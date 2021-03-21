@@ -1,0 +1,25 @@
+{
+  "name": "stylex",
+  "version": "1.0.0",
+  "description": "A simple minimal runtime CSS-in-JS library",
+  "main": "index.js",
+  "repository": "https://www.github.com/facebookexternal/stylex",
+  "author": "Naman Goel <nmn@fb.com>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
+    "@babel/plugin-syntax-flow": "^7.12.13",
+    "@babel/preset-flow": "^7.12.13",
+    "@babel/types": "^7.13.0",
+    "fb-babel-plugin-utils": "^0.12.0",
+    "flow-bin": "^0.147.0",
+    "jest": "^26.6.3",
+    "postcss-value-parser": "^4.1.0"
+  },
+  "dependencies": {
+    "invariant": "^2.2.4",
+    "rtl-detect": "^1.0.2"
+  }
+}
