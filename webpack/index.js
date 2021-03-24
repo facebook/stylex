@@ -25,20 +25,25 @@ class StyleXPlugin {
             from: path,
             map: { prev: map || false }
           };
-          const result = source; //processCSS(source, postcssOpts);
 
-          if (result.map) {
-            compilation.assets[path] = new SourceMapSource(
-              result.css,
-              path,
-              JSON.parse(result.map),
-              source,
-              map,
-              true
-            );
-          } else {
-            compilation.assets[path] = new RawSource(result.css);
-          }
+          const sortedRules = source
+            .trim()
+            .split('\n')
+            .map(line => line.slice(2, -2))
+            .filter(Boolean)
+            .flatMap(json => JSON.parse(json))
+            .sort(([,,first], [,,second]) => first - second)
+          
+          const finalCSS = Array.from(new Map(sortedRules).values()).flatMap(({ltr, rtl}) =>
+            rtl != null 
+            ? [`html:not([dir='rtl']) ${ltr}`, `html[dir='rtl'] ${rtl}`]
+            : [ltr]
+          ).join('\n');
+          
+          console.log('FINAL CSS:', finalCSS)
+
+          compilation.assets[path] = new RawSource(finalCSS);
+          
         }
       });
     });

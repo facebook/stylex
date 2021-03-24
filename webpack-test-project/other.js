@@ -4,7 +4,7 @@ import stylex from 'stylex';
 
 const styles = stylex.create({
   bar: {
-    display: 'absolute',
+    display: 'block',
     width: '100%'
   }
 });

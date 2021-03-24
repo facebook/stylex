@@ -18,7 +18,7 @@ async function styleXLoader(input, inputSourceMap) {
 
   try {
     const { code, map, metadata } = await babel.transformAsync(input, {
-      plugins: [[babelPlugin, options]],
+      plugins: [[babelPlugin, {...options, stylexSheetName: 'index.css'}]],
       inputSourceMap: inputSourceMap || true,
       sourceFileName: this.resourcePath,
       filename: path.basename(this.resourcePath),
@@ -26,7 +26,7 @@ async function styleXLoader(input, inputSourceMap) {
       parserOpts: parserOptions
     });
 
-    if (metadata.stylex === undefined) {
+    if (metadata.stylex === undefined || metadata.stylex.length === 0) {
       this.callback(null, input, inputSourceMap);
     } else if (!outputCSS) {
       this.callback(null, code, map);
@@ -34,16 +34,17 @@ async function styleXLoader(input, inputSourceMap) {
       // const cssPath = path.basename(this.resourcePath) + '.css'
       const cssPath = loaderUtils.interpolateName(
         this,
-        './[hash].css',
+        '[path][name].[hash:base64:7].css',
         {
-          content: `/* bla bla */`
+          content: `/*${JSON.stringify(metadata.stylex)}*/` // 
         }
       );
+      virtualModules.writeModule(cssPath, `/*${JSON.stringify(metadata.stylex)}*/`); // 
 
-      virtualModules.writeModule(cssPath, `/* bla bla */`);
+      const extraImport = `\nimport '${inlineLoader + cssPath}';\n\n`;
+      const newCode = extraImport + code;
 
-      // const postfix = `\nimport '${inlineLoader + cssPath}';\n\n`;
-      this.callback(null, code, map);
+      this.callback(null, newCode, map);
     }
   } catch (error) {
     this.callback(error);

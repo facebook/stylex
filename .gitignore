@@ -5,3 +5,4 @@ build
 coverage
 lib
 webpack-test-project/main.js
+webpack-test-project/index.css

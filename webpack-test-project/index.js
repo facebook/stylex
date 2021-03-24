@@ -7,7 +7,11 @@ import './other'
 const styles = stylex.create({
   foo: {
     display: 'block',
-    height: 500
+    marginStart: 10,
+    height: 500,
+    ':hover': {
+      background: 'red'
+    }
   }
 });
 
