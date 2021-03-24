@@ -42,7 +42,7 @@ const testData = {
   },
   'calc() keeps spaces aroung + and -': {
     input: {value: 'calc((100% + 3% -   100px) / 7)'},
-    output: 'calc((100% + 3% - 100px)/7)',
+    output: 'calc((100% + 3% - 100px) / 7)',
   },
   'strip leading zeros': {
     input: {value: 'cubic-bezier(0.08, 0.52, .52, 1) 50.01s 0.01s'},

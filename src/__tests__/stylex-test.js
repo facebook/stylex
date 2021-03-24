@@ -8,7 +8,7 @@
 
 'use strict';
 
-import rootStyleSheet from '../StyleXSheet';
+import {StyleXSheet, styleSheet} from '../StyleXSheet';
 
 import stylex from '../stylex';
 
@@ -17,9 +17,9 @@ test('stylex.dedupe', () => {
 });
 
 test('stylex.inject', () => {
-  const prevCount = rootStyleSheet.getRuleCount();
+  const prevCount = styleSheet.getRuleCount();
   stylex.inject('hey {}', 0);
-  expect(rootStyleSheet.getRuleCount()).toBeGreaterThan(prevCount);
+  expect(styleSheet.getRuleCount()).toBeGreaterThan(prevCount);
 });
 
 // these tests actually test stylex() itself, so should call it directly

@@ -14,9 +14,9 @@ import type {
   NestedCSSPropTypes,
   Stylex$Create,
   StyleXArray,
-} from './CometStyleXTypes';
+} from './StyleXTypes';
 
-import styleSheet from './StyleXSheet';
+import {styleSheet} from './StyleXSheet';
 
 type DedupeStyles = $ReadOnly<{
   [key: string]: string | $ReadOnly<{[key: string]: string, ...}>,

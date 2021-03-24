@@ -23,7 +23,7 @@ function transform(source, opts = {}) {
     plugins: [
       require('@babel/plugin-syntax-flow'),
       require('@babel/plugin-syntax-object-rest-spread'),
-      [require('../lib/index'), opts],
+      [require('../src/index'), opts],
     ],
   }).code;
 }

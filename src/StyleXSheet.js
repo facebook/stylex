@@ -8,7 +8,7 @@
 
 'use strict';
 
-import type {Theme} from './CometStyleXTypes';
+import type {Theme} from './StyleXTypes';
 
 import rtlDetect from 'rtl-detect';
 
@@ -75,7 +75,7 @@ type SheetOptions = $ReadOnly<{
  * This class manages the CSS stylesheet for the page and the injection of new
  * CSS rules.
  */
-class StyleXSheet {
+export class StyleXSheet {
   static LIGHT_MODE_CLASS_NAME: string = LIGHT_MODE_CLASS_NAME;
   static DARK_MODE_CLASS_NAME: string = DARK_MODE_CLASS_NAME;
 
@@ -339,11 +339,9 @@ class StyleXSheet {
   }
 }
 
-const styleSheet: StyleXSheet = new StyleXSheet({
+export const styleSheet: StyleXSheet = new StyleXSheet({
   isSlow: false,
   supportsVariables: true,
   rootTheme: {},
   rootDarkTheme: {},
 });
-
-export default styleSheet;

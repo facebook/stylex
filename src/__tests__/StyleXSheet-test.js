@@ -8,7 +8,7 @@
 
 'use strict';
 
-import StyleXSheet from '../StyleXSheet';
+import {StyleXSheet} from '../StyleXSheet';
 
 const testOpts = {
   isSlow: false,
@@ -77,23 +77,5 @@ describe('isSlow', () => {
     });
 
     expect(sheet.isSlow).toBeFalsy();
-  });
-
-  test('isSlow reads stylex-slow query param', () => {
-    const {location} = window;
-    // eslint-disable-next-line fb-www/assign-to-location
-    window.location = {
-      search: '/?stylex-slow=1',
-    };
-
-    const sheet = new StyleXSheet({
-      rootDarkTheme: {foo: 'reallydark'},
-      rootTheme: {foo: 'bar'},
-      supportsVariables: false,
-    });
-
-    expect(sheet.isSlow).toBeTruthy();
-    // eslint-disable-next-line fb-www/assign-to-location
-    window.location = location;
   });
 });
