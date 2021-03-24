@@ -11,7 +11,6 @@
 import {StyleXSheet} from '../StyleXSheet';
 
 const testOpts = {
-  isSlow: false,
   rootTheme: null,
   supportsVariables: true,
 };
@@ -57,7 +56,6 @@ test('StyleXSheet.prototype.insert respects priority floats', () => {
 
 test('inlines variables for older browsers', () => {
   const sheet = new StyleXSheet({
-    isSlow: false,
     rootDarkTheme: {foo: 'reallydark'},
     rootTheme: {foo: 'bar'},
     supportsVariables: false,
@@ -66,16 +64,4 @@ test('inlines variables for older browsers', () => {
   sheet.insert('.foo {color: var(--foo)}', 1);
 
   expect(sheet.getCSS()).toMatchSnapshot();
-});
-
-describe('isSlow', () => {
-  test('isSlow is false by default', () => {
-    const sheet = new StyleXSheet({
-      rootDarkTheme: {foo: 'reallydark'},
-      rootTheme: {foo: 'bar'},
-      supportsVariables: false,
-    });
-
-    expect(sheet.isSlow).toBeFalsy();
-  });
 });
