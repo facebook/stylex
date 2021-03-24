@@ -65,7 +65,6 @@ const VARIABLE_MATCH = /var\(--(.*?)\)/g;
 
 // Stylesheet options
 type SheetOptions = $ReadOnly<{
-  isSlow?: boolean,
   rootDarkTheme?: Theme,
   rootTheme: ?Theme,
   supportsVariables?: boolean,
@@ -87,16 +86,9 @@ export class StyleXSheet {
 
     this.rootTheme = opts.rootTheme;
     this.rootDarkTheme = opts.rootDarkTheme;
-    this.isSlow =
-      opts.isSlow ??
-      (typeof location === 'object' && typeof location.search === 'string'
-        ? location.search.includes('stylex-slow')
-        : false);
-
     this.supportsVariables =
       opts.supportsVariables ?? doesSupportCSSVariables();
     this._isRTL = rtlDetect.isRtlLang(navigator?.language ?? 'es_US');
-    this.externalRules = new Set();
   }
 
   _isRTL: boolean;
@@ -105,13 +97,10 @@ export class StyleXSheet {
   rootDarkTheme: ?Theme;
 
   supportsVariables: boolean;
-  isSlow: boolean;
 
   // This is an array containing all the rules we've injected. We use this to
   // keep track of the indexes of all of our rules in the stylesheet.
   rules: Array<string>;
-
-  externalRules: Set<string>;
 
   // Whether we've inserted the style tag into the document.
   injected: boolean;
@@ -231,13 +220,9 @@ export class StyleXSheet {
     }
 
     const tag = this.getTag();
-    if (this.isSlow) {
-      tag.removeChild(tag.childNodes[index + 1]);
-    } else {
-      const sheet = tag.sheet;
-      invariant(sheet, 'expected sheet');
-      sheet.deleteRule(index);
-    }
+    const sheet = tag.sheet;
+    invariant(sheet, 'expected sheet');
+    sheet.deleteRule(index);
   }
 
   /**
@@ -294,20 +279,12 @@ export class StyleXSheet {
 
     const rawRule = this._isRTL && rawRTLRule != null ? rawRTLRule : rawLTRRule;
 
-    if (this.externalRules.has(rawRule.slice(0, rawRule.indexOf('{')).trim())) {
-      return;
-    }
-
     // Don't insert this rule if it already exists
     if (this.rules.includes(rawRule)) {
       return;
     }
 
     const rule = this.normalizeRule(rawRule);
-
-    if (this.externalRules.has(rule.slice(0, rule.indexOf('{')).trim())) {
-      return;
-    }
 
     // Get the position where we should insert the rule
     const insertPos = this.getInsertPositionForPriority(priority);
@@ -321,26 +298,20 @@ export class StyleXSheet {
     }
 
     const tag = this.getTag();
-    if (this.isSlow) {
-      const textNode = document.createTextNode(rule);
-      tag.insertBefore(textNode, tag.childNodes[insertPos]);
-    } else {
-      const sheet = tag.sheet;
+    const sheet = tag.sheet;
 
-      if (sheet != null) {
-        try {
-          sheet.insertRule(rule, insertPos);
-        } catch {
-          // Ignore: error likely due to inserting prefixed rules (e.g. `::-moz-range-thumb`).
-        }
+    if (sheet != null) {
+      try {
+        sheet.insertRule(rule, insertPos);
+      } catch {
+        // Ignore: error likely due to inserting prefixed rules (e.g. `::-moz-range-thumb`).
       }
-      // Ignore the case where sheet == null. It's an edge-case Edge 17 bug.
     }
+    // Ignore the case where sheet == null. It's an edge-case Edge 17 bug.
   }
 }
 
 export const styleSheet: StyleXSheet = new StyleXSheet({
-  isSlow: false,
   supportsVariables: true,
   rootTheme: {},
   rootDarkTheme: {},
