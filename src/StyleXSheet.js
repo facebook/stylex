@@ -10,7 +10,7 @@
 
 import type {Theme} from './StyleXTypes';
 
-import rtlDetect from 'rtl-detect';
+// import rtlDetect from 'rtl-detect';
 
 import invariant from 'invariant';
 
@@ -54,9 +54,9 @@ function makeStyleTag(): HTMLStyleElement {
  */
 function doesSupportCSSVariables() {
   return (
-    window.CSS != null &&
-    window.CSS.supports != null &&
-    window.CSS.supports('--fake-var:0')
+    global.CSS != null &&
+    global.CSS.supports != null &&
+    global.CSS.supports('--fake-var:0')
   );
 }
 
@@ -88,7 +88,7 @@ export class StyleXSheet {
     this.rootDarkTheme = opts.rootDarkTheme;
     this.supportsVariables =
       opts.supportsVariables ?? doesSupportCSSVariables();
-    this._isRTL = rtlDetect.isRtlLang(navigator?.language ?? 'es_US');
+    this._isRTL = false; //global?.body != null && rtlDetect.isRtlLang(global?.navigator?.language ?? 'es_US');
   }
 
   _isRTL: boolean;
@@ -120,7 +120,7 @@ export class StyleXSheet {
    * Check if we have don't have access to the dom
    */
   isHeadless(): boolean {
-    return this.tag == null || window?.document?.body == null;
+    return this.tag == null || global?.document?.body == null;
   }
 
   /**
@@ -164,7 +164,7 @@ export class StyleXSheet {
     this.injected = true;
 
     // Running in a server environment
-    if (window.document?.body == null) {
+    if (global.document?.body == null) {
       this.injectTheme();
       return;
     }

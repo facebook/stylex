@@ -11,3 +11,4 @@ const styles = stylex.create({
   }
 });
 
+console.log(stylex(styles.foo))

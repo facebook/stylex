@@ -1,7 +1,7 @@
 const path = require('path');
 const babel = require('@babel/core');
 const loaderUtils = require('loader-utils');
-const babelPlugin = require('../babel.js');
+const babelPlugin = require('../babel/src');
 const virtualModules = require('./virtualModules.js');
 
 async function styleXLoader(input, inputSourceMap) {
@@ -26,23 +26,24 @@ async function styleXLoader(input, inputSourceMap) {
       parserOpts: parserOptions
     });
 
-    if (metadata.style9 === undefined) {
+    if (metadata.stylex === undefined) {
       this.callback(null, input, inputSourceMap);
     } else if (!outputCSS) {
       this.callback(null, code, map);
     } else {
+      // const cssPath = path.basename(this.resourcePath) + '.css'
       const cssPath = loaderUtils.interpolateName(
         this,
-        '[path][name].[hash:base64:7].css',
+        './[hash].css',
         {
-          content: metadata.style9
+          content: `/* bla bla */`
         }
       );
 
-      virtualModules.writeModule(cssPath, metadata.style9);
+      virtualModules.writeModule(cssPath, `/* bla bla */`);
 
-      const postfix = `\nimport '${inlineLoader + cssPath}';`;
-      this.callback(null, code + postfix, map);
+      // const postfix = `\nimport '${inlineLoader + cssPath}';\n\n`;
+      this.callback(null, code, map);
     }
   } catch (error) {
     this.callback(error);

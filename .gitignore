@@ -3,3 +3,5 @@ build
 .DS_Store
 *.log*
 coverage
+lib
+webpack-test-project/main.js

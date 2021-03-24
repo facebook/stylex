@@ -2,15 +2,18 @@
   "name": "stylex",
   "version": "1.0.0",
   "description": "A simple minimal runtime CSS-in-JS library",
-  "main": "index.js",
+  "main": "lib/stylex.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
   "author": "Naman Goel <nmn@fb.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
+    "babel": "babel src/ --out-dir lib/",
+    "build": "yarn run babel",
     "test": "jest"
   },
   "devDependencies": {
+    "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.13.8",
@@ -23,7 +26,11 @@
     "flow-bin": "^0.147.0",
     "flow-typed": "^3.3.1",
     "jest": "^26.6.3",
-    "postcss-value-parser": "^4.1.0"
+    "loader-utils": "^2.0.0",
+    "mini-css-extract-plugin": "^1.3.9",
+    "postcss-value-parser": "^4.1.0",
+    "webpack-sources": "^2.2.0",
+    "webpack-virtual-modules": "^0.4.2"
   },
   "dependencies": {
     "invariant": "^2.2.4",

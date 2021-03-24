@@ -1,6 +1,6 @@
 const { SourceMapSource, RawSource } = require('webpack-sources');
 const NAME = require('../package.json').name;
-const processCSS = require('../src/process-css.js');
+// const processCSS = require('../src/process-css.js');
 const virtualModules = require('./virtualModules.js');
 
 class StyleXPlugin {
@@ -25,7 +25,7 @@ class StyleXPlugin {
             from: path,
             map: { prev: map || false }
           };
-          const result = processCSS(source, postcssOpts);
+          const result = source; //processCSS(source, postcssOpts);
 
           if (result.map) {
             compilation.assets[path] = new SourceMapSource(
