@@ -5,11 +5,26 @@ const babelPlugin = require('../babel/src');
 const virtualModules = require('./virtualModules.js');
 
 async function styleXLoader(input, inputSourceMap) {
+  
+  // The use of this loader shouldn't need to provide
+  // any configuration options.
+  // Using the file extension we can automatically choose
+  // between `typescript` or `flow` syntax extensions.
+  const fileType = this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx')
+    ? 'typescript'
+    : ['flow', {enums: true}]
+
   const {
     inlineLoader = '',
     outputCSS = true,
     parserOptions = {
-      plugins: ['typescript', 'jsx']
+      plugins: [
+        fileType,
+        'jsx',
+        'classProperties',
+        'classPrivateProperties',
+        'classPrivateMethods',
+      ],
     },
     ...options
   } = loaderUtils.getOptions(this) || {};
@@ -31,7 +46,6 @@ async function styleXLoader(input, inputSourceMap) {
     } else if (!outputCSS) {
       this.callback(null, code, map);
     } else {
-      // const cssPath = path.basename(this.resourcePath) + '.css'
       const cssPath = loaderUtils.interpolateName(
         this,
         '[path][name].[hash:base64:7].css',
