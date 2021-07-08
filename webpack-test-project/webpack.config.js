@@ -28,5 +28,12 @@ module.exports = {
       filename: 'index.css'
     })
   ],
+  /**
+   * By default, Webpack converts every module into a string that
+   * is `eval`ed at runtime. This makes it every hard to inspect
+   * the generated code for correctness.
+   * 
+   * The option of `cheap-source-map` gives you somethings easier
+   */
   devtool: 'cheap-source-map'
 };
