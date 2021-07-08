@@ -346,7 +346,13 @@ function getStylesFromObject(
         const keyPath = prop;
         const valuePath = keyPath;
         const rawValue = value;
-        properties.push({rawKey, keyPath, valuePath, rawValue, isSpread: true});
+        properties.push({
+          rawKey,
+          keyPath,
+          valuePath,
+          rawValue,
+          isSpread: true,
+        });
       });
     } else if (prop.isSpreadElement()) {
       if (
@@ -399,10 +405,10 @@ function getStylesFromObject(
       // handle objects
       const valuePath = prop.get('value');
       if (valuePath.isObjectExpression()) {
-        properties.push({rawKey, keyPath, valuePath, rawValue: null});
+        properties.push({ rawKey, keyPath, valuePath, rawValue: null });
       } else {
         // evaluate the property
-        const {deopt, value: rawValue} = valuePath.evaluate();
+        const { deopt, value: rawValue } = valuePath.evaluate();
 
         // If the evaluate deopted then this isn't a static pure value
         if (deopt != null) {
@@ -438,7 +444,7 @@ function getStylesFromObject(
   // Remove Duplicate Keys
   properties = properties
     .reverse()
-    .filter(({rawKey}) => {
+    .filter(({ rawKey }) => {
       if (uniqueKeys.has(rawKey)) {
         return false;
       }
@@ -448,7 +454,7 @@ function getStylesFromObject(
     .reverse();
 
   // NOTE: with more babel knowledge, I hope to clean this up in the near future
-  for (const {rawKey, keyPath, valuePath, rawValue, isSpread} of properties) {
+  for (const { rawKey, keyPath, valuePath, rawValue, isSpread } of properties) {
     // handle objects
     if (
       rawValue == null &&
@@ -497,7 +503,7 @@ function getStylesFromObject(
     }
 
     // Get the CSS property name
-    const {className, key, rules, value, medium} = getClassNameFromRule(
+    const { className, key, rules, value, medium } = getClassNameFromRule(
       rawKey,
       rawValue,
       pseudo,
@@ -594,7 +600,7 @@ function buildStyleXInject(css, priority) {
     },
   ];
   if (css.rtl != null) {
-    args.push({type: 'StringLiteral', value: css.rtl});
+    args.push({ type: 'StringLiteral', value: css.rtl });
   }
 
   return {
@@ -634,7 +640,7 @@ function convertStylexKeyframesCall(path, opts) {
         ltrBody += `${key}{`;
         rtlBody += `${key}{`;
 
-        for (const {rules} of styles) {
+        for (const { rules } of styles) {
           const ltrBuilt = rules.ltr.key + ':' + rules.ltr.value + ';';
           ltrBody += ltrBuilt;
 
@@ -709,7 +715,7 @@ function convertStylexCall(path, opts, markComposition) {
         rules,
         medium,
       } of styles) {
-        classNames.push({className, pseudoPriority, key, medium});
+        classNames.push({ className, pseudoPriority, key, medium });
 
         const priority = pseudoPriority + getPriorityForRule(key);
         const css = {

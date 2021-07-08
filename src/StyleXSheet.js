@@ -8,7 +8,7 @@
 
 'use strict';
 
-import type {Theme} from './StyleXTypes';
+import type { Theme } from './StyleXTypes';
 
 // import rtlDetect from 'rtl-detect';
 
@@ -127,7 +127,7 @@ export class StyleXSheet {
    * Get the stylesheet tag. Throw if none exists.
    */
   getTag(): HTMLStyleElement {
-    const {tag} = this;
+    const { tag } = this;
     invariant(tag != null, 'expected tag');
     return tag;
   }
@@ -229,7 +229,7 @@ export class StyleXSheet {
    *
    */
   normalizeRule(rule: string): string {
-    const {rootTheme} = this;
+    const { rootTheme } = this;
     if (this.supportsVariables || rootTheme == null) {
       return rule;
     }

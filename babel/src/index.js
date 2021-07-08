@@ -12,7 +12,7 @@ const messages = require('./messages.js');
 const {
   factoryCallToStylexCall,
 } = require('./transform-factory-call-to-stylex-call');
-const {convertStylexValueCall} = require('./transform-factory-call.js');
+const { convertStylexValueCall } = require('./transform-factory-call.js');
 const {
   convertStylexCall,
   convertStylexKeyframesCall,
@@ -35,21 +35,22 @@ function styleXTransform(babel) {
   // Check if path is `require('stylex')`
   function isStyleXRequireCall(path) {
     return (
-      path.get('callee').isIdentifier({name: 'require'}) &&
-      path.get('arguments')[0].isStringLiteral({value: STYLEX})
+      path.get('callee').isIdentifier({ name: 'require' }) &&
+      path.get('arguments')[0].isStringLiteral({ value: STYLEX })
     );
   }
 
   // Check if path is `const stylex = VAL`
   function isStyleXDeclaration(path) {
     return (
-      path.isVariableDeclarator() && path.get('id').isIdentifier({name: STYLEX})
+      path.isVariableDeclarator() &&
+      path.get('id').isIdentifier({ name: STYLEX })
     );
   }
 
   // Check if path is `import _ from 'stylex'`
   function isStyleXImportDeclaration(path) {
-    return path.get('source').isStringLiteral({value: STYLEX});
+    return path.get('source').isStringLiteral({ value: STYLEX });
   }
 
   // Check if path is `import stylex from _`
@@ -61,7 +62,7 @@ function styleXTransform(babel) {
     const firstSpecifier = specifiers[0];
     return (
       firstSpecifier.isImportDefaultSpecifier() &&
-      firstSpecifier.get('local').isIdentifier({name: STYLEX})
+      firstSpecifier.get('local').isIdentifier({ name: STYLEX })
     );
   }
 
@@ -73,11 +74,11 @@ function styleXTransform(babel) {
       path
         .get('callee')
         .get('object')
-        .isIdentifier({name: STYLEX}) &&
+        .isIdentifier({ name: STYLEX }) &&
       path
         .get('callee')
         .get('property')
-        .isIdentifier({name: 'create'})
+        .isIdentifier({ name: 'create' })
     );
   }
 
@@ -139,7 +140,7 @@ function styleXTransform(babel) {
         return true;
       }
       if (
-        arg.isLogicalExpression({operator: '&&'}) &&
+        arg.isLogicalExpression({ operator: '&&' }) &&
         arg.get('right').isMemberExpression()
       ) {
         const namespace = getNamespaceBinding(
@@ -352,7 +353,7 @@ function styleXTransform(babel) {
 
       if (isStyleXCall(path)) {
         // Name of the variable holding the value of stylex function call.
-        const {namespaces, insertCalls, rawInserts} = convertStylexCall(
+        const { namespaces, insertCalls, rawInserts } = convertStylexCall(
           arg,
           {
             filename: state.filename,
@@ -512,7 +513,7 @@ function styleXTransform(babel) {
         // Any usage other than `styles(...)` and `stylex(..., styles.x, ...)`.
         if (
           getStyleXValueNamespaces(path, state) != null &&
-          !path.parentPath.isCallExpression({callee: path.node})
+          !path.parentPath.isCallExpression({ callee: path.node })
           // NOTE: traversal args to stylex(...) is skipped.
         ) {
           hasComposition = true;

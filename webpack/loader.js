@@ -5,14 +5,14 @@ const babelPlugin = require('../babel/src');
 const virtualModules = require('./virtualModules.js');
 
 async function styleXLoader(input, inputSourceMap) {
-  
   // The use of this loader shouldn't need to provide
   // any configuration options.
   // Using the file extension we can automatically choose
   // between `typescript` or `flow` syntax extensions.
-  const fileType = this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx')
-    ? 'typescript'
-    : ['flow', {enums: true}]
+  const fileType =
+    this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx')
+      ? 'typescript'
+      : ['flow', { enums: true }];
 
   // These are the default options.
   // You can override them all.
@@ -35,12 +35,17 @@ async function styleXLoader(input, inputSourceMap) {
 
   try {
     const { code, map, metadata } = await babel.transformAsync(input, {
-      plugins: [[babelPlugin, {dev: !outputCSS, ...options, stylexSheetName: 'index.css'}]],
+      plugins: [
+        [
+          babelPlugin,
+          { dev: !outputCSS, ...options, stylexSheetName: 'index.css' },
+        ],
+      ],
       inputSourceMap: inputSourceMap || true,
       sourceFileName: this.resourcePath,
       filename: path.basename(this.resourcePath),
       sourceMaps: true,
-      parserOpts: parserOptions
+      parserOpts: parserOptions,
     });
 
     if (metadata.stylex === undefined || metadata.stylex.length === 0) {
@@ -52,10 +57,13 @@ async function styleXLoader(input, inputSourceMap) {
         this,
         '[path][name].[hash:base64:7].css',
         {
-          content: `/*${JSON.stringify(metadata.stylex)}*/` // 
-        }
+          content: `/*${JSON.stringify(metadata.stylex)}*/`, //
+        },
       );
-      virtualModules.writeModule(cssPath, `/*${JSON.stringify(metadata.stylex)}*/`); // 
+      virtualModules.writeModule(
+        cssPath,
+        `/*${JSON.stringify(metadata.stylex)}*/`,
+      ); //
 
       const extraImport = `\nimport '${inlineLoader + cssPath}';\n\n`;
       const newCode = extraImport + code;

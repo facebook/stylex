@@ -42,42 +42,42 @@ function splitValue(str) {
 const expansions = {
   border: rawValue => {
     return [
-      {rawKey: 'borderTop', rawValue},
-      {rawKey: 'borderEnd', rawValue},
-      {rawKey: 'borderBottom', rawValue},
-      {rawKey: 'borderStart', rawValue},
+      { rawKey: 'borderTop', rawValue },
+      { rawKey: 'borderEnd', rawValue },
+      { rawKey: 'borderBottom', rawValue },
+      { rawKey: 'borderStart', rawValue },
     ];
   },
   borderColor: rawValue => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
-      {rawKey: 'borderTopColor', rawValue: top},
-      {rawKey: 'borderEndColor', rawValue: right},
-      {rawKey: 'borderBottomColor', rawValue: bottom},
-      {rawKey: 'borderStartColor', rawValue: left},
+      { rawKey: 'borderTopColor', rawValue: top },
+      { rawKey: 'borderEndColor', rawValue: right },
+      { rawKey: 'borderBottomColor', rawValue: bottom },
+      { rawKey: 'borderStartColor', rawValue: left },
     ];
   },
   borderHorizontal: rawValue => {
     return [
-      {rawKey: 'borderStart', rawValue},
-      {rawKey: 'borderEnd', rawValue},
+      { rawKey: 'borderStart', rawValue },
+      { rawKey: 'borderEnd', rawValue },
     ];
   },
   borderStyle: rawValue => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
-      {rawKey: 'borderTopStyle', rawValue: top},
-      {rawKey: 'borderEndStyle', rawValue: right},
-      {rawKey: 'borderBottomStyle', rawValue: bottom},
-      {rawKey: 'borderStartStyle', rawValue: left},
+      { rawKey: 'borderTopStyle', rawValue: top },
+      { rawKey: 'borderEndStyle', rawValue: right },
+      { rawKey: 'borderBottomStyle', rawValue: bottom },
+      { rawKey: 'borderStartStyle', rawValue: left },
     ];
   },
   borderVertical: rawValue => {
     return [
-      {rawKey: 'borderTop', rawValue},
-      {rawKey: 'borderBottom', rawValue},
+      { rawKey: 'borderTop', rawValue },
+      { rawKey: 'borderBottom', rawValue },
     ];
   },
   borderWidth: rawValue => {
@@ -85,10 +85,10 @@ const expansions = {
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
     return [
-      {rawKey: 'borderTopWidth', rawValue: top},
-      {rawKey: 'borderEndWidth', rawValue: right},
-      {rawKey: 'borderBottomWidth', rawValue: bottom},
-      {rawKey: 'borderStartWidth', rawValue: left},
+      { rawKey: 'borderTopWidth', rawValue: top },
+      { rawKey: 'borderEndWidth', rawValue: right },
+      { rawKey: 'borderBottomWidth', rawValue: bottom },
+      { rawKey: 'borderStartWidth', rawValue: left },
     ];
   },
 
@@ -101,10 +101,10 @@ const expansions = {
         : rawValue; // remove
 
     return [
-      {rawKey: 'borderTopStartRadius', rawValue: top},
-      {rawKey: 'borderTopEndRadius', rawValue: right},
-      {rawKey: 'borderBottomEndRadius', rawValue: bottom},
-      {rawKey: 'borderBottomStartRadius', rawValue: left},
+      { rawKey: 'borderTopStartRadius', rawValue: top },
+      { rawKey: 'borderTopEndRadius', rawValue: right },
+      { rawKey: 'borderBottomEndRadius', rawValue: bottom },
+      { rawKey: 'borderBottomStartRadius', rawValue: left },
     ];
   },
 
@@ -113,30 +113,30 @@ const expansions = {
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
     return [
-      {rawKey: 'marginTop', rawValue: top},
-      {rawKey: 'marginEnd', rawValue: right},
-      {rawKey: 'marginBottom', rawValue: bottom},
-      {rawKey: 'marginStart', rawValue: left},
+      { rawKey: 'marginTop', rawValue: top },
+      { rawKey: 'marginEnd', rawValue: right },
+      { rawKey: 'marginBottom', rawValue: bottom },
+      { rawKey: 'marginStart', rawValue: left },
     ];
   },
   marginHorizontal: rawValue => {
     return [
-      {rawKey: 'marginEnd', rawValue},
-      {rawKey: 'marginStart', rawValue},
+      { rawKey: 'marginEnd', rawValue },
+      { rawKey: 'marginStart', rawValue },
     ];
   },
   marginVertical: rawValue => {
     return [
-      {rawKey: 'marginTop', rawValue},
-      {rawKey: 'marginBottom', rawValue},
+      { rawKey: 'marginTop', rawValue },
+      { rawKey: 'marginBottom', rawValue },
     ];
   },
 
   overflow: rawValue => {
     const [x, y = x] = splitValue(rawValue);
     return [
-      {rawKey: 'overflowX', rawValue: x},
-      {rawKey: 'overflowY', rawValue: y},
+      { rawKey: 'overflowX', rawValue: x },
+      { rawKey: 'overflowY', rawValue: y },
     ];
   },
 
@@ -145,22 +145,22 @@ const expansions = {
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
     return [
-      {rawKey: 'paddingTop', rawValue: top},
-      {rawKey: 'paddingEnd', rawValue: right},
-      {rawKey: 'paddingBottom', rawValue: bottom},
-      {rawKey: 'paddingStart', rawValue: left},
+      { rawKey: 'paddingTop', rawValue: top },
+      { rawKey: 'paddingEnd', rawValue: right },
+      { rawKey: 'paddingBottom', rawValue: bottom },
+      { rawKey: 'paddingStart', rawValue: left },
     ];
   },
   paddingHorizontal: rawValue => {
     return [
-      {rawKey: 'paddingEnd', rawValue},
-      {rawKey: 'paddingStart', rawValue},
+      { rawKey: 'paddingEnd', rawValue },
+      { rawKey: 'paddingStart', rawValue },
     ];
   },
   paddingVertical: rawValue => {
     return [
-      {rawKey: 'paddingTop', rawValue},
-      {rawKey: 'paddingBottom', rawValue},
+      { rawKey: 'paddingTop', rawValue },
+      { rawKey: 'paddingBottom', rawValue },
     ];
   },
 };
@@ -169,7 +169,7 @@ function mapValuePathToProperty(rawKey, rawValue) {
   if (expansions[rawKey]) {
     return expansions[rawKey](rawValue);
   }
-  return [{rawKey, rawValue}];
+  return [{ rawKey, rawValue }];
 }
 
 module.exports = mapValuePathToProperty;

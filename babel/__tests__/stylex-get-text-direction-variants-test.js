@@ -23,7 +23,10 @@ test('simple flips', () => {
 });
 
 const tests = {
-  float: [['start', 'left', 'right'], ['end', 'right', 'left']],
+  float: [
+    ['start', 'left', 'right'],
+    ['end', 'right', 'left'],
+  ],
 
   'border-radius': [
     ['0 1px 2px 3em', '0 1px 2px 3em', '1px 0 3em 2px'],

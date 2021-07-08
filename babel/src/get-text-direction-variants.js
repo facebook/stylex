@@ -6,7 +6,7 @@
 
 'use strict';
 
-const {animationNameIgnoreSuffix} = require('./constants.js');
+const { animationNameIgnoreSuffix } = require('./constants.js');
 const parser = require('postcss-value-parser');
 
 /**
@@ -16,8 +16,8 @@ function getTextDirectionVariants(key, value) {
   const simpleFlip = simpleDirectionFlips[key];
   if (simpleFlip != null) {
     return {
-      ltr: {key: simpleFlip.ltr, value},
-      rtl: {key: simpleFlip.rtl, value},
+      ltr: { key: simpleFlip.ltr, value },
+      rtl: { key: simpleFlip.rtl, value },
     };
   }
 
@@ -32,8 +32,8 @@ function getTextDirectionVariants(key, value) {
 
     if (flippedValue != value) {
       return {
-        ltr: {key, value},
-        rtl: {key, value: flippedValue},
+        ltr: { key, value },
+        rtl: { key, value: flippedValue },
       };
     }
   }
@@ -43,8 +43,8 @@ function getTextDirectionVariants(key, value) {
     !value.endsWith(animationNameIgnoreSuffix)
   ) {
     return {
-      ltr: {key, value: value + '-ltr'},
-      rtl: {key, value: value + '-rtl'},
+      ltr: { key, value: value + '-ltr' },
+      rtl: { key, value: value + '-rtl' },
     };
   }
 
@@ -55,8 +55,8 @@ function getTextDirectionVariants(key, value) {
 
     if (rtl !== value) {
       return {
-        ltr: {key, value},
-        rtl: {key, value: rtl},
+        ltr: { key, value },
+        rtl: { key, value: rtl },
       };
     }
   }
@@ -77,8 +77,8 @@ function getTextDirectionVariants(key, value) {
     const rtl = builtDefs.join(', ');
     if (rtl !== value) {
       return {
-        ltr: {key, value},
-        rtl: {key, value: rtl},
+        ltr: { key, value },
+        rtl: { key, value: rtl },
       };
     }
   }
@@ -93,8 +93,8 @@ function getTextDirectionVariants(key, value) {
 
     if (ltr != rtl) {
       return {
-        ltr: {key, value: ltr},
-        rtl: {key, value: rtl},
+        ltr: { key, value: ltr },
+        rtl: { key, value: rtl },
       };
     }
   }
@@ -102,15 +102,15 @@ function getTextDirectionVariants(key, value) {
   if (key === 'float' || key === 'text-align') {
     if (value === 'start') {
       return {
-        ltr: {key, value: 'left'},
-        rtl: {key, value: 'right'},
+        ltr: { key, value: 'left' },
+        rtl: { key, value: 'right' },
       };
     }
 
     if (value === 'end') {
       return {
-        ltr: {key, value: 'right'},
-        rtl: {key, value: 'left'},
+        ltr: { key, value: 'right' },
+        rtl: { key, value: 'left' },
       };
     }
   }
@@ -144,14 +144,14 @@ function getTextDirectionVariants(key, value) {
 
     if (rtl != value) {
       return {
-        ltr: {key, value},
-        rtl: {key, value: rtl},
+        ltr: { key, value },
+        rtl: { key, value: rtl },
       };
     }
   }
 
   return {
-    ltr: {key, value},
+    ltr: { key, value },
     rtl: null,
   };
 }

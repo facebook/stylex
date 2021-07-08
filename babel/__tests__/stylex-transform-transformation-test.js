@@ -9,7 +9,7 @@
 
 jest.autoMockOff();
 
-const {transformSync: babelTransform} = require('@babel/core');
+const { transformSync: babelTransform } = require('@babel/core');
 const TestUtil = require('fb-babel-plugin-utils/TestUtil');
 
 function transform(source, opts = {}) {

@@ -25,7 +25,7 @@ function replaceStringWithMemberExpression(arg, varName) {
       t.identifier(arg.node.value),
     );
   }
-  if (arg.isLogicalExpression({operator: '&&'})) {
+  if (arg.isLogicalExpression({ operator: '&&' })) {
     return t.logicalExpression(
       '&&',
       arg.get('left').node,
@@ -63,7 +63,7 @@ function factoryCallToStylexCall(path) {
         }
         const key = prop.get('key').node;
         const value = prop.get('value');
-        if (value.isBooleanLiteral({value: true})) {
+        if (value.isBooleanLiteral({ value: true })) {
           newArgs.push(t.memberExpression(t.identifier(varName), key));
         } else {
           newArgs.push(
@@ -84,4 +84,4 @@ function factoryCallToStylexCall(path) {
   path.replaceWith(t.callExpression(t.identifier('stylex'), newArgs));
 }
 
-module.exports = {factoryCallToStylexCall};
+module.exports = { factoryCallToStylexCall };

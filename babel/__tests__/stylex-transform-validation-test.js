@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 const messages = require('../src/messages');
-const {transformSync: babelTransform} = require('@babel/core');
+const { transformSync: babelTransform } = require('@babel/core');
 const TestUtil = require('fb-babel-plugin-utils/TestUtil');
 
 function transform(source, opts = {}) {
@@ -353,17 +353,17 @@ const testData = {
   },
   'disallow unclosed style value functions': {
     input: `const styles = stylex.create({default: {color: 'var(--bar'}})`,
-    options: {definedStylexCSSVariables: {bar: 1}},
+    options: { definedStylexCSSVariables: { bar: 1 } },
     throws: messages.LINT_UNCLOSED_FUNCTION,
   },
   'allow only defined CSS variables': {
     input: `const styles = stylex.create({foo: { color: 'var(--bar)' }});`,
-    options: {definedStylexCSSVariables: {bar: 1}},
+    options: { definedStylexCSSVariables: { bar: 1 } },
     throws: false,
   },
   'allow undefined CSS variables': {
     input: `const styles = stylex.create({foo: { color: 'var(--foobar)' }});`,
-    options: {definedStylexCSSVariables: {bar: 1}},
+    options: { definedStylexCSSVariables: { bar: 1 } },
     throws: false,
   },
   'allow only defined CSS variables 2': {
@@ -374,7 +374,7 @@ const testData = {
         },
       });
     `,
-    options: {definedStylexCSSVariables: {bar: 1, baz: 1}},
+    options: { definedStylexCSSVariables: { bar: 1, baz: 1 } },
     throws: false,
   },
   'allow undefined CSS variables 2': {
@@ -385,7 +385,7 @@ const testData = {
         },
       });
     `,
-    options: {definedStylexCSSVariables: {bar: 1, baz: 1}},
+    options: { definedStylexCSSVariables: { bar: 1, baz: 1 } },
     throws: false,
   },
   'allow only defined CSS variables in keyframes': {
@@ -396,7 +396,7 @@ const testData = {
         },
       });
     `,
-    options: {definedStylexCSSVariables: {bar: 1}},
+    options: { definedStylexCSSVariables: { bar: 1 } },
     throws: false,
   },
   'allow undefined CSS variables in keyframes': {
@@ -407,22 +407,22 @@ const testData = {
         },
       });
     `,
-    options: {definedStylexCSSVariables: {bar: 1}},
+    options: { definedStylexCSSVariables: { bar: 1 } },
     throws: false,
   },
   'allow undefined CSS variables, if the list of defined vars is undefined': {
     input: `const styles = stylex.create({foo: { color: 'var(--bar)' }});`,
-    options: {definedStylexCSSVariables: undefined},
+    options: { definedStylexCSSVariables: undefined },
     throws: false,
   },
   'allow undefined CSS variables, if the list of defined vars is null': {
     input: `const styles = stylex.create({foo: { color: 'var(--bar)' }});`,
-    options: {definedStylexCSSVariables: null},
+    options: { definedStylexCSSVariables: null },
     throws: false,
   },
   'ignore undefined CSS variables without leading --': {
     input: `const styles = stylex.create({foo: { color: 'var(bar)' }});`,
-    options: {definedStylexCSSVariables: {baz: 1}},
+    options: { definedStylexCSSVariables: { baz: 1 } },
     throws: false,
   },
 };

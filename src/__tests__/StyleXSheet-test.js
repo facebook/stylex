@@ -8,7 +8,7 @@
 
 'use strict';
 
-import {StyleXSheet} from '../StyleXSheet';
+import { StyleXSheet } from '../StyleXSheet';
 
 const testOpts = {
   rootTheme: null,
@@ -56,8 +56,8 @@ test('StyleXSheet.prototype.insert respects priority floats', () => {
 
 test('inlines variables for older browsers', () => {
   const sheet = new StyleXSheet({
-    rootDarkTheme: {foo: 'reallydark'},
-    rootTheme: {foo: 'bar'},
+    rootDarkTheme: { foo: 'reallydark' },
+    rootTheme: { foo: 'bar' },
     supportsVariables: false,
   });
 

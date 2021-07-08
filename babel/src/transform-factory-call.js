@@ -6,17 +6,17 @@
 
 'use strict';
 
-const {overrideProperties} = require('./constants.js');
+const { overrideProperties } = require('./constants.js');
 const messages = require('./messages.js');
-const {getPriorityForRule} = require('./transform-stylex-call.js');
-const {getKey, namespaceToDevClassName, validateProp} = require('./utils.js');
+const { getPriorityForRule } = require('./transform-stylex-call.js');
+const { getKey, namespaceToDevClassName, validateProp } = require('./utils.js');
 
 /**
  * Take a Babel Node Path and resolve a namespace string from it. Validating it
  * as necessary.
  */
 function getNamespace(path, namespaceData) {
-  if (path.isLogicalExpression({operator: '&&'})) {
+  if (path.isLogicalExpression({ operator: '&&' })) {
     return getNamespace(path.get('right'), namespaceData);
   }
 
@@ -34,7 +34,7 @@ function getNamespace(path, namespaceData) {
     !path.isStringLiteral() &&
     !path.isNumericLiteral() &&
     !path.isIdentifier() &&
-    !path.isObjectProperty({key: path.node})
+    !path.isObjectProperty({ key: path.node })
   ) {
     throw path.buildCodeFrameError(messages.ILLEGAL_NAMESPACE_TYPE);
   }
@@ -63,7 +63,7 @@ function getConditions(path, namespaceData) {
     ];
   }
 
-  if (path.isLogicalExpression({operator: '&&'})) {
+  if (path.isLogicalExpression({ operator: '&&' })) {
     return [
       {
         type: 'condition',
@@ -83,7 +83,7 @@ function getConditions(path, namespaceData) {
       const key = getNamespace(prop.get('key'), namespaceData);
       const value = prop.get('value');
 
-      if (value.isBooleanLiteral({value: true})) {
+      if (value.isBooleanLiteral({ value: true })) {
         conditions.push({
           type: 'namespace',
           namespace: key,
@@ -130,7 +130,7 @@ function namespacesToStringClassNames(
 
     // Get all the styles from this namespace and add on their classes
     const styles = namespaceData.get(namespace);
-    for (const {key, className, pseudoPriority, medium} of styles) {
+    for (const { key, className, pseudoPriority, medium } of styles) {
       const usedKey = getDedupeKey(key, pseudoPriority, medium);
       if (usedKeys.has(usedKey)) {
         continue;
@@ -145,7 +145,7 @@ function namespacesToStringClassNames(
 
     // For all the properties that shadow others, produce fake dedupe entries
     // to prevent them from being inserted
-    for (const {key, pseudoPriority, medium} of styles) {
+    for (const { key, pseudoPriority, medium } of styles) {
       const shadowed = overrideProperties[key];
       if (shadowed == null) {
         continue;
@@ -207,7 +207,7 @@ function buildNamespaceDedupeArgument(
     const namespaceDedupeKeys = new Set();
 
     const namespaceStyles = namespaceData.get(namespace);
-    for (const {className, key, medium, pseudoPriority} of namespaceStyles) {
+    for (const { className, key, medium, pseudoPriority } of namespaceStyles) {
       // Push on the new object
       const dedupeKey = getDedupeKey(key, pseudoPriority, medium);
       possibleDedupeKeys.add(dedupeKey);
@@ -226,7 +226,7 @@ function buildNamespaceDedupeArgument(
     }
 
     // Create shadow properties if necessary
-    for (const {key, medium, pseudoPriority} of namespaceStyles) {
+    for (const { key, medium, pseudoPriority } of namespaceStyles) {
       // Check if this property should shadow any previous properties, if it
       // should, then remove them from the object by setting them to null
       const shadowed = overrideProperties[key];
@@ -457,7 +457,9 @@ function checkCollision(flatNamespaces, namespaceData) {
   const foundStyles = new Set();
 
   for (const namespace of flatNamespaces) {
-    for (const {key, medium, pseudoPriority} of namespaceData.get(namespace)) {
+    for (const { key, medium, pseudoPriority } of namespaceData.get(
+      namespace,
+    )) {
       // Check if there's any properties in this that we should shadow
       const shadow = overrideProperties[key];
       if (shadow != null) {

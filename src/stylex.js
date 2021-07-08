@@ -16,11 +16,11 @@ import type {
   StyleXArray,
 } from './StyleXTypes';
 
-import {styleSheet} from './StyleXSheet';
+import { styleSheet } from './StyleXSheet';
 
 type DedupeStyles = $ReadOnly<{
-  [key: string]: string | $ReadOnly<{[key: string]: string, ...}>,
-  ...
+  [key: string]: string | $ReadOnly<{ [key: string]: string, ... }>,
+  ...,
 }>;
 
 let warnedOnInject = false;
@@ -100,9 +100,9 @@ stylex.compose = function stylexCompose(
   return stylexPrepare((styles: $FlowFixMe));
 };
 
-function stylexCreate(_styles: {...}) {
+function stylexCreate(_styles: { ... }) {
   throw new Error(
-    'stylex.create should never be called. It should be compiled away.'
+    'stylex.create should never be called. It should be compiled away.',
   );
 }
 
@@ -116,9 +116,7 @@ function stylexCreate(_styles: {...}) {
 stylex.create = (stylexCreate: Stylex$Create);
 
 stylex.keyframes = (_keyframes: Keyframes): string => {
-  throw new Error(
-    'stylex.keyframes should never be called'
-  );
+  throw new Error('stylex.keyframes should never be called');
 };
 
 stylex.inject = (

@@ -8,12 +8,12 @@
 
 'use strict';
 
-import {StyleXSheet, styleSheet} from '../StyleXSheet';
+import { StyleXSheet, styleSheet } from '../StyleXSheet';
 
 import stylex from '../stylex';
 
 test('stylex.dedupe', () => {
-  expect(stylex.dedupe({a: 'a', b: 'b'})).toBe('a b');
+  expect(stylex.dedupe({ a: 'a', b: 'b' })).toBe('a b');
 });
 
 test('stylex.inject', () => {
@@ -175,7 +175,12 @@ describe('stylex', () => {
         ],
       ],
     );
-    expect(value.split(' ').sort().join(' ')).toEqual(
+    expect(
+      value
+        .split(' ')
+        .sort()
+        .join(' '),
+    ).toEqual(
       'g5ia77u1 tpe1esc0 gewhe1h2 gcovof34 bdao358l a8c37x1j s5oniofx kvgmc6g5 cxmmr5t8 oygrvhab hcukyx3x jb3vyjys rz4wbd8a qt6c0cv9 a8nywdso oajrlxb2 i1ao9s8h myohyog2 n3t5jt4f gh25dzvf g4tp4svg nhd2j8a9 f1sip0of icdlwmnq e4t7hp5w gmql0nx0 ihxqhq3m l94mrbxd aenfhxwr k4urcfbm gofk2cf1 ksdfmwjs tm8avpzi bj9fd4vl'
         .split(' ')
         .sort()

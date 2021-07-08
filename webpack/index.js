@@ -23,7 +23,7 @@ class StyleXPlugin {
             const postcssOpts = {
               to: path,
               from: path,
-              map: { prev: map || false }
+              map: { prev: map || false },
             };
 
             const rules = source
@@ -31,29 +31,31 @@ class StyleXPlugin {
               .split('\n')
               .filter(line => line.startsWith('/*[') && line.endsWith(']*/'))
               .map(line => line.slice(2, -2))
-              .filter(Boolean)
-            
+              .filter(Boolean);
+
             // If this CSS file doesn't have any rules from Stylex,
             // Continue onto the next one.
             if (rules.length === 0) {
               continue;
             }
-            
+
             const sortedRules = rules
               .flatMap(json => JSON.parse(json))
-              .sort(([,,first], [,,second]) => first - second)
-            
+              .sort(([, , first], [, , second]) => first - second);
+
             const otherStyles = source
               .trim()
               .split('\n')
               .filter(line => !line.startsWith('/*[') || !line.endsWith(']*/'))
-              .join('\n')
-            
-            const finalCSS = Array.from(new Map(sortedRules).values()).flatMap(({ltr, rtl}) =>
-              rtl != null 
-              ? [`html:not([dir='rtl']) ${ltr}`, `html[dir='rtl'] ${rtl}`]
-              : [ltr]
-            ).join('\n');
+              .join('\n');
+
+            const finalCSS = Array.from(new Map(sortedRules).values())
+              .flatMap(({ ltr, rtl }) =>
+                rtl != null
+                  ? [`html:not([dir='rtl']) ${ltr}`, `html[dir='rtl'] ${rtl}`]
+                  : [ltr],
+              )
+              .join('\n');
 
             // Here the styles from Stylex come before the other styles
             //
@@ -62,7 +64,7 @@ class StyleXPlugin {
             const combinedCSS = [finalCSS, otherStyles].join('\n');
 
             compilation.assets[path] = new RawSource(finalCSS);
-          } catch(e) {
+          } catch (e) {
             console.error('StyleX Webpack Plugin Error:', e.message);
           }
         }
