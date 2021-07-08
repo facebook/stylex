@@ -14,6 +14,8 @@ async function styleXLoader(input, inputSourceMap) {
     ? 'typescript'
     : ['flow', {enums: true}]
 
+  // These are the default options.
+  // You can override them all.
   const {
     inlineLoader = '',
     outputCSS = true,
@@ -33,7 +35,7 @@ async function styleXLoader(input, inputSourceMap) {
 
   try {
     const { code, map, metadata } = await babel.transformAsync(input, {
-      plugins: [[babelPlugin, {...options, stylexSheetName: 'index.css'}]],
+      plugins: [[babelPlugin, {dev: !outputCSS, ...options, stylexSheetName: 'index.css'}]],
       inputSourceMap: inputSourceMap || true,
       sourceFileName: this.resourcePath,
       filename: path.basename(this.resourcePath),

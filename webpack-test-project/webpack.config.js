@@ -12,7 +12,9 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: StyleXPlugin.loader,
+        loader: StyleXPlugin.loader,
+        // Example of how to pass options to the loader
+        options: {outputCSS: true}
       },
       {
         test: /\.css$/i,
@@ -25,5 +27,6 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'index.css'
     })
-  ]
+  ],
+  devtool: 'cheap-source-map'
 };

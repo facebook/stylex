@@ -9,3 +9,4 @@ const styles = stylex.create({
   }
 });
 
+export default styles
