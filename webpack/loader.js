@@ -35,6 +35,7 @@ async function styleXLoader(input, inputSourceMap) {
 
   try {
     const { code, map, metadata } = await babel.transformAsync(input, {
+      presets: ['@babel/flow'],
       plugins: [
         [
           babelPlugin,
