@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "babel": "babel src/ --out-dir lib/",
+    "babel": "babel src/ --out-dir lib/ --copy-files",
     "build": "yarn run babel",
     "test": "jest"
   },
@@ -37,7 +37,8 @@
   },
   "dependencies": {
     "invariant": "^2.2.4",
-    "rtl-detect": "^1.0.2"
+    "rtl-detect": "^1.0.2",
+    "utility-types": "^3.10.0"
   },
   "jest": {}
 }
