@@ -29,6 +29,7 @@ async function styleXLoader(input, inputSourceMap) {
         'classPrivateMethods',
       ],
     },
+    virtualCSSName = '[path][name].[hash:base64:7].css',
     ...options
   } = loaderUtils.getOptions(this) || {};
 
@@ -56,13 +57,9 @@ async function styleXLoader(input, inputSourceMap) {
     } else if (!outputCSS) {
       this.callback(null, code, map);
     } else {
-      const cssPath = loaderUtils.interpolateName(
-        this,
-        '[path][name].[hash:base64:7].css',
-        {
-          content: `/*${JSON.stringify(metadata.stylex)}*/`, //
-        },
-      );
+      const cssPath = loaderUtils.interpolateName(this, virtualCSSName, {
+        content: `/*${JSON.stringify(metadata.stylex)}*/`, //
+      });
       virtualModules.writeModule(
         cssPath,
         `/*${JSON.stringify(metadata.stylex)}*/`,
