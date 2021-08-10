@@ -465,6 +465,11 @@ type motion = motionPath | motionOffset | motionRotation;
 type motionOffset = lengthPercentage;
 type motionPath = string | geometryBox | 'none';
 type motionRotation = string | number;
+type MsOverflowStyle =
+  | 'auto'
+  | 'none'
+  | 'scrollbar'
+  | '-ms-autohiding-scrollbar';
 type objectFit = 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
 type objectPosition = string;
 type offsetBlockEnd = string;
@@ -1116,7 +1121,7 @@ export type CSSProperties = $ReadOnly<{
   motionOffset?: motionOffset,
   motionPath?: motionPath,
   motionRotation?: motionRotation,
-  MsOverflowStyle?: 'auto' | 'none' | 'scrollbar' | '-ms-autohiding-scrollbar',
+  MsOverflowStyle?: MsOverflowStyle,
   objectFit?: objectFit,
   objectPosition?: objectPosition,
   offsetBlockEnd?: offsetBlockEnd,
