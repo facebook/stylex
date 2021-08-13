@@ -1,8 +1,8 @@
 'use strict';
 
-import stylex from 'stylex';
+import dynamicImport from 'stylex';
 
-const styles = stylex.create({
+const styles = dynamicImport.create({
   bar: {
     display: 'block',
     width: '100%',
