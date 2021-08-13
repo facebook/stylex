@@ -32,7 +32,7 @@
     "postcss-value-parser": "^4.1.0",
     "prettier": "^2.3.2",
     "webpack-sources": "^2.2.0",
-    "webpack-virtual-modules": "^0.4.2"
+    "webpack-virtual-modules": "^0.4.3"
   },
   "dependencies": {
     "invariant": "^2.2.4",
