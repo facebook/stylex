@@ -9,8 +9,9 @@ async function styleXLoader(input, inputSourceMap) {
   // any configuration options.
   // Using the file extension we can automatically choose
   // between `typescript` or `flow` syntax extensions.
+  const isTypeScript = this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx');
   const fileType =
-    this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx')
+    isTypeScript
       ? 'typescript'
       : ['flow', { enums: true }];
 
@@ -32,9 +33,11 @@ async function styleXLoader(input, inputSourceMap) {
   } = loaderUtils.getOptions(this) || {};
 
   this.async();
-
+  
   try {
+    const transformPresets = isTypeScript ? ['@babel/preset-typescript'] : ['@babel/preset-flow'];
     const { code, map, metadata } = await babel.transformAsync(input, {
+      presets: transformPresets,
       plugins: [
         [
           babelPlugin,
