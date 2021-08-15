@@ -1324,15 +1324,6 @@ type Style = $ReadOnly<
 type Rules = Style | CSSProperties;
 type Keyframes = $ReadOnly<Record<string, CSSProperties>>;
 type Theme = $ReadOnly<Record<string, string>>;
-type StyleXCallable<S extends {}> = (
-  ...mapOrNamespace: ReadonlyArray<
-    | $Keys<S>
-    | $Shape<Readonly<Record<$Keys<S>, boolean | null | undefined>>>
-    | null
-    | void
-    | false
-  >
-) => string;
 // type CSSValue = string | number | $ReadOnlyArray<mixed>;
 type MapCSSValueToClassName = <K, V>(
   arg0: K,
@@ -1354,7 +1345,7 @@ type DedupeStyles = $ReadOnly<
 
 type Stylex$Create = <S extends {}>(
   styles: S,
-) => $ReadOnly<$ObjMap<S, MapNamespaces>> & StyleXCallable<S>;
+) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
 
 type AbsoluteFill = $ReadOnly<{
   bottom: 0;
