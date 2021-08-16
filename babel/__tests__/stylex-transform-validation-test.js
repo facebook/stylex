@@ -29,18 +29,6 @@ const testData = {
     `,
     throws: messages.ILLEGAL_REQUIRE,
   },
-  'disallow binding import "stylex" to anything but stylex': {
-    input: `
-      import foo from 'stylex';
-    `,
-    throws: messages.ILLEGAL_IMPORT,
-  },
-  'disallow destructuring require(stylex)': {
-    input: `
-      const {stylex} = require('stylex');
-    `,
-    throws: messages.ILLEGAL_REQUIRE,
-  },
   'disallow destructuring import of stylex': {
     input: `
       import {stylex} from 'stylex';

@@ -9,8 +9,9 @@ async function styleXLoader(input, inputSourceMap) {
   // any configuration options.
   // Using the file extension we can automatically choose
   // between `typescript` or `flow` syntax extensions.
+  const isTypeScript = this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx');
   const fileType =
-    this.resourcePath.endsWith('.ts') || this.resourcePath.endsWith('.tsx')
+    isTypeScript
       ? 'typescript'
       : ['flow', { enums: true }];
 
@@ -28,13 +29,16 @@ async function styleXLoader(input, inputSourceMap) {
         'classPrivateMethods',
       ],
     },
+    virtualCSSName = '[path][name].[hash:base64:7].css',
     ...options
   } = loaderUtils.getOptions(this) || {};
 
   this.async();
-
+  
   try {
+    const transformPresets = isTypeScript ? ['@babel/preset-typescript'] : ['@babel/preset-flow'];
     const { code, map, metadata } = await babel.transformAsync(input, {
+      presets: transformPresets,
       plugins: [
         [
           babelPlugin,
@@ -53,13 +57,9 @@ async function styleXLoader(input, inputSourceMap) {
     } else if (!outputCSS) {
       this.callback(null, code, map);
     } else {
-      const cssPath = loaderUtils.interpolateName(
-        this,
-        '[path][name].[hash:base64:7].css',
-        {
-          content: `/*${JSON.stringify(metadata.stylex)}*/`, //
-        },
-      );
+      const cssPath = loaderUtils.interpolateName(this, virtualCSSName, {
+        content: `/*${JSON.stringify(metadata.stylex)}*/`, //
+      });
       virtualModules.writeModule(
         cssPath,
         `/*${JSON.stringify(metadata.stylex)}*/`,

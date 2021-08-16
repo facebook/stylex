@@ -1,10 +1,10 @@
 'use strict';
 
-import stylex from 'stylex';
+import dynamicImport from 'stylex';
 
 import './other';
 
-const styles = stylex.create({
+const styles = dynamicImport.create({
   foo: {
     display: 'block',
     marginStart: 10,
@@ -15,4 +15,4 @@ const styles = stylex.create({
   },
 });
 
-console.log(stylex(styles.foo));
+console.log(dynamicImport(styles.foo));

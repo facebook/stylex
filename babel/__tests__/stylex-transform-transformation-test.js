@@ -1661,11 +1661,6 @@ const testData = {
       `,
   },
 
-  'should not be able to import stylex to other name': {
-    input: `import foo from 'stylex'`,
-    throws: true,
-  },
-
   'correctly does nothing to valid imports': {
     input: `
       import stylex from 'stylex';
