@@ -54,9 +54,9 @@ function makeStyleTag(): HTMLStyleElement {
  */
 function doesSupportCSSVariables() {
   return (
-    global.CSS != null &&
-    global.CSS.supports != null &&
-    global.CSS.supports('--fake-var:0')
+    globalThis.CSS != null &&
+    globalThis.CSS.supports != null &&
+    globalThis.CSS.supports('--fake-var:0')
   );
 }
 
@@ -120,7 +120,7 @@ export class StyleXSheet {
    * Check if we have don't have access to the dom
    */
   isHeadless(): boolean {
-    return this.tag == null || global?.document?.body == null;
+    return this.tag == null || globalThis?.document?.body == null;
   }
 
   /**
@@ -164,7 +164,7 @@ export class StyleXSheet {
     this.injected = true;
 
     // Running in a server environment
-    if (global.document?.body == null) {
+    if (globalThis.document?.body == null) {
       this.injectTheme();
       return;
     }
