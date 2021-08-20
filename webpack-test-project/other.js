@@ -9,4 +9,6 @@ const styles = dynamicImport.create({
   },
 });
 
-export default styles;
+export default function other() {
+  return dynamicImport(styles.bar);
+};

@@ -1,8 +1,8 @@
 const path = require('path');
-const StyleXPlugin = require('stylex/webpack');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const stylexBabelPlugin = require('../babel/src');
+const StylexPlugin = require('./stylex-plugin');
 
-module.exports = {
+module.exports = env => ({
   entry: './index.js',
   output: {
     filename: 'main.js',
@@ -12,22 +12,23 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        loader: StyleXPlugin.loader,
-        // Example of how to pass options to the loader
-        options: {
-          virtualCSSName: '[path][hash:base64:7].[name].stylex.css',
-        },
-      },
-      {
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: [
+              [stylexBabelPlugin, { dev: env.prod !== true }]
+            ],
+            metadataSubscribers: [StylexPlugin.stylexMetadataSubscription],
+          }
+        }
       },
     ],
   },
   plugins: [
-    new StyleXPlugin(),
-    new MiniCssExtractPlugin({
-      filename: 'index.css',
+    new StylexPlugin({
+      filename: 'atomic.css',
     }),
   ],
   /**
@@ -38,4 +39,4 @@ module.exports = {
    * The option of `cheap-source-map` gives you somethings easier
    */
   devtool: 'cheap-source-map',
-};
+});

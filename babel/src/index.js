@@ -523,3 +523,24 @@ function styleXTransform(babel) {
 }
 
 module.exports = styleXTransform;
+
+module.exports.processStylexRules = function processStylexRules(rules) {
+  if (rules.length === 0) {
+    return '';
+  }
+
+  const sortedRules = rules.sort(
+    ([, , firstPriority], [, , secondPriority]) =>
+      firstPriority - secondPriority,
+  );
+
+  const collectedCSS = Array.from(new Map(sortedRules).values())
+    .flatMap(({ ltr, rtl }) =>
+      rtl != null
+        ? [`html:not([dir='rtl']) ${ltr}`, `html[dir='rtl'] ${rtl}`]
+        : [ltr],
+    )
+    .join('\n');
+
+  return collectedCSS;
+};

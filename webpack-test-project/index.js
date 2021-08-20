@@ -16,3 +16,5 @@ const styles = dynamicImport.create({
 });
 
 console.log(dynamicImport(styles.foo));
+
+export default function App() {};
