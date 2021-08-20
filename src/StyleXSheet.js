@@ -93,8 +93,8 @@ export class StyleXSheet {
 
   _isRTL: boolean;
 
-  rootTheme?: Theme;
-  rootDarkTheme?: Theme;
+  rootTheme: ?Theme;
+  rootDarkTheme: ?Theme;
 
   supportsVariables: boolean;
 
@@ -106,7 +106,7 @@ export class StyleXSheet {
   injected: boolean;
 
   // Style element to inject rules into
-  tag?: HTMLStyleElement;
+  tag: ?HTMLStyleElement;
 
   // In order to support priorities, we need to store the rule that appears
   // at the start of a priority.
@@ -271,7 +271,7 @@ export class StyleXSheet {
   /**
    * Insert a rule into the stylesheet.
    */
-  insert(rawLTRRule: string, priority: number, rawRTLRule?: string) {
+  insert(rawLTRRule: string, priority: number, rawRTLRule: ?string) {
     // Inject the stylesheet if it hasn't already been
     if (this.injected === false) {
       this.inject();

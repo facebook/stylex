@@ -1,4 +1,8 @@
+[version]
+0.158.0
+
 [ignore]
+.*/node_modules/
 
 [include]
 
@@ -9,15 +13,11 @@ flow-typed
 
 [options]
 emoji=true
-esproposal.export_star_as=enable
-esproposal.optional_chaining=enable
-esproposal.nullish_coalescing=enable
 exact_by_default=true
 experimental.const_params=true
 module.use_strict=true
 munge_underscores=true
 suppress_type=$FlowFixMe
 suppress_type=$FlowTODO
-
 
 [strict]
