@@ -7,12 +7,12 @@
 
 'use strict';
 
+const namedColors = require("./reference/namedColors");
 const numericOperators = new Set(['+', '-', '*', '/']);
-
 // Helper functions to check for stylex values.
 // All these helper functions receive a list of locally defined variables
 // as well. This lets them recursively resolve values that are defined locally.
-const isLiteral = function(value) {
+const isLiteral = function (value) {
   function literalChecker(node, variables) {
     return (
       (node.type === 'Literal' && node.value === value) ||
@@ -24,7 +24,7 @@ const isLiteral = function(value) {
   }
   return literalChecker;
 };
-const isRegEx = function(regex) {
+const isRegEx = function (regex) {
   function regexChecker(node, variables) {
     return (
       (node.type === 'Literal' &&
@@ -73,13 +73,41 @@ const isNumber = (node, variables) =>
     variables.has(node.name) &&
     isNumber(variables.get(node.name) /* purposely not recursing */));
 
+const isHexColor = (node) => {
+  return node.type === 'Literal' && /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value);
+}
+
 const isUnion = (...checkers) => (node, variables) =>
   checkers.some(checker => checker(node, variables));
 const isStringOrNumber = isUnion(isString, isNumber);
 
-// NOTE: converted from Flow types to function calls using this
-// https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
-const color = isString;
+const isNamedColor = isUnion(...Array.from(namedColors).map(color => isLiteral(color)))
+
+const isAbsoluteLength = (node) => {
+  const lengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
+  return node.type === 'Literal' && Array.from(lengthUnits).some(unit => node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)))
+}
+
+const isRelativeLength = (node) => {
+  const lengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw',]);
+  return node.type === 'Literal' && Array.from(lengthUnits).some(unit => node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)))
+}
+
+const isPercentage = (node) => {
+  return node.type === 'Literal' && node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?%)$`))
+}
+
+const isLength = isUnion(isAbsoluteLength, isRelativeLength)
+
+ // NOTE: converted from Flow types to function calls using this
+ // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
+const all = isUnion(
+  isLiteral('initial'),
+  isLiteral('inherit'),
+  isLiteral('unset'),
+  isLiteral('revert'),
+);
+const color = isUnion(isNamedColor, isHexColor, isString);
 const width = isUnion(
   isString,
   isNumber,
@@ -87,16 +115,16 @@ const width = isUnion(
   isLiteral('min-content'),
   isLiteral('max-content'),
   isLiteral('fit-content'),
-  isLiteral('auto'),
+  isLiteral('auto'), isLength, isPercentage
 );
 const borderWidth = isUnion(
   isNumber,
   isLiteral('thin'),
   isLiteral('medium'),
   isLiteral('thick'),
-  isString,
+  isString, isLength
 );
-const lengthPercentage = isUnion(isNumber, isString);
+const lengthPercentage = isStringOrNumber;
 const bgImage = isUnion(isLiteral('none'), isString);
 const borderImageSource = isUnion(isLiteral('none'), isString);
 const time = isString;
@@ -165,13 +193,13 @@ const repeatStyle = isUnion(
   isLiteral('repeat-y'),
   isString,
 );
-const backgroundPosition = isString;
-const backgroundPositionX = isString;
-const backgroundPositionY = isString;
+const backgroundPosition = isUnion(isString, isLiteral('top'), isLiteral('bottom'), isLiteral('left'), isLiteral('right'), isLiteral('center'));
+const backgroundPositionX = isUnion(isString, isLiteral('left'), isLiteral('right'), isLiteral('center'));
+const backgroundPositionY = isUnion(isString, isLiteral('top'), isLiteral('bottom'), isLiteral('center'));
 const borderImageOutset = isString;
-const borderImageRepeat = isString;
+const borderImageRepeat = isUnion(isString, isLiteral('stretch'), isLiteral('repeat'), isLiteral('round'), isLiteral('space'));
 const borderImageWidth = isString;
-const borderImageSlice = isUnion(isString, isNumber, isLiteral('fill'));
+const borderImageSlice = isUnion(isStringOrNumber, isLiteral('fill'));
 const box = isUnion(
   isLiteral('border-box'),
   isLiteral('padding-box'),
@@ -188,7 +216,6 @@ const brStyle = isUnion(
   isLiteral('ridge'),
   isLiteral('inset'),
   isLiteral('outset'),
-  isLiteral('inherit'),
 );
 const CSSCursor = isUnion(
   isLiteral('auto'),
@@ -196,7 +223,6 @@ const CSSCursor = isUnion(
   isLiteral('none'),
   isLiteral('context-menu'),
   isLiteral('help'),
-  isLiteral('inherit'),
   isLiteral('pointer'),
   isLiteral('progress'),
   isLiteral('wait'),
@@ -239,23 +265,20 @@ const flexBasis = isUnion(
   isLiteral('content'),
   isNumber,
   isString,
-  isLiteral('inherit'),
 );
 const flexDirection = isUnion(
   isLiteral('row'),
   isLiteral('row-reverse'),
   isLiteral('column'),
   isLiteral('column-reverse'),
-  isLiteral('inherit'),
 );
 const flexWrap = isUnion(
   isLiteral('nowrap'),
   isLiteral('wrap'),
   isLiteral('wrap-reverse'),
-  isLiteral('inherit'),
 );
-const flexGrow = isUnion(isNumber, isLiteral('inherit'));
-const flexShrink = isUnion(isNumber, isLiteral('inherit'));
+const flexGrow = isNumber;
+const flexShrink = isNumber;
 const flexFlow = isUnion(flexDirection, flexWrap);
 const float = isUnion(
   isLiteral('left'),
@@ -265,7 +288,6 @@ const float = isUnion(
   isLiteral('end'),
   isLiteral('inline-start'),
   isLiteral('inline-end'),
-  isLiteral('inherit'),
 );
 // const font = isUnion(
 //   isString,
@@ -357,11 +379,7 @@ const maskLayer = isUnion(
   compositeOperator,
 );
 
-const all = isUnion(
-  isLiteral('initial'),
-  isLiteral('inherit'),
-  isLiteral('unset'),
-);
+
 const alignContent = isUnion(
   isLiteral('flex-start'),
   isLiteral('flex-end'),
@@ -369,7 +387,6 @@ const alignContent = isUnion(
   isLiteral('space-between'),
   isLiteral('space-around'),
   isLiteral('stretch'),
-  all,
 );
 const alignItems = isUnion(
   isLiteral('start'),
@@ -379,7 +396,6 @@ const alignItems = isUnion(
   isLiteral('center'),
   isLiteral('baseline'),
   isLiteral('stretch'),
-  all,
 );
 const alignSelf = isUnion(
   isLiteral('auto'),
@@ -388,7 +404,6 @@ const alignSelf = isUnion(
   isLiteral('center'),
   isLiteral('baseline'),
   isLiteral('stretch'),
-  all,
 );
 const animationDelay = time;
 const animationDirection = singleAnimationDirection;
@@ -460,7 +475,6 @@ const boxDecorationBreak = isUnion(isLiteral('slice'), isLiteral('clone'));
 const boxDirection = isUnion(
   isLiteral('normal'),
   isLiteral('reverse'),
-  isLiteral('inherit'),
 );
 const boxFlex = isNumber;
 const boxFlexGroup = isNumber;
@@ -471,7 +485,6 @@ const boxOrient = isUnion(
   isLiteral('vertical'),
   isLiteral('inline-axis'),
   isLiteral('block-axis'),
-  isLiteral('inherit'),
 );
 const boxShadow = isUnion(isLiteral('none'), isString);
 const boxSizing = isUnion(isLiteral('content-box'), isLiteral('border-box'));
@@ -552,11 +565,9 @@ const cursor = CSSCursor;
 const direction = isUnion(
   isLiteral('ltr'),
   isLiteral('rtl'),
-  isLiteral('inherit'),
 );
 const display = isUnion(
   isLiteral('none'),
-  isLiteral('inherit'),
   isLiteral('inline'),
   isLiteral('block'),
   isLiteral('list-item'),
@@ -661,7 +672,6 @@ const fontVariantPosition = isUnion(
   isLiteral('super'),
 );
 const fontWeight = isUnion(
-  isLiteral('inherit'),
   isLiteral('normal'),
   isLiteral('bold'),
   isLiteral('bolder'),
@@ -723,7 +733,6 @@ const justifyContent = isUnion(
   isLiteral('space-between'),
   isLiteral('space-around'),
   isLiteral('space-evenly'),
-  isLiteral('inherit'),
 );
 const justifyItems = isUnion(
   isLiteral('start'),
@@ -733,7 +742,6 @@ const justifyItems = isUnion(
   isLiteral('center'),
   isLiteral('baseline'),
   isLiteral('stretch'),
-  all,
 );
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
@@ -754,11 +762,11 @@ const lineBreak = isUnion(
   isLiteral('normal'),
   isLiteral('strict'),
 );
-const lineHeight = isUnion(isLiteral('inherit'), isNumber);
+const lineHeight = isNumber;
 const listStyleImage = isUnion(isString, isLiteral('none'));
 const listStylePosition = isUnion(isLiteral('inside'), isLiteral('outside'));
 const listStyle = isUnion(listStyleType, listStylePosition, listStyleImage);
-const margin = isUnion(isNumber, isString);
+const margin = isStringOrNumber;
 const marginLeft = isUnion(isNumber, isString, isLiteral('auto'));
 const marginRight = isUnion(isNumber, isString, isLiteral('auto'));
 const marginTop = isUnion(isNumber, isString, isLiteral('auto'));
@@ -821,7 +829,7 @@ const minInlineSize = minWidth;
 const mixBlendMode = blendMode;
 const motionPath = isUnion(isString, geometryBox, isLiteral('none'));
 const motionOffset = lengthPercentage;
-const motionRotation = isUnion(isString, isNumber);
+const motionRotation = isStringOrNumber;
 const motion = isUnion(motionPath, motionOffset, motionRotation);
 const objectFit = isUnion(
   isLiteral('fill'),
@@ -882,13 +890,13 @@ const overscrollBehaviorY = isUnion(
   isLiteral('contain'),
   isLiteral('auto'),
 );
-const padding = isUnion(isNumber, isString);
-const paddingLeft = isUnion(isNumber, isString);
-// const paddingBlockEnd = paddingLeft;
-// const paddingBlockStart = paddingLeft;
-const paddingBottom = isUnion(isNumber, isString);
-const paddingRight = isUnion(isNumber, isString);
-const paddingTop = isUnion(isNumber, isString);
+const padding = isStringOrNumber;
+const paddingLeft = isStringOrNumber;
+ // const paddingBlockEnd = paddingLeft;
+ // const paddingBlockStart = paddingLeft;
+const paddingBottom = isStringOrNumber;
+const paddingRight = isStringOrNumber;
+const paddingTop = isStringOrNumber;
 const pageBreakAfter = isUnion(
   isLiteral('auto'),
   isLiteral('always'),
@@ -917,7 +925,6 @@ const pointerEvents = isUnion(
   isLiteral('fill'),
   isLiteral('stroke'),
   isLiteral('all'),
-  isLiteral('inherit'),
 );
 const position = isUnion(
   isLiteral('static'),
@@ -976,7 +983,6 @@ const textAlign = isUnion(
   isLiteral('center'),
   isLiteral('justify'),
   isLiteral('match-parent'),
-  isLiteral('inherit'),
 );
 const textAlignLast = isUnion(
   isLiteral('auto'),
@@ -986,7 +992,6 @@ const textAlignLast = isUnion(
   isLiteral('right'),
   isLiteral('center'),
   isLiteral('justify'),
-  isLiteral('inherit'),
 );
 const textCombineUpright = isUnion(
   isLiteral('none'),
@@ -1051,7 +1056,7 @@ const transformBox = isUnion(
   isLiteral('fill-box'),
   isLiteral('view-box'),
 );
-const transformOrigin = isUnion(isString, isNumber);
+const transformOrigin = isStringOrNumber;
 const transformStyle = isUnion(isLiteral('flat'), isLiteral('preserve-3d'));
 const transitionDelay = time;
 const transitionDuration = time;
@@ -1099,8 +1104,6 @@ const whiteSpace = isUnion(
   isLiteral('nowrap'),
   isLiteral('pre-wrap'),
   isLiteral('pre-line'),
-  isLiteral('initial'),
-  isLiteral('inherit'),
 );
 const widows = isNumber;
 const animatableFeature = isUnion(
@@ -1149,7 +1152,7 @@ const alignmentBaseline = isUnion(
   isLiteral('hanging'),
   isLiteral('mathematical'),
 );
-const svgLength = isUnion(isString, isNumber);
+const svgLength = isStringOrNumber;
 const baselineShift = isUnion(
   isLiteral('baseline'),
   isLiteral('sub'),
@@ -1158,8 +1161,8 @@ const baselineShift = isUnion(
 );
 const behavior = isString;
 const clipRule = isUnion(isLiteral('nonzero'), isLiteral('evenodd'));
-const cueAfter = isUnion(isString, isNumber, isLiteral('none'));
-const cueBefore = isUnion(isString, isNumber, isLiteral('none'));
+const cueAfter = isUnion(isStringOrNumber, isLiteral('none'));
+const cueBefore = isUnion(isStringOrNumber, isLiteral('none'));
 const cue = isUnion(cueBefore, cueAfter);
 const dominantBaseline = isUnion(
   isLiteral('auto'),
@@ -1299,7 +1302,7 @@ const voiceVolume = isUnion(isLiteral('silent'), isString);
 //   backgroundColor
 // );
 const maskImage = maskReference;
-const top = isUnion(isNumber, isString);
+const top = isStringOrNumber;
 
 const SupportedVendorSpecificCSSProperties = {
   MozOsxFontSmoothing: isLiteral('grayscale'),
@@ -1405,7 +1408,7 @@ const CSSProperties = {
   borderTopStyle: borderTopStyle,
   borderTopWidth: borderTopWidth,
   borderWidth: borderWidth,
-  bottom: isUnion(isNumber, isString),
+  bottom: isStringOrNumber,
   boxAlign: boxAlign,
   boxDecorationBreak: boxDecorationBreak,
   boxDirection: boxDirection,
@@ -1451,7 +1454,7 @@ const CSSProperties = {
   displayOutside: displayOutside,
   dominantBaseline: dominantBaseline,
   emptyCells: emptyCells,
-  end: isUnion(isNumber, isString),
+  end: isStringOrNumber,
   fill: fill,
   fillOpacity: fillOpacity,
   fillRule: fillRule,
@@ -1502,7 +1505,7 @@ const CSSProperties = {
   gridTemplateAreas: gridTemplateAreas,
   gridTemplateColumns: gridTemplateColumns,
   gridTemplateRows: gridTemplateRows,
-  height: isUnion(isNumber, isString),
+  height: isStringOrNumber,
   hyphens: hyphens,
   imageOrientation: imageOrientation,
   imageRendering: imageRendering,
@@ -1516,7 +1519,7 @@ const CSSProperties = {
   justifyItems: justifyItems,
   justifySelf: justifySelf,
   kerning: kerning,
-  left: isUnion(isNumber, isString),
+  left: isStringOrNumber,
   letterSpacing: letterSpacing,
   lineBreak: lineBreak,
   lineHeight: lineHeight,
@@ -1616,7 +1619,7 @@ const CSSProperties = {
   rest: rest,
   restAfter: restAfter,
   restBefore: restBefore,
-  right: isUnion(isNumber, isString),
+  right: isStringOrNumber,
   rubyAlign: rubyAlign,
   rubyMerge: rubyMerge,
   rubyPosition: rubyPosition,
@@ -1632,7 +1635,7 @@ const CSSProperties = {
   speak: speak,
   speakAs: speakAs,
   src: src,
-  start: isUnion(isNumber, isString),
+  start: isStringOrNumber,
   stroke: stroke,
   strokeDasharray: strokeDasharray,
   strokeDashoffset: strokeDashoffset,
@@ -1697,6 +1700,10 @@ const CSSProperties = {
   writingMode: writingMode,
   zIndex: zIndex,
 };
+
+for (const key of Object.keys(CSSProperties)) {
+  CSSProperties[key] = isUnion(CSSProperties[key], all);
+}
 
 function isStylexCallee(node) {
   return (
@@ -1789,7 +1796,6 @@ module.exports = {
         }
         const key =
           style.key.type === 'Identifier' ? style.key.name : style.key.value;
-
         const keyCheckerFunction = CSSProperties[key];
         if (keyCheckerFunction == null) {
           return context.report({
@@ -1805,13 +1811,11 @@ module.exports = {
           return context.report({
             node: style.value,
             loc: style.value.loc,
-            message: `This is not a valid value that can be used for ${
-              style.key.name
-            }${
-              key === 'lineHeight'
+            message: `This is not a valid value that can be used for ${style.key.name
+              }${key === 'lineHeight'
                 ? '. Be careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
                 : ''
-            }`,
+              }`,
           });
         }
       }
