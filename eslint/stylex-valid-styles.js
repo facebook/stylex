@@ -862,7 +862,7 @@ const overflowClipBox = isUnion(
   isLiteral('padding-box'),
   isLiteral('content-box'),
 );
-const overflowWrap = isUnion(isLiteral('normal'), isLiteral('break-word'));
+const overflowWrap = isUnion(isLiteral('normal'), isLiteral('break-word'), isLiteral('anywhere'));
 const overflowX = isUnion(
   isLiteral('visible'),
   isLiteral('hidden'),
@@ -999,7 +999,7 @@ const textCombineUpright = isUnion(
   isString,
 );
 const textDecorationColor = color;
-const textDecorationLine = isUnion(isLiteral('none'), isString);
+const textDecorationLine = isUnion(isLiteral('none'), isLiteral('underline'), isLiteral('overline'), isLiteral('line-through'), isLiteral('blink'), isString);
 // const textDecorationSkip = isUnion(isLiteral('none'), isString);
 const textDecorationStyle = isUnion(
   isLiteral('solid'),
@@ -1015,7 +1015,7 @@ const textDecoration = isUnion(
 );
 const textEmphasisColor = color;
 const textEmphasisPosition = isString;
-const textEmphasisStyle = isUnion(isLiteral('none'), isString);
+const textEmphasisStyle = isUnion(isLiteral('none'), isLiteral('filled'), isLiteral('open'), isLiteral('dot'), isLiteral('circle'), isLiteral('double-circle'), isLiteral('triangle'), isLiteral('filled sesame'), isLiteral('open sesame'), isString);
 const textEmphasis = isUnion(textEmphasisStyle, textEmphasisColor);
 const textIndent = isUnion(
   lengthPercentage,
@@ -1027,7 +1027,7 @@ const textOrientation = isUnion(
   isLiteral('upright'),
   isLiteral('sideways'),
 );
-const textOverflow = isString;
+const textOverflow = isUnion(isLiteral('clip'), isLiteral('ellipsis'), isString);
 const textRendering = isUnion(
   isLiteral('auto'),
   isLiteral('optimizeSpeed'),
@@ -1043,7 +1043,7 @@ const textTransform = isUnion(
   isLiteral('lowercase'),
   isLiteral('full-width'),
 );
-const textUnderlinePosition = isUnion(isLiteral('auto'), isString);
+const textUnderlinePosition = isUnion(isLiteral('auto'), isLiteral('under'), isLiteral('left'), isLiteral('right'), isString);
 const touchAction = isUnion(
   isLiteral('auto'),
   isLiteral('none'),
@@ -1055,6 +1055,8 @@ const transformBox = isUnion(
   isLiteral('border-box'),
   isLiteral('fill-box'),
   isLiteral('view-box'),
+  isLiteral('content-box'),
+  isLiteral('stroke-box')
 );
 const transformOrigin = isStringOrNumber;
 const transformStyle = isUnion(isLiteral('flat'), isLiteral('preserve-3d'));
@@ -1064,6 +1066,8 @@ const transitionProperty = isUnion(
   isLiteral('opacity'),
   isLiteral('transform'),
   isLiteral('opacity, transform'),
+  isLiteral('all'),
+  isLiteral('none')
 );
 const transitionTimingFunction = singleTransitionTimingFunction;
 const unicodeBidi = isUnion(
@@ -1104,6 +1108,7 @@ const whiteSpace = isUnion(
   isLiteral('nowrap'),
   isLiteral('pre-wrap'),
   isLiteral('pre-line'),
+  isLiteral('break-spaces')
 );
 const widows = isNumber;
 const animatableFeature = isUnion(
