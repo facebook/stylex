@@ -108,6 +108,112 @@ eslintTester.run('stylex-valid-styles', rule, {
          },
        },
      })`,
+    // test for color
+    `
+     stylex.create({
+       default: {
+         'color': 'red',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'color': '#fff',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'color': '#fafbfc',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'color': '#fafbfcfc',
+       },
+     })`,
+    // test for relative width
+    `
+     stylex.create({
+       default: {
+         'width': '30rem',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30em',
+       },
+      })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30ch',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30ex',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30vh',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30vw',
+       },
+     })`,
+    // test for absolute width
+    `
+     stylex.create({
+       default: {
+         'width': '30px',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30cm',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30mm',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30in',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30pc',
+       },
+     })`,
+    `
+     stylex.create({
+       default: {
+         'width': '30pt',
+       },
+     })`,
+    // test for percentage
+    `
+     stylex.create({
+       default: {
+         'width': '50%',
+       },
+     })`,
   ],
   invalid: [
     {
