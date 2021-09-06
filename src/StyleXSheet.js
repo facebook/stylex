@@ -54,9 +54,9 @@ function makeStyleTag(): HTMLStyleElement {
  */
 function doesSupportCSSVariables() {
   return (
-    global.CSS != null &&
-    global.CSS.supports != null &&
-    global.CSS.supports('--fake-var:0')
+    globalThis.CSS != null &&
+    globalThis.CSS.supports != null &&
+    globalThis.CSS.supports('--fake-var:0')
   );
 }
 
@@ -93,8 +93,8 @@ export class StyleXSheet {
 
   _isRTL: boolean;
 
-  rootTheme?: Theme;
-  rootDarkTheme?: Theme;
+  rootTheme: ?Theme;
+  rootDarkTheme: ?Theme;
 
   supportsVariables: boolean;
 
@@ -106,7 +106,7 @@ export class StyleXSheet {
   injected: boolean;
 
   // Style element to inject rules into
-  tag?: HTMLStyleElement;
+  tag: ?HTMLStyleElement;
 
   // In order to support priorities, we need to store the rule that appears
   // at the start of a priority.
@@ -120,7 +120,7 @@ export class StyleXSheet {
    * Check if we have don't have access to the dom
    */
   isHeadless(): boolean {
-    return this.tag == null || global?.document?.body == null;
+    return this.tag == null || globalThis?.document?.body == null;
   }
 
   /**
@@ -164,7 +164,7 @@ export class StyleXSheet {
     this.injected = true;
 
     // Running in a server environment
-    if (global.document?.body == null) {
+    if (globalThis.document?.body == null) {
       this.injectTheme();
       return;
     }
@@ -271,7 +271,7 @@ export class StyleXSheet {
   /**
    * Insert a rule into the stylesheet.
    */
-  insert(rawLTRRule: string, priority: number, rawRTLRule?: string) {
+  insert(rawLTRRule: string, priority: number, rawRTLRule: ?string) {
     // Inject the stylesheet if it hasn't already been
     if (this.injected === false) {
       this.inject();

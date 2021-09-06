@@ -11,7 +11,7 @@
 import { StyleXSheet } from '../StyleXSheet';
 
 const testOpts = {
-  rootTheme: null,
+  rootTheme: undefined,
   supportsVariables: true,
 };
 

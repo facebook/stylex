@@ -20,7 +20,7 @@ import { styleSheet } from './StyleXSheet';
 
 type DedupeStyles = $ReadOnly<{
   [key: string]: string | $ReadOnly<{ [key: string]: string, ... }>,
-  ...,
+  ...
 }>;
 
 let warnedOnInject = false;
