@@ -7,7 +7,7 @@
 
 'use strict';
 
-const namedColors = require("./reference/namedColors");
+const namedColors = require('./reference/namedColors');
 const numericOperators = new Set(['+', '-', '*', '/']);
 // Helper functions to check for stylex values.
 // All these helper functions receive a list of locally defined variables
@@ -73,34 +73,54 @@ const isNumber = (node, variables) =>
     variables.has(node.name) &&
     isNumber(variables.get(node.name) /* purposely not recursing */));
 
-const isHexColor = (node) => {
-  return node.type === 'Literal' && /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value);
-}
+const isHexColor = node => {
+  return (
+    node.type === 'Literal' &&
+    /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value)
+  );
+};
 
-const isUnion = (...checkers) => (node, variables) =>
-  checkers.some(checker => checker(node, variables));
+const isUnion =
+  (...checkers) =>
+  (node, variables) =>
+    checkers.some(checker => checker(node, variables));
 const isStringOrNumber = isUnion(isString, isNumber);
 
-const isNamedColor = isUnion(...Array.from(namedColors).map(color => isLiteral(color)))
+const isNamedColor = isUnion(
+  ...Array.from(namedColors).map(color => isLiteral(color)),
+);
 
-const isAbsoluteLength = (node) => {
+const isAbsoluteLength = node => {
   const lengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
-  return node.type === 'Literal' && Array.from(lengthUnits).some(unit => node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)))
-}
+  return (
+    node.type === 'Literal' &&
+    Array.from(lengthUnits).some(unit =>
+      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
+    )
+  );
+};
 
-const isRelativeLength = (node) => {
-  const lengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw',]);
-  return node.type === 'Literal' && Array.from(lengthUnits).some(unit => node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)))
-}
+const isRelativeLength = node => {
+  const lengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
+  return (
+    node.type === 'Literal' &&
+    Array.from(lengthUnits).some(unit =>
+      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
+    )
+  );
+};
 
-const isPercentage = (node) => {
-  return node.type === 'Literal' && node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?%)$`))
-}
+const isPercentage = node => {
+  return (
+    node.type === 'Literal' &&
+    node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?%)$`))
+  );
+};
 
-const isLength = isUnion(isAbsoluteLength, isRelativeLength)
+const isLength = isUnion(isAbsoluteLength, isRelativeLength);
 
- // NOTE: converted from Flow types to function calls using this
- // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
+// NOTE: converted from Flow types to function calls using this
+// https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
 const all = isUnion(
   isLiteral('initial'),
   isLiteral('inherit'),
@@ -115,14 +135,17 @@ const width = isUnion(
   isLiteral('min-content'),
   isLiteral('max-content'),
   isLiteral('fit-content'),
-  isLiteral('auto'), isLength, isPercentage
+  isLiteral('auto'),
+  isLength,
+  isPercentage,
 );
 const borderWidth = isUnion(
   isNumber,
   isLiteral('thin'),
   isLiteral('medium'),
   isLiteral('thick'),
-  isString, isLength
+  isString,
+  isLength,
 );
 const lengthPercentage = isStringOrNumber;
 const bgImage = isUnion(isLiteral('none'), isString);
@@ -193,11 +216,34 @@ const repeatStyle = isUnion(
   isLiteral('repeat-y'),
   isString,
 );
-const backgroundPosition = isUnion(isString, isLiteral('top'), isLiteral('bottom'), isLiteral('left'), isLiteral('right'), isLiteral('center'));
-const backgroundPositionX = isUnion(isString, isLiteral('left'), isLiteral('right'), isLiteral('center'));
-const backgroundPositionY = isUnion(isString, isLiteral('top'), isLiteral('bottom'), isLiteral('center'));
+const backgroundPosition = isUnion(
+  isString,
+  isLiteral('top'),
+  isLiteral('bottom'),
+  isLiteral('left'),
+  isLiteral('right'),
+  isLiteral('center'),
+);
+const backgroundPositionX = isUnion(
+  isString,
+  isLiteral('left'),
+  isLiteral('right'),
+  isLiteral('center'),
+);
+const backgroundPositionY = isUnion(
+  isString,
+  isLiteral('top'),
+  isLiteral('bottom'),
+  isLiteral('center'),
+);
 const borderImageOutset = isString;
-const borderImageRepeat = isUnion(isString, isLiteral('stretch'), isLiteral('repeat'), isLiteral('round'), isLiteral('space'));
+const borderImageRepeat = isUnion(
+  isString,
+  isLiteral('stretch'),
+  isLiteral('repeat'),
+  isLiteral('round'),
+  isLiteral('space'),
+);
 const borderImageWidth = isString;
 const borderImageSlice = isUnion(isStringOrNumber, isLiteral('fill'));
 const box = isUnion(
@@ -261,11 +307,7 @@ const relativeSize = isUnion(isLiteral('larger'), isLiteral('smaller'));
 const emptyCells = isUnion(isLiteral('show'), isLiteral('hide'));
 const filter = isUnion(isLiteral('none'), isString);
 // const flex = isUnion(isLiteral('none'), isString, isNumber);
-const flexBasis = isUnion(
-  isLiteral('content'),
-  isNumber,
-  isString,
-);
+const flexBasis = isUnion(isLiteral('content'), isNumber, isString);
 const flexDirection = isUnion(
   isLiteral('row'),
   isLiteral('row-reverse'),
@@ -379,7 +421,6 @@ const maskLayer = isUnion(
   compositeOperator,
 );
 
-
 const alignContent = isUnion(
   isLiteral('flex-start'),
   isLiteral('flex-end'),
@@ -472,10 +513,7 @@ const borderTopRightRadius = lengthPercentage;
 const borderTopStyle = brStyle;
 const borderTopWidth = borderWidth;
 const boxDecorationBreak = isUnion(isLiteral('slice'), isLiteral('clone'));
-const boxDirection = isUnion(
-  isLiteral('normal'),
-  isLiteral('reverse'),
-);
+const boxDirection = isUnion(isLiteral('normal'), isLiteral('reverse'));
 const boxFlex = isNumber;
 const boxFlexGroup = isNumber;
 const boxLines = isUnion(isLiteral('single'), isLiteral('multiple'));
@@ -562,10 +600,7 @@ const content = isString;
 const counterIncrement = isUnion(isString, isLiteral('none'));
 const counterReset = isUnion(isString, isLiteral('none'));
 const cursor = CSSCursor;
-const direction = isUnion(
-  isLiteral('ltr'),
-  isLiteral('rtl'),
-);
+const direction = isUnion(isLiteral('ltr'), isLiteral('rtl'));
 const display = isUnion(
   isLiteral('none'),
   isLiteral('inline'),
@@ -862,7 +897,11 @@ const overflowClipBox = isUnion(
   isLiteral('padding-box'),
   isLiteral('content-box'),
 );
-const overflowWrap = isUnion(isLiteral('normal'), isLiteral('break-word'), isLiteral('anywhere'));
+const overflowWrap = isUnion(
+  isLiteral('normal'),
+  isLiteral('break-word'),
+  isLiteral('anywhere'),
+);
 const overflowX = isUnion(
   isLiteral('visible'),
   isLiteral('hidden'),
@@ -892,8 +931,8 @@ const overscrollBehaviorY = isUnion(
 );
 const padding = isStringOrNumber;
 const paddingLeft = isStringOrNumber;
- // const paddingBlockEnd = paddingLeft;
- // const paddingBlockStart = paddingLeft;
+// const paddingBlockEnd = paddingLeft;
+// const paddingBlockStart = paddingLeft;
 const paddingBottom = isStringOrNumber;
 const paddingRight = isStringOrNumber;
 const paddingTop = isStringOrNumber;
@@ -999,7 +1038,14 @@ const textCombineUpright = isUnion(
   isString,
 );
 const textDecorationColor = color;
-const textDecorationLine = isUnion(isLiteral('none'), isLiteral('underline'), isLiteral('overline'), isLiteral('line-through'), isLiteral('blink'), isString);
+const textDecorationLine = isUnion(
+  isLiteral('none'),
+  isLiteral('underline'),
+  isLiteral('overline'),
+  isLiteral('line-through'),
+  isLiteral('blink'),
+  isString,
+);
 // const textDecorationSkip = isUnion(isLiteral('none'), isString);
 const textDecorationStyle = isUnion(
   isLiteral('solid'),
@@ -1015,7 +1061,18 @@ const textDecoration = isUnion(
 );
 const textEmphasisColor = color;
 const textEmphasisPosition = isString;
-const textEmphasisStyle = isUnion(isLiteral('none'), isLiteral('filled'), isLiteral('open'), isLiteral('dot'), isLiteral('circle'), isLiteral('double-circle'), isLiteral('triangle'), isLiteral('filled sesame'), isLiteral('open sesame'), isString);
+const textEmphasisStyle = isUnion(
+  isLiteral('none'),
+  isLiteral('filled'),
+  isLiteral('open'),
+  isLiteral('dot'),
+  isLiteral('circle'),
+  isLiteral('double-circle'),
+  isLiteral('triangle'),
+  isLiteral('filled sesame'),
+  isLiteral('open sesame'),
+  isString,
+);
 const textEmphasis = isUnion(textEmphasisStyle, textEmphasisColor);
 const textIndent = isUnion(
   lengthPercentage,
@@ -1027,7 +1084,11 @@ const textOrientation = isUnion(
   isLiteral('upright'),
   isLiteral('sideways'),
 );
-const textOverflow = isUnion(isLiteral('clip'), isLiteral('ellipsis'), isString);
+const textOverflow = isUnion(
+  isLiteral('clip'),
+  isLiteral('ellipsis'),
+  isString,
+);
 const textRendering = isUnion(
   isLiteral('auto'),
   isLiteral('optimizeSpeed'),
@@ -1043,7 +1104,13 @@ const textTransform = isUnion(
   isLiteral('lowercase'),
   isLiteral('full-width'),
 );
-const textUnderlinePosition = isUnion(isLiteral('auto'), isLiteral('under'), isLiteral('left'), isLiteral('right'), isString);
+const textUnderlinePosition = isUnion(
+  isLiteral('auto'),
+  isLiteral('under'),
+  isLiteral('left'),
+  isLiteral('right'),
+  isString,
+);
 const touchAction = isUnion(
   isLiteral('auto'),
   isLiteral('none'),
@@ -1056,7 +1123,7 @@ const transformBox = isUnion(
   isLiteral('fill-box'),
   isLiteral('view-box'),
   isLiteral('content-box'),
-  isLiteral('stroke-box')
+  isLiteral('stroke-box'),
 );
 const transformOrigin = isStringOrNumber;
 const transformStyle = isUnion(isLiteral('flat'), isLiteral('preserve-3d'));
@@ -1066,8 +1133,9 @@ const transitionProperty = isUnion(
   isLiteral('opacity'),
   isLiteral('transform'),
   isLiteral('opacity, transform'),
-  isLiteral('all'),
-  isLiteral('none')
+  // All is bad for animation performance.
+  // isLiteral('all'),
+  isLiteral('none'),
 );
 const transitionTimingFunction = singleTransitionTimingFunction;
 const unicodeBidi = isUnion(
@@ -1108,7 +1176,7 @@ const whiteSpace = isUnion(
   isLiteral('nowrap'),
   isLiteral('pre-wrap'),
   isLiteral('pre-line'),
-  isLiteral('break-spaces')
+  isLiteral('break-spaces'),
 );
 const widows = isNumber;
 const animatableFeature = isUnion(
@@ -1816,11 +1884,13 @@ module.exports = {
           return context.report({
             node: style.value,
             loc: style.value.loc,
-            message: `This is not a valid value that can be used for ${style.key.name
-              }${key === 'lineHeight'
+            message: `This is not a valid value that can be used for ${
+              style.key.name
+            }${
+              key === 'lineHeight'
                 ? '. Be careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
                 : ''
-              }`,
+            }`,
           });
         }
       }
