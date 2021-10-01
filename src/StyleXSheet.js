@@ -17,6 +17,13 @@ import invariant from 'invariant';
 const LIGHT_MODE_CLASS_NAME = '__fb-light-mode';
 const DARK_MODE_CLASS_NAME = '__fb-dark-mode';
 
+declare var globalThis: {
+  CSS?: { supports: string => boolean },
+  document?: {
+    body?: {},
+  },
+};
+
 /**
  * Take a theme and generate it's accompanying CSS variables
  */
