@@ -67,6 +67,9 @@ function createUniqueCSSName(str, opts) {
  * how it should appear in the document. 0 is last, greater numbers are first.
  */
 function getPriorityForPseudo(path, pseudo) {
+  if (pseudo && pseudo.startsWith('&:')) {
+    pseudo = pseudo.slice(1);
+  }
   // Get the actual pseudo name of a selector. We allow some pseudo selectors
   // with args like `:nth-child(2n)`
   if (pseudo[0] === ':') {
@@ -114,17 +117,15 @@ function validatePseudo(path, pseudo) {
     return;
   }
 
+  // NOTE: Start of a transition:
+  // Instead of ":hover", we want the keys to be "&:hover" going forward
+  if (pseudo.startsWith('&')) {
+    pseudo = pseudo.slice(1);
+  }
+
   if (pseudo[0] === '@') {
     // Media query
     return;
-  } else if (pseudo[0] === '&') {
-    // Catch a common error where developers use &:hover which is typical of
-    // other CSS preprocessors
-    throw path.buildCodeFrameError(
-      `${pseudo} is prefixed with & which isn't necessary! Just use ${pseudo.slice(
-        1,
-      )}`,
-    );
   } else if (pseudo[0] !== ':') {
     // Unknown pseudo
     throw path.buildCodeFrameError(messages.INVALID_PSEUDO);
@@ -270,6 +271,8 @@ function generateCSS(className, key, value, pseudo) {
     css = `${pseudo}{${className}${className}{${inner}}}`;
   } else if (pseudo[0] === ':') {
     css = `${className}${pseudo}{${inner}}`;
+  } else if (pseudo[0] === '&' && pseudo[1] === ':') {
+    css = `${className}${pseudo.slice(1)}{${inner}}`;
   } else {
     throw new Error(
       `Illegal pseudo selector ${pseudo}, we should have already validated this`,
@@ -283,6 +286,9 @@ function generateCSS(className, key, value, pseudo) {
  * if it hasn't been already.
  */
 function getClassNameFromRule(rawKey, rawValue, pseudo, opts) {
+  if (pseudo && pseudo.startsWith('&')) {
+    pseudo = pseudo.slice(1);
+  }
   // Convert the JS property key to a CSS key
   const key = dashify(rawKey);
 
@@ -307,10 +313,7 @@ function isStylexPreset(path) /*: boolean */ {
   return (
     path.isSpreadElement() &&
     path.get('argument').isMemberExpression() &&
-    path
-      .get('argument')
-      .get('object')
-      .isIdentifier() &&
+    path.get('argument').get('object').isIdentifier() &&
     path.get('argument').get('object').node.name === 'stylex' &&
     baseStyles[path.get('argument').get('property').node.name] != null
   );
@@ -320,12 +323,12 @@ function isStylexPreset(path) /*: boolean */ {
  * Take an object path and build up all the rules for it
  */
 function getStylesFromObject(
-  object,
-  pseudo,
-  pseudoPriority,
+  object, // object of styles
+  pseudo, // pseudo selector
+  pseudoPriority, // priority for pseudo selector, possibly outdated
   opts,
   namespaceName,
-  markComposition,
+  markComposition, // function to call if composition is detected
 ) {
   let styles = [];
 
@@ -462,6 +465,7 @@ function getStylesFromObject(
       valuePath.isObjectExpression()
     ) {
       if (pseudo) {
+        // TODO: fix support for nested pseudo / @media selectors here
         throw valuePath.buildCodeFrameError(messages.ILLEGAL_NESTED_PSEUDO);
       } else {
         validatePseudo(keyPath, rawKey);
@@ -681,7 +685,7 @@ function convertStylexKeyframesCall(path, opts) {
 }
 
 /**
- * Convert a stylex() call
+ * Convert a stylex.create() call
  */
 function convertStylexCall(path, opts, markComposition) {
   const namespacesToClassNames = new Map();

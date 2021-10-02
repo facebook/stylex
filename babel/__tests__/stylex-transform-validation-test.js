@@ -252,16 +252,7 @@ const testData = {
     `,
     throws: messages.ONLY_TOP_LEVEL,
   },
-  'disallow using a & pseudo selector': {
-    input: `
-      const styles = stylex.create({
-        default: {
-          '&:hover': {},
-        },
-      });
-    `,
-    throws: "&:hover is prefixed with & which isn't necessary! Just use :hover",
-  },
+
   'disallow using a pseudo selector that does not start with a :': {
     input: `
       const styles = stylex.create({

@@ -128,11 +128,45 @@ const testData = {
     `,
   },
 
+  'transforms pseudo object with & to CSS': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          '&:hover': {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
+        },
+      });
+    `,
+    output: `
+      stylex.inject(".pbqw5nlk:hover{background-color:red}", 8);
+      stylex.inject(".dvoqa86r:hover{color:blue}", 8);
+    `,
+  },
+
   'transforms invalid pseudo object to CSS': {
     input: `
       const styles = stylex.create({
         default: {
           ':invalpwdijad': {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
+        },
+      });
+    `,
+    output: `
+      stylex.inject(".k6unt73l:invalpwdijad{background-color:red}", 2);
+      stylex.inject(".e05g6ngh:invalpwdijad{color:blue}", 2);
+    `,
+  },
+
+  'transforms invalid pseudo object with & to CSS': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          '&:invalpwdijad': {
             backgroundColor: 'red',
             color: 'blue',
           },
@@ -169,6 +203,32 @@ const testData = {
       stylex.inject(".wfgokdwq:focus{background-color:yellow}", 9);
     `,
   },
+
+  'transforms pseudo objects with & to CSS with correct order': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          '&:hover': {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
+          '&:active': {
+            backgroundColor: 'blue',
+          },
+          '&:focus': {
+            backgroundColor: 'yellow',
+          }
+        },
+      });
+    `,
+    output: `
+      stylex.inject(".pbqw5nlk:hover{background-color:red}", 8);
+      stylex.inject(".dvoqa86r:hover{color:blue}", 8);
+      stylex.inject(".h5pumea0:active{background-color:blue}", 10);
+      stylex.inject(".wfgokdwq:focus{background-color:yellow}", 9);
+    `,
+  },
+
   'transforms multiple namespaces': {
     input: `
       const styles = stylex.create({
@@ -300,8 +360,9 @@ const testData = {
     `,
   },
 
-  'COMPOSITION DUPEABOVE: transforms plain stylex value call with computed numbers': {
-    input: `
+  'COMPOSITION DUPEABOVE: transforms plain stylex value call with computed numbers':
+    {
+      input: `
       const styles = stylex.create({
         [0]: {
           color: 'red',
@@ -312,7 +373,7 @@ const testData = {
       });
       stylex(styles[variant]);
     `,
-    output: `
+      output: `
       stylex.inject(".h3ivgpu3{color:red}", 1);
       stylex.inject(".n6f2byep{background-color:blue}", 1);
       const styles = {
@@ -325,7 +386,7 @@ const testData = {
       };
       stylex(styles[variant]);
     `,
-  },
+    },
 
   'COMPOSITION: only converts create call when there is composition': {
     input: `
@@ -502,8 +563,9 @@ const testData = {
     `,
   },
 
-  'DUPEABOVE: transforms plain stylex value call with strings containing collisions': {
-    input: `
+  'DUPEABOVE: transforms plain stylex value call with strings containing collisions':
+    {
+      input: `
       const styles = stylex.create({
         default: {
           backgroundColor: 'red',
@@ -514,12 +576,12 @@ const testData = {
       });
       stylex(styles.default, styles.default2);
     `,
-    output: `
+      output: `
       stylex.inject(".gyzkc3zm{background-color:red}", 1);
       stylex.inject(".n6f2byep{background-color:blue}", 1);
       "n6f2byep";
     `,
-  },
+    },
 
   'transforms plain stylex value call with conditions': {
     input: `
@@ -949,8 +1011,9 @@ const testData = {
     `,
   },
 
-  'ensure that the first argument of a stylex.dedupe object.assign call is an object': {
-    input: `
+  'ensure that the first argument of a stylex.dedupe object.assign call is an object':
+    {
+      input: `
       const styles = stylex.create({
         highLevel: {
           marginTop: 24,
@@ -964,7 +1027,7 @@ const testData = {
         lowLevel: headingLevel === 3 || headingLevel === 4,
       });
     `,
-    output: `
+      output: `
       stylex.inject(".gmvq99xn{margin-top:24px}", 1);
       stylex.inject(".r6ydv39a{margin-top:16px}", 1);
       stylex.dedupe(headingLevel === 1 || headingLevel === 2 ? {
@@ -973,7 +1036,7 @@ const testData = {
         "margin-top-1": "r6ydv39a"
       } : null);
     `,
-  },
+    },
 
   "don't output style classes when in test mode": {
     options: {
@@ -1128,8 +1191,9 @@ const testData = {
     `,
   },
 
-  'correctly remove shadowed properties when using no conditions with shadowed namespace styles': {
-    input: `
+  'correctly remove shadowed properties when using no conditions with shadowed namespace styles':
+    {
+      input: `
       const styles = stylex.create({
         foo: {
           padding: 5,
@@ -1144,7 +1208,7 @@ const testData = {
       styles('bar', 'foo');
     `,
 
-    output: `
+      output: `
       stylex.inject(".d1v569po{padding-top:5px}", 1);
       stylex.inject(".onux6t7x{padding-bottom:5px}", 1);
       stylex.inject(".t4os9e1m{padding-left:5px}", 1, ".t4os9e1m{padding-right:5px}");
@@ -1155,10 +1219,11 @@ const testData = {
       stylex.inject(".qbvjirod{padding-left:10px}", 1, ".qbvjirod{padding-right:10px}");
       "ejhi0i36 t4os9e1m onux6t7x d1v569po";
     `,
-  },
+    },
 
-  'DUPEABOVE: correctly remove shadowed properties when using no conditions with shadowed namespace styles': {
-    input: `
+  'DUPEABOVE: correctly remove shadowed properties when using no conditions with shadowed namespace styles':
+    {
+      input: `
       const styles = stylex.create({
         foo: {
           padding: 5,
@@ -1173,7 +1238,7 @@ const testData = {
       stylex(styles.bar, styles.foo);
     `,
 
-    output: `
+      output: `
       stylex.inject(".d1v569po{padding-top:5px}", 1);
       stylex.inject(".onux6t7x{padding-bottom:5px}", 1);
       stylex.inject(".t4os9e1m{padding-left:5px}", 1, ".t4os9e1m{padding-right:5px}");
@@ -1184,10 +1249,11 @@ const testData = {
       stylex.inject(".qbvjirod{padding-left:10px}", 1, ".qbvjirod{padding-right:10px}");
       "ejhi0i36 t4os9e1m onux6t7x d1v569po";
     `,
-  },
+    },
 
-  'COMPOSITION: correctly remove shadowed properties when using no conditions with shadowed namespace styles': {
-    input: `
+  'COMPOSITION: correctly remove shadowed properties when using no conditions with shadowed namespace styles':
+    {
+      input: `
       const styles = stylex.create({
         foo: {
           padding: 5,
@@ -1203,7 +1269,7 @@ const testData = {
       module.exports = styles;
     `,
 
-    output: `
+      output: `
       stylex.inject(".d1v569po{padding-top:5px}", 1);
       stylex.inject(".onux6t7x{padding-bottom:5px}", 1);
       stylex.inject(".t4os9e1m{padding-left:5px}", 1, ".t4os9e1m{padding-right:5px}");
@@ -1228,7 +1294,7 @@ const testData = {
       };
       module.exports = styles;
     `,
-  },
+    },
 
   'COMPOSITION: test imported spreads': {
     input: `
@@ -1273,8 +1339,9 @@ const testData = {
     `,
   },
 
-  'React-Native shorthands: correctly remove shadowed properties when using no conditions with shadowed namespace styles': {
-    input: `
+  'React-Native shorthands: correctly remove shadowed properties when using no conditions with shadowed namespace styles':
+    {
+      input: `
       const styles = stylex.create({
         foo: {
           padding: 5,
@@ -1290,7 +1357,7 @@ const testData = {
       module.exports = styles;
     `,
 
-    output: `
+      output: `
       stylex.inject(".d1v569po{padding-top:5px}", 1);
       stylex.inject(".onux6t7x{padding-bottom:5px}", 1);
       stylex.inject(".ejhi0i36{padding-right:10px}", 1, ".ejhi0i36{padding-left:10px}");
@@ -1315,7 +1382,7 @@ const testData = {
       };
       module.exports = styles;
     `,
-  },
+    },
 
   'ES6 exports: correctly export named declaration': {
     input: `
@@ -1532,8 +1599,9 @@ const testData = {
     `,
   },
 
-  'correctly removes shadowed properties when using conditions with shadowed namespace styles': {
-    input: `
+  'correctly removes shadowed properties when using conditions with shadowed namespace styles':
+    {
+      input: `
       const styles = stylex.create({
         foo: {
           padding: 5,
@@ -1552,7 +1620,7 @@ const testData = {
       });
     `,
 
-    output: `
+      output: `
       stylex.inject(".d1v569po{padding-top:5px}", 1);
       stylex.inject(".p4n9ro91{padding-right:5px}", 1, ".p4n9ro91{padding-left:5px}");
       stylex.inject(".onux6t7x{padding-bottom:5px}", 1);
@@ -1573,7 +1641,7 @@ const testData = {
         "padding-start-1": "fk6all4f",
       } : null);
     `,
-  },
+    },
 
   'prefixes vendor rules': {
     input: `
@@ -1948,31 +2016,33 @@ const testData = {
     `,
   },
 
-  'EDGECASE: transforms edge case property values containing CSS variables to point to a single local CSS variable': {
-    input: `
+  'EDGECASE: transforms edge case property values containing CSS variables to point to a single local CSS variable':
+    {
+      input: `
       const styles = stylex.create({
         default: {
           boxShadow: '0px 2px 4px var(--shadow-1)',
         }
       });
     `,
-    output: `
+      output: `
       stylex.inject(".gnxgxjws{--T68779821:0 2px 4px var(--shadow-1);-webkit-box-shadow:var(--T68779821);box-shadow:0 2px 4px var(--shadow-1)}", 1);
     `,
-  },
+    },
 
-  'EDGECASE: does not transform edge case property values containing no CSS variables': {
-    input: `
+  'EDGECASE: does not transform edge case property values containing no CSS variables':
+    {
+      input: `
       const styles = stylex.create({
         default: {
           boxShadow: '0px 2px 4px #000, 0px 12px 28px #000',
         }
       });
     `,
-    output: `
+      output: `
       stylex.inject(".d5ozy75p{box-shadow:0 2px 4px #000,0 12px 28px #000}", 1, ".d5ozy75p{box-shadow:0 2px 4px #000, 0 12px 28px #000}");
     `,
-  },
+    },
 };
 
 describe('stylex-transformation', () => {
