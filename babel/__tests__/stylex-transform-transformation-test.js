@@ -947,13 +947,33 @@ const testData = {
     input: `
       const styles = stylex.create({
         default: {
-          transitionDuration: [500, 1000],
+          position: ['fixed', 'sticky'],
+          top: 0,
         },
       });
     `,
 
     output: `
-      stylex.inject(".l6rz7p1t{transition-duration:.5s,1s}", 1);
+      stylex.inject(".i2sid9oq{position:fixed;position:sticky}", 1);
+      stylex.inject(".ekq1a7f9{top:0}", 1);
+    `,
+  },
+
+  'transforms arrays with pseudo': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          top: 0,
+          ':hover': {
+            position: ['fixed', 'sticky'],
+          }
+        },
+      });
+    `,
+
+    output: `
+      stylex.inject(".ekq1a7f9{top:0}", 1);
+      stylex.inject(".to5dycve:hover{position:fixed;position:sticky}", 8);
     `,
   },
 
@@ -1704,7 +1724,7 @@ const testData = {
     `,
 
     output: `
-      stylex.inject(".f14ij5to{user-select:none;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none}", 1);
+      stylex.inject(".f14ij5to{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}", 1);
     `,
   },
 

@@ -13,6 +13,10 @@ const parser = require('postcss-value-parser');
 const NODE_TYPE_FUNCTION = 'function';
 
 function lintRule(path, key, value, definedCSSVariables) {
+  if (Array.isArray(value)) {
+    value.forEach(v => lintRule(path, key, v, definedCSSVariables));
+    return;
+  }
   // Ensure that functions are unclosed
   const ast = parser(value);
   for (const node of ast.nodes) {

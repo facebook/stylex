@@ -225,8 +225,9 @@ function transformValue(key, value) {
  */
 function generateCSS(className, key, value, pseudo) {
   // Build up the rules
-  const rule = `${key}:${value}`;
-  const rules = [];
+  const origRules = Array.isArray(value)
+    ? value.map(eachValue => [key, eachValue])
+    : [[key, value]];
 
   /**
    * TODO(T68779821): Chrome 49 and old versions of WebKit have a
@@ -246,24 +247,30 @@ function generateCSS(className, key, value, pseudo) {
    * Makehaste for browsers that don't exhibit this bug. Please also delete this
    * comment.
    */
-  if (
-    webkitCSSVariableEdgeCaseProperties.has(key) &&
-    value.match(/.+var\(.*\).*/)
-  ) {
-    const localCSSVariableKey = `--T68779821`;
-    rules.push(`${localCSSVariableKey}:${value}`);
-    rules.push(`-webkit-${key}:var(${localCSSVariableKey})`);
-  }
 
-  rules.push(rule);
-
-  // Add on any vendor prefixes
-  const prefixes = vendorPrefixedRules[key];
-  if (prefixes != null) {
-    for (const prefix of prefixes) {
-      rules.push(prefix + rule);
-    }
-  }
+  const rules = origRules
+    .flatMap(([k, v]) => {
+      if (
+        webkitCSSVariableEdgeCaseProperties.has(k) &&
+        v.match(/.+var\(.*\).*/)
+      ) {
+        const localCSSVariableKey = `--T68779821`;
+        return [
+          [localCSSVariableKey, v],
+          [`-webkit-${k}`, `var(${localCSSVariableKey})`],
+          [k, v],
+        ];
+      }
+      return [[k, v]];
+    })
+    .flatMap(([k, v]) => {
+      const prefixes = vendorPrefixedRules[k];
+      if (prefixes != null) {
+        return [...prefixes.map(prefix => [prefix + k, v]), [k, v]];
+      }
+      return [[k, v]];
+    })
+    .map(([k, v]) => `${k}:${v}`);
 
   // Join the rules together
   const inner = rules.join(';');
@@ -304,10 +311,16 @@ function getClassNameFromRule(rawKey, rawValue, pseudo, opts) {
   const key = dashify(rawKey);
 
   // Normalize the value to a string and convert the value to relative unit.
-  const value = transformValue(key, getStringValue(key, rawValue));
+  const value = Array.isArray(rawValue)
+    ? rawValue.map(eachValue =>
+        transformValue(key, getStringValue(key, eachValue)),
+      )
+    : transformValue(key, getStringValue(key, rawValue));
 
   // Generate the class name for this rule
-  const className = createUniqueCSSName(key + value + pseudo, opts);
+  const className = Array.isArray(value)
+    ? createUniqueCSSName(key + value.join(', ') + pseudo, opts)
+    : createUniqueCSSName(key + value + pseudo, opts);
 
   return {
     className,
