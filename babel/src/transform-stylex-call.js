@@ -69,6 +69,13 @@ function createUniqueCSSName(str, opts) {
 function getPriorityForPseudo(path, pseudo) {
   if (pseudo && pseudo.startsWith('&:')) {
     pseudo = pseudo.slice(1);
+  } else if (pseudo.includes('&')) {
+    const priorityIndex = pseudoPriorities.indexOf(pseudo);
+    if (priorityIndex !== -1) {
+      return priorityIndex + DEFAULT_PRIORITY + 1;
+    } else {
+      throw path.buildCodeFrameError(`Invalid selector: "${pseudo}"`);
+    }
   }
   // Get the actual pseudo name of a selector. We allow some pseudo selectors
   // with args like `:nth-child(2n)`
@@ -270,7 +277,11 @@ function generateCSS(className, key, value, pseudo) {
     // nested pseudo selectors within media queries aren't allowed right now.
     css = `${pseudo}{${className}${className}{${inner}}}`;
   } else if (pseudo[0] === ':') {
-    css = `${className}${pseudo}{${inner}}`;
+    if (pseudo.includes('&')) {
+      css = `${pseudo.replace('&', className)}{${inner}}`;
+    } else {
+      css = `${className}${pseudo}{${inner}}`;
+    }
   } else if (pseudo[0] === '&' && pseudo[1] === ':') {
     css = `${className}${pseudo.slice(1)}{${inner}}`;
   } else {

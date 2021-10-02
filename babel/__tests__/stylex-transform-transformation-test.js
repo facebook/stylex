@@ -145,6 +145,57 @@ const testData = {
     `,
   },
 
+  'transforms pseudo object with parent selector to CSS': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          ':hover > &': {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
+        },
+      });
+    `,
+    output: `
+      stylex.inject(":hover > .s4pjwsqf{background-color:red}", 30);
+      stylex.inject(":hover > .mueixu8a{color:blue}", 30);
+    `,
+  },
+
+  'transforms pseudo object with previous sibling selector to CSS': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          ':hover + &': {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
+        },
+      });
+    `,
+    output: `
+      stylex.inject(":hover + .dx4abepm{background-color:red}", 58);
+      stylex.inject(":hover + .bkfz22dv{color:blue}", 58);
+    `,
+  },
+
+  'transforms pseudo object with prior sibling selector to CSS': {
+    input: `
+      const styles = stylex.create({
+        default: {
+          ':hover ~ &': {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
+        },
+      });
+    `,
+    output: `
+      stylex.inject(":hover ~ .fvqdqt21{background-color:red}", 44);
+      stylex.inject(":hover ~ .l7ckdwzi{color:blue}", 44);
+    `,
+  },
+
   'transforms invalid pseudo object to CSS': {
     input: `
       const styles = stylex.create({
