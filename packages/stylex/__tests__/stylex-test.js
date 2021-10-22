@@ -8,9 +8,9 @@
 
 'use strict';
 
-import { StyleXSheet, styleSheet } from '../StyleXSheet';
+import { StyleXSheet, styleSheet } from '../src/StyleXSheet';
 
-import stylex from '../stylex';
+import stylex from '../src/stylex';
 
 test('stylex.dedupe', () => {
   expect(stylex.dedupe({ a: 'a', b: 'b' })).toBe('a b');

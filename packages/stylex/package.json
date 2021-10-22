@@ -1,0 +1,24 @@
+{
+  "name": "stylex",
+  "version": "1.0.0",
+  "description": "A minimal runtime styling library for web.",
+  "main": "lib/stylex.js",
+  "repository": "https://www.github.com/facebookexternal/stylex",
+  "author": "Naman Goel <nmn@fb.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "babel": "babel src/ --out-dir lib/ --copy-files",
+    "build": "npm run babel",
+    "test": "jest"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "invariant": "^2.2.4",
+    "utility-types": "^3.10.0",
+    "webpack-sources": "^3.2.1"
+  },
+  "jest": {}
+}

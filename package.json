@@ -1,17 +1,16 @@
 {
-  "name": "stylex",
+  "name": "stylex-monorepo",
   "version": "1.0.0",
-  "description": "A simple minimal runtime CSS-in-JS library",
-  "main": "lib/stylex.js",
-  "repository": "https://www.github.com/facebookexternal/stylex",
-  "author": "Naman Goel <nmn@fb.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "babel": "babel src/ --out-dir lib/ --copy-files",
-    "build": "yarn run babel",
-    "test": "jest"
+    "build": "cd packages/stylex && npm run build",
+    "flow": "flow",
+    "test": "npm run test --workspaces --if-present"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.15.5",
@@ -23,20 +22,10 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/types": "^7.15.6",
     "eslint": "^7.32.0",
-    "fb-babel-plugin-utils": "^0.12.0",
     "flow-bin": "^0.161.0",
-    "hermes-eslint": "^0.4.8",
     "jest": "^27.2.4",
-    "loader-utils": "^2.0.0",
     "postcss-value-parser": "^4.1.0",
-    "prettier": "^2.4.1",
-    "rtl-detect": "^1.0.4",
-    "webpack-sources": "^3.2.1"
-  },
-  "dependencies": {
-    "invariant": "^2.2.4",
-    "parsimmon": "^1.18.0",
-    "utility-types": "^3.10.0"
+    "prettier": "^2.4.1"
   },
   "jest": {}
 }

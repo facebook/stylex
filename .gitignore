@@ -4,6 +4,3 @@ build
 *.log*
 coverage
 lib
-webpack-test-project/main.js
-webpack-test-project/main.js.map
-webpack-test-project/*.css

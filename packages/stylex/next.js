@@ -4,8 +4,8 @@
 const {
   getClientStyleLoader
 } = require('next/dist/build/webpack/config/blocks/css/loaders/client');
-const { stringifyCssRequest } = require('./src/plugin-utils.js');
-const StylexPlugin = require('./webpack/index.js');
+const { stringifyCssRequest } = require('./lib/plugin-utils.js');
+const StylexPlugin = require('./webpack.js');
 
 const cssLoader = (() => {
   try {

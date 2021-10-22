@@ -1,3 +1,13 @@
 # Stylex
 
-A minimal runtime CSS-in-JS library that gives you conflict-free composition while giving a dead simple API.
+Stylex is a minimal runtime styling library for web. It has a simple API and provides conflict-free style composition.
+
+## Contributing
+
+Install dependencies:
+
+```
+npm install
+```
+
+Running the examples:

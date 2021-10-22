@@ -8,7 +8,7 @@
 
 'use strict';
 
-import { StyleXSheet } from '../StyleXSheet';
+import { StyleXSheet } from '../src/StyleXSheet';
 
 const testOpts = {
   rootTheme: undefined,

@@ -1,6 +1,5 @@
-const EntryPlugin = require('webpack/lib/EntryPlugin');
 const { RawSource } = require('webpack-sources');
-const stylexBabelPlugin = require('../babel/src');
+const stylexBabelPlugin = require('babel-plugin-transform-stylex');
 
 const PLUGIN_NAME = 'stylex';
 

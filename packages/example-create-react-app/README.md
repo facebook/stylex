@@ -1,4 +1,4 @@
-# stylex-create-react-app-example
+# create-react-app example
 
 Example using [stylex](https://github.com/facebookexternal/stylex) with CRA.
 See [craco.config.js](craco.config.js) for config and
