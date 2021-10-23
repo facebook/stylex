@@ -18,7 +18,6 @@ const {
   convertStylexKeyframesCall,
 } = require('./transform-stylex-call.js');
 const t = require('@babel/types');
-const { default: stylex } = require('../../lib/stylex.js');
 
 function styleXTransform(babel) {
   // GLOBAL variables. All the functions are outside the scope of the plugin
