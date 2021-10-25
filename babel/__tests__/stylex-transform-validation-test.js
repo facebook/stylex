@@ -23,6 +23,12 @@ function transform(source, opts = {}) {
 }
 
 const testData = {
+  'ignore non-styles imports': {
+    input: `
+      import classnames from 'classnames';
+    `,
+    throws: false,
+  },
   'disallow binding require(stylex) to anything but stylex': {
     input: `
       const foo = require('stylex');
