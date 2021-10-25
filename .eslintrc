@@ -3,11 +3,11 @@
     "react": {
       "pragma": "React",
       "version": "17.0",
-      "flowVersion": "0.127.0" // Flow version
+      "flowVersion": "0.161.0" // Flow version
     }
   },
   // babel parser to support ES6/7 features
-  // "parser": "babel-eslint",
+  "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 7,
     "ecmaFeatures": {
