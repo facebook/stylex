@@ -15,7 +15,7 @@ const angles = ['deg', 'grad', 'turn', 'rad'];
 const timings = ['ms', 's'];
 
 module.exports = function normalizeZeroDimensions(ast, _) {
-  ast.walk(node => {
+  ast.walk((node) => {
     if (node.type !== 'word') {
       return;
     }

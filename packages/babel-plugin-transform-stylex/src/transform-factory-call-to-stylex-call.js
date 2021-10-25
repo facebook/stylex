@@ -16,27 +16,27 @@ function replaceStringWithMemberExpression(arg, varName) {
   if (arg.isIdentifier()) {
     return t.memberExpression(
       t.identifier(varName),
-      t.identifier(arg.node.name),
+      t.identifier(arg.node.name)
     );
   }
   if (arg.isStringLiteral()) {
     return t.memberExpression(
       t.identifier(varName),
-      t.identifier(arg.node.value),
+      t.identifier(arg.node.value)
     );
   }
   if (arg.isLogicalExpression({ operator: '&&' })) {
     return t.logicalExpression(
       '&&',
       arg.get('left').node,
-      replaceStringWithMemberExpression(arg.get('right'), varName),
+      replaceStringWithMemberExpression(arg.get('right'), varName)
     );
   }
   if (arg.isConditionalExpression()) {
     return t.conditionalExpression(
       arg.get('test').node,
       replaceStringWithMemberExpression(arg.get('consequent'), varName),
-      replaceStringWithMemberExpression(arg.get('alternate'), varName),
+      replaceStringWithMemberExpression(arg.get('alternate'), varName)
     );
   }
   throw arg.buildCodeFrameError(messages.UNEXPECTED_ARGUMENT);
@@ -70,8 +70,8 @@ function factoryCallToStylexCall(path) {
             t.conditionalExpression(
               value.node,
               t.memberExpression(t.identifier(varName), key),
-              t.nullLiteral(),
-            ),
+              t.nullLiteral()
+            )
           );
         }
       }

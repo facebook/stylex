@@ -42,8 +42,8 @@ const isRegEx = function (regex) {
 const isString = (node, variables) =>
   (node.type === 'Literal' && typeof node.value === 'string') ||
   (node.type === 'TemplateLiteral' &&
-    node.expressions.every(expression =>
-      isStringOrNumber(expression, variables),
+    node.expressions.every((expression) =>
+      isStringOrNumber(expression, variables)
     )) ||
   (node.type === 'Identifier' &&
     variables &&
@@ -57,7 +57,7 @@ const isMathCall = (node, variables) =>
   node.callee.object.name === 'Math' &&
   node.callee.property.type === 'Identifier' &&
   ['abs', 'ceil', 'floor', 'round'].includes(node.callee.property.name) &&
-  node.arguments.every(arg => isNumber(arg, variables));
+  node.arguments.every((arg) => isNumber(arg, variables));
 const isNumber = (node, variables) =>
   (node.type === 'Literal' && typeof node.value === 'number') ||
   (node.type === 'BinaryExpression' &&
@@ -73,7 +73,7 @@ const isNumber = (node, variables) =>
     variables.has(node.name) &&
     isNumber(variables.get(node.name) /* purposely not recursing */));
 
-const isHexColor = node => {
+const isHexColor = (node) => {
   return (
     node.type === 'Literal' &&
     /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value)
@@ -83,34 +83,34 @@ const isHexColor = node => {
 const isUnion =
   (...checkers) =>
   (node, variables) =>
-    checkers.some(checker => checker(node, variables));
+    checkers.some((checker) => checker(node, variables));
 const isStringOrNumber = isUnion(isString, isNumber);
 
 const isNamedColor = isUnion(
-  ...Array.from(namedColors).map(color => isLiteral(color)),
+  ...Array.from(namedColors).map((color) => isLiteral(color))
 );
 
-const isAbsoluteLength = node => {
+const isAbsoluteLength = (node) => {
   const lengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
   return (
     node.type === 'Literal' &&
-    Array.from(lengthUnits).some(unit =>
-      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
+    Array.from(lengthUnits).some((unit) =>
+      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
     )
   );
 };
 
-const isRelativeLength = node => {
+const isRelativeLength = (node) => {
   const lengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
   return (
     node.type === 'Literal' &&
-    Array.from(lengthUnits).some(unit =>
-      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
+    Array.from(lengthUnits).some((unit) =>
+      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
     )
   );
 };
 
-const isPercentage = node => {
+const isPercentage = (node) => {
   return (
     node.type === 'Literal' &&
     node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?%)$`))
@@ -125,7 +125,7 @@ const all = isUnion(
   isLiteral('initial'),
   isLiteral('inherit'),
   isLiteral('unset'),
-  isLiteral('revert'),
+  isLiteral('revert')
 );
 const color = isUnion(isNamedColor, isHexColor, isString);
 const width = isUnion(
@@ -137,7 +137,7 @@ const width = isUnion(
   isLiteral('fit-content'),
   isLiteral('auto'),
   isLength,
-  isPercentage,
+  isPercentage
 );
 const borderWidth = isUnion(
   isNumber,
@@ -145,7 +145,7 @@ const borderWidth = isUnion(
   isLiteral('medium'),
   isLiteral('thick'),
   isString,
-  isLength,
+  isLength
 );
 const lengthPercentage = isStringOrNumber;
 const bgImage = isUnion(isLiteral('none'), isString);
@@ -155,20 +155,20 @@ const singleAnimationDirection = isUnion(
   isLiteral('normal'),
   isLiteral('reverse'),
   isLiteral('alternate'),
-  isLiteral('alternate-reverse'),
+  isLiteral('alternate-reverse')
 );
 const singleAnimationFillMode = isUnion(
   isLiteral('none'),
   isLiteral('forwards'),
   isLiteral('backwards'),
-  isLiteral('both'),
+  isLiteral('both')
 );
 const singleAnimationIterationCount = isUnion(isLiteral('infinite'), isNumber);
 // TODO change this to a special function that looks for stylex.keyframes call
 const singleAnimationName = isUnion(isLiteral('none'), () => true);
 const singleAnimationPlayState = isUnion(
   isLiteral('running'),
-  isLiteral('paused'),
+  isLiteral('paused')
 );
 const singleTransitionTimingFunction = isUnion(
   isLiteral('ease'),
@@ -178,12 +178,12 @@ const singleTransitionTimingFunction = isUnion(
   isLiteral('ease-in-out'),
   isLiteral('step-start'),
   isLiteral('step-end'),
-  isString,
+  isString
 );
 const attachment = isUnion(
   isLiteral('scroll'),
   isLiteral('fixed'),
-  isLiteral('local'),
+  isLiteral('local')
 );
 const blendMode = isUnion(
   isLiteral('normal'),
@@ -201,7 +201,7 @@ const blendMode = isUnion(
   isLiteral('hue'),
   isLiteral('saturation'),
   isLiteral('color'),
-  isLiteral('luminosity'),
+  isLiteral('luminosity')
 );
 const bgSize = isUnion(isString, isLiteral('cover'), isLiteral('contain'));
 const boxAlign = isUnion(
@@ -209,12 +209,12 @@ const boxAlign = isUnion(
   isLiteral('center'),
   isLiteral('end'),
   isLiteral('baseline'),
-  isLiteral('stretch'),
+  isLiteral('stretch')
 );
 const repeatStyle = isUnion(
   isLiteral('repeat-x'),
   isLiteral('repeat-y'),
-  isString,
+  isString
 );
 const backgroundPosition = isUnion(
   isString,
@@ -222,19 +222,19 @@ const backgroundPosition = isUnion(
   isLiteral('bottom'),
   isLiteral('left'),
   isLiteral('right'),
-  isLiteral('center'),
+  isLiteral('center')
 );
 const backgroundPositionX = isUnion(
   isString,
   isLiteral('left'),
   isLiteral('right'),
-  isLiteral('center'),
+  isLiteral('center')
 );
 const backgroundPositionY = isUnion(
   isString,
   isLiteral('top'),
   isLiteral('bottom'),
-  isLiteral('center'),
+  isLiteral('center')
 );
 const borderImageOutset = isString;
 const borderImageRepeat = isUnion(
@@ -242,14 +242,14 @@ const borderImageRepeat = isUnion(
   isLiteral('stretch'),
   isLiteral('repeat'),
   isLiteral('round'),
-  isLiteral('space'),
+  isLiteral('space')
 );
 const borderImageWidth = isString;
 const borderImageSlice = isUnion(isStringOrNumber, isLiteral('fill'));
 const box = isUnion(
   isLiteral('border-box'),
   isLiteral('padding-box'),
-  isLiteral('content-box'),
+  isLiteral('content-box')
 );
 const brStyle = isUnion(
   isLiteral('none'),
@@ -261,7 +261,7 @@ const brStyle = isUnion(
   isLiteral('groove'),
   isLiteral('ridge'),
   isLiteral('inset'),
-  isLiteral('outset'),
+  isLiteral('outset')
 );
 const CSSCursor = isUnion(
   isLiteral('auto'),
@@ -301,7 +301,7 @@ const CSSCursor = isUnion(
   isLiteral('grab'),
   isLiteral('grabbing'),
   isLiteral('-webkit-grab'),
-  isLiteral('-webkit-grabbing'),
+  isLiteral('-webkit-grabbing')
 );
 const relativeSize = isUnion(isLiteral('larger'), isLiteral('smaller'));
 const emptyCells = isUnion(isLiteral('show'), isLiteral('hide'));
@@ -312,12 +312,12 @@ const flexDirection = isUnion(
   isLiteral('row'),
   isLiteral('row-reverse'),
   isLiteral('column'),
-  isLiteral('column-reverse'),
+  isLiteral('column-reverse')
 );
 const flexWrap = isUnion(
   isLiteral('nowrap'),
   isLiteral('wrap'),
-  isLiteral('wrap-reverse'),
+  isLiteral('wrap-reverse')
 );
 const flexGrow = isNumber;
 const flexShrink = isNumber;
@@ -329,7 +329,7 @@ const float = isUnion(
   isLiteral('start'),
   isLiteral('end'),
   isLiteral('inline-start'),
-  isLiteral('inline-end'),
+  isLiteral('inline-end')
 );
 // const font = isUnion(
 //   isString,
@@ -347,12 +347,12 @@ const absoluteSize = isUnion(
   isLiteral('medium'),
   isLiteral('large'),
   isLiteral('x-large'),
-  isLiteral('xx-large'),
+  isLiteral('xx-large')
 );
 const baselinePosition = isUnion(
   isLiteral('baseline'),
   isLiteral('first baseline'),
-  isLiteral('last baseline'),
+  isLiteral('last baseline')
 );
 const fontFamily = isString;
 const gridLine = isUnion(isLiteral('auto'), isString);
@@ -361,12 +361,12 @@ const gridTemplateAreas = isUnion(isLiteral('none'), isString);
 const gridTemplateColumns = isUnion(
   isLiteral('none'),
   isLiteral('subgrid'),
-  isString,
+  isString
 );
 const gridTemplateRows = isUnion(
   isLiteral('none'),
   isLiteral('subgrid'),
-  isString,
+  isString
 );
 const gridRowGap = lengthPercentage;
 const trackBreadth = isUnion(
@@ -374,7 +374,7 @@ const trackBreadth = isUnion(
   isString,
   isLiteral('min-content'),
   isLiteral('max-content'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const selfPosition = isUnion(
   isLiteral('center'),
@@ -383,7 +383,7 @@ const selfPosition = isUnion(
   isLiteral('self-start'),
   isLiteral('self-end'),
   isLiteral('flex-start'),
-  isLiteral('flex-end'),
+  isLiteral('flex-end')
 );
 const listStyleType = isUnion(isString, isLiteral('none'));
 const trackSize = isUnion(trackBreadth, isString);
@@ -398,19 +398,19 @@ const geometryBox = isUnion(
   shapeBox,
   isLiteral('fill-box'),
   isLiteral('stroke-box'),
-  isLiteral('view-box'),
+  isLiteral('view-box')
 );
 const maskReference = isUnion(isLiteral('none'), isString);
 const compositeOperator = isUnion(
   isLiteral('add'),
   isLiteral('subtract'),
   isLiteral('intersect'),
-  isLiteral('exclude'),
+  isLiteral('exclude')
 );
 const maskingMode = isUnion(
   isLiteral('alpha'),
   isLiteral('luminance'),
-  isLiteral('match-source'),
+  isLiteral('match-source')
 );
 const maskLayer = isUnion(
   maskReference,
@@ -418,7 +418,7 @@ const maskLayer = isUnion(
   isString,
   repeatStyle,
   geometryBox,
-  compositeOperator,
+  compositeOperator
 );
 
 const alignContent = isUnion(
@@ -427,7 +427,7 @@ const alignContent = isUnion(
   isLiteral('center'),
   isLiteral('space-between'),
   isLiteral('space-around'),
-  isLiteral('stretch'),
+  isLiteral('stretch')
 );
 const alignItems = isUnion(
   isLiteral('start'),
@@ -436,7 +436,7 @@ const alignItems = isUnion(
   isLiteral('flex-end'),
   isLiteral('center'),
   isLiteral('baseline'),
-  isLiteral('stretch'),
+  isLiteral('stretch')
 );
 const alignSelf = isUnion(
   isLiteral('auto'),
@@ -444,7 +444,7 @@ const alignSelf = isUnion(
   isLiteral('flex-end'),
   isLiteral('center'),
   isLiteral('baseline'),
-  isLiteral('stretch'),
+  isLiteral('stretch')
 );
 const animationDelay = time;
 const animationDirection = singleAnimationDirection;
@@ -457,7 +457,7 @@ const animationTimingFunction = singleTimingFunction;
 const appearance = isUnion(
   isLiteral('auto'),
   isLiteral('none'),
-  isLiteral('textfield'),
+  isLiteral('textfield')
 );
 const backdropFilter = isUnion(isLiteral('none'), isString);
 const backfaceVisibility = isUnion(isLiteral('visible'), isLiteral('hidden'));
@@ -490,7 +490,7 @@ const borderImage = isUnion(
   borderImageSource,
   borderImageSlice,
   isString,
-  borderImageRepeat,
+  borderImageRepeat
 );
 // const borderInlineEnd = isUnion(borderWidth, borderStyle, color);
 // const borderInlineEndColor = color;
@@ -522,14 +522,14 @@ const boxOrient = isUnion(
   isLiteral('horizontal'),
   isLiteral('vertical'),
   isLiteral('inline-axis'),
-  isLiteral('block-axis'),
+  isLiteral('block-axis')
 );
 const boxShadow = isUnion(isLiteral('none'), isString);
 const boxSizing = isUnion(isLiteral('content-box'), isLiteral('border-box'));
 const boxSuppress = isUnion(
   isLiteral('show'),
   isLiteral('discard'),
-  isLiteral('hide'),
+  isLiteral('hide')
 );
 const breakAfter = isUnion(
   isLiteral('auto'),
@@ -543,7 +543,7 @@ const breakAfter = isUnion(
   isLiteral('avoid-column'),
   isLiteral('column'),
   isLiteral('avoid-region'),
-  isLiteral('region'),
+  isLiteral('region')
 );
 const breakBefore = isUnion(
   isLiteral('auto'),
@@ -557,14 +557,14 @@ const breakBefore = isUnion(
   isLiteral('avoid-column'),
   isLiteral('column'),
   isLiteral('avoid-region'),
-  isLiteral('region'),
+  isLiteral('region')
 );
 const breakInside = isUnion(
   isLiteral('auto'),
   isLiteral('avoid'),
   isLiteral('avoid-page'),
   isLiteral('avoid-column'),
-  isLiteral('avoid-region'),
+  isLiteral('avoid-region')
 );
 const captionSide = isUnion(
   isLiteral('top'),
@@ -572,7 +572,7 @@ const captionSide = isUnion(
   isLiteral('block-start'),
   isLiteral('block-end'),
   isLiteral('inline-start'),
-  isLiteral('inline-end'),
+  isLiteral('inline-end')
 );
 const clear = isUnion(
   isLiteral('none'),
@@ -580,7 +580,7 @@ const clear = isUnion(
   isLiteral('right'),
   isLiteral('both'),
   isLiteral('inline-start'),
-  isLiteral('inline-end'),
+  isLiteral('inline-end')
 );
 const clip = isUnion(isString, isLiteral('auto'));
 const clipPath = isUnion(isString, isLiteral('none'));
@@ -594,7 +594,7 @@ const contain = isUnion(
   isLiteral('none'),
   isLiteral('strict'),
   isLiteral('content'),
-  isString,
+  isString
 );
 const content = isString;
 const counterIncrement = isUnion(isString, isLiteral('none'));
@@ -627,7 +627,7 @@ const display = isUnion(
   isLiteral('ruby-text'),
   isLiteral('ruby-base-container'),
   isLiteral('ruby-text-container'),
-  isLiteral('contents'),
+  isLiteral('contents')
 );
 const displayInside = isUnion(
   isLiteral('auto'),
@@ -635,7 +635,7 @@ const displayInside = isUnion(
   isLiteral('table'),
   isLiteral('flex'),
   isLiteral('grid'),
-  isLiteral('ruby'),
+  isLiteral('ruby')
 );
 const displayList = isUnion(isLiteral('none'), isLiteral('list-item'));
 const displayOutside = isUnion(
@@ -655,13 +655,13 @@ const displayOutside = isUnion(
   isLiteral('ruby-base'),
   isLiteral('ruby-text'),
   isLiteral('ruby-base-container'),
-  isLiteral('ruby-text-container'),
+  isLiteral('ruby-text-container')
 );
 const fontFeatureSettings = isUnion(isLiteral('normal'), isString);
 const fontKerning = isUnion(
   isLiteral('auto'),
   isLiteral('normal'),
-  isLiteral('none'),
+  isLiteral('none')
 );
 const fontLanguageOverride = isUnion(isLiteral('normal'), isString);
 const fontSize = isUnion(absoluteSize, relativeSize, lengthPercentage);
@@ -675,12 +675,12 @@ const fontStretch = isUnion(
   isLiteral('semi-expanded'),
   isLiteral('expanded'),
   isLiteral('extra-expanded'),
-  isLiteral('ultra-expanded'),
+  isLiteral('ultra-expanded')
 );
 const fontStyle = isUnion(
   isLiteral('normal'),
   isLiteral('italic'),
-  isLiteral('oblique'),
+  isLiteral('oblique')
 );
 const fontSynthesis = isUnion(isLiteral('none'), isString);
 const fontVariant = isUnion(isLiteral('normal'), isLiteral('none'), isString);
@@ -692,19 +692,19 @@ const fontVariantCaps = isUnion(
   isLiteral('petite-caps'),
   isLiteral('all-petite-caps'),
   isLiteral('unicase'),
-  isLiteral('titling-caps'),
+  isLiteral('titling-caps')
 );
 const fontVariantEastAsian = isUnion(isLiteral('normal'), isString);
 const fontVariantLigatures = isUnion(
   isLiteral('normal'),
   isLiteral('none'),
-  isString,
+  isString
 );
 const fontVariantNumeric = isUnion(isLiteral('normal'), isString);
 const fontVariantPosition = isUnion(
   isLiteral('normal'),
   isLiteral('sub'),
-  isLiteral('super'),
+  isLiteral('super')
 );
 const fontWeight = isUnion(
   isLiteral('normal'),
@@ -719,7 +719,7 @@ const fontWeight = isUnion(
   isLiteral(600),
   isLiteral(700),
   isLiteral(800),
-  isLiteral(900),
+  isLiteral(900)
 );
 const grid = isUnion(gridTemplate, isString);
 const gridArea = isUnion(gridLine, isString);
@@ -737,7 +737,7 @@ const gridRowStart = gridLine;
 const hyphens = isUnion(
   isLiteral('none'),
   isLiteral('manual'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const imageOrientation = isUnion(isLiteral('from-image'), isNumber, isString);
 const imageRendering = isUnion(
@@ -746,7 +746,7 @@ const imageRendering = isUnion(
   isLiteral('pixelated'),
   isLiteral('optimizeSpeed'),
   isLiteral('optimizeQuality'),
-  isString,
+  isString
 );
 const imageResolution = isUnion(isString, isLiteral('snap'));
 const imeMode = isUnion(
@@ -754,7 +754,7 @@ const imeMode = isUnion(
   isLiteral('normal'),
   isLiteral('active'),
   isLiteral('inactive'),
-  isLiteral('disabled'),
+  isLiteral('disabled')
 );
 const initialLetter = isUnion(isLiteral('normal'), isString);
 const initialLetterAlign = isString;
@@ -767,7 +767,7 @@ const justifyContent = isUnion(
   isLiteral('stretch'),
   isLiteral('space-between'),
   isLiteral('space-around'),
-  isLiteral('space-evenly'),
+  isLiteral('space-evenly')
 );
 const justifyItems = isUnion(
   isLiteral('start'),
@@ -776,7 +776,7 @@ const justifyItems = isUnion(
   isLiteral('flex-end'),
   isLiteral('center'),
   isLiteral('baseline'),
-  isLiteral('stretch'),
+  isLiteral('stretch')
 );
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
@@ -788,14 +788,14 @@ const justifySelf = isUnion(
   baselinePosition,
   selfPosition,
   isLiteral('left'),
-  isLiteral('right'),
+  isLiteral('right')
 );
 const letterSpacing = isUnion(isLiteral('normal'), lengthPercentage);
 const lineBreak = isUnion(
   isLiteral('auto'),
   isLiteral('loose'),
   isLiteral('normal'),
-  isLiteral('strict'),
+  isLiteral('strict')
 );
 const lineHeight = isNumber;
 const listStyleImage = isUnion(isString, isLiteral('none'));
@@ -827,7 +827,7 @@ const maxWidth = isUnion(
   isLiteral('max-content'),
   isLiteral('min-content'),
   isLiteral('fit-content'),
-  isLiteral('fill-available'),
+  isLiteral('fill-available')
 );
 const maxBlockSize = maxWidth;
 const maxHeight = isUnion(
@@ -837,7 +837,7 @@ const maxHeight = isUnion(
   isLiteral('max-content'),
   isLiteral('min-content'),
   isLiteral('fit-content'),
-  isLiteral('fill-available'),
+  isLiteral('fill-available')
 );
 const maxInlineSize = maxWidth;
 const minWidth = isUnion(
@@ -847,7 +847,7 @@ const minWidth = isUnion(
   isLiteral('max-content'),
   isLiteral('min-content'),
   isLiteral('fit-content'),
-  isLiteral('fill-available'),
+  isLiteral('fill-available')
 );
 const minBlockSize = minWidth;
 const minHeight = isUnion(
@@ -857,7 +857,7 @@ const minHeight = isUnion(
   isLiteral('max-content'),
   isLiteral('min-content'),
   isLiteral('fit-content'),
-  isLiteral('fill-available'),
+  isLiteral('fill-available')
 );
 const minInlineSize = minWidth;
 
@@ -871,7 +871,7 @@ const objectFit = isUnion(
   isLiteral('contain'),
   isLiteral('cover'),
   isLiteral('none'),
-  isLiteral('scale-down'),
+  isLiteral('scale-down')
 );
 const objectPosition = isString;
 const offsetBlockEnd = isString;
@@ -890,44 +890,44 @@ const overflow = isUnion(
   isLiteral('visible'),
   isLiteral('hidden'),
   isLiteral('scroll'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const overflowAnchor = isUnion(isLiteral('auto'), isLiteral('none'));
 const overflowClipBox = isUnion(
   isLiteral('padding-box'),
-  isLiteral('content-box'),
+  isLiteral('content-box')
 );
 const overflowWrap = isUnion(
   isLiteral('normal'),
   isLiteral('break-word'),
-  isLiteral('anywhere'),
+  isLiteral('anywhere')
 );
 const overflowX = isUnion(
   isLiteral('visible'),
   isLiteral('hidden'),
   isLiteral('scroll'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const overflowY = isUnion(
   isLiteral('visible'),
   isLiteral('hidden'),
   isLiteral('scroll'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const overscrollBehavior = isUnion(
   isLiteral('none'),
   isLiteral('contain'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const overscrollBehaviorX = isUnion(
   isLiteral('none'),
   isLiteral('contain'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const overscrollBehaviorY = isUnion(
   isLiteral('none'),
   isLiteral('contain'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const padding = isStringOrNumber;
 const paddingLeft = isStringOrNumber;
@@ -941,14 +941,14 @@ const pageBreakAfter = isUnion(
   isLiteral('always'),
   isLiteral('avoid'),
   isLiteral('left'),
-  isLiteral('right'),
+  isLiteral('right')
 );
 const pageBreakBefore = isUnion(
   isLiteral('auto'),
   isLiteral('always'),
   isLiteral('avoid'),
   isLiteral('left'),
-  isLiteral('right'),
+  isLiteral('right')
 );
 const pageBreakInside = isUnion(isLiteral('auto'), isLiteral('avoid'));
 const perspective = isUnion(isLiteral('none'), isNumber);
@@ -963,37 +963,37 @@ const pointerEvents = isUnion(
   isLiteral('painted'),
   isLiteral('fill'),
   isLiteral('stroke'),
-  isLiteral('all'),
+  isLiteral('all')
 );
 const position = isUnion(
   isLiteral('static'),
   isLiteral('relative'),
   isLiteral('absolute'),
   isLiteral('sticky'),
-  isLiteral('fixed'),
+  isLiteral('fixed')
 );
 const quotes = isUnion(isString, isLiteral('none'));
 const resize = isUnion(
   isLiteral('none'),
   isLiteral('both'),
   isLiteral('horizontal'),
-  isLiteral('vertical'),
+  isLiteral('vertical')
 );
 const rubyAlign = isUnion(
   isLiteral('start'),
   isLiteral('center'),
   isLiteral('space-between'),
-  isLiteral('space-around'),
+  isLiteral('space-around')
 );
 const rubyMerge = isUnion(
   isLiteral('separate'),
   isLiteral('collapse'),
-  isLiteral('auto'),
+  isLiteral('auto')
 );
 const rubyPosition = isUnion(
   isLiteral('over'),
   isLiteral('under'),
-  isLiteral('inter-character'),
+  isLiteral('inter-character')
 );
 const scrollBehavior = isUnion(isLiteral('auto'), isLiteral('smooth'));
 const scrollSnapPaddingBottom = isNumber;
@@ -1002,12 +1002,12 @@ const scrollSnapAlign = isUnion(
   isLiteral('none'),
   isLiteral('start'),
   isLiteral('end'),
-  isLiteral('center'),
+  isLiteral('center')
 );
 const scrollSnapType = isUnion(
   isLiteral('none'),
   isLiteral('x mandatory'),
-  isLiteral('y mandatory'),
+  isLiteral('y mandatory')
 );
 const shapeImageThreshold = isNumber;
 const shapeMargin = lengthPercentage;
@@ -1021,7 +1021,7 @@ const textAlign = isUnion(
   isLiteral('right'),
   isLiteral('center'),
   isLiteral('justify'),
-  isLiteral('match-parent'),
+  isLiteral('match-parent')
 );
 const textAlignLast = isUnion(
   isLiteral('auto'),
@@ -1030,12 +1030,12 @@ const textAlignLast = isUnion(
   isLiteral('left'),
   isLiteral('right'),
   isLiteral('center'),
-  isLiteral('justify'),
+  isLiteral('justify')
 );
 const textCombineUpright = isUnion(
   isLiteral('none'),
   isLiteral('all'),
-  isString,
+  isString
 );
 const textDecorationColor = color;
 const textDecorationLine = isUnion(
@@ -1044,7 +1044,7 @@ const textDecorationLine = isUnion(
   isLiteral('overline'),
   isLiteral('line-through'),
   isLiteral('blink'),
-  isString,
+  isString
 );
 // const textDecorationSkip = isUnion(isLiteral('none'), isString);
 const textDecorationStyle = isUnion(
@@ -1052,12 +1052,12 @@ const textDecorationStyle = isUnion(
   isLiteral('double'),
   isLiteral('dotted'),
   isLiteral('dashed'),
-  isLiteral('wavy'),
+  isLiteral('wavy')
 );
 const textDecoration = isUnion(
   textDecorationLine,
   textDecorationStyle,
-  textDecorationColor,
+  textDecorationColor
 );
 const textEmphasisColor = color;
 const textEmphasisPosition = isString;
@@ -1071,29 +1071,29 @@ const textEmphasisStyle = isUnion(
   isLiteral('triangle'),
   isLiteral('filled sesame'),
   isLiteral('open sesame'),
-  isString,
+  isString
 );
 const textEmphasis = isUnion(textEmphasisStyle, textEmphasisColor);
 const textIndent = isUnion(
   lengthPercentage,
   isLiteral('hanging'),
-  isLiteral('each-line'),
+  isLiteral('each-line')
 );
 const textOrientation = isUnion(
   isLiteral('mixed'),
   isLiteral('upright'),
-  isLiteral('sideways'),
+  isLiteral('sideways')
 );
 const textOverflow = isUnion(
   isLiteral('clip'),
   isLiteral('ellipsis'),
-  isString,
+  isString
 );
 const textRendering = isUnion(
   isLiteral('auto'),
   isLiteral('optimizeSpeed'),
   isLiteral('optimizeLegibility'),
-  isLiteral('geometricPrecision'),
+  isLiteral('geometricPrecision')
 );
 const textShadow = isUnion(isLiteral('none'), isString);
 const textSizeAdjust = isUnion(isLiteral('none'), isLiteral('auto'), isString);
@@ -1102,20 +1102,20 @@ const textTransform = isUnion(
   isLiteral('capitalize'),
   isLiteral('uppercase'),
   isLiteral('lowercase'),
-  isLiteral('full-width'),
+  isLiteral('full-width')
 );
 const textUnderlinePosition = isUnion(
   isLiteral('auto'),
   isLiteral('under'),
   isLiteral('left'),
   isLiteral('right'),
-  isString,
+  isString
 );
 const touchAction = isUnion(
   isLiteral('auto'),
   isLiteral('none'),
   isString,
-  isLiteral('manipulation'),
+  isLiteral('manipulation')
 );
 const transform = isUnion(isLiteral('none'), isString);
 const transformBox = isUnion(
@@ -1123,7 +1123,7 @@ const transformBox = isUnion(
   isLiteral('fill-box'),
   isLiteral('view-box'),
   isLiteral('content-box'),
-  isLiteral('stroke-box'),
+  isLiteral('stroke-box')
 );
 const transformOrigin = isStringOrNumber;
 const transformStyle = isUnion(isLiteral('flat'), isLiteral('preserve-3d'));
@@ -1135,7 +1135,7 @@ const transitionProperty = isUnion(
   isLiteral('opacity, transform'),
   // All is bad for animation performance.
   // isLiteral('all'),
-  isLiteral('none'),
+  isLiteral('none')
 );
 const transitionTimingFunction = singleTransitionTimingFunction;
 const unicodeBidi = isUnion(
@@ -1144,14 +1144,14 @@ const unicodeBidi = isUnion(
   isLiteral('isolate'),
   isLiteral('bidi-override'),
   isLiteral('isolate-override'),
-  isLiteral('plaintext'),
+  isLiteral('plaintext')
 );
 const userSelect = isUnion(
   isLiteral('auto'),
   isLiteral('text'),
   isLiteral('none'),
   isLiteral('contain'),
-  isLiteral('all'),
+  isLiteral('all')
 );
 const verticalAlign = isUnion(
   isLiteral('baseline'),
@@ -1163,12 +1163,12 @@ const verticalAlign = isUnion(
   isLiteral('top'),
   isLiteral('bottom'),
   isString,
-  isNumber,
+  isNumber
 );
 const visibility = isUnion(
   isLiteral('visible'),
   isLiteral('hidden'),
-  isLiteral('collapse'),
+  isLiteral('collapse')
 );
 const whiteSpace = isUnion(
   isLiteral('normal'),
@@ -1176,13 +1176,13 @@ const whiteSpace = isUnion(
   isLiteral('nowrap'),
   isLiteral('pre-wrap'),
   isLiteral('pre-line'),
-  isLiteral('break-spaces'),
+  isLiteral('break-spaces')
 );
 const widows = isNumber;
 const animatableFeature = isUnion(
   isLiteral('scroll-position'),
   isLiteral('contents'),
-  isString,
+  isString
 );
 const willChange = isUnion(isLiteral('auto'), animatableFeature);
 const nonStandardWordBreak = isLiteral('break-word');
@@ -1190,7 +1190,7 @@ const wordBreak = isUnion(
   isLiteral('normal'),
   isLiteral('break-all'),
   isLiteral('keep-all'),
-  nonStandardWordBreak,
+  nonStandardWordBreak
 );
 const wordSpacing = isUnion(isLiteral('normal'), lengthPercentage);
 const wordWrap = isUnion(isLiteral('normal'), isLiteral('break-word'));
@@ -1200,7 +1200,7 @@ const svgWritingMode = isUnion(
   isLiteral('tb-rl'),
   isLiteral('lr'),
   isLiteral('rl'),
-  isLiteral('tb'),
+  isLiteral('tb')
 );
 const writingMode = isUnion(
   isLiteral('horizontal-tb'),
@@ -1208,7 +1208,7 @@ const writingMode = isUnion(
   isLiteral('vertical-lr'),
   isLiteral('sideways-rl'),
   isLiteral('sideways-lr'),
-  svgWritingMode,
+  svgWritingMode
 );
 const zIndex = isUnion(isLiteral('auto'), isNumber);
 const alignmentBaseline = isUnion(
@@ -1223,14 +1223,14 @@ const alignmentBaseline = isUnion(
   isLiteral('ideographic'),
   isLiteral('alphabetic'),
   isLiteral('hanging'),
-  isLiteral('mathematical'),
+  isLiteral('mathematical')
 );
 const svgLength = isStringOrNumber;
 const baselineShift = isUnion(
   isLiteral('baseline'),
   isLiteral('sub'),
   isLiteral('super'),
-  svgLength,
+  svgLength
 );
 const behavior = isString;
 const clipRule = isUnion(isLiteral('nonzero'), isLiteral('evenodd'));
@@ -1249,13 +1249,13 @@ const dominantBaseline = isUnion(
   isLiteral('central'),
   isLiteral('middle'),
   isLiteral('text-after-edge'),
-  isLiteral('text-before-edge'),
+  isLiteral('text-before-edge')
 );
 const paint = isUnion(
   isLiteral('none'),
   isLiteral('currentColor'),
   color,
-  isString,
+  isString
 );
 const fill = paint;
 const fillOpacity = isNumber;
@@ -1274,7 +1274,7 @@ const pauseAfter = isUnion(
   isLiteral('weak'),
   isLiteral('medium'),
   isLiteral('strong'),
-  isLiteral('x-strong'),
+  isLiteral('x-strong')
 );
 const pauseBefore = isUnion(
   isNumber,
@@ -1283,7 +1283,7 @@ const pauseBefore = isUnion(
   isLiteral('weak'),
   isLiteral('medium'),
   isLiteral('strong'),
-  isLiteral('x-strong'),
+  isLiteral('x-strong')
 );
 const pause = isUnion(pauseBefore, pauseAfter);
 const restAfter = isUnion(
@@ -1293,7 +1293,7 @@ const restAfter = isUnion(
   isLiteral('weak'),
   isLiteral('medium'),
   isLiteral('strong'),
-  isLiteral('x-strong'),
+  isLiteral('x-strong')
 );
 const restBefore = isUnion(
   isNumber,
@@ -1302,26 +1302,26 @@ const restBefore = isUnion(
   isLiteral('weak'),
   isLiteral('medium'),
   isLiteral('strong'),
-  isLiteral('x-strong'),
+  isLiteral('x-strong')
 );
 const rest = isUnion(restBefore, restAfter);
 const shapeRendering = isUnion(
   isLiteral('auto'),
   isLiteral('optimizeSpeed'),
   isLiteral('crispEdges'),
-  isLiteral('geometricPrecision'),
+  isLiteral('geometricPrecision')
 );
 const src = isString;
 const speak = isUnion(
   isLiteral('auto'),
   isLiteral('none'),
-  isLiteral('normal'),
+  isLiteral('normal')
 );
 const speakAs = isUnion(
   isLiteral('normal'),
   isLiteral('spell-out'),
   isLiteral('digits'),
-  isString,
+  isString
 );
 const stroke = paint;
 const strokeDasharray = isUnion(isLiteral('none'), isString);
@@ -1329,12 +1329,12 @@ const strokeDashoffset = svgLength;
 const strokeLinecap = isUnion(
   isLiteral('butt'),
   isLiteral('round'),
-  isLiteral('square'),
+  isLiteral('square')
 );
 const strokeLinejoin = isUnion(
   isLiteral('miter'),
   isLiteral('round'),
-  isLiteral('bevel'),
+  isLiteral('bevel')
 );
 const strokeMiterlimit = isNumber;
 const strokeOpacity = isNumber;
@@ -1342,7 +1342,7 @@ const strokeWidth = svgLength;
 const textAnchor = isUnion(
   isLiteral('start'),
   isLiteral('middle'),
-  isLiteral('end'),
+  isLiteral('end')
 );
 const unicodeRange = isString;
 const voiceBalance = isUnion(
@@ -1351,7 +1351,7 @@ const voiceBalance = isUnion(
   isLiteral('center'),
   isLiteral('right'),
   isLiteral('leftwards'),
-  isLiteral('rightwards'),
+  isLiteral('rightwards')
 );
 const voiceDuration = isUnion(isLiteral('auto'), time);
 const voiceFamily = isUnion(isString, isLiteral('preserve'));
@@ -1363,7 +1363,7 @@ const voiceStress = isUnion(
   isLiteral('strong'),
   isLiteral('moderate'),
   isLiteral('none'),
-  isLiteral('reduced'),
+  isLiteral('reduced')
 );
 const voiceVolume = isUnion(isLiteral('silent'), isString);
 // const finalBgLayer = isUnion(
@@ -1819,7 +1819,7 @@ const keyForNestedObject = isUnion(
   isLiteral('::-webkit-search-cancel-button'),
   isLiteral('::-webkit-search-results-button'),
   isLiteral('::-webkit-search-results-decoration'),
-  isRegEx(/^@media/),
+  isRegEx(/^@media/)
 );
 
 // Maybe add this later.
@@ -1848,8 +1848,8 @@ module.exports = {
                 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries',
             });
           }
-          return style.value.properties.forEach(prop =>
-            checkStyleProperty(prop, level + 1),
+          return style.value.properties.forEach((prop) =>
+            checkStyleProperty(prop, level + 1)
           );
         }
         if (style.computed && style.key.type !== 'Literal') {
@@ -1902,10 +1902,10 @@ module.exports = {
         // This is because stylex allows you to use local constants in your styles
         node.body
           .filter(({ type }) => type === 'VariableDeclaration')
-          .map(constDecl => constDecl.declarations)
+          .map((constDecl) => constDecl.declarations)
           .reduce((arr, curr) => [...arr, ...curr], [])
-          .filter(decl => decl.id.type === 'Identifier')
-          .forEach(decl => variables.set(decl.id.name, decl.init));
+          .filter((decl) => decl.id.type === 'Identifier')
+          .forEach((decl) => variables.set(decl.id.name, decl.init));
       },
       CallExpression(node) {
         if (!isStylexDeclaration(node)) {
@@ -1914,7 +1914,7 @@ module.exports = {
 
         const namespaces = node.arguments[0];
 
-        namespaces.properties.forEach(property => {
+        namespaces.properties.forEach((property) => {
           if (property.value.type !== 'ObjectExpression') {
             return context.report({
               node: property.value,
@@ -1924,7 +1924,7 @@ module.exports = {
           }
 
           const styles = property.value;
-          styles.properties.forEach(prop => checkStyleProperty(prop));
+          styles.properties.forEach((prop) => checkStyleProperty(prop));
         });
       },
       'Program:exit'() {

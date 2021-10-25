@@ -2,7 +2,7 @@ const path = require('path');
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
 const StylexPlugin = require('webpack-plugin-stylex');
 
-module.exports = env => ({
+module.exports = (env) => ({
   entry: './index.js',
   output: {
     filename: 'main.js',
@@ -17,12 +17,10 @@ module.exports = env => ({
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env'],
-            plugins: [
-              [stylexBabelPlugin, { dev: env.prod !== true }]
-            ],
+            plugins: [[stylexBabelPlugin, { dev: env.prod !== true }]],
             metadataSubscribers: [StylexPlugin.stylexMetadataSubscription],
-          }
-        }
+          },
+        },
       },
     ],
   },

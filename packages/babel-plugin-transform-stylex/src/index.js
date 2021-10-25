@@ -117,7 +117,7 @@ function styleXTransform(babel) {
     }
 
     const namespaces = new Map();
-    const isFullyLocal = path.get('arguments').every(arg => {
+    const isFullyLocal = path.get('arguments').every((arg) => {
       if (arg.isMemberExpression()) {
         if (
           arg.node.computed &&
@@ -139,7 +139,7 @@ function styleXTransform(babel) {
       ) {
         const namespace = getNamespaceBinding(
           arg.get('right').get('object'),
-          state,
+          state
         );
         if (!namespace) {
           return false;
@@ -154,22 +154,22 @@ function styleXTransform(babel) {
         ) {
           const namespace1 = getNamespaceBinding(
             arg.get('consequent').get('object'),
-            state,
+            state
           );
           const namespace2 = getNamespaceBinding(
             arg.get('alternate').get('object'),
-            state,
+            state
           );
           if (!namespace1 || !namespace2) {
             return false;
           }
           namespaces.set(
             arg.get('consequent').get('object').node.name,
-            namespace1,
+            namespace1
           );
           namespaces.set(
             arg.get('alternate').get('object').node.name,
-            namespace1,
+            namespace1
           );
           return true;
         }
@@ -179,14 +179,14 @@ function styleXTransform(babel) {
         ) {
           const namespace = getNamespaceBinding(
             arg.get('consequent').get('object'),
-            state,
+            state
           );
           if (!namespace) {
             return false;
           }
           namespaces.set(
             arg.get('consequent').get('object').node.name,
-            namespace,
+            namespace
           );
           return true;
         }
@@ -196,14 +196,14 @@ function styleXTransform(babel) {
         ) {
           const namespace = getNamespaceBinding(
             arg.get('alternate').get('object'),
-            state,
+            state
           );
           if (!namespace) {
             return false;
           }
           namespaces.set(
             arg.get('alternate').get('object').node.name,
-            namespace,
+            namespace
           );
           return true;
         }
@@ -334,8 +334,8 @@ function styleXTransform(babel) {
           parentStatement.insertBefore(
             t.ifStatement(
               t.identifier('__DEV__'),
-              t.blockStatement(insertCalls),
-            ),
+              t.blockStatement(insertCalls)
+            )
           );
         }
         path.replaceWith(replacement);
@@ -355,7 +355,7 @@ function styleXTransform(babel) {
           },
           () => {
             hasComposition = true;
-          },
+          }
         );
         if (variableID) {
           const bindingName = variableID.node.name;
@@ -368,13 +368,13 @@ function styleXTransform(babel) {
             parentStatement.insertBefore(
               t.ifStatement(
                 t.identifier('__DEV__'),
-                t.blockStatement(insertCalls),
-              ),
+                t.blockStatement(insertCalls)
+              )
             );
           }
           path.replaceWith(arg);
         } else {
-          insertCalls.forEach(call => parentStatement.insertBefore(call));
+          insertCalls.forEach((call) => parentStatement.insertBefore(call));
           path.replaceWith(arg);
         }
         stylexCreateCalls.add(parentStatement);
@@ -422,7 +422,7 @@ function styleXTransform(babel) {
         args,
         namespaces,
         opts,
-        varName,
+        varName
       );
       stylexAndNamespaceCalls.set(path, stylexValue);
     } else if (path.get('callee').node.name === STYLEX) {
@@ -439,7 +439,7 @@ function styleXTransform(babel) {
     post() {
       if (!hasComposition) {
         // Remove all the objects created from stylex.create
-        stylexCreateCalls.forEach(variableDeclaration => {
+        stylexCreateCalls.forEach((variableDeclaration) => {
           variableDeclaration.replaceWithMultiple([]);
         });
         // Replace all stylex() calls with classNames etc.
@@ -488,7 +488,7 @@ function styleXTransform(babel) {
                   path.skip();
                 },
               },
-              state,
+              state
             );
           }
         }
@@ -530,14 +530,14 @@ module.exports.processStylexRules = function processStylexRules(rules) {
 
   const sortedRules = rules.sort(
     ([, , firstPriority], [, , secondPriority]) =>
-      firstPriority - secondPriority,
+      firstPriority - secondPriority
   );
 
   const collectedCSS = Array.from(new Map(sortedRules).values())
     .flatMap(({ ltr, rtl }) =>
       rtl != null
         ? [`html:not([dir='rtl']) ${ltr}`, `html[dir='rtl'] ${rtl}`]
-        : [ltr],
+        : [ltr]
     )
     .join('\n');
 

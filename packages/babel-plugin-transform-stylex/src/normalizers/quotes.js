@@ -9,7 +9,7 @@
 'use strict';
 
 module.exports = function normalizeQuotes(ast, _) {
-  ast.walk(node => {
+  ast.walk((node) => {
     if (node.type !== 'string') {
       return;
     }

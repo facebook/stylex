@@ -50,7 +50,7 @@ function getTextDirectionVariants(key, value) {
 
   if (key === 'border-radius') {
     const rtl = splitByDivisor(value)
-      .map(part => flipBoxCornerNotation(part).value)
+      .map((part) => flipBoxCornerNotation(part).value)
       .join(' / ');
 
     if (rtl !== value) {

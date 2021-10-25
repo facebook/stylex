@@ -27,20 +27,20 @@ function splitValue(str) {
   const parsed = parser(str.trim());
 
   const nodes = parsed.nodes
-    .filter(node => node.type !== 'space' && node.type !== 'div')
+    .filter((node) => node.type !== 'space' && node.type !== 'div')
     .map(printNode);
 
   if (
     nodes.length > 1 &&
     nodes[nodes.length - 1].toLowerCase() === '!important'
   ) {
-    return nodes.slice(0, nodes.length - 1).map(node => node + ' !important');
+    return nodes.slice(0, nodes.length - 1).map((node) => node + ' !important');
   }
   return nodes;
 }
 
 const expansions = {
-  border: rawValue => {
+  border: (rawValue) => {
     return [
       { rawKey: 'borderTop', rawValue },
       { rawKey: 'borderEnd', rawValue },
@@ -48,7 +48,7 @@ const expansions = {
       { rawKey: 'borderStart', rawValue },
     ];
   },
-  borderColor: rawValue => {
+  borderColor: (rawValue) => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -58,13 +58,13 @@ const expansions = {
       { rawKey: 'borderStartColor', rawValue: left },
     ];
   },
-  borderHorizontal: rawValue => {
+  borderHorizontal: (rawValue) => {
     return [
       { rawKey: 'borderStart', rawValue },
       { rawKey: 'borderEnd', rawValue },
     ];
   },
-  borderStyle: rawValue => {
+  borderStyle: (rawValue) => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -74,13 +74,13 @@ const expansions = {
       { rawKey: 'borderStartStyle', rawValue: left },
     ];
   },
-  borderVertical: rawValue => {
+  borderVertical: (rawValue) => {
     return [
       { rawKey: 'borderTop', rawValue },
       { rawKey: 'borderBottom', rawValue },
     ];
   },
-  borderWidth: rawValue => {
+  borderWidth: (rawValue) => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
@@ -92,7 +92,7 @@ const expansions = {
     ];
   },
 
-  borderRadius: rawValue => {
+  borderRadius: (rawValue) => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'string'
         ? splitValue(rawValue)
@@ -108,7 +108,7 @@ const expansions = {
     ];
   },
 
-  margin: rawValue => {
+  margin: (rawValue) => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
@@ -119,20 +119,20 @@ const expansions = {
       { rawKey: 'marginStart', rawValue: left },
     ];
   },
-  marginHorizontal: rawValue => {
+  marginHorizontal: (rawValue) => {
     return [
       { rawKey: 'marginEnd', rawValue },
       { rawKey: 'marginStart', rawValue },
     ];
   },
-  marginVertical: rawValue => {
+  marginVertical: (rawValue) => {
     return [
       { rawKey: 'marginTop', rawValue },
       { rawKey: 'marginBottom', rawValue },
     ];
   },
 
-  overflow: rawValue => {
+  overflow: (rawValue) => {
     const [x, y = x] = splitValue(rawValue);
     return [
       { rawKey: 'overflowX', rawValue: x },
@@ -140,7 +140,7 @@ const expansions = {
     ];
   },
 
-  padding: rawValue => {
+  padding: (rawValue) => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
@@ -151,13 +151,13 @@ const expansions = {
       { rawKey: 'paddingStart', rawValue: left },
     ];
   },
-  paddingHorizontal: rawValue => {
+  paddingHorizontal: (rawValue) => {
     return [
       { rawKey: 'paddingEnd', rawValue },
       { rawKey: 'paddingStart', rawValue },
     ];
   },
-  paddingVertical: rawValue => {
+  paddingVertical: (rawValue) => {
     return [
       { rawKey: 'paddingTop', rawValue },
       { rawKey: 'paddingBottom', rawValue },

@@ -25,7 +25,7 @@ const normalizers = [
 
 function normalizeValue(value, key) {
   let ast = parser(value);
-  normalizers.forEach(fn => {
+  normalizers.forEach((fn) => {
     ast = fn(ast, key);
   });
   return ast.toString();

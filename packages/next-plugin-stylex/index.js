@@ -5,7 +5,7 @@
  */
 
 const {
-  getClientStyleLoader
+  getClientStyleLoader,
 } = require('next/dist/build/webpack/config/blocks/css/loaders/client');
 const cssLoader = require('next/dist/compiled/css-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -34,36 +34,38 @@ function getInlineLoader(options, MiniCssExtractPlugin) {
         // pseudo selectors. Setting isDevelopment means MiniCssExtractPlugin is
         // used instead.
         isDevelopment: false,
-        assetPrefix: options.config.assetPrefix
+        assetPrefix: options.config.assetPrefix,
       }),
-      loader: MiniCssExtractPlugin.loader
+      loader: MiniCssExtractPlugin.loader,
     });
   }
 
   return stringifyCssRequest(outputLoaders);
 }
 
-module.exports = (pluginOptions = {}) => (nextConfig = {}) => {
-  return {
-    ...nextConfig,
-    webpack(config, options) {
-      const outputCSS = !options.isServer;
+module.exports =
+  (pluginOptions = {}) =>
+  (nextConfig = {}) => {
+    return {
+      ...nextConfig,
+      webpack(config, options) {
+        const outputCSS = !options.isServer;
 
-      // The stylex compiler must run on source code, which means it must be
-      // configured as the last loader in webpack so that it runs before any
-      // other transformation.
+        // The stylex compiler must run on source code, which means it must be
+        // configured as the last loader in webpack so that it runs before any
+        // other transformation.
 
-      if (typeof nextConfig.webpack === 'function') {
-        config = nextConfig.webpack(config, options);
-      }
+        if (typeof nextConfig.webpack === 'function') {
+          config = nextConfig.webpack(config, options);
+        }
 
-      // For some reason, Next 11.0.1 has `config.optimization.splitChunks`
-      // set to `false` when webpack 5 is enabled.
-      config.optimization.splitChunks = config.optimization.splitChunks || {
-        cacheGroups: {}
-      };
+        // For some reason, Next 11.0.1 has `config.optimization.splitChunks`
+        // set to `false` when webpack 5 is enabled.
+        config.optimization.splitChunks = config.optimization.splitChunks || {
+          cacheGroups: {},
+        };
 
-      /*
+        /*
       // TODO: WebpackPluginStylex.loader is undefined
       config.module.rules.push({
         test: /\.(tsx|ts|js|mjs|jsx)$/,
@@ -80,32 +82,32 @@ module.exports = (pluginOptions = {}) => (nextConfig = {}) => {
       });
       */
 
-      if (outputCSS) {
-        config.optimization.splitChunks.cacheGroups.styles = {
-          name: 'styles',
-          test: /\.css$/,
-          chunks: 'all',
-          enforce: true
-        };
+        if (outputCSS) {
+          config.optimization.splitChunks.cacheGroups.styles = {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true,
+          };
 
-        // HMR reloads the CSS file when the content changes but does not use
-        // the new file name, which means it can't contain a hash.
-        const filename = options.dev
-          ? 'static/css/[name].css'
-          : 'static/css/[contenthash].css';
+          // HMR reloads the CSS file when the content changes but does not use
+          // the new file name, which means it can't contain a hash.
+          const filename = options.dev
+            ? 'static/css/[name].css'
+            : 'static/css/[contenthash].css';
 
-        config.plugins.push(
-          // Logic adopted from https://git.io/JtdBy
-          new MiniCssExtractPlugin({
-            filename,
-            chunkFilename: filename,
-            ignoreOrder: true
-          }),
-          new WebpackPluginStylex()
-        );
-      }
+          config.plugins.push(
+            // Logic adopted from https://git.io/JtdBy
+            new MiniCssExtractPlugin({
+              filename,
+              chunkFilename: filename,
+              ignoreOrder: true,
+            }),
+            new WebpackPluginStylex()
+          );
+        }
 
-      return config;
-    }
+        return config;
+      },
+    };
   };
-};

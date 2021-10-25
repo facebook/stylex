@@ -26,7 +26,7 @@ type DedupeStyles = $ReadOnly<{
 let warnedOnInject = false;
 
 function stylexPrepare<TObj: {}>(
-  rawStyles: Array<StyleXArray<?TObj | boolean>>,
+  rawStyles: Array<StyleXArray<?TObj | boolean>>
 ): TObj {
   // rawStyles is already a new array so we can reverse it inline;
   const workingStack = rawStyles.reverse();
@@ -102,7 +102,7 @@ stylex.compose = function stylexCompose(
 
 function stylexCreate(_styles: { ... }) {
   throw new Error(
-    'stylex.create should never be called. It should be compiled away.',
+    'stylex.create should never be called. It should be compiled away.'
   );
 }
 
@@ -122,7 +122,7 @@ stylex.keyframes = (_keyframes: Keyframes): string => {
 stylex.inject = (
   ltrRule: string,
   priority: number,
-  rtlRule: ?string = null,
+  rtlRule: ?string = null
 ): void => {
   styleSheet.insert(ltrRule, priority, rtlRule);
 };

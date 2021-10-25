@@ -88,7 +88,7 @@ export type NestedCSSPropTypes = $ReadOnly<{
 export type StyleXSingleStyle = false | ?NestedCSSPropTypes;
 export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<false | ?T>;
 export type XStyleWithout<+T: { [string]: void, ... }> = XStyle<
-  $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>,
+  $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>
 >;
 
 export type Styles = $ReadOnly<{ [namespace: string]: Style, ... }>;
@@ -107,7 +107,7 @@ export type Theme = $ReadOnly<{ [constantName: string]: string, ... }>;
 
 type StyleXCallable<S: { ... }> = (
   ...mapOrNamespace: $ReadOnlyArray<
-    $Keys<S> | $Shape<{ +[$Keys<S>]: ?boolean }> | null | void | false,
+    $Keys<S> | $Shape<{ +[$Keys<S>]: ?boolean }> | null | void | false
   >
 ) => string;
 
@@ -120,9 +120,9 @@ type MapCSSValueToClassName = <K, V>(K, V) => StyleXClassNameFor<K, V>;
 // ) => $ObjMap<Rule, MapCSSValueToClassName>) &
 //   MapCSSValueToClassName;
 type MapNamespaces = <CSS: { ... }>(
-  CSS,
+  CSS
 ) => $ObjMapi<CSS, MapCSSValueToClassName>;
 
 export type Stylex$Create = <S: { ... }>(
-  styles: S,
+  styles: S
 ) => $ReadOnly<$ObjMap<S, MapNamespaces>> & StyleXCallable<S>;

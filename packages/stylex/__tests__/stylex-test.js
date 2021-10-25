@@ -34,7 +34,7 @@ describe('stylex', () => {
         {
           backgroundColor: 'gh25dzvf',
         },
-      ]),
+      ])
     ).toEqual('gh25dzvf');
   });
 
@@ -58,7 +58,7 @@ describe('stylex', () => {
             backgroundColor: 'rse6dlih',
           },
         },
-      ]),
+      ])
     ).toEqual('abcdefg rse6dlih gofk2cf1');
   });
 
@@ -74,8 +74,8 @@ describe('stylex', () => {
           ':hover': {
             color: 'gofk2cf1',
           },
-        },
-      ),
+        }
+      )
     ).toEqual('rse6dlih gofk2cf1');
   });
   test('with complicated set of arguments', () => {
@@ -173,13 +173,13 @@ describe('stylex', () => {
             ],
           ],
         ],
-      ],
+      ]
     );
     expect(value.split(' ').sort().join(' ')).toEqual(
       'g5ia77u1 tpe1esc0 gewhe1h2 gcovof34 bdao358l a8c37x1j s5oniofx kvgmc6g5 cxmmr5t8 oygrvhab hcukyx3x jb3vyjys rz4wbd8a qt6c0cv9 a8nywdso oajrlxb2 i1ao9s8h myohyog2 n3t5jt4f gh25dzvf g4tp4svg nhd2j8a9 f1sip0of icdlwmnq e4t7hp5w gmql0nx0 ihxqhq3m l94mrbxd aenfhxwr k4urcfbm gofk2cf1 ksdfmwjs tm8avpzi bj9fd4vl'
         .split(' ')
         .sort()
-        .join(' '),
+        .join(' ')
     );
   });
 });

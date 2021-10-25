@@ -117,7 +117,7 @@ function namespacesToStringClassNames(
   namespaces,
   namespaceData,
   opts,
-  prefixSpace,
+  prefixSpace
 ) {
   const usedKeys = new Set();
   const classNames = [];
@@ -199,7 +199,7 @@ function buildNamespaceDedupeArgument(
   namespace,
   namespaceData,
   possibleDedupeKeys,
-  opts,
+  opts
 ) {
   const properties = [];
 
@@ -303,14 +303,14 @@ function buildDedupeRuntimeArguments(conditions, namespaceData, opts) {
           elem.alternate,
           namespaceData,
           possibleDedupeKeys,
-          opts,
+          opts
         ),
         consequent: buildNamespaceDedupeArgument(
           first,
           elem.consequent,
           namespaceData,
           possibleDedupeKeys,
-          opts,
+          opts
         ),
       });
     } else {
@@ -320,8 +320,8 @@ function buildDedupeRuntimeArguments(conditions, namespaceData, opts) {
           elem.namespace,
           namespaceData,
           possibleDedupeKeys,
-          opts,
-        ),
+          opts
+        )
       );
     }
     first = false;
@@ -336,10 +336,10 @@ function buildDedupeRuntimeArguments(conditions, namespaceData, opts) {
  */
 function buildNamespaceClassesString(conditions, namespaceData, opts) {
   return namespacesToStringClassNames(
-    conditions.map(condition => condition.namespace),
+    conditions.map((condition) => condition.namespace),
     namespaceData,
     opts,
-    false,
+    false
   );
 }
 
@@ -375,13 +375,13 @@ function buildConditionalStringConcat(conditions, namespaceData, opts) {
           [elem.consequent],
           namespaceData,
           opts,
-          !first,
+          !first
         ),
         alternate: namespacesToStringClassNames(
           [elem.alternate],
           namespaceData,
           opts,
-          !first,
+          !first
         ),
       });
     } else if (elem.type === 'namespace') {
@@ -389,7 +389,7 @@ function buildConditionalStringConcat(conditions, namespaceData, opts) {
         [elem.namespace],
         namespaceData,
         opts,
-        !first,
+        !first
       );
 
       const last = args[args.length - 1];
@@ -458,7 +458,7 @@ function checkCollision(flatNamespaces, namespaceData) {
 
   for (const namespace of flatNamespaces) {
     for (const { key, medium, pseudoPriority } of namespaceData.get(
-      namespace,
+      namespace
     )) {
       // Check if there's any properties in this that we should shadow
       const shadow = overrideProperties[key];
@@ -494,7 +494,7 @@ function convertStylexValueCall(args, namespaceData, opts) {
   let namespaceConditions = [];
   for (const arg of args) {
     namespaceConditions = namespaceConditions.concat(
-      getConditions(arg, namespaceData),
+      getConditions(arg, namespaceData)
     );
   }
 
@@ -526,14 +526,14 @@ function convertStylexValueCall(args, namespaceData, opts) {
       return buildConditionalStringConcat(
         namespaceConditions,
         namespaceData,
-        opts,
+        opts
       );
     }
   } else {
     return buildNamespaceClassesString(
       namespaceConditions,
       namespaceData,
-      opts,
+      opts
     );
   }
 }

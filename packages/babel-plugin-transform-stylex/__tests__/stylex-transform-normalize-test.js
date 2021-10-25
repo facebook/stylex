@@ -59,11 +59,11 @@ const testData = {
 };
 
 describe('stylex-normalize', () => {
-  Object.keys(testData).forEach(name => {
+  Object.keys(testData).forEach((name) => {
     const data = testData[name];
     test(name, () => {
       expect(normalizeValue(data.input.value, data.input.key)).toBe(
-        data.output,
+        data.output
       );
     });
   });

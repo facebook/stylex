@@ -11,7 +11,7 @@
 const parser = require('postcss-value-parser');
 
 module.exports = function normalizeTimings(ast, _) {
-  ast.walk(node => {
+  ast.walk((node) => {
     if (node.type !== 'word') {
       return;
     }

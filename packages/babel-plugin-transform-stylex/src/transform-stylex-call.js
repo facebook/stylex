@@ -83,7 +83,7 @@ function getPriorityForPseudo(path, pseudo) {
     const nameMatch = pseudo.match(/^::?([a-z-]+)/);
     if (nameMatch == null) {
       throw path.buildCodeFrameError(
-        `Failed to extract pseudo name from ${pseudo}`,
+        `Failed to extract pseudo name from ${pseudo}`
       );
     }
 
@@ -91,7 +91,7 @@ function getPriorityForPseudo(path, pseudo) {
     const priorityIndex = pseudoPriorities.indexOf(name);
     if (priorityIndex == null) {
       throw path.buildCodeFrameError(
-        `No pseudo priority defined for ${pseudo}`,
+        `No pseudo priority defined for ${pseudo}`
       );
     }
     return priorityIndex + DEFAULT_PRIORITY + 1;
@@ -180,7 +180,7 @@ function getNumberSuffix(key) {
  */
 function getStringValue(key, value) {
   if (Array.isArray(value)) {
-    return value.map(elem => getStringValue(key, elem)).join(',');
+    return value.map((elem) => getStringValue(key, elem)).join(',');
   } else if (typeof value === 'number') {
     return String(Math.round(value * 10000) / 10000) + getNumberSuffix(key);
   } else {
@@ -226,7 +226,7 @@ function transformValue(key, value) {
 function generateCSS(className, key, value, pseudo) {
   // Build up the rules
   const origRules = Array.isArray(value)
-    ? value.map(eachValue => [key, eachValue])
+    ? value.map((eachValue) => [key, eachValue])
     : [[key, value]];
 
   /**
@@ -266,7 +266,7 @@ function generateCSS(className, key, value, pseudo) {
     .flatMap(([k, v]) => {
       const prefixes = vendorPrefixedRules[k];
       if (prefixes != null) {
-        return [...prefixes.map(prefix => [prefix + k, v]), [k, v]];
+        return [...prefixes.map((prefix) => [prefix + k, v]), [k, v]];
       }
       return [[k, v]];
     })
@@ -293,7 +293,7 @@ function generateCSS(className, key, value, pseudo) {
     css = `${className}${pseudo.slice(1)}{${inner}}`;
   } else {
     throw new Error(
-      `Illegal pseudo selector ${pseudo}, we should have already validated this`,
+      `Illegal pseudo selector ${pseudo}, we should have already validated this`
     );
   }
   return css;
@@ -312,8 +312,8 @@ function getClassNameFromRule(rawKey, rawValue, pseudo, opts) {
 
   // Normalize the value to a string and convert the value to relative unit.
   const value = Array.isArray(rawValue)
-    ? rawValue.map(eachValue =>
-        transformValue(key, getStringValue(key, eachValue)),
+    ? rawValue.map((eachValue) =>
+        transformValue(key, getStringValue(key, eachValue))
       )
     : transformValue(key, getStringValue(key, rawValue));
 
@@ -352,7 +352,7 @@ function getStylesFromObject(
   pseudoPriority, // priority for pseudo selector, possibly outdated
   opts,
   namespaceName,
-  markComposition, // function to call if composition is detected
+  markComposition // function to call if composition is detected
 ) {
   let styles = [];
 
@@ -367,7 +367,7 @@ function getStylesFromObject(
     if (isStylexPreset(prop)) {
       replacedElements.push(prop);
       Object.entries(
-        baseStyles[prop.get('argument').get('property').node.name],
+        baseStyles[prop.get('argument').get('property').node.name]
       ).forEach(([key, value]) => {
         const rawKey = key;
         const keyPath = prop;
@@ -416,7 +416,7 @@ function getStylesFromObject(
             }`,
             // `prop.get('argument').node.typeAnnotation.id.type == ${prop.get('argument').node.typeAnnotation.id.type}`,
             // `prop.get('argument').node.typeAnnotation.id.name == ${prop.get('argument').node.typeAnnotation.id.name}`,
-          ].join('\n'),
+          ].join('\n')
         );
       }
       // Ignoring all other spreads.
@@ -446,13 +446,13 @@ function getStylesFromObject(
         const mappedProps = mapValuePathToProperty(rawKey, rawValue);
         if (mappedProps.length !== 1) {
           replacedElements.push(prop);
-          mappedProps.forEach(rawKeyValuePair =>
+          mappedProps.forEach((rawKeyValuePair) =>
             properties.push({
               ...rawKeyValuePair,
               keyPath,
               valuePath: prop,
               isSpread: true,
-            }),
+            })
           );
         } else {
           properties.push({
@@ -502,8 +502,8 @@ function getStylesFromObject(
             pseudoPriority,
             opts,
             namespaceName,
-            markComposition,
-          ),
+            markComposition
+          )
         );
 
         continue;
@@ -524,7 +524,7 @@ function getStylesFromObject(
       for (const elem of rawValue) {
         if (typeof elem !== 'string' && typeof elem !== 'number') {
           throw valuePath.buildCodeFrameError(
-            messages.ILLEGAL_PROP_ARRAY_VALUE,
+            messages.ILLEGAL_PROP_ARRAY_VALUE
           );
         }
       }
@@ -535,7 +535,7 @@ function getStylesFromObject(
       rawKey,
       rawValue,
       pseudo,
-      opts,
+      opts
     );
 
     // Lint this rule
@@ -547,7 +547,7 @@ function getStylesFromObject(
     } else {
       // Add the actual object from the presets.
       valuePath.insertBefore(
-        t.ObjectProperty(t.Identifier(rawKey), t.StringLiteral(className)),
+        t.ObjectProperty(t.Identifier(rawKey), t.StringLiteral(className))
       );
     }
 
@@ -581,13 +581,13 @@ function getStylesFromObject(
   if (opts.dev && opts.filename) {
     const devOnlyClassName = namespaceToDevClassName(
       namespaceName,
-      opts.filename,
+      opts.filename
     );
     const newObjProperty = t.ObjectProperty(
       // We use the fileName_Namespace as the key as well to remove
       // conflicts because we want to keep all the devOnly classnames.
       t.Identifier(devOnlyClassName),
-      t.StringLiteral(devOnlyClassName),
+      t.StringLiteral(devOnlyClassName)
     );
     if (object.get('properties').length === 0) {
       object.node.properties.push(newObjProperty);
@@ -606,7 +606,7 @@ function getStylesFromObject(
   }
 
   if (needToRemoveSpreads) {
-    replacedElements.forEach(spread => spread.replaceWithMultiple([]));
+    replacedElements.forEach((spread) => spread.replaceWithMultiple([]));
   }
 
   return styles;
@@ -732,7 +732,7 @@ function convertStylexCall(path, opts, markComposition) {
         0,
         opts,
         key,
-        markComposition,
+        markComposition
       );
 
       for (const {
@@ -751,14 +751,14 @@ function convertStylexCall(path, opts, markComposition) {
             `.${className}`,
             rules.ltr.key,
             rules.ltr.value,
-            pseudo,
+            pseudo
           ),
           rtl: rules.rtl
             ? generateCSS(
                 `.${className}`,
                 rules.rtl.key,
                 rules.rtl.value,
-                pseudo,
+                pseudo
               )
             : null,
         };

@@ -27,5 +27,8 @@
     "postcss-value-parser": "^4.1.0",
     "prettier": "^2.4.1"
   },
-  "jest": {}
+  "jest": {},
+  "prettier": {
+    "singleQuote": true
+  }
 }

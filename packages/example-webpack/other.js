@@ -11,4 +11,4 @@ const styles = dynamicImport.create({
 
 export default function other() {
   return dynamicImport(styles.bar);
-};
+}

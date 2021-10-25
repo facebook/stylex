@@ -18,7 +18,7 @@ const LIGHT_MODE_CLASS_NAME = '__fb-light-mode';
 const DARK_MODE_CLASS_NAME = '__fb-dark-mode';
 
 declare var globalThis: {
-  CSS?: { supports: string => boolean },
+  CSS?: { supports: (string) => boolean },
   document?: {
     body?: {},
   },
@@ -188,16 +188,16 @@ export class StyleXSheet {
     if (this.rootTheme != null) {
       this.insert(
         buildTheme(`:root, .${LIGHT_MODE_CLASS_NAME}`, this.rootTheme),
-        0,
+        0
       );
     }
     if (this.rootDarkTheme != null) {
       this.insert(
         buildTheme(
           `.${DARK_MODE_CLASS_NAME}:root, .${DARK_MODE_CLASS_NAME}`,
-          this.rootDarkTheme,
+          this.rootDarkTheme
         ),
-        0,
+        0
       );
     }
   }
@@ -263,7 +263,7 @@ export class StyleXSheet {
     // priority to target
     const priorities = Array.from(this.ruleForPriority.keys())
       .sort((a, b) => b - a)
-      .filter(num => (num > priority ? 1 : 0));
+      .filter((num) => (num > priority ? 1 : 0));
 
     // If there's no priorities then place us at the start
     if (priorities.length === 0) {
