@@ -1,4 +1,3 @@
-const path = require('path');
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
 const StylexPlugin = require('webpack-plugin-stylex');
 

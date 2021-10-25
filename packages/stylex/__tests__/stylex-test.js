@@ -8,7 +8,7 @@
 
 'use strict';
 
-import { StyleXSheet, styleSheet } from '../src/StyleXSheet';
+import { styleSheet } from '../src/StyleXSheet';
 
 import stylex from '../src/stylex';
 
@@ -23,7 +23,6 @@ test('stylex.inject', () => {
 });
 
 // these tests actually test stylex() itself, so should call it directly
-/* eslint-disable fb-www/stylex-use-create */
 describe('stylex', () => {
   test('with a top-level array of simple overridden classes', () => {
     expect(
@@ -183,4 +182,3 @@ describe('stylex', () => {
     );
   });
 });
-/* eslint-enable fb-www/stylex-use-create */

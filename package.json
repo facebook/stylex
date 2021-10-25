@@ -6,6 +6,10 @@
   "scripts": {
     "build": "cd packages/stylex && npm run build",
     "flow": "flow",
+    "prettier": "prettier --write \"**/*.js\"",
+    "prettier:report": "prettier --check \"**/*.js\"",
+    "lint": "npm run lint:report -- --fix",
+    "lint:report": "eslint packages",
     "test": "npm run test --workspaces --if-present"
   },
   "workspaces": [
@@ -22,6 +26,10 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/types": "^7.15.6",
     "eslint": "^7.32.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.20.3",
     "flow-bin": "^0.161.0",
     "jest": "^27.2.4",
     "postcss-value-parser": "^4.1.0",

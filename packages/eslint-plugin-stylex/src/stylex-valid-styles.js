@@ -113,7 +113,7 @@ const isRelativeLength = (node) => {
 const isPercentage = (node) => {
   return (
     node.type === 'Literal' &&
-    node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?%)$`))
+    node.value.match(new RegExp('^([-,+]?\\d+(\\.\\d+)?%)$'))
   );
 };
 

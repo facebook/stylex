@@ -4,13 +4,16 @@
  * https://github.com/johanholmerin/style9/blob/master/next.js
  */
 
+/*
 const {
   getClientStyleLoader,
 } = require('next/dist/build/webpack/config/blocks/css/loaders/client');
 const cssLoader = require('next/dist/compiled/css-loader');
+*/
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackPluginStylex = require('webpack-plugin-stylex');
 
+/*
 function stringifyLoaderRequest({ loader, options = {} }) {
   return `${loader}?${JSON.stringify(options)}`;
 }
@@ -42,6 +45,7 @@ function getInlineLoader(options, MiniCssExtractPlugin) {
 
   return stringifyCssRequest(outputLoaders);
 }
+*/
 
 module.exports =
   (pluginOptions = {}) =>

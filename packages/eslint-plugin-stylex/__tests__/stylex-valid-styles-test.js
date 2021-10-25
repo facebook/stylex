@@ -12,8 +12,6 @@ jest.disableAutomock();
 const { RuleTester: ESLintTester } = require('eslint');
 const rule = require('../src/stylex-valid-styles');
 
-// eslint-disable-next-line fb-www/no-flowfixme-in-flow-strict
-
 ESLintTester.setDefaultConfig({
   parser: require.resolve('hermes-eslint'),
   parserOptions: {

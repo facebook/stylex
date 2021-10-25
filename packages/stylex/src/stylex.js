@@ -23,7 +23,7 @@ type DedupeStyles = $ReadOnly<{
   ...
 }>;
 
-let warnedOnInject = false;
+// const warnedOnInject = false;
 
 function stylexPrepare<TObj: {}>(
   rawStyles: Array<StyleXArray<?TObj | boolean>>
@@ -34,7 +34,7 @@ function stylexPrepare<TObj: {}>(
   // When flow creates an empty object, it doesn't like for it to have
   // the type of an exact object. This is just a local override that
   // uses the correct types and overrides the problems of Flow.
-  // eslint-disable-next-line fb-www/no-flowfixme-in-flow-strict
+
   const baseObject: TObj = ({}: $FlowFixMe);
   // const nestedObjects: {[string]: {[string]: string}} = {};
   while (workingStack.length) {
@@ -69,12 +69,12 @@ function stylex(
   // stylexPrepare has more generic types than `stylex` this is why we need
   // the FlowFixMe. This isn't ideal, but the FlowFixMe is local only and
   // the exported types are correctly exported.
-  // eslint-disable-next-line fb-www/no-flowfixme-in-flow-strict
+
   const baseObject = stylexPrepare((rawStyles: $FlowFixMe));
 
   let baseClassString = '';
   for (const key in baseObject) {
-    if (Boolean(baseObject[key])) {
+    if (baseObject[key]) {
       if (typeof baseObject[key] === 'string') {
         baseClassString += baseClassString
           ? ' ' + baseObject[key]
@@ -96,7 +96,7 @@ stylex.compose = function stylexCompose(
   ...styles: Array<StyleXArray<?NestedCSSPropTypes | boolean>>
 ): NestedCSSPropTypes {
   // Similar reasons as above.
-  // eslint-disable-next-line fb-www/no-flowfixme-in-flow-strict
+
   return stylexPrepare((styles: $FlowFixMe));
 };
 

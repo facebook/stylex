@@ -94,9 +94,9 @@ const testData = {
       });
     `,
     output: `
-      stylex.inject(".axp1y60l{content:\\\"\\\"}", 1);
-      stylex.inject(".k48iq9xp{content:\\\"next\\\"}", 1);
-      stylex.inject(".jjrsgf30{content:\\\"prev\\\"}", 1);
+      stylex.inject(".axp1y60l{content:\\"\\"}", 1);
+      stylex.inject(".k48iq9xp{content:\\"next\\"}", 1);
+      stylex.inject(".jjrsgf30{content:\\"prev\\"}", 1);
     `,
   },
   'leaves attr functions alone for content': {
@@ -1595,9 +1595,9 @@ const testData = {
     `,
 
     output: `
-      stylex.inject(\".ez8dtbzv{padding-bottom:16px}\", 1);
+      stylex.inject(".ez8dtbzv{padding-bottom:16px}", 1);
       const a = function() {
-        return \"ez8dtbzv\";
+        return "ez8dtbzv";
       };
     `,
   },
@@ -1618,12 +1618,12 @@ const testData = {
     `,
 
     output: `
-      stylex.inject(\".ez8dtbzv{padding-bottom:16px}\", 1);
+      stylex.inject(".ez8dtbzv{padding-bottom:16px}", 1);
       export default function MyExportDefault() {
-        return \"ez8dtbzv\";
+        return "ez8dtbzv";
       }
       export function MyExport() {
-        return \"ez8dtbzv\";
+        return "ez8dtbzv";
       }
     `,
   },
@@ -1812,7 +1812,7 @@ const testData = {
   },
 
   'should not be able to require stylex to other name': {
-    input: `const foo = require('stylex')`,
+    input: "const foo = require('stylex')",
     throws: true,
   },
 

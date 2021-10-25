@@ -139,7 +139,7 @@ function validatePseudo(path, pseudo) {
   }
 
   // Pseudo selector with arguments, eg. :nth-child(2n)
-  const argPseudo = pseudo.match(/^(:[a-z\-]+)\((.*?)\)$/);
+  const argPseudo = pseudo.match(/^(:[a-z-]+)\((.*?)\)$/);
   if (argPseudo != null && pseudoSelectorArgWhitelist.has(argPseudo[1])) {
     // Ensure that we don't allow engineers to escape this and write arbitrary
     // descedent selectors like: :nth-child(2n) > foo:not()
@@ -204,7 +204,7 @@ function transformValue(key, value) {
   // Users may write `''` without thinking about it, so we fix that.
   if (key === 'content' && typeof value === 'string') {
     const val = value.trim();
-    if (val.match(/^attr\([a-zA-Z0-9\-]+\)$/)) {
+    if (val.match(/^attr\([a-zA-Z0-9-]+\)$/)) {
       return val;
     }
     if (
@@ -254,7 +254,7 @@ function generateCSS(className, key, value, pseudo) {
         webkitCSSVariableEdgeCaseProperties.has(k) &&
         v.match(/.+var\(.*\).*/)
       ) {
-        const localCSSVariableKey = `--T68779821`;
+        const localCSSVariableKey = '--T68779821';
         return [
           [localCSSVariableKey, v],
           [`-webkit-${k}`, `var(${localCSSVariableKey})`],
@@ -368,6 +368,7 @@ function getStylesFromObject(
       replacedElements.push(prop);
       Object.entries(
         baseStyles[prop.get('argument').get('property').node.name]
+        // eslint-disable-next-line no-loop-func
       ).forEach(([key, value]) => {
         const rawKey = key;
         const keyPath = prop;
@@ -446,6 +447,7 @@ function getStylesFromObject(
         const mappedProps = mapValuePathToProperty(rawKey, rawValue);
         if (mappedProps.length !== 1) {
           replacedElements.push(prop);
+          // eslint-disable-next-line no-loop-func
           mappedProps.forEach((rawKeyValuePair) =>
             properties.push({
               ...rawKeyValuePair,

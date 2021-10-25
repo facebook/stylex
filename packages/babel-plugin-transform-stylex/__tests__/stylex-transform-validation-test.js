@@ -333,21 +333,21 @@ const testData = {
     throws: messages.ILLEGAL_NAMESPACE_VALUE,
   },
   'disallows non-objects as an arg to stylex.keyframes': {
-    input: `const name = stylex.keyframes(null);`,
+    input: 'const name = stylex.keyframes(null);',
     throws: messages.NON_OBJECT_FOR_STYLEX_CALL,
   },
   'disallow unclosed style value functions': {
-    input: `const styles = stylex.create({default: {color: 'var(--bar'}})`,
+    input: "const styles = stylex.create({default: {color: 'var(--bar'}})",
     options: { definedStylexCSSVariables: { bar: 1 } },
     throws: messages.LINT_UNCLOSED_FUNCTION,
   },
   'allow only defined CSS variables': {
-    input: `const styles = stylex.create({foo: { color: 'var(--bar)' }});`,
+    input: "const styles = stylex.create({foo: { color: 'var(--bar)' }});",
     options: { definedStylexCSSVariables: { bar: 1 } },
     throws: false,
   },
   'allow undefined CSS variables': {
-    input: `const styles = stylex.create({foo: { color: 'var(--foobar)' }});`,
+    input: "const styles = stylex.create({foo: { color: 'var(--foobar)' }});",
     options: { definedStylexCSSVariables: { bar: 1 } },
     throws: false,
   },
@@ -396,17 +396,17 @@ const testData = {
     throws: false,
   },
   'allow undefined CSS variables, if the list of defined vars is undefined': {
-    input: `const styles = stylex.create({foo: { color: 'var(--bar)' }});`,
+    input: "const styles = stylex.create({foo: { color: 'var(--bar)' }});",
     options: { definedStylexCSSVariables: undefined },
     throws: false,
   },
   'allow undefined CSS variables, if the list of defined vars is null': {
-    input: `const styles = stylex.create({foo: { color: 'var(--bar)' }});`,
+    input: "const styles = stylex.create({foo: { color: 'var(--bar)' }});",
     options: { definedStylexCSSVariables: null },
     throws: false,
   },
   'ignore undefined CSS variables without leading --': {
-    input: `const styles = stylex.create({foo: { color: 'var(bar)' }});`,
+    input: "const styles = stylex.create({foo: { color: 'var(bar)' }});",
     options: { definedStylexCSSVariables: { baz: 1 } },
     throws: false,
   },

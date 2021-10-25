@@ -54,7 +54,7 @@ function namespaceToDevClassName(namespace, filename) {
 
   // Build up the class name, and sanitize it of disallowed characters
   const className = `${basename}__${namespace}`;
-  return className.replace(/[^\.a-zA-Z0-9_-]/g, '');
+  return className.replace(/[^.a-zA-Z0-9_-]/g, '');
 }
 
 module.exports = {

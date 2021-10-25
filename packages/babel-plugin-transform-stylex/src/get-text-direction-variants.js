@@ -30,7 +30,7 @@ function getTextDirectionVariants(key, value) {
   ) {
     const flippedValue = flipBoxBorderNotation(value);
 
-    if (flippedValue != value) {
+    if (flippedValue !== value) {
       return {
         ltr: { key, value },
         rtl: { key, value: flippedValue },
@@ -91,7 +91,7 @@ function getTextDirectionVariants(key, value) {
     const ltr = transformASTLeftRight(value, true);
     const rtl = transformASTLeftRight(value, false);
 
-    if (ltr != rtl) {
+    if (ltr !== rtl) {
       return {
         ltr: { key, value: ltr },
         rtl: { key, value: rtl },
@@ -142,7 +142,7 @@ function getTextDirectionVariants(key, value) {
       rtl = 'se-resize';
     }
 
-    if (rtl != value) {
+    if (rtl !== value) {
       return {
         ltr: { key, value },
         rtl: { key, value: rtl },

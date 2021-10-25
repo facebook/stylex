@@ -20,21 +20,27 @@ module.exports = function normalizeWhitespace(ast, _) {
 
   ast.walk((node, idx) => {
     switch (node.type) {
-      case 'space':
+      case 'space': {
         node.value = ' ';
         break;
+      }
       case 'div':
-      case 'function':
+      case 'function': {
         node.before = '';
         node.after = '';
         break;
-      case 'word':
+      }
+      case 'word': {
         if (node.value === '!important') {
           if (ast.nodes[idx - 1] && ast.nodes[idx - 1].type === 'space') {
             ast.nodes.splice(idx - 1, 1);
           }
         }
         break;
+      }
+      default: {
+        break;
+      }
     }
   });
   return ast;

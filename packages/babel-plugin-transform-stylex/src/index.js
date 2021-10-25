@@ -461,7 +461,7 @@ function styleXTransform(babel) {
     visitor: {
       Program(path, state) {
         // Re-assigned STYLEX with dynamic value for dynamic import feature
-        let dynamicImportArray = path.container.program.body[0].specifiers;
+        const dynamicImportArray = path.container.program.body[0].specifiers;
         let stylexValueChanged = false;
         if (dynamicImportArray && !stylexValueChanged) {
           if (dynamicImportArray.length) {
