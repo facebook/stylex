@@ -1,0 +1,12 @@
+{
+  "name": "webpack-plugin-stylex",
+  "version": "1.0.0",
+  "description": "Webpack plugin for stylex",
+  "main": "index.js",
+  "repository": "https://www.github.com/facebookexternal/stylex",
+  "license": "MIT",
+  "dependencies": {
+    "babel-plugin-transform-stylex": "1.0.0",
+    "webpack": "^5.x.x"
+  }
+}

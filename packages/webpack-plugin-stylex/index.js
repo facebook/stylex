@@ -1,10 +1,13 @@
-const { RawSource } = require('webpack-sources');
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
+const webpack = require('webpack');
 
 const PLUGIN_NAME = 'stylex';
 
+const { RawSource } = webpack.sources;
+
 class StylexPlugin {
   static stylexMetadataSubscription = 'stylexMetadata';
+
   constructor({ filename = 'stylex.css' } = {}) {
     this.filename = filename;
   }

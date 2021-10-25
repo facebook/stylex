@@ -1,20 +1,25 @@
-// license by johanholmerin
-
+/**
+ * Copyright (c) Johan Holmerin.
+ * The MIT License (MIT)
+ * https://github.com/johanholmerin/style9/blob/master/next.js
+ */
 
 const {
   getClientStyleLoader
 } = require('next/dist/build/webpack/config/blocks/css/loaders/client');
-const { stringifyCssRequest } = require('./lib/plugin-utils.js');
-const StylexPlugin = require('./webpack.js');
+const cssLoader = require('next/dist/compiled/css-loader');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WebpackPluginStylex = require('webpack-plugin-stylex');
 
-const cssLoader = (() => {
-  try {
-    // v10+
-    return require.resolve('next/dist/compiled/css-loader');
-  } catch (_) {
-    return 'css-loader';
-  }
-})();
+function stringifyLoaderRequest({ loader, options = {} }) {
+  return `${loader}?${JSON.stringify(options)}`;
+}
+
+function stringifyCssRequest(outputLoaders) {
+  const cssLoaders = outputLoaders.map(stringifyLoaderRequest).join('!');
+
+  return `!${cssLoaders}!`;
+}
 
 function getInlineLoader(options, MiniCssExtractPlugin) {
   const outputLoaders = [{ loader: cssLoader }];
@@ -58,20 +63,13 @@ module.exports = (pluginOptions = {}) => (nextConfig = {}) => {
         cacheGroups: {}
       };
 
-      // Use own MiniCssExtractPlugin to ensure HMR works
-      // v9 has issues when using own plugin in production
-      // v10.2.1 has issues when using built-in plugin in development since it
-      // doesn't bundle HMR files
-      const MiniCssExtractPlugin = options.dev
-        ? require('mini-css-extract-plugin')
-        : require('next/dist/build/webpack/plugins/mini-css-extract-plugin')
-            .default;
-
+      /*
+      // TODO: WebpackPluginStylex.loader is undefined
       config.module.rules.push({
         test: /\.(tsx|ts|js|mjs|jsx)$/,
         use: [
           {
-            loader: StylexPlugin.loader,
+            loader: WebpackPluginStylex.loader,
             options: {
               inlineLoader: getInlineLoader(options, MiniCssExtractPlugin),
               outputCSS,
@@ -80,6 +78,7 @@ module.exports = (pluginOptions = {}) => (nextConfig = {}) => {
           }
         ]
       });
+      */
 
       if (outputCSS) {
         config.optimization.splitChunks.cacheGroups.styles = {
@@ -102,7 +101,7 @@ module.exports = (pluginOptions = {}) => (nextConfig = {}) => {
             chunkFilename: filename,
             ignoreOrder: true
           }),
-          new StylexPlugin()
+          new WebpackPluginStylex()
         );
       }
 

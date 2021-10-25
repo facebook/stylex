@@ -1,6 +1,6 @@
 const path = require('path');
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
-const StylexPlugin = require('stylex/webpack');
+const StylexPlugin = require('webpack-plugin-stylex');
 
 module.exports = env => ({
   entry: './index.js',
