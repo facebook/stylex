@@ -8,8 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "babel": "babel src/ --out-dir lib/ --copy-files",
-    "build": "npm run babel",
+    "build": "babel src/ --out-dir lib/ --copy-files",
     "test": "jest"
   },
   "workspaces": [

@@ -6,7 +6,6 @@
   "repository": "https://github.com/facebookexternal/stylex/eslint",
   "author": "Naman Goel <nmn@fb.com>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "test": "jest"
   },
