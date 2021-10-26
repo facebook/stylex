@@ -1,8 +1,8 @@
 'use strict';
 
-import dynamicImport from 'stylex';
+import stylex from 'stylex';
 
-const styles = dynamicImport.create({
+const styles = stylex.create({
   bar: {
     display: 'block',
     width: '100%',
@@ -10,5 +10,5 @@ const styles = dynamicImport.create({
 });
 
 export default function other() {
-  return dynamicImport(styles.bar);
+  return stylex(styles.bar);
 }

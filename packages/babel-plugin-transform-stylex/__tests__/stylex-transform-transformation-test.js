@@ -1816,6 +1816,11 @@ const testData = {
     throws: true,
   },
 
+  'should not be able to import stylex to other name': {
+    input: "import foo from 'stylex'",
+    throws: true,
+  },
+
   'correctly does nothing to valid requires': {
     input: `
       const stylex = require('stylex');

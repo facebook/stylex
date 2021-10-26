@@ -6,7 +6,7 @@
 
 'use strict';
 
-let STYLEX = 'stylex';
+const STYLEX = 'stylex';
 
 const messages = require('./messages.js');
 const {
@@ -460,15 +460,6 @@ function styleXTransform(babel) {
     },
     visitor: {
       Program(path, state) {
-        // Re-assigned STYLEX with dynamic value for dynamic import feature
-        const dynamicImportArray = path.container.program.body[0].specifiers;
-        let stylexValueChanged = false;
-        if (dynamicImportArray && !stylexValueChanged) {
-          if (dynamicImportArray.length) {
-            STYLEX = dynamicImportArray[0].local.name;
-            stylexValueChanged = true;
-          }
-        }
         // Set the array where we'll push on all raw CSS and their priority
         state.file.metadata.stylex = [];
         state.set('bindingsToNamespace', new Map());

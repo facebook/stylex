@@ -34,16 +34,16 @@ To run flow:
 npm run flow
 ```
 
-To run the unit tests:
+To run all the unit tests:
 
 ```
-npm run test
+npm run tests
 ```
 
 …in watch mode:
 
 ```
-npm run test -- --watch
+npm run tests -- --watch
 ```
 
 ## Compile and build

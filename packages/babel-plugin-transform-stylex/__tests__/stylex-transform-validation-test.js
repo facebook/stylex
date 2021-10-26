@@ -23,7 +23,7 @@ function transform(source, opts = {}) {
 }
 
 const testData = {
-  'ignore non-styles imports': {
+  'ignore non-stylex imports': {
     input: `
       import classnames from 'classnames';
     `,
@@ -32,6 +32,18 @@ const testData = {
   'disallow binding require(stylex) to anything but stylex': {
     input: `
       const foo = require('stylex');
+    `,
+    throws: messages.ILLEGAL_REQUIRE,
+  },
+  'disallow binding import "stylex" to anything but stylex': {
+    input: `
+      import foo from 'stylex';
+    `,
+    throws: messages.ILLEGAL_IMPORT,
+  },
+  'disallow destructuring require(stylex)': {
+    input: `
+      const {stylex} = require('stylex');
     `,
     throws: messages.ILLEGAL_REQUIRE,
   },
