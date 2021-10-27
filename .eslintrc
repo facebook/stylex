@@ -3,17 +3,28 @@
     "react": {
       "pragma": "React",
       "version": "17.0",
-      "flowVersion": "0.161.0" // Flow version
+      "flowVersion": "0.162.1" // Flow version
     }
   },
   // babel parser to support ES6/7 features
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
+    "babelOptions": {
+      "presets": [
+        "@babel/preset-env",
+        "@babel/preset-flow",
+        "@babel/preset-react"
+      ],
+      "plugins": [
+        "@babel/plugin-proposal-class-properties"
+      ]
+    },
     "ecmaVersion": 7,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "jsx": true
     },
+    "requireConfigFile": false,
     "sourceType": "module"
   },
   "extends": [
@@ -23,7 +34,6 @@
   ],
   "plugins": [
     "flowtype",
-    "promise",
     "react"
   ],
   "env": {
@@ -130,9 +140,6 @@
     // flow
     "flowtype/space-after-type-colon": 0,
     "flowtype/generic-spacing": 0,
-
-    // promise
-    "promise/param-names": 2,
 
     // react
     "react/display-name": 0,
