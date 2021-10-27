@@ -2,7 +2,7 @@
   "name": "nextjs-plugin-stylex",
   "version": "1.0.0",
   "description": "Next.js plugin for stylex",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
   "license": "MIT",
   "dependencies": {

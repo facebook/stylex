@@ -1,10 +1,8 @@
 /**
- * Copyright 2004-present Facebook. All Rights Reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * Remove units in zero values, except when required: in angles and timings,
- * in which case make them consistent 0deg and 0s.
- *
- * @format
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
@@ -13,6 +11,11 @@ const parser = require('postcss-value-parser');
 
 const angles = ['deg', 'grad', 'turn', 'rad'];
 const timings = ['ms', 's'];
+
+/**
+ * Remove units in zero values, except when required: in angles and timings,
+ * in which case make them consistent 0deg and 0s.
+ */
 
 module.exports = function normalizeZeroDimensions(ast, _) {
   ast.walk((node) => {

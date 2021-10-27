@@ -1,12 +1,8 @@
 /**
- * Copyright 2004-present Facebook. All Rights Reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * If you're editing this file, you may need to:
- *
- * 1. Run ./scripts/static_resources/no_more_sev_ones_please.pl
- * 2. Increment `VERSION` in HasteVirtualStylexSheet.php
- *
- * @format
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 /* global BigInt */
 

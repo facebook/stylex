@@ -2,7 +2,9 @@
 0.162.1
 
 [ignore]
-.*/node_modules/
+.*/build/.*
+.*/lib/.*
+.*/node_modules/.*
 
 [include]
 

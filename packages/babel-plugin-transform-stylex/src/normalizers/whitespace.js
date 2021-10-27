@@ -1,13 +1,16 @@
 /**
- * Copyright 2004-present Facebook. All Rights Reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * Use single spaces and remove spaces when not needed: around functions,
- * commas. But preserve spece around + and - as they are required in calc()
- *
- * @format
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 'use strict';
+
+/**
+ * Use single spaces and remove spaces when not needed: around functions,
+ * commas. But preserve spece around + and - as they are required in calc()
+ */
 
 module.exports = function normalizeWhitespace(ast, _) {
   // trim

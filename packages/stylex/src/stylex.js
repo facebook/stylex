@@ -1,10 +1,10 @@
 /**
- * Copyright 2004-present Facebook. All Rights Reserved.
+ * Copyright (c) Facebook, Inc. and its affiliates.
  *
- * @emails oncall+comet_ui
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
  * @flow strict
- * @format
- * @has-side-effects_DO_NOT_USE
  */
 
 'use strict';
