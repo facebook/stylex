@@ -1,6 +1,6 @@
-node_modules
-build
-.DS_Store
 *.log*
+build
+dist
 coverage
 lib
+node_modules
