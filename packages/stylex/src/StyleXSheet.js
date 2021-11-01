@@ -48,7 +48,7 @@ function buildTheme(selector: string, theme: Theme): string {
 function makeStyleTag(): HTMLStyleElement {
   const tag = document.createElement('style');
   tag.setAttribute('type', 'text/css');
-  tag.setAttribute('data-styled', 'true');
+  tag.setAttribute('data-stylex', 'true');
 
   const head = document.head || document.getElementsByTagName('head')[0];
   invariant(head, 'expected head');
