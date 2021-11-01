@@ -1,0 +1,4 @@
+{
+  "plugins": ["transform-stylex"],
+  "presets": ["@babel/env"]
+}
