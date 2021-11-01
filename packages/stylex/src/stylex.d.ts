@@ -1308,135 +1308,25 @@ type Stylex$Create = <S extends { [K in string]: NestedCSSPropTypes }>(
     >
   ) => string);
 
-type AbsoluteFill = $ReadOnly<{
-  bottom: 0;
-  boxSizing: 'border-box';
-  end: 0;
-  position: 'absolute';
-  start: 0;
-  top: 0;
-}>;
-
-type AbsoluteCenter = $ReadOnly<{
-  boxSizing: 'border-box';
-  left: '50%';
-  position: 'absolute';
-  top: '50%';
-  transform: 'translate(-50%, -50%)';
-}>;
-
-type BlockBase = $ReadOnly<{
-  borderStyle: 'solid';
-  borderWidth: 0;
-  boxSizing: 'border-box';
-  display: 'block';
-  flexGrow: 1;
-  flexShrink: 1;
-  margin: 0;
-  padding: 0;
-  position: 'relative';
-  zIndex: 0;
-}>;
-
-type InlineBase = $ReadOnly<
-  BlockBase & {
-    display: 'inline';
-  }
->;
-
-type ListBase = $ReadOnly<{
-  boxSizing: 'border-box';
-  listStyle: 'none';
-  marginBottom: 0;
-  marginTop: 0;
-  paddingStart: 0;
-}>;
-
-type VisuallyHidden = $ReadOnly<{
-  clip: 'rect(0, 0, 0, 0)';
-  clipPath: 'inset(50%)';
-  height: 1;
-  overflow: 'hidden';
-  position: 'absolute';
-  width: 1;
-}>;
-
-type LinkBase = $ReadOnly<{
-  backgroundColor: 'transparent';
-  backgroundImage: 'none';
-  boxSizing: 'border-box';
-  color: 'inherit';
-  cursor: 'pointer';
-  position: 'relative';
-  textDecoration: 'none';
-  zIndex: 0;
-}>;
-
-type ButtonBase = $ReadOnly<{
-  appearance: 'none';
-  backgroundColor: 'transparent';
-  borderStyle: 'solid';
-  borderWidth: 0;
-  boxSizing: 'border-box';
-  margin: 0;
-  padding: 0;
-  position: 'relative';
-  textAlign: 'inherit';
-  zIndex: 0;
-}>;
-
-type FlexBase = $ReadOnly<{
-  alignItems: 'stretch';
-  borderStyle: 'solid';
-  borderWidth: 0;
-  boxSizing: 'border-box';
-  display: 'flex';
-  flexDirection: 'column';
-  flexGrow: 1;
-  flexShrink: 1;
-  justifyContent: 'space-between';
-  margin: 0;
-  minHeight: 0;
-  minWidth: 0;
-  padding: 0;
-  position: 'relative';
-  zIndex: 0;
-}>;
-
-type FlexInlineBase = $ReadOnly<
-  FlexBase & {
-    display: 'inline-flex';
-  }
->;
-
-declare var stylex: {
+type stylex = {
   (
     ...styles: ReadonlyArray<
       StyleXArray<(DedupeStyles | null | undefined) | boolean>
     >
   ): string;
-  visuallyHidden: VisuallyHidden;
-  absoluteCenter: AbsoluteCenter;
-  absoluteFill: AbsoluteFill;
-  blockBase: BlockBase;
-  buttonBase: ButtonBase;
   compose: (
     ...styles: ReadonlyArray<
       StyleXArray<(NestedCSSPropTypes | null | undefined) | boolean>
     >
   ) => NestedCSSPropTypes;
   create: Stylex$Create;
-  flexBase: FlexBase;
-  flexInlineBase: FlexInlineBase;
+  dedupe: (...styles: ReadonlyArray<DedupeStyles>) => string;
   inject: (
     ltrRule: string,
     priority: number,
     rtlRule: string | null | undefined
   ) => void;
-  inlineBase: InlineBase;
   keyframes: (keyframes: Keyframes) => string;
-  linkBase: LinkBase;
-  listBase: ListBase;
 };
 
 export default stylex;

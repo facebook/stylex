@@ -8,7 +8,6 @@
 
 'use strict';
 
-const baseStyles = require('./baseStyles');
 const {
   animationNameIgnoreSuffix,
   numberPropertySuffixes,
@@ -307,18 +306,6 @@ function getClassNameFromRule(rawKey, rawValue, pseudo, opts) {
   };
 }
 
-// Checks if the path is a spread property of a key from `stylex`
-// e.g. ...stylex.absoluteFill,
-function isStylexPreset(path) /*: boolean */ {
-  return (
-    path.isSpreadElement() &&
-    path.get('argument').isMemberExpression() &&
-    path.get('argument').get('object').isIdentifier() &&
-    path.get('argument').get('object').node.name === 'stylex' &&
-    baseStyles[path.get('argument').get('property').node.name] != null
-  );
-}
-
 /**
  * Take an object path and build up all the rules for it
  */
@@ -339,26 +326,7 @@ function getStylesFromObject(
 
   // First - expand presets and
   for (const prop of object.get('properties')) {
-    // Handling spread elements from stylex itself.
-    if (isStylexPreset(prop)) {
-      replacedElements.push(prop);
-      Object.entries(
-        baseStyles[prop.get('argument').get('property').node.name]
-        // eslint-disable-next-line no-loop-func
-      ).forEach(([key, value]) => {
-        const rawKey = key;
-        const keyPath = prop;
-        const valuePath = keyPath;
-        const rawValue = value;
-        properties.push({
-          rawKey,
-          keyPath,
-          valuePath,
-          rawValue,
-          isSpread: true,
-        });
-      });
-    } else if (prop.isSpreadElement()) {
+    if (prop.isSpreadElement()) {
       if (
         prop.get('argument').node.type === 'TypeCastExpression' &&
         prop.get('argument').node.expression.type === 'Identifier' &&

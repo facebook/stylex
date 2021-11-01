@@ -29,7 +29,6 @@ eslintTester.run('stylex-valid-styles', rule, {
      const start = 'start';
      const styles = stylex.create({
        default: {
-         ...stylex.absoluteFill,
          textAlign: start,
          MozOsxFontSmoothing: 'grayscale',
          WebkitFontSmoothing: 'antialiased',
@@ -75,7 +74,6 @@ eslintTester.run('stylex-valid-styles', rule, {
     // test for presets
     `stylex.create({
        default: {
-         ...stylex.absoluteFill,
          textAlign: 'start',
        }
      });`,
