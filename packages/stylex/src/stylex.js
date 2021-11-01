@@ -16,7 +16,7 @@ import type {
   StyleXArray,
 } from './StyleXTypes';
 
-import { styleSheet } from './StyleXSheet';
+import inject from './inject';
 
 type DedupeStyles = $ReadOnly<{
   [key: string]: string | $ReadOnly<{ [key: string]: string, ... }>,
@@ -119,13 +119,7 @@ stylex.keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
 };
 
-stylex.inject = (
-  ltrRule: string,
-  priority: number,
-  rtlRule: ?string = null
-): void => {
-  styleSheet.insert(ltrRule, priority, rtlRule);
-};
+stylex.inject = inject;
 
 stylex.dedupe = (...styles: $ReadOnlyArray<DedupeStyles>): string => {
   return stylex(...styles);
