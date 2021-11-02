@@ -1,6 +1,6 @@
 *.log*
 build
-dist
 coverage
+dist
 lib
 node_modules
