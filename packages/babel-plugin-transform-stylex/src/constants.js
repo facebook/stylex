@@ -82,7 +82,7 @@ const pseudoSelectorArgWhitelist = new Set([':nth-child', ':nth-of-type']);
 const webkitCSSVariableEdgeCaseProperties = new Set(['box-shadow']);
 
 // Order of priority to apply pseudo selectors
-const basePseudoPriorities = [
+const pseudoPriorities = [
   ':first-child',
   ':last-child',
   ':only-child',
@@ -100,37 +100,6 @@ const basePseudoPriorities = [
   // For styling input[type=number]
   '::-webkit-inner-spin-button',
   '::-webkit-outer-spin-button',
-];
-
-const pseudoPriorities = [
-  ...basePseudoPriorities,
-
-  ':hover &',
-  ...basePseudoPriorities.map((pseudo) => ':hover &' + pseudo),
-  ':hover > &',
-  ...basePseudoPriorities.map((pseudo) => ':hover > &' + pseudo),
-  ':hover ~ &',
-  ...basePseudoPriorities.map((pseudo) => ':hover ~ &' + pseudo),
-  ':hover + &',
-  ...basePseudoPriorities.map((pseudo) => ':hover + &' + pseudo),
-
-  ':focus &',
-  ...basePseudoPriorities.map((pseudo) => ':focus &' + pseudo),
-  ':focus > &',
-  ...basePseudoPriorities.map((pseudo) => ':focus > &' + pseudo),
-  ':focus ~ &',
-  ...basePseudoPriorities.map((pseudo) => ':focus ~ &' + pseudo),
-  ':focus + &',
-  ...basePseudoPriorities.map((pseudo) => ':focus + &' + pseudo),
-
-  ':active &',
-  ...basePseudoPriorities.map((pseudo) => ':active &' + pseudo),
-  ':active > &',
-  ...basePseudoPriorities.map((pseudo) => ':active > &' + pseudo),
-  ':active ~ &',
-  ...basePseudoPriorities.map((pseudo) => ':active ~ &' + pseudo),
-  ':active + &',
-  ...basePseudoPriorities.map((pseudo) => ':active + &' + pseudo),
 ];
 
 // List of properties that when present, override others declared before them
