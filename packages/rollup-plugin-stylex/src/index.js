@@ -14,6 +14,15 @@ module.exports = function stylexPlugin({ fileName = 'stylex.css' } = {}) {
     name: 'rollup-plugin-stylex',
     babelHook() {
       return {
+        config(currentConfig) {
+          return {
+            ...currentConfig.options,
+            plugins: [
+              ...(currentConfig.options.plugins || []),
+              stylexBabelPlugin,
+            ],
+          };
+        },
         result(result) {
           const { metadata } = result;
           if (metadata.stylex != null && metadata.stylex.length > 0) {
