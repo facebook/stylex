@@ -1,12 +1,11 @@
 'use strict';
 
 import stylex from 'stylex';
-
-import './other';
+import otherStyles from './otherStyles';
 
 const styles = stylex.create({
   foo: {
-    display: 'block',
+    display: 'flex',
     marginStart: 10,
     marginBlockStart: 99,
     height: 500,
@@ -16,6 +15,6 @@ const styles = stylex.create({
   },
 });
 
-console.log(stylex(styles.foo));
-
-export default function App() {}
+export default function App() {
+  return stylex(otherStyles.bar, styles.foo);
+}

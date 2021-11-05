@@ -6,16 +6,20 @@
   "repository": "https://www.github.com/facebookexternal/stylex",
   "license": "MIT",
   "scripts": {
-    "build": "webpack --mode=development -o build"
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns" : ["/node_modules/", "__builds__", "/__fixtures__/"],
+    "testEnvironment": "node"
   },
   "dependencies": {
     "babel-plugin-transform-stylex": "1.0.0",
     "webpack": "^5.x.x"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.5",
     "babel-loader": "^8.2.2",
-    "css-loader": "^6.4.0",
-    "stylex": "1.0.0",
-    "webpack-cli": "^4.5.0"
+    "memfs": "3.3.0",
+    "stylex": "1.0.0"
   }
 }
