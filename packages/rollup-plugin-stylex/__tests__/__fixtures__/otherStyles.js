@@ -9,6 +9,4 @@ const styles = stylex.create({
   },
 });
 
-export default function other() {
-  return stylex(styles.bar);
-}
+export default styles;

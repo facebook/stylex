@@ -5,9 +5,13 @@
   "main": "src/index.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
   "license": "MIT",
-  "keywords": [
-    "rollup-plugin"
-  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns" : ["/node_modules/", "__builds__", "/__fixtures__/"],
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "babel-plugin-transform-stylex": "1.0.0"
   },
