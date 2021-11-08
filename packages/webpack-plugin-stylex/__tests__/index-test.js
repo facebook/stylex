@@ -24,7 +24,10 @@ function createCompiler(fixture, pluginOptions = {}, config = {}) {
       rules: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
+          exclude: [
+            /node_modules/,
+            path.resolve(__dirname, './__fixtures__/npmStyles.js'),
+          ],
           use: {
             loader: require.resolve('babel-loader'),
             options: {
@@ -115,7 +118,7 @@ describe('webpack-plugin-stylex', () => {
         exports.ids = [179];
         exports.modules = {
 
-        /***/ 107:
+        /***/ 899:
         /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
@@ -125,6 +128,7 @@ describe('webpack-plugin-stylex', () => {
         const external_stylex_namespaceObject = stylex;
         var external_stylex_default = /*#__PURE__*/__webpack_require__.n(external_stylex_namespaceObject);
         ;// CONCATENATED MODULE: ./otherStyles.js
+        // otherStyles.js
 
 
 
@@ -138,7 +142,27 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
+        ;// CONCATENATED MODULE: ./npmStyles.js
+        // npmStyles.js
+
+
+
+
+
+        external_stylex_default().inject('.rse6dlih{display:inline}', 1);
+        external_stylex_default().inject('.ezi3dscr{width:50%}', 1);
+        const npmStyles_styles = {
+          baz: {
+            display: 'rse6dlih',
+            width: 'ezi3dscr',
+          },
+        };
+
+        /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
+
         ;// CONCATENATED MODULE: ./index.js
+        // index.js
+
 
 
 
@@ -162,7 +186,7 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         function App() {
-          return stylex(otherStyles.bar, index_styles.foo);
+          return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
         }
 
         /***/ })
@@ -174,7 +198,7 @@ describe('webpack-plugin-stylex', () => {
         var __webpack_require__ = require(\\"./runtime.js\\");
         __webpack_require__.C(exports);
         var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-        var __webpack_exports__ = (__webpack_exec__(107));
+        var __webpack_exports__ = (__webpack_exec__(899));
 
         })();"
       `);

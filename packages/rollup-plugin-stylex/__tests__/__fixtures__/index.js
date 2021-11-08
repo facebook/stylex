@@ -1,7 +1,10 @@
+// index.js
+
 'use strict';
 
 import stylex from 'stylex';
 import otherStyles from './otherStyles';
+import npmStyles from './npmStyles';
 
 const styles = stylex.create({
   foo: {
@@ -16,5 +19,5 @@ const styles = stylex.create({
 });
 
 export default function App() {
-  return stylex(otherStyles.bar, styles.foo);
+  return stylex(otherStyles.bar, styles.foo, npmStyles.baz);
 }
