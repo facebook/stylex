@@ -12,8 +12,5 @@
   "dependencies": {
     "postcss-value-parser": "^4.1.0",
     "@babel/types": "^7.15.6"
-  },
-  "devDependencies": {
-    "fb-babel-plugin-utils": "^0.12.0"
   }
 }

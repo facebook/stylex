@@ -25,10 +25,6 @@ function transform(source, opts = {}) {
 }
 
 describe('babel-plugin-transform-stylex', () => {
-  /**
-   * CSS polyfills
-   */
-
   describe('[transform] CSS keyframes', () => {
     test('converts keyframes to CSS', () => {
       expect(

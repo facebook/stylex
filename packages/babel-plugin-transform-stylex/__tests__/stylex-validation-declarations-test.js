@@ -110,7 +110,11 @@ describe.skip('babel-plugin-transform-stylex', () => {
     ].map((value) => ['transitionProperty', value]);
 
     [
+      // No !important
+      ['display', 'block !important'],
+      // No multi-value short-forms
       ...invalidShortformValueDeclarations,
+      // No CPU intensive property transitions
       ...invalidTransitionPropertyValueDeclarations,
     ].forEach(([prop, value]) => {
       test(`invalid value: "${value}" for "${prop}"`, () => {

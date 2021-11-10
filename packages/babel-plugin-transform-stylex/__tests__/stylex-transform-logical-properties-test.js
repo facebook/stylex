@@ -852,5 +852,28 @@ describe('babel-plugin-transform-stylex', () => {
         const classnames = stylex(styles.x);"
       `);
     });
+
+    /**
+     * Legacy transforms
+     */
+
+    test('[legacy] short-form property value flipping', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({
+            four: {
+              margin: '1 2 3 4',
+            }
+          });
+          stylex(styles.four);
+        `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".mr4w5f57{margin-top:1}\\", 1);
+        stylex.inject(\\".fowiaccw{margin-right:2}\\", 1, \\".fowiaccw{margin-left:2}\\");
+        stylex.inject(\\".iqsy6m2w{margin-bottom:3}\\", 1);
+        stylex.inject(\\".pz2itsrw{margin-left:4}\\", 1, \\".pz2itsrw{margin-right:4}\\");
+        \\"pz2itsrw iqsy6m2w fowiaccw mr4w5f57\\";"
+      `);
+    });
   });
 });

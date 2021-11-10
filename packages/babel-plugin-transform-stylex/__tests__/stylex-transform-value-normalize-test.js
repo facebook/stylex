@@ -51,47 +51,47 @@ describe('babel-plugin-transform-stylex', () => {
       );
     });
 
-    test('no space before "!important"', () => {
-      expect(
-        transform(`
-          const styles = stylex.create({ x: { color: 'red !important' } });
-        `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".fg1v9vue{color:red!important}\\", 1);"'
-      );
-    });
-
     test('no dimensions for 0 values', () => {
       expect(
         transform(`
-          const styles = stylex.create({ x: { margin: '0px 1px 0rem -1pt' } });
+          const styles = stylex.create({ x: {
+            margin: '0px',
+            marginLeft: '1px'
+          } });
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".m8h3af8h{margin-top:0}\\", 1);
-        stylex.inject(\\".ewco64xe{margin-right:1px}\\", 1, \\".ewco64xe{margin-left:1px}\\");
+        stylex.inject(\\".l7ghb35v{margin-right:0}\\", 1, \\".l7ghb35v{margin-left:0}\\");
         stylex.inject(\\".kjdc1dyq{margin-bottom:0}\\", 1);
-        stylex.inject(\\".jqrqz23d{margin-left:-1pt}\\", 1, \\".jqrqz23d{margin-right:-1pt}\\");"
+        stylex.inject(\\".kmwttqpk{margin-left:0}\\", 1, \\".kmwttqpk{margin-right:0}\\");
+        stylex.inject(\\".l3od1t61{margin-left:1px}\\", 1);"
       `);
     });
 
     test('0 timings are all "0s"', () => {
       expect(
         transform(`
-          const styles = stylex.create({ x: { transitionDuration: '500ms 0ms 0s' } });
+          const styles = stylex.create({ x: { transitionDuration: '500ms' } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".kf9ztemh{transition-duration:.5s 0s 0s}\\", 1);"'
+        '"stylex.inject(\\".gkvswz3s{transition-duration:.5s}\\", 1);"'
       );
     });
 
     test('0 angles are all "0deg"', () => {
       expect(
         transform(`
-          const styles = stylex.create({ x: { transform: '0deg 0rad 0turn 0grad' } });
+          const styles = stylex.create({
+            x: { transform: '0rad' },
+            y: { transform: '0turn' },
+            z: { transform: '0grad' }
+          });
         `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".bf5qcrrg{transform:0deg 0deg 0deg 0deg}\\", 0.1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".mdt23r3l{transform:0deg}\\", 0.1);
+        stylex.inject(\\".mdt23r3l{transform:0deg}\\", 0.1);
+        stylex.inject(\\".mdt23r3l{transform:0deg}\\", 0.1);"
+      `);
     });
 
     test('calc() preserves spaces aroung "+" and "-"', () => {
@@ -107,10 +107,13 @@ describe('babel-plugin-transform-stylex', () => {
     test('strip leading zeros', () => {
       expect(
         transform(`
-          const styles = stylex.create({ x: { transitionDuration: '0.01s 0.02s', transitionTimingFunction: 'cubic-bezier(.08,.52,.52,1)' } });
+          const styles = stylex.create({ x: {
+            transitionDuration: '0.01s',
+            transitionTimingFunction: 'cubic-bezier(.08,.52,.52,1)'
+          } });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".qi7d2a38{transition-duration:.01s .02s}\\", 1);
+        "stylex.inject(\\".bs0c03ma{transition-duration:.01s}\\", 1);
         stylex.inject(\\".lvdmvkcg{transition-timing-function:cubic-bezier(.08,.52,.52,1)}\\", 1);"
       `);
     });
@@ -128,10 +131,113 @@ describe('babel-plugin-transform-stylex', () => {
     test('timing values are converted to seconds unless < 10ms', () => {
       expect(
         transform(`
-          const styles = stylex.create({ x: { transitionDuration: '1s 1234ms 500ms 100ms 10ms 1ms 90deg 0ms' } });
+          const styles = stylex.create({
+            x: { transitionDuration: '1234ms' },
+            y: { transitionDuration: '10ms' },
+            z: { transitionDuration: '1ms' }
+          });
+        `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".ac8p61ak{transition-duration:1.234s}\\", 1);
+        stylex.inject(\\".bs0c03ma{transition-duration:.01s}\\", 1);
+        stylex.inject(\\".tgkha51v{transition-duration:1ms}\\", 1);"
+      `);
+    });
+
+    test('transforms non-unitless property values', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({
+            normalize: {
+              height: 500,
+              margin: 10,
+              width: 500
+            },
+            unitless: {
+              fontWeight: 500,
+              lineHeight: 1.5,
+              opacity: 0.5
+            },
+          });
+        `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".mjo95iq7{height:500px}\\", 1);
+        stylex.inject(\\".jenc4j3g{margin-top:10px}\\", 1);
+        stylex.inject(\\".mln2r6ah{margin-right:10px}\\", 1, \\".mln2r6ah{margin-left:10px}\\");
+        stylex.inject(\\".rbcf3a04{margin-bottom:10px}\\", 1);
+        stylex.inject(\\".a60616oh{margin-left:10px}\\", 1, \\".a60616oh{margin-right:10px}\\");
+        stylex.inject(\\".imjq5d63{width:500px}\\", 1);
+        stylex.inject(\\".tpi2lg9u{font-weight:500}\\", 1);
+        stylex.inject(\\".b643thi7{line-height:1.5}\\", 1);
+        stylex.inject(\\".mi59tyey{opacity:.5}\\", 1);"
+      `);
+    });
+
+    test('number values rounded down to four decimal points', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({ x: { height: 100 / 3 } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".fyaq63wf{transition-duration:1s 1.234s .5s .1s .01s 1ms 90deg 0s}\\", 1);"'
+        '"stylex.inject(\\".nomnueuz{height:33.3333px}\\", 1);"'
+      );
+    });
+
+    test('"content" property values are wrapped in quotes', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({
+            default: {
+              content: '',
+            },
+            other: {
+              content: 'next',
+            },
+            withQuotes: {
+              content: '"prev"',
+            }
+          });
+        `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".axp1y60l{content:\\\\\\"\\\\\\"}\\", 1);
+        stylex.inject(\\".k48iq9xp{content:\\\\\\"next\\\\\\"}\\", 1);
+        stylex.inject(\\".jjrsgf30{content:\\\\\\"prev\\\\\\"}\\", 1);"
+      `);
+    });
+
+    test('[legacy] transforms font size from px to rem', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({
+            foo: {
+              fontSize: '24px',
+            },
+            bar: {
+              fontSize: 18,
+            },
+            baz: {
+              fontSize: '1.25rem',
+            },
+            qux: {
+              fontSize: 'inherit',
+            }
+          });
+        `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".qntmu8s7{font-size:1.5rem}\\", 1);
+        stylex.inject(\\".rxmdf5ve{font-size:1.125rem}\\", 1);
+        stylex.inject(\\".rq8durfe{font-size:1.25rem}\\", 1);
+        stylex.inject(\\".jwegzro5{font-size:inherit}\\", 1);"
+      `);
+    });
+
+    test('[legacy] no space before "!important"', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({ x: { color: 'red !important' } });
+        `)
+      ).toMatchInlineSnapshot(
+        '"stylex.inject(\\".fg1v9vue{color:red!important}\\", 1);"'
       );
     });
   });

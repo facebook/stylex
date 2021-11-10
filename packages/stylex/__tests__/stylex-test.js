@@ -17,6 +17,7 @@ test('stylex.dedupe', () => {
   expect(stylex.dedupe({ a: 'a', b: 'b' })).toBe('a b');
 });
 
+// TODO: priorities need testing
 test('stylex.inject', () => {
   const prevCount = styleSheet.getRuleCount();
   stylex.inject('hey {}', 0);
