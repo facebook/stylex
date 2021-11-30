@@ -14,10 +14,9 @@ const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const stylexPlugin = require('../src/index');
 
-const stylex = stylexPlugin({ fileName: 'stylex.css' });
-
 describe('rollup-plugin-stylex', () => {
-  it('extracts CSS and removes stylex.inject calls', async () => {
+  async function runStylex(options) {
+    const stylex = stylexPlugin(options);
     // Configure a rollup bundle
     const bundle = await rollup.rollup({
       // Remove stylex runtime from bundle
@@ -51,27 +50,31 @@ describe('rollup-plugin-stylex', () => {
       }
     }
 
+    return { css, js };
+  }
+
+  it('extracts CSS and removes stylex.inject calls', async () => {
+    const { css, js } = await runStylex({ fileName: 'stylex.css' });
+
     expect(css).toMatchInlineSnapshot(`
-      ".alzwoclg{display:flex}
-      html:not([dir='rtl']) .a60616oh{margin-left:10px}
-      html[dir='rtl'] .a60616oh{margin-right:10px}
-      .h9hgjgce{margin-block-start:99px}
-      .mjo95iq7{height:500px}
-      .b6ax4al1{display:block}
-      .mfclru0v{width:100%}
-      .ew9r2zzs:hover{background:red}"
+      ".p357zi0d{display:flex}
+      html:not([dir='rtl']) .a3oefunm{margin-left:10px}
+      html[dir='rtl'] .a3oefunm{margin-right:10px}
+      .bjgvxnpl{margin-block-start:99px}
+      .cctpw5f5{height:500px}
+      .f804f6gw{display:block}
+      .ln8gz9je{width:100%}
+      .lq9oatf1:hover{background:red}"
     `);
 
     expect(js).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
 
       // otherStyles.js
-      stylex.inject(\\".b6ax4al1{display:block}\\", 1);
-      stylex.inject(\\".mfclru0v{width:100%}\\", 1);
       const styles$2 = {
         bar: {
-          display: \\"b6ax4al1\\",
-          width: \\"mfclru0v\\"
+          display: \\"f804f6gw\\",
+          width: \\"ln8gz9je\\"
         }
       };
 
@@ -86,19 +89,14 @@ describe('rollup-plugin-stylex', () => {
       };
 
       // index.js
-      stylex.inject(\\".alzwoclg{display:flex}\\", 1);
-      stylex.inject(\\".a60616oh{margin-left:10px}\\", 1, \\".a60616oh{margin-right:10px}\\");
-      stylex.inject(\\".h9hgjgce{margin-block-start:99px}\\", 1);
-      stylex.inject(\\".mjo95iq7{height:500px}\\", 1);
-      stylex.inject(\\".ew9r2zzs:hover{background:red}\\", 7.1);
       const styles = {
         foo: {
-          display: \\"alzwoclg\\",
-          marginStart: \\"a60616oh\\",
-          marginBlockStart: \\"h9hgjgce\\",
-          height: \\"mjo95iq7\\",
+          display: \\"p357zi0d\\",
+          marginStart: \\"a3oefunm\\",
+          marginBlockStart: \\"bjgvxnpl\\",
+          height: \\"cctpw5f5\\",
           ':hover': {
-            background: \\"ew9r2zzs\\"
+            background: \\"lq9oatf1\\"
           }
         }
       };
@@ -109,5 +107,75 @@ describe('rollup-plugin-stylex', () => {
       export { App as default };
       "
     `);
+  });
+
+  describe('when in dev mode', () => {
+    it('preserves stylex.inject calls and does not extract CSS', async () => {
+      const { css, js } = await runStylex({
+        dev: true,
+        fileName: 'stylex.css',
+      });
+
+      expect(css).toBeUndefined();
+
+      expect(js).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+
+        // otherStyles.js
+
+        if (__DEV__) {
+          stylex.inject(\\".f804f6gw{display:block}\\", 1);
+          stylex.inject(\\".ln8gz9je{width:100%}\\", 1);
+        }
+
+        const styles$2 = {
+          bar: {
+            otherStyles__bar: \\"otherStyles__bar\\",
+            display: \\"f804f6gw\\",
+            width: \\"ln8gz9je\\"
+          }
+        };
+
+        // npmStyles.js
+        stylex.inject('.rse6dlih{display:inline}', 1);
+        stylex.inject('.ezi3dscr{width:50%}', 1);
+        const styles$1 = {
+          baz: {
+            display: 'rse6dlih',
+            width: 'ezi3dscr'
+          }
+        };
+
+        // index.js
+
+        if (__DEV__) {
+          stylex.inject(\\".p357zi0d{display:flex}\\", 1);
+          stylex.inject(\\".a3oefunm{margin-left:10px}\\", 1, \\".a3oefunm{margin-right:10px}\\");
+          stylex.inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
+          stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
+          stylex.inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
+        }
+
+        const styles = {
+          foo: {
+            index__foo: \\"index__foo\\",
+            display: \\"p357zi0d\\",
+            marginStart: \\"a3oefunm\\",
+            marginBlockStart: \\"bjgvxnpl\\",
+            height: \\"cctpw5f5\\",
+            ':hover': {
+              index__foo: \\"index__foo\\",
+              background: \\"lq9oatf1\\"
+            }
+          }
+        };
+        function App() {
+          return stylex(styles$2.bar, styles.foo, styles$1.baz);
+        }
+
+        export { App as default };
+        "
+      `);
+    });
   });
 });

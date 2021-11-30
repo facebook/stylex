@@ -7,7 +7,14 @@
 
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
 
-module.exports = function stylexPlugin({ fileName = 'stylex.css' } = {}) {
+const IS_DEV_ENV =
+  process.env.NODE_ENV === 'development' ||
+  process.env.BABEL_ENV === 'development';
+
+module.exports = function stylexPlugin({
+  dev = IS_DEV_ENV,
+  fileName = 'stylex.css',
+} = {}) {
   let stylexRules = [];
 
   return {
@@ -19,13 +26,13 @@ module.exports = function stylexPlugin({ fileName = 'stylex.css' } = {}) {
             ...currentConfig.options,
             plugins: [
               ...(currentConfig.options.plugins || []),
-              stylexBabelPlugin,
+              [stylexBabelPlugin, { dev, stylexSheetName: fileName }],
             ],
           };
         },
         result(result) {
           const { metadata } = result;
-          if (metadata.stylex != null && metadata.stylex.length > 0) {
+          if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
             stylexRules = stylexRules.concat(metadata.stylex);
           }
           return result;
@@ -36,13 +43,15 @@ module.exports = function stylexPlugin({ fileName = 'stylex.css' } = {}) {
       stylexRules = [];
     },
     generateBundle() {
-      const collectedCSS = stylexBabelPlugin.processStylexRules(stylexRules);
+      if (stylexRules.length > 0) {
+        const collectedCSS = stylexBabelPlugin.processStylexRules(stylexRules);
 
-      this.emitFile({
-        fileName,
-        source: collectedCSS,
-        type: 'asset',
-      });
+        this.emitFile({
+          fileName,
+          source: collectedCSS,
+          type: 'asset',
+        });
+      }
     },
   };
 };
