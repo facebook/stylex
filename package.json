@@ -26,6 +26,7 @@
     "@babel/preset-flow": "^7.14.5",
     "@babel/preset-react": "^7.14.5",
     "@babel/types": "^7.15.6",
+    "benchmark": "^2.1.4",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-flowtype": "^7.0.0",

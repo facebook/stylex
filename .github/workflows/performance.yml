@@ -4,6 +4,7 @@ on: [pull_request]
 
 jobs:
   compressed-size:
+    name: compressed-size
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -12,3 +13,37 @@ jobs:
         build-script: "build"
         pattern: "./packages/stylex/lib/{stylex.js,StyleXSheet.js}"
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
+  benchmark:
+    name: runtime-performance
+    runs-on: ubuntu-latest
+    steps:
+      # Run benchmark and store the output to a file
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '15.x'
+      - run: npm install
+      - run: npm run build
+      - run: node packages/stylex/benchmark.js | tee benchmark-output.txt
+      # Download previous benchmark result from cache (if exists)
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./cache
+          key: ${{ runner.os }}-benchmark
+      # Run `github-action-benchmark` action
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          # What benchmark tool the output came from
+          tool: 'benchmarkjs'
+          # Where the output from the benchmark tool is stored
+          output-file-path: benchmark-output.txt
+          # Where the previous data file is stored
+          external-data-json-path: ./cache/benchmark-data.json
+          # Show alert with commit comment on detecting possible performance regression
+          alert-threshold: '110%'
+          comment-on-alert: true
+          # comment-always: true
+          # GitHub API token to make a commit comment
+          github-token: ${{ secrets.GITHUB_TOKEN }}

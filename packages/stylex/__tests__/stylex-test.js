@@ -10,11 +10,10 @@
 'use strict';
 
 import { styleSheet } from '../src/StyleXSheet';
-
 import stylex from '../src/stylex';
 
 test('stylex.dedupe', () => {
-  expect(stylex.dedupe({ a: 'a', b: 'b' })).toBe('a b');
+  expect(stylex.dedupe({ a: 'aaa', b: 'bbb' })).toBe('aaa bbb');
 });
 
 // TODO: priorities need testing
@@ -24,7 +23,6 @@ test('stylex.inject', () => {
   expect(styleSheet.getRuleCount()).toBeGreaterThan(prevCount);
 });
 
-// these tests actually test stylex() itself, so should call it directly
 describe('stylex', () => {
   test('with a top-level array of simple overridden classes', () => {
     expect(
