@@ -1424,7 +1424,7 @@ type FlexInlineBase = $ReadOnly<
   }
 >;
 
-type stylex = {
+declare var stylex: {
   (
     ...styles: ReadonlyArray<
       StyleXArray<(DedupeStyles | null | undefined) | boolean>
@@ -1454,3 +1454,5 @@ type stylex = {
   linkBase: LinkBase;
   listBase: ListBase;
 };
+
+export default stylex;
