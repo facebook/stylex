@@ -1249,7 +1249,7 @@ type StyleXClassNameForKey<K> = StyleXClassNameFor<K, unknown>;
 type StyleXClassName = StyleXClassNameFor<unknown, unknown>;
 // Type for arbitrarily nested Array.
 type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
-type CSSPropTypes = $ReadOnly<$ObjMap<CSSProperties, () => StyleXClassName>>;
+type CSSPropTypes = $ReadOnly<{[k in keyof CSSProperties]: StyleXClassName;}>;
 type NestedCSSPropTypes = $ReadOnly<
   CSSPropTypes & {
     // NOTE: the actual type should be nested objects.
@@ -1320,7 +1320,7 @@ type XStyle<T = NestedCSSPropTypes> = StyleXArray<
   false | (T | null | undefined)
 >;
 type XStyleWithout<T extends Record<string, void>> = XStyle<
-  $ReadOnly<$Diff<NestedCSSPropTypes, T>>
+  $ReadOnly<Omit<NestedCSSPropTypes, keyof T>>
 >;
 type Styles = $ReadOnly<Record<string, Style>>;
 type Style = $ReadOnly<
@@ -1332,19 +1332,6 @@ type Rules = Style | CSSProperties;
 type Keyframes = $ReadOnly<Record<string, CSSProperties>>;
 type Theme = $ReadOnly<Record<string, string>>;
 // type CSSValue = string | number | $ReadOnlyArray<mixed>;
-type MapCSSValueToClassName = <K, V>(
-  arg0: K,
-  arg1: V,
-) => StyleXClassNameFor<K, V>;
-// NOTE: Flow was confused by nested ObjMap so for now, nested styles
-// are typed incorrectly to be a string. This won't matter for the time being.
-// type MapStyleToClassName = (<Rule: {}>(
-//   Rule,
-// ) => $ObjMap<Rule, MapCSSValueToClassName>) &
-//   MapCSSValueToClassName;
-type MapNamespaces = <CSS extends {}>(
-  arg0: CSS,
-) => $ObjMap<CSS, MapCSSValueToClassName>;
 
 type DedupeStyles = $ReadOnly<
   Record<string, string | $ReadOnly<Record<string, string>>>
@@ -1352,7 +1339,7 @@ type DedupeStyles = $ReadOnly<
 
 type Stylex$Create = <S extends {}>(
   styles: S,
-) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
+) => $ReadOnly<{[k in keyof S]: string}>;
 
 type AbsoluteFill = $ReadOnly<{
   bottom: 0;
