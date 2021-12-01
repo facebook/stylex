@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { $ReadOnly, $Diff, $Keys, $Shape } from 'utility-types';
+import { $ReadOnly } from 'utility-types';
 
 type CSSCursor =
   | 'auto'
@@ -1244,8 +1244,6 @@ type CSSProperties = $ReadOnly<
 >;
 
 type StyleXClassNameFor<_K, _V> = string;
-type StyleXClassNameForValue<V> = StyleXClassNameFor<unknown, V>;
-type StyleXClassNameForKey<K> = StyleXClassNameFor<K, unknown>;
 type StyleXClassName = StyleXClassNameFor<unknown, unknown>;
 // Type for arbitrarily nested Array.
 type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
@@ -1315,23 +1313,7 @@ type NestedCSSPropTypes = $ReadOnly<
     '@media (max-width: 1024px) and (min-width: 501px)'?: StyleXClassName;
   }
 >;
-type StyleXSingleStyle = false | (NestedCSSPropTypes | null | undefined);
-type XStyle<T = NestedCSSPropTypes> = StyleXArray<
-  false | (T | null | undefined)
->;
-type XStyleWithout<T extends Record<string, void>> = XStyle<
-  $ReadOnly<Omit<NestedCSSPropTypes, keyof T>>
->;
-type Styles = $ReadOnly<Record<string, Style>>;
-type Style = $ReadOnly<
-  CSSProperties & {
-    [pseudo: string]: CSSProperties;
-  }
->;
-type Rules = Style | CSSProperties;
 type Keyframes = $ReadOnly<Record<string, CSSProperties>>;
-type Theme = $ReadOnly<Record<string, string>>;
-// type CSSValue = string | number | $ReadOnlyArray<mixed>;
 
 type DedupeStyles = $ReadOnly<
   Record<string, string | $ReadOnly<Record<string, string>>>
@@ -1441,12 +1423,6 @@ type FlexInlineBase = $ReadOnly<
     display: 'inline-flex';
   }
 >;
-
-type SheetOptions = $ReadOnly<{
-  rootDarkTheme?: Theme;
-  rootTheme: Theme | null | undefined;
-  supportsVariables?: boolean;
-}>;
 
 type stylex = {
   (
