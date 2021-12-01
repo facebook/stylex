@@ -55,6 +55,18 @@ test('StyleXSheet.prototype.insert respects priority floats', () => {
   expect(sheet.getCSS()).toMatchSnapshot();
 });
 
+test.only('StyleXSheet.prototype.insert handles RTL rules with media queries', () => {
+  const sheet = new StyleXSheet(testOpts);
+
+  sheet.insert(
+    '@media (min-width: 1000px) { .foo {} }',
+    0,
+    '@media (min-width: 1000px) { .foo {} }'
+  );
+
+  expect(sheet.getCSS()).toMatchSnapshot();
+});
+
 test('inlines variables for older browsers', () => {
   const sheet = new StyleXSheet({
     rootDarkTheme: { foo: 'reallydark' },

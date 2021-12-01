@@ -1,5 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`StyleXSheet.prototype.insert handles RTL rules with media queries 1`] = `
+"@media (min-width: 1000px) {html:not([dir='rtl'])  .foo {} }
+@media (min-width: 1000px) {html[dir='rtl']  .foo {} }"
+`;
+
 exports[`StyleXSheet.prototype.insert respects priorities 1`] = `
 ".first {}
 .second {}
