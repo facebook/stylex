@@ -1243,85 +1243,55 @@ type CSSProperties = $ReadOnly<
   }
 >;
 
-type StyleXClassNameFor<_K, _V> = string;
-type StyleXClassName = StyleXClassNameFor<unknown, unknown>;
 // Type for arbitrarily nested Array.
 type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
-type CSSPropTypes = $ReadOnly<{[k in keyof CSSProperties]: StyleXClassName;}>;
-type NestedCSSPropTypes = $ReadOnly<
-  CSSPropTypes & {
-    // NOTE: the actual type should be nested objects.
-    // fix after the types in stylex.js are fixed.
-    ':active'?: StyleXClassName;
-    ':focus'?: StyleXClassName;
-    ':focus-visible'?: StyleXClassName;
-    ':hover'?: StyleXClassName;
-    ':disabled'?: StyleXClassName;
-    ':empty'?: StyleXClassName;
-    ':first-child'?: StyleXClassName;
-    ':last-child'?: StyleXClassName;
-    '::before'?: StyleXClassName;
-    '::after'?: StyleXClassName;
-    '::placeholder'?: StyleXClassName;
-    '::-webkit-scrollbar'?: StyleXClassName;
-    // Find a better way to do this. Being forced to add every media query.
-    '@media (max-width: 564px)'?: StyleXClassName;
-    '@media (min-height: 700px)'?: StyleXClassName;
-    '@media (min-height: 700px) and (max-height: 789px)'?: StyleXClassName;
-    '@media (min-height: 753px) and (max-height: 789px)'?: StyleXClassName;
-    '@media (min-height: 790px)'?: StyleXClassName;
-    '@media (max-width: 648px)'?: StyleXClassName;
-    '@media (max-width: 899px)'?: StyleXClassName;
-    '@media (max-width: 900px)'?: StyleXClassName;
-    '@media (min-width: 900px)'?: StyleXClassName;
-    '@media (min-width: 900px) and (max-width: 1259px)'?: StyleXClassName;
-    '@media (max-width: 1099px)'?: StyleXClassName;
-    '@media (max-width: 1199px)'?: StyleXClassName;
-    '@media (max-width: 1259px)'?: StyleXClassName;
-    '@media (min-width: 1290px)'?: StyleXClassName;
-    '@media (max-width: 420px)'?: StyleXClassName;
-    '@media (max-width: 500px)'?: StyleXClassName;
-    '@media (pointer: coarse)'?: StyleXClassName;
-    '@media (-webkit-min-device-pixel-ratio: 0)'?: StyleXClassName;
-    '@media print'?: StyleXClassName;
-    // Media queries used for Oculus Web Design Systems (OCDS components).
-    '@media (max-width: 767px)'?: StyleXClassName;
-    '@media (min-width: 768px)'?: StyleXClassName;
-    '@media (min-width: 768px) and (max-width: 1024px)'?: StyleXClassName;
-    '@media (max-width: 1024px)'?: StyleXClassName;
-    '@media (min-width: 1025px)'?: StyleXClassName;
-    '@media (min-width: 1025px) and (max-width: 1920px)'?: StyleXClassName;
-    '@media (max-width: 1920px)'?: StyleXClassName;
-    '@media (min-width: 1921px)'?: StyleXClassName;
-    // Media queries used for Intern Data Products
-    '@media (min-width: 1500px)'?: StyleXClassName;
-    '@media (min-width: 1800px)'?: StyleXClassName;
-    '@media (min-width: 2250px)'?: StyleXClassName;
-    // webkit styles used for Search in Safari
-    '::-webkit-search-decoration'?: StyleXClassName;
-    '::-webkit-search-cancel-button'?: StyleXClassName;
-    '::-webkit-search-results-button'?: StyleXClassName;
-    '::-webkit-search-results-decoration'?: StyleXClassName;
-    // Media queries used for the logged out header
-    '@media (min-width: 950px)'?: StyleXClassName;
-    // Media queries used for bizweb
-    '@media (min-width: 1440px)'?: StyleXClassName;
-    '@media (min-width: 1920px)'?: StyleXClassName;
-    // Media queries used for fbai
-    '@media (min-width: 800px)'?: StyleXClassName;
-    // Media queries used for messengerkidsdotcom
-    '@media (max-width: 1024px) and (min-width: 501px)'?: StyleXClassName;
-  }
->;
+type PseudoSelectorStyles = {
+  ':active'?: CSSProperties;
+  ':focus'?: CSSProperties;
+  ':focus-visible'?: CSSProperties;
+  ':hover'?: CSSProperties;
+  ':disabled'?: CSSProperties;
+  ':empty'?: CSSProperties;
+  ':first-child'?: CSSProperties;
+  ':last-child'?: CSSProperties;
+  '::before'?: CSSProperties;
+  '::after'?: CSSProperties;
+  '::placeholder'?: CSSProperties;
+  '::-webkit-scrollbar'?: CSSProperties;
+  // webkit styles used for Search in Safari
+  '::-webkit-search-decoration'?: CSSProperties;
+  '::-webkit-search-cancel-button'?: CSSProperties;
+  '::-webkit-search-results-button'?: CSSProperties;
+  '::-webkit-search-results-decoration'?: CSSProperties;
+};
+export type MediaStyles = {
+  [k in `@media ${string}`]?: CSSProperties;
+};
+export type NestedCSSPropTypes = $ReadOnly<MediaStyles & CSSProperties & PseudoSelectorStyles>;
+
 type Keyframes = $ReadOnly<Record<string, CSSProperties>>;
 
 type DedupeStyles = $ReadOnly<
   Record<string, string | $ReadOnly<Record<string, string>>>
 >;
 
-type Stylex$Create = <S extends {}>(
-  styles: S,
-) => $ReadOnly<{[k in keyof S]: string}>;
+type Stylex$Create = <S extends { [K in string]: NestedCSSPropTypes }>(
+  styles: S
+) => $ReadOnly<{
+  [K in keyof S]: {
+    [P in keyof S[K]]: string;
+  };
+}> &
+  ((
+    ...mapOrNamespace: ReadonlyArray<
+      | keyof S
+      | { readonly [K in keyof S]?: boolean }
+      | null
+      | void
+      | undefined
+      | false
+    >
+  ) => string);
 
 type AbsoluteFill = $ReadOnly<{
   bottom: 0;
@@ -1447,7 +1417,7 @@ declare var stylex: {
   inject: (
     ltrRule: string,
     priority: number,
-    rtlRule: string | null | undefined,
+    rtlRule: string | null | undefined
   ) => void;
   inlineBase: InlineBase;
   keyframes: (keyframes: Keyframes) => string;
