@@ -343,6 +343,38 @@ describe('babel-plugin-transform-stylex', () => {
       `);
     });
 
+    test('stylex call using exported styles with pseudo selectors, and queries', () => {
+      expect(
+        transform(`
+          export const styles = stylex.create({
+            default: {
+              ':hover': {
+                color: 'blue',
+              },
+              '@media (min-width: 1000px)': {
+                backgroundColor: 'blue',
+              },
+            }
+          });
+          stylex(styles.default);
+        `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);
+        stylex.inject(\\"@media (min-width: 1000px){.psrm59q7.psrm59q7{background-color:blue}}\\", 2);
+        export const styles = {
+          default: {
+            ':hover': {
+              color: \\"dvoqa86r\\"
+            },
+            '@media (min-width: 1000px)': {
+              backgroundColor: \\"psrm59q7\\"
+            }
+          }
+        };
+        stylex(styles.default);"
+      `);
+    });
+
     // CONDITIONS AND COLLISIONS
 
     test('stylex call with conditions', () => {

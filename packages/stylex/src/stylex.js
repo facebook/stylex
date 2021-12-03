@@ -23,29 +23,104 @@ type DedupeStyles = $ReadOnly<{
   ...
 }>;
 
-// const warnedOnInject = false;
+function stylex(
+  ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
+): string {
+  // Keep a set of property commits to the className
+  const seenProperties = new Set();
+  let className = '';
 
-function stylexPrepare<TObj: {}>(
-  rawStyles: Array<StyleXArray<?TObj | boolean>>
-): TObj {
-  // rawStyles is already a new array so we can reverse it inline;
-  const workingStack = rawStyles.reverse();
+  while (styles.length) {
+    // Push nested styles back onto the stack to be processed
+    const next = styles.pop();
+    if (Array.isArray(next)) {
+      for (let i = 0; i < next.length; i++) {
+        styles.push(next[i]);
+      }
+      continue;
+    }
 
+    // Process an individual style object
+    const styleObj = next;
+    if (styleObj != null && typeof styleObj === 'object') {
+      let classNameChunk = '';
+      for (const prop in styleObj) {
+        const value = styleObj[prop];
+        // Style declarations, e.g., opacity: 's3fkgpd'
+        if (typeof value === 'string') {
+          // Skip if property has already been seen
+          if (!seenProperties.has(prop)) {
+            seenProperties.add(prop);
+            classNameChunk += classNameChunk ? ' ' + value : value;
+          }
+        }
+        // Style conditions, e.g., ':hover', '@media', etc.
+        else if (typeof value === 'object') {
+          const condition = prop;
+          const nestedStyleObject = value;
+          for (const conditionalProp in nestedStyleObject) {
+            const conditionalValue = nestedStyleObject[conditionalProp];
+            const conditionalProperty = condition + conditionalProp;
+            // Skip if conditional property has already been seen
+            if (!seenProperties.has(conditionalProperty)) {
+              seenProperties.add(conditionalProperty);
+              classNameChunk += classNameChunk
+                ? ' ' + conditionalValue
+                : conditionalValue;
+            }
+          }
+        }
+      }
+
+      // Order of classes in chunks matches property-iteration order of style
+      // object. Order of chunks matches passed order of styles from first to
+      // last (which we iterate over in reverse).
+      if (classNameChunk) {
+        className = className
+          ? classNameChunk + ' ' + className
+          : classNameChunk;
+      }
+    }
+  }
+
+  return className;
+}
+
+function stylexCreate(_styles: { ... }) {
+  throw new Error(
+    'stylex.create should never be called. It should be compiled away.'
+  );
+}
+
+/**
+ * WARNING!
+ * If you add another method to stylex make sure to update
+ * CommonJSParser::getStylexPrefixSearchConf().
+ *
+ * Otherwise any callsites will fatal.
+ */
+
+stylex.compose = function stylexCompose(
+  ...styles: Array<StyleXArray<?NestedCSSPropTypes | boolean>>
+): NestedCSSPropTypes {
   // When flow creates an empty object, it doesn't like for it to have
   // the type of an exact object. This is just a local override that
   // uses the correct types and overrides the problems of Flow.
+  const baseObject = ({}: $FlowFixMe);
 
-  const baseObject: TObj = ({}: $FlowFixMe);
-  // const nestedObjects: {[string]: {[string]: string}} = {};
+  const workingStack = styles.reverse();
+
   while (workingStack.length) {
-    const next = workingStack.pop();
+    // Reverse push nested styles back onto the stack to be processed
+    const next = styles.pop();
     if (Array.isArray(next)) {
-      // reverse push onto the stack;
       for (let i = next.length - 1; i >= 0; i--) {
         workingStack.push(next[i]);
       }
       continue;
     }
+
+    // Merge style objects
     const styleObj = next;
     if (styleObj != null && typeof styleObj === 'object') {
       for (const key in styleObj) {
@@ -61,58 +136,8 @@ function stylexPrepare<TObj: {}>(
   }
 
   return baseObject;
-}
-
-function stylex(
-  ...rawStyles: Array<StyleXArray<?DedupeStyles | boolean>>
-): string {
-  // stylexPrepare has more generic types than `stylex` this is why we need
-  // the FlowFixMe. This isn't ideal, but the FlowFixMe is local only and
-  // the exported types are correctly exported.
-
-  const baseObject = stylexPrepare((rawStyles: $FlowFixMe));
-
-  let baseClassString = '';
-  for (const key in baseObject) {
-    if (baseObject[key]) {
-      if (typeof baseObject[key] === 'string') {
-        baseClassString += baseClassString
-          ? ' ' + baseObject[key]
-          : baseObject[key];
-      } else if (typeof baseObject[key] === 'object') {
-        const pseudoObj = baseObject[key];
-        for (const key in pseudoObj) {
-          const val = pseudoObj[key];
-          baseClassString += baseClassString ? ' ' + val : val;
-        }
-      }
-    }
-  }
-
-  return baseClassString;
-}
-
-stylex.compose = function stylexCompose(
-  ...styles: Array<StyleXArray<?NestedCSSPropTypes | boolean>>
-): NestedCSSPropTypes {
-  // Similar reasons as above.
-
-  return stylexPrepare((styles: $FlowFixMe));
 };
 
-function stylexCreate(_styles: { ... }) {
-  throw new Error(
-    'stylex.create should never be called. It should be compiled away.'
-  );
-}
-
-/**
- * WARNING!
- * If you add another method to stylex make sure to update
- * CommonJSParser::getStylexPrefixSearchConf().
- *
- * Otherwise any callsites will fatal.
- */
 stylex.create = (stylexCreate: Stylex$Create);
 
 stylex.keyframes = (_keyframes: Keyframes): string => {

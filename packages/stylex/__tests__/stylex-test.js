@@ -4,13 +4,45 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ * @noflow
  */
 
 'use strict';
 
 import { styleSheet } from '../src/StyleXSheet';
 import stylex from '../src/stylex';
+
+test('stylex.compose', () => {
+  expect(
+    stylex.compose(
+      {
+        backgroundColor: 'nu7423ey',
+      },
+      [
+        {
+          backgroundColor: 'abcdefg',
+          ':hover': {
+            backgroundColor: 'ksdfmwjs',
+          },
+        },
+      ],
+      {
+        color: 'gofk2cf1',
+        ':hover': {
+          backgroundColor: 'rse6dlih',
+        },
+      }
+    )
+  ).toMatchInlineSnapshot(`
+    Object {
+      ":hover": Object {
+        "backgroundColor": "rse6dlih",
+      },
+      "backgroundColor": "abcdefg",
+      "color": "gofk2cf1",
+    }
+  `);
+});
 
 test('stylex.dedupe', () => {
   expect(stylex.dedupe({ a: 'aaa', b: 'bbb' })).toBe('aaa bbb');
@@ -24,6 +56,20 @@ test('stylex.inject', () => {
 });
 
 describe('stylex', () => {
+  test('basic resolve', () => {
+    expect(stylex({ a: 'aaa', b: 'bbb' })).toBe('aaa bbb');
+  });
+
+  test('merge order', () => {
+    expect(
+      stylex([
+        { a: 'a', ':hover': { aa: 'aa' } },
+        { b: 'b' },
+        { c: 'c', ':hover': { cc: 'cc' } },
+      ])
+    ).toBe('a aa b c cc');
+  });
+
   test('with a top-level array of simple overridden classes', () => {
     expect(
       stylex([
@@ -58,7 +104,7 @@ describe('stylex', () => {
           },
         },
       ])
-    ).toEqual('abcdefg rse6dlih gofk2cf1');
+    ).toEqual('abcdefg gofk2cf1 rse6dlih');
   });
 
   test('with just pseudoclasses', () => {
@@ -77,6 +123,7 @@ describe('stylex', () => {
       )
     ).toEqual('rse6dlih gofk2cf1');
   });
+
   test('with complicated set of arguments', () => {
     const value = stylex(
       {
