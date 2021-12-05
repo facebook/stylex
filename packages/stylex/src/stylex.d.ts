@@ -1267,19 +1267,32 @@ type PseudoSelectorStyles = {
 export type MediaStyles = {
   [k in `@media ${string}`]?: CSSProperties;
 };
-export type NestedCSSPropTypes = $ReadOnly<MediaStyles & CSSProperties & PseudoSelectorStyles>;
+export type NestedCSSPropTypes = $ReadOnly<
+  MediaStyles & CSSProperties & PseudoSelectorStyles
+>;
 
 type Keyframes = $ReadOnly<Record<string, CSSProperties>>;
 
+interface StyleXClassNameFor<K, V> extends String {
+  key: K;
+  value: V;
+}
+
 type DedupeStyles = $ReadOnly<
-  Record<string, string | $ReadOnly<Record<string, string>>>
+  Record<
+    string,
+    | StyleXClassNameFor<any, any>
+    | $ReadOnly<Record<string, StyleXClassNameFor<any, any>>>
+  >
 >;
 
 type Stylex$Create = <S extends { [K in string]: NestedCSSPropTypes }>(
   styles: S
 ) => $ReadOnly<{
   [K in keyof S]: {
-    [P in keyof S[K]]: string;
+    [P in keyof S[K]]: S[K][P] extends object
+      ? { [F in keyof S[K][P]]: StyleXClassNameFor<P, S[K][P][F]> }
+      : StyleXClassNameFor<P, S[K][P]>;
   };
 }> &
   ((
