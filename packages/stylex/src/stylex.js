@@ -18,57 +18,97 @@ import type {
 
 import inject from './inject';
 
+type Cache = WeakMap<
+  { ... },
+  {
+    classNameChunk: string,
+    definedPropertiesChunk: Array<string>,
+    next: Cache,
+  }
+>;
+
 type DedupeStyles = $ReadOnly<{
   [key: string]: string | $ReadOnly<{ [key: string]: string, ... }>,
   ...
 }>;
 
+const enableCache = true;
+const cache: ?Cache = enableCache ? new WeakMap() : null;
+
 function stylex(
   ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
 ): string {
   // Keep a set of property commits to the className
-  const seenProperties = new Set();
+  const definedProperties = [];
   let className = '';
+  let nextCache = cache;
 
   while (styles.length) {
     // Push nested styles back onto the stack to be processed
-    const next = styles.pop();
-    if (Array.isArray(next)) {
-      for (let i = 0; i < next.length; i++) {
-        styles.push(next[i]);
+    const possibleStyle = styles.pop();
+    if (Array.isArray(possibleStyle)) {
+      for (let i = 0; i < possibleStyle.length; i++) {
+        styles.push(possibleStyle[i]);
       }
       continue;
     }
 
     // Process an individual style object
-    const styleObj = next;
+    const styleObj = possibleStyle;
     if (styleObj != null && typeof styleObj === 'object') {
+      // Build up the class names defined by this object
       let classNameChunk = '';
-      for (const prop in styleObj) {
-        const value = styleObj[prop];
-        // Style declarations, e.g., opacity: 's3fkgpd'
-        if (typeof value === 'string') {
-          // Skip if property has already been seen
-          if (!seenProperties.has(prop)) {
-            seenProperties.add(prop);
-            classNameChunk += classNameChunk ? ' ' + value : value;
-          }
+      if (nextCache != null && nextCache.has(styleObj)) {
+        // Cache: read
+        const cacheEntry = nextCache.get(styleObj);
+        if (cacheEntry != null) {
+          classNameChunk = cacheEntry.classNameChunk;
+          definedProperties.push(...cacheEntry.definedPropertiesChunk);
+          nextCache = cacheEntry.next;
         }
-        // Style conditions, e.g., ':hover', '@media', etc.
-        else if (typeof value === 'object') {
-          const condition = prop;
-          const nestedStyleObject = value;
-          for (const conditionalProp in nestedStyleObject) {
-            const conditionalValue = nestedStyleObject[conditionalProp];
-            const conditionalProperty = condition + conditionalProp;
-            // Skip if conditional property has already been seen
-            if (!seenProperties.has(conditionalProperty)) {
-              seenProperties.add(conditionalProperty);
-              classNameChunk += classNameChunk
-                ? ' ' + conditionalValue
-                : conditionalValue;
+      } else {
+        // Record the properties this object defines (and that haven't already
+        // been defined by later objects.)
+        const definedPropertiesChunk = [];
+        for (const prop in styleObj) {
+          const value = styleObj[prop];
+          // Style declarations, e.g., opacity: 's3fkgpd'
+          if (typeof value === 'string') {
+            // Skip adding to the chunks if property has already been seen
+            if (!definedProperties.includes(prop)) {
+              definedProperties.push(prop);
+              definedPropertiesChunk.push(prop);
+              classNameChunk += classNameChunk ? ' ' + value : value;
             }
           }
+          // Style conditions, e.g., ':hover', '@media', etc.
+          // TODO: remove if #98 is fixed
+          else if (typeof value === 'object') {
+            const condition = prop;
+            const nestedStyleObject = value;
+            for (const conditionalProp in nestedStyleObject) {
+              const conditionalValue = nestedStyleObject[conditionalProp];
+              const conditionalProperty = condition + conditionalProp;
+              // Skip if conditional property has already been seen
+              if (!definedProperties.includes(conditionalProperty)) {
+                definedProperties.push(conditionalProperty);
+                definedPropertiesChunk.push(conditionalProperty);
+                classNameChunk += classNameChunk
+                  ? ' ' + conditionalValue
+                  : conditionalValue;
+              }
+            }
+          }
+        }
+        // Cache: write
+        if (nextCache != null) {
+          const emptyCache = new WeakMap();
+          nextCache.set(styleObj, {
+            classNameChunk,
+            definedPropertiesChunk,
+            next: emptyCache,
+          });
+          nextCache = emptyCache;
         }
       }
 

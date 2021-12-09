@@ -10,7 +10,15 @@ const Benchmark = require('benchmark');
 const suite = new Benchmark.Suite();
 const test = (...args) => suite.add(...args);
 
-const bigStyle = {
+const basicStyleFixture1 = {
+  backgroundColor: 'nu7423ey',
+};
+
+const basicStyleFixture2 = {
+  backgroundColor: 'gh25dzvf',
+};
+
+const bigStyleFixture = {
   backgroundColor: 'nu7423ey',
   borderColor: 'tpe1esc0',
   borderStyle: 'gewhe1h2',
@@ -33,7 +41,7 @@ const bigStyle = {
   zIndex: 'g4tp4svg',
 };
 
-const bigStyleWithPseudos = {
+const bigStyleWithPseudosFixture = {
   backgroundColor: 'g5ia77u1',
   border: 'e4t7hp5w',
   color: 'gmql0nx0',
@@ -63,84 +71,70 @@ const bigStyleWithPseudos = {
 };
 
 test('stylex(): basic', () => {
-  stylex({
-    backgroundColor: 'nu7423ey',
-  });
+  stylex(basicStyleFixture1);
 });
 
 test('stylex(): complex', () => {
-  stylex(bigStyle);
+  stylex(bigStyleFixture);
 });
 
 test('stylex(): basic merge (args)', () => {
-  stylex(
-    {
-      backgroundColor: 'nu7423ey',
-    },
-    {
-      backgroundColor: 'gh25dzvf',
-    }
-  );
+  stylex(basicStyleFixture1, basicStyleFixture2);
 });
 
 test('stylex(): basic merge (array)', () => {
-  stylex([
-    {
-      backgroundColor: 'nu7423ey',
-    },
-    {
-      backgroundColor: 'gh25dzvf',
-    },
-  ]);
+  stylex([basicStyleFixture1, basicStyleFixture2]);
 });
 
-test('stylex(): complex merge (array)', () => {
-  stylex([
-    bigStyle,
+const complexNestedStyleFixture = [
+  bigStyleFixture,
+  false,
+  false,
+  false,
+  false,
+  [
+    {
+      cursor: 'fsf7x5fv',
+      touchAction: 's3jn8y49',
+    },
     false,
-    false,
-    false,
-    false,
+    {
+      outline: 'icdlwmnq',
+    },
     [
       {
-        cursor: 'fsf7x5fv',
-        touchAction: 's3jn8y49',
+        cursor: 'nhd2j8a9',
+        touchAction: 'f1sip0of',
       },
       false,
+      false,
       {
-        outline: 'icdlwmnq',
+        textDecoration: 'esuyzwwr',
+        ':hover': {
+          textDecoration: 'p8dawk7l',
+        },
       },
+      false,
       [
+        bigStyleWithPseudosFixture,
         {
-          cursor: 'nhd2j8a9',
-          touchAction: 'f1sip0of',
+          display: 'a8c37x1j',
+          width: 'k4urcfbm',
         },
-        false,
-        false,
-        {
-          textDecoration: 'esuyzwwr',
-          ':hover': {
-            textDecoration: 'p8dawk7l',
-          },
-        },
-        false,
         [
-          bigStyleWithPseudos,
           {
-            display: 'a8c37x1j',
-            width: 'k4urcfbm',
-          },
-          [
-            {
-              ':active': {
-                transform: 'tm8avpzi',
-              },
+            ':active': {
+              transform: 'tm8avpzi',
             },
-          ],
+          },
         ],
       ],
     ],
-  ]);
+  ],
+];
+
+test('stylex(): complex merge (array)', () => {
+  stylex([complexNestedStyleFixture]);
 });
 
 suite.on('cycle', (event) => {
