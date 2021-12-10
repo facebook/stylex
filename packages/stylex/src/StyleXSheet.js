@@ -96,10 +96,7 @@ export class StyleXSheet {
     this.rootDarkTheme = opts.rootDarkTheme;
     this.supportsVariables =
       opts.supportsVariables ?? doesSupportCSSVariables();
-    this._isRTL = false; //global?.body != null && rtlDetect.isRtlLang(global?.navigator?.language ?? 'es_US');
   }
-
-  _isRTL: boolean;
 
   rootTheme: ?Theme;
   rootDarkTheme: ?Theme;
@@ -285,7 +282,16 @@ export class StyleXSheet {
       this.inject();
     }
 
-    const rawRule = this._isRTL && rawRTLRule != null ? rawRTLRule : rawLTRRule;
+    if (rawRTLRule != null) {
+      this.insert(
+        addAncestorSelector(rawLTRRule, "html:not([dir='rtl'])"),
+        priority
+      );
+      this.insert(addAncestorSelector(rawRTLRule, "html[dir='rtl']"), priority);
+      return;
+    }
+
+    const rawRule = rawLTRRule;
 
     // Don't insert this rule if it already exists
     if (this.rules.includes(rawRule)) {
@@ -317,6 +323,20 @@ export class StyleXSheet {
     }
     // Ignore the case where sheet == null. It's an edge-case Edge 17 bug.
   }
+}
+
+/**
+ * Adds an ancestor selector in a media-query-aware way.
+ */
+function addAncestorSelector(selector, ancestorSelector) {
+  if (!selector.startsWith('@')) {
+    return `${ancestorSelector} ${selector}`;
+  }
+
+  const firstBracketIndex = selector.indexOf('{');
+  const mediaQueryPart = selector.slice(0, firstBracketIndex + 1);
+  const rest = selector.slice(firstBracketIndex + 1);
+  return `${mediaQueryPart}${ancestorSelector} ${rest}`;
 }
 
 export const styleSheet: StyleXSheet = new StyleXSheet({

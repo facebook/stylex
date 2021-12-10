@@ -528,10 +528,27 @@ module.exports.processStylexRules = function processStylexRules(rules) {
   const collectedCSS = Array.from(new Map(sortedRules).values())
     .flatMap(({ ltr, rtl }) =>
       rtl != null
-        ? [`html:not([dir='rtl']) ${ltr}`, `html[dir='rtl'] ${rtl}`]
+        ? [
+            addAncestorSelector(ltr, "html:not([dir='rtl'])"),
+            addAncestorSelector(rtl, "html[dir='rtl']"),
+          ]
         : [ltr]
     )
     .join('\n');
 
   return collectedCSS;
 };
+
+/**
+ * Adds an ancestor selector in a media-query-aware way.
+ */
+function addAncestorSelector(selector, ancestorSelector) {
+  if (!selector.startsWith('@')) {
+    return `${ancestorSelector} ${selector}`;
+  }
+
+  const firstBracketIndex = selector.indexOf('{');
+  const mediaQueryPart = selector.slice(0, firstBracketIndex + 1);
+  const rest = selector.slice(firstBracketIndex + 1);
+  return `${mediaQueryPart}${ancestorSelector} ${rest}`;
+}

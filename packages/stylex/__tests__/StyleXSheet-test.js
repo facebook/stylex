@@ -41,7 +41,12 @@ test('StyleXSheet.prototype.insert respects priorities', () => {
   sheet.insert('.first {}', 0);
   sheet.insert('.second {}', 1);
 
-  expect(sheet.getCSS()).toMatchSnapshot();
+  expect(sheet.getCSS()).toMatchInlineSnapshot(`
+    ".first {}
+    .second {}
+    .third {}
+    .last {}"
+  `);
 });
 
 test('StyleXSheet.prototype.insert respects priority floats', () => {
@@ -52,7 +57,27 @@ test('StyleXSheet.prototype.insert respects priority floats', () => {
   sheet.insert('.second {}', 6);
   sheet.insert('.first {}', 2);
 
-  expect(sheet.getCSS()).toMatchSnapshot();
+  expect(sheet.getCSS()).toMatchInlineSnapshot(`
+    ".first {}
+    .second {}
+    .third {}
+    .fourth {}"
+  `);
+});
+
+test('StyleXSheet.prototype.insert handles RTL rules with media queries', () => {
+  const sheet = new StyleXSheet(testOpts);
+
+  sheet.insert(
+    '@media (min-width: 1000px) { .foo {} }',
+    0,
+    '@media (min-width: 1000px) { .foo {} }'
+  );
+
+  expect(sheet.getCSS()).toMatchInlineSnapshot(`
+    "@media (min-width: 1000px) {html:not([dir='rtl'])  .foo {} }
+    @media (min-width: 1000px) {html[dir='rtl']  .foo {} }"
+  `);
 });
 
 test('inlines variables for older browsers', () => {
@@ -64,5 +89,13 @@ test('inlines variables for older browsers', () => {
 
   sheet.insert('.foo {color: var(--foo)}', 1);
 
-  expect(sheet.getCSS()).toMatchSnapshot();
+  expect(sheet.getCSS()).toMatchInlineSnapshot(`
+    ":root, .__fb-light-mode {
+      --foo: bar;
+    }
+    .__fb-dark-mode:root, .__fb-dark-mode {
+      --foo: reallydark;
+    }
+    .foo {color: bar}"
+  `);
 });
