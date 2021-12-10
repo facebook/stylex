@@ -689,7 +689,7 @@ function convertStylexKeyframesCall(path, opts) {
 /**
  * Convert a stylex.create() call
  */
-function convertStylexCall(path, opts, markComposition) {
+function convertStylexCreateCall(path, opts, markComposition) {
   const namespacesToClassNames = new Map();
   const insertCalls = [];
   const rawInserts = [];
@@ -758,5 +758,5 @@ function convertStylexCall(path, opts, markComposition) {
 module.exports = {
   getPriorityForRule,
   convertStylexKeyframesCall,
-  convertStylexCall,
+  convertStylexCreateCall,
 };

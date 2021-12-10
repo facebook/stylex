@@ -9,7 +9,7 @@
 
 const { overrideProperties } = require('./constants.js');
 const messages = require('./messages.js');
-const { getPriorityForRule } = require('./transform-stylex-call.js');
+const { getPriorityForRule } = require('./transform-stylex-create-call.js');
 const { getKey, namespaceToDevClassName, validateProp } = require('./utils.js');
 
 /**

@@ -15,9 +15,9 @@ const {
 } = require('./transform-factory-call-to-stylex-call');
 const { convertStylexValueCall } = require('./transform-factory-call.js');
 const {
-  convertStylexCall,
+  convertStylexCreateCall,
   convertStylexKeyframesCall,
-} = require('./transform-stylex-call.js');
+} = require('./transform-stylex-create-call.js');
 
 function styleXTransform(babel) {
   // GLOBAL variables. All the functions are outside the scope of the plugin
@@ -337,7 +337,7 @@ function styleXTransform(babel) {
 
       if (isStyleXCall(path)) {
         // Name of the variable holding the value of stylex function call.
-        const { namespaces, insertCalls, rawInserts } = convertStylexCall(
+        const { namespaces, insertCalls, rawInserts } = convertStylexCreateCall(
           arg,
           {
             filename: state.filename,
