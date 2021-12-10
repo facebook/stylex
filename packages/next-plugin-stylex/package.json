@@ -10,6 +10,6 @@
     "mini-css-extract-plugin": "^2.4.3"
   },
   "peerDependencies": {
-    "next": ">=11.x.x"
+    "next": ">=12.0.7"
   }
 }
