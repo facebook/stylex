@@ -1273,10 +1273,7 @@ export type NestedCSSPropTypes = $ReadOnly<
 
 type Keyframes = $ReadOnly<Record<string, CSSProperties>>;
 
-interface StyleXClassNameFor<K, V> extends String {
-  key: K;
-  value: V;
-}
+type StyleXClassNameFor<K, _V> = `className for ${K extends string ? K : '*'}`;
 
 type DedupeStyles = $ReadOnly<
   Record<
@@ -1290,8 +1287,13 @@ type Stylex$Create = <S extends { [K in string]: NestedCSSPropTypes }>(
   styles: S
 ) => $ReadOnly<{
   [K in keyof S]: {
-    [P in keyof S[K]]: S[K][P] extends object
-      ? { [F in keyof S[K][P]]: StyleXClassNameFor<P, S[K][P][F]> }
+    [P in keyof S[K]]: S[K][P] extends CSSProperties
+      ? {
+          [F in keyof S[K][P]]: StyleXClassNameFor<
+            F,
+            S[K][P][F]
+          >;
+        }
       : StyleXClassNameFor<P, S[K][P]>;
   };
 }> &
