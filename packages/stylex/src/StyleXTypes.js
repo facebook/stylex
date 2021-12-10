@@ -106,12 +106,6 @@ export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
 
 export type Theme = $ReadOnly<{ [constantName: string]: string, ... }>;
 
-type StyleXCallable<S: { ... }> = (
-  ...mapOrNamespace: $ReadOnlyArray<
-    $Keys<S> | $Shape<{ +[$Keys<S>]: ?boolean }> | null | void | false
-  >
-) => string;
-
 // type CSSValue = string | number | $ReadOnlyArray<mixed>;
 type MapCSSValueToClassName = <K, V>(K, V) => StyleXClassNameFor<K, V>;
 // NOTE: Flow was confused by nested ObjMap so for now, nested styles
@@ -126,4 +120,4 @@ type MapNamespaces = <CSS: { ... }>(
 
 export type Stylex$Create = <S: { ... }>(
   styles: S
-) => $ReadOnly<$ObjMap<S, MapNamespaces>> & StyleXCallable<S>;
+) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
