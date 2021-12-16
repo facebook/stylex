@@ -33,6 +33,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('lineClamp', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({ x: { lineClamp: 3 } });
         `)
       ).toMatchInlineSnapshot();
@@ -41,6 +42,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('pointerEvents', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             a: { pointerEvents: 'auto' },
             b: { pointerEvents: 'box-none' },
@@ -54,6 +56,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('scrollbarWidth', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({ x: { scrollbarWidth: 'none' } });
         `)
       ).toMatchInlineSnapshot();

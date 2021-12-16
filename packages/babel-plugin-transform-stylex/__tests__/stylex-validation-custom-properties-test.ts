@@ -33,8 +33,9 @@ describe('babel-plugin-transform-stylex', () => {
       expect(() => {
         transform(
           `
-          const styles = stylex.create({default: {color: 'var(--foo'}})
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({default: {color: 'var(--foo'}})
+          `,
           { definedStylexCSSVariables: { foo: 1 } }
         );
       }).toThrow(messages.LINT_UNCLOSED_FUNCTION);
@@ -44,8 +45,9 @@ describe('babel-plugin-transform-stylex', () => {
       expect(() => {
         transform(
           `
-          const styles = stylex.create({default: {color: 'var(foo'}})
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({default: {color: 'var(foo'}})
+          `,
           { definedStylexCSSVariables: { foo: 1 } }
         );
       }).toThrow();
@@ -55,16 +57,18 @@ describe('babel-plugin-transform-stylex', () => {
       expect(() => {
         transform(
           `
-          const styles = stylex.create({foo: { color: 'var(--foo)' }});
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({foo: { color: 'var(--foo)' }});
+          `,
           { definedStylexCSSVariables: { foo: 1 } }
         );
       }).not.toThrow();
       expect(() => {
         transform(
           `
-          const styles = stylex.create({foo: { backgroundColor: 'var(--foo)', color: 'var(--bar)' }});
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({foo: { backgroundColor: 'var(--foo)', color: 'var(--bar)' }});
+          `,
           { definedStylexCSSVariables: { foo: 1, bar: 1 } }
         );
       }).not.toThrow();
@@ -73,38 +77,43 @@ describe('babel-plugin-transform-stylex', () => {
     test('allow undefined custom properties', () => {
       expect(() => {
         transform(`
-const styles = stylex.create({foo: { color: 'var(--foobar)' }});
+          import stylex from 'stylex';
+          const styles = stylex.create({foo: { color: 'var(--foobar)' }});
         `);
       }).not.toThrow();
       expect(() => {
         transform(
           `
-const styles = stylex.create({foo: { color: 'var(--foobar)' }});
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({foo: { color: 'var(--foobar)' }});
+          `,
           { definedStylexCSSVariables: null }
         );
       }).not.toThrow();
       expect(() => {
         transform(
           `
-const styles = stylex.create({foo: { color: 'var(--foobar)' }});
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({foo: { color: 'var(--foobar)' }});
+          `,
           { definedStylexCSSVariables: undefined }
         );
       }).not.toThrow();
       expect(() => {
         transform(
           `
-const styles = stylex.create({foo: { color: 'var(--foobar)' }});
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({foo: { color: 'var(--foobar)' }});
+          `,
           { definedStylexCSSVariables: { foo: 1 } }
         );
       }).not.toThrow();
       expect(() => {
         transform(
           `
-        const styles = stylex.create({foo: { backgroundColor: 'var(--foofoo)', color: 'var(--foobar)' }});
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.create({foo: { backgroundColor: 'var(--foofoo)', color: 'var(--foobar)' }});
+          `,
           { definedStylexCSSVariables: { foo: 1, bar: 1 } }
         );
       }).not.toThrow();

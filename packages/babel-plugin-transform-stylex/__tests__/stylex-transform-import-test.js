@@ -57,14 +57,16 @@ describe('babel-plugin-transform-stylex', () => {
     test('named declaration export', () => {
       expect(
         transform(`
-          export const styles = (stylex.create({
+          import stylex from 'stylex';
+          export const styles = stylex.create({
             foo: {
               color: 'red'
             },
-          }));
+          });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         export const styles = {
           foo: {
             color: \\"x1e2nbdu\\"
@@ -73,9 +75,28 @@ describe('babel-plugin-transform-stylex', () => {
       `);
     });
 
+    test('Does nothing when stylex not imported', () => {
+      expect(
+        transform(`
+          export const styles = stylex.create({
+            foo: {
+              color: 'red'
+            },
+          });
+        `)
+      ).toMatchInlineSnapshot(`
+        "export const styles = stylex.create({
+          foo: {
+            color: 'red'
+          }
+        });"
+      `);
+    });
+
     test('named property export', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             foo: {
               color: 'red'
@@ -84,7 +105,8 @@ describe('babel-plugin-transform-stylex', () => {
           export {styles}
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         const styles = {
           foo: {
             color: \\"x1e2nbdu\\"
@@ -97,6 +119,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('default export', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           export default (stylex.create({
             foo: {
               color: 'red'
@@ -104,7 +127,8 @@ describe('babel-plugin-transform-stylex', () => {
           }));
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         export default {
           foo: {
             color: \\"x1e2nbdu\\"
@@ -116,6 +140,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('module.export', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             foo: {
               color: 'red'
@@ -124,7 +149,8 @@ describe('babel-plugin-transform-stylex', () => {
           module.export = styles;
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         const styles = {
           foo: {
             color: \\"x1e2nbdu\\"
@@ -224,12 +250,20 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import { create } from 'stylex';
-        stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
-        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
-        stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
-        stylex.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
-        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
-        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        import __stylex__ from \\"stylex\\";
+
+        __stylex__.inject(\\".xrkmrrc{background-color:red}\\", 1);
+
+        __stylex__.inject(\\".xju2f9n{color:blue}\\", 1);
+
+        __stylex__.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+
+        __stylex__.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+
+        __stylex__.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+
+        __stylex__.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+
         const styles = {
           default: {
             backgroundColor: \\"xrkmrrc\\",
@@ -260,12 +294,20 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import { create as css } from 'stylex';
-        stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
-        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
-        stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
-        stylex.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
-        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
-        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        import __stylex__ from \\"stylex\\";
+
+        __stylex__.inject(\\".xrkmrrc{background-color:red}\\", 1);
+
+        __stylex__.inject(\\".xju2f9n{color:blue}\\", 1);
+
+        __stylex__.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+
+        __stylex__.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+
+        __stylex__.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+
+        __stylex__.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+
         const styles = {
           default: {
             backgroundColor: \\"xrkmrrc\\",
