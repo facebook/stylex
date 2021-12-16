@@ -40,12 +40,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1lkbs04{border-block-color:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockColor: \\"x1lkbs04\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1lkbs04\\";"
       `);
     });
 
@@ -57,12 +52,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xk864d9{border-block-start-color:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockStartColor: \\"xk864d9\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xk864d9\\";"
       `);
     });
 
@@ -74,12 +64,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xz8foqe{border-block-end-color:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockEndColor: \\"xz8foqe\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xz8foqe\\";"
       `);
     });
 
@@ -91,12 +76,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1v09clb{border-inline-color:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineColor: \\"x1v09clb\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1v09clb\\";"
       `);
     });
 
@@ -108,12 +88,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1t19a1o{border-inline-start-color:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineStartColor: \\"x1t19a1o\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1t19a1o\\";"
       `);
     });
 
@@ -125,12 +100,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x14mj1wy{border-inline-end-color:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineEndColor: \\"x14mj1wy\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x14mj1wy\\";"
       `);
     });
 
@@ -144,12 +114,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x7mea6a{border-block-style:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockStyle: \\"x7mea6a\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x7mea6a\\";"
       `);
     });
 
@@ -161,12 +126,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xbg2y89{border-block-start-style:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockStartStyle: \\"xbg2y89\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xbg2y89\\";"
       `);
     });
 
@@ -178,12 +138,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1yfoggo{border-block-end-style:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockEndStyle: \\"x1yfoggo\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1yfoggo\\";"
       `);
     });
 
@@ -195,12 +150,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xt8kkye{border-inline-style:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineStyle: \\"xt8kkye\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xt8kkye\\";"
       `);
     });
 
@@ -212,12 +162,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xl8mozw{border-inline-start-style:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineStartStyle: \\"xl8mozw\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xl8mozw\\";"
       `);
     });
 
@@ -229,12 +174,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x10o505a{border-inline-end-style:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineEndStyle: \\"x10o505a\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x10o505a\\";"
       `);
     });
 
@@ -248,12 +188,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1616tdu{border-block-width:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockWidth: \\"x1616tdu\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1616tdu\\";"
       `);
     });
 
@@ -265,12 +200,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xnh6zc7{border-block-start-width:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockStartWidth: \\"xnh6zc7\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xnh6zc7\\";"
       `);
     });
 
@@ -282,12 +212,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1fvpbjb{border-block-end-width:0}\\", 1);
-        const styles = {
-          x: {
-            borderBlockEndWidth: \\"x1fvpbjb\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1fvpbjb\\";"
       `);
     });
 
@@ -299,12 +224,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xuxrje7{border-inline-width:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineWidth: \\"xuxrje7\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xuxrje7\\";"
       `);
     });
 
@@ -316,12 +236,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x14e42zd{border-inline-start-width:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineStartWidth: \\"x14e42zd\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x14e42zd\\";"
       `);
     });
 
@@ -333,12 +248,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x10w94by{border-inline-end-width:0}\\", 1);
-        const styles = {
-          x: {
-            borderInlineEndWidth: \\"x10w94by\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x10w94by\\";"
       `);
     });
 
@@ -352,12 +262,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xlb5a52{inset-block-start:0}\\", 1);
-        const styles = {
-          x: {
-            insetBlockStart: \\"xlb5a52\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xlb5a52\\";"
       `);
     });
 
@@ -369,12 +274,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x10no89f{inset-block:0}\\", 1);
-        const styles = {
-          x: {
-            insetBlock: \\"x10no89f\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x10no89f\\";"
       `);
     });
 
@@ -386,12 +286,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xuufnwz{inset-block-end:0}\\", 1);
-        const styles = {
-          x: {
-            insetBlockEnd: \\"xuufnwz\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xuufnwz\\";"
       `);
     });
 
@@ -403,12 +298,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xlb5a52{inset-block-start:0}\\", 1);
-        const styles = {
-          x: {
-            insetBlockStart: \\"xlb5a52\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xlb5a52\\";"
       `);
     });
 
@@ -420,12 +310,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x17y0mx6{inset-inline:0}\\", 1);
-        const styles = {
-          x: {
-            insetInline: \\"x17y0mx6\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x17y0mx6\\";"
       `);
     });
 
@@ -437,12 +322,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xtijo5x{inset-inline-end:0}\\", 1);
-        const styles = {
-          x: {
-            insetInlineEnd: \\"xtijo5x\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xtijo5x\\";"
       `);
     });
 
@@ -454,12 +334,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1o0tod{inset-inline-start:0}\\", 1);
-        const styles = {
-          x: {
-            insetInlineStart: \\"x1o0tod\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1o0tod\\";"
       `);
     });
 
@@ -473,12 +348,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x10im51j{margin-block:0}\\", 1);
-        const styles = {
-          x: {
-            marginBlock: \\"x10im51j\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x10im51j\\";"
       `);
     });
 
@@ -490,12 +360,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1g8azq5{margin-block-end:0}\\", 1);
-        const styles = {
-          x: {
-            marginBlockEnd: \\"x1g8azq5\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1g8azq5\\";"
       `);
     });
 
@@ -507,12 +372,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1rjqi9y{margin-block-start:0}\\", 1);
-        const styles = {
-          x: {
-            marginBlockStart: \\"x1rjqi9y\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1rjqi9y\\";"
       `);
     });
 
@@ -524,12 +384,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xrxpjvj{margin-inline:0}\\", 1);
-        const styles = {
-          x: {
-            marginInline: \\"xrxpjvj\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xrxpjvj\\";"
       `);
     });
 
@@ -541,12 +396,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x14z9mp{margin-inline-end:0}\\", 1);
-        const styles = {
-          x: {
-            marginInlineEnd: \\"x14z9mp\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x14z9mp\\";"
       `);
     });
 
@@ -558,12 +408,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1lziwak{margin-inline-start:0}\\", 1);
-        const styles = {
-          x: {
-            marginInlineStart: \\"x1lziwak\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1lziwak\\";"
       `);
     });
 
@@ -577,12 +422,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xt970qd{padding-block:0}\\", 1);
-        const styles = {
-          x: {
-            paddingBlock: \\"xt970qd\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xt970qd\\";"
       `);
     });
 
@@ -594,12 +434,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x33s65n{padding-block-end:0}\\", 1);
-        const styles = {
-          x: {
-            paddingBlockEnd: \\"x33s65n\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x33s65n\\";"
       `);
     });
 
@@ -611,12 +446,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1wpizmb{padding-block-start:0}\\", 1);
-        const styles = {
-          x: {
-            paddingBlockStart: \\"x1wpizmb\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1wpizmb\\";"
       `);
     });
 
@@ -628,12 +458,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xnjsko4{padding-inline:0}\\", 1);
-        const styles = {
-          x: {
-            paddingInline: \\"xnjsko4\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xnjsko4\\";"
       `);
     });
 
@@ -645,12 +470,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xyri2b{padding-inline-end:0}\\", 1);
-        const styles = {
-          x: {
-            paddingInlineEnd: \\"xyri2b\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xyri2b\\";"
       `);
     });
 
@@ -662,12 +482,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1c1uobl{padding-inline-start:0}\\", 1);
-        const styles = {
-          x: {
-            paddingInlineStart: \\"x1c1uobl\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1c1uobl\\";"
       `);
     });
 
@@ -683,12 +498,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xnx3k43{right:5px}\\", 1, \\".xnx3k43{left:5px}\\");
-        const styles = {
-          x: {
-            end: \\"xnx3k43\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xnx3k43\\";"
       `);
     });
 
@@ -700,12 +510,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
-        const styles = {
-          x: {
-            marginEnd: \\"x11i5rnm\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x11i5rnm\\";"
       `);
     });
 
@@ -716,15 +521,9 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
-        stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
-        const styles = {
-          x: {
-            marginEnd: \\"x11i5rnm\\",
-            marginStart: \\"x1mh8g0r\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        "stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
+        stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
+        const classnames = \\"x1mh8g0r x11i5rnm\\";"
       `);
     });
 
@@ -736,12 +535,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
-        const styles = {
-          x: {
-            marginStart: \\"x1mh8g0r\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1mh8g0r\\";"
       `);
     });
 
@@ -754,13 +548,7 @@ describe('babel-plugin-transform-stylex', () => {
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xdj266r{margin-top:0}\\", 1);
         stylex.inject(\\".xat24cr{margin-bottom:0}\\", 1);
-        const styles = {
-          x: {
-            marginTop: \\"xdj266r\\",
-            marginBottom: \\"xat24cr\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xdj266r xat24cr\\";"
       `);
     });
 
@@ -772,12 +560,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x4uap5{padding-right:0}\\", 1, \\".x4uap5{padding-left:0}\\");
-        const styles = {
-          x: {
-            paddingEnd: \\"x4uap5\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x4uap5\\";"
       `);
     });
 
@@ -788,15 +571,9 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x4uap5{padding-right:0}\\", 1, \\".x4uap5{padding-left:0}\\");
-        stylex.inject(\\".xkhd6sd{padding-left:0}\\", 1, \\".xkhd6sd{padding-right:0}\\");
-        const styles = {
-          x: {
-            paddingEnd: \\"x4uap5\\",
-            paddingStart: \\"xkhd6sd\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        "stylex.inject(\\".xkhd6sd{padding-left:0}\\", 1, \\".xkhd6sd{padding-right:0}\\");
+        stylex.inject(\\".x4uap5{padding-right:0}\\", 1, \\".x4uap5{padding-left:0}\\");
+        const classnames = \\"xkhd6sd x4uap5\\";"
       `);
     });
 
@@ -808,12 +585,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xkhd6sd{padding-left:0}\\", 1, \\".xkhd6sd{padding-right:0}\\");
-        const styles = {
-          x: {
-            paddingStart: \\"xkhd6sd\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xkhd6sd\\";"
       `);
     });
 
@@ -826,13 +598,7 @@ describe('babel-plugin-transform-stylex', () => {
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xexx8yu{padding-top:0}\\", 1);
         stylex.inject(\\".x18d9i69{padding-bottom:0}\\", 1);
-        const styles = {
-          x: {
-            paddingTop: \\"xexx8yu\\",
-            paddingBottom: \\"x18d9i69\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xexx8yu x18d9i69\\";"
       `);
     });
 
@@ -844,12 +610,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xq7jlbq{left:5px}\\", 1, \\".xq7jlbq{right:5px}\\");
-        const styles = {
-          x: {
-            start: \\"xq7jlbq\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xq7jlbq\\";"
       `);
     });
 
@@ -872,7 +633,7 @@ describe('babel-plugin-transform-stylex', () => {
         stylex.inject(\\".xhi7eei{margin-right:2}\\", 1, \\".xhi7eei{margin-left:2}\\");
         stylex.inject(\\".x1p2gmtr{margin-bottom:3}\\", 1);
         stylex.inject(\\".x15l52qr{margin-left:4}\\", 1, \\".x15l52qr{margin-right:4}\\");
-        \\"x15l52qr x1p2gmtr xhi7eei x14bfre8\\";"
+        \\"x14bfre8 xhi7eei x1p2gmtr x15l52qr\\";"
       `);
     });
   });

@@ -52,43 +52,43 @@ describe('babel-plugin-transform-stylex', () => {
       `);
 
       expect(output.metadata).toMatchInlineSnapshot(`
-        Object {
-          "stylex": Array [
-            Array [
+        {
+          "stylex": [
+            [
               "x1e2nbdu",
-              Object {
+              {
                 "ltr": ".x1e2nbdu{color:red}",
                 "rtl": null,
               },
               1,
             ],
-            Array [
+            [
               "x1ycjhwn",
-              Object {
+              {
                 "ltr": ".x1ycjhwn{height:5px}",
                 "rtl": null,
               },
               1,
             ],
-            Array [
+            [
               "x15uk0yd",
-              Object {
+              {
                 "ltr": ".x15uk0yd:hover{left:10px}",
                 "rtl": ".x15uk0yd:hover{right:10px}",
               },
               8,
             ],
-            Array [
+            [
               "x10tbbcl",
-              Object {
+              {
                 "ltr": "@media (min-width: 1000px){.x10tbbcl.x10tbbcl{right:5px}}",
                 "rtl": "@media (min-width: 1000px){.x10tbbcl.x10tbbcl{left:5px}}",
               },
               2,
             ],
-            Array [
+            [
               "x18kvd1d-B",
-              Object {
+              {
                 "ltr": "@keyframes x18kvd1d-B{from{left:0;}to{left:100px;}}",
                 "rtl": "@keyframes x18kvd1d-B{from{right:0;}to{right:100px;}}",
               },

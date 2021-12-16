@@ -134,4 +134,150 @@ describe('babel-plugin-transform-stylex', () => {
       `);
     });
   });
+
+  describe('[transform] import aliases', () => {
+    test('can import with a different name ', () => {
+      expect(
+        transform(`
+          import foobar from 'stylex';
+
+          const styles = foobar.create({
+            default: {
+              backgroundColor: 'red',
+              color: 'blue',
+              padding: 5
+            }
+          });
+          styles;
+        `)
+      ).toMatchInlineSnapshot(`
+        "import foobar from 'stylex';
+        foobar.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        foobar.inject(\\".xju2f9n{color:blue}\\", 1);
+        foobar.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        foobar.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+        foobar.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        foobar.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        const styles = {
+          default: {
+            backgroundColor: \\"xrkmrrc\\",
+            color: \\"xju2f9n\\",
+            paddingTop: \\"x123j3cw\\",
+            paddingEnd: \\"x1mpkggp\\",
+            paddingBottom: \\"xs9asl8\\",
+            paddingStart: \\"x1t2a60a\\"
+          }
+        };
+        styles;"
+      `);
+    });
+
+    test('can import wildcard', () => {
+      expect(
+        transform(`
+          import * as foobar from 'stylex';
+
+          const styles = foobar.create({
+            default: {
+              backgroundColor: 'red',
+              color: 'blue',
+              padding: 5
+            }
+          });
+          styles;
+        `)
+      ).toMatchInlineSnapshot(`
+        "import * as foobar from 'stylex';
+        foobar.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        foobar.inject(\\".xju2f9n{color:blue}\\", 1);
+        foobar.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        foobar.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+        foobar.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        foobar.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        const styles = {
+          default: {
+            backgroundColor: \\"xrkmrrc\\",
+            color: \\"xju2f9n\\",
+            paddingTop: \\"x123j3cw\\",
+            paddingEnd: \\"x1mpkggp\\",
+            paddingBottom: \\"xs9asl8\\",
+            paddingStart: \\"x1t2a60a\\"
+          }
+        };
+        styles;"
+      `);
+    });
+
+    test('can import just {create}', () => {
+      expect(
+        transform(`
+          import {create} from 'stylex';
+
+          const styles = create({
+            default: {
+              backgroundColor: 'red',
+              color: 'blue',
+              padding: 5
+            }
+          });
+          styles;
+        `)
+      ).toMatchInlineSnapshot(`
+        "import { create } from 'stylex';
+        stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
+        stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        stylex.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        const styles = {
+          default: {
+            backgroundColor: \\"xrkmrrc\\",
+            color: \\"xju2f9n\\",
+            paddingTop: \\"x123j3cw\\",
+            paddingEnd: \\"x1mpkggp\\",
+            paddingBottom: \\"xs9asl8\\",
+            paddingStart: \\"x1t2a60a\\"
+          }
+        };
+        styles;"
+      `);
+    });
+
+    test('can import just {create} with alias', () => {
+      expect(
+        transform(`
+          import {create as css} from 'stylex';
+
+          const styles = css({
+            default: {
+              backgroundColor: 'red',
+              color: 'blue',
+              padding: 5
+            }
+          });
+          styles;
+        `)
+      ).toMatchInlineSnapshot(`
+        "import { create as css } from 'stylex';
+        stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
+        stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        stylex.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        const styles = {
+          default: {
+            backgroundColor: \\"xrkmrrc\\",
+            color: \\"xju2f9n\\",
+            paddingTop: \\"x123j3cw\\",
+            paddingEnd: \\"x1mpkggp\\",
+            paddingBottom: \\"xs9asl8\\",
+            paddingStart: \\"x1t2a60a\\"
+          }
+        };
+        styles;"
+      `);
+    });
+  });
 });

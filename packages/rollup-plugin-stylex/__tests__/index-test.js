@@ -100,7 +100,7 @@ describe('rollup-plugin-stylex', () => {
           marginStart: \\"x1n8p6zw\\",
           marginBlockStart: \\"x188knyk\\",
           height: \\"x1je5kxa\\",
-          ':hover': {
+          \\":hover\\": {
             background: \\"x1kflwvg\\"
           }
         }
@@ -131,7 +131,7 @@ describe('rollup-plugin-stylex', () => {
         stylex.inject(\\".x6mlivy{width:100%}\\", 1);
         var styles$2 = {
           bar: {
-            otherStyles__bar: \\"otherStyles__bar\\",
+            \\"otherStyles__styles.bar\\": \\"otherStyles__styles.bar\\",
             display: \\"xntgbld\\",
             width: \\"x6mlivy\\"
           }
@@ -143,7 +143,7 @@ describe('rollup-plugin-stylex', () => {
         stylex.inject(\\".x1u78jha{width:50%}\\", 1);
         const styles$1 = {
           baz: {
-            npmStyles__baz: \\"npmStyles__baz\\",
+            \\"npmStyles__styles.baz\\": \\"npmStyles__styles.baz\\",
             display: \\"x1wdx05y\\",
             height: \\"x1je5kxa\\",
             width: \\"x1u78jha\\"
@@ -157,17 +157,16 @@ describe('rollup-plugin-stylex', () => {
         stylex.inject(\\".x1n8p6zw{margin-left:10px}\\", 1, \\".x1n8p6zw{margin-right:10px}\\");
         stylex.inject(\\".x188knyk{margin-block-start:99px}\\", 1);
         stylex.inject(\\".x1je5kxa{height:500px}\\", 1);
-        stylex.inject(\\".x1kflwvg:hover{background:red}\\", 7.1);
+        stylex.inject(\\".x1kflwvg:hover{background:red}\\", 8);
         var styles = {
           foo: {
-            index__foo: \\"index__foo\\",
+            \\"index__styles.foo\\": \\"index__styles.foo\\",
             animationName: \\"x1nrqb13\\",
             display: \\"x1c4r43l\\",
             marginStart: \\"x1n8p6zw\\",
             marginBlockStart: \\"x188knyk\\",
             height: \\"x1je5kxa\\",
-            ':hover': {
-              index__foo: \\"index__foo\\",
+            \\":hover\\": {
               background: \\"x1kflwvg\\"
             }
           }

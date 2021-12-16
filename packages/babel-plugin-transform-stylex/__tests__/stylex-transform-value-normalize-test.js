@@ -25,7 +25,6 @@ function transform(source, opts = {}) {
   }).code;
 }
 
-/* eslint-disable quotes */
 describe('babel-plugin-transform-stylex', () => {
   /**
    * CSS value normalization
@@ -42,7 +41,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".x18qx21s{transform:rotate(10deg) translate3d(0,0,0)}\\", 0.1);"'
+        '"stylex.inject(\\".x18qx21s{transform:rotate(10deg) translate3d(0,0,0)}\\", 1);"'
       );
       expect(
         transform(`
@@ -66,7 +65,7 @@ describe('babel-plugin-transform-stylex', () => {
         stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
         stylex.inject(\\".xat24cr{margin-bottom:0}\\", 1);
         stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
-        stylex.inject(\\".xgsvwom{margin-left:1px}\\", 1);"
+        stylex.inject(\\".xgsvwom{margin-left:1px}\\", 1.1);"
       `);
     });
 
@@ -89,11 +88,9 @@ describe('babel-plugin-transform-stylex', () => {
             z: { transform: '0grad' }
           });
         `)
-      ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1jpfit1{transform:0deg}\\", 0.1);
-        stylex.inject(\\".x1jpfit1{transform:0deg}\\", 0.1);
-        stylex.inject(\\".x1jpfit1{transform:0deg}\\", 0.1);"
-      `);
+      ).toMatchInlineSnapshot(
+        '"stylex.inject(\\".x1jpfit1{transform:0deg}\\", 1);"'
+      );
     });
 
     test('calc() preserves spaces aroung "+" and "-"', () => {
@@ -243,7 +240,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        `"stylex.inject(\\".x37c5sx{font-size:calc(100% - 1.5rem)}\\", 1);"`
+        '"stylex.inject(\\".x37c5sx{font-size:calc(100% - 1.5rem)}\\", 1);"'
       );
     });
 

@@ -66,7 +66,7 @@ describe('babel-plugin-transform-stylex', () => {
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\"@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}\\", 1);
         const name = \\"x3zqmp-B\\";
-        stylex.inject(\\".x1qs41r0{animation:3s x3zqmp-B}\\", 0.1);"
+        stylex.inject(\\".x1qs41r0{animation:3s x3zqmp-B}\\", 1);"
       `);
     });
 

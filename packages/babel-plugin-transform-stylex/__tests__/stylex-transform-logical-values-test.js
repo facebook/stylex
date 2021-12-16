@@ -42,12 +42,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xof8tvn{clear:inline-end}\\", 1);
-        const styles = {
-          x: {
-            clear: \\"xof8tvn\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xof8tvn\\";"
       `);
     });
 
@@ -59,12 +54,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x18lmvvi{clear:inline-start}\\", 1);
-        const styles = {
-          x: {
-            clear: \\"x18lmvvi\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x18lmvvi\\";"
       `);
     });
 
@@ -76,12 +66,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1h0q493{float:inline-end}\\", 1);
-        const styles = {
-          x: {
-            float: \\"x1h0q493\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1h0q493\\";"
       `);
     });
 
@@ -93,12 +78,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1kmio9f{float:inline-start}\\", 1);
-        const styles = {
-          x: {
-            float: \\"x1kmio9f\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1kmio9f\\";"
       `);
     });
 
@@ -110,12 +90,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xp4054r{text-align:right}\\", 1, \\".xp4054r{text-align:left}\\");
-        const styles = {
-          x: {
-            textAlign: \\"xp4054r\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xp4054r\\";"
       `);
     });
 
@@ -127,12 +102,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1yc453h{text-align:left}\\", 1, \\".x1yc453h{text-align:right}\\");
-        const styles = {
-          x: {
-            textAlign: \\"x1yc453h\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1yc453h\\";"
       `);
     });
 
@@ -147,13 +117,8 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".xodj72a{clear:end}\\", 1);
-        const styles = {
-          x: {
-            clear: \\"xodj72a\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        "stylex.inject(\\".xodj72a{clear:right}\\", 1, \\".xodj72a{clear:left}\\");
+        const classnames = \\"xodj72a\\";"
       `);
     });
 
@@ -164,13 +129,8 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x390i0x{clear:start}\\", 1);
-        const styles = {
-          x: {
-            clear: \\"x390i0x\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        "stylex.inject(\\".x390i0x{clear:left}\\", 1, \\".x390i0x{clear:right}\\");
+        const classnames = \\"x390i0x\\";"
       `);
     });
 
@@ -182,12 +142,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1guec7k{float:right}\\", 1, \\".x1guec7k{float:left}\\");
-        const styles = {
-          x: {
-            float: \\"x1guec7k\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1guec7k\\";"
       `);
     });
 
@@ -199,12 +154,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xrbpyxo{float:left}\\", 1, \\".xrbpyxo{float:right}\\");
-        const styles = {
-          x: {
-            float: \\"xrbpyxo\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xrbpyxo\\";"
       `);
     });
 
@@ -220,12 +170,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x14mnfz1{cursor:e-resize}\\", 1, \\".x14mnfz1{cursor:w-resize}\\");
-        const styles = {
-          x: {
-            cursor: \\"x14mnfz1\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x14mnfz1\\";"
       `);
     });
 
@@ -237,12 +182,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x14isd7o{cursor:w-resize}\\", 1, \\".x14isd7o{cursor:e-resize}\\");
-        const styles = {
-          x: {
-            cursor: \\"x14isd7o\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x14isd7o\\";"
       `);
     });
 
@@ -254,12 +194,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xc7edbc{cursor:ne-resize}\\", 1, \\".xc7edbc{cursor:nw-resize}\\");
-        const styles = {
-          x: {
-            cursor: \\"xc7edbc\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xc7edbc\\";"
       `);
     });
 
@@ -271,12 +206,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xrpsa6j{cursor:nw-resize}\\", 1, \\".xrpsa6j{cursor:ne-resize}\\");
-        const styles = {
-          x: {
-            cursor: \\"xrpsa6j\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xrpsa6j\\";"
       `);
     });
 
@@ -288,12 +218,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xp35lg9{cursor:se-resize}\\", 1, \\".xp35lg9{cursor:sw-resize}\\");
-        const styles = {
-          x: {
-            cursor: \\"xp35lg9\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xp35lg9\\";"
       `);
     });
 
@@ -305,12 +230,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1egwzy8{cursor:sw-resize}\\", 1, \\".x1egwzy8{cursor:se-resize}\\");
-        const styles = {
-          x: {
-            cursor: \\"x1egwzy8\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1egwzy8\\";"
       `);
     });
 
@@ -326,13 +246,8 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x13xdq3h{animation-name:ignore-ltr}\\", 1, \\".x13xdq3h{animation-name:ignore-rtl}\\");
-        const styles = {
-          x: {
-            animationName: \\"x13xdq3h\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        "stylex.inject(\\".x13xdq3h{animation-name:ignore}\\", 1);
+        const classnames = \\"x13xdq3h\\";"
       `);
     });
 
@@ -344,12 +259,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xl0ducr{background-position:top right}\\", 1, \\".xl0ducr{background-position:top left}\\");
-        const styles = {
-          x: {
-            backgroundPosition: \\"xl0ducr\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xl0ducr\\";"
       `);
       expect(
         transform(`
@@ -358,12 +268,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xgg80n4{background-position:top left}\\", 1, \\".xgg80n4{background-position:top right}\\");
-        const styles = {
-          x: {
-            backgroundPosition: \\"xgg80n4\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xgg80n4\\";"
       `);
     });
 
@@ -375,12 +280,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1gnnqk1{box-shadow:none}\\", 1);
-        const styles = {
-          x: {
-            boxShadow: \\"x1gnnqk1\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1gnnqk1\\";"
       `);
       expect(
         transform(`
@@ -389,12 +289,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xtgyqtp{box-shadow:1px 1px #000}\\", 1, \\".xtgyqtp{box-shadow:-1px 1px #000}\\");
-        const styles = {
-          x: {
-            boxShadow: \\"xtgyqtp\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xtgyqtp\\";"
       `);
       expect(
         transform(`
@@ -403,12 +298,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1d2r41h{box-shadow:-1px -1px #000}\\", 1, \\".x1d2r41h{box-shadow:1px -1px #000}\\");
-        const styles = {
-          x: {
-            boxShadow: \\"x1d2r41h\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1d2r41h\\";"
       `);
       expect(
         transform(`
@@ -417,12 +307,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1x0mpz7{box-shadow:inset 1px 1px #000}\\", 1, \\".x1x0mpz7{box-shadow:inset -1px 1px #000}\\");
-        const styles = {
-          x: {
-            boxShadow: \\"x1x0mpz7\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1x0mpz7\\";"
       `);
       expect(
         transform(`
@@ -431,12 +316,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1fumi7f{box-shadow:1px 1px 1px 1px #000}\\", 1, \\".x1fumi7f{box-shadow:-1px 1px 1px 1px #000}\\");
-        const styles = {
-          x: {
-            boxShadow: \\"x1fumi7f\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1fumi7f\\";"
       `);
       expect(
         transform(`
@@ -445,12 +325,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1fs23zf{box-shadow:inset 1px 1px 1px 1px #000}\\", 1, \\".x1fs23zf{box-shadow:inset -1px 1px 1px 1px #000}\\");
-        const styles = {
-          x: {
-            boxShadow: \\"x1fs23zf\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1fs23zf\\";"
       `);
       expect(
         transform(`
@@ -459,12 +334,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".xtgmjod{box-shadow:2px 2px 2px 2px red,inset 1px 1px 1px 1px #000}\\", 1, \\".xtgmjod{box-shadow:-2px 2px 2px 2px red, inset -1px 1px 1px 1px #000}\\");
-        const styles = {
-          x: {
-            boxShadow: \\"xtgmjod\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"xtgmjod\\";"
       `);
     });
 
@@ -476,12 +346,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x19pm5ym{text-shadow:none}\\", 1);
-        const styles = {
-          x: {
-            textShadow: \\"x19pm5ym\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x19pm5ym\\";"
       `);
       expect(
         transform(`
@@ -490,12 +355,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x12y90mb{text-shadow:1px 1px #000}\\", 1, \\".x12y90mb{text-shadow:-1px 1px #000}\\");
-        const styles = {
-          x: {
-            textShadow: \\"x12y90mb\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x12y90mb\\";"
       `);
       expect(
         transform(`
@@ -504,12 +364,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x1l3mtsg{text-shadow:-1px -1px #000}\\", 1, \\".x1l3mtsg{text-shadow:1px -1px #000}\\");
-        const styles = {
-          x: {
-            textShadow: \\"x1l3mtsg\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x1l3mtsg\\";"
       `);
       expect(
         transform(`
@@ -518,12 +373,7 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".x67hq7l{text-shadow:1px 1px 1px #000}\\", 1, \\".x67hq7l{text-shadow:-1px 1px 1px #000}\\");
-        const styles = {
-          x: {
-            textShadow: \\"x67hq7l\\"
-          }
-        };
-        const classnames = stylex(styles.x);"
+        const classnames = \\"x67hq7l\\";"
       `);
     });
   });

@@ -1,0 +1,22 @@
+{
+  "name": "@stylexjs/shared",
+  "version": "1.0.0",
+  "description": "Shared Code for Stylex compile and runtime.",
+  "main": "lib/index.js",
+  "repository": "https://www.github.com/facebookexternal/stylex",
+  "author": "Naman Goel <nmn@fb.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "babel src/ --out-dir lib/ --copy-files",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "jest": {
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    }
+  }
+}
