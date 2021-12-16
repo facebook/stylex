@@ -25,6 +25,7 @@ import stylexKeyframes from './stylex-keyframes';
 import stylexInclude, {
   IncludedStyles as _IncludedStyles,
 } from './stylex-include';
+import stylexFirstThatWorks from './stylex-first-that-works';
 import * as m from './messages';
 
 export const create = styleXCreateSet;
@@ -32,3 +33,4 @@ export const keyframes = stylexKeyframes;
 export const include = stylexInclude;
 export const messages = m;
 export const IncludedStyles = _IncludedStyles;
+export const firstThatWorks = stylexFirstThatWorks;

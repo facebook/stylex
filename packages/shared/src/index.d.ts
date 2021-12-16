@@ -56,6 +56,8 @@ export class IncludedStyles {
   astNode: any;
 }
 
+export function firstThatWorks<T>(...args: T[]): T[];
+
 export const messages: {
   ILLEGAL_ARGUMENT_LENGTH: string;
   NON_STATIC_VALUE: string;

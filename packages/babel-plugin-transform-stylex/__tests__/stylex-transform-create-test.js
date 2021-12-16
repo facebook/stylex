@@ -232,6 +232,25 @@ describe('babel-plugin-transform-stylex', () => {
       `);
     });
 
+    test('Uses stylex.firstThatWorks correctly', () => {
+      expect(
+        transform(`
+           export const styles = stylex.create({
+             foo: {
+               position: stylex.firstThatWorks('sticky', 'fixed'),
+             }
+           });
+         `)
+      ).toMatchInlineSnapshot(`
+        "stylex.inject(\\".x15oojuh{position:fixed;position:sticky}\\", 1);
+        export const styles = {
+          foo: {
+            position: \\"x15oojuh\\"
+          }
+        };"
+      `);
+    });
+
     test('transforms complex property values containing custom properties variables', () => {
       expect(
         transform(`
