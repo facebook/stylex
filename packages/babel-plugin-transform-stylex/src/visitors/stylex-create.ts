@@ -7,14 +7,19 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
 import StateManager from '../utils/state-manager';
-import { create as stylexCreate } from '@stylexjs/shared';
+import {
+  create as stylexCreate,
+  include as stylexInclude,
+} from '@stylexjs/shared';
 import {
   injectDevClassNames,
   convertToTestStyles,
 } from '../utils/dev-classname';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { messages } from '@stylexjs/shared';
+import { evaluate } from '../utils/evaluate-path';
 
 /// This function looks for `stylex.create` calls and transforms them.
 //. 1. It finds the first argument to `stylex.create` and validates it.
@@ -54,15 +59,27 @@ export default function transformStyleXCreate(
 
     const processingState = preProcessStyleArg(firstArg);
 
-    // TODO: This doesn't support nested function calls.
-    // So when we add those, we'll need to replace this with an
-    // expanded fork of `evaluate` from `@babel/traverse.
-    const { confident, value } = firstArg.evaluate();
+    const identifiers: FunctionConfig['identifiers'] = {};
+    const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    state.stylexIncludeImport.forEach((name) => {
+      identifiers[name] = { fn: stylexInclude, takesPath: true };
+    });
+    state.stylexImport.forEach((name) => {
+      if (memberExpressions[name] == null) {
+        memberExpressions[name] = {};
+      }
+      memberExpressions[name].include = { fn: stylexInclude, takesPath: true };
+    });
+
+    const { confident, value } = evaluate(firstArg, {
+      identifiers,
+      memberExpressions,
+    });
     if (!confident) {
       throw new Error(messages.NON_STATIC_VALUE);
     }
     const plainObject = value;
-    // objectAstToJS(node.init.arguments[0]);
+
     let [compiledStyles, injectedStyles] = stylexCreate(
       plainObject,
       state.stylexSheetName
@@ -184,7 +201,7 @@ function preProcessStyleArg(
     SpreadElement(path) {
       const argument = path.get('argument');
       if (!argument.isTypeCastExpression()) {
-        throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
+        return;
       }
       const expression = argument.get('expression');
       if (!expression.isIdentifier() && !expression.isMemberExpression()) {

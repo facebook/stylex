@@ -17,6 +17,7 @@ export default class StateManager {
   // Imports
   readonly stylexImport: Set<string> = new Set(['stylex']);
   readonly stylexCreateImport: Set<string> = new Set();
+  readonly stylexIncludeImport: Set<string> = new Set();
   readonly stylexKeyframesImport: Set<string> = new Set();
 
   // `stylex.create` calls

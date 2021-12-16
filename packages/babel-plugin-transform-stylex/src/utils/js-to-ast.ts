@@ -6,6 +6,7 @@
  */
 
 import * as t from '@babel/types';
+import { IncludedStyles } from '@stylexjs/shared';
 
 type NestedStringObject = {
   readonly [key: string]: string | NestedStringObject;
@@ -16,12 +17,14 @@ export function convertObjectToAST(
 ): t.ObjectExpression {
   return t.objectExpression(
     Object.entries(obj).map(([key, value]) =>
-      t.objectProperty(
-        canBeIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
-        typeof value === 'string'
-          ? t.stringLiteral(value)
-          : convertObjectToAST(value)
-      )
+      value instanceof IncludedStyles
+        ? t.spreadElement(value.astNode)
+        : t.objectProperty(
+            canBeIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
+            typeof value === 'string'
+              ? t.stringLiteral(value)
+              : convertObjectToAST(value)
+          )
     )
   );
 }

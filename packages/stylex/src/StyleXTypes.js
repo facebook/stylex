@@ -108,15 +108,15 @@ export type Theme = $ReadOnly<{ [constantName: string]: string, ... }>;
 
 // type CSSValue = string | number | $ReadOnlyArray<mixed>;
 type MapCSSValueToClassName = <K, V>(K, V) => StyleXClassNameFor<K, V>;
+
+export type MapNamespace<CSS: { ... }> = $ObjMapi<CSS, MapCSSValueToClassName>;
 // NOTE: Flow was confused by nested ObjMap so for now, nested styles
 // are typed incorrectly to be a string. This won't matter for the time being.
 // type MapStyleToClassName = (<Rule: {}>(
 //   Rule,
 // ) => $ObjMap<Rule, MapCSSValueToClassName>) &
 //   MapCSSValueToClassName;
-type MapNamespaces = <CSS: { ... }>(
-  CSS
-) => $ObjMapi<CSS, MapCSSValueToClassName>;
+type MapNamespaces = <CSS: { ... }>(CSS) => MapNamespace<CSS>;
 
 export type Stylex$Create = <S: { ... }>(
   styles: S

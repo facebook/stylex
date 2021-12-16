@@ -17,6 +17,7 @@ import convertToClassName from './convert-to-className';
 import expandShorthands from './expand-shorthands';
 import { objFromEntries, objValues, objEntries } from './utils/object-utils';
 import * as messages from './messages';
+import { IncludedStyles } from './stylex-include';
 
 // This takes the object of styles passed to `stylex.create` and transforms it.
 //   The transformation replaces style values with classNames.
@@ -79,6 +80,9 @@ function styleXCreateNamespace(
   // e.g. `margin` gets expanded to `marginTop`, `marginBottom`, `marginStart`, `marginEnd`.
   // `entries` is an array of [key, value] pairs.
   const entries = namespaceEntries.flatMap(([key, value]) => {
+    if (value instanceof IncludedStyles) {
+      return [[key, value]];
+    }
     if (value != null && typeof value === 'object' && !Array.isArray(value)) {
       if (!key.startsWith(':') && !key.startsWith('@')) {
         throw new Error(messages.INVALID_PSEUDO);
@@ -126,7 +130,9 @@ function styleXCreateNamespace(
   const resolvedNamespace = {};
   const injectedStyles = {};
   for (const [key, val] of entries) {
-    if (val != null && typeof val === 'object' && !Array.isArray(val)) {
+    if (val instanceof IncludedStyles) {
+      resolvedNamespace[key] = val;
+    } else if (val != null && typeof val === 'object' && !Array.isArray(val)) {
       const pseudo = key;
       const innerObj = {};
       for (const [innerKey, innerVal] of objEntries(val)) {

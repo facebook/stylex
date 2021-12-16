@@ -9,7 +9,12 @@
 
 'use strict';
 
-import type { Keyframes, Stylex$Create, StyleXArray } from './StyleXTypes';
+import type {
+  Keyframes,
+  Stylex$Create,
+  StyleXArray,
+  MapNamespace,
+} from './StyleXTypes';
 
 import inject from './inject';
 
@@ -127,7 +132,20 @@ function stylexCreate(_styles: { ... }) {
   );
 }
 
+function stylexExtends<TStyles: { +[string]: string | number }>(
+  _styles: MapNamespace<TStyles>
+): TStyles {
+  throw new Error(
+    'stylex.extends should never be called. It should be compiled away.'
+  );
+}
+
+type Stylex$Extends = <TStyles: { +[string]: string | number }>(
+  _styles: MapNamespace<TStyles>
+) => TStyles;
+
 stylex.create = (stylexCreate: Stylex$Create);
+stylex.extends = (stylexExtends: Stylex$Extends);
 
 stylex.keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
@@ -144,7 +162,7 @@ stylex.UNSUPPORTED_PROPERTY = (props: { ... }) => {
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
   create: Stylex$Create,
-  dedupe: (...styles: $ReadOnlyArray<DedupeStyles>) => string,
+  extends: Stylex$Extends,
   inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
   keyframes: (keyframes: Keyframes) => string,
   ...
