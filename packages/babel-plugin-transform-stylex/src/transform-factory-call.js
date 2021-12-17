@@ -436,15 +436,8 @@ function buildCollisionDedupeCall(conditions, namespaceData, opts) {
   return {
     type: 'CallExpression',
     callee: {
-      type: 'MemberExpression',
-      object: {
-        type: 'Identifier',
-        name: 'stylex',
-      },
-      property: {
-        type: 'Identifier',
-        name: 'dedupe',
-      },
+      type: 'Identifier',
+      name: 'stylex',
     },
     arguments: buildDedupeRuntimeArguments(conditions, namespaceData, opts),
   };

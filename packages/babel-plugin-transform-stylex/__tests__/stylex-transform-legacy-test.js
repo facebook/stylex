@@ -203,7 +203,7 @@ describe('babel-plugin-transform-stylex', () => {
         ).toMatchInlineSnapshot(`
           "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
           stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
-          stylex.dedupe({
+          stylex({
             \\"color-1\\": \\"h3ivgpu3\\"
           }, isActive ? {
             \\"color-1\\": \\"y6ups3dp\\"
@@ -437,7 +437,7 @@ describe('babel-plugin-transform-stylex', () => {
           stylex.inject(\\".pdnn8mpk{padding-right:2px}\\", 1, \\".pdnn8mpk{padding-left:2px}\\");
           stylex.inject(\\".rt9i6ysf{padding-bottom:2px}\\", 1);
           stylex.inject(\\".qbvjirod{padding-left:10px}\\", 1, \\".qbvjirod{padding-right:10px}\\");
-          stylex.dedupe({
+          stylex({
             \\"padding-top-1\\": \\"ngbj85sm\\",
             \\"padding-end-1\\": \\"pdnn8mpk\\",
             \\"padding-bottom-1\\": \\"rt9i6ysf\\",
@@ -561,7 +561,7 @@ describe('babel-plugin-transform-stylex', () => {
           stylex.inject(\\".pdnn8mpk{padding-right:2px}\\", 1, \\".pdnn8mpk{padding-left:2px}\\");
           stylex.inject(\\".rt9i6ysf{padding-bottom:2px}\\", 1);
           stylex.inject(\\".qbvjirod{padding-left:10px}\\", 1, \\".qbvjirod{padding-right:10px}\\");
-          stylex.dedupe({
+          stylex({
             \\"padding-top-1\\": \\"ngbj85sm\\",
             \\"padding-end-1\\": \\"pdnn8mpk\\",
             \\"padding-bottom-1\\": \\"rt9i6ysf\\",
@@ -642,7 +642,7 @@ describe('babel-plugin-transform-stylex', () => {
         ).toMatchInlineSnapshot(`
           "stylex.inject(\\".gmvq99xn{margin-top:24px}\\", 1);
           stylex.inject(\\".r6ydv39a{margin-top:16px}\\", 1);
-          stylex.dedupe(headingLevel === 1 || headingLevel === 2 ? {
+          stylex(headingLevel === 1 || headingLevel === 2 ? {
             \\"margin-top-1\\": \\"gmvq99xn\\"
           } : {}, headingLevel === 3 || headingLevel === 4 ? {
             \\"margin-top-1\\": \\"r6ydv39a\\"
@@ -725,7 +725,7 @@ describe('babel-plugin-transform-stylex', () => {
         ).toMatchInlineSnapshot(`
           "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
           stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
-          stylex.dedupe({
+          stylex({
             \\"FooBar__default\\": \\"FooBar__default\\",
             \\"color-1\\": \\"h3ivgpu3\\"
           }, isActive ? {
@@ -766,12 +766,12 @@ describe('babel-plugin-transform-stylex', () => {
           "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
           stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
           \\"FooBar__default\\";
-          stylex.dedupe({
+          stylex({
             \\"FooBar__default\\": \\"FooBar__default\\"
           }, isBlue ? {
             \\"FooBar__blue\\": \\"FooBar__blue\\"
           } : null);
-          stylex.dedupe({
+          stylex({
             \\"FooBar__default\\": \\"FooBar__default\\"
           }, isBlue ? {
             \\"FooBar__blue\\": \\"FooBar__blue\\"

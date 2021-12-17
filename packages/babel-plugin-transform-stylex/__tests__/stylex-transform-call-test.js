@@ -464,7 +464,7 @@ describe('babel-plugin-transform-stylex', () => {
       ).toMatchInlineSnapshot(`
         "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
         stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
-        stylex.dedupe({
+        stylex({
           \\"color-1\\": \\"h3ivgpu3\\"
         }, isActive ? {
           \\"color-1\\": \\"y6ups3dp\\"
@@ -570,15 +570,15 @@ describe('babel-plugin-transform-stylex', () => {
             options
           )
         ).toMatchInlineSnapshot(`
-            "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-            stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
-            stylex.dedupe({
-              \\"FooBar__styles.default\\": \\"FooBar__styles.default\\",
-              \\"color-1\\": \\"h3ivgpu3\\"
-            }, isActive ? {
-              \\"FooBar__styles.active\\": \\"FooBar__styles.active\\",
-              \\"color-1\\": \\"y6ups3dp\\"
-            } : null);"
+          "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+          stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
+          stylex({
+            \\"FooBar__styles.default\\": \\"FooBar__styles.default\\",
+            \\"color-1\\": \\"h3ivgpu3\\"
+          }, isActive ? {
+            \\"FooBar__styles.active\\": \\"FooBar__styles.active\\",
+            \\"color-1\\": \\"y6ups3dp\\"
+          } : null);"
         `);
       });
     });

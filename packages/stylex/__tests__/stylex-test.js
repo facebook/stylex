@@ -44,10 +44,6 @@ test('stylex.compose', () => {
   `);
 });
 
-test('stylex.dedupe', () => {
-  expect(stylex.dedupe({ a: 'aaa', b: 'bbb' })).toBe('aaa bbb');
-});
-
 // TODO: priorities need testing
 test('stylex.inject', () => {
   const prevCount = styleSheet.getRuleCount();

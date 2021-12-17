@@ -186,10 +186,6 @@ stylex.keyframes = (_keyframes: Keyframes): string => {
 
 stylex.inject = inject;
 
-stylex.dedupe = (...styles: $ReadOnlyArray<DedupeStyles>): string => {
-  return stylex(...styles);
-};
-
 // actual styles are defined in the compiler
 type AbsoluteFill = $ReadOnly<{
   bottom: 0,

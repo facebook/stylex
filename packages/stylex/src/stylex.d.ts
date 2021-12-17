@@ -1426,7 +1426,6 @@ declare var stylex: {
     >
   ) => NestedCSSPropTypes;
   create: Stylex$Create;
-  dedupe: (...styles: ReadonlyArray<DedupeStyles>) => string;
   flexBase: FlexBase;
   flexInlineBase: FlexInlineBase;
   inject: (
