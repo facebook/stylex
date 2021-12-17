@@ -236,6 +236,9 @@ describe('babel-plugin-transform-stylex', () => {
               },
               ':focus': {
                 color: 'yellow',
+              },
+              ':nth-child(2n)': {
+                color: 'purple'
               }
             },
           });
@@ -243,7 +246,8 @@ describe('babel-plugin-transform-stylex', () => {
         ).toMatchInlineSnapshot(`
           "stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);
           stylex.inject(\\".dcijxkbt:active{color:red}\\", 10);
-          stylex.inject(\\".qsrzr8xi:focus{color:yellow}\\", 9);"
+          stylex.inject(\\".qsrzr8xi:focus{color:yellow}\\", 9);
+          stylex.inject(\\".sablcdem:nth-child(2n){color:purple}\\", 6);"
         `);
       });
 
@@ -273,7 +277,7 @@ describe('babel-plugin-transform-stylex', () => {
                 '::before': {
                   color: 'red'
                 },
-              '::after': {
+                '::after': {
                   color: 'blue'
                 },
               },
@@ -438,68 +442,6 @@ describe('babel-plugin-transform-stylex', () => {
         stylex.inject(\\".ahb38r9s{border-right-width:1px}\\", 0.4, \\".ahb38r9s{border-left-width:1px}\\");
         stylex.inject(\\".scpwgmsl{border-bottom-width:1px}\\", 0.4);
         stylex.inject(\\".opot3u1k{border-left-width:1px}\\", 0.4, \\".opot3u1k{border-right-width:1px}\\");"
-      `);
-    });
-
-    test('[legacy] transforms pseudo object with & to CSS', () => {
-      expect(
-        transform(`
-          const styles = stylex.create({
-            default: {
-              '&:hover': {
-                backgroundColor: 'red',
-                color: 'blue',
-              },
-            },
-          });
-        `)
-      ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".pbqw5nlk:hover{background-color:red}\\", 8);
-        stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);"
-      `);
-    });
-
-    test('[legacy] transforms invalid pseudo object with & to CSS', () => {
-      expect(
-        transform(`
-          const styles = stylex.create({
-            default: {
-              '&:invalpwdijad': {
-                backgroundColor: 'red',
-                color: 'blue',
-              },
-            },
-          });
-        `)
-      ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".k6unt73l:invalpwdijad{background-color:red}\\", 2);
-        stylex.inject(\\".e05g6ngh:invalpwdijad{color:blue}\\", 2);"
-      `);
-    });
-
-    test('[legacy] transforms pseudo objects with & to CSS with correct order', () => {
-      expect(
-        transform(`
-          const styles = stylex.create({
-            default: {
-              '&:hover': {
-                backgroundColor: 'red',
-                color: 'blue',
-              },
-              '&:active': {
-                backgroundColor: 'blue',
-              },
-              '&:focus': {
-                backgroundColor: 'yellow',
-              }
-            },
-          });
-        `)
-      ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".pbqw5nlk:hover{background-color:red}\\", 8);
-        stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);
-        stylex.inject(\\".h5pumea0:active{background-color:blue}\\", 10);
-        stylex.inject(\\".wfgokdwq:focus{background-color:yellow}\\", 9);"
       `);
     });
   });

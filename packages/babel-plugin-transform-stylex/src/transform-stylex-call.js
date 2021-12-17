@@ -63,9 +63,6 @@ function createUniqueCSSName(str, opts) {
  * how it should appear in the document. 0 is last, greater numbers are first.
  */
 function getPriorityForPseudo(path, pseudo) {
-  if (pseudo && pseudo.startsWith('&:')) {
-    pseudo = pseudo.slice(1);
-  }
   // Get the actual pseudo name of a selector. We allow some pseudo selectors
   // with args like `:nth-child(2n)`
   if (pseudo[0] === ':') {
@@ -111,12 +108,6 @@ function getPriorityForRule(name) {
 function validatePseudo(path, pseudo) {
   if (pseudo == null) {
     return;
-  }
-
-  // NOTE: Start of a transition:
-  // Instead of ":hover", we want the keys to be "&:hover" going forward
-  if (pseudo.startsWith('&')) {
-    pseudo = pseudo.slice(1);
   }
 
   if (pseudo[0] === '@') {

@@ -249,11 +249,22 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `);
       }).not.toThrow();
+
       expect(() => {
         transform(`
           const styles = stylex.create({
             default: {
               'hover': {},
+            },
+          });
+        `);
+      }).toThrow(messages.INVALID_PSEUDO);
+
+      expect(() => {
+        transform(`
+          const styles = stylex.create({
+            default: {
+              '&:hover': {},
             },
           });
         `);
