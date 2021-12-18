@@ -12,38 +12,6 @@
 import { styleSheet } from '../src/StyleXSheet';
 import stylex from '../src/stylex';
 
-test('stylex.compose', () => {
-  expect(
-    stylex.compose(
-      {
-        backgroundColor: 'nu7423ey',
-      },
-      [
-        {
-          backgroundColor: 'abcdefg',
-          ':hover': {
-            backgroundColor: 'ksdfmwjs',
-          },
-        },
-      ],
-      {
-        color: 'gofk2cf1',
-        ':hover': {
-          backgroundColor: 'rse6dlih',
-        },
-      }
-    )
-  ).toMatchInlineSnapshot(`
-    Object {
-      ":hover": Object {
-        "backgroundColor": "rse6dlih",
-      },
-      "backgroundColor": "abcdefg",
-      "color": "gofk2cf1",
-    }
-  `);
-});
-
 // TODO: priorities need testing
 test('stylex.inject', () => {
   const prevCount = styleSheet.getRuleCount();

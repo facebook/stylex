@@ -9,12 +9,7 @@
 
 'use strict';
 
-import type {
-  Keyframes,
-  NestedCSSPropTypes,
-  Stylex$Create,
-  StyleXArray,
-} from './StyleXTypes';
+import type { Keyframes, Stylex$Create, StyleXArray } from './StyleXTypes';
 
 import inject from './inject';
 
@@ -132,52 +127,6 @@ function stylexCreate(_styles: { ... }) {
   );
 }
 
-/**
- * WARNING!
- * If you add another method to stylex make sure to update
- * CommonJSParser::getStylexPrefixSearchConf().
- *
- * Otherwise any callsites will fatal.
- */
-
-stylex.compose = function stylexCompose(
-  ...styles: Array<StyleXArray<?NestedCSSPropTypes | boolean>>
-): NestedCSSPropTypes {
-  // When flow creates an empty object, it doesn't like for it to have
-  // the type of an exact object. This is just a local override that
-  // uses the correct types and overrides the problems of Flow.
-  const baseObject = ({}: $FlowFixMe);
-
-  const workingStack = styles.reverse();
-
-  while (workingStack.length) {
-    // Reverse push nested styles back onto the stack to be processed
-    const next = styles.pop();
-    if (Array.isArray(next)) {
-      for (let i = next.length - 1; i >= 0; i--) {
-        workingStack.push(next[i]);
-      }
-      continue;
-    }
-
-    // Merge style objects
-    const styleObj = next;
-    if (styleObj != null && typeof styleObj === 'object') {
-      for (const key in styleObj) {
-        const value = styleObj[key];
-        if (typeof value === 'string') {
-          baseObject[key] = value;
-        } else if (typeof value === 'object') {
-          baseObject[key] = baseObject[key] ?? {};
-          Object.assign(baseObject[key], value);
-        }
-      }
-    }
-  }
-
-  return baseObject;
-};
-
 stylex.create = (stylexCreate: Stylex$Create);
 
 stylex.keyframes = (_keyframes: Keyframes): string => {
@@ -194,9 +143,6 @@ stylex.UNSUPPORTED_PROPERTY = (props: { ... }) => {
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
-  compose: (
-    ...styles: $ReadOnlyArray<StyleXArray<?NestedCSSPropTypes | boolean>>
-  ) => NestedCSSPropTypes,
   create: Stylex$Create,
   dedupe: (...styles: $ReadOnlyArray<DedupeStyles>) => string,
   inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,

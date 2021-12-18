@@ -1314,11 +1314,6 @@ type stylex = {
       StyleXArray<(DedupeStyles | null | undefined) | boolean>
     >
   ): string;
-  compose: (
-    ...styles: ReadonlyArray<
-      StyleXArray<(NestedCSSPropTypes | null | undefined) | boolean>
-    >
-  ) => NestedCSSPropTypes;
   create: Stylex$Create;
   dedupe: (...styles: ReadonlyArray<DedupeStyles>) => string;
   inject: (
