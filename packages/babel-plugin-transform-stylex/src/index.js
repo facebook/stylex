@@ -18,7 +18,6 @@ const {
   convertStylexCall,
   convertStylexKeyframesCall,
 } = require('./transform-stylex-call.js');
-const t = require('@babel/types');
 
 function styleXTransform(babel) {
   // GLOBAL variables. All the functions are outside the scope of the plugin
@@ -329,15 +328,8 @@ function styleXTransform(babel) {
         // Add the `stylex.insert` in runtime mode *and* in DEV mode.
         // We're keeping them in DEV mode to make fast refresh work correctly.
         // The extra calls will be ignored at runtime
-        if (!state.opts.stylexSheetName) {
+        if (!state.opts.stylexSheetName || state.opts.dev) {
           parentStatement.insertBefore(insertCalls);
-        } else if (state.opts.dev) {
-          parentStatement.insertBefore(
-            t.ifStatement(
-              t.identifier('__DEV__'),
-              t.blockStatement(insertCalls)
-            )
-          );
         }
         path.replaceWith(replacement);
         addRawInserts(rawInserts, state);
@@ -362,22 +354,12 @@ function styleXTransform(babel) {
           const bindingName = variableID.node.name;
           state.get('bindingsToNamespace').set(bindingName, namespaces);
         }
-        if (state.opts.stylexSheetName) {
-          if (state.opts.dev) {
-            // We're keeping them in DEV mode to make fast refresh work correctly.
-            // The extra calls will be ignored at runtime
-            parentStatement.insertBefore(
-              t.ifStatement(
-                t.identifier('__DEV__'),
-                t.blockStatement(insertCalls)
-              )
-            );
-          }
-          path.replaceWith(arg);
-        } else {
+        // We're keeping them in DEV mode to make fast refresh work correctly.
+        // The extra calls will be ignored at runtime
+        if (!state.opts.stylexSheetName || state.opts.dev) {
           insertCalls.forEach((call) => parentStatement.insertBefore(call));
-          path.replaceWith(arg);
         }
+        path.replaceWith(arg);
         stylexCreateCalls.add(parentStatement);
         addRawInserts(rawInserts, state);
       }

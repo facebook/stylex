@@ -57,7 +57,9 @@ describe('rollup-plugin-stylex', () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 
     expect(css).toMatchInlineSnapshot(`
-      ".p357zi0d{display:flex}
+      "@keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}
+      .rn32yjq5{animation-name:px4mktj3-B}
+      .p357zi0d{display:flex}
       html:not([dir='rtl']) .a3oefunm{margin-left:10px}
       html[dir='rtl'] .a3oefunm{margin-right:10px}
       .bjgvxnpl{margin-block-start:99px}
@@ -91,6 +93,7 @@ describe('rollup-plugin-stylex', () => {
       // index.js
       const styles = {
         foo: {
+          animationName: \\"rn32yjq5\\",
           display: \\"p357zi0d\\",
           marginStart: \\"a3oefunm\\",
           marginBlockStart: \\"bjgvxnpl\\",
@@ -122,12 +125,8 @@ describe('rollup-plugin-stylex', () => {
         "import stylex from 'stylex';
 
         // otherStyles.js
-
-        if (__DEV__) {
-          stylex.inject(\\".f804f6gw{display:block}\\", 1);
-          stylex.inject(\\".ln8gz9je{width:100%}\\", 1);
-        }
-
+        stylex.inject(\\".f804f6gw{display:block}\\", 1);
+        stylex.inject(\\".ln8gz9je{width:100%}\\", 1);
         const styles$2 = {
           bar: {
             otherStyles__bar: \\"otherStyles__bar\\",
@@ -147,18 +146,17 @@ describe('rollup-plugin-stylex', () => {
         };
 
         // index.js
-
-        if (__DEV__) {
-          stylex.inject(\\".p357zi0d{display:flex}\\", 1);
-          stylex.inject(\\".a3oefunm{margin-left:10px}\\", 1, \\".a3oefunm{margin-right:10px}\\");
-          stylex.inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
-          stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
-          stylex.inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
-        }
-
+        stylex.inject(\\"@keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}\\", 1);
+        stylex.inject(\\".rn32yjq5{animation-name:px4mktj3-B}\\", 1);
+        stylex.inject(\\".p357zi0d{display:flex}\\", 1);
+        stylex.inject(\\".a3oefunm{margin-left:10px}\\", 1, \\".a3oefunm{margin-right:10px}\\");
+        stylex.inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
+        stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
+        stylex.inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
         const styles = {
           foo: {
             index__foo: \\"index__foo\\",
+            animationName: \\"rn32yjq5\\",
             display: \\"p357zi0d\\",
             marginStart: \\"a3oefunm\\",
             marginBlockStart: \\"bjgvxnpl\\",
