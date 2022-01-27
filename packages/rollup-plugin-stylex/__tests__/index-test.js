@@ -57,15 +57,15 @@ describe('rollup-plugin-stylex', () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 
     expect(css).toMatchInlineSnapshot(`
-      "@keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}
-      .rn32yjq5{animation-name:px4mktj3-B}
-      .p357zi0d{display:flex}
-      html:not([dir='rtl']) .a3oefunm{margin-left:10px}
+      "html:not([dir='rtl']) .a3oefunm{margin-left:10px}
       html[dir='rtl'] .a3oefunm{margin-right:10px}
       .bjgvxnpl{margin-block-start:99px}
       .cctpw5f5{height:500px}
       .f804f6gw{display:block}
       .ln8gz9je{width:100%}
+      .p357zi0d{display:flex}
+      @keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}
+      .rn32yjq5{animation-name:px4mktj3-B}
       .lq9oatf1:hover{background:red}"
     `);
 

@@ -503,8 +503,11 @@ module.exports.processStylexRules = function processStylexRules(rules) {
   }
 
   const sortedRules = rules.sort(
-    ([, , firstPriority], [, , secondPriority]) =>
-      firstPriority - secondPriority
+    ([firstSelector, , firstPriority], [secondSelector, , secondPriority]) => {
+      const priorityComparison = firstPriority - secondPriority;
+      if (priorityComparison !== 0) return priorityComparison;
+      return firstSelector < secondSelector ? -1 : 1;
+    }
   );
 
   const collectedCSS = Array.from(new Map(sortedRules).values())
