@@ -9,14 +9,13 @@
 
 const path = require('path');
 const rollup = require('rollup');
-const { createBabelInputPluginFactory } = require('@rollup/plugin-babel');
+const { babel } = require('@rollup/plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const stylexPlugin = require('../src/index');
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {
-    const stylex = stylexPlugin(options);
     // Configure a rollup bundle
     const bundle = await rollup.rollup({
       // Remove stylex runtime from bundle
@@ -25,10 +24,12 @@ describe('rollup-plugin-stylex', () => {
       plugins: [
         nodeResolve(),
         commonjs(),
-        createBabelInputPluginFactory(stylex.babelHook)({
+        babel({
           babelHelpers: 'bundled',
+          configFile: path.resolve(__dirname, '__fixtures__/.babelrc.json'),
+          exclude: [/npmStyles\.js/],
         }),
-        stylex,
+        stylexPlugin(options),
       ],
     });
 
@@ -61,6 +62,8 @@ describe('rollup-plugin-stylex', () => {
       html[dir='rtl'] .a3oefunm{margin-right:10px}
       .bjgvxnpl{margin-block-start:99px}
       .cctpw5f5{height:500px}
+      .d9w12usg{width:50%}
+      .ew8mgplc{display:inline}
       .f804f6gw{display:block}
       .ln8gz9je{width:100%}
       .p357zi0d{display:flex}
@@ -73,7 +76,7 @@ describe('rollup-plugin-stylex', () => {
       "import stylex from 'stylex';
 
       // otherStyles.js
-      const styles$2 = {
+      var styles$2 = {
         bar: {
           display: \\"f804f6gw\\",
           width: \\"ln8gz9je\\"
@@ -81,17 +84,16 @@ describe('rollup-plugin-stylex', () => {
       };
 
       // npmStyles.js
-      stylex.inject('.rse6dlih{display:inline}', 1);
-      stylex.inject('.ezi3dscr{width:50%}', 1);
       const styles$1 = {
         baz: {
-          display: 'rse6dlih',
-          width: 'ezi3dscr'
+          display: \\"ew8mgplc\\",
+          height: \\"cctpw5f5\\",
+          width: \\"d9w12usg\\"
         }
       };
 
       // index.js
-      const styles = {
+      var styles = {
         foo: {
           animationName: \\"rn32yjq5\\",
           display: \\"p357zi0d\\",
@@ -127,7 +129,7 @@ describe('rollup-plugin-stylex', () => {
         // otherStyles.js
         stylex.inject(\\".f804f6gw{display:block}\\", 1);
         stylex.inject(\\".ln8gz9je{width:100%}\\", 1);
-        const styles$2 = {
+        var styles$2 = {
           bar: {
             otherStyles__bar: \\"otherStyles__bar\\",
             display: \\"f804f6gw\\",
@@ -136,12 +138,15 @@ describe('rollup-plugin-stylex', () => {
         };
 
         // npmStyles.js
-        stylex.inject('.rse6dlih{display:inline}', 1);
-        stylex.inject('.ezi3dscr{width:50%}', 1);
+        stylex.inject(\\".ew8mgplc{display:inline}\\", 1);
+        stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
+        stylex.inject(\\".d9w12usg{width:50%}\\", 1);
         const styles$1 = {
           baz: {
-            display: 'rse6dlih',
-            width: 'ezi3dscr'
+            npmStyles__baz: \\"npmStyles__baz\\",
+            display: \\"ew8mgplc\\",
+            height: \\"cctpw5f5\\",
+            width: \\"d9w12usg\\"
           }
         };
 
@@ -153,7 +158,7 @@ describe('rollup-plugin-stylex', () => {
         stylex.inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
         stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
         stylex.inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
-        const styles = {
+        var styles = {
           foo: {
             index__foo: \\"index__foo\\",
             animationName: \\"rn32yjq5\\",

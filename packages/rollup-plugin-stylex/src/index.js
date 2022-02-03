@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const babel = require('@babel/core');
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
 
 const IS_DEV_ENV =
@@ -19,26 +20,6 @@ module.exports = function stylexPlugin({
 
   return {
     name: 'rollup-plugin-stylex',
-    babelHook() {
-      return {
-        config(currentConfig) {
-          return {
-            ...currentConfig.options,
-            plugins: [
-              ...(currentConfig.options.plugins || []),
-              [stylexBabelPlugin, { dev, stylexSheetName: fileName }],
-            ],
-          };
-        },
-        result(result) {
-          const { metadata } = result;
-          if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
-            stylexRules = stylexRules.concat(metadata.stylex);
-          }
-          return result;
-        },
-      };
-    },
     buildStart() {
       stylexRules = [];
     },
@@ -52,6 +33,19 @@ module.exports = function stylexPlugin({
           type: 'asset',
         });
       }
+    },
+    async transform(inputCode, id) {
+      const { code, map, metadata } = await babel.transformAsync(inputCode, {
+        babelrc: false,
+        filename: id,
+        plugins: [[stylexBabelPlugin, { dev, stylexSheetName: fileName }]],
+      });
+
+      if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
+        stylexRules = stylexRules.concat(metadata.stylex);
+      }
+
+      return { code, map };
     },
   };
 };
