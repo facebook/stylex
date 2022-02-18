@@ -30,10 +30,6 @@ function createCompiler(fixture, pluginOptions = {}, config = {}) {
           ],
           use: {
             loader: require.resolve('babel-loader'),
-            options: {
-              plugins: [stylexPlugin.babelPlugin],
-              metadataSubscribers: [stylexPlugin.stylexMetadataSubscription],
-            },
           },
         },
       ],
@@ -115,6 +111,8 @@ describe('webpack-plugin-stylex', () => {
         html[dir='rtl'] .a3oefunm{margin-right:10px}
         .bjgvxnpl{margin-block-start:99px}
         .cctpw5f5{height:500px}
+        .d9w12usg{width:50%}
+        .ew8mgplc{display:inline}
         .f804f6gw{display:block}
         .ln8gz9je{width:100%}
         .p357zi0d{display:flex}
@@ -132,20 +130,19 @@ describe('webpack-plugin-stylex', () => {
         exports.modules = {
 
         /***/ \\"./index.js\\":
-        /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
+        /***/ (() => {
 
 
         // UNUSED EXPORTS: default
 
         ;// CONCATENATED MODULE: external \\"stylex\\"
         const external_stylex_namespaceObject = stylex;
-        var external_stylex_default = /*#__PURE__*/__webpack_require__.n(external_stylex_namespaceObject);
         ;// CONCATENATED MODULE: ./otherStyles.js
         // otherStyles.js
 
 
 
-        const styles = {
+        var styles = {
           bar: {
             display: \\"f804f6gw\\",
             width: \\"ln8gz9je\\"
@@ -157,19 +154,14 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-
-
-        external_stylex_default().inject('.rse6dlih{display:inline}', 1);
-        external_stylex_default().inject('.ezi3dscr{width:50%}', 1);
         const npmStyles_styles = {
           baz: {
-            display: 'rse6dlih',
-            width: 'ezi3dscr',
-          },
+            display: \\"ew8mgplc\\",
+            height: \\"cctpw5f5\\",
+            width: \\"d9w12usg\\"
+          }
         };
-
         /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-
         ;// CONCATENATED MODULE: ./index.js
         // index.js
 
@@ -177,8 +169,8 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-        const fadeAnimation = \\"px4mktj3-B\\";
-        const index_styles = {
+        var fadeAnimation = \\"px4mktj3-B\\";
+        var index_styles = {
           foo: {
             animationName: \\"rn32yjq5\\",
             display: \\"p357zi0d\\",
@@ -246,7 +238,7 @@ describe('webpack-plugin-stylex', () => {
 
           external_stylex_default().inject(\\".f804f6gw{display:block}\\", 1);
           external_stylex_default().inject(\\".ln8gz9je{width:100%}\\", 1);
-          const styles = {
+          var styles = {
             bar: {
               otherStyles__bar: \\"otherStyles__bar\\",
               display: \\"f804f6gw\\",
@@ -259,19 +251,18 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-
-
-          external_stylex_default().inject('.rse6dlih{display:inline}', 1);
-          external_stylex_default().inject('.ezi3dscr{width:50%}', 1);
+          external_stylex_default().inject(\\".ew8mgplc{display:inline}\\", 1);
+          external_stylex_default().inject(\\".cctpw5f5{height:500px}\\", 1);
+          external_stylex_default().inject(\\".d9w12usg{width:50%}\\", 1);
           const npmStyles_styles = {
             baz: {
-              display: 'rse6dlih',
-              width: 'ezi3dscr',
-            },
+              npmStyles__baz: \\"npmStyles__baz\\",
+              display: \\"ew8mgplc\\",
+              height: \\"cctpw5f5\\",
+              width: \\"d9w12usg\\"
+            }
           };
-
           /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-
           ;// CONCATENATED MODULE: ./index.js
           // index.js
 
@@ -280,14 +271,14 @@ describe('webpack-plugin-stylex', () => {
 
 
           external_stylex_default().inject(\\"@keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}\\", 1);
-          const fadeAnimation = \\"px4mktj3-B\\";
+          var fadeAnimation = \\"px4mktj3-B\\";
           external_stylex_default().inject(\\".rn32yjq5{animation-name:px4mktj3-B}\\", 1);
           external_stylex_default().inject(\\".p357zi0d{display:flex}\\", 1);
           external_stylex_default().inject(\\".a3oefunm{margin-left:10px}\\", 1, \\".a3oefunm{margin-right:10px}\\");
           external_stylex_default().inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
           external_stylex_default().inject(\\".cctpw5f5{height:500px}\\", 1);
           external_stylex_default().inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
-          const index_styles = {
+          var index_styles = {
             foo: {
               index__foo: \\"index__foo\\",
               animationName: \\"rn32yjq5\\",

@@ -5,8 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const babel = require('@babel/core');
+const path = require('path');
 const stylexBabelPlugin = require('babel-plugin-transform-stylex');
 const webpack = require('webpack');
+
+const { NormalModule } = webpack;
 
 const PLUGIN_NAME = 'stylex';
 
@@ -17,7 +21,7 @@ const IS_DEV_ENV =
 const { RawSource } = webpack.sources;
 
 class StylexPlugin {
-  stylexMetadataSubscription = 'stylexMetadata';
+  stylexRules = [];
 
   constructor({ dev = IS_DEV_ENV, filename = 'stylex.css' } = {}) {
     this.dev = dev;
@@ -26,32 +30,24 @@ class StylexPlugin {
   }
 
   apply(compiler) {
-    const logger = compiler.getInfrastructureLogger(PLUGIN_NAME);
-
-    let stylexRules = [];
-    const { dev, stylexMetadataSubscription } = this;
-
-    // Read stylex metadata from individual modules and collect it
     compiler.hooks.make.tap(PLUGIN_NAME, (compilation) => {
-      compiler.webpack.NormalModule.getCompilationHooks(compilation).loader.tap(
+      // Apply loader to JS modules.
+      NormalModule.getCompilationHooks(compilation).loader.tap(
         PLUGIN_NAME,
-        function (context, module) {
-          const resourceName = module.resource;
-          context[stylexMetadataSubscription] = function (metadata) {
-            if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
-              stylexRules = stylexRules.concat(metadata.stylex);
-              logger.debug(
-                `Read stylex from ${resourceName}:`,
-                metadata.stylex
-              );
-            }
-          };
+        (loaderContext, module) => {
+          if (/\.jsx?/.test(path.extname(module.resource))) {
+            module.loaders.unshift({
+              loader: path.resolve(__dirname, 'loader.js'),
+              options: { stylexPlugin: this },
+            });
+          }
         }
       );
 
-      // Consumer collected rules and emit the stylex CSS asset
+      // Consume collected rules and emit the stylex CSS asset
       compilation.hooks.additionalAssets.tap(PLUGIN_NAME, () => {
         try {
+          const { stylexRules } = this;
           if (stylexRules.length > 0) {
             const collectedCSS =
               stylexBabelPlugin.processStylexRules(stylexRules);
@@ -62,6 +58,29 @@ class StylexPlugin {
         }
       });
     });
+
+    // Prevent old rules from being left behind if webpack is run in production
+    // mode with watching.
+    compiler.hooks.watchRun.tap(PLUGIN_NAME, () => {
+      this.stylexRules = [];
+    });
+  }
+
+  async transformCode(inputCode, filename, logger) {
+    const { code, map, metadata } = await babel.transformAsync(inputCode, {
+      babelrc: false,
+      filename,
+      plugins: [this.babelPlugin],
+    });
+
+    if (metadata.stylex != null && metadata.stylex.length > 0) {
+      this.stylexRules = this.dev
+        ? this.stylexRules
+        : this.stylexRules.concat(metadata.stylex);
+      logger.debug(`Read stylex from ${filename}:`, metadata.stylex);
+    }
+
+    return { code, map };
   }
 }
 
