@@ -376,6 +376,12 @@ stylex.visuallyHidden = {
   width: 1,
 };
 
+stylex.UNSUPPORTED_PROPERTY = (props: { ... }) => {
+  throw new Error(
+    'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.'
+  );
+};
+
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
   visuallyHidden: VisuallyHidden,
