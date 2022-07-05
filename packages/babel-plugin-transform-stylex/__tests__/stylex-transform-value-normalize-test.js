@@ -42,14 +42,14 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".jr0nlbo0{transform:rotate(10deg) translate3d(0,0,0)}\\", 0.1);"'
+        '"stylex.inject(\\".x18qx21s{transform:rotate(10deg) translate3d(0,0,0)}\\", 0.1);"'
       );
       expect(
         transform(`
           const styles = stylex.create({ x: { color: 'rgba( 1, 222,  33 , 0.5)' } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".s89qmqjn{color:rgba(1,222,33,.5)}\\", 1);"'
+        '"stylex.inject(\\".xe1l9yr{color:rgba(1,222,33,.5)}\\", 1);"'
       );
     });
 
@@ -62,11 +62,11 @@ describe('babel-plugin-transform-stylex', () => {
           } });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".m8h3af8h{margin-top:0}\\", 1);
-        stylex.inject(\\".l7ghb35v{margin-right:0}\\", 1, \\".l7ghb35v{margin-left:0}\\");
-        stylex.inject(\\".kjdc1dyq{margin-bottom:0}\\", 1);
-        stylex.inject(\\".kmwttqpk{margin-left:0}\\", 1, \\".kmwttqpk{margin-right:0}\\");
-        stylex.inject(\\".l3od1t61{margin-left:1px}\\", 1);"
+        "stylex.inject(\\".xdj266r{margin-top:0}\\", 1);
+        stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
+        stylex.inject(\\".xat24cr{margin-bottom:0}\\", 1);
+        stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
+        stylex.inject(\\".xgsvwom{margin-left:1px}\\", 1);"
       `);
     });
 
@@ -76,7 +76,7 @@ describe('babel-plugin-transform-stylex', () => {
           const styles = stylex.create({ x: { transitionDuration: '500ms' } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".gkvswz3s{transition-duration:.5s}\\", 1);"'
+        '"stylex.inject(\\".x1wsgiic{transition-duration:.5s}\\", 1);"'
       );
     });
 
@@ -90,9 +90,9 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".mdt23r3l{transform:0deg}\\", 0.1);
-        stylex.inject(\\".mdt23r3l{transform:0deg}\\", 0.1);
-        stylex.inject(\\".mdt23r3l{transform:0deg}\\", 0.1);"
+        "stylex.inject(\\".x1jpfit1{transform:0deg}\\", 0.1);
+        stylex.inject(\\".x1jpfit1{transform:0deg}\\", 0.1);
+        stylex.inject(\\".x1jpfit1{transform:0deg}\\", 0.1);"
       `);
     });
 
@@ -102,7 +102,7 @@ describe('babel-plugin-transform-stylex', () => {
           const styles = stylex.create({ x: { width: 'calc((100% + 3% -   100px) / 7)' } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".dztgb271{width:calc((100% + 3% - 100px) / 7)}\\", 1);"'
+        '"stylex.inject(\\".x1hauit9{width:calc((100% + 3% - 100px) / 7)}\\", 1);"'
       );
     });
 
@@ -115,8 +115,8 @@ describe('babel-plugin-transform-stylex', () => {
           } });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".bs0c03ma{transition-duration:.01s}\\", 1);
-        stylex.inject(\\".lvdmvkcg{transition-timing-function:cubic-bezier(.08,.52,.52,1)}\\", 1);"
+        "stylex.inject(\\".xpvlhck{transition-duration:.01s}\\", 1);
+        stylex.inject(\\".xxziih7{transition-timing-function:cubic-bezier(.08,.52,.52,1)}\\", 1);"
       `);
     });
 
@@ -126,7 +126,7 @@ describe('babel-plugin-transform-stylex', () => {
           const styles = stylex.create({ x: { quotes: "''" } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".prnalohw{quotes:\\\\\\"\\\\\\"}\\", 1);"'
+        '"stylex.inject(\\".x169joja{quotes:\\\\\\"\\\\\\"}\\", 1);"'
       );
     });
 
@@ -140,9 +140,9 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".ac8p61ak{transition-duration:1.234s}\\", 1);
-        stylex.inject(\\".bs0c03ma{transition-duration:.01s}\\", 1);
-        stylex.inject(\\".tgkha51v{transition-duration:1ms}\\", 1);"
+        "stylex.inject(\\".xsa3hc2{transition-duration:1.234s}\\", 1);
+        stylex.inject(\\".xpvlhck{transition-duration:.01s}\\", 1);
+        stylex.inject(\\".xjd9b36{transition-duration:1ms}\\", 1);"
       `);
     });
 
@@ -163,15 +163,15 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".mjo95iq7{height:500px}\\", 1);
-        stylex.inject(\\".jenc4j3g{margin-top:10px}\\", 1);
-        stylex.inject(\\".mln2r6ah{margin-right:10px}\\", 1, \\".mln2r6ah{margin-left:10px}\\");
-        stylex.inject(\\".rbcf3a04{margin-bottom:10px}\\", 1);
-        stylex.inject(\\".a60616oh{margin-left:10px}\\", 1, \\".a60616oh{margin-right:10px}\\");
-        stylex.inject(\\".imjq5d63{width:500px}\\", 1);
-        stylex.inject(\\".tpi2lg9u{font-weight:500}\\", 1);
-        stylex.inject(\\".b643thi7{line-height:1.5}\\", 1);
-        stylex.inject(\\".mi59tyey{opacity:.5}\\", 1);"
+        "stylex.inject(\\".x1egiwwb{height:500px}\\", 1);
+        stylex.inject(\\".x1anpbxc{margin-top:10px}\\", 1);
+        stylex.inject(\\".xmo9yow{margin-right:10px}\\", 1, \\".xmo9yow{margin-left:10px}\\");
+        stylex.inject(\\".xyorhqc{margin-bottom:10px}\\", 1);
+        stylex.inject(\\".x17adc0v{margin-left:10px}\\", 1, \\".x17adc0v{margin-right:10px}\\");
+        stylex.inject(\\".xvue9z{width:500px}\\", 1);
+        stylex.inject(\\".xk50ysn{font-weight:500}\\", 1);
+        stylex.inject(\\".x1evy7pa{line-height:1.5}\\", 1);
+        stylex.inject(\\".xbyyjgo{opacity:.5}\\", 1);"
       `);
     });
 
@@ -181,7 +181,7 @@ describe('babel-plugin-transform-stylex', () => {
           const styles = stylex.create({ x: { height: 100 / 3 } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".nomnueuz{height:33.3333px}\\", 1);"'
+        '"stylex.inject(\\".x1vvwc6p{height:33.3333px}\\", 1);"'
       );
     });
 
@@ -201,9 +201,9 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".axp1y60l{content:\\\\\\"\\\\\\"}\\", 1);
-        stylex.inject(\\".k48iq9xp{content:\\\\\\"next\\\\\\"}\\", 1);
-        stylex.inject(\\".jjrsgf30{content:\\\\\\"prev\\\\\\"}\\", 1);"
+        "stylex.inject(\\".x14axycx{content:\\\\\\"\\\\\\"}\\", 1);
+        stylex.inject(\\".xmmpjw1{content:\\\\\\"next\\\\\\"}\\", 1);
+        stylex.inject(\\".x12vzfr8{content:\\\\\\"prev\\\\\\"}\\", 1);"
       `);
     });
 
@@ -226,10 +226,10 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".qntmu8s7{font-size:1.5rem}\\", 1);
-        stylex.inject(\\".rxmdf5ve{font-size:1.125rem}\\", 1);
-        stylex.inject(\\".rq8durfe{font-size:1.25rem}\\", 1);
-        stylex.inject(\\".jwegzro5{font-size:inherit}\\", 1);"
+        "stylex.inject(\\".xngnso2{font-size:1.5rem}\\", 1);
+        stylex.inject(\\".x1c3i2sq{font-size:1.125rem}\\", 1);
+        stylex.inject(\\".x1603h9y{font-size:1.25rem}\\", 1);
+        stylex.inject(\\".x1qlqyl8{font-size:inherit}\\", 1);"
       `);
     });
 
@@ -243,7 +243,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        `"stylex.inject(\\".btbpybun{font-size:calc(100% - 1.5rem)}\\", 1);"`
+        `"stylex.inject(\\".x37c5sx{font-size:calc(100% - 1.5rem)}\\", 1);"`
       );
     });
 
@@ -253,7 +253,7 @@ describe('babel-plugin-transform-stylex', () => {
           const styles = stylex.create({ x: { color: 'red !important' } });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".fg1v9vue{color:red!important}\\", 1);"'
+        '"stylex.inject(\\".xzw3067{color:red!important}\\", 1);"'
       );
     });
   });

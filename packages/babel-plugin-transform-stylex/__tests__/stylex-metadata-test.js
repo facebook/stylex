@@ -55,42 +55,42 @@ describe('babel-plugin-transform-stylex', () => {
         Object {
           "stylex": Array [
             Array [
-              "h3ivgpu3",
+              "x1e2nbdu",
               Object {
-                "ltr": ".h3ivgpu3{color:red}",
+                "ltr": ".x1e2nbdu{color:red}",
                 "rtl": null,
               },
               1,
             ],
             Array [
-              "sws6tvwg",
+              "x1ycjhwn",
               Object {
-                "ltr": ".sws6tvwg{height:5px}",
+                "ltr": ".x1ycjhwn{height:5px}",
                 "rtl": null,
               },
               1,
             ],
             Array [
-              "beji1480",
+              "x15uk0yd",
               Object {
-                "ltr": ".beji1480:hover{left:10px}",
-                "rtl": ".beji1480:hover{right:10px}",
+                "ltr": ".x15uk0yd:hover{left:10px}",
+                "rtl": ".x15uk0yd:hover{right:10px}",
               },
               8,
             ],
             Array [
-              "afainbk7",
+              "x10tbbcl",
               Object {
-                "ltr": "@media (min-width: 1000px){.afainbk7.afainbk7{right:5px}}",
-                "rtl": "@media (min-width: 1000px){.afainbk7.afainbk7{left:5px}}",
+                "ltr": "@media (min-width: 1000px){.x10tbbcl.x10tbbcl{right:5px}}",
+                "rtl": "@media (min-width: 1000px){.x10tbbcl.x10tbbcl{left:5px}}",
               },
               2,
             ],
             Array [
-              "gd0gnj7z-B",
+              "x18kvd1d-B",
               Object {
-                "ltr": "@keyframes gd0gnj7z-B{from{left:0;}to{left:100px;}}",
-                "rtl": "@keyframes gd0gnj7z-B{from{right:0;}to{right:100px;}}",
+                "ltr": "@keyframes x18kvd1d-B{from{left:0;}to{left:100px;}}",
+                "rtl": "@keyframes x18kvd1d-B{from{right:0;}to{right:100px;}}",
               },
               1,
             ],

@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-/* global BigInt */
 
 'use strict';
 
@@ -31,9 +30,8 @@ const {
   validateProp,
 } = require('./utils');
 const t = require('@babel/types');
-const crypto = require('crypto');
+const hash = require('./hash');
 
-const INVALID_CSS_ID = /^\d/;
 const DEFAULT_PRIORITY = 1;
 
 /**
@@ -41,18 +39,10 @@ const DEFAULT_PRIORITY = 1;
  * Valid CSS identifiers cannot start with a digit.
  */
 function createUniqueCSSName(str, opts) {
-  let src = '';
-  let hash = '';
-  do {
-    // each iteration will append "str" to the source (until we get a valid ID)
-    src += str;
-    hash = crypto
-      .createHash('sha1')
-      .update(src + ':' + (opts.stylexSheetName || '<>'))
-      .digest('hex');
-    hash = BigInt('0x' + hash).toString(36); // base36 encode it
-  } while (INVALID_CSS_ID.test(hash));
-  return hash.slice(0, 8);
+  const prefix = opts.classNamePrefix || 'x';
+  const name = opts.stylexSheetName || '<>';
+  const hashedString = hash(name + str);
+  return `${prefix}${hashedString}`;
 }
 
 /**

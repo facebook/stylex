@@ -45,8 +45,8 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.red);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        \\"h3ivgpu3\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        \\"x1e2nbdu\\";"
       `);
     });
 
@@ -64,9 +64,9 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles[0], styles[1]);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
-        \\"h3ivgpu3 n6f2byep\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
+        \\"x1e2nbdu x1t391ir\\";"
       `);
     });
 
@@ -84,9 +84,9 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles[0], styles[1]);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
-        \\"h3ivgpu3 n6f2byep\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
+        \\"x1e2nbdu x1t391ir\\";"
       `);
     });
 
@@ -101,8 +101,8 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles['default']);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        \\"h3ivgpu3\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        \\"x1e2nbdu\\";"
       `);
     });
 
@@ -120,14 +120,14 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles[variant]);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
         const styles = {
           [0]: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           },
           [1]: {
-            backgroundColor: \\"n6f2byep\\"
+            backgroundColor: \\"x1t391ir\\"
           }
         };
         stylex(styles[variant]);"
@@ -150,9 +150,9 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default, otherStyles.default);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
-        \\"h3ivgpu3 n6f2byep\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
+        \\"x1e2nbdu x1t391ir\\";"
       `);
     });
 
@@ -167,10 +167,10 @@ describe('babel-plugin-transform-stylex', () => {
           }
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
 
         const a = function () {
-          return \\"h3ivgpu3\\";
+          return \\"x1e2nbdu\\";
         };"
       `);
     });
@@ -190,14 +190,14 @@ describe('babel-plugin-transform-stylex', () => {
           const foo = styles;
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
         const styles = {
           foo: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           },
           bar: {
-            backgroundColor: \\"n6f2byep\\"
+            backgroundColor: \\"x1t391ir\\"
           }
         };
         stylex(styles.foo, styles.bar);
@@ -219,12 +219,12 @@ describe('babel-plugin-transform-stylex', () => {
           }
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         export default function MyExportDefault() {
-          return \\"h3ivgpu3\\";
+          return \\"x1e2nbdu\\";
         }
         export function MyExport() {
-          return \\"h3ivgpu3\\";
+          return \\"x1e2nbdu\\";
         }"
       `);
     });
@@ -240,11 +240,11 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.foo);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".d1v569po{padding-top:5px}\\", 1);
-        stylex.inject(\\".p4n9ro91{padding-right:5px}\\", 1, \\".p4n9ro91{padding-left:5px}\\");
-        stylex.inject(\\".onux6t7x{padding-bottom:5px}\\", 1);
-        stylex.inject(\\".t4os9e1m{padding-left:5px}\\", 1, \\".t4os9e1m{padding-right:5px}\\");
-        \\"t4os9e1m onux6t7x p4n9ro91 d1v569po\\";"
+        "stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        stylex.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        \\"x1t2a60a xs9asl8 x1mpkggp x123j3cw\\";"
       `);
     });
 
@@ -259,16 +259,16 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.foo);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".d1v569po{padding-top:5px}\\", 1);
-        stylex.inject(\\".p4n9ro91{padding-right:5px}\\", 1, \\".p4n9ro91{padding-left:5px}\\");
-        stylex.inject(\\".onux6t7x{padding-bottom:5px}\\", 1);
-        stylex.inject(\\".t4os9e1m{padding-left:5px}\\", 1, \\".t4os9e1m{padding-right:5px}\\");
+        "stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        stylex.inject(\\".x1mpkggp{padding-right:5px}\\", 1, \\".x1mpkggp{padding-left:5px}\\");
+        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
         export const styles = {
           foo: {
-            paddingTop: \\"d1v569po\\",
-            paddingEnd: \\"p4n9ro91\\",
-            paddingBottom: \\"onux6t7x\\",
-            paddingStart: \\"t4os9e1m\\"
+            paddingTop: \\"x123j3cw\\",
+            paddingEnd: \\"x1mpkggp\\",
+            paddingBottom: \\"xs9asl8\\",
+            paddingStart: \\"x1t2a60a\\"
           }
         };
         stylex(styles.foo);"
@@ -289,9 +289,9 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);
-        \\"dvoqa86r h3ivgpu3\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);
+        \\"x17z2mba x1e2nbdu\\";"
       `);
     });
 
@@ -312,10 +312,10 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-        stylex.inject(\\"@media (min-width: 1000px){.psrm59q7.psrm59q7{background-color:blue}}\\", 2);
-        stylex.inject(\\"@media (min-width: 2000px){.bi4461le.bi4461le{background-color:purple}}\\", 2);
-        \\"bi4461le psrm59q7 gyzkc3zm\\";"
+        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\"@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}\\", 2);
+        stylex.inject(\\"@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}\\", 2);
+        \\"x1ssfqz5 xc445zv xrkmrrc\\";"
       `);
     });
 
@@ -336,10 +336,10 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-        stylex.inject(\\"@supports (hover: hover){.s3zv1jgm.s3zv1jgm{background-color:blue}}\\", 2);
-        stylex.inject(\\"@supports not (hover: hover){.btbcoxja.btbcoxja{background-color:purple}}\\", 2);
-        \\"btbcoxja s3zv1jgm gyzkc3zm\\";"
+        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\"@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}\\", 2);
+        stylex.inject(\\"@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}\\", 2);
+        \\"x6um648 x6m3b6q xrkmrrc\\";"
       `);
     });
 
@@ -359,15 +359,15 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);
-        stylex.inject(\\"@media (min-width: 1000px){.psrm59q7.psrm59q7{background-color:blue}}\\", 2);
+        "stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);
+        stylex.inject(\\"@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}\\", 2);
         export const styles = {
           default: {
             ':hover': {
-              color: \\"dvoqa86r\\"
+              color: \\"x17z2mba\\"
             },
             '@media (min-width: 1000px)': {
-              backgroundColor: \\"psrm59q7\\"
+              backgroundColor: \\"xc445zv\\"
             }
           }
         };
@@ -391,9 +391,9 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default, isActive && styles.active);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-        stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
-        \\"gyzkc3zm\\" + (isActive ? \\" y6ups3dp\\" : \\"\\");"
+        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
+        \\"xrkmrrc\\" + (isActive ? \\" xju2f9n\\" : \\"\\");"
       `);
     });
 
@@ -412,10 +412,10 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.blue, styles.red);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
-        \\"y6ups3dp\\";
-        \\"h3ivgpu3\\";"
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
+        \\"xju2f9n\\";
+        \\"x1e2nbdu\\";"
       `);
     });
 
@@ -436,15 +436,15 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.foo, styles.bar);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".d1v569po{padding-top:5px}\\", 1);
-        stylex.inject(\\".onux6t7x{padding-bottom:5px}\\", 1);
-        stylex.inject(\\".t4os9e1m{padding-left:5px}\\", 1, \\".t4os9e1m{padding-right:5px}\\");
-        stylex.inject(\\".ejhi0i36{padding-right:10px}\\", 1, \\".ejhi0i36{padding-left:10px}\\");
-        stylex.inject(\\".ngbj85sm{padding-top:2px}\\", 1);
-        stylex.inject(\\".pdnn8mpk{padding-right:2px}\\", 1, \\".pdnn8mpk{padding-left:2px}\\");
-        stylex.inject(\\".rt9i6ysf{padding-bottom:2px}\\", 1);
-        stylex.inject(\\".qbvjirod{padding-left:10px}\\", 1, \\".qbvjirod{padding-right:10px}\\");
-        \\"qbvjirod rt9i6ysf pdnn8mpk ngbj85sm\\";"
+        "stylex.inject(\\".x123j3cw{padding-top:5px}\\", 1);
+        stylex.inject(\\".xs9asl8{padding-bottom:5px}\\", 1);
+        stylex.inject(\\".x1t2a60a{padding-left:5px}\\", 1, \\".x1t2a60a{padding-right:5px}\\");
+        stylex.inject(\\".x1iji9kk{padding-right:10px}\\", 1, \\".x1iji9kk{padding-left:10px}\\");
+        stylex.inject(\\".x1nn3v0j{padding-top:2px}\\", 1);
+        stylex.inject(\\".xg83lxy{padding-right:2px}\\", 1, \\".xg83lxy{padding-left:2px}\\");
+        stylex.inject(\\".x1120s5i{padding-bottom:2px}\\", 1);
+        stylex.inject(\\".x1sln4lm{padding-left:10px}\\", 1, \\".x1sln4lm{padding-right:10px}\\");
+        \\"x1sln4lm x1120s5i xg83lxy x1nn3v0j\\";"
       `);
     });
 
@@ -462,12 +462,12 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.red, isActive && styles.blue);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-        stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);
         stylex({
-          \\"color-1\\": \\"h3ivgpu3\\"
+          \\"color-1\\": \\"x1e2nbdu\\"
         }, isActive ? {
-          \\"color-1\\": \\"y6ups3dp\\"
+          \\"color-1\\": \\"xju2f9n\\"
         } : null);"
       `);
     });
@@ -485,10 +485,10 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.default, props);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         const styles = {
           default: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           }
         };
         stylex(styles.default, props);"
@@ -514,8 +514,8 @@ describe('babel-plugin-transform-stylex', () => {
             options
           )
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-          \\"FooBar__styles.default h3ivgpu3\\";"
+          "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+          \\"FooBar__styles.default x1e2nbdu\\";"
         `);
       });
 
@@ -542,9 +542,9 @@ describe('babel-plugin-transform-stylex', () => {
             options
           )
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-          stylex.inject(\\".n6f2byep{background-color:blue}\\", 1);
-          \\"FooBar__styles.default h3ivgpu3\\" + (isActive ? \\" FooBar__otherStyles.default n6f2byep\\" : \\"\\");"
+          "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+          stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
+          \\"FooBar__styles.default x1e2nbdu\\" + (isActive ? \\" FooBar__otherStyles.default x1t391ir\\" : \\"\\");"
         `);
       });
 
@@ -570,14 +570,14 @@ describe('babel-plugin-transform-stylex', () => {
             options
           )
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
-          stylex.inject(\\".y6ups3dp{color:blue}\\", 1);
+          "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+          stylex.inject(\\".xju2f9n{color:blue}\\", 1);
           stylex({
             \\"FooBar__styles.default\\": \\"FooBar__styles.default\\",
-            \\"color-1\\": \\"h3ivgpu3\\"
+            \\"color-1\\": \\"x1e2nbdu\\"
           }, isActive ? {
             \\"FooBar__styles.active\\": \\"FooBar__styles.active\\",
-            \\"color-1\\": \\"y6ups3dp\\"
+            \\"color-1\\": \\"xju2f9n\\"
           } : null);"
         `);
       });

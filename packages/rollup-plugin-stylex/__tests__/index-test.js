@@ -58,18 +58,18 @@ describe('rollup-plugin-stylex', () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 
     expect(css).toMatchInlineSnapshot(`
-      "html:not([dir='rtl']) .a3oefunm{margin-left:10px}
-      html[dir='rtl'] .a3oefunm{margin-right:10px}
-      .bjgvxnpl{margin-block-start:99px}
-      .cctpw5f5{height:500px}
-      .d9w12usg{width:50%}
-      .ew8mgplc{display:inline}
-      .f804f6gw{display:block}
-      .ln8gz9je{width:100%}
-      .p357zi0d{display:flex}
-      @keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}
-      .rn32yjq5{animation-name:px4mktj3-B}
-      .lq9oatf1:hover{background:red}"
+      "@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}
+      .x188knyk{margin-block-start:99px}
+      .x1c4r43l{display:flex}
+      .x1je5kxa{height:500px}
+      html:not([dir='rtl']) .x1n8p6zw{margin-left:10px}
+      html[dir='rtl'] .x1n8p6zw{margin-right:10px}
+      .x1nrqb13{animation-name:x11gtny7-B}
+      .x1u78jha{width:50%}
+      .x1wdx05y{display:inline}
+      .x6mlivy{width:100%}
+      .xntgbld{display:block}
+      .x1kflwvg:hover{background:red}"
     `);
 
     expect(js).toMatchInlineSnapshot(`
@@ -78,30 +78,30 @@ describe('rollup-plugin-stylex', () => {
       // otherStyles.js
       var styles$2 = {
         bar: {
-          display: \\"f804f6gw\\",
-          width: \\"ln8gz9je\\"
+          display: \\"xntgbld\\",
+          width: \\"x6mlivy\\"
         }
       };
 
       // npmStyles.js
       const styles$1 = {
         baz: {
-          display: \\"ew8mgplc\\",
-          height: \\"cctpw5f5\\",
-          width: \\"d9w12usg\\"
+          display: \\"x1wdx05y\\",
+          height: \\"x1je5kxa\\",
+          width: \\"x1u78jha\\"
         }
       };
 
       // index.js
       var styles = {
         foo: {
-          animationName: \\"rn32yjq5\\",
-          display: \\"p357zi0d\\",
-          marginStart: \\"a3oefunm\\",
-          marginBlockStart: \\"bjgvxnpl\\",
-          height: \\"cctpw5f5\\",
+          animationName: \\"x1nrqb13\\",
+          display: \\"x1c4r43l\\",
+          marginStart: \\"x1n8p6zw\\",
+          marginBlockStart: \\"x188knyk\\",
+          height: \\"x1je5kxa\\",
           ':hover': {
-            background: \\"lq9oatf1\\"
+            background: \\"x1kflwvg\\"
           }
         }
       };
@@ -127,48 +127,48 @@ describe('rollup-plugin-stylex', () => {
         "import stylex from 'stylex';
 
         // otherStyles.js
-        stylex.inject(\\".f804f6gw{display:block}\\", 1);
-        stylex.inject(\\".ln8gz9je{width:100%}\\", 1);
+        stylex.inject(\\".xntgbld{display:block}\\", 1);
+        stylex.inject(\\".x6mlivy{width:100%}\\", 1);
         var styles$2 = {
           bar: {
             otherStyles__bar: \\"otherStyles__bar\\",
-            display: \\"f804f6gw\\",
-            width: \\"ln8gz9je\\"
+            display: \\"xntgbld\\",
+            width: \\"x6mlivy\\"
           }
         };
 
         // npmStyles.js
-        stylex.inject(\\".ew8mgplc{display:inline}\\", 1);
-        stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
-        stylex.inject(\\".d9w12usg{width:50%}\\", 1);
+        stylex.inject(\\".x1wdx05y{display:inline}\\", 1);
+        stylex.inject(\\".x1je5kxa{height:500px}\\", 1);
+        stylex.inject(\\".x1u78jha{width:50%}\\", 1);
         const styles$1 = {
           baz: {
             npmStyles__baz: \\"npmStyles__baz\\",
-            display: \\"ew8mgplc\\",
-            height: \\"cctpw5f5\\",
-            width: \\"d9w12usg\\"
+            display: \\"x1wdx05y\\",
+            height: \\"x1je5kxa\\",
+            width: \\"x1u78jha\\"
           }
         };
 
         // index.js
-        stylex.inject(\\"@keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}\\", 1);
-        stylex.inject(\\".rn32yjq5{animation-name:px4mktj3-B}\\", 1);
-        stylex.inject(\\".p357zi0d{display:flex}\\", 1);
-        stylex.inject(\\".a3oefunm{margin-left:10px}\\", 1, \\".a3oefunm{margin-right:10px}\\");
-        stylex.inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
-        stylex.inject(\\".cctpw5f5{height:500px}\\", 1);
-        stylex.inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
+        stylex.inject(\\"@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}\\", 1);
+        stylex.inject(\\".x1nrqb13{animation-name:x11gtny7-B}\\", 1);
+        stylex.inject(\\".x1c4r43l{display:flex}\\", 1);
+        stylex.inject(\\".x1n8p6zw{margin-left:10px}\\", 1, \\".x1n8p6zw{margin-right:10px}\\");
+        stylex.inject(\\".x188knyk{margin-block-start:99px}\\", 1);
+        stylex.inject(\\".x1je5kxa{height:500px}\\", 1);
+        stylex.inject(\\".x1kflwvg:hover{background:red}\\", 7.1);
         var styles = {
           foo: {
             index__foo: \\"index__foo\\",
-            animationName: \\"rn32yjq5\\",
-            display: \\"p357zi0d\\",
-            marginStart: \\"a3oefunm\\",
-            marginBlockStart: \\"bjgvxnpl\\",
-            height: \\"cctpw5f5\\",
+            animationName: \\"x1nrqb13\\",
+            display: \\"x1c4r43l\\",
+            marginStart: \\"x1n8p6zw\\",
+            marginBlockStart: \\"x188knyk\\",
+            height: \\"x1je5kxa\\",
             ':hover': {
               index__foo: \\"index__foo\\",
-              background: \\"lq9oatf1\\"
+              background: \\"x1kflwvg\\"
             }
           }
         };
