@@ -36,8 +36,6 @@ const crypto = require('crypto');
 const INVALID_CSS_ID = /^\d/;
 const DEFAULT_PRIORITY = 1;
 
-const DEFAULT_ROOT_FONT_SIZE = 16;
-
 /**
  * Creates a short unique CSS identifier by hashing the input string and then converting it to base36.
  * Valid CSS identifiers cannot start with a digit.

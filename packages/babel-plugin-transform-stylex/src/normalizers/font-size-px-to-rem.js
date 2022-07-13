@@ -9,6 +9,8 @@
 
 const parser = require('postcss-value-parser');
 
+const ROOT_FONT_SIZE = 16;
+
 /**
  * Convert font sizes from absolute unit `px` to relative unit `rem`.
  * This will allow developers to continue thinking and using what's familiar
@@ -24,7 +26,7 @@ module.exports = function convertFontSizeToRem(ast, key) {
     }
     const dimension = parser.unit(node.value);
     if (dimension && dimension.unit === 'px') {
-      node.value = `${parseFloat(dimension.number) / 16}rem`;
+      node.value = `${parseFloat(dimension.number) / ROOT_FONT_SIZE}rem`;
     }
   });
   return ast;
