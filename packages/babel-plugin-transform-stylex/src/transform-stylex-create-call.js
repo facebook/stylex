@@ -172,13 +172,6 @@ function getStringValue(key, value) {
  * Convert absolute unit into relative unit for adjustability
  */
 function transformValue(key, value) {
-  // Convert font sizes from absolute unit `px` to relative unit `rem`.
-  // This will allow developers to continue thinking and using what's familiar
-  // while we output font sizes that are adjustable
-  if (key === 'font-size' && /\d(px)/.test(value)) {
-    return `${parseInt(value, 10) / DEFAULT_ROOT_FONT_SIZE}rem`;
-  }
-
   // content is one of the values that needs to wrapped in quotes.
   // Users may write `''` without thinking about it, so we fix that.
   if (key === 'content' && typeof value === 'string') {
