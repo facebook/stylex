@@ -3,6 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  */
 
 'use strict';
@@ -24,6 +25,7 @@ function transform(source, opts = {}) {
   }).code;
 }
 
+/* eslint-disable quotes */
 describe('babel-plugin-transform-stylex', () => {
   /**
    * CSS value normalization
@@ -229,6 +231,20 @@ describe('babel-plugin-transform-stylex', () => {
         stylex.inject(\\".rq8durfe{font-size:1.25rem}\\", 1);
         stylex.inject(\\".jwegzro5{font-size:inherit}\\", 1);"
       `);
+    });
+
+    test('[legacy] transforms font size from px to rem even with calc', () => {
+      expect(
+        transform(`
+          const styles = stylex.create({
+            foo: {
+              fontSize: 'calc(100% - 24px)',
+            },
+          });
+        `)
+      ).toMatchInlineSnapshot(
+        `"stylex.inject(\\".btbpybun{font-size:calc(100% - 1.5rem)}\\", 1);"`
+      );
     });
 
     test('[legacy] no space before "!important"', () => {

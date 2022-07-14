@@ -12,6 +12,7 @@ const normalizeQuotes = require('./normalizers/quotes.js');
 const normalizeTimings = require('./normalizers/timings.js');
 const normalizeWhitespace = require('./normalizers/whitespace.js');
 const normalizeZeroDimensions = require('./normalizers/zero-dimensions.js');
+const convertFontSizeToRem = require('./normalizers/font-size-px-to-rem');
 const parser = require('postcss-value-parser');
 
 // `Timings` should be before `LeadingZero`, because it
@@ -22,6 +23,7 @@ const normalizers = [
   normalizeZeroDimensions,
   normalizeLeadingZero,
   normalizeQuotes,
+  convertFontSizeToRem,
 ];
 
 function normalizeValue(value, key) {
