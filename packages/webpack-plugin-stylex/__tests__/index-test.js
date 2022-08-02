@@ -107,18 +107,18 @@ describe('webpack-plugin-stylex', () => {
       const js = readAsset('main.js', compiler, stats);
 
       expect(css).toMatchInlineSnapshot(`
-        "html:not([dir='rtl']) .a3oefunm{margin-left:10px}
-        html[dir='rtl'] .a3oefunm{margin-right:10px}
-        .bjgvxnpl{margin-block-start:99px}
-        .cctpw5f5{height:500px}
-        .d9w12usg{width:50%}
-        .ew8mgplc{display:inline}
-        .f804f6gw{display:block}
-        .ln8gz9je{width:100%}
-        .p357zi0d{display:flex}
-        @keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}
-        .rn32yjq5{animation-name:px4mktj3-B}
-        .lq9oatf1:hover{background:red}"
+        "@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}
+        .x188knyk{margin-block-start:99px}
+        .x1c4r43l{display:flex}
+        .x1je5kxa{height:500px}
+        html:not([dir='rtl']) .x1n8p6zw{margin-left:10px}
+        html[dir='rtl'] .x1n8p6zw{margin-right:10px}
+        .x1nrqb13{animation-name:x11gtny7-B}
+        .x1u78jha{width:50%}
+        .x1wdx05y{display:inline}
+        .x6mlivy{width:100%}
+        .xntgbld{display:block}
+        .x1kflwvg:hover{background:red}"
       `);
 
       expect(js).toMatchInlineSnapshot(`
@@ -144,8 +144,8 @@ describe('webpack-plugin-stylex', () => {
 
         var styles = {
           bar: {
-            display: \\"f804f6gw\\",
-            width: \\"ln8gz9je\\"
+            display: \\"xntgbld\\",
+            width: \\"x6mlivy\\"
           }
         };
         /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
@@ -156,9 +156,9 @@ describe('webpack-plugin-stylex', () => {
 
         const npmStyles_styles = {
           baz: {
-            display: \\"ew8mgplc\\",
-            height: \\"cctpw5f5\\",
-            width: \\"d9w12usg\\"
+            display: \\"x1wdx05y\\",
+            height: \\"x1je5kxa\\",
+            width: \\"x1u78jha\\"
           }
         };
         /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
@@ -169,16 +169,16 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-        var fadeAnimation = \\"px4mktj3-B\\";
+        var fadeAnimation = \\"x11gtny7-B\\";
         var index_styles = {
           foo: {
-            animationName: \\"rn32yjq5\\",
-            display: \\"p357zi0d\\",
-            marginStart: \\"a3oefunm\\",
-            marginBlockStart: \\"bjgvxnpl\\",
-            height: \\"cctpw5f5\\",
+            animationName: \\"x1nrqb13\\",
+            display: \\"x1c4r43l\\",
+            marginStart: \\"x1n8p6zw\\",
+            marginBlockStart: \\"x188knyk\\",
+            height: \\"x1je5kxa\\",
             ':hover': {
-              background: \\"lq9oatf1\\"
+              background: \\"x1kflwvg\\"
             }
           }
         };
@@ -236,13 +236,13 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(\\".f804f6gw{display:block}\\", 1);
-          external_stylex_default().inject(\\".ln8gz9je{width:100%}\\", 1);
+          external_stylex_default().inject(\\".xntgbld{display:block}\\", 1);
+          external_stylex_default().inject(\\".x6mlivy{width:100%}\\", 1);
           var styles = {
             bar: {
               otherStyles__bar: \\"otherStyles__bar\\",
-              display: \\"f804f6gw\\",
-              width: \\"ln8gz9je\\"
+              display: \\"xntgbld\\",
+              width: \\"x6mlivy\\"
             }
           };
           /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
@@ -251,15 +251,15 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(\\".ew8mgplc{display:inline}\\", 1);
-          external_stylex_default().inject(\\".cctpw5f5{height:500px}\\", 1);
-          external_stylex_default().inject(\\".d9w12usg{width:50%}\\", 1);
+          external_stylex_default().inject(\\".x1wdx05y{display:inline}\\", 1);
+          external_stylex_default().inject(\\".x1je5kxa{height:500px}\\", 1);
+          external_stylex_default().inject(\\".x1u78jha{width:50%}\\", 1);
           const npmStyles_styles = {
             baz: {
               npmStyles__baz: \\"npmStyles__baz\\",
-              display: \\"ew8mgplc\\",
-              height: \\"cctpw5f5\\",
-              width: \\"d9w12usg\\"
+              display: \\"x1wdx05y\\",
+              height: \\"x1je5kxa\\",
+              width: \\"x1u78jha\\"
             }
           };
           /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
@@ -270,25 +270,25 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(\\"@keyframes px4mktj3-B{0%{opacity:.25;}100%{opacity:1;}}\\", 1);
-          var fadeAnimation = \\"px4mktj3-B\\";
-          external_stylex_default().inject(\\".rn32yjq5{animation-name:px4mktj3-B}\\", 1);
-          external_stylex_default().inject(\\".p357zi0d{display:flex}\\", 1);
-          external_stylex_default().inject(\\".a3oefunm{margin-left:10px}\\", 1, \\".a3oefunm{margin-right:10px}\\");
-          external_stylex_default().inject(\\".bjgvxnpl{margin-block-start:99px}\\", 1);
-          external_stylex_default().inject(\\".cctpw5f5{height:500px}\\", 1);
-          external_stylex_default().inject(\\".lq9oatf1:hover{background:red}\\", 7.1);
+          external_stylex_default().inject(\\"@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}\\", 1);
+          var fadeAnimation = \\"x11gtny7-B\\";
+          external_stylex_default().inject(\\".x1nrqb13{animation-name:x11gtny7-B}\\", 1);
+          external_stylex_default().inject(\\".x1c4r43l{display:flex}\\", 1);
+          external_stylex_default().inject(\\".x1n8p6zw{margin-left:10px}\\", 1, \\".x1n8p6zw{margin-right:10px}\\");
+          external_stylex_default().inject(\\".x188knyk{margin-block-start:99px}\\", 1);
+          external_stylex_default().inject(\\".x1je5kxa{height:500px}\\", 1);
+          external_stylex_default().inject(\\".x1kflwvg:hover{background:red}\\", 7.1);
           var index_styles = {
             foo: {
               index__foo: \\"index__foo\\",
-              animationName: \\"rn32yjq5\\",
-              display: \\"p357zi0d\\",
-              marginStart: \\"a3oefunm\\",
-              marginBlockStart: \\"bjgvxnpl\\",
-              height: \\"cctpw5f5\\",
+              animationName: \\"x1nrqb13\\",
+              display: \\"x1c4r43l\\",
+              marginStart: \\"x1n8p6zw\\",
+              marginBlockStart: \\"x188knyk\\",
+              height: \\"x1je5kxa\\",
               ':hover': {
                 index__foo: \\"index__foo\\",
-                background: \\"lq9oatf1\\"
+                background: \\"x1kflwvg\\"
               }
             }
           };

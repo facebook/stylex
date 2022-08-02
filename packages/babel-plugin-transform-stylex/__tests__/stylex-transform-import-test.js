@@ -64,10 +64,10 @@ describe('babel-plugin-transform-stylex', () => {
           }));
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         export const styles = {
           foo: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           }
         };"
       `);
@@ -84,10 +84,10 @@ describe('babel-plugin-transform-stylex', () => {
           export {styles}
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         const styles = {
           foo: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           }
         };
         export { styles };"
@@ -104,10 +104,10 @@ describe('babel-plugin-transform-stylex', () => {
           }));
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         export default {
           foo: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           }
         };"
       `);
@@ -124,10 +124,10 @@ describe('babel-plugin-transform-stylex', () => {
           module.export = styles;
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h3ivgpu3{color:red}\\", 1);
+        "stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
         const styles = {
           foo: {
-            color: \\"h3ivgpu3\\"
+            color: \\"x1e2nbdu\\"
           }
         };
         module.export = styles;"

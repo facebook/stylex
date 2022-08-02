@@ -37,8 +37,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-        stylex.inject(\\".y6ups3dp{color:blue}\\", 1);"
+        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);"
       `);
     });
 
@@ -52,7 +52,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".eq698nx4{--background-color:red}\\", 1);"'
+        '"stylex.inject(\\".xgau0yw{--background-color:red}\\", 1);"'
       );
     });
 
@@ -66,7 +66,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".i4rl8tte{--final-color:var(--background-color)}\\", 1);"'
+        '"stylex.inject(\\".x13tgbkp{--final-color:var(--background-color)}\\", 1);"'
       );
     });
 
@@ -83,8 +83,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-        stylex.inject(\\".y6ups3dp{color:blue}\\", 1);"
+        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        stylex.inject(\\".xju2f9n{color:blue}\\", 1);"
       `);
     });
 
@@ -98,7 +98,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".fbkz01wb{content:attr(some-attribute)}\\", 1);"'
+        '"stylex.inject(\\".xd71okc{content:attr(some-attribute)}\\", 1);"'
       );
     });
 
@@ -115,8 +115,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".pbqw5nlk:hover{background-color:red}\\", 8);
-        stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);"
+        "stylex.inject(\\".x1gykpug:hover{background-color:red}\\", 8);
+        stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);"
       `);
     });
 
@@ -130,7 +130,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".e8fwzc4u{position:sticky;position:fixed}\\", 1);"'
+        '"stylex.inject(\\".x1ruww2u{position:sticky;position:fixed}\\", 1);"'
       );
     });
 
@@ -145,7 +145,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".f14ij5to{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}\\", 1);"'
+        '"stylex.inject(\\".x87ps6o{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}\\", 1);"'
       );
     });
 
@@ -162,16 +162,16 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".lq84ybu9{overflow-x:hidden}\\", 1);
-        stylex.inject(\\".hf30pyar{overflow-y:hidden}\\", 1);
-        stylex.inject(\\".mkcwp88r{border-top-style:dashed}\\", 0.4);
-        stylex.inject(\\".gmfpv47j{border-right-style:dashed}\\", 0.4, \\".gmfpv47j{border-left-style:dashed}\\");
-        stylex.inject(\\".c9z4645e{border-bottom-style:dashed}\\", 0.4);
-        stylex.inject(\\".su4h28ut{border-left-style:dashed}\\", 0.4, \\".su4h28ut{border-right-style:dashed}\\");
-        stylex.inject(\\".r4jidfu8{border-top-width:1px}\\", 0.4);
-        stylex.inject(\\".ahb38r9s{border-right-width:1px}\\", 0.4, \\".ahb38r9s{border-left-width:1px}\\");
-        stylex.inject(\\".scpwgmsl{border-bottom-width:1px}\\", 0.4);
-        stylex.inject(\\".opot3u1k{border-left-width:1px}\\", 0.4, \\".opot3u1k{border-right-width:1px}\\");"
+        "stylex.inject(\\".x6ikm8r{overflow-x:hidden}\\", 1);
+        stylex.inject(\\".x10wlt62{overflow-y:hidden}\\", 1);
+        stylex.inject(\\".xlya59e{border-top-style:dashed}\\", 0.4);
+        stylex.inject(\\".x157eodl{border-right-style:dashed}\\", 0.4, \\".x157eodl{border-left-style:dashed}\\");
+        stylex.inject(\\".xpvcztv{border-bottom-style:dashed}\\", 0.4);
+        stylex.inject(\\".x1q04ism{border-left-style:dashed}\\", 0.4, \\".x1q04ism{border-right-style:dashed}\\");
+        stylex.inject(\\".x178xt8z{border-top-width:1px}\\", 0.4);
+        stylex.inject(\\".xm81vs4{border-right-width:1px}\\", 0.4, \\".xm81vs4{border-left-width:1px}\\");
+        stylex.inject(\\".xso031l{border-bottom-width:1px}\\", 0.4);
+        stylex.inject(\\".xy80clv{border-left-width:1px}\\", 0.4, \\".xy80clv{border-right-width:1px}\\");"
       `);
     });
 
@@ -199,7 +199,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".gnxgxjws{--T68779821:0 2px 4px var(--shadow-1);-webkit-box-shadow:var(--T68779821);box-shadow:0 2px 4px var(--shadow-1)}\\", 1);"'
+        '"stylex.inject(\\".xxnfx33{--T68779821:0 2px 4px var(--shadow-1);-webkit-box-shadow:var(--T68779821);box-shadow:0 2px 4px var(--shadow-1)}\\", 1);"'
       );
     });
 
@@ -218,8 +218,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".k6unt73l:invalpwdijad{background-color:red}\\", 2);
-          stylex.inject(\\".e05g6ngh:invalpwdijad{color:blue}\\", 2);"
+          "stylex.inject(\\".x19iys6w:invalpwdijad{background-color:red}\\", 2);
+          stylex.inject(\\".x5z3o4w:invalpwdijad{color:blue}\\", 2);"
         `);
       });
 
@@ -244,10 +244,10 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".dvoqa86r:hover{color:blue}\\", 8);
-          stylex.inject(\\".dcijxkbt:active{color:red}\\", 10);
-          stylex.inject(\\".qsrzr8xi:focus{color:yellow}\\", 9);
-          stylex.inject(\\".sablcdem:nth-child(2n){color:purple}\\", 6);"
+          "stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);
+          stylex.inject(\\".x96fq8s:active{color:red}\\", 10);
+          stylex.inject(\\".x1wvtd7d:focus{color:yellow}\\", 9);
+          stylex.inject(\\".x126ychx:nth-child(2n){color:purple}\\", 6);"
         `);
       });
 
@@ -263,7 +263,7 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
         ).toMatchInlineSnapshot(
-          '"stylex.inject(\\".fk7q53tq:hover{position:sticky;position:fixed}\\", 8);"'
+          '"stylex.inject(\\".x1nxcus0:hover{position:sticky;position:fixed}\\", 8);"'
         );
       });
     });
@@ -284,8 +284,8 @@ describe('babel-plugin-transform-stylex', () => {
             });
           `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".h4s9hi3m::before{color:red}\\", 2);
-          stylex.inject(\\".boetlxaj::after{color:blue}\\", 2);"
+          "stylex.inject(\\".x16oeupf::before{color:red}\\", 2);
+          stylex.inject(\\".xdaarc3::after{color:blue}\\", 2);"
         `);
       });
 
@@ -301,7 +301,7 @@ describe('babel-plugin-transform-stylex', () => {
             });
           `)
         ).toMatchInlineSnapshot(
-          '"stylex.inject(\\".p7cmcfs2::placeholder{color:gray}\\", 12);"'
+          '"stylex.inject(\\".x6yu8oj::placeholder{color:gray}\\", 12);"'
         );
       });
 
@@ -317,9 +317,9 @@ describe('babel-plugin-transform-stylex', () => {
             });
           `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".pbjb215a::-webkit-slider-thumb{width:16px}\\", 13);
-          stylex.inject(\\".pbjb215a::-moz-range-thumb{width:16px}\\", 13);
-          stylex.inject(\\".pbjb215a::-ms-thumb{width:16px}\\", 13);"
+          "stylex.inject(\\".x1en94km::-webkit-slider-thumb{width:16px}\\", 13);
+          stylex.inject(\\".x1en94km::-moz-range-thumb{width:16px}\\", 13);
+          stylex.inject(\\".x1en94km::-ms-thumb{width:16px}\\", 13);"
         `);
       });
     });
@@ -341,9 +341,9 @@ describe('babel-plugin-transform-stylex', () => {
       });
           `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-          stylex.inject(\\"@media (min-width: 1000px){.psrm59q7.psrm59q7{background-color:blue}}\\", 2);
-          stylex.inject(\\"@media (min-width: 2000px){.bi4461le.bi4461le{background-color:purple}}\\", 2);"
+          "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+          stylex.inject(\\"@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}\\", 2);
+          stylex.inject(\\"@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}\\", 2);"
         `);
       });
 
@@ -364,9 +364,9 @@ describe('babel-plugin-transform-stylex', () => {
 
           `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".gyzkc3zm{background-color:red}\\", 1);
-          stylex.inject(\\"@supports (hover: hover){.s3zv1jgm.s3zv1jgm{background-color:blue}}\\", 2);
-          stylex.inject(\\"@supports not (hover: hover){.btbcoxja.btbcoxja{background-color:purple}}\\", 2);"
+          "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+          stylex.inject(\\"@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}\\", 2);
+          stylex.inject(\\"@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}\\", 2);"
         `);
       });
     });
@@ -402,46 +402,46 @@ describe('babel-plugin-transform-stylex', () => {
         `)
       ).toMatchInlineSnapshot(`
         "const borderRadius = 2;
-        stylex.inject(\\".i3w7snjj{margin-top:calc((100% - 50px) * .5)}\\", 1);
-        stylex.inject(\\".idhzwy6c{margin-right:20px}\\", 1, \\".idhzwy6c{margin-left:20px}\\");
-        stylex.inject(\\".kjdc1dyq{margin-bottom:0}\\", 1);
-        stylex.inject(\\".mswf2hbd{margin-left:20px}\\", 1, \\".mswf2hbd{margin-right:20px}\\");
-        stylex.inject(\\".h0hlbn7z{border-top-color:red}\\", 0.4);
-        stylex.inject(\\".tvldids3{border-right-color:blue}\\", 0.4, \\".tvldids3{border-left-color:blue}\\");
-        stylex.inject(\\".awjel6go{border-bottom-color:red}\\", 0.4);
-        stylex.inject(\\".n9snmaig{border-left-color:blue}\\", 0.4, \\".n9snmaig{border-right-color:blue}\\");
-        stylex.inject(\\".mkcwp88r{border-top-style:dashed}\\", 0.4);
-        stylex.inject(\\".gmfpv47j{border-right-style:dashed}\\", 0.4, \\".gmfpv47j{border-left-style:dashed}\\");
-        stylex.inject(\\".c9z4645e{border-bottom-style:dashed}\\", 0.4);
-        stylex.inject(\\".su4h28ut{border-left-style:dashed}\\", 0.4, \\".su4h28ut{border-right-style:dashed}\\");
-        stylex.inject(\\".frfouenu{border-top-width:0}\\", 0.4);
-        stylex.inject(\\".bonavkto{border-right-width:0}\\", 0.4, \\".bonavkto{border-left-width:0}\\");
-        stylex.inject(\\".ntrxh2kl{border-bottom-width:2px}\\", 0.4);
-        stylex.inject(\\".r7bn319e{border-left-width:0}\\", 0.4, \\".r7bn319e{border-right-width:0}\\");
-        stylex.inject(\\".aiyajaxl{border-top:1px solid var(--divider)}\\", 0.3);
-        stylex.inject(\\".fo7qhhrp{border-right:1px solid var(--divider)}\\", 0.3, \\".fo7qhhrp{border-left:1px solid var(--divider)}\\");
-        stylex.inject(\\".azmosjmx{border-left:1px solid var(--divider)}\\", 0.3, \\".azmosjmx{border-right:1px solid var(--divider)}\\");
-        stylex.inject(\\".dl2p71xr{border-top-left-radius:4px}\\", 1, \\".dl2p71xr{border-top-right-radius:4px}\\");
-        stylex.inject(\\".h0c7ht3v{border-top-right-radius:4px}\\", 1, \\".h0c7ht3v{border-top-left-radius:4px}\\");
-        stylex.inject(\\".j8nb7h05{border-bottom-right-radius:4px}\\", 1, \\".j8nb7h05{border-bottom-left-radius:4px}\\");
-        stylex.inject(\\".gffp4m6x{border-bottom-left-radius:4px}\\", 1, \\".gffp4m6x{border-bottom-right-radius:4px}\\");
-        stylex.inject(\\".j42iuzh4{border-bottom:5px solid red}\\", 0.3);
-        stylex.inject(\\".h9d8p3y9{padding-right:var(--rightpadding,20px)}\\", 1, \\".h9d8p3y9{padding-left:var(--rightpadding,20px)}\\");
-        stylex.inject(\\".mbao2bx1{padding-bottom:calc((100% - 50px) * .5)}\\", 1);
-        stylex.inject(\\".iroq9065{padding-left:var(--rightpadding,20px)}\\", 1, \\".iroq9065{padding-right:var(--rightpadding,20px)}\\");
-        stylex.inject(\\".srn514ro{padding-top:0}\\", 1);
-        stylex.inject(\\".cqotfd8r{border-top-color:green}\\", 0.4);
-        stylex.inject(\\".dth01l8s{border-right-color:green}\\", 0.4, \\".dth01l8s{border-left-color:green}\\");
-        stylex.inject(\\".fhwwqjh9{border-bottom-color:green}\\", 0.4);
-        stylex.inject(\\".ozbm2uno{border-left-color:green}\\", 0.4, \\".ozbm2uno{border-right-color:green}\\");
-        stylex.inject(\\".s9ok87oh{border-top-style:solid}\\", 0.4);
-        stylex.inject(\\".s9ljgwtm{border-right-style:solid}\\", 0.4, \\".s9ljgwtm{border-left-style:solid}\\");
-        stylex.inject(\\".lxqftegz{border-bottom-style:solid}\\", 0.4);
-        stylex.inject(\\".bf1zulr9{border-left-style:solid}\\", 0.4, \\".bf1zulr9{border-right-style:solid}\\");
-        stylex.inject(\\".r4jidfu8{border-top-width:1px}\\", 0.4);
-        stylex.inject(\\".ahb38r9s{border-right-width:1px}\\", 0.4, \\".ahb38r9s{border-left-width:1px}\\");
-        stylex.inject(\\".scpwgmsl{border-bottom-width:1px}\\", 0.4);
-        stylex.inject(\\".opot3u1k{border-left-width:1px}\\", 0.4, \\".opot3u1k{border-right-width:1px}\\");"
+        stylex.inject(\\".xxsse2n{margin-top:calc((100% - 50px) * .5)}\\", 1);
+        stylex.inject(\\".x1h5jrl4{margin-right:20px}\\", 1, \\".x1h5jrl4{margin-left:20px}\\");
+        stylex.inject(\\".xat24cr{margin-bottom:0}\\", 1);
+        stylex.inject(\\".xmn8rco{margin-left:20px}\\", 1, \\".xmn8rco{margin-right:20px}\\");
+        stylex.inject(\\".x1uu1fcu{border-top-color:red}\\", 0.4);
+        stylex.inject(\\".xkwlhv9{border-right-color:blue}\\", 0.4, \\".xkwlhv9{border-left-color:blue}\\");
+        stylex.inject(\\".xud65wk{border-bottom-color:red}\\", 0.4);
+        stylex.inject(\\".x1z0yhbn{border-left-color:blue}\\", 0.4, \\".x1z0yhbn{border-right-color:blue}\\");
+        stylex.inject(\\".xlya59e{border-top-style:dashed}\\", 0.4);
+        stylex.inject(\\".x157eodl{border-right-style:dashed}\\", 0.4, \\".x157eodl{border-left-style:dashed}\\");
+        stylex.inject(\\".xpvcztv{border-bottom-style:dashed}\\", 0.4);
+        stylex.inject(\\".x1q04ism{border-left-style:dashed}\\", 0.4, \\".x1q04ism{border-right-style:dashed}\\");
+        stylex.inject(\\".x972fbf{border-top-width:0}\\", 0.4);
+        stylex.inject(\\".xcfux6l{border-right-width:0}\\", 0.4, \\".xcfux6l{border-left-width:0}\\");
+        stylex.inject(\\".xlxy82{border-bottom-width:2px}\\", 0.4);
+        stylex.inject(\\".xm0m39n{border-left-width:0}\\", 0.4, \\".xm0m39n{border-right-width:0}\\");
+        stylex.inject(\\".x1n2xptk{border-top:1px solid var(--divider)}\\", 0.3);
+        stylex.inject(\\".xkbpzyx{border-right:1px solid var(--divider)}\\", 0.3, \\".xkbpzyx{border-left:1px solid var(--divider)}\\");
+        stylex.inject(\\".x1rr5fae{border-left:1px solid var(--divider)}\\", 0.3, \\".x1rr5fae{border-right:1px solid var(--divider)}\\");
+        stylex.inject(\\".x1lcm9me{border-top-left-radius:4px}\\", 1, \\".x1lcm9me{border-top-right-radius:4px}\\");
+        stylex.inject(\\".x1yr5g0i{border-top-right-radius:4px}\\", 1, \\".x1yr5g0i{border-top-left-radius:4px}\\");
+        stylex.inject(\\".xrt01vj{border-bottom-right-radius:4px}\\", 1, \\".xrt01vj{border-bottom-left-radius:4px}\\");
+        stylex.inject(\\".x10y3i5r{border-bottom-left-radius:4px}\\", 1, \\".x10y3i5r{border-bottom-right-radius:4px}\\");
+        stylex.inject(\\".xdwpb5{border-bottom:5px solid red}\\", 0.3);
+        stylex.inject(\\".xcrpjku{padding-right:var(--rightpadding,20px)}\\", 1, \\".xcrpjku{padding-left:var(--rightpadding,20px)}\\");
+        stylex.inject(\\".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}\\", 1);
+        stylex.inject(\\".xyv1419{padding-left:var(--rightpadding,20px)}\\", 1, \\".xyv1419{padding-right:var(--rightpadding,20px)}\\");
+        stylex.inject(\\".xexx8yu{padding-top:0}\\", 1);
+        stylex.inject(\\".xb9njkq{border-top-color:green}\\", 0.4);
+        stylex.inject(\\".x1plg3iu{border-right-color:green}\\", 0.4, \\".x1plg3iu{border-left-color:green}\\");
+        stylex.inject(\\".x1hnil3p{border-bottom-color:green}\\", 0.4);
+        stylex.inject(\\".x1s0fimb{border-left-color:green}\\", 0.4, \\".x1s0fimb{border-right-color:green}\\");
+        stylex.inject(\\".x13fuv20{border-top-style:solid}\\", 0.4);
+        stylex.inject(\\".xu3j5b3{border-right-style:solid}\\", 0.4, \\".xu3j5b3{border-left-style:solid}\\");
+        stylex.inject(\\".x1q0q8m5{border-bottom-style:solid}\\", 0.4);
+        stylex.inject(\\".x26u7qi{border-left-style:solid}\\", 0.4, \\".x26u7qi{border-right-style:solid}\\");
+        stylex.inject(\\".x178xt8z{border-top-width:1px}\\", 0.4);
+        stylex.inject(\\".xm81vs4{border-right-width:1px}\\", 0.4, \\".xm81vs4{border-left-width:1px}\\");
+        stylex.inject(\\".xso031l{border-bottom-width:1px}\\", 0.4);
+        stylex.inject(\\".xy80clv{border-left-width:1px}\\", 0.4, \\".xy80clv{border-right-width:1px}\\");"
       `);
     });
   });

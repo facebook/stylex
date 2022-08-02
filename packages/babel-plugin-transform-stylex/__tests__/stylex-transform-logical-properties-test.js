@@ -39,10 +39,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".glsht0ft{border-block-color:0}\\", 1);
+        "stylex.inject(\\".x1lkbs04{border-block-color:0}\\", 1);
         const styles = {
           x: {
-            borderBlockColor: \\"glsht0ft\\"
+            borderBlockColor: \\"x1lkbs04\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -56,10 +56,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".hp5zipul{border-block-start-color:0}\\", 1);
+        "stylex.inject(\\".xk864d9{border-block-start-color:0}\\", 1);
         const styles = {
           x: {
-            borderBlockStartColor: \\"hp5zipul\\"
+            borderBlockStartColor: \\"xk864d9\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -73,10 +73,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".kjhe5e47{border-block-end-color:0}\\", 1);
+        "stylex.inject(\\".xz8foqe{border-block-end-color:0}\\", 1);
         const styles = {
           x: {
-            borderBlockEndColor: \\"kjhe5e47\\"
+            borderBlockEndColor: \\"xz8foqe\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -90,10 +90,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".ms3ud69g{border-inline-color:0}\\", 1);
+        "stylex.inject(\\".x1v09clb{border-inline-color:0}\\", 1);
         const styles = {
           x: {
-            borderInlineColor: \\"ms3ud69g\\"
+            borderInlineColor: \\"x1v09clb\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -107,10 +107,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".t9ih75qz{border-inline-start-color:0}\\", 1);
+        "stylex.inject(\\".x1t19a1o{border-inline-start-color:0}\\", 1);
         const styles = {
           x: {
-            borderInlineStartColor: \\"t9ih75qz\\"
+            borderInlineStartColor: \\"x1t19a1o\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -124,10 +124,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".mzepkvk3{border-inline-end-color:0}\\", 1);
+        "stylex.inject(\\".x14mj1wy{border-inline-end-color:0}\\", 1);
         const styles = {
           x: {
-            borderInlineEndColor: \\"mzepkvk3\\"
+            borderInlineEndColor: \\"x14mj1wy\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -143,10 +143,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".ddzv1qv3{border-block-style:0}\\", 1);
+        "stylex.inject(\\".x7mea6a{border-block-style:0}\\", 1);
         const styles = {
           x: {
-            borderBlockStyle: \\"ddzv1qv3\\"
+            borderBlockStyle: \\"x7mea6a\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -160,10 +160,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".ch8vs2nf{border-block-start-style:0}\\", 1);
+        "stylex.inject(\\".xbg2y89{border-block-start-style:0}\\", 1);
         const styles = {
           x: {
-            borderBlockStartStyle: \\"ch8vs2nf\\"
+            borderBlockStartStyle: \\"xbg2y89\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -177,10 +177,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".etsnurg8{border-block-end-style:0}\\", 1);
+        "stylex.inject(\\".x1yfoggo{border-block-end-style:0}\\", 1);
         const styles = {
           x: {
-            borderBlockEndStyle: \\"etsnurg8\\"
+            borderBlockEndStyle: \\"x1yfoggo\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -194,10 +194,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".nghdtlmc{border-inline-style:0}\\", 1);
+        "stylex.inject(\\".xt8kkye{border-inline-style:0}\\", 1);
         const styles = {
           x: {
-            borderInlineStyle: \\"nghdtlmc\\"
+            borderInlineStyle: \\"xt8kkye\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -211,10 +211,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".fj6i00d8{border-inline-start-style:0}\\", 1);
+        "stylex.inject(\\".xl8mozw{border-inline-start-style:0}\\", 1);
         const styles = {
           x: {
-            borderInlineStartStyle: \\"fj6i00d8\\"
+            borderInlineStartStyle: \\"xl8mozw\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -228,10 +228,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".co99ylq0{border-inline-end-style:0}\\", 1);
+        "stylex.inject(\\".x10o505a{border-inline-end-style:0}\\", 1);
         const styles = {
           x: {
-            borderInlineEndStyle: \\"co99ylq0\\"
+            borderInlineEndStyle: \\"x10o505a\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -247,10 +247,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".fyjzgvbd{border-block-width:0}\\", 1);
+        "stylex.inject(\\".x1616tdu{border-block-width:0}\\", 1);
         const styles = {
           x: {
-            borderBlockWidth: \\"fyjzgvbd\\"
+            borderBlockWidth: \\"x1616tdu\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -264,10 +264,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".bjyoi13i{border-block-start-width:0}\\", 1);
+        "stylex.inject(\\".xnh6zc7{border-block-start-width:0}\\", 1);
         const styles = {
           x: {
-            borderBlockStartWidth: \\"bjyoi13i\\"
+            borderBlockStartWidth: \\"xnh6zc7\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -281,10 +281,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".ji2lh6yc{border-block-end-width:0}\\", 1);
+        "stylex.inject(\\".x1fvpbjb{border-block-end-width:0}\\", 1);
         const styles = {
           x: {
-            borderBlockEndWidth: \\"ji2lh6yc\\"
+            borderBlockEndWidth: \\"x1fvpbjb\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -298,10 +298,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".jdmse54s{border-inline-width:0}\\", 1);
+        "stylex.inject(\\".xuxrje7{border-inline-width:0}\\", 1);
         const styles = {
           x: {
-            borderInlineWidth: \\"jdmse54s\\"
+            borderInlineWidth: \\"xuxrje7\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -315,10 +315,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".treqeyay{border-inline-start-width:0}\\", 1);
+        "stylex.inject(\\".x14e42zd{border-inline-start-width:0}\\", 1);
         const styles = {
           x: {
-            borderInlineStartWidth: \\"treqeyay\\"
+            borderInlineStartWidth: \\"x14e42zd\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -332,10 +332,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".outacnph{border-inline-end-width:0}\\", 1);
+        "stylex.inject(\\".x10w94by{border-inline-end-width:0}\\", 1);
         const styles = {
           x: {
-            borderInlineEndWidth: \\"outacnph\\"
+            borderInlineEndWidth: \\"x10w94by\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -351,10 +351,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".dai7na9b{inset-block-start:0}\\", 1);
+        "stylex.inject(\\".xlb5a52{inset-block-start:0}\\", 1);
         const styles = {
           x: {
-            insetBlockStart: \\"dai7na9b\\"
+            insetBlockStart: \\"xlb5a52\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -368,10 +368,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".mhcligdx{inset-block:0}\\", 1);
+        "stylex.inject(\\".x10no89f{inset-block:0}\\", 1);
         const styles = {
           x: {
-            insetBlock: \\"mhcligdx\\"
+            insetBlock: \\"x10no89f\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -385,10 +385,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".t7tiwqrj{inset-block-end:0}\\", 1);
+        "stylex.inject(\\".xuufnwz{inset-block-end:0}\\", 1);
         const styles = {
           x: {
-            insetBlockEnd: \\"t7tiwqrj\\"
+            insetBlockEnd: \\"xuufnwz\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -402,10 +402,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".dai7na9b{inset-block-start:0}\\", 1);
+        "stylex.inject(\\".xlb5a52{inset-block-start:0}\\", 1);
         const styles = {
           x: {
-            insetBlockStart: \\"dai7na9b\\"
+            insetBlockStart: \\"xlb5a52\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -419,10 +419,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".r4rsox6c{inset-inline:0}\\", 1);
+        "stylex.inject(\\".x17y0mx6{inset-inline:0}\\", 1);
         const styles = {
           x: {
-            insetInline: \\"r4rsox6c\\"
+            insetInline: \\"x17y0mx6\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -436,10 +436,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".p5dzx4u7{inset-inline-end:0}\\", 1);
+        "stylex.inject(\\".xtijo5x{inset-inline-end:0}\\", 1);
         const styles = {
           x: {
-            insetInlineEnd: \\"p5dzx4u7\\"
+            insetInlineEnd: \\"xtijo5x\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -453,10 +453,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".picngouf{inset-inline-start:0}\\", 1);
+        "stylex.inject(\\".x1o0tod{inset-inline-start:0}\\", 1);
         const styles = {
           x: {
-            insetInlineStart: \\"picngouf\\"
+            insetInlineStart: \\"x1o0tod\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -472,10 +472,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".n8vtft0c{margin-block:0}\\", 1);
+        "stylex.inject(\\".x10im51j{margin-block:0}\\", 1);
         const styles = {
           x: {
-            marginBlock: \\"n8vtft0c\\"
+            marginBlock: \\"x10im51j\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -489,10 +489,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".a3sutblb{margin-block-end:0}\\", 1);
+        "stylex.inject(\\".x1g8azq5{margin-block-end:0}\\", 1);
         const styles = {
           x: {
-            marginBlockEnd: \\"a3sutblb\\"
+            marginBlockEnd: \\"x1g8azq5\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -506,10 +506,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".cry48jto{margin-block-start:0}\\", 1);
+        "stylex.inject(\\".x1rjqi9y{margin-block-start:0}\\", 1);
         const styles = {
           x: {
-            marginBlockStart: \\"cry48jto\\"
+            marginBlockStart: \\"x1rjqi9y\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -523,10 +523,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".jmrexof9{margin-inline:0}\\", 1);
+        "stylex.inject(\\".xrxpjvj{margin-inline:0}\\", 1);
         const styles = {
           x: {
-            marginInline: \\"jmrexof9\\"
+            marginInline: \\"xrxpjvj\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -540,10 +540,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".h6esja58{margin-inline-end:0}\\", 1);
+        "stylex.inject(\\".x14z9mp{margin-inline-end:0}\\", 1);
         const styles = {
           x: {
-            marginInlineEnd: \\"h6esja58\\"
+            marginInlineEnd: \\"x14z9mp\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -557,10 +557,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".s6tsv53s{margin-inline-start:0}\\", 1);
+        "stylex.inject(\\".x1lziwak{margin-inline-start:0}\\", 1);
         const styles = {
           x: {
-            marginInlineStart: \\"s6tsv53s\\"
+            marginInlineStart: \\"x1lziwak\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -576,10 +576,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".p7sxz1ka{padding-block:0}\\", 1);
+        "stylex.inject(\\".xt970qd{padding-block:0}\\", 1);
         const styles = {
           x: {
-            paddingBlock: \\"p7sxz1ka\\"
+            paddingBlock: \\"xt970qd\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -593,10 +593,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".icnti0gi{padding-block-end:0}\\", 1);
+        "stylex.inject(\\".x33s65n{padding-block-end:0}\\", 1);
         const styles = {
           x: {
-            paddingBlockEnd: \\"icnti0gi\\"
+            paddingBlockEnd: \\"x33s65n\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -610,10 +610,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".tqpwkkoj{padding-block-start:0}\\", 1);
+        "stylex.inject(\\".x1wpizmb{padding-block-start:0}\\", 1);
         const styles = {
           x: {
-            paddingBlockStart: \\"tqpwkkoj\\"
+            paddingBlockStart: \\"x1wpizmb\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -627,10 +627,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".awlblqoi{padding-inline:0}\\", 1);
+        "stylex.inject(\\".xnjsko4{padding-inline:0}\\", 1);
         const styles = {
           x: {
-            paddingInline: \\"awlblqoi\\"
+            paddingInline: \\"xnjsko4\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -644,10 +644,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".ojw254q4{padding-inline-end:0}\\", 1);
+        "stylex.inject(\\".xyri2b{padding-inline-end:0}\\", 1);
         const styles = {
           x: {
-            paddingInlineEnd: \\"ojw254q4\\"
+            paddingInlineEnd: \\"xyri2b\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -661,10 +661,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".erqt9x5n{padding-inline-start:0}\\", 1);
+        "stylex.inject(\\".x1c1uobl{padding-inline-start:0}\\", 1);
         const styles = {
           x: {
-            paddingInlineStart: \\"erqt9x5n\\"
+            paddingInlineStart: \\"x1c1uobl\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -682,10 +682,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".pdnn0v0e{right:5px}\\", 1, \\".pdnn0v0e{left:5px}\\");
+        "stylex.inject(\\".xnx3k43{right:5px}\\", 1, \\".xnx3k43{left:5px}\\");
         const styles = {
           x: {
-            end: \\"pdnn0v0e\\"
+            end: \\"xnx3k43\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -699,10 +699,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".l7ghb35v{margin-right:0}\\", 1, \\".l7ghb35v{margin-left:0}\\");
+        "stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
         const styles = {
           x: {
-            marginEnd: \\"l7ghb35v\\"
+            marginEnd: \\"x11i5rnm\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -716,12 +716,12 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".l7ghb35v{margin-right:0}\\", 1, \\".l7ghb35v{margin-left:0}\\");
-        stylex.inject(\\".kmwttqpk{margin-left:0}\\", 1, \\".kmwttqpk{margin-right:0}\\");
+        "stylex.inject(\\".x11i5rnm{margin-right:0}\\", 1, \\".x11i5rnm{margin-left:0}\\");
+        stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
         const styles = {
           x: {
-            marginEnd: \\"l7ghb35v\\",
-            marginStart: \\"kmwttqpk\\"
+            marginEnd: \\"x11i5rnm\\",
+            marginStart: \\"x1mh8g0r\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -735,10 +735,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".kmwttqpk{margin-left:0}\\", 1, \\".kmwttqpk{margin-right:0}\\");
+        "stylex.inject(\\".x1mh8g0r{margin-left:0}\\", 1, \\".x1mh8g0r{margin-right:0}\\");
         const styles = {
           x: {
-            marginStart: \\"kmwttqpk\\"
+            marginStart: \\"x1mh8g0r\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -752,12 +752,12 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".m8h3af8h{margin-top:0}\\", 1);
-        stylex.inject(\\".kjdc1dyq{margin-bottom:0}\\", 1);
+        "stylex.inject(\\".xdj266r{margin-top:0}\\", 1);
+        stylex.inject(\\".xat24cr{margin-bottom:0}\\", 1);
         const styles = {
           x: {
-            marginTop: \\"m8h3af8h\\",
-            marginBottom: \\"kjdc1dyq\\"
+            marginTop: \\"xdj266r\\",
+            marginBottom: \\"xat24cr\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -771,10 +771,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".oxkhqvkx{padding-right:0}\\", 1, \\".oxkhqvkx{padding-left:0}\\");
+        "stylex.inject(\\".x4uap5{padding-right:0}\\", 1, \\".x4uap5{padding-left:0}\\");
         const styles = {
           x: {
-            paddingEnd: \\"oxkhqvkx\\"
+            paddingEnd: \\"x4uap5\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -788,12 +788,12 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".oxkhqvkx{padding-right:0}\\", 1, \\".oxkhqvkx{padding-left:0}\\");
-        stylex.inject(\\".nch0832m{padding-left:0}\\", 1, \\".nch0832m{padding-right:0}\\");
+        "stylex.inject(\\".x4uap5{padding-right:0}\\", 1, \\".x4uap5{padding-left:0}\\");
+        stylex.inject(\\".xkhd6sd{padding-left:0}\\", 1, \\".xkhd6sd{padding-right:0}\\");
         const styles = {
           x: {
-            paddingEnd: \\"oxkhqvkx\\",
-            paddingStart: \\"nch0832m\\"
+            paddingEnd: \\"x4uap5\\",
+            paddingStart: \\"xkhd6sd\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -807,10 +807,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".nch0832m{padding-left:0}\\", 1, \\".nch0832m{padding-right:0}\\");
+        "stylex.inject(\\".xkhd6sd{padding-left:0}\\", 1, \\".xkhd6sd{padding-right:0}\\");
         const styles = {
           x: {
-            paddingStart: \\"nch0832m\\"
+            paddingStart: \\"xkhd6sd\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -824,12 +824,12 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".srn514ro{padding-top:0}\\", 1);
-        stylex.inject(\\".rl78xhln{padding-bottom:0}\\", 1);
+        "stylex.inject(\\".xexx8yu{padding-top:0}\\", 1);
+        stylex.inject(\\".x18d9i69{padding-bottom:0}\\", 1);
         const styles = {
           x: {
-            paddingTop: \\"srn514ro\\",
-            paddingBottom: \\"rl78xhln\\"
+            paddingTop: \\"xexx8yu\\",
+            paddingBottom: \\"x18d9i69\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -843,10 +843,10 @@ describe('babel-plugin-transform-stylex', () => {
           const classnames = stylex(styles.x);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".c4a4i8yc{left:5px}\\", 1, \\".c4a4i8yc{right:5px}\\");
+        "stylex.inject(\\".xq7jlbq{left:5px}\\", 1, \\".xq7jlbq{right:5px}\\");
         const styles = {
           x: {
-            start: \\"c4a4i8yc\\"
+            start: \\"xq7jlbq\\"
           }
         };
         const classnames = stylex(styles.x);"
@@ -868,11 +868,11 @@ describe('babel-plugin-transform-stylex', () => {
           stylex(styles.four);
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".mr4w5f57{margin-top:1}\\", 1);
-        stylex.inject(\\".fowiaccw{margin-right:2}\\", 1, \\".fowiaccw{margin-left:2}\\");
-        stylex.inject(\\".iqsy6m2w{margin-bottom:3}\\", 1);
-        stylex.inject(\\".pz2itsrw{margin-left:4}\\", 1, \\".pz2itsrw{margin-right:4}\\");
-        \\"pz2itsrw iqsy6m2w fowiaccw mr4w5f57\\";"
+        "stylex.inject(\\".x14bfre8{margin-top:1}\\", 1);
+        stylex.inject(\\".xhi7eei{margin-right:2}\\", 1, \\".xhi7eei{margin-left:2}\\");
+        stylex.inject(\\".x1p2gmtr{margin-bottom:3}\\", 1);
+        stylex.inject(\\".x15l52qr{margin-left:4}\\", 1, \\".x15l52qr{margin-right:4}\\");
+        \\"x15l52qr x1p2gmtr xhi7eei x14bfre8\\";"
       `);
     });
   });

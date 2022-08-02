@@ -40,8 +40,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\"@keyframes ptsi9t9a-B{from{background-color:red;}to{background-color:blue;}}\\", 1);
-        const name = \\"ptsi9t9a-B\\";"
+        "stylex.inject(\\"@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}\\", 1);
+        const name = \\"xbopttm-B\\";"
       `);
     });
 
@@ -64,9 +64,9 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\"@keyframes lz712mjz-B{from{background-color:blue;}to{background-color:red;}}\\", 1);
-        const name = \\"lz712mjz-B\\";
-        stylex.inject(\\".qna8o59p{animation:3s lz712mjz-B}\\", 0.1);"
+        "stylex.inject(\\"@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}\\", 1);
+        const name = \\"x3zqmp-B\\";
+        stylex.inject(\\".x1qs41r0{animation:3s x3zqmp-B}\\", 0.1);"
       `);
     });
 
@@ -90,9 +90,9 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\"@keyframes h768rhe7-B{from{left:0;}to{left:500px;}}\\", 1, \\"@keyframes h768rhe7-B{from{right:0;}to{right:500px;}}\\");
-        const name = \\"h768rhe7-B\\";
-        stylex.inject(\\".i3ugh2qu{animation-name:h768rhe7-B}\\", 1);"
+        "stylex.inject(\\"@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}\\", 1, \\"@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}\\");
+        const name = \\"x1lvx8r0-B\\";
+        stylex.inject(\\".x1ugarde{animation-name:x1lvx8r0-B}\\", 1);"
       `);
     });
   });
