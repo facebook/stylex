@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -1289,10 +1289,7 @@ type Stylex$Create = <S extends { [K in string]: NestedCSSPropTypes }>(
   [K in keyof S]: {
     [P in keyof S[K]]: S[K][P] extends CSSProperties
       ? {
-          [F in keyof S[K][P]]: StyleXClassNameFor<
-            F,
-            S[K][P][F]
-          >;
+          [F in keyof S[K][P]]: StyleXClassNameFor<F, S[K][P][F]>;
         }
       : StyleXClassNameFor<P, S[K][P]>;
   };
