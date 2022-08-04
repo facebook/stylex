@@ -15,7 +15,12 @@ import type {
 
 import convertToClassName from './convert-to-className';
 import expandShorthands from './expand-shorthands';
-import { objFromEntries, objValues, objEntries } from './utils/object-utils';
+import {
+  objFromEntries,
+  objValues,
+  objEntries,
+  flattenObject,
+} from './utils/object-utils';
 import * as messages from './messages';
 
 // This takes the object of styles passed to `stylex.create` and transforms it.
@@ -44,7 +49,7 @@ export default function styleXCreateSet(
       namespace,
       stylexSheetName
     );
-    resolvedNamespaces[namespaceName] = resolvedNamespace;
+    resolvedNamespaces[namespaceName] = flattenObject(resolvedNamespace);
     for (const cn of Object.keys(injected)) {
       if (injectedStyles[cn] == null) {
         injectedStyles[cn] = injected[cn];

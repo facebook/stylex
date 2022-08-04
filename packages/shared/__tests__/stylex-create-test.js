@@ -213,10 +213,8 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
-            ":hover": {
-              "backgroundColor": "x1gykpug",
-              "color": "x17z2mba",
-            },
+            ":hover_backgroundColor": "x1gykpug",
+            ":hover_color": "x17z2mba",
           },
         },
         {
@@ -360,12 +358,8 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
-            "@media (min-width: 1000px)": {
-              "backgroundColor": "xc445zv",
-            },
-            "@media (min-width: 2000px)": {
-              "backgroundColor": "x1ssfqz5",
-            },
+            "@media (min-width: 1000px)_backgroundColor": "xc445zv",
+            "@media (min-width: 2000px)_backgroundColor": "x1ssfqz5",
             "backgroundColor": "xrkmrrc",
           },
         },

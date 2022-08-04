@@ -9,6 +9,22 @@
 
 // A bunch of object utils with better Flow types
 
+export function flattenObject<
+  Obj: { +[string]: string | { +[string]: string } }
+>(obj: Obj): { [string]: string } {
+  const result: { [string]: string } = {};
+  for (const [key, value] of objEntries(obj)) {
+    if (typeof value === 'string') {
+      result[key] = value;
+    } else {
+      for (const [subKey, subValue] of objEntries(value)) {
+        result[`${key}_${subKey}`] = subValue;
+      }
+    }
+  }
+  return result;
+}
+
 export function objEntries<Obj: { ... }>(
   obj: Obj
 ): Array<[$Keys<Obj>, Obj[$Keys<Obj>]]> {

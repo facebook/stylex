@@ -560,12 +560,8 @@ describe('babel-plugin-transform-stylex', () => {
         stylex.inject(\\"@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}\\", 2);
         export const styles = {
           default: {
-            \\":hover\\": {
-              color: \\"x17z2mba\\"
-            },
-            \\"@media (min-width: 1000px)\\": {
-              backgroundColor: \\"xc445zv\\"
-            }
+            \\":hover_color\\": \\"x17z2mba\\",
+            \\"@media (min-width: 1000px)_backgroundColor\\": \\"xc445zv\\"
           }
         };
         \\"x17z2mba xc445zv\\";"
@@ -643,12 +639,8 @@ describe('babel-plugin-transform-stylex', () => {
           stylex.inject(\\"@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}\\", 2);
           export const styles = {
             default: {
-              \\":hover\\": {
-                color: \\"x17z2mba\\"
-              },
-              \\"@media (min-width: 1000px)\\": {
-                backgroundColor: \\"xc445zv\\"
-              }
+              \\":hover_color\\": \\"x17z2mba\\",
+              \\"@media (min-width: 1000px)_backgroundColor\\": \\"xc445zv\\"
             }
           };"
         `);

@@ -100,9 +100,7 @@ describe('rollup-plugin-stylex', () => {
           marginStart: \\"x1n8p6zw\\",
           marginBlockStart: \\"x188knyk\\",
           height: \\"x1je5kxa\\",
-          \\":hover\\": {
-            background: \\"x1kflwvg\\"
-          }
+          \\":hover_background\\": \\"x1kflwvg\\"
         }
       };
       function App() {
@@ -166,9 +164,7 @@ describe('rollup-plugin-stylex', () => {
             marginStart: \\"x1n8p6zw\\",
             marginBlockStart: \\"x188knyk\\",
             height: \\"x1je5kxa\\",
-            \\":hover\\": {
-              background: \\"x1kflwvg\\"
-            }
+            \\":hover_background\\": \\"x1kflwvg\\"
           }
         };
         function App() {
