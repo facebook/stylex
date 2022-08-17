@@ -22,5 +22,6 @@ module.use_strict=true
 munge_underscores=true
 suppress_type=$FlowFixMe
 suppress_type=$FlowTODO
+module.name_mapper='^@stylexjs\/shared\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/shared/src/\1'
 
 [strict]

@@ -177,7 +177,7 @@ describe('webpack-plugin-stylex', () => {
             marginStart: \\"x1n8p6zw\\",
             marginBlockStart: \\"x188knyk\\",
             height: \\"x1je5kxa\\",
-            ':hover': {
+            \\":hover\\": {
               background: \\"x1kflwvg\\"
             }
           }
@@ -240,7 +240,7 @@ describe('webpack-plugin-stylex', () => {
           external_stylex_default().inject(\\".x6mlivy{width:100%}\\", 1);
           var styles = {
             bar: {
-              otherStyles__bar: \\"otherStyles__bar\\",
+              \\"otherStyles__styles.bar\\": \\"otherStyles__styles.bar\\",
               display: \\"xntgbld\\",
               width: \\"x6mlivy\\"
             }
@@ -256,7 +256,7 @@ describe('webpack-plugin-stylex', () => {
           external_stylex_default().inject(\\".x1u78jha{width:50%}\\", 1);
           const npmStyles_styles = {
             baz: {
-              npmStyles__baz: \\"npmStyles__baz\\",
+              \\"npmStyles__styles.baz\\": \\"npmStyles__styles.baz\\",
               display: \\"x1wdx05y\\",
               height: \\"x1je5kxa\\",
               width: \\"x1u78jha\\"
@@ -277,17 +277,16 @@ describe('webpack-plugin-stylex', () => {
           external_stylex_default().inject(\\".x1n8p6zw{margin-left:10px}\\", 1, \\".x1n8p6zw{margin-right:10px}\\");
           external_stylex_default().inject(\\".x188knyk{margin-block-start:99px}\\", 1);
           external_stylex_default().inject(\\".x1je5kxa{height:500px}\\", 1);
-          external_stylex_default().inject(\\".x1kflwvg:hover{background:red}\\", 7.1);
+          external_stylex_default().inject(\\".x1kflwvg:hover{background:red}\\", 8);
           var index_styles = {
             foo: {
-              index__foo: \\"index__foo\\",
+              \\"index__styles.foo\\": \\"index__styles.foo\\",
               animationName: \\"x1nrqb13\\",
               display: \\"x1c4r43l\\",
               marginStart: \\"x1n8p6zw\\",
               marginBlockStart: \\"x188knyk\\",
               height: \\"x1je5kxa\\",
-              ':hover': {
-                index__foo: \\"index__foo\\",
+              \\":hover\\": {
                 background: \\"x1kflwvg\\"
               }
             }
