@@ -28,6 +28,7 @@ describe('babel-plugin-transform-stylex', () => {
   describe('[metadata] plugin metadata', () => {
     test('stylex metadata is correctly set', () => {
       const output = transform(`
+        import stylex from 'stylex';
         const styles = stylex.create({
           foo: {
             color: 'red',

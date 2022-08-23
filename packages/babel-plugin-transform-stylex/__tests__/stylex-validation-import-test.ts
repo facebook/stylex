@@ -39,6 +39,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('support named export of stylex.create()', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           export const styles = stylex.create({});
         `);
       }).not.toThrow();
@@ -47,6 +48,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('support default export of stylex.create()', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           export default stylex.create({});
         `);
       }).not.toThrow();

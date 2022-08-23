@@ -33,11 +33,13 @@ describe('babel-plugin-transform-stylex', () => {
       // TODO: This needs a different message. It mentions stylex.create right now.
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes(null);
         `);
       }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes({
             from: false
           });
@@ -45,6 +47,7 @@ describe('babel-plugin-transform-stylex', () => {
       }).toThrow(messages.ILLEGAL_NAMESPACE_VALUE);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes({
             from: {},
             to: {},
@@ -53,6 +56,7 @@ describe('babel-plugin-transform-stylex', () => {
       }).not.toThrow();
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes({
             '0%': {
               opacity: 0
@@ -70,12 +74,13 @@ describe('babel-plugin-transform-stylex', () => {
       expect(() => {
         transform(
           `
-          const styles = stylex.keyframes({
-            from: {
-              backgroundColor: 'var(--bar)',
-            },
-          });
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.keyframes({
+              from: {
+                backgroundColor: 'var(--bar)',
+              },
+            });
+          `,
           {
             definedStylexCSSVariables: { bar: 1 },
           }
@@ -87,12 +92,13 @@ describe('babel-plugin-transform-stylex', () => {
       expect(() => {
         transform(
           `
-          const styles = stylex.keyframes({
-            from: {
-              backgroundColor: 'var(--foobar)',
-            },
-          });
-        `,
+            import stylex from 'stylex';
+            const styles = stylex.keyframes({
+              from: {
+                backgroundColor: 'var(--foobar)',
+              },
+            });
+          `,
           {
             definedStylexCSSVariables: { bar: 1 },
           }

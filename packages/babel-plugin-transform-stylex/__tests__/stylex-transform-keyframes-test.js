@@ -29,6 +29,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('converts keyframes to CSS', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes({
             from: {
               backgroundColor: 'red',
@@ -40,7 +41,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\"@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\"@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}\\", 1);
         const name = \\"xbopttm-B\\";"
       `);
     });
@@ -48,6 +50,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('allows template literal references to keyframes', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes({
             from: {
               backgroundColor: 'blue',
@@ -64,7 +67,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\"@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\"@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}\\", 1);
         const name = \\"x3zqmp-B\\";
         stylex.inject(\\".x1qs41r0{animation:3s x3zqmp-B}\\", 1);"
       `);
@@ -73,6 +77,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('generates RTL-specific keyframes', () => {
       expect(
         transform(`
+          import stylex from 'stylex';
           const name = stylex.keyframes({
             from: {
               start: 0,
@@ -90,7 +95,8 @@ describe('babel-plugin-transform-stylex', () => {
           });
         `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\"@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}\\", 1, \\"@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}\\");
+        "import stylex from 'stylex';
+        stylex.inject(\\"@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}\\", 1, \\"@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}\\");
         const name = \\"x1lvx8r0-B\\";
         stylex.inject(\\".x1ugarde{animation-name:x1lvx8r0-B}\\", 1);"
       `);

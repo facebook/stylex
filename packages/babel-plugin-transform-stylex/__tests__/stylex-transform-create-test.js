@@ -30,6 +30,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('transforms style object', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                backgroundColor: 'red',
@@ -38,7 +39,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
         stylex.inject(\\".xju2f9n{color:blue}\\", 1);"
       `);
     });
@@ -46,34 +48,39 @@ describe('babel-plugin-transform-stylex', () => {
     test('transforms style object with custom propety', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                '--background-color': 'red',
              }
            });
          `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".xgau0yw{--background-color:red}\\", 1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\".xgau0yw{--background-color:red}\\", 1);"
+      `);
     });
 
     test('transforms style object with custom propety as value', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                '--final-color': 'var(--background-color)',
              }
            });
          `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".x13tgbkp{--final-color:var(--background-color)}\\", 1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\".x13tgbkp{--final-color:var(--background-color)}\\", 1);"
+      `);
     });
 
     test('transforms multiple namespaces', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                backgroundColor: 'red',
@@ -84,7 +91,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
         stylex.inject(\\".xju2f9n{color:blue}\\", 1);"
       `);
     });
@@ -92,20 +100,23 @@ describe('babel-plugin-transform-stylex', () => {
     test('does not transform attr() value', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                content: 'attr(some-attribute)',
              },
            });
          `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".xd71okc{content:attr(some-attribute)}\\", 1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\".xd71okc{content:attr(some-attribute)}\\", 1);"
+      `);
     });
 
     test('transforms nested pseudo-class to CSS', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                ':hover': {
@@ -116,7 +127,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1gykpug:hover{background-color:red}\\", 8);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1gykpug:hover{background-color:red}\\", 8);
         stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);"
       `);
     });
@@ -124,36 +136,41 @@ describe('babel-plugin-transform-stylex', () => {
     test('transforms array values as fallbacks', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                position: ['sticky', 'fixed']
              },
            });
          `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".x1ruww2u{position:sticky;position:fixed}\\", 1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1ruww2u{position:sticky;position:fixed}\\", 1);"
+      `);
     });
 
     // TODO: add more vendor-prefixed properties and values
     test('transforms properties requiring vendor prefixes', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                userSelect: 'none',
              },
            });
          `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".x87ps6o{user-select:none}\\", 1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\".x87ps6o{user-select:none}\\", 1);"
+      `);
     });
 
     // Legacy, short?
     test('tranforms valid shorthands', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                overflow: 'hidden',
@@ -163,7 +180,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x6ikm8r{overflow-x:hidden}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x6ikm8r{overflow-x:hidden}\\", 1);
         stylex.inject(\\".x10wlt62{overflow-y:hidden}\\", 1);
         stylex.inject(\\".xlya59e{border-top-style:dashed}\\", 1);
         stylex.inject(\\".x157eodl{border-right-style:dashed}\\", 1, \\".x157eodl{border-left-style:dashed}\\");
@@ -180,6 +198,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('preserves imported object spread', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            export const styles = stylex.create({
              foo: {
                ...(importedStyles.foo: XStyle<>)
@@ -187,7 +206,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x1k9kg1j{include(imported-styles.foo):include(importedStyles.foo)}\\", 1);
+        "import stylex from 'stylex';
+        stylex.inject(\\".x1k9kg1j{include(imported-styles.foo):include(importedStyles.foo)}\\", 1);
         export const styles = {
           foo: { ...importedStyles.foo
           }
@@ -198,15 +218,17 @@ describe('babel-plugin-transform-stylex', () => {
     test('transforms complex property values containing custom properties variables', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                boxShadow: '0px 2px 4px var(--shadow-1)',
              }
            });
          `)
-      ).toMatchInlineSnapshot(
-        '"stylex.inject(\\".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}\\", 1);"'
-      );
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}\\", 1);"
+      `);
     });
 
     describe('pseudo-classes', () => {
@@ -214,6 +236,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms invalid pseudo-class', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                ':invalpwdijad': {
@@ -224,7 +247,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".x19iys6w:invalpwdijad{background-color:red}\\", 2);
+          "import stylex from 'stylex';
+          stylex.inject(\\".x19iys6w:invalpwdijad{background-color:red}\\", 2);
           stylex.inject(\\".x5z3o4w:invalpwdijad{color:blue}\\", 2);"
         `);
       });
@@ -232,6 +256,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms valid pseudo-classes in order', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                ':hover': {
@@ -250,7 +275,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);
+          "import stylex from 'stylex';
+          stylex.inject(\\".x17z2mba:hover{color:blue}\\", 8);
           stylex.inject(\\".x96fq8s:active{color:red}\\", 10);
           stylex.inject(\\".x1wvtd7d:focus{color:yellow}\\", 9);
           stylex.inject(\\".x126ychx:nth-child(2n){color:purple}\\", 6);"
@@ -260,6 +286,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms pseudo-class with array value as fallbacks', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
            const styles = stylex.create({
              default: {
                ':hover': {
@@ -268,9 +295,10 @@ describe('babel-plugin-transform-stylex', () => {
              },
            });
          `)
-        ).toMatchInlineSnapshot(
-          '"stylex.inject(\\".x1nxcus0:hover{position:sticky;position:fixed}\\", 8);"'
-        );
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(\\".x1nxcus0:hover{position:sticky;position:fixed}\\", 8);"
+        `);
       });
     });
 
@@ -279,6 +307,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms ::before and ::after', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
              const styles = stylex.create({
                foo: {
                  '::before': {
@@ -291,7 +320,8 @@ describe('babel-plugin-transform-stylex', () => {
              });
            `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".x16oeupf::before{color:red}\\", 2);
+          "import stylex from 'stylex';
+          stylex.inject(\\".x16oeupf::before{color:red}\\", 2);
           stylex.inject(\\".xdaarc3::after{color:blue}\\", 2);"
         `);
       });
@@ -299,6 +329,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms ::placeholder', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
              const styles = stylex.create({
                foo: {
                  '::placeholder': {
@@ -307,14 +338,16 @@ describe('babel-plugin-transform-stylex', () => {
                },
              });
            `)
-        ).toMatchInlineSnapshot(
-          '"stylex.inject(\\".x6yu8oj::placeholder{color:gray}\\", 12);"'
-        );
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(\\".x6yu8oj::placeholder{color:gray}\\", 12);"
+        `);
       });
 
       test('transforms ::thumb', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
              const styles = stylex.create({
                foo: {
                  '::thumb': {
@@ -323,9 +356,10 @@ describe('babel-plugin-transform-stylex', () => {
                },
              });
            `)
-        ).toMatchInlineSnapshot(
-          '"stylex.inject(\\".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}\\", 13);"'
-        );
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(\\".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}\\", 13);"
+        `);
       });
     });
 
@@ -333,6 +367,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms media queries', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
        const styles = stylex.create({
          default: {
            backgroundColor: 'red',
@@ -346,7 +381,8 @@ describe('babel-plugin-transform-stylex', () => {
        });
            `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+          "import stylex from 'stylex';
+          stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
           stylex.inject(\\"@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}\\", 2);
           stylex.inject(\\"@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}\\", 2);"
         `);
@@ -355,6 +391,7 @@ describe('babel-plugin-transform-stylex', () => {
       test('transforms supports queries', () => {
         expect(
           transform(`
+             import stylex from 'stylex';
              const styles = stylex.create({
                default: {
                  backgroundColor: 'red',
@@ -369,7 +406,8 @@ describe('babel-plugin-transform-stylex', () => {
 
            `)
         ).toMatchInlineSnapshot(`
-          "stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
+          "import stylex from 'stylex';
+          stylex.inject(\\".xrkmrrc{background-color:red}\\", 1);
           stylex.inject(\\"@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}\\", 2);
           stylex.inject(\\"@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}\\", 2);"
         `);
@@ -379,6 +417,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('[legacy] auto-expands shorthands', () => {
       expect(
         transform(`
+           import stylex from 'stylex';
            const borderRadius = 2;
            const styles = stylex.create({
              default: {
@@ -406,7 +445,8 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "const borderRadius = 2;
+        "import stylex from 'stylex';
+        const borderRadius = 2;
         stylex.inject(\\".xxsse2n{margin-top:calc((100% - 50px) * .5)}\\", 1);
         stylex.inject(\\".x1h5jrl4{margin-right:20px}\\", 1, \\".x1h5jrl4{margin-left:20px}\\");
         stylex.inject(\\".xat24cr{margin-bottom:0}\\", 1);

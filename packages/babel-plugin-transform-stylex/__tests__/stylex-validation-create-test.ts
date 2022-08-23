@@ -32,6 +32,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('must be bound to a variable', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           stylex.create({});
         `);
       }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
@@ -40,6 +41,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('must be called at top level', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           if (bar) {
             const styles = stylex.create({});
           } 
@@ -50,21 +52,25 @@ describe('babel-plugin-transform-stylex', () => {
     test('its only argument must be a single object', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create(genStyles());
         `);
       }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create();
         `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({}, {});
         `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({});
         `);
       }).not.toThrow();
@@ -73,6 +79,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('namespace keys must be a static value', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             [root]: {
               backgroundColor: 'red',
@@ -85,6 +92,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('namespace values must be an object', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             namespace: false,
           });
@@ -104,6 +112,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('properties must be a static value', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             root: {
               [backgroundColor]: 'red',
@@ -119,6 +128,7 @@ describe('babel-plugin-transform-stylex', () => {
       // number
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             root: {
               padding: 5,
@@ -129,6 +139,7 @@ describe('babel-plugin-transform-stylex', () => {
       // string
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             root: {
               backgroundColor: 'red',
@@ -139,6 +150,7 @@ describe('babel-plugin-transform-stylex', () => {
       // array of numbers
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               transitionDuration: [500],
@@ -149,6 +161,7 @@ describe('babel-plugin-transform-stylex', () => {
       // array of strings
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               transitionDuration: ['0.5s'],
@@ -159,6 +172,7 @@ describe('babel-plugin-transform-stylex', () => {
       // not string or number
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               transitionDuration: [[], {}],
@@ -168,6 +182,7 @@ describe('babel-plugin-transform-stylex', () => {
       }).toThrow(messages.ILLEGAL_PROP_ARRAY_VALUE);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               color: true,
@@ -178,6 +193,7 @@ describe('babel-plugin-transform-stylex', () => {
       // not static
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             root: {
               backgroundColor: backgroundColor,
@@ -187,6 +203,7 @@ describe('babel-plugin-transform-stylex', () => {
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             root: {
               backgroundColor: generateBg(),
@@ -199,6 +216,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('values can reference local bindings in stylex.create()', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const bg = '#eee';
           const styles = stylex.create({
             root: {
@@ -212,6 +230,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('values can be pure complex expressions in stylex.create()', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const borderRadius = 2;
           const styles = stylex.create({
             root: {
@@ -225,6 +244,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('values can be template literal expressions in stylex.create()', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const borderSize = 2;
           const styles = stylex.create({
             root: {
@@ -240,6 +260,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('pseudo-classes must start with ":" character', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               ':hover': {},
@@ -250,6 +271,7 @@ describe('babel-plugin-transform-stylex', () => {
 
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               'hover': {},
@@ -260,6 +282,7 @@ describe('babel-plugin-transform-stylex', () => {
 
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               '&:hover': {},
@@ -272,6 +295,7 @@ describe('babel-plugin-transform-stylex', () => {
     test('pseudo-classes cannot be nested', () => {
       expect(() => {
         transform(`
+          import stylex from 'stylex';
           const styles = stylex.create({
             default: {
               ':hover': {

@@ -55,6 +55,7 @@ describe.skip('babel-plugin-transform-stylex', () => {
       test(`invalid property: "${prop}"`, () => {
         expect(() => {
           transform(`
+            import stylex from 'stylex';
             const styles = stylex.create({ x: { ${prop}: "${value}" } });
           `);
         }).toThrow(messages.UNKNOWN_PROP_KEY);
@@ -118,6 +119,7 @@ describe.skip('babel-plugin-transform-stylex', () => {
       test(`invalid value: "${value}" for "${prop}"`, () => {
         expect(() => {
           transform(`
+            import stylex from 'stylex';
             const styles = stylex.create({ x: { ${prop}: "${value}" } });
           `);
         }).toThrow(messages.ILLEGAL_PROP_VALUE);

@@ -15,7 +15,7 @@ export default class StateManager {
   readonly _state: PluginPass;
 
   // Imports
-  readonly stylexImport: Set<string> = new Set(['stylex']);
+  readonly stylexImport: Set<string> = new Set();
   readonly stylexCreateImport: Set<string> = new Set();
   readonly stylexKeyframesImport: Set<string> = new Set();
 
