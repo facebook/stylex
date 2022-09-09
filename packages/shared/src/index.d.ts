@@ -48,6 +48,14 @@ export function keyframes<
   }
 >(animation: Obj, stylexSheetName?: string): readonly [string, InjectableStyle];
 
+export function include(animation: {
+  readonly [key: string]: string | number;
+}): readonly { [key: string]: IncludedStyles };
+
+export class IncludedStyles {
+  astNode: any;
+}
+
 export const messages: {
   ILLEGAL_ARGUMENT_LENGTH: string;
   NON_STATIC_VALUE: string;

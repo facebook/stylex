@@ -38,6 +38,9 @@ export function readImportDeclarations(
           if (specifier.imported.name === 'keyframes') {
             state.stylexKeyframesImport.add(specifier.local.name);
           }
+          if (specifier.imported.name === 'include') {
+            state.stylexIncludeImport.add(specifier.local.name);
+          }
         }
         if (specifier.imported.type === 'StringLiteral') {
           if (specifier.imported.value === 'create') {
@@ -45,6 +48,9 @@ export function readImportDeclarations(
           }
           if (specifier.imported.value === 'keyframes') {
             state.stylexKeyframesImport.add(specifier.local.name);
+          }
+          if (specifier.imported.value === 'include') {
+            state.stylexIncludeImport.add(specifier.local.name);
           }
         }
       }
@@ -82,6 +88,9 @@ export function readRequires(
           }
           if (prop.key.name === 'keyframes') {
             state.stylexKeyframesImport.add(prop.value.name);
+          }
+          if (prop.key.name === 'include') {
+            state.stylexIncludeImport.add(prop.value.name);
           }
         }
       }

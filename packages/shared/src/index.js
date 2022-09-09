@@ -22,8 +22,13 @@ export type {
 
 import styleXCreateSet from './stylex-create';
 import stylexKeyframes from './stylex-keyframes';
+import stylexInclude, {
+  IncludedStyles as _IncludedStyles,
+} from './stylex-include';
 import * as m from './messages';
 
 export const create = styleXCreateSet;
 export const keyframes = stylexKeyframes;
+export const include = stylexInclude;
 export const messages = m;
+export const IncludedStyles = _IncludedStyles;

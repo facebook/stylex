@@ -194,7 +194,6 @@ describe('babel-plugin-transform-stylex', () => {
       `);
     });
 
-    // TODO: fix this test
     test('preserves imported object spread', () => {
       expect(
         transform(`
@@ -208,6 +207,44 @@ describe('babel-plugin-transform-stylex', () => {
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(\\".x1k9kg1j{include(imported-styles.foo):include(importedStyles.foo)}\\", 1);
+        export const styles = {
+          foo: { ...importedStyles.foo
+          }
+        };"
+      `);
+    });
+
+    test('Uses stylex.include correctly with Identifiers', () => {
+      expect(
+        transform(`
+           import {include} from 'stylex';
+           export const styles = stylex.create({
+             foo: {
+               ...include(importedStyles)
+             }
+           });
+         `)
+      ).toMatchInlineSnapshot(`
+        "import { include } from 'stylex';
+        export const styles = {
+          foo: { ...importedStyles
+          }
+        };"
+      `);
+    });
+
+    test('Uses stylex.include correctly with MemberExpressions', () => {
+      expect(
+        transform(`
+           import stylex from 'stylex';
+           export const styles = stylex.create({
+             foo: {
+               ...stylex.include(importedStyles.foo)
+             }
+           });
+         `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
         export const styles = {
           foo: { ...importedStyles.foo
           }
