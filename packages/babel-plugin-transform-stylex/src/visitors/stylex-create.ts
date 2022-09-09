@@ -12,6 +12,7 @@ import StateManager from '../utils/state-manager';
 import {
   create as stylexCreate,
   include as stylexInclude,
+  firstThatWorks as stylexFirstThatWorks,
 } from '@stylexjs/shared';
 import {
   injectDevClassNames,
@@ -64,11 +65,15 @@ export default function transformStyleXCreate(
     state.stylexIncludeImport.forEach((name) => {
       identifiers[name] = { fn: stylexInclude, takesPath: true };
     });
+    state.stylexFirstThatWorksImport.forEach((name) => {
+      identifiers[name] = { fn: stylexFirstThatWorks };
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
       }
       memberExpressions[name].include = { fn: stylexInclude, takesPath: true };
+      memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
     });
 
     const { confident, value } = evaluate(firstArg, {
@@ -79,7 +84,6 @@ export default function transformStyleXCreate(
       throw new Error(messages.NON_STATIC_VALUE);
     }
     const plainObject = value;
-
     let [compiledStyles, injectedStyles] = stylexCreate(
       plainObject,
       state.stylexSheetName
