@@ -9,12 +9,16 @@
 
 // A bunch of object utils with better Flow types
 
+import { IncludedStyles } from '../stylex-include';
+
 export function flattenObject<
   Obj: { +[string]: string | { +[string]: string } }
 >(obj: Obj): { [string]: string } {
   const result: { [string]: string } = {};
   for (const [key, value] of objEntries(obj)) {
     if (typeof value === 'string') {
+      result[key] = value;
+    } else if (value instanceof IncludedStyles) {
       result[key] = value;
     } else {
       for (const [subKey, subValue] of objEntries(value)) {

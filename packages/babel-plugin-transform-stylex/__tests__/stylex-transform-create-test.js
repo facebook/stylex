@@ -217,15 +217,15 @@ describe('babel-plugin-transform-stylex', () => {
     test('Uses stylex.include correctly with Identifiers', () => {
       expect(
         transform(`
-           import {include} from 'stylex';
-           export const styles = stylex.create({
+           import {create, include} from 'stylex';
+           export const styles = create({
              foo: {
                ...include(importedStyles)
              }
            });
          `)
       ).toMatchInlineSnapshot(`
-        "import { include } from 'stylex';
+        "import { create, include } from 'stylex';
         export const styles = {
           foo: { ...importedStyles
           }
@@ -262,12 +262,11 @@ describe('babel-plugin-transform-stylex', () => {
            });
          `)
       ).toMatchInlineSnapshot(`
-        "stylex.inject(\\".x15oojuh{position:fixed;position:sticky}\\", 1);
-        export const styles = {
+        "export const styles = stylex.create({
           foo: {
-            position: \\"x15oojuh\\"
+            position: stylex.firstThatWorks('sticky', 'fixed')
           }
-        };"
+        });"
       `);
     });
 
