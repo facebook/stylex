@@ -11,6 +11,7 @@ import type {
   RawStyles,
   CompiledStyles,
   InjectableStyle,
+  StyleXOptions,
 } from './common-types';
 
 import convertToClassName from './convert-to-className';
@@ -36,7 +37,7 @@ import { IncludedStyles } from './stylex-include';
 // Before returning, it ensures that there are no duplicate styles being injected.
 export default function styleXCreateSet(
   namespaces: { +[string]: RawStyles },
-  stylexSheetName?: string
+  options?: StyleXOptions = {}
 ): [{ [string]: CompiledStyles }, { [string]: InjectableStyle }] {
   const resolvedNamespaces = {};
   const injectedStyles = {};
@@ -48,7 +49,7 @@ export default function styleXCreateSet(
     }
     const [resolvedNamespace, injected] = styleXCreateNamespace(
       namespace,
-      stylexSheetName
+      options
     );
     resolvedNamespaces[namespaceName] = flattenObject(resolvedNamespace);
     for (const cn of Object.keys(injected)) {
@@ -77,7 +78,7 @@ export default function styleXCreateSet(
 // Then, it returns the transformed style Object and an object of injected styles.
 function styleXCreateNamespace(
   style: RawStyles,
-  stylexSheetName?: string
+  options: StyleXOptions
 ): [CompiledStyles, { [string]: [string, InjectableStyle] }] {
   const namespaceEntries = objEntries(style);
 
@@ -144,7 +145,7 @@ function styleXCreateNamespace(
         const [updatedKey, className, cssRule] = convertToClassName(
           [innerKey, innerVal],
           pseudo,
-          stylexSheetName
+          options
         );
         innerObj[updatedKey] = className;
         injectedStyles[updatedKey + pseudo] = [className, cssRule];
@@ -154,7 +155,7 @@ function styleXCreateNamespace(
       const [updatedKey, className, cssRule] = convertToClassName(
         [key, val],
         undefined,
-        stylexSheetName
+        options
       );
       resolvedNamespace[updatedKey] = className;
       injectedStyles[updatedKey] = [className, cssRule];

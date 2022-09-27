@@ -9,7 +9,7 @@
 import type { PluginPass } from '@babel/core';
 import type { NodePath } from '@babel/traverse';
 import type { StyleRule } from '@stylexjs/shared';
-import type { CompiledNamespaces } from '@stylexjs/shared';
+import type { CompiledNamespaces, StyleXOptions } from '@stylexjs/shared';
 
 export default class StateManager {
   readonly _state: PluginPass;
@@ -33,9 +33,18 @@ export default class StateManager {
     (state.file.metadata as any).stylex = [];
   }
 
-  get options(): { [key: string]: any } {
-    this._state.opts = this._state.opts || {};
-    return this._state.opts;
+  get options(): StyleXOptions {
+    const options = this._state.opts || {};
+    this._state.opts = {
+      ...options,
+      dev: (options as any).dev ?? false,
+      test: (options as any).test ?? false,
+      stylexSheetName: (options as any).stylexSheetName ?? undefined,
+      classNamePrefix: (options as any).classNamePrefix ?? 'x',
+      definedStylexCSSVariables:
+        (options as any).definedStylexCSSVariables ?? {},
+    } as StyleXOptions;
+    return this._state.opts as any;
   }
 
   get metadata(): { [key: string]: any } {

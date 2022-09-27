@@ -61,7 +61,7 @@ export default function transformStyleXKeyframes(
     assertValidKeyframes(plainObject);
     let [animationName, injectedStyle] = stylexKeyframes(
       plainObject,
-      state.stylexSheetName
+      state.options
     );
 
     // This should be a string

@@ -8,7 +8,7 @@
  */
 
 import createHash from './hash';
-import type { TRawValue, StyleRule } from './common-types';
+import type { TRawValue, StyleRule, StyleXOptions } from './common-types';
 import dashify from './utils/dashify';
 import transformValue from './transform-value';
 import generateCSSRule from './generate-css-rule';
@@ -23,8 +23,7 @@ import generateCSSRule from './generate-css-rule';
 export default function convertToClassName(
   objEntry: [string, TRawValue],
   pseudo?: string,
-  stylexSheetName?: string = '<>',
-  prefix?: string = 'x'
+  { stylexSheetName = '<>', classNamePrefix = 'x' }: StyleXOptions = {}
 ): StyleRule {
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
@@ -37,7 +36,8 @@ export default function convertToClassName(
     ? dashedKey + value.join(', ') + (pseudo ?? 'null')
     : dashedKey + value + (pseudo ?? 'null');
 
-  const className = prefix + createHash(stylexSheetName + stringToHash);
+  const className =
+    classNamePrefix + createHash(stylexSheetName + stringToHash);
 
   const cssRules = generateCSSRule(className, dashedKey, value, pseudo);
 

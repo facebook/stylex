@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { InjectableStyle } from './common-types';
+import type { InjectableStyle, StyleXOptions } from './common-types';
 
 import createHash from './hash';
 import expandShorthands from './expand-shorthands';
@@ -31,8 +31,7 @@ import {
 // `stylex.create`.
 export default function styleXKeyframes(
   frames: { +[string]: { +[string]: string | number } },
-  stylexSheetName?: string = '<>',
-  prefix?: string = 'x'
+  { stylexSheetName = '<>', classNamePrefix = 'x' }: StyleXOptions = {}
 ): [string, InjectableStyle] {
   const expandedObject = objMap(frames, (frame) =>
     Pipe.create(frame)
@@ -53,7 +52,8 @@ export default function styleXKeyframes(
   const rtlString = constructKeyframesObj(rtlStyles);
 
   // This extra `-B` is kept for some idiosyncratic legacy compatibility for now.
-  const animationName = prefix + createHash(stylexSheetName + ltrString) + '-B';
+  const animationName =
+    classNamePrefix + createHash(stylexSheetName + ltrString) + '-B';
 
   const ltr = `@keyframes ${animationName}{${ltrString}}`;
   const rtl =

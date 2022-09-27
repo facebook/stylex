@@ -39,14 +39,14 @@ export type MutableCompiledNamespaces = {
 
 export function create<N extends { readonly [key: string]: RawStyles }>(
   namespaces: N,
-  stylexSheetName?: string
+  options?: StyleXOptions
 ): readonly [CompiledNamespaces, { readonly [key: string]: InjectableStyle }];
 
 export function keyframes<
   Obj extends {
     readonly [key: string]: { readonly [k: string]: string | number };
   }
->(animation: Obj, stylexSheetName?: string): readonly [string, InjectableStyle];
+>(animation: Obj, options?: StyleXOptions): readonly [string, InjectableStyle];
 
 export function include(animation: {
   readonly [key: string]: string | number;
@@ -55,6 +55,15 @@ export function include(animation: {
 export class IncludedStyles {
   astNode: any;
 }
+
+export type StyleXOptions = {
+  dev: boolean;
+  test: boolean;
+  stylexSheetName?: string | undefined;
+  classNamePrefix: string;
+  definedStylexCSSVariables?: { [key: string]: any };
+  [key: string]: any;
+};
 
 export function firstThatWorks<T>(...args: T[]): T[];
 
