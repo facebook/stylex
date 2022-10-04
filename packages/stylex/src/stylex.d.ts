@@ -53,7 +53,7 @@ type Stylex$Create = <S extends StyleXNamespaceSet>(
   };
 }>;
 
-type StylexExtends = <S extends CompiledNamespace>(
+type StylexInclude = <S extends CompiledNamespace>(
   compiledNamespace: S
 ) => {
   readonly [K in keyof S]: S[K] extends ClassNameFor<K, infer V>
@@ -72,7 +72,7 @@ type stylex = {
     >
   ): string;
   create: Stylex$Create;
-  extends: StylexExtends;
+  include: StylexInclude;
   inject: (
     ltrRule: string,
     priority: number,
