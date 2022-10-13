@@ -6,7 +6,7 @@
 
 ## Enabling the plugin and rules
 
-Once you've installed the npm package you can enable the plugin and rules by openng your ESLint configuration file and adding the plugin and rules.
+Once you've installed the npm package you can enable the plugin and rules by opening your ESLint configuration file and adding the plugin and rules.
 
 ``` json
 {
