@@ -243,56 +243,7 @@ eslintTester.run('stylex-valid-styles', rule, {
       code: "stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
-          message: `textAlign value must be one of:
-start
-end
-left
-right
-center
-justify
-match-parent
-initial
-inherit
-unset
-revert`,
-        },
-      ],
-    },
-    {
-      code: 'stylex.create({default: {fontWeight: 99}});',
-      errors: [
-        {
-          message: `fontWeight value must be one of:
-normal
-bold
-bolder
-lighter
-100
-200
-300
-400
-500
-600
-700
-800
-900
-initial
-inherit
-unset
-revert`,
-        },
-      ],
-    },
-    {
-      code: 'stylex.create({default: {content: 100 + 100}});',
-      errors: [
-        {
-          message: `content value must be one of:
-a string literal
-initial
-inherit
-unset
-revert`,
+          message: 'This is not a valid value that can be used for textAlign',
         },
       ],
     },
@@ -300,15 +251,8 @@ revert`,
       code: "stylex.create({default: {transitionProperty: 'all'}});",
       errors: [
         {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
-initial
-inherit
-unset
-revert`,
+          message:
+            'This is not a valid value that can be used for transitionProperty',
         },
       ],
     },
@@ -316,15 +260,8 @@ revert`,
       code: "stylex.create({default: {transitionProperty: 'height'}});",
       errors: [
         {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
-initial
-inherit
-unset
-revert`,
+          message:
+            'This is not a valid value that can be used for transitionProperty',
         },
       ],
     },
@@ -340,18 +277,7 @@ revert`,
       code: "stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
       errors: [
         {
-          message: `textAlign value must be one of:
-start
-end
-left
-right
-center
-justify
-match-parent
-initial
-inherit
-unset
-revert`,
+          message: 'This is not a valid value that can be used for textAlign',
         },
       ],
     },
