@@ -113,7 +113,7 @@ describe('babel-plugin-transform-stylex', () => {
             },
           });
 
-          const styles = stylex.create({
+          export const styles = stylex.create({
             root: {
               animationName: name,
             },
@@ -123,7 +123,12 @@ describe('babel-plugin-transform-stylex', () => {
         "import stylex from 'stylex';
         stylex.inject(\\"@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}\\", 1, \\"@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}\\");
         const name = \\"x1lvx8r0-B\\";
-        stylex.inject(\\".x1ugarde{animation-name:x1lvx8r0-B}\\", 1);"
+        stylex.inject(\\".x1ugarde{animation-name:x1lvx8r0-B}\\", 1);
+        export const styles = {
+          root: {
+            animationName: \\"x1ugarde\\"
+          }
+        };"
       `);
     });
   });

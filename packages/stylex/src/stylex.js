@@ -140,15 +140,21 @@ function stylexExtends<TStyles: { +[string]: string | number }>(
   );
 }
 
-type Stylex$Extends = <TStyles: { +[string]: string | number }>(
+type Stylex$Include = <TStyles: { +[string]: string | number }>(
   _styles: MapNamespace<TStyles>
 ) => TStyles;
 
 stylex.create = (stylexCreate: Stylex$Create);
-stylex.extends = (stylexExtends: Stylex$Extends);
+stylex.include = (stylexExtends: Stylex$Include);
 
 stylex.keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
+};
+
+stylex.firstThatWorks = <T: string | number>(
+  ..._styles: $ReadOnlyArray<T>
+): $ReadOnlyArray<T> => {
+  throw new Error('stylex.firstThatWorks should never be called.');
 };
 
 stylex.inject = inject;
@@ -162,7 +168,8 @@ stylex.UNSUPPORTED_PROPERTY = (props: { ... }) => {
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
   create: Stylex$Create,
-  extends: Stylex$Extends,
+  include: Stylex$Include,
+  firstThatWorks: <T>(...args: $ReadOnlyArray<T>) => $ReadOnlyArray<T>,
   inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
   keyframes: (keyframes: Keyframes) => string,
   ...
