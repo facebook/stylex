@@ -31,3 +31,12 @@ export type StyleRule = [string, string, InjectableStyle];
 export type CompiledStyles = $ReadOnly<{
   [string]: string | $ReadOnly<{ [string]: string }>,
 }>;
+
+export type StyleXOptions = {
+  dev: boolean,
+  test: boolean,
+  stylexSheetName?: string | void,
+  classNamePrefix: string,
+  definedStylexCSSVariables?: { [key: string]: mixed },
+  ...
+};

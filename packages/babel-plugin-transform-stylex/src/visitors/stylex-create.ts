@@ -86,7 +86,7 @@ export default function transformStyleXCreate(
     const plainObject = value;
     let [compiledStyles, injectedStyles] = stylexCreate(
       plainObject,
-      state.stylexSheetName
+      state.options
     );
 
     let varName = null;
