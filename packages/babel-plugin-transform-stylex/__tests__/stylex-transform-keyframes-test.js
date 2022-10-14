@@ -74,6 +74,31 @@ describe('babel-plugin-transform-stylex', () => {
       `);
     });
 
+    test('allows inline references to keyframes', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+
+          const styles = stylex.create({
+            default: {
+              animationName: stylex.keyframes({
+                from: {
+                  backgroundColor: 'blue',
+                },
+                to: {
+                  backgroundColor: 'red',
+                },
+              }),
+            },
+          });
+        `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(\\"@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}\\", 1);
+        stylex.inject(\\".xcoz2pf{animation-name:x3zqmp-B}\\", 1);"
+      `);
+    });
+
     test('generates RTL-specific keyframes', () => {
       expect(
         transform(`

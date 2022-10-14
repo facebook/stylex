@@ -13,6 +13,8 @@ import {
   create as stylexCreate,
   include as stylexInclude,
   firstThatWorks as stylexFirstThatWorks,
+  keyframes as stylexKeyframes,
+  InjectableStyle,
 } from '@stylexjs/shared';
 import {
   injectDevClassNames,
@@ -60,6 +62,20 @@ export default function transformStyleXCreate(
 
     const processingState = preProcessStyleArg(firstArg);
 
+    const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+    function keyframes<
+      Obj extends {
+        readonly [key: string]: { readonly [k: string]: string | number };
+      }
+    >(animation: Obj): string {
+      const [animationName, injectedStyle] = stylexKeyframes(
+        animation,
+        state.options
+      );
+      injectedKeyframes[animationName] = injectedStyle;
+      return animationName;
+    }
+
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
     state.stylexIncludeImport.forEach((name) => {
@@ -68,12 +84,16 @@ export default function transformStyleXCreate(
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
+    state.stylexKeyframesImport.forEach((name) => {
+      identifiers[name] = { fn: keyframes };
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
       }
       memberExpressions[name].include = { fn: stylexInclude, takesPath: true };
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
+      memberExpressions[name].keyframes = { fn: keyframes };
     });
 
     const { confident, value } = evaluate(firstArg, {
@@ -84,10 +104,15 @@ export default function transformStyleXCreate(
       throw new Error(messages.NON_STATIC_VALUE);
     }
     const plainObject = value;
-    let [compiledStyles, injectedStyles] = stylexCreate(
+    let [compiledStyles, injectedStylesSansKeyframes] = stylexCreate(
       plainObject,
       state.options
     );
+
+    const injectedStyles = {
+      ...injectedKeyframes,
+      ...injectedStylesSansKeyframes,
+    };
 
     let varName = null;
     if (path.parentPath.isVariableDeclarator()) {
