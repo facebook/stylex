@@ -20,9 +20,10 @@ function getDistanceMin(d0, d1, d2, bx, ay) {
  * This a fork of Gustaf Andersson's levenshtein implmentation
  * https://github.com/gustf/js-levenshtein
  *
- * Includes a naive max distance for bailing out early to prevent
- * slowing down the lint rule too much.
- * It will return Infinity if the max is met.
+ * Includes a naive bailout using max distance for stopping early
+ * to prevent slowing down the lint rule too much.
+ *
+ * It will return Infinity if it bails out early
  */
 function getDistance(a, b, max) {
   // returns Infinity if max is exceeded
