@@ -228,6 +228,40 @@ eslintTester.run('stylex-valid-styles', rule, {
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
+          suggestions: [
+            {
+              desc: 'Did you mean "textAlign"?',
+              output: "stylex.create({default: {textAlign: 'left'}});",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: "stylex.create({default: {textAlin: 'left'}});",
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex',
+          suggestions: [
+            {
+              desc: 'Did you mean "textAlign"?',
+              output: "stylex.create({default: {textAlign: 'left'}});",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: 'stylex.create({default: {["textAlin"]: \'left\'}});',
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex',
+          suggestions: [
+            {
+              desc: 'Did you mean "textAlign"?',
+              output: 'stylex.create({default: {["textAlign"]: \'left\'}});',
+            },
+          ],
         },
       ],
     },
@@ -243,7 +277,56 @@ eslintTester.run('stylex-valid-styles', rule, {
       code: "stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
-          message: 'This is not a valid value that can be used for textAlign',
+          message: `textAlign value must be one of:
+start
+end
+left
+right
+center
+justify
+match-parent
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
+      code: 'stylex.create({default: {fontWeight: 99}});',
+      errors: [
+        {
+          message: `fontWeight value must be one of:
+normal
+bold
+bolder
+lighter
+100
+200
+300
+400
+500
+600
+700
+800
+900
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
+      code: 'stylex.create({default: {content: 100 + 100}});',
+      errors: [
+        {
+          message: `content value must be one of:
+a string literal
+initial
+inherit
+unset
+revert`,
         },
       ],
     },
@@ -251,8 +334,15 @@ eslintTester.run('stylex-valid-styles', rule, {
       code: "stylex.create({default: {transitionProperty: 'all'}});",
       errors: [
         {
-          message:
-            'This is not a valid value that can be used for transitionProperty',
+          message: `transitionProperty value must be one of:
+opacity
+transform
+opacity, transform
+none
+initial
+inherit
+unset
+revert`,
         },
       ],
     },
@@ -260,8 +350,31 @@ eslintTester.run('stylex-valid-styles', rule, {
       code: "stylex.create({default: {transitionProperty: 'height'}});",
       errors: [
         {
-          message:
-            'This is not a valid value that can be used for transitionProperty',
+          message: `transitionProperty value must be one of:
+opacity
+transform
+opacity, transform
+none
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
+      code: "stylex.create({default: {transitionProperty: 'transfrom'}});",
+      errors: [
+        {
+          message: `transitionProperty value must be one of:
+opacity
+transform
+opacity, transform
+none
+initial
+inherit
+unset
+revert`,
         },
       ],
     },
@@ -277,7 +390,25 @@ eslintTester.run('stylex-valid-styles', rule, {
       code: "stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
       errors: [
         {
-          message: 'This is not a valid value that can be used for textAlign',
+          message: `textAlign value must be one of:
+start
+end
+left
+right
+center
+justify
+match-parent
+initial
+inherit
+unset
+revert`,
+          suggestions: [
+            {
+              desc: 'Did you mean "left"? Replace "lfet" with "left"',
+              output:
+                "stylex.create({default: {':focus': {textAlign: 'left'}}});",
+            },
+          ],
         },
       ],
     },
@@ -313,6 +444,53 @@ eslintTester.run('stylex-valid-styles', rule, {
       errors: [
         {
           message: 'You cannot nest styles more than one level deep',
+        },
+      ],
+    },
+    {
+      code: 'stylex.create({default: {transitionProperty: "opasity"}});',
+      errors: [
+        {
+          message: `transitionProperty value must be one of:
+opacity
+transform
+opacity, transform
+none
+initial
+inherit
+unset
+revert`,
+          suggestions: [
+            {
+              desc: 'Did you mean "opacity"? Replace "opasity" with "opacity"',
+              output:
+                'stylex.create({default: {transitionProperty: "opacity"}});',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `const tp = "opasity";
+const styles = stylex.create({default: {transitionProperty: tp}});`,
+      errors: [
+        {
+          message: `transitionProperty value must be one of:
+opacity
+transform
+opacity, transform
+none
+initial
+inherit
+unset
+revert`,
+          suggestions: [
+            {
+              desc: 'Did you mean "opacity"? Replace "opasity" with "opacity"',
+              output: `const tp = "opacity";
+const styles = stylex.create({default: {transitionProperty: tp}});`,
+            },
+          ],
         },
       ],
     },
