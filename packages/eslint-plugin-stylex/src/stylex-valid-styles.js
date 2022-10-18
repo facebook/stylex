@@ -8,23 +8,59 @@
 'use strict';
 
 const namedColors = require('./reference/namedColors');
+const getDistance = require('./utils/getDistance');
 const numericOperators = new Set(['+', '-', '*', '/']);
+
+/*
+type Rule = (ASTNode, Variables) => undefined | {
+  message: string;
+  distance?: number;
+  suggest?: {
+    fix: (node) => node;
+    desc: string;
+  }
+};
+*/
+
 // Helper functions to check for stylex values.
 // All these helper functions receive a list of locally defined variables
 // as well. This lets them recursively resolve values that are defined locally.
-const isLiteral = function (value) {
+const MAX_DISTANCE = 4;
+const makeLiteralRule = function (value) {
   function literalChecker(node, variables) {
-    return (
-      (node.type === 'Literal' && node.value === value) ||
-      (node.type === 'Identifier' &&
-        variables &&
-        variables.has(node.name) &&
-        literalChecker(variables.get(node.name), variables))
-    );
+    if (node.type === 'Literal' && node.value === value) {
+      return;
+    }
+    if (node.type === 'Identifier' && variables && variables.has(node.name)) {
+      return literalChecker(variables.get(node.name), variables);
+    }
+    const distance =
+      node.type === 'Literal' && typeof node.value === 'string'
+        ? getDistance(value, node.value, MAX_DISTANCE)
+        : Infinity;
+    const suggest =
+      distance < MAX_DISTANCE
+        ? {
+            desc: `Did you mean "${value}"? Replace "${node.value}" with "${value}"`,
+            fix: (fixer) => {
+              const quoteType = node.raw.substr(0, 1);
+              return fixer.replaceText(
+                node,
+                `${quoteType}${value}${quoteType}`
+              );
+            },
+          }
+        : undefined;
+    return {
+      message: value,
+      distance: distance,
+      suggest,
+    };
   }
   return literalChecker;
 };
-const isRegEx = function (regex) {
+
+const makeRegExRule = function (regex, message) {
   function regexChecker(node, variables) {
     return (
       (node.type === 'Literal' &&
@@ -36,7 +72,8 @@ const isRegEx = function (regex) {
         regexChecker(variables.get(node.name), variables))
     );
   }
-  return regexChecker;
+  return (node, variables) =>
+    !regexChecker(node, variables) ? { message } : undefined;
 };
 
 const isString = (node, variables) =>
@@ -48,7 +85,11 @@ const isString = (node, variables) =>
   (node.type === 'Identifier' &&
     variables &&
     variables.has(node.name) &&
-    isString(variables.get(node.name) /* purposely not recursing */));
+    isString(variables.get(node.name) /* purposely not recursing */))
+    ? undefined
+    : {
+        message: 'a string literal',
+      };
 
 const isMathCall = (node, variables) =>
   node.type === 'CallExpression' &&
@@ -57,7 +98,11 @@ const isMathCall = (node, variables) =>
   node.callee.object.name === 'Math' &&
   node.callee.property.type === 'Identifier' &&
   ['abs', 'ceil', 'floor', 'round'].includes(node.callee.property.name) &&
-  node.arguments.every((arg) => isNumber(arg, variables));
+  node.arguments.every((arg) => isNumber(arg, variables))
+    ? undefined
+    : {
+        message: 'a math expression',
+      };
 const isNumber = (node, variables) =>
   (node.type === 'Literal' && typeof node.value === 'number') ||
   (node.type === 'BinaryExpression' &&
@@ -71,348 +116,415 @@ const isNumber = (node, variables) =>
   (node.type === 'Identifier' &&
     variables &&
     variables.has(node.name) &&
-    isNumber(variables.get(node.name) /* purposely not recursing */));
+    isNumber(variables.get(node.name) /* purposely not recursing */))
+    ? undefined
+    : {
+        message: 'a number literal or math expression',
+      };
 
 const isHexColor = (node) => {
-  return (
-    node.type === 'Literal' &&
+  return node.type === 'Literal' &&
     /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value)
-  );
+    ? undefined
+    : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' };
 };
 
-const isUnion =
-  (...checkers) =>
-  (node, variables) =>
-    checkers.some((checker) => checker(node, variables));
-const isStringOrNumber = isUnion(isString, isNumber);
+const makeUnionRule = (...rules) => {
+  return (node, variables) => {
+    const failedRules = [];
+    for (const rule of rules) {
+      const check = rule(node, variables);
+      if (check === undefined) {
+        // passes, that means we pass.
+        return undefined;
+      }
+      failedRules.push(check);
+    }
+    const fixable = failedRules.filter((a) => a.suggest !== undefined);
+    fixable.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+    return {
+      message: failedRules.map((a) => a.message).join('\n'),
+      suggest: fixable[0] != null ? fixable[0].suggest : undefined,
+    };
+  };
+};
 
-const isNamedColor = isUnion(
-  ...Array.from(namedColors).map((color) => isLiteral(color))
+const isStringOrNumber = makeUnionRule(isString, isNumber);
+
+const isNamedColor = makeUnionRule(
+  ...Array.from(namedColors).map((color) => makeLiteralRule(color))
 );
 
+const absoluteLengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
 const isAbsoluteLength = (node) => {
-  const lengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
-  return (
-    node.type === 'Literal' &&
-    Array.from(lengthUnits).some((unit) =>
-      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
+  if (
+    !(
+      node.type === 'Literal' &&
+      Array.from(absoluteLengthUnits).some((unit) =>
+        node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
+      )
     )
-  );
+  ) {
+    return {
+      message: `a number ending in ${Array.from(absoluteLengthUnits).join(
+        ', '
+      )}`,
+    };
+  }
 };
 
+const relativeLengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
 const isRelativeLength = (node) => {
-  const lengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
-  return (
-    node.type === 'Literal' &&
-    Array.from(lengthUnits).some((unit) =>
-      node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
+  if (
+    !(
+      node.type === 'Literal' &&
+      Array.from(relativeLengthUnits).some((unit) =>
+        node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
+      )
     )
-  );
+  ) {
+    return {
+      message: `a number ending in ${Array.from(relativeLengthUnits).join(
+        ', '
+      )}`,
+    };
+  }
 };
 
 const isPercentage = (node) => {
-  return (
-    node.type === 'Literal' &&
-    node.value.match(new RegExp('^([-,+]?\\d+(\\.\\d+)?%)$'))
-  );
+  if (
+    !(
+      node.type === 'Literal' &&
+      node.value.match(new RegExp('^([-,+]?\\d+(\\.\\d+)?%)$'))
+    )
+  ) {
+    return {
+      message: 'A string literal representing a percentage (e.g. 100%)',
+    };
+  }
 };
 
-const isLength = isUnion(isAbsoluteLength, isRelativeLength);
+const isLength = makeUnionRule(isAbsoluteLength, isRelativeLength);
 
 // NOTE: converted from Flow types to function calls using this
 // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
-const all = isUnion(
-  isLiteral('initial'),
-  isLiteral('inherit'),
-  isLiteral('unset'),
-  isLiteral('revert')
+const all = makeUnionRule(
+  makeLiteralRule('initial'),
+  makeLiteralRule('inherit'),
+  makeLiteralRule('unset'),
+  makeLiteralRule('revert')
 );
-const color = isUnion(isNamedColor, isHexColor, isString);
-const width = isUnion(
+const color = makeUnionRule(isString, isNamedColor, isHexColor);
+const width = makeUnionRule(
   isString,
   isNumber,
-  isLiteral('available'),
-  isLiteral('min-content'),
-  isLiteral('max-content'),
-  isLiteral('fit-content'),
-  isLiteral('auto'),
+  makeLiteralRule('available'),
+  makeLiteralRule('min-content'),
+  makeLiteralRule('max-content'),
+  makeLiteralRule('fit-content'),
+  makeLiteralRule('auto'),
   isLength,
   isPercentage
 );
-const borderWidth = isUnion(
+const borderWidth = makeUnionRule(
   isNumber,
-  isLiteral('thin'),
-  isLiteral('medium'),
-  isLiteral('thick'),
+  makeLiteralRule('thin'),
+  makeLiteralRule('medium'),
+  makeLiteralRule('thick'),
   isString,
   isLength
 );
 const lengthPercentage = isStringOrNumber;
-const bgImage = isUnion(isLiteral('none'), isString);
-const borderImageSource = isUnion(isLiteral('none'), isString);
+const bgImage = makeUnionRule(makeLiteralRule('none'), isString);
+const borderImageSource = makeUnionRule(makeLiteralRule('none'), isString);
 const time = isString;
-const singleAnimationDirection = isUnion(
-  isLiteral('normal'),
-  isLiteral('reverse'),
-  isLiteral('alternate'),
-  isLiteral('alternate-reverse')
+const singleAnimationDirection = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('reverse'),
+  makeLiteralRule('alternate'),
+  makeLiteralRule('alternate-reverse')
 );
-const singleAnimationFillMode = isUnion(
-  isLiteral('none'),
-  isLiteral('forwards'),
-  isLiteral('backwards'),
-  isLiteral('both')
+const singleAnimationFillMode = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('forwards'),
+  makeLiteralRule('backwards'),
+  makeLiteralRule('both')
 );
-const singleAnimationIterationCount = isUnion(isLiteral('infinite'), isNumber);
+const singleAnimationIterationCount = makeUnionRule(
+  makeLiteralRule('infinite'),
+  isNumber
+);
 // TODO change this to a special function that looks for stylex.keyframes call
-const singleAnimationName = isUnion(isLiteral('none'), () => true);
-const singleAnimationPlayState = isUnion(
-  isLiteral('running'),
-  isLiteral('paused')
+const singleAnimationName = makeUnionRule(makeLiteralRule('none'), () => true);
+
+const singleAnimationPlayState = makeUnionRule(
+  makeLiteralRule('running'),
+  makeLiteralRule('paused')
 );
-const singleTransitionTimingFunction = isUnion(
-  isLiteral('ease'),
-  isLiteral('linear'),
-  isLiteral('ease-in'),
-  isLiteral('ease-out'),
-  isLiteral('ease-in-out'),
-  isLiteral('step-start'),
-  isLiteral('step-end'),
+const singleTransitionTimingFunction = makeUnionRule(
+  makeLiteralRule('ease'),
+  makeLiteralRule('linear'),
+  makeLiteralRule('ease-in'),
+  makeLiteralRule('ease-out'),
+  makeLiteralRule('ease-in-out'),
+  makeLiteralRule('step-start'),
+  makeLiteralRule('step-end'),
   isString
 );
-const attachment = isUnion(
-  isLiteral('scroll'),
-  isLiteral('fixed'),
-  isLiteral('local')
+const attachment = makeUnionRule(
+  makeLiteralRule('scroll'),
+  makeLiteralRule('fixed'),
+  makeLiteralRule('local')
 );
-const blendMode = isUnion(
-  isLiteral('normal'),
-  isLiteral('multiply'),
-  isLiteral('screen'),
-  isLiteral('overlay'),
-  isLiteral('darken'),
-  isLiteral('lighten'),
-  isLiteral('color-dodge'),
-  isLiteral('color-burn'),
-  isLiteral('hard-light'),
-  isLiteral('soft-light'),
-  isLiteral('difference'),
-  isLiteral('exclusion'),
-  isLiteral('hue'),
-  isLiteral('saturation'),
-  isLiteral('color'),
-  isLiteral('luminosity')
+const blendMode = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('multiply'),
+  makeLiteralRule('screen'),
+  makeLiteralRule('overlay'),
+  makeLiteralRule('darken'),
+  makeLiteralRule('lighten'),
+  makeLiteralRule('color-dodge'),
+  makeLiteralRule('color-burn'),
+  makeLiteralRule('hard-light'),
+  makeLiteralRule('soft-light'),
+  makeLiteralRule('difference'),
+  makeLiteralRule('exclusion'),
+  makeLiteralRule('hue'),
+  makeLiteralRule('saturation'),
+  makeLiteralRule('color'),
+  makeLiteralRule('luminosity')
 );
-const bgSize = isUnion(isString, isLiteral('cover'), isLiteral('contain'));
-const boxAlign = isUnion(
-  isLiteral('start'),
-  isLiteral('center'),
-  isLiteral('end'),
-  isLiteral('baseline'),
-  isLiteral('stretch')
+const bgSize = makeUnionRule(
+  isString,
+  makeLiteralRule('cover'),
+  makeLiteralRule('contain')
 );
-const repeatStyle = isUnion(
-  isLiteral('repeat-x'),
-  isLiteral('repeat-y'),
+const boxAlign = makeUnionRule(
+  makeLiteralRule('start'),
+  makeLiteralRule('center'),
+  makeLiteralRule('end'),
+  makeLiteralRule('baseline'),
+  makeLiteralRule('stretch')
+);
+const repeatStyle = makeUnionRule(
+  makeLiteralRule('repeat-x'),
+  makeLiteralRule('repeat-y'),
   isString
 );
-const backgroundPosition = isUnion(
+const backgroundPosition = makeUnionRule(
   isString,
-  isLiteral('top'),
-  isLiteral('bottom'),
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('center')
+  makeLiteralRule('top'),
+  makeLiteralRule('bottom'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('center')
 );
-const backgroundPositionX = isUnion(
+const backgroundPositionX = makeUnionRule(
   isString,
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('center')
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('center')
 );
-const backgroundPositionY = isUnion(
+const backgroundPositionY = makeUnionRule(
   isString,
-  isLiteral('top'),
-  isLiteral('bottom'),
-  isLiteral('center')
+  makeLiteralRule('top'),
+  makeLiteralRule('bottom'),
+  makeLiteralRule('center')
 );
 const borderImageOutset = isString;
-const borderImageRepeat = isUnion(
+const borderImageRepeat = makeUnionRule(
   isString,
-  isLiteral('stretch'),
-  isLiteral('repeat'),
-  isLiteral('round'),
-  isLiteral('space')
+  makeLiteralRule('stretch'),
+  makeLiteralRule('repeat'),
+  makeLiteralRule('round'),
+  makeLiteralRule('space')
 );
 const borderImageWidth = isString;
-const borderImageSlice = isUnion(isStringOrNumber, isLiteral('fill'));
-const box = isUnion(
-  isLiteral('border-box'),
-  isLiteral('padding-box'),
-  isLiteral('content-box')
+const borderImageSlice = makeUnionRule(
+  isStringOrNumber,
+  makeLiteralRule('fill')
 );
-const brStyle = isUnion(
-  isLiteral('none'),
-  isLiteral('hidden'),
-  isLiteral('dotted'),
-  isLiteral('dashed'),
-  isLiteral('solid'),
-  isLiteral('double'),
-  isLiteral('groove'),
-  isLiteral('ridge'),
-  isLiteral('inset'),
-  isLiteral('outset')
+const box = makeUnionRule(
+  makeLiteralRule('border-box'),
+  makeLiteralRule('padding-box'),
+  makeLiteralRule('content-box')
 );
-const CSSCursor = isUnion(
-  isLiteral('auto'),
-  isLiteral('default'),
-  isLiteral('none'),
-  isLiteral('context-menu'),
-  isLiteral('help'),
-  isLiteral('pointer'),
-  isLiteral('progress'),
-  isLiteral('wait'),
-  isLiteral('cell'),
-  isLiteral('crosshair'),
-  isLiteral('text'),
-  isLiteral('vertical-text'),
-  isLiteral('alias'),
-  isLiteral('copy'),
-  isLiteral('move'),
-  isLiteral('no-drop'),
-  isLiteral('not-allowed'),
-  isLiteral('e-resize'),
-  isLiteral('n-resize'),
-  isLiteral('ne-resize'),
-  isLiteral('nw-resize'),
-  isLiteral('s-resize'),
-  isLiteral('se-resize'),
-  isLiteral('sw-resize'),
-  isLiteral('w-resize'),
-  isLiteral('ew-resize'),
-  isLiteral('ns-resize'),
-  isLiteral('nesw-resize'),
-  isLiteral('nwse-resize'),
-  isLiteral('col-resize'),
-  isLiteral('row-resize'),
-  isLiteral('all-scroll'),
-  isLiteral('zoom-in'),
-  isLiteral('zoom-out'),
-  isLiteral('grab'),
-  isLiteral('grabbing'),
-  isLiteral('-webkit-grab'),
-  isLiteral('-webkit-grabbing')
+const brStyle = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('hidden'),
+  makeLiteralRule('dotted'),
+  makeLiteralRule('dashed'),
+  makeLiteralRule('solid'),
+  makeLiteralRule('double'),
+  makeLiteralRule('groove'),
+  makeLiteralRule('ridge'),
+  makeLiteralRule('inset'),
+  makeLiteralRule('outset')
 );
-const relativeSize = isUnion(isLiteral('larger'), isLiteral('smaller'));
-const emptyCells = isUnion(isLiteral('show'), isLiteral('hide'));
-const filter = isUnion(isLiteral('none'), isString);
-// const flex = isUnion(isLiteral('none'), isString, isNumber);
-const flexBasis = isUnion(isLiteral('content'), isNumber, isString);
-const flexDirection = isUnion(
-  isLiteral('row'),
-  isLiteral('row-reverse'),
-  isLiteral('column'),
-  isLiteral('column-reverse')
+const CSSCursor = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('default'),
+  makeLiteralRule('none'),
+  makeLiteralRule('context-menu'),
+  makeLiteralRule('help'),
+  makeLiteralRule('pointer'),
+  makeLiteralRule('progress'),
+  makeLiteralRule('wait'),
+  makeLiteralRule('cell'),
+  makeLiteralRule('crosshair'),
+  makeLiteralRule('text'),
+  makeLiteralRule('vertical-text'),
+  makeLiteralRule('alias'),
+  makeLiteralRule('copy'),
+  makeLiteralRule('move'),
+  makeLiteralRule('no-drop'),
+  makeLiteralRule('not-allowed'),
+  makeLiteralRule('e-resize'),
+  makeLiteralRule('n-resize'),
+  makeLiteralRule('ne-resize'),
+  makeLiteralRule('nw-resize'),
+  makeLiteralRule('s-resize'),
+  makeLiteralRule('se-resize'),
+  makeLiteralRule('sw-resize'),
+  makeLiteralRule('w-resize'),
+  makeLiteralRule('ew-resize'),
+  makeLiteralRule('ns-resize'),
+  makeLiteralRule('nesw-resize'),
+  makeLiteralRule('nwse-resize'),
+  makeLiteralRule('col-resize'),
+  makeLiteralRule('row-resize'),
+  makeLiteralRule('all-scroll'),
+  makeLiteralRule('zoom-in'),
+  makeLiteralRule('zoom-out'),
+  makeLiteralRule('grab'),
+  makeLiteralRule('grabbing'),
+  makeLiteralRule('-webkit-grab'),
+  makeLiteralRule('-webkit-grabbing')
 );
-const flexWrap = isUnion(
-  isLiteral('nowrap'),
-  isLiteral('wrap'),
-  isLiteral('wrap-reverse')
+const relativeSize = makeUnionRule(
+  makeLiteralRule('larger'),
+  makeLiteralRule('smaller')
+);
+const emptyCells = makeUnionRule(
+  makeLiteralRule('show'),
+  makeLiteralRule('hide')
+);
+const filter = makeUnionRule(makeLiteralRule('none'), isString);
+// const flex = makeUnionRule(makeLiteralRule('none'), isString, isNumber);
+const flexBasis = makeUnionRule(makeLiteralRule('content'), isNumber, isString);
+const flexDirection = makeUnionRule(
+  makeLiteralRule('row'),
+  makeLiteralRule('row-reverse'),
+  makeLiteralRule('column'),
+  makeLiteralRule('column-reverse')
+);
+const flexWrap = makeUnionRule(
+  makeLiteralRule('nowrap'),
+  makeLiteralRule('wrap'),
+  makeLiteralRule('wrap-reverse')
 );
 const flexGrow = isNumber;
 const flexShrink = isNumber;
-const flexFlow = isUnion(flexDirection, flexWrap);
-const float = isUnion(
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('none'),
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('inline-start'),
-  isLiteral('inline-end')
+const flexFlow = makeUnionRule(flexDirection, flexWrap);
+const float = makeUnionRule(
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('none'),
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('inline-start'),
+  makeLiteralRule('inline-end')
 );
-// const font = isUnion(
+// const font = makeUnionRule(
 //   isString,
-//   isLiteral('caption'),
-//   isLiteral('icon'),
-//   isLiteral('menu'),
-//   isLiteral('message-box'),
-//   isLiteral('small-caption'),
-//   isLiteral('status-bar'),
+//   makeLiteralRule('caption'),
+//   makeLiteralRule('icon'),
+//   makeLiteralRule('menu'),
+//   makeLiteralRule('message-box'),
+//   makeLiteralRule('small-caption'),
+//   makeLiteralRule('status-bar'),
 // );
-const absoluteSize = isUnion(
-  isLiteral('xx-small'),
-  isLiteral('x-small'),
-  isLiteral('small'),
-  isLiteral('medium'),
-  isLiteral('large'),
-  isLiteral('x-large'),
-  isLiteral('xx-large')
+const absoluteSize = makeUnionRule(
+  makeLiteralRule('xx-small'),
+  makeLiteralRule('x-small'),
+  makeLiteralRule('small'),
+  makeLiteralRule('medium'),
+  makeLiteralRule('large'),
+  makeLiteralRule('x-large'),
+  makeLiteralRule('xx-large')
 );
-const baselinePosition = isUnion(
-  isLiteral('baseline'),
-  isLiteral('first baseline'),
-  isLiteral('last baseline')
+const baselinePosition = makeUnionRule(
+  makeLiteralRule('baseline'),
+  makeLiteralRule('first baseline'),
+  makeLiteralRule('last baseline')
 );
 const fontFamily = isString;
-const gridLine = isUnion(isLiteral('auto'), isString);
-const gridTemplate = isUnion(isLiteral('none'), isLiteral('subgrid'), isString);
-const gridTemplateAreas = isUnion(isLiteral('none'), isString);
-const gridTemplateColumns = isUnion(
-  isLiteral('none'),
-  isLiteral('subgrid'),
+const gridLine = makeUnionRule(makeLiteralRule('auto'), isString);
+const gridTemplate = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('subgrid'),
   isString
 );
-const gridTemplateRows = isUnion(
-  isLiteral('none'),
-  isLiteral('subgrid'),
+const gridTemplateAreas = makeUnionRule(makeLiteralRule('none'), isString);
+const gridTemplateColumns = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('subgrid'),
+  isString
+);
+const gridTemplateRows = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('subgrid'),
   isString
 );
 const gridRowGap = lengthPercentage;
-const trackBreadth = isUnion(
+const trackBreadth = makeUnionRule(
   lengthPercentage,
   isString,
-  isLiteral('min-content'),
-  isLiteral('max-content'),
-  isLiteral('auto')
+  makeLiteralRule('min-content'),
+  makeLiteralRule('max-content'),
+  makeLiteralRule('auto')
 );
-const selfPosition = isUnion(
-  isLiteral('center'),
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('self-start'),
-  isLiteral('self-end'),
-  isLiteral('flex-start'),
-  isLiteral('flex-end')
+const selfPosition = makeUnionRule(
+  makeLiteralRule('center'),
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('self-start'),
+  makeLiteralRule('self-end'),
+  makeLiteralRule('flex-start'),
+  makeLiteralRule('flex-end')
 );
-const listStyleType = isUnion(isString, isLiteral('none'));
-const trackSize = isUnion(trackBreadth, isString);
+const listStyleType = makeUnionRule(isString, makeLiteralRule('none'));
+const trackSize = makeUnionRule(trackBreadth, isString);
 const borderStyle = brStyle;
 const columnRuleColor = color;
 const columnRuleStyle = brStyle;
 const columnRuleWidth = borderWidth;
-const columnRule = isUnion(columnRuleWidth, columnRuleStyle, columnRuleColor);
+const columnRule = makeUnionRule(
+  columnRuleWidth,
+  columnRuleStyle,
+  columnRuleColor
+);
 const singleTimingFunction = singleTransitionTimingFunction;
-const shapeBox = isUnion(box, isLiteral('margin-box'));
-const geometryBox = isUnion(
+const shapeBox = makeUnionRule(box, makeLiteralRule('margin-box'));
+const geometryBox = makeUnionRule(
   shapeBox,
-  isLiteral('fill-box'),
-  isLiteral('stroke-box'),
-  isLiteral('view-box')
+  makeLiteralRule('fill-box'),
+  makeLiteralRule('stroke-box'),
+  makeLiteralRule('view-box')
 );
-const maskReference = isUnion(isLiteral('none'), isString);
-const compositeOperator = isUnion(
-  isLiteral('add'),
-  isLiteral('subtract'),
-  isLiteral('intersect'),
-  isLiteral('exclude')
+const maskReference = makeUnionRule(makeLiteralRule('none'), isString);
+const compositeOperator = makeUnionRule(
+  makeLiteralRule('add'),
+  makeLiteralRule('subtract'),
+  makeLiteralRule('intersect'),
+  makeLiteralRule('exclude')
 );
-const maskingMode = isUnion(
-  isLiteral('alpha'),
-  isLiteral('luminance'),
-  isLiteral('match-source')
+const maskingMode = makeUnionRule(
+  makeLiteralRule('alpha'),
+  makeLiteralRule('luminance'),
+  makeLiteralRule('match-source')
 );
-const maskLayer = isUnion(
+const maskLayer = makeUnionRule(
   maskReference,
   maskingMode,
   isString,
@@ -421,30 +533,30 @@ const maskLayer = isUnion(
   compositeOperator
 );
 
-const alignContent = isUnion(
-  isLiteral('flex-start'),
-  isLiteral('flex-end'),
-  isLiteral('center'),
-  isLiteral('space-between'),
-  isLiteral('space-around'),
-  isLiteral('stretch')
+const alignContent = makeUnionRule(
+  makeLiteralRule('flex-start'),
+  makeLiteralRule('flex-end'),
+  makeLiteralRule('center'),
+  makeLiteralRule('space-between'),
+  makeLiteralRule('space-around'),
+  makeLiteralRule('stretch')
 );
-const alignItems = isUnion(
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('flex-start'),
-  isLiteral('flex-end'),
-  isLiteral('center'),
-  isLiteral('baseline'),
-  isLiteral('stretch')
+const alignItems = makeUnionRule(
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('flex-start'),
+  makeLiteralRule('flex-end'),
+  makeLiteralRule('center'),
+  makeLiteralRule('baseline'),
+  makeLiteralRule('stretch')
 );
-const alignSelf = isUnion(
-  isLiteral('auto'),
-  isLiteral('flex-start'),
-  isLiteral('flex-end'),
-  isLiteral('center'),
-  isLiteral('baseline'),
-  isLiteral('stretch')
+const alignSelf = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('flex-start'),
+  makeLiteralRule('flex-end'),
+  makeLiteralRule('center'),
+  makeLiteralRule('baseline'),
+  makeLiteralRule('stretch')
 );
 const animationDelay = time;
 const animationDirection = singleAnimationDirection;
@@ -454,13 +566,16 @@ const animationIterationCount = singleAnimationIterationCount;
 const animationName = singleAnimationName;
 const animationPlayState = singleAnimationPlayState;
 const animationTimingFunction = singleTimingFunction;
-const appearance = isUnion(
-  isLiteral('auto'),
-  isLiteral('none'),
-  isLiteral('textfield')
+const appearance = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('none'),
+  makeLiteralRule('textfield')
 );
-const backdropFilter = isUnion(isLiteral('none'), isString);
-const backfaceVisibility = isUnion(isLiteral('visible'), isLiteral('hidden'));
+const backdropFilter = makeUnionRule(makeLiteralRule('none'), isString);
+const backfaceVisibility = makeUnionRule(
+  makeLiteralRule('visible'),
+  makeLiteralRule('hidden')
+);
 // type background = string | finalBgLayer;
 const backgroundAttachment = attachment;
 const backgroundBlendMode = blendMode;
@@ -471,12 +586,12 @@ const backgroundOrigin = box;
 const backgroundRepeat = repeatStyle;
 const backgroundSize = bgSize;
 const blockSize = width;
-const border = isUnion(borderWidth, brStyle, color);
-// const borderBlockEnd = isUnion(borderWidth, borderStyle, color);
+const border = makeUnionRule(borderWidth, brStyle, color);
+// const borderBlockEnd = makeUnionRule(borderWidth, borderStyle, color);
 // const borderBlockEndColor = color;
 // const borderBlockEndStyle = borderStyle;
 // const borderBlockEndWidth = borderWidth;
-// const borderBlockStart = isUnion(borderWidth, borderStyle, color);
+// const borderBlockStart = makeUnionRule(borderWidth, borderStyle, color);
 // const borderBlockStartColor = color;
 // const borderBlockStartStyle = borderStyle;
 // const borderBlockStartWidth = borderWidth;
@@ -484,19 +599,22 @@ const borderBottomLeftRadius = lengthPercentage;
 const borderBottomRightRadius = lengthPercentage;
 const borderBottomStyle = brStyle;
 const borderBottomWidth = borderWidth;
-const borderCollapse = isUnion(isLiteral('collapse'), isLiteral('separate'));
+const borderCollapse = makeUnionRule(
+  makeLiteralRule('collapse'),
+  makeLiteralRule('separate')
+);
 const borderColor = color;
-const borderImage = isUnion(
+const borderImage = makeUnionRule(
   borderImageSource,
   borderImageSlice,
   isString,
   borderImageRepeat
 );
-// const borderInlineEnd = isUnion(borderWidth, borderStyle, color);
+// const borderInlineEnd = makeUnionRule(borderWidth, borderStyle, color);
 // const borderInlineEndColor = color;
 // const borderInlineEndStyle = borderStyle;
 // const borderInlineEndWidth = borderWidth;
-// const borderInlineStart = isUnion(borderWidth, borderStyle, color);
+// const borderInlineStart = makeUnionRule(borderWidth, borderStyle, color);
 // const borderInlineStartColor = color;
 // const borderInlineStartStyle = borderStyle;
 // const borderInlineStartWidth = borderWidth;
@@ -512,305 +630,350 @@ const borderTopLeftRadius = lengthPercentage;
 const borderTopRightRadius = lengthPercentage;
 const borderTopStyle = brStyle;
 const borderTopWidth = borderWidth;
-const boxDecorationBreak = isUnion(isLiteral('slice'), isLiteral('clone'));
-const boxDirection = isUnion(isLiteral('normal'), isLiteral('reverse'));
+const boxDecorationBreak = makeUnionRule(
+  makeLiteralRule('slice'),
+  makeLiteralRule('clone')
+);
+const boxDirection = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('reverse')
+);
 const boxFlex = isNumber;
 const boxFlexGroup = isNumber;
-const boxLines = isUnion(isLiteral('single'), isLiteral('multiple'));
+const boxLines = makeUnionRule(
+  makeLiteralRule('single'),
+  makeLiteralRule('multiple')
+);
 const boxOrdinalGroup = isNumber;
-const boxOrient = isUnion(
-  isLiteral('horizontal'),
-  isLiteral('vertical'),
-  isLiteral('inline-axis'),
-  isLiteral('block-axis')
+const boxOrient = makeUnionRule(
+  makeLiteralRule('horizontal'),
+  makeLiteralRule('vertical'),
+  makeLiteralRule('inline-axis'),
+  makeLiteralRule('block-axis')
 );
-const boxShadow = isUnion(isLiteral('none'), isString);
-const boxSizing = isUnion(isLiteral('content-box'), isLiteral('border-box'));
-const boxSuppress = isUnion(
-  isLiteral('show'),
-  isLiteral('discard'),
-  isLiteral('hide')
+const boxShadow = makeUnionRule(makeLiteralRule('none'), isString);
+const boxSizing = makeUnionRule(
+  makeLiteralRule('content-box'),
+  makeLiteralRule('border-box')
 );
-const breakAfter = isUnion(
-  isLiteral('auto'),
-  isLiteral('avoid'),
-  isLiteral('avoid-page'),
-  isLiteral('page'),
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('recto'),
-  isLiteral('verso'),
-  isLiteral('avoid-column'),
-  isLiteral('column'),
-  isLiteral('avoid-region'),
-  isLiteral('region')
+const boxSuppress = makeUnionRule(
+  makeLiteralRule('show'),
+  makeLiteralRule('discard'),
+  makeLiteralRule('hide')
 );
-const breakBefore = isUnion(
-  isLiteral('auto'),
-  isLiteral('avoid'),
-  isLiteral('avoid-page'),
-  isLiteral('page'),
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('recto'),
-  isLiteral('verso'),
-  isLiteral('avoid-column'),
-  isLiteral('column'),
-  isLiteral('avoid-region'),
-  isLiteral('region')
+const breakAfter = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('avoid'),
+  makeLiteralRule('avoid-page'),
+  makeLiteralRule('page'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('recto'),
+  makeLiteralRule('verso'),
+  makeLiteralRule('avoid-column'),
+  makeLiteralRule('column'),
+  makeLiteralRule('avoid-region'),
+  makeLiteralRule('region')
 );
-const breakInside = isUnion(
-  isLiteral('auto'),
-  isLiteral('avoid'),
-  isLiteral('avoid-page'),
-  isLiteral('avoid-column'),
-  isLiteral('avoid-region')
+const breakBefore = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('avoid'),
+  makeLiteralRule('avoid-page'),
+  makeLiteralRule('page'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('recto'),
+  makeLiteralRule('verso'),
+  makeLiteralRule('avoid-column'),
+  makeLiteralRule('column'),
+  makeLiteralRule('avoid-region'),
+  makeLiteralRule('region')
 );
-const captionSide = isUnion(
-  isLiteral('top'),
-  isLiteral('bottom'),
-  isLiteral('block-start'),
-  isLiteral('block-end'),
-  isLiteral('inline-start'),
-  isLiteral('inline-end')
+const breakInside = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('avoid'),
+  makeLiteralRule('avoid-page'),
+  makeLiteralRule('avoid-column'),
+  makeLiteralRule('avoid-region')
 );
-const clear = isUnion(
-  isLiteral('none'),
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('both'),
-  isLiteral('inline-start'),
-  isLiteral('inline-end')
+const captionSide = makeUnionRule(
+  makeLiteralRule('top'),
+  makeLiteralRule('bottom'),
+  makeLiteralRule('block-start'),
+  makeLiteralRule('block-end'),
+  makeLiteralRule('inline-start'),
+  makeLiteralRule('inline-end')
 );
-const clip = isUnion(isString, isLiteral('auto'));
-const clipPath = isUnion(isString, isLiteral('none'));
-const columnCount = isUnion(isNumber, isLiteral('auto'));
-const columnFill = isUnion(isLiteral('auto'), isLiteral('balance'));
-const columnGap = isUnion(isNumber, isString, isLiteral('normal'));
-const columnSpan = isUnion(isLiteral('none'), isLiteral('all'));
-const columnWidth = isUnion(isNumber, isLiteral('auto'));
-const columns = isUnion(columnWidth, columnCount);
-const contain = isUnion(
-  isLiteral('none'),
-  isLiteral('strict'),
-  isLiteral('content'),
+const clear = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('both'),
+  makeLiteralRule('inline-start'),
+  makeLiteralRule('inline-end')
+);
+const clip = makeUnionRule(isString, makeLiteralRule('auto'));
+const clipPath = makeUnionRule(isString, makeLiteralRule('none'));
+const columnCount = makeUnionRule(isNumber, makeLiteralRule('auto'));
+const columnFill = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('balance')
+);
+const columnGap = makeUnionRule(isNumber, isString, makeLiteralRule('normal'));
+const columnSpan = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('all')
+);
+const columnWidth = makeUnionRule(isNumber, makeLiteralRule('auto'));
+const columns = makeUnionRule(columnWidth, columnCount);
+const contain = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('strict'),
+  makeLiteralRule('content'),
   isString
 );
 const content = isString;
-const counterIncrement = isUnion(isString, isLiteral('none'));
-const counterReset = isUnion(isString, isLiteral('none'));
+const counterIncrement = makeUnionRule(isString, makeLiteralRule('none'));
+const counterReset = makeUnionRule(isString, makeLiteralRule('none'));
 const cursor = CSSCursor;
-const direction = isUnion(isLiteral('ltr'), isLiteral('rtl'));
-const display = isUnion(
-  isLiteral('none'),
-  isLiteral('inline'),
-  isLiteral('block'),
-  isLiteral('list-item'),
-  isLiteral('inline-list-item'),
-  isLiteral('inline-block'),
-  isLiteral('inline-table'),
-  isLiteral('table'),
-  isLiteral('table-cell'),
-  isLiteral('table-column'),
-  isLiteral('table-column-group'),
-  isLiteral('table-footer-group'),
-  isLiteral('table-header-group'),
-  isLiteral('table-row'),
-  isLiteral('table-row-group'),
-  isLiteral('flex'),
-  isLiteral('inline-flex'),
-  isLiteral('grid'),
-  isLiteral('inline-grid'),
-  isLiteral('run-in'),
-  isLiteral('ruby'),
-  isLiteral('ruby-base'),
-  isLiteral('ruby-text'),
-  isLiteral('ruby-base-container'),
-  isLiteral('ruby-text-container'),
-  isLiteral('contents')
+const direction = makeUnionRule(makeLiteralRule('ltr'), makeLiteralRule('rtl'));
+const display = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('inline'),
+  makeLiteralRule('block'),
+  makeLiteralRule('list-item'),
+  makeLiteralRule('inline-list-item'),
+  makeLiteralRule('inline-block'),
+  makeLiteralRule('inline-table'),
+  makeLiteralRule('table'),
+  makeLiteralRule('table-cell'),
+  makeLiteralRule('table-column'),
+  makeLiteralRule('table-column-group'),
+  makeLiteralRule('table-footer-group'),
+  makeLiteralRule('table-header-group'),
+  makeLiteralRule('table-row'),
+  makeLiteralRule('table-row-group'),
+  makeLiteralRule('flex'),
+  makeLiteralRule('inline-flex'),
+  makeLiteralRule('grid'),
+  makeLiteralRule('inline-grid'),
+  makeLiteralRule('run-in'),
+  makeLiteralRule('ruby'),
+  makeLiteralRule('ruby-base'),
+  makeLiteralRule('ruby-text'),
+  makeLiteralRule('ruby-base-container'),
+  makeLiteralRule('ruby-text-container'),
+  makeLiteralRule('contents')
 );
-const displayInside = isUnion(
-  isLiteral('auto'),
-  isLiteral('block'),
-  isLiteral('table'),
-  isLiteral('flex'),
-  isLiteral('grid'),
-  isLiteral('ruby')
+const displayInside = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('block'),
+  makeLiteralRule('table'),
+  makeLiteralRule('flex'),
+  makeLiteralRule('grid'),
+  makeLiteralRule('ruby')
 );
-const displayList = isUnion(isLiteral('none'), isLiteral('list-item'));
-const displayOutside = isUnion(
-  isLiteral('block-level'),
-  isLiteral('inline-level'),
-  isLiteral('run-in'),
-  isLiteral('contents'),
-  isLiteral('none'),
-  isLiteral('table-row-group'),
-  isLiteral('table-header-group'),
-  isLiteral('table-footer-group'),
-  isLiteral('table-row'),
-  isLiteral('table-cell'),
-  isLiteral('table-column-group'),
-  isLiteral('table-column'),
-  isLiteral('table-caption'),
-  isLiteral('ruby-base'),
-  isLiteral('ruby-text'),
-  isLiteral('ruby-base-container'),
-  isLiteral('ruby-text-container')
+const displayList = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('list-item')
 );
-const fontFeatureSettings = isUnion(isLiteral('normal'), isString);
-const fontKerning = isUnion(
-  isLiteral('auto'),
-  isLiteral('normal'),
-  isLiteral('none')
+const displayOutside = makeUnionRule(
+  makeLiteralRule('block-level'),
+  makeLiteralRule('inline-level'),
+  makeLiteralRule('run-in'),
+  makeLiteralRule('contents'),
+  makeLiteralRule('none'),
+  makeLiteralRule('table-row-group'),
+  makeLiteralRule('table-header-group'),
+  makeLiteralRule('table-footer-group'),
+  makeLiteralRule('table-row'),
+  makeLiteralRule('table-cell'),
+  makeLiteralRule('table-column-group'),
+  makeLiteralRule('table-column'),
+  makeLiteralRule('table-caption'),
+  makeLiteralRule('ruby-base'),
+  makeLiteralRule('ruby-text'),
+  makeLiteralRule('ruby-base-container'),
+  makeLiteralRule('ruby-text-container')
 );
-const fontLanguageOverride = isUnion(isLiteral('normal'), isString);
-const fontSize = isUnion(absoluteSize, relativeSize, lengthPercentage);
-const fontSizeAdjust = isUnion(isLiteral('none'), isNumber);
-const fontStretch = isUnion(
-  isLiteral('normal'),
-  isLiteral('ultra-condensed'),
-  isLiteral('extra-condensed'),
-  isLiteral('condensed'),
-  isLiteral('semi-condensed'),
-  isLiteral('semi-expanded'),
-  isLiteral('expanded'),
-  isLiteral('extra-expanded'),
-  isLiteral('ultra-expanded')
+const fontFeatureSettings = makeUnionRule(makeLiteralRule('normal'), isString);
+const fontKerning = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('normal'),
+  makeLiteralRule('none')
 );
-const fontStyle = isUnion(
-  isLiteral('normal'),
-  isLiteral('italic'),
-  isLiteral('oblique')
+const fontLanguageOverride = makeUnionRule(makeLiteralRule('normal'), isString);
+const fontSize = makeUnionRule(absoluteSize, relativeSize, lengthPercentage);
+const fontSizeAdjust = makeUnionRule(makeLiteralRule('none'), isNumber);
+const fontStretch = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('ultra-condensed'),
+  makeLiteralRule('extra-condensed'),
+  makeLiteralRule('condensed'),
+  makeLiteralRule('semi-condensed'),
+  makeLiteralRule('semi-expanded'),
+  makeLiteralRule('expanded'),
+  makeLiteralRule('extra-expanded'),
+  makeLiteralRule('ultra-expanded')
 );
-const fontSynthesis = isUnion(isLiteral('none'), isString);
-const fontVariant = isUnion(isLiteral('normal'), isLiteral('none'), isString);
-const fontVariantAlternates = isUnion(isLiteral('normal'), isString);
-const fontVariantCaps = isUnion(
-  isLiteral('normal'),
-  isLiteral('small-caps'),
-  isLiteral('all-small-caps'),
-  isLiteral('petite-caps'),
-  isLiteral('all-petite-caps'),
-  isLiteral('unicase'),
-  isLiteral('titling-caps')
+const fontStyle = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('italic'),
+  makeLiteralRule('oblique')
 );
-const fontVariantEastAsian = isUnion(isLiteral('normal'), isString);
-const fontVariantLigatures = isUnion(
-  isLiteral('normal'),
-  isLiteral('none'),
+const fontSynthesis = makeUnionRule(makeLiteralRule('none'), isString);
+const fontVariant = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('none'),
   isString
 );
-const fontVariantNumeric = isUnion(isLiteral('normal'), isString);
-const fontVariantPosition = isUnion(
-  isLiteral('normal'),
-  isLiteral('sub'),
-  isLiteral('super')
+const fontVariantAlternates = makeUnionRule(
+  makeLiteralRule('normal'),
+  isString
 );
-const fontWeight = isUnion(
-  isLiteral('normal'),
-  isLiteral('bold'),
-  isLiteral('bolder'),
-  isLiteral('lighter'),
-  isLiteral(100),
-  isLiteral(200),
-  isLiteral(300),
-  isLiteral(400),
-  isLiteral(500),
-  isLiteral(600),
-  isLiteral(700),
-  isLiteral(800),
-  isLiteral(900)
+const fontVariantCaps = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('small-caps'),
+  makeLiteralRule('all-small-caps'),
+  makeLiteralRule('petite-caps'),
+  makeLiteralRule('all-petite-caps'),
+  makeLiteralRule('unicase'),
+  makeLiteralRule('titling-caps')
 );
-const grid = isUnion(gridTemplate, isString);
-const gridArea = isUnion(gridLine, isString);
+const fontVariantEastAsian = makeUnionRule(makeLiteralRule('normal'), isString);
+const fontVariantLigatures = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('none'),
+  isString
+);
+const fontVariantNumeric = makeUnionRule(makeLiteralRule('normal'), isString);
+const fontVariantPosition = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('sub'),
+  makeLiteralRule('super')
+);
+const fontWeight = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('bold'),
+  makeLiteralRule('bolder'),
+  makeLiteralRule('lighter'),
+  makeLiteralRule(100),
+  makeLiteralRule(200),
+  makeLiteralRule(300),
+  makeLiteralRule(400),
+  makeLiteralRule(500),
+  makeLiteralRule(600),
+  makeLiteralRule(700),
+  makeLiteralRule(800),
+  makeLiteralRule(900)
+);
+const grid = makeUnionRule(gridTemplate, isString);
+const gridArea = makeUnionRule(gridLine, isString);
 const gridAutoColumns = trackSize;
-const gridAutoFlow = isUnion(isString, isLiteral('dense'));
+const gridAutoFlow = makeUnionRule(isString, makeLiteralRule('dense'));
 const gridAutoRows = trackSize;
-const gridColumn = isUnion(gridLine, isString);
+const gridColumn = makeUnionRule(gridLine, isString);
 const gridColumnEnd = gridLine;
 const gridColumnGap = lengthPercentage;
 const gridColumnStart = gridLine;
-const gridGap = isUnion(gridRowGap, gridColumnGap);
-const gridRow = isUnion(gridLine, isString);
+const gridGap = makeUnionRule(gridRowGap, gridColumnGap);
+const gridRow = makeUnionRule(gridLine, isString);
 const gridRowEnd = gridLine;
 const gridRowStart = gridLine;
-const hyphens = isUnion(
-  isLiteral('none'),
-  isLiteral('manual'),
-  isLiteral('auto')
+const hyphens = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('manual'),
+  makeLiteralRule('auto')
 );
-const imageOrientation = isUnion(isLiteral('from-image'), isNumber, isString);
-const imageRendering = isUnion(
-  isLiteral('auto'),
-  isLiteral('crisp-edges'),
-  isLiteral('pixelated'),
-  isLiteral('optimizeSpeed'),
-  isLiteral('optimizeQuality'),
+const imageOrientation = makeUnionRule(
+  makeLiteralRule('from-image'),
+  isNumber,
   isString
 );
-const imageResolution = isUnion(isString, isLiteral('snap'));
-const imeMode = isUnion(
-  isLiteral('auto'),
-  isLiteral('normal'),
-  isLiteral('active'),
-  isLiteral('inactive'),
-  isLiteral('disabled')
+const imageRendering = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('crisp-edges'),
+  makeLiteralRule('pixelated'),
+  makeLiteralRule('optimizeSpeed'),
+  makeLiteralRule('optimizeQuality'),
+  isString
 );
-const initialLetter = isUnion(isLiteral('normal'), isString);
+const imageResolution = makeUnionRule(isString, makeLiteralRule('snap'));
+const imeMode = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('normal'),
+  makeLiteralRule('active'),
+  makeLiteralRule('inactive'),
+  makeLiteralRule('disabled')
+);
+const initialLetter = makeUnionRule(makeLiteralRule('normal'), isString);
 const initialLetterAlign = isString;
 const inlineSize = width;
-const isolation = isUnion(isLiteral('auto'), isLiteral('isolate'));
-const justifyContent = isUnion(
-  isLiteral('flex-start'),
-  isLiteral('flex-end'),
-  isLiteral('center'),
-  isLiteral('stretch'),
-  isLiteral('space-between'),
-  isLiteral('space-around'),
-  isLiteral('space-evenly')
+const isolation = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('isolate')
 );
-const justifyItems = isUnion(
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('flex-start'),
-  isLiteral('flex-end'),
-  isLiteral('center'),
-  isLiteral('baseline'),
-  isLiteral('stretch')
+const justifyContent = makeUnionRule(
+  makeLiteralRule('flex-start'),
+  makeLiteralRule('flex-end'),
+  makeLiteralRule('center'),
+  makeLiteralRule('stretch'),
+  makeLiteralRule('space-between'),
+  makeLiteralRule('space-around'),
+  makeLiteralRule('space-evenly')
+);
+const justifyItems = makeUnionRule(
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('flex-start'),
+  makeLiteralRule('flex-end'),
+  makeLiteralRule('center'),
+  makeLiteralRule('baseline'),
+  makeLiteralRule('stretch')
 );
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
 // here.
-const justifySelf = isUnion(
-  isLiteral('auto'),
-  isLiteral('normal'),
-  isLiteral('stretch'),
+const justifySelf = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('normal'),
+  makeLiteralRule('stretch'),
   baselinePosition,
   selfPosition,
-  isLiteral('left'),
-  isLiteral('right')
+  makeLiteralRule('left'),
+  makeLiteralRule('right')
 );
-const letterSpacing = isUnion(isLiteral('normal'), lengthPercentage);
-const lineBreak = isUnion(
-  isLiteral('auto'),
-  isLiteral('loose'),
-  isLiteral('normal'),
-  isLiteral('strict')
+const letterSpacing = makeUnionRule(
+  makeLiteralRule('normal'),
+  lengthPercentage
+);
+const lineBreak = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('loose'),
+  makeLiteralRule('normal'),
+  makeLiteralRule('strict')
 );
 const lineHeight = isNumber;
-const listStyleImage = isUnion(isString, isLiteral('none'));
-const listStylePosition = isUnion(isLiteral('inside'), isLiteral('outside'));
-const listStyle = isUnion(listStyleType, listStylePosition, listStyleImage);
+const listStyleImage = makeUnionRule(isString, makeLiteralRule('none'));
+const listStylePosition = makeUnionRule(
+  makeLiteralRule('inside'),
+  makeLiteralRule('outside')
+);
+const listStyle = makeUnionRule(
+  listStyleType,
+  listStylePosition,
+  listStyleImage
+);
 const margin = isStringOrNumber;
-const marginLeft = isUnion(isNumber, isString, isLiteral('auto'));
-const marginRight = isUnion(isNumber, isString, isLiteral('auto'));
-const marginTop = isUnion(isNumber, isString, isLiteral('auto'));
+const marginLeft = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
+const marginRight = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
+const marginTop = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
 // const marginBlockEnd = marginLeft;
 // const marginBlockStart = marginLeft;
-const marginBottom = isUnion(isNumber, isString, isLiteral('auto'));
+const marginBottom = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
 // const marginInlineEnd = marginLeft;
 // const marginInlineStart = marginLeft;
-const markerOffset = isUnion(isNumber, isLiteral('auto'));
+const markerOffset = makeUnionRule(isNumber, makeLiteralRule('auto'));
 const mask = maskLayer;
 const maskClip = isString;
 const maskComposite = compositeOperator;
@@ -819,59 +982,66 @@ const maskOrigin = geometryBox;
 const maskPosition = isString;
 const maskRepeat = repeatStyle;
 const maskSize = bgSize;
-const maskType = isUnion(isLiteral('luminance'), isLiteral('alpha'));
-const maxWidth = isUnion(
+const maskType = makeUnionRule(
+  makeLiteralRule('luminance'),
+  makeLiteralRule('alpha')
+);
+const maxWidth = makeUnionRule(
   isNumber,
   isString,
-  isLiteral('none'),
-  isLiteral('max-content'),
-  isLiteral('min-content'),
-  isLiteral('fit-content'),
-  isLiteral('fill-available')
+  makeLiteralRule('none'),
+  makeLiteralRule('max-content'),
+  makeLiteralRule('min-content'),
+  makeLiteralRule('fit-content'),
+  makeLiteralRule('fill-available')
 );
 const maxBlockSize = maxWidth;
-const maxHeight = isUnion(
+const maxHeight = makeUnionRule(
   isNumber,
   isString,
-  isLiteral('none'),
-  isLiteral('max-content'),
-  isLiteral('min-content'),
-  isLiteral('fit-content'),
-  isLiteral('fill-available')
+  makeLiteralRule('none'),
+  makeLiteralRule('max-content'),
+  makeLiteralRule('min-content'),
+  makeLiteralRule('fit-content'),
+  makeLiteralRule('fill-available')
 );
 const maxInlineSize = maxWidth;
-const minWidth = isUnion(
+const minWidth = makeUnionRule(
   isNumber,
   isString,
-  isLiteral('auto'),
-  isLiteral('max-content'),
-  isLiteral('min-content'),
-  isLiteral('fit-content'),
-  isLiteral('fill-available')
+  makeLiteralRule('auto'),
+  makeLiteralRule('max-content'),
+  makeLiteralRule('min-content'),
+  makeLiteralRule('fit-content'),
+  makeLiteralRule('fill-available')
 );
 const minBlockSize = minWidth;
-const minHeight = isUnion(
+const minHeight = makeUnionRule(
   isNumber,
   isString,
-  isLiteral('auto'),
-  isLiteral('max-content'),
-  isLiteral('min-content'),
-  isLiteral('fit-content'),
-  isLiteral('fill-available')
+  makeLiteralRule('auto'),
+  makeLiteralRule('max-content'),
+  makeLiteralRule('min-content'),
+  makeLiteralRule('fit-content'),
+  makeLiteralRule('fill-available')
 );
 const minInlineSize = minWidth;
 
 const mixBlendMode = blendMode;
-const motionPath = isUnion(isString, geometryBox, isLiteral('none'));
+const motionPath = makeUnionRule(
+  isString,
+  geometryBox,
+  makeLiteralRule('none')
+);
 const motionOffset = lengthPercentage;
 const motionRotation = isStringOrNumber;
-const motion = isUnion(motionPath, motionOffset, motionRotation);
-const objectFit = isUnion(
-  isLiteral('fill'),
-  isLiteral('contain'),
-  isLiteral('cover'),
-  isLiteral('none'),
-  isLiteral('scale-down')
+const motion = makeUnionRule(motionPath, motionOffset, motionRotation);
+const objectFit = makeUnionRule(
+  makeLiteralRule('fill'),
+  makeLiteralRule('contain'),
+  makeLiteralRule('cover'),
+  makeLiteralRule('none'),
+  makeLiteralRule('scale-down')
 );
 const objectPosition = isString;
 const offsetBlockEnd = isString;
@@ -882,52 +1052,55 @@ const opacity = isNumber;
 const order = isNumber;
 const orphans = isNumber;
 const outline = isString;
-// const outlineColor = isUnion(color, isLiteral('invert'));
+// const outlineColor = makeUnionRule(color, makeLiteralRule('invert'));
 // const outlineOffset = isNumber;
-// const outlineStyle = isUnion(isLiteral('auto'), brStyle);
+// const outlineStyle = makeUnionRule(makeLiteralRule('auto'), brStyle);
 // const outlineWidth = borderWidth;
-const overflow = isUnion(
-  isLiteral('visible'),
-  isLiteral('hidden'),
-  isLiteral('scroll'),
-  isLiteral('auto')
+const overflow = makeUnionRule(
+  makeLiteralRule('visible'),
+  makeLiteralRule('hidden'),
+  makeLiteralRule('scroll'),
+  makeLiteralRule('auto')
 );
-const overflowAnchor = isUnion(isLiteral('auto'), isLiteral('none'));
-const overflowClipBox = isUnion(
-  isLiteral('padding-box'),
-  isLiteral('content-box')
+const overflowAnchor = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('none')
 );
-const overflowWrap = isUnion(
-  isLiteral('normal'),
-  isLiteral('break-word'),
-  isLiteral('anywhere')
+const overflowClipBox = makeUnionRule(
+  makeLiteralRule('padding-box'),
+  makeLiteralRule('content-box')
 );
-const overflowX = isUnion(
-  isLiteral('visible'),
-  isLiteral('hidden'),
-  isLiteral('scroll'),
-  isLiteral('auto')
+const overflowWrap = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('break-word'),
+  makeLiteralRule('anywhere')
 );
-const overflowY = isUnion(
-  isLiteral('visible'),
-  isLiteral('hidden'),
-  isLiteral('scroll'),
-  isLiteral('auto')
+const overflowX = makeUnionRule(
+  makeLiteralRule('visible'),
+  makeLiteralRule('hidden'),
+  makeLiteralRule('scroll'),
+  makeLiteralRule('auto')
 );
-const overscrollBehavior = isUnion(
-  isLiteral('none'),
-  isLiteral('contain'),
-  isLiteral('auto')
+const overflowY = makeUnionRule(
+  makeLiteralRule('visible'),
+  makeLiteralRule('hidden'),
+  makeLiteralRule('scroll'),
+  makeLiteralRule('auto')
 );
-const overscrollBehaviorX = isUnion(
-  isLiteral('none'),
-  isLiteral('contain'),
-  isLiteral('auto')
+const overscrollBehavior = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('contain'),
+  makeLiteralRule('auto')
 );
-const overscrollBehaviorY = isUnion(
-  isLiteral('none'),
-  isLiteral('contain'),
-  isLiteral('auto')
+const overscrollBehaviorX = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('contain'),
+  makeLiteralRule('auto')
+);
+const overscrollBehaviorY = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('contain'),
+  makeLiteralRule('auto')
 );
 const padding = isStringOrNumber;
 const paddingLeft = isStringOrNumber;
@@ -936,437 +1109,470 @@ const paddingLeft = isStringOrNumber;
 const paddingBottom = isStringOrNumber;
 const paddingRight = isStringOrNumber;
 const paddingTop = isStringOrNumber;
-const pageBreakAfter = isUnion(
-  isLiteral('auto'),
-  isLiteral('always'),
-  isLiteral('avoid'),
-  isLiteral('left'),
-  isLiteral('right')
+const pageBreakAfter = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('always'),
+  makeLiteralRule('avoid'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right')
 );
-const pageBreakBefore = isUnion(
-  isLiteral('auto'),
-  isLiteral('always'),
-  isLiteral('avoid'),
-  isLiteral('left'),
-  isLiteral('right')
+const pageBreakBefore = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('always'),
+  makeLiteralRule('avoid'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right')
 );
-const pageBreakInside = isUnion(isLiteral('auto'), isLiteral('avoid'));
-const perspective = isUnion(isLiteral('none'), isNumber);
+const pageBreakInside = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('avoid')
+);
+const perspective = makeUnionRule(makeLiteralRule('none'), isNumber);
 const perspectiveOrigin = isString;
-const pointerEvents = isUnion(
-  isLiteral('auto'),
-  isLiteral('none'),
-  isLiteral('visiblePainted'),
-  isLiteral('visibleFill'),
-  isLiteral('visibleStroke'),
-  isLiteral('visible'),
-  isLiteral('painted'),
-  isLiteral('fill'),
-  isLiteral('stroke'),
-  isLiteral('all')
+const pointerEvents = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('none'),
+  makeLiteralRule('visiblePainted'),
+  makeLiteralRule('visibleFill'),
+  makeLiteralRule('visibleStroke'),
+  makeLiteralRule('visible'),
+  makeLiteralRule('painted'),
+  makeLiteralRule('fill'),
+  makeLiteralRule('stroke'),
+  makeLiteralRule('all')
 );
-const position = isUnion(
-  isLiteral('static'),
-  isLiteral('relative'),
-  isLiteral('absolute'),
-  isLiteral('sticky'),
-  isLiteral('fixed')
+const position = makeUnionRule(
+  makeLiteralRule('static'),
+  makeLiteralRule('relative'),
+  makeLiteralRule('absolute'),
+  makeLiteralRule('sticky'),
+  makeLiteralRule('fixed')
 );
-const quotes = isUnion(isString, isLiteral('none'));
-const resize = isUnion(
-  isLiteral('none'),
-  isLiteral('both'),
-  isLiteral('horizontal'),
-  isLiteral('vertical')
+const quotes = makeUnionRule(isString, makeLiteralRule('none'));
+const resize = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('both'),
+  makeLiteralRule('horizontal'),
+  makeLiteralRule('vertical')
 );
-const rubyAlign = isUnion(
-  isLiteral('start'),
-  isLiteral('center'),
-  isLiteral('space-between'),
-  isLiteral('space-around')
+const rubyAlign = makeUnionRule(
+  makeLiteralRule('start'),
+  makeLiteralRule('center'),
+  makeLiteralRule('space-between'),
+  makeLiteralRule('space-around')
 );
-const rubyMerge = isUnion(
-  isLiteral('separate'),
-  isLiteral('collapse'),
-  isLiteral('auto')
+const rubyMerge = makeUnionRule(
+  makeLiteralRule('separate'),
+  makeLiteralRule('collapse'),
+  makeLiteralRule('auto')
 );
-const rubyPosition = isUnion(
-  isLiteral('over'),
-  isLiteral('under'),
-  isLiteral('inter-character')
+const rubyPosition = makeUnionRule(
+  makeLiteralRule('over'),
+  makeLiteralRule('under'),
+  makeLiteralRule('inter-character')
 );
-const scrollBehavior = isUnion(isLiteral('auto'), isLiteral('smooth'));
+const scrollBehavior = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('smooth')
+);
 const scrollSnapPaddingBottom = isNumber;
 const scrollSnapPaddingTop = isNumber;
-const scrollSnapAlign = isUnion(
-  isLiteral('none'),
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('center')
+const scrollSnapAlign = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('center')
 );
-const scrollSnapType = isUnion(
-  isLiteral('none'),
-  isLiteral('x mandatory'),
-  isLiteral('y mandatory')
+const scrollSnapType = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('x mandatory'),
+  makeLiteralRule('y mandatory')
 );
 const shapeImageThreshold = isNumber;
 const shapeMargin = lengthPercentage;
-const shapeOutside = isUnion(isLiteral('none'), shapeBox, isString);
+const shapeOutside = makeUnionRule(makeLiteralRule('none'), shapeBox, isString);
 const tabSize = isNumber;
-const tableLayout = isUnion(isLiteral('auto'), isLiteral('fixed'));
-const textAlign = isUnion(
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('center'),
-  isLiteral('justify'),
-  isLiteral('match-parent')
+const tableLayout = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('fixed')
 );
-const textAlignLast = isUnion(
-  isLiteral('auto'),
-  isLiteral('start'),
-  isLiteral('end'),
-  isLiteral('left'),
-  isLiteral('right'),
-  isLiteral('center'),
-  isLiteral('justify')
+const textAlign = makeUnionRule(
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('center'),
+  makeLiteralRule('justify'),
+  makeLiteralRule('match-parent')
 );
-const textCombineUpright = isUnion(
-  isLiteral('none'),
-  isLiteral('all'),
+const textAlignLast = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('start'),
+  makeLiteralRule('end'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  makeLiteralRule('center'),
+  makeLiteralRule('justify')
+);
+const textCombineUpright = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('all'),
   isString
 );
 const textDecorationColor = color;
-const textDecorationLine = isUnion(
-  isLiteral('none'),
-  isLiteral('underline'),
-  isLiteral('overline'),
-  isLiteral('line-through'),
-  isLiteral('blink'),
+const textDecorationLine = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('underline'),
+  makeLiteralRule('overline'),
+  makeLiteralRule('line-through'),
+  makeLiteralRule('blink'),
   isString
 );
-// const textDecorationSkip = isUnion(isLiteral('none'), isString);
-const textDecorationStyle = isUnion(
-  isLiteral('solid'),
-  isLiteral('double'),
-  isLiteral('dotted'),
-  isLiteral('dashed'),
-  isLiteral('wavy')
+// const textDecorationSkip = makeUnionRule(makeLiteralRule('none'), isString);
+const textDecorationStyle = makeUnionRule(
+  makeLiteralRule('solid'),
+  makeLiteralRule('double'),
+  makeLiteralRule('dotted'),
+  makeLiteralRule('dashed'),
+  makeLiteralRule('wavy')
 );
-const textDecoration = isUnion(
+const textDecoration = makeUnionRule(
   textDecorationLine,
   textDecorationStyle,
   textDecorationColor
 );
 const textEmphasisColor = color;
 const textEmphasisPosition = isString;
-const textEmphasisStyle = isUnion(
-  isLiteral('none'),
-  isLiteral('filled'),
-  isLiteral('open'),
-  isLiteral('dot'),
-  isLiteral('circle'),
-  isLiteral('double-circle'),
-  isLiteral('triangle'),
-  isLiteral('filled sesame'),
-  isLiteral('open sesame'),
+const textEmphasisStyle = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('filled'),
+  makeLiteralRule('open'),
+  makeLiteralRule('dot'),
+  makeLiteralRule('circle'),
+  makeLiteralRule('double-circle'),
+  makeLiteralRule('triangle'),
+  makeLiteralRule('filled sesame'),
+  makeLiteralRule('open sesame'),
   isString
 );
-const textEmphasis = isUnion(textEmphasisStyle, textEmphasisColor);
-const textIndent = isUnion(
+const textEmphasis = makeUnionRule(textEmphasisStyle, textEmphasisColor);
+const textIndent = makeUnionRule(
   lengthPercentage,
-  isLiteral('hanging'),
-  isLiteral('each-line')
+  makeLiteralRule('hanging'),
+  makeLiteralRule('each-line')
 );
-const textOrientation = isUnion(
-  isLiteral('mixed'),
-  isLiteral('upright'),
-  isLiteral('sideways')
+const textOrientation = makeUnionRule(
+  makeLiteralRule('mixed'),
+  makeLiteralRule('upright'),
+  makeLiteralRule('sideways')
 );
-const textOverflow = isUnion(
-  isLiteral('clip'),
-  isLiteral('ellipsis'),
+const textOverflow = makeUnionRule(
+  makeLiteralRule('clip'),
+  makeLiteralRule('ellipsis'),
   isString
 );
-const textRendering = isUnion(
-  isLiteral('auto'),
-  isLiteral('optimizeSpeed'),
-  isLiteral('optimizeLegibility'),
-  isLiteral('geometricPrecision')
+const textRendering = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('optimizeSpeed'),
+  makeLiteralRule('optimizeLegibility'),
+  makeLiteralRule('geometricPrecision')
 );
-const textShadow = isUnion(isLiteral('none'), isString);
-const textSizeAdjust = isUnion(isLiteral('none'), isLiteral('auto'), isString);
-const textTransform = isUnion(
-  isLiteral('none'),
-  isLiteral('capitalize'),
-  isLiteral('uppercase'),
-  isLiteral('lowercase'),
-  isLiteral('full-width')
-);
-const textUnderlinePosition = isUnion(
-  isLiteral('auto'),
-  isLiteral('under'),
-  isLiteral('left'),
-  isLiteral('right'),
+const textShadow = makeUnionRule(makeLiteralRule('none'), isString);
+const textSizeAdjust = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('auto'),
   isString
 );
-const touchAction = isUnion(
-  isLiteral('auto'),
-  isLiteral('none'),
+const textTransform = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('capitalize'),
+  makeLiteralRule('uppercase'),
+  makeLiteralRule('lowercase'),
+  makeLiteralRule('full-width')
+);
+const textUnderlinePosition = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('under'),
+  makeLiteralRule('left'),
+  makeLiteralRule('right'),
+  isString
+);
+const touchAction = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('none'),
   isString,
-  isLiteral('manipulation')
+  makeLiteralRule('manipulation')
 );
-const transform = isUnion(isLiteral('none'), isString);
-const transformBox = isUnion(
-  isLiteral('border-box'),
-  isLiteral('fill-box'),
-  isLiteral('view-box'),
-  isLiteral('content-box'),
-  isLiteral('stroke-box')
+const transform = makeUnionRule(makeLiteralRule('none'), isString);
+const transformBox = makeUnionRule(
+  makeLiteralRule('border-box'),
+  makeLiteralRule('fill-box'),
+  makeLiteralRule('view-box'),
+  makeLiteralRule('content-box'),
+  makeLiteralRule('stroke-box')
 );
 const transformOrigin = isStringOrNumber;
-const transformStyle = isUnion(isLiteral('flat'), isLiteral('preserve-3d'));
+const transformStyle = makeUnionRule(
+  makeLiteralRule('flat'),
+  makeLiteralRule('preserve-3d')
+);
 const transitionDelay = time;
 const transitionDuration = time;
-const transitionProperty = isUnion(
-  isLiteral('opacity'),
-  isLiteral('transform'),
-  isLiteral('opacity, transform'),
+const transitionProperty = makeUnionRule(
+  makeLiteralRule('opacity'),
+  makeLiteralRule('transform'),
+  makeLiteralRule('opacity, transform'),
   // All is bad for animation performance.
-  // isLiteral('all'),
-  isLiteral('none')
+  // makeLiteralRule('all'),
+  makeLiteralRule('none')
 );
 const transitionTimingFunction = singleTransitionTimingFunction;
-const unicodeBidi = isUnion(
-  isLiteral('normal'),
-  isLiteral('embed'),
-  isLiteral('isolate'),
-  isLiteral('bidi-override'),
-  isLiteral('isolate-override'),
-  isLiteral('plaintext')
+const unicodeBidi = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('embed'),
+  makeLiteralRule('isolate'),
+  makeLiteralRule('bidi-override'),
+  makeLiteralRule('isolate-override'),
+  makeLiteralRule('plaintext')
 );
-const userSelect = isUnion(
-  isLiteral('auto'),
-  isLiteral('text'),
-  isLiteral('none'),
-  isLiteral('contain'),
-  isLiteral('all')
+const userSelect = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('text'),
+  makeLiteralRule('none'),
+  makeLiteralRule('contain'),
+  makeLiteralRule('all')
 );
-const verticalAlign = isUnion(
-  isLiteral('baseline'),
-  isLiteral('sub'),
-  isLiteral('super'),
-  isLiteral('text-top'),
-  isLiteral('text-bottom'),
-  isLiteral('middle'),
-  isLiteral('top'),
-  isLiteral('bottom'),
+const verticalAlign = makeUnionRule(
+  makeLiteralRule('baseline'),
+  makeLiteralRule('sub'),
+  makeLiteralRule('super'),
+  makeLiteralRule('text-top'),
+  makeLiteralRule('text-bottom'),
+  makeLiteralRule('middle'),
+  makeLiteralRule('top'),
+  makeLiteralRule('bottom'),
   isString,
   isNumber
 );
-const visibility = isUnion(
-  isLiteral('visible'),
-  isLiteral('hidden'),
-  isLiteral('collapse')
+const visibility = makeUnionRule(
+  makeLiteralRule('visible'),
+  makeLiteralRule('hidden'),
+  makeLiteralRule('collapse')
 );
-const whiteSpace = isUnion(
-  isLiteral('normal'),
-  isLiteral('pre'),
-  isLiteral('nowrap'),
-  isLiteral('pre-wrap'),
-  isLiteral('pre-line'),
-  isLiteral('break-spaces')
+const whiteSpace = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('pre'),
+  makeLiteralRule('nowrap'),
+  makeLiteralRule('pre-wrap'),
+  makeLiteralRule('pre-line'),
+  makeLiteralRule('break-spaces')
 );
 const widows = isNumber;
-const animatableFeature = isUnion(
-  isLiteral('scroll-position'),
-  isLiteral('contents'),
+const animatableFeature = makeUnionRule(
+  makeLiteralRule('scroll-position'),
+  makeLiteralRule('contents'),
   isString
 );
-const willChange = isUnion(isLiteral('auto'), animatableFeature);
-const nonStandardWordBreak = isLiteral('break-word');
-const wordBreak = isUnion(
-  isLiteral('normal'),
-  isLiteral('break-all'),
-  isLiteral('keep-all'),
+const willChange = makeUnionRule(makeLiteralRule('auto'), animatableFeature);
+const nonStandardWordBreak = makeLiteralRule('break-word');
+const wordBreak = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('break-all'),
+  makeLiteralRule('keep-all'),
   nonStandardWordBreak
 );
-const wordSpacing = isUnion(isLiteral('normal'), lengthPercentage);
-const wordWrap = isUnion(isLiteral('normal'), isLiteral('break-word'));
-const svgWritingMode = isUnion(
-  isLiteral('lr-tb'),
-  isLiteral('rl-tb'),
-  isLiteral('tb-rl'),
-  isLiteral('lr'),
-  isLiteral('rl'),
-  isLiteral('tb')
+const wordSpacing = makeUnionRule(makeLiteralRule('normal'), lengthPercentage);
+const wordWrap = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('break-word')
 );
-const writingMode = isUnion(
-  isLiteral('horizontal-tb'),
-  isLiteral('vertical-rl'),
-  isLiteral('vertical-lr'),
-  isLiteral('sideways-rl'),
-  isLiteral('sideways-lr'),
+const svgWritingMode = makeUnionRule(
+  makeLiteralRule('lr-tb'),
+  makeLiteralRule('rl-tb'),
+  makeLiteralRule('tb-rl'),
+  makeLiteralRule('lr'),
+  makeLiteralRule('rl'),
+  makeLiteralRule('tb')
+);
+const writingMode = makeUnionRule(
+  makeLiteralRule('horizontal-tb'),
+  makeLiteralRule('vertical-rl'),
+  makeLiteralRule('vertical-lr'),
+  makeLiteralRule('sideways-rl'),
+  makeLiteralRule('sideways-lr'),
   svgWritingMode
 );
-const zIndex = isUnion(isLiteral('auto'), isNumber);
-const alignmentBaseline = isUnion(
-  isLiteral('auto'),
-  isLiteral('baseline'),
-  isLiteral('before-edge'),
-  isLiteral('text-before-edge'),
-  isLiteral('middle'),
-  isLiteral('central'),
-  isLiteral('after-edge'),
-  isLiteral('text-after-edge'),
-  isLiteral('ideographic'),
-  isLiteral('alphabetic'),
-  isLiteral('hanging'),
-  isLiteral('mathematical')
+const zIndex = makeUnionRule(makeLiteralRule('auto'), isNumber);
+const alignmentBaseline = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('baseline'),
+  makeLiteralRule('before-edge'),
+  makeLiteralRule('text-before-edge'),
+  makeLiteralRule('middle'),
+  makeLiteralRule('central'),
+  makeLiteralRule('after-edge'),
+  makeLiteralRule('text-after-edge'),
+  makeLiteralRule('ideographic'),
+  makeLiteralRule('alphabetic'),
+  makeLiteralRule('hanging'),
+  makeLiteralRule('mathematical')
 );
 const svgLength = isStringOrNumber;
-const baselineShift = isUnion(
-  isLiteral('baseline'),
-  isLiteral('sub'),
-  isLiteral('super'),
+const baselineShift = makeUnionRule(
+  makeLiteralRule('baseline'),
+  makeLiteralRule('sub'),
+  makeLiteralRule('super'),
   svgLength
 );
 const behavior = isString;
-const clipRule = isUnion(isLiteral('nonzero'), isLiteral('evenodd'));
-const cueAfter = isUnion(isStringOrNumber, isLiteral('none'));
-const cueBefore = isUnion(isStringOrNumber, isLiteral('none'));
-const cue = isUnion(cueBefore, cueAfter);
-const dominantBaseline = isUnion(
-  isLiteral('auto'),
-  isLiteral('use-script'),
-  isLiteral('no-change'),
-  isLiteral('reset-size'),
-  isLiteral('ideographic'),
-  isLiteral('alphabetic'),
-  isLiteral('hanging'),
-  isLiteral('mathematical'),
-  isLiteral('central'),
-  isLiteral('middle'),
-  isLiteral('text-after-edge'),
-  isLiteral('text-before-edge')
+const clipRule = makeUnionRule(
+  makeLiteralRule('nonzero'),
+  makeLiteralRule('evenodd')
 );
-const paint = isUnion(
-  isLiteral('none'),
-  isLiteral('currentColor'),
+const cueAfter = makeUnionRule(isStringOrNumber, makeLiteralRule('none'));
+const cueBefore = makeUnionRule(isStringOrNumber, makeLiteralRule('none'));
+const cue = makeUnionRule(cueBefore, cueAfter);
+const dominantBaseline = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('use-script'),
+  makeLiteralRule('no-change'),
+  makeLiteralRule('reset-size'),
+  makeLiteralRule('ideographic'),
+  makeLiteralRule('alphabetic'),
+  makeLiteralRule('hanging'),
+  makeLiteralRule('mathematical'),
+  makeLiteralRule('central'),
+  makeLiteralRule('middle'),
+  makeLiteralRule('text-after-edge'),
+  makeLiteralRule('text-before-edge')
+);
+const paint = makeUnionRule(
+  makeLiteralRule('none'),
+  makeLiteralRule('currentColor'),
   color,
   isString
 );
 const fill = paint;
 const fillOpacity = isNumber;
-const fillRule = isUnion(isLiteral('nonzero'), isLiteral('evenodd'));
+const fillRule = makeUnionRule(
+  makeLiteralRule('nonzero'),
+  makeLiteralRule('evenodd')
+);
 const glyphOrientationHorizontal = isNumber;
 const glyphOrientationVertical = isNumber;
-const kerning = isUnion(isLiteral('auto'), svgLength);
-const marker = isUnion(isLiteral('none'), isString);
-const markerEnd = isUnion(isLiteral('none'), isString);
-const markerMid = isUnion(isLiteral('none'), isString);
-const markerStart = isUnion(isLiteral('none'), isString);
-const pauseAfter = isUnion(
+const kerning = makeUnionRule(makeLiteralRule('auto'), svgLength);
+const marker = makeUnionRule(makeLiteralRule('none'), isString);
+const markerEnd = makeUnionRule(makeLiteralRule('none'), isString);
+const markerMid = makeUnionRule(makeLiteralRule('none'), isString);
+const markerStart = makeUnionRule(makeLiteralRule('none'), isString);
+const pauseAfter = makeUnionRule(
   isNumber,
-  isLiteral('none'),
-  isLiteral('x-weak'),
-  isLiteral('weak'),
-  isLiteral('medium'),
-  isLiteral('strong'),
-  isLiteral('x-strong')
+  makeLiteralRule('none'),
+  makeLiteralRule('x-weak'),
+  makeLiteralRule('weak'),
+  makeLiteralRule('medium'),
+  makeLiteralRule('strong'),
+  makeLiteralRule('x-strong')
 );
-const pauseBefore = isUnion(
+const pauseBefore = makeUnionRule(
   isNumber,
-  isLiteral('none'),
-  isLiteral('x-weak'),
-  isLiteral('weak'),
-  isLiteral('medium'),
-  isLiteral('strong'),
-  isLiteral('x-strong')
+  makeLiteralRule('none'),
+  makeLiteralRule('x-weak'),
+  makeLiteralRule('weak'),
+  makeLiteralRule('medium'),
+  makeLiteralRule('strong'),
+  makeLiteralRule('x-strong')
 );
-const pause = isUnion(pauseBefore, pauseAfter);
-const restAfter = isUnion(
+const pause = makeUnionRule(pauseBefore, pauseAfter);
+const restAfter = makeUnionRule(
   isNumber,
-  isLiteral('none'),
-  isLiteral('x-weak'),
-  isLiteral('weak'),
-  isLiteral('medium'),
-  isLiteral('strong'),
-  isLiteral('x-strong')
+  makeLiteralRule('none'),
+  makeLiteralRule('x-weak'),
+  makeLiteralRule('weak'),
+  makeLiteralRule('medium'),
+  makeLiteralRule('strong'),
+  makeLiteralRule('x-strong')
 );
-const restBefore = isUnion(
+const restBefore = makeUnionRule(
   isNumber,
-  isLiteral('none'),
-  isLiteral('x-weak'),
-  isLiteral('weak'),
-  isLiteral('medium'),
-  isLiteral('strong'),
-  isLiteral('x-strong')
+  makeLiteralRule('none'),
+  makeLiteralRule('x-weak'),
+  makeLiteralRule('weak'),
+  makeLiteralRule('medium'),
+  makeLiteralRule('strong'),
+  makeLiteralRule('x-strong')
 );
-const rest = isUnion(restBefore, restAfter);
-const shapeRendering = isUnion(
-  isLiteral('auto'),
-  isLiteral('optimizeSpeed'),
-  isLiteral('crispEdges'),
-  isLiteral('geometricPrecision')
+const rest = makeUnionRule(restBefore, restAfter);
+const shapeRendering = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('optimizeSpeed'),
+  makeLiteralRule('crispEdges'),
+  makeLiteralRule('geometricPrecision')
 );
 const src = isString;
-const speak = isUnion(
-  isLiteral('auto'),
-  isLiteral('none'),
-  isLiteral('normal')
+const speak = makeUnionRule(
+  makeLiteralRule('auto'),
+  makeLiteralRule('none'),
+  makeLiteralRule('normal')
 );
-const speakAs = isUnion(
-  isLiteral('normal'),
-  isLiteral('spell-out'),
-  isLiteral('digits'),
+const speakAs = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('spell-out'),
+  makeLiteralRule('digits'),
   isString
 );
 const stroke = paint;
-const strokeDasharray = isUnion(isLiteral('none'), isString);
+const strokeDasharray = makeUnionRule(makeLiteralRule('none'), isString);
 const strokeDashoffset = svgLength;
-const strokeLinecap = isUnion(
-  isLiteral('butt'),
-  isLiteral('round'),
-  isLiteral('square')
+const strokeLinecap = makeUnionRule(
+  makeLiteralRule('butt'),
+  makeLiteralRule('round'),
+  makeLiteralRule('square')
 );
-const strokeLinejoin = isUnion(
-  isLiteral('miter'),
-  isLiteral('round'),
-  isLiteral('bevel')
+const strokeLinejoin = makeUnionRule(
+  makeLiteralRule('miter'),
+  makeLiteralRule('round'),
+  makeLiteralRule('bevel')
 );
 const strokeMiterlimit = isNumber;
 const strokeOpacity = isNumber;
 const strokeWidth = svgLength;
-const textAnchor = isUnion(
-  isLiteral('start'),
-  isLiteral('middle'),
-  isLiteral('end')
+const textAnchor = makeUnionRule(
+  makeLiteralRule('start'),
+  makeLiteralRule('middle'),
+  makeLiteralRule('end')
 );
 const unicodeRange = isString;
-const voiceBalance = isUnion(
+const voiceBalance = makeUnionRule(
   isNumber,
-  isLiteral('left'),
-  isLiteral('center'),
-  isLiteral('right'),
-  isLiteral('leftwards'),
-  isLiteral('rightwards')
+  makeLiteralRule('left'),
+  makeLiteralRule('center'),
+  makeLiteralRule('right'),
+  makeLiteralRule('leftwards'),
+  makeLiteralRule('rightwards')
 );
-const voiceDuration = isUnion(isLiteral('auto'), time);
-const voiceFamily = isUnion(isString, isLiteral('preserve'));
-const voicePitch = isUnion(isNumber, isLiteral('absolute'), isString);
-const voiceRange = isUnion(isNumber, isLiteral('absolute'), isString);
+const voiceDuration = makeUnionRule(makeLiteralRule('auto'), time);
+const voiceFamily = makeUnionRule(isString, makeLiteralRule('preserve'));
+const voicePitch = makeUnionRule(
+  isNumber,
+  makeLiteralRule('absolute'),
+  isString
+);
+const voiceRange = makeUnionRule(
+  isNumber,
+  makeLiteralRule('absolute'),
+  isString
+);
 const voiceRate = isString;
-const voiceStress = isUnion(
-  isLiteral('normal'),
-  isLiteral('strong'),
-  isLiteral('moderate'),
-  isLiteral('none'),
-  isLiteral('reduced')
+const voiceStress = makeUnionRule(
+  makeLiteralRule('normal'),
+  makeLiteralRule('strong'),
+  makeLiteralRule('moderate'),
+  makeLiteralRule('none'),
+  makeLiteralRule('reduced')
 );
-const voiceVolume = isUnion(isLiteral('silent'), isString);
-// const finalBgLayer = isUnion(
+const voiceVolume = makeUnionRule(makeLiteralRule('silent'), isString);
+// const finalBgLayer = makeUnionRule(
 //   bgImage,
 //   isString,
 //   repeatStyle,
@@ -1378,11 +1584,11 @@ const maskImage = maskReference;
 const top = isStringOrNumber;
 
 const SupportedVendorSpecificCSSProperties = {
-  MozOsxFontSmoothing: isLiteral('grayscale'),
-  WebkitFontSmoothing: isLiteral('antialiased'),
-  WebkitAppearance: isLiteral('textfield'),
+  MozOsxFontSmoothing: makeLiteralRule('grayscale'),
+  WebkitFontSmoothing: makeLiteralRule('antialiased'),
+  WebkitAppearance: makeLiteralRule('textfield'),
   WebkitTapHighlightColor: color,
-  WebkitOverflowScrolling: isLiteral('touch'),
+  WebkitOverflowScrolling: makeLiteralRule('touch'),
 };
 
 /* eslint-disable object-shorthand */
@@ -1773,9 +1979,9 @@ const CSSProperties = {
   writingMode: writingMode,
   zIndex: zIndex,
 };
-
-for (const key of Object.keys(CSSProperties)) {
-  CSSProperties[key] = isUnion(CSSProperties[key], all);
+const CSSPropertyKeys = Object.keys(CSSProperties);
+for (const key of CSSPropertyKeys) {
+  CSSProperties[key] = makeUnionRule(CSSProperties[key], all);
 }
 
 function isStylexCallee(node) {
@@ -1798,34 +2004,37 @@ function isStylexDeclaration(node) {
   );
 }
 
-const keyForNestedObject = isUnion(
-  isLiteral(':first-child'),
-  isLiteral(':last-child'),
-  isLiteral(':only-child'),
-  isLiteral(':nth-child'),
-  isLiteral(':nth-of-type'),
-  isLiteral(':hover'),
-  isLiteral(':focus'),
-  isLiteral(':focus-visible'),
-  isLiteral(':active'),
-  isLiteral(':disabled'),
-  isLiteral('::placeholder'),
-  isLiteral('::thumb'),
+const keyForNestedObject = makeUnionRule(
+  makeLiteralRule(':first-child'),
+  makeLiteralRule(':last-child'),
+  makeLiteralRule(':only-child'),
+  makeLiteralRule(':nth-child'),
+  makeLiteralRule(':nth-of-type'),
+  makeLiteralRule(':hover'),
+  makeLiteralRule(':focus'),
+  makeLiteralRule(':focus-visible'),
+  makeLiteralRule(':active'),
+  makeLiteralRule(':disabled'),
+  makeLiteralRule('::placeholder'),
+  makeLiteralRule('::thumb'),
   // For styling input[type=number]
-  isLiteral('::-webkit-inner-spin-button'),
-  isLiteral('::-webkit-outer-spin-button'),
+  makeLiteralRule('::-webkit-inner-spin-button'),
+  makeLiteralRule('::-webkit-outer-spin-button'),
   // For styling input[type=search]
-  isLiteral('::-webkit-search-decoration'),
-  isLiteral('::-webkit-search-cancel-button'),
-  isLiteral('::-webkit-search-results-button'),
-  isLiteral('::-webkit-search-results-decoration'),
-  isRegEx(/^@media/)
+  makeLiteralRule('::-webkit-search-decoration'),
+  makeLiteralRule('::-webkit-search-cancel-button'),
+  makeLiteralRule('::-webkit-search-results-button'),
+  makeLiteralRule('::-webkit-search-results-decoration'),
+  makeRegExRule(/^@media/, 'a media query')
 );
 
 // Maybe add this later.
 // const pseudoAllowlist = new Set([]);
 
 module.exports = {
+  meta: {
+    hasSuggestions: true,
+  },
   create(context) {
     const variables = new Map();
 
@@ -1840,7 +2049,10 @@ module.exports = {
               message: 'You cannot nest styles more than one level deep',
             });
           }
-          if (!keyForNestedObject(style.key /*not checking variables*/)) {
+          const check = keyForNestedObject(
+            style.key /*not checking variables*/
+          );
+          if (check !== undefined) {
             return context.report({
               node: style.value,
               loc: style.value.loc,
@@ -1871,26 +2083,50 @@ module.exports = {
           style.key.type === 'Identifier' ? style.key.name : style.key.value;
         const keyCheckerFunction = CSSProperties[key];
         if (keyCheckerFunction == null) {
+          const closestKey = CSSPropertyKeys.find((cssProp) => {
+            const distance = getDistance(key, cssProp, 2);
+            return distance <= 2;
+          });
           return context.report({
             node: style.key,
             loc: style.key.loc,
             message: 'This is not a key that is allowed by stylex',
+            suggest:
+              closestKey != null
+                ? [
+                    {
+                      desc: `Did you mean "${closestKey}"?`,
+                      fix: (fixer) => {
+                        if (style.key.type === 'Identifier') {
+                          return fixer.replaceText(style.key, closestKey);
+                        } else {
+                          const quoteType = style.key.raw.substr(0, 1);
+                          return fixer.replaceText(
+                            style.key,
+                            `${quoteType}${closestKey}${quoteType}`
+                          );
+                        }
+                      },
+                    },
+                  ]
+                : undefined,
           });
         }
         if (typeof keyCheckerFunction !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
         }
-        if (!keyCheckerFunction(style.value, variables)) {
+        const check = keyCheckerFunction(style.value, variables);
+        if (check != null) {
+          const { message, suggest } = check;
           return context.report({
             node: style.value,
             loc: style.value.loc,
-            message: `This is not a valid value that can be used for ${
-              style.key.name
-            }${
+            message: `${key} value must be one of:\n${message}${
               key === 'lineHeight'
-                ? '. Be careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
+                ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
                 : ''
             }`,
+            suggest: suggest != null ? [suggest] : undefined,
           });
         }
       }
@@ -1919,7 +2155,7 @@ module.exports = {
             return context.report({
               node: property.value,
               loc: property.value.loc,
-              message: 'Styles must be representes as javascript objects',
+              message: 'Styles must be represented as javascript objects',
             });
           }
 
