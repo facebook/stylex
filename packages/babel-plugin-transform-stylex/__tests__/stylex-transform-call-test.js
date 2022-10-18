@@ -11,6 +11,7 @@ jest.autoMockOff();
 
 const { transformSync } = require('@babel/core');
 const stylexPlugin = require('../src/index');
+const jsx = require('@babel/plugin-syntax-jsx');
 
 function transform(source, opts = {}) {
   return transformSync(source, {
@@ -20,7 +21,7 @@ function transform(source, opts = {}) {
         all: true,
       },
     },
-    plugins: [[stylexPlugin, opts]],
+    plugins: [jsx, [stylexPlugin, opts]],
   }).code;
 }
 
@@ -623,31 +624,80 @@ describe('babel-plugin-transform-stylex', () => {
         expect(
           transform(`
             import stylex from 'stylex';
-              stylex(styles[variant]);
-              const styles = stylex.create({
-                [0]: {
-                  color: 'red',
-                },
-                [1]: {
-                  backgroundColor: 'blue',
-                }
-              });
-              
-            `)
-        ).toMatchInlineSnapshot(`
-            "import stylex from 'stylex';
             stylex(styles[variant]);
-            stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
-            stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
-            const styles = {
-              \\"0\\": {
-                color: \\"x1e2nbdu\\"
+            const styles = stylex.create({
+              [0]: {
+                color: 'red',
               },
-              \\"1\\": {
-                backgroundColor: \\"x1t391ir\\"
+              [1]: {
+                backgroundColor: 'blue',
               }
-            };"
-          `);
+            });
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex(styles[variant]);
+          stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+          stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
+          const styles = {
+            \\"0\\": {
+              color: \\"x1e2nbdu\\"
+            },
+            \\"1\\": {
+              backgroundColor: \\"x1t391ir\\"
+            }
+          };"
+        `);
+      });
+
+      test('stylex call with mixed access', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            
+            function MyComponent() {
+              return (
+                <>
+                  <div className={stylex(styles.foo)} />
+                  <div className={stylex(styles.bar)} />
+                  <CustomComponent xstyle={styles.foo} />
+                  <div className={stylex(styles.foo, styles.bar)} />
+                </>
+              );
+            }
+
+            const styles = stylex.create({
+              foo: {
+                color: 'red',
+              },
+              bar: {
+                backgroundColor: 'blue',
+              }
+            });
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+
+          function MyComponent() {
+            return <>
+                            <div className={\\"x1e2nbdu\\"} />
+                            <div className={\\"x1t391ir\\"} />
+                            <CustomComponent xstyle={styles.foo} />
+                            <div className={\\"x1e2nbdu x1t391ir\\"} />
+                          </>;
+          }
+
+          stylex.inject(\\".x1e2nbdu{color:red}\\", 1);
+          stylex.inject(\\".x1t391ir{background-color:blue}\\", 1);
+          const styles = {
+            foo: {
+              color: \\"x1e2nbdu\\"
+            },
+            bar: {
+              backgroundColor: \\"x1t391ir\\"
+            }
+          };"
+        `);
       });
       test('stylex call with composition of external styles', () => {
         expect(
