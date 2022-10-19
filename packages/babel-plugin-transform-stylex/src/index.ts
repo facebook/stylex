@@ -56,6 +56,22 @@ export default function styleXTransform<U extends {}>(): PluginObj {
               }
             }
           }
+
+          path.traverse({
+            // Look for stylex-related function calls and transform them.
+            // e.g.
+            //   stylex.create(...)
+            //   stylex.keyframes(...)
+            CallExpression(path: NodePath<t.CallExpression>) {
+              if (path.parentPath.isVariableDeclarator()) {
+                // # Look for `stylex.keyframes` calls
+                //   Needs to be handled *before* `stylex.create` as the `create` call
+                //   may use the generated animation name.
+                transformStyleXKeyframes(path.parentPath, state);
+              }
+              transformStyleXCreate(path, state);
+            },
+          });
         },
         // After all other visitors are done, we can remove `styles=stylex.create(...)`
         // variables entirely if they're not needed.
@@ -79,22 +95,11 @@ export default function styleXTransform<U extends {}>(): PluginObj {
         },
       },
 
-      // Look for stylex-related function calls and transform them.
-      // e.g.
-      //   stylex.create(...)
-      //   stylex.keyframes(...)
       CallExpression(path: NodePath<t.CallExpression>) {
         // Don't traverse the children of `stylex(...)` calls.
         // This is important for detecting which `stylex.create()` calls
         // should be kept.
         skipStylexMergeChildren(path, state);
-        if (path.parentPath.isVariableDeclarator()) {
-          // # Look for `stylex.keyframes` calls
-          //   Needs to be handled *before* `stylex.create` as the `create` call
-          //   may use the generated animation name.
-          transformStyleXKeyframes(path.parentPath, state);
-        }
-        transformStyleXCreate(path, state);
       },
 
       Identifier(path: NodePath<t.Identifier>) {
