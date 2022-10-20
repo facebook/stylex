@@ -22,7 +22,7 @@
  * @param {number} seed Positive integer only
  * @return {number} 32-bit positive integer hash
  */
-function murmurhash2_32_gc(str, seed) {
+function murmurhash2_32_gc(str: string, seed: number) {
   let l = str.length,
     h = seed ^ l,
     i = 0,

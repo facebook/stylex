@@ -23,11 +23,11 @@ The first step in enabling stylex on Next.js is installing the required packages
 
 Navigate to your next.js project folder and run the following command. You can also use your package manager of choice to do it, just don't forget to install all 3 packages.
 
-`$ npm install facebook/stylex facebook/stylex-next babel-plugin-transform-stylex`
+`$ npm install @stylexjs/stylex @stylexjs/nextjs-plugin @stylexjs/babel-plugin @stylexjs/eslint-plugin`
 
 ### Enable stylex babel transform
 
-Create or edit the `.babelrc` in the root of your project directory and add `babel-plugin-transform-stylex` to the plugins array.
+Create or edit the `.babelrc` in the root of your project directory and add `@stylexjs/babel-plugin` to the plugins array.
 
 If you just created your plugin, your `.babelrc` will look something like this:
 
@@ -36,7 +36,7 @@ If you just created your plugin, your `.babelrc` will look something like this:
   "presets": ["next/babel"],
   "plugins": [
     [
-      "babel-plugin-transform-stylex",
+      "@stylexjs/babel-plugin",
       {}
     ]
   ]

@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Shared Code for Stylex compile and runtime.",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
@@ -10,6 +10,9 @@
   "scripts": {
     "build": "babel src/ --out-dir lib/ --copy-files",
     "test": "jest"
+  },
+  "dependencies": {
+    "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {
     "typescript": "^4.7.4"

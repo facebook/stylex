@@ -328,7 +328,7 @@ export class StyleXSheet {
 /**
  * Adds an ancestor selector in a media-query-aware way.
  */
-function addAncestorSelector(selector, ancestorSelector) {
+function addAncestorSelector(selector: string, ancestorSelector: string) {
   if (!selector.startsWith('@')) {
     return `${ancestorSelector} ${selector}`;
   }

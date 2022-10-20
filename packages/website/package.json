@@ -5,7 +5,7 @@
   "description": "Documentation website for stylex",
   "scripts": {
     "dev": "eleventy --serve",
-    "build": "ELEVENTY_PRODUCTION=true eleventy",
+    "build-skip": "ELEVENTY_PRODUCTION=true eleventy",
     "debug": "DEBUG=* eleventy"
   },
   "devDependencies": {

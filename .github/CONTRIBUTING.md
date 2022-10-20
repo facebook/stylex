@@ -77,14 +77,14 @@ After you have submitted your pull request, we'll try to get back to you as soon
 
 ### Babel
 
-StyleX expects you to transform all `js`/`ts`/`tsx` files with `babel-plugin-transform-stylex`.
+StyleX expects you to transform all `js`/`ts`/`tsx` files with `@stylexjs/babel-plugin`.
 In addition to transforming JS code, this plugin also produces an Array of CSS rules. All the CSS rules
 generated from all JS files within your project should be concatenated together and converted to a CSS
 file using the `processStyles` function which is also exported from the same module.
 
 (NOTE: StyleX only uses RTL-friendly logical values of `start` and `end` and disallows using `left` and `right` entirely.)
 
-`babel-plugin-transform-stylex` is fairly lightweight. It pre-computes `stylex` related functions like
+`@stylexjs/babel-plugin` is fairly lightweight. It pre-computes `stylex` related functions like
 `stylex.create` and `stylex.keyframes` by converting the argument AST to a JS object and transforming them
 by passing them to the functions of the corresponding names within `@stylex/shared`
 
@@ -138,7 +138,7 @@ The `[resolvedNamespace, injectedStyles]` is returned.
 
 `styleXCreateSet(...)` takes all the `[resolvedNamespace, finalInjectedStyles]` tuples and returns a tuple of `[compiledNamespaceSet, allInjectedStyles]`
 
-### Back to `create` with the `babel-plugin-transform-stylex` package
+### Back to `create` with the `@stylexjs/babel-plugin` package
 
 The `create` function within the babel plugin package takes the `stylex.create(...)` function call and replaces it with the `compiledNamespaceSet`.
 

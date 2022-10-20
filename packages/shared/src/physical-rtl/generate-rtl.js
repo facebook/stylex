@@ -21,11 +21,11 @@ const cursorFlip = {
   'sw-resize': 'se-resize',
 };
 
-function splitByDivisor(value) {
+function splitByDivisor(value: string) {
   const ast = parser(value);
   const groups = [];
 
-  let currGroup = [];
+  let currGroup: Array<PostCSSValueASTNode> = [];
   function push() {
     if (currGroup.length === 0) {
       return;
@@ -48,7 +48,7 @@ function splitByDivisor(value) {
   return groups;
 }
 
-function flipSign(value) {
+function flipSign(value: string) {
   if (value === '0') {
     return value;
   } else {
@@ -56,7 +56,7 @@ function flipSign(value) {
   }
 }
 
-function flipShadow(value) {
+function flipShadow(value: string) {
   const defs = splitByDivisor(value);
   const builtDefs = [];
 
@@ -79,11 +79,11 @@ function flipShadow(value) {
 // I think the better approach would be to let engineers use
 // CSS-vars directly.
 const shadowsFlip = {
-  'box-shadow': ([key, val]) => {
+  'box-shadow': ([key, val]: [string, string]) => {
     const rtlVal = flipShadow(val);
     return rtlVal ? [key, rtlVal] : null;
   },
-  'text-shadow': ([key, val]) => {
+  'text-shadow': ([key, val]: [string, string]) => {
     const rtlVal = flipShadow(val);
     return rtlVal ? [key, rtlVal] : null;
   },
@@ -95,55 +95,79 @@ const logicalToPhysical = {
 };
 
 const propertyToRTL = {
-  'margin-start': ([key, val]) => ['margin-right', val],
-  // 'margin-inline-start': ([key, val]) => ['margin-right', val],
-  'margin-end': ([key, val]) => ['margin-left', val],
-  // 'margin-inline-end': ([key, val]) => ['margin-left', val],
-  'padding-start': ([key, val]) => ['padding-right', val],
-  // 'padding-inline-start': ([key, val]) => ['padding-right', val],
-  'padding-end': ([key, val]) => ['padding-left', val],
-  // 'padding-inline-end': ([key, val]) => ['padding-left', val],
-  'border-start': ([key, val]) => ['border-right', val],
-  // 'border-inline-start': ([key, val]) => ['border-right', val],
-  'border-end': ([key, val]) => ['border-left', val],
-  // 'border-inline-end': ([key, val]) => ['border-left', val],
-  'border-start-width': ([key, val]) => ['border-right-width', val],
-  // 'border-inline-start-width': ([key, val]) => ['border-right-width', val],
-  'border-end-width': ([key, val]) => ['border-left-width', val],
-  // 'border-inline-end-width': ([key, val]) => ['border-left-width', val],
-  'border-start-color': ([key, val]) => ['border-right-color', val],
-  // 'border-inline-start-color': ([key, val]) => ['border-right-color', val],
-  'border-end-color': ([key, val]) => ['border-left-color', val],
-  // 'border-inline-end-color': ([key, val]) => ['border-left-color', val],
-  'border-start-style': ([key, val]) => ['border-right-style', val],
-  // 'border-inline-start-style': ([key, val]) => ['border-right-style', val],
-  'border-end-style': ([key, val]) => ['border-left-style', val],
-  // 'border-inline-end-style': ([key, val]) => ['border-left-style', val],
-  'border-top-start-radius': ([key, val]) => ['border-top-right-radius', val],
-  // 'border-start-start-radius': ([key, val]) => ['border-top-right-radius', val],
-  'border-bottom-start-radius': ([key, val]) => [
+  'margin-start': ([key, val]: [string, string]) => ['margin-right', val],
+  // 'margin-inline-start': ([key, val]: [string, string]) => ['margin-right', val],
+  'margin-end': ([key, val]: [string, string]) => ['margin-left', val],
+  // 'margin-inline-end': ([key, val]: [string, string]) => ['margin-left', val],
+  'padding-start': ([key, val]: [string, string]) => ['padding-right', val],
+  // 'padding-inline-start': ([key, val]: [string, string]) => ['padding-right', val],
+  'padding-end': ([key, val]: [string, string]) => ['padding-left', val],
+  // 'padding-inline-end': ([key, val]: [string, string]) => ['padding-left', val],
+  'border-start': ([key, val]: [string, string]) => ['border-right', val],
+  // 'border-inline-start': ([key, val]: [string, string]) => ['border-right', val],
+  'border-end': ([key, val]: [string, string]) => ['border-left', val],
+  // 'border-inline-end': ([key, val]: [string, string]) => ['border-left', val],
+  'border-start-width': ([key, val]: [string, string]) => [
+    'border-right-width',
+    val,
+  ],
+  // 'border-inline-start-width': ([key, val]: [string, string]) => ['border-right-width', val],
+  'border-end-width': ([key, val]: [string, string]) => [
+    'border-left-width',
+    val,
+  ],
+  // 'border-inline-end-width': ([key, val]: [string, string]) => ['border-left-width', val],
+  'border-start-color': ([key, val]: [string, string]) => [
+    'border-right-color',
+    val,
+  ],
+  // 'border-inline-start-color': ([key, val]: [string, string]) => ['border-right-color', val],
+  'border-end-color': ([key, val]: [string, string]) => [
+    'border-left-color',
+    val,
+  ],
+  // 'border-inline-end-color': ([key, val]: [string, string]) => ['border-left-color', val],
+  'border-start-style': ([key, val]: [string, string]) => [
+    'border-right-style',
+    val,
+  ],
+  // 'border-inline-start-style': ([key, val]: [string, string]) => ['border-right-style', val],
+  'border-end-style': ([key, val]: [string, string]) => [
+    'border-left-style',
+    val,
+  ],
+  // 'border-inline-end-style': ([key, val]: [string, string]) => ['border-left-style', val],
+  'border-top-start-radius': ([key, val]: [string, string]) => [
+    'border-top-right-radius',
+    val,
+  ],
+  // 'border-start-start-radius': ([key, val]: [string, string]) => ['border-top-right-radius', val],
+  'border-bottom-start-radius': ([key, val]: [string, string]) => [
     'border-bottom-right-radius',
     val,
   ],
-  // 'border-end-start-radius': ([key, val]) => ['border-bottom-right-radius', val],
-  'border-top-end-radius': ([key, val]) => ['border-top-left-radius', val],
-  // 'border-start-end-radius': ([key, val]) => ['border-top-left-radius', val],
-  'border-bottom-end-radius': ([key, val]) => [
+  // 'border-end-start-radius': ([key, val]: [string, string]) => ['border-bottom-right-radius', val],
+  'border-top-end-radius': ([key, val]: [string, string]) => [
+    'border-top-left-radius',
+    val,
+  ],
+  // 'border-start-end-radius': ([key, val]: [string, string]) => ['border-top-left-radius', val],
+  'border-bottom-end-radius': ([key, val]: [string, string]) => [
     'border-bottom-left-radius',
     val,
   ],
-  // 'border-end-end-radius': ([key, val]) => ['border-bottom-left-radius', val],
-  'text-align': ([key, val]) =>
+  // 'border-end-end-radius': ([key, val]: [string, string]) => ['border-bottom-left-radius', val],
+  'text-align': ([key, val]: [string, string]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
-  float: ([key, val]) =>
+  float: ([key, val]: [string, string]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
-  clear: ([key, val]) =>
+  clear: ([key, val]: [string, string]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
-  start: ([key, val]) => ['right', val],
-  // 'inset-inline-start': ([key, val]) => ['right', val],
-  end: ([key, val]) => ['left', val],
-  // 'inset-inline-end': ([key, val]) => ['left', val],
-  'background-position': ([key, val]) => {
+  start: ([key, val]: [string, string]) => ['right', val],
+  // 'inset-inline-start': ([key, val]: [string, string]) => ['right', val],
+  end: ([key, val]: [string, string]) => ['left', val],
+  // 'inset-inline-end': ([key, val]: [string, string]) => ['left', val],
+  'background-position': ([key, val]: [string, string]) => {
     const words = val.split(' ');
     if (!words.includes('start') && !words.includes('end')) {
       return null;
@@ -157,7 +181,7 @@ const propertyToRTL = {
         .join(' '),
     ];
   },
-  cursor: ([key, val]) =>
+  cursor: ([key, val]: [string, string]) =>
     cursorFlip[val] != null ? [key, cursorFlip[val]] : null,
   ...shadowsFlip,
 };
