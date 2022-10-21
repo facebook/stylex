@@ -4,14 +4,14 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "turbo run build",
     "flow": "flow",
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
     "lint:report": "eslint packages",
-    "pretests": "npm run build --workspaces --if-present",
-    "tests": "npm run test --workspaces --if-present"
+    "tests": "turbo run test",
+    "test": "turbo run test"
   },
   "workspaces": [
     "packages/*"
@@ -34,15 +34,16 @@
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@types/jest": "^29.2.0",
     "benchmark": "^2.1.4",
+    "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-react": "^7.20.3",
-    "eslint": "^8.25.0",
     "flow-bin": "^0.190.0",
     "jest": "^29.2.1",
     "prettier": "^2.4.1",
     "rollup": "^3.2.3",
-    "ts-jest": "^29.0.3"
+    "ts-jest": "^29.0.3",
+    "turbo": "^1.5.6"
   },
   "prettier": {
     "singleQuote": true,

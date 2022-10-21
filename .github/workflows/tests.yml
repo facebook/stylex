@@ -3,7 +3,7 @@ name: tests
 on:
   push:
     branches:
-      - "main"
+      - 'main'
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -11,39 +11,39 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '15.x'
-    - run: npm install
-    - run: npm run prettier:report
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run prettier:report
 
   type-check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '15.x'
-    - run: npm install
-    - run: npm run flow
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run flow
 
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '15.x'
-    - run: npm install
-    - run: npm run lint:report
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run lint:report
 
   unit-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '15.x'
-    - run: npm install
-    - run: npm run tests
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run tests

@@ -9,10 +9,7 @@
 
 import stylex from '@stylexjs/stylex';
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
-import type {
-  MapNamespace,
-  Stylex$Create,
-} from '@stylexjs/stylex/lib/StyleXTypes';
+import type { MapNamespace } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
 import type { StyleXOptions } from '@stylexjs/shared/lib/common-types';
 
