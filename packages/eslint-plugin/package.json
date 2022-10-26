@@ -1,0 +1,15 @@
+{
+  "name": "@stylexjs/eslint-plugin",
+  "version": "1.0.0",
+  "description": "StyleX eslint plugin.",
+  "main": "./src/index.js",
+  "repository": "https://github.com/facebookexternal/stylex/eslint",
+  "author": "Naman Goel <nmn@fb.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "hermes-eslint": "^0.9.0"
+  }
+}

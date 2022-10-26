@@ -24,13 +24,13 @@ npm install stylex
 Component libraries and npm packages must be compiled using the [Babel](https://babeljs.io/) plugin.
 
 ```shell
-npm install --save-dev babel-plugin-transform-stylex
+npm install --save-dev @stylexjs/babel-plugin
 ```
 
 ```js
 {
   "plugins": [
-    ["babel-plugin-transform-stylex", { }]
+    ["@stylexjs/babel-plugin", { }]
   ]
 }
 ```
@@ -38,7 +38,6 @@ npm install --save-dev babel-plugin-transform-stylex
 ## Bundler setup
 
 When using a bundler plugin the above compilation setup is built-in, and further runtime optimization is provided by CSS file extraction.
-
 
 ### Rollup
 

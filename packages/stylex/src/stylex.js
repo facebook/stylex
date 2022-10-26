@@ -132,7 +132,7 @@ function stylexCreate(_styles: { ... }) {
   );
 }
 
-function stylexExtends<TStyles: { +[string]: string | number }>(
+function stylexIncludes<TStyles: { +[string]: string | number }>(
   _styles: MapNamespace<TStyles>
 ): TStyles {
   throw new Error(
@@ -145,7 +145,7 @@ type Stylex$Include = <TStyles: { +[string]: string | number }>(
 ) => TStyles;
 
 stylex.create = (stylexCreate: Stylex$Create);
-stylex.include = (stylexExtends: Stylex$Include);
+stylex.include = (stylexIncludes: Stylex$Include);
 
 stylex.keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');

@@ -40,7 +40,7 @@ export default function transformValue(
   return normalizeValue(value, key);
 }
 
-function getNumberSuffix(key) {
+function getNumberSuffix(key: string) {
   if (unitlessNumberProperties.has(key)) {
     return '';
   }
