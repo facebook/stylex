@@ -10,6 +10,7 @@
   "private": true,
   "scripts": {
     "build": "babel src/ --out-dir lib/ --copy-files",
+    "build-haste": "HASTE=true babel src/ --out-dir lib/ --copy-files",
     "test": "jest"
   },
   "dependencies": {

@@ -16,7 +16,7 @@ import type {
   MapNamespace,
 } from './StyleXTypes';
 
-import inject from './inject';
+import inject from './stylex-inject';
 
 type Cache = WeakMap<
   { ... },
