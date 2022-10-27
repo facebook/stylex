@@ -750,4 +750,26 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
   });
+  describe('Setting custom import paths', () => {
+    test('Basic stylex call', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'custom-stylex-path';
+          const styles = stylex.create({
+            red: {
+              color: 'red',
+            }
+          });
+          stylex(styles.red);
+        `,
+          { importSources: ['custom-stylex-path'] }
+        )
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'custom-stylex-path';
+        stylex.inject(".x1e2nbdu{color:red}", 1);
+        "x1e2nbdu";"
+      `);
+    });
+  });
 });

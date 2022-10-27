@@ -9,9 +9,6 @@
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
-// This is currently just `stylex` but it might become
-// `@stylexjs/core` or `@stylexjs/runtime` in the future
-import { name } from '@stylexjs/stylex/package.json';
 
 // Read imports of react and remember the name of the local varsiables for later
 export function readImportDeclarations(
@@ -22,7 +19,7 @@ export function readImportDeclarations(
   if (node?.importKind === 'type' || node?.importKind === 'typeof') {
     return;
   }
-  if (node.source.value === 'stylex' || node.source.value === name) {
+  if (state.options.importSources.includes(node.source.value)) {
     for (const specifier of node.specifiers) {
       if (specifier.type === 'ImportDefaultSpecifier') {
         state.stylexImport.add(specifier.local.name);
@@ -77,7 +74,7 @@ export function readRequires(
     node.init?.arguments?.length === 1 &&
     node.init?.arguments?.[0].type === 'StringLiteral' &&
     (node.init?.arguments?.[0].value === 'stylex' ||
-      node.init?.arguments?.[0].value === name)
+      state.options.importSources.includes(node.init?.arguments?.[0].value))
   ) {
     if (node.id.type === 'Identifier') {
       state.stylexImport.add(node.id.name);
