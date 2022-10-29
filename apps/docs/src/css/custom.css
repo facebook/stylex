@@ -1,0 +1,78 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @format
+ */
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+
+  --bg1: hsl(276, 17%, 96%);
+  --bg2: hsl(0, 0%, 100%);
+  --code-bg: hsl(251, 19%, 29%);
+
+  --fg1: hsl(330, 6%, 7%);
+  --fg2: hsl(251, 19%, 29%);
+
+  --link: hsla(202, 100%, 50%, 1);
+
+  --cyan: hsla(202, 100%, 50%, 1);
+  --cyan-h: 202;
+  --cyan-s: 100%;
+  --cyan-l: 50%;
+  --pink: hsla(295, 62%, 60%, 1);
+  --pink-h: 295;
+  --pink-s: 62%;
+  --pink-l: 60%;
+
+  --ifm-navbar-background-color: var(--bg2);
+  --ifm-footer-background-color: var(--bg1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+
+  --bg1: #000000;
+  --bg2: hsl(249, 19%, 13%);
+  --code-bg: hsl(249, 19%, 13%);
+
+  --fg1: hsl(0, 0%, 100%);
+  --fg2: hsl(0, 0%, 80%);
+
+  --link: hsl(202, 100%, 57%);
+  --cyan: hsl(202, 100%, 57%);
+  --cyan-h: 202;
+  --cyan-s: 100%;
+  --cyan-l: 57%;
+  --pink: hsl(295, 62%, 66%);
+  --pink-h: 295;
+  --pink-s: 62%;
+  --pink-l: 66%;
+
+  --purple-navy: hsla(251, 19%, 39%, 1);
+  --black-coffee: hsla(330, 6%, 20%, 1);
+}

@@ -1,0 +1,58 @@
+:root {
+  --bg1: hsl(276, 17%, 96%);
+  --bg2: hsl(0, 0%, 100%);
+  --code-bg: hsl(251, 19%, 29%);
+
+  --fg1: hsl(330, 6%, 7%);
+  --fg2: hsl(251, 19%, 29%);
+
+  --link: hsla(202, 100%, 50%, 1);
+
+  --cyan: hsla(202, 100%, 50%, 1);
+  --cyan-h: 202;
+  --cyan-s: 100%;
+  --cyan-l: 50%;
+  --pink: hsla(295, 62%, 60%, 1);
+  --pink-h: 295;
+  --pink-s: 62%;
+  --pink-l: 60%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg1: #000000;
+    --bg2: hsl(249, 19%, 13%);
+    --code-bg: hsl(249, 19%, 13%);
+
+    --fg1: hsl(0, 0%, 100%);
+    --fg2: hsl(0, 0%, 80%);
+
+    --link: hsl(202, 100%, 57%);
+    --cyan: hsl(202, 100%, 57%);
+    --cyan-h: 202;
+    --cyan-s: 100%;
+    --cyan-l: 57%;
+    --pink: hsl(295, 62%, 66%);
+    --pink-h: 295;
+    --pink-s: 62%;
+    --pink-l: 66%;
+
+    --purple-navy: hsla(251, 19%, 39%, 1);
+    --black-coffee: hsla(330, 6%, 20%, 1);
+  }
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color: var(--bg1);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  color: var(--fg1);
+}
+
+* {
+  box-sizing: border-box;
+}
