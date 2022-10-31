@@ -5,3 +5,4 @@ dist
 lib
 node_modules
 .turbo
+apps/docs/.stylex/*

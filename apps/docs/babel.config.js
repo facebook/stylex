@@ -7,7 +7,15 @@
  * @format
  */
 
+const isProd = process.env.NODE_ENV === 'production';
+
+const options = {
+  dev: !isProd,
+  test: false,
+  stylexSheetName: isProd ? 'custom' : undefined,
+};
+
 module.exports = {
-  plugins: [['@stylexjs/babel-plugin', {}]],
+  plugins: [['@stylexjs/babel-plugin', options]],
   presets: [require.resolve('@docusaurus/core/lib/babel/preset')],
 };
