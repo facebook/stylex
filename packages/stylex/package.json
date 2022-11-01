@@ -7,7 +7,6 @@
   "repository": "https://www.github.com/facebookexternal/stylex",
   "author": "Naman Goel <nmn@fb.com>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "build": "babel src/ --out-dir lib/ --copy-files",
     "build-haste": "HASTE=true babel src/ --out-dir lib/ --copy-files",
