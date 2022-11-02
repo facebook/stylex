@@ -1,8 +1,8 @@
 {
   "name": "@stylexjs/babel-plugin",
-  "version": "0.1.0-beta.3",
-  "description": "StyleX eslint plugin.",
-  "main": "./lib/index.js",
+  "version": "0.1.0-beta.6",
+  "description": "StyleX babel plugin.",
+  "main": "lib/index.js",
   "repository": "https://github.com/facebookexternal/stylex",
   "author": "Naman Goel <nmn@fb.com>",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stylexjs/shared": "0.1.0-beta.3"
+    "@stylexjs/shared": "0.1.0-beta.6"
   },
   "peerDependencies": {
     "@babel/core": "^7.19.6",
@@ -22,5 +22,8 @@
     "ts-jest": "^29.0.3",
     "ts-node": "^10.8.1",
     "typescript": "^4.7.4"
-  }
+  },
+  "files": [
+    "lib/*"
+  ]
 }

@@ -1,20 +1,23 @@
 {
   "name": "@stylexjs/dev-runtime",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.6",
   "description": "A development-only package that makes stylex work entirely at runtime",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
   "author": "Naman Goel <nmn@fb.com>",
   "license": "MIT",
   "scripts": {
-    "build": "rollup --config ./rollup.config.mjs",
+    "build": "babel src/ --out-dir lib/ --copy-files",
     "test": "jest"
   },
   "workspaces": [
     "packages/*"
   ],
   "dependencies": {
-    "@stylexjs/shared": "0.1.0-beta.3"
+    "@stylexjs/shared": "0.1.0-beta.6"
   },
-  "jest": {}
+  "jest": {},
+  "files": [
+    "lib/*"
+  ]
 }

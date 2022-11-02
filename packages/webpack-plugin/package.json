@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/webpack-plugin",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.6",
   "description": "Webpack plugin for stylex",
   "main": "src/index.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
@@ -21,14 +21,14 @@
   },
   "dependencies": {
     "@babel/core": "^7.15.5",
-    "@stylexjs/babel-plugin": "0.1.0-beta.3",
+    "@stylexjs/babel-plugin": "0.1.0-beta.6",
     "webpack": "^5.x.x"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.8",
     "babel-loader": "^8.2.2",
     "memfs": "3.3.0",
-    "@stylexjs/stylex": "0.1.0",
+    "@stylexjs/stylex": "0.1.0-beta.6",
     "webpack-cli": "^4.x.x"
   }
 }
