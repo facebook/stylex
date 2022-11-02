@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "description": "Shared Code for Stylex compile and runtime.",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebookexternal/stylex",
