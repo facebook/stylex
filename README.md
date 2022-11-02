@@ -1,4 +1,4 @@
-# stylex &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookexternal/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/stylex.svg?style=flat)](https://www.npmjs.com/package/stylex) [![Build Status](https://github.com/facebookexternal/stylex/workflows/tests/badge.svg)](https://github.com/facebookexternal/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebookexternal/styles/blob/master/.github/CONTRIBUTING.md)
+# stylex &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookexternal/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/stylex.svg?style=flat)](https://www.npmjs.com/package/@stylexjs/stylex) [![Build Status](https://github.com/facebookexternal/stylex/workflows/tests/badge.svg)](https://github.com/facebookexternal/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebookexternal/styles/blob/master/.github/CONTRIBUTING.md)
 
 stylex is a JavaScript library for writing conflict-free styles for user interfaces.
 
@@ -13,11 +13,11 @@ Here is a simple example to get you started:
 ```js
 const styles = stylex.create({
   root: {
-    padding: 10
+    padding: 10,
   },
   element: {
-    backgroundColor: 'red'
-  }
+    backgroundColor: 'red',
+  },
 });
 
 const styleProps = stylex(styles.root, styles.element);

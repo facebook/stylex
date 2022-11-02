@@ -44,6 +44,9 @@
 
   --ifm-navbar-background-color: var(--bg2);
   --ifm-footer-background-color: var(--bg1);
+
+  /* cache-breaker */
+  --hash: 1;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */

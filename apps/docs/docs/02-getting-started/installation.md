@@ -20,7 +20,7 @@ $ npm install --save-dev @stylexjs/eslint-plugin
 In order to make it easy to get started, you can simply import `@stylexjs/development-runtime` in your JS entry-point to set everything up. [pending edit](noteplan://x-callback-url/openNote?noteTitle=Edits%20for%20Documentation%20to%20make%20sense%23Complete%20implementation%20of%20%60development-runtime%60)
 
 ```ts
-import inject from '@stylexjs/development-runtime';
+import inject from '@stylexjs/dev-runtime';
 
 inject({
   // configuration options

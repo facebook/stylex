@@ -11,7 +11,7 @@ In order be as familiar as possible, StyleX uses an API that is very reminiscent
 Defining styles is as simple as using the `stylex.create` function to define a one or more “namespaces” or objects of styles. The Styles are defined as Javascript objects. (See [[Why JS Objects and not a CSS string]])
 
 ```tsx
-import stylex from '@stylexjs/runtime';
+import stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: {
@@ -32,7 +32,7 @@ Here we have defined two objects of styles, that we refer to as “namespaces”
 Once styles have been defined, they can be converted to classNames using the `stylex` function and used as the `className` prop of any HTML element.
 
 ```tsx
-import stylex from '@stylexjs/runtime';
+import stylex from '@stylexjs/stylex';
 
 <div className={stylex(styles.base)} />;
 ```
