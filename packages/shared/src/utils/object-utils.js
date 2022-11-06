@@ -16,7 +16,7 @@ export function flattenObject<
 >(obj: Obj): { [string]: string | IncludedStyles } {
   const result: { [string]: string | IncludedStyles } = {};
   for (const [key, value] of objEntries(obj)) {
-    if (typeof value === 'string') {
+    if (typeof value === 'string' || value == null) {
       result[key] = value;
     } else if (value instanceof IncludedStyles) {
       result[key] = value;

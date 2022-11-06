@@ -112,6 +112,7 @@ function styleXCreateNamespace(
       ];
     } else {
       if (
+        value !== null &&
         typeof value !== 'string' &&
         typeof value !== 'number' &&
         !Array.isArray(value)
@@ -142,23 +143,31 @@ function styleXCreateNamespace(
       const pseudo = key;
       const innerObj = {};
       for (const [innerKey, innerVal] of objEntries(val)) {
-        const [updatedKey, className, cssRule] = convertToClassName(
-          [innerKey, innerVal],
-          pseudo,
-          options
-        );
-        innerObj[updatedKey] = className;
-        injectedStyles[updatedKey + pseudo] = [className, cssRule];
+        if (innerVal === null) {
+          innerObj[innerKey] = null;
+        } else {
+          const [updatedKey, className, cssRule] = convertToClassName(
+            [innerKey, innerVal],
+            pseudo,
+            options
+          );
+          innerObj[updatedKey] = className;
+          injectedStyles[updatedKey + pseudo] = [className, cssRule];
+        }
       }
       resolvedNamespace[key] = innerObj;
     } else {
-      const [updatedKey, className, cssRule] = convertToClassName(
-        [key, val],
-        undefined,
-        options
-      );
-      resolvedNamespace[updatedKey] = className;
-      injectedStyles[updatedKey] = [className, cssRule];
+      if (val === null) {
+        resolvedNamespace[key] = null;
+      } else {
+        const [updatedKey, className, cssRule] = convertToClassName(
+          [key, val],
+          undefined,
+          options
+        );
+        resolvedNamespace[updatedKey] = className;
+        injectedStyles[updatedKey] = [className, cssRule];
+      }
     }
   }
   const finalInjectedStyles = objFromEntries(objValues(injectedStyles));

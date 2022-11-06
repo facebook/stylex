@@ -12,7 +12,7 @@ import * as t from '@babel/types';
 import traverse from '@babel/traverse';
 import StateManager from '../utils/state-manager';
 
-type ClassNameValue = string | NonStringClassNameValue;
+type ClassNameValue = null | string | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 type TResolvedStyles = { [key: string]: ClassNameValue };
 
@@ -194,10 +194,12 @@ export default function transformStyleXMerge(
 
 // This function takes nested objects with styles collapses them to a single level deep.
 // `':hover': {color: 'red'}` becomes `':hover.color': 'red'`
-function flattenObject(object: CompiledStyles): { [key: string]: string } {
+function flattenObject(object: CompiledStyles): {
+  [key: string]: null | string;
+} {
   const result: { [key: string]: string } = {};
   for (const [key, value] of Object.entries(object)) {
-    if (typeof value === 'string') {
+    if (typeof value === 'string' || value == null) {
       result[key] = value;
     } else if (typeof value === 'object') {
       for (const [subKey, subValue] of Object.entries(value)) {
@@ -214,7 +216,7 @@ function flattenObject(object: CompiledStyles): { [key: string]: string } {
 function parseNullableStyle(
   node: t.Expression,
   state: StateManager
-): null | { [key: string]: string } | 'other' {
+): null | { [key: string]: null | string } | 'other' {
   if (
     t.isNullLiteral(node) ||
     (t.isIdentifier(node) && node.name === 'undefined')
@@ -262,7 +264,7 @@ function makeStringExpression(
 
   const nonStrings = values.filter(
     (value: ClassNameValue): value is NonStringClassNameValue =>
-      typeof value !== 'string'
+      typeof value !== 'string' && value != null
   );
 
   const groupedByTest = groupBy(

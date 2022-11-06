@@ -392,6 +392,29 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('stylex call with reverting by null', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              },
+              revert: {
+                color: null,
+              }
+            });
+            stylex(styles.red, styles.revert);
+            stylex(styles.revert, styles.red);
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1e2nbdu{color:red}", 1);
+          "";
+          "x1e2nbdu";"
+        `);
+      });
+
       test('stylex call with short-form property collisions', () => {
         expect(
           transform(`
@@ -423,6 +446,37 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('stylex call with short-form property collisions with null', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                padding: 5,
+                paddingEnd: 10,
+              },
+  
+              bar: {
+                padding: 2,
+                paddingStart: null,
+              },
+            });
+            stylex(styles.foo, styles.bar);
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x123j3cw{padding-top:5px}", 1);
+          stylex.inject(".x1iji9kk{padding-right:10px}", 1, ".x1iji9kk{padding-left:10px}");
+          stylex.inject(".xs9asl8{padding-bottom:5px}", 1);
+          stylex.inject(".x1t2a60a{padding-left:5px}", 1, ".x1t2a60a{padding-right:5px}");
+          stylex.inject(".x1nn3v0j{padding-top:2px}", 1);
+          stylex.inject(".xg83lxy{padding-right:2px}", 1, ".xg83lxy{padding-left:2px}");
+          stylex.inject(".x1120s5i{padding-bottom:2px}", 1);
+          stylex.inject(".x1h0ha7o{padding-left:2px}", 1, ".x1h0ha7o{padding-right:2px}");
+          "x1nn3v0j xg83lxy x1120s5i";"
+        `);
+      });
+
       test('stylex call with conditions and collisions', () => {
         expect(
           transform(`
@@ -442,6 +496,27 @@ describe('@stylexjs/babel-plugin', () => {
           stylex.inject(".x1e2nbdu{color:red}", 1);
           stylex.inject(".xju2f9n{color:blue}", 1);
           "" + (isActive ? " xju2f9n" : " x1e2nbdu");"
+        `);
+      });
+
+      test('stylex call with conditions and null collisions', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              },
+              blue: {
+                color: null,
+              }
+            });
+            stylex(styles.red, isActive && styles.blue);
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1e2nbdu{color:red}", 1);
+          "" + (isActive ? "" : " x1e2nbdu");"
         `);
       });
     });

@@ -23,6 +23,10 @@ export function convertObjectToAST(
             canBeIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
             typeof value === 'string'
               ? t.stringLiteral(value)
+              : typeof value === 'boolean'
+              ? t.booleanLiteral(value)
+              : value === null
+              ? t.nullLiteral()
               : convertObjectToAST(value)
           )
     )
