@@ -9,9 +9,9 @@
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
     "lint:report": "eslint packages",
-    "pretests": "npm run build",
-    "tests": "npm run test --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present"
+    "pretest": "npm run build",
+    "test": "npm run test --workspaces --if-present",
+    "test-nobuild": "npm run test --workspaces --if-present"
   },
   "workspaces": [
     "packages/shared",
