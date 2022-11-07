@@ -129,6 +129,51 @@ const isHexColor = (node) => {
     : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' };
 };
 
+const isAnimationName = (node, variables) => {
+  if (
+    node.type === 'CallExpression' &&
+    node.callee.type === 'MemberExpression' &&
+    node.callee.object.type === 'Identifier' &&
+    node.callee.object.name === 'stylex' &&
+    node.callee.property.type === 'Identifier' &&
+    node.callee.property.name === 'keyframes'
+  ) {
+    return undefined;
+  }
+  if (node.type === 'Identifier' && variables && variables.has(node.name)) {
+    return isAnimationName(variables.get(node.name), variables);
+  }
+  if (node.type === 'TemplateLiteral') {
+    if (
+      !node.expressions.every(
+        (expr) => isAnimationName(expr, variables) === undefined
+      )
+    ) {
+      return {
+        message:
+          'All expressions in a template literal must be a `stylex.keyframes(...)` function call',
+      };
+    }
+    if (
+      !node.quasis.every((quasi, index, { length }) =>
+        index === 0 || index === length - 1
+          ? quasi.value.raw === ''
+          : quasi.value.raw === ', '
+      )
+    ) {
+      return {
+        message:
+          'animation names must be separated by a comma and a space (", ")',
+      };
+    }
+    return undefined;
+  }
+  return {
+    message:
+      'a `stylex.keyframes(...)` function call, a reference to it or a many such valid',
+  };
+};
+
 const makeUnionRule = (...rules) => {
   return (node, variables) => {
     const failedRules = [];
@@ -255,7 +300,10 @@ const singleAnimationIterationCount = makeUnionRule(
   isNumber
 );
 // TODO change this to a special function that looks for stylex.keyframes call
-const singleAnimationName = makeUnionRule(makeLiteralRule('none'), () => true);
+const singleAnimationName = makeUnionRule(
+  makeLiteralRule('none'),
+  isAnimationName
+);
 
 const singleAnimationPlayState = makeUnionRule(
   makeLiteralRule('running'),
@@ -2139,7 +2187,7 @@ module.exports = {
         node.body
           .filter(({ type }) => type === 'VariableDeclaration')
           .map((constDecl) => constDecl.declarations)
-          .reduce((arr, curr) => [...arr, ...curr], [])
+          .reduce((arr, curr) => arr.concat(curr), [])
           .filter((decl) => decl.id.type === 'Identifier')
           .forEach((decl) => variables.set(decl.id.name, decl.init));
       },

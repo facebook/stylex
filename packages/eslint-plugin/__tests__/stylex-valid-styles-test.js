@@ -26,17 +26,85 @@ eslintTester.run('stylex-valid-styles', rule, {
   valid: [
     // test for local static variables
     `
-     const start = 'start';
-     const styles = stylex.create({
-       default: {
-         textAlign: start,
-         MozOsxFontSmoothing: 'grayscale',
-         WebkitFontSmoothing: 'antialiased',
-         transitionProperty: 'opacity, transform',
-         transitionDuration: '0.3s',
-         transitionTimingFunction: 'ease',
-       }
-     });`,
+      const start = 'start';
+      const styles = stylex.create({
+        default: {
+          textAlign: start,
+          MozOsxFontSmoothing: 'grayscale',
+          WebkitFontSmoothing: 'antialiased',
+          transitionProperty: 'opacity, transform',
+          transitionDuration: '0.3s',
+          transitionTimingFunction: 'ease',
+        }
+      });
+    `,
+    `
+      const bounce = stylex.keyframes({
+        '0%': {
+          transform: 'translateY(0)',
+        },
+        '50%': {
+          transform: 'translateY(-10px)',
+        },
+        '100%': {
+          transform: 'translateY(0)',
+        },
+      });
+      const styles = stylex.create({
+        default: {
+          animationName: bounce,
+          animationDuration: '1s',
+          animationIterationCount: 'infinite',
+        }
+      });
+    `,
+    `
+      const styles = stylex.create({
+        default: {
+          animationName: stylex.keyframes({
+            '0%': {
+              transform: 'translateY(0)',
+            },
+            '50%': {
+              transform: 'translateY(-10px)',
+            },
+            '100%': {
+              transform: 'translateY(0)',
+            },
+          }),
+          animationDuration: '1s',
+          animationIterationCount: 'infinite',
+        }
+      });
+    `,
+    `
+      const bounce = stylex.keyframes({
+        '0%': {
+          transform: 'translateY(0)',
+        },
+        '50%': {
+          transform: 'translateY(-10px)',
+        },
+        '100%': {
+          transform: 'translateY(0)',
+        },
+      });
+      const shimmy = stylex.keyframes({
+        '0%': {
+          backgroundPosition: '-468px 0',
+        },
+        '100%': {
+          backgroundPosition: '468px 0',
+        },
+      });
+      const styles = stylex.create({
+        default: {
+          animationName: \`\${bounce}, \${shimmy}\`,
+          animationDuration: '1s',
+          animationIterationCount: 'infinite',
+        }
+      });
+    `,
     // test for nested styles
     `
      const styles = stylex.create({
@@ -491,6 +559,40 @@ revert`,
 const styles = stylex.create({default: {transitionProperty: tp}});`,
             },
           ],
+        },
+      ],
+    },
+    {
+      code: `
+        const bounce = stylex.keyframes({
+          '0%': {
+            transform: 'translateY(0)',
+          },
+          '50%': {
+            transform: 'translateY(-10px)',
+          },
+          '100%': {
+            transform: 'translateY(0)',
+          },
+        });
+        const styles = stylex.create({
+          default: {
+            animationName: bob,
+            animationDuration: '1s',
+            animationIterationCount: 'infinite',
+          }
+        });
+      `,
+      errors: [
+        {
+          message: `animationName value must be one of:
+none
+a \`stylex.keyframes(...)\` function call, a reference to it or a many such valid
+initial
+inherit
+unset
+revert`,
+          suggestions: [],
         },
       ],
     },
