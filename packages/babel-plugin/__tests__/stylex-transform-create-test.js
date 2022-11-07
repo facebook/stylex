@@ -206,7 +206,6 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1k9kg1j{include(imported-styles.foo):include(importedStyles.foo)}", 1);
         export const styles = {
           foo: {
             ...importedStyles.foo

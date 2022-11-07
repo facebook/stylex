@@ -60,7 +60,7 @@ export default function transformStyleXCreate(
       throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
     }
 
-    const processingState = preProcessStyleArg(firstArg);
+    preProcessStyleArg(firstArg, state);
 
     const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
     function keyframes<
@@ -135,27 +135,12 @@ export default function transformStyleXCreate(
 
     path.replaceWith(convertObjectToAST(compiledStyles));
 
-    postProcessStyles(path, processingState);
-
     if (Object.keys(injectedStyles).length === 0) {
       return;
     }
     if (state.isDev || state.stylexSheetName == null) {
       const statementPath = findNearestStatementAncestor(path);
-
-      let stylexName: string | undefined;
-      state.stylexImport.forEach((importName) => {
-        stylexName = importName;
-      });
-      if (stylexName == null) {
-        stylexName = '__stylex__';
-        statementPath.insertBefore(
-          t.importDeclaration(
-            [t.importDefaultSpecifier(t.identifier(stylexName))],
-            t.stringLiteral('stylex')
-          )
-        );
-      }
+      let stylexName = getStylexDefaultImport(path, state);
 
       for (const [key, { ltr, priority, rtl }] of Object.entries(
         injectedStyles
@@ -215,17 +200,11 @@ function findNearestStatementAncestor(path: NodePath): NodePath<t.Statement> {
   return findNearestStatementAncestor(path.parentPath as any);
 }
 
-// These functions are for special handling of dynamic parts of the style object
-// Currently they handle spreading pre-defined style objects with stylex.create calls.
-//
-// It converts the spreads into a special string and remembers the original value in an object...
-type ProcessingState = {
-  [key: string]: t.Expression;
-};
+// Converts typed spreads to `stylex.include` calls.
 function preProcessStyleArg(
-  objPath: NodePath<t.ObjectExpression>
-): ProcessingState {
-  const state: { [key: string]: t.Expression } = {};
+  objPath: NodePath<t.ObjectExpression>,
+  state: StateManager
+): void {
   objPath.traverse({
     SpreadElement(path) {
       const argument = path.get('argument');
@@ -250,25 +229,14 @@ function preProcessStyleArg(
         throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
       }
 
-      const key = `include(${toString(expression)})`;
+      let stylexName = getStylexDefaultImport(path, state);
 
-      path.replaceWith(
-        t.objectProperty(t.stringLiteral(key), t.stringLiteral(key))
+      argument.replaceWith(
+        t.callExpression(
+          t.memberExpression(t.identifier(stylexName), t.identifier('include')),
+          [expression.node]
+        )
       );
-      state[key] = expression.node;
-    },
-  });
-  return state;
-}
-
-// Later, it finds those strings and replaces them back with their original values.
-function postProcessStyles(objPath: NodePath, state: ProcessingState) {
-  objPath.traverse({
-    ObjectProperty(path) {
-      const node = path.node.key;
-      if (node.type === 'StringLiteral' && state[node.value] != null) {
-        path.replaceWith(t.spreadElement(state[node.value]));
-      }
     },
   });
 }
@@ -283,4 +251,24 @@ function toString(path: NodePath): string {
     return `${toString(path.get('object'))}.${toString(path.get('property'))}`;
   }
   throw new Error(path.node.type);
+}
+
+function getStylexDefaultImport(path: NodePath, state: StateManager): string {
+  const statementPath = findNearestStatementAncestor(path);
+
+  let stylexName: string | undefined;
+  state.stylexImport.forEach((importName) => {
+    stylexName = importName;
+  });
+  if (stylexName == null) {
+    stylexName = '__stylex__';
+    statementPath.insertBefore(
+      t.importDeclaration(
+        [t.importDefaultSpecifier(t.identifier(stylexName))],
+        t.stringLiteral('stylex')
+      )
+    );
+    state.stylexImport.add(stylexName);
+  }
+  return stylexName;
 }
