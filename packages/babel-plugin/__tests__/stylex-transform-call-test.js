@@ -184,10 +184,12 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1t391ir{background-color:blue}", 1);
         const styles = {
           foo: {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           },
           bar: {
-            backgroundColor: "x1t391ir"
+            backgroundColor: "x1t391ir",
+            $$css: true
           }
         };
         "x1e2nbdu x1t391ir";
@@ -264,7 +266,8 @@ describe('@stylexjs/babel-plugin', () => {
             paddingTop: "x123j3cw",
             paddingEnd: "x1mpkggp",
             paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a"
+            paddingStart: "x1t2a60a",
+            $$css: true
           }
         };
         "x123j3cw x1mpkggp xs9asl8 x1t2a60a";"
@@ -631,10 +634,12 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1t391ir{background-color:blue}", 1);
         const styles = {
           "0": {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           },
           "1": {
-            backgroundColor: "x1t391ir"
+            backgroundColor: "x1t391ir",
+            $$css: true
           }
         };
         stylex(styles[variant]);"
@@ -656,7 +661,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1e2nbdu{color:red}", 1);
         const styles = {
           default: {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           }
         };
         stylex(styles.default, props);"
@@ -686,7 +692,8 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: {
             ":hover_color": "x17z2mba",
-            "@media (min-width: 1000px)_backgroundColor": "xc445zv"
+            "@media (min-width: 1000px)_backgroundColor": "xc445zv",
+            $$css: true
           }
         };
         "x17z2mba xc445zv";"
@@ -715,10 +722,12 @@ describe('@stylexjs/babel-plugin', () => {
           stylex.inject(".x1t391ir{background-color:blue}", 1);
           const styles = {
             "0": {
-              color: "x1e2nbdu"
+              color: "x1e2nbdu",
+              $$css: true
             },
             "1": {
-              backgroundColor: "x1t391ir"
+              backgroundColor: "x1t391ir",
+              $$css: true
             }
           };"
         `);
@@ -763,10 +772,12 @@ describe('@stylexjs/babel-plugin', () => {
           stylex.inject(".x1t391ir{background-color:blue}", 1);
           const styles = {
             foo: {
-              color: "x1e2nbdu"
+              color: "x1e2nbdu",
+              $$css: true
             },
             bar: {
-              backgroundColor: "x1t391ir"
+              backgroundColor: "x1t391ir",
+              $$css: true
             }
           };"
         `);
@@ -788,7 +799,8 @@ describe('@stylexjs/babel-plugin', () => {
           stylex.inject(".x1e2nbdu{color:red}", 1);
           const styles = {
             default: {
-              color: "x1e2nbdu"
+              color: "x1e2nbdu",
+              $$css: true
             }
           };"
         `);
@@ -818,7 +830,8 @@ describe('@stylexjs/babel-plugin', () => {
           export const styles = {
             default: {
               ":hover_color": "x17z2mba",
-              "@media (min-width: 1000px)_backgroundColor": "xc445zv"
+              "@media (min-width: 1000px)_backgroundColor": "xc445zv",
+              $$css: true
             }
           };"
         `);

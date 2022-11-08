@@ -68,7 +68,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1e2nbdu{color:red}", 1);
         export const styles = {
           foo: {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           }
         };"
       `);
@@ -108,7 +109,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1e2nbdu{color:red}", 1);
         const styles = {
           foo: {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           }
         };
         export { styles };"
@@ -130,7 +132,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1e2nbdu{color:red}", 1);
         export default {
           foo: {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           }
         };"
       `);
@@ -152,7 +155,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1e2nbdu{color:red}", 1);
         const styles = {
           foo: {
-            color: "x1e2nbdu"
+            color: "x1e2nbdu",
+            $$css: true
           }
         };
         module.export = styles;"
@@ -190,7 +194,8 @@ describe('@stylexjs/babel-plugin', () => {
             paddingTop: "x123j3cw",
             paddingEnd: "x1mpkggp",
             paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a"
+            paddingStart: "x1t2a60a",
+            $$css: true
           }
         };
         styles;"
@@ -226,7 +231,8 @@ describe('@stylexjs/babel-plugin', () => {
             paddingTop: "x123j3cw",
             paddingEnd: "x1mpkggp",
             paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a"
+            paddingStart: "x1t2a60a",
+            $$css: true
           }
         };
         styles;"
@@ -263,7 +269,8 @@ describe('@stylexjs/babel-plugin', () => {
             paddingTop: "x123j3cw",
             paddingEnd: "x1mpkggp",
             paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a"
+            paddingStart: "x1t2a60a",
+            $$css: true
           }
         };
         styles;"
@@ -300,7 +307,8 @@ describe('@stylexjs/babel-plugin', () => {
             paddingTop: "x123j3cw",
             paddingEnd: "x1mpkggp",
             paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a"
+            paddingStart: "x1t2a60a",
+            $$css: true
           }
         };
         styles;"

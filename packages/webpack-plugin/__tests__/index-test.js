@@ -146,7 +146,8 @@ describe('webpack-plugin-stylex', () => {
         var styles = {
           bar: {
             display: "xntgbld",
-            width: "x6mlivy"
+            width: "x6mlivy",
+            $$css: true
           }
         };
         /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
@@ -160,7 +161,8 @@ describe('webpack-plugin-stylex', () => {
           baz: {
             display: "x1wdx05y",
             height: "x1je5kxa",
-            width: "x1u78jha"
+            width: "x1u78jha",
+            $$css: true
           }
         };
         /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
@@ -180,7 +182,8 @@ describe('webpack-plugin-stylex', () => {
             marginStart: "x1n8p6zw",
             marginBlockStart: "x188knyk",
             height: "x1je5kxa",
-            ":hover_background": "x1kflwvg"
+            ":hover_background": "x1kflwvg",
+            $$css: true
           }
         };
         function App() {
@@ -244,7 +247,8 @@ describe('webpack-plugin-stylex', () => {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
               display: "xntgbld",
-              width: "x6mlivy"
+              width: "x6mlivy",
+              $$css: true
             }
           };
           /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
@@ -262,7 +266,8 @@ describe('webpack-plugin-stylex', () => {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
               display: "x1wdx05y",
               height: "x1je5kxa",
-              width: "x1u78jha"
+              width: "x1u78jha",
+              $$css: true
             }
           };
           /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
@@ -290,7 +295,8 @@ describe('webpack-plugin-stylex', () => {
               marginStart: "x1n8p6zw",
               marginBlockStart: "x188knyk",
               height: "x1je5kxa",
-              ":hover_background": "x1kflwvg"
+              ":hover_background": "x1kflwvg",
+              $$css: true
             }
           };
           function App() {

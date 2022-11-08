@@ -85,6 +85,7 @@ describe('Development Runtime Transformation', () => {
         })
       ).toEqual({
         root: {
+          $$css: true,
           animationName: 'x1ugarde',
         },
       });

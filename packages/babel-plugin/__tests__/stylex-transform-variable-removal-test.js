@@ -41,7 +41,8 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
       const styles = {
         default: {
           backgroundColor: "xrkmrrc",
-          color: "xju2f9n"
+          color: "xju2f9n",
+          $$css: true
         }
       };
       styles;"

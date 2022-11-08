@@ -12,6 +12,7 @@ import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
 import type { MapNamespace } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
 import type { StyleXOptions } from '@stylexjs/shared/lib/common-types';
+import type { FlatCompiledStyles } from '../../shared/src/common-types';
 
 // function insert(
 //   ltrRule: string,
@@ -57,7 +58,7 @@ export default function inject({
     }
     for (const key in compiledStyles) {
       const styleObj = compiledStyles[key];
-      const replacement = {};
+      const replacement: { ...FlatCompiledStyles } = { $$css: true };
       let useReplacement = false;
       for (const prop in styleObj) {
         const value = styleObj[prop];

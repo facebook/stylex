@@ -9,7 +9,7 @@ import * as t from '@babel/types';
 import { IncludedStyles } from '@stylexjs/shared';
 
 type NestedStringObject = {
-  readonly [key: string]: string | NestedStringObject;
+  readonly [key: string]: string | null | boolean | NestedStringObject;
 };
 
 export function convertObjectToAST(

@@ -77,7 +77,8 @@ describe('rollup-plugin-stylex', () => {
       var styles$2 = {
         bar: {
           display: "xntgbld",
-          width: "x6mlivy"
+          width: "x6mlivy",
+          $$css: true
         }
       };
 
@@ -86,7 +87,8 @@ describe('rollup-plugin-stylex', () => {
         baz: {
           display: "x1wdx05y",
           height: "x1je5kxa",
-          width: "x1u78jha"
+          width: "x1u78jha",
+          $$css: true
         }
       };
 
@@ -98,7 +100,8 @@ describe('rollup-plugin-stylex', () => {
           marginStart: "x1n8p6zw",
           marginBlockStart: "x188knyk",
           height: "x1je5kxa",
-          ":hover_background": "x1kflwvg"
+          ":hover_background": "x1kflwvg",
+          $$css: true
         }
       };
       function App() {
@@ -129,7 +132,8 @@ describe('rollup-plugin-stylex', () => {
           bar: {
             "otherStyles__styles.bar": "otherStyles__styles.bar",
             display: "xntgbld",
-            width: "x6mlivy"
+            width: "x6mlivy",
+            $$css: true
           }
         };
 
@@ -142,7 +146,8 @@ describe('rollup-plugin-stylex', () => {
             "npmStyles__styles.baz": "npmStyles__styles.baz",
             display: "x1wdx05y",
             height: "x1je5kxa",
-            width: "x1u78jha"
+            width: "x1u78jha",
+            $$css: true
           }
         };
 
@@ -162,7 +167,8 @@ describe('rollup-plugin-stylex', () => {
             marginStart: "x1n8p6zw",
             marginBlockStart: "x188knyk",
             height: "x1je5kxa",
-            ":hover_background": "x1kflwvg"
+            ":hover_background": "x1kflwvg",
+            $$css: true
           }
         };
         function App() {

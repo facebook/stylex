@@ -36,6 +36,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           backgroundColor: 'xrkmrrc',
           color: 'xju2f9n',
         },
@@ -51,6 +52,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           '--background-color': 'xgau0yw',
         },
       });
@@ -65,6 +67,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           '--final-color': 'x13tgbkp',
         },
       });
@@ -82,9 +85,11 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           backgroundColor: 'xrkmrrc',
         },
         default2: {
+          $$css: true,
           color: 'xju2f9n',
         },
       });
@@ -99,6 +104,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           content: 'xd71okc',
         },
       });
@@ -124,6 +130,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           ':hover_backgroundColor': 'x1gykpug',
           ':hover_color': 'x17z2mba',
         },
@@ -148,6 +155,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           position: 'x1ruww2u',
         },
       });
@@ -171,6 +179,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           userSelect: 'x87ps6o',
         },
       });
@@ -192,6 +201,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           overflowX: 'x6ikm8r',
           overflowY: 'x10wlt62',
           borderTopStyle: 'xlya59e',
@@ -266,6 +276,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         foo: {
+          $$css: true,
           color: 'xju2f9n',
         },
       });
@@ -287,6 +298,7 @@ describe('Development Plugin Transformation', () => {
         })
       ).toEqual({
         default: {
+          $$css: true,
           boxShadow: 'xxnfx33',
         },
       });
@@ -314,6 +326,7 @@ describe('Development Plugin Transformation', () => {
           })
         ).toEqual({
           default: {
+            $$css: true,
             ':invalpwdijad_backgroundColor': 'x19iys6w',
             ':invalpwdijad_color': 'x5z3o4w',
           },
@@ -353,6 +366,7 @@ describe('Development Plugin Transformation', () => {
           })
         ).toEqual({
           default: {
+            $$css: true,
             ':hover_color': 'x17z2mba',
             ':active_color': 'x96fq8s',
             ':focus_color': 'x1wvtd7d',
@@ -383,6 +397,7 @@ describe('Development Plugin Transformation', () => {
           })
         ).toEqual({
           default: {
+            $$css: true,
             ':hover_position': 'x1nxcus0',
           },
         });

@@ -126,7 +126,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1ugarde{animation-name:x1lvx8r0-B}", 1);
         export const styles = {
           root: {
-            animationName: "x1ugarde"
+            animationName: "x1ugarde",
+            $$css: true
           }
         };"
       `);

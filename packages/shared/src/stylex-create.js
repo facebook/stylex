@@ -12,6 +12,7 @@ import type {
   CompiledStyles,
   InjectableStyle,
   StyleXOptions,
+  FlatCompiledStyles,
 } from './common-types';
 
 import convertToClassName from './convert-to-className';
@@ -38,8 +39,8 @@ import { IncludedStyles } from './stylex-include';
 export default function styleXCreateSet(
   namespaces: { +[string]: RawStyles },
   options?: StyleXOptions = {}
-): [{ [string]: CompiledStyles }, { [string]: InjectableStyle }] {
-  const resolvedNamespaces = {};
+): [{ [string]: FlatCompiledStyles }, { [string]: InjectableStyle }] {
+  const resolvedNamespaces: { [string]: FlatCompiledStyles } = {};
   const injectedStyles = {};
 
   for (const namespaceName of Object.keys(namespaces)) {
@@ -51,7 +52,9 @@ export default function styleXCreateSet(
       namespace,
       options
     );
-    resolvedNamespaces[namespaceName] = flattenObject(resolvedNamespace);
+    const compiledNamespace: { +[string]: string | IncludedStyles } =
+      flattenObject(resolvedNamespace);
+    resolvedNamespaces[namespaceName] = { ...compiledNamespace, $$css: true };
     for (const cn of Object.keys(injected)) {
       if (injectedStyles[cn] == null) {
         injectedStyles[cn] = injected[cn];

@@ -23,6 +23,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "backgroundColor": "xrkmrrc",
             "color": "xju2f9n",
           },
@@ -55,6 +56,7 @@ describe('stylex-create-test', () => {
       [
         {
           "short": {
+            "$$css": true,
             "paddingBottom": "x18xuxqe",
             "paddingEnd": "xcrpjku",
             "paddingStart": "xyv1419",
@@ -98,6 +100,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "--background-color": "xgau0yw",
           },
         },
@@ -123,6 +126,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "--final-color": "x13tgbkp",
           },
         },
@@ -152,9 +156,11 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "backgroundColor": "xrkmrrc",
           },
           "default2": {
+            "$$css": true,
             "color": "xju2f9n",
           },
         },
@@ -185,6 +191,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "content": "xd71okc",
           },
         },
@@ -213,6 +220,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             ":hover_backgroundColor": "x1gykpug",
             ":hover_color": "x17z2mba",
           },
@@ -245,6 +253,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "position": "x1ruww2u",
           },
         },
@@ -272,6 +281,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "borderBottomStyle": "xpvcztv",
             "borderBottomWidth": "xso031l",
             "borderEndStyle": "x157eodl",
@@ -358,6 +368,7 @@ describe('stylex-create-test', () => {
       [
         {
           "default": {
+            "$$css": true,
             "@media (min-width: 1000px)_backgroundColor": "xc445zv",
             "@media (min-width: 2000px)_backgroundColor": "x1ssfqz5",
             "backgroundColor": "xrkmrrc",

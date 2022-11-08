@@ -25,10 +25,12 @@ export type InjectableStyle = {
 export type StyleRule = readonly [string, string, InjectableStyle];
 
 export type CompiledStyles = {
-  readonly [key: string]: string | { readonly [key: string]: string };
+  readonly [key: string]: string | null;
+  readonly $$css: true;
 };
 export type MutableCompiledStyles = {
-  [key: string]: string | { [key: string]: string };
+  [key: string]: string | null;
+  $$css: true;
 };
 
 export type CompiledNamespaces = { readonly [key: string]: CompiledStyles };

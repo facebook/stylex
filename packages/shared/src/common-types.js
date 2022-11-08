@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { IncludedStyles } from './stylex-include';
+
 export type TRawValue = number | string | $ReadOnlyArray<number | string>;
 
 export type TStyleValue = number | string | $ReadOnlyArray<number | string>;
@@ -30,6 +32,11 @@ export type StyleRule = [string, string, InjectableStyle];
 
 export type CompiledStyles = $ReadOnly<{
   [string]: string | $ReadOnly<{ [string]: string }>,
+}>;
+
+export type FlatCompiledStyles = $ReadOnly<{
+  [string]: string | IncludedStyles | null,
+  $$css: true,
 }>;
 
 export type StyleXOptions = {

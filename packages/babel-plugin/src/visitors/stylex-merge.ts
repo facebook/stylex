@@ -12,7 +12,7 @@ import * as t from '@babel/types';
 import traverse from '@babel/traverse';
 import StateManager from '../utils/state-manager';
 
-type ClassNameValue = null | string | NonStringClassNameValue;
+type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 type TResolvedStyles = { [key: string]: ClassNameValue };
 
@@ -192,18 +192,31 @@ export default function transformStyleXMerge(
   }
 }
 
+type NestedStyles = {
+  [key: string]:
+    | string
+    | null
+    | boolean
+    | { [key: string]: string | null | boolean };
+};
+
 // This function takes nested objects with styles collapses them to a single level deep.
 // `':hover': {color: 'red'}` becomes `':hover.color': 'red'`
-function flattenObject(object: CompiledStyles): {
-  [key: string]: null | string;
+function flattenObject(object: NestedStyles): {
+  [key: string]: string | null | boolean;
 } {
-  const result: { [key: string]: string } = {};
+  const result: { [key: string]: string | null | boolean } = {};
   for (const [key, value] of Object.entries(object)) {
-    if (typeof value === 'string' || value == null) {
+    if (
+      typeof value === 'string' ||
+      typeof value === 'boolean' ||
+      value == null
+    ) {
       result[key] = value;
-    } else if (typeof value === 'object') {
+    } else if (typeof value === 'object' && value !== null) {
       for (const [subKey, subValue] of Object.entries(value)) {
-        result[`${key}.${subKey}`] = subValue;
+        const newKey: string = `${key}.${subKey}`;
+        result[newKey] = subValue;
       }
     }
   }
@@ -216,7 +229,7 @@ function flattenObject(object: CompiledStyles): {
 function parseNullableStyle(
   node: t.Expression,
   state: StateManager
-): null | { [key: string]: null | string } | 'other' {
+): null | { [key: string]: string | null | boolean } | 'other' {
   if (
     t.isNullLiteral(node) ||
     (t.isIdentifier(node) && node.name === 'undefined')
@@ -262,13 +275,13 @@ function makeStringExpression(
     strings = ' ' + strings;
   }
 
-  const nonStrings = values.filter(
+  const nonPrimitive = values.filter(
     (value: ClassNameValue): value is NonStringClassNameValue =>
-      typeof value !== 'string' && value != null
+      typeof value !== 'string' && typeof value !== 'boolean' && value != null
   );
 
   const groupedByTest = groupBy(
-    nonStrings,
+    nonPrimitive,
     ([test, _a, _b]: NonStringClassNameValue) => test
   );
 

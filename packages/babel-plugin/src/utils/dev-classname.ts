@@ -51,8 +51,8 @@ export function convertToTestStyles(
   obj: CompiledNamespaces,
   varName: null | string,
   state: StateManager
-): { readonly [key: string]: { readonly [key: string]: string } } {
-  const result: { [key: string]: { readonly [key: string]: string } } = {};
+): CompiledNamespaces {
+  const result: MutableCompiledNamespaces = {};
   for (const [key, value] of Object.entries(obj)) {
     const devClassName = namespaceToDevClassName(
       key,
@@ -61,7 +61,8 @@ export function convertToTestStyles(
     );
     result[key] = {
       [devClassName]: devClassName,
-    };
+      $$css: true,
+    } as any;
   }
   return result;
 }

@@ -81,24 +81,6 @@ function stylex(
               classNameChunk += classNameChunk ? ' ' + value : value;
             }
           }
-          // Style conditions, e.g., ':hover', '@media', etc.
-          // TODO: remove if #98 is fixed
-          else if (typeof value === 'object') {
-            const condition = prop;
-            const nestedStyleObject = value;
-            for (const conditionalProp in nestedStyleObject) {
-              const conditionalValue = nestedStyleObject[conditionalProp];
-              const conditionalProperty = condition + conditionalProp;
-              // Skip if conditional property has already been seen
-              if (!definedProperties.includes(conditionalProperty)) {
-                definedProperties.push(conditionalProperty);
-                definedPropertiesChunk.push(conditionalProperty);
-                classNameChunk += classNameChunk
-                  ? ' ' + conditionalValue
-                  : conditionalValue;
-              }
-            }
-          }
         }
         // Cache: write
         if (nextCache != null) {

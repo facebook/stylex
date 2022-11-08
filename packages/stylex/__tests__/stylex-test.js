@@ -27,9 +27,9 @@ describe('stylex', () => {
   test('merge order', () => {
     expect(
       stylex([
-        { a: 'a', ':hover': { aa: 'aa' } },
+        { a: 'a', ':hover__aa': 'aa' },
         { b: 'b' },
-        { c: 'c', ':hover': { cc: 'cc' } },
+        { c: 'c', ':hover__cc': 'cc' },
       ])
     ).toBe('a aa b c cc');
   });
@@ -56,16 +56,12 @@ describe('stylex', () => {
         [
           {
             backgroundColor: 'abcdefg',
-            ':hover': {
-              backgroundColor: 'ksdfmwjs',
-            },
+            ':hover__backgroundColor': 'ksdfmwjs',
           },
         ],
         {
           color: 'gofk2cf1',
-          ':hover': {
-            backgroundColor: 'rse6dlih',
-          },
+          ':hover__backgroundColor': 'rse6dlih',
         },
       ])
     ).toEqual('abcdefg gofk2cf1 rse6dlih');
@@ -75,14 +71,10 @@ describe('stylex', () => {
     expect(
       stylex(
         {
-          ':hover': {
-            backgroundColor: 'rse6dlih',
-          },
+          ':hover__backgroundColor': 'rse6dlih',
         },
         {
-          ':hover': {
-            color: 'gofk2cf1',
-          },
+          ':hover__color': 'gofk2cf1',
         }
       )
     ).toEqual('rse6dlih gofk2cf1');
@@ -136,9 +128,7 @@ describe('stylex', () => {
           false,
           {
             textDecoration: 'esuyzwwr',
-            ':hover': {
-              textDecoration: 'p8dawk7l',
-            },
+            ':hover__textDecoration': 'p8dawk7l',
           },
           false,
           [
@@ -161,14 +151,10 @@ describe('stylex', () => {
               paddingStart: 'a8nywdso',
               textAlign: 'i1ao9s8h',
               textDecoration: 'myohyog2',
-              ':hover': {
-                color: 'ksdfmwjs',
-                textDecoration: 'gofk2cf1',
-              },
-              ':active': {
-                transform: 'lsqurvkf',
-                transition: 'bj9fd4vl',
-              },
+              ':hover__color': 'ksdfmwjs',
+              ':hover__textDecoration': 'gofk2cf1',
+              ':active__transform': 'lsqurvkf',
+              ':active__transition': 'bj9fd4vl',
             },
             {
               display: 'a8c37x1j',
@@ -176,9 +162,7 @@ describe('stylex', () => {
             },
             [
               {
-                ':active': {
-                  transform: 'tm8avpzi',
-                },
+                ':active__transform': 'tm8avpzi',
               },
             ],
           ],
