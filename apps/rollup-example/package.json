@@ -1,0 +1,19 @@
+{
+  "name": "rollup-example",
+  "version": "1.0.0",
+  "description": "A simple rollup example to test stylexjs/rollup-plugin",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup --config ./rollup.config.mjs",
+    "start": "rollup --config ./rollup.config.mjs --watch"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/babel-plugin": "*",
+    "@stylexjs/stylex": "*"
+  },
+  "devDependencies": {
+    "rollup": "*"
+  }
+}

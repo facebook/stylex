@@ -15,17 +15,19 @@ const IS_DEV_ENV =
 module.exports = function stylexPlugin({
   dev = IS_DEV_ENV,
   fileName = 'stylex.css',
+  babelConig: { plugins = [], presets = [] } = {},
 } = {}) {
-  let stylexRules = [];
+  let stylexRules = {};
 
   return {
     name: 'rollup-plugin-stylex',
     buildStart() {
-      stylexRules = [];
+      stylexRules = {};
     },
     generateBundle() {
-      if (stylexRules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(stylexRules);
+      const rules = Object.values(stylexRules).flat();
+      if (rules.length > 0) {
+        const collectedCSS = stylexBabelPlugin.processStylexRules(rules);
 
         this.emitFile({
           fileName,
@@ -34,18 +36,26 @@ module.exports = function stylexPlugin({
         });
       }
     },
+    shouldTransformCachedModule({ code, id, cache, meta }) {
+      stylexRules[id] = meta.stylex;
+      return false;
+    },
     async transform(inputCode, id) {
       const { code, map, metadata } = await babel.transformAsync(inputCode, {
         babelrc: false,
         filename: id,
-        plugins: [[stylexBabelPlugin, { dev, stylexSheetName: fileName }]],
+        presets,
+        plugins: [
+          ...plugins,
+          [stylexBabelPlugin, { dev, stylexSheetName: fileName }],
+        ],
       });
 
       if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
-        stylexRules = stylexRules.concat(metadata.stylex);
+        stylexRules[id] = metadata.stylex;
       }
 
-      return { code, map };
+      return { code, map, meta: metadata };
     },
   };
 };
