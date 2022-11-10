@@ -87,7 +87,7 @@ export default function transformStyleXMerge(
             );
           }
 
-          const namespace = flattenObject(style[propName]);
+          const namespace = style[propName];
           Object.assign(resolvedStyles, namespace);
         } else {
           // Unknown style found. bail out.
@@ -111,11 +111,19 @@ export default function transformStyleXMerge(
           ...Object.keys(fallback ?? {}),
         ]);
         for (const key of allKeys) {
-          if (resolvedStyles[key] == null) {
-            const primaryValue = primary?.[key] ?? resolvedStyles[key] ?? '';
-            const fallbackValue = fallback?.[key] ?? resolvedStyles[key] ?? '';
-            resolvedStyles[key] = [test, primaryValue, fallbackValue];
-          }
+          // if (resolvedStyles[key] === undefined) {
+          const primaryValue = firstValidValue(
+            primary?.[key],
+            resolvedStyles[key],
+            ''
+          );
+          const fallbackValue = firstValidValue(
+            fallback?.[key],
+            resolvedStyles[key],
+            ''
+          );
+          resolvedStyles[key] = [test, primaryValue, fallbackValue];
+          // }
         }
         break;
       case 'LogicalExpression':
@@ -200,29 +208,12 @@ type NestedStyles = {
     | { [key: string]: string | null | boolean };
 };
 
-// This function takes nested objects with styles collapses them to a single level deep.
-// `':hover': {color: 'red'}` becomes `':hover.color': 'red'`
-function flattenObject(object: NestedStyles): {
-  [key: string]: string | null | boolean;
-} {
-  const result: { [key: string]: string | null | boolean } = {};
-  for (const [key, value] of Object.entries(object)) {
-    if (
-      typeof value === 'string' ||
-      typeof value === 'boolean' ||
-      value == null
-    ) {
-      result[key] = value;
-    } else if (typeof value === 'object' && value !== null) {
-      for (const [subKey, subValue] of Object.entries(value)) {
-        const newKey: string = `${key}.${subKey}`;
-        result[newKey] = subValue;
-      }
-    }
-  }
-  return result;
+function firstValidValue(
+  ...values: Array<ClassNameValue | undefined>
+): ClassNameValue {
+  const [first, ...rest] = values;
+  return first !== undefined ? first : firstValidValue(...rest);
 }
-
 // Looks for Null or locally defined style namespaces.
 // Otherwise it returns the string "other"
 // Which is used as an indicator to bail out of this optimization.
@@ -256,7 +247,7 @@ function parseNullableStyle(
     if (style == null) {
       return 'other';
     }
-    return flattenObject(style);
+    return style;
   } else {
     return 'other';
   }

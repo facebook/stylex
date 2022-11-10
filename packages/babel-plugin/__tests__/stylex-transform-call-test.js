@@ -860,4 +860,97 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
   });
+  describe('Specific edge-case bugs', () => {
+    test.only('Basic stylex call', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            sidebar: {
+              boxSizing: 'border-box',
+              gridArea: 'sidebar',
+            },
+            content: {
+              gridArea: 'content',
+            },
+            root: {
+              display: 'grid',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"content"',
+            },
+            withSidebar: {
+              gridTemplateColumns: 'auto minmax(0, 1fr)',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"sidebar content"',
+              '@media (max-width: 640px)': {
+                gridTemplateRows: 'minmax(0, 1fr) auto',
+                gridTemplateAreas: '"content" "sidebar"',
+                gridTemplateColumns: '100%',
+              },
+            },
+            noSidebar: {
+              gridTemplateColumns: 'minmax(0, 1fr)',
+            },
+          });
+          stylex(
+            styles.root,
+            sidebar == null ? styles.noSidebar : styles.withSidebar,
+          );
+        `,
+          { dev: true }
+        )
+      ).toMatchInlineSnapshot(`
+        "import stylex from '@stylexjs/stylex';
+        stylex.inject(".x9f619{box-sizing:border-box}", 1);
+        stylex.inject(".x1yc5d2u{grid-area:sidebar}", 1);
+        stylex.inject(".x1fdo2jl{grid-area:content}", 1);
+        stylex.inject(".xrvj5dj{display:grid}", 1);
+        stylex.inject(".x7k18q3{grid-template-rows:100%}", 1);
+        stylex.inject(".x5gp9wm{grid-template-areas:\\"content\\"}", 1);
+        stylex.inject(".x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 1);
+        stylex.inject(".x17lh93j{grid-template-areas:\\"sidebar content\\"}", 1);
+        stylex.inject("@media (max-width: 640px){.xmr4b4k.xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 2);
+        stylex.inject("@media (max-width: 640px){.xesbpuc.xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2);
+        stylex.inject("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 2);
+        stylex.inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 1);
+        export const styles = {
+          sidebar: {
+            "UnkownFile__styles.sidebar": "UnkownFile__styles.sidebar",
+            boxSizing: "x9f619",
+            gridArea: "x1yc5d2u",
+            $$css: true
+          },
+          content: {
+            "UnkownFile__styles.content": "UnkownFile__styles.content",
+            gridArea: "x1fdo2jl",
+            $$css: true
+          },
+          root: {
+            "UnkownFile__styles.root": "UnkownFile__styles.root",
+            display: "xrvj5dj",
+            gridTemplateRows: "x7k18q3",
+            gridTemplateAreas: "x5gp9wm",
+            $$css: true
+          },
+          withSidebar: {
+            "UnkownFile__styles.withSidebar": "UnkownFile__styles.withSidebar",
+            gridTemplateColumns: "x1rkzygb",
+            gridTemplateRows: "x7k18q3",
+            gridTemplateAreas: "x17lh93j",
+            "@media (max-width: 640px)_gridTemplateRows": "xmr4b4k",
+            "@media (max-width: 640px)_gridTemplateAreas": "xesbpuc",
+            "@media (max-width: 640px)_gridTemplateColumns": "x15nfgh4",
+            $$css: true
+          },
+          noSidebar: {
+            "UnkownFile__styles.noSidebar": "UnkownFile__styles.noSidebar",
+            gridTemplateColumns: "x1mkdm3x",
+            $$css: true
+          }
+        };
+        "UnkownFile__styles.root xrvj5dj" + (sidebar == null ? " x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x" : " x7k18q3 x17lh93j  x1rkzygb UnkownFile__styles.withSidebar xmr4b4k xesbpuc x15nfgh4");"
+      `);
+    });
+  });
 });
