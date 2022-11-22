@@ -18,7 +18,7 @@ const config = {
   trailingSlash: true,
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -55,10 +55,11 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: 'Stylex',
+        title: '',
         logo: {
-          alt: 'Stylex Project Logo',
-          src: 'img/logo.svg',
+          alt: 'StyleX Project Logo',
+          src: 'img/stylex-logo-small.svg',
+          srcDark: 'img/stylex-logo-small-dark.svg',
         },
         items: [
           {

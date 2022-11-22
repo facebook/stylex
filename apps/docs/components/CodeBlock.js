@@ -10,34 +10,43 @@
 import React from 'react';
 import stylex from '@stylexjs/stylex';
 import {PrismLight as SyntaxHighlighter} from 'react-syntax-highlighter';
+import {useColorMode} from '@docusaurus/theme-common';
 import tsx from 'react-syntax-highlighter/dist/cjs/languages/prism/tsx';
 import bash from 'react-syntax-highlighter/dist/cjs/languages/prism/bash';
-import theme from 'react-syntax-highlighter/dist/cjs/styles/prism/material-dark';
+import themeLight from 'react-syntax-highlighter/dist/cjs/styles/prism/material-light';
+import themeDark from 'react-syntax-highlighter/dist/cjs/styles/prism/material-dark';
 
 SyntaxHighlighter.registerLanguage('tsx', tsx);
 SyntaxHighlighter.registerLanguage('bash', bash);
 
-const finalTheme = Object.fromEntries(
-  Object.entries(theme).map(([key, value]) => [
-    key,
-    Object.fromEntries(
-      Object.entries(value).map(([k, v]) => {
-        if (k === 'background') {
-          return [k, 'transparent'];
-        }
-        if (k === 'margin') {
-          return [k, '0'];
-        }
-        if (k === 'padding') {
-          return [k, '1.25em 1em 0'];
-        }
-        return [k, v];
-      }),
-    ),
-  ]),
-);
+function tweakStyle(theme) {
+  return Object.fromEntries(
+    Object.entries(theme).map(([key, value]) => [
+      key,
+      Object.fromEntries(
+        Object.entries(value).map(([k, v]) => {
+          if (k === 'background') {
+            return [k, 'transparent'];
+          }
+          if (k === 'margin') {
+            return [k, '0'];
+          }
+          if (k === 'padding') {
+            return [k, '1.25em 1em 0'];
+          }
+          return [k, v];
+        }),
+      ),
+    ]),
+  );
+}
+
+const lightTheme = tweakStyle(themeLight);
+const darkTheme = tweakStyle(themeDark);
 
 export default function CodeBlock({children, xstyle, language = 'tsx'}) {
+  const {isDarkTheme} = useColorMode();
+  const finalTheme = isDarkTheme ? darkTheme : lightTheme;
   return (
     <SyntaxHighlighter
       className={stylex(xstyle)}

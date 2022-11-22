@@ -11,6 +11,7 @@ import * as React from 'react';
 import stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import Logo from '@site/components/Logo';
+// import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 
 const STEP_1 = `import stylex from '@stylexjs/stylex';
@@ -20,15 +21,15 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '1rem',
+    fontSize: '8rem',
   }
 });
 
 `;
 
-const STEP_2 = `<div
-  className={stylex(styles.container)}
-/>
+const STEP_2 = `<div className={stylex(styles.container)}>
+  🎉
+</div>
 `;
 
 export default function Home() {
@@ -38,22 +39,23 @@ export default function Home() {
         <section className={stylex(styles.hero)}>
           <h1 className={stylex(styles.title)}>
             <Logo xstyle={styles.logo} />
+            {/* <StylexAnimatedLogo /> */}
           </h1>
           <h2 className={stylex(styles.subtitle)}>
-            Super-Fast{' '}
+            Super-fast{' '}
             <span className={stylex(styles.subtitleHighlight)}>
-              Atomic Styles
+              atomic styles
             </span>
             ,
             <br />
             <span className={stylex(styles.subtitleHighlight)}>
-              Without
+              without
             </span>{' '}
-            Even Thinking About It!
+            even thinking about it!
           </h2>
         </section>
         <section className={stylex(styles.getStarted)}>
-          <h1 className={stylex(styles.sectionTitle)}>Dead Simple.</h1>
+          <h1 className={stylex(styles.sectionTitle)}>There's no step 3!</h1>
           <div className={stylex(styles.card)}>
             <h3 className={stylex(styles.cardTitle)}>Step 1</h3>
             <p className={stylex(styles.cardDescription)}>Define Your Styles</p>
@@ -106,8 +108,6 @@ const styles = stylex.create({
     justifyContent: 'center',
   },
   title: {
-    width: '100%',
-    maxWidth: 300,
     boxSizing: 'border-box',
     margin: 0,
   },
@@ -131,7 +131,7 @@ const styles = stylex.create({
   },
   subtitleHighlight: {
     color: 'var(--pink)',
-    fontWeight: '800',
+    fontWeight: '600',
   },
   sectionTitle: {
     fontSize: '4rem',
@@ -165,7 +165,7 @@ const styles = stylex.create({
   cardTitle: {
     fontSize: '1.8rem',
     margin: 0,
-    fontWeight: '400',
+    fontWeight: '800',
     marginVertical: '1rem',
     paddingHorizontal: 24,
     color: 'var(--pink)',
@@ -180,7 +180,7 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     paddingHorizontal: '1rem',
-    backgroundColor: 'black',
+    backgroundColor: 'var(--code-bg)',
     marginTop: 16,
     fontFamily:
       'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
