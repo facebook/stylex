@@ -7,7 +7,7 @@
 
 'use strict';
 
-module.exports = new Set([
+const namedColors = new Set<string>([
   'aliceblue',
   'antiquewhite',
   'aqua',
@@ -157,3 +157,5 @@ module.exports = new Set([
   'yellowgreen',
   'rebeccapurple',
 ]);
+
+export default namedColors;

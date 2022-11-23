@@ -7,7 +7,13 @@
 
 'use strict';
 
-function getDistanceMin(d0, d1, d2, bx, ay) {
+function getDistanceMin(
+  d0: number,
+  d1: number,
+  d2: number,
+  bx: number,
+  ay: number
+): number {
   return d0 < d1 || d2 < d1
     ? d0 > d2
       ? d2 + 1
@@ -25,7 +31,7 @@ function getDistanceMin(d0, d1, d2, bx, ay) {
  *
  * It will return Infinity if it bails out early
  */
-function getDistance(a, b, max) {
+export default function getDistance(a: string, b: string, max: number): number {
   // returns Infinity if max is exceeded
   if (a === b) {
     return 0;
@@ -64,7 +70,7 @@ function getDistance(a, b, max) {
   let d1;
   let d2;
   let d3;
-  let dd;
+  let dd = Infinity;
   let dy;
   let ay;
   let bx0;
@@ -123,5 +129,3 @@ function getDistance(a, b, max) {
 
   return dd;
 }
-
-module.exports = getDistance;

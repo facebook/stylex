@@ -7,129 +7,156 @@
 
 'use strict';
 
-const namedColors = require('./reference/namedColors');
-const getDistance = require('./utils/getDistance');
+import namedColors from './reference/namedColors';
+import getDistance from './utils/getDistance';
+import type * as ESTree from 'estree';
+import type { Rule } from 'eslint';
+import makeVariableCheckingRule from './utils/makeVariableCheckingRule';
+
 const numericOperators = new Set(['+', '-', '*', '/']);
 
-/*
-type Rule = (ASTNode, Variables) => undefined | {
-  message: string;
-  distance?: number;
-  suggest?: {
-    fix: (node) => node;
-    desc: string;
-  }
-};
-*/
+export type Variables = Map<string, ESTree.Expression>;
+export type RuleCheck = (
+  node: ESTree.Expression,
+  variables?: Variables
+) => RuleResponse;
+export type RuleResponse =
+  | undefined
+  | {
+      message: string;
+      distance?: number;
+      suggest?: {
+        fix: Rule.ReportFixer;
+        desc: string;
+      };
+    };
 
 // Helper functions to check for stylex values.
 // All these helper functions receive a list of locally defined variables
 // as well. This lets them recursively resolve values that are defined locally.
 const MAX_DISTANCE = 4;
-const makeLiteralRule = function (value) {
-  function literalChecker(node, variables) {
-    if (node.type === 'Literal' && node.value === value) {
-      return;
+function makeLiteralRule(value: number | string): RuleCheck {
+  function literalChecker(
+    node: ESTree.Node,
+    variables?: Variables
+  ): RuleResponse {
+    const defaultFailure = {
+      message: `${value}`,
+    };
+    if (node.type !== 'Literal') {
+      if (node.type === 'Identifier' && variables) {
+        const storedVar = variables.get(node.name);
+        if (storedVar != null) {
+          return literalChecker(storedVar, variables);
+        }
+      }
+      return defaultFailure;
     }
-    if (node.type === 'Identifier' && variables && variables.has(node.name)) {
-      return literalChecker(variables.get(node.name), variables);
+    if (node.value === value) {
+      return undefined;
     }
     const distance =
-      node.type === 'Literal' && typeof node.value === 'string'
+      typeof node.value === 'string' && typeof value === 'string'
         ? getDistance(value, node.value, MAX_DISTANCE)
         : Infinity;
     const suggest =
       distance < MAX_DISTANCE
         ? {
             desc: `Did you mean "${value}"? Replace "${node.value}" with "${value}"`,
-            fix: (fixer) => {
-              const quoteType = node.raw.substr(0, 1);
-              return fixer.replaceText(
-                node,
-                `${quoteType}${value}${quoteType}`
-              );
+            fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+              const raw = node.raw;
+              if (raw != null) {
+                const quoteType = raw.substr(0, 1);
+                return fixer.replaceText(
+                  node as ESTree.SimpleLiteral,
+                  `${quoteType}${value}${quoteType}`
+                );
+              }
+              return null;
             },
           }
         : undefined;
     return {
-      message: value,
+      ...defaultFailure,
       distance: distance,
       suggest,
     };
   }
   return literalChecker;
-};
+}
 
-const makeRegExRule = function (regex, message) {
-  function regexChecker(node, variables) {
-    return (
-      (node.type === 'Literal' &&
-        typeof node.value === 'string' &&
-        regex.test(node.value)) ||
-      (node.type === 'Identifier' &&
-        variables &&
-        variables.has(node.name) &&
-        regexChecker(variables.get(node.name), variables))
-    );
+const makeRegExRule = function (regex: RegExp, message: string) {
+  function regexChecker(
+    node: ESTree.Node,
+    variables?: Variables
+  ): RuleResponse {
+    if (
+      node.type === 'Literal' &&
+      typeof node.value === 'string' &&
+      regex.test(node.value)
+    ) {
+      return undefined;
+    }
+    return {
+      message,
+    };
   }
-  return (node, variables) =>
-    !regexChecker(node, variables) ? { message } : undefined;
+  return makeVariableCheckingRule(regexChecker);
 };
 
-const isString = (node, variables) =>
-  (node.type === 'Literal' && typeof node.value === 'string') ||
-  (node.type === 'TemplateLiteral' &&
-    node.expressions.every((expression) =>
-      isStringOrNumber(expression, variables)
-    )) ||
-  (node.type === 'Identifier' &&
-    variables &&
-    variables.has(node.name) &&
-    isString(variables.get(node.name) /* purposely not recursing */))
-    ? undefined
-    : {
-        message: 'a string literal',
-      };
+const isString = makeVariableCheckingRule(
+  (node: ESTree.Node, variables?: Variables): RuleResponse =>
+    (node.type === 'Literal' && typeof node.value === 'string') ||
+    (node.type === 'TemplateLiteral' &&
+      node.expressions.every((expression) =>
+        isStringOrNumber(expression, variables)
+      ))
+      ? undefined
+      : {
+          message: 'a string literal',
+        }
+);
 
-const isMathCall = (node, variables) =>
+const isMathCall = (node: ESTree.Node, variables?: Variables): RuleResponse =>
   node.type === 'CallExpression' &&
   node.callee.type === 'MemberExpression' &&
   node.callee.object.type === 'Identifier' &&
   node.callee.object.name === 'Math' &&
   node.callee.property.type === 'Identifier' &&
   ['abs', 'ceil', 'floor', 'round'].includes(node.callee.property.name) &&
-  node.arguments.every((arg) => isNumber(arg, variables))
+  node.arguments.every(
+    (arg) =>
+      (arg.type === 'Literal' ||
+        arg.type === 'UnaryExpression' ||
+        arg.type === 'BinaryExpression') &&
+      isNumber(arg, variables)
+  )
     ? undefined
     : {
         message: 'a math expression',
       };
-const isNumber = (node, variables) =>
-  (node.type === 'Literal' && typeof node.value === 'number') ||
-  (node.type === 'BinaryExpression' &&
-    numericOperators.has(node.operator) &&
-    isNumber(node.left, variables) &&
-    isNumber(node.right, variables)) ||
-  (node.type === 'UnaryExpression' &&
-    node.operator === '-' &&
-    isNumber(node.argument, variables)) ||
-  isMathCall(node, variables) ||
-  (node.type === 'Identifier' &&
-    variables &&
-    variables.has(node.name) &&
-    isNumber(variables.get(node.name) /* purposely not recursing */))
-    ? undefined
-    : {
-        message: 'a number literal or math expression',
-      };
 
-const isHexColor = (node) => {
-  return node.type === 'Literal' &&
-    /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value)
-    ? undefined
-    : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' };
-};
+const isNumber = makeVariableCheckingRule(
+  (node: ESTree.Node, variables?: Variables): RuleResponse =>
+    (node.type === 'Literal' && typeof node.value === 'number') ||
+    (node.type === 'BinaryExpression' &&
+      numericOperators.has(node.operator) &&
+      isNumber(node.left, variables) &&
+      isNumber(node.right, variables)) ||
+    (node.type === 'UnaryExpression' &&
+      node.operator === '-' &&
+      isNumber(node.argument, variables)) ||
+    isMathCall(node, variables)
+      ? undefined
+      : {
+          message: 'a number literal or math expression',
+        }
+);
 
-const isAnimationName = (node, variables) => {
+const isAnimationName = (
+  node: ESTree.Node,
+  variables?: Variables
+): RuleResponse => {
   if (
     node.type === 'CallExpression' &&
     node.callee.type === 'MemberExpression' &&
@@ -141,7 +168,15 @@ const isAnimationName = (node, variables) => {
     return undefined;
   }
   if (node.type === 'Identifier' && variables && variables.has(node.name)) {
-    return isAnimationName(variables.get(node.name), variables);
+    const variable = variables.get(node.name);
+    if (variable != null) {
+      return isAnimationName(variable, variables);
+    } else {
+      return {
+        message:
+          'All expressions in a template literal must be a `stylex.keyframes(...)` function call',
+      };
+    }
   }
   if (node.type === 'TemplateLiteral') {
     if (
@@ -174,7 +209,17 @@ const isAnimationName = (node, variables) => {
   };
 };
 
-const makeUnionRule = (...rules) => {
+const isHexColor = makeVariableCheckingRule(
+  (node: ESTree.Node, variables?: Variables): RuleResponse => {
+    return node.type === 'Literal' &&
+      typeof node.value === 'string' &&
+      /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(node.value)
+      ? undefined
+      : { message: 'a valid hex color (#FFAADD or #FFAADDFF)' };
+  }
+);
+
+const makeUnionRule = (...rules: RuleCheck[]): RuleCheck => {
   return (node, variables) => {
     const failedRules = [];
     for (const rule of rules) {
@@ -201,52 +246,64 @@ const isNamedColor = makeUnionRule(
 );
 
 const absoluteLengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
-const isAbsoluteLength = (node) => {
-  if (
-    !(
-      node.type === 'Literal' &&
+const isAbsoluteLength = (
+  node: ESTree.Node,
+  variables?: Variables
+): RuleResponse => {
+  if (node.type === 'Literal') {
+    const val = node.value;
+    if (
+      typeof val === 'string' &&
       Array.from(absoluteLengthUnits).some((unit) =>
-        node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
+        val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
       )
-    )
-  ) {
-    return {
-      message: `a number ending in ${Array.from(absoluteLengthUnits).join(
-        ', '
-      )}`,
-    };
+    ) {
+      return undefined;
+    }
   }
+  return {
+    message: `a number ending in ${Array.from(absoluteLengthUnits).join(', ')}`,
+  };
 };
 
 const relativeLengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
-const isRelativeLength = (node) => {
-  if (
-    !(
-      node.type === 'Literal' &&
+const isRelativeLength = (
+  node: ESTree.Node,
+  variables?: Variables
+): RuleResponse => {
+  if (node.type === 'Literal') {
+    const val = node.value;
+    if (
+      typeof val === 'string' &&
       Array.from(relativeLengthUnits).some((unit) =>
-        node.value.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
+        val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
       )
-    )
-  ) {
-    return {
-      message: `a number ending in ${Array.from(relativeLengthUnits).join(
-        ', '
-      )}`,
-    };
+    ) {
+      return undefined;
+    }
   }
+
+  return {
+    message: `a number ending in ${Array.from(relativeLengthUnits).join(', ')}`,
+  };
 };
 
-const isPercentage = (node) => {
-  if (
-    !(
-      node.type === 'Literal' &&
-      node.value.match(new RegExp('^([-,+]?\\d+(\\.\\d+)?%)$'))
-    )
-  ) {
-    return {
-      message: 'A string literal representing a percentage (e.g. 100%)',
-    };
+const isPercentage = (
+  node: ESTree.Node,
+  variables?: Variables
+): RuleResponse => {
+  if (node.type === 'Literal') {
+    const val = node.value;
+    if (
+      typeof val === 'string' &&
+      val.match(new RegExp('^([-,+]?\\d+(\\.\\d+)?%)$'))
+    ) {
+      return undefined;
+    }
   }
+  return {
+    message: 'A string literal representing a percentage (e.g. 100%)',
+  };
 };
 
 const isLength = makeUnionRule(isAbsoluteLength, isRelativeLength);
@@ -1640,7 +1697,7 @@ const SupportedVendorSpecificCSSProperties = {
 };
 
 /* eslint-disable object-shorthand */
-const CSSProperties = {
+const CSSProperties: { [key: string]: RuleCheck } = {
   ...SupportedVendorSpecificCSSProperties,
   alignContent: alignContent,
   alignItems: alignItems,
@@ -2032,7 +2089,7 @@ for (const key of CSSPropertyKeys) {
   CSSProperties[key] = makeUnionRule(CSSProperties[key], all);
 }
 
-function isStylexCallee(node) {
+function isStylexCallee(node: ESTree.Node) {
   return (
     node.type === 'MemberExpression' &&
     node.object.type === 'Identifier' &&
@@ -2042,7 +2099,7 @@ function isStylexCallee(node) {
   );
 }
 
-function isStylexDeclaration(node) {
+function isStylexDeclaration(node: ESTree.Node) {
   return (
     node &&
     node.type === 'CallExpression' &&
@@ -2079,34 +2136,49 @@ const keyForNestedObject = makeUnionRule(
 // Maybe add this later.
 // const pseudoAllowlist = new Set([]);
 
-module.exports = {
+function nullThrows<T>(t: T | undefined | null): T {
+  if (t == null) {
+    throw new Error('Did not expect value to be null');
+  }
+  return t;
+}
+
+const stylexValidStyles = {
   meta: {
     hasSuggestions: true,
   },
-  create(context) {
-    const variables = new Map();
+  create(context: Rule.RuleContext) {
+    const variables = new Map<string, ESTree.Expression>();
 
-    function checkStyleProperty(style, level = 0) {
+    function checkStyleProperty(style: ESTree.Node, level = 0): void {
       // currently ignoring preset spreads.
       if (style.type === 'Property') {
         if (style.value.type === 'ObjectExpression') {
           if (level > 0) {
             return context.report({
-              node: style.value,
+              node: style.value as ESTree.Node,
               loc: style.value.loc,
               message: 'You cannot nest styles more than one level deep',
-            });
+            } as Rule.ReportDescriptor);
           }
-          const check = keyForNestedObject(
+          console.log('check this', style.key);
+          if (style.key.type !== 'Literal') {
+            return context.report({
+              node: style.key as ESTree.Expression,
+              loc: style.key.loc,
+              message: 'Keys must be strings',
+            } as Rule.ReportDescriptor);
+          }
+          const ruleCheck = keyForNestedObject(
             style.key /*not checking variables*/
           );
-          if (check !== undefined) {
+          if (ruleCheck !== undefined) {
             return context.report({
               node: style.value,
               loc: style.value.loc,
               message:
                 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries',
-            });
+            } as Rule.ReportDescriptor);
           }
           return style.value.properties.forEach((prop) =>
             checkStyleProperty(prop, level + 1)
@@ -2117,7 +2189,7 @@ module.exports = {
             node: style.key,
             loc: style.key.loc,
             message: 'Computed keys are not allowed within stylex.',
-          });
+          } as Rule.ReportDescriptor);
         }
         if (style.key.type !== 'Literal' && style.key.type !== 'Identifier') {
           return context.report({
@@ -2125,12 +2197,20 @@ module.exports = {
             loc: style.key.loc,
             message:
               'All keys in a stylex object must be static literal values.',
-          });
+          } as Rule.ReportDescriptor);
         }
         const key =
           style.key.type === 'Identifier' ? style.key.name : style.key.value;
-        const keyCheckerFunction = CSSProperties[key];
-        if (keyCheckerFunction == null) {
+        if (typeof key !== 'string') {
+          return context.report({
+            node: style.key,
+            loc: style.key.loc,
+            message:
+              'All keys in a stylex object must be static literal string values.',
+          } as Rule.ReportDescriptor);
+        }
+        const ruleChecker = CSSProperties[key];
+        if (ruleChecker == null) {
           const closestKey = CSSPropertyKeys.find((cssProp) => {
             const distance = getDistance(key, cssProp, 2);
             return distance <= 2;
@@ -2147,23 +2227,27 @@ module.exports = {
                       fix: (fixer) => {
                         if (style.key.type === 'Identifier') {
                           return fixer.replaceText(style.key, closestKey);
-                        } else {
-                          const quoteType = style.key.raw.substr(0, 1);
-                          return fixer.replaceText(
-                            style.key,
-                            `${quoteType}${closestKey}${quoteType}`
-                          );
+                        } else if (style.key.type === 'Literal') {
+                          const raw = style.key.raw;
+                          if (raw != null) {
+                            const quoteType = raw.substr(0, 1);
+                            return fixer.replaceText(
+                              style.key as ESTree.SimpleLiteral,
+                              `${quoteType}${closestKey}${quoteType}`
+                            );
+                          }
                         }
+                        return null;
                       },
                     },
                   ]
                 : undefined,
-          });
+          } as Rule.ReportDescriptor);
         }
-        if (typeof keyCheckerFunction !== 'function') {
+        if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
         }
-        const check = keyCheckerFunction(style.value, variables);
+        const check = ruleChecker(style.value as ESTree.Expression, variables);
         if (check != null) {
           const { message, suggest } = check;
           return context.report({
@@ -2175,36 +2259,73 @@ module.exports = {
                 : ''
             }`,
             suggest: suggest != null ? [suggest] : undefined,
-          });
+          } as Rule.ReportDescriptor);
         }
       }
     }
 
     return {
-      Program(node) {
+      Program(node: ESTree.Program) {
         // Keep track of all the top-level local variable declarations
         // This is because stylex allows you to use local constants in your styles
         node.body
-          .filter(({ type }) => type === 'VariableDeclaration')
-          .map((constDecl) => constDecl.declarations)
+          .reduce(
+            (
+              collection: ESTree.VariableDeclaration[],
+              node:
+                | ESTree.Statement
+                | ESTree.ModuleDeclaration
+                | ESTree.Directive
+            ) => {
+              if (node.type === 'VariableDeclaration') {
+                collection.push(node);
+              }
+              return collection;
+            },
+            []
+          )
+          .map(
+            (constDecl: ESTree.VariableDeclaration) => constDecl.declarations
+          )
           .reduce((arr, curr) => arr.concat(curr), [])
           .filter((decl) => decl.id.type === 'Identifier')
-          .forEach((decl) => variables.set(decl.id.name, decl.init));
+          .forEach((decl: ESTree.VariableDeclarator) => {
+            const id = decl.id as ESTree.Identifier;
+            const init = decl.init;
+            if (id != null && init != null) {
+              variables.set(id.name, init);
+            }
+          });
       },
-      CallExpression(node) {
+      CallExpression(node: ESTree.CallExpression & Rule.NodeParentExtension) {
         if (!isStylexDeclaration(node)) {
           return;
         }
 
         const namespaces = node.arguments[0];
+        if (namespaces.type !== 'ObjectExpression') {
+          return context.report({
+            node: namespaces,
+            loc: namespaces.loc,
+            message: 'Styles must be represented as javascript objects',
+          } as Rule.ReportDescriptor);
+        }
 
         namespaces.properties.forEach((property) => {
-          if (property.value.type !== 'ObjectExpression') {
+          if (property.type !== 'Property') {
+            return context.report({
+              node: property,
+              loc: property.loc,
+              message: 'Styles cannot be spread objects',
+            } as Rule.ReportDescriptor);
+          }
+          const type = property.value.type;
+          if (type !== 'ObjectExpression') {
             return context.report({
               node: property.value,
               loc: property.value.loc,
               message: 'Styles must be represented as javascript objects',
-            });
+            } as Rule.ReportDescriptor);
           }
 
           const styles = property.value;
@@ -2217,5 +2338,5 @@ module.exports = {
     };
   },
 };
-
+export default stylexValidStyles;
 /* eslint-enable object-shorthand */

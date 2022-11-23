@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const validStyles = require('./stylex-valid-styles');
+import validStyles from './stylex-valid-styles';
 
-module.exports = {
-  rules: {
-    'valid-styles': validStyles,
-  },
+const rules = {
+  'valid-styles': validStyles,
 };
+
+export { rules };

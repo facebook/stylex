@@ -22,7 +22,7 @@ ESLintTester.setDefaultConfig({
 
 const eslintTester = new ESLintTester();
 
-eslintTester.run('stylex-valid-styles', rule, {
+eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
     // test for local static variables
     `
