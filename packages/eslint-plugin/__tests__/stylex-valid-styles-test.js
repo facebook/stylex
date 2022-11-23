@@ -289,6 +289,23 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          'width': '50%',
        },
      })`,
+    `stylex.create({
+       default: {
+         fontWeight: 'var(--weight)',
+       },
+     })`,
+    `stylex.create({
+      default: {
+        fontWeight: 'var(--🔴)',
+      },
+    })`,
+    `
+    const red = 'var(--🔴)';
+    stylex.create({
+      default: {
+        fontWeight: red,
+      },
+    })`,
   ],
   invalid: [
     {
@@ -378,6 +395,7 @@ lighter
 700
 800
 900
+a CSS Variable
 initial
 inherit
 unset
