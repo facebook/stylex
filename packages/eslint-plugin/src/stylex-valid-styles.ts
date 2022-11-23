@@ -11,7 +11,6 @@ import namedColors from './reference/namedColors';
 import getDistance from './utils/getDistance';
 import type * as ESTree from 'estree';
 import type { Rule } from 'eslint';
-import makeVariableCheckingRule from './utils/makeVariableCheckingRule';
 import isCSSVariable from './rules/isCSSVariable';
 import makeLiteralRule from './rules/makeLiteralRule';
 import makeRegExRule from './rules/makeRegExRule';
@@ -21,8 +20,6 @@ import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isPercentage from './rules/isPercentage';
 import isAnimationName from './rules/isAnimationName';
-
-const numericOperators = new Set(['+', '-', '*', '/']);
 
 export type Variables = Map<string, ESTree.Expression>;
 export type RuleCheck = (
@@ -40,14 +37,18 @@ export type RuleResponse =
       };
     };
 
+const showError =
+  (message: string): RuleCheck =>
+  () => ({ message });
+
 const isStringOrNumber = makeUnionRule(isString, isNumber);
 
 const isNamedColor = makeUnionRule(
   ...Array.from(namedColors).map((color) => makeLiteralRule(color))
 );
 
-const absoluteLengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
-const isAbsoluteLength = (
+const absoluteLengthUnits = new Set(['px', 'mm', 'in', 'pc', 'pt']);
+const isAbsoluteLength: RuleCheck = (
   node: ESTree.Node,
   variables?: Variables
 ): RuleResponse => {
@@ -67,8 +68,31 @@ const isAbsoluteLength = (
   };
 };
 
-const relativeLengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
-const isRelativeLength = (
+const relativeLengthUnits = new Set([
+  // font units
+  'ch',
+  'em',
+  'ex',
+  'ic',
+  'rem',
+  // viewport units
+  'vh',
+  'vw',
+  'vmin',
+  'vmax',
+  'svh',
+  'dvh',
+  'lvh',
+  'svw',
+  'dvw',
+  'ldw',
+  // container units
+  'cqw',
+  'cqh',
+  'cqmin',
+  'cqmax',
+]);
+const isRelativeLength: RuleCheck = (
   node: ESTree.Node,
   variables?: Variables
 ): RuleResponse => {
@@ -93,7 +117,7 @@ const isLength = makeUnionRule(isAbsoluteLength, isRelativeLength);
 
 // NOTE: converted from Flow types to function calls using this
 // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
-const all = makeUnionRule(
+const all: RuleCheck = makeUnionRule(
   makeLiteralRule('initial'),
   makeLiteralRule('inherit'),
   makeLiteralRule('unset'),
@@ -120,7 +144,6 @@ const borderWidth = makeUnionRule(
   isLength
 );
 const lengthPercentage = isStringOrNumber;
-const bgImage = makeUnionRule(makeLiteralRule('none'), isString);
 const borderImageSource = makeUnionRule(makeLiteralRule('none'), isString);
 const time = isString;
 const singleAnimationDirection = makeUnionRule(
@@ -323,15 +346,6 @@ const float = makeUnionRule(
   makeLiteralRule('inline-start'),
   makeLiteralRule('inline-end')
 );
-// const font = makeUnionRule(
-//   isString,
-//   makeLiteralRule('caption'),
-//   makeLiteralRule('icon'),
-//   makeLiteralRule('menu'),
-//   makeLiteralRule('message-box'),
-//   makeLiteralRule('small-caption'),
-//   makeLiteralRule('status-bar'),
-// );
 const absoluteSize = makeUnionRule(
   makeLiteralRule('xx-small'),
   makeLiteralRule('x-small'),
@@ -469,7 +483,7 @@ const backgroundAttachment = attachment;
 const backgroundBlendMode = blendMode;
 const backgroundClip = box;
 const backgroundColor = color;
-const backgroundImage = bgImage;
+const backgroundImage = makeUnionRule(makeLiteralRule('none'), isString);
 const backgroundOrigin = box;
 const backgroundRepeat = repeatStyle;
 const backgroundSize = bgSize;
@@ -1461,14 +1475,6 @@ const voiceStress = makeUnionRule(
   makeLiteralRule('reduced')
 );
 const voiceVolume = makeUnionRule(makeLiteralRule('silent'), isString);
-// const finalBgLayer = makeUnionRule(
-//   bgImage,
-//   isString,
-//   repeatStyle,
-//   attachment,
-//   box,
-//   backgroundColor
-// );
 const maskImage = maskReference;
 const top = isStringOrNumber;
 
@@ -1516,19 +1522,39 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   border: border,
   borderHorizontal: border,
   borderVertical: border,
-  // borderBlockEnd: borderBlockEnd,
-  // borderBlockEndColor: borderBlockEndColor,
-  // borderBlockEndStyle: borderBlockEndStyle,
-  // borderBlockEndWidth: borderBlockEndWidth,
-  // borderBlockStart: borderBlockStart,
-  // borderBlockStartColor: borderBlockStartColor,
-  // borderBlockStartStyle: borderBlockStartStyle,
-  // borderBlockStartWidth: borderBlockStartWidth,
+  borderBlockEnd: showError(
+    '`borderBlockEnd` is not supported. Please use `borderBottom` instead'
+  ),
+  borderBlockEndColor: showError(
+    '`borderBlockEndColor` is not supported. Please use `borderBottomColor` instead'
+  ),
+  borderBlockEndStyle: showError(
+    '`borderBlockEndStyle` is not supported. Please use `borderBottomStyle` instead'
+  ),
+  borderBlockEndWidth: showError(
+    '`borderBlockEndWidth` is not supported. Please use `borderBottomWidth` instead'
+  ),
+  borderBlockStart: showError(
+    '`borderBlockStart` is not supported. Please use `borderTop` instead'
+  ),
+  borderBlockStartColor: showError(
+    '`borderBlockStartColor` is not supported. Please use `borderTopColor` instead'
+  ),
+  borderBlockStartStyle: showError(
+    '`borderBlockStartStyle` is not supported. Please use `borderTopStyle` instead'
+  ),
+  borderBlockStartWidth: showError(
+    '`borderBlockStartWidth` is not supported. Please use `borderTopWidth` instead'
+  ),
   borderBottom: border,
   borderBottomColor: color,
   borderBottomEndRadius: borderBottomRightRadius,
-  // borderBottomLeftRadius: borderBottomLeftRadius,
-  // borderBottomRightRadius: borderBottomRightRadius,
+  borderBottomLeftRadius: showError(
+    '`borderBottomLeftRadius` is not supported. Please use `borderBottomStartRadius` instead'
+  ),
+  borderBottomRightRadius: showError(
+    `'borderBottomRightRadius' is not supported. Please use 'borderBottomEndRadius' instead`
+  ),
   borderBottomStartRadius: borderBottomLeftRadius,
   borderBottomStyle: borderBottomStyle,
   borderBottomWidth: borderBottomWidth,
@@ -1552,15 +1578,31 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   // borderInlineStartColor: borderInlineStartColor,
   // borderInlineStartStyle: borderInlineStartStyle,
   // borderInlineStartWidth: borderInlineStartWidth,
-  borderLeft: border,
-  // borderLeftColor: borderLeftColor,
-  // borderLeftStyle: borderLeftStyle,
-  // borderLeftWidth: borderLeftWidth,
+  borderLeft: showError(
+    '`borderLeft` is not supported. Please use `borderStart` instead'
+  ),
+  borderLeftColor: showError(
+    '`borderLeftColor` is not supported. Please use `borderStartColor` instead'
+  ),
+  borderLeftStyle: showError(
+    '`borderLeftStyle` is not supported. Please use `borderStartStyle` instead'
+  ),
+  borderLeftWidth: showError(
+    '`borderLeftWidth` is not supported. Please use `borderStartWidth` instead'
+  ),
   borderRadius: borderRadius,
-  borderRight: border,
-  // borderRightColor: borderRightColor,
-  // borderRightStyle: borderRightStyle,
-  // borderRightWidth: borderRightWidth,
+  borderRight: showError(
+    '`borderRight` is not supported. Please use `borderEnd` instead'
+  ),
+  borderRightColor: showError(
+    '`borderRightColor` is not supported. Please use `borderEndColor` instead'
+  ),
+  borderRightStyle: showError(
+    '`borderRightStyle` is not supported. Please use `borderEndStyle` instead'
+  ),
+  borderRightWidth: showError(
+    '`borderRightWidth` is not supported. Please use `borderEndWidth` instead'
+  ),
   borderSpacing: borderSpacing,
   borderStart: border,
   borderStartColor: borderLeftColor,
@@ -1570,8 +1612,18 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   borderTop: border,
   borderTopColor: color,
   borderTopEndRadius: borderTopRightRadius,
-  // borderTopLeftRadius: borderTopLeftRadius,
-  // borderTopRightRadius: borderTopRightRadius,
+  borderStartStartRadius: showError(
+    '`borderStartStartRadius` is not supported. Please use `borderTopStartRadius` instead'
+  ),
+  borderTopLeftRadius: showError(
+    '`borderTopLeftRadius` is not supported. Please use `borderTopStartRadius` instead'
+  ),
+  borderStartEndRadius: showError(
+    '`borderStartEndRadius` is not supported. Please use `borderTopEndRadius` instead'
+  ),
+  borderTopRightRadius: showError(
+    '`borderTopRightRadius` is not supported. Please use `borderTopEndRadius` instead'
+  ),
   borderTopStartRadius: borderTopLeftRadius,
   borderTopStyle: borderTopStyle,
   borderTopWidth: borderTopWidth,
@@ -1627,7 +1679,9 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   fillOpacity: fillOpacity,
   fillRule: fillRule,
   filter: filter,
-  // flex: flex,
+  flex: showError(
+    '`flex` is not supported. Please use `flexGrow`, `flexShrink` and `flexBasis` instead'
+  ),
   flexBasis: flexBasis,
   flexDirection: flexDirection,
   flexFlow: flexFlow,
@@ -1635,7 +1689,9 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   flexShrink: flexShrink,
   flexWrap: flexWrap,
   float: float,
-  // font: font,
+  font: showError(
+    '`font` is not supported. Please use `fontSize`, `fontFamily`, `fontStyle` etc. instead'
+  ),
   fontFamily: fontFamily,
   fontFeatureSettings: fontFeatureSettings,
   fontKerning: fontKerning,
@@ -1655,6 +1711,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   fontWeight: fontWeight,
   glyphOrientationHorizontal: glyphOrientationHorizontal,
   glyphOrientationVertical: glyphOrientationVertical,
+
   grid: grid,
   gridArea: gridArea,
   gridAutoColumns: gridAutoColumns,
@@ -1664,15 +1721,18 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   gridColumnEnd: gridColumnEnd,
   gridColumnGap: gridColumnGap,
   gridColumnStart: gridColumnStart,
-  gridGap: gridGap,
+
   gridRow: gridRow,
   gridRowEnd: gridRowEnd,
+  gridGap: gridGap,
   gridRowGap: gridRowGap,
+
   gridRowStart: gridRowStart,
   gridTemplate: gridTemplate,
   gridTemplateAreas: gridTemplateAreas,
   gridTemplateColumns: gridTemplateColumns,
   gridTemplateRows: gridTemplateRows,
+
   height: isStringOrNumber,
   hyphens: hyphens,
   imageOrientation: imageOrientation,
@@ -1696,8 +1756,12 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   listStylePosition: listStylePosition,
   listStyleType: listStyleType,
   margin: margin,
-  // marginBlockEnd: marginBlockEnd,
-  // marginBlockStart: marginBlockStart,
+  marginBlockEnd: showError(
+    '`marginBlockEnd` is not supported. Please use `marginBottom` instead'
+  ),
+  marginBlockStart: showError(
+    '`marginBlockStart` is not supported. Please use `marginTop` instead'
+  ),
   marginBottom: marginBottom,
   marginEnd: marginRight,
   marginHorizontal: marginLeft,
@@ -1747,10 +1811,18 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   order: order,
   orphans: orphans,
   outline: outline,
-  // outlineColor: outlineColor,
-  // outlineOffset: outlineOffset,
-  // outlineStyle: outlineStyle,
-  // outlineWidth: outlineWidth,
+  outlineColor: showError(
+    `'outlineColor' is not supported. Please use 'outline' instead`
+  ),
+  outlineOffset: showError(
+    `'outlineOffset' is not supported. Please use 'outline' instead`
+  ),
+  outlineStyle: showError(
+    `'outlineStyle' is not supported. Please use 'outline' instead`
+  ),
+  outlineWidth: showError(
+    `'outlineWidth' is not supported. Please use 'outline' instead`
+  ),
   overflow: overflow,
   overflowAnchor: overflowAnchor,
   overflowClipBox: overflowClipBox,
@@ -1819,10 +1891,20 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   textAnchor: textAnchor,
   textCombineUpright: textCombineUpright,
   textDecoration: textDecoration,
-  // textDecorationColor: textDecorationColor,
-  // textDecorationLine: textDecorationLine,
-  // textDecorationSkip: textDecorationSkip,
-  // textDecorationStyle: textDecorationStyle,
+
+  textDecorationColor: showError(
+    '`textDecorationColor` is not supported. Please use `textDecoration` instead.'
+  ),
+  textDecorationLine: showError(
+    '`textDecorationLine` is not supported. Please use `textDecoration` instead.'
+  ),
+  textDecorationSkip: showError(
+    '`textDecorationSkip` is not supported. Please use `textDecoration` instead.'
+  ),
+  textDecorationStyle: showError(
+    '`textDecorationStyle` is not supported. Please use `textDecoration` instead.'
+  ),
+
   textEmphasis: textEmphasis,
   textEmphasisColor: textEmphasisColor,
   textEmphasisPosition: textEmphasisPosition,

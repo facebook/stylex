@@ -39,6 +39,20 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      const start = 'start';
+      const grayscale = 'grayscale';
+      const styles = stylex.create({
+        default: {
+          textAlign: start,
+          MozOsxFontSmoothing: grayscale,
+          WebkitFontSmoothing: 'antialiased',
+          transitionProperty: 'opacity, transform',
+          transitionDuration: '0.3s',
+          transitionTimingFunction: 'ease',
+        }
+      });
+    `,
+    `
       const bounce = stylex.keyframes({
         '0%': {
           transform: 'translateY(0)',
@@ -107,17 +121,20 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `,
     // test for nested styles
     `
-     const styles = stylex.create({
-       default: {
-         opacity: 0,
-         ':hover': {
-           opacity: 1
-         },
-         ':focus-visible': {
-           border: "1px solid blue"
-         }
-       }
-     });`,
+      const TRANSPARENT = 0;
+      const OPAQUE = 1;
+      const styles = stylex.create({
+        default: {
+          opacity: TRANSPARENT,
+          ':hover': {
+            opacity: OPAQUE,
+          },
+          ':focus-visible': {
+            border: "1px solid blue"
+          }
+        }
+      });
+    `,
     `
      const styles = stylex.create({
        default: {

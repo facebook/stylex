@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.2",
+    "clean-css": "^5.3.1",
     "eslint": "^8.19.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.5.0",
