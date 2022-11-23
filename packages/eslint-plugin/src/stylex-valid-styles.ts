@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
 'use strict';
 
 import namedColors from './reference/namedColors';
@@ -40,57 +39,6 @@ export type RuleResponse =
         desc: string;
       };
     };
-
-const isStringOrNumber = makeUnionRule(isString, isNumber);
-
-const isNamedColor = makeUnionRule(
-  ...Array.from(namedColors).map((color) => makeLiteralRule(color))
-);
-
-const absoluteLengthUnits = new Set(['px', 'cm', 'mm', 'in', 'pc', 'pt']);
-const isAbsoluteLength = makeVariableCheckingRule(
-  (node: ESTree.Node, variables?: Variables): RuleResponse => {
-    if (node.type === 'Literal') {
-      const val = node.value;
-      if (
-        typeof val === 'string' &&
-        Array.from(absoluteLengthUnits).some((unit) =>
-          val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
-        )
-      ) {
-        return undefined;
-      }
-    }
-    return {
-      message: `a number ending in ${Array.from(absoluteLengthUnits).join(
-        ', '
-      )}`,
-    };
-  }
-);
-
-const relativeLengthUnits = new Set(['ch', 'em', 'ex', 'rem', 'vh', 'vw']);
-const isRelativeLength = makeVariableCheckingRule(
-  (node: ESTree.Node, variables?: Variables): RuleResponse => {
-    if (node.type === 'Literal') {
-      const val = node.value;
-      if (
-        typeof val === 'string' &&
-        Array.from(relativeLengthUnits).some((unit) =>
-          val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`))
-        )
-      ) {
-        return undefined;
-      }
-    }
-
-    return {
-      message: `a number ending in ${Array.from(relativeLengthUnits).join(
-        ', '
-      )}`,
-    };
-  }
-);
 
 const isStringOrNumber = makeUnionRule(isString, isNumber);
 
