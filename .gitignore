@@ -7,3 +7,4 @@ node_modules
 .turbo
 apps/docs/.stylex/*
 apps/rollup-example/.build
+apps/webpack-example/.build

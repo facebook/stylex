@@ -1,11 +1,11 @@
 {
-  "name": "rollup-example",
+  "name": "webpack-example",
   "version": "0.1.0-beta.7",
   "description": "A simple rollup example to test stylexjs/rollup-plugin",
   "main": "index.js",
   "scripts": {
-    "build": "rollup --config ./rollup.config.mjs",
-    "start": "rollup --config ./rollup.config.mjs --watch"
+    "build": "webpack",
+    "start": "webpack --watch"
   },
   "author": "",
   "license": "MIT",
@@ -13,7 +13,9 @@
     "@stylexjs/stylex": "0.1.0-beta.7"
   },
   "devDependencies": {
-    "rollup": "^3.2.3",
-    "@stylexjs/rollup-plugin": "0.1.0-beta.7"
+    "@stylexjs/webpack-plugin": "0.1.0-beta.7",
+    "html-webpack-plugin": "^5.5.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0"
   }
 }

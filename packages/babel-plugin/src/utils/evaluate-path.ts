@@ -28,17 +28,11 @@ const VALID_CALLEES = ['String', 'Number', 'Math'] as const;
 const INVALID_METHODS = ['random'] as const;
 
 function isValidCallee(val: string): val is typeof VALID_CALLEES[number] {
-  return VALID_CALLEES.includes(
-    // @ts-expect-error
-    val
-  );
+  return (VALID_CALLEES as ReadonlyArray<string>).includes(val);
 }
 
 function isInvalidMethod(val: string): val is typeof INVALID_METHODS[number] {
-  return INVALID_METHODS.includes(
-    // @ts-expect-error
-    val
-  );
+  return (INVALID_METHODS as ReadonlyArray<string>).includes(val);
 }
 
 export type FunctionConfig = {
@@ -482,6 +476,12 @@ function evaluateQuasis(
 
   let i = 0;
   const exprs: Array<NodePath<t.Node>> = path.get('expressions') as any;
+
+  // const exprs: Array<NodePath<t.Node>> = path.isTemplateLiteral()
+  //   ? path.get('expressions')
+  //   : (path as NodePath<t.TaggedTemplateExpression>)
+  //       .get('quasi')
+  //       .get('expressions');
 
   for (const elem of quasis) {
     // not confident, evaluated an expression we don't like

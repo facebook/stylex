@@ -9,6 +9,9 @@ const babel = require('@babel/core');
 const path = require('path');
 const stylexBabelPlugin = require('@stylexjs/babel-plugin');
 const webpack = require('webpack');
+const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
+const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
+const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
 
 const { NormalModule } = webpack;
 
@@ -21,12 +24,18 @@ const IS_DEV_ENV =
 const { RawSource } = webpack.sources;
 
 class StylexPlugin {
-  stylexRules = [];
+  stylexRules = {};
+  filesInLastRun = null;
 
-  constructor({ dev = IS_DEV_ENV, filename = 'stylex.css' } = {}) {
+  constructor({
+    dev = IS_DEV_ENV,
+    filename = 'stylex.css',
+    babelConig: { plugins = [], presets = [] } = {},
+  } = {}) {
     this.dev = dev;
     this.filename = filename;
-    this.babelPlugin = [stylexBabelPlugin, { dev, stylexSheetName: filename }];
+    this.babelConfig = { plugins, presets };
+    this.babelPlugin = [stylexBabelPlugin, { dev, stylexSheetName: '<>' }];
   }
 
   apply(compiler) {
@@ -35,7 +44,12 @@ class StylexPlugin {
       NormalModule.getCompilationHooks(compilation).loader.tap(
         PLUGIN_NAME,
         (loaderContext, module) => {
-          if (/\.jsx?/.test(path.extname(module.resource))) {
+          if (
+            // Javascript (and Flow) modules
+            /\.jsx?/.test(path.extname(module.resource)) ||
+            // Typescript modules
+            /\.tsx?/.test(path.extname(module.resource))
+          ) {
             module.loaders.unshift({
               loader: path.resolve(__dirname, 'loader.js'),
               options: { stylexPlugin: this },
@@ -44,13 +58,26 @@ class StylexPlugin {
         }
       );
 
+      // Make a list of all modules that were included in the last compilation.
+      compilation.hooks.finishModules.tap(PLUGIN_NAME, (modules) => {
+        this.filesInLastRun = [...modules.values()].map((m) => m.resource);
+      });
+
       // Consume collected rules and emit the stylex CSS asset
       compilation.hooks.additionalAssets.tap(PLUGIN_NAME, () => {
         try {
           const { stylexRules } = this;
-          if (stylexRules.length > 0) {
-            const collectedCSS =
-              stylexBabelPlugin.processStylexRules(stylexRules);
+          if (Object.keys(stylexRules).length > 0) {
+            // Take styles for the modules that were included in the last compilation.
+            const allRules = Object.keys(stylexRules)
+              .filter((filename) =>
+                this.filesInLastRun == null
+                  ? true
+                  : this.filesInLastRun.includes(filename)
+              )
+              .map((filename) => stylexRules[filename])
+              .flat();
+            const collectedCSS = stylexBabelPlugin.processStylexRules(allRules);
             compilation.emitAsset(this.filename, new RawSource(collectedCSS));
           }
         } catch (e) {
@@ -58,25 +85,30 @@ class StylexPlugin {
         }
       });
     });
-
-    // Prevent old rules from being left behind if webpack is run in production
-    // mode with watching.
-    compiler.hooks.watchRun.tap(PLUGIN_NAME, () => {
-      this.stylexRules = [];
-    });
   }
 
+  // This function is not called by Webpack directly.
+  // Instead, `NormalModule.getCompilationHooks` is used to inject a loader
+  // for JS modules. The loader than calls this function.
   async transformCode(inputCode, filename, logger) {
     const { code, map, metadata } = await babel.transformAsync(inputCode, {
       babelrc: false,
       filename,
-      plugins: [this.babelPlugin],
+      // Use Typescript syntax plugin if the filename ends with `.ts` or `.tsx`
+      // and use the Flow syntax plugin otherwise.
+      plugins: [
+        ...this.babelConfig.plugins,
+        /\.jsx?/.test(path.extname(filename))
+          ? flowSyntaxPlugin
+          : typescriptSyntaxPlugin,
+        jsxSyntaxPlugin,
+        this.babelPlugin,
+      ],
+      presets: this.babelConfig.presets,
     });
 
     if (metadata.stylex != null && metadata.stylex.length > 0) {
-      this.stylexRules = this.dev
-        ? this.stylexRules
-        : this.stylexRules.concat(metadata.stylex);
+      this.stylexRules[filename] = metadata.stylex;
       logger.debug(`Read stylex from ${filename}:`, metadata.stylex);
     }
 

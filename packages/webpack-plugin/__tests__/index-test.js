@@ -107,18 +107,18 @@ describe('webpack-plugin-stylex', () => {
       const js = readAsset('main.js', compiler, stats);
 
       expect(css).toMatchInlineSnapshot(`
-        "@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}
-        .x188knyk{margin-block-start:99px}
-        .x1c4r43l{display:flex}
-        .x1je5kxa{height:500px}
-        html:not([dir='rtl']) .x1n8p6zw{margin-left:10px}
-        html[dir='rtl'] .x1n8p6zw{margin-right:10px}
-        .x1nrqb13{animation-name:x11gtny7-B}
-        .x1u78jha{width:50%}
-        .x1wdx05y{display:inline}
-        .x6mlivy{width:100%}
-        .xntgbld{display:block}
-        .x1kflwvg:hover{background:red}"
+        "html:not([dir='rtl']) .x17adc0v{margin-left:10px}
+        html[dir='rtl'] .x17adc0v{margin-right:10px}
+        .x1egiwwb{height:500px}
+        .x1lliihq{display:block}
+        .x1vdzyal{margin-block-start:99px}
+        .x3hqpx7{width:50%}
+        .x78zum5{display:flex}
+        .xeuoslp{animation-name:xgnty7z-B}
+        @keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
+        .xh8yej3{width:100%}
+        .xt0psk2{display:inline}
+        .x1oz5o6v:hover{background:red}"
       `);
 
       expect(js).toMatchInlineSnapshot(`
@@ -145,8 +145,8 @@ describe('webpack-plugin-stylex', () => {
 
         var styles = {
           bar: {
-            display: "xntgbld",
-            width: "x6mlivy",
+            display: "x1lliihq",
+            width: "xh8yej3",
             $$css: true
           }
         };
@@ -159,9 +159,9 @@ describe('webpack-plugin-stylex', () => {
 
         const npmStyles_styles = {
           baz: {
-            display: "x1wdx05y",
-            height: "x1je5kxa",
-            width: "x1u78jha",
+            display: "xt0psk2",
+            height: "x1egiwwb",
+            width: "x3hqpx7",
             $$css: true
           }
         };
@@ -174,15 +174,15 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-        var fadeAnimation = "x11gtny7-B";
+        var fadeAnimation = "xgnty7z-B";
         var index_styles = {
           foo: {
-            animationName: "x1nrqb13",
-            display: "x1c4r43l",
-            marginStart: "x1n8p6zw",
-            marginBlockStart: "x188knyk",
-            height: "x1je5kxa",
-            ":hover_background": "x1kflwvg",
+            animationName: "xeuoslp",
+            display: "x78zum5",
+            marginStart: "x17adc0v",
+            marginBlockStart: "x1vdzyal",
+            height: "x1egiwwb",
+            ":hover_background": "x1oz5o6v",
             $$css: true
           }
         };
@@ -216,7 +216,7 @@ describe('webpack-plugin-stylex', () => {
         const cssExists = assetExists('stylex.css', compiler, stats);
         const js = readAsset('main.js', compiler, stats);
 
-        expect(cssExists).toEqual(false);
+        expect(cssExists).toEqual(true);
 
         expect(js).toMatchInlineSnapshot(`
           ""use strict";
@@ -241,13 +241,13 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".xntgbld{display:block}", 1);
-          external_stylex_default().inject(".x6mlivy{width:100%}", 1);
+          external_stylex_default().inject(".x1lliihq{display:block}", 1);
+          external_stylex_default().inject(".xh8yej3{width:100%}", 1);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
-              display: "xntgbld",
-              width: "x6mlivy",
+              display: "x1lliihq",
+              width: "xh8yej3",
               $$css: true
             }
           };
@@ -258,15 +258,15 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".x1wdx05y{display:inline}", 1);
-          external_stylex_default().inject(".x1je5kxa{height:500px}", 1);
-          external_stylex_default().inject(".x1u78jha{width:50%}", 1);
+          external_stylex_default().inject(".xt0psk2{display:inline}", 1);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 1);
+          external_stylex_default().inject(".x3hqpx7{width:50%}", 1);
           const npmStyles_styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
-              display: "x1wdx05y",
-              height: "x1je5kxa",
-              width: "x1u78jha",
+              display: "xt0psk2",
+              height: "x1egiwwb",
+              width: "x3hqpx7",
               $$css: true
             }
           };
@@ -279,23 +279,23 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject("@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
-          var fadeAnimation = "x11gtny7-B";
-          external_stylex_default().inject(".x1nrqb13{animation-name:x11gtny7-B}", 1);
-          external_stylex_default().inject(".x1c4r43l{display:flex}", 1);
-          external_stylex_default().inject(".x1n8p6zw{margin-left:10px}", 1, ".x1n8p6zw{margin-right:10px}");
-          external_stylex_default().inject(".x188knyk{margin-block-start:99px}", 1);
-          external_stylex_default().inject(".x1je5kxa{height:500px}", 1);
-          external_stylex_default().inject(".x1kflwvg:hover{background:red}", 8);
+          external_stylex_default().inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+          var fadeAnimation = "xgnty7z-B";
+          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 1);
+          external_stylex_default().inject(".x78zum5{display:flex}", 1);
+          external_stylex_default().inject(".x17adc0v{margin-left:10px}", 1, ".x17adc0v{margin-right:10px}");
+          external_stylex_default().inject(".x1vdzyal{margin-block-start:99px}", 1);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 1);
+          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 8);
           var index_styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
-              animationName: "x1nrqb13",
-              display: "x1c4r43l",
-              marginStart: "x1n8p6zw",
-              marginBlockStart: "x188knyk",
-              height: "x1je5kxa",
-              ":hover_background": "x1kflwvg",
+              animationName: "xeuoslp",
+              display: "x78zum5",
+              marginStart: "x17adc0v",
+              marginBlockStart: "x1vdzyal",
+              height: "x1egiwwb",
+              ":hover_background": "x1oz5o6v",
               $$css: true
             }
           };

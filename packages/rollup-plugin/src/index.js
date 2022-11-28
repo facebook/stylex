@@ -7,6 +7,10 @@
 
 const babel = require('@babel/core');
 const stylexBabelPlugin = require('@stylexjs/babel-plugin');
+const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
+const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
+const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
+const path = require('path');
 
 const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
@@ -47,6 +51,10 @@ module.exports = function stylexPlugin({
         presets,
         plugins: [
           ...plugins,
+          /\.jsx?/.test(path.extname(id))
+            ? flowSyntaxPlugin
+            : typescriptSyntaxPlugin,
+          jsxSyntaxPlugin,
           [stylexBabelPlugin, { dev, stylexSheetName: fileName }],
         ],
       });
