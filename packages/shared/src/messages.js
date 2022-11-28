@@ -24,6 +24,8 @@ export const NON_OBJECT_FOR_STYLEX_CALL =
   'stylex.create() can only accept a style object.';
 export const UNKNOWN_PROP_KEY = 'Unknown property key';
 export const INVALID_PSEUDO = 'Invalid pseudo selector, not on the whitelist.';
+export const NO_CONDITIONAL_SHORTHAND =
+  'You cannot use conditional style values for a shorthand property.';
 export const ILLEGAL_NAMESPACE_TYPE =
   'Only a string literal namespace is allowed here.';
 export const UNKNOWN_NAMESPACE = 'Unknown namespace';

@@ -16,7 +16,7 @@ import type {
 } from './common-types';
 
 import convertToClassName from './convert-to-className';
-import expandShorthands from './expand-shorthands';
+import expandShorthands, { expandedKeys } from './expand-shorthands';
 import {
   objFromEntries,
   objValues,
@@ -52,7 +52,7 @@ export default function styleXCreateSet(
       namespace,
       options
     );
-    const compiledNamespace: { +[string]: string | IncludedStyles } =
+    const compiledNamespace: { +[string]: string | IncludedStyles | null } =
       flattenObject(resolvedNamespace);
     resolvedNamespaces[namespaceName] = { ...compiledNamespace, $$css: true };
     for (const cn of Object.keys(injected)) {
@@ -93,7 +93,11 @@ function styleXCreateNamespace(
       return [[key, value]];
     }
     if (value != null && typeof value === 'object' && !Array.isArray(value)) {
-      if (!key.startsWith(':') && !key.startsWith('@')) {
+      if (
+        !key.startsWith(':') &&
+        !key.startsWith('@') &&
+        expandedKeys.includes(key)
+      ) {
         throw new Error(messages.INVALID_PSEUDO);
       }
       return [
@@ -143,22 +147,46 @@ function styleXCreateNamespace(
     if (val instanceof IncludedStyles) {
       resolvedNamespace[key] = val;
     } else if (val != null && typeof val === 'object' && !Array.isArray(val)) {
-      const pseudo = key;
-      const innerObj = {};
-      for (const [innerKey, innerVal] of objEntries(val)) {
-        if (innerVal === null) {
-          innerObj[innerKey] = null;
-        } else {
-          const [updatedKey, className, cssRule] = convertToClassName(
-            [innerKey, innerVal],
-            pseudo,
-            options
-          );
-          innerObj[updatedKey] = className;
-          injectedStyles[updatedKey + pseudo] = [className, cssRule];
+      if (key.startsWith(':') || key.startsWith('@')) {
+        const pseudo = key;
+        const innerObj = {};
+        for (const [innerKey, innerVal] of objEntries(val)) {
+          if (innerVal === null) {
+            innerObj[innerKey] = null;
+          } else {
+            const [updatedKey, className, cssRule] = convertToClassName(
+              [innerKey, innerVal],
+              pseudo,
+              options
+            );
+            innerObj[updatedKey] = className;
+            injectedStyles[updatedKey + pseudo] = [className, cssRule];
+          }
         }
+        resolvedNamespace[key] = innerObj;
+      } else {
+        const propKey = key;
+        const classNames = [];
+        for (const [pseudo, innerVal] of objEntries(val)) {
+          if (
+            pseudo !== 'default' &&
+            !pseudo.startsWith(':') &&
+            !pseudo.startsWith('@')
+          ) {
+            throw new Error(messages.INVALID_PSEUDO);
+          }
+          if (innerVal !== null) {
+            const [updatedKey, className, cssRule] = convertToClassName(
+              [propKey, innerVal],
+              pseudo === 'default' ? undefined : pseudo,
+              options
+            );
+            injectedStyles[updatedKey + pseudo] = [className, cssRule];
+            classNames.push(className);
+          }
+        }
+        resolvedNamespace[key] = classNames.join(' ');
       }
-      resolvedNamespace[key] = innerObj;
     } else {
       if (val === null) {
         resolvedNamespace[key] = null;

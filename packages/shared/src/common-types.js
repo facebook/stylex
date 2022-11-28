@@ -11,7 +11,11 @@ import type { IncludedStyles } from './stylex-include';
 
 export type TRawValue = number | string | $ReadOnlyArray<number | string>;
 
-export type TStyleValue = number | string | $ReadOnlyArray<number | string>;
+export type TStyleValue =
+  | null
+  | number
+  | string
+  | $ReadOnlyArray<number | string>;
 export type TNestableStyleValue =
   | TStyleValue
   | $ReadOnly<{

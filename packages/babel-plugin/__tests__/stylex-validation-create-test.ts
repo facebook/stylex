@@ -274,18 +274,24 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({
             default: {
-              'hover': {},
+              'color': {
+                default: 'black',
+                ':hover': 'blue'
+              },
             },
           });
         `);
-      }).toThrow(messages.INVALID_PSEUDO);
+      }).not.toThrow(messages.INVALID_PSEUDO);
 
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({
             default: {
-              '&:hover': {},
+              'color': {
+                default: 'black',
+                '&:hover': 'blue'
+              },
             },
           });
         `);

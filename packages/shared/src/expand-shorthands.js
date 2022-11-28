@@ -250,6 +250,8 @@ const expansions = {
   },
 };
 
+export const expandedKeys: $ReadOnlyArray<string> = Object.keys(expansions);
+
 export default function flatMapExpandedShorthands<T>(
   objEntry: [string, T]
 ): Array<[string, T]> {

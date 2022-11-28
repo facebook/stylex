@@ -133,6 +133,28 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('transforms nested pseudo-class within properties to CSS', () => {
+      expect(
+        transform(`
+           import stylex from 'stylex';
+           const styles = stylex.create({
+             default: {
+               backgroundColor: {
+                 ':hover': 'red',
+               },
+               color: {
+                 ':hover': 'blue',
+               }
+             },
+           });
+         `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".x1gykpug:hover{background-color:red}", 8);
+        stylex.inject(".x17z2mba:hover{color:blue}", 8);"
+      `);
+    });
+
     test('transforms array values as fallbacks', () => {
       expect(
         transform(`
@@ -146,6 +168,26 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1ruww2u{position:sticky;position:fixed}", 1);"
+      `);
+    });
+
+    test('transforms array values as fallbacks within media query', () => {
+      expect(
+        transform(`
+           import stylex from 'stylex';
+           const styles = stylex.create({
+             default: {
+               position: {
+                 default: 'fixed',
+                 '@media (min-width: 768px)': ['sticky', 'fixed'],
+               }
+             },
+           });
+         `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".xixxii4{position:fixed}", 1);
+        stylex.inject("@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}", 2);"
       `);
     });
 
@@ -362,6 +404,69 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
+    describe('pseudo-classes within properties', () => {
+      // TODO: this should either fail or guarantee an insertion order relative to valid pseudo-classes
+      test('transforms invalid pseudo-class', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                backgroundColor: {':invalpwdijad': 'red'},
+                color: {':invalpwdijad': 'blue'},
+              },
+            });
+         `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 2);
+          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 2);"
+        `);
+      });
+
+      test('transforms valid pseudo-classes in order', () => {
+        expect(
+          transform(`
+             import stylex from 'stylex';
+           const styles = stylex.create({
+             default: {
+               color: {
+                ':hover': 'blue',
+                ':active':'red',
+                ':focus': 'yellow',
+                ':nth-child(2n)': 'purple',
+               },
+             },
+           });
+         `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x17z2mba:hover{color:blue}", 8);
+          stylex.inject(".x96fq8s:active{color:red}", 10);
+          stylex.inject(".x1wvtd7d:focus{color:yellow}", 9);
+          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 6);"
+        `);
+      });
+
+      test('transforms pseudo-class with array value as fallbacks', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                position: {
+                  ':hover': ['sticky', 'fixed'],
+                }
+              },
+            });
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 8);"
+        `);
+      });
+    });
+
     // TODO: more unsupported pseudo-classes
     describe('pseudo-elements', () => {
       test('transforms ::before and ::after', () => {
@@ -474,7 +579,53 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
-    test('[legacy] auto-expands shorthands', () => {
+    describe('queries within properties', () => {
+      test('transforms media queries', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media (min-width: 1000px)': 'blue',
+                  '@media (min-width: 2000px)': 'purple',
+                }
+              },
+            });
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".xrkmrrc{background-color:red}", 1);
+          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 2);
+          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 2);"
+        `);
+      });
+
+      test('transforms supports queries', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                backgroundColor: {
+                  default:'red',
+                  '@supports (hover: hover)': 'blue',
+                  '@supports not (hover: hover)': 'purple',
+                }
+              },
+            });
+          `)
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".xrkmrrc{background-color:red}", 1);
+          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 2);
+          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 2);"
+        `);
+      });
+    });
+
+    test('auto-expands shorthands', () => {
       expect(
         transform(`
            import stylex from 'stylex';

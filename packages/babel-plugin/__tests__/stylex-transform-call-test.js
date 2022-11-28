@@ -296,6 +296,28 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex call using styles with pseudo selectors within property', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              color: {
+                default: 'red',
+                ':hover': 'blue',
+              }
+            }
+          });
+          stylex(styles.default);
+        `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".x1e2nbdu{color:red}", 1);
+        stylex.inject(".x17z2mba:hover{color:blue}", 8);
+        "x1e2nbdu x17z2mba";"
+      `);
+    });
+
     test('stylex call using styles with Media Queries', () => {
       expect(
         transform(`
@@ -322,6 +344,30 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex call using styles with Media Queries within property', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              backgroundColor: {
+                default:'red',
+                '@media (min-width: 1000px)': 'blue',
+                '@media (min-width: 2000px)': 'purple',
+              },
+            },
+          });
+          stylex(styles.default);
+        `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".xrkmrrc{background-color:red}", 1);
+        stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 2);
+        stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 2);
+        "xrkmrrc xc445zv x1ssfqz5";"
+      `);
+    });
+
     test('stylex call using styles with Support Queries', () => {
       expect(
         transform(`
@@ -334,6 +380,30 @@ describe('@stylexjs/babel-plugin', () => {
               },
               '@supports not (hover: hover)': {
                 backgroundColor: 'purple',
+              },
+            },
+          });
+          stylex(styles.default);
+        `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".xrkmrrc{background-color:red}", 1);
+        stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 2);
+        stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 2);
+        "xrkmrrc x6m3b6q x6um648";"
+      `);
+    });
+
+    test('stylex call using styles with Support Queries within property', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              backgroundColor: {
+                default:'red',
+                '@supports (hover: hover)': 'blue',
+                '@supports not (hover: hover)': 'purple',
               },
             },
           });
@@ -907,6 +977,37 @@ describe('@stylexjs/babel-plugin', () => {
           default: {
             ":hover_color": "x17z2mba",
             "@media (min-width: 1000px)_backgroundColor": "xc445zv",
+            $$css: true
+          }
+        };
+        "x17z2mba xc445zv";"
+      `);
+    });
+
+    test('stylex call using exported styles with pseudo selectors, and queries within props', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: {
+              color: {
+                ':hover': 'blue',
+              },
+              backgroundColor: {
+                '@media (min-width: 1000px)': 'blue'  
+              },
+            }
+          });
+          stylex(styles.default);
+        `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".x17z2mba:hover{color:blue}", 8);
+        stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 2);
+        export const styles = {
+          default: {
+            color: "x17z2mba",
+            backgroundColor: "xc445zv",
             $$css: true
           }
         };
