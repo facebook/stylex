@@ -15,7 +15,10 @@ import type {
 } from '@stylexjs/shared';
 import { name } from '@stylexjs/stylex/package.json';
 
-type StyleXOptions = RuntimeOptions & { importSources: Array<string> };
+type StyleXOptions = RuntimeOptions & {
+  importSources: Array<string>;
+  genConditionalClasses: boolean;
+};
 
 export default class StateManager {
   readonly _state: PluginPass;
@@ -50,6 +53,7 @@ export default class StateManager {
       importSources: (options as any).importSources ?? [name, 'stylex'],
       definedStylexCSSVariables:
         (options as any).definedStylexCSSVariables ?? {},
+      genConditionalClasses: !!(options as any).genConditionalClasses,
     } as StyleXOptions;
     return this._state.opts as any;
   }

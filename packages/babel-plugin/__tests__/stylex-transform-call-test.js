@@ -351,7 +351,8 @@ describe('@stylexjs/babel-plugin', () => {
     describe('with conditional styles and collisions', () => {
       test('stylex call with conditions', () => {
         expect(
-          transform(`
+          transform(
+            `
             import stylex from 'stylex';
             const styles = stylex.create({
               default: {
@@ -362,12 +363,51 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.default, isActive && styles.active);
-          `)
+          `,
+            { genConditionalClasses: true }
+          )
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 1);
           stylex.inject(".xju2f9n{color:blue}", 1);
-          "xrkmrrc" + (isActive ? " xju2f9n" : "");"
+          ({
+            0: "xrkmrrc",
+            1: "xrkmrrc xju2f9n"
+          })[!!isActive << 0];"
+        `);
+      });
+
+      test('stylex call with conditions - skip conditional', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                backgroundColor: 'red',
+              },
+              active: {
+                color: 'blue',
+              }
+            });
+            stylex(styles.default, isActive && styles.active);
+            `
+          )
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".xrkmrrc{background-color:red}", 1);
+          stylex.inject(".xju2f9n{color:blue}", 1);
+          const styles = {
+            default: {
+              backgroundColor: "xrkmrrc",
+              $$css: true
+            },
+            active: {
+              color: "xju2f9n",
+              $$css: true
+            }
+          };
+          stylex(styles.default, isActive && styles.active);"
         `);
       });
 
@@ -482,7 +522,8 @@ describe('@stylexjs/babel-plugin', () => {
 
       test('stylex call with conditions and collisions', () => {
         expect(
-          transform(`
+          transform(
+            `
             import stylex from 'stylex';
             const styles = stylex.create({
               red: {
@@ -493,18 +534,58 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.red, isActive && styles.blue);
-          `)
+          `,
+            { genConditionalClasses: true }
+          )
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 1);
           stylex.inject(".xju2f9n{color:blue}", 1);
-          "" + (isActive ? " xju2f9n" : " x1e2nbdu");"
+          ({
+            0: "x1e2nbdu",
+            1: "xju2f9n"
+          })[!!isActive << 0];"
+        `);
+      });
+
+      test('stylex call with conditions and collisions - skip conditional', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              },
+              blue: {
+                color: 'blue',
+              }
+            });
+            stylex(styles.red, isActive && styles.blue);
+            `
+          )
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1e2nbdu{color:red}", 1);
+          stylex.inject(".xju2f9n{color:blue}", 1);
+          const styles = {
+            red: {
+              color: "x1e2nbdu",
+              $$css: true
+            },
+            blue: {
+              color: "xju2f9n",
+              $$css: true
+            }
+          };
+          stylex(styles.red, isActive && styles.blue);"
         `);
       });
 
       test('stylex call with conditions and null collisions', () => {
         expect(
-          transform(`
+          transform(
+            `
             import stylex from 'stylex';
             const styles = stylex.create({
               red: {
@@ -515,11 +596,49 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.red, isActive && styles.blue);
-          `)
+          `,
+            { genConditionalClasses: true }
+          )
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 1);
-          "" + (isActive ? "" : " x1e2nbdu");"
+          ({
+            0: "x1e2nbdu",
+            1: ""
+          })[!!isActive << 0];"
+        `);
+      });
+
+      test('stylex call with conditions and null collisions - skip conditional', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              },
+              blue: {
+                color: null,
+              }
+            });
+            stylex(styles.red, isActive && styles.blue);
+            `
+          )
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1e2nbdu{color:red}", 1);
+          const styles = {
+            red: {
+              color: "x1e2nbdu",
+              $$css: true
+            },
+            blue: {
+              color: null,
+              $$css: true
+            }
+          };
+          stylex(styles.red, isActive && styles.blue);"
         `);
       });
     });
@@ -555,6 +674,7 @@ describe('@stylexjs/babel-plugin', () => {
         const options = {
           filename: '/html/js/FooBar.react.js',
           dev: true,
+          genConditionalClasses: true,
         };
         expect(
           transform(
@@ -578,7 +698,55 @@ describe('@stylexjs/babel-plugin', () => {
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 1);
           stylex.inject(".x1t391ir{background-color:blue}", 1);
-          "FooBar__styles.default x1e2nbdu" + (isActive ? " FooBar__otherStyles.default x1t391ir" : "");"
+          ({
+            0: "FooBar__styles.default x1e2nbdu",
+            1: "FooBar__styles.default x1e2nbdu FooBar__otherStyles.default x1t391ir"
+          })[!!isActive << 0];"
+        `);
+      });
+
+      test('stylex call produces dev class name with conditions - skip conditional', () => {
+        const options = {
+          filename: '/html/js/FooBar.react.js',
+          dev: true,
+        };
+        expect(
+          transform(
+            `
+              import stylex from 'stylex';
+              const styles = stylex.create({
+                default: {
+                  color: 'red',
+                },
+              });
+              const otherStyles = stylex.create({
+                default: {
+                  backgroundColor: 'blue',
+                }
+              });
+              stylex(styles.default, isActive && otherStyles.default);
+          `,
+            options
+          )
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1e2nbdu{color:red}", 1);
+          const styles = {
+            default: {
+              "FooBar__styles.default": "FooBar__styles.default",
+              color: "x1e2nbdu",
+              $$css: true
+            }
+          };
+          stylex.inject(".x1t391ir{background-color:blue}", 1);
+          const otherStyles = {
+            default: {
+              "FooBar__otherStyles.default": "FooBar__otherStyles.default",
+              backgroundColor: "x1t391ir",
+              $$css: true
+            }
+          };
+          stylex(styles.default, isActive && otherStyles.default);"
         `);
       });
 
@@ -586,6 +754,7 @@ describe('@stylexjs/babel-plugin', () => {
         const options = {
           filename: '/html/js/FooBar.react.js',
           dev: true,
+          genConditionalClasses: true,
         };
 
         expect(
@@ -608,7 +777,52 @@ describe('@stylexjs/babel-plugin', () => {
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 1);
           stylex.inject(".xju2f9n{color:blue}", 1);
-          "FooBar__styles.default" + (isActive ? " xju2f9n FooBar__styles.active" : " x1e2nbdu");"
+          ({
+            0: "FooBar__styles.default x1e2nbdu",
+            1: "FooBar__styles.default FooBar__styles.active xju2f9n"
+          })[!!isActive << 0];"
+        `);
+      });
+
+      test('stylex call produces dev class name with collisions - skip conditional', () => {
+        const options = {
+          filename: '/html/js/FooBar.react.js',
+          dev: true,
+        };
+
+        expect(
+          transform(
+            `
+              import stylex from 'stylex';
+              const styles = stylex.create({
+                default: {
+                  color: 'red',
+                },
+                active: {
+                  color: 'blue',
+                }
+              });
+              stylex(styles.default, isActive && styles.active);
+            `,
+            options
+          )
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1e2nbdu{color:red}", 1);
+          stylex.inject(".xju2f9n{color:blue}", 1);
+          const styles = {
+            default: {
+              "FooBar__styles.default": "FooBar__styles.default",
+              color: "x1e2nbdu",
+              $$css: true
+            },
+            active: {
+              "FooBar__styles.active": "FooBar__styles.active",
+              color: "xju2f9n",
+              $$css: true
+            }
+          };
+          stylex(styles.default, isActive && styles.active);"
         `);
       });
     });
@@ -861,7 +1075,102 @@ describe('@stylexjs/babel-plugin', () => {
     });
   });
   describe('Specific edge-case bugs', () => {
-    test.only('Basic stylex call', () => {
+    test('Basic stylex call', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            sidebar: {
+              boxSizing: 'border-box',
+              gridArea: 'sidebar',
+            },
+            content: {
+              gridArea: 'content',
+            },
+            root: {
+              display: 'grid',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"content"',
+            },
+            withSidebar: {
+              gridTemplateColumns: 'auto minmax(0, 1fr)',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"sidebar content"',
+              '@media (max-width: 640px)': {
+                gridTemplateRows: 'minmax(0, 1fr) auto',
+                gridTemplateAreas: '"content" "sidebar"',
+                gridTemplateColumns: '100%',
+              },
+            },
+            noSidebar: {
+              gridTemplateColumns: 'minmax(0, 1fr)',
+            },
+          });
+          stylex(
+            styles.root,
+            sidebar == null ? styles.noSidebar : styles.withSidebar,
+          );
+        `,
+          { dev: true, genConditionalClasses: true }
+        )
+      ).toMatchInlineSnapshot(`
+        "import stylex from '@stylexjs/stylex';
+        stylex.inject(".x9f619{box-sizing:border-box}", 1);
+        stylex.inject(".x1yc5d2u{grid-area:sidebar}", 1);
+        stylex.inject(".x1fdo2jl{grid-area:content}", 1);
+        stylex.inject(".xrvj5dj{display:grid}", 1);
+        stylex.inject(".x7k18q3{grid-template-rows:100%}", 1);
+        stylex.inject(".x5gp9wm{grid-template-areas:\\"content\\"}", 1);
+        stylex.inject(".x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 1);
+        stylex.inject(".x17lh93j{grid-template-areas:\\"sidebar content\\"}", 1);
+        stylex.inject("@media (max-width: 640px){.xmr4b4k.xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 2);
+        stylex.inject("@media (max-width: 640px){.xesbpuc.xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2);
+        stylex.inject("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 2);
+        stylex.inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 1);
+        export const styles = {
+          sidebar: {
+            "UnkownFile__styles.sidebar": "UnkownFile__styles.sidebar",
+            boxSizing: "x9f619",
+            gridArea: "x1yc5d2u",
+            $$css: true
+          },
+          content: {
+            "UnkownFile__styles.content": "UnkownFile__styles.content",
+            gridArea: "x1fdo2jl",
+            $$css: true
+          },
+          root: {
+            "UnkownFile__styles.root": "UnkownFile__styles.root",
+            display: "xrvj5dj",
+            gridTemplateRows: "x7k18q3",
+            gridTemplateAreas: "x5gp9wm",
+            $$css: true
+          },
+          withSidebar: {
+            "UnkownFile__styles.withSidebar": "UnkownFile__styles.withSidebar",
+            gridTemplateColumns: "x1rkzygb",
+            gridTemplateRows: "x7k18q3",
+            gridTemplateAreas: "x17lh93j",
+            "@media (max-width: 640px)_gridTemplateRows": "xmr4b4k",
+            "@media (max-width: 640px)_gridTemplateAreas": "xesbpuc",
+            "@media (max-width: 640px)_gridTemplateColumns": "x15nfgh4",
+            $$css: true
+          },
+          noSidebar: {
+            "UnkownFile__styles.noSidebar": "UnkownFile__styles.noSidebar",
+            gridTemplateColumns: "x1mkdm3x",
+            $$css: true
+          }
+        };
+        ({
+          0: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
+          1: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x"
+        })[!!(sidebar == null) << 0];"
+      `);
+    });
+
+    test('Basic stylex call - skip conditional', () => {
       expect(
         transform(
           `
@@ -949,7 +1258,75 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           }
         };
-        "UnkownFile__styles.root xrvj5dj" + (sidebar == null ? " x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x" : " x7k18q3 x17lh93j  x1rkzygb UnkownFile__styles.withSidebar xmr4b4k xesbpuc x15nfgh4");"
+        stylex(styles.root, sidebar == null ? styles.noSidebar : styles.withSidebar);"
+      `);
+    });
+
+    test('Basic stylex call', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            sidebar: {
+              boxSizing: 'border-box',
+              gridArea: 'sidebar',
+            },
+            content: {
+              gridArea: 'content',
+            },
+            root: {
+              display: 'grid',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"content"',
+            },
+            withSidebar: {
+              gridTemplateColumns: 'auto minmax(0, 1fr)',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"sidebar content"',
+              '@media (max-width: 640px)': {
+                gridTemplateRows: 'minmax(0, 1fr) auto',
+                gridTemplateAreas: '"content" "sidebar"',
+                gridTemplateColumns: '100%',
+              },
+            },
+            noSidebar: {
+              gridTemplateColumns: 'minmax(0, 1fr)',
+            },
+          });
+          const complex = stylex(
+            styles.root,
+            sidebar == null && !isSidebar ? styles.noSidebar : styles.withSidebar,
+            isSidebar && styles.sidebar,
+            isContent && styles.content,
+          );
+        `,
+          { dev: true, genConditionalClasses: true }
+        )
+      ).toMatchInlineSnapshot(`
+        "import stylex from '@stylexjs/stylex';
+        stylex.inject(".x9f619{box-sizing:border-box}", 1);
+        stylex.inject(".x1yc5d2u{grid-area:sidebar}", 1);
+        stylex.inject(".x1fdo2jl{grid-area:content}", 1);
+        stylex.inject(".xrvj5dj{display:grid}", 1);
+        stylex.inject(".x7k18q3{grid-template-rows:100%}", 1);
+        stylex.inject(".x5gp9wm{grid-template-areas:\\"content\\"}", 1);
+        stylex.inject(".x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 1);
+        stylex.inject(".x17lh93j{grid-template-areas:\\"sidebar content\\"}", 1);
+        stylex.inject("@media (max-width: 640px){.xmr4b4k.xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 2);
+        stylex.inject("@media (max-width: 640px){.xesbpuc.xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2);
+        stylex.inject("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 2);
+        stylex.inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 1);
+        const complex = {
+          0: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
+          4: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x",
+          2: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnkownFile__styles.sidebar x9f619 x1yc5d2u",
+          6: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x UnkownFile__styles.sidebar x9f619 x1yc5d2u",
+          1: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnkownFile__styles.content x1fdo2jl",
+          5: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x UnkownFile__styles.content x1fdo2jl",
+          3: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnkownFile__styles.sidebar x9f619 UnkownFile__styles.content x1fdo2jl",
+          7: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x UnkownFile__styles.sidebar x9f619 UnkownFile__styles.content x1fdo2jl"
+        }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
     });
   });

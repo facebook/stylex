@@ -73,12 +73,14 @@ function stylex(
         for (const prop in styleObj) {
           const value = styleObj[prop];
           // Style declarations, e.g., opacity: 's3fkgpd'
-          if (typeof value === 'string') {
+          if (typeof value === 'string' || value === null) {
             // Skip adding to the chunks if property has already been seen
             if (!definedProperties.includes(prop)) {
               definedProperties.push(prop);
               definedPropertiesChunk.push(prop);
-              classNameChunk += classNameChunk ? ' ' + value : value;
+              if (typeof value === 'string') {
+                classNameChunk += classNameChunk ? ' ' + value : value;
+              }
             }
           }
         }

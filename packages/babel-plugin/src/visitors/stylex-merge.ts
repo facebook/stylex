@@ -5,16 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { CompiledStyles } from '@stylexjs/shared';
 import type { NodePath } from '@babel/traverse';
 
 import * as t from '@babel/types';
-import traverse from '@babel/traverse';
 import StateManager from '../utils/state-manager';
+import stylex from '@stylexjs/stylex';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
-type TResolvedStyles = { [key: string]: ClassNameValue };
+
+type StyleObject = { [key: string]: string | null | boolean };
+type StyleObjectOrNull = StyleObject | null | undefined;
+type ConditionalStyle = [t.Expression, StyleObjectOrNull, StyleObjectOrNull];
+type ResolvedArg = StyleObjectOrNull | ConditionalStyle;
+type ResolvedArgs = Array<ResolvedArg>;
 
 export function skipStylexMergeChildren(
   path: NodePath<t.CallExpression>,
@@ -49,115 +53,53 @@ export default function transformStyleXMerge(
   }
 
   let bailOut = false;
-  const resolvedStyles: TResolvedStyles = {};
   let conditional = false;
-  for (const arg of node.arguments) {
+
+  const resolvedArgs: ResolvedArgs = [];
+  loop: for (const arg of node.arguments) {
     switch (arg.type) {
       case 'MemberExpression':
-        const { property, object, computed } = arg;
-        let objName = null;
-        let propName = null;
-        if (
-          object.type === 'Identifier' &&
-          state.styleMap.has(object.name) &&
-          property.type === 'Identifier' &&
-          !computed
-        ) {
-          objName = object.name;
-          propName = property.name;
-        }
-        if (
-          object.type === 'Identifier' &&
-          state.styleMap.has(object.name) &&
-          (property.type === 'StringLiteral' ||
-            property.type === 'NumericLiteral') &&
-          computed
-        ) {
-          objName = object.name;
-          propName = property.value;
-        }
-        if (objName != null && propName != null) {
-          const style = state.styleMap.get(objName);
-
-          if (style == null || style[propName] == null) {
-            throw new Error(
-              `Unknown style ${objName}.${propName}. The defined style ${objName}, contains the following keys: ${Object.keys(
-                style ?? {}
-              ).join(', ')}`
-            );
-          }
-
-          const namespace = style[propName];
-          Object.assign(resolvedStyles, namespace);
-        } else {
-          // Unknown style found. bail out.
+        const resolved = parseNullableStyle(arg, state);
+        if (resolved === 'other') {
           bailOut = true;
+          break loop;
+        } else {
+          resolvedArgs.push(resolved);
         }
         break;
       case 'ConditionalExpression':
+        conditional = true;
         const { test, consequent, alternate } = arg;
         const primary = parseNullableStyle(consequent, state);
         const fallback = parseNullableStyle(alternate, state);
         if (primary === 'other' || fallback === 'other') {
           bailOut = true;
-          break;
+          break loop;
         }
-        if (primary === null && fallback === null) {
-          // A no-op
-          break;
-        }
-        const allKeys = new Set<string>([
-          ...Object.keys(primary ?? {}),
-          ...Object.keys(fallback ?? {}),
-        ]);
-        for (const key of allKeys) {
-          // if (resolvedStyles[key] === undefined) {
-          const primaryValue = firstValidValue(
-            primary?.[key],
-            resolvedStyles[key],
-            ''
-          );
-          const fallbackValue = firstValidValue(
-            fallback?.[key],
-            resolvedStyles[key],
-            ''
-          );
-          resolvedStyles[key] = [test, primaryValue, fallbackValue];
-          // }
-        }
+        resolvedArgs.push([test, primary, fallback]);
         break;
       case 'LogicalExpression':
+        conditional = true;
         if (arg.operator !== '&&') {
           bailOut = true;
-          break;
+          break loop;
         }
         const { left, right } = arg;
-        if (
-          left.type === 'MemberExpression' &&
-          left.object.type === 'Identifier' &&
-          state.styleMap.has(left.object.name)
-        ) {
-          // We don't support `a && b` in stylex calls where `a` is a style namespace.
+        const leftResolved = parseNullableStyle(left, state);
+        const rightResolved = parseNullableStyle(right, state);
+        if (leftResolved !== 'other' || rightResolved === 'other') {
           bailOut = true;
-          break;
+          break loop;
         }
-        const value = parseNullableStyle(right, state);
-        if (value === 'other') {
-          bailOut = true;
-          break;
-        }
-        if (value === null) {
-          // A no-op??
-          break;
-        }
-        for (const [key, val] of Object.entries(value)) {
-          resolvedStyles[key] = [left, val, resolvedStyles[key] ?? ''];
-        }
+        resolvedArgs.push([left, rightResolved, null]);
         break;
       default:
         bailOut = true;
         break;
     }
+  }
+  if (!state.options.genConditionalClasses && conditional) {
+    bailOut = true;
   }
   if (bailOut) {
     path.traverse({
@@ -193,125 +135,124 @@ export default function transformStyleXMerge(
     path.skip();
     // convert resolvedStyles to a string + ternary expressions
     // We no longer need the keys, so we can just use the values.
-    const stringExpression = makeStringExpression(
-      Object.values(resolvedStyles)
-    );
+    const stringExpression = makeStringExpression(resolvedArgs);
     path.replaceWith(stringExpression);
   }
 }
 
-type NestedStyles = {
-  [key: string]:
-    | string
-    | null
-    | boolean
-    | { [key: string]: string | null | boolean };
-};
-
-function firstValidValue(
-  ...values: Array<ClassNameValue | undefined>
-): ClassNameValue {
-  const [first, ...rest] = values;
-  return first !== undefined ? first : firstValidValue(...rest);
-}
 // Looks for Null or locally defined style namespaces.
 // Otherwise it returns the string "other"
 // Which is used as an indicator to bail out of this optimization.
 function parseNullableStyle(
   node: t.Expression,
   state: StateManager
-): null | { [key: string]: string | null | boolean } | 'other' {
+): null | StyleObject | 'other' {
   if (
     t.isNullLiteral(node) ||
     (t.isIdentifier(node) && node.name === 'undefined')
   ) {
     return null;
   }
+
   if (t.isMemberExpression(node)) {
-    const { object: obj, property: prop, computed: computed } = node;
+    const { object, property, computed: computed } = node;
+    let objName = null;
+    let propName = null;
     if (
-      obj.type !== 'Identifier' ||
-      !state.styleMap.has(obj.name) ||
-      prop.type !== 'Identifier' ||
+      object.type === 'Identifier' &&
+      state.styleMap.has(object.name) &&
+      property.type === 'Identifier' &&
+      !computed
+    ) {
+      objName = object.name;
+      propName = property.name;
+    }
+    if (
+      object.type === 'Identifier' &&
+      state.styleMap.has(object.name) &&
+      (property.type === 'StringLiteral' ||
+        property.type === 'NumericLiteral') &&
       computed
     ) {
-      return 'other';
+      objName = object.name;
+      propName = property.value;
     }
 
-    const namespace1 = state.styleMap.get(obj.name);
-    if (namespace1 == null) {
-      return 'other';
+    if (objName != null && propName != null) {
+      const style = state.styleMap.get(objName);
+      if (style != null && style[propName] != null) {
+        return style[propName];
+      }
     }
-    const style = namespace1[prop.name];
-
-    if (style == null) {
-      return 'other';
-    }
-    return style;
-  } else {
-    return 'other';
-  }
-}
-
-function makeStringExpression(
-  values: ReadonlyArray<ClassNameValue>,
-  inTernary: boolean = false
-): t.Expression {
-  // To start let's split the plain strings and everything else.
-  let strings = values
-    .filter((value) => typeof value === 'string')
-    .join(' ')
-    .trim();
-  if (inTernary && strings !== '') {
-    strings = ' ' + strings;
   }
 
-  const nonPrimitive = values.filter(
-    (value: ClassNameValue): value is NonStringClassNameValue =>
-      typeof value !== 'string' && typeof value !== 'boolean' && value != null
-  );
-
-  const groupedByTest = groupBy(
-    nonPrimitive,
-    ([test, _a, _b]: NonStringClassNameValue) => test
-  );
-
-  const eachTernary = [...groupedByTest.entries()].map(
-    ([test, value]: [t.Expression, Array<NonStringClassNameValue>]) => {
-      const consequents = makeStringExpression(
-        value.map(([_a, a, _b]: NonStringClassNameValue) => a),
-        true
-      );
-      const fallbacks = makeStringExpression(
-        value.map(([_a, _b, b]: NonStringClassNameValue) => b),
-        true
-      );
-
-      return t.conditionalExpression(test, consequents, fallbacks);
-    }
-  );
-
-  return addAll([t.stringLiteral(strings), ...eachTernary]);
+  return 'other';
 }
 
-function addAll([first, ...nodes]: ReadonlyArray<t.Expression>): t.Expression {
-  if (nodes.length === 0) {
-    return first;
+function makeStringExpression(values: ResolvedArgs): t.Expression {
+  const conditions = values
+    .filter((v) => Array.isArray(v))
+    .map((v) => (v as ConditionalStyle)[0]);
+
+  if (conditions.length === 0) {
+    return t.stringLiteral(stylex(...(values as any)));
   }
-  return t.binaryExpression('+', first, addAll(nodes));
+
+  const conditionPermutations = genConditionPermutations(conditions.length);
+  const objEntries = conditionPermutations.map((permutation) => {
+    let i = 0;
+    const args = values.map((v) => {
+      if (Array.isArray(v)) {
+        const [test, primary, fallback] = v;
+        return permutation[i++] ? primary : fallback;
+      } else {
+        return v;
+      }
+    });
+    const key = permutation.reduce(
+      (soFar, bool) => (soFar << 1) | (bool ? 1 : 0),
+      0
+    );
+    return t.objectProperty(
+      t.numericLiteral(key),
+      t.stringLiteral(stylex(...(args as any)))
+    );
+  });
+  const objExpressions = t.objectExpression(objEntries);
+  const conditionsToKey = genBitwiseOrOfConditions(conditions);
+  return t.memberExpression(objExpressions, conditionsToKey, true);
 }
 
-// Array groupBy function
-function groupBy<T, K>(
-  array: ReadonlyArray<T>,
-  key: (item: T) => K
-): Map<K, Array<T>> {
-  const result: Map<K, Array<T>> = new Map();
-  for (const item of array) {
-    const k = key(item);
-    const array = result.get(k) ?? [];
-    array.push(item);
-    result.set(k, array);
+// A function to generate a list of all possible permutations of true and false for a given count of conditional expressions.
+// For example, if there are 2 conditional expressions, this function will return:
+// [[true, true], [true, false], [false, true], [false, false]]
+function genConditionPermutations(count: number): Array<Array<boolean>> {
+  const result = [];
+  for (let i = 0; i < 2 ** count; i++) {
+    const combination = [];
+    for (let j = 0; j < count; j++) {
+      combination.push(Boolean(i & (1 << j)));
+    }
+    result.push(combination);
   }
   return result;
+}
+
+// A function to generate a bitwise or of all the conditions.
+// For example, if there are 2 conditional expressions, this function will return:
+// `!!test1 << 2 | !!test2 << 1
+function genBitwiseOrOfConditions(
+  conditions: Array<t.Expression>
+): t.Expression {
+  const binaryExpressions = conditions.map((condition, i) => {
+    const shift = conditions.length - i - 1;
+    return t.binaryExpression(
+      '<<',
+      t.unaryExpression('!', t.unaryExpression('!', condition)),
+      t.numericLiteral(shift)
+    );
+  });
+  return binaryExpressions.reduce((acc, expr) => {
+    return t.binaryExpression('|', acc, expr);
+  });
 }
