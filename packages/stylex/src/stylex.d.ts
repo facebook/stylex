@@ -38,17 +38,14 @@ export type CompiledNamespaceSet = {
   readonly [K in string]: CompiledNamespace;
 };
 
-type Stylex$Create = <S extends StyleXNamespaceSet>(
+type Stylex$Create = <S extends NamespaceSet>(
   styles: S
 ) => $ReadOnly<{
   readonly [K in keyof S]: {
     readonly [P in keyof S[K]]: S[K][P] extends string | number
-      ? StyleXClassNameFor<P, S[K][P]>
+      ? ClassNameFor<P, S[K][P]>
       : {
-          readonly [F in keyof S[K][P]]: StyleXClassNameFor<
-            `${P}+${F}`,
-            S[K][P][F]
-          >;
+          readonly [F in keyof S[K][P]]: ClassNameFor<`${P}+${F}`, S[K][P][F]>;
         };
   };
 }>;
@@ -56,19 +53,17 @@ type Stylex$Create = <S extends StyleXNamespaceSet>(
 type StylexInclude = <S extends CompiledNamespace>(
   compiledNamespace: S
 ) => {
-  readonly [K in keyof S]: S[K] extends ClassNameFor<K, infer V>
-    ? V
-    : Uncompiled<S[K]>;
+  readonly [K in keyof S]: S[K] extends ClassNameFor<K, infer V> ? V : S[K];
 };
 
-type Stylex$Keyframes = <S extends StyleXNamespaceSet>(
-  animationConfig: S
-) => string;
+type Stylex$Keyframes = <S extends NamespaceSet>(animationConfig: S) => string;
 
-type stylex = {
+type NestedArray<T> = T | Array<T | NestedArray<T>>;
+
+declare let stylex: {
   (
     ...styles: ReadonlyArray<
-      StyleXArray<(CompiledNamespace | null | undefined) | boolean>
+      NestedArray<(CompiledNamespace | null | undefined) | boolean>
     >
   ): string;
   create: Stylex$Create;

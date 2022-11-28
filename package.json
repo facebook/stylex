@@ -37,6 +37,7 @@
     "@rollup/plugin-node-resolve": "^15.0.0",
     "@types/jest": "^29.2.0",
     "@types/estree": "^1.0.0",
+    "@types/react": "18.0.1",
     "benchmark": "^2.1.4",
     "eslint": "^8.25.0",
     "eslint-config-prettier": "^8.5.0",

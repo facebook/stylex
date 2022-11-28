@@ -1,0 +1,22 @@
+{
+  "name": "nextjs-example",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "^0.1.0-beta.7",
+    "next": "^13.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@stylexjs/nextjs-plugin": "^0.1.0-beta.7",
+    "@types/react": "18.0.4",
+    "eslint": "^7.32.0",
+    "eslint-config-next": "^13.0.5"
+  }
+}
