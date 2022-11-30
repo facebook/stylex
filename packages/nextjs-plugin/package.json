@@ -6,6 +6,7 @@
   "repository": "https://www.github.com/facebookexternal/stylex",
   "license": "MIT",
   "dependencies": {
+    "@stylexjs/webpack-plugin": "^0.2.0-beta.8",
     "css-loader": "^6.5.0",
     "mini-css-extract-plugin": "^2.4.3"
   },
