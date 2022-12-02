@@ -13,6 +13,7 @@ import Layout from '@theme/Layout';
 import Logo from '@site/components/Logo';
 // import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
+import ZStack from '../../components/ZStack';
 
 const STEP_1 = `import stylex from '@stylexjs/stylex';
 
@@ -42,20 +43,42 @@ export default function Home() {
             {/* <StylexAnimatedLogo /> */}
           </h1>
           <h2 className={stylex(styles.subtitle)}>
-            Super-fast{' '}
-            <span className={stylex(styles.subtitleHighlight)}>
-              atomic styles
-            </span>
-            ,
+            Stop thinking about{' '}
+            <ZStack>
+              {[
+                <span className={stylex(styles.subtitleHighlight)}>
+                  Performance
+                </span>,
+                <span
+                  className={stylex(
+                    styles.subtitleHighlight,
+                    styles.highlightBlue,
+                  )}>
+                  Organization
+                </span>,
+                <span className={stylex(styles.subtitleHighlight)}>
+                  Writing Modes
+                </span>,
+                <span
+                  className={stylex(
+                    styles.subtitleHighlight,
+                    styles.highlightBlue,
+                  )}>
+                  Specificity Wars
+                </span>,
+              ]}
+            </ZStack>
             <br />
-            <span className={stylex(styles.subtitleHighlight)}>
-              without
-            </span>{' '}
-            even thinking about it!
           </h2>
+          <h3 className={stylex(styles.h3)}>
+            <span className={stylex(styles.subtitleHighlight)}>Start</span>{' '}
+            writing fast, maintainable CSS, effortlessly.
+          </h3>
         </section>
         <section className={stylex(styles.getStarted)}>
-          <h1 className={stylex(styles.sectionTitle)}>There's no step 3!</h1>
+          <h1 className={stylex(styles.sectionTitle)}>
+            {'There\u2019s no step 3!'}
+          </h1>
           <div className={stylex(styles.card)}>
             <h3 className={stylex(styles.cardTitle)}>Step 1</h3>
             <p className={stylex(styles.cardDescription)}>Define Your Styles</p>
@@ -99,6 +122,8 @@ const styles = stylex.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'var(--bg1)',
+    backgroundImage:
+      'radial-gradient(hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.15), var(--bg1) 70%)',
   },
   hero: {
     height: 'calc((100vh - 72px))',
@@ -108,30 +133,44 @@ const styles = stylex.create({
     justifyContent: 'center',
   },
   title: {
+    position: 'relative',
     boxSizing: 'border-box',
     margin: 0,
+    zIndex: 0,
   },
   logo: {
     width: '100%',
     display: 'flex',
+    position: 'relative',
+    zIndex: 1,
   },
   subtitle: {
-    width: '100%',
-    maxWidth: 1080,
-    fontWeight: '300',
+    marginTop: 24,
+    paddingInline: 24,
+    fontWeight: '400',
     textAlign: 'center',
     color: 'var(--fg2)',
-    fontSize: '5rem',
-    '@media (min-width: 900px) and (max-width: 1200px)': {
-      fontSize: '4rem',
-    },
-    '@media (max-width: 900px)': {
-      fontSize: '2.4rem',
-    },
+    fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',
+    // '@media (min-width: 900px) and (max-width: 1200px)': {
+    //   fontSize: '3rem',
+    // },
+    // '@media (max-width: 900px)': {
+    //   fontSize: '2.4rem',
+    // },
+  },
+  h3: {
+    width: '100%',
+    fontWeight: '400',
+    fontSize: 'clamp(1rem, 0.8rem + 5vw, 2rem)',
+    textAlign: 'center',
+    opacity: 0.7,
   },
   subtitleHighlight: {
     color: 'var(--pink)',
-    fontWeight: '600',
+    fontWeight: '700',
+  },
+  highlightBlue: {
+    color: 'var(--cyan)',
   },
   sectionTitle: {
     fontSize: '4rem',
