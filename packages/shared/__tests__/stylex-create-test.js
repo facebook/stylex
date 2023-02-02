@@ -31,12 +31,12 @@ describe('stylex-create-test', () => {
         {
           "xju2f9n": {
             "ltr": ".xju2f9n{color:blue}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
           "xrkmrrc": {
             "ltr": ".xrkmrrc{background-color:red}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },
@@ -66,22 +66,22 @@ describe('stylex-create-test', () => {
         {
           "x18xuxqe": {
             "ltr": ".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
           "xcrpjku": {
             "ltr": ".xcrpjku{padding-right:var(--rightpadding,20px)}",
-            "priority": 1,
+            "priority": 4,
             "rtl": ".xcrpjku{padding-left:var(--rightpadding,20px)}",
           },
           "xexx8yu": {
             "ltr": ".xexx8yu{padding-top:0}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
           "xyv1419": {
             "ltr": ".xyv1419{padding-left:var(--rightpadding,20px)}",
-            "priority": 1,
+            "priority": 4,
             "rtl": ".xyv1419{padding-right:var(--rightpadding,20px)}",
           },
         },
@@ -107,7 +107,7 @@ describe('stylex-create-test', () => {
         {
           "xgau0yw": {
             "ltr": ".xgau0yw{--background-color:red}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },
@@ -133,7 +133,7 @@ describe('stylex-create-test', () => {
         {
           "x13tgbkp": {
             "ltr": ".x13tgbkp{--final-color:var(--background-color)}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },
@@ -167,12 +167,12 @@ describe('stylex-create-test', () => {
         {
           "xju2f9n": {
             "ltr": ".xju2f9n{color:blue}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
           "xrkmrrc": {
             "ltr": ".xrkmrrc{background-color:red}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },
@@ -198,7 +198,7 @@ describe('stylex-create-test', () => {
         {
           "xd71okc": {
             "ltr": ".xd71okc{content:attr(some-attribute)}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },
@@ -228,12 +228,12 @@ describe('stylex-create-test', () => {
         {
           "x17z2mba": {
             "ltr": ".x17z2mba:hover{color:blue}",
-            "priority": 8,
+            "priority": 17,
             "rtl": null,
           },
           "x1gykpug": {
             "ltr": ".x1gykpug:hover{background-color:red}",
-            "priority": 8,
+            "priority": 17,
             "rtl": null,
           },
         },
@@ -260,7 +260,7 @@ describe('stylex-create-test', () => {
         {
           "x1ruww2u": {
             "ltr": ".x1ruww2u{position:sticky;position:fixed}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },
@@ -282,68 +282,40 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "borderBottomStyle": "xpvcztv",
-            "borderBottomWidth": "xso031l",
-            "borderEndStyle": "x157eodl",
-            "borderEndWidth": "xm81vs4",
-            "borderStartStyle": "x1q04ism",
-            "borderStartWidth": "xy80clv",
-            "borderTopStyle": "xlya59e",
-            "borderTopWidth": "x178xt8z",
-            "overflowX": "x6ikm8r",
-            "overflowY": "x10wlt62",
+            "borderBottomStyle": null,
+            "borderBottomWidth": null,
+            "borderInlineEndStyle": null,
+            "borderInlineEndWidth": null,
+            "borderInlineStartStyle": null,
+            "borderInlineStartWidth": null,
+            "borderLeftStyle": null,
+            "borderLeftWidth": null,
+            "borderRightStyle": null,
+            "borderRightWidth": null,
+            "borderStyle": "xbsl7fq",
+            "borderTopStyle": null,
+            "borderTopWidth": null,
+            "borderWidth": "xmkeg23",
+            "overflow": "xb3r6kr",
+            "overflowX": null,
+            "overflowY": null,
           },
         },
         {
-          "x10wlt62": {
-            "ltr": ".x10wlt62{overflow-y:hidden}",
-            "priority": 1,
+          "xb3r6kr": {
+            "ltr": ".xb3r6kr{overflow:hidden}",
+            "priority": 3,
             "rtl": null,
           },
-          "x157eodl": {
-            "ltr": ".x157eodl{border-right-style:dashed}",
-            "priority": 1,
-            "rtl": ".x157eodl{border-left-style:dashed}",
-          },
-          "x178xt8z": {
-            "ltr": ".x178xt8z{border-top-width:1px}",
-            "priority": 1,
+          "xbsl7fq": {
+            "ltr": ".xbsl7fq{border-style:dashed}",
+            "priority": 3,
             "rtl": null,
           },
-          "x1q04ism": {
-            "ltr": ".x1q04ism{border-left-style:dashed}",
-            "priority": 1,
-            "rtl": ".x1q04ism{border-right-style:dashed}",
-          },
-          "x6ikm8r": {
-            "ltr": ".x6ikm8r{overflow-x:hidden}",
-            "priority": 1,
+          "xmkeg23": {
+            "ltr": ".xmkeg23{border-width:1px}",
+            "priority": 3,
             "rtl": null,
-          },
-          "xlya59e": {
-            "ltr": ".xlya59e{border-top-style:dashed}",
-            "priority": 1,
-            "rtl": null,
-          },
-          "xm81vs4": {
-            "ltr": ".xm81vs4{border-right-width:1px}",
-            "priority": 1,
-            "rtl": ".xm81vs4{border-left-width:1px}",
-          },
-          "xpvcztv": {
-            "ltr": ".xpvcztv{border-bottom-style:dashed}",
-            "priority": 1,
-            "rtl": null,
-          },
-          "xso031l": {
-            "ltr": ".xso031l{border-bottom-width:1px}",
-            "priority": 1,
-            "rtl": null,
-          },
-          "xy80clv": {
-            "ltr": ".xy80clv{border-left-width:1px}",
-            "priority": 1,
-            "rtl": ".xy80clv{border-right-width:1px}",
           },
         },
       ]
@@ -377,17 +349,17 @@ describe('stylex-create-test', () => {
         {
           "x1ssfqz5": {
             "ltr": "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
-            "priority": 2,
+            "priority": 25,
             "rtl": null,
           },
           "xc445zv": {
             "ltr": "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-            "priority": 2,
+            "priority": 25,
             "rtl": null,
           },
           "xrkmrrc": {
             "ltr": ".xrkmrrc{background-color:red}",
-            "priority": 1,
+            "priority": 4,
             "rtl": null,
           },
         },

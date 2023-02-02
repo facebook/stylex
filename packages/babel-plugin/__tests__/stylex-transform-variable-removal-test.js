@@ -36,8 +36,8 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
     `);
     expect(result.code).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
-      stylex.inject(".xrkmrrc{background-color:red}", 1);
-      stylex.inject(".xju2f9n{color:blue}", 1);
+      stylex.inject(".xrkmrrc{background-color:red}", 4);
+      stylex.inject(".xju2f9n{color:blue}", 4);
       const styles = {
         default: {
           backgroundColor: "xrkmrrc",
@@ -56,7 +56,7 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
               "ltr": ".xrkmrrc{background-color:red}",
               "rtl": null,
             },
-            1,
+            4,
           ],
           [
             "xju2f9n",
@@ -64,7 +64,7 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
               "ltr": ".xju2f9n{color:blue}",
               "rtl": null,
             },
-            1,
+            4,
           ],
         ],
       }
@@ -84,8 +84,8 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
     `);
     expect(result.code).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
-      stylex.inject(".xrkmrrc{background-color:red}", 1);
-      stylex.inject(".xju2f9n{color:blue}", 1);"
+      stylex.inject(".xrkmrrc{background-color:red}", 4);
+      stylex.inject(".xju2f9n{color:blue}", 4);"
     `);
     expect(result.metadata).toMatchInlineSnapshot(`
       {
@@ -96,7 +96,7 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
               "ltr": ".xrkmrrc{background-color:red}",
               "rtl": null,
             },
-            1,
+            4,
           ],
           [
             "xju2f9n",
@@ -104,7 +104,7 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
               "ltr": ".xju2f9n{color:blue}",
               "rtl": null,
             },
-            1,
+            4,
           ],
         ],
       }

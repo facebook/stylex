@@ -10,7 +10,7 @@
 import type { InjectableStyle, StyleXOptions } from './common-types';
 
 import createHash from './hash';
-import expandShorthands from './expand-shorthands';
+import expandShorthands from './preprocess-rules/index';
 import generateLtr from './physical-rtl/generate-ltr';
 import generateRtl from './physical-rtl/generate-rtl';
 import transformValue from './transform-value';
@@ -31,11 +31,12 @@ import {
 // `stylex.create`.
 export default function styleXKeyframes(
   frames: { +[string]: { +[string]: string | number } },
-  { stylexSheetName = '<>', classNamePrefix = 'x' }: StyleXOptions = {}
+  options: StyleXOptions = {}
 ): [string, InjectableStyle] {
+  const { stylexSheetName = '<>', classNamePrefix = 'x' } = options;
   const expandedObject = objMap(frames, (frame) =>
     Pipe.create(frame)
-      .pipe(expandFrameShorthands)
+      .pipe((frame) => expandFrameShorthands(frame, options))
       .pipe((x) => objMapKeys(x, dashify))
       .pipe((x) => objMap(x, (value, key) => transformValue(key, value)))
       .done()
@@ -64,13 +65,19 @@ export default function styleXKeyframes(
   return [animationName, { ltr, rtl, priority: 1 }];
 }
 
-function expandFrameShorthands(frame: { +[key: string]: string | number }): {
+function expandFrameShorthands(
+  frame: { +[key: string]: string | number },
+  options: StyleXOptions
+): {
   +[key: string]: string | number,
 } {
   return objFromEntries(
-    objEntries(frame).flatMap((pair): Array<[string, string | number]> =>
-      expandShorthands(pair)
-    )
+    objEntries(frame)
+      .flatMap((pair): Array<[string, string | number]> =>
+        expandShorthands(pair, options)
+      )
+      // Keyframes are not combined. The nulls can be skipped
+      .filter(([key, value]) => value != null)
   );
 }
 

@@ -64,6 +64,7 @@ export type StyleXOptions = {
   stylexSheetName?: string | undefined;
   classNamePrefix: string;
   definedStylexCSSVariables?: { [key: string]: any };
+  skipShorthandExpansion?: boolean;
   [key: string]: any;
 };
 

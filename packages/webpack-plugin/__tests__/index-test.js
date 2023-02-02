@@ -107,17 +107,16 @@ describe('webpack-plugin-stylex', () => {
       const js = readAsset('main.js', compiler, stats);
 
       expect(css).toMatchInlineSnapshot(`
-        "html:not([dir='rtl']) .x17adc0v{margin-left:10px}
-        html[dir='rtl'] .x17adc0v{margin-right:10px}
-        .x1egiwwb{height:500px}
-        .x1lliihq{display:block}
-        .x1vdzyal{margin-block-start:99px}
-        .x3hqpx7{width:50%}
-        .x78zum5{display:flex}
+        "@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
         .xeuoslp{animation-name:xgnty7z-B}
-        @keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
-        .xh8yej3{width:100%}
+        .x1lliihq{display:block}
+        .x78zum5{display:flex}
         .xt0psk2{display:inline}
+        .x1egiwwb{height:500px}
+        .x1hm9lzh{margin-inline-start:10px}
+        .xlrshdv{margin-top:99px}
+        .xh8yej3{width:100%}
+        .x3hqpx7{width:50%}
         .x1oz5o6v:hover{background:red}"
       `);
 
@@ -179,10 +178,20 @@ describe('webpack-plugin-stylex', () => {
           foo: {
             animationName: "xeuoslp",
             display: "x78zum5",
-            marginStart: "x17adc0v",
-            marginBlockStart: "x1vdzyal",
+            marginInlineStart: "x1hm9lzh",
+            marginLeft: null,
+            marginRight: null,
+            marginTop: "xlrshdv",
             height: "x1egiwwb",
             ":hover_background": "x1oz5o6v",
+            ":hover_backgroundAttachment": null,
+            ":hover_backgroundClip": null,
+            ":hover_backgroundColor": null,
+            ":hover_backgroundImage": null,
+            ":hover_backgroundOrigin": null,
+            ":hover_backgroundPosition": null,
+            ":hover_backgroundRepeat": null,
+            ":hover_backgroundSize": null,
             $$css: true
           }
         };
@@ -241,8 +250,8 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".x1lliihq{display:block}", 1);
-          external_stylex_default().inject(".xh8yej3{width:100%}", 1);
+          external_stylex_default().inject(".x1lliihq{display:block}", 4);
+          external_stylex_default().inject(".xh8yej3{width:100%}", 4);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -258,9 +267,9 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".xt0psk2{display:inline}", 1);
-          external_stylex_default().inject(".x1egiwwb{height:500px}", 1);
-          external_stylex_default().inject(".x3hqpx7{width:50%}", 1);
+          external_stylex_default().inject(".xt0psk2{display:inline}", 4);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 4);
+          external_stylex_default().inject(".x3hqpx7{width:50%}", 4);
           const npmStyles_styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -281,21 +290,31 @@ describe('webpack-plugin-stylex', () => {
 
           external_stylex_default().inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 1);
-          external_stylex_default().inject(".x78zum5{display:flex}", 1);
-          external_stylex_default().inject(".x17adc0v{margin-left:10px}", 1, ".x17adc0v{margin-right:10px}");
-          external_stylex_default().inject(".x1vdzyal{margin-block-start:99px}", 1);
-          external_stylex_default().inject(".x1egiwwb{height:500px}", 1);
-          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 8);
+          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 4);
+          external_stylex_default().inject(".x78zum5{display:flex}", 4);
+          external_stylex_default().inject(".x1hm9lzh{margin-inline-start:10px}", 4);
+          external_stylex_default().inject(".xlrshdv{margin-top:99px}", 4);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 4);
+          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 16);
           var index_styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
               animationName: "xeuoslp",
               display: "x78zum5",
-              marginStart: "x17adc0v",
-              marginBlockStart: "x1vdzyal",
+              marginInlineStart: "x1hm9lzh",
+              marginLeft: null,
+              marginRight: null,
+              marginTop: "xlrshdv",
               height: "x1egiwwb",
               ":hover_background": "x1oz5o6v",
+              ":hover_backgroundAttachment": null,
+              ":hover_backgroundClip": null,
+              ":hover_backgroundColor": null,
+              ":hover_backgroundImage": null,
+              ":hover_backgroundOrigin": null,
+              ":hover_backgroundPosition": null,
+              ":hover_backgroundRepeat": null,
+              ":hover_backgroundSize": null,
               $$css: true
             }
           };

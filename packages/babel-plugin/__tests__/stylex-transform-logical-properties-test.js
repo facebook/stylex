@@ -41,7 +41,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1lkbs04{border-block-color:0}", 1);
+        stylex.inject(".x1lkbs04{border-block-color:0}", 4);
         const classnames = "x1lkbs04";"
       `);
     });
@@ -55,8 +55,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xk864d9{border-block-start-color:0}", 1);
-        const classnames = "xk864d9";"
+        stylex.inject(".x4q076{border-top-color:0}", 4);
+        const classnames = "x4q076";"
       `);
     });
 
@@ -69,8 +69,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xz8foqe{border-block-end-color:0}", 1);
-        const classnames = "xz8foqe";"
+        stylex.inject(".x1ylptbq{border-bottom-color:0}", 4);
+        const classnames = "x1ylptbq";"
       `);
     });
 
@@ -83,7 +83,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1v09clb{border-inline-color:0}", 1);
+        stylex.inject(".x1v09clb{border-inline-color:0}", 4);
         const classnames = "x1v09clb";"
       `);
     });
@@ -97,7 +97,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1t19a1o{border-inline-start-color:0}", 1);
+        stylex.inject(".x1t19a1o{border-inline-start-color:0}", 4);
         const classnames = "x1t19a1o";"
       `);
     });
@@ -111,7 +111,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14mj1wy{border-inline-end-color:0}", 1);
+        stylex.inject(".x14mj1wy{border-inline-end-color:0}", 4);
         const classnames = "x14mj1wy";"
       `);
     });
@@ -127,7 +127,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x7mea6a{border-block-style:0}", 1);
+        stylex.inject(".x7mea6a{border-block-style:0}", 4);
         const classnames = "x7mea6a";"
       `);
     });
@@ -141,8 +141,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xbg2y89{border-block-start-style:0}", 1);
-        const classnames = "xbg2y89";"
+        stylex.inject(".x1d917x0{border-top-style:0}", 4);
+        const classnames = "x1d917x0";"
       `);
     });
 
@@ -155,8 +155,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1yfoggo{border-block-end-style:0}", 1);
-        const classnames = "x1yfoggo";"
+        stylex.inject(".x1nmap2y{border-bottom-style:0}", 4);
+        const classnames = "x1nmap2y";"
       `);
     });
 
@@ -169,7 +169,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xt8kkye{border-inline-style:0}", 1);
+        stylex.inject(".xt8kkye{border-inline-style:0}", 4);
         const classnames = "xt8kkye";"
       `);
     });
@@ -183,7 +183,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xl8mozw{border-inline-start-style:0}", 1);
+        stylex.inject(".xl8mozw{border-inline-start-style:0}", 4);
         const classnames = "xl8mozw";"
       `);
     });
@@ -197,7 +197,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x10o505a{border-inline-end-style:0}", 1);
+        stylex.inject(".x10o505a{border-inline-end-style:0}", 4);
         const classnames = "x10o505a";"
       `);
     });
@@ -213,7 +213,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1616tdu{border-block-width:0}", 1);
+        stylex.inject(".x1616tdu{border-block-width:0}", 4);
         const classnames = "x1616tdu";"
       `);
     });
@@ -227,8 +227,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xnh6zc7{border-block-start-width:0}", 1);
-        const classnames = "xnh6zc7";"
+        stylex.inject(".x972fbf{border-top-width:0}", 4);
+        const classnames = "x972fbf";"
       `);
     });
 
@@ -241,8 +241,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1fvpbjb{border-block-end-width:0}", 1);
-        const classnames = "x1fvpbjb";"
+        stylex.inject(".x1qhh985{border-bottom-width:0}", 4);
+        const classnames = "x1qhh985";"
       `);
     });
 
@@ -255,7 +255,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xuxrje7{border-inline-width:0}", 1);
+        stylex.inject(".xuxrje7{border-inline-width:0}", 4);
         const classnames = "xuxrje7";"
       `);
     });
@@ -269,7 +269,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14e42zd{border-inline-start-width:0}", 1);
+        stylex.inject(".x14e42zd{border-inline-start-width:0}", 4);
         const classnames = "x14e42zd";"
       `);
     });
@@ -283,7 +283,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x10w94by{border-inline-end-width:0}", 1);
+        stylex.inject(".x10w94by{border-inline-end-width:0}", 4);
         const classnames = "x10w94by";"
       `);
     });
@@ -299,8 +299,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xlb5a52{inset-block-start:0}", 1);
-        const classnames = "xlb5a52";"
+        stylex.inject(".x13vifvy{top:0}", 4);
+        const classnames = "x13vifvy";"
       `);
     });
 
@@ -313,7 +313,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x10no89f{inset-block:0}", 1);
+        stylex.inject(".x10no89f{inset-block:0}", 4);
         const classnames = "x10no89f";"
       `);
     });
@@ -327,8 +327,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xuufnwz{inset-block-end:0}", 1);
-        const classnames = "xuufnwz";"
+        stylex.inject(".x1ey2m1c{bottom:0}", 4);
+        const classnames = "x1ey2m1c";"
       `);
     });
 
@@ -341,8 +341,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xlb5a52{inset-block-start:0}", 1);
-        const classnames = "xlb5a52";"
+        stylex.inject(".x13vifvy{top:0}", 4);
+        const classnames = "x13vifvy";"
       `);
     });
 
@@ -355,7 +355,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x17y0mx6{inset-inline:0}", 1);
+        stylex.inject(".x17y0mx6{inset-inline:0}", 4);
         const classnames = "x17y0mx6";"
       `);
     });
@@ -369,7 +369,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xtijo5x{inset-inline-end:0}", 1);
+        stylex.inject(".xtijo5x{inset-inline-end:0}", 4);
         const classnames = "xtijo5x";"
       `);
     });
@@ -383,7 +383,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1o0tod{inset-inline-start:0}", 1);
+        stylex.inject(".x1o0tod{inset-inline-start:0}", 4);
         const classnames = "x1o0tod";"
       `);
     });
@@ -399,7 +399,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x10im51j{margin-block:0}", 1);
+        stylex.inject(".x10im51j{margin-block:0}", 4);
         const classnames = "x10im51j";"
       `);
     });
@@ -413,8 +413,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1g8azq5{margin-block-end:0}", 1);
-        const classnames = "x1g8azq5";"
+        stylex.inject(".xat24cr{margin-bottom:0}", 4);
+        const classnames = "xat24cr";"
       `);
     });
 
@@ -427,8 +427,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1rjqi9y{margin-block-start:0}", 1);
-        const classnames = "x1rjqi9y";"
+        stylex.inject(".xdj266r{margin-top:0}", 4);
+        const classnames = "xdj266r";"
       `);
     });
 
@@ -441,7 +441,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrxpjvj{margin-inline:0}", 1);
+        stylex.inject(".xrxpjvj{margin-inline:0}", 4);
         const classnames = "xrxpjvj";"
       `);
     });
@@ -455,7 +455,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14z9mp{margin-inline-end:0}", 1);
+        stylex.inject(".x14z9mp{margin-inline-end:0}", 4);
         const classnames = "x14z9mp";"
       `);
     });
@@ -469,7 +469,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1lziwak{margin-inline-start:0}", 1);
+        stylex.inject(".x1lziwak{margin-inline-start:0}", 4);
         const classnames = "x1lziwak";"
       `);
     });
@@ -485,7 +485,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xt970qd{padding-block:0}", 1);
+        stylex.inject(".xt970qd{padding-block:0}", 4);
         const classnames = "xt970qd";"
       `);
     });
@@ -499,8 +499,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x33s65n{padding-block-end:0}", 1);
-        const classnames = "x33s65n";"
+        stylex.inject(".x18d9i69{padding-bottom:0}", 4);
+        const classnames = "x18d9i69";"
       `);
     });
 
@@ -513,8 +513,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1wpizmb{padding-block-start:0}", 1);
-        const classnames = "x1wpizmb";"
+        stylex.inject(".xexx8yu{padding-top:0}", 4);
+        const classnames = "xexx8yu";"
       `);
     });
 
@@ -527,7 +527,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xnjsko4{padding-inline:0}", 1);
+        stylex.inject(".xnjsko4{padding-inline:0}", 4);
         const classnames = "xnjsko4";"
       `);
     });
@@ -541,7 +541,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xyri2b{padding-inline-end:0}", 1);
+        stylex.inject(".xyri2b{padding-inline-end:0}", 4);
         const classnames = "xyri2b";"
       `);
     });
@@ -555,7 +555,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1c1uobl{padding-inline-start:0}", 1);
+        stylex.inject(".x1c1uobl{padding-inline-start:0}", 4);
         const classnames = "x1c1uobl";"
       `);
     });
@@ -573,8 +573,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xnx3k43{right:5px}", 1, ".xnx3k43{left:5px}");
-        const classnames = "xnx3k43";"
+        stylex.inject(".xceh6e4{inset-inline-end:5px}", 4);
+        const classnames = "xceh6e4";"
       `);
     });
 
@@ -587,8 +587,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x11i5rnm{margin-right:0}", 1, ".x11i5rnm{margin-left:0}");
-        const classnames = "x11i5rnm";"
+        stylex.inject(".x14z9mp{margin-inline-end:0}", 4);
+        const classnames = "x14z9mp";"
       `);
     });
 
@@ -601,9 +601,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1mh8g0r{margin-left:0}", 1, ".x1mh8g0r{margin-right:0}");
-        stylex.inject(".x11i5rnm{margin-right:0}", 1, ".x11i5rnm{margin-left:0}");
-        const classnames = "x1mh8g0r x11i5rnm";"
+        stylex.inject(".xrxpjvj{margin-inline:0}", 4);
+        const classnames = "xrxpjvj";"
       `);
     });
 
@@ -616,8 +615,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1mh8g0r{margin-left:0}", 1, ".x1mh8g0r{margin-right:0}");
-        const classnames = "x1mh8g0r";"
+        stylex.inject(".x1lziwak{margin-inline-start:0}", 4);
+        const classnames = "x1lziwak";"
       `);
     });
 
@@ -630,9 +629,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xdj266r{margin-top:0}", 1);
-        stylex.inject(".xat24cr{margin-bottom:0}", 1);
-        const classnames = "xdj266r xat24cr";"
+        stylex.inject(".x10im51j{margin-block:0}", 4);
+        const classnames = "x10im51j";"
       `);
     });
 
@@ -645,8 +643,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x4uap5{padding-right:0}", 1, ".x4uap5{padding-left:0}");
-        const classnames = "x4uap5";"
+        stylex.inject(".xyri2b{padding-inline-end:0}", 4);
+        const classnames = "xyri2b";"
       `);
     });
 
@@ -659,9 +657,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xkhd6sd{padding-left:0}", 1, ".xkhd6sd{padding-right:0}");
-        stylex.inject(".x4uap5{padding-right:0}", 1, ".x4uap5{padding-left:0}");
-        const classnames = "xkhd6sd x4uap5";"
+        stylex.inject(".xnjsko4{padding-inline:0}", 4);
+        const classnames = "xnjsko4";"
       `);
     });
 
@@ -674,8 +671,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xkhd6sd{padding-left:0}", 1, ".xkhd6sd{padding-right:0}");
-        const classnames = "xkhd6sd";"
+        stylex.inject(".x1c1uobl{padding-inline-start:0}", 4);
+        const classnames = "x1c1uobl";"
       `);
     });
 
@@ -688,9 +685,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xexx8yu{padding-top:0}", 1);
-        stylex.inject(".x18d9i69{padding-bottom:0}", 1);
-        const classnames = "xexx8yu x18d9i69";"
+        stylex.inject(".xt970qd{padding-block:0}", 4);
+        const classnames = "xt970qd";"
       `);
     });
 
@@ -703,8 +699,8 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xq7jlbq{left:5px}", 1, ".xq7jlbq{right:5px}");
-        const classnames = "xq7jlbq";"
+        stylex.inject(".x1fb7gu6{inset-inline-start:5px}", 4);
+        const classnames = "x1fb7gu6";"
       `);
     });
 
@@ -725,11 +721,11 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14bfre8{margin-top:1}", 1);
-        stylex.inject(".xhi7eei{margin-right:2}", 1, ".xhi7eei{margin-left:2}");
-        stylex.inject(".x1p2gmtr{margin-bottom:3}", 1);
-        stylex.inject(".x15l52qr{margin-left:4}", 1, ".x15l52qr{margin-right:4}");
-        "x14bfre8 xhi7eei x1p2gmtr x15l52qr";"
+        stylex.inject(".x14bfre8{margin-top:1}", 4);
+        stylex.inject(".xi4fp0l{margin-inline-end:2}", 4);
+        stylex.inject(".x1p2gmtr{margin-bottom:3}", 4);
+        stylex.inject(".xmq3q2h{margin-inline-start:4}", 4);
+        "x14bfre8 xi4fp0l x1p2gmtr xmq3q2h";"
       `);
     });
   });

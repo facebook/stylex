@@ -11,9 +11,9 @@
 
 import { IncludedStyles } from '../stylex-include';
 
-export function flattenObject<
-  Obj: { +[string]: IncludedStyles | string | { +[string]: string } }
->(obj: Obj): { [string]: string | IncludedStyles } {
+export function flattenObject(obj: {
+  +[string]: IncludedStyles | string | { +[string]: string },
+}): { [string]: string | IncludedStyles } {
   const result: { [string]: string | IncludedStyles } = {};
   for (const [key, value] of objEntries(obj)) {
     if (typeof value === 'string' || value == null) {

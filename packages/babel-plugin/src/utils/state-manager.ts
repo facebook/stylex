@@ -54,6 +54,7 @@ export default class StateManager {
       definedStylexCSSVariables:
         (options as any).definedStylexCSSVariables ?? {},
       genConditionalClasses: !!(options as any).genConditionalClasses,
+      skipShorthandExpansion: !!(options as any).skipShorthandExpansion,
     } as StyleXOptions;
     return this._state.opts as any;
   }

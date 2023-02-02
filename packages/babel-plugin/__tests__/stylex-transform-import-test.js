@@ -65,7 +65,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 1);
+        stylex.inject(".x1e2nbdu{color:red}", 4);
         export const styles = {
           foo: {
             color: "x1e2nbdu",
@@ -106,7 +106,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 1);
+        stylex.inject(".x1e2nbdu{color:red}", 4);
         const styles = {
           foo: {
             color: "x1e2nbdu",
@@ -129,7 +129,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 1);
+        stylex.inject(".x1e2nbdu{color:red}", 4);
         export default {
           foo: {
             color: "x1e2nbdu",
@@ -152,7 +152,7 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 1);
+        stylex.inject(".x1e2nbdu{color:red}", 4);
         const styles = {
           foo: {
             color: "x1e2nbdu",
@@ -181,20 +181,20 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import foobar from 'stylex';
-        foobar.inject(".xrkmrrc{background-color:red}", 1);
-        foobar.inject(".xju2f9n{color:blue}", 1);
-        foobar.inject(".x123j3cw{padding-top:5px}", 1);
-        foobar.inject(".x1mpkggp{padding-right:5px}", 1, ".x1mpkggp{padding-left:5px}");
-        foobar.inject(".xs9asl8{padding-bottom:5px}", 1);
-        foobar.inject(".x1t2a60a{padding-left:5px}", 1, ".x1t2a60a{padding-right:5px}");
+        foobar.inject(".xrkmrrc{background-color:red}", 4);
+        foobar.inject(".xju2f9n{color:blue}", 4);
+        foobar.inject(".x14odnwx{padding:5px}", 3);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
             color: "xju2f9n",
-            paddingTop: "x123j3cw",
-            paddingEnd: "x1mpkggp",
-            paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a",
+            padding: "x14odnwx",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
+            paddingTop: null,
+            paddingBottom: null,
             $$css: true
           }
         };
@@ -218,20 +218,20 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import * as foobar from 'stylex';
-        foobar.inject(".xrkmrrc{background-color:red}", 1);
-        foobar.inject(".xju2f9n{color:blue}", 1);
-        foobar.inject(".x123j3cw{padding-top:5px}", 1);
-        foobar.inject(".x1mpkggp{padding-right:5px}", 1, ".x1mpkggp{padding-left:5px}");
-        foobar.inject(".xs9asl8{padding-bottom:5px}", 1);
-        foobar.inject(".x1t2a60a{padding-left:5px}", 1, ".x1t2a60a{padding-right:5px}");
+        foobar.inject(".xrkmrrc{background-color:red}", 4);
+        foobar.inject(".xju2f9n{color:blue}", 4);
+        foobar.inject(".x14odnwx{padding:5px}", 3);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
             color: "xju2f9n",
-            paddingTop: "x123j3cw",
-            paddingEnd: "x1mpkggp",
-            paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a",
+            padding: "x14odnwx",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
+            paddingTop: null,
+            paddingBottom: null,
             $$css: true
           }
         };
@@ -256,20 +256,20 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import { create } from 'stylex';
         import __stylex__ from "stylex";
-        __stylex__.inject(".xrkmrrc{background-color:red}", 1);
-        __stylex__.inject(".xju2f9n{color:blue}", 1);
-        __stylex__.inject(".x123j3cw{padding-top:5px}", 1);
-        __stylex__.inject(".x1mpkggp{padding-right:5px}", 1, ".x1mpkggp{padding-left:5px}");
-        __stylex__.inject(".xs9asl8{padding-bottom:5px}", 1);
-        __stylex__.inject(".x1t2a60a{padding-left:5px}", 1, ".x1t2a60a{padding-right:5px}");
+        __stylex__.inject(".xrkmrrc{background-color:red}", 4);
+        __stylex__.inject(".xju2f9n{color:blue}", 4);
+        __stylex__.inject(".x14odnwx{padding:5px}", 3);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
             color: "xju2f9n",
-            paddingTop: "x123j3cw",
-            paddingEnd: "x1mpkggp",
-            paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a",
+            padding: "x14odnwx",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
+            paddingTop: null,
+            paddingBottom: null,
             $$css: true
           }
         };
@@ -294,20 +294,20 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import { create as css } from 'stylex';
         import __stylex__ from "stylex";
-        __stylex__.inject(".xrkmrrc{background-color:red}", 1);
-        __stylex__.inject(".xju2f9n{color:blue}", 1);
-        __stylex__.inject(".x123j3cw{padding-top:5px}", 1);
-        __stylex__.inject(".x1mpkggp{padding-right:5px}", 1, ".x1mpkggp{padding-left:5px}");
-        __stylex__.inject(".xs9asl8{padding-bottom:5px}", 1);
-        __stylex__.inject(".x1t2a60a{padding-left:5px}", 1, ".x1t2a60a{padding-right:5px}");
+        __stylex__.inject(".xrkmrrc{background-color:red}", 4);
+        __stylex__.inject(".xju2f9n{color:blue}", 4);
+        __stylex__.inject(".x14odnwx{padding:5px}", 3);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
             color: "xju2f9n",
-            paddingTop: "x123j3cw",
-            paddingEnd: "x1mpkggp",
-            paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a",
+            padding: "x14odnwx",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
+            paddingTop: null,
+            paddingBottom: null,
             $$css: true
           }
         };

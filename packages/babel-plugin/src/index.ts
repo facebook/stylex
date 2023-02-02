@@ -152,18 +152,31 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  *
  * End-users can choose to not use this function and use their own logic instead.
  */
+type Rule = [string, { ltr: string; rtl?: null | string }, number];
 export const processStylexRules = function processStylexRules(
-  rules: Array<[string, { ltr: string; rtl?: null | string }, number]>
+  rules: Array<Rule>
 ): string {
   if (rules.length === 0) {
     return '';
   }
 
   const sortedRules = rules.sort(
-    ([firstSelector, , firstPriority], [secondSelector, , secondPriority]) => {
+    (
+      [_1, { ltr: rule1 }, firstPriority]: Rule,
+      [_2, { ltr: rule2 }, secondPriority]: Rule
+    ) => {
       const priorityComparison = firstPriority - secondPriority;
       if (priorityComparison !== 0) return priorityComparison;
-      return firstSelector < secondSelector ? -1 : 1;
+      if (rule1.startsWith('@') && !rule2.startsWith('@')) {
+        const query1 = rule1.slice(0, rule1.indexOf('{'));
+        const query2 = rule2.slice(0, rule2.indexOf('{'));
+        if (query1 !== query2) {
+          return query1.localeCompare(query2);
+        }
+      }
+      const property1 = rule1.slice(rule1.lastIndexOf('{'));
+      const property2 = rule2.slice(rule2.lastIndexOf('{'));
+      return property1.localeCompare(property2);
     }
   );
 

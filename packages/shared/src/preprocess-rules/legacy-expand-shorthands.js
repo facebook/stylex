@@ -7,40 +7,7 @@
  * @flow strict
  */
 
-import parser from 'postcss-value-parser';
-
-function printNode(node: PostCSSValueASTNode) {
-  switch (node.type) {
-    case 'word':
-    case 'string':
-      return `${node.value}`;
-    case 'function':
-      return `${node.value}(${node.nodes.map(printNode).join('')})`;
-    default:
-      return node.value;
-  }
-}
-
-// Using split(' ') Isn't enough bcause of values like calc.
-function splitValue(str: string) {
-  if (Array.isArray(str)) {
-    return str;
-  }
-
-  const parsed = parser(str.trim());
-
-  const nodes = parsed.nodes
-    .filter((node) => node.type !== 'space' && node.type !== 'div')
-    .map(printNode);
-
-  if (
-    nodes.length > 1 &&
-    nodes[nodes.length - 1].toLowerCase() === '!important'
-  ) {
-    return nodes.slice(0, nodes.length - 1).map((node) => node + ' !important');
-  }
-  return nodes;
-}
+import splitValue from '../utils/split-css-value';
 
 // TODO: to be added later.
 // const aliases = {
@@ -113,18 +80,18 @@ function splitValue(str: string) {
  */
 
 const expansions = {
-  // ...aliases,
-  border: (rawValue: string) => {
-    return [
-      ['borderTop', rawValue],
-      ['borderEnd', rawValue],
-      ['borderBottom', rawValue],
-      ['borderStart', rawValue],
-    ];
-  },
-  /*
+  // Old buggy implementation that left two sets of conflicting border properties
+  // border: (rawValue: string): Array<[string, string]> => {
+  //   return [
+  //     ['borderTop', rawValue],
+  //     ['borderEnd', rawValue],
+  //     ['borderBottom', rawValue],
+  //     ['borderStart', rawValue],
+  //   ];
+  // },
+
   // Add this later, as this will be a breaking change
-  border: (rawValue: string) => {
+  border: (rawValue: string): Array<[string, string]> => {
     if (typeof rawValue === 'number') {
       return expansions.borderWidth(rawValue);
     }
@@ -134,9 +101,75 @@ const expansions = {
       ...expansions.borderStyle(style),
       ...expansions.borderColor(color),
     ];
-  }
-  */
-  borderColor: (rawValue: string) => {
+  },
+  borderTop: (rawValue: string): Array<[string, string]> => {
+    if (typeof rawValue === 'number') {
+      return [['borderTopWidth', rawValue]];
+    }
+    const [width, style, color] = splitValue(rawValue);
+    return [
+      ['borderTopWidth', width],
+      ['borderTopStyle', style],
+      ['borderTopColor', color],
+    ];
+  },
+  borderEnd: (rawValue: string): Array<[string, string]> => {
+    if (typeof rawValue === 'number') {
+      return [['borderEndWidth', rawValue]];
+    }
+    const [width, style, color] = splitValue(rawValue);
+    return [
+      ['borderEndWidth', width],
+      ['borderEndStyle', style],
+      ['borderEndColor', color],
+    ];
+  },
+  borderRight: (rawValue: string): Array<[string, string]> => {
+    if (typeof rawValue === 'number') {
+      return [['borderRightWidth', rawValue]];
+    }
+    const [width, style, color] = splitValue(rawValue);
+    return [
+      ['borderRightWidth', width],
+      ['borderRightStyle', style],
+      ['borderRightColor', color],
+    ];
+  },
+  borderBottom: (rawValue: string): Array<[string, string]> => {
+    if (typeof rawValue === 'number') {
+      return [['borderBottomWidth', rawValue]];
+    }
+    const [width, style, color] = splitValue(rawValue);
+    return [
+      ['borderBottomWidth', width],
+      ['borderBottomStyle', style],
+      ['borderBottomColor', color],
+    ];
+  },
+  borderStart: (rawValue: string): Array<[string, string]> => {
+    if (typeof rawValue === 'number') {
+      return [['borderStartWidth', rawValue]];
+    }
+    const [width, style, color] = splitValue(rawValue);
+    return [
+      ['borderStartWidth', width],
+      ['borderStartStyle', style],
+      ['borderStartColor', color],
+    ];
+  },
+  borderLeft: (rawValue: string): Array<[string, string]> => {
+    if (typeof rawValue === 'number') {
+      return [['borderLeftWidth', rawValue]];
+    }
+    const [width, style, color] = splitValue(rawValue);
+    return [
+      ['borderLeftWidth', width],
+      ['borderLeftStyle', style],
+      ['borderLeftColor', color],
+    ];
+  },
+
+  borderColor: (rawValue: string): Array<[string, string]> => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -146,13 +179,13 @@ const expansions = {
       ['borderStartColor', left],
     ];
   },
-  borderHorizontal: (rawValue: string) => {
+  borderHorizontal: (rawValue: string): Array<[string, string]> => {
     return [
       ['borderStart', rawValue],
       ['borderEnd', rawValue],
     ];
   },
-  borderStyle: (rawValue: string) => {
+  borderStyle: (rawValue: string): Array<[string, string]> => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -162,13 +195,13 @@ const expansions = {
       ['borderStartStyle', left],
     ];
   },
-  borderVertical: (rawValue: string) => {
+  borderVertical: (rawValue: string): Array<[string, string]> => {
     return [
       ['borderTop', rawValue],
       ['borderBottom', rawValue],
     ];
   },
-  borderWidth: (rawValue: string) => {
+  borderWidth: (rawValue: string): Array<[string, string]> => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
@@ -179,7 +212,7 @@ const expansions = {
       ['borderStartWidth', left],
     ];
   },
-  borderRadius: (rawValue: string) => {
+  borderRadius: (rawValue: string): Array<[string, string]> => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'string'
         ? splitValue(rawValue)
@@ -194,7 +227,7 @@ const expansions = {
       ['borderBottomStartRadius', left],
     ];
   },
-  margin: (rawValue: string) => {
+  margin: (rawValue: string): Array<[string, string]> => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
@@ -205,27 +238,27 @@ const expansions = {
       ['marginStart', left],
     ];
   },
-  marginHorizontal: (rawValue: string) => {
+  marginHorizontal: (rawValue: string): Array<[string, string]> => {
     return [
       ['marginStart', rawValue],
       ['marginEnd', rawValue],
     ];
   },
-  marginVertical: (rawValue: string) => {
+  marginVertical: (rawValue: string): Array<[string, string]> => {
     return [
       ['marginTop', rawValue],
       ['marginBottom', rawValue],
     ];
   },
 
-  overflow: (rawValue: string) => {
+  overflow: (rawValue: string): Array<[string, string]> => {
     const [x, y = x] = splitValue(rawValue);
     return [
       ['overflowX', x],
       ['overflowY', y],
     ];
   },
-  padding: (rawValue: string) => {
+  padding: (rawValue: string): Array<[string, string]> => {
     const [top, right = top, bottom = top, left = right] =
       typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
 
@@ -236,13 +269,13 @@ const expansions = {
       ['paddingStart', left],
     ];
   },
-  paddingHorizontal: (rawValue: string) => {
+  paddingHorizontal: (rawValue: string): Array<[string, string]> => {
     return [
       ['paddingStart', rawValue],
       ['paddingEnd', rawValue],
     ];
   },
-  paddingVertical: (rawValue: string) => {
+  paddingVertical: (rawValue: string): Array<[string, string]> => {
     return [
       ['paddingTop', rawValue],
       ['paddingBottom', rawValue],
@@ -250,20 +283,4 @@ const expansions = {
   },
 };
 
-export const expandedKeys: $ReadOnlyArray<string> = Object.keys(expansions);
-
-export default function flatMapExpandedShorthands<T>(
-  objEntry: [string, T]
-): Array<[string, T]> {
-  const [key, value] = objEntry;
-  const expansion = expansions[key];
-  if (expansion) {
-    if (Array.isArray(value)) {
-      throw new Error(
-        'Cannot use fallbacks for shorthands. Use the expansion instead.'
-      );
-    }
-    return expansion(value);
-  }
-  return [objEntry];
-}
+export default expansions;

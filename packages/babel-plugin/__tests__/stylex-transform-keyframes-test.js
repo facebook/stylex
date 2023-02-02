@@ -70,7 +70,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import stylex from 'stylex';
         stylex.inject("@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}", 1);
         const name = "x3zqmp-B";
-        stylex.inject(".x1qs41r0{animation:3s x3zqmp-B}", 1);"
+        stylex.inject(".x1qs41r0{animation:3s x3zqmp-B}", 3);"
       `);
     });
 
@@ -95,7 +95,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject("@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}", 1);
-        stylex.inject(".xcoz2pf{animation-name:x3zqmp-B}", 1);"
+        stylex.inject(".xcoz2pf{animation-name:x3zqmp-B}", 4);"
       `);
     });
 
@@ -121,12 +121,12 @@ describe('@stylexjs/babel-plugin', () => {
         `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject("@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}", 1, "@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}");
-        const name = "x1lvx8r0-B";
-        stylex.inject(".x1ugarde{animation-name:x1lvx8r0-B}", 1);
+        stylex.inject("@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}", 1);
+        const name = "x1jkcf39-B";
+        stylex.inject(".x1vfi257{animation-name:x1jkcf39-B}", 4);
         export const styles = {
           root: {
-            animationName: "x1ugarde",
+            animationName: "x1vfi257",
             $$css: true
           }
         };"

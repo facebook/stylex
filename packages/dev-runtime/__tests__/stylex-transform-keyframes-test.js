@@ -12,6 +12,7 @@ jest.autoMockOff();
 import inject from '../src';
 import stylex from '@stylexjs/stylex';
 
+/* eslint-disable quotes */
 describe('Development Runtime Transformation', () => {
   describe('[transform] CSS keyframes', () => {
     let metadata = [];
@@ -37,18 +38,20 @@ describe('Development Runtime Transformation', () => {
             backgroundColor: 'blue',
           },
         })
-      ).toEqual('xbopttm-B');
+      ).toMatchInlineSnapshot(`"xbopttm-B"`);
 
-      expect(metadata).toEqual([
+      expect(metadata).toMatchInlineSnapshot(`
         [
-          'xbopttm-B',
-          {
-            ltr: '@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}',
-            rtl: null,
-          },
-          1,
-        ],
-      ]);
+          [
+            "xbopttm-B",
+            {
+              "ltr": "@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}",
+              "rtl": null,
+            },
+            1,
+          ],
+        ]
+      `);
     });
 
     test('allows template literal references to keyframes', () => {
@@ -62,7 +65,7 @@ describe('Development Runtime Transformation', () => {
             backgroundColor: 'red',
           },
         })
-      ).toEqual('x3zqmp-B');
+      ).toMatchInlineSnapshot(`"x3zqmp-B"`);
     });
 
     test('generates RTL-specific keyframes', () => {
@@ -75,7 +78,7 @@ describe('Development Runtime Transformation', () => {
           start: 500,
         },
       });
-      expect(name).toEqual('x1lvx8r0-B');
+      expect(name).toMatchInlineSnapshot(`"x1jkcf39-B"`);
 
       expect(
         stylex.create({
@@ -83,28 +86,35 @@ describe('Development Runtime Transformation', () => {
             animationName: name,
           },
         })
-      ).toEqual({
-        root: {
-          $$css: true,
-          animationName: 'x1ugarde',
-        },
-      });
-
-      expect(metadata).toEqual([
-        [
-          'x1lvx8r0-B',
-          {
-            ltr: '@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}',
-            rtl: '@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}',
+      ).toMatchInlineSnapshot(`
+        {
+          "root": {
+            "$$css": true,
+            "animationName": "x1vfi257",
           },
-          1,
-        ],
+        }
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
         [
-          'x1ugarde',
-          { ltr: '.x1ugarde{animation-name:x1lvx8r0-B}', rtl: null },
-          1,
-        ],
-      ]);
+          [
+            "x1jkcf39-B",
+            {
+              "ltr": "@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}",
+              "rtl": null,
+            },
+            1,
+          ],
+          [
+            "x1vfi257",
+            {
+              "ltr": ".x1vfi257{animation-name:x1jkcf39-B}",
+              "rtl": null,
+            },
+            4,
+          ],
+        ]
+      `);
     });
   });
 });

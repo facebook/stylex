@@ -40,8 +40,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 1);
-        stylex.inject(".xju2f9n{color:blue}", 1);"
+        stylex.inject(".xrkmrrc{background-color:red}", 4);
+        stylex.inject(".xju2f9n{color:blue}", 4);"
       `);
     });
 
@@ -57,7 +57,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xgau0yw{--background-color:red}", 1);"
+        stylex.inject(".xgau0yw{--background-color:red}", 4);"
       `);
     });
 
@@ -73,7 +73,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x13tgbkp{--final-color:var(--background-color)}", 1);"
+        stylex.inject(".x13tgbkp{--final-color:var(--background-color)}", 4);"
       `);
     });
 
@@ -92,8 +92,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 1);
-        stylex.inject(".xju2f9n{color:blue}", 1);"
+        stylex.inject(".xrkmrrc{background-color:red}", 4);
+        stylex.inject(".xju2f9n{color:blue}", 4);"
       `);
     });
 
@@ -109,7 +109,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xd71okc{content:attr(some-attribute)}", 1);"
+        stylex.inject(".xd71okc{content:attr(some-attribute)}", 4);"
       `);
     });
 
@@ -128,8 +128,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gykpug:hover{background-color:red}", 8);
-        stylex.inject(".x17z2mba:hover{color:blue}", 8);"
+        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
+        stylex.inject(".x17z2mba:hover{color:blue}", 17);"
       `);
     });
 
@@ -150,8 +150,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gykpug:hover{background-color:red}", 8);
-        stylex.inject(".x17z2mba:hover{color:blue}", 8);"
+        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
+        stylex.inject(".x17z2mba:hover{color:blue}", 17);"
       `);
     });
 
@@ -167,7 +167,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1ruww2u{position:sticky;position:fixed}", 1);"
+        stylex.inject(".x1ruww2u{position:sticky;position:fixed}", 4);"
       `);
     });
 
@@ -186,8 +186,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xixxii4{position:fixed}", 1);
-        stylex.inject("@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}", 2);"
+        stylex.inject(".xixxii4{position:fixed}", 4);
+        stylex.inject("@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}", 25);"
       `);
     });
 
@@ -204,7 +204,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x87ps6o{user-select:none}", 1);"
+        stylex.inject(".x87ps6o{user-select:none}", 4);"
       `);
     });
 
@@ -223,16 +223,9 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x6ikm8r{overflow-x:hidden}", 1);
-        stylex.inject(".x10wlt62{overflow-y:hidden}", 1);
-        stylex.inject(".xlya59e{border-top-style:dashed}", 1);
-        stylex.inject(".x157eodl{border-right-style:dashed}", 1, ".x157eodl{border-left-style:dashed}");
-        stylex.inject(".xpvcztv{border-bottom-style:dashed}", 1);
-        stylex.inject(".x1q04ism{border-left-style:dashed}", 1, ".x1q04ism{border-right-style:dashed}");
-        stylex.inject(".x178xt8z{border-top-width:1px}", 1);
-        stylex.inject(".xm81vs4{border-right-width:1px}", 1, ".xm81vs4{border-left-width:1px}");
-        stylex.inject(".xso031l{border-bottom-width:1px}", 1);
-        stylex.inject(".xy80clv{border-left-width:1px}", 1, ".xy80clv{border-right-width:1px}");"
+        stylex.inject(".xb3r6kr{overflow:hidden}", 3);
+        stylex.inject(".xbsl7fq{border-style:dashed}", 3);
+        stylex.inject(".xmkeg23{border-width:1px}", 3);"
       `);
     });
 
@@ -329,7 +322,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 1);"
+        stylex.inject(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 4);"
       `);
     });
 
@@ -350,8 +343,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 2);
-          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 2);"
+          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 8);
+          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 8);"
         `);
       });
 
@@ -378,10 +371,10 @@ describe('@stylexjs/babel-plugin', () => {
          `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x17z2mba:hover{color:blue}", 8);
-          stylex.inject(".x96fq8s:active{color:red}", 10);
-          stylex.inject(".x1wvtd7d:focus{color:yellow}", 9);
-          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 6);"
+          stylex.inject(".x17z2mba:hover{color:blue}", 17);
+          stylex.inject(".x96fq8s:active{color:red}", 21);
+          stylex.inject(".x1wvtd7d:focus{color:yellow}", 20);
+          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 10);"
         `);
       });
 
@@ -399,7 +392,7 @@ describe('@stylexjs/babel-plugin', () => {
          `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 8);"
+          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 17);"
         `);
       });
     });
@@ -419,8 +412,8 @@ describe('@stylexjs/babel-plugin', () => {
          `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 2);
-          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 2);"
+          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 8);
+          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 8);"
         `);
       });
 
@@ -441,10 +434,10 @@ describe('@stylexjs/babel-plugin', () => {
          `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x17z2mba:hover{color:blue}", 8);
-          stylex.inject(".x96fq8s:active{color:red}", 10);
-          stylex.inject(".x1wvtd7d:focus{color:yellow}", 9);
-          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 6);"
+          stylex.inject(".x17z2mba:hover{color:blue}", 17);
+          stylex.inject(".x96fq8s:active{color:red}", 21);
+          stylex.inject(".x1wvtd7d:focus{color:yellow}", 20);
+          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 10);"
         `);
       });
 
@@ -462,7 +455,7 @@ describe('@stylexjs/babel-plugin', () => {
           `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 8);"
+          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 17);"
         `);
       });
     });
@@ -486,8 +479,8 @@ describe('@stylexjs/babel-plugin', () => {
            `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x16oeupf::before{color:red}", 2);
-          stylex.inject(".xdaarc3::after{color:blue}", 2);"
+          stylex.inject(".x16oeupf::before{color:red}", 8);
+          stylex.inject(".xdaarc3::after{color:blue}", 8);"
         `);
       });
 
@@ -505,7 +498,7 @@ describe('@stylexjs/babel-plugin', () => {
            `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x6yu8oj::placeholder{color:gray}", 12);"
+          stylex.inject(".x6yu8oj::placeholder{color:gray}", 8);"
         `);
       });
 
@@ -523,7 +516,7 @@ describe('@stylexjs/babel-plugin', () => {
            `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 13);"
+          stylex.inject(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 8);"
         `);
       });
     });
@@ -547,9 +540,9 @@ describe('@stylexjs/babel-plugin', () => {
            `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 1);
-          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 2);
-          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 2);"
+          stylex.inject(".xrkmrrc{background-color:red}", 4);
+          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 25);
+          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 25);"
         `);
       });
 
@@ -572,9 +565,9 @@ describe('@stylexjs/babel-plugin', () => {
            `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 1);
-          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 2);
-          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 2);"
+          stylex.inject(".xrkmrrc{background-color:red}", 4);
+          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 24);
+          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 24);"
         `);
       });
     });
@@ -596,9 +589,9 @@ describe('@stylexjs/babel-plugin', () => {
           `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 1);
-          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 2);
-          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 2);"
+          stylex.inject(".xrkmrrc{background-color:red}", 4);
+          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 25);
+          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 25);"
         `);
       });
 
@@ -618,9 +611,9 @@ describe('@stylexjs/babel-plugin', () => {
           `)
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 1);
-          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 2);
-          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 2);"
+          stylex.inject(".xrkmrrc{background-color:red}", 4);
+          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 24);
+          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 24);"
         `);
       });
     });
@@ -658,46 +651,304 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;
-        stylex.inject(".xxsse2n{margin-top:calc((100% - 50px) * .5)}", 1);
-        stylex.inject(".x1h5jrl4{margin-right:20px}", 1, ".x1h5jrl4{margin-left:20px}");
-        stylex.inject(".xat24cr{margin-bottom:0}", 1);
-        stylex.inject(".xmn8rco{margin-left:20px}", 1, ".xmn8rco{margin-right:20px}");
-        stylex.inject(".x1uu1fcu{border-top-color:red}", 1);
-        stylex.inject(".xkwlhv9{border-right-color:blue}", 1, ".xkwlhv9{border-left-color:blue}");
-        stylex.inject(".xud65wk{border-bottom-color:red}", 1);
-        stylex.inject(".x1z0yhbn{border-left-color:blue}", 1, ".x1z0yhbn{border-right-color:blue}");
-        stylex.inject(".xlya59e{border-top-style:dashed}", 1);
-        stylex.inject(".x157eodl{border-right-style:dashed}", 1, ".x157eodl{border-left-style:dashed}");
-        stylex.inject(".xpvcztv{border-bottom-style:dashed}", 1);
-        stylex.inject(".x1q04ism{border-left-style:dashed}", 1, ".x1q04ism{border-right-style:dashed}");
-        stylex.inject(".x972fbf{border-top-width:0}", 1);
-        stylex.inject(".xcfux6l{border-right-width:0}", 1, ".xcfux6l{border-left-width:0}");
-        stylex.inject(".xlxy82{border-bottom-width:2px}", 1);
-        stylex.inject(".xm0m39n{border-left-width:0}", 1, ".xm0m39n{border-right-width:0}");
-        stylex.inject(".x1n2xptk{border-top:1px solid var(--divider)}", 1);
-        stylex.inject(".xkbpzyx{border-right:1px solid var(--divider)}", 1, ".xkbpzyx{border-left:1px solid var(--divider)}");
-        stylex.inject(".xdwpb5{border-bottom:5px solid red}", 1);
-        stylex.inject(".x1rr5fae{border-left:1px solid var(--divider)}", 1, ".x1rr5fae{border-right:1px solid var(--divider)}");
-        stylex.inject(".x1lcm9me{border-top-left-radius:4px}", 1, ".x1lcm9me{border-top-right-radius:4px}");
-        stylex.inject(".x1yr5g0i{border-top-right-radius:4px}", 1, ".x1yr5g0i{border-top-left-radius:4px}");
-        stylex.inject(".xrt01vj{border-bottom-right-radius:4px}", 1, ".xrt01vj{border-bottom-left-radius:4px}");
-        stylex.inject(".x10y3i5r{border-bottom-left-radius:4px}", 1, ".x10y3i5r{border-bottom-right-radius:4px}");
-        stylex.inject(".xexx8yu{padding-top:0}", 1);
-        stylex.inject(".xcrpjku{padding-right:var(--rightpadding,20px)}", 1, ".xcrpjku{padding-left:var(--rightpadding,20px)}");
-        stylex.inject(".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}", 1);
-        stylex.inject(".xyv1419{padding-left:var(--rightpadding,20px)}", 1, ".xyv1419{padding-right:var(--rightpadding,20px)}");
-        stylex.inject(".xb9njkq{border-top-color:green}", 1);
-        stylex.inject(".x1plg3iu{border-right-color:green}", 1, ".x1plg3iu{border-left-color:green}");
-        stylex.inject(".x1hnil3p{border-bottom-color:green}", 1);
-        stylex.inject(".x1s0fimb{border-left-color:green}", 1, ".x1s0fimb{border-right-color:green}");
-        stylex.inject(".x13fuv20{border-top-style:solid}", 1);
-        stylex.inject(".xu3j5b3{border-right-style:solid}", 1, ".xu3j5b3{border-left-style:solid}");
-        stylex.inject(".x1q0q8m5{border-bottom-style:solid}", 1);
-        stylex.inject(".x26u7qi{border-left-style:solid}", 1, ".x26u7qi{border-right-style:solid}");
-        stylex.inject(".x178xt8z{border-top-width:1px}", 1);
-        stylex.inject(".xm81vs4{border-right-width:1px}", 1, ".xm81vs4{border-left-width:1px}");
-        stylex.inject(".xso031l{border-bottom-width:1px}", 1);
-        stylex.inject(".xy80clv{border-left-width:1px}", 1, ".xy80clv{border-right-width:1px}");"
+        stylex.inject(".xxsse2n{margin-top:calc((100% - 50px) * .5)}", 4);
+        stylex.inject(".x3aesyq{margin-inline-end:20px}", 4);
+        stylex.inject(".xat24cr{margin-bottom:0}", 4);
+        stylex.inject(".xqsn43r{margin-inline-start:20px}", 4);
+        stylex.inject(".xs4buau{border-color:red blue}", 3);
+        stylex.inject(".xbsl7fq{border-style:dashed}", 3);
+        stylex.inject(".xn43iik{border-width:0 0 2px 0}", 3);
+        stylex.inject(".xmkeg23{border-width:1px}", 3);
+        stylex.inject(".x1y0btm7{border-style:solid}", 3);
+        stylex.inject(".x1lh7sze{border-color:var(--divider)}", 3);
+        stylex.inject(".x12oqio5{border-radius:4px}", 3);
+        stylex.inject(".xa309fb{border-bottom-width:5px}", 4);
+        stylex.inject(".x1q0q8m5{border-bottom-style:solid}", 4);
+        stylex.inject(".xud65wk{border-bottom-color:red}", 4);
+        stylex.inject(".xexx8yu{padding-top:0}", 4);
+        stylex.inject(".xcrpjku{padding-right:var(--rightpadding,20px)}", 4, ".xcrpjku{padding-left:var(--rightpadding,20px)}");
+        stylex.inject(".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}", 4);
+        stylex.inject(".xyv1419{padding-left:var(--rightpadding,20px)}", 4, ".xyv1419{padding-right:var(--rightpadding,20px)}");
+        stylex.inject(".x1bg2uv5{border-color:green}", 3);"
+      `);
+    });
+
+    test('Last property wins, even if shorthand', () => {
+      expect(
+        transform(
+          `
+            import stylex from 'stylex';
+            const borderRadius = 2;
+            const styles = stylex.create({
+              default: {
+                marginTop: 5,
+                marginEnd: 10,
+                marginBottom: 15,
+                marginStart: 20,
+              },
+              override: {
+                marginBottom: 100,
+                margin: 0,
+              }
+            });
+            stylex(styles.default, styles.override);
+          `
+        )
+        // Expect the className to reflect override entirely
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        const borderRadius = 2;
+        stylex.inject(".x1ok221b{margin-top:5px}", 4);
+        stylex.inject(".x1sa5p1d{margin-inline-end:10px}", 4);
+        stylex.inject(".x1fqp7bg{margin-bottom:15px}", 4);
+        stylex.inject(".xqsn43r{margin-inline-start:20px}", 4);
+        stylex.inject(".xiv7p99{margin-bottom:100px}", 4);
+        stylex.inject(".x1ghz6dp{margin:0}", 3);
+        "x1ghz6dp";"
+      `);
+    });
+
+    test('Adds null for constituent properties of shorthands', () => {
+      expect(
+        transform(
+          `
+           import stylex from 'stylex';
+           const borderRadius = 2;
+           export const styles = stylex.create({
+             default: {
+               margin: 'calc((100% - 50px) * 0.5) 20px 0',
+             },
+             error: {
+               borderColor: 'red blue',
+               borderStyle: 'dashed',
+               borderWidth: '0 0 2px 0',
+             },
+             root: {
+               border: '1px solid var(--divider)',
+               borderRadius: borderRadius * 2,
+               borderBottom: '5px solid red',
+             },
+             short: {
+               padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
+               paddingTop: 0,
+             },
+             shortReversed: {
+              paddingTop: 0,
+              padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
+            },
+             valid: {
+               borderColor: 'green',
+               borderStyle: 'solid',
+               borderWidth: 1,
+             }
+           });
+         `,
+          { stylexSheetName: '<>' }
+        )
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        const borderRadius = 2;
+        export const styles = {
+          default: {
+            marginTop: "xxsse2n",
+            marginInlineEnd: "x3aesyq",
+            marginBottom: "xat24cr",
+            marginInlineStart: "xqsn43r",
+            marginLeft: null,
+            marginRight: null,
+            $$css: true
+          },
+          error: {
+            borderColor: "xs4buau",
+            borderTopColor: null,
+            borderInlineEndColor: null,
+            borderRightColor: null,
+            borderBottomColor: null,
+            borderInlineStartColor: null,
+            borderLeftColor: null,
+            borderStyle: "xbsl7fq",
+            borderTopStyle: null,
+            borderInlineEndStyle: null,
+            borderRightStyle: null,
+            borderBottomStyle: null,
+            borderInlineStartStyle: null,
+            borderLeftStyle: null,
+            borderWidth: "xn43iik",
+            borderTopWidth: null,
+            borderInlineEndWidth: null,
+            borderRightWidth: null,
+            borderBottomWidth: null,
+            borderInlineStartWidth: null,
+            borderLeftWidth: null,
+            $$css: true
+          },
+          root: {
+            borderWidth: "xmkeg23",
+            borderTopWidth: null,
+            borderInlineEndWidth: null,
+            borderRightWidth: null,
+            borderBottomWidth: "xa309fb",
+            borderInlineStartWidth: null,
+            borderLeftWidth: null,
+            borderStyle: "x1y0btm7",
+            borderTopStyle: null,
+            borderInlineEndStyle: null,
+            borderRightStyle: null,
+            borderBottomStyle: "x1q0q8m5",
+            borderInlineStartStyle: null,
+            borderLeftStyle: null,
+            borderColor: "x1lh7sze",
+            borderTopColor: null,
+            borderInlineEndColor: null,
+            borderRightColor: null,
+            borderBottomColor: "xud65wk",
+            borderInlineStartColor: null,
+            borderLeftColor: null,
+            borderRadius: "x12oqio5",
+            borderStartStartRadius: null,
+            borderStartEndRadius: null,
+            borderEndStartRadius: null,
+            borderEndEndRadius: null,
+            borderTopLeftRadius: null,
+            borderTopRightRadius: null,
+            borderBottomLeftRadius: null,
+            borderBottomRightRadius: null,
+            $$css: true
+          },
+          short: {
+            paddingTop: "xexx8yu",
+            paddingEnd: "xcrpjku",
+            paddingBottom: "x18xuxqe",
+            paddingStart: "xyv1419",
+            $$css: true
+          },
+          shortReversed: {
+            paddingTop: "xx5yw1q",
+            paddingEnd: "xcrpjku",
+            paddingBottom: "x18xuxqe",
+            paddingStart: "xyv1419",
+            $$css: true
+          },
+          valid: {
+            borderColor: "x1bg2uv5",
+            borderTopColor: null,
+            borderInlineEndColor: null,
+            borderRightColor: null,
+            borderBottomColor: null,
+            borderInlineStartColor: null,
+            borderLeftColor: null,
+            borderStyle: "x1y0btm7",
+            borderTopStyle: null,
+            borderInlineEndStyle: null,
+            borderRightStyle: null,
+            borderBottomStyle: null,
+            borderInlineStartStyle: null,
+            borderLeftStyle: null,
+            borderWidth: "xmkeg23",
+            borderTopWidth: null,
+            borderInlineEndWidth: null,
+            borderRightWidth: null,
+            borderBottomWidth: null,
+            borderInlineStartWidth: null,
+            borderLeftWidth: null,
+            $$css: true
+          }
+        };"
+      `);
+    });
+
+    test('Can leave shorthands as is when configured.', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          const borderRadius = 2;
+          export const styles = stylex.create({
+            default: {
+              marginTop: 'calc((100% - 50px) * 0.5)',
+              marginRight: 20,
+              marginBottom: 0,
+            },
+            error: {
+              borderVerticalColor: 'red',
+              borderHorizontalColor: 'blue',
+              borderStyle: 'dashed',
+              borderBottomWidth: 2,
+            },
+            root: {
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderColor: 'var(--divider)',
+              borderRadius: borderRadius * 2,
+              borderBottomWidth: 5,
+              borderBottomStyle: 'solid',
+              borderBottomColor: 'red',
+            },
+            short: {
+              paddingVertical: 'calc((100% - 50px) * 0.5)',
+              paddingHorizontal: 'var(--rightpadding, 20px)',
+              paddingTop: 0,
+            },
+            shortReversed: {
+              paddingTop: 0,
+              paddingVertical: 'calc((100% - 50px) * 0.5)',
+              paddingHorizontal: 'var(--rightpadding, 20px)',
+            },
+            valid: {
+              borderColor: 'green',
+              borderStyle: 'solid',
+              borderWidth: 1,
+            }
+          });
+         `,
+          { stylexSheetName: '<>', styleResolution: 'property-specificity' }
+        )
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        const borderRadius = 2;
+        export const styles = {
+          default: {
+            marginTop: "xxsse2n",
+            marginRight: "x1wh8b8d",
+            marginBottom: "xat24cr",
+            $$css: true
+          },
+          error: {
+            borderBlockColor: "xzu6wam",
+            borderInlineColor: "xgomli1",
+            borderStyle: "xbsl7fq",
+            borderBottomWidth: "xlxy82",
+            $$css: true
+          },
+          root: {
+            borderWidth: "xmkeg23",
+            borderStyle: "x1y0btm7",
+            borderColor: "x1lh7sze",
+            borderRadius: "x12oqio5",
+            borderBottomWidth: "xa309fb",
+            borderBottomStyle: "x1q0q8m5",
+            borderBottomColor: "xud65wk",
+            $$css: true
+          },
+          short: {
+            paddingBlock: "x190pm2f",
+            paddingInline: "x1n86tx6",
+            paddingTop: "xexx8yu",
+            $$css: true
+          },
+          shortReversed: {
+            paddingTop: "xexx8yu",
+            paddingBlock: "x190pm2f",
+            paddingInline: "x1n86tx6",
+            $$css: true
+          },
+          valid: {
+            borderColor: "x1bg2uv5",
+            borderStyle: "x1y0btm7",
+            borderWidth: "xmkeg23",
+            $$css: true
+          }
+        };"
       `);
     });
   });

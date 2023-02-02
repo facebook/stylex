@@ -48,48 +48,50 @@ describe('Development Plugin Metadata', () => {
         },
       });
 
-      expect(metadata).toEqual([
+      expect(metadata).toMatchInlineSnapshot(`
         [
-          'x1e2nbdu',
-          {
-            ltr: '.x1e2nbdu{color:red}',
-            rtl: null,
-          },
-          1,
-        ],
-        [
-          'x1ycjhwn',
-          {
-            ltr: '.x1ycjhwn{height:5px}',
-            rtl: null,
-          },
-          1,
-        ],
-        [
-          'x15uk0yd',
-          {
-            ltr: '.x15uk0yd:hover{left:10px}',
-            rtl: '.x15uk0yd:hover{right:10px}',
-          },
-          8,
-        ],
-        [
-          'x10tbbcl',
-          {
-            ltr: '@media (min-width: 1000px){.x10tbbcl.x10tbbcl{right:5px}}',
-            rtl: '@media (min-width: 1000px){.x10tbbcl.x10tbbcl{left:5px}}',
-          },
-          2,
-        ],
-        [
-          'x18kvd1d-B',
-          {
-            ltr: '@keyframes x18kvd1d-B{from{left:0;}to{left:100px;}}',
-            rtl: '@keyframes x18kvd1d-B{from{right:0;}to{right:100px;}}',
-          },
-          1,
-        ],
-      ]);
+          [
+            "x1e2nbdu",
+            {
+              "ltr": ".x1e2nbdu{color:red}",
+              "rtl": null,
+            },
+            4,
+          ],
+          [
+            "x1ycjhwn",
+            {
+              "ltr": ".x1ycjhwn{height:5px}",
+              "rtl": null,
+            },
+            4,
+          ],
+          [
+            "xaiupp8",
+            {
+              "ltr": ".xaiupp8:hover{inset-inline-start:10px}",
+              "rtl": null,
+            },
+            17,
+          ],
+          [
+            "x1uy60zq",
+            {
+              "ltr": "@media (min-width: 1000px){.x1uy60zq.x1uy60zq{inset-inline-end:5px}}",
+              "rtl": null,
+            },
+            25,
+          ],
+          [
+            "xqv9ub1-B",
+            {
+              "ltr": "@keyframes xqv9ub1-B{from{inset-inline-start:0;}to{inset-inline-start:100px;}}",
+              "rtl": null,
+            },
+            1,
+          ],
+        ]
+      `);
     });
   });
 });

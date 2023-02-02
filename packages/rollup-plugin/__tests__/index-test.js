@@ -57,16 +57,15 @@ describe('rollup-plugin-stylex', () => {
 
     expect(css).toMatchInlineSnapshot(`
       "@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}
-      .x188knyk{margin-block-start:99px}
-      .x1c4r43l{display:flex}
-      .x1je5kxa{height:500px}
-      html:not([dir='rtl']) .x1n8p6zw{margin-left:10px}
-      html[dir='rtl'] .x1n8p6zw{margin-right:10px}
       .x1nrqb13{animation-name:x11gtny7-B}
-      .x1u78jha{width:50%}
-      .x1wdx05y{display:inline}
-      .x6mlivy{width:100%}
       .xntgbld{display:block}
+      .x1c4r43l{display:flex}
+      .x1wdx05y{display:inline}
+      .x1je5kxa{height:500px}
+      .xo3gju4{margin-inline-start:10px}
+      .x1h9ru99{margin-top:99px}
+      .x6mlivy{width:100%}
+      .x1u78jha{width:50%}
       .x1kflwvg:hover{background:red}"
     `);
 
@@ -97,10 +96,20 @@ describe('rollup-plugin-stylex', () => {
         foo: {
           animationName: "x1nrqb13",
           display: "x1c4r43l",
-          marginStart: "x1n8p6zw",
-          marginBlockStart: "x188knyk",
+          marginInlineStart: "xo3gju4",
+          marginLeft: null,
+          marginRight: null,
+          marginTop: "x1h9ru99",
           height: "x1je5kxa",
           ":hover_background": "x1kflwvg",
+          ":hover_backgroundAttachment": null,
+          ":hover_backgroundClip": null,
+          ":hover_backgroundColor": null,
+          ":hover_backgroundImage": null,
+          ":hover_backgroundOrigin": null,
+          ":hover_backgroundPosition": null,
+          ":hover_backgroundRepeat": null,
+          ":hover_backgroundSize": null,
           $$css: true
         }
       };
@@ -126,8 +135,8 @@ describe('rollup-plugin-stylex', () => {
         "import stylex from 'stylex';
 
         // otherStyles.js
-        stylex.inject(".xntgbld{display:block}", 1);
-        stylex.inject(".x6mlivy{width:100%}", 1);
+        stylex.inject(".xntgbld{display:block}", 4);
+        stylex.inject(".x6mlivy{width:100%}", 4);
         var styles$2 = {
           bar: {
             "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -138,9 +147,9 @@ describe('rollup-plugin-stylex', () => {
         };
 
         // npmStyles.js
-        stylex.inject(".x1wdx05y{display:inline}", 1);
-        stylex.inject(".x1je5kxa{height:500px}", 1);
-        stylex.inject(".x1u78jha{width:50%}", 1);
+        stylex.inject(".x1wdx05y{display:inline}", 4);
+        stylex.inject(".x1je5kxa{height:500px}", 4);
+        stylex.inject(".x1u78jha{width:50%}", 4);
         const styles$1 = {
           baz: {
             "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -153,21 +162,31 @@ describe('rollup-plugin-stylex', () => {
 
         // index.js
         stylex.inject("@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
-        stylex.inject(".x1nrqb13{animation-name:x11gtny7-B}", 1);
-        stylex.inject(".x1c4r43l{display:flex}", 1);
-        stylex.inject(".x1n8p6zw{margin-left:10px}", 1, ".x1n8p6zw{margin-right:10px}");
-        stylex.inject(".x188knyk{margin-block-start:99px}", 1);
-        stylex.inject(".x1je5kxa{height:500px}", 1);
-        stylex.inject(".x1kflwvg:hover{background:red}", 8);
+        stylex.inject(".x1nrqb13{animation-name:x11gtny7-B}", 4);
+        stylex.inject(".x1c4r43l{display:flex}", 4);
+        stylex.inject(".xo3gju4{margin-inline-start:10px}", 4);
+        stylex.inject(".x1h9ru99{margin-top:99px}", 4);
+        stylex.inject(".x1je5kxa{height:500px}", 4);
+        stylex.inject(".x1kflwvg:hover{background:red}", 16);
         var styles = {
           foo: {
             "index__styles.foo": "index__styles.foo",
             animationName: "x1nrqb13",
             display: "x1c4r43l",
-            marginStart: "x1n8p6zw",
-            marginBlockStart: "x188knyk",
+            marginInlineStart: "xo3gju4",
+            marginLeft: null,
+            marginRight: null,
+            marginTop: "x1h9ru99",
             height: "x1je5kxa",
             ":hover_background": "x1kflwvg",
+            ":hover_backgroundAttachment": null,
+            ":hover_backgroundClip": null,
+            ":hover_backgroundColor": null,
+            ":hover_backgroundImage": null,
+            ":hover_backgroundOrigin": null,
+            ":hover_backgroundPosition": null,
+            ":hover_backgroundRepeat": null,
+            ":hover_backgroundSize": null,
             $$css: true
           }
         };

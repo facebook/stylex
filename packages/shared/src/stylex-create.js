@@ -16,7 +16,7 @@ import type {
 } from './common-types';
 
 import convertToClassName from './convert-to-className';
-import expandShorthands, { expandedKeys } from './expand-shorthands';
+import expandShorthands, { getExpandedKeys } from './preprocess-rules/index';
 import {
   objFromEntries,
   objValues,
@@ -25,6 +25,7 @@ import {
 } from './utils/object-utils';
 import * as messages from './messages';
 import { IncludedStyles } from './stylex-include';
+// import preflatten from './namespace-transforms/preflatten';
 
 // This takes the object of styles passed to `stylex.create` and transforms it.
 //   The transformation replaces style values with classNames.
@@ -48,6 +49,9 @@ export default function styleXCreateSet(
     if (typeof namespace !== 'object' || Array.isArray(namespace)) {
       throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
     }
+
+    // namespace = preflatten(namespace);
+
     const [resolvedNamespace, injected] = styleXCreateNamespace(
       namespace,
       options
@@ -96,7 +100,7 @@ function styleXCreateNamespace(
       if (
         !key.startsWith(':') &&
         !key.startsWith('@') &&
-        expandedKeys.includes(key)
+        getExpandedKeys(options).includes(key)
       ) {
         throw new Error(messages.INVALID_PSEUDO);
       }
@@ -112,7 +116,8 @@ function styleXCreateNamespace(
               ) {
                 throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
               }
-              return expandShorthands([innerKey, innerValue]);
+
+              return expandShorthands([innerKey, innerValue], options);
             })
           ),
         ],
@@ -132,7 +137,8 @@ function styleXCreateNamespace(
       ) {
         throw new Error(messages.ILLEGAL_PROP_ARRAY_VALUE);
       }
-      return expandShorthands([key, value]);
+
+      return expandShorthands([key, value], options);
     }
   });
 

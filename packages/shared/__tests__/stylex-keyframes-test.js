@@ -47,11 +47,11 @@ describe('stylex-keyframes test', () => {
       })
     ).toMatchInlineSnapshot(`
       [
-        "x1lvx8r0-B",
+        "x1jkcf39-B",
         {
-          "ltr": "@keyframes x1lvx8r0-B{from{left:0;}to{left:500px;}}",
+          "ltr": "@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}",
           "priority": 1,
-          "rtl": "@keyframes x1lvx8r0-B{from{right:0;}to{right:500px;}}",
+          "rtl": null,
         },
       ]
     `);

@@ -16,11 +16,7 @@ export type TStyleValue =
   | number
   | string
   | $ReadOnlyArray<number | string>;
-export type TNestableStyleValue =
-  | TStyleValue
-  | $ReadOnly<{
-      [string]: TStyleValue,
-    }>;
+export type TNestableStyleValue = TStyleValue | RawStyles;
 
 export type RawStyles = $ReadOnly<{
   [string]: TNestableStyleValue,
@@ -49,5 +45,12 @@ export type StyleXOptions = {
   stylexSheetName?: string | void,
   classNamePrefix: string,
   definedStylexCSSVariables?: { [key: string]: mixed },
+  styleResolution:
+    | 'application-order' // The last style applied wins.
+    // More specific styles will win over less specific styles. (margin-top wins over margin)
+    | 'property-specificity'
+    // Legacy behavior, that expands shorthand properties into their longhand counterparts at compile-time.
+    // This is not recommended, and will be removed in a future version.
+    | 'legacy-expand-shorthands',
   ...
 };
