@@ -1985,6 +1985,7 @@ const keyForNestedObject = makeUnionRule(
   makeLiteralRule(':focus'),
   makeLiteralRule(':focus-visible'),
   makeLiteralRule(':active'),
+  makeLiteralRule(':visited'),
   makeLiteralRule(':disabled'),
   makeLiteralRule('::placeholder'),
   makeLiteralRule('::thumb'),
