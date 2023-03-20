@@ -21,15 +21,15 @@ test('stylex.inject', () => {
 
 describe('stylex', () => {
   test('basic resolve', () => {
-    expect(stylex({ a: 'aaa', b: 'bbb' })).toBe('aaa bbb');
+    expect(stylex({ a: 'aaa', b: 'bbb', $$css: true })).toBe('aaa bbb');
   });
 
   test('merge order', () => {
     expect(
       stylex([
-        { a: 'a', ':hover__aa': 'aa' },
-        { b: 'b' },
-        { c: 'c', ':hover__cc': 'cc' },
+        { a: 'a', ':hover__aa': 'aa', $$css: true },
+        { b: 'b', $$css: true },
+        { c: 'c', ':hover__cc': 'cc', $$css: true },
       ])
     ).toBe('a aa b c cc');
   });
@@ -39,9 +39,11 @@ describe('stylex', () => {
       stylex([
         {
           backgroundColor: 'nu7423ey',
+          $$css: true,
         },
         {
           backgroundColor: 'gh25dzvf',
+          $$css: true,
         },
       ])
     ).toEqual('gh25dzvf');
@@ -52,16 +54,19 @@ describe('stylex', () => {
       stylex([
         {
           backgroundColor: 'nu7423ey',
+          $$css: true,
         },
         [
           {
             backgroundColor: 'abcdefg',
             ':hover__backgroundColor': 'ksdfmwjs',
+            $$css: true,
           },
         ],
         {
           color: 'gofk2cf1',
           ':hover__backgroundColor': 'rse6dlih',
+          $$css: true,
         },
       ])
     ).toEqual('abcdefg gofk2cf1 rse6dlih');
@@ -72,9 +77,11 @@ describe('stylex', () => {
       stylex(
         {
           ':hover__backgroundColor': 'rse6dlih',
+          $$css: true,
         },
         {
           ':hover__color': 'gofk2cf1',
+          $$css: true,
         }
       )
     ).toEqual('rse6dlih gofk2cf1');
@@ -104,6 +111,7 @@ describe('stylex', () => {
         whiteSpace: 'n3t5jt4f',
         wordWrap: 'gh25dzvf',
         zIndex: 'g4tp4svg',
+        $$css: true,
       },
       false,
       false,
@@ -113,22 +121,26 @@ describe('stylex', () => {
         {
           cursor: 'fsf7x5fv',
           touchAction: 's3jn8y49',
+          $$css: true,
         },
         false,
         {
           outline: 'icdlwmnq',
+          $$css: true,
         },
         [
           {
             WebkitTapHighlightColor: 'oajrlxb2',
             cursor: 'nhd2j8a9',
             touchAction: 'f1sip0of',
+            $$css: true,
           },
           false,
           false,
           {
             textDecoration: 'esuyzwwr',
             ':hover__textDecoration': 'p8dawk7l',
+            $$css: true,
           },
           false,
           [
@@ -155,14 +167,17 @@ describe('stylex', () => {
               ':hover__textDecoration': 'gofk2cf1',
               ':active__transform': 'lsqurvkf',
               ':active__transition': 'bj9fd4vl',
+              $$css: true,
             },
             {
               display: 'a8c37x1j',
               width: 'k4urcfbm',
+              $$css: true,
             },
             [
               {
                 ':active__transform': 'tm8avpzi',
+                $$css: true,
               },
             ],
           ],

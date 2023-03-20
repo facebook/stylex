@@ -16,7 +16,8 @@ import type {
   MapNamespace,
 } from './StyleXTypes';
 
-import inject from './stylex-inject';
+import injectStyle from './stylex-inject';
+import { styleq } from 'styleq';
 
 type Cache = WeakMap<
   { ... },
@@ -32,83 +33,22 @@ type DedupeStyles = $ReadOnly<{
   ...
 }>;
 
-const enableCache = true;
-const cache: ?Cache = enableCache ? new WeakMap() : null;
-
 function stylex(
   ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
 ): string {
-  // Keep a set of property commits to the className
-  const definedProperties = [];
-  let className = '';
-  let nextCache = cache;
-
-  while (styles.length) {
-    // Push nested styles back onto the stack to be processed
-    const possibleStyle = styles.pop();
-    if (Array.isArray(possibleStyle)) {
-      for (let i = 0; i < possibleStyle.length; i++) {
-        styles.push(possibleStyle[i]);
-      }
-      continue;
-    }
-
-    // Process an individual style object
-    const styleObj = possibleStyle;
-    if (styleObj != null && typeof styleObj === 'object') {
-      // Build up the class names defined by this object
-      let classNameChunk = '';
-      if (nextCache != null && nextCache.has(styleObj)) {
-        // Cache: read
-        const cacheEntry = nextCache.get(styleObj);
-        if (cacheEntry != null) {
-          classNameChunk = cacheEntry.classNameChunk;
-          definedProperties.push(...cacheEntry.definedPropertiesChunk);
-          nextCache = cacheEntry.next;
-        }
-      } else {
-        // Record the properties this object defines (and that haven't already
-        // been defined by later objects.)
-        const definedPropertiesChunk = [];
-        for (const prop in styleObj) {
-          const value = styleObj[prop];
-          // Style declarations, e.g., opacity: 's3fkgpd'
-          if (typeof value === 'string' || value === null) {
-            // Skip adding to the chunks if property has already been seen
-            if (!definedProperties.includes(prop)) {
-              definedProperties.push(prop);
-              definedPropertiesChunk.push(prop);
-              if (typeof value === 'string') {
-                classNameChunk += classNameChunk ? ' ' + value : value;
-              }
-            }
-          }
-        }
-        // Cache: write
-        if (nextCache != null) {
-          const emptyCache = new WeakMap();
-          nextCache.set(styleObj, {
-            classNameChunk,
-            definedPropertiesChunk,
-            next: emptyCache,
-          });
-          nextCache = emptyCache;
-        }
-      }
-
-      // Order of classes in chunks matches property-iteration order of style
-      // object. Order of chunks matches passed order of styles from first to
-      // last (which we iterate over in reverse).
-      if (classNameChunk) {
-        className = className
-          ? classNameChunk + ' ' + className
-          : classNameChunk;
-      }
-    }
-  }
-
+  const [className] = styleq(styles);
   return className;
 }
+
+export function apply(
+  ...styles: Array<
+    StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>
+  >
+): { className: string, style: { [string]: string | number } } {
+  const [className, style] = styleq(styles);
+  return { className, style };
+}
+stylex.apply = apply;
 
 function stylexCreate(_styles: { ... }) {
   throw new Error(
@@ -128,26 +68,33 @@ type Stylex$Include = <TStyles: { +[string]: string | number }>(
   _styles: MapNamespace<TStyles>
 ) => TStyles;
 
-stylex.create = (stylexCreate: Stylex$Create);
-stylex.include = (stylexIncludes: Stylex$Include);
+export const create: Stylex$Create = stylexCreate;
+stylex.create = create;
 
-stylex.keyframes = (_keyframes: Keyframes): string => {
+export const include: Stylex$Include = stylexIncludes;
+stylex.include = include;
+
+export const keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
 };
+stylex.keyframes = keyframes;
 
-stylex.firstThatWorks = <T: string | number>(
+export const firstThatWorks = <T: string | number>(
   ..._styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
   throw new Error('stylex.firstThatWorks should never be called.');
 };
+stylex.firstThatWorks = firstThatWorks;
 
+export const inject = injectStyle;
 stylex.inject = inject;
 
-stylex.UNSUPPORTED_PROPERTY = (props: { ... }) => {
+export const UNSUPPORTED_PROPERTY = (props: { ... }) => {
   throw new Error(
     'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.'
   );
 };
+stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,

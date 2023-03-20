@@ -5,7 +5,7 @@
 .*/build/.*
 .*/dist/.*
 .*/lib/.*
-.*/node_modules/.*
+.*/malformed_package_json/.*
 
 [include]
 
