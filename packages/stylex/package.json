@@ -17,9 +17,6 @@
     "utility-types": "^3.10.0",
     "styleq": "0.1.3"
   },
-  "devDependencies": {
-    "benchmark": "^2.1.4"
-  },
   "jest": {},
   "files": [
     "lib/*"
