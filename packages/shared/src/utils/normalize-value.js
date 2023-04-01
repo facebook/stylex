@@ -33,6 +33,9 @@ const normalizers = [
 ];
 
 export default function normalizeValue(value: string, key: string): string {
+  if (value == null) {
+    return value;
+  }
   const parsedAST = parser(value);
   return normalizers.reduce((ast, fn) => fn(ast, key), parsedAST).toString();
 }

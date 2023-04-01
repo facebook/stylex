@@ -24,6 +24,10 @@ function printNode(node: PostCSSValueASTNode): string {
 
 // Using split(' ') Isn't enough bcause of values like calc.
 export default function splitValue(str: string): Array<string> {
+  if (str == null) {
+    return [str];
+  }
+
   if (Array.isArray(str)) {
     return str;
   }
