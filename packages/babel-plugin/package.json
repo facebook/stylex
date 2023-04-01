@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rollup --config ./rollup.config.mjs",
+    "build-haste": "HASTE=true rollup --config ./rollup.config.mjs",
     "test": "jest"
   },
   "dependencies": {

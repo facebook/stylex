@@ -15,12 +15,14 @@ const config = {
     babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
     nodeResolve({
       extensions,
-      resolveOnly: [
-        '@stylexjs/shared',
-        '@stylexjs/shared/**/*',
-        '@stylexjs/stylex',
-        '@stylexjs/stylex/**/*',
-      ],
+      resolveOnly: process.env['HASTE']
+        ? []
+        : [
+            '@stylexjs/shared',
+            '@stylexjs/shared/**/*',
+            '@stylexjs/stylex',
+            '@stylexjs/stylex/**/*',
+          ],
     }),
     commonjs(),
     json(),
