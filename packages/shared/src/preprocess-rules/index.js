@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { StyleXOptions } from '../common-types';
+import type { StyleXOptions, TStyleValue } from '../common-types';
 
 import applicationOrder from './application-order';
 import legacyExpandShorthands from './legacy-expand-shorthands';
@@ -27,12 +27,14 @@ export function getExpandedKeys(
   );
 }
 
-export default function flatMapExpandedShorthands<T>(
-  objEntry: [string, T],
+export default function flatMapExpandedShorthands(
+  objEntry: [string, TStyleValue],
   options: StyleXOptions
-): Array<[string, T]> {
+): $ReadOnlyArray<[string, TStyleValue]> {
   const [key, value] = objEntry;
-  const expansion =
+  const expansion: (
+    string | number | null
+  ) => $ReadOnlyArray<[string, TStyleValue]> =
     expansions[options.styleResolution ?? 'application-order'][key];
   if (expansion) {
     if (Array.isArray(value)) {
@@ -42,5 +44,5 @@ export default function flatMapExpandedShorthands<T>(
     }
     return expansion(value);
   }
-  return [objEntry];
+  return [[key, value]];
 }

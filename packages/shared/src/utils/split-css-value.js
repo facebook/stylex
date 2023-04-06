@@ -8,6 +8,8 @@
  *
  */
 
+import type { TStyleValue } from '../common-types';
+
 import parser from 'postcss-value-parser';
 
 function printNode(node: PostCSSValueASTNode): string {
@@ -23,8 +25,10 @@ function printNode(node: PostCSSValueASTNode): string {
 }
 
 // Using split(' ') Isn't enough bcause of values like calc.
-export default function splitValue(str: string): Array<string> {
-  if (str == null) {
+export default function splitValue(
+  str: TStyleValue
+): $ReadOnlyArray<TStyleValue> {
+  if (str == null || typeof str === 'number') {
     return [str];
   }
 

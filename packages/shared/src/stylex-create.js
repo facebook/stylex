@@ -16,7 +16,9 @@ import type {
 } from './common-types';
 
 import convertToClassName from './convert-to-className';
-import expandShorthands, { getExpandedKeys } from './preprocess-rules/index';
+import flatMapExpandedShorthands, {
+  getExpandedKeys,
+} from './preprocess-rules/index';
 import {
   objFromEntries,
   objValues,
@@ -25,7 +27,6 @@ import {
 } from './utils/object-utils';
 import * as messages from './messages';
 import { IncludedStyles } from './stylex-include';
-// import preflatten from './namespace-transforms/preflatten';
 
 // This takes the object of styles passed to `stylex.create` and transforms it.
 //   The transformation replaces style values with classNames.
@@ -89,14 +90,16 @@ function styleXCreateNamespace(
 ): [CompiledStyles, { [string]: [string, InjectableStyle] }] {
   const namespaceEntries = objEntries(style);
 
-  // First the shorthand properties are expanded.
-  // e.g. `margin` gets expanded to `marginTop`, `marginBottom`, `marginStart`, `marginEnd`.
-  // `entries` is an array of [key, value] pairs.
+  // First handle shorthands. The strategy for this is based on the `styleResolution` option.
   const entries = namespaceEntries.flatMap(([key, value]) => {
+    // Detect style ...spreads and leave them unmodified
     if (value instanceof IncludedStyles) {
       return [[key, value]];
     }
+    // Detect nested style objects.
     if (value != null && typeof value === 'object' && !Array.isArray(value)) {
+      // Nested Objects are only allowed for legacy :pseudo, @media or long-hand properties for now.
+      // In the future, we will try to support shorthands as well.
       if (
         !key.startsWith(':') &&
         !key.startsWith('@') &&
@@ -117,7 +120,7 @@ function styleXCreateNamespace(
                 throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
               }
 
-              return expandShorthands([innerKey, innerValue], options);
+              return flatMapExpandedShorthands([innerKey, innerValue], options);
             })
           ),
         ],
@@ -138,7 +141,7 @@ function styleXCreateNamespace(
         throw new Error(messages.ILLEGAL_PROP_ARRAY_VALUE);
       }
 
-      return expandShorthands([key, value], options);
+      return flatMapExpandedShorthands([key, value], options);
     }
   });
 
@@ -159,6 +162,8 @@ function styleXCreateNamespace(
         for (const [innerKey, innerVal] of objEntries(val)) {
           if (innerVal === null) {
             innerObj[innerKey] = null;
+          } else if (typeof innerVal === 'object' && !Array.isArray(innerVal)) {
+            throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
           } else {
             const [updatedKey, className, cssRule] = convertToClassName(
               [innerKey, innerVal],
@@ -180,6 +185,9 @@ function styleXCreateNamespace(
             !pseudo.startsWith('@')
           ) {
             throw new Error(messages.INVALID_PSEUDO);
+          }
+          if (typeof innerVal === 'object' && !Array.isArray(innerVal)) {
+            throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
           }
           if (innerVal !== null) {
             const [updatedKey, className, cssRule] = convertToClassName(

@@ -9,6 +9,8 @@
 
 import splitValue from '../utils/split-css-value';
 
+import type { TStyleValue } from '../common-types';
+
 /// # Handle CSS shorthands in a React Native compatible way.
 ///
 /// This means:
@@ -16,67 +18,69 @@ import splitValue from '../utils/split-css-value';
 /// - disallowing multiple values within many shorthands
 /// - Treating certain non-standard properties as aliases for real CSS properties
 
+type TReturn = $ReadOnlyArray<[string, TStyleValue]>;
+
 const shorthands = {
-  all: (_: string) => {
+  all: (_: TStyleValue): TReturn => {
     throw new Error('all is not supported');
   },
-  animation: (value: string): Array<[string, string]> => {
+  animation: (value: TStyleValue): TReturn => {
     throw new Error('animation is not supported');
   },
-  background: (value: string): Array<[string, string]> => {
+  background: (value: TStyleValue): TReturn => {
     throw new Error(
       'background is not supported. Use background-color, border-image etc. instead.'
     );
   },
-  border: (rawValue: string): Array<[string, string]> => {
+  border: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'border is not supported. Use border-width, border-style and border-color instead.'
     );
   },
-  borderInline: (rawValue: string): Array<[string, string]> => {
+  borderInline: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderInline is not supported. Use borderInlineWidth, borderInlineStyle and borderInlineColor instead.'
     );
   },
   // @Deprecated
-  borderBlock: (rawValue: string): Array<[string, string]> => {
+  borderBlock: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderBlock is not supported. Use borderBlockWidth, borderBlockStyle and borderBlockColor instead.'
     );
   },
 
   // @Deprecated
-  borderTop: (rawValue: string): Array<[string, string]> => {
+  borderTop: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderTop is not supported. Use borderTopWidth, borderTopStyle and borderTopColor instead.'
     );
   },
   // @Deprecated
-  borderInlineEnd: (rawValue: string): Array<[string, string]> => {
+  borderInlineEnd: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderInlineEnd is not supported. Use borderInlineEndWidth, borderInlineEndStyle and borderInlineEndColor instead.'
     );
   },
   // @Deprecated
-  borderRight: (rawValue: string): Array<[string, string]> => {
+  borderRight: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderRight is not supported. Use borderRightWidth, borderRightStyle and borderRightColor instead.'
     );
   },
   // @Deprecated
-  borderBottom: (rawValue: string): Array<[string, string]> => {
+  borderBottom: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderBottom is not supported. Use borderBottomWidth, borderBottomStyle and borderBottomColor instead.'
     );
   },
   // @Deprecated
-  borderInlineStart: (rawValue: string): Array<[string, string]> => {
+  borderInlineStart: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderInlineStart is not supported. Use borderInlineStartWidth, borderInlineStartStyle and borderInlineStartColor instead.'
     );
   },
   // @Deprecated
-  borderLeft: (rawValue: string): Array<[string, string]> => {
+  borderLeft: (rawValue: TStyleValue): TReturn => {
     throw new Error(
       [
         '`borderLeft` is not supported.',
@@ -86,8 +90,8 @@ const shorthands = {
     );
   },
 
-  margin: (value: string): Array<[string, string]> => {
-    const values = typeof value === 'number' ? [value] : splitValue(value);
+  margin: (value: TStyleValue): TReturn => {
+    const values = splitValue(value);
     if (values.length === 1) {
       return [['margin', values[0]]];
     } else {
@@ -97,9 +101,8 @@ const shorthands = {
     }
   },
 
-  padding: (rawValue: string): Array<[string, string]> => {
-    const values =
-      typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
+  padding: (rawValue: TStyleValue): TReturn => {
+    const values = splitValue(rawValue);
     if (values.length === 1) {
       return [['padding', values[0]]];
     }
@@ -124,123 +127,103 @@ const aliases = {
   // @UNSUPPORTED
   borderStart: shorthands.borderInlineStart,
 
-  borderHorizontalWidth: (value: string): Array<[string, string]> => [
+  borderHorizontalWidth: (value: TStyleValue): TReturn => [
     ['borderInlineWidth', value],
   ],
-  borderHorizontalStyle: (value: string): Array<[string, string]> => [
+  borderHorizontalStyle: (value: TStyleValue): TReturn => [
     ['borderInlineStyle', value],
   ],
-  borderHorizontalColor: (value: string): Array<[string, string]> => [
+  borderHorizontalColor: (value: TStyleValue): TReturn => [
     ['borderInlineColor', value],
   ],
-  borderVerticalWidth: (value: string): Array<[string, string]> => [
+  borderVerticalWidth: (value: TStyleValue): TReturn => [
     ['borderBlockWidth', value],
   ],
-  borderVerticalStyle: (value: string): Array<[string, string]> => [
+  borderVerticalStyle: (value: TStyleValue): TReturn => [
     ['borderBlockStyle', value],
   ],
-  borderVerticalColor: (value: string): Array<[string, string]> => [
+  borderVerticalColor: (value: TStyleValue): TReturn => [
     ['borderBlockColor', value],
   ],
 
-  borderBlockStartColor: (value: string): Array<[string, string]> => [
+  borderBlockStartColor: (value: TStyleValue): TReturn => [
     ['borderTopColor', value],
   ],
-  borderBlockEndColor: (value: string): Array<[string, string]> => [
+  borderBlockEndColor: (value: TStyleValue): TReturn => [
     ['borderBottomColor', value],
   ],
-  borderBlockStartStyle: (value: string): Array<[string, string]> => [
+  borderBlockStartStyle: (value: TStyleValue): TReturn => [
     ['borderTopStyle', value],
   ],
-  borderBlockEndStyle: (value: string): Array<[string, string]> => [
+  borderBlockEndStyle: (value: TStyleValue): TReturn => [
     ['borderBottomStyle', value],
   ],
-  borderBlockStartWidth: (value: string): Array<[string, string]> => [
+  borderBlockStartWidth: (value: TStyleValue): TReturn => [
     ['borderTopWidth', value],
   ],
-  borderBlockEndWidth: (value: string): Array<[string, string]> => [
+  borderBlockEndWidth: (value: TStyleValue): TReturn => [
     ['borderBottomWidth', value],
   ],
 
-  borderStartColor: (value: string): Array<[string, string]> => [
+  borderStartColor: (value: TStyleValue): TReturn => [
     ['borderInlineStartColor', value],
   ],
-  borderEndColor: (value: string): Array<[string, string]> => [
+  borderEndColor: (value: TStyleValue): TReturn => [
     ['borderInlineEndColor', value],
   ],
-  borderStartStyle: (value: string): Array<[string, string]> => [
+  borderStartStyle: (value: TStyleValue): TReturn => [
     ['borderInlineStartStyle', value],
   ],
-  borderEndStyle: (value: string): Array<[string, string]> => [
+  borderEndStyle: (value: TStyleValue): TReturn => [
     ['borderInlineEndStyle', value],
   ],
-  borderStartWidth: (value: string): Array<[string, string]> => [
+  borderStartWidth: (value: TStyleValue): TReturn => [
     ['borderInlineStartWidth', value],
   ],
-  borderEndWidth: (value: string): Array<[string, string]> => [
+  borderEndWidth: (value: TStyleValue): TReturn => [
     ['borderInlineEndWidth', value],
   ],
 
-  borderTopStartRadius: (value: string): Array<[string, string]> => [
+  borderTopStartRadius: (value: TStyleValue): TReturn => [
     ['borderStartStartRadius', value],
   ],
-  borderTopEndRadius: (value: string): Array<[string, string]> => [
+  borderTopEndRadius: (value: TStyleValue): TReturn => [
     ['borderStartEndRadius', value],
   ],
-  borderBottomStartRadius: (value: string): Array<[string, string]> => [
+  borderBottomStartRadius: (value: TStyleValue): TReturn => [
     ['borderEndStartRadius', value],
   ],
-  borderBottomEndRadius: (value: string): Array<[string, string]> => [
+  borderBottomEndRadius: (value: TStyleValue): TReturn => [
     ['borderEndEndRadius', value],
   ],
 
-  marginBlockStart: (value: string): Array<[string, string]> => [
-    ['marginTop', value],
-  ],
-  marginBlockEnd: (value: string): Array<[string, string]> => [
-    ['marginBottom', value],
-  ],
+  marginBlockStart: (value: TStyleValue): TReturn => [['marginTop', value]],
+  marginBlockEnd: (value: TStyleValue): TReturn => [['marginBottom', value]],
 
-  marginStart: (value: string): Array<[string, string]> => [
-    ['marginInlineStart', value],
-  ],
-  marginEnd: (value: string): Array<[string, string]> => [
-    ['marginInlineEnd', value],
-  ],
-  marginHorizontal: (value: string): Array<[string, string]> => [
-    ['marginInline', value],
-  ],
-  marginVertical: (value: string): Array<[string, string]> => [
-    ['marginBlock', value],
-  ],
+  marginStart: (value: TStyleValue): TReturn => [['marginInlineStart', value]],
+  marginEnd: (value: TStyleValue): TReturn => [['marginInlineEnd', value]],
+  marginHorizontal: (value: TStyleValue): TReturn => [['marginInline', value]],
+  marginVertical: (value: TStyleValue): TReturn => [['marginBlock', value]],
 
-  paddingBlockStart: (rawValue: string): Array<[string, string]> => [
+  paddingBlockStart: (rawValue: TStyleValue): TReturn => [
     ['paddingTop', rawValue],
   ],
-  paddingBlockEnd: (rawValue: string): Array<[string, string]> => [
+  paddingBlockEnd: (rawValue: TStyleValue): TReturn => [
     ['paddingBottom', rawValue],
   ],
-  paddingStart: (value: string): Array<[string, string]> => [
+  paddingStart: (value: TStyleValue): TReturn => [
     ['paddingInlineStart', value],
   ],
-  paddingEnd: (value: string): Array<[string, string]> => [
-    ['paddingInlineEnd', value],
-  ],
-  paddingHorizontal: (value: string): Array<[string, string]> => [
+  paddingEnd: (value: TStyleValue): TReturn => [['paddingInlineEnd', value]],
+  paddingHorizontal: (value: TStyleValue): TReturn => [
     ['paddingInline', value],
   ],
-  paddingVertical: (value: string): Array<[string, string]> => [
-    ['paddingBlock', value],
-  ],
+  paddingVertical: (value: TStyleValue): TReturn => [['paddingBlock', value]],
 
-  insetBlockStart: (value: string): Array<[string, string]> => [['top', value]],
-  insetBlockEnd: (value: string): Array<[string, string]> => [
-    ['bottom', value],
-  ],
-  start: (value: string): Array<[string, string]> => [
-    ['insetInlineStart', value],
-  ],
-  end: (value: string): Array<[string, string]> => [['insetInlineEnd', value]],
+  insetBlockStart: (value: TStyleValue): TReturn => [['top', value]],
+  insetBlockEnd: (value: TStyleValue): TReturn => [['bottom', value]],
+  start: (value: TStyleValue): TReturn => [['insetInlineStart', value]],
+  end: (value: TStyleValue): TReturn => [['insetInlineEnd', value]],
 };
 
 const expansions = {

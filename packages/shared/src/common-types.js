@@ -10,12 +10,7 @@
 import type { IncludedStyles } from './stylex-include';
 
 export type TRawValue = number | string | $ReadOnlyArray<number | string>;
-
-export type TStyleValue =
-  | null
-  | number
-  | string
-  | $ReadOnlyArray<number | string>;
+export type TStyleValue = null | TRawValue;
 export type TNestableStyleValue = TStyleValue | RawStyles;
 
 export type RawStyles = $ReadOnly<{

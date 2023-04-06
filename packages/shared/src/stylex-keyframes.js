@@ -75,6 +75,13 @@ function expandFrameShorthands(
     objEntries(frame)
       .flatMap((pair): Array<[string, string | number]> =>
         expandShorthands(pair, options)
+          .map(([key, value]) => {
+            if (typeof value === 'string' || typeof value === 'number') {
+              return [key, value];
+            }
+            return null;
+          })
+          .filter(Boolean)
       )
       // Keyframes are not combined. The nulls can be skipped
       .filter(([key, value]) => value != null)

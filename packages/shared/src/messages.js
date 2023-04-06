@@ -29,7 +29,8 @@ export const NO_CONDITIONAL_SHORTHAND =
 export const ILLEGAL_NAMESPACE_TYPE =
   'Only a string literal namespace is allowed here.';
 export const UNKNOWN_NAMESPACE = 'Unknown namespace';
-export const ILLEGAL_NESTED_PSEUDO = "Pseudo objects can't be nested.";
+export const ILLEGAL_NESTED_PSEUDO =
+  "Pseudo objects can't be nested more than one level deep.";
 export const ILLEGAL_PROP_VALUE =
   'A style value can only contain an array, string or number.';
 export const ILLEGAL_PROP_ARRAY_VALUE =

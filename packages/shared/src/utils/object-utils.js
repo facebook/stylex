@@ -31,7 +31,7 @@ export function flattenObject(obj: {
 
 export function objEntries<Obj: { ... }>(
   obj: Obj
-): Array<[$Keys<Obj>, Obj[$Keys<Obj>]]> {
+): $ReadOnlyArray<[$Keys<Obj>, Obj[$Keys<Obj>]]> {
   const retVal = [];
   for (const key of Object.keys(obj)) {
     retVal.push([key, obj[key]]);
@@ -39,7 +39,9 @@ export function objEntries<Obj: { ... }>(
   return retVal;
 }
 
-export function objValues<Obj: { ... }>(obj: Obj): Array<Obj[$Keys<Obj>]> {
+export function objValues<Obj: { ... }>(
+  obj: Obj
+): $ReadOnlyArray<Obj[$Keys<Obj>]> {
   const retVal = [];
   for (const key of Object.keys(obj)) {
     retVal.push(obj[key]);

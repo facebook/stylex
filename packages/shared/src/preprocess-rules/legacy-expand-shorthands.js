@@ -9,6 +9,8 @@
 
 import splitValue from '../utils/split-css-value';
 
+import type { TStyleValue } from '../common-types';
+
 // TODO: to be added later.
 // const aliases = {
 //   marginInlineStart: (rawValue) => [['marginStart', rawValue]],
@@ -79,9 +81,11 @@ import splitValue from '../utils/split-css-value';
  * - [ ] transition
  */
 
+type TReturn = $ReadOnlyArray<[string, TStyleValue]>;
+
 const expansions = {
   // Old buggy implementation that left two sets of conflicting border properties
-  // border: (rawValue: string): Array<[string, string]> => {
+  // border: (rawValue: TStyleValue): TReturn => {
   //   return [
   //     ['borderTop', rawValue],
   //     ['borderEnd', rawValue],
@@ -91,7 +95,7 @@ const expansions = {
   // },
 
   // Add this later, as this will be a breaking change
-  border: (rawValue: string): Array<[string, string]> => {
+  border: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return expansions.borderWidth(rawValue);
     }
@@ -102,7 +106,7 @@ const expansions = {
       ...expansions.borderColor(color),
     ];
   },
-  borderTop: (rawValue: string): Array<[string, string]> => {
+  borderTop: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderTopWidth', rawValue]];
     }
@@ -113,7 +117,7 @@ const expansions = {
       ['borderTopColor', color],
     ];
   },
-  borderEnd: (rawValue: string): Array<[string, string]> => {
+  borderEnd: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderEndWidth', rawValue]];
     }
@@ -124,7 +128,7 @@ const expansions = {
       ['borderEndColor', color],
     ];
   },
-  borderRight: (rawValue: string): Array<[string, string]> => {
+  borderRight: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderRightWidth', rawValue]];
     }
@@ -135,7 +139,7 @@ const expansions = {
       ['borderRightColor', color],
     ];
   },
-  borderBottom: (rawValue: string): Array<[string, string]> => {
+  borderBottom: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderBottomWidth', rawValue]];
     }
@@ -146,7 +150,7 @@ const expansions = {
       ['borderBottomColor', color],
     ];
   },
-  borderStart: (rawValue: string): Array<[string, string]> => {
+  borderStart: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderStartWidth', rawValue]];
     }
@@ -157,7 +161,7 @@ const expansions = {
       ['borderStartColor', color],
     ];
   },
-  borderLeft: (rawValue: string): Array<[string, string]> => {
+  borderLeft: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderLeftWidth', rawValue]];
     }
@@ -169,7 +173,7 @@ const expansions = {
     ];
   },
 
-  borderColor: (rawValue: string): Array<[string, string]> => {
+  borderColor: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -179,13 +183,13 @@ const expansions = {
       ['borderStartColor', left],
     ];
   },
-  borderHorizontal: (rawValue: string): Array<[string, string]> => {
+  borderHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
       ['borderStart', rawValue],
       ['borderEnd', rawValue],
     ];
   },
-  borderStyle: (rawValue: string): Array<[string, string]> => {
+  borderStyle: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -195,15 +199,14 @@ const expansions = {
       ['borderStartStyle', left],
     ];
   },
-  borderVertical: (rawValue: string): Array<[string, string]> => {
+  borderVertical: (rawValue: TStyleValue): TReturn => {
     return [
       ['borderTop', rawValue],
       ['borderBottom', rawValue],
     ];
   },
-  borderWidth: (rawValue: string): Array<[string, string]> => {
-    const [top, right = top, bottom = top, left = right] =
-      typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
+  borderWidth: (rawValue: TStyleValue): TReturn => {
+    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
       ['borderTopWidth', top],
@@ -212,13 +215,8 @@ const expansions = {
       ['borderStartWidth', left],
     ];
   },
-  borderRadius: (rawValue: string): Array<[string, string]> => {
-    const [top, right = top, bottom = top, left = right] =
-      typeof rawValue === 'string'
-        ? splitValue(rawValue)
-        : typeof rawValue === 'number'
-        ? [rawValue]
-        : rawValue; // remove
+  borderRadius: (rawValue: TStyleValue): TReturn => {
+    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
       ['borderTopStartRadius', top],
@@ -227,9 +225,8 @@ const expansions = {
       ['borderBottomStartRadius', left],
     ];
   },
-  margin: (rawValue: string): Array<[string, string]> => {
-    const [top, right = top, bottom = top, left = right] =
-      typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
+  margin: (rawValue: TStyleValue): TReturn => {
+    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
       ['marginTop', top],
@@ -238,29 +235,28 @@ const expansions = {
       ['marginStart', left],
     ];
   },
-  marginHorizontal: (rawValue: string): Array<[string, string]> => {
+  marginHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
       ['marginStart', rawValue],
       ['marginEnd', rawValue],
     ];
   },
-  marginVertical: (rawValue: string): Array<[string, string]> => {
+  marginVertical: (rawValue: TStyleValue): TReturn => {
     return [
       ['marginTop', rawValue],
       ['marginBottom', rawValue],
     ];
   },
 
-  overflow: (rawValue: string): Array<[string, string]> => {
+  overflow: (rawValue: TStyleValue): TReturn => {
     const [x, y = x] = splitValue(rawValue);
     return [
       ['overflowX', x],
       ['overflowY', y],
     ];
   },
-  padding: (rawValue: string): Array<[string, string]> => {
-    const [top, right = top, bottom = top, left = right] =
-      typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
+  padding: (rawValue: TStyleValue): TReturn => {
+    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
       ['paddingTop', top],
@@ -269,13 +265,13 @@ const expansions = {
       ['paddingStart', left],
     ];
   },
-  paddingHorizontal: (rawValue: string): Array<[string, string]> => {
+  paddingHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
       ['paddingStart', rawValue],
       ['paddingEnd', rawValue],
     ];
   },
-  paddingVertical: (rawValue: string): Array<[string, string]> => {
+  paddingVertical: (rawValue: TStyleValue): TReturn => {
     return [
       ['paddingTop', rawValue],
       ['paddingBottom', rawValue],
