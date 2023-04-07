@@ -27,11 +27,12 @@ function printNode(node: PostCSSValueASTNode): string {
 // Using split(' ') Isn't enough bcause of values like calc.
 export default function splitValue(
   str: TStyleValue
-): $ReadOnlyArray<TStyleValue> {
+): $ReadOnlyArray<number | string | null> {
   if (str == null || typeof str === 'number') {
     return [str];
   }
 
+  // This will never happen, but keeping here for Flow.
   if (Array.isArray(str)) {
     return str;
   }

@@ -83,6 +83,55 @@ import type { TStyleValue } from '../common-types';
 
 type TReturn = $ReadOnlyArray<[string, TStyleValue]>;
 
+const borderWidthKeywords = new Set(['thin', 'medium', 'thick']);
+const borderStyleKeywords = new Set([
+  'none',
+  'hidden',
+  'solid',
+  'dashed',
+  'dotted',
+  'double',
+  'groove',
+  'ridge',
+  'inset',
+  'outset',
+]);
+const globalKeywords = new Set(['initial', 'inherit', 'unset']);
+function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
+  const parts = borderParts.filter(Boolean).slice();
+
+  if (parts.length === 1 && globalKeywords.has(parts[0])) {
+    return [parts[0], parts[0], parts[0]];
+  }
+
+  // Find the part that starts with a number
+  // This is most likely to be the borderWidth
+  let width = parts.find(
+    (part) =>
+      typeof part === 'number' ||
+      part.match(/^\d+$/) ||
+      borderWidthKeywords.has(part)
+  );
+  if (width != null) {
+    parts.splice(parts.indexOf(width), 1);
+  }
+  const style = parts.find(
+    (part) => typeof part === 'string' && borderStyleKeywords.has(part)
+  );
+  if (style != null) {
+    parts.splice(parts.indexOf(style), 1);
+  }
+  if (parts.length === 2 && width == null) {
+    width = parts[0];
+    parts.splice(0, 1);
+  }
+  if (width != null && parts.length > 1) {
+    throw new Error('Invalid border shorthand value');
+  }
+  const color = parts[0];
+  return [width, style, color];
+}
+
 const expansions = {
   // Old buggy implementation that left two sets of conflicting border properties
   // border: (rawValue: TStyleValue): TReturn => {
@@ -99,34 +148,42 @@ const expansions = {
     if (typeof rawValue === 'number') {
       return expansions.borderWidth(rawValue);
     }
-    const [width, style, color] = splitValue(rawValue);
+
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
+
     return [
-      ...expansions.borderWidth(width),
-      ...expansions.borderStyle(style),
-      ...expansions.borderColor(color),
+      ...(width != null ? expansions.borderWidth(width) : []),
+      ...(style != null ? expansions.borderStyle(style) : []),
+      ...(color != null ? expansions.borderColor(color) : []),
     ];
   },
   borderTop: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderTopWidth', rawValue]];
     }
-    const [width, style, color] = splitValue(rawValue);
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
+
     return [
-      ['borderTopWidth', width],
-      ['borderTopStyle', style],
-      ['borderTopColor', color],
-    ];
+      width != null ? ['borderTopWidth', width] : null,
+      style != null ? ['borderTopStyle', style] : null,
+      color != null ? ['borderTopColor', color] : null,
+    ].filter(Boolean);
   },
   borderEnd: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderEndWidth', rawValue]];
     }
-    const [width, style, color] = splitValue(rawValue);
+
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
+
     return [
-      ['borderEndWidth', width],
-      ['borderEndStyle', style],
-      ['borderEndColor', color],
-    ];
+      width != null ? ['borderEndWidth', width] : null,
+      style != null ? ['borderEndStyle', style] : null,
+      color != null ? ['borderEndColor', color] : null,
+    ].filter(Boolean);
   },
   borderRight: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
@@ -154,12 +211,13 @@ const expansions = {
     if (typeof rawValue === 'number') {
       return [['borderStartWidth', rawValue]];
     }
-    const [width, style, color] = splitValue(rawValue);
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
     return [
-      ['borderStartWidth', width],
-      ['borderStartStyle', style],
-      ['borderStartColor', color],
-    ];
+      width != null ? ['borderStartWidth', width] : null,
+      style != null ? ['borderStartStyle', style] : null,
+      color != null ? ['borderStartColor', color] : null,
+    ].filter(Boolean);
   },
   borderLeft: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
@@ -185,8 +243,8 @@ const expansions = {
   },
   borderHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
-      ['borderStart', rawValue],
-      ['borderEnd', rawValue],
+      ...expansions.borderStart(rawValue),
+      ...expansions.borderEnd(rawValue),
     ];
   },
   borderStyle: (rawValue: TStyleValue): TReturn => {
@@ -201,8 +259,8 @@ const expansions = {
   },
   borderVertical: (rawValue: TStyleValue): TReturn => {
     return [
-      ['borderTop', rawValue],
-      ['borderBottom', rawValue],
+      ...expansions.borderTop(rawValue),
+      ...expansions.borderBottom(rawValue),
     ];
   },
   borderWidth: (rawValue: TStyleValue): TReturn => {
