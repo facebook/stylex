@@ -51,6 +51,8 @@ This is the development monorepo for stylex.
 
 ### Tasks
 
+First, `npm install` the npm workspace.
+
 * `build`
   * Use `npm run build` to run the build script in every package.
   * Use `npm run build -w <package-name>` to run the build script for a specific package.

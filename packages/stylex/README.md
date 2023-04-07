@@ -157,3 +157,89 @@ This is equivalent to defining CSS as follows:
   position: sticky;
 }
 ```
+
+## Types
+
+StyleX comes with full support for Static Types.
+
+### `XStyle<>`
+
+The most common type you might need to use is `XStyle<>`. This lets you accept an object of arbitrary StyleX styles.
+
+```tsx
+type Props = {
+  ...
+  style?: XStyle<>,
+};
+
+function MyComponent({style, ...}: Props) {
+  return (
+    <div {...stylex.apply(localStyles.foo, localStyles.bar, style)} />
+  );
+}
+```
+
+### `XStyleWithout<>`
+
+To disallow specific style properties, use the `XStyleWithout<>` type.
+
+```tsx
+type Props = {
+  // ...
+  style?: XStyleWithout<{
+    postion: unknown,
+    display: unknown
+  }>
+};
+```
+
+### `XStyleValue<>`
+
+To accept specific style properties only, use the `XStyle<{...}>` and `XStyleValue` types. For example, to allow only color-related style props:
+
+```tsx
+type Props = {
+  // ...
+  style?: XStyle<{
+    color?: StyleXValue,
+    backgroundColor?: StyleXValue,
+    borderColor?: StyleXValue,
+    borderTopColor?: StyleXValue,
+    borderEndColor?: StyleXValue,
+    borderBottomColor?: StyleXValue,
+    borderStartColor?: StyleXValue,
+  }>,
+};
+```
+
+### `XStyleValueFor<>`
+
+To limit the possible values for style properties, use the `XStyleValueFor<>` type.  Pass in a type argument with a union of literal types that provide the set of possible values that the style property can have. For example, if a component should accept `marginTop` but only accept one of `0`, `4`, or `8` pixels as values.
+
+```tsx
+type Props = {
+  ...
+  style?: XStyle<{
+    marginTop: XStyleValueFor<0 | 4 | 8>
+  }>,
+};
+```
+
+## How StyleX works
+
+StyleX produces atomic styles, which means that each CSS rule contains only a single declaration and uses a unique class name. For example:
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  root: {
+    width: '100%',
+    color: 'red',
+  }
+}
+```
+
+From this code, StyleX will generate 2 classes. One for the `width: '100%'` declaration, and one for the `color: 'red'` declaration. If you use the declaration `width: '100%'` anywhere else in your application, it will *reuse the same CSS class* rather than creating a new one.
+
+One of the benefits of this approach is that the generated CSS file grows *logarithmically* as you add new styled components to your app. As more style declarations are added to components, they are more likely to already be in use elsehwere in the app. As a result of this CSS optimization, the generated CSS style sheet for an app is usually small enough to be contained in a single file and used across routes, avoiding style recalculation and layout thrashing as users navigate through your app.
