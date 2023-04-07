@@ -90,7 +90,25 @@ Although the example above uses JSX, StyleX itself is framework agnostic and can
 
 ### Optimized for large apps
 
-StyleX uses Atomic Styles. This means that there is a single style for className. This maximizes reusability of styles among your components. This enables stylex to create a single CSS bundle that can be loaded upfront for your entire application. This means that loading new routes won't fetch additional styles which causes style recalculation and layout thrashing.
+StyleX uses atomic styles, which means that each CSS class only contains a single rule, and each rule is contained in only one CSS class. For example, if we look at the example from earlier:
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+// Define styles
+const styles = stylex.create({
+  // base styles
+  main: {
+    width: '100%',
+    maxWidth: 800,
+    minHeight: 40,
+  },
+});
+```
+
+Three CSS classes will be generated: One for the `width: '100%'` rule, one for the `maxWidth: 800`, and one for the `minHeight: 40`. If you use `width: '100%'` anywhere else in your application, it will *reuse the same CSS class* rather than creating a new one.
+
+This means that your CSS file will grow *logarithmically* as you add new components to your app, since the styles needed by new components will likely already exist in the CSS file. As a result, the CSS file is usually small enough that it can all be bundled as a single bundle rather than splitting it per route, avoiding style recalculation and layout thrashing as users navigate through your app.
 
 By creating a single bundle of atomic styles, you get performance that scales well for larger applications, but might be marginally slower for small applications. StyleX chooses to focus on applications where performance is more likely to be a problem rather than try to optimize for applications where any solution is going to be "fast enough".
 
