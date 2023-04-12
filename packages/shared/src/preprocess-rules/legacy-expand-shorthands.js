@@ -93,12 +93,22 @@ const borderStyleKeywords = new Set([
   'double',
   'groove',
   'ridge',
+  'inside', // Non-standard
   'inset',
   'outset',
 ]);
 const globalKeywords = new Set(['initial', 'inherit', 'unset']);
 function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
   const parts = borderParts.filter(Boolean).slice();
+
+  let suffix = '';
+  for (let i = 0; i < parts.length; i++) {
+    const part = parts[i];
+    if (typeof part === 'string' && part.endsWith('!important')) {
+      parts[i] = part.replace('!important', '').trim();
+      suffix = ' !important';
+    }
+  }
 
   if (parts.length === 1 && globalKeywords.has(parts[0])) {
     return [parts[0], parts[0], parts[0]];
@@ -109,11 +119,18 @@ function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
   let width = parts.find(
     (part) =>
       typeof part === 'number' ||
-      part.match(/^\d+$/) ||
+      part.match(/^\.?\d+/) ||
       borderWidthKeywords.has(part)
   );
+  if (typeof width === 'number') {
+    width = String(width) + 'px';
+  }
+  // console.log('width', width);
   if (width != null) {
     parts.splice(parts.indexOf(width), 1);
+  }
+  if (parts.length === 0) {
+    return [String(width) + suffix, null, null];
   }
   const style = parts.find(
     (part) => typeof part === 'string' && borderStyleKeywords.has(part)
@@ -129,21 +146,12 @@ function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
     throw new Error('Invalid border shorthand value');
   }
   const color = parts[0];
-  return [width, style, color];
+  return [width, style, color].map((part) =>
+    part != null ? part + suffix : null
+  );
 }
 
 const expansions = {
-  // Old buggy implementation that left two sets of conflicting border properties
-  // border: (rawValue: TStyleValue): TReturn => {
-  //   return [
-  //     ['borderTop', rawValue],
-  //     ['borderEnd', rawValue],
-  //     ['borderBottom', rawValue],
-  //     ['borderStart', rawValue],
-  //   ];
-  // },
-
-  // Add this later, as this will be a breaking change
   border: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return expansions.borderWidth(rawValue);
@@ -189,23 +197,25 @@ const expansions = {
     if (typeof rawValue === 'number') {
       return [['borderRightWidth', rawValue]];
     }
-    const [width, style, color] = splitValue(rawValue);
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
     return [
-      ['borderRightWidth', width],
-      ['borderRightStyle', style],
-      ['borderRightColor', color],
-    ];
+      width != null ? ['borderRightWidth', width] : null,
+      style != null ? ['borderRightStyle', style] : null,
+      color != null ? ['borderRightColor', color] : null,
+    ].filter(Boolean);
   },
   borderBottom: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
       return [['borderBottomWidth', rawValue]];
     }
-    const [width, style, color] = splitValue(rawValue);
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
     return [
-      ['borderBottomWidth', width],
-      ['borderBottomStyle', style],
-      ['borderBottomColor', color],
-    ];
+      width != null ? ['borderBottomWidth', width] : null,
+      style != null ? ['borderBottomStyle', style] : null,
+      color != null ? ['borderBottomColor', color] : null,
+    ].filter(Boolean);
   },
   borderStart: (rawValue: TStyleValue): TReturn => {
     if (typeof rawValue === 'number') {
@@ -223,12 +233,13 @@ const expansions = {
     if (typeof rawValue === 'number') {
       return [['borderLeftWidth', rawValue]];
     }
-    const [width, style, color] = splitValue(rawValue);
+    const parts = splitValue(rawValue);
+    const [width, style, color] = borderDetector(parts);
     return [
-      ['borderLeftWidth', width],
-      ['borderLeftStyle', style],
-      ['borderLeftColor', color],
-    ];
+      width != null ? ['borderLeftWidth', width] : null,
+      style != null ? ['borderLeftStyle', style] : null,
+      color != null ? ['borderLeftColor', color] : null,
+    ].filter(Boolean);
   },
 
   borderColor: (rawValue: TStyleValue): TReturn => {
