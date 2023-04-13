@@ -86,6 +86,24 @@ describe('Ensure borders are split correctly', () => {
         ['borderStartColor', 'var(--divider)'],
       ]);
     });
+    test('1px var(--media-inner-border) solid', () => {
+      expect(
+        legacyExpandShorthands.border('1px var(--media-inner-border) solid')
+      ).toEqual([
+        ['borderTopWidth', '1px'],
+        ['borderEndWidth', '1px'],
+        ['borderBottomWidth', '1px'],
+        ['borderStartWidth', '1px'],
+        ['borderTopStyle', 'solid'],
+        ['borderEndStyle', 'solid'],
+        ['borderBottomStyle', 'solid'],
+        ['borderStartStyle', 'solid'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+        ['borderEndColor', 'var(--media-inner-border)'],
+        ['borderBottomColor', 'var(--media-inner-border)'],
+        ['borderStartColor', 'var(--media-inner-border)'],
+      ]);
+    });
   });
   describe('borderTop', () => {
     test('1px solid var(--thumbnail-inner-border)', () => {
@@ -113,6 +131,24 @@ describe('Ensure borders are split correctly', () => {
       expect(
         legacyExpandShorthands.borderTop('solid var(--media-inner-border)')
       ).toEqual([
+        ['borderTopStyle', 'solid'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('var(--media-inner-border) solid 1px', () => {
+      expect(
+        legacyExpandShorthands.borderTop('var(--media-inner-border) solid 1px')
+      ).toEqual([
+        ['borderTopWidth', '1px'],
+        ['borderTopStyle', 'solid'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('1px var(--media-inner-border) solid', () => {
+      expect(
+        legacyExpandShorthands.borderTop('1px var(--media-inner-border) solid')
+      ).toEqual([
+        ['borderTopWidth', '1px'],
         ['borderTopStyle', 'solid'],
         ['borderTopColor', 'var(--media-inner-border)'],
       ]);
@@ -703,6 +739,17 @@ describe('Ensure borders are split correctly', () => {
         ['borderBottomWidth', 'thin'],
         ['borderBottomStyle', 'solid'],
         ['borderBottomColor', 'var(--always-gray-40)'],
+      ]);
+    });
+    test('1px var(--media-inner-border) solid', () => {
+      expect(
+        legacyExpandShorthands.borderBottom(
+          '1px var(--media-inner-border) solid'
+        )
+      ).toEqual([
+        ['borderBottomWidth', '1px'],
+        ['borderBottomStyle', 'solid'],
+        ['borderBottomColor', 'var(--media-inner-border)'],
       ]);
     });
   });
