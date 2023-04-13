@@ -12,6 +12,122 @@ import legacyExpandShorthands from '../../src/preprocess-rules/legacy-expand-sho
 
 describe('Ensure borders are split correctly', () => {
   describe('border', () => {
+    test('none !important', () => {
+      expect(legacyExpandShorthands.border('none !important')).toEqual([
+        ['borderTopStyle', 'none !important'],
+        ['borderEndStyle', 'none !important'],
+        ['borderBottomStyle', 'none !important'],
+        ['borderStartStyle', 'none !important'],
+      ]);
+    });
+    test('none!important', () => {
+      expect(legacyExpandShorthands.border('none !important')).toEqual([
+        ['borderTopStyle', 'none !important'],
+        ['borderEndStyle', 'none !important'],
+        ['borderBottomStyle', 'none !important'],
+        ['borderStartStyle', 'none !important'],
+      ]);
+    });
+    test('solid var(--media-inner-border)', () => {
+      expect(
+        legacyExpandShorthands.border('solid var(--media-inner-border)')
+      ).toEqual([
+        ['borderTopStyle', 'solid'],
+        ['borderEndStyle', 'solid'],
+        ['borderBottomStyle', 'solid'],
+        ['borderStartStyle', 'solid'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+        ['borderEndColor', 'var(--media-inner-border)'],
+        ['borderBottomColor', 'var(--media-inner-border)'],
+        ['borderStartColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('3px dashed var(--media-inner-border)', () => {
+      expect(
+        legacyExpandShorthands.border('3px dashed var(--media-inner-border)')
+      ).toEqual([
+        ['borderTopWidth', '3px'],
+        ['borderEndWidth', '3px'],
+        ['borderBottomWidth', '3px'],
+        ['borderStartWidth', '3px'],
+        ['borderTopStyle', 'dashed'],
+        ['borderEndStyle', 'dashed'],
+        ['borderBottomStyle', 'dashed'],
+        ['borderStartStyle', 'dashed'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+        ['borderEndColor', 'var(--media-inner-border)'],
+        ['borderBottomColor', 'var(--media-inner-border)'],
+        ['borderStartColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('1px var(--divider)', () => {
+      expect(legacyExpandShorthands.border('1px var(--divider)')).toEqual([
+        ['borderTopWidth', '1px'],
+        ['borderEndWidth', '1px'],
+        ['borderBottomWidth', '1px'],
+        ['borderStartWidth', '1px'],
+        ['borderTopColor', 'var(--divider)'],
+        ['borderEndColor', 'var(--divider)'],
+        ['borderBottomColor', 'var(--divider)'],
+        ['borderStartColor', 'var(--divider)'],
+      ]);
+    });
+    test('var(--thin-size) var(--divider)', () => {
+      expect(
+        legacyExpandShorthands.border('var(--thin-size) var(--divider)')
+      ).toEqual([
+        ['borderTopWidth', 'var(--thin-size)'],
+        ['borderEndWidth', 'var(--thin-size)'],
+        ['borderBottomWidth', 'var(--thin-size)'],
+        ['borderStartWidth', 'var(--thin-size)'],
+        ['borderTopColor', 'var(--divider)'],
+        ['borderEndColor', 'var(--divider)'],
+        ['borderBottomColor', 'var(--divider)'],
+        ['borderStartColor', 'var(--divider)'],
+      ]);
+    });
+  });
+  describe('borderTop', () => {
+    test('1px solid var(--thumbnail-inner-border)', () => {
+      expect(
+        legacyExpandShorthands.borderTop(
+          '1px solid var(--thumbnail-inner-border)'
+        )
+      ).toEqual([
+        ['borderTopWidth', '1px'],
+        ['borderTopStyle', 'solid'],
+        ['borderTopColor', 'var(--thumbnail-inner-border)'],
+      ]);
+    });
+    test('none !important', () => {
+      expect(legacyExpandShorthands.borderTop('none !important')).toEqual([
+        ['borderTopStyle', 'none !important'],
+      ]);
+    });
+    test('none!important', () => {
+      expect(legacyExpandShorthands.borderTop('none !important')).toEqual([
+        ['borderTopStyle', 'none !important'],
+      ]);
+    });
+    test('solid var(--media-inner-border)', () => {
+      expect(
+        legacyExpandShorthands.borderTop('solid var(--media-inner-border)')
+      ).toEqual([
+        ['borderTopStyle', 'solid'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('var(--media-inner-border) solid 1px', () => {
+      expect(
+        legacyExpandShorthands.borderTop('var(--media-inner-border) solid 1px')
+      ).toEqual([
+        ['borderTopWidth', '1px'],
+        ['borderTopStyle', 'solid'],
+        ['borderTopColor', 'var(--media-inner-border)'],
+      ]);
+    });
+  });
+  describe('borderBottom', () => {
     test('1px solid var(--thumbnail-inner-border)', () => {
       expect(
         legacyExpandShorthands.borderBottom(
@@ -471,6 +587,11 @@ describe('Ensure borders are split correctly', () => {
         ['borderBottomColor', 'var(--media-inner-border)'],
       ]);
     });
+    test('none !important', () => {
+      expect(legacyExpandShorthands.borderBottom('none !important')).toEqual([
+        ['borderBottomStyle', 'none !important'],
+      ]);
+    });
     test('none!important', () => {
       expect(legacyExpandShorthands.borderBottom('none!important')).toEqual([
         ['borderBottomStyle', 'none !important'],
@@ -582,6 +703,38 @@ describe('Ensure borders are split correctly', () => {
         ['borderBottomWidth', 'thin'],
         ['borderBottomStyle', 'solid'],
         ['borderBottomColor', 'var(--always-gray-40)'],
+      ]);
+    });
+  });
+  describe('borderStart', () => {
+    test('1px var(--media-inner-border) solid', () => {
+      expect(
+        legacyExpandShorthands.borderStart(
+          '1px var(--media-inner-border) solid'
+        )
+      ).toEqual([
+        ['borderStartWidth', '1px'],
+        ['borderStartStyle', 'solid'],
+        ['borderStartColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('solid var(--media-inner-border)', () => {
+      expect(
+        legacyExpandShorthands.borderStart('solid var(--media-inner-border)')
+      ).toEqual([
+        ['borderStartStyle', 'solid'],
+        ['borderStartColor', 'var(--media-inner-border)'],
+      ]);
+    });
+    test('var(--media-inner-border) 1px solid', () => {
+      expect(
+        legacyExpandShorthands.borderStart(
+          'var(--media-inner-border) 1px solid'
+        )
+      ).toEqual([
+        ['borderStartWidth', '1px'],
+        ['borderStartStyle', 'solid'],
+        ['borderStartColor', 'var(--media-inner-border)'],
       ]);
     });
   });
