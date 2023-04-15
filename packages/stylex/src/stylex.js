@@ -33,12 +33,28 @@ type DedupeStyles = $ReadOnly<{
   ...
 }>;
 
-function stylex(
+type IStyleX = {
+  (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
+  apply: (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>) => {
+    className: string,
+    style: { [string]: string | number },
+  },
+  create: Stylex$Create,
+  include: Stylex$Include,
+  firstThatWorks: <T: string | number>(
+    ...v: $ReadOnlyArray<T>
+  ) => $ReadOnlyArray<T>,
+  inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
+  keyframes: (keyframes: Keyframes) => string,
+  UNSUPPORTED_PROPERTY: <T>(props: T) => T,
+  ...
+};
+export const stylex: IStyleX = function stylex(
   ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
 ): string {
   const [className] = styleq(styles);
   return className;
-}
+};
 
 export function apply(
   ...styles: Array<
@@ -89,21 +105,11 @@ stylex.firstThatWorks = firstThatWorks;
 export const inject = injectStyle;
 stylex.inject = inject;
 
-export const UNSUPPORTED_PROPERTY = (props: { ... }) => {
+export const UNSUPPORTED_PROPERTY = <T>(props: T): T => {
   throw new Error(
     'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.'
   );
 };
 stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
-
-type IStyleX = {
-  (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
-  create: Stylex$Create,
-  include: Stylex$Include,
-  firstThatWorks: <T>(...args: $ReadOnlyArray<T>) => $ReadOnlyArray<T>,
-  inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
-  keyframes: (keyframes: Keyframes) => string,
-  ...
-};
 
 export default (stylex: IStyleX);

@@ -9,6 +9,9 @@ function makeHaste() {
           );
         }
       },
+      ExportDefaultDeclaration(path) {
+        path.remove();
+      },
     },
   };
 }
