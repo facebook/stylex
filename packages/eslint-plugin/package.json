@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/eslint-plugin",
-  "version": "0.2.0-beta.8",
+  "version": "0.2.0-beta.9",
   "description": "StyleX eslint plugin.",
   "main": "./lib/index.js",
   "repository": "https://github.com/facebookexternal/stylex/eslint",

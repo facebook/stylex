@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/stylex",
-  "version": "0.2.0-beta.8",
+  "version": "0.2.0-beta.9",
   "description": "A minimal runtime styling library for web.",
   "main": "lib/stylex.js",
   "types": "lib/stylex.d.ts",
