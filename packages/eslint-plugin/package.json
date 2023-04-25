@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build",
+    "postbuild": "prettier --write lib/**/*.js",
     "test": "jest"
   },
   "devDependencies": {

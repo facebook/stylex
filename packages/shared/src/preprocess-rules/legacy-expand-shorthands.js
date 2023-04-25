@@ -98,6 +98,7 @@ const borderStyleKeywords = new Set([
   'outset',
 ]);
 const globalKeywords = new Set(['initial', 'inherit', 'unset']);
+// eslint-disable-next-line no-unused-vars
 function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
   const parts = borderParts.filter(Boolean).slice();
 
@@ -152,94 +153,105 @@ function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
 }
 
 const expansions = {
+  // TODO: Due to UI regressions internally, we need to maintain the buggy behaviour of
+  // border shorthand for now. This will be fixed in a future release.
+  // border: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return expansions.borderWidth(rawValue);
+  //   }
+
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+
+  //   return [
+  //     ...(width != null ? expansions.borderWidth(width) : []),
+  //     ...(style != null ? expansions.borderStyle(style) : []),
+  //     ...(color != null ? expansions.borderColor(color) : []),
+  //   ];
+  // },
+  // borderTop: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return [['borderTopWidth', rawValue]];
+  //   }
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+
+  //   return [
+  //     width != null ? ['borderTopWidth', width] : null,
+  //     style != null ? ['borderTopStyle', style] : null,
+  //     color != null ? ['borderTopColor', color] : null,
+  //   ].filter(Boolean);
+  // },
+  // borderEnd: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return [['borderEndWidth', rawValue]];
+  //   }
+
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+
+  //   return [
+  //     width != null ? ['borderEndWidth', width] : null,
+  //     style != null ? ['borderEndStyle', style] : null,
+  //     color != null ? ['borderEndColor', color] : null,
+  //   ].filter(Boolean);
+  // },
+  // borderRight: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return [['borderRightWidth', rawValue]];
+  //   }
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+  //   return [
+  //     width != null ? ['borderRightWidth', width] : null,
+  //     style != null ? ['borderRightStyle', style] : null,
+  //     color != null ? ['borderRightColor', color] : null,
+  //   ].filter(Boolean);
+  // },
+  // borderBottom: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return [['borderBottomWidth', rawValue]];
+  //   }
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+  //   return [
+  //     width != null ? ['borderBottomWidth', width] : null,
+  //     style != null ? ['borderBottomStyle', style] : null,
+  //     color != null ? ['borderBottomColor', color] : null,
+  //   ].filter(Boolean);
+  // },
+  // borderStart: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return [['borderStartWidth', rawValue]];
+  //   }
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+  //   return [
+  //     width != null ? ['borderStartWidth', width] : null,
+  //     style != null ? ['borderStartStyle', style] : null,
+  //     color != null ? ['borderStartColor', color] : null,
+  //   ].filter(Boolean);
+  // },
+  // borderLeft: (rawValue: TStyleValue): TReturn => {
+  //   if (typeof rawValue === 'number') {
+  //     return [['borderLeftWidth', rawValue]];
+  //   }
+  //   const parts = splitValue(rawValue);
+  //   const [width, style, color] = borderDetector(parts);
+  //   return [
+  //     width != null ? ['borderLeftWidth', width] : null,
+  //     style != null ? ['borderLeftStyle', style] : null,
+  //     color != null ? ['borderLeftColor', color] : null,
+  //   ].filter(Boolean);
+  // },
+
   border: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return expansions.borderWidth(rawValue);
-    }
-
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-
     return [
-      ...(width != null ? expansions.borderWidth(width) : []),
-      ...(style != null ? expansions.borderStyle(style) : []),
-      ...(color != null ? expansions.borderColor(color) : []),
+      ['borderTop', rawValue],
+      ['borderEnd', rawValue],
+      ['borderBottom', rawValue],
+      ['borderStart', rawValue],
     ];
-  },
-  borderTop: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderTopWidth', rawValue]];
-    }
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-
-    return [
-      width != null ? ['borderTopWidth', width] : null,
-      style != null ? ['borderTopStyle', style] : null,
-      color != null ? ['borderTopColor', color] : null,
-    ].filter(Boolean);
-  },
-  borderEnd: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderEndWidth', rawValue]];
-    }
-
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-
-    return [
-      width != null ? ['borderEndWidth', width] : null,
-      style != null ? ['borderEndStyle', style] : null,
-      color != null ? ['borderEndColor', color] : null,
-    ].filter(Boolean);
-  },
-  borderRight: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderRightWidth', rawValue]];
-    }
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-    return [
-      width != null ? ['borderRightWidth', width] : null,
-      style != null ? ['borderRightStyle', style] : null,
-      color != null ? ['borderRightColor', color] : null,
-    ].filter(Boolean);
-  },
-  borderBottom: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderBottomWidth', rawValue]];
-    }
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-    return [
-      width != null ? ['borderBottomWidth', width] : null,
-      style != null ? ['borderBottomStyle', style] : null,
-      color != null ? ['borderBottomColor', color] : null,
-    ].filter(Boolean);
-  },
-  borderStart: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderStartWidth', rawValue]];
-    }
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-    return [
-      width != null ? ['borderStartWidth', width] : null,
-      style != null ? ['borderStartStyle', style] : null,
-      color != null ? ['borderStartColor', color] : null,
-    ].filter(Boolean);
-  },
-  borderLeft: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderLeftWidth', rawValue]];
-    }
-    const parts = splitValue(rawValue);
-    const [width, style, color] = borderDetector(parts);
-    return [
-      width != null ? ['borderLeftWidth', width] : null,
-      style != null ? ['borderLeftStyle', style] : null,
-      color != null ? ['borderLeftColor', color] : null,
-    ].filter(Boolean);
   },
 
   borderColor: (rawValue: TStyleValue): TReturn => {
@@ -254,9 +266,13 @@ const expansions = {
   },
   borderHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
-      ...expansions.borderStart(rawValue),
-      ...expansions.borderEnd(rawValue),
+      ['borderStart', rawValue],
+      ['borderEnd', rawValue],
     ];
+    // return [
+    //   ...expansions.borderStart(rawValue),
+    //   ...expansions.borderEnd(rawValue),
+    // ];
   },
   borderStyle: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
@@ -270,9 +286,13 @@ const expansions = {
   },
   borderVertical: (rawValue: TStyleValue): TReturn => {
     return [
-      ...expansions.borderTop(rawValue),
-      ...expansions.borderBottom(rawValue),
+      ['borderTop', rawValue],
+      ['borderBottom', rawValue],
     ];
+    // return [
+    //   ...expansions.borderTop(rawValue),
+    //   ...expansions.borderBottom(rawValue),
+    // ];
   },
   borderWidth: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);

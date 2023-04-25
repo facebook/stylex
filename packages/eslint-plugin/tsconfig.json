@@ -5,7 +5,7 @@
     "module": "CommonJS",
     "noEmitOnError": true,
     "noImplicitAny": true,
-    "removeComments": true,
+    "removeComments": false,
     "sourceMap": false,
     "strict": true,
     "target": "ES2019",
