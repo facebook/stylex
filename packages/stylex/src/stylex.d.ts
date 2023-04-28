@@ -74,6 +74,14 @@ declare let stylex: {
     rtlRule: string | null | undefined
   ) => void;
   keyframes: Stylex$Keyframes;
+  spread: (
+    ...styles: ReadonlyArray<
+      NestedArray<(Object | CompiledNamespace | null | undefined) | boolean>
+    >
+  ) => {
+    className: string;
+    style: { [key: string]: string | number };
+  };
 };
 
 export default stylex;

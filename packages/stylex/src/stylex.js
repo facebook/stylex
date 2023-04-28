@@ -35,7 +35,7 @@ type DedupeStyles = $ReadOnly<{
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
-  apply: (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>) => {
+  spread: (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>) => {
     className: string,
     style: { [string]: string | number },
   },
@@ -56,7 +56,7 @@ export const stylex: IStyleX = function stylex(
   return className;
 };
 
-export function apply(
+export function spread(
   ...styles: Array<
     StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>
   >
@@ -64,7 +64,7 @@ export function apply(
   const [className, style] = styleq(styles);
   return { className, style };
 }
-stylex.apply = apply;
+stylex.spread = spread;
 
 function stylexCreate(_styles: { ... }) {
   throw new Error(
