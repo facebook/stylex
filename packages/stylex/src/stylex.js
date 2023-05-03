@@ -33,29 +33,6 @@ type DedupeStyles = $ReadOnly<{
   ...
 }>;
 
-type IStyleX = {
-  (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
-  spread: (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>) => {
-    className: string,
-    style: { [string]: string | number },
-  },
-  create: Stylex$Create,
-  include: Stylex$Include,
-  firstThatWorks: <T: string | number>(
-    ...v: $ReadOnlyArray<T>
-  ) => $ReadOnlyArray<T>,
-  inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
-  keyframes: (keyframes: Keyframes) => string,
-  UNSUPPORTED_PROPERTY: <T>(props: T) => T,
-  ...
-};
-export const stylex: IStyleX = function stylex(
-  ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
-): string {
-  const [className] = styleq(styles);
-  return className;
-};
-
 export function spread(
   ...styles: Array<
     StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>
@@ -64,7 +41,6 @@ export function spread(
   const [className, style] = styleq(styles);
   return { className, style };
 }
-stylex.spread = spread;
 
 function stylexCreate(_styles: { ... }) {
   throw new Error(
@@ -85,31 +61,58 @@ type Stylex$Include = <TStyles: { +[string]: string | number }>(
 ) => TStyles;
 
 export const create: Stylex$Create = stylexCreate;
-stylex.create = create;
 
 export const include: Stylex$Include = stylexIncludes;
-stylex.include = include;
 
 export const keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
 };
-stylex.keyframes = keyframes;
 
 export const firstThatWorks = <T: string | number>(
   ..._styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
   throw new Error('stylex.firstThatWorks should never be called.');
 };
-stylex.firstThatWorks = firstThatWorks;
 
 export const inject = injectStyle;
-stylex.inject = inject;
 
 export const UNSUPPORTED_PROPERTY = <T>(props: T): T => {
   throw new Error(
     'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.'
   );
 };
-stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
 
-export default (stylex: IStyleX);
+function _stylex(
+  ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
+): string {
+  const [className] = styleq(styles);
+  return className;
+}
+_stylex.spread = spread;
+_stylex.create = create;
+_stylex.include = include;
+_stylex.keyframes = keyframes;
+_stylex.firstThatWorks = firstThatWorks;
+_stylex.inject = inject;
+_stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
+
+type IStyleX = {
+  (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
+  spread: (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>) => {
+    className: string,
+    style: { [string]: string | number },
+  },
+  create: Stylex$Create,
+  include: Stylex$Include,
+  firstThatWorks: <T: string | number>(
+    ...v: $ReadOnlyArray<T>
+  ) => $ReadOnlyArray<T>,
+  inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
+  keyframes: (keyframes: Keyframes) => string,
+  UNSUPPORTED_PROPERTY: <T>(props: T) => T,
+  ...
+};
+
+export default (_stylex: IStyleX);
+
+export const stylex: IStyleX = _stylex;
