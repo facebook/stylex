@@ -1,0 +1,412 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`custom properties filters out the property and emits a warning when encountering a variable name which has not been provided 1`] = `
+{
+  "style": {
+    "position": "static",
+  },
+}
+`;
+
+exports[`custom properties resolves custom properties' values 1`] = `
+{
+  "style": {
+    "color": "#333",
+    "position": "static",
+    "width": 42,
+  },
+}
+`;
+
+exports[`length units 10 "em" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 160,
+  },
+}
+`;
+
+exports[`length units 10 "em" units based on inherited font-size 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 120,
+  },
+}
+`;
+
+exports[`length units 10 "px" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 10,
+  },
+}
+`;
+
+exports[`length units 10 "rem" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 160,
+  },
+}
+`;
+
+exports[`length units 10 "vh" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 60,
+  },
+}
+`;
+
+exports[`length units 10 "vmax" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 60,
+  },
+}
+`;
+
+exports[`length units 10 "vmin" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 32,
+  },
+}
+`;
+
+exports[`length units 10 "vw" units are resolved to pixels 1`] = `
+{
+  "style": {
+    "position": "static",
+    "width": 32,
+  },
+}
+`;
+
+exports[`styles box-shadow 1`] = `
+{
+  "style": {
+    "position": "static",
+    "shadowColor": "red",
+    "shadowOffset": {
+      "height": 2,
+      "width": 1,
+    },
+    "shadowOpacity": 1,
+    "shadowRadius": 3,
+  },
+}
+`;
+
+exports[`styles direction 1`] = `
+{
+  "style": {
+    "direction": "ltr",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles direction 2`] = `
+{
+  "style": {
+    "direction": "rtl",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles font-size: default 1`] = `
+{
+  "style": {
+    "fontSize": 40,
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles font-size: fontScale:2 1`] = `
+{
+  "style": {
+    "fontSize": 80,
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles font-variant 1`] = `
+{
+  "style": {
+    "fontVariant": "common-ligatures small-caps",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles font-weight 1`] = `
+{
+  "style": {
+    "fontWeight": 900,
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles font-weight 2`] = `
+{
+  "style": {
+    "fontWeight": "bold",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles line-clamp 1`] = `
+{
+  "numberOfLines": 3,
+  "style": {
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles object-fit: contain 1`] = `
+{
+  "style": {
+    "objectFit": "contain",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles object-fit: contain 2`] = `
+{
+  "style": {
+    "objectFit": "cover",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles object-fit: fill 1`] = `
+{
+  "style": {
+    "objectFit": "fill",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles object-fit: none 1`] = `
+{
+  "style": {
+    "objectFit": "none",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles object-fit: scaleDown 1`] = `
+{
+  "style": {
+    "objectFit": "scale-down",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles pointer-events 1`] = `
+{
+  "style": {
+    "pointerEvents": "none",
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles position 1`] = `
+{
+  "style": {
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles position 2`] = `
+{
+  "style": {
+    "position": "relative",
+  },
+}
+`;
+
+exports[`styles text-shadow 1`] = `
+{
+  "style": {
+    "position": "static",
+    "textShadowColor": "red",
+    "textShadowOffset": {
+      "height": 2,
+      "width": 1,
+    },
+    "textShadowRadius": 3,
+  },
+}
+`;
+
+exports[`styles text-shadow 2`] = `
+{
+  "style": {
+    "position": "static",
+    "textShadowColor": "red",
+    "textShadowOffset": {
+      "height": 2,
+      "width": 1,
+    },
+    "textShadowRadius": 3,
+  },
+}
+`;
+
+exports[`styles transform: matrix 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "matrix(0.1, 1, -0.3, 1, 0, 0)",
+  },
+}
+`;
+
+exports[`styles transform: mixed 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "
+          rotateX(1deg) rotateY(2deg) rotateZ(3deg) rotate3d(1deg, 2deg, 3deg)
+          scale(1) scaleX(2) scaleY(3) scaleZ(4) scale3d(1,2,3)
+          translateX(1px) translateY(1em) translateZ(1rem) translate3d(1px, 1em, 1rem)
+        ",
+  },
+}
+`;
+
+exports[`styles transform: none 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "none",
+  },
+}
+`;
+
+exports[`styles transform: perspective 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "perspective(10px)",
+  },
+}
+`;
+
+exports[`styles transform: rotate 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "rotate(10deg) rotateX(20deg) rotateY(30deg) rotateZ(40deg) rotate3d(0, 0.5, 1, 90deg)",
+  },
+}
+`;
+
+exports[`styles transform: rotate 2`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "rotate(10deg) rotateX(20deg) rotateY(30deg) rotateZ(40deg) rotate3d(0, 0.5, 1, 90deg)",
+  },
+}
+`;
+
+exports[`styles transform: scale 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "scale(1, 2) scaleX(1) scaleY(2) scaleZ(3) scale3d(1, 2, 3)",
+  },
+}
+`;
+
+exports[`styles transform: skew 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "skew(10deg, 15deg) skewX(20deg) skewY(30deg)",
+  },
+}
+`;
+
+exports[`styles transform: translate 1`] = `
+{
+  "style": {
+    "position": "static",
+    "transform": "translate(10px, 20px) translateX(11px) translateY(12px) translateZ(13px) translate3d(20px, 30px, 40px)",
+  },
+}
+`;
+
+exports[`styles user-select 1`] = `
+{
+  "style": {
+    "position": "static",
+    "userSelect": "none",
+  },
+}
+`;
+
+exports[`styles vertical-align: middle 1`] = `
+{
+  "style": {
+    "position": "static",
+    "verticalAlign": "middle",
+  },
+}
+`;
+
+exports[`styles vertical-align: top 1`] = `
+{
+  "style": {
+    "position": "static",
+    "verticalAlign": "top",
+  },
+}
+`;
+
+exports[`unsupported style values calc 1`] = `
+{
+  "style": {
+    "position": "static",
+  },
+}
+`;
+
+exports[`unsupported style values inherit 1`] = `
+{
+  "style": {
+    "position": "static",
+  },
+}
+`;
+
+exports[`unsupported style values initial 1`] = `
+{
+  "style": {
+    "position": "static",
+  },
+}
+`;

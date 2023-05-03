@@ -3,6 +3,7 @@
   "version": "0.2.0-beta.10",
   "description": "A minimal runtime styling library for web.",
   "main": "lib/stylex.js",
+  "react-native": "lib/native/stylex.js",
   "types": "lib/stylex.d.ts",
   "repository": "https://www.github.com/facebookexternal/stylex",
   "author": "Naman Goel <nmn@fb.com>",
@@ -13,6 +14,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "css-mediaquery": "^0.1.2",
     "invariant": "^2.2.4",
     "utility-types": "^3.10.0",
     "styleq": "0.1.3"

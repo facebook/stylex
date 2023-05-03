@@ -87,15 +87,15 @@ const styles = stylex.create({
 
 The compiler will extract the rules to CSS and replace the rules in the source code with a "compiled style" object.
 
-### stylex.apply()
+### stylex.spread()
 
-Applying style rules to specific elements is done using `stylex.apply()`. Each argument to this function must be a reference to a compiled style object, or an array of compiled style objects. The function merges styles from left to right.
+Applying style rules to specific elements is done using `stylex.spread`. Each argument to this function must be a reference to a compiled style object, or an array of compiled style objects. The function merges styles from left to right.
 
 ```tsx
-<div {...stylex.apply(styles.root, styles.highlighted)} />
+<div {...stylex.spread(styles.root, styles.highlighted)} />
 ```
 
-The `stylex.apply` function returns React DOM style props as required to render an HTML element. StyleX styles can still be passed to other components via props, but only the components rendering HTML elements will use `stylex.apply()`. For example:
+The `stylex.spread` function returns React props as required to render an element. StyleX styles can still be passed to other components via props, but only the components rendering host platform elements will use `stylex.spread()`. For example:
 
 ```tsx
 const styles = stylex.create({
@@ -108,7 +108,7 @@ const styles = stylex.create({
 });
 
 function InternalComponent(props) {
-  return <div {...props} {...stylex.apply([ styles.internalRoot, props.style ])} />
+  return <div {...props} {...stylex.spread([ styles.internalRoot, props.style ])} />
 }
 
 export function ExportedComponent(props) {
@@ -119,19 +119,19 @@ export function ExportedComponent(props) {
 Styles can be conditionally included using standard JavaScript.
 
 ```tsx
-<div {...stylex.apply(styles.root, isHighlighted && styles.highlighted)} />
+<div {...stylex.spread(styles.root, isHighlighted && styles.highlighted)} />
 ```
 
 And the local merging of styles can be used to control the relative priority of rules. For example, to allow a component's local styles to take priority over style property values passed in via props.
 
 ```tsx
-<div {...stylex.apply(props.style, styles.root)} />
+<div {...stylex.spread(props.style, styles.root)} />
 ```
 
 You can even mix compiled styles with inline styles
 
 ```tsx
-<div {...stylex.apply(styles.root, { opacity })} />
+<div {...stylex.spread(styles.root, { opacity })} />
 ```
 
 ### stylex.firstThatWorks()
@@ -174,7 +174,7 @@ type Props = {
 
 function MyComponent({style, ...}: Props) {
   return (
-    <div {...stylex.apply(localStyles.foo, localStyles.bar, style)} />
+    <div {...stylex.spread(localStyles.foo, localStyles.bar, style)} />
   );
 }
 ```
