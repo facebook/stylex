@@ -26,7 +26,11 @@ export type InjectableStyle = {
 export type StyleRule = [string, string, InjectableStyle];
 
 export type CompiledStyles = $ReadOnly<{
-  [string]: string | $ReadOnly<{ [string]: string }>,
+  [string]:
+    | IncludedStyles
+    | null
+    | string
+    | $ReadOnly<{ [string]: null | string }>,
 }>;
 
 export type FlatCompiledStyles = $ReadOnly<{

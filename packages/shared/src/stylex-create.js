@@ -27,6 +27,7 @@ import {
 } from './utils/object-utils';
 import * as messages from './messages';
 import { IncludedStyles } from './stylex-include';
+import { defaultOptions } from './utils/default-options';
 
 // This takes the object of styles passed to `stylex.create` and transforms it.
 //   The transformation replaces style values with classNames.
@@ -40,10 +41,10 @@ import { IncludedStyles } from './stylex-include';
 // Before returning, it ensures that there are no duplicate styles being injected.
 export default function styleXCreateSet(
   namespaces: { +[string]: RawStyles },
-  options?: StyleXOptions = {}
+  options?: StyleXOptions = defaultOptions
 ): [{ [string]: FlatCompiledStyles }, { [string]: InjectableStyle }] {
   const resolvedNamespaces: { [string]: FlatCompiledStyles } = {};
-  const injectedStyles = {};
+  const injectedStyles: { [string]: InjectableStyle } = {};
 
   for (const namespaceName of Object.keys(namespaces)) {
     const namespace = namespaces[namespaceName];
@@ -87,7 +88,7 @@ export default function styleXCreateSet(
 function styleXCreateNamespace(
   style: RawStyles,
   options: StyleXOptions
-): [CompiledStyles, { [string]: [string, InjectableStyle] }] {
+): [CompiledStyles, { [string]: InjectableStyle }] {
   const namespaceEntries = objEntries(style);
 
   // First handle shorthands. The strategy for this is based on the `styleResolution` option.
@@ -150,15 +151,17 @@ function styleXCreateNamespace(
   //
   // The [key, className] pair is then added to the output Object: `resolvedNamespace`.
   // While hashing, the CSS rule that the className is generated from is also added to the output Object: `injectedStyles`.
-  const resolvedNamespace = {};
-  const injectedStyles = {};
+  const resolvedNamespace: {
+    [string]: null | IncludedStyles | { [string]: null | string } | string,
+  } = {};
+  const injectedStyles: { [string]: [string, InjectableStyle] } = {};
   for (const [key, val] of entries) {
     if (val instanceof IncludedStyles) {
       resolvedNamespace[key] = val;
     } else if (val != null && typeof val === 'object' && !Array.isArray(val)) {
       if (key.startsWith(':') || key.startsWith('@')) {
         const pseudo = key;
-        const innerObj = {};
+        const innerObj: { [string]: null | string } = {};
         for (const [innerKey, innerVal] of objEntries(val)) {
           if (innerVal === null) {
             innerObj[innerKey] = null;

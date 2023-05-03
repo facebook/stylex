@@ -23,6 +23,7 @@ import {
   Pipe,
   objMapEntry,
 } from './utils/object-utils';
+import { defaultOptions } from './utils/default-options';
 
 // Similar to `stylex.create` it takes an object of keyframes
 // and returns a string after hashing it.
@@ -31,7 +32,7 @@ import {
 // `stylex.create`.
 export default function styleXKeyframes(
   frames: { +[string]: { +[string]: string | number } },
-  options: StyleXOptions = {}
+  options: StyleXOptions = defaultOptions
 ): [string, InjectableStyle] {
   const { stylexSheetName = '<>', classNamePrefix = 'x' } = options;
   const expandedObject = objMap(frames, (frame) =>

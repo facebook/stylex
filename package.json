@@ -46,7 +46,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-react": "^7.20.3",
-    "flow-bin": "^0.190.0",
+    "flow-bin": "^0.199.1",
     "jest": "^29.2.1",
     "prettier": "^2.4.1",
     "rollup": "^3.2.3",

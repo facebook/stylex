@@ -12,6 +12,7 @@ import type { TRawValue, StyleRule, StyleXOptions } from './common-types';
 import dashify from './utils/dashify';
 import transformValue from './transform-value';
 import generateCSSRule from './generate-css-rule';
+import { defaultOptions } from './utils/default-options';
 
 // This function takes a single style rule and transforms it into a CSS rule.
 // [color: 'red'] => ['color', 'classname-for-color-red', CSSRULE{ltr, rtl, priority}]
@@ -23,7 +24,10 @@ import generateCSSRule from './generate-css-rule';
 export default function convertToClassName(
   objEntry: [string, TRawValue],
   pseudo?: string,
-  { stylexSheetName = '<>', classNamePrefix = 'x' }: StyleXOptions = {}
+  {
+    stylexSheetName = '<>',
+    classNamePrefix = 'x',
+  }: StyleXOptions = defaultOptions
 ): StyleRule {
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);

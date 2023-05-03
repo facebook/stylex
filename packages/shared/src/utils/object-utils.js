@@ -9,12 +9,14 @@
 
 // A bunch of object utils with better Flow types
 
+import type { CompiledStyles } from '../common-types';
+
 import { IncludedStyles } from '../stylex-include';
 
-export function flattenObject(obj: {
-  +[string]: IncludedStyles | string | { +[string]: string },
-}): { [string]: string | IncludedStyles } {
-  const result: { [string]: string | IncludedStyles } = {};
+export function flattenObject(obj: CompiledStyles): {
+  +[string]: null | string | IncludedStyles,
+} {
+  const result: { [string]: null | string | IncludedStyles } = {};
   for (const [key, value] of objEntries(obj)) {
     if (typeof value === 'string' || value == null) {
       result[key] = value;
@@ -52,7 +54,7 @@ export function objValues<Obj: { ... }>(
 export function objFromEntries<K: string | number, V>(
   entries: $ReadOnlyArray<[K, V]>
 ): { [K]: V } {
-  const retVal = {};
+  const retVal: { [K]: V } = {};
   for (const [key, value] of entries) {
     retVal[key] = value;
   }

@@ -64,7 +64,13 @@ export type StyleXOptions = {
   stylexSheetName?: string | undefined;
   classNamePrefix: string;
   definedStylexCSSVariables?: { [key: string]: any };
-  skipShorthandExpansion?: boolean;
+  styleResolution:
+    | 'application-order' // The last style applied wins.
+    // More specific styles will win over less specific styles. (margin-top wins over margin)
+    | 'property-specificity'
+    // Legacy behavior, that expands shorthand properties into their longhand counterparts at compile-time.
+    // This is not recommended, and will be removed in a future version.
+    | 'legacy-expand-shorthands';
   [key: string]: any;
 };
 
