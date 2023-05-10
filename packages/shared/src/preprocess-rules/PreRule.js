@@ -141,7 +141,7 @@ export class PreRuleSet implements IPreRule {
   }
 
   compiled(options: StyleXOptions): $ReadOnlyArray<ComputedStyle> {
-    const styleTuple: Array<ComputedStyle> = this.rules
+    const styleTuple: $ReadOnlyArray<ComputedStyle> = this.rules
       .flatMap((rule) => rule.compiled(options))
       .filter(Boolean);
     return styleTuple.length > 0 ? styleTuple : [null];

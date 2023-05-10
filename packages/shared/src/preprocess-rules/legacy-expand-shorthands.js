@@ -111,7 +111,11 @@ function borderDetector(borderParts: $ReadOnlyArray<number | string | null>) {
     }
   }
 
-  if (parts.length === 1 && globalKeywords.has(parts[0])) {
+  if (
+    parts.length === 1 &&
+    typeof parts[0] === 'string' &&
+    globalKeywords.has(parts[0])
+  ) {
     return [parts[0], parts[0], parts[0]];
   }
 

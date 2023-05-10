@@ -1,7 +1,8 @@
+/* eslint-disable flowtype/no-types-missing-file-annotation */
 // flow-typed signature: e3af2fa52d8b68d50f28a98fe6a6d971
 // flow-typed version: 76f8523085/jest_v26.x.x/flow_>=v0.134.x
 
-type JestMockFn<TArguments: $ReadOnlyArray<*>, TReturn> = {
+type JestMockFn<TArguments: $ReadOnlyArray<mixed>, TReturn> = {
   (...args: TArguments): TReturn,
   /**
    * An object for introspecting mock calls
@@ -624,7 +625,7 @@ interface JestExpectType {
    * Use .toBeInstanceOf(Class) to check that an object is an instance of a
    * class.
    */
-  toBeInstanceOf(cls: Class<*>): void;
+  toBeInstanceOf(cls: Class<mixed>): void;
   /**
    * .toBeNull() is the same as .toBe(null) but the error messages are a bit
    * nicer.
@@ -823,7 +824,7 @@ type JestObjectType = {
    * Returns a new, unused mock function. Optionally takes a mock
    * implementation.
    */
-  fn<TArguments: $ReadOnlyArray<*>, TReturn>(
+  fn<TArguments: $ReadOnlyArray<mixed>, TReturn>(
     implementation?: (...args: TArguments) => TReturn
   ): JestMockFn<TArguments, TReturn>,
   /**
@@ -1124,9 +1125,9 @@ type JestPrettyFormatColors = {
 };
 
 type JestPrettyFormatIndent = (string) => string;
-type JestPrettyFormatRefs = Array<any>;
+// type JestPrettyFormatRefs = Array<any>;
 type JestPrettyFormatPrint = (any) => string;
-type JestPrettyFormatStringOrNull = string | null;
+// type JestPrettyFormatStringOrNull = string | null;
 
 type JestPrettyFormatOptions = {|
   callToJSON: boolean,

@@ -28,7 +28,7 @@ export function getExpandedKeys(
 }
 
 export default function flatMapExpandedShorthands(
-  objEntry: [string, TStyleValue],
+  objEntry: $ReadOnly<[string, TStyleValue]>,
   options: StyleXOptions
 ): $ReadOnlyArray<[string, TStyleValue]> {
   const [key, value] = objEntry;

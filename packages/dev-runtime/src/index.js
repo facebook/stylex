@@ -13,6 +13,10 @@ import type { MapNamespace } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
 import type { StyleXOptions } from '@stylexjs/shared/lib/common-types';
 import type { FlatCompiledStyles } from '../../shared/src/common-types';
+import type {
+  MapNamespaces,
+  Stylex$Create,
+} from '../../stylex/src/StyleXTypes';
 
 // function insert(
 //   ltrRule: string,
@@ -47,7 +51,9 @@ export default function inject({
   insert = defaultInsert,
   ...config
 }: RuntimeOptions): void {
-  const stylexCreate = <S: { ... }>(styles: S) => {
+  const stylexCreate: Stylex$Create = <S: { ... }>(
+    styles: S
+  ): $ReadOnly<$ObjMap<S, MapNamespaces>> => {
     const [compiledStyles, injectedStyles] = shared.create(
       (styles: $FlowFixMe),
       config

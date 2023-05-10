@@ -74,7 +74,7 @@ function expandFrameShorthands(
 } {
   return objFromEntries(
     objEntries(frame)
-      .flatMap((pair): Array<[string, string | number]> =>
+      .flatMap((pair): $ReadOnlyArray<[string, string | number]> =>
         expandShorthands(pair, options)
           .map(([key, value]) => {
             if (typeof value === 'string' || typeof value === 'number') {

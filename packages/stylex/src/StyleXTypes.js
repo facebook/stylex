@@ -116,7 +116,7 @@ export type MapNamespace<CSS: { ... }> = $ObjMapi<CSS, MapCSSValueToClassName>;
 //   Rule,
 // ) => $ObjMap<Rule, MapCSSValueToClassName>) &
 //   MapCSSValueToClassName;
-type MapNamespaces = <CSS: { ... }>(CSS) => MapNamespace<CSS>;
+export type MapNamespaces = <CSS: { ... }>(CSS) => MapNamespace<CSS>;
 
 export type Stylex$Create = <S: { ... }>(
   styles: S
