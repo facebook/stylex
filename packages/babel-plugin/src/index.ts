@@ -6,7 +6,7 @@
  */
 
 import * as t from '@babel/types';
-import type { NodePath, VisitNodeObject } from '@babel/traverse';
+import type { NodePath } from '@babel/traverse';
 import type { PluginObj } from '@babel/core';
 import StateManager from './utils/state-manager';
 import { readImportDeclarations, readRequires } from './visitors/imports';
@@ -153,9 +153,7 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  * End-users can choose to not use this function and use their own logic instead.
  */
 type Rule = [string, { ltr: string; rtl?: null | string }, number];
-export const processStylexRules = function processStylexRules(
-  rules: Array<Rule>
-): string {
+function processStylexRules(rules: Array<Rule>): string {
   if (rules.length === 0) {
     return '';
   }
@@ -193,7 +191,7 @@ export const processStylexRules = function processStylexRules(
     .join('\n');
 
   return collectedCSS;
-};
+}
 
 styleXTransform.processStylexRules = processStylexRules;
 
