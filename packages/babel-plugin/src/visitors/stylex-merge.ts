@@ -53,49 +53,54 @@ export default function transformStyleXMerge(
   }
 
   let bailOut = false;
-  let conditional = false;
+  let conditional = 0;
 
   const resolvedArgs: ResolvedArgs = [];
-  loop: for (const arg of node.arguments) {
+  for (const arg of node.arguments) {
     switch (arg.type) {
       case 'MemberExpression':
         const resolved = parseNullableStyle(arg, state);
         if (resolved === 'other') {
           bailOut = true;
-          break loop;
         } else {
           resolvedArgs.push(resolved);
         }
         break;
       case 'ConditionalExpression':
-        conditional = true;
         const { test, consequent, alternate } = arg;
         const primary = parseNullableStyle(consequent, state);
         const fallback = parseNullableStyle(alternate, state);
         if (primary === 'other' || fallback === 'other') {
           bailOut = true;
-          break loop;
+        } else {
+          resolvedArgs.push([test, primary, fallback]);
+          conditional++;
         }
-        resolvedArgs.push([test, primary, fallback]);
         break;
       case 'LogicalExpression':
-        conditional = true;
         if (arg.operator !== '&&') {
           bailOut = true;
-          break loop;
+          break;
         }
         const { left, right } = arg;
         const leftResolved = parseNullableStyle(left, state);
         const rightResolved = parseNullableStyle(right, state);
         if (leftResolved !== 'other' || rightResolved === 'other') {
           bailOut = true;
-          break loop;
+        } else {
+          resolvedArgs.push([left, rightResolved, null]);
+          conditional++;
         }
-        resolvedArgs.push([left, rightResolved, null]);
         break;
       default:
         bailOut = true;
         break;
+    }
+    if (conditional > 4) {
+      bailOut = true;
+    }
+    if (bailOut) {
+      break;
     }
   }
   if (!state.options.genConditionalClasses && conditional) {
