@@ -13,6 +13,15 @@ import type { CompiledStyles } from '../common-types';
 
 import { IncludedStyles } from '../stylex-include';
 
+export function isPlainObject(obj: mixed): boolean %checks {
+  return (
+    typeof obj === 'object' &&
+    obj != null &&
+    !Array.isArray(obj) &&
+    obj?.constructor === Object
+  );
+}
+
 export function flattenObject(obj: CompiledStyles): {
   +[string]: null | string | IncludedStyles,
 } {
@@ -52,7 +61,7 @@ export function objValues<Obj: { ... }>(
 }
 
 export function objFromEntries<K: string | number, V>(
-  entries: $ReadOnlyArray<[K, V]>
+  entries: $ReadOnlyArray<$ReadOnly<[K, V]>>
 ): { [K]: V } {
   const retVal: { [K]: V } = {};
   for (const [key, value] of entries) {
@@ -110,3 +119,25 @@ export class Pipe<T> {
     return new Pipe(val);
   }
 }
+
+// Function that sorts an array without mutating it and returns a new array
+export const arraySort = <T>(
+  arr: $ReadOnlyArray<T>,
+  fn?: (T, T) => number
+): $ReadOnlyArray<T> => [...arr].sort(fn);
+
+export const arrayEquals = <T>(
+  arr1: $ReadOnlyArray<T>,
+  arr2: $ReadOnlyArray<T>,
+  equals: (T, T) => boolean = (a, b) => a === b
+): boolean => {
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+  for (let i = 0; i < arr1.length; i++) {
+    if (!equals(arr1[i], arr2[i])) {
+      return false;
+    }
+  }
+  return true;
+};

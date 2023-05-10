@@ -295,9 +295,10 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-      }).toThrow(messages.INVALID_PSEUDO);
+      }).toThrow(messages.INVALID_PSEUDO_OR_AT_RULE);
     });
 
+    // Pseudo-classes can now be nested!
     test('pseudo-classes cannot be nested', () => {
       expect(() => {
         transform(`
@@ -310,7 +311,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-      }).toThrow(messages.ILLEGAL_NESTED_PSEUDO);
+      }).not.toThrow(messages.ILLEGAL_NESTED_PSEUDO);
     });
   });
 });

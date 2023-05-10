@@ -85,7 +85,7 @@ function expandFrameShorthands(
           .filter(Boolean)
       )
       // Keyframes are not combined. The nulls can be skipped
-      .filter(([key, value]) => value != null)
+      .filter(([_key, value]) => value != null)
   );
 }
 

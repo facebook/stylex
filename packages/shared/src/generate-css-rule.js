@@ -9,15 +9,16 @@
 
 import generateLtr from './physical-rtl/generate-ltr';
 import generateRtl from './physical-rtl/generate-rtl';
-import genCSSRule from './utils/genCSSRule';
+import { genCSSRule } from './utils/genCSSRule';
 import type { InjectableStyle } from './common-types';
 import getPriority from './utils/property-priorities';
 
-export default function generateCSSRule(
+export function generateRule(
   className: string,
   key: string, // pre-dashed
   value: string | $ReadOnlyArray<string>,
-  pseudo?: string
+  pseudos: $ReadOnlyArray<string>,
+  atRules: $ReadOnlyArray<string>
 ): InjectableStyle {
   const pairs: $ReadOnlyArray<[string, string]> = Array.isArray(value)
     ? value.map((eachValue) => [key, eachValue])
@@ -32,10 +33,14 @@ export default function generateCSSRule(
     .map((pair) => pair.join(':'))
     .join(';');
 
-  const ltrRule = genCSSRule(className, ltrDecls, pseudo);
-  const rtlRule = !rtlDecls ? null : genCSSRule(className, rtlDecls, pseudo);
+  const ltrRule = genCSSRule(className, ltrDecls, pseudos, atRules);
+  const rtlRule = !rtlDecls
+    ? null
+    : genCSSRule(className, rtlDecls, pseudos, atRules);
 
-  const priority = getPriority(key) + (pseudo ? getPriority(pseudo) : 0);
+  const priority =
+    getPriority(key) +
+    Math.max(...pseudos.map(getPriority), ...atRules.map(getPriority), 0);
 
   return { priority, ltr: ltrRule, rtl: rtlRule };
 }

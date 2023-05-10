@@ -659,12 +659,12 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xbsl7fq{border-style:dashed}", 3);
         stylex.inject(".xn43iik{border-width:0 0 2px 0}", 3);
         stylex.inject(".xmkeg23{border-width:1px}", 3);
-        stylex.inject(".x1y0btm7{border-style:solid}", 3);
-        stylex.inject(".x1lh7sze{border-color:var(--divider)}", 3);
-        stylex.inject(".x12oqio5{border-radius:4px}", 3);
         stylex.inject(".xa309fb{border-bottom-width:5px}", 4);
+        stylex.inject(".x1y0btm7{border-style:solid}", 3);
         stylex.inject(".x1q0q8m5{border-bottom-style:solid}", 4);
+        stylex.inject(".x1lh7sze{border-color:var(--divider)}", 3);
         stylex.inject(".xud65wk{border-bottom-color:red}", 4);
+        stylex.inject(".x12oqio5{border-radius:4px}", 3);
         stylex.inject(".xexx8yu{padding-top:0}", 4);
         stylex.inject(".xcrpjku{padding-right:var(--rightpadding,20px)}", 4, ".xcrpjku{padding-left:var(--rightpadding,20px)}");
         stylex.inject(".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}", 4);
@@ -694,6 +694,7 @@ describe('@stylexjs/babel-plugin', () => {
             stylex(styles.default, styles.override);
           `
         )
+
         // Expect the className to reflect override entirely
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -702,7 +703,6 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1sa5p1d{margin-inline-end:10px}", 4);
         stylex.inject(".x1fqp7bg{margin-bottom:15px}", 4);
         stylex.inject(".xqsn43r{margin-inline-start:20px}", 4);
-        stylex.inject(".xiv7p99{margin-bottom:100px}", 4);
         stylex.inject(".x1ghz6dp{margin:0}", 3);
         "x1ghz6dp";"
       `);

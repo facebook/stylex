@@ -17,7 +17,7 @@ export default function validateEntry([key, value]: [string, TRawValue]) {
   }
 }
 
-function validateSimplyEntry([key, value]: [string, string | number]) {
+function validateSimplyEntry([key, _value]: [string, string | number]) {
   if (BANNED_KEYS.has(key)) {
     throw new Error('Banned key: ' + key);
   }

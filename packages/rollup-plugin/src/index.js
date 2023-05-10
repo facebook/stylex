@@ -40,7 +40,7 @@ module.exports = function stylexPlugin({
         });
       }
     },
-    shouldTransformCachedModule({ code, id, cache, meta }) {
+    shouldTransformCachedModule({ code: _code, id, cache: _cache, meta }) {
       stylexRules[id] = meta.stylex;
       return false;
     },

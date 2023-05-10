@@ -10,27 +10,30 @@
 
 'use strict';
 
-export default function generateCSSRule(
-  className: string,
-  decls: string,
-  pseudo: ?string
-): string {
-  if (pseudo === '::thumb') {
-    const selector = THUMB_VARIANTS.map(
-      (suffix) => '.' + className + suffix
-    ).join(', ');
-    return `${selector}{${decls}}`;
-  }
-
-  return pseudo != null && pseudo[0] === '@'
-    ? `${pseudo}{.${className}.${className}{${decls}}}`
-    : pseudo != null && pseudo[0] === ':'
-    ? `.${className}${pseudo}{${decls}}`
-    : `.${className}{${decls}}`;
-}
-
 const THUMB_VARIANTS = [
   '::-webkit-slider-thumb',
   '::-moz-range-thumb',
   '::-ms-thumb',
 ];
+
+export function genCSSRule(
+  className: string,
+  decls: string,
+  pseudos: $ReadOnlyArray<string>,
+  atRules: $ReadOnlyArray<string>
+): string {
+  const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
+  let selectorForAtRules =
+    `.${className}` + atRules.map(() => `.${className}`).join('') + pseudo;
+
+  if (pseudos.includes('::thumb')) {
+    selectorForAtRules = THUMB_VARIANTS.map(
+      (suffix) => selectorForAtRules + suffix
+    ).join(', ');
+  }
+
+  return atRules.reduce(
+    (acc, atRule) => `${atRule}{${acc}}`,
+    `${selectorForAtRules}{${decls}}`
+  );
+}

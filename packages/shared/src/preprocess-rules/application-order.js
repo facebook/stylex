@@ -164,7 +164,7 @@ const shorthands = {
     ];
   },
   // @Deprecated
-  borderRight: (rawValue: TStyleValue): TReturn => {
+  borderRight: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       [
         '`borderRight` is not supported.',
@@ -198,7 +198,7 @@ const shorthands = {
     ];
   },
   // @Deprecated
-  borderLeft: (rawValue: TStyleValue): TReturn => {
+  borderLeft: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       [
         '`borderLeft` is not supported.',

@@ -76,7 +76,7 @@ export const firstThatWorks = <T: string | number>(
 
 export const inject = injectStyle;
 
-export const UNSUPPORTED_PROPERTY = <T>(props: T): T => {
+export const UNSUPPORTED_PROPERTY = <T>(_props: T): T => {
   throw new Error(
     'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.'
   );

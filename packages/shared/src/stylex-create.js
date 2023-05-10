@@ -9,25 +9,17 @@
 
 import type {
   RawStyles,
-  CompiledStyles,
   InjectableStyle,
   StyleXOptions,
   FlatCompiledStyles,
 } from './common-types';
 
-import convertToClassName from './convert-to-className';
-import flatMapExpandedShorthands, {
-  getExpandedKeys,
-} from './preprocess-rules/index';
-import {
-  objFromEntries,
-  objValues,
-  objEntries,
-  flattenObject,
-} from './utils/object-utils';
-import * as messages from './messages';
+import { objFromEntries } from './utils/object-utils';
 import { IncludedStyles } from './stylex-include';
 import { defaultOptions } from './utils/default-options';
+import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
+import type { ComputedStyle } from './preprocess-rules/PreRule';
+import { validateNamespace } from './preprocess-rules/basic-validation';
 
 // This takes the object of styles passed to `stylex.create` and transforms it.
 //   The transformation replaces style values with classNames.
@@ -48,176 +40,41 @@ export default function styleXCreateSet(
 
   for (const namespaceName of Object.keys(namespaces)) {
     const namespace = namespaces[namespaceName];
-    if (typeof namespace !== 'object' || Array.isArray(namespace)) {
-      throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
-    }
 
-    // namespace = preflatten(namespace);
+    validateNamespace(namespace);
 
-    const [resolvedNamespace, injected] = styleXCreateNamespace(
-      namespace,
-      options
-    );
-    const compiledNamespace: { +[string]: string | IncludedStyles | null } =
-      flattenObject(resolvedNamespace);
-    resolvedNamespaces[namespaceName] = { ...compiledNamespace, $$css: true };
-    for (const cn of Object.keys(injected)) {
-      if (injectedStyles[cn] == null) {
-        injectedStyles[cn] = injected[cn];
+    const flattenedNamespace = flattenRawStyleObject(namespace, options);
+    const compiledNamespaceTuples = flattenedNamespace.map(([key, value]) => {
+      return [key, value.compiled(options)];
+    });
+
+    const compiledNamespace = objFromEntries<
+      string,
+      IncludedStyles | $ReadOnlyArray<ComputedStyle>
+    >(compiledNamespaceTuples);
+
+    const namespaceObj: {
+      [string]: null | string | IncludedStyles,
+    } = {};
+    for (const key of Object.keys(compiledNamespace)) {
+      const value = compiledNamespace[key];
+      if (value instanceof IncludedStyles) {
+        namespaceObj[key] = value;
+      } else {
+        const classNameTuples: Array<$ReadOnly<[string, InjectableStyle]>> =
+          value.map((v) => (Array.isArray(v) ? v : null)).filter(Boolean);
+        const className =
+          classNameTuples.map(([className]) => className).join(' ') || null;
+        namespaceObj[key] = className;
+        for (const [className, injectable] of classNameTuples) {
+          if (injectedStyles[className] == null) {
+            injectedStyles[className] = injectable;
+          }
+        }
       }
     }
+    resolvedNamespaces[namespaceName] = { ...namespaceObj, $$css: true };
   }
 
   return [resolvedNamespaces, injectedStyles];
-}
-
-// Transforms a single style namespace.
-// e.g. Something along the lines of:
-//  {color: 'red', margin: '10px'} =>
-//  {
-//    color: 'color-red',
-//    marginTop: 'margin-top-10px',
-//    marginBottom: 'margin-bottom-10px',
-//    marginStart: 'margin-start-10px',
-//    marginEnd: 'margin-end-10px'
-//  }
-//
-// First, it expands shorthand properties. (margin => marginTop, marginBottom, marginStart, marginEnd)
-// Then, it converts each style value to a className.
-// Then, it returns the transformed style Object and an object of injected styles.
-function styleXCreateNamespace(
-  style: RawStyles,
-  options: StyleXOptions
-): [CompiledStyles, { [string]: InjectableStyle }] {
-  const namespaceEntries = objEntries(style);
-
-  // First handle shorthands. The strategy for this is based on the `styleResolution` option.
-  const entries = namespaceEntries.flatMap(([key, value]) => {
-    // Detect style ...spreads and leave them unmodified
-    if (value instanceof IncludedStyles) {
-      return [[key, value]];
-    }
-    // Detect nested style objects.
-    if (value != null && typeof value === 'object' && !Array.isArray(value)) {
-      // Nested Objects are only allowed for legacy :pseudo, @media or long-hand properties for now.
-      // In the future, we will try to support shorthands as well.
-      if (
-        !key.startsWith(':') &&
-        !key.startsWith('@') &&
-        getExpandedKeys(options).includes(key)
-      ) {
-        throw new Error(messages.INVALID_PSEUDO);
-      }
-      return [
-        [
-          key,
-          objFromEntries(
-            objEntries(value).flatMap(([innerKey, innerValue]) => {
-              if (
-                innerValue != null &&
-                typeof innerValue === 'object' &&
-                !Array.isArray(innerValue)
-              ) {
-                throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
-              }
-
-              return flatMapExpandedShorthands([innerKey, innerValue], options);
-            })
-          ),
-        ],
-      ];
-    } else {
-      if (
-        value !== null &&
-        typeof value !== 'string' &&
-        typeof value !== 'number' &&
-        !Array.isArray(value)
-      ) {
-        throw new Error(messages.ILLEGAL_PROP_VALUE);
-      }
-      if (
-        Array.isArray(value) &&
-        value.some((val) => typeof val === 'object')
-      ) {
-        throw new Error(messages.ILLEGAL_PROP_ARRAY_VALUE);
-      }
-
-      return flatMapExpandedShorthands([key, value], options);
-    }
-  });
-
-  // Now each [key, value] pair is considered a single atomic style.
-  // This atomic style is converted to a className by hashing
-  //
-  // The [key, className] pair is then added to the output Object: `resolvedNamespace`.
-  // While hashing, the CSS rule that the className is generated from is also added to the output Object: `injectedStyles`.
-  const resolvedNamespace: {
-    [string]: null | IncludedStyles | { [string]: null | string } | string,
-  } = {};
-  const injectedStyles: { [string]: [string, InjectableStyle] } = {};
-  for (const [key, val] of entries) {
-    if (val instanceof IncludedStyles) {
-      resolvedNamespace[key] = val;
-    } else if (val != null && typeof val === 'object' && !Array.isArray(val)) {
-      if (key.startsWith(':') || key.startsWith('@')) {
-        const pseudo = key;
-        const innerObj: { [string]: null | string } = {};
-        for (const [innerKey, innerVal] of objEntries(val)) {
-          if (innerVal === null) {
-            innerObj[innerKey] = null;
-          } else if (typeof innerVal === 'object' && !Array.isArray(innerVal)) {
-            throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
-          } else {
-            const [updatedKey, className, cssRule] = convertToClassName(
-              [innerKey, innerVal],
-              pseudo,
-              options
-            );
-            innerObj[updatedKey] = className;
-            injectedStyles[updatedKey + pseudo] = [className, cssRule];
-          }
-        }
-        resolvedNamespace[key] = innerObj;
-      } else {
-        const propKey = key;
-        const classNames = [];
-        for (const [pseudo, innerVal] of objEntries(val)) {
-          if (
-            pseudo !== 'default' &&
-            !pseudo.startsWith(':') &&
-            !pseudo.startsWith('@')
-          ) {
-            throw new Error(messages.INVALID_PSEUDO);
-          }
-          if (typeof innerVal === 'object' && !Array.isArray(innerVal)) {
-            throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
-          }
-          if (innerVal !== null) {
-            const [updatedKey, className, cssRule] = convertToClassName(
-              [propKey, innerVal],
-              pseudo === 'default' ? undefined : pseudo,
-              options
-            );
-            injectedStyles[updatedKey + pseudo] = [className, cssRule];
-            classNames.push(className);
-          }
-        }
-        resolvedNamespace[key] = classNames.join(' ');
-      }
-    } else {
-      if (val === null) {
-        resolvedNamespace[key] = null;
-      } else {
-        const [updatedKey, className, cssRule] = convertToClassName(
-          [key, val],
-          undefined,
-          options
-        );
-        resolvedNamespace[updatedKey] = className;
-        injectedStyles[updatedKey] = [className, cssRule];
-      }
-    }
-  }
-  const finalInjectedStyles = objFromEntries(objValues(injectedStyles));
-  return [resolvedNamespace, finalInjectedStyles];
 }

@@ -11,8 +11,9 @@ import createHash from './hash';
 import type { TRawValue, StyleRule, StyleXOptions } from './common-types';
 import dashify from './utils/dashify';
 import transformValue from './transform-value';
-import generateCSSRule from './generate-css-rule';
+import { generateRule } from './generate-css-rule';
 import { defaultOptions } from './utils/default-options';
+import { arraySort } from './utils/object-utils';
 
 // This function takes a single style rule and transforms it into a CSS rule.
 // [color: 'red'] => ['color', 'classname-for-color-red', CSSRULE{ltr, rtl, priority}]
@@ -21,9 +22,10 @@ import { defaultOptions } from './utils/default-options';
 // Handles RTL-flipping
 // Hashes to get a className
 // Returns the final key, className a CSS Rule
-export default function convertToClassName(
+export function convertStyleToClassName(
   objEntry: [string, TRawValue],
-  pseudo?: string,
+  pseudos: $ReadOnlyArray<string>,
+  atRules: $ReadOnlyArray<string>,
   {
     stylexSheetName = '<>',
     classNamePrefix = 'x',
@@ -36,14 +38,22 @@ export default function convertToClassName(
     ? rawValue.map((eachValue) => transformValue(key, eachValue))
     : transformValue(key, rawValue);
 
+  const sortedPseudos = arraySort(pseudos ?? []);
+  const sortedAtRules = arraySort(atRules ?? []);
+
+  const atRuleHashString = sortedPseudos.join('');
+  const pseudoHashString = sortedAtRules.join('');
+
+  const modifierHashString = atRuleHashString + pseudoHashString || 'null';
+
   const stringToHash = Array.isArray(value)
-    ? dashedKey + value.join(', ') + (pseudo ?? 'null')
-    : dashedKey + value + (pseudo ?? 'null');
+    ? dashedKey + value.join(', ') + modifierHashString
+    : dashedKey + value + modifierHashString;
 
   const className =
     classNamePrefix + createHash(stylexSheetName + stringToHash);
 
-  const cssRules = generateCSSRule(className, dashedKey, value, pseudo);
+  const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
 
   return [key, className, cssRules];
 }

@@ -24,6 +24,7 @@ export const NON_OBJECT_FOR_STYLEX_CALL =
   'stylex.create() can only accept a style object.';
 export const UNKNOWN_PROP_KEY = 'Unknown property key';
 export const INVALID_PSEUDO = 'Invalid pseudo selector, not on the whitelist.';
+export const INVALID_PSEUDO_OR_AT_RULE = 'Invalid pseudo or at-rule.';
 export const NO_CONDITIONAL_SHORTHAND =
   'You cannot use conditional style values for a shorthand property.';
 export const ILLEGAL_NAMESPACE_TYPE =
@@ -46,3 +47,7 @@ export const UNEXPECTED_ARGUMENT =
 export const EXPECTED_FUNCTION_CALL =
   'Expected a simple function call but found something else.';
 export const NO_PARENT_PATH = 'Unexpected AST node without a parent path.';
+export const ONLY_TOP_LEVEL_INLCUDES =
+  'stylex.include() is only at the top level of a style definition object.';
+export const DUPLICATE_CONDITIONAL =
+  'The same pseudo selector or at-rule cannot be used more than once.';

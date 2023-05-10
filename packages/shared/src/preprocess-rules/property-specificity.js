@@ -24,63 +24,63 @@ const shorthands = {
   all: (_: TStyleValue): TReturn => {
     throw new Error('all is not supported');
   },
-  animation: (value: TStyleValue): TReturn => {
+  animation: (_value: TStyleValue): TReturn => {
     throw new Error('animation is not supported');
   },
-  background: (value: TStyleValue): TReturn => {
+  background: (_value: TStyleValue): TReturn => {
     throw new Error(
       'background is not supported. Use background-color, border-image etc. instead.'
     );
   },
-  border: (rawValue: TStyleValue): TReturn => {
+  border: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'border is not supported. Use border-width, border-style and border-color instead.'
     );
   },
-  borderInline: (rawValue: TStyleValue): TReturn => {
+  borderInline: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderInline is not supported. Use borderInlineWidth, borderInlineStyle and borderInlineColor instead.'
     );
   },
   // @Deprecated
-  borderBlock: (rawValue: TStyleValue): TReturn => {
+  borderBlock: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderBlock is not supported. Use borderBlockWidth, borderBlockStyle and borderBlockColor instead.'
     );
   },
 
   // @Deprecated
-  borderTop: (rawValue: TStyleValue): TReturn => {
+  borderTop: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderTop is not supported. Use borderTopWidth, borderTopStyle and borderTopColor instead.'
     );
   },
   // @Deprecated
-  borderInlineEnd: (rawValue: TStyleValue): TReturn => {
+  borderInlineEnd: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderInlineEnd is not supported. Use borderInlineEndWidth, borderInlineEndStyle and borderInlineEndColor instead.'
     );
   },
   // @Deprecated
-  borderRight: (rawValue: TStyleValue): TReturn => {
+  borderRight: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderRight is not supported. Use borderRightWidth, borderRightStyle and borderRightColor instead.'
     );
   },
   // @Deprecated
-  borderBottom: (rawValue: TStyleValue): TReturn => {
+  borderBottom: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderBottom is not supported. Use borderBottomWidth, borderBottomStyle and borderBottomColor instead.'
     );
   },
   // @Deprecated
-  borderInlineStart: (rawValue: TStyleValue): TReturn => {
+  borderInlineStart: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       'borderInlineStart is not supported. Use borderInlineStartWidth, borderInlineStartStyle and borderInlineStartColor instead.'
     );
   },
   // @Deprecated
-  borderLeft: (rawValue: TStyleValue): TReturn => {
+  borderLeft: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       [
         '`borderLeft` is not supported.',

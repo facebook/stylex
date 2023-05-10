@@ -96,4 +96,7 @@ export const messages: {
   LOCAL_ONLY: string;
   UNEXPECTED_ARGUMENT: string;
   EXPECTED_FUNCTION_CALL: string;
+  INVALID_PSEUDO_OR_AT_RULE: string;
+  ONLY_TOP_LEVEL_INLCUDES: string;
+  DUPLICATE_CONDITIONAL: string;
 };
