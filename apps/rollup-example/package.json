@@ -7,7 +7,6 @@
     "build": "rollup --config ./rollup.config.mjs",
     "start": "rollup --config ./rollup.config.mjs --watch"
   },
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "@stylexjs/stylex": "0.2.0-beta.10"

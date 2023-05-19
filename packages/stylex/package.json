@@ -1,12 +1,11 @@
 {
   "name": "@stylexjs/stylex",
   "version": "0.2.0-beta.10",
-  "description": "A minimal runtime styling library for web.",
+  "description": "A styling library for React.",
   "main": "lib/stylex.js",
   "react-native": "lib/native/stylex.js",
   "types": "lib/stylex.d.ts",
-  "repository": "https://www.github.com/facebookexternal/stylex",
-  "author": "Naman Goel <nmn@fb.com>",
+  "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "build": "babel src/ --out-dir lib/ --copy-files",

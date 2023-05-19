@@ -3,8 +3,7 @@
   "version": "0.2.0-beta.10",
   "description": "StyleX babel plugin.",
   "main": "lib/index.js",
-  "repository": "https://github.com/facebookexternal/stylex",
-  "author": "Naman Goel <nmn@fb.com>",
+  "repository": "https://github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "build": "rollup --config ./rollup.config.mjs",

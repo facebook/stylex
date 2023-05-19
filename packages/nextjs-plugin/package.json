@@ -1,9 +1,9 @@
 {
   "name": "@stylexjs/nextjs-plugin",
   "version": "0.2.0-beta.10",
-  "description": "Next.js plugin for stylex",
+  "description": "Next.js plugin for StyleX",
   "main": "src/index.js",
-  "repository": "https://www.github.com/facebookexternal/stylex",
+  "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "dependencies": {
     "@stylexjs/webpack-plugin": "^0.2.0-beta.9",

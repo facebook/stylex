@@ -1,9 +1,9 @@
 {
   "name": "@stylexjs/webpack-plugin",
   "version": "0.2.0-beta.10",
-  "description": "Webpack plugin for stylex",
+  "description": "Webpack plugin for StyleX",
   "main": "src/index.js",
-  "repository": "https://www.github.com/facebookexternal/stylex",
+  "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "fixtures:webpack": "webpack build --config __tests__/__fixtures__/webpack.config.js",
