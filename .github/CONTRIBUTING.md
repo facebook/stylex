@@ -37,13 +37,13 @@ npm run flow
 To run all the unit tests:
 
 ```
-npm run tests
+npm run test
 ```
 
 …in watch mode:
 
 ```
-npm run tests -- --watch
+npm run test -- --watch
 ```
 
 ## Compile and build

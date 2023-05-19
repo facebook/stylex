@@ -10,9 +10,10 @@
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
     "lint:report": "eslint packages",
+    "precommit": "npm run prettier && npm run flow && npm run lint && npm run test",
     "pretest": "npm run build",
     "test": "npm run test --workspaces --if-present",
-    "test-nobuild": "npm run test --workspaces --if-present"
+    "test:nobuild": "npm run test --workspaces --if-present"
   },
   "workspaces": [
     "packages/shared",
