@@ -162,7 +162,7 @@ function isReactNativeStyleProp(propName: string): boolean {
   return stylePropertyAllowlistSet.has(propName) || propName.startsWith('--');
 }
 
-function isReactNativeStyleValue(propValue: mixed, propName: string): boolean {
+function isReactNativeStyleValue(propValue: mixed): boolean {
   if (typeof propValue === 'string') {
     // RN doesn't have an inherit keyword
     if (propValue === 'inherit') {
@@ -191,7 +191,7 @@ function isReactNativeStyleValue(propValue: mixed, propName: string): boolean {
   return true;
 }
 
-function preprocessPropertyValue(propValue: mixed, propName: string): mixed {
+function preprocessPropertyValue(propValue: mixed): mixed {
   if (typeof propValue === 'string') {
     if (isCustomPropertyValue(propValue)) {
       return new CSSCustomPropertyValue(propValue);
@@ -281,10 +281,7 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
 
   // Process values that need to be resolved during render
   for (const prop in processedStyle) {
-    const processedStyleValue = preprocessPropertyValue(
-      processedStyle[prop],
-      prop
-    );
+    const processedStyleValue = preprocessPropertyValue(processedStyle[prop]);
     processedStyle[prop] = processedStyleValue;
   }
 
@@ -313,7 +310,7 @@ export const firstThatWorks = <T: string | number>(
   return values[0];
 };
 
-export function keyframes(keyframes: any): void {
+export function keyframes(): void {
   errorMsg('keyframes are not supported in React Native.');
 }
 
@@ -397,7 +394,7 @@ export function spread(
     // value. Similarly, any sort of prop value transformations should happen before this
     // filter.
     // We check this at resolve time to ensure the render-time styles are safe.
-    if (!isReactNativeStyleValue(styleValue, styleProp)) {
+    if (!isReactNativeStyleValue(styleValue)) {
       errorMsg(
         `Encounted unsupported style value "${String(
           styleValue
