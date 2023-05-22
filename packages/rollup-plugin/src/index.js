@@ -19,7 +19,7 @@ const IS_DEV_ENV =
 module.exports = function stylexPlugin({
   dev = IS_DEV_ENV,
   fileName = 'stylex.css',
-  babelConig: { plugins = [], presets = [] } = {},
+  babelConfig: { plugins = [], presets = [] } = {},
 } = {}) {
   let stylexRules = {};
 
