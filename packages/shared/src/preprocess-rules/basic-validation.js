@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { IncludedStyles } from '..';
+import { IncludedStyles } from '../stylex-include';
 import * as messages from '../messages';
 import { isPlainObject } from '../utils/object-utils';
 

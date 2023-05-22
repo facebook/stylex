@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import flatMapExpandedShorthands from '.';
+import flatMapExpandedShorthands from './index';
 import type { RawStyles, StyleXOptions, TStyleValue } from '../common-types';
 
 import {
@@ -18,7 +18,7 @@ import {
   type IPreRule,
   PreIncludedStylesRule,
 } from './PreRule';
-import { IncludedStyles } from '..';
+import { IncludedStyles } from '../stylex-include';
 
 export function flattenRawStyleObject(
   style: RawStyles,
