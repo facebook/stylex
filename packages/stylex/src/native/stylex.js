@@ -342,6 +342,8 @@ export function spread(
     flattenStyle(style);
   /* eslint-enable prefer-const */
 
+  const nativeProps = {};
+
   for (const styleProp in flatStyle) {
     let styleValue = flatStyle[styleProp];
 
@@ -407,20 +409,15 @@ export function spread(
     flatStyle[styleProp] = styleValue;
   }
 
-  if (flatStyle != null) {
+  if (flatStyle != null && Object.keys(flatStyle).length > 0) {
     flatStyle = CSSMediaQuery.resolveMediaQueries(flatStyle, {
       width: viewportWidth,
       height: viewportHeight,
       direction: writingDirection,
     });
+    // $FlowFixMe
+    nativeProps.style = flatStyle;
   }
-
-  // Use 'static' position by default for all elements
-  if (flatStyle.position == null) {
-    flatStyle.position = 'static';
-  }
-
-  const nativeProps = { style: flatStyle };
 
   if (lineClamp != null) {
     // $FlowFixMe
