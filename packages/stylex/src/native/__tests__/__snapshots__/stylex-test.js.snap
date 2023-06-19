@@ -132,7 +132,7 @@ exports[`styles font-variant 1`] = `
 exports[`styles font-weight 1`] = `
 {
   "style": {
-    "fontWeight": 900,
+    "fontWeight": "900",
   },
 }
 `;
@@ -199,9 +199,39 @@ exports[`styles pointer-events 1`] = `
 }
 `;
 
-exports[`styles position 1`] = `{}`;
+exports[`styles position: absolute 1`] = `
+{
+  "style": {
+    "position": "absolute",
+  },
+}
+`;
 
-exports[`styles position 2`] = `
+exports[`styles position: fixed 1`] = `
+{
+  "style": {
+    "position": "absolute",
+  },
+}
+`;
+
+exports[`styles position: relative 1`] = `
+{
+  "style": {
+    "position": "relative",
+  },
+}
+`;
+
+exports[`styles position: static 1`] = `
+{
+  "style": {
+    "position": "static",
+  },
+}
+`;
+
+exports[`styles position: sticky 1`] = `
 {
   "style": {
     "position": "relative",

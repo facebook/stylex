@@ -249,6 +249,11 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       processedStyle.shadowOffset = { height: offsetY, width: offsetX };
       processedStyle.shadowOpacity = 1;
       processedStyle.shadowRadius = blurRadius;
+    }
+    // Needed by React Native for Desktop
+    else if (propName === 'fontWeight' && typeof styleValue === 'number') {
+      // $FlowFixMe
+      processedStyle[propName] = styleValue.toString();
     } else if (propName === 'position') {
       if (styleValue === 'fixed') {
         processedStyle[propName] = 'absolute';
@@ -260,6 +265,8 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
         errorMsg(
           '"position" value of "sticky" is not supported in React Native. Falling back to "relative".'
         );
+      } else {
+        processedStyle[propName] = styleValue;
       }
     }
     // React Native only supports non-standard text-shadow styles
@@ -435,3 +442,5 @@ export type IStyleX = {
 };
 
 export const stylex: IStyleX = { create, firstThatWorks, keyframes, spread };
+
+export default stylex;

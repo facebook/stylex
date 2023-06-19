@@ -159,20 +159,32 @@ describe('styles', () => {
 
   test('position', () => {
     const styles = stylex.create({
+      static: {
+        position: 'static',
+      },
+      relative: {
+        position: 'relative',
+      },
+      absolute: {
+        position: 'absolute',
+      },
       fixed: {
         position: 'fixed',
       },
-    });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalledTimes(1);
-
-    const styles2 = stylex.create({
-      root: {
+      sticky: {
         position: 'sticky',
       },
     });
-    expect(stylex.spread(styles2.root, mockOptions)).toMatchSnapshot();
     expect(console.error).toHaveBeenCalledTimes(2);
+    expect(stylex.spread(styles.static, mockOptions)).toMatchSnapshot('static');
+    expect(stylex.spread(styles.relative, mockOptions)).toMatchSnapshot(
+      'relative'
+    );
+    expect(stylex.spread(styles.absolute, mockOptions)).toMatchSnapshot(
+      'absolute'
+    );
+    expect(stylex.spread(styles.fixed, mockOptions)).toMatchSnapshot('fixed');
+    expect(stylex.spread(styles.sticky, mockOptions)).toMatchSnapshot('sticky');
   });
 
   test('text-shadow', () => {
