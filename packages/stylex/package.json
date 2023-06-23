@@ -8,6 +8,7 @@
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src/ --out-dir lib/ --copy-files",
     "build-haste": "HASTE=true babel src/ --out-dir lib/ --copy-files",
     "test": "jest"
@@ -17,6 +18,9 @@
     "invariant": "^2.2.4",
     "utility-types": "^3.10.0",
     "styleq": "0.1.3"
+  },
+  "devDependencies": {
+    "@stylexjs/scripts": "0.2.0-beta.11"
   },
   "jest": {},
   "files": [

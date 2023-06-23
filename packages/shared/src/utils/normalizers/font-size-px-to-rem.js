@@ -9,7 +9,7 @@
 
 'use strict';
 
-const parser = require('postcss-value-parser');
+import parser from 'postcss-value-parser';
 
 const ROOT_FONT_SIZE = 16;
 
@@ -18,7 +18,7 @@ const ROOT_FONT_SIZE = 16;
  * This will allow developers to continue thinking and using what's familiar
  * while we output font sizes that are adjustable
  */
-module.exports = function convertFontSizeToRem(
+export default function convertFontSizeToRem(
   ast: PostCSSValueAST,
   key: string
 ): PostCSSValueAST {
@@ -35,4 +35,4 @@ module.exports = function convertFontSizeToRem(
     }
   });
   return ast;
-};
+}
