@@ -56,3 +56,9 @@ export type StyleXOptions = {
     | 'legacy-expand-shorthands',
   ...
 };
+
+export type MutableCompiledNamespaces = {
+  [key: string]: FlatCompiledStyles,
+};
+
+export type CompiledNamespaces = $ReadOnly<MutableCompiledNamespaces>;

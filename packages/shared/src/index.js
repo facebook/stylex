@@ -28,9 +28,21 @@ import stylexInclude, {
 import stylexFirstThatWorks from './stylex-first-that-works';
 import * as m from './messages';
 
-export const create = styleXCreateSet;
-export const keyframes = stylexKeyframes;
-export const include = stylexInclude;
-export const messages = m;
-export const IncludedStyles = _IncludedStyles;
-export const firstThatWorks = stylexFirstThatWorks;
+import type {
+  InjectableStyle as _InjectableStyle,
+  CompiledNamespaces as _CompiledNamespaces,
+  MutableCompiledNamespaces as _MutableCompiledNamespaces,
+  StyleXOptions as _StyleXOptions,
+} from './common-types';
+
+export const create: typeof styleXCreateSet = styleXCreateSet;
+export const keyframes: typeof stylexKeyframes = stylexKeyframes;
+export const include: typeof stylexInclude = stylexInclude;
+export const messages: typeof m = m;
+export const IncludedStyles: typeof _IncludedStyles = _IncludedStyles;
+export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
+
+export type InjectableStyle = _InjectableStyle;
+export type CompiledNamespaces = _CompiledNamespaces;
+export type MutableCompiledNamespaces = _MutableCompiledNamespaces;
+export type StyleXOptions = _StyleXOptions;

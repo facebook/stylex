@@ -34,9 +34,10 @@ type DedupeStyles = $ReadOnly<{
 }>;
 
 export function spread(
-  ...styles: Array<
+  styles: $ReadOnlyArray<
     StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>
-  >
+  >,
+  _options: { ... }
 ): { className: string, style: { [string]: string | number } } {
   const [className, style] = styleq(styles);
   return { className, style };
@@ -74,7 +75,7 @@ export const firstThatWorks = <T: string | number>(
   throw new Error('stylex.firstThatWorks should never be called.');
 };
 
-export const inject = injectStyle;
+export const inject: typeof injectStyle = injectStyle;
 
 export const UNSUPPORTED_PROPERTY = <T>(_props: T): T => {
   throw new Error(
@@ -98,7 +99,10 @@ _stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
-  spread: (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>) => {
+  spread: (
+    styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>,
+    options: { ... }
+  ) => {
     className: string,
     style: { [string]: string | number },
   },

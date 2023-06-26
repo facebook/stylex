@@ -11,10 +11,14 @@ import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import stylex from '@stylexjs/stylex';
 
+import { IncludedStyles } from '@stylexjs/shared';
+
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 
-type StyleObject = { [key: string]: string | null | boolean };
+type StyleObject = {
+  [key: string]: string | null | boolean | InstanceType<typeof IncludedStyles>;
+};
 type StyleObjectOrNull = StyleObject | null | undefined;
 type ConditionalStyle = [t.Expression, StyleObjectOrNull, StyleObjectOrNull];
 type ResolvedArg = StyleObjectOrNull | ConditionalStyle;

@@ -83,7 +83,9 @@ export default class StateManager {
     return this.options.definedStylexCSSVariables;
   }
 
-  addStyle(style: [string, { ltr: string; rtl?: string }, number]): void {
+  addStyle(
+    style: [string, { ltr: string; rtl?: string | null }, number]
+  ): void {
     this.metadata.stylex.push(style);
   }
 

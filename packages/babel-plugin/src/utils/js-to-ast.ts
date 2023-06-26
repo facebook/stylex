@@ -8,9 +8,14 @@
 import * as t from '@babel/types';
 import { IncludedStyles } from '@stylexjs/shared';
 
-type NestedStringObject = {
-  readonly [key: string]: string | null | boolean | NestedStringObject;
-};
+type NestedStringObject = Readonly<{
+  [key: string]:
+    | string
+    | null
+    | boolean
+    | NestedStringObject
+    | InstanceType<typeof IncludedStyles>;
+}>;
 
 export function convertObjectToAST(
   obj: NestedStringObject
