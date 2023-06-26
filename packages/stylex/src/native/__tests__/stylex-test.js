@@ -454,6 +454,42 @@ describe('media queries', () => {
   });
 });
 
+describe('unsupported style properties', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'error');
+    console.error.mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    console.error.mockRestore();
+  });
+
+  test('"filter"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        filter: 'blur(1px)',
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.error).toHaveBeenCalled();
+  });
+
+  test('"transitionProperty" passthrough', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        transitionProperty: 'opacity',
+      },
+    });
+    expect(
+      stylex.spread(underTest, {
+        ...mockOptions,
+        passthroughProperties: ['transitionProperty'],
+      })
+    ).toMatchSnapshot();
+    expect(console.error).not.toHaveBeenCalled();
+  });
+});
+
 describe('unsupported style values', () => {
   beforeEach(() => {
     jest.spyOn(console, 'error');

@@ -328,6 +328,7 @@ type SpreadOptions = {|
   customProperties: {},
   inheritedFontSize: ?number,
   fontScale: number | void,
+  passthroughProperties: Array<string>,
   viewportHeight: number,
   viewportWidth: number,
   writingDirection: 'ltr' | 'rtl',
@@ -336,9 +337,10 @@ type SpreadOptions = {|
 export function spread(
   style: ?{ [key: string]: mixed },
   {
-    customProperties,
+    customProperties = {},
     inheritedFontSize,
     fontScale = 1,
+    passthroughProperties = [],
     viewportHeight,
     viewportWidth,
     writingDirection,
@@ -393,7 +395,10 @@ export function spread(
     // the developer a warning to let them know that there's a new prop we should either
     // explicitly ignore or process in some way.
     // NOTE: Any kind of prop name transformations should happen before this check.
-    if (!isReactNativeStyleProp(styleProp)) {
+    if (
+      !isReactNativeStyleProp(styleProp) &&
+      passthroughProperties.indexOf(styleProp) === -1
+    ) {
       errorMsg(`Encountered unsupported style property "${styleProp}"`);
       delete flatStyle[styleProp];
       continue;

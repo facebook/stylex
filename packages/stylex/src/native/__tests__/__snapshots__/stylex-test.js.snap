@@ -365,6 +365,16 @@ exports[`styles vertical-align: top 1`] = `
 }
 `;
 
+exports[`unsupported style properties "filter" 1`] = `{}`;
+
+exports[`unsupported style properties "transitionProperty" passthrough 1`] = `
+{
+  "style": {
+    "transitionProperty": "opacity",
+  },
+}
+`;
+
 exports[`unsupported style values calc 1`] = `{}`;
 
 exports[`unsupported style values inherit 1`] = `{}`;
