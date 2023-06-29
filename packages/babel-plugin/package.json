@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/babel-plugin",
-  "version": "0.2.0-beta.11",
+  "version": "0.2.0-beta.12",
   "description": "StyleX babel plugin.",
   "main": "lib/index.js",
   "repository": "https://github.com/facebook/stylex",
@@ -11,7 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@stylexjs/shared": "0.2.0-beta.11"
+    "@stylexjs/shared": "0.2.0-beta.12"
   },
   "peerDependencies": {
     "@babel/core": "^7.19.6",

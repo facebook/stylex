@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "0.2.0-beta.11",
+  "version": "0.2.0-beta.12",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.2.0-beta.11",
+    "@stylexjs/scripts": "0.2.0-beta.12",
     "typescript": "^4.7.4"
   },
   "jest": {
