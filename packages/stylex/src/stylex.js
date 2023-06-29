@@ -34,9 +34,7 @@ type DedupeStyles = $ReadOnly<{
 }>;
 
 export function spread(
-  styles: $ReadOnlyArray<
-    StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>
-  >,
+  styles: StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>,
   _options?: { ... }
 ): { className: string, style: { [string]: string | number } } {
   const [className, style] = styleq(styles);
