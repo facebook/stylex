@@ -20,11 +20,13 @@ import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isPercentage from './rules/isPercentage';
 import isAnimationName from './rules/isAnimationName';
+import { borderSplitter } from './utils/split-css-value';
 
 export type Variables = Map<string, ESTree.Expression>;
 export type RuleCheck = (
   node: ESTree.Expression,
-  variables?: Variables
+  variables?: Variables,
+  prop?: ESTree.Property
 ) => RuleResponse;
 export type RuleResponse =
   | undefined
@@ -488,7 +490,48 @@ const backgroundOrigin = box;
 const backgroundRepeat = repeatStyle;
 const backgroundSize = bgSize;
 const blockSize = width;
-const border = makeUnionRule(borderWidth, brStyle, color);
+const quotedString = (val: number | string) =>
+  typeof val === 'string' ? `'${val}'` : val;
+const border =
+  (suffix: string = ''): RuleCheck =>
+  (node: ESTree.Expression, _variables?: Variables, prop?: ESTree.Property) => {
+    const response: RuleResponse = {
+      message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
+    };
+    if (node.type !== 'Literal' || prop == null) {
+      return response;
+    }
+    if (typeof node.value === 'number') {
+      response.suggest = {
+        desc: `Replace 'border${suffix}' set to a number with 'border${suffix}Width' instead?`,
+        fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+          return fixer.replaceText(prop, `border${suffix}Width: ${node.value}`);
+        },
+      };
+    }
+    if (typeof node.value === 'string') {
+      const [width, style, color] = borderSplitter(node.value);
+      if (width != null || style != null || color != null) {
+        response.suggest = {
+          desc: `Replace 'border${suffix}' with 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' instead?`,
+          fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+            const newRules = [];
+            if (width != null) {
+              newRules.push(`border${suffix}Width: ${quotedString(width)}`);
+            }
+            if (style != null) {
+              newRules.push(`border${suffix}Style: ${quotedString(style)}`);
+            }
+            if (color != null) {
+              newRules.push(`border${suffix}Color: ${quotedString(color)}`);
+            }
+            return fixer.replaceText(prop, newRules.join(',\n    '));
+          },
+        };
+      }
+    }
+    return response;
+  };
 // const borderBlockEnd = makeUnionRule(borderWidth, borderStyle, color);
 // const borderBlockEndColor = color;
 // const borderBlockEndStyle = borderStyle;
@@ -1521,11 +1564,10 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   baselineShift: baselineShift,
   behavior: behavior,
   blockSize: blockSize,
-  border: border,
-  borderHorizontal: border,
-  borderVertical: border,
+  // borderHorizontal: border,
+  // borderVertical: border,
   borderBlockEnd: showError(
-    '`borderBlockEnd` is not supported. Please use `borderBottom` instead'
+    '`borderBlockEnd` is not supported. Please use `borderBottomWidth`, `borderBottomStyle` and `borderBottomColor` instead'
   ),
   borderBlockEndColor: showError(
     '`borderBlockEndColor` is not supported. Please use `borderBottomColor` instead'
@@ -1537,7 +1579,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
     '`borderBlockEndWidth` is not supported. Please use `borderBottomWidth` instead'
   ),
   borderBlockStart: showError(
-    '`borderBlockStart` is not supported. Please use `borderTop` instead'
+    '`borderBlockStart` is not supported. Please use `borderTopWidth`, `borderTopStyle` and `borderTopColor` instead'
   ),
   borderBlockStartColor: showError(
     '`borderBlockStartColor` is not supported. Please use `borderTopColor` instead'
@@ -1548,7 +1590,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   borderBlockStartWidth: showError(
     '`borderBlockStartWidth` is not supported. Please use `borderTopWidth` instead'
   ),
-  borderBottom: border,
   borderBottomColor: color,
   borderBottomEndRadius: borderBottomRightRadius,
   borderBottomLeftRadius: showError(
@@ -1562,7 +1603,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   borderBottomWidth: borderBottomWidth,
   borderCollapse: borderCollapse,
   borderColor: borderColor,
-  borderEnd: border,
   borderEndColor: borderRightColor,
   borderEndStyle: borderRightStyle,
   borderEndWidth: borderRightWidth,
@@ -1580,9 +1620,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   // borderInlineStartColor: borderInlineStartColor,
   // borderInlineStartStyle: borderInlineStartStyle,
   // borderInlineStartWidth: borderInlineStartWidth,
-  borderLeft: showError(
-    '`borderLeft` is not supported. Please use `borderStart` instead'
-  ),
   borderLeftColor: showError(
     '`borderLeftColor` is not supported. Please use `borderStartColor` instead'
   ),
@@ -1593,9 +1630,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
     '`borderLeftWidth` is not supported. Please use `borderStartWidth` instead'
   ),
   borderRadius: borderRadius,
-  borderRight: showError(
-    '`borderRight` is not supported. Please use `borderEnd` instead'
-  ),
   borderRightColor: showError(
     '`borderRightColor` is not supported. Please use `borderEndColor` instead'
   ),
@@ -1606,12 +1640,10 @@ const CSSProperties: { [key: string]: RuleCheck } = {
     '`borderRightWidth` is not supported. Please use `borderEndWidth` instead'
   ),
   borderSpacing: borderSpacing,
-  borderStart: border,
   borderStartColor: borderLeftColor,
   borderStartStyle: borderLeftStyle,
   borderStartWidth: borderLeftWidth,
   borderStyle: borderStyle,
-  borderTop: border,
   borderTopColor: color,
   borderTopEndRadius: borderTopRightRadius,
   borderStartStartRadius: showError(
@@ -1959,25 +1991,15 @@ for (const key of CSSPropertyKeys) {
   CSSProperties[key] = makeUnionRule(CSSProperties[key], all);
 }
 
-function isStylexCallee(node: ESTree.Node) {
-  return (
-    node.type === 'MemberExpression' &&
-    node.object.type === 'Identifier' &&
-    node.object.name === 'stylex' &&
-    node.property.type === 'Identifier' &&
-    node.property.name === 'create'
-  );
-}
-
-function isStylexDeclaration(node: ESTree.Node) {
-  return (
-    node &&
-    node.type === 'CallExpression' &&
-    isStylexCallee(node.callee) &&
-    node.arguments.length === 1 &&
-    node.arguments[0].type === 'ObjectExpression'
-  );
-}
+const CSSPropertyReplacements: { [key: string]: RuleCheck | undefined } = {
+  border: border(),
+  borderTop: border('Top'),
+  borderEnd: border('End'),
+  borderRight: border('Right'),
+  borderBottom: border('Bottom'),
+  borderStart: border('Start'),
+  borderLeft: border('Left'),
+};
 
 const keyForNestedObject = makeUnionRule(
   makeLiteralRule(':first-child'),
@@ -2001,30 +2023,53 @@ const keyForNestedObject = makeUnionRule(
   makeLiteralRule('::-webkit-search-cancel-button'),
   makeLiteralRule('::-webkit-search-results-button'),
   makeLiteralRule('::-webkit-search-results-decoration'),
-  makeRegExRule(/^@media/, 'a media query')
+  makeRegExRule(/^@media/, 'a media query'),
+  makeRegExRule(/^@supports/, 'a supports query')
 );
 
 // Maybe add this later.
 // const pseudoAllowlist = new Set([]);
 
-function nullThrows<T>(t: T | undefined | null): T {
-  if (t == null) {
-    throw new Error('Did not expect value to be null');
-  }
-  return t;
-}
-
 const stylexValidStyles = {
   meta: {
+    type: 'problem',
     hasSuggestions: true,
   },
   create(context: Rule.RuleContext) {
     const variables = new Map<string, ESTree.Expression>();
 
+    // TODO: Make this configurable
+    const importsToLookFor = ['stylex', '@stylexjs/stylex'];
+    const styleXDefaultImports = new Set<string>();
+    const styleXCreateImports = new Set<string>();
+
+    function isStylexCallee(node: ESTree.Node) {
+      return (
+        (node.type === 'MemberExpression' &&
+          node.object.type === 'Identifier' &&
+          styleXDefaultImports.has(node.object.name) &&
+          node.property.type === 'Identifier' &&
+          node.property.name === 'create') ||
+        (node.type === 'Identifier' && styleXCreateImports.has(node.name))
+      );
+    }
+
+    function isStylexDeclaration(node: ESTree.Node) {
+      return (
+        node &&
+        node.type === 'CallExpression' &&
+        isStylexCallee(node.callee) &&
+        node.arguments.length === 1 &&
+        node.arguments[0].type === 'ObjectExpression'
+      );
+    }
+
     function checkStyleProperty(style: ESTree.Node, level = 0): void {
       // currently ignoring preset spreads.
       if (style.type === 'Property') {
         if (style.value.type === 'ObjectExpression') {
+          // TODO: Remove this soon
+          // But we want to make sure that the same "condition" isn't repeated
           if (level > 0) {
             return context.report({
               node: style.value as ESTree.Node,
@@ -2039,9 +2084,7 @@ const stylexValidStyles = {
               message: 'Keys must be strings',
             } as Rule.ReportDescriptor);
           }
-          const ruleCheck = keyForNestedObject(
-            style.key /*not checking variables*/
-          );
+          const ruleCheck = keyForNestedObject(style.key, new Map());
           if (ruleCheck !== undefined) {
             return context.report({
               node: style.value,
@@ -2078,6 +2121,24 @@ const stylexValidStyles = {
             message:
               'All keys in a stylex object must be static literal string values.',
           } as Rule.ReportDescriptor);
+        }
+        if (CSSPropertyReplacements[key] != null) {
+          const propCheck = CSSPropertyReplacements[key] as RuleCheck;
+          const check = propCheck(
+            style.value as ESTree.Expression,
+            variables,
+            style
+          );
+          if (check != null) {
+            const { message, suggest } = check;
+            const diagnostic = {
+              node: style,
+              loc: style.loc,
+              message,
+              suggest: suggest != null ? [suggest] : undefined,
+            } as Rule.ReportDescriptor;
+            return context.report(diagnostic);
+          }
         }
         const ruleChecker = CSSProperties[key];
         if (ruleChecker == null) {
@@ -2117,7 +2178,11 @@ const stylexValidStyles = {
         if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
         }
-        const check = ruleChecker(style.value as ESTree.Expression, variables);
+        const check = ruleChecker(
+          style.value as ESTree.Expression,
+          variables,
+          style
+        );
         if (check != null) {
           const { message, suggest } = check;
           return context.report({
@@ -2138,7 +2203,7 @@ const stylexValidStyles = {
       Program(node: ESTree.Program) {
         // Keep track of all the top-level local variable declarations
         // This is because stylex allows you to use local constants in your styles
-        node.body
+        const vars = node.body
           .reduce(
             (
               collection: ESTree.VariableDeclaration[],
@@ -2157,7 +2222,56 @@ const stylexValidStyles = {
           .map(
             (constDecl: ESTree.VariableDeclaration) => constDecl.declarations
           )
-          .reduce((arr, curr) => arr.concat(curr), [])
+          .reduce((arr, curr) => arr.concat(curr), []);
+
+        const [requires, others] = vars.reduce(
+          (acc, decl) => {
+            if (
+              decl.init != null &&
+              decl.init.type === 'CallExpression' &&
+              decl.init.callee.type === 'Identifier' &&
+              decl.init.callee.name === 'require'
+            ) {
+              acc[0].push(decl);
+            } else {
+              acc[1].push(decl);
+            }
+            return acc;
+          },
+          [[] as ESTree.VariableDeclarator[], [] as ESTree.VariableDeclarator[]]
+        );
+
+        requires.forEach((decl: ESTree.VariableDeclarator) => {
+          // detect requires of "stylex" and "@stylexjs/stylex"
+          if (
+            decl.init != null &&
+            decl.init.type === 'CallExpression' &&
+            decl.init.callee.type === 'Identifier' &&
+            decl.init.callee.name === 'require' &&
+            decl.init.arguments.length === 1 &&
+            decl.init.arguments[0].type === 'Literal' &&
+            importsToLookFor.includes(decl.init.arguments[0].value as string)
+          ) {
+            if (decl.id.type === 'Identifier') {
+              styleXDefaultImports.add(decl.id.name);
+            }
+            if (decl.id.type === 'ObjectPattern') {
+              decl.id.properties.forEach((prop) => {
+                if (
+                  prop.type === 'Property' &&
+                  prop.key.type === 'Identifier' &&
+                  prop.key.name === 'create' &&
+                  !prop.computed &&
+                  prop.value.type === 'Identifier'
+                ) {
+                  styleXCreateImports.add(prop.value.name);
+                }
+              });
+            }
+          }
+        });
+
+        others
           .filter((decl) => decl.id.type === 'Identifier')
           .forEach((decl: ESTree.VariableDeclarator) => {
             const id = decl.id as ESTree.Identifier;
@@ -2166,6 +2280,33 @@ const stylexValidStyles = {
               variables.set(id.name, init);
             }
           });
+      },
+      ImportDeclaration(node: ESTree.ImportDeclaration) {
+        if (
+          node.source.type !== 'Literal' ||
+          typeof node.source.value !== 'string'
+        ) {
+          return;
+        }
+        const sourceValue = node.source.value;
+        if (!importsToLookFor.includes(sourceValue)) {
+          return;
+        }
+
+        node.specifiers.forEach((specifier) => {
+          if (
+            specifier.type === 'ImportDefaultSpecifier' ||
+            specifier.type === 'ImportNamespaceSpecifier'
+          ) {
+            styleXDefaultImports.add(specifier.local.name);
+          }
+          if (
+            specifier.type === 'ImportSpecifier' &&
+            specifier.imported.name === 'create'
+          ) {
+            styleXCreateImports.add(specifier.local.name);
+          }
+        });
       },
       CallExpression(node: ESTree.CallExpression & Rule.NodeParentExtension) {
         if (!isStylexDeclaration(node)) {
@@ -2189,8 +2330,8 @@ const stylexValidStyles = {
               message: 'Styles cannot be spread objects',
             } as Rule.ReportDescriptor);
           }
-          const type = property.value.type;
-          if (type !== 'ObjectExpression') {
+
+          if (property.value.type !== 'ObjectExpression') {
             return context.report({
               node: property.value,
               loc: property.value.loc,

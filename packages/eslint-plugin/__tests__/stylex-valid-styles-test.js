@@ -26,6 +26,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
     // test for local static variables
     `
+      import stylex from 'stylex';
       const start = 'start';
       const styles = stylex.create({
         default: {
@@ -39,6 +40,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      import stylex from 'stylex';
       const start = 'start';
       const grayscale = 'grayscale';
       const styles = stylex.create({
@@ -53,6 +55,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      import stylex from 'stylex';
       const bounce = stylex.keyframes({
         '0%': {
           transform: 'translateY(0)',
@@ -73,6 +76,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      import stylex from 'stylex';
       const styles = stylex.create({
         default: {
           animationName: stylex.keyframes({
@@ -92,6 +96,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      import stylex from 'stylex';
       const bounce = stylex.keyframes({
         '0%': {
           transform: 'translateY(0)',
@@ -121,6 +126,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `,
     // test for nested styles
     `
+      import stylex from 'stylex';
       const TRANSPARENT = 0;
       const OPAQUE = 1;
       const styles = stylex.create({
@@ -130,12 +136,15 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             opacity: OPAQUE,
           },
           ':focus-visible': {
-            border: "1px solid blue"
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         }
       });
     `,
     `
+     import stylex from 'stylex';
      const styles = stylex.create({
        default: {
          width: '50%',
@@ -145,25 +154,27 @@ eslintTester.run('stylex-valid-styles', rule.default, {
        }
      });`,
     // test for positive numbers
-    'stylex.create({default: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({default: {marginStart: 5}});',
     // test for literals as namespaces
-    'stylex.create({"default-1": {marginStart: 5}});',
-    'stylex.create({["default-1"]: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({"default-1": {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({["default-1"]: {marginStart: 5}});',
     // test for numbers as namespaces
-    'stylex.create({0: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({0: {marginStart: 5}});',
     // test for computed numbers as namespaces
-    'stylex.create({[0]: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({[0]: {marginStart: 5}});',
     // test for negative values.
-    'stylex.create({default: {marginStart: -5}});',
-    "stylex.create({default: {textAlign: 'start'}});",
+    'import stylex from "stylex"; stylex.create({default: {marginStart: -5}});',
+    "import stylex from 'stylex'; stylex.create({default: {textAlign: 'start'}});",
     // test for presets
-    `stylex.create({
+    `import stylex from "stylex";
+     stylex.create({
        default: {
          textAlign: 'start',
        }
      });`,
     // test for Math
-    `stylex.create({
+    `import stylex from "stylex";
+     stylex.create({
        default: {
          marginStart: Math.abs(-1),
          marginEnd: \`\${Math.floor(5 / 2)}px\`,
@@ -171,7 +182,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          paddingEnd: Math.round(5 / 2),
        },
      })`,
-    `
+    `import stylex from "stylex";
      const x = 5;
      stylex.create({
        default: {
@@ -182,7 +193,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
        },
      })`,
     // test for Search
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'WebkitAppearance': 'textfield',
@@ -201,122 +212,125 @@ eslintTester.run('stylex-valid-styles', rule.default, {
        },
      })`,
     // test for color
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'color': 'red',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'color': '#fff',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'color': '#fafbfc',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'color': '#fafbfcfc',
        },
      })`,
     // test for relative width
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30rem',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30em',
        },
       })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30ch',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30ex',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30vh',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30vw',
        },
      })`,
     // test for absolute width
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30px',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30cm',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30mm',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30in',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30pc',
        },
      })`,
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '30pt',
        },
      })`,
     // test for percentage
-    `
+    `import stylex from "stylex";
      stylex.create({
        default: {
          'width': '50%',
        },
      })`,
-    `stylex.create({
+    `import stylex from "stylex";
+     stylex.create({
        default: {
          fontWeight: 'var(--weight)',
        },
      })`,
-    `stylex.create({
+    `import stylex from "stylex";
+     stylex.create({
       default: {
         fontWeight: 'var(--🔴)',
       },
     })`,
     `
+    import stylex from "stylex";
     const red = 'var(--🔴)';
     stylex.create({
       default: {
@@ -326,49 +340,52 @@ eslintTester.run('stylex-valid-styles', rule.default, {
   ],
   invalid: [
     {
-      code: "stylex.create({default: {textAlin: 'left'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
-              output: "stylex.create({default: {textAlign: 'left'}});",
+              output:
+                "import stylex from 'stylex'; stylex.create({default: {textAlign: 'left'}});",
             },
           ],
         },
       ],
     },
     {
-      code: "stylex.create({default: {textAlin: 'left'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
-              output: "stylex.create({default: {textAlign: 'left'}});",
+              output:
+                "import stylex from 'stylex'; stylex.create({default: {textAlign: 'left'}});",
             },
           ],
         },
       ],
     },
     {
-      code: 'stylex.create({default: {["textAlin"]: \'left\'}});',
+      code: 'import stylex from "stylex"; stylex.create({default: {["textAlin"]: \'left\'}});',
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
-              output: 'stylex.create({default: {["textAlign"]: \'left\'}});',
+              output:
+                'import stylex from "stylex"; stylex.create({default: {["textAlign"]: \'left\'}});',
             },
           ],
         },
       ],
     },
     {
-      code: "stylex.create({default: {transition: 'all 0.3s ease'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {transition: 'all 0.3s ease'}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -376,7 +393,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
-      code: "stylex.create({default: {textAlign: 'lfet'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
           message: `textAlign value must be one of:
@@ -395,7 +412,7 @@ revert`,
       ],
     },
     {
-      code: 'stylex.create({default: {fontWeight: 99}});',
+      code: 'import stylex from "stylex"; stylex.create({default: {fontWeight: 99}});',
       errors: [
         {
           message: `fontWeight value must be one of:
@@ -421,7 +438,7 @@ revert`,
       ],
     },
     {
-      code: 'stylex.create({default: {content: 100 + 100}});',
+      code: 'import stylex from "stylex"; stylex.create({default: {content: 100 + 100}});',
       errors: [
         {
           message: `content value must be one of:
@@ -434,7 +451,7 @@ revert`,
       ],
     },
     {
-      code: "stylex.create({default: {transitionProperty: 'all'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {transitionProperty: 'all'}});",
       errors: [
         {
           message: `transitionProperty value must be one of:
@@ -450,7 +467,7 @@ revert`,
       ],
     },
     {
-      code: "stylex.create({default: {transitionProperty: 'height'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {transitionProperty: 'height'}});",
       errors: [
         {
           message: `transitionProperty value must be one of:
@@ -466,7 +483,7 @@ revert`,
       ],
     },
     {
-      code: "stylex.create({default: {transitionProperty: 'transfrom'}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {transitionProperty: 'transfrom'}});",
       errors: [
         {
           message: `transitionProperty value must be one of:
@@ -482,7 +499,7 @@ revert`,
       ],
     },
     {
-      code: "stylex.create({default: {':hover': {textAlin: 'left'}}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {':hover': {textAlin: 'left'}}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -490,7 +507,7 @@ revert`,
       ],
     },
     {
-      code: "stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
+      code: "import stylex from 'stylex'; stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
       errors: [
         {
           message: `textAlign value must be one of:
@@ -509,7 +526,7 @@ revert`,
             {
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
               output:
-                "stylex.create({default: {':focus': {textAlign: 'left'}}});",
+                "import stylex from 'stylex'; stylex.create({default: {':focus': {textAlign: 'left'}}});",
             },
           ],
         },
@@ -517,14 +534,15 @@ revert`,
     },
     {
       code: `
-         stylex.create({
-           default: {
-             ':focs': {
-               textAlign: 'left'
-             }
-           }
-         });
-       `,
+        import stylex from 'stylex';
+        stylex.create({
+          default: {
+            ':focs': {
+              textAlign: 'left'
+            }
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -534,16 +552,17 @@ revert`,
     },
     {
       code: `
-         stylex.create({
-           default: {
-             ':focus': {
-               ':hover': {
-                 textAlign: 'left'
-               }
-             }
-           }
-         });
-       `,
+        import stylex from 'stylex';
+        stylex.create({
+          default: {
+            ':focus': {
+              ':hover': {
+                textAlign: 'left'
+              }
+            }
+          }
+        });
+      `,
       errors: [
         {
           message: 'You cannot nest styles more than one level deep',
@@ -551,7 +570,7 @@ revert`,
       ],
     },
     {
-      code: 'stylex.create({default: {transitionProperty: "opasity"}});',
+      code: 'import stylex from "stylex"; stylex.create({default: {transitionProperty: "opasity"}});',
       errors: [
         {
           message: `transitionProperty value must be one of:
@@ -567,15 +586,18 @@ revert`,
             {
               desc: 'Did you mean "opacity"? Replace "opasity" with "opacity"',
               output:
-                'stylex.create({default: {transitionProperty: "opacity"}});',
+                'import stylex from "stylex"; stylex.create({default: {transitionProperty: "opacity"}});',
             },
           ],
         },
       ],
     },
     {
-      code: `const tp = "opasity";
-const styles = stylex.create({default: {transitionProperty: tp}});`,
+      code: `
+        import stylex from 'stylex';
+        const tp = "opasity";
+        const styles = stylex.create({default: {transitionProperty: tp}});
+      `,
       errors: [
         {
           message: `transitionProperty value must be one of:
@@ -590,8 +612,11 @@ revert`,
           suggestions: [
             {
               desc: 'Did you mean "opacity"? Replace "opasity" with "opacity"',
-              output: `const tp = "opacity";
-const styles = stylex.create({default: {transitionProperty: tp}});`,
+              output: `
+        import stylex from 'stylex';
+        const tp = "opacity";
+        const styles = stylex.create({default: {transitionProperty: tp}});
+      `,
             },
           ],
         },
@@ -599,6 +624,7 @@ const styles = stylex.create({default: {transitionProperty: tp}});`,
     },
     {
       code: `
+        import stylex from 'stylex';
         const bounce = stylex.keyframes({
           '0%': {
             transform: 'translateY(0)',
@@ -628,6 +654,306 @@ inherit
 unset
 revert`,
           suggestions: [],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "1px solid blue",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'blue',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "solid blue 1px",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'blue',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "blue 1px solid",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'blue',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "1px blue solid",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'blue',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "1px solid",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "1px var(--foo)",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderColor: 'var(--foo)',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "1px",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: "none",
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderStyle: 'none',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: 0,
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' set to a number with 'borderWidth' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: 0,
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            border: 4,
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' set to a number with 'borderWidth' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: 4,
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },

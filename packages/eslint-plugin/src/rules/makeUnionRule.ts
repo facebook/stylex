@@ -15,17 +15,33 @@ import * as ESTree from 'estree';
 import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
 
 export default function makeUnionRule(...rules: RuleCheck[]): RuleCheck {
-  return (node: ESTree.Expression, variables?: Variables): RuleResponse => {
+  return (
+    node: ESTree.Expression,
+    variables?: Variables,
+    prop?: ESTree.Property
+  ): RuleResponse => {
+    let isBorder = false;
+    if (
+      prop != null &&
+      prop.key.type === 'Identifier' &&
+      prop.key.name === 'border'
+    ) {
+      console.log('UNION OF BORDER', prop);
+      isBorder = true;
+    }
     const failedRules = [];
     for (const rule of rules) {
-      const check = rule(node, variables);
+      const check = rule(node, variables, prop);
       if (check === undefined) {
         // passes, that means we pass.
         return undefined;
       }
       failedRules.push(check);
     }
-    const fixable = failedRules.filter((a) => a.suggest !== undefined);
+    const fixable = failedRules.filter((a) => a.suggest != null);
+    if (isBorder) {
+      console.log('UNION OF BORDER fixable Rules:', fixable, node);
+    }
     fixable.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
     return {
       message: failedRules.map((a) => a.message).join('\n'),

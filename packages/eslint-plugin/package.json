@@ -6,8 +6,7 @@
   "repository": "https://github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build",
-    "postbuild": "prettier --write lib/**/*.js",
+    "build": "babel src/ --out-dir lib/ --extensions .ts --out-file-extension .js",
     "test": "jest"
   },
   "devDependencies": {
