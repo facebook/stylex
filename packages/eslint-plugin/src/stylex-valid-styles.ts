@@ -770,6 +770,7 @@ const fontWeight = makeUnionRule(
   makeLiteralRule(900),
   isCSSVariable
 );
+const gap = isStringOrNumber;
 const grid = makeUnionRule(gridTemplate, isString);
 const gridArea = makeUnionRule(gridLine, isString);
 const gridAutoColumns = trackSize;
@@ -1058,6 +1059,7 @@ const resize = makeUnionRule(
   makeLiteralRule('horizontal'),
   makeLiteralRule('vertical')
 );
+const rowGap = isStringOrNumber;
 const rubyAlign = makeUnionRule(
   makeLiteralRule('start'),
   makeLiteralRule('center'),
@@ -1709,6 +1711,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   fontVariantNumeric: fontVariantNumeric,
   fontVariantPosition: fontVariantPosition,
   fontWeight: fontWeight,
+  gap: gap,
   glyphOrientationHorizontal: glyphOrientationHorizontal,
   glyphOrientationVertical: glyphOrientationVertical,
 
@@ -1860,6 +1863,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   restAfter: restAfter,
   restBefore: restBefore,
   right: isStringOrNumber,
+  rowGap: rowGap,
   rubyAlign: rubyAlign,
   rubyMerge: rubyMerge,
   rubyPosition: rubyPosition,

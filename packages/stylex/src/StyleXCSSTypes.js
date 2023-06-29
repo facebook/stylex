@@ -338,6 +338,7 @@ type fontWeight =
   | 700
   | 800
   | 900;
+type gap = number | string;
 type grid = gridTemplate | string;
 type gridArea = gridLine | string;
 type gridAutoColumns = trackSize;
@@ -521,6 +522,7 @@ type pointerEvents =
 type position = 'static' | 'relative' | 'absolute' | 'sticky' | 'fixed';
 type quotes = string | 'none';
 type resize = 'none' | 'both' | 'horizontal' | 'vertical';
+type rowGap = number | string;
 type rubyAlign = 'start' | 'center' | 'space-between' | 'space-around';
 type rubyMerge = 'separate' | 'collapse' | 'auto';
 type rubyPosition = 'over' | 'under' | 'inter-character';
@@ -1039,6 +1041,7 @@ export type CSSProperties = $ReadOnly<{
   fontVariantNumeric?: fontVariantNumeric,
   fontVariantPosition?: fontVariantPosition,
   fontWeight?: fontWeight,
+  gap?: gap,
   glyphOrientationHorizontal?: glyphOrientationHorizontal,
   glyphOrientationVertical?: glyphOrientationVertical,
   grid?: grid,
@@ -1173,6 +1176,7 @@ export type CSSProperties = $ReadOnly<{
   restAfter?: restAfter,
   restBefore?: restBefore,
   right?: number | string,
+  rowGap?: rowGap,
   rubyAlign?: rubyAlign,
   rubyMerge?: rubyMerge,
   rubyPosition?: rubyPosition,
