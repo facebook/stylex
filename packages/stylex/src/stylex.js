@@ -37,7 +37,7 @@ export function spread(
   styles: $ReadOnlyArray<
     StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>
   >,
-  _options: { ... }
+  _options?: { ... }
 ): { className: string, style: { [string]: string | number } } {
   const [className, style] = styleq(styles);
   return { className, style };
@@ -101,7 +101,7 @@ type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
   spread: (
     styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>,
-    options: { ... }
+    options?: { ... }
   ) => {
     className: string,
     style: { [string]: string | number },
