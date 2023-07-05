@@ -11,6 +11,8 @@ import type { PluginObj } from '@babel/core';
 import StateManager from './utils/state-manager';
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
+import transformStyleXCreateVars from './visitors/stylex-create-vars';
+import transformStyleXOverrideVars from './visitors/stylex-override-vars';
 import transformStyleXKeyframes from './visitors/stylex-keyframes';
 import transformStylexCall, {
   skipStylexMergeChildren,
@@ -69,6 +71,8 @@ export default function styleXTransform<U extends {}>(): PluginObj {
                 //   may use the generated animation name.
                 transformStyleXKeyframes(path.parentPath, state);
               }
+              transformStyleXCreateVars(path, state);
+              transformStyleXOverrideVars(path, state);
               transformStyleXCreate(path, state);
             },
           });

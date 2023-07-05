@@ -60,14 +60,20 @@ export default function transformStyleXCreate(
       throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
     }
 
+    // TODO: This should be removed soon since we should disallow spreads without
+    // `stylex.include` in the future.
     preProcessStyleArg(firstArg, state);
 
+    state.inStyleXCreate = true;
+
     const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+
     function keyframes<
       Obj extends {
         readonly [key: string]: { readonly [k: string]: string | number };
       }
     >(animation: Obj): string {
+      ``;
       const [animationName, injectedStyle] = stylexKeyframes(
         animation,
         state.options
@@ -96,7 +102,7 @@ export default function transformStyleXCreate(
       memberExpressions[name].keyframes = { fn: keyframes };
     });
 
-    const { confident, value } = evaluate(firstArg, {
+    const { confident, value } = evaluate(firstArg, state, {
       identifiers,
       memberExpressions,
     });
@@ -167,6 +173,7 @@ export default function transformStyleXCreate(
       state.addStyle([key, rest, priority]);
     }
   }
+  state.inStyleXCreate = false;
 }
 
 // Validates the first argument to `stylex.create`.

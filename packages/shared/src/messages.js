@@ -51,3 +51,7 @@ export const ONLY_TOP_LEVEL_INLCUDES =
   'stylex.include() is only at the top level of a style definition object.';
 export const DUPLICATE_CONDITIONAL =
   'The same pseudo selector or at-rule cannot be used more than once.';
+export const NO_PROJECT_ROOT_DIRECTORY =
+  'The project root directory `rootDir` is not configured.';
+export const NON_EXPORT_NAMED_DECLARATION =
+  'The return value of stylex.createVars() must be bound to a named export.';

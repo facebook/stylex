@@ -38,14 +38,28 @@ type RuntimeOptions = {
   ...
 };
 
+const injectedVariableObjs = new Set<string>();
+
 const defaultInsert = (
   key: string,
   ltrRule: string,
   priority: number,
   rtlRule?: ?string
 ): void => {
+  if (priority === 0) {
+    if (injectedVariableObjs.has(key)) {
+      throw new Error('A Theme with this name already exists: ' + key);
+    } else {
+      injectedVariableObjs.add(key);
+    }
+  }
   styleSheet.insert(ltrRule, priority, rtlRule);
 };
+
+let themeNameCount = 0;
+function themeNameUUID(): string {
+  return `theme-${themeNameCount++}`;
+}
 
 export default function inject({
   insert = defaultInsert,
@@ -83,6 +97,31 @@ export default function inject({
   };
 
   stylex.create = stylexCreate;
+
+  stylex.unstable_createVars = (
+    variables: { +[string]: string },
+    { themeName }: { themeName: string } = {
+      themeName: themeNameUUID(),
+    }
+  ) => {
+    const [cssVarsObject, { css }] = shared.createVars(variables, {
+      themeName,
+    });
+    insert(cssVarsObject.__themeName__, css, 0);
+    // $FlowFixMe
+    return cssVarsObject;
+  };
+
+  stylex.unstable_overrideVars = (
+    variablesTheme: { __themeName__: string, +[string]: string },
+    variablesOverride: { +[string]: string }
+  ) => {
+    const [js, css] = shared.overrideVars(variablesTheme, variablesOverride);
+    const styleKey = js[variablesTheme.__themeName__];
+    insert(styleKey, css[styleKey].ltr, css[styleKey].priority);
+    // $FlowFixMe
+    return js;
+  };
 
   stylex.keyframes = (frames) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(

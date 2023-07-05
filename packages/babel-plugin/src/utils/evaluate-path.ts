@@ -19,8 +19,13 @@
  * - It can handle object spreads when the spread value itself is statically evaluated.
  */
 
+import { parseSync } from '@babel/core';
+import traverse from '@babel/traverse';
 import type { NodePath, Binding } from '@babel/traverse';
 import type * as t from '@babel/types';
+import fs from 'fs';
+import StateManager from './state-manager';
+import { utils } from '@stylexjs/shared';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -57,6 +62,7 @@ type State = {
   deoptPath: NodePath | null;
   seen: Map<t.Node, Result>;
   functions: FunctionConfig;
+  traversalState: StateManager;
 };
 
 type Result = {
@@ -70,6 +76,94 @@ function deopt(path: NodePath, state: State) {
   if (!state.confident) return;
   state.deoptPath = path;
   state.confident = false;
+}
+
+function evaluateImportedFile(
+  filePath: string,
+  namedExport: string,
+  state: State
+): any {
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  // It's safe to use `.babelrc` here because we're only
+  // interested in the JS runtime, and not the CSS.
+  // TODO: in environments where `.babelrc` is not available,
+  // we need to find a way to decide whether to use Flow or TS syntax extensions.
+  const ast = parseSync(fileContents, { babelrc: true });
+  if (!ast) {
+    state.confident = false;
+    return;
+  }
+  let result: any;
+  traverse(ast, {
+    ExportNamedDeclaration(path) {
+      const declaration = path.get('declaration');
+
+      if (declaration.isVariableDeclaration()) {
+        const decls = declaration.get('declarations');
+
+        const finder = (decl: NodePath<t.Node>) => {
+          if (decl.isVariableDeclarator()) {
+            const id = decl.get('id');
+            const init = decl.get('init');
+            if (
+              id.isIdentifier() &&
+              id.node.name === namedExport &&
+              init != null &&
+              init.isExpression()
+            ) {
+              result = evaluateCached(init, state);
+            }
+          }
+        };
+        if (Array.isArray(decls)) {
+          decls.forEach(finder);
+        } else {
+          finder(decls);
+        }
+      }
+    },
+  });
+
+  if (state.confident) {
+    return result;
+  } else {
+    state.confident = false;
+    return;
+  }
+}
+
+function evaluateThemeRef(
+  fileName: string,
+  exportName: string,
+  state: State
+): { [key: string]: string } {
+  const resolveKey = (key: string) => {
+    let strToHash =
+      key === '__themeName__'
+        ? utils.genFileBasedIdentifier({ fileName, exportName })
+        : utils.genFileBasedIdentifier({ fileName, exportName, key });
+
+    const varName =
+      state.traversalState.options.classNamePrefix + utils.hash(strToHash);
+    return `var(--${varName})`;
+  };
+
+  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
+  const proxy = new Proxy(
+    {},
+    {
+      get(_, key: string) {
+        return resolveKey(key as string);
+      },
+      set(_, key: string, value: unknown) {
+        throw new Error(
+          `Cannot set value ${value} to key ${key} in theme ${fileName}`
+        );
+      },
+    }
+  );
+
+  return proxy;
 }
 
 /**
@@ -173,21 +267,64 @@ function _evaluate(path: NodePath, state: State): any {
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
-    const property = path.get('property');
-    const object = path.get('object');
-
-    if (object.isLiteral() && property.isIdentifier()) {
-      // @ts-expect-error todo(flow->ts): instead of typeof - would it be better to check type of ast node?
-      const value = object.node.value;
-      const type = typeof value;
-      if (type === 'number' || type === 'string') {
-        return value[property.node.name];
-      }
+    const object = evaluateCached(path.get('object'), state);
+    if (!state.confident) {
+      return;
     }
+
+    const propPath = path.get('property');
+
+    let property;
+    if (path.node.computed) {
+      property = evaluateCached(propPath, state);
+      if (!state.confident) {
+        return;
+      }
+    } else if (propPath.isIdentifier()) {
+      property = propPath.node.name;
+    } else if (propPath.isStringLiteral()) {
+      property = propPath.node.value;
+    } else {
+      return deopt(propPath, state);
+    }
+
+    return object[property];
   }
 
   if (path.isReferencedIdentifier()) {
     const binding: Binding = path.scope.getBinding(path.node.name) as any;
+
+    if (
+      binding &&
+      binding.path.isImportSpecifier() &&
+      !binding.path.isImportDefaultSpecifier()
+    ) {
+      // const localName = binding.path.node.local.name;
+      const imported: t.Identifier | t.StringLiteral =
+        binding.path.node.imported;
+      const importedName =
+        imported.type === 'Identifier' ? imported.name : imported.value;
+      const importPath = binding.path.parentPath;
+      if (importPath.isImportDeclaration()) {
+        const absPath = state.traversalState.importPathResolver(
+          importPath.node.source.value
+        );
+        if (!absPath) {
+          return deopt(binding.path, state);
+        }
+        const [type, value] = absPath;
+
+        const returnValue =
+          type === 'themeNameRef'
+            ? evaluateThemeRef(value, importedName, state)
+            : evaluateImportedFile(value, importedName, state);
+        if (state.confident) {
+          return returnValue;
+        } else {
+          deopt(binding.path, state);
+        }
+      }
+    }
 
     if (binding && binding.constantViolations.length > 0) {
       return deopt(binding.path, state);
@@ -251,7 +388,7 @@ function _evaluate(path: NodePath, state: State): any {
     const arr = [];
     const elems: Array<NodePath> = path.get('elements') as any;
     for (const elem of elems) {
-      const elemValue = evaluate(elem, state.functions);
+      const elemValue = evaluate(elem, state.traversalState, state.functions);
 
       if (elemValue.confident) {
         arr.push(elemValue.value);
@@ -280,7 +417,7 @@ function _evaluate(path: NodePath, state: State): any {
       const keyPath: any = prop.get('key');
       let key = keyPath;
       if ((prop.node as any).computed) {
-        key = evaluate(key);
+        key = evaluate(key, state.traversalState, state.functions);
         if (!key.confident) {
           return deopt(key.deopt, state);
         }
@@ -292,7 +429,7 @@ function _evaluate(path: NodePath, state: State): any {
       }
       // todo(flow->ts): remove typecast
       const valuePath = prop.get('value') as NodePath;
-      let value = evaluate(valuePath, state.functions);
+      let value = evaluate(valuePath, state.traversalState, state.functions);
       if (!value.confident) {
         return deopt((value as any).deopt, state);
       }
@@ -517,6 +654,7 @@ function evaluateQuasis(
 
 export function evaluate(
   path: NodePath,
+  traversalState: StateManager,
   functions: FunctionConfig = { identifiers: {}, memberExpressions: {} }
 ): {
   confident: boolean;
@@ -528,6 +666,7 @@ export function evaluate(
     deoptPath: null,
     seen: new Map(),
     functions,
+    traversalState,
   };
   let value = evaluateCached(path, state);
   if (!state.confident) value = undefined;

@@ -12,6 +12,8 @@
 import type {
   Keyframes,
   Stylex$Create,
+  Stylex$CreateVars,
+  Stylex$OverrideVars,
   StyleXArray,
   MapNamespace,
 } from './StyleXTypes';
@@ -47,6 +49,18 @@ function stylexCreate(_styles: { ... }) {
   );
 }
 
+function stylexCreateVars(_styles: { ... }) {
+  throw new Error(
+    'stylex.createVars should never be called. It should be compiled away.'
+  );
+}
+
+function stylexOverrideVars(_styles: { ... }) {
+  throw new Error(
+    'stylex.overrideVars should never be called. It should be compiled away.'
+  );
+}
+
 function stylexIncludes<TStyles: { +[string]: string | number }>(
   _styles: MapNamespace<TStyles>
 ): TStyles {
@@ -60,6 +74,10 @@ type Stylex$Include = <TStyles: { +[string]: string | number }>(
 ) => TStyles;
 
 export const create: Stylex$Create = stylexCreate;
+
+export const unstable_createVars: Stylex$CreateVars = stylexCreateVars;
+
+export const unstable_overrideVars: Stylex$OverrideVars = stylexOverrideVars;
 
 export const include: Stylex$Include = stylexIncludes;
 
@@ -89,6 +107,8 @@ function _stylex(
 }
 _stylex.spread = spread;
 _stylex.create = create;
+_stylex.unstable_createVars = unstable_createVars;
+_stylex.unstable_overrideVars = unstable_overrideVars;
 _stylex.include = include;
 _stylex.keyframes = keyframes;
 _stylex.firstThatWorks = firstThatWorks;
@@ -105,6 +125,8 @@ type IStyleX = {
     style: { [string]: string | number },
   },
   create: Stylex$Create,
+  unstable_createVars: Stylex$CreateVars,
+  unstable_overrideVars: Stylex$OverrideVars,
   include: Stylex$Include,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>

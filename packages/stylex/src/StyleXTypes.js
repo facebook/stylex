@@ -121,3 +121,17 @@ export type MapNamespaces = <CSS: { ... }>(CSS) => MapNamespace<CSS>;
 export type Stylex$Create = <S: { ... }>(
   styles: S
 ) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
+
+// This is the type for the variables object
+export opaque type StyleXVarsTheme<+Vars: { +[string]: string }>: Vars = Vars;
+
+export type Stylex$CreateVars = <+Vars: { +[string]: string }>(
+  styles: Vars,
+  config?: { themeName: string }
+) => StyleXVarsTheme<$ReadOnly<$ObjMapConst<Vars, string>>>;
+
+export type Stylex$OverrideVars = <+Vars: { +[string]: string }>(
+  styles: Vars & { __themeName__: string },
+  stylesOverride: Vars,
+  config?: { themeName: string }
+) => StyleXVarsTheme<$ReadOnly<$ObjMapConst<Vars, string>>>;

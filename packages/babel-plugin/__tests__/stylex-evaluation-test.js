@@ -12,12 +12,17 @@ jest.autoMockOff();
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const { evaluate } = require('../src/utils/evaluate-path');
+const { default: StateManager } = require('../src/utils/state-manager');
 
 function evaluateFirstStatement(code, functions) {
   const ast = parse(code);
   let result;
   traverse(ast, {
-    Program(path) {
+    Program(path, state) {
+      const stateManager = new StateManager({
+        ...state,
+        file: { metadata: {} },
+      });
       const statements = path.get('body');
       const statement = statements[0];
       if (!statement) {
@@ -25,9 +30,9 @@ function evaluateFirstStatement(code, functions) {
       }
       if (statement.isVariableDeclaration()) {
         const valuePath = statement.get('declarations')[0].get('init');
-        result = evaluate(valuePath, functions);
+        result = evaluate(valuePath, stateManager, functions);
       } else {
-        result = evaluate(statement, functions);
+        result = evaluate(statement, stateManager, functions);
       }
     },
   });

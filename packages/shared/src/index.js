@@ -21,11 +21,15 @@ export type {
 // These are the implementations of those functions.
 
 import styleXCreateSet from './stylex-create';
+import styleXCreateVars from './stylex-create-vars';
+import styleXOverrideVars from './stylex-override-vars';
 import stylexKeyframes from './stylex-keyframes';
 import stylexInclude, {
   IncludedStyles as _IncludedStyles,
 } from './stylex-include';
 import stylexFirstThatWorks from './stylex-first-that-works';
+import hash from './hash';
+import genFileBasedIdentifier from './utils/file-based-identifier';
 import * as m from './messages';
 
 import type {
@@ -36,8 +40,17 @@ import type {
 } from './common-types';
 
 export const create: typeof styleXCreateSet = styleXCreateSet;
+export const createVars: typeof styleXCreateVars = styleXCreateVars;
+export const overrideVars: typeof styleXOverrideVars = styleXOverrideVars;
 export const keyframes: typeof stylexKeyframes = stylexKeyframes;
 export const include: typeof stylexInclude = stylexInclude;
+export const utils: {
+  hash: typeof hash,
+  genFileBasedIdentifier: typeof genFileBasedIdentifier,
+} = {
+  hash,
+  genFileBasedIdentifier,
+};
 export const messages: typeof m = m;
 export const IncludedStyles: typeof _IncludedStyles = _IncludedStyles;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
