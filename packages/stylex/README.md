@@ -1,5 +1,7 @@
 # @stylexjs/stylex
 
+StyleX is a JavaScript library for defining styles for optimized user interfaces.
+
 ## Installation
 
 To start playing with StyleX without having to set up any build settings you can install just two packages:

@@ -1,7 +1,7 @@
 {
   "name": "@stylexjs/stylex",
   "version": "0.2.0-beta.12",
-  "description": "A styling library for React.",
+  "description": "A library for defining styles for optimized user interfaces.",
   "main": "lib/stylex.js",
   "react-native": "lib/native/stylex.js",
   "types": "lib/stylex.d.ts",

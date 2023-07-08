@@ -1,6 +1,6 @@
 # stylex &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookexternal/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/stylex.svg?style=flat)](https://www.npmjs.com/package/@stylexjs/stylex) [![Build Status](https://github.com/facebookexternal/stylex/workflows/tests/badge.svg)](https://github.com/facebookexternal/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebookexternal/styles/blob/master/.github/CONTRIBUTING.md)
 
-stylex is a JavaScript library for writing conflict-free styles for user interfaces.
+StyleX is a JavaScript library for defining styles for optimized user interfaces.
 
 
 ## Documentation
