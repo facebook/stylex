@@ -36,9 +36,16 @@ type DedupeStyles = $ReadOnly<{
 }>;
 
 export function spread(
-  styles: StyleXArray<?DedupeStyles | boolean | { [string]: string | number }>,
+  styles: StyleXArray<
+    | ?DedupeStyles
+    | boolean
+    | $ReadOnly<{ $$css?: void, [string]: string | number }>
+  >,
   _options?: { ... }
-): { className: string, style: { [string]: string | number } } {
+): $ReadOnly<{
+  className: string,
+  style: $ReadOnly<{ $$css?: void, [string]: string | number }>,
+}> {
   const [className, style] = styleq(styles);
   return { className, style };
 }
@@ -118,12 +125,16 @@ _stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
   spread: (
-    styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>,
-    options?: { ... }
-  ) => {
+    styles: StyleXArray<
+      | ?DedupeStyles
+      | boolean
+      | $ReadOnly<{ $$css?: void, [string]: string | number }>
+    >,
+    _options?: { ... }
+  ) => $ReadOnly<{
     className: string,
-    style: { [string]: string | number },
-  },
+    style: $ReadOnly<{ $$css?: void, [string]: string | number }>,
+  }>,
   create: Stylex$Create,
   unstable_createVars: Stylex$CreateVars,
   unstable_overrideVars: Stylex$OverrideVars,
