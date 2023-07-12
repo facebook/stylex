@@ -31,6 +31,7 @@ type Cache = WeakMap<
 >;
 
 type DedupeStyles = $ReadOnly<{
+  $$css: true,
   [key: string]: string | $ReadOnly<{ [key: string]: string, ... }>,
   ...
 }>;
