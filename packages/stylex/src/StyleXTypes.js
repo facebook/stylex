@@ -95,8 +95,8 @@ export type XStyleWithout<+T: { [string]: void, ... }> = XStyle<
 export type Styles = $ReadOnly<{ [namespace: string]: Style, ... }>;
 
 export type Style = $ReadOnly<{
-  [pseudo: string]: CSSProperties,
   ...CSSProperties,
+  [pseudo: string]: CSSProperties,
   ...
 }>;
 

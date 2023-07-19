@@ -17,7 +17,7 @@
 // $FlowExpectedError(toplevel-library-import)
 import * as t from '@babel/types';
 // $FlowExpectedError(toplevel-library-import)
-import _traverse, {
+import {
   type Visitor as _Visitor,
   type NodePath,
   type Scope,
@@ -30,7 +30,7 @@ declare module '@babel/core' {
   declare export type Node = t.Node;
   // export import template = require('babel-template');
   declare export var version: string;
-  declare export var traverse: typeof _traverse;
+  declare export var traverse: any;
   // $FlowExpectedError(value-as-type)
   declare export type Visitor<T> = _Visitor<T>;
 

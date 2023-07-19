@@ -17,7 +17,7 @@ declare module 'webpack' {
     hasErrors(): boolean;
     hasWarnings(): boolean;
     toJson(options?: StatsOptions): any;
-    toString(options?: { ...StatsOptions, colors?: boolean, ... }): string;
+    toString(options?: { ...StatsOptionsObj, colors?: boolean, ... }): string;
   }
 
   declare type Callback = (error: WebpackError, stats: Stats) => void;
@@ -399,63 +399,65 @@ declare module 'webpack' {
 
   declare type FilterTypes = FilterItemTypes | Array<FilterItemTypes>;
 
+  declare type StatsOptionsObj = {
+    all?: boolean,
+    assets?: boolean,
+    assetsSort?: string,
+    builtAt?: boolean,
+    cached?: boolean,
+    cachedAssets?: boolean,
+    children?: boolean,
+    chunkGroups?: boolean,
+    chunkModules?: boolean,
+    chunkOrigins?: boolean,
+    chunks?: boolean,
+    chunksSort?: string,
+    colors?:
+      | boolean
+      | {
+          bold?: string,
+          cyan?: string,
+          green?: string,
+          magenta?: string,
+          red?: string,
+          yellow?: string,
+          ...
+        },
+    context?: string,
+    depth?: boolean,
+    entrypoints?: boolean,
+    env?: boolean,
+    errorDetails?: boolean,
+    errors?: boolean,
+    exclude?: FilterTypes | boolean,
+    excludeAssets?: FilterTypes,
+    excludeModules?: FilterTypes | boolean,
+    hash?: boolean,
+    maxModules?: number,
+    moduleAssets?: boolean,
+    moduleTrace?: boolean,
+    modules?: boolean,
+    modulesSort?: string,
+    nestedModules?: boolean,
+    optimizationBailout?: boolean,
+    outputPath?: boolean,
+    performance?: boolean,
+    providedExports?: boolean,
+    publicPath?: boolean,
+    reasons?: boolean,
+    source?: boolean,
+    timings?: boolean,
+    usedExports?: boolean,
+    version?: boolean,
+    warnings?: boolean,
+    warningsFilter?: FilterTypes,
+    ...
+  };
+
   declare type StatsOptions =
     | boolean
     | ('none' | 'errors-only' | 'minimal' | 'normal' | 'detailed' | 'verbose')
-    | {
-        all?: boolean,
-        assets?: boolean,
-        assetsSort?: string,
-        builtAt?: boolean,
-        cached?: boolean,
-        cachedAssets?: boolean,
-        children?: boolean,
-        chunkGroups?: boolean,
-        chunkModules?: boolean,
-        chunkOrigins?: boolean,
-        chunks?: boolean,
-        chunksSort?: string,
-        colors?:
-          | boolean
-          | {
-              bold?: string,
-              cyan?: string,
-              green?: string,
-              magenta?: string,
-              red?: string,
-              yellow?: string,
-              ...
-            },
-        context?: string,
-        depth?: boolean,
-        entrypoints?: boolean,
-        env?: boolean,
-        errorDetails?: boolean,
-        errors?: boolean,
-        exclude?: FilterTypes | boolean,
-        excludeAssets?: FilterTypes,
-        excludeModules?: FilterTypes | boolean,
-        hash?: boolean,
-        maxModules?: number,
-        moduleAssets?: boolean,
-        moduleTrace?: boolean,
-        modules?: boolean,
-        modulesSort?: string,
-        nestedModules?: boolean,
-        optimizationBailout?: boolean,
-        outputPath?: boolean,
-        performance?: boolean,
-        providedExports?: boolean,
-        publicPath?: boolean,
-        reasons?: boolean,
-        source?: boolean,
-        timings?: boolean,
-        usedExports?: boolean,
-        version?: boolean,
-        warnings?: boolean,
-        warningsFilter?: FilterTypes,
-        ...
-      };
+    | StatsOptionsObj;
 
   declare type WatchOptions = {
     aggregateTimeout?: number,
