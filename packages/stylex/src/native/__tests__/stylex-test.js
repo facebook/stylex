@@ -458,10 +458,13 @@ describe('unsupported style properties', () => {
   beforeEach(() => {
     jest.spyOn(console, 'error');
     console.error.mockImplementation(() => {});
+    jest.spyOn(console, 'warn');
+    console.warn.mockImplementation(() => {});
   });
 
   afterEach(() => {
     console.error.mockRestore();
+    console.warn.mockRestore();
   });
 
   test('"filter"', () => {
@@ -472,6 +475,46 @@ describe('unsupported style properties', () => {
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
     expect(console.error).toHaveBeenCalled();
+  });
+
+  test('"marginHorizontal"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        marginHorizontal: 10,
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.warn).toHaveBeenCalled();
+  });
+
+  test('"marginVertical"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        marginVertical: 10,
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.warn).toHaveBeenCalled();
+  });
+
+  test('"paddingHorizontal"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        paddingHorizontal: 10,
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.warn).toHaveBeenCalled();
+  });
+
+  test('"paddingVertical"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        paddingVertical: 10,
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('"transitionProperty" passthrough', () => {

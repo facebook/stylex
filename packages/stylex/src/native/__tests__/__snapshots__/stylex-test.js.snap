@@ -367,6 +367,38 @@ exports[`styles vertical-align: top 1`] = `
 
 exports[`unsupported style properties "filter" 1`] = `{}`;
 
+exports[`unsupported style properties "marginHorizontal" 1`] = `
+{
+  "style": {
+    "marginInline": 10,
+  },
+}
+`;
+
+exports[`unsupported style properties "marginVertical" 1`] = `
+{
+  "style": {
+    "marginBlock": 10,
+  },
+}
+`;
+
+exports[`unsupported style properties "paddingHorizontal" 1`] = `
+{
+  "style": {
+    "paddingInline": 10,
+  },
+}
+`;
+
+exports[`unsupported style properties "paddingVertical" 1`] = `
+{
+  "style": {
+    "paddingBlock": 10,
+  },
+}
+`;
+
 exports[`unsupported style properties "transitionProperty" passthrough 1`] = `
 {
   "style": {

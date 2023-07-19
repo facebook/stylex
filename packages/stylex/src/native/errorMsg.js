@@ -10,3 +10,7 @@
 export function errorMsg(msg: string) {
   console.error(`stylex: ${msg}`);
 }
+
+export function warnMsg(msg: string) {
+  console.warn(`stylex: ${msg}`);
+}

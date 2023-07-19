@@ -13,7 +13,7 @@ import {
 } from './CSSCustomPropertyValue';
 import { CSSLengthUnitValue } from './CSSLengthUnitValue';
 import { CSSMediaQuery } from './CSSMediaQuery';
-import { errorMsg } from './errorMsg';
+import { errorMsg, warnMsg } from './errorMsg';
 import { flattenStyle } from './flattenStyle';
 import { parseShadow } from './parseShadow';
 
@@ -154,7 +154,7 @@ const stylePropertyAllowlistSet = new Set<string>([
   'userSelect',
   'verticalAlign', // Android Only
   'width',
-  'writingDirection', // iOS Only
+  // 'writingDirection', // iOS Only
   'zIndex',
 ]);
 
@@ -281,6 +281,18 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       processedStyle.textShadowColor = color;
       processedStyle.textShadowOffset = { height: offsetY, width: offsetX };
       processedStyle.textShadowRadius = blurRadius;
+    } else if (propName === 'marginHorizontal') {
+      warnMsg('"marginHorizontal" is deprecated. Use "marginInline".');
+      processedStyle.marginInline = styleValue;
+    } else if (propName === 'marginVertical') {
+      warnMsg('"marginVertical" is deprecated. Use "marginBlock".');
+      processedStyle.marginBlock = styleValue;
+    } else if (propName === 'paddingHorizontal') {
+      warnMsg('"paddingHorizontal" is deprecated. Use "paddingInline".');
+      processedStyle.paddingInline = styleValue;
+    } else if (propName === 'paddingVertical') {
+      warnMsg('"paddingVertical" is deprecated. Use "paddingBlock".');
+      processedStyle.paddingBlock = styleValue;
     } else {
       processedStyle[propName] = styleValue;
     }
