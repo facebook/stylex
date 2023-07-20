@@ -367,10 +367,26 @@ exports[`styles vertical-align: top 1`] = `
 
 exports[`unsupported style properties "filter" 1`] = `{}`;
 
+exports[`unsupported style properties "marginEnd" 1`] = `
+{
+  "style": {
+    "marginEnd": 10,
+  },
+}
+`;
+
 exports[`unsupported style properties "marginHorizontal" 1`] = `
 {
   "style": {
     "marginInline": 10,
+  },
+}
+`;
+
+exports[`unsupported style properties "marginStart" 1`] = `
+{
+  "style": {
+    "marginStart": 10,
   },
 }
 `;

@@ -477,6 +477,26 @@ describe('unsupported style properties', () => {
     expect(console.error).toHaveBeenCalled();
   });
 
+  test('"marginStart"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        marginStart: 10,
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  test('"marginEnd"', () => {
+    const { underTest } = stylex.create({
+      underTest: {
+        marginEnd: 10,
+      },
+    });
+    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
   test('"marginHorizontal"', () => {
     const { underTest } = stylex.create({
       underTest: {
