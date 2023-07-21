@@ -59,6 +59,12 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           export const styles = stylex.unstable_createVars(genStyles());
           `);
+      }).toThrow(messages.NON_STATIC_VALUE);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.unstable_createVars(1);
+          `);
       }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
       expect(() => {
         transform(`

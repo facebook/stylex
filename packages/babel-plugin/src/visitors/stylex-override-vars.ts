@@ -66,6 +66,9 @@ export default function transformStyleXOverrideVars(
     if (!confident2) {
       throw new Error(messages.NON_STATIC_VALUE);
     }
+    if (typeof overrides !== 'object' || overrides == null) {
+      throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+    }
 
     // Check that first arg has __themeName__ set
     if (
@@ -148,9 +151,5 @@ function validateStyleXOverrideVars(
 
   if (callExpressionPath.node.arguments.length !== 2) {
     throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
-  }
-
-  if (callExpressionPath.node.arguments[1].type !== 'ObjectExpression') {
-    throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
   }
 }

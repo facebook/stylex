@@ -56,6 +56,32 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
     });
+    test('transforms referenced local variables object', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const defaultButtonTokens = {
+            bgColor: 'blue',
+            bgColorDisabled: 'grey',
+            cornerRadius: 10,
+          };
+          export const buttonTheme = stylex.unstable_createVars(defaultButtonTokens);
+        `)
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        const defaultButtonTokens = {
+          bgColor: 'blue',
+          bgColorDisabled: 'grey',
+          cornerRadius: 10
+        };
+        export const buttonTheme = {
+          bgColor: "var(--xgck17p)",
+          bgColorDisabled: "var(--xpegid5)",
+          cornerRadius: "var(--xrqfjmn)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
 
     test('transforms variables object and add stylex.inject in dev mode', () => {
       expect(

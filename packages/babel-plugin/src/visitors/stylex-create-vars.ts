@@ -64,6 +64,9 @@ export default function transformStyleXCreateVars(
     if (!confident) {
       throw new Error(messages.NON_STATIC_VALUE);
     }
+    if (typeof value !== 'object' || value == null) {
+      throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+    }
 
     const fileName = state.fileNameForHashing;
     if (fileName == null) {
@@ -142,8 +145,5 @@ function validateStyleXCreateVars(
 
   if (callExpressionPath.node.arguments.length !== 1) {
     throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
-  }
-  if (callExpressionPath.node.arguments[0].type !== 'ObjectExpression') {
-    throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
   }
 }

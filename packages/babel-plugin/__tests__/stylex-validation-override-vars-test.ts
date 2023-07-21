@@ -79,7 +79,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const variables = stylex.unstable_overrideVars({__themeName__: 'x568ih9'}, genStyles());
           `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
