@@ -103,9 +103,9 @@ export function borderSplitter(
   }
   if (width != null) {
     parts.splice(parts.indexOf(width), 1);
-  }
-  if (parts.length === 0) {
-    return [String(width) + suffix, null, null];
+    if (parts.length === 0) {
+      return [width + suffix, null, null];
+    }
   }
   const style = parts.find(
     (part) => typeof part === 'string' && borderStyleKeywords.has(part)
@@ -117,11 +117,7 @@ export function borderSplitter(
     width = parts[0];
     parts.splice(0, 1);
   }
-  if (width != null && parts.length > 1) {
-    throw new Error('Invalid border shorthand value');
-  }
   const color = parts[0];
-
   const withSuffix = (part: void | null | string | number) =>
     part != null ? part + suffix : null;
 
