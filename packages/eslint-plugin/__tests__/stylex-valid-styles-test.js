@@ -693,6 +693,37 @@ revert`,
         import stylex from 'stylex';
         const styles = stylex.create({
           default: {
+            border: '1px solid rgba(var(--black), 0.0975)',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'rgba(var(--black), 0.0975)',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
             border: "solid blue 1px",
           }
         });

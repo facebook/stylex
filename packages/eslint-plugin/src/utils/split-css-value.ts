@@ -15,7 +15,7 @@ function splitValue(
   const values: string[] = [];
   let currentSegment = '';
   let withinQuotes = false;
-  let withinFunction = false;
+  let withinFunction = 0;
 
   for (let i = 0; i < borderValue.length; i++) {
     const char = borderValue[i];
@@ -23,12 +23,12 @@ function splitValue(
     if (char === "'" || char === '"') {
       withinQuotes = !withinQuotes;
     } else if (char === '(' && !withinQuotes) {
-      withinFunction = true;
+      withinFunction = withinFunction + 1;
     } else if (char === ')' && !withinQuotes) {
-      withinFunction = false;
+      withinFunction = withinFunction - 1;
     }
 
-    if (char === ' ' && !withinQuotes && !withinFunction) {
+    if (char === ' ' && !withinQuotes && withinFunction === 0) {
       if (currentSegment.length > 0) {
         values.push(currentSegment);
         currentSegment = '';
