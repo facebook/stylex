@@ -73,6 +73,7 @@ describe('rollup-plugin-stylex', () => {
       "import stylex from 'stylex';
 
       // otherStyles.js
+
       var styles$2 = {
         bar: {
           display: "xntgbld",
@@ -82,6 +83,7 @@ describe('rollup-plugin-stylex', () => {
       };
 
       // npmStyles.js
+
       const styles$1 = {
         baz: {
           display: "x1wdx05y",
@@ -92,6 +94,7 @@ describe('rollup-plugin-stylex', () => {
       };
 
       // index.js
+
       var styles = {
         foo: {
           animationName: "x1nrqb13",
@@ -135,6 +138,7 @@ describe('rollup-plugin-stylex', () => {
         "import stylex from 'stylex';
 
         // otherStyles.js
+
         stylex.inject(".xntgbld{display:block}", 4);
         stylex.inject(".x6mlivy{width:100%}", 4);
         var styles$2 = {
@@ -147,6 +151,7 @@ describe('rollup-plugin-stylex', () => {
         };
 
         // npmStyles.js
+
         stylex.inject(".x1wdx05y{display:inline}", 4);
         stylex.inject(".x1je5kxa{height:500px}", 4);
         stylex.inject(".x1u78jha{width:50%}", 4);
@@ -161,6 +166,7 @@ describe('rollup-plugin-stylex', () => {
         };
 
         // index.js
+
         stylex.inject("@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
         stylex.inject(".x1nrqb13{animation-name:x11gtny7-B}", 4);
         stylex.inject(".x1c4r43l{display:flex}", 4);

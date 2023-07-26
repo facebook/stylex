@@ -23,9 +23,9 @@
   "devDependencies": {
     "@babel/preset-env": "^7.16.8",
     "@rollup/plugin-babel": "^6.0.0",
-    "@rollup/plugin-commonjs": "^23.0.1",
+    "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-node-resolve": "^15.0.0",
-    "rollup": "^3.2.3",
+    "rollup": "^3.26.3",
     "@stylexjs/stylex": "0.2.0-beta.16"
   }
 }

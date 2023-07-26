@@ -7,7 +7,7 @@
     "gen-types": "./gen-types.js"
   },
   "dependencies": {
-    "flow-api-translator": "0.12.1",
+    "flow-api-translator": "0.15.0",
     "yargs": "17.7.2"
   }
 }

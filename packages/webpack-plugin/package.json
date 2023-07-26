@@ -25,13 +25,13 @@
     "@babel/plugin-syntax-jsx": "^7.14.5",
     "@babel/plugin-syntax-typescript": "^7.14.5",
     "@stylexjs/babel-plugin": "0.2.0-beta.16",
-    "webpack": "^5.x.x"
+    "webpack": "^5.88.2"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.8",
     "babel-loader": "^8.2.2",
-    "memfs": "3.3.0",
+    "memfs": "4.2.0",
     "@stylexjs/stylex": "0.2.0-beta.16",
-    "webpack-cli": "^4.x.x"
+    "webpack-cli": "^5.1.4"
   }
 }
