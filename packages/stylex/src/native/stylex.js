@@ -446,6 +446,13 @@ export function spread(
       height: viewportHeight,
       direction: writingDirection,
     });
+
+    // polyfill borderStyle:"none" behavior
+    if (flatStyle.borderStyle === 'none') {
+      flatStyle.borderWidth = 0;
+      delete flatStyle.borderStyle;
+    }
+
     // $FlowFixMe
     nativeProps.style = flatStyle;
   }
@@ -453,12 +460,6 @@ export function spread(
   if (lineClamp != null) {
     // $FlowFixMe
     nativeProps.numberOfLines = lineClamp;
-  }
-
-  // polyfill borderStyle:"none" behavior
-  if (flatStyle.borderStyle === 'none') {
-    flatStyle.borderWidth = 0;
-    delete flatStyle.borderStyle;
   }
 
   return nativeProps;

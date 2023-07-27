@@ -32,11 +32,11 @@ import { utils } from '@stylexjs/shared';
 const VALID_CALLEES = ['String', 'Number', 'Math'] as const;
 const INVALID_METHODS = ['random'] as const;
 
-function isValidCallee(val: string): val is typeof VALID_CALLEES[number] {
+function isValidCallee(val: string): val is (typeof VALID_CALLEES)[number] {
   return (VALID_CALLEES as ReadonlyArray<string>).includes(val);
 }
 
-function isInvalidMethod(val: string): val is typeof INVALID_METHODS[number] {
+function isInvalidMethod(val: string): val is (typeof INVALID_METHODS)[number] {
   return (INVALID_METHODS as ReadonlyArray<string>).includes(val);
 }
 
