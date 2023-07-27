@@ -17,7 +17,7 @@ import { defaultOptions } from './utils/default-options';
 //
 export default function styleXOverrideVars(
   themeVars: { __themeName__: string, +[string]: string },
-  variables: { +[string]: string },
+  variables: { +[string]: string | { default: string, +[string]: string } },
   options?: StyleXOptions
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__themeName__ !== 'string') {
@@ -31,23 +31,70 @@ export default function styleXOverrideVars(
     ...options,
   };
 
+  // Sort the set of variables to get a consistent unique hash value
   const sortedKeys = Object.keys(variables).sort();
+
+  // Create a map of @-rule names and values
+  const atRules: any = {};
 
   const cssVariablesOverrideString = sortedKeys
     .map((key) => {
       const varNameHash = themeVars[key].slice(4, -1);
-      return varNameHash != null ? `${varNameHash}:${variables[key]};` : '';
+      const value = variables[key];
+
+      if (varNameHash != null && value !== null && typeof value === 'object') {
+        if (value.default === undefined) {
+          throw new Error(
+            'Default value is not defined for ' + key + ' variable.'
+          );
+        }
+        const definedVarString = `${varNameHash}:${value.default};`;
+        Object.keys(value).forEach((key) => {
+          if (key.startsWith('@')) {
+            const definedVarStringForAtRule = `${varNameHash}:${value[key]};`;
+            if (atRules[key] == null) {
+              atRules[key] = [definedVarStringForAtRule];
+            } else {
+              atRules[key].push(definedVarStringForAtRule);
+            }
+          }
+        });
+        return definedVarString;
+      }
+
+      return varNameHash != null && typeof value !== 'object'
+        ? `${varNameHash}:${value};`
+        : '';
     })
     .join('');
 
+  // Sort @-rules to get a consistent unique hash value
+  const sortedAtRules = Object.keys(atRules).sort();
+
+  const atRulesStringForHash = sortedAtRules
+    .map((atRule) => {
+      // Sort variables defined inside the @-rules to get a consistent unique hash value
+      return `${atRule}{${atRules[atRule].sort().join('')}}`;
+    })
+    .join('');
+
+  // Create a class name hash
   const overrideClassName =
-    classNamePrefix + createHash(cssVariablesOverrideString);
+    classNamePrefix +
+    createHash(cssVariablesOverrideString + atRulesStringForHash);
+
+  // Create a class name hash
+  const atRulesCss = sortedAtRules
+    .map((atRule) => {
+      return `${atRule}{.${overrideClassName}{${atRules[atRule].join('')}}}`;
+    })
+    .join('');
 
   return [
     { $$css: true, [themeVars.__themeName__]: overrideClassName },
     {
       [overrideClassName]: {
-        ltr: `.${overrideClassName}{${cssVariablesOverrideString}}`,
+        ltr: `.${overrideClassName}{${cssVariablesOverrideString}${atRulesCss}}`,
         priority: 0.99,
         rtl: undefined,
       },

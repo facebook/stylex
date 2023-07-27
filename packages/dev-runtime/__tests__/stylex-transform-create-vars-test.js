@@ -30,9 +30,19 @@ describe('Development Plugin Transformation', () => {
       expect(
         stylex.unstable_createVars(
           {
-            bgColor: 'blue',
-            bgColorDisabled: 'grey',
+            bgColor: {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            bgColorDisabled: {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
             cornerRadius: '10px',
+            fgColor: {
+              default: 'pink',
+            },
           },
           {
             themeName: 'buttonTheme',
@@ -44,6 +54,7 @@ describe('Development Plugin Transformation', () => {
           "bgColor": "var(--xiwovr5)",
           "bgColorDisabled": "var(--xdg0pry)",
           "cornerRadius": "var(--x1j3mert)",
+          "fgColor": "var(--x1wgda7f)",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
@@ -51,7 +62,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl",
             {
-              "ltr": ":root{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;}",
+              "ltr": ":root{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}@media (prefers-color-scheme: dark){:root{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}@media print{:root{--xiwovr5:white;}}",
               "rtl": undefined,
             },
             0,
