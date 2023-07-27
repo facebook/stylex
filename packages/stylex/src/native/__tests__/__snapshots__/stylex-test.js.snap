@@ -75,6 +75,23 @@ exports[`length units 10 "vw" units are resolved to pixels 1`] = `
 }
 `;
 
+exports[`styles border-style 1`] = `
+{
+  "style": {
+    "borderWidth": 0,
+  },
+}
+`;
+
+exports[`styles border-style 2`] = `
+{
+  "style": {
+    "borderStyle": "solid",
+    "borderWidth": 10,
+  },
+}
+`;
+
 exports[`styles box-shadow 1`] = `
 {
   "style": {

@@ -33,6 +33,22 @@ describe('styles', () => {
     expect(console.error).toHaveBeenCalled();
   });
 
+  test('border-style', () => {
+    const styles = stylex.create({
+      root: {
+        borderStyle: 'none',
+        borderWidth: 10,
+      },
+      override: {
+        borderStyle: 'solid',
+      },
+    });
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(
+      stylex.spread([styles.root, styles.override], mockOptions)
+    ).toMatchSnapshot();
+  });
+
   test('box-shadow', () => {
     const styles = stylex.create({
       root: {

@@ -455,6 +455,12 @@ export function spread(
     nativeProps.numberOfLines = lineClamp;
   }
 
+  // polyfill borderStyle:"none" behavior
+  if (flatStyle.borderStyle === 'none') {
+    flatStyle.borderWidth = 0;
+    delete flatStyle.borderStyle;
+  }
+
   return nativeProps;
 }
 
