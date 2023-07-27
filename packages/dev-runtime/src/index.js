@@ -99,7 +99,7 @@ export default function inject({
   stylex.create = stylexCreate;
 
   stylex.unstable_createVars = (
-    variables: { +[string]: string },
+    variables: { +[string]: string | { default: string, +[string]: string } },
     { themeName }: { themeName: string } = {
       themeName: themeNameUUID(),
     }

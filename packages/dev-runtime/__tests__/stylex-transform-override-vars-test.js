@@ -31,33 +31,43 @@ describe('Development Plugin Transformation', () => {
         stylex.unstable_overrideVars(
           {
             __themeName__: 'TestTheme.stylex.js//buttonTheme',
-            bgColor: 'var(--xiwovr5)',
-            bgColorDisabled: 'var(--xdg0pry)',
-            cornerRadius: 'var(--x1j3mert)',
+            bgColor: 'var(--xgck17p)',
+            bgColorDisabled: 'var(--xpegid5)',
+            cornerRadius: 'var(--xrqfjmn)',
+            fgColor: 'var(--x4y59db)',
           },
           {
-            bgColor: 'green',
-            cornerRadius: '6px',
+            bgColor: {
+              default: 'green',
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            },
+            bgColorDisabled: {
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            },
+            cornerRadius: { default: '6px' },
+            fgColor: 'coral',
           }
         )
       ).toMatchInlineSnapshot(`
-         {
-           "$$css": true,
-           "TestTheme.stylex.js//buttonTheme": "xuvtb6u",
-         }
-       `);
+        {
+          "$$css": true,
+          "TestTheme.stylex.js//buttonTheme": "xfmksyk",
+        }
+      `);
       expect(metadata).toMatchInlineSnapshot(`
-         [
-           [
-             "xuvtb6u",
-             {
-               "ltr": ".xuvtb6u{--xiwovr5:green;--x1j3mert:6px;}",
-               "rtl": undefined,
-             },
-             0.99,
-           ],
-         ]
-       `);
+        [
+          [
+            "xfmksyk",
+            {
+              "ltr": ".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}",
+              "rtl": undefined,
+            },
+            0.99,
+          ],
+        ]
+      `);
     });
   });
 });

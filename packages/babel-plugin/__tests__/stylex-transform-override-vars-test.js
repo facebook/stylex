@@ -35,14 +35,52 @@ function transform(source, opts = defaultOpts) {
 }
 let createVarsOutput = '';
 
+const overrideVars = `{
+  bgColor: {
+    default: 'green',
+    '@media (prefers-color-scheme: dark)': 'lightgreen',
+    '@media print': 'transparent',
+  },
+  bgColorDisabled: {
+    default: 'antiquewhite',
+    '@media (prefers-color-scheme: dark)': 'floralwhite',
+  },
+  cornerRadius: { default: '6px' },
+  fgColor: 'coral',
+}`;
+
+const overrideVarsWithDifferentOrder = `{
+  bgColorDisabled: {
+    default: 'antiquewhite',
+    '@media (prefers-color-scheme: dark)': 'floralwhite',
+  },
+  fgColor: { default: 'coral' },
+  bgColor: {
+    default: 'green',
+    '@media print': 'transparent',
+    '@media (prefers-color-scheme: dark)': 'lightgreen',
+  },
+  cornerRadius: '6px',
+}`;
+
 describe('@stylexjs/babel-plugin', () => {
   beforeEach(() => {
     createVarsOutput = transform(`
       import stylex from 'stylex';
       export const buttonTheme = stylex.unstable_createVars({
-        bgColor: 'blue',
-        bgColorDisabled: 'grey',
+        bgColor: {
+          default: 'blue',
+          '@media (prefers-color-scheme: dark)': 'lightblue',
+          '@media print': 'white',
+        },
+        bgColorDisabled: {
+          default: 'grey',
+          '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+        },
         cornerRadius: 10,
+        fgColor: {
+          default: 'pink',
+        },
       });
     `);
   });
@@ -53,6 +91,7 @@ describe('@stylexjs/babel-plugin', () => {
         bgColor: "var(--xgck17p)",
         bgColorDisabled: "var(--xpegid5)",
         cornerRadius: "var(--xrqfjmn)",
+        fgColor: "var(--x4y59db)",
         __themeName__: "x568ih9"
       };"
     `);
@@ -62,22 +101,14 @@ describe('@stylexjs/babel-plugin', () => {
       const output1 = transform(
         `
          ${createVarsOutput}
-         const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-          bgColor: 'green',
-          bgColorDisabled: 'lightseagreen',
-          cornerRadius: '6px',
-        });
+         const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
        `,
         { dev: true, ...defaultOpts }
       );
       const output2 = transform(
         `
          ${createVarsOutput}
-         const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-           bgColorDisabled: 'lightseagreen',
-           cornerRadius: '6px',
-           bgColor: 'green',
-        });
+         const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVarsWithDifferentOrder});
        `,
         { dev: true, ...defaultOpts }
       );
@@ -87,12 +118,13 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".x1giqolr{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:6px;}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };"
       `);
       expect(output1).toEqual(output2);
@@ -102,11 +134,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(`
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-             bgColor: 'green',
-             bgColorDisabled: 'lightseagreen',
-             cornerRadius: '6px',
-           });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
          `)
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -114,11 +142,12 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -128,11 +157,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: '6px',
-          });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
          `,
           { dev: true, ...defaultOpts }
         )
@@ -142,12 +167,13 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".x1giqolr{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:6px;}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -157,11 +183,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: '6px',
-          });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
          `,
           {
             moduleSystem: 'commonjs',
@@ -174,11 +196,12 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -188,11 +211,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: '6px',
-          });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
          `,
           {
             dev: true,
@@ -206,12 +225,13 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".x1giqolr{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:6px;}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -221,11 +241,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: '6px',
-          });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
            const buttonThemeNew = stylex.unstable_overrideVars(buttonTheme, {
             bgColor: 'skyblue',
             cornerRadius: '8px',
@@ -238,11 +254,12 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };
         const buttonThemeNew = {
           $$css: true,
@@ -256,11 +273,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-             bgColor: 'green',
-             bgColorDisabled: 'lightseagreen',
-             cornerRadius: '6px',
-           });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
            const buttonThemeMonochromatic = stylex.unstable_overrideVars(
             buttonTheme, {
               bgColor: 'white',
@@ -279,12 +292,13 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".x1giqolr{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:6px;}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };
         stylex.inject(".xpsjjyf{--xgck17p:white;--xpegid5:black;--xrqfjmn:0px;}", 0.99);
         const buttonThemeMonochromatic = {
@@ -301,9 +315,17 @@ describe('@stylexjs/babel-plugin', () => {
            ${createVarsOutput}
            const RADIUS = 10;
            const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: RADIUS,
+            bgColor: {
+              default: 'green',
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            },
+            bgColorDisabled: {
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            },
+            cornerRadius: { default: RADIUS },
+            fgColor: 'coral',
           });
          `,
           { dev: true, ...defaultOpts }
@@ -314,13 +336,14 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
         const RADIUS = 10;
-        stylex.inject(".x1f1cezm{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:10;}", 0.99);
+        stylex.inject(".xrpt93l{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:10;--x4y59db:coral;@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xrpt93l{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1f1cezm"
+          x568ih9: "xrpt93l"
         };"
       `);
     });
@@ -330,11 +353,19 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const RADIUS = 10;
+           const COLOR = 'coral';
            const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: RADIUS,
+            bgColor: {
+              default: 'green',
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            },
+            bgColorDisabled: {
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            },
+            cornerRadius: { default: '6px' },
+            fgColor: COLOR,
           });
          `,
           { dev: true, ...defaultOpts }
@@ -345,13 +376,14 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        const RADIUS = 10;
-        stylex.inject(".x1f1cezm{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:10;}", 0.99);
+        const COLOR = 'coral';
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1f1cezm"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -363,9 +395,17 @@ describe('@stylexjs/babel-plugin', () => {
            ${createVarsOutput}
            const name = 'light';
            const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: \`\${name}green\`,
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: '6px',
+            bgColor: {
+              default: \`\${name}green\`,
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            },
+            bgColorDisabled: {
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            },
+            cornerRadius: { default: '6px' },
+            fgColor: 'coral',
           });
          `,
           { dev: true, ...defaultOpts }
@@ -376,13 +416,14 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
         const name = 'light';
-        stylex.inject(".x1xnxhux{--xgck17p:lightgreen;--xpegid5:lightseagreen;--xrqfjmn:6px;}", 0.99);
+        stylex.inject(".x1u43pop{--xgck17p:lightgreen;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1u43pop{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1xnxhux"
+          x568ih9: "x1u43pop"
         };"
       `);
     });
@@ -394,9 +435,17 @@ describe('@stylexjs/babel-plugin', () => {
            ${createVarsOutput}
            const RADIUS = 2;
            const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: RADIUS * 2,
+            bgColor: {
+              default: 'green',
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            },
+            bgColorDisabled: {
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            },
+            cornerRadius: { default: RADIUS * 2 },
+            fgColor: 'coral',
           });
          `,
           { dev: true, ...defaultOpts }
@@ -407,13 +456,14 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
         const RADIUS = 2;
-        stylex.inject(".x1f0cjm7{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:4;}", 0.99);
+        stylex.inject(".x1ubmxd4{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:4;--x4y59db:coral;@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1ubmxd4{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1f0cjm7"
+          x568ih9: "x1ubmxd4"
         };"
       `);
     });
@@ -423,11 +473,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
            ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
-            bgColor: 'green',
-            bgColorDisabled: 'lightseagreen',
-            cornerRadius: '6px',
-          });
+           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
          `,
           {
             dev: true,
@@ -444,12 +490,13 @@ describe('@stylexjs/babel-plugin', () => {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".x1giqolr{--xgck17p:green;--xpegid5:lightseagreen;--xrqfjmn:6px;}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1giqolr"
+          x568ih9: "xfmksyk"
         };"
       `);
     });

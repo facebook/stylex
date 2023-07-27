@@ -16,9 +16,19 @@ describe('stylex-create-vars test', () => {
     const themeName = 'TestTheme.stylex.js//buttonTheme';
     const classNamePrefix = 'x';
     const defaultVars = {
-      bgColor: 'blue',
-      bgColorDisabled: 'grey',
+      bgColor: {
+        default: 'blue',
+        '@media (prefers-color-scheme: dark)': 'lightblue',
+        '@media print': 'white',
+      },
+      bgColorDisabled: {
+        default: 'grey',
+        '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+      },
       cornerRadius: '10px',
+      fgColor: {
+        default: 'pink',
+      },
     };
     const [jsOutput, cssOutput] = styleXCreateVars(defaultVars, { themeName });
 
@@ -31,10 +41,11 @@ describe('stylex-create-vars test', () => {
       cornerRadius: `var(--${
         classNamePrefix + createHash(`${themeName}.cornerRadius`)
       })`,
+      fgColor: `var(--${classNamePrefix + createHash(`${themeName}.fgColor`)})`,
     });
 
     expect(cssOutput).toEqual({
-      css: ':root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;}',
+      css: ':root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}',
     });
   });
 });
