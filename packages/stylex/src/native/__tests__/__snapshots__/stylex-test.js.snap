@@ -168,6 +168,38 @@ exports[`styles line-clamp 1`] = `
 }
 `;
 
+exports[`styles logical border radius: endend 1`] = `
+{
+  "style": {
+    "borderBottomEndRadius": 10,
+  },
+}
+`;
+
+exports[`styles logical border radius: endstart 1`] = `
+{
+  "style": {
+    "borderBottomStartRadius": 10,
+  },
+}
+`;
+
+exports[`styles logical border radius: startend 1`] = `
+{
+  "style": {
+    "borderTopEndRadius": 10,
+  },
+}
+`;
+
+exports[`styles logical border radius: startstart 1`] = `
+{
+  "style": {
+    "borderTopStartRadius": 10,
+  },
+}
+`;
+
 exports[`styles object-fit: contain 1`] = `
 {
   "style": {

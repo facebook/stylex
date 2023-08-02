@@ -290,6 +290,33 @@ describe('styles', () => {
     expect(stylex.spread(styles.top, mockOptions)).toMatchSnapshot('top');
   });
 
+  test('logical border radius', () => {
+    const styles = stylex.create({
+      startstart: {
+        borderStartStartRadius: 10,
+      },
+      startend: {
+        borderStartEndRadius: 10,
+      },
+      endstart: {
+        borderEndStartRadius: 10,
+      },
+      endend: {
+        borderEndEndRadius: 10,
+      },
+    });
+    expect(stylex.spread(styles.startstart, mockOptions)).toMatchSnapshot(
+      'startstart'
+    );
+    expect(stylex.spread(styles.startend, mockOptions)).toMatchSnapshot(
+      'startend'
+    );
+    expect(stylex.spread(styles.endstart, mockOptions)).toMatchSnapshot(
+      'endstart'
+    );
+    expect(stylex.spread(styles.endend, mockOptions)).toMatchSnapshot('endend');
+  });
+
   test.skip('logical border short-forms', () => {
     const styles = stylex.create({
       root: {},

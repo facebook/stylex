@@ -453,6 +453,23 @@ export function spread(
       delete flatStyle.borderStyle;
     }
 
+    if (flatStyle.borderStartStartRadius != null) {
+      flatStyle.borderTopStartRadius = flatStyle.borderStartStartRadius;
+      delete flatStyle.borderStartStartRadius;
+    }
+    if (flatStyle.borderEndStartRadius != null) {
+      flatStyle.borderBottomStartRadius = flatStyle.borderEndStartRadius;
+      delete flatStyle.borderEndStartRadius;
+    }
+    if (flatStyle.borderStartEndRadius != null) {
+      flatStyle.borderTopEndRadius = flatStyle.borderStartEndRadius;
+      delete flatStyle.borderStartEndRadius;
+    }
+    if (flatStyle.borderEndEndRadius != null) {
+      flatStyle.borderBottomEndRadius = flatStyle.borderEndEndRadius;
+      delete flatStyle.borderEndEndRadius;
+    }
+
     // $FlowFixMe
     nativeProps.style = flatStyle;
   }
