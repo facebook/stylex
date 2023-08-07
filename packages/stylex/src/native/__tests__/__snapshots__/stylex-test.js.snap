@@ -75,6 +75,22 @@ exports[`length units 10 "vw" units are resolved to pixels 1`] = `
 }
 `;
 
+exports[`styles animation-delay 1`] = `
+{
+  "style": {
+    "animationDelay": 300,
+  },
+}
+`;
+
+exports[`styles animation-duration 1`] = `
+{
+  "style": {
+    "animationDuration": 500,
+  },
+}
+`;
+
 exports[`styles border-style 1`] = `
 {
   "style": {
@@ -386,6 +402,22 @@ exports[`styles transform: translate 1`] = `
 {
   "style": {
     "transform": "translate(10px, 20px) translateX(11px) translateY(12px) translateZ(13px) translate3d(20px, 30px, 40px)",
+  },
+}
+`;
+
+exports[`styles transition-delay 1`] = `
+{
+  "style": {
+    "transitionDelay": 300,
+  },
+}
+`;
+
+exports[`styles transition-duration 1`] = `
+{
+  "style": {
+    "transitionDuration": 500,
   },
 }
 `;
