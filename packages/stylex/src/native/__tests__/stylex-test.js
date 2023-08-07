@@ -23,6 +23,24 @@ describe('styles', () => {
     console.error.mockRestore();
   });
 
+  test('animation-delay', () => {
+    const styles = stylex.create({
+      root: {
+        animationDelay: '0.3s',
+      },
+    });
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+  });
+
+  test('animation-duration', () => {
+    const styles = stylex.create({
+      root: {
+        animationDuration: '0.5s',
+      },
+    });
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+  });
+
   test('background-image', () => {
     const styles = stylex.create({
       root: {
@@ -266,6 +284,24 @@ describe('styles', () => {
     );
     expect(stylex.spread(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
     expect(stylex.spread(styles.mixed, mockOptions)).toMatchSnapshot('mixed');
+  });
+
+  test('transition-delay', () => {
+    const styles = stylex.create({
+      root: {
+        transitionDelay: '0.3s',
+      },
+    });
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+  });
+
+  test('transition-duration', () => {
+    const styles = stylex.create({
+      root: {
+        transitionDuration: '0.5s',
+      },
+    });
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('user-select', () => {

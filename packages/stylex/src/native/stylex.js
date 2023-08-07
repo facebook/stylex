@@ -16,11 +16,14 @@ import { CSSMediaQuery } from './CSSMediaQuery';
 import { errorMsg, warnMsg } from './errorMsg';
 import { flattenStyle } from './flattenStyle';
 import { parseShadow } from './parseShadow';
+import { parseTimeValue } from './parseTimeValue';
 
 const stylePropertyAllowlistSet = new Set<string>([
   'alignContent',
   'alignItems',
   'alignSelf',
+  'animationDelay',
+  'animationDuration',
   'aspectRatio',
   'backfaceVisibility',
   'backgroundColor',
@@ -157,6 +160,8 @@ const stylePropertyAllowlistSet = new Set<string>([
   'textTransform',
   'tintColor',
   'transform',
+  'transitionDelay',
+  'transitionDuration',
   'top',
   'userSelect',
   'verticalAlign', // Android Only
@@ -340,6 +345,13 @@ export function keyframes(): void {
   errorMsg('keyframes are not supported in React Native.');
 }
 
+const timeValuedProperties = [
+  'animationDelay',
+  'animationDuration',
+  'transitionDelay',
+  'transitionDuration',
+];
+
 /**
  * The spread method shim
  */
@@ -468,6 +480,14 @@ export function spread(
     if (flatStyle.borderEndEndRadius != null) {
       flatStyle.borderBottomEndRadius = flatStyle.borderEndEndRadius;
       delete flatStyle.borderEndEndRadius;
+    }
+
+    for (const timeValuedProperty of timeValuedProperties) {
+      if (typeof flatStyle[timeValuedProperty] === 'string') {
+        flatStyle[timeValuedProperty] = parseTimeValue(
+          flatStyle[timeValuedProperty]
+        );
+      }
     }
 
     // $FlowFixMe
