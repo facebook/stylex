@@ -16,9 +16,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [stylexPlugin, opts],
   });

@@ -89,7 +89,7 @@ export type NestedCSSPropTypes = $ReadOnly<{
 export type StyleXSingleStyle = false | ?NestedCSSPropTypes;
 export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<false | ?T>;
 export type XStyleWithout<+T: { [string]: void, ... }> = XStyle<
-  $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>
+  $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>,
 >;
 
 export type Styles = $ReadOnly<{ [namespace: string]: Style, ... }>;
@@ -119,7 +119,7 @@ export type MapNamespace<CSS: { ... }> = $ObjMapi<CSS, MapCSSValueToClassName>;
 export type MapNamespaces = <CSS: { ... }>(CSS) => MapNamespace<CSS>;
 
 export type Stylex$Create = <S: { ... }>(
-  styles: S
+  styles: S,
 ) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
 
 // This is the type for the variables object
@@ -127,11 +127,11 @@ export opaque type StyleXVarsTheme<+Vars: { +[string]: string }>: Vars = Vars;
 
 export type Stylex$CreateVars = <+Vars: { +[string]: string }>(
   styles: Vars,
-  config?: { themeName: string }
+  config?: { themeName: string },
 ) => StyleXVarsTheme<$ReadOnly<$ObjMapConst<Vars, string>>>;
 
 export type Stylex$OverrideVars = <+Vars: { +[string]: string }>(
   styles: Vars & { __themeName__: string },
   stylesOverride: Vars,
-  config?: { themeName: string }
+  config?: { themeName: string },
 ) => StyleXVarsTheme<$ReadOnly<$ObjMapConst<Vars, string>>>;

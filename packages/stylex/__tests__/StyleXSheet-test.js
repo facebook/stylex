@@ -71,7 +71,7 @@ test('StyleXSheet.prototype.insert handles RTL rules with media queries', () => 
   sheet.insert(
     '@media (min-width: 1000px) { .foo {} }',
     0,
-    '@media (min-width: 1000px) { .foo {} }'
+    '@media (min-width: 1000px) { .foo {} }',
   );
 
   expect(sheet.getCSS()).toMatchInlineSnapshot(`

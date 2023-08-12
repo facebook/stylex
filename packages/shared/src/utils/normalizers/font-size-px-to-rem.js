@@ -20,7 +20,7 @@ const ROOT_FONT_SIZE = 16;
  */
 export default function convertFontSizeToRem(
   ast: PostCSSValueAST,
-  key: string
+  key: string,
 ): PostCSSValueAST {
   if (key !== 'fontSize') {
     return ast;

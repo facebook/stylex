@@ -25,9 +25,7 @@ function transform(source, opts = defaultOpts) {
   return transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
@@ -55,7 +53,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -87,7 +85,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           };
           export const buttonTheme = stylex.unstable_createVars(defaultButtonTokens);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const defaultButtonTokens = {
@@ -136,8 +134,8 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
@@ -175,8 +173,8 @@ describe('@stylexjs/babel-plugin', () => {
           {
             moduleSystem: 'commonjs',
             rootDir,
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -214,8 +212,8 @@ describe('@stylexjs/babel-plugin', () => {
             dev: true,
             moduleSystem: 'commonjs',
             rootDir,
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
@@ -257,8 +255,8 @@ describe('@stylexjs/babel-plugin', () => {
             },
             cornerRadius: 8,
           });
-        `
-        )
+        `,
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -309,8 +307,8 @@ describe('@stylexjs/babel-plugin', () => {
           {
             dev: true,
             ...defaultOpts,
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
@@ -353,8 +351,8 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const RADIUS = 10;
@@ -391,8 +389,8 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const color = 'blue';
@@ -429,8 +427,8 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const name = 'light';
@@ -467,8 +465,8 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const RADIUS = 2;
@@ -511,8 +509,8 @@ describe('@stylexjs/babel-plugin', () => {
               rootDir,
             },
             filename: '/stylex/packages/utils/NestedTheme.stylex.js',
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(":root{--x1sm8rlu:blue;--xxncinc:grey;--x4e1236:10;--xv9uic:pink;}@media (prefers-color-scheme: dark){:root{--x1sm8rlu:lightblue;--xxncinc:rgba(0, 0, 0, 0.8);}}@media print{:root{--x1sm8rlu:white;}}", 0);

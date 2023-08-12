@@ -20,7 +20,7 @@ export function genCSSRule(
   className: string,
   decls: string,
   pseudos: $ReadOnlyArray<string>,
-  atRules: $ReadOnlyArray<string>
+  atRules: $ReadOnlyArray<string>,
 ): string {
   const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
   let selectorForAtRules =
@@ -28,12 +28,12 @@ export function genCSSRule(
 
   if (pseudos.includes('::thumb')) {
     selectorForAtRules = THUMB_VARIANTS.map(
-      (suffix) => selectorForAtRules + suffix
+      (suffix) => selectorForAtRules + suffix,
     ).join(', ');
   }
 
   return atRules.reduce(
     (acc, atRule) => `${atRule}{${acc}}`,
-    `${selectorForAtRules}{${decls}}`
+    `${selectorForAtRules}{${decls}}`,
   );
 }

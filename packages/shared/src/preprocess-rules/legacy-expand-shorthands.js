@@ -207,4 +207,4 @@ const expansions = {
   },
 };
 
-export default expansions;
+export default (expansions: typeof expansions);

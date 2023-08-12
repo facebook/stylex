@@ -78,7 +78,7 @@ class StylexPlugin {
               options: { stylexPlugin: this },
             });
           }
-        }
+        },
       );
 
       // Make a list of all modules that were included in the last compilation.
@@ -97,7 +97,7 @@ class StylexPlugin {
           .filter((filename) =>
             this.filesInLastRun == null
               ? true
-              : this.filesInLastRun.includes(filename)
+              : this.filesInLastRun.includes(filename),
           )
           .map((filename) => stylexRules[filename])
           .flat();
@@ -114,7 +114,7 @@ class StylexPlugin {
             const cssFileName = Object.keys(assets).find(
               typeof this.appendTo === 'function'
                 ? this.appendTo
-                : (filename) => filename.endsWith(this.appendTo)
+                : (filename) => filename.endsWith(this.appendTo),
             );
             if (cssFileName) {
               const cssAsset = assets[cssFileName];
@@ -122,11 +122,11 @@ class StylexPlugin {
               if (stylexCSS != null) {
                 assets[cssFileName] = new ConcatSource(
                   cssAsset,
-                  new RawSource(stylexCSS)
+                  new RawSource(stylexCSS),
                 );
               }
             }
-          }
+          },
         );
       } else {
         // Consume collected rules and emit the stylex CSS asset
@@ -170,7 +170,7 @@ class StylexPlugin {
             this.babelPlugin,
           ],
           presets: this.babelConfig.presets,
-        }
+        },
       );
       if (metadata.stylex != null && metadata.stylex.length > 0) {
         this.stylexRules[filename] = metadata.stylex;

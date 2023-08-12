@@ -1,0 +1,41 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+import * as ESTree from '../estree';
+
+export type TokenType =
+  | 'Boolean'
+  | 'Null'
+  | 'Identifier'
+  | 'Keyword'
+  | 'Punctuator'
+  | 'JSXIdentifier'
+  | 'JSXText'
+  | 'Numeric'
+  | 'String'
+  | 'RegularExpression';
+
+export type Token = {
+  type: TokenType,
+  value: string,
+  range: Range,
+  loc: SourceLocation,
+};
+
+export type SourceLocation = ESTree.SourceLocation;
+
+export type Range = [number, number];
+
+export type Program = {
+  ...ESTree.Program,
+  comments: ESTree.Comment[],
+  tokens: Token[],
+  loc: SourceLocation,
+  range: Range,
+};

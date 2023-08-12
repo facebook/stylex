@@ -29,54 +29,54 @@ const shorthands = {
   },
   background: (_value: TStyleValue): TReturn => {
     throw new Error(
-      'background is not supported. Use background-color, border-image etc. instead.'
+      'background is not supported. Use background-color, border-image etc. instead.',
     );
   },
   border: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'border is not supported. Use border-width, border-style and border-color instead.'
+      'border is not supported. Use border-width, border-style and border-color instead.',
     );
   },
   borderInline: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderInline is not supported. Use borderInlineWidth, borderInlineStyle and borderInlineColor instead.'
+      'borderInline is not supported. Use borderInlineWidth, borderInlineStyle and borderInlineColor instead.',
     );
   },
   // @Deprecated
   borderBlock: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderBlock is not supported. Use borderBlockWidth, borderBlockStyle and borderBlockColor instead.'
+      'borderBlock is not supported. Use borderBlockWidth, borderBlockStyle and borderBlockColor instead.',
     );
   },
 
   // @Deprecated
   borderTop: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderTop is not supported. Use borderTopWidth, borderTopStyle and borderTopColor instead.'
+      'borderTop is not supported. Use borderTopWidth, borderTopStyle and borderTopColor instead.',
     );
   },
   // @Deprecated
   borderInlineEnd: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderInlineEnd is not supported. Use borderInlineEndWidth, borderInlineEndStyle and borderInlineEndColor instead.'
+      'borderInlineEnd is not supported. Use borderInlineEndWidth, borderInlineEndStyle and borderInlineEndColor instead.',
     );
   },
   // @Deprecated
   borderRight: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderRight is not supported. Use borderRightWidth, borderRightStyle and borderRightColor instead.'
+      'borderRight is not supported. Use borderRightWidth, borderRightStyle and borderRightColor instead.',
     );
   },
   // @Deprecated
   borderBottom: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderBottom is not supported. Use borderBottomWidth, borderBottomStyle and borderBottomColor instead.'
+      'borderBottom is not supported. Use borderBottomWidth, borderBottomStyle and borderBottomColor instead.',
     );
   },
   // @Deprecated
   borderInlineStart: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
-      'borderInlineStart is not supported. Use borderInlineStartWidth, borderInlineStartStyle and borderInlineStartColor instead.'
+      'borderInlineStart is not supported. Use borderInlineStartWidth, borderInlineStartStyle and borderInlineStartColor instead.',
     );
   },
   // @Deprecated
@@ -86,7 +86,7 @@ const shorthands = {
         '`borderLeft` is not supported.',
         'You could use `borderLeftWidth`, `borderLeftStyle` and `borderLeftColor`,',
         'but it is preferable to use `borderInlineStartWidth`, `borderInlineStartStyle` and `borderInlineStartColor`.',
-      ].join(' ')
+      ].join(' '),
     );
   },
 
@@ -96,7 +96,7 @@ const shorthands = {
       return [['margin', values[0]]];
     } else {
       throw new Error(
-        'margin shorthand with multiple values is not supported. Use marginTop, marginInlineEnd, marginBottom and marginInlineStart instead.'
+        'margin shorthand with multiple values is not supported. Use marginTop, marginInlineEnd, marginBottom and marginInlineStart instead.',
       );
     }
   },
@@ -108,7 +108,7 @@ const shorthands = {
     }
 
     throw new Error(
-      'padding shorthand with multiple values is not supported. Use paddingTop, paddingInlineEnd, paddingBottom and paddingInlineStart instead.'
+      'padding shorthand with multiple values is not supported. Use paddingTop, paddingInlineEnd, paddingBottom and paddingInlineStart instead.',
     );
   },
 };
@@ -231,4 +231,7 @@ const expansions = {
   ...aliases,
 };
 
-export default expansions;
+export default (expansions: $ReadOnly<{
+  ...typeof shorthands,
+  ...typeof aliases,
+}>);

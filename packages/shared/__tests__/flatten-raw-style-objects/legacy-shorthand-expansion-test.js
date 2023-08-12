@@ -26,8 +26,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
             color: 'red',
             marginStart: 10,
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         ['color', new PreRule('color', 'red')],
         ['marginStart', new PreRule('marginStart', 10)],
@@ -43,7 +43,7 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
       ]);
 
       expect(
-        flattenRawStyleObject({ margin: 10, marginBottom: 20 }, options)
+        flattenRawStyleObject({ margin: 10, marginBottom: 20 }, options),
       ).toEqual([
         ['marginTop', new PreRule('marginTop', 10)],
         ['marginEnd', new PreRule('marginEnd', 10)],
@@ -57,8 +57,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
       expect(
         flattenRawStyleObject(
           { margin: '10px 20px', borderColor: 'red' },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         ['marginTop', new PreRule('marginTop', '10px')],
         ['marginEnd', new PreRule('marginEnd', '20px')],
@@ -73,7 +73,7 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
 
     test('should expand shorthands with fallbacks', () => {
       expect(
-        flattenRawStyleObject({ margin: ['10vh 20px', '10dvh 20px'] }, options)
+        flattenRawStyleObject({ margin: ['10vh 20px', '10dvh 20px'] }, options),
       ).toEqual([
         ['marginTop', new PreRule('marginTop', ['10vh', '10dvh'])],
         ['marginEnd', new PreRule('marginEnd', '20px')],
@@ -95,8 +95,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               marginStart: 10,
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         ['color', new PreRule('color', 'blue')],
         ['marginStart', new PreRule('marginStart', 0)],
@@ -117,8 +117,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               ':hover': 10,
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'color',
@@ -149,8 +149,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               ':hover': 10,
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'color',
@@ -202,8 +202,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               ':hover': '10px 20px',
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'color',
@@ -256,8 +256,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               ':hover': 10,
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'color',
@@ -287,8 +287,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               ':hover': ['10px 20px', '1dvh 2dvw'],
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'marginTop',
@@ -330,8 +330,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               },
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           '@media (min-width: 300px)_:hover_color',
@@ -340,7 +340,7 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               'color',
               'red',
               [':hover'],
-              ['@media (min-width: 300px)']
+              ['@media (min-width: 300px)'],
             ),
           ]),
         ],
@@ -359,8 +359,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               },
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           '@media (min-width: 300px)_:hover_color',
@@ -369,7 +369,7 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               'color',
               'pink',
               [':hover'],
-              ['@media (min-width: 300px)']
+              ['@media (min-width: 300px)'],
             ),
           ]),
         ],
@@ -380,7 +380,7 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               'color',
               'red',
               [':active', ':hover'],
-              ['@media (min-width: 300px)']
+              ['@media (min-width: 300px)'],
             ),
           ]),
         ],
@@ -397,8 +397,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               },
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'color',
@@ -408,7 +408,7 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               'color',
               'red',
               [':hover'],
-              ['@media (min-width: 300px)']
+              ['@media (min-width: 300px)'],
             ),
           ]),
         ],
@@ -428,8 +428,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               },
             },
           },
-          options
-        )
+          options,
+        ),
       ).toEqual([
         [
           'color',
@@ -439,13 +439,13 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
               'color',
               'red',
               [':hover'],
-              ['@media (min-width: 300px)']
+              ['@media (min-width: 300px)'],
             ),
             new PreRule(
               'color',
               'maroon',
               [':hover', ':active'],
-              ['@media (min-width: 300px)']
+              ['@media (min-width: 300px)'],
             ),
           ]),
         ],

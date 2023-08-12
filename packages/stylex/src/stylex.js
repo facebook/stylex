@@ -22,12 +22,12 @@ import injectStyle from './stylex-inject';
 import { styleq } from 'styleq';
 
 type Cache = WeakMap<
-  { ... },
+  { +[string]: mixed },
   {
     classNameChunk: string,
     definedPropertiesChunk: Array<string>,
     next: Cache,
-  }
+  },
 >;
 
 type DedupeStyles = $ReadOnly<{
@@ -40,9 +40,9 @@ export function spread(
   styles: StyleXArray<
     | ?DedupeStyles
     | boolean
-    | $ReadOnly<{ $$css?: void, [string]: string | number }>
+    | $ReadOnly<{ $$css?: void, [string]: string | number }>,
   >,
-  _options?: { ... }
+  _options?: { ... },
 ): $ReadOnly<{
   className: string,
   style: $ReadOnly<{ $$css?: void, [string]: string | number }>,
@@ -53,32 +53,32 @@ export function spread(
 
 function stylexCreate(_styles: { ... }) {
   throw new Error(
-    'stylex.create should never be called. It should be compiled away.'
+    'stylex.create should never be called. It should be compiled away.',
   );
 }
 
 function stylexCreateVars(_styles: { ... }) {
   throw new Error(
-    'stylex.createVars should never be called. It should be compiled away.'
+    'stylex.createVars should never be called. It should be compiled away.',
   );
 }
 
 function stylexOverrideVars(_styles: { ... }) {
   throw new Error(
-    'stylex.overrideVars should never be called. It should be compiled away.'
+    'stylex.overrideVars should never be called. It should be compiled away.',
   );
 }
 
 function stylexIncludes<TStyles: { +[string]: string | number }>(
-  _styles: MapNamespace<TStyles>
+  _styles: MapNamespace<TStyles>,
 ): TStyles {
   throw new Error(
-    'stylex.extends should never be called. It should be compiled away.'
+    'stylex.extends should never be called. It should be compiled away.',
   );
 }
 
 type Stylex$Include = <TStyles: { +[string]: string | number }>(
-  _styles: MapNamespace<TStyles>
+  _styles: MapNamespace<TStyles>,
 ) => TStyles;
 
 export const create: Stylex$Create = stylexCreate;
@@ -103,7 +103,7 @@ export const inject: typeof injectStyle = injectStyle;
 
 export const UNSUPPORTED_PROPERTY = <T>(_props: T): T => {
   throw new Error(
-    'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.'
+    'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.',
   );
 };
 
@@ -129,9 +129,9 @@ type IStyleX = {
     styles: StyleXArray<
       | ?DedupeStyles
       | boolean
-      | $ReadOnly<{ $$css?: void, [string]: string | number }>
+      | $ReadOnly<{ $$css?: void, [string]: string | number }>,
     >,
-    _options?: { ... }
+    _options?: { ... },
   ) => $ReadOnly<{
     className: string,
     style: $ReadOnly<{ $$css?: void, [string]: string | number }>,

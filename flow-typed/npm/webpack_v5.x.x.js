@@ -84,16 +84,16 @@ declare module 'webpack' {
     | ((
         context: string,
         request: string,
-        callback: (err?: Error, result?: string) => void
+        callback: (err?: Error, result?: string) => void,
       ) => void)
     | ExternalItem
     | Array<
         | ((
             context: string,
             request: string,
-            callback: (err?: Error, result?: string) => void
+            callback: (err?: Error, result?: string) => void,
           ) => void)
-        | ExternalItem
+        | ExternalItem,
       >;
 
   declare type RuleSetCondition =
@@ -633,17 +633,20 @@ declare module 'webpack' {
 
   declare class EnvironmentPlugin {
     constructor(
-      env: { [string]: mixed, ... } | string[]
+      env: { [string]: mixed, ... } | string[],
     ): $ElementType<
       $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
-      number
+      number,
     >;
   }
 
   declare class DefinePlugin {
-    constructor({ [string]: string, ... }): $ElementType<
+    constructor({
+      [string]: string,
+      ...
+    }): $ElementType<
       $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
-      number
+      number,
     >;
   }
 
@@ -654,10 +657,10 @@ declare module 'webpack' {
           resourceRegExp: RegExp,
           contextRegExp?: RegExp,
         |},
-      void | RegExp
+      void | RegExp,
     ): $ElementType<
       $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
-      number
+      number,
     >;
   }
 
@@ -686,34 +689,34 @@ declare module 'webpack' {
       fileContext?: ?string,
     |}): $ElementType<
       $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
-      number
+      number,
     >;
   }
 
   declare class HotModuleReplacementPlugin {
     constructor(): $ElementType<
       $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
-      number
+      number,
     >;
   }
 
   declare class ContextReplacementPlugin {
     constructor(
       resourceRegExp: RegExp,
-      newContentRegExp?: RegExp
+      newContentRegExp?: RegExp,
     ): $ElementType<
       $NonMaybeType<$PropertyType<ResolveOptions, 'plugins'>>,
-      number
+      number,
     >;
   }
 
   declare function builder(
     options: WebpackOptions,
-    callback?: Callback
+    callback?: Callback,
   ): WebpackCompiler;
   declare function builder(
     options: WebpackOptions[],
-    callback?: Callback
+    callback?: Callback,
   ): WebpackMultiCompiler;
 
   declare module.exports: typeof builder & {

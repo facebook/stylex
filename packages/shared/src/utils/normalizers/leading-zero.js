@@ -16,7 +16,7 @@ import parser from 'postcss-value-parser';
  */
 export default function normalizeLeadingZero(
   ast: PostCSSValueAST,
-  _: mixed
+  _: mixed,
 ): PostCSSValueAST {
   ast.walk((node) => {
     if (node.type !== 'word') {

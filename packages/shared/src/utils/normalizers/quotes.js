@@ -16,7 +16,7 @@
 
 export default function normalizeQuotes(
   ast: PostCSSValueAST,
-  _: mixed
+  _: mixed,
 ): PostCSSValueAST {
   ast.walk((node) => {
     if (node.type !== 'string') {

@@ -16,9 +16,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [[stylexPlugin, opts]],
   }).code;
@@ -31,7 +29,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           import {foo, bar} from 'other';
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         import { foo, bar } from 'other';"
@@ -43,7 +41,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           const stylex = require('stylex');
           const {foo, bar} = require('other');
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "const stylex = require('stylex');
         const {
@@ -62,7 +60,7 @@ describe('@stylexjs/babel-plugin', () => {
               color: 'red'
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -83,7 +81,7 @@ describe('@stylexjs/babel-plugin', () => {
               color: 'red'
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "export const styles = stylex.create({
           foo: {
@@ -103,7 +101,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           export {styles}
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -126,7 +124,7 @@ describe('@stylexjs/babel-plugin', () => {
               color: 'red'
             },
           }));
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -149,7 +147,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           module.export = styles;
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -178,7 +176,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           styles;
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import foobar from 'stylex';
         foobar.inject(".xrkmrrc{background-color:red}", 4);
@@ -215,7 +213,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           styles;
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import * as foobar from 'stylex';
         foobar.inject(".xrkmrrc{background-color:red}", 4);
@@ -252,7 +250,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           styles;
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import { create } from 'stylex';
         import __stylex__ from "stylex";
@@ -290,7 +288,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           styles;
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import { create as css } from 'stylex';
         import __stylex__ from "stylex";

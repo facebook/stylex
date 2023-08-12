@@ -17,9 +17,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [[stylexPlugin, opts]],
   }).code;
@@ -40,7 +38,7 @@ describe('@stylexjs/babel-plugin', () => {
               transform: '  rotate(10deg)  translate3d( 0 , 0 , 0 )  '
             }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x18qx21s{transform:rotate(10deg) translate3d(0,0,0)}", 4);"
@@ -49,7 +47,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { color: 'rgba( 1, 222,  33 , 0.5)' } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xe1l9yr{color:rgba(1,222,33,.5)}", 4);"
@@ -64,7 +62,7 @@ describe('@stylexjs/babel-plugin', () => {
             margin: '0px',
             marginLeft: '1px'
           } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1ghz6dp{margin:0}", 3);
@@ -77,7 +75,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { transitionDuration: '500ms' } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1wsgiic{transition-duration:.5s}", 4);"
@@ -93,7 +91,7 @@ describe('@stylexjs/babel-plugin', () => {
             y: { transform: '0turn' },
             z: { transform: '0grad' }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1jpfit1{transform:0deg}", 4);"
@@ -105,7 +103,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { width: 'calc((100% + 3% -   100px) / 7)' } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1hauit9{width:calc((100% + 3% - 100px) / 7)}", 4);"
@@ -120,7 +118,7 @@ describe('@stylexjs/babel-plugin', () => {
             transitionDuration: '0.01s',
             transitionTimingFunction: 'cubic-bezier(.08,.52,.52,1)'
           } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xpvlhck{transition-duration:.01s}", 4);
@@ -133,7 +131,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { quotes: "''" } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x169joja{quotes:\\"\\"}", 4);"
@@ -149,7 +147,7 @@ describe('@stylexjs/babel-plugin', () => {
             y: { transitionDuration: '10ms' },
             z: { transitionDuration: '1ms' }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xsa3hc2{transition-duration:1.234s}", 4);
@@ -174,7 +172,7 @@ describe('@stylexjs/babel-plugin', () => {
               opacity: 0.5
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1egiwwb{height:500px}", 4);
@@ -191,7 +189,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { height: 100 / 3 } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1vvwc6p{height:33.3333px}", 4);"
@@ -213,7 +211,7 @@ describe('@stylexjs/babel-plugin', () => {
               content: '"prev"',
             }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14axycx{content:\\"\\"}", 4);
@@ -240,7 +238,7 @@ describe('@stylexjs/babel-plugin', () => {
               fontSize: 'inherit',
             }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xngnso2{font-size:1.5rem}", 4);
@@ -259,7 +257,7 @@ describe('@stylexjs/babel-plugin', () => {
               fontSize: 'calc(100% - 24px)',
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x37c5sx{font-size:calc(100% - 1.5rem)}", 4);"
@@ -271,7 +269,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { color: 'red !important' } });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xzw3067{color:red!important}", 4);"

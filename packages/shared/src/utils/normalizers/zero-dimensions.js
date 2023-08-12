@@ -21,7 +21,7 @@ const timings = ['ms', 's'];
 
 export default function normalizeZeroDimensions(
   ast: PostCSSValueAST,
-  _: mixed
+  _: mixed,
 ): PostCSSValueAST {
   ast.walk((node) => {
     if (node.type !== 'word') {

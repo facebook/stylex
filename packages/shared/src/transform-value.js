@@ -13,7 +13,7 @@ import normalizeValue from './utils/normalize-value';
  */
 export default function transformValue(
   key: string,
-  rawValue: string | number
+  rawValue: string | number,
 ): string {
   const value =
     typeof rawValue === 'number'

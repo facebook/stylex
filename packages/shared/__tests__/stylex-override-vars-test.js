@@ -36,7 +36,7 @@ describe('stylex-override-vars test', () => {
 
     const [classNameOutput, cssOutput] = styleXOverrideVars(
       defaultVars,
-      overrideVars
+      overrideVars,
     );
 
     expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
@@ -91,7 +91,7 @@ describe('stylex-override-vars test', () => {
     const [classNameOutput2] = styleXOverrideVars(defaultVars, overrideVars2);
 
     expect(classNameOutput1[defaultVars.__themeName__]).toEqual(
-      classNameOutput2[defaultVars.__themeName__]
+      classNameOutput2[defaultVars.__themeName__],
     );
   });
 });

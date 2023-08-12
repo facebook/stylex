@@ -17,9 +17,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [jsx, [stylexPlugin, opts]],
   }).code;
@@ -32,7 +30,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           stylex();
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         "";"
@@ -49,7 +47,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.red);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -70,7 +68,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles[0], styles[1]);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -92,7 +90,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles[0], styles[1]);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -111,7 +109,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles['default']);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -134,7 +132,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.default, otherStyles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -153,7 +151,7 @@ describe('@stylexjs/babel-plugin', () => {
           const a = function() {
             return stylex(styles.foo);
           }
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -177,7 +175,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           stylex(styles.foo, styles.bar);
           const foo = styles;
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -210,7 +208,7 @@ describe('@stylexjs/babel-plugin', () => {
           export function MyExport() {
             return stylex(styles.foo);
           }
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -233,7 +231,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.foo);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14odnwx{padding:5px}", 3);
@@ -251,7 +249,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.foo);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14odnwx{padding:5px}", 3);
@@ -284,7 +282,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -306,7 +304,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -331,7 +329,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -355,7 +353,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -381,7 +379,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -405,7 +403,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -431,8 +429,8 @@ describe('@stylexjs/babel-plugin', () => {
             });
             stylex(styles.default, isActive && styles.active);
           `,
-            { genConditionalClasses: true }
-          )
+            { genConditionalClasses: true },
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -458,8 +456,8 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.default, isActive && styles.active);
-            `
-          )
+            `,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -492,7 +490,7 @@ describe('@stylexjs/babel-plugin', () => {
             });
             stylex(styles.red, styles.blue);
             stylex(styles.blue, styles.red);
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -516,7 +514,7 @@ describe('@stylexjs/babel-plugin', () => {
             });
             stylex(styles.red, styles.revert);
             stylex(styles.revert, styles.red);
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -541,7 +539,7 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
             stylex(styles.foo, styles.bar);
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x14odnwx{padding:5px}", 3);
@@ -568,7 +566,7 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
             stylex(styles.foo, styles.bar);
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x14odnwx{padding:5px}", 3);
@@ -593,8 +591,8 @@ describe('@stylexjs/babel-plugin', () => {
             });
             stylex(styles.red, isActive && styles.blue);
           `,
-            { genConditionalClasses: true }
-          )
+            { genConditionalClasses: true },
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -620,8 +618,8 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.red, isActive && styles.blue);
-            `
-          )
+            `,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -655,8 +653,8 @@ describe('@stylexjs/babel-plugin', () => {
             });
             stylex(styles.red, isActive && styles.blue);
           `,
-            { genConditionalClasses: true }
-          )
+            { genConditionalClasses: true },
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -681,8 +679,8 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.red, isActive && styles.blue);
-            `
-          )
+            `,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -719,8 +717,8 @@ describe('@stylexjs/babel-plugin', () => {
               });
               stylex(styles.default);
             `,
-            options
-          )
+            options,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -750,8 +748,8 @@ describe('@stylexjs/babel-plugin', () => {
               });
               stylex(styles.default, isActive && otherStyles.default);
           `,
-            options
-          )
+            options,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -784,8 +782,8 @@ describe('@stylexjs/babel-plugin', () => {
               });
               stylex(styles.default, isActive && otherStyles.default);
           `,
-            options
-          )
+            options,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -829,8 +827,8 @@ describe('@stylexjs/babel-plugin', () => {
               });
               stylex(styles.default, isActive && styles.active);
           `,
-            options
-          )
+            options,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -862,8 +860,8 @@ describe('@stylexjs/babel-plugin', () => {
               });
               stylex(styles.default, isActive && styles.active);
             `,
-            options
-          )
+            options,
+          ),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -899,7 +897,7 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles[variant]);
-          `)
+          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -927,7 +925,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
           stylex(styles.default, props);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -956,7 +954,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x17z2mba:hover{color:blue}", 17);
@@ -987,7 +985,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.default);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x17z2mba:hover{color:blue}", 17);
@@ -1017,7 +1015,7 @@ describe('@stylexjs/babel-plugin', () => {
                 backgroundColor: 'blue',
               }
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex(styles[variant]);
@@ -1060,7 +1058,7 @@ describe('@stylexjs/babel-plugin', () => {
                 backgroundColor: 'blue',
               }
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           function MyComponent() {
@@ -1095,7 +1093,7 @@ describe('@stylexjs/babel-plugin', () => {
                 color: 'red',
               },
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex(styles.default, props);
@@ -1124,7 +1122,7 @@ describe('@stylexjs/babel-plugin', () => {
                 },
               }
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           "x17z2mba xc445zv";
@@ -1154,8 +1152,8 @@ describe('@stylexjs/babel-plugin', () => {
           });
           stylex(styles.red);
         `,
-          { importSources: ['custom-stylex-path'] }
-        )
+          { importSources: ['custom-stylex-path'] },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'custom-stylex-path';
         stylex.inject(".x1e2nbdu{color:red}", 4);
@@ -1201,8 +1199,8 @@ describe('@stylexjs/babel-plugin', () => {
             sidebar == null ? styles.noSidebar : styles.withSidebar,
           );
         `,
-          { dev: true, genConditionalClasses: true }
-        )
+          { dev: true, genConditionalClasses: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from '@stylexjs/stylex';
         stylex.inject(".x9f619{box-sizing:border-box}", 4);
@@ -1308,8 +1306,8 @@ describe('@stylexjs/babel-plugin', () => {
             sidebar == null ? styles.noSidebar : styles.withSidebar,
           );
         `,
-          { dev: true }
-        )
+          { dev: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from '@stylexjs/stylex';
         stylex.inject(".x9f619{box-sizing:border-box}", 4);
@@ -1414,8 +1412,8 @@ describe('@stylexjs/babel-plugin', () => {
             isContent && styles.content,
           );
         `,
-          { dev: true, genConditionalClasses: true }
-        )
+          { dev: true, genConditionalClasses: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from '@stylexjs/stylex';
         stylex.inject(".x9f619{box-sizing:border-box}", 4);

@@ -1,6 +1,6 @@
 {
   "extends": "next/core-web-vitals",
   "rules": {
-    "flowtype/no-types-missing-file-annotation": "off"
+    "ft-flow/no-types-missing-file-annotation": "off"
   }
 }

@@ -22,7 +22,7 @@ export type ComputedStyle = null | $ReadOnly<[string, InjectableStyle]>;
 // with all the metadata needed to compile them into CSS.
 export interface IPreRule {
   compiled(
-    options: StyleXOptions
+    options: StyleXOptions,
   ): IncludedStyles | $ReadOnlyArray<ComputedStyle>;
   equals(other: IPreRule): boolean;
 }
@@ -81,7 +81,7 @@ export class PreRule implements IPreRule {
     property: string,
     value: string | number | $ReadOnlyArray<string | number>,
     pseudos?: ?$ReadOnlyArray<string>,
-    atRules?: ?$ReadOnlyArray<string>
+    atRules?: ?$ReadOnlyArray<string>,
   ) {
     this.property = property;
     this.value = value;
@@ -94,7 +94,7 @@ export class PreRule implements IPreRule {
       [this.property, this.value],
       this.pseudos ?? [],
       this.atRules ?? [],
-      options
+      options,
     );
     return [[className, rule]];
   }
@@ -126,10 +126,10 @@ export class PreRuleSet implements IPreRule {
   }
 
   static create(
-    rules: $ReadOnlyArray<PreRule | NullPreRule | PreRuleSet>
+    rules: $ReadOnlyArray<PreRule | NullPreRule | PreRuleSet>,
   ): AnyPreRule {
     const flatRules = rules.flatMap((rule) =>
-      rule instanceof PreRuleSet ? rule.rules : [rule]
+      rule instanceof PreRuleSet ? rule.rules : [rule],
     );
     if (flatRules.length === 0) {
       return new NullPreRule();

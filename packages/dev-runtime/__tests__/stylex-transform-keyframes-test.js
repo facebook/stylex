@@ -37,7 +37,7 @@ describe('Development Runtime Transformation', () => {
           to: {
             backgroundColor: 'blue',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`"xbopttm-B"`);
 
       expect(metadata).toMatchInlineSnapshot(`
@@ -64,7 +64,7 @@ describe('Development Runtime Transformation', () => {
           to: {
             backgroundColor: 'red',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`"x3zqmp-B"`);
     });
 
@@ -85,7 +85,7 @@ describe('Development Runtime Transformation', () => {
           root: {
             animationName: name,
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "root": {

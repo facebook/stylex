@@ -48,8 +48,8 @@ describe('Development Plugin Transformation', () => {
             },
             cornerRadius: { default: '6px' },
             fgColor: 'coral',
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         {
           "$$css": true,

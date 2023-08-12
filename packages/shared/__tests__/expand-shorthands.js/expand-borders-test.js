@@ -13,7 +13,7 @@ import legacyExpandShorthands from '../../src/preprocess-rules/legacy-expand-sho
 describe('Ensure border are still splitting to the old implementation', () => {
   test('1px solid var(--thumbnail-inner-border)', () => {
     expect(
-      legacyExpandShorthands.border('1px solid var(--thumbnail-inner-border)')
+      legacyExpandShorthands.border('1px solid var(--thumbnail-inner-border)'),
     ).toEqual([
       ['borderTop', '1px solid var(--thumbnail-inner-border)'],
       ['borderEnd', '1px solid var(--thumbnail-inner-border)'],

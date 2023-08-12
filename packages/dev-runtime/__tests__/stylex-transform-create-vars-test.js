@@ -46,8 +46,8 @@ describe('Development Plugin Transformation', () => {
           },
           {
             themeName: 'buttonTheme',
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         {
           "__themeName__": "x7fqapl",

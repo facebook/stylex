@@ -6,6 +6,7 @@
   "repository": "https://github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
     "build": "rollup --config ./rollup.config.mjs",
     "build-haste": "HASTE=true rollup --config ./rollup.config.mjs",
     "test": "jest"
@@ -20,6 +21,12 @@
   },
   "devDependencies": {
     "ts-node": "^10.8.1"
+  },
+  "jest": {
+    "verbose": true,
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    }
   },
   "files": [
     "lib/*"

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @flow strict
- *
  */
 
 import parser from 'postcss-value-parser';
@@ -31,7 +30,7 @@ function splitByDivisor(value: string) {
       return;
     }
 
-    groups.push(parser.stringify((currGroup: $FlowFixMe)));
+    groups.push(parser.stringify(currGroup));
     currGroup = [];
   }
 
@@ -176,7 +175,7 @@ const propertyToRTL = {
       key,
       words
         .map((word) =>
-          word === 'start' ? 'right' : word === 'end' ? 'left' : word
+          word === 'start' ? 'right' : word === 'end' ? 'left' : word,
         )
         .join(' '),
     ];
@@ -188,7 +187,7 @@ const propertyToRTL = {
 
 export default function generateRTL([key, value]: [string, string]): ?[
   string,
-  string
+  string,
 ] {
   if (propertyToRTL[key]) {
     return propertyToRTL[key]([key, value]);

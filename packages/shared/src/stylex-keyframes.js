@@ -32,7 +32,7 @@ import { defaultOptions } from './utils/default-options';
 // `stylex.create`.
 export default function styleXKeyframes(
   frames: { +[string]: { +[string]: string | number } },
-  options: StyleXOptions = defaultOptions
+  options: StyleXOptions = defaultOptions,
 ): [string, InjectableStyle] {
   const { stylexSheetName = '<>', classNamePrefix = 'x' } = options;
   const expandedObject = objMap(frames, (frame) =>
@@ -40,14 +40,14 @@ export default function styleXKeyframes(
       .pipe((frame) => expandFrameShorthands(frame, options))
       .pipe((x) => objMapKeys(x, dashify))
       .pipe((x) => objMap(x, (value, key) => transformValue(key, value)))
-      .done()
+      .done(),
   );
 
   const ltrStyles = objMap(expandedObject, (frame) =>
-    objMapEntry(frame, generateLtr)
+    objMapEntry(frame, generateLtr),
   );
   const rtlStyles = objMap(expandedObject, (frame) =>
-    objMapEntry(frame, (entry) => generateRtl(entry) ?? entry)
+    objMapEntry(frame, (entry) => generateRtl(entry) ?? entry),
   );
 
   const ltrString = constructKeyframesObj(ltrStyles);
@@ -68,7 +68,7 @@ export default function styleXKeyframes(
 
 function expandFrameShorthands(
   frame: { +[key: string]: string | number },
-  options: StyleXOptions
+  options: StyleXOptions,
 ): {
   +[key: string]: string | number,
 } {
@@ -82,10 +82,10 @@ function expandFrameShorthands(
             }
             return null;
           })
-          .filter(Boolean)
+          .filter(Boolean),
       )
       // Keyframes are not combined. The nulls can be skipped
-      .filter(([_key, value]) => value != null)
+      .filter(([_key, value]) => value != null),
   );
 }
 
@@ -98,7 +98,7 @@ function constructKeyframesObj(frames: {
       ([key, value]) =>
         `${key}{${objEntries(value)
           .map(([k, v]) => `${k}:${v};`)
-          .join('')}}`
+          .join('')}}`,
     )
     .join('');
 }

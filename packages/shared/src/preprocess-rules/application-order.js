@@ -170,7 +170,7 @@ const shorthands = {
         '`borderRight` is not supported.',
         'You could use `borderRightWidth`, `borderRightStyle` and `borderRightColor`,',
         'but it is preferable to use `borderInlineEndWidth`, `borderInlineEndStyle` and `borderInlineEndColor`.',
-      ].join(' ')
+      ].join(' '),
     );
   },
   // @Deprecated
@@ -204,7 +204,7 @@ const shorthands = {
         '`borderLeft` is not supported.',
         'You could use `borderLeftWidth`, `borderLeftStyle` and `borderLeftColor`,',
         'but it is preferable to use `borderInlineStartWidth`, `borderInlineStartStyle` and `borderInlineStartColor`.',
-      ].join(' ')
+      ].join(' '),
     );
   },
   borderInlineWidth: (rawValue: TStyleValue): TReturn => [
@@ -836,4 +836,7 @@ const expansions = {
   ...aliases,
 };
 
-export default expansions;
+export default (expansions: $ReadOnly<{
+  ...typeof shorthands,
+  ...typeof aliases,
+}>);

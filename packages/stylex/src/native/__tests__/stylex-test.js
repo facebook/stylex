@@ -63,7 +63,7 @@ describe('styles', () => {
     });
     expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
     expect(
-      stylex.spread([styles.root, styles.override], mockOptions)
+      stylex.spread([styles.root, styles.override], mockOptions),
     ).toMatchSnapshot();
   });
 
@@ -117,7 +117,7 @@ describe('styles', () => {
     expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot('default');
 
     expect(
-      stylex.spread(styles.root, { ...mockOptions, fontScale: 2 })
+      stylex.spread(styles.root, { ...mockOptions, fontScale: 2 }),
     ).toMatchSnapshot('fontScale:2');
   });
 
@@ -172,12 +172,12 @@ describe('styles', () => {
       },
     });
     expect(stylex.spread(styles.contain, mockOptions)).toMatchSnapshot(
-      'contain'
+      'contain',
     );
     expect(stylex.spread(styles.cover, mockOptions)).toMatchSnapshot('contain');
     expect(stylex.spread(styles.fill, mockOptions)).toMatchSnapshot('fill');
     expect(stylex.spread(styles.scaleDown, mockOptions)).toMatchSnapshot(
-      'scaleDown'
+      'scaleDown',
     );
     expect(stylex.spread(styles.none, mockOptions)).toMatchSnapshot('none');
   });
@@ -212,10 +212,10 @@ describe('styles', () => {
     expect(console.error).toHaveBeenCalledTimes(2);
     expect(stylex.spread(styles.static, mockOptions)).toMatchSnapshot('static');
     expect(stylex.spread(styles.relative, mockOptions)).toMatchSnapshot(
-      'relative'
+      'relative',
     );
     expect(stylex.spread(styles.absolute, mockOptions)).toMatchSnapshot(
-      'absolute'
+      'absolute',
     );
     expect(stylex.spread(styles.fixed, mockOptions)).toMatchSnapshot('fixed');
     expect(stylex.spread(styles.sticky, mockOptions)).toMatchSnapshot('sticky');
@@ -274,13 +274,13 @@ describe('styles', () => {
     expect(stylex.spread(styles.none, mockOptions)).toMatchSnapshot('none');
     expect(stylex.spread(styles.matrix, mockOptions)).toMatchSnapshot('matrix');
     expect(stylex.spread(styles.perspective, mockOptions)).toMatchSnapshot(
-      'perspective'
+      'perspective',
     );
     expect(stylex.spread(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
     expect(stylex.spread(styles.scale, mockOptions)).toMatchSnapshot('scale');
     expect(stylex.spread(styles.skew, mockOptions)).toMatchSnapshot('skew');
     expect(stylex.spread(styles.translate, mockOptions)).toMatchSnapshot(
-      'translate'
+      'translate',
     );
     expect(stylex.spread(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
     expect(stylex.spread(styles.mixed, mockOptions)).toMatchSnapshot('mixed');
@@ -342,13 +342,13 @@ describe('styles', () => {
       },
     });
     expect(stylex.spread(styles.startstart, mockOptions)).toMatchSnapshot(
-      'startstart'
+      'startstart',
     );
     expect(stylex.spread(styles.startend, mockOptions)).toMatchSnapshot(
-      'startend'
+      'startend',
     );
     expect(stylex.spread(styles.endstart, mockOptions)).toMatchSnapshot(
-      'endstart'
+      'endstart',
     );
     expect(stylex.spread(styles.endend, mockOptions)).toMatchSnapshot('endend');
   });
@@ -409,7 +409,10 @@ describe('length units', () => {
       },
     });
     expect(
-      stylex.spread(styles.underTest, { ...mockOptions, inheritedFontSize: 12 })
+      stylex.spread(styles.underTest, {
+        ...mockOptions,
+        inheritedFontSize: 12,
+      }),
     ).toMatchSnapshot();
   });
 });
@@ -432,7 +435,7 @@ describe('custom properties', () => {
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
     expect(console.error).toHaveBeenCalledWith(
-      'stylex: Unrecognized custom property "--unprovided"'
+      'stylex: Unrecognized custom property "--unprovided"',
     );
   });
 
@@ -450,7 +453,7 @@ describe('custom properties', () => {
           slightlyDarkerBlack: '#333',
           theBestWidth: 42,
         },
-      })
+      }),
     ).toMatchSnapshot();
   });
 });
@@ -626,7 +629,7 @@ describe('unsupported style properties', () => {
       stylex.spread(underTest, {
         ...mockOptions,
         passthroughProperties: ['transitionProperty'],
-      })
+      }),
     ).toMatchSnapshot();
     expect(console.error).not.toHaveBeenCalled();
   });

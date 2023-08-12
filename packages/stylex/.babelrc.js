@@ -5,7 +5,7 @@ function makeHaste() {
         if (path.get('source').isStringLiteral()) {
           const oldValue = path.get('source').node.value;
           path.get('source').node.value = oldValue.slice(
-            oldValue.lastIndexOf('/') + 1
+            oldValue.lastIndexOf('/') + 1,
           );
         }
       },

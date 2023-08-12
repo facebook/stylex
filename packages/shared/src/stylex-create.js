@@ -33,7 +33,7 @@ import { validateNamespace } from './preprocess-rules/basic-validation';
 // Before returning, it ensures that there are no duplicate styles being injected.
 export default function styleXCreateSet(
   namespaces: { +[string]: RawStyles },
-  options?: StyleXOptions = defaultOptions
+  options?: StyleXOptions = defaultOptions,
 ): [{ [string]: FlatCompiledStyles }, { [string]: InjectableStyle }] {
   const resolvedNamespaces: { [string]: FlatCompiledStyles } = {};
   const injectedStyles: { [string]: InjectableStyle } = {};
@@ -50,7 +50,7 @@ export default function styleXCreateSet(
 
     const compiledNamespace = objFromEntries<
       string,
-      IncludedStyles | $ReadOnlyArray<ComputedStyle>
+      IncludedStyles | $ReadOnlyArray<ComputedStyle>,
     >(compiledNamespaceTuples);
 
     const namespaceObj: {

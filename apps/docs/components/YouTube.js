@@ -26,7 +26,7 @@ const styles = stylex.create({
   },
 });
 
-export default function YouTube({width, height, src, title}) {
+export default function YouTube({width: _w, height: _h, src, title}) {
   return (
     <div className={stylex(styles.container)}>
       <iframe

@@ -30,7 +30,7 @@ export class RawRule<V> extends Rule<V> {
     key: string,
     value: V,
     psuedos: ?$ReadOnlyArray<string>,
-    atRules: ?$ReadOnlyArray<string>
+    atRules: ?$ReadOnlyArray<string>,
   ) {
     super();
     this.key = key;
@@ -70,7 +70,7 @@ export class CompiledRule<V> extends Rule<V> {
     value: V,
     psuedos: ?$ReadOnlyArray<string>,
     atRules: ?$ReadOnlyArray<string>,
-    className: string
+    className: string,
   ) {
     super();
     this.key = key;

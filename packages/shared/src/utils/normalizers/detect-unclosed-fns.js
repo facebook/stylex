@@ -16,7 +16,7 @@ import * as messages from '../../messages';
  */
 export default function detectUnclosedFns(
   ast: PostCSSValueAST,
-  _: mixed
+  _: mixed,
 ): PostCSSValueAST {
   ast.walk((node) => {
     if (node.type === 'function' && node.unclosed) {

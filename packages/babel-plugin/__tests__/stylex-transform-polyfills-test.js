@@ -16,9 +16,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [[stylexPlugin, opts]],
   }).code;
@@ -35,7 +33,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { lineClamp: 3 } });
-        `)
+        `),
       ).toMatchInlineSnapshot();
     });
 
@@ -49,7 +47,7 @@ describe('@stylexjs/babel-plugin', () => {
             c: { pointerEvents: 'box-only' },
             d: { pointerEvents: 'none' }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot();
     });
 
@@ -58,7 +56,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.create({ x: { scrollbarWidth: 'none' } });
-        `)
+        `),
       ).toMatchInlineSnapshot();
     });
   });

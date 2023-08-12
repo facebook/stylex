@@ -25,9 +25,7 @@ function transform(source, opts = defaultOpts) {
   return transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
@@ -103,14 +101,14 @@ describe('@stylexjs/babel-plugin', () => {
          ${createVarsOutput}
          const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
        `,
-        { dev: true, ...defaultOpts }
+        { dev: true, ...defaultOpts },
       );
       const output2 = transform(
         `
          ${createVarsOutput}
          const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVarsWithDifferentOrder});
        `,
-        { dev: true, ...defaultOpts }
+        { dev: true, ...defaultOpts },
       );
       expect(output1).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -135,7 +133,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
            ${createVarsOutput}
            const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -159,8 +157,8 @@ describe('@stylexjs/babel-plugin', () => {
            ${createVarsOutput}
            const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
          `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -188,8 +186,8 @@ describe('@stylexjs/babel-plugin', () => {
           {
             moduleSystem: 'commonjs',
             rootDir,
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -217,8 +215,8 @@ describe('@stylexjs/babel-plugin', () => {
             dev: true,
             moduleSystem: 'commonjs',
             rootDir,
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -246,8 +244,8 @@ describe('@stylexjs/babel-plugin', () => {
             bgColor: 'skyblue',
             cornerRadius: '8px',
           });
-         `
-        )
+         `,
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -284,8 +282,8 @@ describe('@stylexjs/babel-plugin', () => {
           {
             dev: true,
             ...defaultOpts,
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -328,8 +326,8 @@ describe('@stylexjs/babel-plugin', () => {
             fgColor: 'coral',
           });
          `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -368,8 +366,8 @@ describe('@stylexjs/babel-plugin', () => {
             fgColor: COLOR,
           });
          `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -408,8 +406,8 @@ describe('@stylexjs/babel-plugin', () => {
             fgColor: 'coral',
           });
          `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -448,8 +446,8 @@ describe('@stylexjs/babel-plugin', () => {
             fgColor: 'coral',
           });
          `,
-          { dev: true, ...defaultOpts }
-        )
+          { dev: true, ...defaultOpts },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -482,8 +480,8 @@ describe('@stylexjs/babel-plugin', () => {
               rootDir,
             },
             filename: '/stylex/packages/utils/NestedTheme.stylex.js',
-          }
-        )
+          },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {

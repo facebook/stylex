@@ -18,7 +18,7 @@ import parser from 'postcss-value-parser';
 
 export default function normalizeTimings(
   ast: PostCSSValueAST,
-  _: mixed
+  _: mixed,
 ): PostCSSValueAST {
   ast.walk((node) => {
     if (node.type !== 'word') {

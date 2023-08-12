@@ -33,7 +33,7 @@ type RuntimeOptions = {
     key: string,
     ltrRule: string,
     priority: number,
-    rtlRule?: ?string
+    rtlRule?: ?string,
   ) => void,
   ...
 };
@@ -44,7 +44,7 @@ const defaultInsert = (
   key: string,
   ltrRule: string,
   priority: number,
-  rtlRule?: ?string
+  rtlRule?: ?string,
 ): void => {
   if (priority === 0) {
     if (injectedVariableObjs.has(key)) {
@@ -66,11 +66,11 @@ export default function inject({
   ...config
 }: RuntimeOptions): void {
   const stylexCreate: Stylex$Create = <S: { ... }>(
-    styles: S
+    styles: S,
   ): $ReadOnly<$ObjMap<S, MapNamespaces>> => {
     const [compiledStyles, injectedStyles] = shared.create(
       (styles: $FlowFixMe),
-      config
+      config,
     );
     for (const key in injectedStyles) {
       const { ltr, priority, rtl } = injectedStyles[key];
@@ -102,7 +102,7 @@ export default function inject({
     variables: { +[string]: string | { default: string, +[string]: string } },
     { themeName }: { themeName: string } = {
       themeName: themeNameUUID(),
-    }
+    },
   ) => {
     const [cssVarsObject, { css }] = shared.createVars(variables, {
       themeName,
@@ -114,7 +114,7 @@ export default function inject({
 
   stylex.unstable_overrideVars = (
     variablesTheme: { __themeName__: string, +[string]: string },
-    variablesOverride: { +[string]: string }
+    variablesOverride: { +[string]: string },
   ) => {
     const [js, css] = shared.overrideVars(variablesTheme, variablesOverride);
     const styleKey = js[variablesTheme.__themeName__];
@@ -126,7 +126,7 @@ export default function inject({
   stylex.keyframes = (frames) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(
       (frames: $FlowFixMe),
-      config
+      config,
     );
     insert(animationName, ltr, priority, rtl);
     return animationName;
@@ -135,7 +135,7 @@ export default function inject({
   stylex.firstThatWorks = shared.firstThatWorks;
 
   const stylexInclude = <TStyles: { +[string]: string | number }>(
-    includedStyles: MapNamespace<TStyles>
+    includedStyles: MapNamespace<TStyles>,
   ): TStyles => {
     return (shared.include({ node: includedStyles }): $FlowFixMe);
   };

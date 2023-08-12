@@ -20,6 +20,6 @@ module.exports = function stylexLoader(inputCode) {
     },
     (error) => {
       callback(error);
-    }
+    },
   );
 };

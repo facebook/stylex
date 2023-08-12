@@ -6,7 +6,8 @@
   "repository": "https://github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
-    "build": "babel src/ --out-dir lib/ --extensions .ts --out-file-extension .js",
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "babel src/ --out-dir lib/",
     "test": "jest"
   },
   "devDependencies": {

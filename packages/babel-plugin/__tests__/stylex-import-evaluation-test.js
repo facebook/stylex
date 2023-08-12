@@ -25,9 +25,7 @@ function transform(source, opts = options) {
   return transformSync(source, {
     filename: opts.filename ?? 'test.js',
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     babelrc: false,
     plugins: [jsx, [stylexPlugin, opts]],
@@ -52,10 +50,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         stylex(styles.red);
       `);
       const expectedVarName = `var(--${options.classNamePrefix}${hash(
-        'otherFile.stylex.js//MyTheme.foreground'
+        'otherFile.stylex.js//MyTheme.foreground',
       )})`;
       expect(expectedVarName).toMatchInlineSnapshot(
-        `"var(--__hashed_var__1jqb1tb)"`
+        `"var(--__hashed_var__1jqb1tb)"`,
       );
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`
@@ -89,10 +87,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         stylex(styles.red);
       `);
       const expectedVarName = `var(--${options.classNamePrefix}${hash(
-        'otherFile.stylex.js//MyTheme.foreground'
+        'otherFile.stylex.js//MyTheme.foreground',
       )})`;
       expect(expectedVarName).toMatchInlineSnapshot(
-        `"var(--__hashed_var__1jqb1tb)"`
+        `"var(--__hashed_var__1jqb1tb)"`,
       );
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`
@@ -126,10 +124,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         stylex(styles.red);
       `);
       const expectedVarName = `var(--${options.classNamePrefix}${hash(
-        'otherFile.stylex.js//MyTheme.foreground'
+        'otherFile.stylex.js//MyTheme.foreground',
       )})`;
       expect(expectedVarName).toMatchInlineSnapshot(
-        `"var(--__hashed_var__1jqb1tb)"`
+        `"var(--__hashed_var__1jqb1tb)"`,
       );
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`

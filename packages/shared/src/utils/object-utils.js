@@ -13,7 +13,10 @@ import type { CompiledStyles } from '../common-types';
 
 import { IncludedStyles } from '../stylex-include';
 
-export function isPlainObject(obj: mixed): boolean %checks {
+// eslint-disable-next-line no-unused-vars
+type AnyObject = { +[string]: mixed };
+
+export function isPlainObject(obj: mixed) /*: obj is AnyObject */ {
   return (
     typeof obj === 'object' &&
     obj != null &&
@@ -40,9 +43,14 @@ export function flattenObject(obj: CompiledStyles): {
   return result;
 }
 
-export function objEntries<Obj: { ... }>(
-  obj: Obj
-): $ReadOnlyArray<[$Keys<Obj>, Obj[$Keys<Obj>]]> {
+type _ObjectEntries<Obj: { +[string]: mixed }> = {
+  [Key in keyof Obj]: [Key, Obj[Key]],
+};
+type ObjectEntries<Obj: { +[string]: mixed }> = $Values<_ObjectEntries<Obj>>;
+
+export function objEntries<Obj: { +[string]: mixed }>(
+  obj: Obj,
+): $ReadOnlyArray<ObjectEntries<Obj>> {
   const retVal = [];
   for (const key of Object.keys(obj)) {
     retVal.push([key, obj[key]]);
@@ -50,8 +58,8 @@ export function objEntries<Obj: { ... }>(
   return retVal;
 }
 
-export function objValues<Obj: { ... }>(
-  obj: Obj
+export function objValues<Obj: { +[string]: mixed }>(
+  obj: Obj,
 ): $ReadOnlyArray<Obj[$Keys<Obj>]> {
   const retVal = [];
   for (const key of Object.keys(obj)) {
@@ -61,7 +69,7 @@ export function objValues<Obj: { ... }>(
 }
 
 export function objFromEntries<K: string | number, V>(
-  entries: $ReadOnlyArray<$ReadOnly<[K, V]>>
+  entries: $ReadOnlyArray<$ReadOnly<[K, V]>>,
 ): { [K]: V } {
   const retVal: { [K]: V } = {};
   for (const [key, value] of entries) {
@@ -70,33 +78,30 @@ export function objFromEntries<K: string | number, V>(
   return retVal;
 }
 
-export function objMapKeys<
-  V,
-  K1: string | number = string,
-  K2: string | number = string
->(obj: { +[K1]: V }, mapper: (K1) => K2): { +[K2]: V } {
+export function objMapKeys<V, K1: string = string, K2: string = string>(
+  obj: { +[K1]: V },
+  mapper: (K1) => K2,
+): { +[K2]: V } {
   return objFromEntries(
-    objEntries(obj).map(([key, value]) => [mapper(key), value])
+    objEntries(obj).map(([key, value]) => [mapper(key), value]),
   );
 }
 
-export function objMapEntry<
-  V,
-  V2,
-  K1: string | number = string,
-  K2: string | number = string
->(obj: { +[K1]: V }, mapper: ([K1, V]) => [K2, V2]): { +[K2]: V2 } {
+export function objMapEntry<V, V2, K1: string = string, K2: string = string>(
+  obj: { +[K1]: V },
+  mapper: ([K1, V]) => [K2, V2],
+): { +[K2]: V2 } {
   return objFromEntries(
-    objEntries(obj).map(([key, value]) => mapper([key, value]))
+    objEntries(obj).map(([key, value]) => mapper([key, value])),
   );
 }
 
-export function objMap<V, V2, K: string | number = string>(
+export function objMap<V, V2, K: string = string>(
   obj: { +[K]: V },
-  mapper: (V, K) => V2
+  mapper: (V, K) => V2,
 ): { +[K]: V2 } {
   return objFromEntries(
-    objEntries(obj).map(([key, value]) => [key, mapper(value, key)])
+    objEntries(obj).map(([key, value]) => [key, mapper(value, key)]),
   );
 }
 
@@ -123,13 +128,13 @@ export class Pipe<T> {
 // Function that sorts an array without mutating it and returns a new array
 export const arraySort = <T>(
   arr: $ReadOnlyArray<T>,
-  fn?: (T, T) => number
+  fn?: (T, T) => number,
 ): $ReadOnlyArray<T> => [...arr].sort(fn);
 
 export const arrayEquals = <T>(
   arr1: $ReadOnlyArray<T>,
   arr2: $ReadOnlyArray<T>,
-  equals: (T, T) => boolean = (a, b) => a === b
+  equals: (T, T) => boolean = (a, b) => a === b,
 ): boolean => {
   if (arr1.length !== arr2.length) {
     return false;

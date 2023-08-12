@@ -186,16 +186,16 @@ export class StyleXSheet {
     if (this.rootTheme != null) {
       this.insert(
         buildTheme(`:root, .${LIGHT_MODE_CLASS_NAME}`, this.rootTheme),
-        0
+        0,
       );
     }
     if (this.rootDarkTheme != null) {
       this.insert(
         buildTheme(
           `.${DARK_MODE_CLASS_NAME}:root, .${DARK_MODE_CLASS_NAME}`,
-          this.rootDarkTheme
+          this.rootDarkTheme,
         ),
-        0
+        0,
       );
     }
   }
@@ -285,7 +285,7 @@ export class StyleXSheet {
     if (rawRTLRule != null) {
       this.insert(
         addAncestorSelector(rawLTRRule, "html:not([dir='rtl'])"),
-        priority
+        priority,
       );
       this.insert(addAncestorSelector(rawRTLRule, "html[dir='rtl']"), priority);
       return;

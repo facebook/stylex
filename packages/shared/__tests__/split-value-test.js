@@ -42,7 +42,7 @@ describe('Ensure CSS values are split correctly', () => {
       'calc((100% - 50px) * 0.5)',
     ]);
     expect(
-      splitValue('calc((100% - 50px) * 0.5) var(--rightpadding, 20px)')
+      splitValue('calc((100% - 50px) * 0.5) var(--rightpadding, 20px)'),
     ).toEqual(['calc((100% - 50px) * 0.5)', 'var(--rightpadding,20px)']);
   });
 });

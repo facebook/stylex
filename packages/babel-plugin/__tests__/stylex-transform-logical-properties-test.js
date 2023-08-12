@@ -16,9 +16,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [[stylexPlugin, opts]],
   }).code;
@@ -38,7 +36,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockColor: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1lkbs04{border-block-color:0}", 4);
@@ -52,7 +50,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockStartColor: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x4q076{border-top-color:0}", 4);
@@ -66,7 +64,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockEndColor: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1ylptbq{border-bottom-color:0}", 4);
@@ -80,7 +78,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineColor: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1v09clb{border-inline-color:0}", 4);
@@ -94,7 +92,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineStartColor: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1t19a1o{border-inline-start-color:0}", 4);
@@ -108,7 +106,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineEndColor: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14mj1wy{border-inline-end-color:0}", 4);
@@ -124,7 +122,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockStyle: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x7mea6a{border-block-style:0}", 4);
@@ -138,7 +136,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockStartStyle: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1d917x0{border-top-style:0}", 4);
@@ -152,7 +150,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockEndStyle: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1nmap2y{border-bottom-style:0}", 4);
@@ -166,7 +164,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineStyle: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xt8kkye{border-inline-style:0}", 4);
@@ -180,7 +178,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineStartStyle: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xl8mozw{border-inline-start-style:0}", 4);
@@ -194,7 +192,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineEndStyle: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x10o505a{border-inline-end-style:0}", 4);
@@ -210,7 +208,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockWidth: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1616tdu{border-block-width:0}", 4);
@@ -224,7 +222,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockStartWidth: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x972fbf{border-top-width:0}", 4);
@@ -238,7 +236,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderBlockEndWidth: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1qhh985{border-bottom-width:0}", 4);
@@ -252,7 +250,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineWidth: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xuxrje7{border-inline-width:0}", 4);
@@ -266,7 +264,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineStartWidth: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14e42zd{border-inline-start-width:0}", 4);
@@ -280,7 +278,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { borderInlineEndWidth: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x10w94by{border-inline-end-width:0}", 4);
@@ -296,7 +294,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetBlockStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x13vifvy{top:0}", 4);
@@ -310,7 +308,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetBlock: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x10no89f{inset-block:0}", 4);
@@ -324,7 +322,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetBlockEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1ey2m1c{bottom:0}", 4);
@@ -338,7 +336,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetBlockStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x13vifvy{top:0}", 4);
@@ -352,7 +350,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetInline: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x17y0mx6{inset-inline:0}", 4);
@@ -366,7 +364,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetInlineEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xtijo5x{inset-inline-end:0}", 4);
@@ -380,7 +378,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { insetInlineStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1o0tod{inset-inline-start:0}", 4);
@@ -396,7 +394,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginBlock: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x10im51j{margin-block:0}", 4);
@@ -410,7 +408,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginBlockEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xat24cr{margin-bottom:0}", 4);
@@ -424,7 +422,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginBlockStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xdj266r{margin-top:0}", 4);
@@ -438,7 +436,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginInline: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrxpjvj{margin-inline:0}", 4);
@@ -452,7 +450,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginInlineEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14z9mp{margin-inline-end:0}", 4);
@@ -466,7 +464,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginInlineStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1lziwak{margin-inline-start:0}", 4);
@@ -482,7 +480,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingBlock: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xt970qd{padding-block:0}", 4);
@@ -496,7 +494,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingBlockEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x18d9i69{padding-bottom:0}", 4);
@@ -510,7 +508,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingBlockStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xexx8yu{padding-top:0}", 4);
@@ -524,7 +522,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingInline: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xnjsko4{padding-inline:0}", 4);
@@ -538,7 +536,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingInlineEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xyri2b{padding-inline-end:0}", 4);
@@ -552,7 +550,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingInlineStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1c1uobl{padding-inline-start:0}", 4);
@@ -570,7 +568,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { end: 5 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xceh6e4{inset-inline-end:5px}", 4);
@@ -584,7 +582,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14z9mp{margin-inline-end:0}", 4);
@@ -598,7 +596,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginHorizontal: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrxpjvj{margin-inline:0}", 4);
@@ -612,7 +610,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1lziwak{margin-inline-start:0}", 4);
@@ -626,7 +624,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { marginVertical: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x10im51j{margin-block:0}", 4);
@@ -640,7 +638,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingEnd: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xyri2b{padding-inline-end:0}", 4);
@@ -654,7 +652,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingHorizontal: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xnjsko4{padding-inline:0}", 4);
@@ -668,7 +666,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingStart: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1c1uobl{padding-inline-start:0}", 4);
@@ -682,7 +680,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { paddingVertical: 0 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xt970qd{padding-block:0}", 4);
@@ -696,7 +694,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const styles = stylex.create({ x: { start: 5 } });
           const classnames = stylex(styles.x);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1fb7gu6{inset-inline-start:5px}", 4);
@@ -718,7 +716,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
           stylex(styles.four);
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x14bfre8{margin-top:1}", 4);

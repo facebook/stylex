@@ -24,7 +24,7 @@ export class CSSMediaQuery {
 
   static resolveMediaQueries(
     styleObj: { +[string]: mixed },
-    matchObj: MatchObject
+    matchObj: MatchObject,
   ): { [string]: mixed } {
     const mediaQueries = [];
     const result: { [string]: mixed } = {};
@@ -45,7 +45,7 @@ export class CSSMediaQuery {
         const unresolvedMatchedStyle = mqInst.resolve(matchObj);
         const resolvedMatchedStyle = this.resolveMediaQueries(
           unresolvedMatchedStyle,
-          matchObj
+          matchObj,
         );
         for (const propName in resolvedMatchedStyle) {
           result[propName] = resolvedMatchedStyle[propName];

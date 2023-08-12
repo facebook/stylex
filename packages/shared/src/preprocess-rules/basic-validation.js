@@ -13,12 +13,12 @@ import { isPlainObject } from '../utils/object-utils';
 
 export function validateNamespace(
   namespace: mixed,
-  conditions: $ReadOnlyArray<string> = []
+  conditions: $ReadOnlyArray<string> = [],
 ): void {
   if (!isPlainObject(namespace)) {
     throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
   }
-  const ns: { [string]: mixed } = (namespace: $FlowFixMe);
+  const ns: { +[string]: mixed } = namespace;
   for (const key in ns) {
     const val = ns[key];
     if (val === null || typeof val === 'string' || typeof val === 'number') {
@@ -56,7 +56,7 @@ export function validateNamespace(
 
 function validateConditionalStyles(
   val: { ... },
-  conditions: $ReadOnlyArray<string> = []
+  conditions: $ReadOnlyArray<string> = [],
 ): void {
   for (const key in val) {
     const v = val[key];

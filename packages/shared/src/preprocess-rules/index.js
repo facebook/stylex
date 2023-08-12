@@ -20,26 +20,26 @@ const expansions = {
 };
 
 export function getExpandedKeys(
-  options: StyleXOptions
+  options: StyleXOptions,
 ): $ReadOnlyArray<string> {
   return Object.keys(
-    expansions[options.styleResolution ?? 'application-order']
+    expansions[options.styleResolution ?? 'application-order'],
   );
 }
 
 export default function flatMapExpandedShorthands(
   objEntry: $ReadOnly<[string, TStyleValue]>,
-  options: StyleXOptions
+  options: StyleXOptions,
 ): $ReadOnlyArray<[string, TStyleValue]> {
   const [key, value] = objEntry;
   const expansion: (
-    string | number | null
+    string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
     expansions[options.styleResolution ?? 'application-order'][key];
   if (expansion) {
     if (Array.isArray(value)) {
       throw new Error(
-        'Cannot use fallbacks for shorthands. Use the expansion instead.'
+        'Cannot use fallbacks for shorthands. Use the expansion instead.',
       );
     }
     return expansion(value);

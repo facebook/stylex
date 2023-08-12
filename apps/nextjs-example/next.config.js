@@ -4,7 +4,7 @@ const stylexPlugin = require('@stylexjs/nextjs-plugin');
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  webpack(config, options) {
+  webpack(config, _options) {
     config.output.hashFunction = 'sha256';
     return config;
   },

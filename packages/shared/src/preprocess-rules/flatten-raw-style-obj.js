@@ -22,7 +22,7 @@ import { IncludedStyles } from '../stylex-include';
 
 export function flattenRawStyleObject(
   style: RawStyles,
-  options: StyleXOptions
+  options: StyleXOptions,
 ): $ReadOnlyArray<$ReadOnly<[string, IPreRule]>> {
   return _flattenRawStyleObject(style, [], [], options);
 }
@@ -31,10 +31,10 @@ export function _flattenRawStyleObject(
   style: RawStyles,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
-  options: StyleXOptions
+  options: StyleXOptions,
 ): Array<$ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>> {
   const flattened: Array<
-    $ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>
+    $ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>,
   > = [];
   for (const key in style) {
     const value = style[key];
@@ -135,7 +135,7 @@ export function _flattenRawStyleObject(
           { [key]: innerValue },
           pseudosToPassDown,
           atRulesToPassDown,
-          options
+          options,
         );
         for (const [property, preRule] of pairs) {
           if (preRule instanceof PreIncludedStylesRule) {
@@ -177,7 +177,7 @@ export function _flattenRawStyleObject(
         value,
         pseudosToPassDown,
         atRulesToPassDown,
-        options
+        options,
       );
       for (const [property, preRule] of pairs) {
         flattened.push([key + '_' + property, preRule]);

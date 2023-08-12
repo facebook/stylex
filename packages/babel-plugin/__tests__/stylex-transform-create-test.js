@@ -17,9 +17,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [flowPlugin, [stylexPlugin, opts]],
   }).code;
@@ -37,7 +35,7 @@ describe('@stylexjs/babel-plugin', () => {
                color: 'blue',
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -54,7 +52,7 @@ describe('@stylexjs/babel-plugin', () => {
                '--background-color': 'red',
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xgau0yw{--background-color:red}", 4);"
@@ -70,7 +68,7 @@ describe('@stylexjs/babel-plugin', () => {
                '--final-color': 'var(--background-color)',
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x13tgbkp{--final-color:var(--background-color)}", 4);"
@@ -89,7 +87,7 @@ describe('@stylexjs/babel-plugin', () => {
                color: 'blue',
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -106,7 +104,7 @@ describe('@stylexjs/babel-plugin', () => {
                content: 'attr(some-attribute)',
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xd71okc{content:attr(some-attribute)}", 4);"
@@ -125,7 +123,7 @@ describe('@stylexjs/babel-plugin', () => {
                },
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1gykpug:hover{background-color:red}", 17);
@@ -147,7 +145,7 @@ describe('@stylexjs/babel-plugin', () => {
                }
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1gykpug:hover{background-color:red}", 17);
@@ -164,7 +162,7 @@ describe('@stylexjs/babel-plugin', () => {
                position: ['sticky', 'fixed']
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x1ruww2u{position:sticky;position:fixed}", 4);"
@@ -183,7 +181,7 @@ describe('@stylexjs/babel-plugin', () => {
                }
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xixxii4{position:fixed}", 4);
@@ -201,7 +199,7 @@ describe('@stylexjs/babel-plugin', () => {
                userSelect: 'none',
              },
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x87ps6o{user-select:none}", 4);"
@@ -220,7 +218,7 @@ describe('@stylexjs/babel-plugin', () => {
                borderWidth: 1
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xb3r6kr{overflow:hidden}", 3);
@@ -238,7 +236,7 @@ describe('@stylexjs/babel-plugin', () => {
                ...(importedStyles.foo: XStyle<>)
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const styles = {
@@ -259,7 +257,7 @@ describe('@stylexjs/babel-plugin', () => {
                ...include(importedStyles)
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import { create, include } from 'stylex';
         export const styles = {
@@ -280,7 +278,7 @@ describe('@stylexjs/babel-plugin', () => {
                ...stylex.include(importedStyles.foo)
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const styles = {
@@ -300,7 +298,7 @@ describe('@stylexjs/babel-plugin', () => {
                position: stylex.firstThatWorks('sticky', 'fixed'),
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "export const styles = stylex.create({
           foo: {
@@ -319,7 +317,7 @@ describe('@stylexjs/babel-plugin', () => {
                boxShadow: '0px 2px 4px var(--shadow-1)',
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 4);"
@@ -340,7 +338,7 @@ describe('@stylexjs/babel-plugin', () => {
                },
              },
            });
-         `)
+         `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 8);
@@ -368,7 +366,7 @@ describe('@stylexjs/babel-plugin', () => {
                }
              },
            });
-         `)
+         `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x17z2mba:hover{color:blue}", 17);
@@ -389,7 +387,7 @@ describe('@stylexjs/babel-plugin', () => {
                }
              },
            });
-         `)
+         `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 17);"
@@ -409,7 +407,7 @@ describe('@stylexjs/babel-plugin', () => {
                 color: {':invalpwdijad': 'blue'},
               },
             });
-         `)
+         `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 8);
@@ -431,7 +429,7 @@ describe('@stylexjs/babel-plugin', () => {
                },
              },
            });
-         `)
+         `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x17z2mba:hover{color:blue}", 17);
@@ -452,7 +450,7 @@ describe('@stylexjs/babel-plugin', () => {
                 }
               },
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 17);"
@@ -476,7 +474,7 @@ describe('@stylexjs/babel-plugin', () => {
                  },
                },
              });
-           `)
+           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x16oeupf::before{color:red}", 8);
@@ -495,7 +493,7 @@ describe('@stylexjs/babel-plugin', () => {
                  },
                },
              });
-           `)
+           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x6yu8oj::placeholder{color:gray}", 8);"
@@ -513,7 +511,7 @@ describe('@stylexjs/babel-plugin', () => {
                  },
                },
              });
-           `)
+           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 8);"
@@ -537,7 +535,7 @@ describe('@stylexjs/babel-plugin', () => {
            },
          },
        });
-           `)
+           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -562,7 +560,7 @@ describe('@stylexjs/babel-plugin', () => {
                },
              });
 
-           `)
+           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -586,7 +584,7 @@ describe('@stylexjs/babel-plugin', () => {
                 }
               },
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -608,7 +606,7 @@ describe('@stylexjs/babel-plugin', () => {
                 }
               },
             });
-          `)
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -647,7 +645,7 @@ describe('@stylexjs/babel-plugin', () => {
                borderWidth: 1,
              }
            });
-         `)
+         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;
@@ -692,8 +690,8 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
             stylex(styles.default, styles.override);
-          `
-        )
+          `,
+        ),
 
         // Expect the className to reflect override entirely
       ).toMatchInlineSnapshot(`
@@ -743,8 +741,8 @@ describe('@stylexjs/babel-plugin', () => {
              }
            });
          `,
-          { stylexSheetName: '<>' }
-        )
+          { stylexSheetName: '<>' },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;
@@ -901,8 +899,8 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
          `,
-          { stylexSheetName: '<>', styleResolution: 'property-specificity' }
-        )
+          { stylexSheetName: '<>', styleResolution: 'property-specificity' },
+        ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;

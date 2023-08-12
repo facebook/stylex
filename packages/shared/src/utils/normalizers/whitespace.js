@@ -17,7 +17,7 @@
 
 export default function normalizeWhitespace(
   ast: PostCSSValueAST,
-  _: mixed
+  _: mixed,
 ): PostCSSValueAST {
   // trim
   if (ast.nodes[0].type === 'space') {

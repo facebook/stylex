@@ -55,7 +55,7 @@ export default function ZStack({children, xstyle}) {
 
   return (
     <span className={stylex(styles.container, xstyle)}>
-      {children.map((child, i) => (
+      {children.map((child, _i) => (
         <span className={stylex(styles.itemLayout)}>{child}</span>
       ))}
       {children.map((child, i) => (

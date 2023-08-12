@@ -16,9 +16,7 @@ function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      flow: {
-        all: true,
-      },
+      flow: 'all',
     },
     plugins: [[stylexPlugin, opts]],
   }).code;
@@ -39,7 +37,7 @@ describe('@stylexjs/babel-plugin', () => {
               backgroundColor: 'blue',
             }
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject("@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}", 1);
@@ -65,7 +63,7 @@ describe('@stylexjs/babel-plugin', () => {
               animation: \`3s \${name}\`,
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject("@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}", 1);
@@ -91,7 +89,7 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject("@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}", 1);
@@ -118,7 +116,7 @@ describe('@stylexjs/babel-plugin', () => {
               animationName: name,
             },
           });
-        `)
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject("@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}", 1);

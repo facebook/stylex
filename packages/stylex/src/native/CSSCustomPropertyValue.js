@@ -23,7 +23,7 @@ export class CSSCustomPropertyValue {
     const found = value.match(CUSTOM_PROPERTY_REGEX);
     if (found == null) {
       throw new Error(
-        '[stylex]: Unable to find custom property reference in input string'
+        '[stylex]: Unable to find custom property reference in input string',
       );
     }
     const [, kebabCasePropName] = found;

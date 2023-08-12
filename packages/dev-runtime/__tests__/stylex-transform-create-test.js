@@ -33,7 +33,7 @@ describe('Development Plugin Transformation', () => {
             backgroundColor: 'red',
             color: 'blue',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -51,7 +51,7 @@ describe('Development Plugin Transformation', () => {
           default: {
             '--background-color': 'red',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -68,7 +68,7 @@ describe('Development Plugin Transformation', () => {
           default: {
             '--final-color': 'var(--background-color)',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -88,7 +88,7 @@ describe('Development Plugin Transformation', () => {
           default2: {
             color: 'blue',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -109,7 +109,7 @@ describe('Development Plugin Transformation', () => {
           default: {
             content: 'attr(some-attribute)',
           },
-        })
+        }),
       ).toEqual({
         default: {
           $$css: true,
@@ -140,7 +140,7 @@ describe('Development Plugin Transformation', () => {
               color: 'blue',
             },
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -179,7 +179,7 @@ describe('Development Plugin Transformation', () => {
           default: {
             position: ['sticky', 'fixed'],
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -210,7 +210,7 @@ describe('Development Plugin Transformation', () => {
           default: {
             userSelect: 'none',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -243,7 +243,7 @@ describe('Development Plugin Transformation', () => {
             borderStyle: 'dashed',
             borderWidth: 1,
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -311,7 +311,7 @@ describe('Development Plugin Transformation', () => {
           foo: {
             ...stylex.include(importedStyles.foo),
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "foo": {
@@ -337,7 +337,7 @@ describe('Development Plugin Transformation', () => {
           default: {
             boxShadow: '0px 2px 4px var(--shadow-1)',
           },
-        })
+        }),
       ).toMatchInlineSnapshot(`
         {
           "default": {
@@ -372,7 +372,7 @@ describe('Development Plugin Transformation', () => {
                 color: 'blue',
               },
             },
-          })
+          }),
         ).toMatchInlineSnapshot(`
           {
             "default": {
@@ -422,7 +422,7 @@ describe('Development Plugin Transformation', () => {
                 color: 'purple',
               },
             },
-          })
+          }),
         ).toMatchInlineSnapshot(`
           {
             "default": {
@@ -481,7 +481,7 @@ describe('Development Plugin Transformation', () => {
                 position: ['sticky', 'fixed'],
               },
             },
-          })
+          }),
         ).toMatchInlineSnapshot(`
           {
             "default": {

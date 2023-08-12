@@ -18,7 +18,7 @@ export function generateRule(
   key: string, // pre-dashed
   value: string | $ReadOnlyArray<string>,
   pseudos: $ReadOnlyArray<string>,
-  atRules: $ReadOnlyArray<string>
+  atRules: $ReadOnlyArray<string>,
 ): InjectableStyle {
   const pairs: $ReadOnlyArray<[string, string]> = Array.isArray(value)
     ? value.map((eachValue) => [key, eachValue])

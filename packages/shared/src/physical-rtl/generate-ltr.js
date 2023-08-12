@@ -91,7 +91,7 @@ const propertyToLTR = {
     val
       .split(' ')
       .map((word) =>
-        word === 'start' ? 'left' : word === 'end' ? 'right' : word
+        word === 'start' ? 'left' : word === 'end' ? 'right' : word,
       )
       .join(' '),
   ],

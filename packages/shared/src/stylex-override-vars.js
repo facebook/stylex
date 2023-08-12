@@ -18,11 +18,11 @@ import { defaultOptions } from './utils/default-options';
 export default function styleXOverrideVars(
   themeVars: { __themeName__: string, +[string]: string },
   variables: { +[string]: string | { default: string, +[string]: string } },
-  options?: StyleXOptions
+  options?: StyleXOptions,
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__themeName__ !== 'string') {
     throw new Error(
-      'Can only override variables theme created with stylex.unstable_createVars().'
+      'Can only override variables theme created with stylex.unstable_createVars().',
     );
   }
 
@@ -45,7 +45,7 @@ export default function styleXOverrideVars(
       if (varNameHash != null && value !== null && typeof value === 'object') {
         if (value.default === undefined) {
           throw new Error(
-            'Default value is not defined for ' + key + ' variable.'
+            'Default value is not defined for ' + key + ' variable.',
           );
         }
         const definedVarString = `${varNameHash}:${value.default};`;

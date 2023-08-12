@@ -14,7 +14,7 @@ import { objEntries, objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
 
 type VarsObject<
-  Vars: { +[string]: string | { default: string, +[string]: string } }
+  Vars: { +[string]: string | { default: string, +[string]: string } },
 > = {
   ...$ObjMapConst<Vars, string>,
   __themeName__: string,
@@ -25,10 +25,10 @@ type VarsObject<
 export default function styleXCreateVars<
   +Vars: {
     +[string]: string | { default: string, +[string]: string },
-  }
+  },
 >(
   variables: Vars,
-  options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>
+  options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
 ): [VarsObject<Vars>, { css: string }] {
   const {
     classNamePrefix,
@@ -71,7 +71,7 @@ function constructCssVariablesString(variables: {
       if (value !== null && typeof value === 'object') {
         if (value.default === undefined) {
           throw new Error(
-            'Default value is not defined for ' + key + ' variable.'
+            'Default value is not defined for ' + key + ' variable.',
           );
         }
         const definedVarString = `--${nameHash}:${value.default};`;

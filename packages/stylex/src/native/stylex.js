@@ -219,7 +219,6 @@ function preprocessPropertyValue(propValue: mixed): mixed {
 }
 
 function preprocessCreate<S: { [string]: mixed }>(style: S): S {
-  // eslint-disable-next-line flowtype/no-flow-fix-me-comments
   const processedStyle: S = ({}: $FlowFixMe);
   for (const propName in style) {
     const styleValue = style[propName];
@@ -233,7 +232,7 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       const processsedSubStyle = preprocessCreate({ ...styleValue });
       processedStyle[propName] = new CSSMediaQuery(
         propName,
-        processsedSubStyle
+        processsedSubStyle,
       );
       continue;
     }
@@ -246,7 +245,7 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       const parsedShadow = parseShadow(styleValue);
       if (parsedShadow.length > 1) {
         errorMsg(
-          'Multiple "boxShadow" values are not supported in React Native.'
+          'Multiple "boxShadow" values are not supported in React Native.',
         );
       }
       const { inset, offsetX, offsetY, blurRadius, color } = parsedShadow[0];
@@ -254,7 +253,7 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       // errorMsg('"boxShadow" opacity is not implemented in React Native.');
       if (inset) {
         errorMsg(
-          '"boxShadow" value of "inset" is not supported in React Native.'
+          '"boxShadow" value of "inset" is not supported in React Native.',
         );
       }
       processedStyle.shadowColor = color;
@@ -270,12 +269,12 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       if (styleValue === 'fixed') {
         processedStyle[propName] = 'absolute';
         errorMsg(
-          '"position" value of "fixed" is not supported in React Native. Falling back to "absolute".'
+          '"position" value of "fixed" is not supported in React Native. Falling back to "absolute".',
         );
       } else if (styleValue === 'sticky') {
         processedStyle[propName] = 'relative';
         errorMsg(
-          '"position" value of "sticky" is not supported in React Native. Falling back to "relative".'
+          '"position" value of "sticky" is not supported in React Native. Falling back to "relative".',
         );
       } else {
         processedStyle[propName] = styleValue;
@@ -286,7 +285,7 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       const parsedShadow = parseShadow(styleValue);
       if (parsedShadow.length > 1) {
         errorMsg(
-          'Multiple "textShadow" values are not supported in React Native.'
+          'Multiple "textShadow" values are not supported in React Native.',
         );
       }
       const { offsetX, offsetY, blurRadius, color } = parsedShadow[0];
@@ -375,7 +374,7 @@ export function spread(
     viewportHeight,
     viewportWidth,
     writingDirection,
-  }: SpreadOptions
+  }: SpreadOptions,
 ): { [string]: { ... } } {
   /* eslint-disable prefer-const */
   let { lineClamp, ...flatStyle }: { [key: string]: mixed } =
@@ -417,7 +416,7 @@ export function spread(
         viewportWidth,
         viewportHeight,
         fontScale,
-        inheritedFontSize
+        inheritedFontSize,
       );
       styleValue = resolvedValue;
     }
@@ -442,8 +441,8 @@ export function spread(
     if (!isReactNativeStyleValue(styleValue)) {
       errorMsg(
         `Encounted unsupported style value "${String(
-          styleValue
-        )}" for property "${styleProp}"`
+          styleValue,
+        )}" for property "${styleProp}"`,
       );
       delete flatStyle[styleProp];
       continue;
@@ -485,7 +484,7 @@ export function spread(
     for (const timeValuedProperty of timeValuedProperties) {
       if (typeof flatStyle[timeValuedProperty] === 'string') {
         flatStyle[timeValuedProperty] = parseTimeValue(
-          flatStyle[timeValuedProperty]
+          flatStyle[timeValuedProperty],
         );
       }
     }
@@ -511,4 +510,4 @@ export type IStyleX = {
 
 export const stylex: IStyleX = { create, firstThatWorks, keyframes, spread };
 
-export default stylex;
+export default (stylex: IStyleX);

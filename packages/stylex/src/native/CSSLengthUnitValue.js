@@ -36,7 +36,7 @@ export class CSSLengthUnitValue {
     viewportWidth: number,
     viewportHeight: number,
     fontScale: number,
-    inheritedFontSize: ?number
+    inheritedFontSize: ?number,
   ): number {
     const unit = this.unit;
     const value = this.value;

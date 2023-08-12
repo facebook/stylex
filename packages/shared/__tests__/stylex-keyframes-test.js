@@ -21,7 +21,7 @@ describe('stylex-keyframes test', () => {
         to: {
           backgroundColor: 'blue',
         },
-      })
+      }),
     ).toMatchInlineSnapshot(`
       [
         "xbopttm-B",
@@ -44,7 +44,7 @@ describe('stylex-keyframes test', () => {
         to: {
           start: 500,
         },
-      })
+      }),
     ).toMatchInlineSnapshot(`
       [
         "x1jkcf39-B",

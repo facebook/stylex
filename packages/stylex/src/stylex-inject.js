@@ -12,7 +12,7 @@ import { styleSheet } from './StyleXSheet';
 export default function inject(
   ltrRule: string,
   priority: number,
-  rtlRule: ?string = null
+  rtlRule: ?string = null,
 ): void {
   styleSheet.insert(ltrRule, priority, rtlRule);
 }

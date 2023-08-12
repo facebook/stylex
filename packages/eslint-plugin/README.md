@@ -6,7 +6,18 @@ This was originally created from Flow types which is why it's currently not very
 
 ## Installing the plugin
 
-`$ npm i eslint-plugin-stylex --save-dev`
+`$ npm i @stylexjs/eslint-plugin@beta --save-dev`
+
+## Enable Flow Types
+
+If you need to import this package in an environment where you need the Flow type definitions
+shipped with this package to work, please add the following options to your `.flowconfig` file:
+
+```
+module.system.node.resolve_dirname=flow_modules
+module.system.node.resolve_dirname=node_modules
+```
+This will fix the missing types for `eslint` and `estree`.
 
 ## Enabling the plugin and rules
 

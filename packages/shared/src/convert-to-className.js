@@ -29,7 +29,7 @@ export function convertStyleToClassName(
   {
     stylexSheetName = '<>',
     classNamePrefix = 'x',
-  }: StyleXOptions = defaultOptions
+  }: StyleXOptions = defaultOptions,
 ): StyleRule {
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);

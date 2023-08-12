@@ -68,7 +68,7 @@ describe('custom path evaluation works as expected', () => {
   test('Evaluates Simple Arrays and Objects', () => {
     expect(evaluateFirstStatement('const x = {};', {})).toEqual({});
     expect(
-      evaluateFirstStatement('const x = {name: "Name", age: 43};', {})
+      evaluateFirstStatement('const x = {name: "Name", age: 43};', {}),
     ).toEqual({ name: 'Name', age: 43 });
 
     expect(evaluateFirstStatement('const x = [];', {})).toEqual([]);
@@ -83,15 +83,15 @@ describe('custom path evaluation works as expected', () => {
     expect(
       evaluateFirstStatement(
         'const x = {name: "Name", ...({hero: true}), age: 43};',
-        {}
-      )
+        {},
+      ),
     ).toEqual({ name: 'Name', hero: true, age: 43 });
 
     expect(
       evaluateFirstStatement(
         'const x = {name: "Name", ...({name: "StyleX", age: 1}), age: 43};',
-        {}
-      )
+        {},
+      ),
     ).toEqual({ name: 'StyleX', age: 43 });
   });
 
@@ -110,13 +110,13 @@ describe('custom path evaluation works as expected', () => {
         identifiers: {
           makeArray: { fn: makeArray },
         },
-      })
+      }),
     ).toEqual([3, 2, 1]);
 
     expect(
       evaluateFirstStatement('const x = stylex.makeArray(1, 2, 3);', {
         memberExpressions: { stylex: { makeArray: { fn: makeArray } } },
-      })
+      }),
     ).toEqual([3, 2, 1]);
   });
 
@@ -133,7 +133,7 @@ describe('custom path evaluation works as expected', () => {
     expect(
       evaluateFirstStatement('const x = makeClass("Hello");', {
         identifiers: { makeClass: { fn: makeClass } },
-      })
+      }),
     ).toEqual(new MyClass('Hello'));
   });
 
@@ -149,8 +149,8 @@ describe('custom path evaluation works as expected', () => {
           identifiers: {
             makeObj: { fn: makeObj },
           },
-        }
-      )
+        },
+      ),
     ).toEqual({ name: 'Name', spreadValue: 'Hello', age: 30 });
   });
 
@@ -163,7 +163,7 @@ describe('custom path evaluation works as expected', () => {
     expect(
       evaluateFirstStatement('const x = getNode("Hello");', {
         identifiers: { getNode: { fn: getNode, takesPath: true } },
-      })
+      }),
     ).toEqual({ type: 'StringLiteral', value: 'Hello' });
   });
 });
