@@ -92,24 +92,17 @@ export type XStyleWithout<+T: { [string]: void, ... }> = XStyle<
   $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>,
 >;
 
-export type Styles = $ReadOnly<{ [namespace: string]: Style, ... }>;
-
-export type Style = $ReadOnly<{
-  ...CSSProperties,
-  [pseudo: string]: CSSProperties,
-  ...
-}>;
-
-export type Rules = Style | CSSProperties;
-
 export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
 
-export type Theme = $ReadOnly<{ [constantName: string]: string, ... }>;
+export type LegacyTheme = $ReadOnly<{ [constantName: string]: string, ... }>;
 
 // type CSSValue = string | number | $ReadOnlyArray<mixed>;
 type MapCSSValueToClassName = <K, V>(K, V) => StyleXClassNameFor<K, V>;
 
-export type MapNamespace<CSS: { ... }> = $ObjMapi<CSS, MapCSSValueToClassName>;
+export type MapNamespace<CSS: { ... }> = $ReadOnly<{
+  ...$ObjMapi<CSS, MapCSSValueToClassName>,
+  $$css: true,
+}>;
 // NOTE: Flow was confused by nested ObjMap so for now, nested styles
 // are typed incorrectly to be a string. This won't matter for the time being.
 // type MapStyleToClassName = (<Rule: {}>(
@@ -122,16 +115,74 @@ export type Stylex$Create = <S: { ... }>(
   styles: S,
 ) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
 
+export type CompiledStyles = $ReadOnly<{
+  $$css: true,
+  [key: string]:
+    | StyleXClassName
+    | $ReadOnly<{ [key: string]: StyleXClassName, ... }>,
+  ...
+}>;
+
 // This is the type for the variables object
 export opaque type StyleXVarsTheme<+Vars: { +[string]: string }>: Vars = Vars;
 
-export type Stylex$CreateVars = <+Vars: { +[string]: string }>(
-  styles: Vars,
-  config?: { themeName: string },
-) => StyleXVarsTheme<$ReadOnly<$ObjMapConst<Vars, string>>>;
+export opaque type Theme<
+  +Tokens: { +[string]: mixed },
+  // eslint-disable-next-line no-unused-vars
+  +ID: string = string,
+>: $ReadOnly<{ [$Keys<Tokens>]: string }> = $ReadOnly<{
+  [$Keys<Tokens>]: string,
+}>;
 
-export type Stylex$OverrideVars = <+Vars: { +[string]: string }>(
-  styles: Vars & { __themeName__: string },
-  stylesOverride: Vars,
-  config?: { themeName: string },
-) => StyleXVarsTheme<$ReadOnly<$ObjMapConst<Vars, string>>>;
+export type TokensFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
+  infer Tokens,
+>
+  ? Tokens
+  : empty;
+type IDFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
+  { +[string]: mixed },
+  infer ID,
+>
+  ? ID
+  : empty;
+
+export type FlattenTokens<
+  T: {
+    +[string]: string | { +default: string, +[string]: string },
+  },
+> = {
+  +[Key in keyof T]: T[Key] extends { +default: infer X, +[string]: infer Y }
+    ? X | Y
+    : T[Key],
+};
+
+export type StyleX$CreateVars = <
+  +DefaultTokens: {
+    +[string]: string | { default: string, +[string]: string },
+  },
+  +ID: string = string,
+>(
+  tokens: DefaultTokens,
+) => Theme<FlattenTokens<DefaultTokens>, ID>;
+
+export type Variant<
+  +T: Theme<{ +[string]: mixed }, string>,
+  +_Tag: string = string,
+> = $ReadOnly<{
+  $$css: true,
+  [string]: StyleXClassNameFor<string, IDFromTheme<T>>,
+}>;
+
+export type OverridesForTokenType<Config: { +[string]: mixed }> = {
+  [Key in keyof Config]:
+    | Config[Key]
+    | { +default: Config[Key], +[string]: Config[Key] },
+};
+
+export type StyleX$OverrideVars = <
+  +BaseTokens: Theme<{ +[string]: mixed }>,
+  +ID: string = string,
+>(
+  baseTokens: BaseTokens,
+  overrides: OverridesForTokenType<TokensFromTheme<BaseTokens>>,
+) => Variant<BaseTokens, ID>;

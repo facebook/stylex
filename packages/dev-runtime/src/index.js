@@ -9,7 +9,13 @@
 
 import stylex from '@stylexjs/stylex';
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
-import type { MapNamespace } from '@stylexjs/stylex/lib/StyleXTypes';
+import type {
+  MapNamespace,
+  Theme,
+  TokensFromTheme,
+  Variant,
+  OverridesForTokenType,
+} from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
 import type { StyleXOptions } from '@stylexjs/shared/lib/common-types';
 import type { FlatCompiledStyles } from '../../shared/src/common-types';
@@ -17,14 +23,6 @@ import type {
   MapNamespaces,
   Stylex$Create,
 } from '../../stylex/src/StyleXTypes';
-
-// function insert(
-//   ltrRule: string,
-//   priority: number,
-//   rtlRule: ?string = null
-// ): void {
-//   insert(ltrRule, priority, rtlRule);
-// }
 
 type RuntimeOptions = {
   ...$Exact<StyleXOptions>,
@@ -98,12 +96,17 @@ export default function inject({
 
   stylex.create = stylexCreate;
 
-  stylex.unstable_createVars = (
-    variables: { +[string]: string | { default: string, +[string]: string } },
+  stylex.unstable_createVars = <
+    +DefaultTokens: {
+      +[string]: string | { default: string, +[string]: string },
+    },
+    +ID: string = string,
+  >(
+    variables: DefaultTokens,
     { themeName }: { themeName: string } = {
       themeName: themeNameUUID(),
     },
-  ) => {
+  ): Theme<DefaultTokens, ID> => {
     const [cssVarsObject, { css }] = shared.createVars(variables, {
       themeName,
     });
@@ -112,16 +115,21 @@ export default function inject({
     return cssVarsObject;
   };
 
-  stylex.unstable_overrideVars = (
-    variablesTheme: { __themeName__: string, +[string]: string },
-    variablesOverride: { +[string]: string },
-  ) => {
+  const overrideVars: $FlowFixMe = <
+    BaseTokens: Theme<{ +[string]: mixed }>,
+    ID: string = string,
+  >(
+    variablesTheme: BaseTokens,
+    variablesOverride: OverridesForTokenType<TokensFromTheme<$FlowFixMe>>,
+  ): Variant<BaseTokens, ID> => {
     const [js, css] = shared.overrideVars(variablesTheme, variablesOverride);
     const styleKey = js[variablesTheme.__themeName__];
     insert(styleKey, css[styleKey].ltr, css[styleKey].priority);
-    // $FlowFixMe
+    // $FlowFixMe[incompatible-return]
     return js;
   };
+
+  stylex.unstable_overrideVars = overrideVars;
 
   stylex.keyframes = (frames) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(

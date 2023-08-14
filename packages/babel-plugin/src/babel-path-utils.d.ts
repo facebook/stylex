@@ -10,1099 +10,1099 @@
 import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 
-type object = { +[key: string]: mixed };
+type object = { [key: string]: unknown };
 
-declare export function isAnyTypeAnnotation(
+export declare function isAnyTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.AnyTypeAnnotation>;
-declare export function isArrayExpression(
+export declare function isArrayExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ArrayExpression>;
-declare export function isArrayPattern(
+export declare function isArrayPattern(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ArrayPattern>;
-declare export function isArrayTypeAnnotation(
+export declare function isArrayTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ArrayTypeAnnotation>;
-declare export function isArrowFunctionExpression(
+export declare function isArrowFunctionExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ArrowFunctionExpression>;
-declare export function isAssignmentExpression(
+export declare function isAssignmentExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.AssignmentExpression>;
-declare export function isAssignmentPattern(
+export declare function isAssignmentPattern(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.AssignmentPattern>;
-declare export function isAwaitExpression(
+export declare function isAwaitExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.AwaitExpression>;
-declare export function isBigIntLiteral(
+export declare function isBigIntLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BigIntLiteral>;
-declare export function isBinary(
+export declare function isBinary(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Binary>;
-declare export function isBinaryExpression(
+export declare function isBinaryExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BinaryExpression>;
-declare export function isBindExpression(
+export declare function isBindExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BindExpression>;
-declare export function isBlock(
+export declare function isBlock(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Block>;
-declare export function isBlockParent(
+export declare function isBlockParent(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BlockParent>;
-declare export function isBlockStatement(
+export declare function isBlockStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BlockStatement>;
-declare export function isBooleanLiteral(
+export declare function isBooleanLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BooleanLiteral>;
-declare export function isBooleanLiteralTypeAnnotation(
+export declare function isBooleanLiteralTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BooleanLiteralTypeAnnotation>;
-declare export function isBooleanTypeAnnotation(
+export declare function isBooleanTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BooleanTypeAnnotation>;
-declare export function isBreakStatement(
+export declare function isBreakStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.BreakStatement>;
-declare export function isCallExpression(
+export declare function isCallExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.CallExpression>;
-declare export function isCatchClause(
+export declare function isCatchClause(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.CatchClause>;
-declare export function isClass(
+export declare function isClass(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Class>;
-declare export function isClassBody(
+export declare function isClassBody(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassBody>;
-declare export function isClassDeclaration(
+export declare function isClassDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassDeclaration>;
-declare export function isClassExpression(
+export declare function isClassExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassExpression>;
-declare export function isClassImplements(
+export declare function isClassImplements(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassImplements>;
-declare export function isClassMethod(
+export declare function isClassMethod(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassMethod>;
-declare export function isClassPrivateMethod(
+export declare function isClassPrivateMethod(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassPrivateMethod>;
-declare export function isClassPrivateProperty(
+export declare function isClassPrivateProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassPrivateProperty>;
-declare export function isClassProperty(
+export declare function isClassProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ClassProperty>;
-declare export function isCompletionStatement(
+export declare function isCompletionStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.CompletionStatement>;
-declare export function isConditional(
+export declare function isConditional(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Conditional>;
-declare export function isConditionalExpression(
+export declare function isConditionalExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ConditionalExpression>;
-declare export function isContinueStatement(
+export declare function isContinueStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ContinueStatement>;
-declare export function isDebuggerStatement(
+export declare function isDebuggerStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DebuggerStatement>;
-declare export function isDeclaration(
+export declare function isDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Declaration>;
-declare export function isDeclareClass(
+export declare function isDeclareClass(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareClass>;
-declare export function isDeclareExportAllDeclaration(
+export declare function isDeclareExportAllDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareExportAllDeclaration>;
-declare export function isDeclareExportDeclaration(
+export declare function isDeclareExportDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareExportDeclaration>;
-declare export function isDeclareFunction(
+export declare function isDeclareFunction(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareFunction>;
-declare export function isDeclareInterface(
+export declare function isDeclareInterface(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareInterface>;
-declare export function isDeclareModule(
+export declare function isDeclareModule(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareModule>;
-declare export function isDeclareModuleExports(
+export declare function isDeclareModuleExports(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareModuleExports>;
-declare export function isDeclareOpaqueType(
+export declare function isDeclareOpaqueType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareOpaqueType>;
-declare export function isDeclareTypeAlias(
+export declare function isDeclareTypeAlias(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareTypeAlias>;
-declare export function isDeclareVariable(
+export declare function isDeclareVariable(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclareVariable>;
-declare export function isDeclaredPredicate(
+export declare function isDeclaredPredicate(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DeclaredPredicate>;
-declare export function isDecorator(
+export declare function isDecorator(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Decorator>;
-declare export function isDirective(
+export declare function isDirective(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Directive>;
-declare export function isDirectiveLiteral(
+export declare function isDirectiveLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DirectiveLiteral>;
-declare export function isDoExpression(
+export declare function isDoExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DoExpression>;
-declare export function isDoWhileStatement(
+export declare function isDoWhileStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.DoWhileStatement>;
-declare export function isEmptyStatement(
+export declare function isEmptyStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.EmptyStatement>;
-declare export function isEmptyTypeAnnotation(
+export declare function isEmptyTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.EmptyTypeAnnotation>;
-declare export function isExistsTypeAnnotation(
+export declare function isExistsTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExistsTypeAnnotation>;
-declare export function isExportAllDeclaration(
+export declare function isExportAllDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportAllDeclaration>;
-declare export function isExportDeclaration(
+export declare function isExportDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportDeclaration>;
-declare export function isExportDefaultDeclaration(
+export declare function isExportDefaultDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportDefaultDeclaration>;
-declare export function isExportDefaultSpecifier(
+export declare function isExportDefaultSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportDefaultSpecifier>;
-declare export function isExportNamedDeclaration(
+export declare function isExportNamedDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportNamedDeclaration>;
-declare export function isExportNamespaceSpecifier(
+export declare function isExportNamespaceSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportNamespaceSpecifier>;
-declare export function isExportSpecifier(
+export declare function isExportSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExportSpecifier>;
-declare export function isExpression(
+export declare function isExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Expression>;
-declare export function isExpressionStatement(
+export declare function isExpressionStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExpressionStatement>;
-declare export function isExpressionWrapper(
+export declare function isExpressionWrapper(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ExpressionWrapper>;
-declare export function isFile(
+export declare function isFile(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.File>;
-declare export function isFlow(
+export declare function isFlow(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Flow>;
-declare export function isFlowBaseAnnotation(
+export declare function isFlowBaseAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FlowBaseAnnotation>;
-declare export function isFlowDeclaration(
+export declare function isFlowDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FlowDeclaration>;
-declare export function isFlowPredicate(
+export declare function isFlowPredicate(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FlowPredicate>;
-declare export function isFlowType(
+export declare function isFlowType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FlowType>;
-declare export function isFor(
+export declare function isFor(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.For>;
-declare export function isForInStatement(
+export declare function isForInStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ForInStatement>;
-declare export function isForOfStatement(
+export declare function isForOfStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ForOfStatement>;
-declare export function isForStatement(
+export declare function isForStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ForStatement>;
-declare export function isForXStatement(
+export declare function isForXStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ForXStatement>;
-declare export function isFunction(
+export declare function isFunction(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Function>;
-declare export function isFunctionDeclaration(
+export declare function isFunctionDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FunctionDeclaration>;
-declare export function isFunctionExpression(
+export declare function isFunctionExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FunctionExpression>;
-declare export function isFunctionParent(
+export declare function isFunctionParent(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FunctionParent>;
-declare export function isFunctionTypeAnnotation(
+export declare function isFunctionTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FunctionTypeAnnotation>;
-declare export function isFunctionTypeParam(
+export declare function isFunctionTypeParam(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.FunctionTypeParam>;
-declare export function isGenericTypeAnnotation(
+export declare function isGenericTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.GenericTypeAnnotation>;
-declare export function isIdentifier(
+export declare function isIdentifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Identifier>;
-declare export function isIfStatement(
+export declare function isIfStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.IfStatement>;
-declare export function isImmutable(
+export declare function isImmutable(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Immutable>;
-declare export function isImport(
+export declare function isImport(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Import>;
-declare export function isImportDeclaration(
+export declare function isImportDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ImportDeclaration>;
-declare export function isImportDefaultSpecifier(
+export declare function isImportDefaultSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ImportDefaultSpecifier>;
-declare export function isImportNamespaceSpecifier(
+export declare function isImportNamespaceSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ImportNamespaceSpecifier>;
-declare export function isImportSpecifier(
+export declare function isImportSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ImportSpecifier>;
-declare export function isInferredPredicate(
+export declare function isInferredPredicate(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.InferredPredicate>;
-declare export function isInterfaceDeclaration(
+export declare function isInterfaceDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.InterfaceDeclaration>;
-declare export function isInterfaceExtends(
+export declare function isInterfaceExtends(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.InterfaceExtends>;
-declare export function isInterfaceTypeAnnotation(
+export declare function isInterfaceTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.InterfaceTypeAnnotation>;
-declare export function isInterpreterDirective(
+export declare function isInterpreterDirective(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.InterpreterDirective>;
-declare export function isIntersectionTypeAnnotation(
+export declare function isIntersectionTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.IntersectionTypeAnnotation>;
-declare export function isJSX(
+export declare function isJSX(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSX>;
-declare export function isJSXAttribute(
+export declare function isJSXAttribute(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXAttribute>;
-declare export function isJSXClosingElement(
+export declare function isJSXClosingElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXClosingElement>;
-declare export function isJSXClosingFragment(
+export declare function isJSXClosingFragment(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXClosingFragment>;
-declare export function isJSXElement(
+export declare function isJSXElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXElement>;
-declare export function isJSXEmptyExpression(
+export declare function isJSXEmptyExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXEmptyExpression>;
-declare export function isJSXExpressionContainer(
+export declare function isJSXExpressionContainer(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXExpressionContainer>;
-declare export function isJSXFragment(
+export declare function isJSXFragment(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXFragment>;
-declare export function isJSXIdentifier(
+export declare function isJSXIdentifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXIdentifier>;
-declare export function isJSXMemberExpression(
+export declare function isJSXMemberExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXMemberExpression>;
-declare export function isJSXNamespacedName(
+export declare function isJSXNamespacedName(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXNamespacedName>;
-declare export function isJSXOpeningElement(
+export declare function isJSXOpeningElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXOpeningElement>;
-declare export function isJSXOpeningFragment(
+export declare function isJSXOpeningFragment(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXOpeningFragment>;
-declare export function isJSXSpreadAttribute(
+export declare function isJSXSpreadAttribute(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXSpreadAttribute>;
-declare export function isJSXSpreadChild(
+export declare function isJSXSpreadChild(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXSpreadChild>;
-declare export function isJSXText(
+export declare function isJSXText(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.JSXText>;
-declare export function isLVal(
+export declare function isLVal(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.LVal>;
-declare export function isLabeledStatement(
+export declare function isLabeledStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.LabeledStatement>;
-declare export function isLiteral(
+export declare function isLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Literal>;
-declare export function isLogicalExpression(
+export declare function isLogicalExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.LogicalExpression>;
-declare export function isLoop(
+export declare function isLoop(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Loop>;
-declare export function isMemberExpression(
+export declare function isMemberExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.MemberExpression>;
-declare export function isMetaProperty(
+export declare function isMetaProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.MetaProperty>;
-declare export function isMethod(
+export declare function isMethod(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Method>;
-declare export function isMixedTypeAnnotation(
+export declare function isMixedTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.MixedTypeAnnotation>;
-declare export function isModuleDeclaration(
+export declare function isModuleDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ModuleDeclaration>;
-declare export function isModuleSpecifier(
+export declare function isModuleSpecifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ModuleSpecifier>;
-declare export function isNewExpression(
+export declare function isNewExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NewExpression>;
-declare export function isNoop(
+export declare function isNoop(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Noop>;
-declare export function isNullLiteral(
+export declare function isNullLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NullLiteral>;
-declare export function isNullLiteralTypeAnnotation(
+export declare function isNullLiteralTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NullLiteralTypeAnnotation>;
-declare export function isNullableTypeAnnotation(
+export declare function isNullableTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NullableTypeAnnotation>;
-declare export function isNumberLiteralTypeAnnotation(
+export declare function isNumberLiteralTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NumberLiteralTypeAnnotation>;
-declare export function isNumberTypeAnnotation(
+export declare function isNumberTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NumberTypeAnnotation>;
-declare export function isNumericLiteral(
+export declare function isNumericLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.NumericLiteral>;
-declare export function isObjectExpression(
+export declare function isObjectExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectExpression>;
-declare export function isObjectMember(
+export declare function isObjectMember(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectMember>;
-declare export function isObjectMethod(
+export declare function isObjectMethod(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectMethod>;
-declare export function isObjectPattern(
+export declare function isObjectPattern(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectPattern>;
-declare export function isObjectProperty(
+export declare function isObjectProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectProperty>;
-declare export function isObjectTypeAnnotation(
+export declare function isObjectTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectTypeAnnotation>;
-declare export function isObjectTypeCallProperty(
+export declare function isObjectTypeCallProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectTypeCallProperty>;
-declare export function isObjectTypeIndexer(
+export declare function isObjectTypeIndexer(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectTypeIndexer>;
-declare export function isObjectTypeInternalSlot(
+export declare function isObjectTypeInternalSlot(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectTypeInternalSlot>;
-declare export function isObjectTypeProperty(
+export declare function isObjectTypeProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectTypeProperty>;
-declare export function isObjectTypeSpreadProperty(
+export declare function isObjectTypeSpreadProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ObjectTypeSpreadProperty>;
-declare export function isOpaqueType(
+export declare function isOpaqueType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.OpaqueType>;
-declare export function isOptionalCallExpression(
+export declare function isOptionalCallExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.OptionalCallExpression>;
-declare export function isOptionalMemberExpression(
+export declare function isOptionalMemberExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.OptionalMemberExpression>;
-declare export function isParenthesizedExpression(
+export declare function isParenthesizedExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ParenthesizedExpression>;
-declare export function isPattern(
+export declare function isPattern(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Pattern>;
-declare export function isPatternLike(
+export declare function isPatternLike(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.PatternLike>;
-declare export function isPipelineBareFunction(
+export declare function isPipelineBareFunction(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.PipelineBareFunction>;
-declare export function isPipelinePrimaryTopicReference(
+export declare function isPipelinePrimaryTopicReference(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.PipelinePrimaryTopicReference>;
-declare export function isPipelineTopicExpression(
+export declare function isPipelineTopicExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.PipelineTopicExpression>;
-declare export function isPrivate(
+export declare function isPrivate(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Private>;
-declare export function isPrivateName(
+export declare function isPrivateName(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.PrivateName>;
-declare export function isProgram(
+export declare function isProgram(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Program>;
-declare export function isProperty(
+export declare function isProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Property>;
-declare export function isPureish(
+export declare function isPureish(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Pureish>;
-declare export function isQualifiedTypeIdentifier(
+export declare function isQualifiedTypeIdentifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.QualifiedTypeIdentifier>;
-declare export function isRegExpLiteral(
+export declare function isRegExpLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.RegExpLiteral>;
-declare export function isRestElement(
+export declare function isRestElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.RestElement>;
-declare export function isReturnStatement(
+export declare function isReturnStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ReturnStatement>;
-declare export function isScopable(
+export declare function isScopable(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Scopable>;
-declare export function isSequenceExpression(
+export declare function isSequenceExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.SequenceExpression>;
-declare export function isSpreadElement(
+export declare function isSpreadElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.SpreadElement>;
-declare export function isStatement(
+export declare function isStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Statement>;
-declare export function isStringLiteral(
+export declare function isStringLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.StringLiteral>;
-declare export function isStringLiteralTypeAnnotation(
+export declare function isStringLiteralTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.StringLiteralTypeAnnotation>;
-declare export function isStringTypeAnnotation(
+export declare function isStringTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.StringTypeAnnotation>;
-declare export function isSuper(
+export declare function isSuper(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Super>;
-declare export function isSwitchCase(
+export declare function isSwitchCase(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.SwitchCase>;
-declare export function isSwitchStatement(
+export declare function isSwitchStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.SwitchStatement>;
-declare export function isTSAnyKeyword(
+export declare function isTSAnyKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSAnyKeyword>;
-declare export function isTSArrayType(
+export declare function isTSArrayType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSArrayType>;
-declare export function isTSAsExpression(
+export declare function isTSAsExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSAsExpression>;
-declare export function isTSBooleanKeyword(
+export declare function isTSBooleanKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSBooleanKeyword>;
-declare export function isTSCallSignatureDeclaration(
+export declare function isTSCallSignatureDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSCallSignatureDeclaration>;
-declare export function isTSConditionalType(
+export declare function isTSConditionalType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSConditionalType>;
-declare export function isTSConstructSignatureDeclaration(
+export declare function isTSConstructSignatureDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSConstructSignatureDeclaration>;
-declare export function isTSConstructorType(
+export declare function isTSConstructorType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSConstructorType>;
-declare export function isTSDeclareFunction(
+export declare function isTSDeclareFunction(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSDeclareFunction>;
-declare export function isTSDeclareMethod(
+export declare function isTSDeclareMethod(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSDeclareMethod>;
-declare export function isTSEntityName(
+export declare function isTSEntityName(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSEntityName>;
-declare export function isTSEnumDeclaration(
+export declare function isTSEnumDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSEnumDeclaration>;
-declare export function isTSEnumMember(
+export declare function isTSEnumMember(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSEnumMember>;
-declare export function isTSExportAssignment(
+export declare function isTSExportAssignment(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSExportAssignment>;
-declare export function isTSExpressionWithTypeArguments(
+export declare function isTSExpressionWithTypeArguments(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSExpressionWithTypeArguments>;
-declare export function isTSExternalModuleReference(
+export declare function isTSExternalModuleReference(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSExternalModuleReference>;
-declare export function isTSFunctionType(
+export declare function isTSFunctionType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSFunctionType>;
-declare export function isTSImportEqualsDeclaration(
+export declare function isTSImportEqualsDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSImportEqualsDeclaration>;
-declare export function isTSImportType(
+export declare function isTSImportType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSImportType>;
-declare export function isTSIndexSignature(
+export declare function isTSIndexSignature(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSIndexSignature>;
-declare export function isTSIndexedAccessType(
+export declare function isTSIndexedAccessType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSIndexedAccessType>;
-declare export function isTSInferType(
+export declare function isTSInferType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSInferType>;
-declare export function isTSInterfaceBody(
+export declare function isTSInterfaceBody(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSInterfaceBody>;
-declare export function isTSInterfaceDeclaration(
+export declare function isTSInterfaceDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSInterfaceDeclaration>;
-declare export function isTSIntersectionType(
+export declare function isTSIntersectionType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSIntersectionType>;
-declare export function isTSLiteralType(
+export declare function isTSLiteralType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSLiteralType>;
-declare export function isTSMappedType(
+export declare function isTSMappedType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSMappedType>;
-declare export function isTSMethodSignature(
+export declare function isTSMethodSignature(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSMethodSignature>;
-declare export function isTSModuleBlock(
+export declare function isTSModuleBlock(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSModuleBlock>;
-declare export function isTSModuleDeclaration(
+export declare function isTSModuleDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSModuleDeclaration>;
-declare export function isTSNamespaceExportDeclaration(
+export declare function isTSNamespaceExportDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSNamespaceExportDeclaration>;
-declare export function isTSNeverKeyword(
+export declare function isTSNeverKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSNeverKeyword>;
-declare export function isTSNonNullExpression(
+export declare function isTSNonNullExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSNonNullExpression>;
-declare export function isTSNullKeyword(
+export declare function isTSNullKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSNullKeyword>;
-declare export function isTSNumberKeyword(
+export declare function isTSNumberKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSNumberKeyword>;
-declare export function isTSObjectKeyword(
+export declare function isTSObjectKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSObjectKeyword>;
-declare export function isTSOptionalType(
+export declare function isTSOptionalType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSOptionalType>;
-declare export function isTSParameterProperty(
+export declare function isTSParameterProperty(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSParameterProperty>;
-declare export function isTSParenthesizedType(
+export declare function isTSParenthesizedType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSParenthesizedType>;
-declare export function isTSPropertySignature(
+export declare function isTSPropertySignature(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSPropertySignature>;
-declare export function isTSQualifiedName(
+export declare function isTSQualifiedName(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSQualifiedName>;
-declare export function isTSRestType(
+export declare function isTSRestType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSRestType>;
-declare export function isTSStringKeyword(
+export declare function isTSStringKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSStringKeyword>;
-declare export function isTSSymbolKeyword(
+export declare function isTSSymbolKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSSymbolKeyword>;
-declare export function isTSThisType(
+export declare function isTSThisType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSThisType>;
-declare export function isTSTupleType(
+export declare function isTSTupleType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTupleType>;
-declare export function isTSType(
+export declare function isTSType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSType>;
-declare export function isTSTypeAliasDeclaration(
+export declare function isTSTypeAliasDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeAliasDeclaration>;
-declare export function isTSTypeAnnotation(
+export declare function isTSTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeAnnotation>;
-declare export function isTSTypeAssertion(
+export declare function isTSTypeAssertion(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeAssertion>;
-declare export function isTSTypeElement(
+export declare function isTSTypeElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeElement>;
-declare export function isTSTypeLiteral(
+export declare function isTSTypeLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeLiteral>;
-declare export function isTSTypeOperator(
+export declare function isTSTypeOperator(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeOperator>;
-declare export function isTSTypeParameter(
+export declare function isTSTypeParameter(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeParameter>;
-declare export function isTSTypeParameterDeclaration(
+export declare function isTSTypeParameterDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeParameterDeclaration>;
-declare export function isTSTypeParameterInstantiation(
+export declare function isTSTypeParameterInstantiation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeParameterInstantiation>;
-declare export function isTSTypePredicate(
+export declare function isTSTypePredicate(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypePredicate>;
-declare export function isTSTypeQuery(
+export declare function isTSTypeQuery(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeQuery>;
-declare export function isTSTypeReference(
+export declare function isTSTypeReference(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSTypeReference>;
-declare export function isTSUndefinedKeyword(
+export declare function isTSUndefinedKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSUndefinedKeyword>;
-declare export function isTSUnionType(
+export declare function isTSUnionType(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSUnionType>;
-declare export function isTSUnknownKeyword(
+export declare function isTSUnknownKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSUnknownKeyword>;
-declare export function isTSVoidKeyword(
+export declare function isTSVoidKeyword(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TSVoidKeyword>;
-declare export function isTaggedTemplateExpression(
+export declare function isTaggedTemplateExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TaggedTemplateExpression>;
-declare export function isTemplateElement(
+export declare function isTemplateElement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TemplateElement>;
-declare export function isTemplateLiteral(
+export declare function isTemplateLiteral(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TemplateLiteral>;
-declare export function isTerminatorless(
+export declare function isTerminatorless(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Terminatorless>;
-declare export function isThisExpression(
+export declare function isThisExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ThisExpression>;
-declare export function isThisTypeAnnotation(
+export declare function isThisTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ThisTypeAnnotation>;
-declare export function isThrowStatement(
+export declare function isThrowStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.ThrowStatement>;
-declare export function isTryStatement(
+export declare function isTryStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TryStatement>;
-declare export function isTupleTypeAnnotation(
+export declare function isTupleTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TupleTypeAnnotation>;
-declare export function isTypeAlias(
+export declare function isTypeAlias(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeAlias>;
-declare export function isTypeAnnotation(
+export declare function isTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeAnnotation>;
-declare export function isTypeCastExpression(
+export declare function isTypeCastExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeCastExpression>;
-declare export function isTypeParameter(
+export declare function isTypeParameter(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeParameter>;
-declare export function isTypeParameterDeclaration(
+export declare function isTypeParameterDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeParameterDeclaration>;
-declare export function isTypeParameterInstantiation(
+export declare function isTypeParameterInstantiation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeParameterInstantiation>;
-declare export function isTypeofTypeAnnotation(
+export declare function isTypeofTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.TypeofTypeAnnotation>;
-declare export function isUnaryExpression(
+export declare function isUnaryExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.UnaryExpression>;
-declare export function isUnaryLike(
+export declare function isUnaryLike(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.UnaryLike>;
-declare export function isUnionTypeAnnotation(
+export declare function isUnionTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.UnionTypeAnnotation>;
-declare export function isUpdateExpression(
+export declare function isUpdateExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.UpdateExpression>;
-declare export function isUserWhitespacable(
+export declare function isUserWhitespacable(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.UserWhitespacable>;
-declare export function isVariableDeclaration(
+export declare function isVariableDeclaration(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.VariableDeclaration>;
-declare export function isVariableDeclarator(
+export declare function isVariableDeclarator(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.VariableDeclarator>;
-declare export function isVariance(
+export declare function isVariance(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Variance>;
-declare export function isVoidTypeAnnotation(
+export declare function isVoidTypeAnnotation(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.VoidTypeAnnotation>;
-declare export function isWhile(
+export declare function isWhile(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.While>;
-declare export function isWhileStatement(
+export declare function isWhileStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.WhileStatement>;
-declare export function isWithStatement(
+export declare function isWithStatement(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.WithStatement>;
-declare export function isYieldExpression(
+export declare function isYieldExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.YieldExpression>;
-declare export function isBindingIdentifier(
+export declare function isBindingIdentifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Identifier>;
-declare export function isBlockScoped(
+export declare function isBlockScoped(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<
-  t.FunctionDeclaration | t.ClassDeclaration | t.VariableDeclaration,
+  t.FunctionDeclaration | t.ClassDeclaration | t.VariableDeclaration
 >;
-declare export function isGenerated(
+export declare function isGenerated(
   path: NodePath<>,
   props?: object | null,
 ): boolean;
-declare export function isPure(
+export declare function isPure(
   path: NodePath<>,
   props?: object | null,
 ): boolean;
-declare export function isReferenced(
+export declare function isReferenced(
   path: NodePath<>,
   props?: object | null,
 ): boolean;
-declare export function isReferencedIdentifier(
+export declare function isReferencedIdentifier(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Identifier | t.JSXIdentifier>;
-declare export function isReferencedMemberExpression(
+export declare function isReferencedMemberExpression(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.MemberExpression>;
-declare export function isScope(
+export declare function isScope(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.Scopable>;
-declare export function isUser(
+export declare function isUser(
   path: NodePath<>,
   props?: object | null,
 ): boolean;
-declare export function isVar(
+export declare function isVar(
   path: NodePath<>,
   props?: object | null,
 ): path is NodePath<t.VariableDeclaration>;

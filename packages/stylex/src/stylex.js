@@ -12,11 +12,16 @@
 import type {
   Keyframes,
   Stylex$Create,
-  Stylex$CreateVars,
-  Stylex$OverrideVars,
+  StyleX$CreateVars,
+  StyleX$OverrideVars,
   StyleXArray,
+  Theme,
+  FlattenTokens,
   MapNamespace,
+  CompiledStyles,
 } from './StyleXTypes';
+
+export type { Theme, Variant } from './StyleXTypes';
 
 import injectStyle from './stylex-inject';
 import { styleq } from 'styleq';
@@ -30,15 +35,9 @@ type Cache = WeakMap<
   },
 >;
 
-type DedupeStyles = $ReadOnly<{
-  $$css: true,
-  [key: string]: string | $ReadOnly<{ [key: string]: string, ... }>,
-  ...
-}>;
-
 export function spread(
   styles: StyleXArray<
-    | ?DedupeStyles
+    | ?CompiledStyles
     | boolean
     | $ReadOnly<{ $$css?: void, [string]: string | number }>,
   >,
@@ -57,7 +56,12 @@ function stylexCreate(_styles: { ... }) {
   );
 }
 
-function stylexCreateVars(_styles: { ... }) {
+function stylexCreateVars<
+  +DefaultTokens: {
+    +[string]: string | { default: string, +[string]: string },
+  },
+  +ID: string = string,
+>(_styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {
   throw new Error(
     'stylex.createVars should never be called. It should be compiled away.',
   );
@@ -83,9 +87,9 @@ type Stylex$Include = <TStyles: { +[string]: string | number }>(
 
 export const create: Stylex$Create = stylexCreate;
 
-export const unstable_createVars: Stylex$CreateVars = stylexCreateVars;
+export const unstable_createVars: StyleX$CreateVars = stylexCreateVars;
 
-export const unstable_overrideVars: Stylex$OverrideVars = stylexOverrideVars;
+export const unstable_overrideVars: StyleX$OverrideVars = stylexOverrideVars;
 
 export const include: Stylex$Include = stylexIncludes;
 
@@ -108,7 +112,7 @@ export const UNSUPPORTED_PROPERTY = <T>(_props: T): T => {
 };
 
 function _stylex(
-  ...styles: Array<StyleXArray<?DedupeStyles | boolean>>
+  ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
 ): string {
   const [className] = styleq(styles);
   return className;
@@ -124,10 +128,10 @@ _stylex.inject = inject;
 _stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
 
 type IStyleX = {
-  (...styles: $ReadOnlyArray<StyleXArray<?DedupeStyles | boolean>>): string,
+  (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
   spread: (
     styles: StyleXArray<
-      | ?DedupeStyles
+      | ?CompiledStyles
       | boolean
       | $ReadOnly<{ $$css?: void, [string]: string | number }>,
     >,
@@ -137,8 +141,8 @@ type IStyleX = {
     style: $ReadOnly<{ $$css?: void, [string]: string | number }>,
   }>,
   create: Stylex$Create,
-  unstable_createVars: Stylex$CreateVars,
-  unstable_overrideVars: Stylex$OverrideVars,
+  unstable_createVars: StyleX$CreateVars,
+  unstable_overrideVars: StyleX$OverrideVars,
   include: Stylex$Include,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>

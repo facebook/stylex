@@ -15,10 +15,10 @@ import { defaultOptions } from './utils/default-options';
 
 type VarsObject<
   Vars: { +[string]: string | { default: string, +[string]: string } },
-> = {
+> = $ReadOnly<{
   ...$ObjMapConst<Vars, string>,
   __themeName__: string,
-};
+}>;
 
 // Similar to `stylex.create` it takes an object of variables with their values
 // and returns a string after hashing it.

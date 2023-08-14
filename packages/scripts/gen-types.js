@@ -22,6 +22,10 @@ async function generateTypes(inputDir, outputDir, rootDir) {
     .filter((dirent) => dirent.name.endsWith('.js.flow'))
     .map((dirent) => dirent.name.replace(/\.js\.flow$/, '.js'));
 
+  const dTsFiles = dirents
+    .filter((dirent) => dirent.name.endsWith('.d.ts'))
+    .map((dirent) => dirent.name);
+
   dirents = dirents.filter((dirents) => !jsFlowFiles.includes(dirents.name));
 
   for (const dirent of dirents) {
@@ -34,7 +38,15 @@ async function generateTypes(inputDir, outputDir, rootDir) {
         await generateTypes(inputFullPath, outputFullPath, rootPath);
       }
     } else {
-      // dirent is a file
+      // // dirent is a file
+      if (dirent.name.endsWith('.d.ts')) {
+        const fileContents = await fsPromises.readFile(inputFullPath, 'utf8');
+        await fsPromises.writeFile(
+          path.join(outputDir, dirent.name),
+          fileContents,
+        );
+      }
+
       if (dirent.name.endsWith('.js') || dirent.name.endsWith('.js.flow')) {
         try {
           let fileContents = await fsPromises.readFile(inputFullPath, 'utf8');
@@ -53,6 +65,12 @@ async function generateTypes(inputDir, outputDir, rootDir) {
             `${outputFullPath}.flow`,
             outputFlowContents,
           );
+          const tsOutputName = dirent.name
+            .replace(/\.js$/, '.d.ts')
+            .replace(/\.js\.flow$/, '.d.ts');
+          if (dTsFiles.includes(tsOutputName)) {
+            continue;
+          }
           const outputTSContents = await translate.translateFlowToTSDef(
             fileContents,
             monorepoPackage.prettier,

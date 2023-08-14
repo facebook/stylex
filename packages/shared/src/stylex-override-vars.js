@@ -16,7 +16,7 @@ import { defaultOptions } from './utils/default-options';
 // and returns a hashed className with variables overrides.
 //
 export default function styleXOverrideVars(
-  themeVars: { __themeName__: string, +[string]: string },
+  themeVars: { +__themeName__: string, +[string]: string },
   variables: { +[string]: string | { default: string, +[string]: string } },
   options?: StyleXOptions,
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {

@@ -31,8 +31,13 @@ const presets = process.env['HASTE']
     ];
 
 const plugins = process.env['HASTE']
-  ? [makeHaste, '@babel/plugin-syntax-flow', '@babel/plugin-syntax-jsx']
-  : [];
+  ? [
+      makeHaste,
+      // '@babel/plugin-syntax-flow',
+      // '@babel/plugin-syntax-jsx',
+      ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
+    ]
+  : [['babel-plugin-syntax-hermes-parser', { flow: 'detect' }]];
 
 module.exports = {
   assumptions: {
