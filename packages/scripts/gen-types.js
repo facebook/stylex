@@ -79,7 +79,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
             outputFullPath.replace(/\.js$/, '.d.ts'),
             // Typescript Prefers `NodePath` unlike `NodePath<>` in Flow
             // `flow-api-translator` doesn't handle this case yet.
-            outputTSContents.replace(/<>/g, ''),
+            postProcessTSOutput(outputTSContents),
           );
         } catch (err) {
           console.log(`Failed to process file: ${inputFullPath}`);
@@ -104,6 +104,15 @@ function preprocessFileContents(inputCode) {
     inputCode = inputCode.replace(comment, replacement);
   }
   return inputCode;
+}
+
+function postProcessTSOutput(outputCode) {
+  const result = outputCode
+    .replace(/<>/g, '')
+    .replace(/\$ReadOnlyMap/g, 'ReadonlyMap')
+    .replace(/\$ReadOnlySet/g, 'ReadonlySet');
+
+  return result;
 }
 
 const args = yargs(process.argv)
