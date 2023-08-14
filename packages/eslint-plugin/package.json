@@ -1,8 +1,8 @@
 {
   "name": "@stylexjs/eslint-plugin",
-  "version": "0.2.0-beta.17",
+  "version": "0.2.0-beta.18",
   "description": "StyleX eslint plugin.",
-  "main": "./lib/index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
@@ -13,5 +13,9 @@
   "devDependencies": {
     "hermes-eslint": "^0.15.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "files": [
+    "flow_modules/*",
+    "lib/*"
+  ]
 }
