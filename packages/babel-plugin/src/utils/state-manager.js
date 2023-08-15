@@ -158,8 +158,10 @@ export default class StateManager {
         if (!matchesFileSuffix(themeFileExtension)(importPath)) {
           return false;
         }
-        const resolvedFilePath = filePathResolver(importPath, rootDir);
-        return resolvedFilePath ? ['themeNameRef', resolvedFilePath] : false;
+        const resolvedFilePath = filePathResolver(importPath, sourceFilePath);
+        return resolvedFilePath
+          ? ['themeNameRef', path.relative(rootDir, resolvedFilePath)]
+          : false;
       }
       case 'haste': {
         const themeFileExtension =
@@ -202,27 +204,32 @@ const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
 ): void | string => {
-  const fileToLookFor = addFileExtension(relativeFilePath, sourceFilePath);
-  try {
-    const resolvedFilePath = require.resolve(fileToLookFor, {
-      paths: [path.dirname(sourceFilePath)],
-    });
-    return resolvedFilePath;
-  } catch {}
+  const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
+  if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
+    try {
+      const resolvedFilePath = require.resolve(fileToLookFor, {
+        paths: [path.dirname(sourceFilePath)],
+      });
+      return resolvedFilePath;
+    } catch {}
+  }
+  for (const ext of EXTENSIONS) {
+    try {
+      const resolvedFilePath = require.resolve(fileToLookFor + ext, {
+        paths: [path.dirname(sourceFilePath)],
+      });
+      return resolvedFilePath;
+    } catch {}
+  }
 };
+
+const EXTENSIONS = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
 
 const addFileExtension = (
   importedFilePath: string,
   sourceFile: string,
 ): string => {
-  if (
-    importedFilePath.endsWith('.js') ||
-    importedFilePath.endsWith('.ts') ||
-    importedFilePath.endsWith('.tsx') ||
-    importedFilePath.endsWith('.jsx') ||
-    importedFilePath.endsWith('.mjs') ||
-    importedFilePath.endsWith('.cjs')
-  ) {
+  if (EXTENSIONS.some((ext) => importedFilePath.endsWith(ext))) {
     return importedFilePath;
   }
   const fileExtension = path.extname(sourceFile);
