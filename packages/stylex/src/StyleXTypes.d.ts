@@ -21,6 +21,42 @@ export type StyleXClassName = StyleXClassNameFor<unknown, unknown>;
 // Type for arbitrarily nested Array.
 export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
 
+type lowerCaseAlphabet =
+  | 'a'
+  | 'b'
+  | 'c'
+  | 'd'
+  | 'e'
+  | 'f'
+  | 'g'
+  | 'h'
+  | 'i'
+  | 'j'
+  | 'k'
+  | 'l'
+  | 'm'
+  | 'n'
+  | 'o'
+  | 'p'
+  | 'q'
+  | 'r'
+  | 's'
+  | 't'
+  | 'u'
+  | 'v'
+  | 'w'
+  | 'x'
+  | 'y'
+  | 'z'
+  | '-'
+  | '_'
+  | '@'
+  | ':';
+
+// Strings that don't start with a dollar sign.
+// So that we can `&` with {$$css: true} without type errors.
+type NonDollarStr = `${lowerCaseAlphabet}${string}`;
+
 type CSSPropTypes = {
   [Key in keyof CSSProperties]: StyleXClassNameFor<Key, CSSProperties[Key]>;
 };
@@ -70,18 +106,23 @@ export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 export type XStyle<T = NestedCSSPropTypes> = StyleXArray<
   false | (null | undefined | T)
 >;
-export type XStyleWithout<T extends { [$$Key$$: string]: void }> = XStyle<
+export type XStyleWithout<T extends { [$$Key$$: NonDollarStr]: void }> = XStyle<
   Readonly<Pick<NestedCSSPropTypes, Exclude<keyof NestedCSSPropTypes, keyof T>>>
 >;
 
-export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
-export type LegacyTheme = Readonly<{ [constantName: string]: string }>;
+export type Keyframes = Readonly<{ [name: NonDollarStr]: CSSProperties }>;
+export type LegacyTheme = Readonly<{ [constantName: NonDollarStr]: string }>;
 
 type RawStyles = {
-  [key: string]: null | string | number | Array<string | number> | RawStyles;
+  [key: NonDollarStr]:
+    | null
+    | string
+    | number
+    | Array<string | number>
+    | RawStyles;
 };
 
-type CompiledNamespace<N extends RawStyles> = {
+type CompiledNamespace<const N extends RawStyles> = {
   [K in keyof N]: N[K] extends string | number | null
     ? StyleXClassNameFor<K, N[K]>
     : N[K] extends ReadonlyArray<infer T>
@@ -95,23 +136,25 @@ type CompiledNamespace<N extends RawStyles> = {
     : never;
 };
 
-export type Stylex$Create = <const S extends { [n: string]: RawStyles }>(
+export type Stylex$Create = <const S extends { [n: NonDollarStr]: RawStyles }>(
   styles: S,
 ) => Readonly<{
-  [N in keyof S]: CompiledNamespace<S[N]>;
+  [N in keyof S]: CompiledNamespace<S[N]> & { $$css: true };
 }>;
 
 export type CompiledStyles = Readonly<{
-  [key: string]: StyleXClassName | Readonly<{ [key: string]: StyleXClassName }>;
-}>;
+  [key: NonDollarStr]:
+    | StyleXClassName
+    | Readonly<{ [key: NonDollarStr]: StyleXClassName }>;
+}> & { $$css: true };
 
 type TTokens = {
-  [key: string]: string | { default: string; [key: string]: string };
+  [key: NonDollarStr]: string | { default: string; [key: string]: string };
 };
 
 export type FlattenTokens<
   T extends {
-    [key: string]: string | { default: string; [key: string]: string };
+    [key: NonDollarStr]: string | { default: string; [key: string]: string };
   },
 > = {
   [Key in keyof T]: T[Key] extends { default: infer X } & {

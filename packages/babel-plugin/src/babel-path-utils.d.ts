@@ -10,8 +10,6 @@
 import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 
-type object = { [key: string]: unknown };
-
 export declare function isAnyTypeAnnotation(
   path: NodePath,
   props?: object | null,
