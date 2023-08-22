@@ -26,7 +26,8 @@
     "verbose": true,
     "snapshotFormat": {
       "printBasicPrototype": false
-    }
+    },
+    "prettierPath": null
   },
   "files": [
     "flow_modules/*",

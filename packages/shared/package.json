@@ -18,7 +18,8 @@
   "jest": {
     "snapshotFormat": {
       "printBasicPrototype": false
-    }
+    },
+    "prettierPath": null
   },
   "files": [
     "lib/*"

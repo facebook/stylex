@@ -119,7 +119,7 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk"
@@ -168,7 +168,7 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk"
@@ -226,7 +226,7 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk"
@@ -293,7 +293,7 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk"
@@ -338,7 +338,7 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const RADIUS = 10;
-        stylex.inject(".xrpt93l{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:10;--x4y59db:coral;@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xrpt93l{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xrpt93l{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:10;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xrpt93l{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xrpt93l"
@@ -378,7 +378,7 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const COLOR = 'coral';
-        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk"
@@ -418,7 +418,7 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const name = 'light';
-        stylex.inject(".x1u43pop{--xgck17p:lightgreen;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1u43pop{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".x1u43pop{--xgck17p:lightgreen;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1u43pop{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "x1u43pop"
@@ -458,7 +458,7 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const RADIUS = 2;
-        stylex.inject(".x1ubmxd4{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:4;--x4y59db:coral;@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1ubmxd4{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".x1ubmxd4{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:4;--x4y59db:coral;}@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1ubmxd4{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "x1ubmxd4"
@@ -491,7 +491,7 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}}", 0.99);
+        stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk"
