@@ -15,12 +15,12 @@ const mockOptions = {
 
 describe('styles', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error');
-    console.error.mockImplementation(() => {});
+    jest.spyOn(console, 'warn');
+    console.warn.mockImplementation(() => {});
   });
 
   afterEach(() => {
-    console.error.mockRestore();
+    console.warn.mockRestore();
   });
 
   test('animation-delay', () => {
@@ -48,7 +48,7 @@ describe('styles', () => {
       },
     });
     stylex.spread(styles.root, mockOptions);
-    expect(console.error).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('border-style', () => {
@@ -81,7 +81,7 @@ describe('styles', () => {
       },
     });
     stylex.spread(styles2.root, mockOptions);
-    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.warn).toHaveBeenCalledTimes(1);
 
     const styles3 = stylex.create({
       root: {
@@ -89,7 +89,7 @@ describe('styles', () => {
       },
     });
     stylex.spread(styles3.root, mockOptions);
-    expect(console.error).toHaveBeenCalledTimes(2);
+    expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
   test('direction', () => {
@@ -209,7 +209,6 @@ describe('styles', () => {
         position: 'sticky',
       },
     });
-    expect(console.error).toHaveBeenCalledTimes(2);
     expect(stylex.spread(styles.static, mockOptions)).toMatchSnapshot('static');
     expect(stylex.spread(styles.relative, mockOptions)).toMatchSnapshot(
       'relative',
@@ -219,6 +218,7 @@ describe('styles', () => {
     );
     expect(stylex.spread(styles.fixed, mockOptions)).toMatchSnapshot('fixed');
     expect(stylex.spread(styles.sticky, mockOptions)).toMatchSnapshot('sticky');
+    expect(console.warn).toHaveBeenCalledTimes(3);
   });
 
   test('text-shadow', () => {
@@ -235,7 +235,7 @@ describe('styles', () => {
       },
     });
     expect(stylex.spread(styles2.root, mockOptions)).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.warn).toHaveBeenCalledTimes(1);
   });
 
   test('transform', () => {
@@ -325,8 +325,85 @@ describe('styles', () => {
     expect(stylex.spread(styles.middle, mockOptions)).toMatchSnapshot('middle');
     expect(stylex.spread(styles.top, mockOptions)).toMatchSnapshot('top');
   });
+});
 
-  test('logical border radius', () => {
+describe('logical styles', () => {
+  test('borderBlock', () => {
+    const styles = stylex.create({
+      borderBlock: {
+        borderBlockColor: 'black',
+        borderBlockStyle: 'solid',
+        borderBlockWidth: 1,
+      },
+      borderBlockEnd: {
+        borderBlockEndColor: 'red',
+        borderBlockEndStyle: 'dotted',
+        borderBlockEndWidth: 2,
+      },
+      borderBlockStart: {
+        borderBlockStartColor: 'green',
+        borderBlockStartStyle: 'dashed',
+        borderBlockStartWidth: 3,
+      },
+    });
+    expect(stylex.spread(styles.borderBlock, mockOptions)).toMatchSnapshot(
+      'borderBlock',
+    );
+    expect(stylex.spread(styles.borderBlockEnd, mockOptions)).toMatchSnapshot(
+      'borderBlockEnd',
+    );
+    expect(stylex.spread(styles.borderBlockStart, mockOptions)).toMatchSnapshot(
+      'borderBlockStart',
+    );
+
+    expect(
+      stylex.spread([styles.borderBlockEnd, styles.borderBlock], mockOptions),
+    ).toMatchSnapshot('borderBlock after borderBlockEnd');
+    expect(
+      stylex.spread([styles.borderBlockStart, styles.borderBlock], mockOptions),
+    ).toMatchSnapshot('borderBlock after borderBlockStart');
+  });
+
+  test('borderInline', () => {
+    const styles = stylex.create({
+      borderInline: {
+        borderInlineColor: 'black',
+        borderInlineStyle: 'solid',
+        borderInlineWidth: 1,
+      },
+      borderInlineEnd: {
+        borderInlineEndColor: 'red',
+        borderInlineEndStyle: 'dotted',
+        borderInlineEndWidth: 2,
+      },
+      borderInlineStart: {
+        borderInlineStartColor: 'green',
+        borderInlineStartStyle: 'dashed',
+        borderInlineStartWidth: 3,
+      },
+    });
+    expect(stylex.spread(styles.borderInline, mockOptions)).toMatchSnapshot(
+      'borderInline',
+    );
+    expect(stylex.spread(styles.borderInlineEnd, mockOptions)).toMatchSnapshot(
+      'borderInlineEnd',
+    );
+    expect(
+      stylex.spread(styles.borderInlineStart, mockOptions),
+    ).toMatchSnapshot('borderInlineStart');
+
+    expect(
+      stylex.spread([styles.borderInlineEnd, styles.borderInline], mockOptions),
+    ).toMatchSnapshot('borderInline after borderInlineEnd');
+    expect(
+      stylex.spread(
+        [styles.borderInlineStart, styles.borderInline],
+        mockOptions,
+      ),
+    ).toMatchSnapshot('borderInline after borderInlineStart');
+  });
+
+  test('borderRadius', () => {
     const styles = stylex.create({
       startstart: {
         borderStartStartRadius: 10,
@@ -353,31 +430,170 @@ describe('styles', () => {
     expect(stylex.spread(styles.endend, mockOptions)).toMatchSnapshot('endend');
   });
 
-  test.skip('logical border short-forms', () => {
+  test.skip('borderStyle', () => {
     const styles = stylex.create({
       root: {},
     });
     expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
   });
 
-  test.skip('logical border long-forms', () => {
+  test.skip('borderWidth', () => {
     const styles = stylex.create({
       root: {},
     });
     expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
   });
 
-  test.skip('logical inset short-forms', () => {
+  test('inset', () => {
     const styles = stylex.create({
-      root: {
-        insetBlock: 5,
-        insetInline: 10,
+      inset: {
+        inset: 1,
+      },
+      insetBlock: {
+        insetBlock: 2,
+      },
+      insetBlockStart: {
+        insetBlockStart: 3,
+      },
+      insetBlockEnd: {
+        insetBlockEnd: 4,
+      },
+      insetInline: {
+        insetInline: 5,
+      },
+      insetInlineStart: {
+        insetInlineStart: 6,
+      },
+      insetInlineEnd: {
+        insetInlineEnd: 7,
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.spread(styles.inset, mockOptions)).toMatchSnapshot('inset');
+    expect(stylex.spread(styles.insetBlock, mockOptions)).toMatchSnapshot(
+      'insetBlock',
+    );
+    expect(stylex.spread(styles.insetBlockStart, mockOptions)).toMatchSnapshot(
+      'insetBlockStart',
+    );
+    expect(stylex.spread(styles.insetBlockEnd, mockOptions)).toMatchSnapshot(
+      'insetBlockEnd',
+    );
+    expect(stylex.spread(styles.insetInline, mockOptions)).toMatchSnapshot(
+      'insetInline',
+    );
+    expect(stylex.spread(styles.insetInlineStart, mockOptions)).toMatchSnapshot(
+      'insetInlineStart',
+    );
+    expect(stylex.spread(styles.insetInlineEnd, mockOptions)).toMatchSnapshot(
+      'insetInlineEnd',
+    );
+
+    expect(
+      stylex.spread(
+        [
+          { left: 10, right: 10, bottom: 100, top: 100 },
+          styles.insetBlockStart,
+        ],
+        mockOptions,
+      ),
+    ).toMatchSnapshot('inset vs top');
+    expect(
+      stylex.spread(
+        [{ bottom: 100, top: 100 }, styles.insetBlockStart],
+        mockOptions,
+      ),
+    ).toMatchSnapshot('insetBlock vs top');
+    expect(
+      stylex.spread([{ top: 100 }, styles.insetBlockStart], mockOptions),
+    ).toMatchSnapshot('insetBlockStart vs top');
+    expect(
+      stylex.spread([{ bottom: 100 }, styles.insetBlockEnd], mockOptions),
+    ).toMatchSnapshot('insetBlockEnd vs bottom');
   });
 
-  test.skip('logical text alignment', () => {
+  test('margin', () => {
+    const styles = stylex.create({
+      marginBlock: {
+        marginBlock: 1,
+      },
+      marginBlockStart: {
+        marginBlockStart: 2,
+      },
+      marginBlockEnd: {
+        marginBlockEnd: 3,
+      },
+      marginInline: {
+        marginInline: 1,
+      },
+      marginInlineStart: {
+        marginInlineStart: 2,
+      },
+      marginInlineEnd: {
+        marginInlineEnd: 3,
+      },
+    });
+    expect(stylex.spread(styles.marginBlock, mockOptions)).toMatchSnapshot(
+      'marginBlock',
+    );
+    expect(stylex.spread(styles.marginBlockStart, mockOptions)).toMatchSnapshot(
+      'marginBlockStart',
+    );
+    expect(stylex.spread(styles.marginBlockEnd, mockOptions)).toMatchSnapshot(
+      'marginBlockEnd',
+    );
+    expect(stylex.spread(styles.marginInline, mockOptions)).toMatchSnapshot(
+      'marginInline',
+    );
+    expect(
+      stylex.spread(styles.marginInlineStart, mockOptions),
+    ).toMatchSnapshot('marginInlineStart');
+    expect(stylex.spread(styles.marginInlineEnd, mockOptions)).toMatchSnapshot(
+      'marginInlineEnd',
+    );
+  });
+
+  test('padding', () => {
+    const styles = stylex.create({
+      paddingBlock: {
+        paddingBlock: 1,
+      },
+      paddingBlockStart: {
+        paddingBlockStart: 2,
+      },
+      paddingBlockEnd: {
+        paddingBlockEnd: 3,
+      },
+      paddingInline: {
+        paddingInline: 1,
+      },
+      paddingInlineStart: {
+        paddingInlineStart: 2,
+      },
+      paddingInlineEnd: {
+        paddingInlineEnd: 3,
+      },
+    });
+    expect(stylex.spread(styles.paddingBlock, mockOptions)).toMatchSnapshot(
+      'paddingBlock',
+    );
+    expect(
+      stylex.spread(styles.paddingBlockStart, mockOptions),
+    ).toMatchSnapshot('paddingBlockStart');
+    expect(stylex.spread(styles.paddingBlockEnd, mockOptions)).toMatchSnapshot(
+      'paddingBlockEnd',
+    );
+    expect(stylex.spread(styles.paddingInline, mockOptions)).toMatchSnapshot(
+      'paddingInline',
+    );
+    expect(
+      stylex.spread(styles.paddingInlineStart, mockOptions),
+    ).toMatchSnapshot('paddingInlineStart');
+    expect(stylex.spread(styles.paddingInlineEnd, mockOptions)).toMatchSnapshot(
+      'paddingInlineEnd',
+    );
+  });
+
+  test.skip('textAlign', () => {
     const styles = stylex.create({
       root: {
         textAlign: 'start',
@@ -538,14 +754,11 @@ describe('media queries', () => {
 
 describe('unsupported style properties', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error');
-    console.error.mockImplementation(() => {});
     jest.spyOn(console, 'warn');
     console.warn.mockImplementation(() => {});
   });
 
   afterEach(() => {
-    console.error.mockRestore();
     console.warn.mockRestore();
   });
 
@@ -556,7 +769,7 @@ describe('unsupported style properties', () => {
       },
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('"marginStart"', () => {
@@ -566,7 +779,7 @@ describe('unsupported style properties', () => {
       },
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('"marginEnd"', () => {
@@ -576,7 +789,7 @@ describe('unsupported style properties', () => {
       },
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('"marginHorizontal"', () => {
@@ -631,18 +844,18 @@ describe('unsupported style properties', () => {
         passthroughProperties: ['transitionProperty'],
       }),
     ).toMatchSnapshot();
-    expect(console.error).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 });
 
 describe('unsupported style values', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'error');
-    console.error.mockImplementation(() => {});
+    jest.spyOn(console, 'warn');
+    console.warn.mockImplementation(() => {});
   });
 
   afterEach(() => {
-    console.error.mockRestore();
+    console.warn.mockRestore();
   });
 
   test('calc', () => {
@@ -652,7 +865,7 @@ describe('unsupported style values', () => {
       },
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('inherit', () => {
@@ -662,7 +875,7 @@ describe('unsupported style values', () => {
       },
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 
   test('initial', () => {
@@ -672,6 +885,6 @@ describe('unsupported style values', () => {
       },
     });
     expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
-    expect(console.error).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalled();
   });
 });

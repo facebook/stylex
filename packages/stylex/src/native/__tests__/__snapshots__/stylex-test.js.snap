@@ -75,6 +75,349 @@ exports[`length units 10 "vw" units are resolved to pixels 1`] = `
 }
 `;
 
+exports[`logical styles borderBlock: borderBlock 1`] = `
+{
+  "style": {
+    "borderBottomColor": "black",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1,
+    "borderTopColor": "black",
+    "borderTopStyle": "solid",
+    "borderTopWidth": 1,
+  },
+}
+`;
+
+exports[`logical styles borderBlock: borderBlock after borderBlockEnd 1`] = `
+{
+  "style": {
+    "borderBottomColor": "red",
+    "borderBottomStyle": "dotted",
+    "borderBottomWidth": 2,
+    "borderTopColor": "black",
+    "borderTopStyle": "solid",
+    "borderTopWidth": 1,
+  },
+}
+`;
+
+exports[`logical styles borderBlock: borderBlock after borderBlockStart 1`] = `
+{
+  "style": {
+    "borderBottomColor": "black",
+    "borderBottomStyle": "solid",
+    "borderBottomWidth": 1,
+    "borderTopColor": "green",
+    "borderTopStyle": "dashed",
+    "borderTopWidth": 3,
+  },
+}
+`;
+
+exports[`logical styles borderBlock: borderBlockEnd 1`] = `
+{
+  "style": {
+    "borderBottomColor": "red",
+    "borderBottomStyle": "dotted",
+    "borderBottomWidth": 2,
+  },
+}
+`;
+
+exports[`logical styles borderBlock: borderBlockStart 1`] = `
+{
+  "style": {
+    "borderTopColor": "green",
+    "borderTopStyle": "dashed",
+    "borderTopWidth": 3,
+  },
+}
+`;
+
+exports[`logical styles borderInline: borderInline 1`] = `
+{
+  "style": {
+    "borderEndColor": "black",
+    "borderEndStyle": "solid",
+    "borderEndWidth": 1,
+    "borderStartColor": "black",
+    "borderStartStyle": "solid",
+    "borderStartWidth": 1,
+  },
+}
+`;
+
+exports[`logical styles borderInline: borderInline after borderInlineEnd 1`] = `
+{
+  "style": {
+    "borderEndColor": "red",
+    "borderEndStyle": "dotted",
+    "borderEndWidth": 2,
+    "borderStartColor": "black",
+    "borderStartStyle": "solid",
+    "borderStartWidth": 1,
+  },
+}
+`;
+
+exports[`logical styles borderInline: borderInline after borderInlineStart 1`] = `
+{
+  "style": {
+    "borderEndColor": "black",
+    "borderEndStyle": "solid",
+    "borderEndWidth": 1,
+    "borderStartColor": "green",
+    "borderStartStyle": "dashed",
+    "borderStartWidth": 3,
+  },
+}
+`;
+
+exports[`logical styles borderInline: borderInlineEnd 1`] = `
+{
+  "style": {
+    "borderEndColor": "red",
+    "borderEndStyle": "dotted",
+    "borderEndWidth": 2,
+  },
+}
+`;
+
+exports[`logical styles borderInline: borderInlineStart 1`] = `
+{
+  "style": {
+    "borderStartColor": "green",
+    "borderStartStyle": "dashed",
+    "borderStartWidth": 3,
+  },
+}
+`;
+
+exports[`logical styles borderRadius: endend 1`] = `
+{
+  "style": {
+    "borderBottomEndRadius": 10,
+  },
+}
+`;
+
+exports[`logical styles borderRadius: endstart 1`] = `
+{
+  "style": {
+    "borderBottomStartRadius": 10,
+  },
+}
+`;
+
+exports[`logical styles borderRadius: startend 1`] = `
+{
+  "style": {
+    "borderTopEndRadius": 10,
+  },
+}
+`;
+
+exports[`logical styles borderRadius: startstart 1`] = `
+{
+  "style": {
+    "borderTopStartRadius": 10,
+  },
+}
+`;
+
+exports[`logical styles inset: inset 1`] = `
+{
+  "style": {
+    "bottom": 1,
+    "end": 1,
+    "start": 1,
+    "top": 1,
+  },
+}
+`;
+
+exports[`logical styles inset: inset vs top 1`] = `
+{
+  "style": {
+    "bottom": 100,
+    "left": 10,
+    "right": 10,
+    "top": 100,
+  },
+}
+`;
+
+exports[`logical styles inset: insetBlock 1`] = `
+{
+  "style": {
+    "bottom": 2,
+    "top": 2,
+  },
+}
+`;
+
+exports[`logical styles inset: insetBlock vs top 1`] = `
+{
+  "style": {
+    "bottom": 100,
+    "top": 100,
+  },
+}
+`;
+
+exports[`logical styles inset: insetBlockEnd 1`] = `
+{
+  "style": {
+    "bottom": 4,
+  },
+}
+`;
+
+exports[`logical styles inset: insetBlockEnd vs bottom 1`] = `
+{
+  "style": {
+    "bottom": 100,
+  },
+}
+`;
+
+exports[`logical styles inset: insetBlockStart 1`] = `
+{
+  "style": {
+    "top": 3,
+  },
+}
+`;
+
+exports[`logical styles inset: insetBlockStart vs top 1`] = `
+{
+  "style": {
+    "top": 100,
+  },
+}
+`;
+
+exports[`logical styles inset: insetInline 1`] = `
+{
+  "style": {
+    "end": 5,
+    "start": 5,
+  },
+}
+`;
+
+exports[`logical styles inset: insetInlineEnd 1`] = `
+{
+  "style": {
+    "end": 7,
+  },
+}
+`;
+
+exports[`logical styles inset: insetInlineStart 1`] = `
+{
+  "style": {
+    "start": 6,
+  },
+}
+`;
+
+exports[`logical styles margin: marginBlock 1`] = `
+{
+  "style": {
+    "marginVertical": 1,
+  },
+}
+`;
+
+exports[`logical styles margin: marginBlockEnd 1`] = `
+{
+  "style": {
+    "marginBottom": 3,
+  },
+}
+`;
+
+exports[`logical styles margin: marginBlockStart 1`] = `
+{
+  "style": {
+    "marginTop": 2,
+  },
+}
+`;
+
+exports[`logical styles margin: marginInline 1`] = `
+{
+  "style": {
+    "marginHorizontal": 1,
+  },
+}
+`;
+
+exports[`logical styles margin: marginInlineEnd 1`] = `
+{
+  "style": {
+    "marginEnd": 3,
+  },
+}
+`;
+
+exports[`logical styles margin: marginInlineStart 1`] = `
+{
+  "style": {
+    "marginStart": 2,
+  },
+}
+`;
+
+exports[`logical styles padding: paddingBlock 1`] = `
+{
+  "style": {
+    "paddingVertical": 1,
+  },
+}
+`;
+
+exports[`logical styles padding: paddingBlockEnd 1`] = `
+{
+  "style": {
+    "paddingBottom": 3,
+  },
+}
+`;
+
+exports[`logical styles padding: paddingBlockStart 1`] = `
+{
+  "style": {
+    "paddingTop": 2,
+  },
+}
+`;
+
+exports[`logical styles padding: paddingInline 1`] = `
+{
+  "style": {
+    "paddingHorizontal": 1,
+  },
+}
+`;
+
+exports[`logical styles padding: paddingInlineEnd 1`] = `
+{
+  "style": {
+    "paddingEnd": 3,
+  },
+}
+`;
+
+exports[`logical styles padding: paddingInlineStart 1`] = `
+{
+  "style": {
+    "paddingStart": 2,
+  },
+}
+`;
+
 exports[`styles animation-delay 1`] = `
 {
   "style": {
@@ -184,38 +527,6 @@ exports[`styles line-clamp 1`] = `
 }
 `;
 
-exports[`styles logical border radius: endend 1`] = `
-{
-  "style": {
-    "borderBottomEndRadius": 10,
-  },
-}
-`;
-
-exports[`styles logical border radius: endstart 1`] = `
-{
-  "style": {
-    "borderBottomStartRadius": 10,
-  },
-}
-`;
-
-exports[`styles logical border radius: startend 1`] = `
-{
-  "style": {
-    "borderTopEndRadius": 10,
-  },
-}
-`;
-
-exports[`styles logical border radius: startstart 1`] = `
-{
-  "style": {
-    "borderTopStartRadius": 10,
-  },
-}
-`;
-
 exports[`styles object-fit: contain 1`] = `
 {
   "style": {
@@ -291,7 +602,7 @@ exports[`styles position: relative 1`] = `
 exports[`styles position: static 1`] = `
 {
   "style": {
-    "position": "static",
+    "position": "relative",
   },
 }
 `;
@@ -448,53 +759,17 @@ exports[`styles vertical-align: top 1`] = `
 
 exports[`unsupported style properties "filter" 1`] = `{}`;
 
-exports[`unsupported style properties "marginEnd" 1`] = `
-{
-  "style": {
-    "marginEnd": 10,
-  },
-}
-`;
+exports[`unsupported style properties "marginEnd" 1`] = `{}`;
 
-exports[`unsupported style properties "marginHorizontal" 1`] = `
-{
-  "style": {
-    "marginInline": 10,
-  },
-}
-`;
+exports[`unsupported style properties "marginHorizontal" 1`] = `{}`;
 
-exports[`unsupported style properties "marginStart" 1`] = `
-{
-  "style": {
-    "marginStart": 10,
-  },
-}
-`;
+exports[`unsupported style properties "marginStart" 1`] = `{}`;
 
-exports[`unsupported style properties "marginVertical" 1`] = `
-{
-  "style": {
-    "marginBlock": 10,
-  },
-}
-`;
+exports[`unsupported style properties "marginVertical" 1`] = `{}`;
 
-exports[`unsupported style properties "paddingHorizontal" 1`] = `
-{
-  "style": {
-    "paddingInline": 10,
-  },
-}
-`;
+exports[`unsupported style properties "paddingHorizontal" 1`] = `{}`;
 
-exports[`unsupported style properties "paddingVertical" 1`] = `
-{
-  "style": {
-    "paddingBlock": 10,
-  },
-}
-`;
+exports[`unsupported style properties "paddingVertical" 1`] = `{}`;
 
 exports[`unsupported style properties "transitionProperty" passthrough 1`] = `
 {

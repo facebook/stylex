@@ -27,38 +27,12 @@ const stylePropertyAllowlistSet = new Set<string>([
   'aspectRatio',
   'backfaceVisibility',
   'backgroundColor',
-  'borderBlockColor',
-  'borderBlockStyle',
-  'borderBlockWidth',
-  'borderBlockEndColor',
-  'borderBlockEndStyle',
-  'borderBlockEndWidth',
-  'borderBlockStartColor',
-  'borderBlockStartStyle',
-  'borderBlockStartWidth',
   'borderBottomColor',
   'borderBottomLeftRadius',
   'borderBottomRightRadius',
   'borderBottomStyle',
   'borderBottomWidth',
-  'borderEndEndRadius',
-  'borderEndStartRadius',
   'borderColor',
-  'borderInlineColor',
-  'borderInlineStyle',
-  'borderInlineWidth',
-  'borderInlineEndColor',
-  'borderInlineEndStyle',
-  'borderInlineEndWidth',
-  'borderInlineStartColor',
-  'borderInlineStartStyle',
-  'borderInlineStartWidth',
-  'borderEndColor',
-  'borderEndStyle',
-  'borderEndWidth',
-  'borderStartColor',
-  'borderStartStyle',
-  'borderStartWidth',
   'borderLeftColor',
   'borderLeftStyle',
   'borderLeftWidth',
@@ -66,8 +40,6 @@ const stylePropertyAllowlistSet = new Set<string>([
   'borderRightColor',
   'borderRightStyle',
   'borderRightWidth',
-  'borderStartEndRadius',
-  'borderStartStartRadius',
   'borderStyle',
   'borderTopColor',
   'borderTopLeftRadius',
@@ -96,29 +68,14 @@ const stylePropertyAllowlistSet = new Set<string>([
   'gapRow',
   'height',
   // 'includeFontPadding', Android Only
-  'inset',
-  'insetBlock',
-  'insetBlockEnd',
-  'insetBlockStart',
-  'insetInline',
-  'insetInlineEnd',
-  'insetInlineStart',
   'justifyContent',
   'left',
   'letterSpacing',
   'lineHeight',
   'margin',
-  'marginBlock',
-  'marginBlockEnd',
-  'marginBlockStart',
   'marginBottom',
-  'marginEnd',
-  'marginInline',
-  'marginInlineEnd',
-  'marginInlineStart',
   'marginLeft',
   'marginRight',
-  'marginStart',
   'marginTop',
   'maxHeight',
   'maxWidth',
@@ -128,17 +85,9 @@ const stylePropertyAllowlistSet = new Set<string>([
   'opacity',
   'overflow',
   'padding',
-  'paddingBlock',
-  'paddingBlockEnd',
-  'paddingBlockStart',
   'paddingBottom',
-  'paddingEnd',
-  'paddingInline',
-  'paddingInlineEnd',
-  'paddingInlineStart',
   'paddingLeft',
   'paddingRight',
-  'paddingStart',
   'paddingTop',
   'pointerEvents',
   'position',
@@ -168,6 +117,49 @@ const stylePropertyAllowlistSet = new Set<string>([
   'width',
   // 'writingDirection', // iOS Only
   'zIndex',
+  // DESKTOP: no built-in support for logical properties.
+  // Comment out all the logical properties so they can be converted to legacy non-standard properties.
+  //'borderBlockColor',
+  //'borderBlockStyle',
+  //'borderBlockWidth',
+  //'borderBlockEndColor',
+  //'borderBlockEndStyle',
+  //'borderBlockEndWidth',
+  //'borderBlockStartColor',
+  //'borderBlockStartStyle',
+  //'borderBlockStartWidth',
+  //'borderInlineColor',
+  //'borderInlineStyle',
+  //'borderInlineWidth',
+  //'borderInlineEndColor',
+  //'borderInlineEndStyle',
+  //'borderInlineEndWidth',
+  //'borderInlineStartColor',
+  //'borderInlineStartStyle',
+  //'borderInlineStartWidth',
+  //'borderEndEndRadius',
+  //'borderEndStartRadius',
+  //'borderStartEndRadius',
+  //'borderStartStartRadius',
+  //'inset',
+  //'insetBlock',
+  //'insetBlockEnd',
+  //'insetBlockStart',
+  //'insetInline',
+  //'insetInlineEnd',
+  //'insetInlineStart',
+  //'marginBlock',
+  //'marginBlockEnd',
+  //'marginBlockStart',
+  //'marginInline',
+  //'marginInlineEnd',
+  //'marginInlineStart',
+  //'paddingBlock',
+  //'paddingBlockEnd',
+  //'paddingBlockStart',
+  //'paddingInline',
+  //'paddingInlineEnd',
+  //'paddingInlineStart',
 ]);
 
 function isReactNativeStyleProp(propName: string): boolean {
@@ -237,14 +229,11 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       continue;
     }
 
-    if (propName === 'backgroundImage') {
-      errorMsg('"backgroundImage" is not supported in React Native.');
-    }
     // React Native only supports non-standard box-shadow styles
-    else if (propName === 'boxShadow' && typeof styleValue === 'string') {
+    if (propName === 'boxShadow' && typeof styleValue === 'string') {
       const parsedShadow = parseShadow(styleValue);
       if (parsedShadow.length > 1) {
-        errorMsg(
+        warnMsg(
           'Multiple "boxShadow" values are not supported in React Native.',
         );
       }
@@ -252,7 +241,7 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       // TODO: parse alpha color inputs => alpha + color
       // errorMsg('"boxShadow" opacity is not implemented in React Native.');
       if (inset) {
-        errorMsg(
+        warnMsg(
           '"boxShadow" value of "inset" is not supported in React Native.',
         );
       }
@@ -261,30 +250,11 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       processedStyle.shadowOpacity = 1;
       processedStyle.shadowRadius = blurRadius;
     }
-    // Needed by React Native for Desktop
-    else if (propName === 'fontWeight' && typeof styleValue === 'number') {
-      // $FlowFixMe
-      processedStyle[propName] = styleValue.toString();
-    } else if (propName === 'position') {
-      if (styleValue === 'fixed') {
-        processedStyle[propName] = 'absolute';
-        errorMsg(
-          '"position" value of "fixed" is not supported in React Native. Falling back to "absolute".',
-        );
-      } else if (styleValue === 'sticky') {
-        processedStyle[propName] = 'relative';
-        errorMsg(
-          '"position" value of "sticky" is not supported in React Native. Falling back to "relative".',
-        );
-      } else {
-        processedStyle[propName] = styleValue;
-      }
-    }
     // React Native only supports non-standard text-shadow styles
     else if (propName === 'textShadow' && typeof styleValue === 'string') {
       const parsedShadow = parseShadow(styleValue);
       if (parsedShadow.length > 1) {
-        errorMsg(
+        warnMsg(
           'Multiple "textShadow" values are not supported in React Native.',
         );
       }
@@ -292,18 +262,6 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
       processedStyle.textShadowColor = color;
       processedStyle.textShadowOffset = { height: offsetY, width: offsetX };
       processedStyle.textShadowRadius = blurRadius;
-    } else if (propName === 'marginHorizontal') {
-      warnMsg('"marginHorizontal" is deprecated. Use "marginInline".');
-      processedStyle.marginInline = styleValue;
-    } else if (propName === 'marginVertical') {
-      warnMsg('"marginVertical" is deprecated. Use "marginBlock".');
-      processedStyle.marginBlock = styleValue;
-    } else if (propName === 'paddingHorizontal') {
-      warnMsg('"paddingHorizontal" is deprecated. Use "paddingInline".');
-      processedStyle.paddingInline = styleValue;
-    } else if (propName === 'paddingVertical') {
-      warnMsg('"paddingVertical" is deprecated. Use "paddingBlock".');
-      processedStyle.paddingBlock = styleValue;
     } else {
       processedStyle[propName] = styleValue;
     }
@@ -379,6 +337,7 @@ export function spread(
   /* eslint-disable prefer-const */
   let { lineClamp, ...flatStyle }: { [key: string]: mixed } =
     flattenStyle(style);
+  let prevStyle = { ...flatStyle };
   /* eslint-enable prefer-const */
 
   const nativeProps = {};
@@ -429,7 +388,117 @@ export function spread(
       !isReactNativeStyleProp(styleProp) &&
       passthroughProperties.indexOf(styleProp) === -1
     ) {
-      errorMsg(`Encountered unsupported style property "${styleProp}"`);
+      // borderBlock
+      if (styleProp === 'borderBlockColor') {
+        flatStyle.borderTopColor = flatStyle.borderTopColor ?? styleValue;
+        flatStyle.borderBottomColor = flatStyle.borderBottomColor ?? styleValue;
+      } else if (styleProp === 'borderBlockStyle') {
+        flatStyle.borderTopStyle = flatStyle.borderTopStyle ?? styleValue;
+        flatStyle.borderBottomStyle = flatStyle.borderBottomStyle ?? styleValue;
+      } else if (styleProp === 'borderBlockWidth') {
+        flatStyle.borderTopWidth = flatStyle.borderTopWidth ?? styleValue;
+        flatStyle.borderBottomWidth = flatStyle.borderBottomWidth ?? styleValue;
+      } else if (styleProp === 'borderBlockEndColor') {
+        flatStyle.borderBottomColor = prevStyle.borderBottomColor ?? styleValue;
+      } else if (styleProp === 'borderBlockEndStyle') {
+        flatStyle.borderBottomStyle = prevStyle.borderBottomStyle ?? styleValue;
+      } else if (styleProp === 'borderBlockEndWidth') {
+        flatStyle.borderBottomWidth = prevStyle.borderBottomWidth ?? styleValue;
+      } else if (styleProp === 'borderBlockStartColor') {
+        flatStyle.borderTopColor = prevStyle.borderTopColor ?? styleValue;
+      } else if (styleProp === 'borderBlockStartStyle') {
+        flatStyle.borderTopStyle = prevStyle.borderTopStyle ?? styleValue;
+      } else if (styleProp === 'borderBlockStartWidth') {
+        flatStyle.borderTopWidth = prevStyle.borderTopWidth ?? styleValue;
+      }
+      // borderInline
+      else if (styleProp === 'borderInlineColor') {
+        flatStyle.borderStartColor = flatStyle.borderStartColor ?? styleValue;
+        flatStyle.borderEndColor = flatStyle.borderEndColor ?? styleValue;
+      } else if (styleProp === 'borderInlineStyle') {
+        flatStyle.borderStartStyle = flatStyle.borderStartStyle ?? styleValue;
+        flatStyle.borderEndStyle = flatStyle.borderEndStyle ?? styleValue;
+      } else if (styleProp === 'borderInlineWidth') {
+        flatStyle.borderStartWidth = flatStyle.borderStartWidth ?? styleValue;
+        flatStyle.borderEndWidth = flatStyle.borderEndWidth ?? styleValue;
+      } else if (styleProp === 'borderInlineEndColor') {
+        flatStyle.borderEndColor = styleValue;
+      } else if (styleProp === 'borderInlineEndStyle') {
+        flatStyle.borderEndStyle = styleValue;
+      } else if (styleProp === 'borderInlineEndWidth') {
+        flatStyle.borderEndWidth = styleValue;
+      } else if (styleProp === 'borderInlineStartColor') {
+        flatStyle.borderStartColor = styleValue;
+      } else if (styleProp === 'borderInlineStartStyle') {
+        flatStyle.borderStartStyle = styleValue;
+      } else if (styleProp === 'borderInlineStartWidth') {
+        flatStyle.borderStartWidth = styleValue;
+      }
+      // borderRadius
+      else if (styleProp === 'borderStartStartRadius') {
+        flatStyle.borderTopStartRadius = styleValue;
+      } else if (styleProp === 'borderEndStartRadius') {
+        flatStyle.borderBottomStartRadius = styleValue;
+      } else if (styleProp === 'borderStartEndRadius') {
+        flatStyle.borderTopEndRadius = styleValue;
+      } else if (styleProp === 'borderEndEndRadius') {
+        flatStyle.borderBottomEndRadius = styleValue;
+      }
+      // inset
+      else if (styleProp === 'inset') {
+        flatStyle.top = flatStyle.top ?? styleValue;
+        flatStyle.start = flatStyle.start ?? styleValue;
+        flatStyle.end = flatStyle.end ?? styleValue;
+        flatStyle.bottom = flatStyle.bottom ?? styleValue;
+      } else if (styleProp === 'insetBlock') {
+        flatStyle.top = flatStyle.top ?? styleValue;
+        flatStyle.bottom = flatStyle.bottom ?? styleValue;
+      } else if (styleProp === 'insetBlockEnd') {
+        flatStyle.bottom = prevStyle.bottom ?? styleValue;
+      } else if (styleProp === 'insetBlockStart') {
+        flatStyle.top = prevStyle.top ?? styleValue;
+      } else if (styleProp === 'insetInline') {
+        flatStyle.end = flatStyle.end ?? styleValue;
+        flatStyle.start = flatStyle.start ?? styleValue;
+      } else if (styleProp === 'insetInlineEnd') {
+        flatStyle.end = prevStyle.end ?? styleValue;
+      } else if (styleProp === 'insetInlineStart') {
+        flatStyle.start = prevStyle.start ?? styleValue;
+      }
+      // marginBlock
+      else if (styleProp === 'marginBlock') {
+        flatStyle.marginVertical = styleValue;
+      } else if (styleProp === 'marginBlockStart') {
+        flatStyle.marginTop = flatStyle.marginTop ?? styleValue;
+      } else if (styleProp === 'marginBlockEnd') {
+        flatStyle.marginBottom = flatStyle.marginBottom ?? styleValue;
+      }
+      // marginInline
+      else if (styleProp === 'marginInline') {
+        flatStyle.marginHorizontal = styleValue;
+      } else if (styleProp === 'marginInlineStart') {
+        flatStyle.marginStart = styleValue;
+      } else if (styleProp === 'marginInlineEnd') {
+        flatStyle.marginEnd = styleValue;
+      }
+      // paddingBlock
+      else if (styleProp === 'paddingBlock') {
+        flatStyle.paddingVertical = styleValue;
+      } else if (styleProp === 'paddingBlockStart') {
+        flatStyle.paddingTop = flatStyle.paddingTop ?? styleValue;
+      } else if (styleProp === 'paddingBlockEnd') {
+        flatStyle.paddingBottom = flatStyle.paddingBottom ?? styleValue;
+      }
+      // paddingInline
+      else if (styleProp === 'paddingInline') {
+        flatStyle.paddingHorizontal = styleValue;
+      } else if (styleProp === 'paddingInlineStart') {
+        flatStyle.paddingStart = styleValue;
+      } else if (styleProp === 'paddingInlineEnd') {
+        flatStyle.paddingEnd = styleValue;
+      } else {
+        warnMsg(`Ignoring unsupported style property "${styleProp}"`);
+      }
       delete flatStyle[styleProp];
       continue;
     }
@@ -439,8 +508,8 @@ export function spread(
     // filter.
     // We check this at resolve time to ensure the render-time styles are safe.
     if (!isReactNativeStyleValue(styleValue)) {
-      errorMsg(
-        `Encounted unsupported style value "${String(
+      warnMsg(
+        `Ignoring unsupported style value "${String(
           styleValue,
         )}" for property "${styleProp}"`,
       );
@@ -464,21 +533,28 @@ export function spread(
       delete flatStyle.borderStyle;
     }
 
-    if (flatStyle.borderStartStartRadius != null) {
-      flatStyle.borderTopStartRadius = flatStyle.borderStartStartRadius;
-      delete flatStyle.borderStartStartRadius;
+    // polyfill numeric fontWeight (for desktop)
+    if (typeof flatStyle.fontWeight === 'number') {
+      flatStyle.fontWeight = flatStyle.fontWeight.toString();
     }
-    if (flatStyle.borderEndStartRadius != null) {
-      flatStyle.borderBottomStartRadius = flatStyle.borderEndStartRadius;
-      delete flatStyle.borderEndStartRadius;
-    }
-    if (flatStyle.borderStartEndRadius != null) {
-      flatStyle.borderTopEndRadius = flatStyle.borderStartEndRadius;
-      delete flatStyle.borderStartEndRadius;
-    }
-    if (flatStyle.borderEndEndRadius != null) {
-      flatStyle.borderBottomEndRadius = flatStyle.borderEndEndRadius;
-      delete flatStyle.borderEndEndRadius;
+
+    // workaround unsupported position values
+    const positionValue = flatStyle.position;
+    if (positionValue === 'fixed') {
+      flatStyle.position = 'absolute';
+      warnMsg(
+        '"position" value of "fixed" is not supported in React Native. Falling back to "absolute".',
+      );
+    } else if (positionValue === 'static') {
+      flatStyle.position = 'relative';
+      warnMsg(
+        '"position" value of "static" is not supported in React Native. Falling back to "relative".',
+      );
+    } else if (positionValue === 'sticky') {
+      flatStyle.position = 'relative';
+      warnMsg(
+        '"position" value of "sticky" is not supported in React Native. Falling back to "relative".',
+      );
     }
 
     for (const timeValuedProperty of timeValuedProperties) {
