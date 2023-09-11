@@ -12,7 +12,7 @@ jobs:
       with:
         name: "runtime library"
         build-script: "build -w @stylexjs/stylex"
-        pattern: "./packages/stylex/lib/{stylex.js,StyleXSheet.js}"
+        pattern: "./packages/stylex/lib/{native.js,stylex.js,StyleXSheet.js}"
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
   bundle-size:
