@@ -38,6 +38,7 @@ import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isPercentage from './rules/isPercentage';
 import isAnimationName from './rules/isAnimationName';
+import isStylexCreateVarsToken from './rules/isStylexCreateVarsToken';
 import { borderSplitter } from './utils/split-css-value';
 
 export type Variables = $ReadOnlyMap<string, Expression>;
@@ -2059,6 +2060,8 @@ const stylexValidStyles = {
 
     // TODO: Make this configurable
     const importsToLookFor = ['stylex', '@stylexjs/stylex'];
+    const stylexCreateVarsFileExtension = '.stylex';
+    const stylexCreateVarsTokenImports = new Set<string>();
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
 
@@ -2218,21 +2221,27 @@ const stylexValidStyles = {
         if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
         }
-        const check = ruleChecker(style.value, variables, style);
-        if (check != null) {
-          const { message, suggest } = check;
-          return context.report(
-            ({
-              node: style.value,
-              loc: style.value.loc,
-              message: `${key} value must be one of:\n${message}${
-                key === 'lineHeight'
-                  ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
-                  : ''
-              }`,
-              suggest: suggest != null ? [suggest] : undefined,
-            }: Rule.ReportDescriptor),
-          );
+
+        const isReferencingStylexCreateVarsTokens =
+          stylexCreateVarsTokenImports.size > 0 &&
+          isStylexCreateVarsToken(style.value, stylexCreateVarsTokenImports);
+        if (!isReferencingStylexCreateVarsTokens) {
+          const check = ruleChecker(style.value, variables, style);
+          if (check != null) {
+            const { message, suggest } = check;
+            return context.report(
+              ({
+                node: style.value,
+                loc: style.value.loc,
+                message: `${key} value must be one of:\n${message}${
+                  key === 'lineHeight'
+                    ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
+                    : ''
+                }`,
+                suggest: suggest != null ? [suggest] : undefined,
+              }: Rule.ReportDescriptor),
+            );
+          }
         }
       }
     }
@@ -2333,24 +2342,37 @@ const stylexValidStyles = {
           return;
         }
         const sourceValue = node.source.value;
-        if (!importsToLookFor.includes(sourceValue)) {
+        const isStylexImport = importsToLookFor.includes(sourceValue);
+        const isStylexCreateVarsImport = sourceValue.endsWith(
+          stylexCreateVarsFileExtension,
+        );
+        if (!(isStylexImport || isStylexCreateVarsImport)) {
           return;
         }
+        if (isStylexImport) {
+          node.specifiers.forEach((specifier) => {
+            if (
+              specifier.type === 'ImportDefaultSpecifier' ||
+              specifier.type === 'ImportNamespaceSpecifier'
+            ) {
+              styleXDefaultImports.add(specifier.local.name);
+            }
+            if (
+              specifier.type === 'ImportSpecifier' &&
+              specifier.imported.name === 'create'
+            ) {
+              styleXCreateImports.add(specifier.local.name);
+            }
+          });
+        }
 
-        node.specifiers.forEach((specifier) => {
-          if (
-            specifier.type === 'ImportDefaultSpecifier' ||
-            specifier.type === 'ImportNamespaceSpecifier'
-          ) {
-            styleXDefaultImports.add(specifier.local.name);
-          }
-          if (
-            specifier.type === 'ImportSpecifier' &&
-            specifier.imported.name === 'create'
-          ) {
-            styleXCreateImports.add(specifier.local.name);
-          }
-        });
+        if (isStylexCreateVarsImport) {
+          node.specifiers.forEach((specifier) => {
+            if (specifier.type === 'ImportSpecifier') {
+              stylexCreateVarsTokenImports.add(specifier.local.name);
+            }
+          });
+        }
       },
       CallExpression(node: { ...CallExpression, ...Rule.NodeParentExtension }) {
         if (!isStylexDeclaration(node)) {

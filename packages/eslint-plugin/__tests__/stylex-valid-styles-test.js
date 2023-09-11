@@ -337,6 +337,19 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         fontWeight: red,
       },
     })`,
+    // test for stylex create vars tokens
+    `
+    import stylex from'stylex';
+    import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens.stylex';
+    stylex.create({
+      root: {
+        fontSize: TextType.fontSize,
+        borderColor: ColorTokens.borderColor,
+        paddingBottom: TextType.paddingBottom,
+        fontFamily: \`\${TextType.defaultFontFamily}, \${TextType.fallbackFontFamily}\`,
+      }
+    })
+    `,
   ],
   invalid: [
     {
@@ -985,6 +998,189 @@ revert`,
       `,
             },
           ],
+        },
+      ],
+    },
+    {
+      code: `
+      import stylex from'stylex';
+      import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens';
+      stylex.create({
+        root: {
+          fontSize: TextType.fontSize,
+          borderColor: ColorTokens.borderColor,
+          paddingBottom: TextType.paddingBottom,
+          fontFamily: \`\${TextType.fontFamily}, \${TextType.fallbackFontFamily}\`,
+        }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'borderColor value must be one of:\n' +
+            'a string literal\n' +
+            'aliceblue\n' +
+            'antiquewhite\n' +
+            'aqua\n' +
+            'aquamarine\n' +
+            'azure\n' +
+            'beige\n' +
+            'bisque\n' +
+            'black\n' +
+            'blanchedalmond\n' +
+            'blue\n' +
+            'blueviolet\n' +
+            'brown\n' +
+            'burlywood\n' +
+            'cadetblue\n' +
+            'chartreuse\n' +
+            'chocolate\n' +
+            'coral\n' +
+            'cornflowerblue\n' +
+            'cornsilk\n' +
+            'crimson\n' +
+            'cyan\n' +
+            'darkblue\n' +
+            'darkcyan\n' +
+            'darkgoldenrod\n' +
+            'darkgray\n' +
+            'darkgrey\n' +
+            'darkgreen\n' +
+            'darkkhaki\n' +
+            'darkmagenta\n' +
+            'darkolivegreen\n' +
+            'darkorange\n' +
+            'darkorchid\n' +
+            'darkred\n' +
+            'darksalmon\n' +
+            'darkseagreen\n' +
+            'darkslateblue\n' +
+            'darkslategray\n' +
+            'darkslategrey\n' +
+            'darkturquoise\n' +
+            'darkviolet\n' +
+            'deeppink\n' +
+            'deepskyblue\n' +
+            'dimgray\n' +
+            'dimgrey\n' +
+            'dodgerblue\n' +
+            'firebrick\n' +
+            'floralwhite\n' +
+            'forestgreen\n' +
+            'fuchsia\n' +
+            'gainsboro\n' +
+            'ghostwhite\n' +
+            'gold\n' +
+            'goldenrod\n' +
+            'gray\n' +
+            'grey\n' +
+            'green\n' +
+            'greenyellow\n' +
+            'honeydew\n' +
+            'hotpink\n' +
+            'indianred\n' +
+            'indigo\n' +
+            'ivory\n' +
+            'khaki\n' +
+            'lavender\n' +
+            'lavenderblush\n' +
+            'lawngreen\n' +
+            'lemonchiffon\n' +
+            'lightblue\n' +
+            'lightcoral\n' +
+            'lightcyan\n' +
+            'lightgoldenrodyellow\n' +
+            'lightgray\n' +
+            'lightgrey\n' +
+            'lightgreen\n' +
+            'lightpink\n' +
+            'lightsalmon\n' +
+            'lightseagreen\n' +
+            'lightskyblue\n' +
+            'lightslategray\n' +
+            'lightslategrey\n' +
+            'lightsteelblue\n' +
+            'lightyellow\n' +
+            'lime\n' +
+            'limegreen\n' +
+            'linen\n' +
+            'magenta\n' +
+            'maroon\n' +
+            'mediumaquamarine\n' +
+            'mediumblue\n' +
+            'mediumorchid\n' +
+            'mediumpurple\n' +
+            'mediumseagreen\n' +
+            'mediumslateblue\n' +
+            'mediumspringgreen\n' +
+            'mediumturquoise\n' +
+            'mediumvioletred\n' +
+            'midnightblue\n' +
+            'mintcream\n' +
+            'mistyrose\n' +
+            'moccasin\n' +
+            'navajowhite\n' +
+            'navy\n' +
+            'oldlace\n' +
+            'olive\n' +
+            'olivedrab\n' +
+            'orange\n' +
+            'orangered\n' +
+            'orchid\n' +
+            'palegoldenrod\n' +
+            'palegreen\n' +
+            'paleturquoise\n' +
+            'palevioletred\n' +
+            'papayawhip\n' +
+            'peachpuff\n' +
+            'peru\n' +
+            'pink\n' +
+            'plum\n' +
+            'powderblue\n' +
+            'purple\n' +
+            'red\n' +
+            'rosybrown\n' +
+            'royalblue\n' +
+            'saddlebrown\n' +
+            'salmon\n' +
+            'sandybrown\n' +
+            'seagreen\n' +
+            'seashell\n' +
+            'sienna\n' +
+            'silver\n' +
+            'skyblue\n' +
+            'slateblue\n' +
+            'slategray\n' +
+            'slategrey\n' +
+            'snow\n' +
+            'springgreen\n' +
+            'steelblue\n' +
+            'tan\n' +
+            'teal\n' +
+            'thistle\n' +
+            'tomato\n' +
+            'turquoise\n' +
+            'violet\n' +
+            'wheat\n' +
+            'white\n' +
+            'whitesmoke\n' +
+            'yellow\n' +
+            'yellowgreen\n' +
+            'rebeccapurple\n' +
+            'a valid hex color (#FFAADD or #FFAADDFF)\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
+        },
+        {
+          message:
+            'fontFamily value must be one of:\n' +
+            'a string literal\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
         },
       ],
     },
