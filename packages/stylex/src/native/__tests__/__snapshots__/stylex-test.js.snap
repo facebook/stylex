@@ -75,6 +75,54 @@ exports[`length units 10 "vw" units are resolved to pixels 1`] = `
 }
 `;
 
+exports[`logical styles blockSize: blockSize 1`] = `
+{
+  "style": {
+    "height": 100,
+  },
+}
+`;
+
+exports[`logical styles blockSize: blockSize after height 1`] = `
+{
+  "style": {
+    "height": 200,
+  },
+}
+`;
+
+exports[`logical styles blockSize: maxBlockSize 1`] = `
+{
+  "style": {
+    "maxHeight": 100,
+  },
+}
+`;
+
+exports[`logical styles blockSize: maxBlockSize after maxHeight 1`] = `
+{
+  "style": {
+    "maxHeight": 200,
+  },
+}
+`;
+
+exports[`logical styles blockSize: minBlockSize 1`] = `
+{
+  "style": {
+    "minHeight": 100,
+  },
+}
+`;
+
+exports[`logical styles blockSize: minBlockSize after minHeight 1`] = `
+{
+  "style": {
+    "minHeight": 200,
+  },
+}
+`;
+
 exports[`logical styles borderBlock: borderBlock 1`] = `
 {
   "style": {
@@ -221,6 +269,54 @@ exports[`logical styles borderRadius: startstart 1`] = `
 {
   "style": {
     "borderTopStartRadius": 10,
+  },
+}
+`;
+
+exports[`logical styles inlineSize: inlineSize 1`] = `
+{
+  "style": {
+    "width": 100,
+  },
+}
+`;
+
+exports[`logical styles inlineSize: inlineSize after width 1`] = `
+{
+  "style": {
+    "width": 200,
+  },
+}
+`;
+
+exports[`logical styles inlineSize: maxInlineSize 1`] = `
+{
+  "style": {
+    "maxWidth": 100,
+  },
+}
+`;
+
+exports[`logical styles inlineSize: maxInlineSize after maxWidth 1`] = `
+{
+  "style": {
+    "maxWidth": 200,
+  },
+}
+`;
+
+exports[`logical styles inlineSize: minInlineSize 1`] = `
+{
+  "style": {
+    "minWidth": 100,
+  },
+}
+`;
+
+exports[`logical styles inlineSize: minInlineSize after minWidth 1`] = `
+{
+  "style": {
+    "minWidth": 200,
   },
 }
 `;
@@ -414,6 +510,22 @@ exports[`logical styles padding: paddingInlineStart 1`] = `
 {
   "style": {
     "paddingStart": 2,
+  },
+}
+`;
+
+exports[`logical styles textAlign: end 1`] = `
+{
+  "style": {
+    "textAlign": "end",
+  },
+}
+`;
+
+exports[`logical styles textAlign: start 1`] = `
+{
+  "style": {
+    "textAlign": "start",
   },
 }
 `;

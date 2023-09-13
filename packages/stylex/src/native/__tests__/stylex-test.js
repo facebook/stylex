@@ -328,6 +328,70 @@ describe('styles', () => {
 });
 
 describe('logical styles', () => {
+  test('blockSize', () => {
+    const styles = stylex.create({
+      blockSize: {
+        blockSize: '100px',
+      },
+      maxBlockSize: {
+        maxBlockSize: '100px',
+      },
+      minBlockSize: {
+        minBlockSize: '100px',
+      },
+    });
+    expect(stylex.spread(styles.blockSize, mockOptions)).toMatchSnapshot(
+      'blockSize',
+    );
+    expect(
+      stylex.spread([{ height: 200 }, styles.blockSize], mockOptions),
+    ).toMatchSnapshot('blockSize after height');
+    expect(stylex.spread(styles.maxBlockSize, mockOptions)).toMatchSnapshot(
+      'maxBlockSize',
+    );
+    expect(
+      stylex.spread([{ maxHeight: 200 }, styles.maxBlockSize], mockOptions),
+    ).toMatchSnapshot('maxBlockSize after maxHeight');
+    expect(stylex.spread(styles.minBlockSize, mockOptions)).toMatchSnapshot(
+      'minBlockSize',
+    );
+    expect(
+      stylex.spread([{ minHeight: 200 }, styles.minBlockSize], mockOptions),
+    ).toMatchSnapshot('minBlockSize after minHeight');
+  });
+
+  test('inlineSize', () => {
+    const styles = stylex.create({
+      inlineSize: {
+        inlineSize: '100px',
+      },
+      maxInlineSize: {
+        maxInlineSize: '100px',
+      },
+      minInlineSize: {
+        minInlineSize: '100px',
+      },
+    });
+    expect(stylex.spread(styles.inlineSize, mockOptions)).toMatchSnapshot(
+      'inlineSize',
+    );
+    expect(
+      stylex.spread([{ width: 200 }, styles.inlineSize], mockOptions),
+    ).toMatchSnapshot('inlineSize after width');
+    expect(stylex.spread(styles.maxInlineSize, mockOptions)).toMatchSnapshot(
+      'maxInlineSize',
+    );
+    expect(
+      stylex.spread([{ maxWidth: 200 }, styles.maxInlineSize], mockOptions),
+    ).toMatchSnapshot('maxInlineSize after maxWidth');
+    expect(stylex.spread(styles.minInlineSize, mockOptions)).toMatchSnapshot(
+      'minInlineSize',
+    );
+    expect(
+      stylex.spread([{ minWidth: 200 }, styles.minInlineSize], mockOptions),
+    ).toMatchSnapshot('minInlineSize after minWidth');
+  });
+
   test('borderBlock', () => {
     const styles = stylex.create({
       borderBlock: {
@@ -593,13 +657,17 @@ describe('logical styles', () => {
     );
   });
 
-  test.skip('textAlign', () => {
+  test('textAlign', () => {
     const styles = stylex.create({
-      root: {
+      start: {
         textAlign: 'start',
       },
+      end: {
+        textAlign: 'end',
+      },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.spread(styles.start, mockOptions)).toMatchSnapshot('start');
+    expect(stylex.spread(styles.end, mockOptions)).toMatchSnapshot('end');
   });
 });
 

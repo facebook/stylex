@@ -117,8 +117,16 @@ const stylePropertyAllowlistSet = new Set<string>([
   'width',
   // 'writingDirection', // iOS Only
   'zIndex',
+
   // DESKTOP: no built-in support for logical properties.
-  // Comment out all the logical properties so they can be converted to legacy non-standard properties.
+  // Comment out all the logical properties so they can be converted to fallbacks
+  // and legacy non-standard properties.
+  //'blockSize',
+  //'inlineSize',
+  //'maxBlockSize',
+  //'minBlockSize',
+  //'maxInlineSize',
+  //'minInlineSize',
   //'borderBlockColor',
   //'borderBlockStyle',
   //'borderBlockWidth',
@@ -388,8 +396,22 @@ export function spread(
       !isReactNativeStyleProp(styleProp) &&
       passthroughProperties.indexOf(styleProp) === -1
     ) {
+      // block/inlineSize
+      if (styleProp === 'blockSize') {
+        flatStyle.height = flatStyle.height ?? styleValue;
+      } else if (styleProp === 'inlineSize') {
+        flatStyle.width = flatStyle.width ?? styleValue;
+      } else if (styleProp === 'maxBlockSize') {
+        flatStyle.maxHeight = flatStyle.maxHeight ?? styleValue;
+      } else if (styleProp === 'minBlockSize') {
+        flatStyle.minHeight = flatStyle.minHeight ?? styleValue;
+      } else if (styleProp === 'maxInlineSize') {
+        flatStyle.maxWidth = flatStyle.maxWidth ?? styleValue;
+      } else if (styleProp === 'minInlineSize') {
+        flatStyle.minWidth = flatStyle.minWidth ?? styleValue;
+      }
       // borderBlock
-      if (styleProp === 'borderBlockColor') {
+      else if (styleProp === 'borderBlockColor') {
         flatStyle.borderTopColor = flatStyle.borderTopColor ?? styleValue;
         flatStyle.borderBottomColor = flatStyle.borderBottomColor ?? styleValue;
       } else if (styleProp === 'borderBlockStyle') {
@@ -496,9 +518,12 @@ export function spread(
         flatStyle.paddingStart = styleValue;
       } else if (styleProp === 'paddingInlineEnd') {
         flatStyle.paddingEnd = styleValue;
-      } else {
+      }
+      // everything else
+      else {
         warnMsg(`Ignoring unsupported style property "${styleProp}"`);
       }
+
       delete flatStyle[styleProp];
       continue;
     }
