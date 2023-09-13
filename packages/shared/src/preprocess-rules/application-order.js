@@ -761,6 +761,13 @@ const aliases = {
   // @Deprecated
   borderStart: shorthands.borderInlineStart,
 
+  blockSize: (val: TStyleValue): TReturn => [['height', val]],
+  inlineSize: (val: TStyleValue): TReturn => [['width', val]],
+  minBlockSize: (val: TStyleValue): TReturn => [['minHeight', val]],
+  minInlineSize: (val: TStyleValue): TReturn => [['minWidth', val]],
+  maxBlockSize: (val: TStyleValue): TReturn => [['maxHeight', val]],
+  maxInlineSize: (val: TStyleValue): TReturn => [['maxWidth', val]],
+
   borderHorizontalWidth: shorthands.borderInlineWidth,
   borderHorizontalStyle: shorthands.borderInlineStyle,
   borderHorizontalColor: shorthands.borderInlineColor,
