@@ -55,6 +55,7 @@ export default class StateManager {
   +stylexKeyframesImport: Set<string> = new Set();
   +stylexCreateVarsImport: Set<string> = new Set();
   +stylexOverrideVarsImport: Set<string> = new Set();
+  +stylexTypesImport: Set<string> = new Set();
 
   // `stylex.create` calls
   +styleMap: Map<string, CompiledNamespaces> = new Map();

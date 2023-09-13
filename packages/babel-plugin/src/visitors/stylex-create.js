@@ -9,7 +9,6 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
-import type { FunctionConfig } from '../utils/evaluate-path';
 import StateManager from '../utils/state-manager';
 import {
   create as stylexCreate,
@@ -24,7 +23,7 @@ import {
 } from '../utils/dev-classname';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { messages } from '@stylexjs/shared';
-import { evaluate } from '../utils/evaluate-path';
+import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
 import * as pathUtils from '../babel-path-utils';
 
 /// This function looks for `stylex.create` calls and transforms them.

@@ -7,22 +7,22 @@
  * @flow strict
  */
 
-import stylex from '@stylexjs/stylex';
+import stylex, { types } from '@stylexjs/stylex';
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
 import type {
   MapNamespace,
+  MapNamespaces,
+  OverridesForTokenType,
+  Stylex$Create,
   Theme,
   TokensFromTheme,
   Variant,
-  OverridesForTokenType,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
-import type { StyleXOptions } from '@stylexjs/shared/lib/common-types';
-import type { FlatCompiledStyles } from '../../shared/src/common-types';
 import type {
-  MapNamespaces,
-  Stylex$Create,
-} from '../../stylex/src/StyleXTypes';
+  StyleXOptions,
+  FlatCompiledStyles,
+} from '@stylexjs/shared/lib/common-types';
 
 type RuntimeOptions = {
   ...$Exact<StyleXOptions>,
@@ -95,6 +95,20 @@ export default function inject({
   };
 
   stylex.create = stylexCreate;
+
+  (types: $FlowFixMe).angle = shared.types.angle;
+  (types: $FlowFixMe).color = shared.types.color;
+  (types: $FlowFixMe).url = shared.types.url;
+  (types: $FlowFixMe).image = shared.types.image;
+  (types: $FlowFixMe).integer = shared.types.integer;
+  (types: $FlowFixMe).lengthPercentage = shared.types.lengthPercentage;
+  (types: $FlowFixMe).length = shared.types.length;
+  (types: $FlowFixMe).percentage = shared.types.percentage;
+  (types: $FlowFixMe).number = shared.types.number;
+  (types: $FlowFixMe).resolution = shared.types.resolution;
+  (types: $FlowFixMe).time = shared.types.time;
+  (types: $FlowFixMe).transformFunction = shared.types.transformFunction;
+  (types: $FlowFixMe).transformList = shared.types.transformList;
 
   stylex.unstable_createVars = <
     +DefaultTokens: {

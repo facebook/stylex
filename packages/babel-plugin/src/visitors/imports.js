@@ -48,6 +48,9 @@ export function readImportDeclarations(
           if (specifier.imported.name === 'unstable_overrideVars') {
             state.stylexCreateVarsImport.add(specifier.local.name);
           }
+          if (specifier.imported.name === 'types') {
+            state.stylexTypesImport.add(specifier.local.name);
+          }
         }
         if (specifier.imported.type === 'StringLiteral') {
           if (specifier.imported.value === 'create') {
@@ -67,6 +70,9 @@ export function readImportDeclarations(
           }
           if (specifier.imported.value === 'unstable_overrideVars  ') {
             state.stylexCreateVarsImport.add(specifier.local.name);
+          }
+          if (specifier.imported.value === 'types  ') {
+            state.stylexTypesImport.add(specifier.local.name);
           }
         }
       }
@@ -117,6 +123,9 @@ export function readRequires(
           }
           if (prop.key.name === 'unstable_overrideVars') {
             state.stylexCreateVarsImport.add(value.name);
+          }
+          if (prop.key.name === 'types') {
+            state.stylexTypesImport.add(value.name);
           }
         }
       }

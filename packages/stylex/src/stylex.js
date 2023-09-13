@@ -21,6 +21,8 @@ import type {
   CompiledStyles,
 } from './StyleXTypes';
 
+import typeof * as TTypes from '@stylexjs/shared/lib/types';
+
 export type { Theme, Variant } from './StyleXTypes';
 
 import injectStyle from './stylex-inject';
@@ -93,6 +95,66 @@ export const unstable_overrideVars: StyleX$OverrideVars = stylexOverrideVars;
 
 export const include: Stylex$Include = stylexIncludes;
 
+type TypeFunctionNames =
+  | 'angle'
+  | 'color'
+  | 'url'
+  | 'image'
+  | 'integer'
+  | 'lengthPercentage'
+  | 'length'
+  | 'percentage'
+  | 'number'
+  | 'resolution'
+  | 'time'
+  | 'transformFunction'
+  | 'transformList';
+
+const errorForType = (type: TypeFunctionNames) =>
+  `stylex.types.${type} should be compiled away by @stylexjs/babel-plugin`;
+
+export const types: Pick<TTypes, TypeFunctionNames> = {
+  angle: (_v) => {
+    throw new Error(errorForType('angle'));
+  },
+  color: (_v) => {
+    throw new Error(errorForType('color'));
+  },
+  url: (_v) => {
+    throw new Error(errorForType('url'));
+  },
+  image: (_v) => {
+    throw new Error(errorForType('image'));
+  },
+  integer: (_v) => {
+    throw new Error(errorForType('integer'));
+  },
+  lengthPercentage: (_v) => {
+    throw new Error(errorForType('lengthPercentage'));
+  },
+  length: (_v) => {
+    throw new Error(errorForType('length'));
+  },
+  percentage: (_v) => {
+    throw new Error(errorForType('percentage'));
+  },
+  number: (_v) => {
+    throw new Error(errorForType('number'));
+  },
+  resolution: (_v) => {
+    throw new Error(errorForType('resolution'));
+  },
+  time: (_v) => {
+    throw new Error(errorForType('time'));
+  },
+  transformFunction: (_v) => {
+    throw new Error(errorForType('transformFunction'));
+  },
+  transformList: (_v) => {
+    throw new Error(errorForType('transformList'));
+  },
+};
+
 export const keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
 };
@@ -126,6 +188,7 @@ _stylex.keyframes = keyframes;
 _stylex.firstThatWorks = firstThatWorks;
 _stylex.inject = inject;
 _stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
+_stylex.types = types;
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
@@ -144,6 +207,7 @@ type IStyleX = {
   unstable_createVars: StyleX$CreateVars,
   unstable_overrideVars: StyleX$OverrideVars,
   include: Stylex$Include,
+  types: Pick<TTypes, TypeFunctionNames>,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,

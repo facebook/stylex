@@ -16,7 +16,7 @@ import {
   utils,
 } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
-import { evaluate } from '../utils/evaluate-path';
+import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
 import * as pathUtils from '../babel-path-utils';
 
 /// This function looks for `stylex.createVars` calls and transforms them.
@@ -70,7 +70,13 @@ export default function transformStyleXCreateVars(
     > = callExpressionPath.get('arguments');
     const firstArg = args[0];
 
-    const { confident, value } = evaluate(firstArg, state);
+    const identifiers: FunctionConfig['identifiers'] = {};
+    const memberExpressions: FunctionConfig['memberExpressions'] = {};
+
+    const { confident, value } = evaluate(firstArg, state, {
+      identifiers,
+      memberExpressions,
+    });
     if (!confident) {
       throw new Error(messages.NON_STATIC_VALUE);
     }
