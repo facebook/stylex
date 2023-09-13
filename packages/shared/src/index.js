@@ -31,6 +31,7 @@ import stylexFirstThatWorks from './stylex-first-that-works';
 import hash from './hash';
 import genFileBasedIdentifier from './utils/file-based-identifier';
 import * as m from './messages';
+export * as types from './types';
 
 import type {
   InjectableStyle as _InjectableStyle,
