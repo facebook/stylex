@@ -92,6 +92,88 @@ describe('styles', () => {
     expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
+  test('box-sizing: content-box', () => {
+    const styles = stylex.create({
+      width: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        width: 100,
+
+        // Properties unrelated to box sizing pass through
+        overflow: 'hidden',
+      },
+      height: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        height: 50,
+      },
+      maxWidth: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        maxWidth: 100,
+      },
+      minWidth: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        minWidth: 100,
+      },
+      maxHeight: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        maxHeight: 50,
+      },
+      minHeight: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        minHeight: 50,
+      },
+      units: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: '1rem',
+        width: '100px',
+        height: 50,
+      },
+      allDifferent: {
+        boxSizing: 'content-box',
+        borderTopWidth: 1,
+        borderRightWidth: 2,
+        borderBottomWidth: 3,
+        borderLeftWidth: 4,
+        paddingTop: 10,
+        paddingRight: 20,
+        paddingBottom: 30,
+        paddingLeft: 40,
+        width: 100,
+        height: 100,
+      },
+    });
+    expect(stylex.spread(styles.width, mockOptions)).toMatchSnapshot('width');
+    expect(stylex.spread(styles.height, mockOptions)).toMatchSnapshot('height');
+    expect(stylex.spread(styles.maxWidth, mockOptions)).toMatchSnapshot(
+      'maxWidth',
+    );
+    expect(stylex.spread(styles.maxHeight, mockOptions)).toMatchSnapshot(
+      'maxHeight',
+    );
+    expect(stylex.spread(styles.minWidth, mockOptions)).toMatchSnapshot(
+      'minWidth',
+    );
+    expect(stylex.spread(styles.minHeight, mockOptions)).toMatchSnapshot(
+      'minHeight',
+    );
+    expect(stylex.spread(styles.units, mockOptions)).toMatchSnapshot('units');
+    expect(stylex.spread(styles.allDifferent, mockOptions)).toMatchSnapshot(
+      'allDifferent',
+    );
+  });
+
   test('direction', () => {
     const styles = stylex.create({
       root: {
