@@ -21,8 +21,6 @@ import type {
   CompiledStyles,
 } from './StyleXTypes';
 
-import typeof * as TTypes from '@stylexjs/shared/lib/types';
-
 export type { Theme, Variant } from './StyleXTypes';
 
 import injectStyle from './stylex-inject';
@@ -95,65 +93,84 @@ export const unstable_overrideVars: StyleX$OverrideVars = stylexOverrideVars;
 
 export const include: Stylex$Include = stylexIncludes;
 
-type TypeFunctionNames =
-  | 'angle'
-  | 'color'
-  | 'url'
-  | 'image'
-  | 'integer'
-  | 'lengthPercentage'
-  | 'length'
-  | 'percentage'
-  | 'number'
-  | 'resolution'
-  | 'time'
-  | 'transformFunction'
-  | 'transformList';
+type ValueWithDefault<+T> =
+  | T
+  | $ReadOnly<{
+      +default: T,
+      +[string]: ValueWithDefault<T>,
+    }>;
 
-const errorForType = (type: TypeFunctionNames) =>
-  `stylex.types.${type} should be compiled away by @stylexjs/babel-plugin`;
+type CSSSyntax =
+  | '*'
+  | '<length>'
+  | '<number>'
+  | '<percentage>'
+  | '<length-percentage>'
+  | '<color>'
+  | '<image>'
+  | '<url>'
+  | '<integer>'
+  | '<angle>'
+  | '<time>'
+  | '<resolution>'
+  | '<transform-function>'
+  | '<custom-ident>'
+  | '<transform-list>';
 
-export const types: Pick<TTypes, TypeFunctionNames> = {
-  angle: (_v) => {
+type CSSSyntaxType = CSSSyntax | $ReadOnlyArray<CSSSyntax>;
+
+interface ICSSType<+T: string | number> {
+  +value: ValueWithDefault<T>;
+  +syntax: CSSSyntaxType;
+}
+
+export const types = {
+  angle: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('angle'));
   },
-  color: (_v) => {
+  color: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('color'));
   },
-  url: (_v) => {
+  url: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('url'));
   },
-  image: (_v) => {
+  image: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('image'));
   },
-  integer: (_v) => {
+  integer: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('integer'));
   },
-  lengthPercentage: (_v) => {
+  lengthPercentage: <T: number | string>(
+    _v: ValueWithDefault<T>,
+  ): ICSSType<T> => {
     throw new Error(errorForType('lengthPercentage'));
   },
-  length: (_v) => {
+  length: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('length'));
   },
-  percentage: (_v) => {
+  percentage: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('percentage'));
   },
-  number: (_v) => {
+  number: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('number'));
   },
-  resolution: (_v) => {
+  resolution: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('resolution'));
   },
-  time: (_v) => {
+  time: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('time'));
   },
-  transformFunction: (_v) => {
+  transformFunction: <T: number | string>(
+    _v: ValueWithDefault<T>,
+  ): ICSSType<T> => {
     throw new Error(errorForType('transformFunction'));
   },
-  transformList: (_v) => {
+  transformList: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
     throw new Error(errorForType('transformList'));
   },
 };
+const errorForType = (type: $Keys<typeof types>) =>
+  `stylex.types.${type} should be compiled away by @stylexjs/babel-plugin`;
 
 export const keyframes = (_keyframes: Keyframes): string => {
   throw new Error('stylex.keyframes should never be called');
@@ -207,7 +224,7 @@ type IStyleX = {
   unstable_createVars: StyleX$CreateVars,
   unstable_overrideVars: StyleX$OverrideVars,
   include: Stylex$Include,
-  types: Pick<TTypes, TypeFunctionNames>,
+  types: typeof types,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,

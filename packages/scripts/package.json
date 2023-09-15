@@ -4,7 +4,8 @@
   "description": "Helper scripts for stylex monorepo.",
   "license": "MIT",
   "bin": {
-    "gen-types": "./gen-types.js"
+    "gen-types": "./gen-types.js",
+    "rewrite-imports": "./rewrite-imports.js"
   },
   "dependencies": {
     "flow-api-translator": "0.15.1",

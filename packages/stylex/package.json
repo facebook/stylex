@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src/ --out-dir lib/ --copy-files",
-    "build-haste": "HASTE=true babel src/ --out-dir lib/ --copy-files",
+    "build-haste": "rewrite-imports -i src/ -o lib/",
     "test": "jest"
   },
   "dependencies": {
