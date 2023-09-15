@@ -577,6 +577,95 @@ exports[`styles box-shadow 1`] = `
 }
 `;
 
+exports[`styles box-sizing: content-box: allDifferent 1`] = `
+{
+  "style": {
+    "borderBottomWidth": 3,
+    "borderLeftWidth": 4,
+    "borderRightWidth": 2,
+    "borderTopWidth": 1,
+    "height": 144,
+    "paddingBottom": 30,
+    "paddingLeft": 40,
+    "paddingRight": 20,
+    "paddingTop": 10,
+    "width": 166,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: height 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "height": 74,
+    "padding": 10,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: maxHeight 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "maxHeight": 74,
+    "padding": 10,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: maxWidth 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "maxWidth": 124,
+    "padding": 10,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: minHeight 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "minHeight": 74,
+    "padding": 10,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: minWidth 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "minWidth": 124,
+    "padding": 10,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: units 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "height": 86,
+    "padding": 16,
+    "width": 136,
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: width 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "overflow": "hidden",
+    "padding": 10,
+    "width": 124,
+  },
+}
+`;
+
 exports[`styles direction 1`] = `
 {
   "style": {

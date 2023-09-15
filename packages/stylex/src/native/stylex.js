@@ -14,6 +14,7 @@ import {
 import { CSSLengthUnitValue } from './CSSLengthUnitValue';
 import { CSSMediaQuery } from './CSSMediaQuery';
 import { errorMsg, warnMsg } from './errorMsg';
+import { fixContentBox } from './fixContentBox';
 import { flattenStyle } from './flattenStyle';
 import { parseShadow } from './parseShadow';
 import { parseTimeValue } from './parseTimeValue';
@@ -48,6 +49,7 @@ const stylePropertyAllowlistSet = new Set<string>([
   'borderTopWidth',
   'borderWidth',
   'bottom',
+  'boxSizing',
   'color',
   'direction',
   'display',
@@ -562,6 +564,12 @@ export function spread(
     if (typeof flatStyle.fontWeight === 'number') {
       flatStyle.fontWeight = flatStyle.fontWeight.toString();
     }
+
+    const boxSizingValue = flatStyle.boxSizing;
+    if (boxSizingValue === 'content-box') {
+      flatStyle = fixContentBox(flatStyle);
+    }
+    delete flatStyle.boxSizing;
 
     // workaround unsupported position values
     const positionValue = flatStyle.position;
