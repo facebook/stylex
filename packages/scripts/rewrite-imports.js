@@ -46,13 +46,19 @@ async function rewriteImportsInFolder(
     const inputFullPath = path.join(inputDir, fileName);
     const outputFullPath = path.join(outputDir, fileName);
     const inputFile = await fs.readFile(inputFullPath, 'utf8');
-    const outputFile = await translateFlowImportsTo(
+    let outputFile = await translateFlowImportsTo(
       inputFile,
       {},
       {
         sourceMapper: ({ module }) => module.slice(module.lastIndexOf('/') + 1),
       },
     );
+    if (fileName === 'stylex.js') {
+      outputFile = outputFile.replace(
+        'export default (_stylex: IStyleX);\n',
+        '',
+      );
+    }
     await fs.writeFile(outputFullPath, outputFile);
   }
 }

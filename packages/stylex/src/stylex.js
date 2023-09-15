@@ -234,6 +234,5 @@ type IStyleX = {
   ...
 };
 
-export default (_stylex: IStyleX);
-
 export const stylex: IStyleX = _stylex;
+export default (_stylex: IStyleX);
