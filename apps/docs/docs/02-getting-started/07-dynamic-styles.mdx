@@ -1,0 +1,67 @@
+---
+sidebar_position: 6
+---
+
+# Dynamic Styles (Coming Soon)
+
+:::warning
+
+This feature has been implemented on an experimental branch, but is not yet
+available yet.
+
+:::
+
+:::warning
+
+Dynamic styles are an advanced feature and should be used sparingly. When you
+use them ask if you absolutely cannot know the value or a list of possible
+values at build-time.
+
+:::
+
+StyleX generates all styles at compile-time which means you need to _know_ all
+those styles ahead of time as well. But sometimes you just don't know what you
+will need until runtime. For example, you may be styling a bar chart where the
+bar changes colors based on the data.
+
+In most other styling solutions, you need to resort to using inline styles for
+something like this. This comes with some big downsides, including:
+
+- Inability to use pseudo-classes like `:hover` and `:focus`
+- Inability to use media queries
+
+In the context of StyleX, using inline styles directly would also break the
+predictability that you get when merging styles.
+
+CSS variables are a great solution to all of these problems. Instead of setting
+arbitrary styles as inline styles, you can set CSS variables and then use those
+variables in your styles.
+
+This is exactly what StyleX does _under the hood_. All _you_ have to do is use a
+function instead of an object when defining your styles.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  base: (r, g, b) => ({
+    fontSize: 16,
+    lineHeight: 1.5,
+    color: `rgb(${r},${g},${b})`,
+  }),
+});
+
+const r = Math.floor(Math.random() * 255);
+const g = Math.floor(Math.random() * 255);
+const b = Math.floor(Math.random() * 255);
+
+<div {...stylex.spread(styles.base(r, g, b))} />;
+```
+
+:::warning
+
+If you use this pattern, StyleX will generate a combination of classNames and
+Inline styles and you _must_ use the `stylex.spread()` (and not `stylex()`) to
+apply them.
+
+:::

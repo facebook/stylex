@@ -10,8 +10,8 @@
 import * as React from 'react';
 import stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
-import Logo from '@site/components/Logo';
-// import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
+// import Logo from '@site/components/Logo';
+import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 import ZStack from '../../components/ZStack';
 
@@ -39,12 +39,12 @@ export default function Home() {
       <main className={stylex(styles.main)}>
         <section className={stylex(styles.hero)}>
           <h1 className={stylex(styles.title)}>
-            <Logo xstyle={styles.logo} />
+            <StylexAnimatedLogo xstyle={styles.logo} />
             {/* <StylexAnimatedLogo /> */}
           </h1>
           <h2 className={stylex(styles.subtitle)}>
             Stop thinking about{' '}
-            <ZStack>
+            <ZStack xstyle={styles.zstack}>
               {[
                 <span className={stylex(styles.subtitleHighlight)}>
                   Performance
@@ -192,14 +192,14 @@ const styles = stylex.create({
   card: {
     backgroundColor: 'var(--bg3)',
     borderRadius: 16,
-    flexBasis: 0,
+    flexBasis: {
+      default: 0,
+      '@media (max-width: 1100px)': '100%',
+    },
     flexGrow: 1,
     margin: 16,
     display: 'flex',
     flexDirection: 'column',
-    '@media (max-width: 1100px)': {
-      flexBasis: '100%',
-    },
   },
   cardTitle: {
     fontSize: '1.8rem',
@@ -233,5 +233,11 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '8rem',
+  },
+  zstack: {
+    alignItems: {
+      default: 'flex-start',
+      '@media (max-width: 1135px)': 'center',
+    },
   },
 });

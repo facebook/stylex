@@ -24,6 +24,7 @@ const config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'facebook', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
+  plugins: ['@orama/plugin-docusaurus'],
 
   presets: [
     [
@@ -54,6 +55,9 @@ const config = {
         disableSwitch: false,
         respectPrefersColorScheme: true,
       },
+      prism: {
+        theme: require('prism-react-renderer/themes/dracula'),
+      },
       navbar: {
         title: '',
         logo: {
@@ -66,6 +70,11 @@ const config = {
             to: '/docs',
             position: 'left',
             label: 'Docs',
+          },
+          {
+            to: '/playground',
+            position: 'left',
+            label: 'Playground',
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {

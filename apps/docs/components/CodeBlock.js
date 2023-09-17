@@ -41,12 +41,48 @@ function tweakStyle(theme) {
   );
 }
 
+function tweakStyleH(theme) {
+  return Object.fromEntries(
+    Object.entries(theme).map(([key, value]) => [
+      key,
+      Object.fromEntries(
+        Object.entries(value).map(([k, v]) => {
+          if (k === 'background') {
+            return [k, 'var(--bg2)'];
+          }
+          if (k === 'margin') {
+            return [k, '0'];
+          }
+          if (k === 'padding') {
+            return [k, '1.25em 1em'];
+          }
+          return [k, v];
+        }),
+      ),
+    ]),
+  );
+}
+
 const lightTheme = tweakStyle(themeLight);
 const darkTheme = tweakStyle(themeDark);
 
-export default function CodeBlock({children, xstyle, language = 'tsx'}) {
+const lightThemeH = tweakStyleH(themeLight);
+const darkThemeH = tweakStyleH(themeDark);
+
+export default function CodeBlock({
+  children,
+  xstyle,
+  language = 'tsx',
+  highlight = false,
+}) {
   const {isDarkTheme} = useColorMode();
-  const finalTheme = isDarkTheme ? darkTheme : lightTheme;
+  const finalTheme = highlight
+    ? isDarkTheme
+      ? darkThemeH
+      : lightThemeH
+    : isDarkTheme
+    ? darkTheme
+    : lightTheme;
   return (
     <SyntaxHighlighter
       className={stylex(xstyle)}

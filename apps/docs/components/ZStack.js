@@ -30,8 +30,8 @@ const styles = stylex.create({
   },
   item: {
     position: 'absolute',
-    top: 0,
-    start: 0,
+    // top: 0,
+    // start: 0,
     opacity: 0,
     transition: 'opacity 0.5s ease-in-out',
   },

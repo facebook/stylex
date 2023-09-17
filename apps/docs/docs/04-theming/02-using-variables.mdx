@@ -1,0 +1,75 @@
+---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Using Variables
+
+:::danger
+
+Theming APIs for defining and overrideing CSS variables are experimental and
+subject to change.
+
+:::
+
+Once you've [defined a variable](../defining-variables), you can import and use
+them in your styles:
+
+<Tabs>
+<TabItem label="Declaring Varibles" value="var-export">
+
+```tsx title="tokens.stylex.js"
+import stylex from '@stylexjs/stylex';
+
+// A constant can be used to avoid repeating the media query
+const DARK = '@media (prefers-color-scheme: dark)';
+
+export const colors = stylex.createVars({
+  primaryText: {default: 'black', [DARK]: 'white'},
+  secondaryText: {default: '#333', [DARK]: '#ccc'},
+  accent: {default: 'blue', [DARK]: 'lightblue'},
+  background: {default: 'white', [DARK]: 'black'},
+  lineColor: {default: 'gray', [DARK]: 'lightgray'},
+  borderRadius: '4px',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '16px',
+});
+```
+
+</TabItem>
+<TabItem label="Using Varibles" value="var-import" default>
+
+```tsx title="components/MyComponent.js"
+import stylex from '@stylexjs/stylex';
+import {colors, spacing} from '../tokens.styles';
+
+const styles = stylex.create({
+  container: {
+    color: colors.primaryText,
+    backgroundColor: colors.background,
+    padding: spacing.medium,
+  },
+});
+```
+
+</TabItem>
+</Tabs>
+
+Usually StyleX will error if you try to use imported values in your styles.
+However, when use named imports from a `.stylex.js` file, StyleX will
+automatically resolve the values for you at compile time.
+
+## Rules when using variables
+
+When using variables, there are a few rules to keep in mind:
+
+1. You must use named imports from a `.stylex.js` file. You cannot use
+   destructuring or default imports. (commonjs is currently not supported)
+2. You must use import paths that Node.js can understand.
+   - You cannot rely on import aliases or other custom import paths that are
+     only understood by your bundler.
+
+Also, remember that these references are strings of the form `var(--name)` and
+not the values stored within them.

@@ -15,16 +15,44 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --aa-text-color-rgb: 38, 38, 39;
+  --aa-input-background-color-rgb: 255, 255, 255;
+  --aa-input-border-color-rgb: 128, 126, 163;
+  --aa-muted-color-rgb: 128, 126, 163;
+  --aa-primary-color-rgb: 62, 52, 211;
+  /*
+   // light mode
+   // dark mode
+
+   // light mode
+   // dark mode??
+  
+   // light mode
+   // dark mode
+
+  
+   // light mode
+   // dark mode
+
+  --aa-text-color-rgb: // already set.
+  
+  --key-shadow:
+  --key-gradient:
+  
+  */
+
+  --ifm-color-primary: hsl(295, 62%, 35%);
+  --ifm-color-primary-dark: hsl(295, 62%, 32%);
+  --ifm-color-primary-darker: hsl(295, 62%, 30%);
+  --ifm-color-primary-darkest: hsl(295, 62%, 25%);
+  --ifm-color-primary-light: hsl(295, 60%, 39%);
+  --ifm-color-primary-lighter: hsl(295, 62%, 40%);
+  --ifm-color-primary-lightest: hsl(295, 60%, 46%);
   --ifm-code-font-size: 95%;
 
   --bg1: hsl(276, 17%, 96%);
+  --bg1-alpha50: hsla(276, 17%, 96%, 0.5);
+  --bg1-alpha75: hsla(276, 17%, 96%, 0.75);
   --bg2: hsl(0, 0%, 100%);
   --code-bg: hsl(276, 17%, 96%);
 
@@ -54,26 +82,70 @@
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
-[data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+html[data-theme='dark']:root {
+  --aa-text-color-rgb: 183, 192, 199;
+  --aa-input-background-color-rgb: 0, 3, 9;
+  --aa-input-border-color-rgb: 128, 126, 163;
+  --aa-muted-color-rgb: 146, 138, 255;
+  --aa-primary-color-rgb: 146, 138, 255;
 
-  --bg1: #000000;
-  --bg2: hsl(249, 19%, 13%);
+  --ifm-color-scheme: dark;
+  --ifm-color-emphasis-0: var(--ifm-color-gray-1000);
+  --ifm-color-emphasis-100: var(--ifm-color-gray-900);
+  --ifm-color-emphasis-200: var(--ifm-color-gray-800);
+  --ifm-color-emphasis-300: var(--ifm-color-gray-700);
+  --ifm-color-emphasis-400: var(--ifm-color-gray-600);
+  --ifm-color-emphasis-600: var(--ifm-color-gray-400);
+  --ifm-color-emphasis-700: var(--ifm-color-gray-300);
+  --ifm-color-emphasis-800: var(--ifm-color-gray-200);
+  --ifm-color-emphasis-900: var(--ifm-color-gray-100);
+  --ifm-color-emphasis-1000: var(--ifm-color-gray-0);
+  --ifm-background-color: #1b1b1d;
+  --ifm-background-surface-color: #242526;
+  --ifm-hover-overlay: hsla(0, 0%, 100%, 0.05);
+  --ifm-color-content: #e3e3e3;
+  --ifm-color-content-secondary: #fff;
+  --ifm-breadcrumb-separator-filter: invert(64%) sepia(11%) saturate(0%)
+    hue-rotate(149deg) brightness(99%) contrast(95%);
+  --ifm-code-background: hsla(0, 0%, 100%, 0.1);
+  --ifm-scrollbar-track-background-color: #444;
+  --ifm-scrollbar-thumb-background-color: #686868;
+  --ifm-scrollbar-thumb-hover-background-color: #7a7a7a;
+  --ifm-table-stripe-background: hsla(0, 0%, 100%, 0.07);
+  --ifm-color-primary-contrast-background: #102445;
+  --ifm-color-primary-contrast-foreground: #ebf2fc;
+  --ifm-color-secondary-contrast-background: #474748;
+  --ifm-color-secondary-contrast-foreground: #fdfdfe;
+  --ifm-color-success-contrast-background: #003100;
+  --ifm-color-success-contrast-foreground: #e6f6e6;
+  --ifm-color-info-contrast-background: #193c47;
+  --ifm-color-info-contrast-foreground: #eef9fd;
+  --ifm-color-warning-contrast-background: #4d3800;
+  --ifm-color-warning-contrast-foreground: #fff8e6;
+  --ifm-color-danger-contrast-background: #4b1113;
+  --ifm-color-danger-contrast-foreground: #ffebec;
+
+  --ifm-color-primary: hsl(295, 52%, 55%);
+  --ifm-color-primary-dark: hsl(295, 52%, 51%);
+  --ifm-color-primary-darker: hsl(295, 52%, 48%);
+  --ifm-color-primary-darkest: hsl(295, 52%, 42%);
+  --ifm-color-primary-light: hsl(295, 52%, 60%);
+  --ifm-color-primary-lighter: hsl(295, 52%, 62%);
+  --ifm-color-primary-lightest: hsl(295, 52%, 69%);
+
+  --bg1: hsl(249, 30%, 7%);
+  --bg1-alpha50: hsla(249, 30%, 7%, 0.5);
+  --bg1-alpha75: hsla(249, 30%, 7%, 0.75);
+  --bg2: hsl(249, 35%, 16%);
   --code-bg: #000000;
 
   --fg1: hsl(0, 0%, 100%);
   --fg2: hsl(0, 0%, 80%);
 
   --link: hsl(202, 100%, 57%);
-  --cyan: hsl(202, 100%, 57%);
-  --cyan-h: 202;
-  --cyan-s: 100%;
+  --cyan: hsl(249, 70%, 57%);
+  --cyan-h: 249;
+  --cyan-s: 70%;
   --cyan-l: 57%;
   --pink: hsl(295, 62%, 66%);
   --pink-h: 295;
@@ -82,4 +154,69 @@
 
   --purple-navy: hsla(251, 19%, 39%, 1);
   --black-coffee: hsla(330, 6%, 20%, 1);
+  --ifm-toc-border-color: hsla(330, 6%, 75%, 0.1);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background-color: var(--bg1);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  color: var(--fg1);
+}
+
+html {
+  color-scheme: light dark;
+}
+html:not([data-theme='dark']) {
+  color-scheme: light;
+}
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+article .theme-doc-markdown.markdown {
+  padding-inline: 1rem;
+}
+
+.theme-doc-breadcrumbs {
+  position: sticky;
+  top: 60px;
+  background-color: var(--bg1-alpha75);
+  backdrop-filter: blur(10px);
+  z-index: 1;
+  padding-block: 0.5rem;
+  margin-block: -0.5rem;
+}
+@media (max-width: 768px) {
+  .theme-doc-breadcrumbs {
+    position: static;
+  }
+}
+.aa-DetachedSearchButton {
+  border: 1px solid rgba(128, 126, 163, 0.8);
+}
+
+.aa-FooterSearchCredit {
+  display: none !important;
+}
+
+.aa-DetachedSearchButton {
+  /* shadow and gradient are taken from docsearch */
+  --key-shadow: inset 0 -2px 0 0 #cdcde6, inset 0 0 1px 1px #fff,
+    0 1px 2px 1px rgba(30, 35, 90, 0.4);
+  --key-gradient: linear-gradient(-225deg, #d5dbe4, #f8f8f8);
+}
+
+html[data-theme='dark'] .aa-DetachedSearchButton {
+  --key-shadow: inset 0 -2px 0 0 #282d55, inset 0 0 1px 1px #51577d,
+    0 2px 2px 0 rgba(3, 4, 9, 0.3);
+  --key-gradient: linear-gradient(-26.5deg, #565872, #31355b);
 }

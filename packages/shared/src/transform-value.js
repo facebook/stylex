@@ -55,6 +55,7 @@ function getNumberSuffix(key: string) {
 
 const unitlessNumberProperties = new Set([
   'animationIterationCount',
+  'aspectRatio',
   'borderImageOutset',
   'borderImageSlice',
   'borderImageWidth',

@@ -1,0 +1,56 @@
+---
+sidebar_position: 2
+---
+
+# Ideal conditions for using StyleX?
+
+StyleX works well in a wide variety of projects, and you will usually not regret
+choosing it.
+
+However, there are some conditions that are more ideal for using StyleX than
+others.
+
+## When authoring your UI in Javascript
+
+StyleX is a CSS-in-JS library, which means that it is most useful when you are
+authoring your UI in Javascript. If you're using a framework such as `React`,
+`Preact`, `Solid`, `Lit`, or `Angular`, using StyleX should be a breeze.
+
+Some frameworks, such as Svete and Vue use custom file formats that are compiled
+to Javascript at build time. StyleX can still be used in these frameworks, but
+may need some extra configuration.
+
+There are also UI solutions such as `htmx` and various templating engines where
+you author your markup in files that can't contain arbitrary Javascript. Even if
+you can make StyleX work in these environments, it may not be worth the effort.
+
+## Large or growing projects
+
+While StyleX works well for projects of all sizes, it really shines in larger
+applications.
+
+Since StyleX compiles to atomic class names, a big performance benefit is that
+the size of your CSS bundle plateaus as your project grows.
+
+For smaller projects, it may still make sense to choose StyleX for its
+expressive API, but the performance benefits may not be as meaningful.
+
+## Reusable components
+
+StyleX makes the most sense when being used alongside reusable UI components.
+
+For years, we have had to choose between "Design System" components that come
+with styles baked in but can be difficult to customize or "Headless" components
+that are completely unstyled.
+
+StyleX finally lets you build UI components that can have default styles _and_
+still be customizable.
+
+### NPM packages of UI components
+
+Because StyleX is able to merge styles across components and files in a
+predictable and deterministic way, it is uniquely well-suited for building
+reusable UI components that can be published to NPM.
+
+By accepting `StyleXStyles` as props, these components can, trivially, be made
+fully customizable.

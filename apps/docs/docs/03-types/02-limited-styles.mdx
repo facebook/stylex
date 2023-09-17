@@ -1,0 +1,110 @@
+---
+sidebar_position: 2
+---
+
+# Accepting a specific set of styles
+
+When you want to accept external styles, but not arbitrary styles, it might make
+sense to create an allow list for the styles properties (and values) that can be
+accepted. To do this, you can simply use the `StyleXStyle<{...}>` type with a
+type argument.
+
+## Accepting from a set of style properties
+
+Say you wanted to accept styles that allowed changing the colors of the
+component but nothing else, you could write types that looked like this:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="typescript" label="Typescript" default>
+
+```tsx
+type Props = {
+  // ...
+  xstyle?: StyleXStyle<{
+    color?: string;
+    backgroundColor?: string;
+    borderColor?: string;
+    borderTopColor?: string;
+    borderEndColor?: string;
+    borderBottomColor?: string;
+    borderStartColor?: string;
+  }>;
+};
+```
+
+  </TabItem>
+  <TabItem value="flow" label="Flow">
+
+```tsx
+type Props = $ReadOnly<{
+  // ...
+  xstyle?: StyleXStyle<{
+    color?: string;
+    backgroundColor?: string;
+    borderColor?: string;
+    borderTopColor?: string;
+    borderEndColor?: string;
+    borderBottomColor?: string;
+    borderStartColor?: string;
+  }>;
+}>;
+```
+
+  </TabItem>
+</Tabs>
+
+Now, the `xstyle` prop will accept only the properties that you have defined but
+disallow anything else.
+
+:::warning
+
+It is usually a good practice to make the keys of the style types optional.
+However, there might be situations where you can require some styles to be
+passed in.
+
+:::
+
+## Limiting the possible values for Styles
+
+While it's useful to limit what style properties can be passed in, sometimes it
+makes sense to go a step further and limit the possible values for those styles
+too. For example, if your component wants to accept `marginTop` but only accept
+one of `0`, `4`, or `8` pixels as values, you can do that too!
+
+<Tabs>
+  <TabItem value="typescript" label="Typescript" default>
+
+```tsx
+type Props = {
+  ...
+  // Only accept styles for marginTop and nothing else.
+  // the value for marginTop can only be 0, 4, or 8.
+  xstyle?: StyleXStyle<{
+    marginTop: 0 | 4 | 8
+  }>,
+};
+```
+
+  </TabItem>
+  <TabItem value="flow" label="Flow">
+
+```tsx
+type Props = $ReadOnly<{
+  ...
+  // Only accept styles for marginTop and nothing else.
+  // the value for marginTop can only be 0, 4, or 8.
+  xstyle?: StyleXStyle<{
+    marginTop: 0 | 4 | 8
+  }>,
+}>;
+```
+
+  </TabItem>
+</Tabs>
+
+With the `StyleXClassNameForValue<>` type you can pass in a type argument with a
+union of literal types that provide the set of possible values that the style
+property can have.

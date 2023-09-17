@@ -1,0 +1,101 @@
+---
+sidebar_position: 3
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Variable Overrides
+
+:::danger
+
+Theming APIs for defining and overrideing CSS variables are experimental and
+subject to change.
+
+:::
+
+Once you have defined your variables in a `.stylex.js` file you can also create
+overrides for them which can used to theme sub-trees in your application.
+
+## Example
+
+<Tabs>
+<TabItem label="Declaring Varibles" value="var-export">
+
+```tsx title="tokens.stylex.js"
+import stylex from '@stylexjs/stylex';
+
+// A constant can be used to avoid repeating the media query
+const DARK = '@media (prefers-color-scheme: dark)';
+
+export const colors = stylex.createVars({
+  primaryText: {default: 'black', [DARK]: 'white'},
+  secondaryText: {default: '#333', [DARK]: '#ccc'},
+  accent: {default: 'blue', [DARK]: 'lightblue'},
+  background: {default: 'white', [DARK]: 'black'},
+  lineColor: {default: 'gray', [DARK]: 'lightgray'},
+  borderRadius: '4px',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '16px',
+});
+```
+
+</TabItem>
+<TabItem label="Varibles Override" value="var-override" default>
+
+```tsx title="themes.js"
+import stylex from '@stylexjs/stylex';
+import {colors, spacing} from './tokens.styles';
+
+// A constant can be used to avoid repeating the media query
+const DARK = '@media (prefers-color-scheme: dark)';
+
+// Draclua theme
+export const dracula = stylex.varsProvider(colors, {
+  primaryText: {default: 'purple', [DARK]: 'lighpurple'},
+  secondaryText: {default: 'pink', [DARK]: 'hotpink'},
+  accent: 'red',
+  background: {default: '#555', [DARK]: 'black'},
+  lineColor: 'red',
+  borderRadius: '4px',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '16px',
+});
+```
+
+</TabItem>
+<TabItem label="Using Varibles" value="var-import">
+
+```tsx title="components/MyComponent.js"
+import stylex from '@stylexjs/stylex';
+import {colors, spacing} from '../tokens.styles';
+import {dracula} from '../themes';
+
+const styles = stylex.create({
+  container: {
+    color: colors.primaryText,
+    backgroundColor: colors.background,
+    padding: spacing.medium,
+  },
+});
+
+<div className={stylex(/*...*/, dracula)}>
+  <div className={styles.container}>Hello World</div>
+</div>
+
+```
+
+</TabItem>
+</Tabs>
+
+Unlike when you define variables, your can create these overrideProvider
+anywhere in your application.
+
+The `varsProvider` function takes two arguments, the first is the set of
+variables you want to override and the second is the set of overrides. The
+static types will ensure that you only override variables that already exist and
+that you override them all. (We are looking into partial overrides)
+
+The value returned from `stylex.varsProvider` is of the `StyleXStyle` type that
+can be used in a `stylex()` or `stylex.spread()` call to apply your overrides on
+an element and all its descendent element.

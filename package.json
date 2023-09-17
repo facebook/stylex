@@ -61,6 +61,7 @@
     "plugins": [
       "prettier-plugin-hermes-parser"
     ],
+    "proseWrap": "always",
     "overrides": [
       {
         "files": [

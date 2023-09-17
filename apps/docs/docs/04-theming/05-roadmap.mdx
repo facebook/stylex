@@ -1,0 +1,40 @@
+---
+sidebar_position: 4
+---
+
+# Enhancement Ideas for StyleX Variables
+
+First class variable support is fairy new in StyleX and still unstable. While we
+are happy with the current capabilities and experience of using variables we
+have some ideas to further improve the implementation:
+
+## Declaring CSS `<syntax>` types for variables
+
+Using `@property` rules, it is possible to declare the type of a CSS variable.
+These types can add additional meaning to variables such as make them animatable
+or restrict them to a certain range of values.
+
+We are currently in the process of adding API to StyleX to allow declaring these
+types for variables.
+
+## Less Configuration
+
+You need to currently manually configure StyleX to provide the root directory
+containing your application to be able to even use variables. We are
+investigating ways to make this configuration step unnecessary by looking for
+the `package.json` file automatically
+
+## Performance Enhancements
+
+There are many situations where variables may be used for a better developer
+experience where they don't need to CSS variables in production. We are looking
+into detecting CSS variables that are never overridden and replacing them with
+their values at build time and thus reducing the CSS bundle-size and improving
+performance.
+
+## API for changing the default values of variables
+
+If, in the future, NPM packages start shipping their own StyleX variables, it
+might be useful not just to define overrides, but replace the default values of
+variables. This would enable the performance enhancement mentioned above in more
+scenarios.

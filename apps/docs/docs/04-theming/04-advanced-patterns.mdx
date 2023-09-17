@@ -1,0 +1,47 @@
+---
+sidebar_position: 4
+---
+
+# Advanced Usage Patterns for Variables
+
+:::danger
+
+Theming APIs for defining and overrideing CSS variables are experimental and
+subject to change.
+
+:::
+
+The APIs for variables are designed to be simple and easy to use, but also
+scalable to support complex use-cases.
+
+Here are some things you can do with variables in StyleX that may not be
+obvious:
+
+## You can define different variables sets for different types of tokens
+
+StyleX enforces that you define your Variables as groups when using the
+`createVars` function, but you can use the function multiple times to create
+logical groups for your variables.
+
+## You can create variables from other variables
+
+You can use the `createVars` function to create variables from other variables.
+
+```tsx title="heroTokens.stylex.js"
+import stylex from '@stylexjs/stylex';
+import {colors} from './tokens.stylex';
+
+// A constant can be used to avoid repeating the media query
+const DARK = '@media (prefers-color-scheme: dark)';
+
+export const colors = stylex.createVars({
+  ctaButtonBackground: colors.accent,
+  ctaButtonColor: colors.primaryText,
+});
+```
+
+## You can create many themes using providers and apply them to different parts of your app
+
+You can create many different override providers for your variables and then
+apply them conditionally and dynamically to different parts of your app to
+enable custom themes.
