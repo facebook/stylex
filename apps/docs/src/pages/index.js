@@ -28,9 +28,12 @@ const styles = stylex.create({
 
 `;
 
-const STEP_2 = `<div className={stylex(styles.container)}>
+const STEP_2 = `<div 
+  className={stylex(styles.container)}
+>
   🎉
 </div>
+
 `;
 
 export default function Home() {
@@ -98,12 +101,7 @@ export default function Home() {
             <p className={stylex(styles.cardDescription)}>
               There is no step 3!
             </p>
-            <div
-              className={stylex(
-                styles.codeContainer,
-                styles.code,
-                styles.codeEmpty,
-              )}>
+            <div className={stylex(styles.codeContainer, styles.codeEmpty)}>
               🎉
             </div>
           </div>
@@ -151,12 +149,6 @@ const styles = stylex.create({
     textAlign: 'center',
     color: 'var(--fg2)',
     fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',
-    // '@media (min-width: 900px) and (max-width: 1200px)': {
-    //   fontSize: '3rem',
-    // },
-    // '@media (max-width: 900px)': {
-    //   fontSize: '2.4rem',
-    // },
   },
   h3: {
     width: '100%',
@@ -200,6 +192,7 @@ const styles = stylex.create({
     margin: 16,
     display: 'flex',
     flexDirection: 'column',
+    maxWidth: '100%',
   },
   cardTitle: {
     fontSize: '1.8rem',
@@ -224,12 +217,15 @@ const styles = stylex.create({
     fontFamily:
       'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
     borderRadius: 16,
+    fontSize: {
+      default: '1rem',
+      '@media (max-width: 1100px)': '0.8rem',
+    },
   },
   code: {
     flexGrow: 1,
   },
   codeEmpty: {
-    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '8rem',
