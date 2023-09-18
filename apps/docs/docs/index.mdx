@@ -97,48 +97,7 @@ expressiveness of Inline Styles without sacrificing performance.
 - Uses Atomic Styles to generate the minimum set of rules possible.
 - All CSS is generated at compile time into a single bundle
   - No runtime style injection
-  - No style recalculation to due repeated lazy loading of styles at runtime
-
-## Design principles
-
-### Choosing Consistency over the raw expressiveness of CSS.
-
-StyleX, unlike most other styling solutions on the web, lets you expressively
-compose styles and pass them around among components. This opens up a whole new
-world of possibilities for design systems and components where you can accept
-styles as props and trust them to work predictably.
-
-To enable this kind of predictable expressiveness, StyleX will sometimes limit
-the kind of styles that you can author. StyleX does not allow complex selectors
-and certain CSS properties may be supported at all.
-
-### Statically Typed
-
-All StyleX styles are strong typed. You can use Typescript (or Flow) to add type
-constraints for styles that a component accepts. Again, using StyleX should feel
-no different than using Inline Styles directly!
-
-### Co-location
-
-StyleX is betting that writing your styles in the same javascript as your
-component is a superior experience to writing styles in separate files. This bet
-can sometimes limit the kinds of features that can be implemented or make
-implementations of other features more challenging. We believe that the improved
-Developer Experience that comes from Style co-location is worth that extra
-effort.
-
-### Minimal Magic
-
-While StyleX uses a compiler to statically extract CSS and optimize performance,
-there is a `dev-runtime` package available that does everything at runtime.
-StyleX tries to only create abstractions that are easy to understand and don't
-hide how everything works too much.
-
-### Pit of Success
-
-We want StyleX to create a "Pit of Success" by giving you one, and only one,
-good way to do things well. We aim to have an API that makes the simple things
-easy and performant and the edge-cases possible.
+  - No style recalculation to due to repeated lazy loading of styles at runtime
 
 ## Comparison with other tools
 
@@ -150,16 +109,51 @@ judgement of other CSS-in-JS solutions.
 
 :::
 
-| Package           | Static | Atomic | Style Format | Colocation | Composition | Dynamic Styles | Types |
-| ----------------- | ------ | ------ | ------------ | ---------- | ----------- | -------------- | ----- |
-| StyleX            | ✅     | ✅     | Objects      | ✅         | ✅          | ✅             | ✅    |
-| Tailwind          | ✅     | ✅     | Class Names  | ✅         | ❌          | ❌             | ❌    |
-| Emotion           | ❌     | ❌     | Strings      | ✅         | ❌          | ❌             | ❌    |
-| Styled Components | ❌     | ❌     | Strings      | ✅         | ❌          | ❌             | ❌    |
-| Linaria           | ✅     | ❌     | Strings      | ✅         | ❌          | ✅             | ❌    |
-| Vanilla Extract   | ✅     | Opt-in | Either       | ❌         | Opt-in      | Opt-in         | ✅    |
-| Stitches          | ❌     | ❌     | Objects      | ✅         | ❌          | ❌             | ❌    |
-| Styletron         | ❌     | ✅     | Object       | ✅         | ❌          | ✅             | ❌    |
+export const LinariaLink = () => (
+  <a
+    href="https://github.com/callstack/linaria/blob/master/docs/ATOMIC_CSS.md"
+    target="_blank">
+    Opt-in
+  </a>
+);
+
+export const SprinklesLink = () => (
+  <a
+    href="https://vanilla-extract.style/documentation/packages/sprinkles/"
+    target="_blank">
+    Opt-in
+  </a>
+);
+
+| Package           | Static | Atomic            | Style Format    | Colocation | Composition       | Dynamic Styles    | Types |
+| ----------------- | ------ | ----------------- | --------------- | ---------- | ----------------- | ----------------- | ----- |
+| StyleX            | ✅     | ✅                | Objects         | ✅         | ✅                | ✅                | ✅    |
+| Tailwind          | ✅     | ✅                | Classes         | kind of    | ❌                | ❌                | ❌    |
+| PandaCSS          | ✅     | ✅                | Classes/Objects | kind of    | ❌                | ❌                | ❌    |
+| Emotion           | ❌     | ❌                | Strings         | ✅         | ❌                | ❌                | ❌    |
+| Styled Components | ❌     | ❌                | Strings         | ✅         | ❌                | ❌                | ❌    |
+| Linaria           | ✅     | <LinariaLink />   | Strings         | ✅         | ❌                | ✅                | ❌    |
+| Vanilla Extract   | ✅     | <SprinklesLink /> | Either          | ❌         | <SprinklesLink /> | <SprinklesLink /> | ✅    |
+| Stitches          | ❌     | ❌                | Objects         | ✅         | ❌                | ❌                | ❌    |
+| Styletron         | ❌     | ✅                | Object          | ✅         | ❌                | ✅                | ❌    |
+
+<details>
+<summary>
+Glossary
+</summary>
+
+- **Static** - Does the library generate CSS at compile time?
+- **Atomic** - Does the library generate atomic CSS?
+- **Style Format** - What format are styles authored in? Strings, Objects, or
+  separate CSS files.
+- **Co-location** - Are the styles in the same file as your component?
+- **Composition** - Can you compose and merge styles across component
+  boundaries? Can you pass styles as props?
+- **Dynamic Styles** - Are dynamic values for styles possible.
+- **Types** - Are the authored styles typed? Can constrain what styles are
+  passed to components with static types?
+
+</details>
 
 ## Roadmap
 

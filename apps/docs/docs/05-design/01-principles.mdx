@@ -11,7 +11,9 @@ important to understand the core principles that guide it.
 
 When it comes to performance cost of StyleX, our guiding principle is that
 StyleX should always be the fastest way to achieve a particular pattern. I.e.
-Unless you opt into a feature, you should never pay for it.
+Unless you opt into a feature, you should never pay for it with runtime
+performance. We make the trade-off of doing more work at build-time to improve
+runtime performance.
 
 Here's how this plays out in practice:
 
@@ -89,26 +91,26 @@ classNames.
 
 ## Styles should be deterministic and predictable
 
-CSS is a powerful and extremely expressive language. However, it also feels
-extremely fragile. Some of this stems from a misunderstand how CSS works
-(box-sizing: content-box, anyone?), but a lot of it stems from the fact that CSS
-selectors have different specificity and the rules of precendence are complex.
+CSS is a powerful and extremely expressive language. However, it can sometimes
+feel fragile. Some of this stems from a misunderstanding how CSS works, but a
+lot of it stems from the discipline and organization required to keep your CSS
+selectors with different specificities from stepping on each other's toes.
 
-Whenever we start applying multiple CSS rules (classes) to an element, we start
-to lose control of what the final result will be. We start to bumping the
-specificity of our CSS rules, and adding `!important` to our styles and the
-whole thing becomes a game of whack-a-mole.
+Most existing solutions to this problem rely on rules and conventions.
 
-Many of the most successful solutions this problem involve following rules
-through discipline. BEM introduces a naming convention such that we don't run
-into many of these problems. But it puts the burden on the developer to follow
-the rules and it mostly just tells you not to merge styles at all. This leads to
-bloated CSS.
+BEM and OOCSS introduce naming conventions such that we don't run into many of
+these problems. But it puts the burden on the developer to follow the rules and
+it mostly just tells you not to merge styles at all. This can lead to bloated
+CSS.
 
-Atomic utility classNames like Tailwind CSS and Tachyons solve this problem by
-putting the onus on the developer to not put multiple utility classes that sets
-the same style on the same element. It also doesn't let you merge styles from
-different files together.
+Atomic utility classNames like Tailwind CSS and Tachyons relies on a convention
+to ensure you don't apply conflicting classNames on the same element. This
+limits you to a small subset of CSS's expressive power to make your styles
+reliable.
+
+StyleX aims to improve on both the consistency and predictability of styles
+_and_ the expressive power available. We believe this is possible through
+build-tools.
 
 StyleX aims to give you a completely predictable and deterministic styling
 system that works across files. And we aim to not only give you deterministic
@@ -117,23 +119,17 @@ shorthand and longhand properties. (`margin` vs `margin-top`).
 
 "The last style applied always wins." is a core principle of StyleX.
 
-TLDR; We want to make this meme a thing of the past:
-
-![CSS Blinds](/img/css-blinds.gif)
-
 ## Readability & Maintainabity over Terseness
 
-Many recent styling solutions are extremely terse. Tailwind CSS is popular and
-lets you author your styles by putting extremely terse utility classNames
-directly on your markup. This is great for authoring styles quickly, but in our
-opinion, in the long run it makes the styles harder to read and maintain.
+Many recent styling solutions are extremely terse and easy to write. Tailwind
+CSS is popular and lets you author your styles by putting extremely terse
+utility classNames directly on your markup. This is great for authoring styles
+quickly, but in our opinion, in the long run it makes the styles harder to read
+and maintain. It can also have a steeper learning curve up-front.
 
-These systems also introduce a completely new naming pattern that developers
-have to learn and internalize.
-
-StyleX makes the choice to use the same CSS property names that you're used to.
-(We did decide to use camelCase instead of kebab-case as that makes them easier
-to type in JavaScript.) This makes it easier to learn and read.
+StyleX makes the choice to use the same CSS property names that you're already
+used to. (We did decide to use camelCase instead of kebab-case as that makes
+them easier to type in JavaScript.) This makes it easier to learn and read.
 
 We also enforce that your styles are authored in objects separate from the HTML
 elements where you use them. We made this decision to help with the readabiliy
@@ -141,7 +137,11 @@ of your HTML markup and so you can choose appropriate names for your styles to
 indicate their purpose. `styles.active` tells you much more about the purpose of
 a bunch of styles than what those styles are themselves.
 
-## As little syntax as possible
+This principle leads to trade-offs where authoring styles may take more typing
+with StyleX than some other solutions, but your styles will be more readable and
+maintainable in the long run.
+
+## Small API Surface Area
 
 At it's core StyleX can be boiled down to just two functions:
 
@@ -178,7 +178,7 @@ StyleX enables you to write your styles in every file where you use them and
 repeat yourself as many times as you want and it automatically de-duplicates all
 the generated CSS to give you the smallest CSS bundle possible.
 
-## Styles should be Type-Safe too
+## Styles should be Type-Safe
 
 Typescript has becomes massively popular due to the experience and safety it
 provides. Our styles, however, have largly remained untyped and unreliable.
@@ -192,7 +192,7 @@ incompatibilies between the two type-systems we take the time to ensure that we
 write custom Typescript types to achieve the same level of power and safety as
 the original Flow.
 
-All styles are typed. When accepting styles as props, you can use types to
+_All styles are typed_. When accepting styles as props, you can use types to
 constrain what you will and will not accept. Styles should be as type-safe as
 any other props for your components.
 

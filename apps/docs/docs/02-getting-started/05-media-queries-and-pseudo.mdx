@@ -49,7 +49,7 @@ And you can use the styles as usual:
 <button {...stylex.spread(styles.button)} />
 ```
 
-## Media Queries
+## Media Queries (and At Rules)
 
 Media Queries can, similarly, be nested within style definitions.
 
@@ -60,7 +60,7 @@ const styles = stylex.create({
   base: {
     width: {
       default: 800,
-      '@media (max-width: 800)': '100%',
+      '@media (max-width: 800px)': '100%',
     },
   },
 });
@@ -73,6 +73,31 @@ Using styles remains the same
 // OR
 <div {...stylex.spread(styles.base)} />
 ```
+
+<details>
+<summary>Container Queries</summary>
+
+Container Queries can be used the same way as Media Queries. The same is true
+for `@supports` and other similar At Rules.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  base: {
+    width: {
+      default: 800,
+      '@container (max-width: 800px)': '100%',
+    },
+  },
+});
+```
+
+For _named_ container queries, we are looking into an API that will help you
+avoid using "magic strings" and be able to use references for such names
+instead.
+
+</details>
 
 ## Combining Conditions
 
@@ -123,7 +148,7 @@ Pseudo Elements are:
 - `::after`
 - `::placeholder`
 
-Pseudo Elements are very different from Pseudo Elements (despite the similar
+Pseudo Elements are very different from Pseudo Classes (despite the similar
 name) because they do not represent some kind of state. Instead, they are CSS's
 way to target a completely different DOM element, that doesn't actually exist in
 the HTML itself.

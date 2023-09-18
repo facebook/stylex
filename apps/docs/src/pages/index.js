@@ -28,7 +28,10 @@ const styles = stylex.create({
 
 `;
 
-const STEP_2 = `<div 
+const STEP_2 = `import stylex from '@stylexjs/stylex';
+const styles = stylex.create({/*...*/});
+
+<div 
   className={stylex(styles.container)}
 >
   🎉
@@ -46,8 +49,16 @@ export default function Home() {
             {/* <StylexAnimatedLogo /> */}
           </h1>
           <h2 className={stylex(styles.subtitle)}>
-            Stop thinking about{' '}
-            <ZStack xstyle={styles.zstack}>
+            The <span className={stylex(styles.subtitleHighlight)}>Power</span>{' '}
+            of Inline Styles.
+            <br />
+            The Speed of{' '}
+            <span className={stylex(styles.subtitleHighlight)}>
+              Atomic
+            </span>{' '}
+            CSS.
+            {/* Stop thinking about{' '} */}
+            {/* <ZStack xstyle={styles.zstack}>
               {[
                 <span className={stylex(styles.subtitleHighlight)}>
                   Performance
@@ -70,18 +81,15 @@ export default function Home() {
                   Specificity Wars
                 </span>,
               ]}
-            </ZStack>
-            <br />
+            </ZStack> */}
+            {/* <br /> */}
           </h2>
-          <h3 className={stylex(styles.h3)}>
-            <span className={stylex(styles.subtitleHighlight)}>Start</span>{' '}
-            writing fast, maintainable CSS, effortlessly.
-          </h3>
+          {/* <h3 className={stylex(styles.h3)}>
+            By generating static CSS at compile-time.
+          </h3> */}
         </section>
         <section className={stylex(styles.getStarted)}>
-          <h1 className={stylex(styles.sectionTitle)}>
-            {'There\u2019s no step 3!'}
-          </h1>
+          <h1 className={stylex(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
           <div className={stylex(styles.card)}>
             <h3 className={stylex(styles.cardTitle)}>Step 1</h3>
             <p className={stylex(styles.cardDescription)}>Define Your Styles</p>
@@ -134,6 +142,7 @@ const styles = stylex.create({
     position: 'relative',
     boxSizing: 'border-box',
     margin: 0,
+    overflow: 'hidden',
     zIndex: 0,
   },
   logo: {
@@ -148,7 +157,7 @@ const styles = stylex.create({
     fontWeight: '400',
     textAlign: 'center',
     color: 'var(--fg2)',
-    fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',
+    fontSize: 'clamp(1rem, 1rem + 3vw, 4rem)',
   },
   h3: {
     width: '100%',
@@ -165,7 +174,7 @@ const styles = stylex.create({
     color: 'var(--cyan)',
   },
   sectionTitle: {
-    fontSize: '4rem',
+    fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',
     width: '100%',
     textAlign: 'center',
     marginVertical: '1rem',
