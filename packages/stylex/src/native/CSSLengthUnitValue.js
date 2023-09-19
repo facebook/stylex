@@ -13,7 +13,7 @@ type CSSLengthUnitType = 'em' | 'px' | 'rem' | 'vh' | 'vmax' | 'vmin' | 'vw';
 
 // TODO: this only works on simple values
 export class CSSLengthUnitValue {
-  static parse(inp: string): CSSLengthUnitValue | null {
+  static parse(inp: string): [number, CSSLengthUnitType] | null {
     const match = inp.match(LENGTH_REGEX);
     if (match == null) {
       return null;
@@ -21,7 +21,7 @@ export class CSSLengthUnitValue {
     const [, value, unit] = match;
     const parsedValue = parseFloat(value);
     // $FlowFixMe
-    return new CSSLengthUnitValue(parsedValue, unit);
+    return [parsedValue, unit];
   }
 
   value: number;

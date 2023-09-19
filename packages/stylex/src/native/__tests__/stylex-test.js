@@ -235,6 +235,31 @@ describe('styles', () => {
     expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
   });
 
+  test('line-height', () => {
+    const styles = stylex.create({
+      numeric: {
+        lineHeight: 1.5,
+      },
+      string: {
+        lineHeight: '1.5',
+      },
+      rem: {
+        lineHeight: '1.5rem',
+      },
+      px: {
+        lineHeight: '24px',
+      },
+    });
+    expect(stylex.spread(styles.numeric, mockOptions)).toMatchSnapshot(
+      'unitless number',
+    );
+    expect(stylex.spread(styles.string, mockOptions)).toMatchSnapshot(
+      'unitless string',
+    );
+    expect(stylex.spread(styles.rem, mockOptions)).toMatchSnapshot('rem');
+    expect(stylex.spread(styles.px, mockOptions)).toMatchSnapshot('px');
+  });
+
   test('object-fit', () => {
     const styles = stylex.create({
       contain: {

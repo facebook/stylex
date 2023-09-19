@@ -728,6 +728,38 @@ exports[`styles line-clamp 1`] = `
 }
 `;
 
+exports[`styles line-height: px 1`] = `
+{
+  "style": {
+    "lineHeight": 24,
+  },
+}
+`;
+
+exports[`styles line-height: rem 1`] = `
+{
+  "style": {
+    "lineHeight": 24,
+  },
+}
+`;
+
+exports[`styles line-height: unitless number 1`] = `
+{
+  "style": {
+    "lineHeight": 24,
+  },
+}
+`;
+
+exports[`styles line-height: unitless string 1`] = `
+{
+  "style": {
+    "lineHeight": 24,
+  },
+}
+`;
+
 exports[`styles object-fit: contain 1`] = `
 {
   "style": {

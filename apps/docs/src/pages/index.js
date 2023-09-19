@@ -13,7 +13,7 @@ import Layout from '@theme/Layout';
 // import Logo from '@site/components/Logo';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
-import ZStack from '../../components/ZStack';
+// import ZStack from '../../components/ZStack';
 
 const STEP_1 = `import stylex from '@stylexjs/stylex';
 
@@ -31,7 +31,7 @@ const styles = stylex.create({
 const STEP_2 = `import stylex from '@stylexjs/stylex';
 const styles = stylex.create({/*...*/});
 
-<div 
+<div
   className={stylex(styles.container)}
 >
   🎉

@@ -211,9 +211,9 @@ function preprocessPropertyValue(propValue: mixed): mixed {
       return new CSSCustomPropertyValue(propValue);
     }
 
-    const maybeViewportValue = CSSLengthUnitValue.parse(propValue);
-    if (maybeViewportValue != null) {
-      return maybeViewportValue;
+    const maybeLengthUnitValue = CSSLengthUnitValue.parse(propValue);
+    if (maybeLengthUnitValue != null) {
+      return new CSSLengthUnitValue(...maybeLengthUnitValue);
     }
   }
 
@@ -279,7 +279,19 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
 
   // Process values that need to be resolved during render
   for (const prop in processedStyle) {
-    const processedStyleValue = preprocessPropertyValue(processedStyle[prop]);
+    let value = processedStyle[prop];
+    // Polyfill unitless lineHeight
+    // React Native treats unitless as a 'px' value
+    // Web treats unitless as an 'em' value
+    if (prop === 'lineHeight') {
+      if (
+        typeof value === 'number' ||
+        (typeof value === 'string' && CSSLengthUnitValue.parse(value) == null)
+      ) {
+        value = value + 'em';
+      }
+    }
+    const processedStyleValue = preprocessPropertyValue(value);
     processedStyle[prop] = processedStyleValue;
   }
 
@@ -379,7 +391,7 @@ export function spread(
       }
       styleValue = resolvedValue;
     }
-    // resolve viewport units
+    // resolve length units
     if (styleValue instanceof CSSLengthUnitValue) {
       const resolvedValue = styleValue.resolvePixelValue(
         viewportWidth,
