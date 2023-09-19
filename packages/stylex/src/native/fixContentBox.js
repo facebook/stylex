@@ -80,22 +80,23 @@ export function fixContentBox(flatStyle: FlatStyle): FlatStyle {
   const nextStyle: FlatStyle = {};
   for (const styleProp of Object.keys(flatStyle)) {
     const correction = correctionMapping.get(styleProp);
+    const styleValue = flatStyle[styleProp];
     if (correction != null) {
-      if (flatStyle[styleProp] == null) {
+      if (styleValue == null) {
         nextStyle[styleProp] = null;
         continue;
       }
-      if (typeof flatStyle[styleProp] !== 'number') {
+      if (typeof styleValue !== 'number') {
         warnMsg(
-          `fixContentBox: Expected style value as a number (${styleProp}: ${String(
-            flatStyle[styleProp],
-          )})`,
+          `"boxSizing:'content-box'" does not support value "${String(
+            styleValue,
+          )}" for property "${styleProp}". Expected a value that resolves to a number. Percentage values can only be used with "boxSizing:'border-box'".`,
         );
         return flatStyle;
       }
-      nextStyle[styleProp] = flatStyle[styleProp] + correction;
+      nextStyle[styleProp] = styleValue + correction;
     } else {
-      nextStyle[styleProp] = flatStyle[styleProp];
+      nextStyle[styleProp] = styleValue;
     }
   }
 
