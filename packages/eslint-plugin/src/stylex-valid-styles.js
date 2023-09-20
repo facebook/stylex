@@ -933,13 +933,7 @@ const listStyle = makeUnionRule(
 );
 const margin = isStringOrNumber;
 const marginLeft = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
-const marginRight = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
 const marginTop = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
-// const marginBlockEnd = marginLeft;
-// const marginBlockStart = marginLeft;
-const marginBottom = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
-// const marginInlineEnd = marginLeft;
-// const marginInlineStart = marginLeft;
 const markerOffset = makeUnionRule(isNumber, makeLiteralRule('auto'));
 const mask = maskLayer;
 const maskClip = isString;
@@ -1583,106 +1577,98 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   backgroundSize: backgroundSize,
   baselineShift: baselineShift,
   behavior: behavior,
-  blockSize: blockSize,
-  // borderHorizontal: border,
-  // borderVertical: border,
-  borderBlockEnd: showError(
-    '`borderBlockEnd` is not supported. Please use `borderBottomWidth`, `borderBottomStyle` and `borderBottomColor` instead',
-  ),
-  borderBlockEndColor: showError(
-    '`borderBlockEndColor` is not supported. Please use `borderBottomColor` instead',
-  ),
-  borderBlockEndStyle: showError(
-    '`borderBlockEndStyle` is not supported. Please use `borderBottomStyle` instead',
-  ),
-  borderBlockEndWidth: showError(
-    '`borderBlockEndWidth` is not supported. Please use `borderBottomWidth` instead',
-  ),
-  borderBlockStart: showError(
-    '`borderBlockStart` is not supported. Please use `borderTopWidth`, `borderTopStyle` and `borderTopColor` instead',
-  ),
-  borderBlockStartColor: showError(
-    '`borderBlockStartColor` is not supported. Please use `borderTopColor` instead',
-  ),
-  borderBlockStartStyle: showError(
-    '`borderBlockStartStyle` is not supported. Please use `borderTopStyle` instead',
-  ),
-  borderBlockStartWidth: showError(
-    '`borderBlockStartWidth` is not supported. Please use `borderTopWidth` instead',
-  ),
-  borderBottomColor: color,
+
   borderBottomEndRadius: borderBottomRightRadius,
-  borderBottomLeftRadius: showError(
-    '`borderBottomLeftRadius` is not supported. Please use `borderBottomStartRadius` instead',
-  ),
-  borderBottomRightRadius: showError(
-    "'borderBottomRightRadius' is not supported. Please use 'borderBottomEndRadius' instead",
-  ),
+  borderBottomLeftRadius: borderBottomRightRadius,
+  borderBottomRightRadius: borderBottomRightRadius,
   borderBottomStartRadius: borderBottomLeftRadius,
-  borderBottomStyle: borderBottomStyle,
-  borderBottomWidth: borderBottomWidth,
+
   borderCollapse: borderCollapse,
-  borderColor: borderColor,
   borderEndColor: borderRightColor,
   borderEndStyle: borderRightStyle,
   borderEndWidth: borderRightWidth,
+
   borderImage: borderImage,
+  borderImageWidth: borderImageWidth,
   borderImageOutset: borderImageOutset,
   borderImageRepeat: borderImageRepeat,
   borderImageSlice: borderImageSlice,
   borderImageSource: borderImageSource,
-  borderImageWidth: borderImageWidth,
-  // borderInlineEnd: borderInlineEnd,
-  // borderInlineEndColor: borderInlineEndColor,
-  // borderInlineEndStyle: borderInlineEndStyle,
-  // borderInlineEndWidth: borderInlineEndWidth,
-  // borderInlineStart: borderInlineStart,
-  // borderInlineStartColor: borderInlineStartColor,
-  // borderInlineStartStyle: borderInlineStartStyle,
-  // borderInlineStartWidth: borderInlineStartWidth,
-  borderLeftColor: showError(
-    '`borderLeftColor` is not supported. Please use `borderStartColor` instead',
+
+  borderWidth: borderWidth,
+  borderStyle: borderStyle,
+  borderColor: borderColor,
+  borderTopWidth: borderTopWidth,
+  borderTopStyle: borderTopStyle,
+  borderTopColor: color,
+  borderBottomWidth: borderBottomWidth,
+  borderBottomStyle: borderBottomStyle,
+  borderBottomColor: color,
+  borderLeftColor: borderLeftColor,
+  borderLeftStyle: borderLeftStyle,
+  borderLeftWidth: borderLeftWidth,
+  borderRightColor: borderLeftColor,
+  borderRightStyle: borderLeftStyle,
+  borderRightWidth: borderLeftWidth,
+  borderInlineEnd: showError(
+    [
+      '`borderInlineEnd` is not supported. Please use',
+      '  - `borderInlineEndWidth`,',
+      '  - `borderInlineEndStyle` and',
+      '  - `borderInlineEndColor` instead',
+    ].join('\n'),
   ),
-  borderLeftStyle: showError(
-    '`borderLeftStyle` is not supported. Please use `borderStartStyle` instead',
+  borderInlineEndColor: borderLeftColor,
+  borderInlineEndStyle: borderLeftStyle,
+  borderInlineEndWidth: borderLeftWidth,
+  borderInlineStart: showError(
+    [
+      '`borderInlineStart` is not supported. Please use',
+      '  - `borderInlineStartWidth`,',
+      '  - `borderInlineStartStyle` and',
+      '  - `borderInlineStartColor` instead',
+    ].join('\n'),
   ),
-  borderLeftWidth: showError(
-    '`borderLeftWidth` is not supported. Please use `borderStartWidth` instead',
+  borderInlineStartColor: borderLeftColor,
+  borderInlineStartStyle: borderLeftStyle,
+  borderInlineStartWidth: borderLeftWidth,
+  borderBlockEnd: showError(
+    [
+      '`borderBlockEnd` is not supported. Please use',
+      '  - `borderBlockEndWidth`,',
+      '  - `borderBlockEndStyle` and',
+      '  - `borderBlockEndColor` instead',
+    ].join('\n'),
   ),
-  borderRadius: borderRadius,
-  borderRightColor: showError(
-    '`borderRightColor` is not supported. Please use `borderEndColor` instead',
+
+  borderBlockEndColor: borderLeftColor,
+  borderBlockEndStyle: borderLeftStyle,
+  borderBlockEndWidth: borderLeftWidth,
+  borderBlockStart: showError(
+    [
+      '`borderBlockStart` is not supported. Please use',
+      '  - `borderBlockStartWidth`,',
+      '  - `borderBlockStartStyle` and',
+      '  - `borderBlockStartColor` instead',
+    ].join('\n'),
   ),
-  borderRightStyle: showError(
-    '`borderRightStyle` is not supported. Please use `borderEndStyle` instead',
-  ),
-  borderRightWidth: showError(
-    '`borderRightWidth` is not supported. Please use `borderEndWidth` instead',
-  ),
+  borderBlockStartColor: borderLeftColor,
+  borderBlockStartStyle: borderLeftStyle,
+  borderBlockStartWidth: borderLeftWidth,
+
   borderSpacing: borderSpacing,
   borderStartColor: borderLeftColor,
   borderStartStyle: borderLeftStyle,
   borderStartWidth: borderLeftWidth,
-  borderStyle: borderStyle,
-  borderTopColor: color,
+
+  borderRadius: borderRadius,
   borderTopEndRadius: borderTopRightRadius,
-  borderStartStartRadius: showError(
-    '`borderStartStartRadius` is not supported. Please use `borderTopStartRadius` instead',
-  ),
-  borderTopLeftRadius: showError(
-    '`borderTopLeftRadius` is not supported. Please use `borderTopStartRadius` instead',
-  ),
-  borderStartEndRadius: showError(
-    '`borderStartEndRadius` is not supported. Please use `borderTopEndRadius` instead',
-  ),
-  borderTopRightRadius: showError(
-    '`borderTopRightRadius` is not supported. Please use `borderTopEndRadius` instead',
-  ),
+  borderStartStartRadius: borderTopRightRadius,
+  borderTopLeftRadius: borderTopRightRadius,
+  borderStartEndRadius: borderTopRightRadius,
+  borderTopRightRadius: borderTopRightRadius,
   borderTopStartRadius: borderTopLeftRadius,
-  borderTopStyle: borderTopStyle,
-  borderTopWidth: borderTopWidth,
-  borderWidth: borderWidth,
-  bottom: isStringOrNumber,
+
   boxAlign: boxAlign,
   boxDecorationBreak: boxDecorationBreak,
   boxDirection: boxDirection,
@@ -1728,7 +1714,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   displayOutside: displayOutside,
   dominantBaseline: dominantBaseline,
   emptyCells: emptyCells,
-  end: isStringOrNumber,
   fill: fill,
   fillOpacity: fillOpacity,
   fillRule: fillRule,
@@ -1788,7 +1773,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   gridTemplateColumns: gridTemplateColumns,
   gridTemplateRows: gridTemplateRows,
 
-  height: isStringOrNumber,
   hyphens: hyphens,
   imageOrientation: imageOrientation,
   imageRendering: imageRendering,
@@ -1796,13 +1780,39 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   imeMode: imeMode,
   initialLetter: initialLetter,
   initialLetterAlign: initialLetterAlign,
+
+  inset: isStringOrNumber,
+  top: top,
+  insetBlock: isStringOrNumber,
+  insetBlockStart: top,
+  insetBlockEnd: isStringOrNumber,
+  right: isStringOrNumber,
+  bottom: isStringOrNumber,
+  left: isStringOrNumber,
+  start: isStringOrNumber,
+  insetInline: isStringOrNumber,
+  insetInlineStart: isStringOrNumber,
+  insetInlineEnd: isStringOrNumber,
+
+  height: isStringOrNumber,
+  width: width,
+  blockSize: blockSize,
   inlineSize: inlineSize,
+
+  maxHeight: maxHeight,
+  maxWidth: maxWidth,
+  maxBlockSize: maxBlockSize,
+  maxInlineSize: maxInlineSize,
+  minBlockSize: minBlockSize,
+  minHeight: minHeight,
+  minInlineSize: minInlineSize,
+  minWidth: minWidth,
+
   isolation: isolation,
   justifyContent: justifyContent,
   justifyItems: justifyItems,
   justifySelf: justifySelf,
   kerning: kerning,
-  left: isStringOrNumber,
   letterSpacing: letterSpacing,
   lineBreak: lineBreak,
   lineHeight: lineHeight,
@@ -1810,20 +1820,19 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   listStyleImage: listStyleImage,
   listStylePosition: listStylePosition,
   listStyleType: listStyleType,
+
   margin: margin,
-  marginBlockEnd: showError(
-    '`marginBlockEnd` is not supported. Please use `marginBottom` instead',
-  ),
-  marginBlockStart: showError(
-    '`marginBlockStart` is not supported. Please use `marginTop` instead',
-  ),
-  marginBottom: marginBottom,
-  marginEnd: marginRight,
+  marginBlock: marginLeft,
+  marginBlockEnd: marginLeft,
+  marginBlockStart: marginLeft,
+  marginBottom: marginLeft,
+  marginEnd: marginLeft,
   marginHorizontal: marginLeft,
-  // marginInlineEnd: marginInlineEnd,
-  // marginInlineStart: marginInlineStart,
+  marginInline: marginLeft,
+  marginInlineEnd: marginLeft,
+  marginInlineStart: marginLeft,
   marginLeft: marginLeft,
-  marginRight: marginRight,
+  marginRight: marginLeft,
   marginStart: marginLeft,
   marginTop: marginTop,
   marginVertical: marginTop,
@@ -1843,14 +1852,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   maskRepeat: maskRepeat,
   maskSize: maskSize,
   maskType: maskType,
-  maxBlockSize: maxBlockSize,
-  maxHeight: maxHeight,
-  maxInlineSize: maxInlineSize,
-  maxWidth: maxWidth,
-  minBlockSize: minBlockSize,
-  minHeight: minHeight,
-  minInlineSize: minInlineSize,
-  minWidth: minWidth,
+
   mixBlendMode: mixBlendMode,
   motion: motion,
   motionOffset: motionOffset,
@@ -1867,16 +1869,16 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   orphans: orphans,
   outline: outline,
   outlineColor: showError(
-    "'outlineColor' is not supported. Please use 'outline' instead",
+    "'outlineColor' is not supported yet. Please use 'outline' instead",
   ),
   outlineOffset: showError(
-    "'outlineOffset' is not supported. Please use 'outline' instead",
+    "'outlineOffset' is not supported yet. Please use 'outline' instead",
   ),
   outlineStyle: showError(
-    "'outlineStyle' is not supported. Please use 'outline' instead",
+    "'outlineStyle' is not supported yet. Please use 'outline' instead",
   ),
   outlineWidth: showError(
-    "'outlineWidth' is not supported. Please use 'outline' instead",
+    "'outlineWidth' is not supported yet. Please use 'outline' instead",
   ),
   overflow: overflow,
   overflowAnchor: overflowAnchor,
@@ -1887,12 +1889,17 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   overscrollBehavior: overscrollBehavior,
   overscrollBehaviorX: overscrollBehaviorX,
   overscrollBehaviorY: overscrollBehaviorY,
+
   padding: padding,
-  // paddingBlockEnd: paddingBlockEnd,
-  // paddingBlockStart: paddingBlockStart,
+  paddingBlock: paddingTop,
+  paddingBlockEnd: paddingTop,
+  paddingBlockStart: paddingTop,
   paddingBottom: paddingBottom,
   paddingEnd: paddingRight,
   paddingHorizontal: paddingLeft,
+  paddingInline: paddingLeft,
+  paddingInlineEnd: paddingLeft,
+  paddingInlineStart: paddingLeft,
   paddingLeft: paddingLeft,
   paddingRight: paddingRight,
   paddingStart: paddingLeft,
@@ -1914,7 +1921,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   rest: rest,
   restAfter: restAfter,
   restBefore: restBefore,
-  right: isStringOrNumber,
+
   rowGap: rowGap,
   rubyAlign: rubyAlign,
   rubyMerge: rubyMerge,
@@ -1931,7 +1938,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   speak: speak,
   speakAs: speakAs,
   src: src,
-  start: isStringOrNumber,
+
   stroke: stroke,
   strokeDasharray: strokeDasharray,
   strokeDashoffset: strokeDashoffset,
@@ -1973,7 +1980,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   textSizeAdjust: textSizeAdjust,
   textTransform: textTransform,
   textUnderlinePosition: textUnderlinePosition,
-  top: top,
+
   touchAction: touchAction,
   transform: transform,
   transformBox: transformBox,
@@ -1998,7 +2005,6 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   voiceVolume: voiceVolume,
   whiteSpace: whiteSpace,
   widows: widows,
-  width: width,
   willChange: willChange,
   wordBreak: wordBreak,
   wordSpacing: wordSpacing,
@@ -2014,10 +2020,14 @@ for (const key of CSSPropertyKeys) {
 const CSSPropertyReplacements: { [key: string]: RuleCheck | void } = {
   border: border(),
   borderTop: border('Top'),
-  borderEnd: border('End'),
+  borderBlockStart: border('Top'),
+  borderEnd: border('InlineEnd'),
+  borderInlineEnd: border('InlineEnd'),
   borderRight: border('Right'),
   borderBottom: border('Bottom'),
-  borderStart: border('Start'),
+  borderBlockEnd: border('Bottom'),
+  borderStart: border('InlineStart'),
+  borderInlineStart: border('InlineStart'),
   borderLeft: border('Left'),
 };
 
