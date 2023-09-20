@@ -9,7 +9,8 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
-import StateManager from '../utils/state-manager';
+import type { FunctionConfig } from '../../utils/evaluate-path';
+import StateManager from '../../utils/state-manager';
 import {
   create as stylexCreate,
   include as stylexInclude,
@@ -20,11 +21,11 @@ import {
 import {
   injectDevClassNames,
   convertToTestStyles,
-} from '../utils/dev-classname';
-import { convertObjectToAST } from '../utils/js-to-ast';
+} from '../../utils/dev-classname';
+import { convertObjectToAST } from '../../utils/js-to-ast';
 import { messages } from '@stylexjs/shared';
-import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
-import * as pathUtils from '../babel-path-utils';
+import * as pathUtils from '../../babel-path-utils';
+import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 
 /// This function looks for `stylex.create` calls and transforms them.
 //. 1. It finds the first argument to `stylex.create` and validates it.
@@ -71,7 +72,7 @@ export default function transformStyleXCreate(
 
     // TODO: This should be removed soon since we should disallow spreads without
     // `stylex.include` in the future.
-    preProcessStyleArg(firstArg, state);
+    // preProcessStyleArg(firstArg, state);
 
     state.inStyleXCreate = true;
 
@@ -111,7 +112,7 @@ export default function transformStyleXCreate(
       memberExpressions[name].keyframes = { fn: keyframes };
     });
 
-    const { confident, value } = evaluate(firstArg, state, {
+    const { confident, value, fns } = evaluateStyleXCreateArg(firstArg, state, {
       identifiers,
       memberExpressions,
     });
@@ -153,7 +154,42 @@ export default function transformStyleXCreate(
       state.styleVars.set(varName, (path.parentPath: $FlowFixMe));
     }
 
-    path.replaceWith(convertObjectToAST(compiledStyles));
+    const resultAst = convertObjectToAST(compiledStyles);
+
+    if (fns != null) {
+      resultAst.properties = resultAst.properties.map((prop) => {
+        if (t.isObjectProperty(prop)) {
+          const key =
+            prop.key.type === 'Identifier' && !prop.computed
+              ? prop.key.name
+              : prop.key.type === 'StringLiteral'
+              ? prop.key.value
+              : null;
+          if (key != null && Object.keys(fns).includes(key)) {
+            const [params, inlineStyles] = fns[key];
+
+            if (t.isExpression(prop.value)) {
+              const value: t.Expression = (prop.value: $FlowFixMe);
+              prop.value = t.arrowFunctionExpression(
+                params,
+                t.arrayExpression([
+                  value,
+                  t.objectExpression(
+                    Object.entries(inlineStyles).map(([key, value]) =>
+                      t.objectProperty(t.stringLiteral(key), value),
+                    ),
+                  ),
+                ]),
+              );
+            }
+          }
+        }
+
+        return prop;
+      });
+    }
+
+    path.replaceWith(resultAst);
 
     if (Object.keys(injectedStyles).length === 0) {
       return;
@@ -225,52 +261,52 @@ function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
 }
 
 // Converts typed spreads to `stylex.include` calls.
-function preProcessStyleArg(
-  objPath: NodePath<t.ObjectExpression>,
-  state: StateManager,
-): void {
-  objPath.traverse({
-    SpreadElement(path) {
-      const argument = path.get('argument');
-      if (!pathUtils.isTypeCastExpression(argument)) {
-        return;
-      }
-      const expression = argument.get('expression');
-      if (
-        !pathUtils.isIdentifier(expression) &&
-        !pathUtils.isMemberExpression(expression)
-      ) {
-        throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
-      }
-      if (
-        !(
-          (
-            pathUtils.isObjectExpression(path.parentPath) && // namespaceObject
-            pathUtils.isObjectProperty(path.parentPath.parentPath) && // namespaceProperty
-            pathUtils.isObjectExpression(
-              path.parentPath.parentPath.parentPath,
-            ) && // stylex.create argument
-            pathUtils.isCallExpression(
-              path.parentPath.parentPath.parentPath.parentPath,
-            )
-          ) // stylex.create
-        )
-      ) {
-        // Disallow spreads within pseudo or media query objects
-        throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
-      }
+// function preProcessStyleArg(
+//   objPath: NodePath<t.ObjectExpression>,
+//   state: StateManager,
+// ): void {
+//   objPath.traverse({
+//     SpreadElement(path) {
+//       const argument = path.get('argument');
+//       if (!pathUtils.isTypeCastExpression(argument)) {
+//         return;
+//       }
+//       const expression = argument.get('expression');
+//       if (
+//         !pathUtils.isIdentifier(expression) &&
+//         !pathUtils.isMemberExpression(expression)
+//       ) {
+//         throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
+//       }
+//       if (
+//         !(
+//           (
+//             pathUtils.isObjectExpression(path.parentPath) && // namespaceObject
+//             pathUtils.isObjectProperty(path.parentPath.parentPath) && // namespaceProperty
+//             pathUtils.isObjectExpression(
+//               path.parentPath.parentPath.parentPath,
+//             ) && // stylex.create argument
+//             pathUtils.isCallExpression(
+//               path.parentPath.parentPath.parentPath.parentPath,
+//             )
+//           ) // stylex.create
+//         )
+//       ) {
+//         // Disallow spreads within pseudo or media query objects
+//         throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
+//       }
 
-      const stylexName = getStylexDefaultImport(path, state);
+//       const stylexName = getStylexDefaultImport(path, state);
 
-      argument.replaceWith(
-        t.callExpression(
-          t.memberExpression(t.identifier(stylexName), t.identifier('include')),
-          [expression.node],
-        ),
-      );
-    },
-  });
-}
+//       argument.replaceWith(
+//         t.callExpression(
+//           t.memberExpression(t.identifier(stylexName), t.identifier('include')),
+//           [expression.node],
+//         ),
+//       );
+//     },
+//   });
+// }
 
 // A function to deterministicly convert a spreadded expression to a string.
 // function toString(path: NodePath): string {

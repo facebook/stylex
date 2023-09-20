@@ -11,30 +11,14 @@ import stylex, { types } from '@stylexjs/stylex';
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
 import type {
   MapNamespace,
-  MapNamespaces,
   OverridesForTokenType,
-  Stylex$Create,
   Theme,
   TokensFromTheme,
   Variant,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
-import type {
-  StyleXOptions,
-  FlatCompiledStyles,
-} from '@stylexjs/shared/lib/common-types';
-
-type RuntimeOptions = {
-  ...$Exact<StyleXOptions>,
-  // This is mostly needed for just testing
-  insert?: (
-    key: string,
-    ltrRule: string,
-    priority: number,
-    rtlRule?: ?string,
-  ) => void,
-  ...
-};
+import type { RuntimeOptions } from './types';
+import getStyleXCreate from './stylex-create';
 
 const injectedVariableObjs = new Set<string>();
 
@@ -63,38 +47,7 @@ export default function inject({
   insert = defaultInsert,
   ...config
 }: RuntimeOptions): void {
-  const stylexCreate: Stylex$Create = <S: { ... }>(
-    styles: S,
-  ): $ReadOnly<$ObjMap<S, MapNamespaces>> => {
-    const [compiledStyles, injectedStyles] = shared.create(
-      (styles: $FlowFixMe),
-      config,
-    );
-    for (const key in injectedStyles) {
-      const { ltr, priority, rtl } = injectedStyles[key];
-      insert(key, ltr, priority, rtl);
-    }
-    for (const key in compiledStyles) {
-      const styleObj = compiledStyles[key];
-      const replacement: { ...FlatCompiledStyles } = { $$css: true };
-      let useReplacement = false;
-      for (const prop in styleObj) {
-        const value = styleObj[prop];
-        if (value instanceof shared.IncludedStyles) {
-          useReplacement = true;
-          Object.assign(replacement, value.astNode);
-        } else {
-          replacement[prop] = value;
-        }
-      }
-      if (useReplacement) {
-        compiledStyles[key] = replacement;
-      }
-    }
-    return compiledStyles;
-  };
-
-  stylex.create = stylexCreate;
+  stylex.create = getStyleXCreate({ ...config, insert });
 
   (types: $FlowFixMe).angle = shared.types.angle;
   (types: $FlowFixMe).color = shared.types.color;

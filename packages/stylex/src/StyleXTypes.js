@@ -109,7 +109,11 @@ export type MapNamespace<CSS: { ... }> = $ReadOnly<{
 //   Rule,
 // ) => $ObjMap<Rule, MapCSSValueToClassName>) &
 //   MapCSSValueToClassName;
-export type MapNamespaces = <CSS: { ... }>(CSS) => MapNamespace<CSS>;
+/*::
+export type MapNamespaces = 
+  (<CSS: { ... }>(CSS) => MapNamespace<CSS>) &
+  (<Args: $ReadOnlyArray<mixed>, CSS: { ... }>(fn: (...args: Args) => CSS) => MapNamespace<CSS>)
+*/
 
 export type Stylex$Create = <S: { ... }>(
   styles: S,

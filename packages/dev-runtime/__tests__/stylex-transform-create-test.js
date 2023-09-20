@@ -506,4 +506,250 @@ describe('Development Plugin Transformation', () => {
       });
     });
   });
+
+  describe('[transform] stylex.create() functions', () => {
+    let metadata = [];
+    beforeEach(() => {
+      metadata = [];
+      inject({
+        dev: false,
+        test: false,
+        insert: (key, ltr, priority, rtl) => {
+          metadata.push([key, { ltr, rtl }, priority]);
+        },
+      });
+    });
+
+    test('transforms style function', () => {
+      const styles = stylex.create({
+        default: (color) => ({
+          backgroundColor: 'red',
+          color: color,
+        }),
+      });
+
+      expect(styles.default('blue')).toMatchInlineSnapshot(`
+        [
+          {
+            "$$css": true,
+            "backgroundColor": "xrkmrrc",
+            "color": "x19dipnz",
+          },
+          {
+            "--color": "blue",
+          },
+        ]
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xrkmrrc",
+            {
+              "ltr": ".xrkmrrc{background-color:red}",
+              "rtl": null,
+            },
+            4,
+          ],
+          [
+            "x19dipnz",
+            {
+              "ltr": ".x19dipnz{color:var(--color,revert)}",
+              "rtl": null,
+            },
+            4,
+          ],
+        ]
+      `);
+    });
+
+    test('adds unit to numbers in style function', () => {
+      const styles = stylex.create({
+        default: (width) => ({
+          backgroundColor: 'red',
+          width,
+        }),
+      });
+
+      expect(styles.default(10)).toMatchInlineSnapshot(`
+        [
+          {
+            "$$css": true,
+            "backgroundColor": "xrkmrrc",
+            "width": "x17fnjtu",
+          },
+          {
+            "--width": "10px",
+          },
+        ]
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xrkmrrc",
+            {
+              "ltr": ".xrkmrrc{background-color:red}",
+              "rtl": null,
+            },
+            4,
+          ],
+          [
+            "x17fnjtu",
+            {
+              "ltr": ".x17fnjtu{width:var(--width,revert)}",
+              "rtl": null,
+            },
+            4,
+          ],
+        ]
+      `);
+    });
+
+    test('transforms mix of style objects and functions', () => {
+      const styles = stylex.create({
+        default: (color) => ({
+          backgroundColor: 'red',
+          color: color,
+        }),
+        mono: {
+          color: 'black',
+        },
+      });
+
+      expect(Object.keys(styles)).toEqual(['default', 'mono']);
+
+      expect(typeof styles.default).toBe('function');
+      expect(typeof styles.mono).toBe('object');
+
+      expect(styles.mono).toMatchInlineSnapshot(`
+        {
+          "$$css": true,
+          "color": "x1mqxbix",
+        }
+      `);
+
+      expect(styles.default('blue')).toMatchInlineSnapshot(`
+        [
+          {
+            "$$css": true,
+            "backgroundColor": "xrkmrrc",
+            "color": "x19dipnz",
+          },
+          {
+            "--color": "blue",
+          },
+        ]
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xrkmrrc",
+            {
+              "ltr": ".xrkmrrc{background-color:red}",
+              "rtl": null,
+            },
+            4,
+          ],
+          [
+            "x19dipnz",
+            {
+              "ltr": ".x19dipnz{color:var(--color,revert)}",
+              "rtl": null,
+            },
+            4,
+          ],
+          [
+            "x1mqxbix",
+            {
+              "ltr": ".x1mqxbix{color:black}",
+              "rtl": null,
+            },
+            4,
+          ],
+        ]
+      `);
+    });
+
+    test('transforms style object with custom propety', () => {
+      const styles = stylex.create({
+        default: (bgColor) => ({
+          '--background-color': bgColor,
+        }),
+      });
+
+      expect(styles.default('red')).toMatchInlineSnapshot(`
+        [
+          {
+            "$$css": true,
+            "--background-color": "xyv4n8w",
+          },
+          {
+            "----background-color": "red",
+          },
+        ]
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xyv4n8w",
+            {
+              "ltr": ".xyv4n8w{--background-color:var(----background-color,revert)}",
+              "rtl": null,
+            },
+            4,
+          ],
+        ]
+      `);
+    });
+
+    test('transforms nested pseudo-class to CSS', () => {
+      const styles = stylex.create({
+        default: (color) => ({
+          ':hover': {
+            backgroundColor: 'red',
+            color,
+          },
+        }),
+      });
+
+      expect(typeof styles.default).toBe('function');
+
+      expect(styles.default('blue')).toMatchInlineSnapshot(`
+        [
+          {
+            "$$css": true,
+            ":hover_backgroundColor": "x1gykpug",
+            ":hover_color": "x11bf1mc",
+          },
+          {
+            "--1ijzsae": "blue",
+          },
+        ]
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "x1gykpug",
+            {
+              "ltr": ".x1gykpug:hover{background-color:red}",
+              "rtl": null,
+            },
+            17,
+          ],
+          [
+            "x11bf1mc",
+            {
+              "ltr": ".x11bf1mc:hover{color:var(--1ijzsae,revert)}",
+              "rtl": null,
+            },
+            17,
+          ],
+        ]
+      `);
+    });
+  });
 });

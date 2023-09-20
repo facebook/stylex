@@ -227,27 +227,6 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('preserves imported object spread', () => {
-      expect(
-        transform(`
-           import stylex from 'stylex';
-           export const styles = stylex.create({
-             foo: {
-               ...(importedStyles.foo: XStyle<>)
-             }
-           });
-         `),
-      ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        export const styles = {
-          foo: {
-            ...importedStyles.foo,
-            $$css: true
-          }
-        };"
-      `);
-    });
-
     test('Uses stylex.include correctly with Identifiers', () => {
       expect(
         transform(`
@@ -948,6 +927,149 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };"
       `);
+    });
+  });
+
+  describe('[transform] stylex.create() with functions', () => {
+    test('transforms style object with function', () => {
+      expect(
+        transform(`
+           import stylex from 'stylex';
+           export const styles = stylex.create({
+             default: (color) => ({
+               backgroundColor: 'red',
+               color,
+             })
+           });
+        `),
+      ).toMatchInlineSnapshot(`
+"import stylex from 'stylex';
+stylex.inject(".xrkmrrc{background-color:red}", 4);
+stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
+export const styles = {
+  default: color => [{
+    backgroundColor: "xrkmrrc",
+    color: "x19dipnz",
+    $$css: true
+  }, {
+    "--color": color ?? "initial"
+  }]
+};"
+`);
+    });
+
+    test('adds units for numbers in style object with function', () => {
+      expect(
+        transform(`
+           import stylex from 'stylex';
+           export const styles = stylex.create({
+             default: (width) => ({
+               backgroundColor: 'red',
+               width,
+             })
+           });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".xrkmrrc{background-color:red}", 4);
+        stylex.inject(".x17fnjtu{width:var(--width,revert)}", 4);
+        export const styles = {
+          default: width => [{
+            backgroundColor: "xrkmrrc",
+            width: "x17fnjtu",
+            $$css: true
+          }, {
+            "--width": (val => typeof val === "number" ? val + "px" : val ?? "initial")(width)
+          }]
+        };"
+      `);
+    });
+
+    test('transforms mix of objects and functions', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (color) => ({
+              backgroundColor: 'red',
+              color: color,
+            }),
+            mono: {
+              color: 'black',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+"import stylex from 'stylex';
+stylex.inject(".xrkmrrc{background-color:red}", 4);
+stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
+stylex.inject(".x1mqxbix{color:black}", 4);
+export const styles = {
+  default: color => [{
+    backgroundColor: "xrkmrrc",
+    color: "x19dipnz",
+    $$css: true
+  }, {
+    "--color": color ?? "initial"
+  }],
+  mono: {
+    color: "x1mqxbix",
+    $$css: true
+  }
+};"
+`);
+    });
+    test('transforms styles that set CSS vars', () => {
+      // NOTE: the generated variable name is a little weird, but valid.
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (bgColor) => ({
+              '--background-color': bgColor,
+            }),
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+"import stylex from 'stylex';
+stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 4);
+export const styles = {
+  default: bgColor => [{
+    "--background-color": "xyv4n8w",
+    $$css: true
+  }, {
+    "----background-color": bgColor ?? "initial"
+  }]
+};"
+`);
+    });
+    test('transforms functions with nested dynamic values', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (color) => ({
+              ':hover': {
+                backgroundColor: 'red',
+                color,
+              },
+            }),
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+"import stylex from 'stylex';
+stylex.inject(".x1gykpug:hover{background-color:red}", 17);
+stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 17);
+export const styles = {
+  default: color => [{
+    ":hover_backgroundColor": "x1gykpug",
+    ":hover_color": "x11bf1mc",
+    $$css: true
+  }, {
+    "--1ijzsae": color ?? "initial"
+  }]
+};"
+`);
     });
   });
 });

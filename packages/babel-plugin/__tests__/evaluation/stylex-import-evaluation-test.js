@@ -1,4 +1,3 @@
-/* eslint-disable quotes */
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -10,8 +9,9 @@
 
 jest.autoMockOff();
 
+/* eslint-disable quotes */
 const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+const stylexPlugin = require('../../src/index');
 const jsx = require('@babel/plugin-syntax-jsx');
 const { utils } = require('@stylexjs/shared');
 

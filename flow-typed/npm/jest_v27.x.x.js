@@ -1,6 +1,7 @@
-/* eslint-disable flowtype/no-types-missing-file-annotation */
 // flow-typed signature: 5ddcf688200e3506308fdcfa78ca48d9
 // flow-typed version: 644a595e77/jest_v27.x.x/flow_>=v0.134.x
+
+/* eslint-disable ft-flow/no-types-missing-file-annotation, no-unused-vars */
 
 type JestMockFn<TArguments: $ReadOnlyArray<mixed>, TReturn> = {
   (...args: TArguments): TReturn,

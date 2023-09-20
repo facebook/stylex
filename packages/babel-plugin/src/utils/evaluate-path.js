@@ -701,11 +701,11 @@ export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
   functions: FunctionConfig = { identifiers: {}, memberExpressions: {} },
-): {
+): $ReadOnly<{
   confident: boolean,
   value: any,
   deopt?: null | NodePath<>,
-} {
+}> {
   const state: State = {
     confident: true,
     deoptPath: null,
