@@ -174,8 +174,6 @@ function evaluatePartialObjectRecursively(
               ? getNumberSuffix(key)
               : '';
 
-          console.log({ key, unit });
-
           inlineStyles[varName] =
             unit !== ''
               ? t.callExpression(
