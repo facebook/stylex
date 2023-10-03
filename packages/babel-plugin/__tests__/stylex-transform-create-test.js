@@ -943,19 +943,19 @@ describe('@stylexjs/babel-plugin', () => {
            });
         `),
       ).toMatchInlineSnapshot(`
-"import stylex from 'stylex';
-stylex.inject(".xrkmrrc{background-color:red}", 4);
-stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
-export const styles = {
-  default: color => [{
-    backgroundColor: "xrkmrrc",
-    color: "x19dipnz",
-    $$css: true
-  }, {
-    "--color": color ?? "initial"
-  }]
-};"
-`);
+        "import stylex from 'stylex';
+        stylex.inject(".xrkmrrc{background-color:red}", 4);
+        stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
+        export const styles = {
+          default: color => [{
+            backgroundColor: "xrkmrrc",
+            color: "x19dipnz",
+            $$css: true
+          }, {
+            "--color": color ?? "initial"
+          }]
+        };"
+      `);
     });
 
     test('adds units for numbers in style object with function', () => {
@@ -1000,24 +1000,24 @@ export const styles = {
           });
         `),
       ).toMatchInlineSnapshot(`
-"import stylex from 'stylex';
-stylex.inject(".xrkmrrc{background-color:red}", 4);
-stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
-stylex.inject(".x1mqxbix{color:black}", 4);
-export const styles = {
-  default: color => [{
-    backgroundColor: "xrkmrrc",
-    color: "x19dipnz",
-    $$css: true
-  }, {
-    "--color": color ?? "initial"
-  }],
-  mono: {
-    color: "x1mqxbix",
-    $$css: true
-  }
-};"
-`);
+        "import stylex from 'stylex';
+        stylex.inject(".xrkmrrc{background-color:red}", 4);
+        stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
+        stylex.inject(".x1mqxbix{color:black}", 4);
+        export const styles = {
+          default: color => [{
+            backgroundColor: "xrkmrrc",
+            color: "x19dipnz",
+            $$css: true
+          }, {
+            "--color": color ?? "initial"
+          }],
+          mono: {
+            color: "x1mqxbix",
+            $$css: true
+          }
+        };"
+      `);
     });
     test('transforms styles that set CSS vars', () => {
       // NOTE: the generated variable name is a little weird, but valid.
@@ -1031,17 +1031,17 @@ export const styles = {
           });
         `),
       ).toMatchInlineSnapshot(`
-"import stylex from 'stylex';
-stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 4);
-export const styles = {
-  default: bgColor => [{
-    "--background-color": "xyv4n8w",
-    $$css: true
-  }, {
-    "----background-color": bgColor ?? "initial"
-  }]
-};"
-`);
+        "import stylex from 'stylex';
+        stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 4);
+        export const styles = {
+          default: bgColor => [{
+            "--background-color": "xyv4n8w",
+            $$css: true
+          }, {
+            "----background-color": bgColor ?? "initial"
+          }]
+        };"
+      `);
     });
     test('transforms functions with nested dynamic values', () => {
       expect(
@@ -1057,19 +1057,19 @@ export const styles = {
           });
         `),
       ).toMatchInlineSnapshot(`
-"import stylex from 'stylex';
-stylex.inject(".x1gykpug:hover{background-color:red}", 17);
-stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 17);
-export const styles = {
-  default: color => [{
-    ":hover_backgroundColor": "x1gykpug",
-    ":hover_color": "x11bf1mc",
-    $$css: true
-  }, {
-    "--1ijzsae": color ?? "initial"
-  }]
-};"
-`);
+        "import stylex from 'stylex';
+        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
+        stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 17);
+        export const styles = {
+          default: color => [{
+            ":hover_backgroundColor": "x1gykpug",
+            ":hover_color": "x11bf1mc",
+            $$css: true
+          }, {
+            "--1ijzsae": color ?? "initial"
+          }]
+        };"
+      `);
     });
   });
 });

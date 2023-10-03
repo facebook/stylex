@@ -1,0 +1,211 @@
+// @flow strict
+
+import stylex from '../src/stylex';
+import type {
+  StaticStyles,
+  StyleXStyles,
+  XStyle,
+  // StaticStylesWithout,
+  // StyleXStylesWithout,
+  StyleXClassNameFor,
+  StyleXClassName,
+  InlineStyles,
+} from '../src/StyleXTypes';
+
+/* eslint-disable no-unused-vars */
+
+/**
+ * EMPTY STYLES
+ */
+const styles1: $ReadOnly<{ foo: $ReadOnly<{ $$css: true }> }> = stylex.create({
+  foo: {},
+});
+(styles1.foo: StaticStyles<>);
+(styles1.foo: StaticStyles<{}>);
+(styles1.foo: StaticStyles<{ width?: number | string }>);
+// (styles1.foo: StaticStylesWithout<{ width: mixed }>);
+(styles1.foo: StaticStyles<{ width?: mixed }>);
+(styles1.foo: StyleXStyles<>);
+(styles1.foo: StyleXStyles<{}>);
+// (styles1.foo: StyleXStylesWithout<{ width: mixed }>);
+(styles1.foo: StyleXStyles<{ width?: number | string }>);
+(styles1.foo: StyleXStyles<{ width?: mixed }>);
+
+(styles1.foo: XStyle<>);
+(styles1.foo: XStyle<{ width?: StyleXClassNameFor<'width', number | string> }>);
+(styles1.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
+(styles1.foo: XStyle<{ width?: StyleXClassName }>);
+
+/**
+ * SIMPLE STYLES
+ */
+const styles2: $ReadOnly<{
+  foo: $ReadOnly<{
+    $$css: true,
+    width: StyleXClassNameFor<'width', '100%'>,
+  }>,
+}> = stylex.create({
+  foo: {
+    width: '100%',
+  },
+});
+(styles2.foo: StaticStyles<>);
+(styles2.foo: StaticStyles<{ width: '100%' }>);
+// (styles2.foo: StaticStylesWithout<{ width: '100%' }>);
+(styles2.foo: StaticStyles<{ width: number | string }>);
+(styles2.foo: StaticStyles<{ width?: mixed, height?: string }>);
+(styles2.foo: StyleXStyles<>);
+(styles2.foo: StyleXStyles<{ width: '100%' }>);
+(styles2.foo: StyleXStyles<{ width: number | string }>);
+(styles2.foo: StyleXStyles<{ width?: mixed }>);
+
+(styles2.foo: XStyle<>);
+(styles2.foo: XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>);
+(styles2.foo: XStyle<{ width: StyleXClassNameFor<'width', number | string> }>);
+(styles2.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
+(styles2.foo: XStyle<{ width?: StyleXClassNameFor<string, mixed> }>);
+(styles2.foo: XStyle<{ width?: StyleXClassName }>);
+
+/**
+ * FALLBACK STYLES
+ */
+const styles3: $ReadOnly<{
+  foo: $ReadOnly<{
+    $$css: true,
+    width: StyleXClassNameFor<'width', '100%' | '200%'>,
+  }>,
+}> = stylex.create({
+  foo: {
+    width: stylex.firstThatWorks('100%', '200%'),
+  },
+});
+(styles3.foo: StaticStyles<>);
+(styles3.foo: StaticStyles<{ width: '100%' | '200%' }>);
+(styles3.foo: StaticStyles<{ width: number | string }>);
+(styles3.foo: StyleXStyles<>);
+(styles3.foo: StyleXStyles<{ width: '100%' | '200%' }>);
+(styles3.foo: StyleXStyles<{ width: number | string }>);
+(styles3.foo: StyleXStyles<{ width?: mixed }>);
+
+(styles3.foo: XStyle<>);
+// $FlowExpectedError[incompatible-cast] - value can be '100%' or '200%'.
+(styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>);
+(styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', '100%' | '200%'> }>);
+(styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', number | string> }>);
+(styles3.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
+
+/**
+ * CONDITIONAL STYLES
+ */
+const styles4: $ReadOnly<{
+  foo: $ReadOnly<{
+    $$css: true,
+    width: StyleXClassNameFor<'width', '100%' | '100dvw'>,
+  }>,
+}> = stylex.create({
+  foo: {
+    width: {
+      default: '100%',
+      '@supports (width: 100dvw)': '100dvw',
+    },
+  },
+});
+(styles4.foo: StaticStyles<>);
+(styles4.foo: StaticStyles<{ width: '100%' | '100dvw' }>);
+(styles4.foo: StaticStyles<{ width: number | string }>);
+(styles4.foo: StyleXStyles<>);
+(styles4.foo: StyleXStyles<{ width: '100%' | '100dvw' }>);
+(styles4.foo: StyleXStyles<{ width: number | string }>);
+(styles4.foo: StyleXStyles<{ width?: mixed }>);
+
+/**
+ * NESTED CONDITIONAL STYLES
+ */
+const styles5: $ReadOnly<{
+  foo: $ReadOnly<{
+    $$css: true,
+    width: StyleXClassNameFor<'width', '100%' | '100dvw' | '200%'>,
+  }>,
+}> = stylex.create({
+  foo: {
+    width: {
+      default: '100%',
+      '@supports (width: 100dvw)': {
+        default: '100dvw',
+        '@media (max-width: 1000px)': '200%',
+      },
+    },
+  },
+});
+(styles5.foo: StaticStyles<>);
+(styles5.foo: StaticStyles<{ width: '100%' | '100dvw' | '200%' }>);
+(styles5.foo: StaticStyles<{ width: number | string }>);
+(styles5.foo: StyleXStyles<>);
+(styles5.foo: StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>);
+(styles5.foo: StyleXStyles<{ width: number | string }>);
+(styles5.foo: StyleXStyles<{ width?: mixed }>);
+
+/**
+ * DYNAMIC NESTED CONDITIONAL STYLES
+ */
+const styles6: $ReadOnly<{
+  foo: (number) => $ReadOnly<
+    [
+      $ReadOnly<{
+        $$css: true,
+        width: StyleXClassNameFor<'width', '100%' | '100dvw' | number>,
+      }>,
+      InlineStyles,
+    ],
+  >,
+}> = stylex.create({
+  foo: (mobile: number) => ({
+    width: {
+      default: '100%',
+      '@supports (width: 100dvw)': {
+        default: '100dvw',
+        '@media (max-width: 1000px)': mobile,
+      },
+    },
+  }),
+});
+// $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
+(styles6.foo(100): StaticStyles<>);
+// $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
+(styles6.foo(100): StaticStyles<{ width: '100%' | '100dvw' | number }>);
+// $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
+(styles6.foo(100): StaticStyles<{ width: number | string }>);
+// Functions return StyleXStyles!
+(styles6.foo(100): StyleXStyles<>);
+(styles6.foo(100): StyleXStyles<{ width: '100%' | '100dvw' | number }>);
+(styles6.foo(100): StyleXStyles<{ width: number | string }>);
+(styles6.foo(100): StyleXStyles<{ width?: mixed }>);
+
+/**
+ * PSEUDO-ELEMENT STYLES
+ */
+const styles7: $ReadOnly<{
+  foo: $ReadOnly<{
+    $$css: true,
+    '::before': StyleXClassNameFor<
+      '::before',
+      $ReadOnly<{
+        width: '100%',
+      }>,
+    >,
+  }>,
+}> = stylex.create({
+  foo: {
+    '::before': { width: '100%' },
+  },
+});
+(styles7.foo: StaticStyles<>);
+(styles7.foo: StaticStyles<{ '::before': { width: '100%' } }>);
+(styles7.foo: StaticStyles<{
+  '::before': { width: number | string, height?: mixed },
+}>);
+(styles7.foo: StyleXStyles<>);
+(styles7.foo: StyleXStyles<{ '::before': { width: '100%' } }>);
+(styles7.foo: StyleXStyles<{
+  '::before': { width: number | string, height?: mixed },
+}>);

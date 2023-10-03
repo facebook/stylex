@@ -57,10 +57,10 @@ function stylexCreate(_styles: { ... }) {
 }
 
 function stylexCreateVars<
-  +DefaultTokens: {
-    +[string]: string | { default: string, +[string]: string },
+  DefaultTokens: {
+    +[string]: string | { +default: string, +[string]: string },
   },
-  +ID: string = string,
+  ID: string = string,
 >(_styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {
   throw new Error(
     'stylex.createVars should never be called. It should be compiled away.',

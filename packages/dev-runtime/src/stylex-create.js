@@ -178,7 +178,7 @@ export default function getStyleXCreate(
 ): Stylex$Create {
   const stylexCreate: Stylex$Create = <S: { ... }>(
     styles: S,
-  ): $ReadOnly<$ObjMap<S, MapNamespaces>> => {
+  ): MapNamespaces<S> => {
     return createWithFns(styles, config);
   };
 

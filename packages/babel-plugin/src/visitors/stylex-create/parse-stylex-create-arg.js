@@ -210,7 +210,6 @@ function evaluatePartialObjectRecursively(
       }
     }
   }
-
   return { value: obj, confident: true, inlineStyles };
 }
 

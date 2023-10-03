@@ -19,10 +19,12 @@ const styles = stylex.create({
   },
   titleLink: {
     color: '#0070f3',
-    textDecoration: 'none',
-    ':hover': { textDecoration: 'underline' },
-    ':focus': { textDecoration: 'underline' },
-    ':active': { textDecoration: 'underline' },
+    textDecoration: {
+      default: 'none',
+      ':hover': 'underline',
+      ':focus': 'underline',
+      ':active': 'underline',
+    },
   },
   description: {
     marginHorizontal: '4rem',

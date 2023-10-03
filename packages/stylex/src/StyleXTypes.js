@@ -20,75 +20,78 @@ export type StyleXClassName = StyleXClassNameFor<mixed, mixed>;
 // Type for arbitrarily nested Array.
 export type StyleXArray<+T> = T | $ReadOnlyArray<StyleXArray<T>>;
 
-type CSSPropTypes = $ReadOnly<$ObjMap<CSSProperties, () => StyleXClassName>>;
-export type NestedCSSPropTypes = $ReadOnly<{
-  ...$Exact<CSSPropTypes>,
-  // NOTE: the actual type should be nested objects.
-  // fix after the types in stylex.js are fixed.
-  ':active'?: StyleXClassName,
-  ':focus'?: StyleXClassName,
-  ':focus-visible'?: StyleXClassName,
-  ':hover'?: StyleXClassName,
-  ':disabled'?: StyleXClassName,
-  ':empty'?: StyleXClassName,
-  ':first-child'?: StyleXClassName,
-  ':last-child'?: StyleXClassName,
-  '::before'?: StyleXClassName,
-  '::after'?: StyleXClassName,
-  '::placeholder'?: StyleXClassName,
-  '::-webkit-scrollbar'?: StyleXClassName,
+type CSSPropertiesWithExtras = $ReadOnly<{
+  ...CSSProperties,
+  ':active'?: CSSProperties,
+  ':focus'?: CSSProperties,
+  ':focus-visible'?: CSSProperties,
+  ':hover'?: CSSProperties,
+  ':disabled'?: CSSProperties,
+  ':empty'?: CSSProperties,
+  ':first-child'?: CSSProperties,
+  ':last-child'?: CSSProperties,
+  '::before'?: CSSProperties,
+  '::after'?: CSSProperties,
+  '::placeholder'?: CSSProperties,
+  '::-webkit-scrollbar'?: CSSProperties,
   // Find a better way to do this. Being forced to add every media query.
-  '@media (max-width: 564px)'?: StyleXClassName,
-  '@media (min-height: 700px)'?: StyleXClassName,
-  '@media (min-height: 700px) and (max-height: 789px)'?: StyleXClassName,
-  '@media (min-height: 753px) and (max-height: 789px)'?: StyleXClassName,
-  '@media (min-height: 790px)'?: StyleXClassName,
-  '@media (max-width: 648px)'?: StyleXClassName,
-  '@media (max-width: 899px)'?: StyleXClassName,
-  '@media (max-width: 900px)'?: StyleXClassName,
-  '@media (min-width: 900px)'?: StyleXClassName,
-  '@media (min-width: 900px) and (max-width: 1259px)'?: StyleXClassName,
-  '@media (max-width: 1099px)'?: StyleXClassName,
-  '@media (max-width: 1199px)'?: StyleXClassName,
-  '@media (max-width: 1259px)'?: StyleXClassName,
-  '@media (min-width: 1290px)'?: StyleXClassName,
-  '@media (max-width: 420px)'?: StyleXClassName,
-  '@media (max-width: 500px)'?: StyleXClassName,
-  '@media (pointer: coarse)'?: StyleXClassName,
-  '@media (-webkit-min-device-pixel-ratio: 0)'?: StyleXClassName,
-  '@media print'?: StyleXClassName,
+  '@media (max-width: 564px)'?: CSSProperties,
+  '@media (min-height: 700px)'?: CSSProperties,
+  '@media (min-height: 700px) and (max-height: 789px)'?: CSSProperties,
+  '@media (min-height: 753px) and (max-height: 789px)'?: CSSProperties,
+  '@media (min-height: 790px)'?: CSSProperties,
+  '@media (max-width: 648px)'?: CSSProperties,
+  '@media (max-width: 899px)'?: CSSProperties,
+  '@media (max-width: 900px)'?: CSSProperties,
+  '@media (min-width: 900px)'?: CSSProperties,
+  '@media (min-width: 900px) and (max-width: 1259px)'?: CSSProperties,
+  '@media (max-width: 1099px)'?: CSSProperties,
+  '@media (max-width: 1199px)'?: CSSProperties,
+  '@media (max-width: 1259px)'?: CSSProperties,
+  '@media (min-width: 1290px)'?: CSSProperties,
+  '@media (max-width: 420px)'?: CSSProperties,
+  '@media (max-width: 500px)'?: CSSProperties,
+  '@media (pointer: coarse)'?: CSSProperties,
+  '@media (-webkit-min-device-pixel-ratio: 0)'?: CSSProperties,
+  '@media print'?: CSSProperties,
   // Media queries used for Oculus Web Design Systems (OCDS components).
-  '@media (max-width: 767px)'?: StyleXClassName,
-  '@media (min-width: 768px)'?: StyleXClassName,
-  '@media (min-width: 768px) and (max-width: 1024px)'?: StyleXClassName,
-  '@media (max-width: 1024px)'?: StyleXClassName,
-  '@media (min-width: 1025px)'?: StyleXClassName,
-  '@media (min-width: 1025px) and (max-width: 1920px)'?: StyleXClassName,
-  '@media (max-width: 1920px)'?: StyleXClassName,
-  '@media (min-width: 1921px)'?: StyleXClassName,
+  '@media (max-width: 767px)'?: CSSProperties,
+  '@media (min-width: 768px)'?: CSSProperties,
+  '@media (min-width: 768px) and (max-width: 1024px)'?: CSSProperties,
+  '@media (max-width: 1024px)'?: CSSProperties,
+  '@media (min-width: 1025px)'?: CSSProperties,
+  '@media (min-width: 1025px) and (max-width: 1920px)'?: CSSProperties,
+  '@media (max-width: 1920px)'?: CSSProperties,
+  '@media (min-width: 1921px)'?: CSSProperties,
   // Media queries used for Intern Data Products
-  '@media (min-width: 1500px)'?: StyleXClassName,
-  '@media (min-width: 1800px)'?: StyleXClassName,
-  '@media (min-width: 2250px)'?: StyleXClassName,
+  '@media (min-width: 1500px)'?: CSSProperties,
+  '@media (min-width: 1800px)'?: CSSProperties,
+  '@media (min-width: 2250px)'?: CSSProperties,
   // webkit styles used for Search in Safari
-  '::-webkit-search-decoration'?: StyleXClassName,
-  '::-webkit-search-cancel-button'?: StyleXClassName,
-  '::-webkit-search-results-button'?: StyleXClassName,
-  '::-webkit-search-results-decoration'?: StyleXClassName,
+  '::-webkit-search-decoration'?: CSSProperties,
+  '::-webkit-search-cancel-button'?: CSSProperties,
+  '::-webkit-search-results-button'?: CSSProperties,
+  '::-webkit-search-results-decoration'?: CSSProperties,
   // Media queries used for the logged out header
-  '@media (min-width: 950px)'?: StyleXClassName,
+  '@media (min-width: 950px)'?: CSSProperties,
   // Media queries used for bizweb
-  '@media (min-width: 1440px)'?: StyleXClassName,
-  '@media (min-width: 1920px)'?: StyleXClassName,
+  '@media (min-width: 1440px)'?: CSSProperties,
+  '@media (min-width: 1920px)'?: CSSProperties,
   // Media queries used for fbai
-  '@media (min-width: 800px)'?: StyleXClassName,
+  '@media (min-width: 800px)'?: CSSProperties,
   // Media queries used for messengerkidsdotcom
-  '@media (max-width: 1024px) and (min-width: 501px)'?: StyleXClassName,
+  '@media (max-width: 1024px) and (min-width: 501px)'?: CSSProperties,
+}>;
+
+export type NestedCSSPropTypes = $ReadOnly<{
+  [Key in keyof CSSPropertiesWithExtras]?: StyleXClassNameForKey<Key>,
 }>;
 
 export type StyleXSingleStyle = false | ?NestedCSSPropTypes;
-export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<false | ?T>;
-export type XStyleWithout<+T: { [string]: void, ... }> = XStyle<
+export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<
+  false | ?$ReadOnly<{ ...T, $$css: true }>,
+>;
+export type XStyleWithout<+T: { +[string]: mixed }> = XStyle<
   $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>,
 >;
 
@@ -96,28 +99,31 @@ export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
 
 export type LegacyTheme = $ReadOnly<{ [constantName: string]: string, ... }>;
 
-// type CSSValue = string | number | $ReadOnlyArray<mixed>;
-type MapCSSValueToClassName = <K, V>(K, V) => StyleXClassNameFor<K, V>;
+type ComplexStyleValueType<+T> = T extends string | number | null
+  ? T
+  : T extends StyleXVar<infer U>
+  ? U
+  : T extends $ReadOnlyArray<infer U>
+  ? U
+  : T extends $ReadOnly<{ default: infer A, +[string]: infer B }>
+  ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
+  : T;
 
-export type MapNamespace<CSS: { ... }> = $ReadOnly<{
-  ...$ObjMapi<CSS, MapCSSValueToClassName>,
+type _MapNamespace<+CSS: { +[string]: mixed }> = $ReadOnly<{
+  [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>,
+}>;
+export type MapNamespace<+CSS: { +[string]: mixed }> = $ReadOnly<{
+  ..._MapNamespace<CSS>,
   $$css: true,
 }>;
-// NOTE: Flow was confused by nested ObjMap so for now, nested styles
-// are typed incorrectly to be a string. This won't matter for the time being.
-// type MapStyleToClassName = (<Rule: {}>(
-//   Rule,
-// ) => $ObjMap<Rule, MapCSSValueToClassName>) &
-//   MapCSSValueToClassName;
-/*::
-export type MapNamespaces = 
-  (<CSS: { ... }>(CSS) => MapNamespace<CSS>) &
-  (<Args: $ReadOnlyArray<mixed>, CSS: { ... }>(fn: (...args: Args) => CSS) => MapNamespace<CSS>)
-*/
-
-export type Stylex$Create = <S: { ... }>(
+export type MapNamespaces<+S: { +[string]: mixed }> = $ReadOnly<{
+  [Key in keyof S]: S[Key] extends (...args: infer Args) => infer Obj
+    ? (...args: Args) => $ReadOnly<[MapNamespace<Obj>, InlineStyles]>
+    : MapNamespace<S[Key]>,
+}>;
+export type Stylex$Create = <S: { +[string]: mixed }>(
   styles: S,
-) => $ReadOnly<$ObjMap<S, MapNamespaces>>;
+) => MapNamespaces<S>;
 
 export type CompiledStyles = $ReadOnly<{
   $$css: true,
@@ -126,16 +132,48 @@ export type CompiledStyles = $ReadOnly<{
     | $ReadOnly<{ [key: string]: StyleXClassName, ... }>,
   ...
 }>;
+export type InlineStyles = $ReadOnly<{
+  $$css?: void,
+  [key: string]: string,
+}>;
 
+type _GenStylePropType<+CSS: { +[string]: mixed }> = $ReadOnly<{
+  [Key in keyof CSS]: CSS[Key] extends { +[string]: mixed }
+    ? StyleXClassNameFor<Key, $ReadOnly<CSS[Key]>>
+    : StyleXClassNameFor<Key, CSS[Key]>,
+}>;
+type GenStylePropType<+CSS: { +[string]: mixed }> = $ReadOnly<{
+  ..._GenStylePropType<CSS>,
+  $$css: true,
+}>;
+
+// Replace `XStyle` with this.
+export type StaticStyles<+CSS: { +[string]: mixed } = CSSPropertiesWithExtras> =
+  StyleXArray<false | ?GenStylePropType<$ReadOnly<CSS>>>;
+
+export type StaticStylesWithout<+CSS: { +[string]: mixed }> = StaticStyles<
+  $Rest<CSSPropertiesWithExtras, $ReadOnly<CSS>>,
+>;
+
+export type StyleXStyles<+CSS: { +[string]: mixed } = CSSPropertiesWithExtras> =
+  StyleXArray<
+    | ?false
+    | GenStylePropType<$ReadOnly<CSS>>
+    | $ReadOnly<[GenStylePropType<$ReadOnly<CSS>>, InlineStyles]>,
+  >;
+
+export type StyleXStylesWithout<+CSS: { +[string]: mixed }> = StyleXStyles<
+  $Rest<CSSPropertiesWithExtras, $ReadOnly<CSS>>,
+>;
 // This is the type for the variables object
-export opaque type StyleXVarsTheme<+Vars: { +[string]: string }>: Vars = Vars;
+export opaque type StyleXVar<+_Val: mixed> = string;
 
 export opaque type Theme<
   +Tokens: { +[string]: mixed },
   // eslint-disable-next-line no-unused-vars
   +ID: string = string,
->: $ReadOnly<{ [$Keys<Tokens>]: string }> = $ReadOnly<{
-  [$Keys<Tokens>]: string,
+>: $ReadOnly<{ [Key in keyof Tokens]: StyleXVar<Tokens[Key]> }> = $ReadOnly<{
+  [Key in keyof Tokens]: StyleXVar<Tokens[Key]>,
 }>;
 
 export type TokensFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
@@ -150,22 +188,17 @@ type IDFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
   ? ID
   : empty;
 
-export type FlattenTokens<
-  T: {
-    +[string]: string | { +default: string, +[string]: string },
-  },
-> = {
+type TTokens = $ReadOnly<{
+  [string]: string | $ReadOnly<{ default: string, [string]: string }>,
+}>;
+
+export type FlattenTokens<T: TTokens> = {
   +[Key in keyof T]: T[Key] extends { +default: infer X, +[string]: infer Y }
     ? X | Y
     : T[Key],
 };
 
-export type StyleX$CreateVars = <
-  +DefaultTokens: {
-    +[string]: string | { default: string, +[string]: string },
-  },
-  +ID: string = string,
->(
+export type StyleX$CreateVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
 ) => Theme<FlattenTokens<DefaultTokens>, ID>;
 
@@ -184,8 +217,8 @@ export type OverridesForTokenType<Config: { +[string]: mixed }> = {
 };
 
 export type StyleX$OverrideVars = <
-  +BaseTokens: Theme<{ +[string]: mixed }>,
-  +ID: string = string,
+  BaseTokens: Theme<{ +[string]: mixed }>,
+  ID: string = string,
 >(
   baseTokens: BaseTokens,
   overrides: OverridesForTokenType<TokensFromTheme<BaseTokens>>,

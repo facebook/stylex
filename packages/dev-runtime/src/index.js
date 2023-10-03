@@ -64,10 +64,10 @@ export default function inject({
   (types: $FlowFixMe).transformList = shared.types.transformList;
 
   stylex.unstable_createVars = <
-    +DefaultTokens: {
-      +[string]: string | { default: string, +[string]: string },
+    DefaultTokens: {
+      +[string]: string | { +default: string, +[string]: string },
     },
-    +ID: string = string,
+    ID: string = string,
   >(
     variables: DefaultTokens,
     { themeName }: { themeName: string } = {
@@ -90,7 +90,7 @@ export default function inject({
     variablesOverride: OverridesForTokenType<TokensFromTheme<$FlowFixMe>>,
   ): Variant<BaseTokens, ID> => {
     const [js, css] = shared.overrideVars(variablesTheme, variablesOverride);
-    const styleKey = js[variablesTheme.__themeName__];
+    const styleKey = js[String(variablesTheme.__themeName__)];
     insert(styleKey, css[styleKey].ltr, css[styleKey].priority);
     // $FlowFixMe[incompatible-return]
     return js;

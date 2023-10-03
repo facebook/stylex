@@ -11,8 +11,8 @@ import type { CSSProperties } from './StyleXCSSTypes';
 declare const StyleXClassNameTag: unique symbol;
 export type StyleXClassNameFor<K, V> = string & {
   _opaque: typeof StyleXClassNameTag;
-  key: K;
-  value: V;
+  _key: K;
+  _value: V;
 };
 
 export type StyleXClassNameForValue<V> = StyleXClassNameFor<unknown, V>;
@@ -21,162 +21,174 @@ export type StyleXClassName = StyleXClassNameFor<unknown, unknown>;
 // Type for arbitrarily nested Array.
 export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
 
-type lowerCaseAlphabet =
-  | 'a'
-  | 'b'
-  | 'c'
-  | 'd'
-  | 'e'
-  | 'f'
-  | 'g'
-  | 'h'
-  | 'i'
-  | 'j'
-  | 'k'
-  | 'l'
-  | 'm'
-  | 'n'
-  | 'o'
-  | 'p'
-  | 'q'
-  | 'r'
-  | 's'
-  | 't'
-  | 'u'
-  | 'v'
-  | 'w'
-  | 'x'
-  | 'y'
-  | 'z'
-  | '-'
-  | '_'
-  | '@'
-  | ':';
+declare const StyleXVarTag: unique symbol;
+export type StyleXVar<_Val> = string & typeof StyleXVarTag;
+
+// prettier-ignore
+type NonDollarChars =
+  | 'a' | 'A' | 'b' | 'B' | 'c' | 'C' | 'd' | 'D'
+  | 'e' | 'E' | 'f' | 'F' | 'g' | 'G'
+  | 'h' | 'H' | 'i' | 'I' | 'j' | 'J' | 'k' | 'K'
+  | 'l' | 'L' | 'm' | 'M' | 'n' | 'N' | 'o' | 'O' | 'p' | 'P'
+  | 'q' | 'Q' | 'r' | 'R' | 's' | 'S' | 't' | 'T'
+  | 'u' | 'U' | 'v' | 'V' | 'w' | 'W'
+  | 'x' | 'X' | 'y' | 'Y' | 'z' | 'Z'
+  | '-' | '_' | '@' | ':';
 
 // Strings that don't start with a dollar sign.
 // So that we can `&` with {$$css: true} without type errors.
-type NonDollarStr = `${lowerCaseAlphabet}${string}`;
+type NonDollarStr = `${NonDollarChars}${string}`;
+type PseudoClassStr = `:${string}`;
+type AtRuleStr = `@${string}`;
 
-type CSSPropTypes = {
-  [Key in keyof CSSProperties]: StyleXClassNameFor<Key, CSSProperties[Key]>;
-};
+type CondStr = PseudoClassStr | AtRuleStr;
 
-export type NestedCSSPropTypes = CSSPropTypes &
-  Readonly<{
-    // NOTE: the actual type should be nested objects.
-    // fix after the types in stylex.js are fixed.
-    ':active': StyleXClassName;
-    ':focus': StyleXClassName;
-    ':focus-visible': StyleXClassName;
-    ':hover': StyleXClassName;
-    ':disabled': StyleXClassName;
-    ':empty': StyleXClassName;
-    ':first-child': StyleXClassName;
-    ':last-child': StyleXClassName;
-    '::before': StyleXClassName;
-    '::after': StyleXClassName;
-    '::placeholder': StyleXClassName;
-    '::-webkit-scrollbar': StyleXClassName;
-
-    [key: `@media (max-width: ${number}px)`]: StyleXClassName;
-    [key: `@media (min-width: ${number}px)`]: StyleXClassName;
-    [
-      key: `@media (min-width: ${number}px) and (max-width: ${number}px)`
-    ]: StyleXClassName;
-
-    [key: `@media (max-height: ${number}px)`]: StyleXClassName;
-    [key: `@media (min-height: ${number}px)`]: StyleXClassName;
-    [
-      key: `@media (min-height: ${number}px) and (max-height: ${number}px)`
-    ]: StyleXClassName;
-
-    [
-      key: `@media (-webkit-min-device-pixel-ratio: ${number})`
-    ]: StyleXClassName;
-    '@media print': StyleXClassName;
-
-    // webkit styles used for Search in Safari
-    '::-webkit-search-decoration': StyleXClassName;
-    '::-webkit-search-cancel-button': StyleXClassName;
-    '::-webkit-search-results-button': StyleXClassName;
-    '::-webkit-search-results-decoration': StyleXClassName;
-  }>;
-
-export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
-export type XStyle<T = NestedCSSPropTypes> = StyleXArray<
-  false | (null | undefined | T)
+type CSSPropertiesWithExtras = Partial<
+  Readonly<
+    CSSProperties & {
+      '::after': CSSProperties;
+      '::backdrop': CSSProperties;
+      '::before': CSSProperties;
+      '::cue': CSSProperties;
+      '::cue-region': CSSProperties;
+      '::first-letter': CSSProperties;
+      '::first-line': CSSProperties;
+      '::file-selector-button': CSSProperties;
+      '::grammar-error': CSSProperties;
+      '::marker': CSSProperties;
+      // This is a pattern and not a static key so it cannot be typed correctly.
+      // '::part()': CSSProperties;
+      '::placeholder': CSSProperties;
+      '::selection': CSSProperties;
+      // This is a pattern and not a static key so it cannot be typed correctly.
+      // '::slotted()': CSSProperties;
+      '::spelling-error': CSSProperties;
+      '::target-text': CSSProperties;
+    }
+  >
 >;
-export type XStyleWithout<T extends { [$$Key$$: NonDollarStr]: void }> = XStyle<
+
+export type NestedCSSPropTypes = Partial<
+  Readonly<{
+    [Key in keyof CSSPropertiesWithExtras]: StyleXClassNameFor<
+      Key,
+      CSSPropertiesWithExtras[Key]
+    >;
+  }>
+>;
+
+type UserAuthoredStyles = { [key: NonDollarStr]: unknown };
+export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
+export type XStyle<T extends UserAuthoredStyles = NestedCSSPropTypes> =
+  StyleXArray<false | (null | undefined | Readonly<T & { $$css: true }>)>;
+export type XStyleWithout<T extends UserAuthoredStyles> = XStyle<
   Readonly<Pick<NestedCSSPropTypes, Exclude<keyof NestedCSSPropTypes, keyof T>>>
 >;
 
 export type Keyframes = Readonly<{ [name: NonDollarStr]: CSSProperties }>;
 export type LegacyTheme = Readonly<{ [constantName: NonDollarStr]: string }>;
 
-type RawStyles = {
-  [key: NonDollarStr]:
-    | null
-    | string
-    | number
-    | Array<string | number>
-    | RawStyles;
-};
+type ComplexStyleValueType<T> = T extends string | number | null
+  ? T
+  : T extends StyleXVar<infer U>
+  ? U
+  : T extends ReadonlyArray<infer U>
+  ? U
+  : T extends Readonly<{ default: infer A; [cond: CondStr]: infer B }>
+  ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
+  : T;
 
-type CompiledNamespace<const N extends RawStyles> = {
-  [K in keyof N]: N[K] extends string | number | null
-    ? StyleXClassNameFor<K, N[K]>
-    : N[K] extends ReadonlyArray<infer T>
-    ? StyleXClassNameFor<K, T>
-    : K extends `:${string}` | `@${string}`
-    ? N[K] extends RawStyles
-      ? CompiledNamespace<N[K]>
-      : StyleXClassNameFor<K, N[K]>
-    : N[K] extends { [key: string]: infer T }
-    ? StyleXClassNameFor<K, T> // TODO: Handle nested objects
-    : never;
-};
-
-export type Stylex$Create = <const S extends { [n: NonDollarStr]: RawStyles }>(
-  styles: S,
-) => Readonly<{
-  [N in keyof S]: CompiledNamespace<S[N]> & { $$css: true };
+type _MapNamespace<CSS> = Readonly<{
+  [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>;
 }>;
 
-export type CompiledStyles = Readonly<{
-  [key: NonDollarStr]:
-    | StyleXClassName
-    | Readonly<{ [key: NonDollarStr]: StyleXClassName }>;
-}> & { $$css: true };
+export type MapNamespace<CSS> = Readonly<
+  _MapNamespace<CSS> & Readonly<{ $$css: true }>
+>;
+
+export type MapNamespaces<
+  S extends {
+    [key: string]: UserAuthoredStyles | ((...args: any) => UserAuthoredStyles);
+  },
+> = Readonly<{
+  [Key in keyof S]: S[Key] extends (...args: infer Args) => infer Obj
+    ? (...args: Args) => Readonly<[MapNamespace<Obj>, InlineStyles]>
+    : MapNamespace<S[Key]>;
+}>;
+
+export type Stylex$Create = <
+  const S extends {
+    [key: string]: UserAuthoredStyles | ((...args: any) => UserAuthoredStyles);
+  },
+>(
+  styles: S,
+) => MapNamespaces<S>;
+
+export type CompiledStyles = Readonly<
+  {
+    [key: NonDollarStr]:
+      | StyleXClassName
+      | Readonly<{ [key: NonDollarStr]: StyleXClassName }>;
+  } & { $$css: true }
+>;
+
+export type InlineStyles = Readonly<
+  { [key: NonDollarStr]: string } & { $$css?: void }
+>;
+
+type _GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<{
+  [Key in keyof CSS]: StyleXClassNameFor<Key, Readonly<CSS[Key]>>;
+}>;
+type GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<
+  _GenStylePropType<CSS> & { $$css: true } & Partial<{
+      [Key in Exclude<
+        keyof CSSPropertiesWithExtras,
+        keyof CSS | '$$css'
+      >]: never;
+    }>
+>;
+
+// Replace `XStyle` with this.
+export type StaticStyles<
+  CSS extends UserAuthoredStyles = CSSPropertiesWithExtras,
+> = StyleXArray<false | null | void | GenStylePropType<CSS>>;
+export type StaticStylesWithout<CSS extends UserAuthoredStyles> = StaticStyles<
+  Omit<CSSPropertiesWithExtras, keyof CSS>
+>;
+
+export type StyleXStyles<
+  CSS extends UserAuthoredStyles = CSSPropertiesWithExtras,
+> = StyleXArray<
+  | null
+  | void
+  | false
+  | GenStylePropType<CSS>
+  | Readonly<[GenStylePropType<CSS>, InlineStyles]>
+>;
+export type StyleXStylesWithout<CSS extends UserAuthoredStyles> = StyleXStyles<
+  Omit<CSSPropertiesWithExtras, keyof CSS>
+>;
+
+declare const StyleXThemeTag: unique symbol;
+export type Theme<
+  Tokens extends { [key: NonDollarStr]: unknown },
+  ID extends symbol = symbol,
+> = Readonly<{ [_Key in keyof Tokens]: string }> & {
+  $opaqueId: ID;
+  $tokens: Tokens;
+} & typeof StyleXThemeTag;
+
+export type TokensFromTheme<T extends Theme<TTokens>> = T['$tokens'];
+
+export type IDFromTheme<T extends Theme<TTokens>> = T['$opaqueId'];
 
 type TTokens = {
-  [key: NonDollarStr]: string | { default: string; [key: string]: string };
+  [key: NonDollarStr]: string | { default: string; [key: AtRuleStr]: string };
 };
 
-export type FlattenTokens<
-  T extends {
-    [key: NonDollarStr]: string | { default: string; [key: string]: string };
-  },
-> = {
-  [Key in keyof T]: T[Key] extends { default: infer X } & {
-    [key: Exclude<string, 'default'>]: infer Y;
-  }
-    ? X | Y
-    : T[Key];
-};
-
-export type Theme<
-  Tokens extends { [key: string]: unknown },
-  ID extends symbol = symbol,
-> = Readonly<{
-  [_Key in Exclude<keyof Tokens, '_opaque' | '_tokens'>]: string;
-}> & {
-  _opaque: ID;
-  _tokens: Tokens;
-};
-
-export type TokensFromTheme<T extends Theme<TTokens>> = T['_tokens'];
-
-export type IDFromTheme<T extends Theme<TTokens>> = T['_opaque'];
+export type FlattenTokens<T extends TTokens> = Readonly<{
+  [Key in keyof T]: T[Key] extends { [key: string]: infer X } ? X : T[Key];
+}>;
 
 export type StyleX$CreateVars = <
   DefaultTokens extends TTokens,
@@ -189,14 +201,15 @@ export type Variant<
   T extends Theme<TTokens, symbol>,
   // eslint-disable-next-line no-unused-vars
   Tag extends symbol = symbol,
-> = Readonly<{
-  [Key: symbol]: StyleXClassNameFor<string, IDFromTheme<T>>;
-}> & { _opaque: Tag };
+> = Tag &
+  Readonly<{
+    theme: StyleXClassNameFor<string, IDFromTheme<T>>;
+  }>;
 
-type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
+type OverridesForTokenType<Config extends { [key: string]: any }> = {
   [Key in keyof Config]:
     | Config[Key]
-    | { default: Config[Key]; [atRule: string]: Config[Key] };
+    | { default: Config[Key]; [atRule: AtRuleStr]: Config[Key] };
 };
 
 export type StyleX$OverrideVars = <

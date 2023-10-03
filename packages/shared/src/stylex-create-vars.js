@@ -14,7 +14,7 @@ import { objEntries, objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
 
 type VarsObject<
-  Vars: { +[string]: string | { default: string, +[string]: string } },
+  Vars: { +[string]: string | { +default: string, +[string]: string } },
 > = $ReadOnly<{
   ...$ObjMapConst<Vars, string>,
   __themeName__: string,
@@ -23,8 +23,8 @@ type VarsObject<
 // Similar to `stylex.create` it takes an object of variables with their values
 // and returns a string after hashing it.
 export default function styleXCreateVars<
-  +Vars: {
-    +[string]: string | { default: string, +[string]: string },
+  Vars: {
+    +[string]: string | { +default: string, +[string]: string },
   },
 >(
   variables: Vars,
@@ -61,7 +61,7 @@ export default function styleXCreateVars<
 function constructCssVariablesString(variables: {
   +[string]: {
     nameHash: string,
-    value: string | { default: string, +[string]: string },
+    value: string | { +default: string, +[string]: string },
   },
 }): string {
   const atRules: any = {};

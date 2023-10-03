@@ -22,8 +22,8 @@
 type ValueWithDefault<+T> =
   | T
   | $ReadOnly<{
-      +default: T,
-      +[string]: ValueWithDefault<T>,
+      default: T,
+      [string]: ValueWithDefault<T>,
     }>;
 
 type CSSSyntax =

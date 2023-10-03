@@ -21,7 +21,7 @@ describe('stylex-types-test', () => {
     test('color', () => {
       const value = { default: 'red' };
 
-      const obj = t.Color.create(value);
+      const obj = t.Color.create<string>(value);
       expect(obj.value).toEqual(value);
       expect(obj.syntax).toEqual('<color>');
     });
@@ -42,24 +42,24 @@ describe('stylex-types-test', () => {
 
     test('length', () => {
       const value = '1px';
-      let obj = t.Length.create(value);
+      const obj = t.Length.create(value);
       expect(obj.value).toEqual(value);
       expect(obj.syntax).toEqual('<length>');
 
-      obj = t.Length.create(1);
-      expect(obj.value).toEqual(value);
-      expect(obj.syntax).toEqual('<length>');
+      const obj2 = t.Length.create(1);
+      expect(obj2.value).toEqual(value);
+      expect(obj2.syntax).toEqual('<length>');
     });
 
     test('percentage', () => {
       const value = '50%';
-      let obj = t.Percentage.create(value);
+      const obj = t.Percentage.create(value);
       expect(obj.value).toEqual(value);
       expect(obj.syntax).toEqual('<percentage>');
 
-      obj = t.Percentage.create(0.5);
-      expect(obj.value).toEqual(value);
-      expect(obj.syntax).toEqual('<percentage>');
+      const obj2 = t.Percentage.create(0.5);
+      expect(obj2.value).toEqual(value);
+      expect(obj2.syntax).toEqual('<percentage>');
     });
 
     test('num', () => {
@@ -120,7 +120,7 @@ describe('stylex-types-test', () => {
     test('color', () => {
       const value = { default: 'red' };
 
-      const obj = t.color(value);
+      const obj = t.color<string>(value);
       expect(obj.value).toEqual(value);
       expect(obj.syntax).toEqual('<color>');
     });
@@ -141,24 +141,24 @@ describe('stylex-types-test', () => {
 
     test('length', () => {
       const value = '1px';
-      let obj = t.length(value);
+      const obj = t.length(value);
       expect(obj.value).toEqual(value);
       expect(obj.syntax).toEqual('<length>');
 
-      obj = t.length(1);
-      expect(obj.value).toEqual(value);
-      expect(obj.syntax).toEqual('<length>');
+      const obj2 = t.length(1);
+      expect(obj2.value).toEqual(value);
+      expect(obj2.syntax).toEqual('<length>');
     });
 
     test('percentage', () => {
       const value = '50%';
-      let obj = t.percentage(value);
+      const obj = t.percentage(value);
       expect(obj.value).toEqual(value);
       expect(obj.syntax).toEqual('<percentage>');
 
-      obj = t.percentage(0.5);
-      expect(obj.value).toEqual(value);
-      expect(obj.syntax).toEqual('<percentage>');
+      const obj2 = t.percentage(0.5);
+      expect(obj2.value).toEqual(value);
+      expect(obj2.syntax).toEqual('<percentage>');
     });
 
     test('num', () => {
