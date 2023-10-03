@@ -10,10 +10,8 @@
 import * as React from 'react';
 import stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
-// import Logo from '@site/components/Logo';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
-// import ZStack from '../../components/ZStack';
 
 const STEP_1 = `import stylex from '@stylexjs/stylex';
 
@@ -29,11 +27,14 @@ const styles = stylex.create({
 `;
 
 const STEP_2 = `import stylex from '@stylexjs/stylex';
-const styles = stylex.create({/*...*/});
+const styles = stylex.create({
+  container: {
+    //...
+    fontSize: '8rem',
+  }
+});
 
-<div
-  className={stylex(styles.container)}
->
+<div {...stylex.spread(styles.container)}>
   🎉
 </div>
 
@@ -49,7 +50,14 @@ export default function Home() {
             {/* <StylexAnimatedLogo /> */}
           </h1>
           <h2 className={stylex(styles.subtitle)}>
-            The <span className={stylex(styles.subtitleHighlight)}>Power</span>{' '}
+            The{' '}
+            <span
+              className={stylex(
+                styles.subtitleHighlight,
+                styles.highlightBlue,
+              )}>
+              Power
+            </span>{' '}
             of Inline Styles.
             <br />
             The Speed of{' '}
@@ -57,36 +65,7 @@ export default function Home() {
               Atomic
             </span>{' '}
             CSS.
-            {/* Stop thinking about{' '} */}
-            {/* <ZStack xstyle={styles.zstack}>
-              {[
-                <span className={stylex(styles.subtitleHighlight)}>
-                  Performance
-                </span>,
-                <span
-                  className={stylex(
-                    styles.subtitleHighlight,
-                    styles.highlightBlue,
-                  )}>
-                  Organization
-                </span>,
-                <span className={stylex(styles.subtitleHighlight)}>
-                  Writing Modes
-                </span>,
-                <span
-                  className={stylex(
-                    styles.subtitleHighlight,
-                    styles.highlightBlue,
-                  )}>
-                  Specificity Wars
-                </span>,
-              ]}
-            </ZStack> */}
-            {/* <br /> */}
           </h2>
-          {/* <h3 className={stylex(styles.h3)}>
-            By generating static CSS at compile-time.
-          </h3> */}
         </section>
         <section className={stylex(styles.getStarted)}>
           <h1 className={stylex(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
@@ -132,7 +111,7 @@ const styles = stylex.create({
       'radial-gradient(hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.15), var(--bg1) 70%)',
   },
   hero: {
-    height: 'calc((100vh - 72px))',
+    minHeight: 'calc((100vh - 72px))',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -157,7 +136,7 @@ const styles = stylex.create({
     fontWeight: '400',
     textAlign: 'center',
     color: 'var(--fg2)',
-    fontSize: 'clamp(1rem, 1rem + 3vw, 4rem)',
+    fontSize: 'clamp(1rem, 1rem + 2vw, 3rem)',
   },
   h3: {
     width: '100%',
@@ -169,9 +148,13 @@ const styles = stylex.create({
   subtitleHighlight: {
     color: 'var(--pink)',
     fontWeight: '700',
+    textShadow:
+      '0 0 10px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.5)',
   },
   highlightBlue: {
     color: 'var(--cyan)',
+    textShadow:
+      '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.5)',
   },
   sectionTitle: {
     fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',

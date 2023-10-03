@@ -5,11 +5,11 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Variable Overrides
+# Scoped Variable Overrides
 
 :::danger
 
-Theming APIs for defining and overrideing CSS variables are experimental and
+Theming APIs for defining and overriding CSS variables are experimental and
 subject to change.
 
 :::
@@ -20,7 +20,7 @@ overrides for them which can used to theme sub-trees in your application.
 ## Example
 
 <Tabs>
-<TabItem label="Declaring Varibles" value="var-export">
+<TabItem label="Declaring Variables" value="var-export">
 
 ```tsx title="tokens.stylex.js"
 import stylex from '@stylexjs/stylex';
@@ -41,7 +41,7 @@ export const colors = stylex.createVars({
 ```
 
 </TabItem>
-<TabItem label="Varibles Override" value="var-override" default>
+<TabItem label="Variable Override Provider" value="var-override" default>
 
 ```tsx title="themes.js"
 import stylex from '@stylexjs/stylex';
@@ -50,9 +50,9 @@ import {colors, spacing} from './tokens.styles';
 // A constant can be used to avoid repeating the media query
 const DARK = '@media (prefers-color-scheme: dark)';
 
-// Draclua theme
+// Dracula theme
 export const dracula = stylex.varsProvider(colors, {
-  primaryText: {default: 'purple', [DARK]: 'lighpurple'},
+  primaryText: {default: 'purple', [DARK]: 'lightpurple'},
   secondaryText: {default: 'pink', [DARK]: 'hotpink'},
   accent: 'red',
   background: {default: '#555', [DARK]: 'black'},
@@ -64,7 +64,7 @@ export const dracula = stylex.varsProvider(colors, {
 ```
 
 </TabItem>
-<TabItem label="Using Varibles" value="var-import">
+<TabItem label="Using Variables" value="var-import">
 
 ```tsx title="components/MyComponent.js"
 import stylex from '@stylexjs/stylex';
@@ -88,13 +88,24 @@ const styles = stylex.create({
 </TabItem>
 </Tabs>
 
-Unlike when you define variables, your can create these overrideProvider
-anywhere in your application.
+Unlike when you define variables, your can create these `varsProvider`s anywhere
+in your codebase. Same as `stylex.create()`.
 
 The `varsProvider` function takes two arguments, the first is the set of
 variables you want to override and the second is the set of overrides. The
-static types will ensure that you only override variables that already exist and
-that you override them all. (We are looking into partial overrides)
+static types will ensure that you only override variables that already exist
+_and_ that you override them all.
+
+:::tip
+
+It is not currently possible to override a subset of variables in a variable
+set. We made this decision to catch mistakes where a developer may accidentally
+forget to override a variable.
+
+We know this is not ideal and working on the right API to allow this while
+continuing to catch mistakes.
+
+:::
 
 The value returned from `stylex.varsProvider` is of the `StyleXStyle` type that
 can be used in a `stylex()` or `stylex.spread()` call to apply your overrides on

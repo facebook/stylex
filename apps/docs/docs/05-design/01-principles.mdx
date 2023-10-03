@@ -2,10 +2,14 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Core Principles
 
-To understand why StyleX exists why it makes the decisions it does, it's
-important to understand the core principles that guide it.
+To understand why StyleX exists why it makes the decisions it does, it may be
+helpful to understand the core principles that guide it. This may help guide
+your decision to decide if StyleX is the right solution for you.
 
 ## Zero-cost Abstractions
 
@@ -36,9 +40,26 @@ let a = stylex(styles.red);
 
 Compiles down to just:
 
+<Tabs>
+<TabItem label="JS Output" value="js-output">
+
 ```tsx
+import stylex from 'stylex';
+
 let a = 'x1e2nbdu';
 ```
+
+</TabItem>
+<TabItem label="CSS Output" value="css-output">
+
+```css
+.x1e2nbdu {
+  color: red;
+}
+```
+
+</TabItem>
+</Tabs>
 
 There is no runtime cost to this.
 
@@ -62,7 +83,9 @@ const styles = stylex.create({
   },
 });
 
-stylex(styles.foo, styles.bar, props.xstyle);
+function MyComponent({xstyle}) {
+  return <div className={stylex(styles.foo, styles.bar, xstyle)} />;
+}
 ```
 
 Compiles down to:
@@ -79,15 +102,16 @@ const styles = {
   },
 };
 
-stylex(styles.foo, styles.bar, props.xstyle);
+function MyComponent((xstyle)) {
+  return <div className={stylex(styles.foo, styles.bar, xstyle)} />;
+}
 ```
 
 This definitely a little more code, but the runtime cost is still minimal
-because how fast the `stylex()` and `stylex.spread()` functions are.
+because of how fast the `stylex()` and `stylex.spread()` functions are.
 
-Most other styling solutions don't even let you compose styles across file
-boundaries this way. The state of the art is to simply combine lists of
-classNames.
+Most other styling solutions don't enable composition of styles across file
+boundaries. The state of the art is to combine lists of classNames.
 
 ## Styles should be deterministic and predictable
 
@@ -98,15 +122,21 @@ selectors with different specificities from stepping on each other's toes.
 
 Most existing solutions to this problem rely on rules and conventions.
 
-BEM and OOCSS introduce naming conventions such that we don't run into many of
-these problems. But it puts the burden on the developer to follow the rules and
-it mostly just tells you not to merge styles at all. This can lead to bloated
-CSS.
+<details>
+  <summary>BEM and OOCSS Conventions</summary>
+  BEM and OOCSS introduce naming conventions such that we don't run into many of
+  these problems. But it puts the burden on the developer to follow the rules and
+  it mostly just tells you not to merge styles at all. This can lead to bloated CSS.
+</details>
 
-Atomic utility classNames like Tailwind CSS and Tachyons relies on a convention
-to ensure you don't apply conflicting classNames on the same element. This
-limits you to a small subset of CSS's expressive power to make your styles
-reliable.
+<details>
+  <summary>Utility Classes</summary>
+  Atomic utility classNames like Tailwind CSS and Tachyons relies on a convention
+  to ensure you don't apply conflicting classNames on the same element. The tooling
+  to enforce this rule relies on all your styles being present inline in the same
+  string. This makes it harder to refactor your styles into separate groups and merge
+  them. Within the same file or across file boundaries.
+</details>
 
 StyleX aims to improve on both the consistency and predictability of styles
 _and_ the expressive power available. We believe this is possible through
@@ -115,9 +145,9 @@ build-tools.
 StyleX aims to give you a completely predictable and deterministic styling
 system that works across files. And we aim to not only give you deterministic
 results when merging multiple selectors, but also when merging multiple
-shorthand and longhand properties. (`margin` vs `margin-top`).
+shorthand and longhand properties. (e.g. `margin` vs `margin-top`).
 
-"The last style applied always wins." is a core principle of StyleX.
+> "The last style applied always wins."
 
 ## Readability & Maintainabity over Terseness
 
@@ -128,8 +158,8 @@ quickly, but in our opinion, in the long run it makes the styles harder to read
 and maintain. It can also have a steeper learning curve up-front.
 
 StyleX makes the choice to use the same CSS property names that you're already
-used to. (We did decide to use camelCase instead of kebab-case as that makes
-them easier to type in JavaScript.) This makes it easier to learn and read.
+used to. _(We did decide to use camelCase instead of kebab-case as that makes
+them easier to type in JavaScript.)_ This makes it easier to learn and read.
 
 We also enforce that your styles are authored in objects separate from the HTML
 elements where you use them. We made this decision to help with the readabiliy
@@ -138,8 +168,14 @@ indicate their purpose. `styles.active` tells you much more about the purpose of
 a bunch of styles than what those styles are themselves.
 
 This principle leads to trade-offs where authoring styles may take more typing
-with StyleX than some other solutions, but your styles will be more readable and
-maintainable in the long run.
+with StyleX than some other solutions. You're also forced to name your style
+objects when styling new elements.
+
+We believe these costs are worth the improved readability over time. Giving each
+HTML element a semantic name can communicate a lot more than the styles
+themselves. This also makes testing easier as we can remove the styles entirely
+in a testing environment to remove the noise caused by constantly changing
+styles.
 
 ## Small API Surface Area
 
@@ -155,8 +191,8 @@ Other than the fact that `stylex.create` takes static values, you don't really
 need to learn anything else about how StyleX works. Things work the way you
 expect when dealing with JavaScript objects and arrays. No surprises.
 
-Other functions within the StyleX API should be simple utilities that feel
-simple and obvious.
+Other functions within the StyleX API should be simple utilities whose purpose
+should be self-evident by their names.
 
 - `stylex.firstThatWorks` let's you define a series of fallback values for a
   property
@@ -222,9 +258,10 @@ All of these patterns, while powerful, makes your styles fragile and harder to
 debug. You apply classNames on one element and affect a completely different
 element.
 
-Styles such as `color` will still be inherited, but that is the _only_ form of
-style-at-a-distance that StyleX allows. And in those cases too, the styles
-applied directly on an element always take precedence over inherited styles.
+Inheritable styles such as `color` will still be inherited, but that is the
+_only_ form of style-at-a-distance that StyleX allows. And in those cases too,
+the styles applied directly on an element always take precedence over inherited
+styles.
 
 This is often not the case when using complex selectors as the complex selectors
 usually have higher specificity than the simple classname selectors used for
@@ -236,23 +273,23 @@ patterns in CSS impossible:
 - e.g. It is currently impossible for a child element to have conditional styles
   when it's parent is hovered.
 
-We will find ways to make these patterns possible in the future, without
-breaking the core principle of style encapsulation.
+We already have some ideas to make these patterns possible in the future,
+without breaking the core principle of style encapsulation.
 
 ## Styles should be modular and composable
 
 NPM has made it extremely easy to share code across projects. However, sharing
 CSS has remained a challenge.
 
-When using third-party components, you have to either choose components with
-styles baked in that are hard or impossible to customize, or "headless"
-components that are completely unstyled.
+When using third-party components, you generally have to either choose
+components with styles baked in that are hard or impossible to customize, or
+"headless" components that are completely unstyled.
 
 The lack of a good system to predictably merge and compose styles across
 packages has also been an obstacle when sharing styles within packages.
 
 StyleX aims to create a system to easily and reliably share styles along with
-components withiin packages on NPM.
+components within packages on NPM.
 
 ## A single file is better than lots of lazily-loaded CSS
 
