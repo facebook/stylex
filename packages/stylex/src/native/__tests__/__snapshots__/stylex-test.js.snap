@@ -594,6 +594,17 @@ exports[`styles box-sizing: content-box: allDifferent 1`] = `
 }
 `;
 
+exports[`styles box-sizing: content-box: auto 1`] = `
+{
+  "style": {
+    "borderWidth": 2,
+    "height": 74,
+    "padding": 10,
+    "width": "auto",
+  },
+}
+`;
+
 exports[`styles box-sizing: content-box: height 1`] = `
 {
   "style": {
