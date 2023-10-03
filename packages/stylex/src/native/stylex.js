@@ -18,6 +18,7 @@ import { fixContentBox } from './fixContentBox';
 import { flattenStyle } from './flattenStyle';
 import { parseShadow } from './parseShadow';
 import { parseTimeValue } from './parseTimeValue';
+import { type SpreadOptions } from './SpreadOptions';
 
 const stylePropertyAllowlistSet = new Set<string>([
   'alignContent',
@@ -299,6 +300,32 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
 }
 
 /**
+ * Take a value which may be a CSS custom property or a length unit value and resolve it to a final value
+ * suitable for passing to React Native.
+ */
+function finalizeValue(unfinalizedValue: mixed, options: SpreadOptions): mixed {
+  let styleValue = unfinalizedValue;
+
+  // resolve custom property references
+  while (styleValue instanceof CSSCustomPropertyValue) {
+    const customProperties = options.customProperties || {};
+    const resolvedValue = customProperties[styleValue.name];
+    if (resolvedValue == null) {
+      errorMsg(`Unrecognized custom property "--${styleValue.name}"`);
+      return null;
+    }
+    // preprocess the value again in case the custom property value is a reference to another var or a length type unit
+    styleValue = preprocessPropertyValue(resolvedValue);
+  }
+
+  // resolve length units
+  if (styleValue instanceof CSSLengthUnitValue) {
+    styleValue = styleValue.resolvePixelValue(options);
+  }
+  return styleValue;
+}
+
+/**
  * The create method shim should do initial transforms like
  * renaming/expanding/validating properties, essentially all the steps
  * which can be done at initialization-time (could potentially be done at
@@ -334,27 +361,10 @@ const timeValuedProperties = [
 /**
  * The spread method shim
  */
-type SpreadOptions = {|
-  customProperties: {},
-  inheritedFontSize: ?number,
-  fontScale: number | void,
-  passthroughProperties: Array<string>,
-  viewportHeight: number,
-  viewportWidth: number,
-  writingDirection: 'ltr' | 'rtl',
-|};
 
 export function spread(
   style: ?{ [key: string]: mixed },
-  {
-    customProperties = {},
-    inheritedFontSize,
-    fontScale = 1,
-    passthroughProperties = [],
-    viewportHeight,
-    viewportWidth,
-    writingDirection,
-  }: SpreadOptions,
+  options: SpreadOptions,
 ): { [string]: { ... } } {
   /* eslint-disable prefer-const */
   let { lineClamp, ...flatStyle }: { [key: string]: mixed } =
@@ -362,6 +372,12 @@ export function spread(
   let prevStyle = { ...flatStyle };
   /* eslint-enable prefer-const */
 
+  const {
+    passthroughProperties = [],
+    viewportHeight,
+    viewportWidth,
+    writingDirection,
+  } = options;
   const nativeProps = {};
 
   for (const styleProp in flatStyle) {
@@ -381,25 +397,11 @@ export function spread(
         continue;
       }
     }
-    // resolve custom property references
-    if (styleValue instanceof CSSCustomPropertyValue) {
-      const resolvedValue = customProperties[styleValue.name];
-      if (resolvedValue == null) {
-        errorMsg(`Unrecognized custom property "--${styleValue.name}"`);
-        delete flatStyle[styleProp];
-        continue;
-      }
-      styleValue = resolvedValue;
-    }
-    // resolve length units
-    if (styleValue instanceof CSSLengthUnitValue) {
-      const resolvedValue = styleValue.resolvePixelValue(
-        viewportWidth,
-        viewportHeight,
-        fontScale,
-        inheritedFontSize,
-      );
-      styleValue = resolvedValue;
+    // resolve any outstanding custom properties or length unit values
+    styleValue = finalizeValue(styleValue, options);
+    if (styleValue == null) {
+      delete flatStyle[styleProp];
+      continue;
     }
 
     // Filter out any unexpected style property names so RN doesn't crash but give

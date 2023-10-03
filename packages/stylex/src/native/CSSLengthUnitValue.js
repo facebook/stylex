@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { SpreadOptions } from './SpreadOptions';
+
 const LENGTH_REGEX = /^([0-9]*[.]?[0-9]+)(em|px|rem|vh|vmax|vmin|vw)$/;
 
 type CSSLengthUnitType = 'em' | 'px' | 'rem' | 'vh' | 'vmax' | 'vmin' | 'vw';
@@ -32,12 +34,13 @@ export class CSSLengthUnitValue {
     this.unit = unit;
   }
 
-  resolvePixelValue(
-    viewportWidth: number,
-    viewportHeight: number,
-    fontScale: number,
-    inheritedFontSize: ?number,
-  ): number {
+  resolvePixelValue(options: SpreadOptions): number {
+    const {
+      viewportWidth,
+      viewportHeight,
+      fontScale = 1,
+      inheritedFontSize,
+    } = options;
     const unit = this.unit;
     const value = this.value;
     const valuePercent = value / 100;
