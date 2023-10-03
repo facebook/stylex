@@ -153,6 +153,13 @@ describe('styles', () => {
         width: 100,
         height: 100,
       },
+      auto: {
+        boxSizing: 'content-box',
+        borderWidth: 2,
+        padding: 10,
+        height: 50,
+        width: 'auto',
+      },
     });
     expect(stylex.spread(styles.width, mockOptions)).toMatchSnapshot('width');
     expect(stylex.spread(styles.height, mockOptions)).toMatchSnapshot('height');
@@ -172,6 +179,7 @@ describe('styles', () => {
     expect(stylex.spread(styles.allDifferent, mockOptions)).toMatchSnapshot(
       'allDifferent',
     );
+    expect(stylex.spread(styles.auto, mockOptions)).toMatchSnapshot('auto');
   });
 
   test('direction', () => {

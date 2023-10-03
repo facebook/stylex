@@ -86,6 +86,10 @@ export function fixContentBox(flatStyle: FlatStyle): FlatStyle {
         nextStyle[styleProp] = null;
         continue;
       }
+      if (styleValue === 'auto') {
+        nextStyle[styleProp] = styleValue;
+        continue;
+      }
       if (typeof styleValue !== 'number') {
         warnMsg(
           `"boxSizing:'content-box'" does not support value "${String(
