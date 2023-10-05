@@ -14,7 +14,11 @@ import type {
 } from '../stylex-valid-styles';
 import type { Expression, Pattern, Property } from 'estree';
 
-export default function makeUnionRule(...rules: RuleCheck[]): RuleCheck {
+import makeLiteralRule from './makeLiteralRule';
+
+export default function makeUnionRule(
+  ...rules: $ReadOnlyArray<string | RuleCheck>
+): RuleCheck {
   return (
     node: Expression | Pattern,
     variables?: Variables,
@@ -30,7 +34,9 @@ export default function makeUnionRule(...rules: RuleCheck[]): RuleCheck {
       isBorder = true;
     }
     const failedRules = [];
-    for (const rule of rules) {
+    for (const _rule of rules) {
+      const rule = typeof _rule === 'string' ? makeLiteralRule(_rule) : _rule;
+
       const check = rule(node, variables, prop);
       if (check === undefined) {
         // passes, that means we pass.

@@ -12,15 +12,13 @@ jest.disableAutomock();
 const { RuleTester: ESLintTester } = require('eslint');
 const rule = require('../src/stylex-valid-styles');
 
-ESLintTester.setDefaultConfig({
+const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
   },
 });
-
-const eslintTester = new ESLintTester();
 
 eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
@@ -125,34 +123,41 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     // test for nested styles
-    `
-      import stylex from 'stylex';
-      const TRANSPARENT = 0;
-      const OPAQUE = 1;
-      const styles = stylex.create({
-        default: {
-          opacity: TRANSPARENT,
-          ':hover': {
-            opacity: OPAQUE,
-          },
-          ':focus-visible': {
-            borderWidth: 1,
-            borderStyle: 'solid',
-            borderColor: 'blue',
+    {
+      code: `
+        import stylex from 'stylex';
+        const TRANSPARENT = 0;
+        const OPAQUE = 1;
+        const styles = stylex.create({
+          default: {
+            opacity: TRANSPARENT,
+            ':hover': {
+              opacity: OPAQUE,
+            },
+            ':focus-visible': {
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderColor: 'blue',
+            }
           }
-        }
-      });
-    `,
-    `
-     import stylex from 'stylex';
-     const styles = stylex.create({
-       default: {
-         width: '50%',
-         '@media (max-width: 600px)': {
-           width: '100%',
-         }
-       }
-     });`,
+        });
+      `,
+      options: [{ allowOuterPsuedoAndMedia: true }],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            width: '50%',
+            '@media (max-width: 600px)': {
+              width: '100%',
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPsuedoAndMedia: true }],
+    },
     // test for positive numbers
     'import stylex from "stylex"; stylex.create({default: {marginStart: 5}});',
     // test for literals as namespaces
@@ -513,6 +518,7 @@ revert`,
     },
     {
       code: "import stylex from 'stylex'; stylex.create({default: {':hover': {textAlin: 'left'}}});",
+      options: [{ allowOuterPsuedoAndMedia: true }],
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -521,6 +527,7 @@ revert`,
     },
     {
       code: "import stylex from 'stylex'; stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
+      options: [{ allowOuterPsuedoAndMedia: true }],
       errors: [
         {
           message: `textAlign value must be one of:
@@ -556,6 +563,7 @@ revert`,
           }
         });
       `,
+      options: [{ allowOuterPsuedoAndMedia: true }],
       errors: [
         {
           message:
@@ -576,6 +584,7 @@ revert`,
           }
         });
       `,
+      options: [{ allowOuterPsuedoAndMedia: true }],
       errors: [
         {
           message: 'You cannot nest styles more than one level deep',
@@ -990,6 +999,36 @@ revert`,
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
               output: `
         import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: 4,
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'custom-import';
+        const styles = stylex.create({
+          default: {
+            border: 4,
+          }
+        });
+      `,
+      options: [{ validImports: ['custom-import'] }],
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' set to a number with 'borderWidth' instead?",
+              output: `
+        import stylex from 'custom-import';
         const styles = stylex.create({
           default: {
             borderWidth: 4,

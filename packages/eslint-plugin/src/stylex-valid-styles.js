@@ -27,6 +27,7 @@ import type {
   Statement,
   VariableDeclaration,
   VariableDeclarator,
+  PrivateIdentifier,
 } from 'estree';
 /*:: import { Rule } from 'eslint'; */
 import isCSSVariable from './rules/isCSSVariable';
@@ -1546,13 +1547,20 @@ const SupportedVendorSpecificCSSProperties = {
 };
 
 /* eslint-disable object-shorthand */
-const CSSProperties: { [key: string]: RuleCheck } = {
+const CSSProperties = {
   ...SupportedVendorSpecificCSSProperties,
+  accentColor: color,
+  alignTracks: isString,
   alignContent: alignContent,
   alignItems: alignItems,
   alignSelf: alignSelf,
   alignmentBaseline: alignmentBaseline,
   all: all,
+  animationComposition: makeUnionRule(
+    makeLiteralRule('replace'),
+    makeLiteralRule('add'),
+    makeLiteralRule('accumulate'),
+  ),
   animationDelay: animationDelay,
   animationDirection: animationDirection,
   animationDuration: animationDuration,
@@ -1561,7 +1569,9 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   animationName: animationName,
   animationPlayState: animationPlayState,
   animationTimingFunction: animationTimingFunction,
+  animationTimeline: isString,
   appearance: appearance,
+  aspectRatio: isNumber,
   backdropFilter: backdropFilter,
   backfaceVisibility: backfaceVisibility,
   backgroundAttachment: backgroundAttachment,
@@ -1579,7 +1589,9 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   behavior: behavior,
 
   borderBottomEndRadius: borderBottomRightRadius,
+  borderEndEndRadius: borderBottomRightRadius,
   borderBottomLeftRadius: borderBottomRightRadius,
+  borderEndStartRadius: borderBottomRightRadius,
   borderBottomRightRadius: borderBottomRightRadius,
   borderBottomStartRadius: borderBottomLeftRadius,
 
@@ -1618,6 +1630,9 @@ const CSSProperties: { [key: string]: RuleCheck } = {
       '  - `borderInlineEndColor` instead',
     ].join('\n'),
   ),
+  borderInlineColor: borderLeftColor,
+  borderInlineStyle: borderLeftStyle,
+  borderInlineWidth: borderLeftWidth,
   borderInlineEndColor: borderLeftColor,
   borderInlineEndStyle: borderLeftStyle,
   borderInlineEndWidth: borderLeftWidth,
@@ -1640,7 +1655,9 @@ const CSSProperties: { [key: string]: RuleCheck } = {
       '  - `borderBlockEndColor` instead',
     ].join('\n'),
   ),
-
+  borderBlockColor: borderLeftColor,
+  borderBlockStyle: borderLeftStyle,
+  borderBlockWidth: borderLeftWidth,
   borderBlockEndColor: borderLeftColor,
   borderBlockEndStyle: borderLeftStyle,
   borderBlockEndWidth: borderLeftWidth,
@@ -1684,11 +1701,14 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   breakBefore: breakBefore,
   breakInside: breakInside,
   captionSide: captionSide,
+  caretColor: color,
   clear: clear,
   clip: clip,
   clipPath: clipPath,
   clipRule: clipRule,
   color: color,
+  colorAdjust: makeUnionRule('economy', 'exact'),
+  colorScheme: makeUnionRule('light', 'dark', 'light dark'),
   columnCount: columnCount,
   columnFill: columnFill,
   columnGap: columnGap,
@@ -1700,9 +1720,13 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   columnWidth: columnWidth,
   columns: columns,
   contain: contain,
+  containerType: makeUnionRule('normal', 'size', 'inline-size'),
+  containerName: isString,
   content: content,
+  contentVisibility: makeUnionRule('visible', 'hidden', 'auto'),
   counterIncrement: counterIncrement,
   counterReset: counterReset,
+  counterSet: isString,
   cue: cue,
   cueAfter: cueAfter,
   cueBefore: cueBefore,
@@ -1735,8 +1759,11 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   fontFeatureSettings: fontFeatureSettings,
   fontKerning: fontKerning,
   fontLanguageOverride: fontLanguageOverride,
+  fontOpticalSizing: makeUnionRule('auto', 'none'),
+  fontPalette: isString,
   fontSize: fontSize,
   fontSizeAdjust: fontSizeAdjust,
+  fontSmooth: makeUnionRule('auto', 'never', 'always', lengthPercentage),
   fontStretch: fontStretch,
   fontStyle: fontStyle,
   fontSynthesis: fontSynthesis,
@@ -1744,10 +1771,13 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   fontVariantAlternates: fontVariantAlternates,
   fontVariantCaps: fontVariantCaps,
   fontVariantEastAsian: fontVariantEastAsian,
+  fontVariantEmoji: makeUnionRule('auto', 'text', 'emoji', 'unicode'),
   fontVariantLigatures: fontVariantLigatures,
   fontVariantNumeric: fontVariantNumeric,
   fontVariantPosition: fontVariantPosition,
+  fontVariationSettings: isString,
   fontWeight: fontWeight,
+  forcedColorAdjust: makeUnionRule('auto', 'none'),
   gap: gap,
   glyphOrientationHorizontal: glyphOrientationHorizontal,
   glyphOrientationVertical: glyphOrientationVertical,
@@ -1881,6 +1911,8 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   outlineWidth: showError(
     "'outlineWidth' is not supported yet. Please use 'outline' instead",
   ),
+  blockOverflow: overflow, // TODO - Add support to Babel Plugin
+  inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
   overflowAnchor: overflowAnchor,
   overflowClipBox: overflowClipBox,
@@ -1981,6 +2013,7 @@ const CSSProperties: { [key: string]: RuleCheck } = {
   textSizeAdjust: textSizeAdjust,
   textTransform: textTransform,
   textUnderlinePosition: textUnderlinePosition,
+  textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty'),
 
   touchAction: touchAction,
   transform: transform,
@@ -2032,7 +2065,32 @@ const CSSPropertyReplacements: { [key: string]: RuleCheck | void } = {
   borderLeft: border('Left'),
 };
 
-const keyForNestedObject = makeUnionRule(
+const pseudoElements = makeUnionRule(
+  makeLiteralRule('::before'),
+  makeLiteralRule('::after'),
+  makeLiteralRule('::first-letter'),
+  makeLiteralRule('::first-line'),
+  makeLiteralRule('::selection'),
+  makeLiteralRule('::backdrop'),
+  makeLiteralRule('::marker'),
+  makeLiteralRule('::placeholder'),
+  makeLiteralRule('::spelling-error'),
+  makeLiteralRule('::grammar-error'),
+  makeLiteralRule('::cue'),
+  makeLiteralRule('::slotted'),
+  makeLiteralRule('::part'),
+  makeLiteralRule('::thumb'),
+  // For styling input[type=number]
+  makeLiteralRule('::-webkit-inner-spin-button'),
+  makeLiteralRule('::-webkit-outer-spin-button'),
+  // For styling input[type=search]
+  makeLiteralRule('::-webkit-search-decoration'),
+  makeLiteralRule('::-webkit-search-cancel-button'),
+  makeLiteralRule('::-webkit-search-results-button'),
+  makeLiteralRule('::-webkit-search-results-decoration'),
+);
+
+const pseudoClassesAndAtRules = makeUnionRule(
   makeLiteralRule(':first-child'),
   makeLiteralRule(':last-child'),
   makeLiteralRule(':only-child'),
@@ -2044,19 +2102,12 @@ const keyForNestedObject = makeUnionRule(
   makeLiteralRule(':active'),
   makeLiteralRule(':visited'),
   makeLiteralRule(':disabled'),
-  makeLiteralRule('::placeholder'),
-  makeLiteralRule('::thumb'),
-  // For styling input[type=number]
-  makeLiteralRule('::-webkit-inner-spin-button'),
-  makeLiteralRule('::-webkit-outer-spin-button'),
-  // For styling input[type=search]
-  makeLiteralRule('::-webkit-search-decoration'),
-  makeLiteralRule('::-webkit-search-cancel-button'),
-  makeLiteralRule('::-webkit-search-results-button'),
-  makeLiteralRule('::-webkit-search-results-decoration'),
   makeRegExRule(/^@media/, 'a media query'),
+  makeRegExRule(/^@container/, 'a media query'),
   makeRegExRule(/^@supports/, 'a supports query'),
 );
+
+const allModifiers = makeUnionRule(pseudoElements, pseudoClassesAndAtRules);
 
 // Maybe add this later.
 // const pseudoAllowlist = new Set([]);
@@ -2065,12 +2116,63 @@ const stylexValidStyles = {
   meta: {
     type: 'problem',
     hasSuggestions: true,
+    docs: {
+      descriptions: 'Enforce that you create valid stylex styles',
+      category: 'Possible Errors',
+      recommended: true,
+    },
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          validImports: {
+            type: 'array',
+            items: { type: 'string' },
+          },
+          allowOuterPsuedoAndMedia: {
+            type: 'boolean',
+            default: false,
+          },
+          banPropsForLegacy: {
+            type: 'boolean',
+            default: false,
+          },
+          propLimits: {
+            type: 'object',
+            additionalProperties: {
+              type: 'object',
+              properties: {
+                limit: {
+                  oneOf: [
+                    { type: 'null' },
+                    { type: 'string' },
+                    { type: 'number' },
+                    {
+                      type: 'array',
+                      items: {
+                        oneOf: [{ type: 'string' }, { type: 'number' }],
+                      },
+                    },
+                  ],
+                },
+                reason: { type: 'string' },
+              },
+            },
+          },
+        },
+      },
+    ],
   },
   create(context: Rule.RuleContext): { ... } {
     const variables = new Map<string, Expression>();
 
-    // TODO: Make this configurable
-    const importsToLookFor = ['stylex', '@stylexjs/stylex'];
+    const {
+      validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      allowOuterPsuedoAndMedia,
+      // banPropsForLegacy,
+      // propLimits,
+    } = context.options[0] || {};
+
     const stylexCreateVarsFileExtension = '.stylex';
     const stylexCreateVarsTokenImports = new Set<string>();
     const styleXDefaultImports = new Set<string>();
@@ -2097,7 +2199,11 @@ const stylexValidStyles = {
       );
     }
 
-    function checkStyleProperty(style: Node, level: number = 0): void {
+    function checkStyleProperty(
+      style: Node,
+      level: number,
+      propName: null | string,
+    ): void {
       // currently ignoring preset spreads.
       if (style.type === 'Property') {
         // const styleAsProperty: Property = style;
@@ -2105,7 +2211,7 @@ const stylexValidStyles = {
           const styleValue: ObjectExpression = style.value;
           // TODO: Remove this soon
           // But we want to make sure that the same "condition" isn't repeated
-          if (level > 0) {
+          if (level > 0 && propName == null) {
             return context.report(
               ({
                 node: (style.value: Node),
@@ -2114,56 +2220,106 @@ const stylexValidStyles = {
               }: Rule.ReportDescriptor),
             );
           }
-          if (style.key.type !== 'Literal') {
+          const key = style.key;
+          const keyName =
+            key.type === 'Literal'
+              ? key.value
+              : key.type === 'Identifier' && !style.computed
+              ? key.name
+              : null;
+          if (
+            typeof keyName !== 'string' ||
+            (key.type !== 'Literal' && key.type !== 'Identifier')
+          ) {
             return context.report(
               ({
-                node: style.key,
-                loc: style.key.loc,
+                node: key,
+                loc: key.loc,
                 message: 'Keys must be strings',
               }: Rule.ReportDescriptor),
             );
           }
-          const ruleCheck = keyForNestedObject(style.key, new Map());
-          if (ruleCheck !== undefined) {
-            return context.report(
-              ({
-                node: style.value,
-                loc: style.value.loc,
-                message:
-                  'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries',
-              }: $ReadOnly<Rule.ReportDescriptor>),
-            );
+          if (keyName.startsWith('@') || keyName.startsWith(':')) {
+            if (level === 0) {
+              const ruleCheck = (
+                allowOuterPsuedoAndMedia ? allModifiers : pseudoElements
+              )(key, variables);
+
+              if (ruleCheck !== undefined) {
+                return context.report(
+                  ({
+                    node: style.value,
+                    loc: style.value.loc,
+                    message: allowOuterPsuedoAndMedia
+                      ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
+                      : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
+                  }: $ReadOnly<Rule.ReportDescriptor>),
+                );
+              }
+            } else {
+              const ruleCheck = pseudoClassesAndAtRules(key, variables);
+
+              if (ruleCheck !== undefined) {
+                return context.report(
+                  ({
+                    node: style.value,
+                    loc: style.value.loc,
+                    message:
+                      'Invalid Pseudo class or At Rule used for conditional style value',
+                  }: $ReadOnly<Rule.ReportDescriptor>),
+                );
+              }
+            }
           }
+
           return styleValue.properties.forEach((prop) =>
-            checkStyleProperty(prop, level + 1),
+            checkStyleProperty(
+              prop,
+              level + 1,
+              propName ??
+                (keyName.startsWith('@') ||
+                keyName.startsWith(':') ||
+                keyName === 'default'
+                  ? null
+                  : keyName),
+            ),
           );
         }
+        let styleKey: Expression | PrivateIdentifier = style.key;
         if (style.computed && style.key.type !== 'Literal') {
-          return context.report(
-            ({
-              node: style.key,
-              loc: style.key.loc,
-              message: 'Computed keys are not allowed within stylex.',
-            }: Rule.ReportDescriptor),
-          );
+          if (style.key.type === 'Identifier') {
+            const varValue = variables.get(style.key.name);
+            if (varValue != null) {
+              styleKey = varValue;
+            } else {
+              return context.report(
+                ({
+                  node: style.key,
+                  loc: style.key.loc,
+                  message: 'Computed key cannot be resolved.',
+                }: Rule.ReportDescriptor),
+              );
+            }
+          }
         }
-        if (style.key.type !== 'Literal' && style.key.type !== 'Identifier') {
+        if (styleKey.type !== 'Literal' && styleKey.type !== 'Identifier') {
           return context.report(
             ({
-              node: style.key,
-              loc: style.key.loc,
+              node: styleKey,
+              loc: styleKey.loc,
               message:
                 'All keys in a stylex object must be static literal values.',
             }: Rule.ReportDescriptor),
           );
         }
         const key =
-          style.key.type === 'Identifier' ? style.key.name : style.key.value;
+          propName ??
+          (styleKey.type === 'Identifier' ? styleKey.name : styleKey.value);
         if (typeof key !== 'string') {
           return context.report(
             ({
-              node: style.key,
-              loc: style.key.loc,
+              node: styleKey,
+              loc: styleKey.loc,
               message:
                 'All keys in a stylex object must be static literal string values.',
             }: Rule.ReportDescriptor),
@@ -2261,6 +2417,12 @@ const stylexValidStyles = {
       Program(node: Program) {
         // Keep track of all the top-level local variable declarations
         // This is because stylex allows you to use local constants in your styles
+
+        // const body = node.body;
+        // for (let statement of body) {
+
+        // }
+
         const vars = node.body
           .reduce(
             (
@@ -2402,25 +2564,27 @@ const stylexValidStyles = {
           );
         }
 
-        namespaces.properties.forEach((property) => {
-          if (property.type !== 'Property') {
+        namespaces.properties.forEach((namespace) => {
+          if (namespace.type !== 'Property') {
             return context.report({
-              node: property,
-              loc: property.loc,
+              node: namespace,
+              loc: namespace.loc,
               message: 'Styles cannot be spread objects',
             });
           }
 
-          if (property.value.type !== 'ObjectExpression') {
+          if (namespace.value.type !== 'ObjectExpression') {
             return context.report({
-              node: property.value,
-              loc: property.value.loc,
+              node: namespace.value,
+              loc: namespace.value.loc,
               message: 'Styles must be represented as javascript objects',
             });
           }
 
-          const styles = property.value;
-          styles.properties.forEach((prop) => checkStyleProperty(prop));
+          const styles = namespace.value;
+          styles.properties.forEach((prop) =>
+            checkStyleProperty(prop, 0, null),
+          );
         });
       },
       'Program:exit'() {
