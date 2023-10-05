@@ -9,7 +9,7 @@
 
 import {
   CSSCustomPropertyValue,
-  isCustomPropertyValue,
+  createCSSCustomPropertyValue,
 } from './CSSCustomPropertyValue';
 import { CSSLengthUnitValue } from './CSSLengthUnitValue';
 import { CSSMediaQuery } from './CSSMediaQuery';
@@ -208,8 +208,9 @@ function isReactNativeStyleValue(propValue: mixed): boolean {
 
 function preprocessPropertyValue(propValue: mixed): mixed {
   if (typeof propValue === 'string') {
-    if (isCustomPropertyValue(propValue)) {
-      return new CSSCustomPropertyValue(propValue);
+    const customPropValue = createCSSCustomPropertyValue(propValue);
+    if (customPropValue != null) {
+      return customPropValue;
     }
 
     const maybeLengthUnitValue = CSSLengthUnitValue.parse(propValue);
@@ -311,7 +312,8 @@ function finalizeValue(unfinalizedValue: mixed, options: SpreadOptions): mixed {
   // resolve custom property references
   while (styleValue instanceof CSSCustomPropertyValue) {
     const customProperties = options.customProperties || {};
-    const resolvedValue = customProperties[styleValue.name];
+    const resolvedValue =
+      customProperties[styleValue.name] ?? styleValue.defaultValue;
     if (resolvedValue == null) {
       errorMsg(`Unrecognized custom property "--${styleValue.name}"`);
       return null;

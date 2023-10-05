@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`stylex CSSCustomProperty value test falls back to a default value with spaces 1`] = `
+{
+  "style": {
+    "shadowColor": "0px 0px 0px black",
+    "shadowOffset": {
+      "height": undefined,
+      "width": undefined,
+    },
+    "shadowOpacity": 1,
+  },
+}
+`;
+
+exports[`stylex CSSCustomProperty value test parses a variable with a default value with spaces 1`] = `
+{
+  "style": {
+    "shadowColor": "5px 5px 5px black",
+    "shadowOffset": {
+      "height": undefined,
+      "width": undefined,
+    },
+    "shadowOpacity": 1,
+  },
+}
+`;
+
+exports[`stylex CSSCustomProperty value test parses and falls back to a default value containing spaces and embedded variables 1`] = `
+{
+  "style": {
+    "shadowColor": "var(--boxShadowVarNotFound",
+    "shadowOffset": {
+      "height": undefined,
+      "width": undefined,
+    },
+    "shadowOpacity": 1,
+  },
+}
+`;
+
+exports[`stylex CSSCustomProperty value test parses and falls back to default value containing a variable 1`] = `
+{
+  "style": {
+    "color": "blue",
+  },
+}
+`;
