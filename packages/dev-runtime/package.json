@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/dev-runtime",
-  "version": "0.2.0-beta.20",
+  "version": "0.2.0-beta.21",
   "description": "A development-only package that makes StyleX work entirely at runtime",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebook/stylex",
@@ -13,7 +13,7 @@
     "packages/*"
   ],
   "dependencies": {
-    "@stylexjs/shared": "0.2.0-beta.20"
+    "@stylexjs/shared": "0.2.0-beta.21"
   },
   "jest": {
     "verbose": true,
