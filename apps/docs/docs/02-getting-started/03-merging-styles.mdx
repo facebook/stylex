@@ -32,9 +32,10 @@ const styles = stylex.create({
 You can use the result of merging both style objects like so:
 
 ```tsx
-<div className={stylex(styles.base, styles.highlighted)} />
-// OR
 <div {...stylex.spread([styles.base, styles.highlighted])} />
+
+// Legacy API
+<div className={stylex(styles.base, styles.highlighted)} />
 ```
 
 :::info
@@ -64,12 +65,12 @@ The `stylex.spread` function similarly, but it returns an object conataining
 
 :::
 
-Here, it is important to note that the last argument to the `stylex` function
-will always win. The order in which the styles are defined does not matter, only
-the order in which they are passed to the `stylex` function. In the example
-above, the resolved `color` of the div will be "rebeccapurple" simply becomes
-`styles.highlighted` comes after `styles.base` in the argument list of the
-`stylex` function.
+Here, it is important to note that the last styles in the list of styles passed
+to the `stylex.spread` function will always win. Styles are always resolved by
+_application order_.
+
+When in doubt, think about `Object.assign` or inline styles in HTML. The last
+styles applied always wins.
 
 ## Conditional styles
 
@@ -79,18 +80,18 @@ conditionally.
 
 ```tsx
 <div
-  className={stylex(
+  {...stylex.spread([
     styles.base,
     props.isHighlighted && styles.highlighted,
     isActive ? styles.active : styles.inactive,
-  )}
+  ])}
 />
 ```
 
 :::info
 
-It is recommended that you inline the logic to apply your styles directly with
-the `stylex()` call for readability.
+It is recommended that you inline the conditional logic to apply your styles
+directly with the `stylex.spread()` calls for readability.
 
 :::
 
@@ -100,11 +101,10 @@ operator. Remember that any pattern that would work while merging objects with
 
 ### Variants
 
-A common pattern offerred by various other styling solutions is often called
-"variants". In this pattern you apply one of a list of possible styles based on
-the value of the prop named `variant`.
+A common styling pattern called "variants" lets you apply one of a list of
+possible styles based on the value of the prop named `variant`.
 
-The existing patterns presented so far can be used to implement variants.
+StyleX supports this pattern no additional API.
 
 First to define your variant styles, you can define a set of style with
 `Style Names` that match your variant names.
@@ -133,6 +133,7 @@ const colorVariants = stylex.create({
       ':hover': 'lightgray',
     },
   },
+  // ... more variants here ...
 });
 ```
 
@@ -140,7 +141,22 @@ And then you apply the styles by using your variant prop as a key on the
 `colorVariants` object.
 
 <Tabs>
-  <TabItem value="stylex" label="stylex" default>
+  
+  <TabItem value="spread" label="stylex.spread">
+
+```tsx
+function Button({color, ...props}) {
+  return (
+    <button
+      {...props}
+      {...stylex.spread([styles.base, colorVariants[color]])}
+    />
+  );
+}
+```
+
+  </TabItem>
+  <TabItem value="stylex" label="stylex (legacy)" default>
 
 ```tsx
 function Button({color, ...props}) {
@@ -151,15 +167,7 @@ function Button({color, ...props}) {
 ```
 
   </TabItem>
-  <TabItem value="spread" label="stylex.spread">
-
-```tsx
-function Button({color, ...props}) {
-  return (
-    <button {...props} {...stylex.spread(styles.base, colorVariants[color])} />
-  );
-}
-```
-
-  </TabItem>
 </Tabs>
+
+As always, we try to not introduce any new concepts or APIs when existing object
+patterns can be used.

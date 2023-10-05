@@ -16,7 +16,7 @@ import CodeBlock from '@site/components/CodeBlock';
 const STEP_1 = `import stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
-  container: {
+  hello: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -28,13 +28,13 @@ const styles = stylex.create({
 
 const STEP_2 = `import stylex from '@stylexjs/stylex';
 const styles = stylex.create({
-  container: {
+  hello: {
     //...
     fontSize: '8rem',
   }
 });
 
-<div {...stylex.spread(styles.container)}>
+<div {...stylex.spread([styles.hello])}>
   🎉
 </div>
 

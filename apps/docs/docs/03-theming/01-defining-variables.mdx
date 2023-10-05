@@ -22,8 +22,10 @@ reliable, predictable and type-safe way.
 
 The design of the theming APIs in StyleX is directly inspired by React's Context
 APIs. Similar to React's Context, CSS variables are defined globally and should
-generally have default values. But they can also have overridden values for
-particular sub-trees within your UI.
+generally have default values.
+
+Once the variables have been created, you can create "provider" to overridde the
+values for particular sub-trees within your UI.
 
 ## Defining Variables
 
@@ -163,3 +165,14 @@ export const colors = {
 #### 3. No other exports are allowed in the file
 
 For now, `.stylex.js` files are exclusively for defining CSS variables.
+
+:::info
+
+StyleX _could_ work without the need for these strict rules. However, by
+enforcing these rules we can build a build pipeline with strict file boundaries
+where we can confidently cache the results of the compilation process on a
+per-file basis.
+
+With better and faster tooling, we remove these restrictions in the future.
+
+:::

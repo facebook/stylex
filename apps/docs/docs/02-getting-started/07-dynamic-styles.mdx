@@ -2,20 +2,21 @@
 sidebar_position: 6
 ---
 
-# Dynamic Styles (Coming Soon)
+# Dynamic Styles
 
 :::warning
 
-This feature has been implemented on an experimental branch, but is not yet
-available yet.
+This feature is experimental and there may be bugs and breaking changes in the
+future.
 
 :::
 
 :::warning
 
-Dynamic styles are an advanced feature and should be used sparingly. When you
-use them ask if you absolutely cannot know the value or a list of possible
-values at build-time.
+Dynamic styles are an advanced feature and should be used sparingly. For the
+majority of use-cases,
+[conditional styles](/docs/getting-started/defining-and-using-styles/) should be
+sufficient.
 
 :::
 
@@ -24,21 +25,17 @@ those styles ahead of time as well. But sometimes you just don't know what you
 will need until runtime. For example, you may be styling a bar chart where the
 bar changes colors based on the data.
 
-In most other styling solutions, you need to resort to using inline styles for
-something like this. This comes with some big downsides, including:
+Usually, you need to resort to using inline styles for something like this. This
+comes with some big downsides, including:
 
-- Inability to use pseudo-classes like `:hover` and `:focus`
-- Inability to use media queries
+- Inability to use pseudo-classes or media queries
+- Inline Styles have a much higher specificity and overriding them with static
+  styles can be problematic.
 
-In the context of StyleX, using inline styles directly would also break the
-predictability that you get when merging styles.
+StyleX provides a way to define styles that can have dynamic values resolved at
+runtime by using functions instead of objects to define styles.
 
-CSS variables are a great solution to all of these problems. Instead of setting
-arbitrary styles as inline styles, you can set CSS variables and then use those
-variables in your styles.
-
-This is exactly what StyleX does _under the hood_. All _you_ have to do is use a
-function instead of an object when defining your styles.
+````tsx
 
 ```tsx
 import stylex from '@stylexjs/stylex';
@@ -56,7 +53,10 @@ const g = Math.floor(Math.random() * 255);
 const b = Math.floor(Math.random() * 255);
 
 <div {...stylex.spread(styles.base(r, g, b))} />;
-```
+````
+
+**NOTE**: The function body _must_ be an object literal. You cannot use a
+function body with multiple statements.
 
 :::warning
 
@@ -65,3 +65,14 @@ Inline styles and you _must_ use the `stylex.spread()` (and not `stylex()`) to
 apply them.
 
 :::
+
+## How it works
+
+Behind the scenes, StyleX generates a combination of classNames and inline
+styles. However, to maintain the same guarantees as static styles, the only
+inline styles that are generated are to define values of inline styles.
+
+This enables you to use all the same features of StyleX, including pseudo
+classes and media queries.
+
+Thanks to [Linaria](https://linaria.dev/) for pioneering this approach.

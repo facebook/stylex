@@ -5,7 +5,7 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Scoped Variable Overrides
+# Variable Theme Providers
 
 :::danger
 
@@ -14,8 +14,13 @@ subject to change.
 
 :::
 
-Once you have defined your variables in a `.stylex.js` file you can also create
-overrides for them which can used to theme sub-trees in your application.
+Once you have defined your variables in a `.stylex.js` file, you can create
+"providers" for them using the `stylex.varsProvider` function. The providers
+created are the same type as the `StyleXStyle` type that is returned from
+`stylex.create` and can be be used on any UI sub-tree in your app.
+
+You can only create a provider for a set of variables that have already been
+defined using the `stylex.createVars` function. Similar to React's Context API.
 
 ## Example
 

@@ -40,9 +40,10 @@ Once styles have been defined, they can be converted to classNames using the
 `stylex` function and used as the `className` prop of any HTML element.
 
 ```tsx
-<div className={stylex(styles.base)} />
-// OR
 <div {...stylex.spread(styles.base)} />
+
+// Legacy API (Doesn't support Dynamic Styles)
+<div className={stylex(styles.base)} />
 ```
 
 While this is the simplest case, it is trivial to merge multiple style objects,
@@ -68,7 +69,7 @@ may only contain:
 
 More specifically, the following are **not** allowed:
 
-- Function calls
+- Function calls _(we're working on limited support for functions)_
 - Values imported from other modules
   - (except when it comes to CSS Variables created using StyleX in a
     `.stylex.js` file)

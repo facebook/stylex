@@ -1,0 +1,62 @@
+## Comparison with other tools
+
+:::warning
+
+The data in table may be wrong, outdated or both. This is a work in progress and
+we will fill it with valid data over time. Please don't take this as a judgement
+of other styling solutions.
+
+:::
+
+export const LinariaLink = () => (
+  <a
+    href="https://github.com/callstack/linaria/blob/master/docs/ATOMIC_CSS.md"
+    target="_blank">
+    Opt-in
+  </a>
+);
+
+export const SprinklesLink = () => (
+  <a
+    href="https://vanilla-extract.style/documentation/packages/sprinkles/"
+    target="_blank">
+    Opt-in
+  </a>
+);
+
+| Package           | Static | Atomic            | Style Format    | Colocation | Composition       | Dynamic Styles    | Typed |
+| ----------------- | ------ | ----------------- | --------------- | ---------- | ----------------- | ----------------- | ----- |
+| StyleX            | ✅     | ✅                | Objects         | ✅         | ✅                | ✅                | ✅    |
+| Tailwind          | ✅     | ✅                | Classes         | ✅\*       | ❌                | ❌                | ❌    |
+| PandaCSS          | ✅     | ✅                | Classes/Objects | ✅         | ✅                | ❔                | ❔    |
+| Tamagui           | ✅     | ✅                | Objects/Props   | ✅         | ✅                | ❔                | ❔    |
+| Vanilla Extract   | ✅     | <SprinklesLink /> | Either          | ❌         | <SprinklesLink /> | <SprinklesLink /> | ✅    |
+| CSS Modules       | ✅     | ❌                | CSS Files       | ❌         | ❌                | ❌                | ❌    |
+| Linaria           | ✅     | <LinariaLink />   | Strings         | ✅         | ❌                | ✅                | ❌    |
+| Emotion           | ❌     | ❌                | Strings         | ✅         | ❌                | ❌                | ❌    |
+| Styled Components | ❌     | ❌                | Strings         | ✅         | ❌                | ❌                | ❌    |
+| Stitches          | ❌     | ❌                | Objects         | ✅         | ❌                | ❌                | ❌    |
+| Styletron         | ❌     | ✅                | Object          | ✅         | ❌                | ✅                | ❌    |
+
+`*` - Tailwind doesn't co-locate the styles themselves, but since it uses a
+special shorthand to represent styles, it is effectively the same.
+
+<details>
+<summary>
+Glossary
+</summary>
+
+- **Static** - Does the library generate CSS at compile time?
+- **Atomic** - Does the library generate atomic CSS?
+- **Style Format** - What format are styles authored in? Strings, Objects, or
+  separate CSS files.
+- **Co-location** - Are the styles in the same file as your component?
+- **Composition** - Can you compose and merge styles across component
+  boundaries? Can you pass styles as props?
+- **Dynamic Styles** - Can you generate styles with dynamic values not known
+  until runtime?
+- **Typed** - Are the authored styles typed? Can constrain what styles are
+  passed to components with static types? This is only relevant when composing
+  styles.
+
+</details>

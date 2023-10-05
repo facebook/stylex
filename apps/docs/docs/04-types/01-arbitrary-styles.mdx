@@ -5,7 +5,7 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Accepting Arbitrary Styles
+# Types for Style Props
 
 StyleX comes with full support for Static Types. Apart from having to use a few
 helper types, the type definitions should feel no different from types used for
@@ -60,16 +60,23 @@ Since `xstyle` is just a regular prop, you can use an arbitrary name for it and
 you can use multiple props if you want to be able accept styles for multiple
 HTML elements within your component.
 
-## Disallowing Inline Styles
+<details>
+<summary>
+Disallowing Dyanmic Inline Styles
+</summary>
 
 When you author styles with dynamic values that cannot be known ahead of time,
 the `StyleX Style` object returns contains bother atomic classNames _and_ inline
 styles. The type `StyleXStyles` allows a mix of both. As such, you should
 usually default to using `StyleXStyles` and `stylex.spread` in your code.
 
-However, for the best possible performance, you can choose to disallow any
-dynamic styles. For these scenarios, you can use the `StaticStyles` types
-instead of `StyleXStyles`. The rest of the code can remain unchanged.
+However, if you're using StyleX in a codebase without client-side JavaScript,
+you can choose to disallow any dynamic styles by using the `StaticStyles` type
+instead of `StyleXStyles`.
+
+The rest of the code can remain unchanged.
+
+</details>
 
 ## Recommendations
 
@@ -77,21 +84,17 @@ Here are some recommendations for patterns to use while using StyleX. These are
 not rules and you can use StyleX however you want. We make these recommendations
 to help guide various codebases using StyleX into a consistent pattern.
 
-### Use prop names that follow the pattern of `xstyle` or `fooXStyle` when accepting "StyleX Styles"
+### Follow the pattern of `xstyle` or `fooXStyle` for naming your style props.
 
-We recommend using the prop name `xstyle` for the canonical HTML element of your
-component and the pattern of `*XStyle` for other externals that you accept for
-your component. This will lead to a consistent pattern among components that use
-StyleX and will make usage of stylex within components more predictable.
+We recommend using the prop name `xstyle` for accepting styles for the canonical
+outer-most HTML element of your component and the pattern of `*XStyle` for other
+internal elements. This will lead to a consistent pattern among components that
+use StyleX and will make usage of stylex within components more predictable.
 
 ### When accepting arbitrary styles for your components, let them override your base styles.
 
 We recommend ensuring that any styles that are passed in as props externally
 override any local styles that you may have set on your custom component. This
 will gives users of your component a more predictable behaviour when passing
-styles in. You do this by simply passing `xstyle` as the last argument to the
-`stylex()` `stylex.spread()` function.
-
-There may, however, be situations where you don't want certain local styles to
-ever be overridden. In those cases we suggest using types to block certain
-styles from being passed.
+styles in. You do this by simply passing `xstyle` as the last styles to the
+`stylex.spread()` function.

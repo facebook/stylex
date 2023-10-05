@@ -234,13 +234,13 @@ any other props for your components.
 
 ## Framework-agnostic
 
-StyleX is a CSS-in-JS solution, not a CSS-in-React solution. It's designed to be
-used with any Javascript framework that lets you author your markup in your
-Javacript. It can even be used with frameworks where you markup is stored in
-separate templates, although that's not the ideal use-case.
+StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Althought StyleX
+works best with React today, It's designed to be used with any Javascript
+framework that lets you author your markup in your Javacript.
 
-React is probably the best fit for StyleX today, but we will make improvements
-to make it work well with various different frameworks overtime.
+Some APIs, such as `stylex.spread` return an object with `className` and `style`
+keys today. You may need to use a wrapper function to make this work with your
+framework of choice.
 
 ## Style Encapsulation and Debuggability over Power
 
@@ -309,3 +309,33 @@ performance penalty.
 The StyleX model doesn't make lazy-loading or critical-css impossible, but we
 are not optimizing for it for now and are focusing on generating smallest,
 fastest single CSS bundle possible.
+
+## No Magic Strings
+
+We want every codebase that uses StyleX to feel instantly familiar. You
+shouldn't have to dig through configuration files to learn the conventions of a
+project. Our goal is to remove all "magic strings" and replace them with
+familiar patterns such as constants and imports.
+
+Any project specific style restrictions should be enforced by one of the
+following:
+
+1. Exports from JS files.
+
+2. ESlint Configuration: We do allow configuration of our ESLint rules to
+   enforce project-specific conventions.
+3. Static Types: You can create static types to add constraints to the styles
+   components can accept.
+
+This principle can be seen in practice in a few locations already:
+
+- You will never have to remember a className. All styles are applied by passing
+  object references to `stylex.spread` or `stylex()`.
+- You don't have to remember names of CSS variables. You import and use them by
+  reference.
+- You don't have to remember the names of keyframes. You define them and use
+  them by reference.
+
+There are additional locations where CSS makes you use magic strings today, e.g.
+`container-name`. We're looking into ways to replace these magic strings with
+type-safe APIs as well.

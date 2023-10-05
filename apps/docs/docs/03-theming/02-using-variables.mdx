@@ -14,7 +14,7 @@ subject to change.
 
 :::
 
-Once you've [defined a variable](../defining-variables), you can import and use
+Once you've [defined variables](../defining-variables), you can import and use
 them in your styles:
 
 <Tabs>
@@ -65,11 +65,12 @@ automatically resolve the values for you at compile time.
 
 When using variables, there are a few rules to keep in mind:
 
-1. You must use named imports from a `.stylex.js` file. You cannot use
-   destructuring or default imports. (commonjs is currently not supported)
-2. You must use import paths that Node.js can understand.
-   - You cannot rely on import aliases or other custom import paths that are
-     only understood by your bundler.
+1. You must use named imports from a `.stylex.js` file directly in your
+   `stylex.create` call. Don't create intermediate variables.
+2. You must use ESM. CommonJS is not supported.
+3. You must use import paths that Node.js can understand.
+   - Do not rely on import aliases or other custom import paths that are only
+     understood by your bundler.
 
-Also, remember that these references are strings of the form `var(--name)` and
-not the values stored within them.
+Also, remember that these references to variable strings. Do not try to use
+these references in your non-stylex JavaScript code.

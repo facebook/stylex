@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Accepting a specific set of styles
+# Constraining Style Props
 
 When you want to accept external styles, but not arbitrary styles, it might make
 sense to create an allow list for the styles properties (and values) that can be
@@ -59,11 +59,18 @@ type Props = $ReadOnly<{
 Now, the `xstyle` prop will accept only the properties that you have defined but
 disallow anything else.
 
-:::warning
+:::info
 
-It is usually a good practice to make the keys of the style types optional.
-However, there might be situations where you can require some styles to be
-passed in.
+It is a good practice to make the keys of the style types optional and have
+baseline styles in the component itself.
+
+:::
+
+:::danger
+
+Typescript object types don't error when given objects with extra properties.
+We've taken steps to mitigate this issue, but there may be edge-cases where
+you'll be able to pass in extra, disallowed styles without a type error.
 
 :::
 
@@ -83,7 +90,7 @@ type Props = {
   // Only accept styles for marginTop and nothing else.
   // the value for marginTop can only be 0, 4, or 8.
   xstyle?: StyleXStyle<{
-    marginTop: 0 | 4 | 8
+    marginTop: 0 | 4 | 8 | 16
   }>,
 };
 ```
@@ -97,7 +104,7 @@ type Props = $ReadOnly<{
   // Only accept styles for marginTop and nothing else.
   // the value for marginTop can only be 0, 4, or 8.
   xstyle?: StyleXStyle<{
-    marginTop: 0 | 4 | 8
+    marginTop: 0 | 4 | 8 | 16
   }>,
 }>;
 ```

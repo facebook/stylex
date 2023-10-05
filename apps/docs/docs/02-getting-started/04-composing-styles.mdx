@@ -16,23 +16,27 @@ component.
 
 :::warning
 
-Don't use the `stylex` function when passing styles to a custom component.
+Don't use the `stylex.spread` or `stylex` functions when passing styles to a
+custom component.
 
 ### Don't Do This!
 
 ```tsx
+// NO!
 <CustomComponent xstyle={stylex(styles.base)} />
+// NO!
+<CustomComponent xstyle={stylex.spread([styles.base])} />
 ```
 
-The `stylex` function should only be used to convert one or more style objects
-into a className string directly on an HTML element. Here, we used a prop named
-`xstyle` on a custom component named `CustomComponent`.
+The `stylex.spread` function should only be used directly on an HTML element.
+Here, we used a prop named `xstyle` on a custom component named
+`CustomComponent`.
 
 :::
 
 Conditional styles just you would when setting styles on an HTML element. The
-only difference is that instead of using the `stylex` function, we use an Array
-literal instead:
+only difference is that instead of using the `stylex.spread` function, we use an
+Array literal instead:
 
 ```tsx
 <CustomComponent xstyle={[styles.base, styles.highlighted]} />;
@@ -47,7 +51,7 @@ literal instead:
 The prop name `xstyle` is an arbitrary name. You can choose your own prop names
 for your codebase.
 
-We chose the prop name `xstyle` as short-form for “external styles”.
+We chose the name `xstyle` as short for “external styles”.
 
 :::
 
@@ -59,7 +63,25 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 <Tabs>
-  <TabItem value="stylex" label="stylex" default>
+  <TabItem value="spread" label="stylex.spread">
+
+```tsx
+import stylex from '@stylexjs/runtime';
+
+// Local Styles
+const styles = stylex.create({
+  base: {
+    /*...*/
+  },
+});
+
+function CustomComponent({xstyle}) {
+  return <div {...stylex.spread([styles.base, xstyle])} />;
+}
+```
+
+  </TabItem>
+  <TabItem value="stylex" label="stylex (legacy)" default>
 
 ```tsx
 import stylex from '@stylexjs/runtime';
@@ -77,37 +99,19 @@ function CustomComponent({xstyle}) {
 ```
 
   </TabItem>
-  <TabItem value="spread" label="stylex.spread">
-
-```tsx
-import stylex from '@stylexjs/runtime';
-
-// Local Styles
-const styles = stylex.create({
-  base: {
-    /*...*/
-  },
-});
-
-function CustomComponent({xstyle}) {
-  return <div {...stylex.spread(styles.base, xstyle)} />;
-}
-```
-
-  </TabItem>
 </Tabs>
 
 The `xstyle` prop which is passed from another component (example above) may
-either be a single object or an Array of multiple objects. Luckily, the `stylex`
-function can handle Arrays of style objects without any further modifications
-and the code above will _just work_.
+either be a single object or an Array of multiple objects. Luckily, the
+`stylex.spread` function can handle nested Arrays of style objects and the code
+above will _just work_.
 
-In the code example above, the external styles in the `xstyle` prop is passed as
-the last argument to the `stylex` function. This means that any external styles
-will override and win over any local styles defined in `styles.foo`. While this
-is not a requirement of styles, we recommend that you follow this pattern for
-your own custom components so that you can have predictable behavior when
-passing styles to custom component.
+In the code example above, the external styles in the `xstyle` prop is passed
+last to the `stylex.spread` function. This means that any external styles will
+override and win over any local styles defined in `styles.foo`. While this is
+not a requirement of styles, we recommend that you follow this pattern for your
+own custom components so that you can have predictable behavior when passing
+styles to custom component.
 
 There may be cases when you don't want to allow overriding certain local styles
 in your custom component. In such cases, we recommend that you limit the styles
@@ -124,22 +128,6 @@ that should not be override-able after `xstyle` to the `stylex()` or
 `stylex.spread()` function call.
 
 <Tabs>
-  <TabItem value="stylex" label="stylex" default>
-
-```tsx
-import stylex from '@stylexjs/runtime';
-
-// Local Styles
-const styles = stylex.create({
-  /*...*/
-});
-
-function CustomComponent({xstyle}) {
-  return <div className={stylex(styles.base, xstyle, styles.essential)} />;
-}
-```
-
-  </TabItem>
   <TabItem value="spread" label="stylex.spread">
 
 ```tsx
@@ -156,6 +144,22 @@ function CustomComponent({xstyle}) {
 ```
 
   </TabItem>
+  <TabItem value="stylex" label="stylex" default>
+
+```tsx
+import stylex from '@stylexjs/runtime';
+
+// Local Styles
+const styles = stylex.create({
+  /*...*/
+});
+
+function CustomComponent({xstyle}) {
+  return <div className={stylex(styles.base, xstyle, styles.essential)} />;
+}
+```
+
+  </TabItem>
 </Tabs>
 
 :::
@@ -167,8 +171,8 @@ remove styles that have already been applied by a component. CSS gives you a few
 values to do so such as `initial`, `inherit`, `unset`, and `revert`.
 
 You can use these values in StyleX too, but they result in their own atomic
-className that can usually be redundant. Instead, if you just want to remove
-StyleX styles for a particular property you can set it's value to `null`.
+className that is usually redundant. Instead, if you just want to remove StyleX
+styles for a particular property you can set it's value to `null`.
 
 Here is an example to remove the `color` style from a component:
 
@@ -180,5 +184,5 @@ const styles = stylex.create({
 });
 ```
 
-`styles.base` would behave the same as if `color:inherit` was used in CSS, but
+`styles.base` would behave the same as if `color: inherit` was used in CSS, but
 there will be no className for the `color` property applied at all.
