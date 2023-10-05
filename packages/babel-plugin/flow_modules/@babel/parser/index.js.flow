@@ -246,7 +246,8 @@ export type ParseError = {
   reasonCode: string,
 };
 
-export type ParseResult<Result: { +[string]: mixed }> = {
-  ...Result,
-  errors: ParseError[],
-};
+export type ParseResult<Result: t.Node = t.Node> =
+  | Result
+  | {
+      +errors: $ReadOnlyArray<ParseError>,
+    };

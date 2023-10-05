@@ -166,4 +166,66 @@ describe('custom path evaluation works as expected', () => {
       }),
     ).toEqual({ type: 'StringLiteral', value: 'Hello' });
   });
+
+  describe('evaluating function expressions', () => {
+    test('function with a single params', () => {
+      const fn = evaluateFirstStatement('const double = x => x * 2;', {});
+      expect(typeof fn).toEqual('function');
+
+      expect(fn(2)).toBe(4);
+    });
+
+    test('function with a two params', () => {
+      const fn = evaluateFirstStatement('const add = (a, b) => a + b;', {});
+      expect(typeof fn).toEqual('function');
+
+      expect(fn(2, 7)).toBe(9);
+    });
+
+    test('Array map', () => {
+      expect(
+        evaluateFirstStatement('const x = [1, 2, 3].map(x => x * 2);', {}),
+      ).toEqual([2, 4, 6]);
+    });
+
+    test('Array filter', () => {
+      expect(
+        evaluateFirstStatement(
+          'const x = [1, 2, 3].filter(x => x % 2 === 0);',
+          {},
+        ),
+      ).toEqual([2]);
+    });
+
+    test('Array map and filter', () => {
+      expect(
+        evaluateFirstStatement(
+          'const x = [1, 2, 3].map(x => x * 2).filter(x => x % 2 === 0);',
+          {},
+        ),
+      ).toEqual([2, 4, 6]);
+    });
+
+    test('Object entries', () => {
+      expect(
+        evaluateFirstStatement(
+          'const x = Object.entries({a: 1, b: 2, c: 4}).filter((entry) => entry[1] % 2 === 0);',
+          {},
+        ),
+      ).toEqual([
+        ['b', 2],
+        ['c', 4],
+      ]);
+
+      expect(
+        evaluateFirstStatement(
+          'const x = Object.fromEntries(Object.entries({a: 1, b: 2, c: 4}).filter((entry) => entry[1] % 2 === 0));',
+          {},
+        ),
+      ).toEqual({
+        b: 2,
+        c: 4,
+      });
+    });
+  });
 });

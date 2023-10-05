@@ -28,8 +28,7 @@ export { traverse, NodePath };
 export type Visitor<S> = _Visitor<S>;
 
 export type Node = t.Node;
-export type ParseResult<Result: { +[string]: mixed } = { +[string]: mixed }> =
-  _ParseResult<Result>;
+export type ParseResult<Result: t.Node = t.Node> = _ParseResult<Result>;
 declare export var version: string;
 declare export var DEFAULT_EXTENSIONS: ['.js', '.jsx', '.es6', '.es', '.mjs'];
 
@@ -586,7 +585,7 @@ declare export var parse: ((
 declare export function parseSync(
   code: string,
   options?: TransformOptions,
-): ParseResult<> | null;
+): ParseResult<t.File> | null;
 
 /**
  * Given some code, parse it using Babel's standard behavior.
@@ -595,7 +594,7 @@ declare export function parseSync(
 declare export function parseAsync(
   code: string,
   options?: TransformOptions,
-): Promise<ParseResult<> | null>;
+): Promise<ParseResult<t.File> | null>;
 
 /**
  * Resolve Babel's options fully, resulting in an options object where:

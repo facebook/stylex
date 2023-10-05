@@ -32,8 +32,16 @@ import * as pathUtils from '../babel-path-utils';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
-const VALID_CALLEES = ['String', 'Number', 'Math'];
-const INVALID_METHODS = ['random'];
+const VALID_CALLEES = ['String', 'Number', 'Math', 'Object', 'Array'];
+const INVALID_METHODS = [
+  'random',
+  'assign',
+  'defineProperties',
+  'defineProperty',
+  'freeze',
+  'seal',
+  'splice',
+];
 
 function isValidCallee(val: string): boolean {
   return (VALID_CALLEES: $ReadOnlyArray<string>).includes(val);
@@ -91,15 +99,19 @@ function evaluateImportedFile(
   // interested in the JS runtime, and not the CSS.
   // TODO: in environments where `.babelrc` is not available,
   // we need to find a way to decide whether to use Flow or TS syntax extensions.
-  const ast = parseSync(fileContents, { babelrc: true });
-  if (!ast) {
+  const ast: null | t.File | { +errors: mixed } = parseSync(fileContents, {
+    babelrc: true,
+  });
+  if (!ast || ast.errors || !t.isNode(ast)) {
     state.confident = false;
     return;
   }
+
+  const astNode: t.Node = (ast: $FlowFixMe);
+
   let result: any;
 
-  // $FlowFixMe
-  traverse(ast, {
+  traverse(astNode, {
     ExportNamedDeclaration(path: NodePath<t.ExportNamedDeclaration>) {
       const declaration = path.get('declaration');
 
@@ -207,6 +219,39 @@ function evaluateCached(path: NodePath<>, state: State): any {
 
 function _evaluate(path: NodePath<>, state: State): any {
   if (!state.confident) return;
+
+  if (pathUtils.isArrowFunctionExpression(path)) {
+    const body = path.get('body');
+    const params: $ReadOnlyArray<
+      NodePath<t.Identifier | t.Pattern | t.RestElement>,
+    > = path.get('params');
+    const identParams = params
+      .filter((param): param is NodePath<t.Identifier> =>
+        pathUtils.isIdentifier(param),
+      )
+      .map((paramPath) => paramPath.node.name);
+    if (pathUtils.isExpression(body) && identParams.length === params.length) {
+      const expr: NodePath<t.Expression> = body;
+      return (...args) => {
+        const identifierEntries = identParams.map(
+          (ident, index): [string, any] => [ident, args[index]],
+        );
+        const identifiersObj = Object.fromEntries(identifierEntries);
+        const result = evaluate(expr, state.traversalState, {
+          ...state.functions,
+          identifiers: { ...state.functions.identifiers, ...identifiersObj },
+        });
+        return result.value;
+      };
+    }
+  }
+
+  if (pathUtils.isIdentifier(path)) {
+    const name: string = path.node.name;
+    if (Object.keys(state.functions?.identifiers ?? {}).includes(name)) {
+      return state.functions.identifiers[name];
+    }
+  }
 
   if (pathUtils.isSequenceExpression(path)) {
     const exprs = path.get('expressions');
@@ -617,6 +662,16 @@ function _evaluate(path: NodePath<>, state: State): any {
       ) {
         const val: number | string = object.node.value;
         func = (val: $FlowFixMe)[property.node.name];
+      }
+
+      const parsedObj = evaluate(object, state.traversalState, state.functions);
+      if (parsedObj.confident && pathUtils.isIdentifier(property)) {
+        func = parsedObj.value[property.node.name];
+        context = parsedObj.value;
+      }
+      if (parsedObj.confident && pathUtils.isStringLiteral(property)) {
+        func = parsedObj.value[property.node.value];
+        context = parsedObj.value;
       }
     }
 
