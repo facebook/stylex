@@ -214,7 +214,9 @@ function preprocessPropertyValue(propValue: mixed): mixed {
 
     const maybeLengthUnitValue = CSSLengthUnitValue.parse(propValue);
     if (maybeLengthUnitValue != null) {
-      return new CSSLengthUnitValue(...maybeLengthUnitValue);
+      return maybeLengthUnitValue[1] === 'px'
+        ? maybeLengthUnitValue[0]
+        : new CSSLengthUnitValue(...maybeLengthUnitValue);
     }
   }
 
