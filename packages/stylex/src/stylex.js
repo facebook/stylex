@@ -19,6 +19,7 @@ import type {
   FlattenTokens,
   MapNamespace,
   CompiledStyles,
+  InlineStyles,
 } from './StyleXTypes';
 
 export type { Theme, Variant } from './StyleXTypes';
@@ -37,14 +38,12 @@ type Cache = WeakMap<
 
 export function spread(
   styles: StyleXArray<
-    | ?CompiledStyles
-    | boolean
-    | $ReadOnly<{ $$css?: void, [string]: string | number }>,
+    ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
   >,
   _options?: { ... },
 ): $ReadOnly<{
   className: string,
-  style: $ReadOnly<{ $$css?: void, [string]: string | number }>,
+  style: $ReadOnly<{ [string]: string | number }>,
 }> {
   const [className, style] = styleq(styles);
   return { className, style };
@@ -211,14 +210,12 @@ type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
   spread: (
     styles: StyleXArray<
-      | ?CompiledStyles
-      | boolean
-      | $ReadOnly<{ $$css?: void, [string]: string | number }>,
+      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
     >,
     _options?: { ... },
   ) => $ReadOnly<{
     className: string,
-    style: $ReadOnly<{ $$css?: void, [string]: string | number }>,
+    style: $ReadOnly<{ [string]: string | number }>,
   }>,
   create: Stylex$Create,
   unstable_createVars: StyleX$CreateVars,

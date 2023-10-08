@@ -1,0 +1,35 @@
+// @flow strict
+/* eslint-disable no-unused-vars */
+
+import React from 'react';
+import stylex from '@stylexjs/stylex';
+import type {
+  StyleXClassNameFor,
+  XStyle,
+} from '@stylexjs/stylex/lib/StyleXTypes';
+
+type Props = {
+  xstyle?: XStyle<{
+    backgroundColor?: StyleXClassNameFor<'backgroundColor', string>,
+  }>,
+};
+
+function Component({ xstyle }: Props) {
+  return <div className={stylex(xstyle)} />;
+}
+
+const styles = stylex.create({
+  valid: {
+    backgroundColor: 'red',
+  },
+  invalid: {
+    color: 'red',
+  },
+});
+
+function OtherComponent() {
+  <Component xstyle={styles.valid} />;
+
+  // $FlowExpectedError - `color` is not allowed
+  <Component xstyle={styles.invalid} />;
+}

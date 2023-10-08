@@ -99,15 +99,15 @@ export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
 
 export type LegacyTheme = $ReadOnly<{ [constantName: string]: string, ... }>;
 
-type ComplexStyleValueType<+T> = T extends string | number | null
-  ? T
-  : T extends StyleXVar<infer U>
+type ComplexStyleValueType<+T> = T extends StyleXVar<infer U>
   ? U
+  : T extends string | number | null
+  ? T
   : T extends $ReadOnlyArray<infer U>
   ? U
   : T extends $ReadOnly<{ default: infer A, +[string]: infer B }>
   ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
-  : T;
+  : $ReadOnly<T>;
 
 type _MapNamespace<+CSS: { +[string]: mixed }> = $ReadOnly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>,
@@ -127,10 +127,7 @@ export type Stylex$Create = <S: { +[string]: mixed }>(
 
 export type CompiledStyles = $ReadOnly<{
   $$css: true,
-  [key: string]:
-    | StyleXClassName
-    | $ReadOnly<{ [key: string]: StyleXClassName, ... }>,
-  ...
+  [key: string]: StyleXClassName,
 }>;
 export type InlineStyles = $ReadOnly<{
   $$css?: void,
@@ -165,13 +162,16 @@ export type StyleXStyles<+CSS: { +[string]: mixed } = CSSPropertiesWithExtras> =
 export type StyleXStylesWithout<+CSS: { +[string]: mixed }> = StyleXStyles<
   $Rest<CSSPropertiesWithExtras, $ReadOnly<CSS>>,
 >;
+
+declare class Var<+T> {
+  value: T;
+}
 // This is the type for the variables object
-export opaque type StyleXVar<+_Val: mixed> = string;
+export opaque type StyleXVar<+Val: mixed> = Var<Val>;
 
 export opaque type Theme<
   +Tokens: { +[string]: mixed },
-  // eslint-disable-next-line no-unused-vars
-  +ID: string = string,
+  +_ID: string = string,
 >: $ReadOnly<{ [Key in keyof Tokens]: StyleXVar<Tokens[Key]> }> = $ReadOnly<{
   [Key in keyof Tokens]: StyleXVar<Tokens[Key]>,
 }>;

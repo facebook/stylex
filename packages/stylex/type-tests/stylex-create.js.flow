@@ -9,7 +9,9 @@ import type {
   // StyleXStylesWithout,
   StyleXClassNameFor,
   StyleXClassName,
+  CompiledStyles,
   InlineStyles,
+  StyleXVar,
 } from '../src/StyleXTypes';
 
 /* eslint-disable no-unused-vars */
@@ -35,6 +37,9 @@ const styles1: $ReadOnly<{ foo: $ReadOnly<{ $$css: true }> }> = stylex.create({
 (styles1.foo: XStyle<{ width?: StyleXClassNameFor<'width', number | string> }>);
 (styles1.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
 (styles1.foo: XStyle<{ width?: StyleXClassName }>);
+
+stylex(styles1.foo);
+stylex.spread([styles1.foo]);
 
 /**
  * SIMPLE STYLES
@@ -66,6 +71,9 @@ const styles2: $ReadOnly<{
 (styles2.foo: XStyle<{ width?: StyleXClassNameFor<string, mixed> }>);
 (styles2.foo: XStyle<{ width?: StyleXClassName }>);
 
+stylex(styles2.foo);
+stylex.spread([styles2.foo]);
+
 /**
  * FALLBACK STYLES
  */
@@ -94,6 +102,9 @@ const styles3: $ReadOnly<{
 (styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', number | string> }>);
 (styles3.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
 
+stylex(styles3.foo);
+stylex.spread([styles3.foo]);
+
 /**
  * CONDITIONAL STYLES
  */
@@ -117,6 +128,9 @@ const styles4: $ReadOnly<{
 (styles4.foo: StyleXStyles<{ width: '100%' | '100dvw' }>);
 (styles4.foo: StyleXStyles<{ width: number | string }>);
 (styles4.foo: StyleXStyles<{ width?: mixed }>);
+
+stylex(styles4.foo);
+stylex.spread([styles4.foo]);
 
 /**
  * NESTED CONDITIONAL STYLES
@@ -144,6 +158,9 @@ const styles5: $ReadOnly<{
 (styles5.foo: StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>);
 (styles5.foo: StyleXStyles<{ width: number | string }>);
 (styles5.foo: StyleXStyles<{ width?: mixed }>);
+
+stylex(styles5.foo);
+stylex.spread([styles5.foo]);
 
 /**
  * DYNAMIC NESTED CONDITIONAL STYLES
@@ -181,6 +198,15 @@ const styles6: $ReadOnly<{
 (styles6.foo(100): StyleXStyles<{ width: number | string }>);
 (styles6.foo(100): StyleXStyles<{ width?: mixed }>);
 
+(styles6.foo(100)[0]: CompiledStyles);
+(styles6.foo(100)[1]: InlineStyles);
+(styles6.foo(100): $ReadOnly<[CompiledStyles, InlineStyles]>);
+
+// $FlowExpectedError[incompatible-call] - `stylex()` can't handle dynamic styles.
+stylex(styles6.foo(100));
+stylex(styles6.foo(100)[0]);
+stylex.spread(styles6.foo(100));
+
 /**
  * PSEUDO-ELEMENT STYLES
  */
@@ -209,3 +235,50 @@ const styles7: $ReadOnly<{
 (styles7.foo: StyleXStyles<{
   '::before': { width: number | string, height?: mixed },
 }>);
+
+stylex(styles7.foo);
+stylex.spread([styles7.foo]);
+
+const vars = stylex.unstable_createVars({
+  accent: 'red',
+});
+
+(vars.accent: StyleXVar<'red'>);
+
+const styles8: $ReadOnly<{
+  foo: $ReadOnly<{
+    $$css: true,
+    color: StyleXClassNameFor<'color', 'red'>,
+  }>,
+}> = stylex.create({
+  foo: {
+    color: vars.accent,
+  },
+});
+
+(styles8.foo: StaticStyles<>);
+// $FlowExpectedError[incompatible-cast] - We want to disallow extra keys
+(styles8.foo: StaticStyles<{}>);
+(styles8.foo: StaticStyles<{ color: 'red' }>);
+(styles8.foo: StaticStyles<{ color: mixed }>);
+// (styles8.foo: StaticStylesWithout<{ height: mixed }>);
+// - @ts-expect-error - The style does have `width`
+// (styles8.foo: StaticStylesWithout<{ color: mixed }>);
+// $FlowExpectedError[incompatible-cast] - 'number' is not assignable to 'red'.
+(styles8.foo: StaticStyles<{ color: 100 }>);
+// $FlowExpectedError[incompatible-cast] - 'blue' is not assignable to 'red'.
+(styles8.foo: StaticStyles<{ color: 'blue' }>);
+(styles8.foo: StaticStyles<{ color: number | string }>);
+(styles8.foo: StaticStyles<{ color?: mixed, height?: string }>);
+(styles8.foo: StyleXStyles<>);
+// $FlowExpectedError[incompatible-cast] - We want to disallow extra keys
+(styles8.foo: StyleXStyles<{}>);
+(styles8.foo: StyleXStyles<{ color: 'red' }>);
+(styles8.foo: StyleXStyles<{ color: number | string }>);
+(styles8.foo: StyleXStyles<{ color?: mixed }>);
+// (styles8.foo: StyleXStylesWithout<{ height: unknown }>);
+// - @ts-expect-error - The style does have `color`
+// (styles8.foo: StyleXStylesWithout<{ color: unknown }>);
+
+stylex(styles8.foo);
+stylex.spread(styles8.foo);

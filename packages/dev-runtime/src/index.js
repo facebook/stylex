@@ -89,7 +89,10 @@ export default function inject({
     variablesTheme: BaseTokens,
     variablesOverride: OverridesForTokenType<TokensFromTheme<$FlowFixMe>>,
   ): Variant<BaseTokens, ID> => {
-    const [js, css] = shared.overrideVars(variablesTheme, variablesOverride);
+    const [js, css] = shared.overrideVars(
+      (variablesTheme: $FlowFixMe),
+      variablesOverride,
+    );
     const styleKey = js[String(variablesTheme.__themeName__)];
     insert(styleKey, css[styleKey].ltr, css[styleKey].priority);
     // $FlowFixMe[incompatible-return]

@@ -11,10 +11,10 @@ overridden.
 For example, you may want to disallow overriding layout properties while
 allowing other styles that won't break the layout.
 
-For these use cases, you can use the `XStyleWithout<>` type.
+For these use cases, you can use the `StyleXStylesWithout<>` type.
 
 ```tsx
-type XStyleWithoutLayout = XStyleWithout<{
+type NoLayout = StyleXStylesWithout<{
   postion: unknown,
   display: unknown,
   top: unknown,
@@ -47,7 +47,7 @@ type XStyleWithoutLayout = XStyleWithout<{
 
 type Props = {
   // ...
-  xstyle?: XStyleWithoutLayout,
+  xstyle?: NoLayout,
 };
 
 function MyComponent({xstyle, ...}: Props) {

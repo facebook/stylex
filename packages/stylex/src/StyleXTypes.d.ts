@@ -15,29 +15,18 @@ export type StyleXClassNameFor<K, V> = string & {
   _value: V;
 };
 
-export type StyleXClassNameForValue<V> = StyleXClassNameFor<unknown, V>;
-export type StyleXClassNameForKey<K> = StyleXClassNameFor<K, unknown>;
-export type StyleXClassName = StyleXClassNameFor<unknown, unknown>;
+export type StyleXClassNameForValue<V> = StyleXClassNameFor<any, V>;
+export type StyleXClassNameForKey<K> = StyleXClassNameFor<K, any>;
+export type StyleXClassName = StyleXClassNameFor<any, any>;
 // Type for arbitrarily nested Array.
 export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
 
 declare const StyleXVarTag: unique symbol;
 export type StyleXVar<_Val> = string & typeof StyleXVarTag;
 
-// prettier-ignore
-type NonDollarChars =
-  | 'a' | 'A' | 'b' | 'B' | 'c' | 'C' | 'd' | 'D'
-  | 'e' | 'E' | 'f' | 'F' | 'g' | 'G'
-  | 'h' | 'H' | 'i' | 'I' | 'j' | 'J' | 'k' | 'K'
-  | 'l' | 'L' | 'm' | 'M' | 'n' | 'N' | 'o' | 'O' | 'p' | 'P'
-  | 'q' | 'Q' | 'r' | 'R' | 's' | 'S' | 't' | 'T'
-  | 'u' | 'U' | 'v' | 'V' | 'w' | 'W'
-  | 'x' | 'X' | 'y' | 'Y' | 'z' | 'Z'
-  | '-' | '_' | '@' | ':';
-
 // Strings that don't start with a dollar sign.
 // So that we can `&` with {$$css: true} without type errors.
-type NonDollarStr = `${NonDollarChars}${string}`;
+type string = `${NonDollarChars}${string}`;
 type PseudoClassStr = `:${string}`;
 type AtRuleStr = `@${string}`;
 
@@ -77,16 +66,12 @@ export type NestedCSSPropTypes = Partial<
   }>
 >;
 
-type UserAuthoredStyles = { [key: NonDollarStr]: unknown };
+type UserAuthoredStyles = { [key: string]: unknown };
 export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
-export type XStyle<T extends UserAuthoredStyles = NestedCSSPropTypes> =
-  StyleXArray<false | (null | undefined | Readonly<T & { $$css: true }>)>;
-export type XStyleWithout<T extends UserAuthoredStyles> = XStyle<
-  Readonly<Pick<NestedCSSPropTypes, Exclude<keyof NestedCSSPropTypes, keyof T>>>
->;
+// NOTE: `XStyle` has been deprecated in favor of `StaticStyles` and `StyleXStyles`.
 
-export type Keyframes = Readonly<{ [name: NonDollarStr]: CSSProperties }>;
-export type LegacyTheme = Readonly<{ [constantName: NonDollarStr]: string }>;
+export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
+export type LegacyTheme = Readonly<{ [constantName: string]: string }>;
 
 type ComplexStyleValueType<T> = T extends string | number | null
   ? T
@@ -98,13 +83,9 @@ type ComplexStyleValueType<T> = T extends string | number | null
   ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
   : T;
 
-type _MapNamespace<CSS> = Readonly<{
+export type MapNamespace<CSS> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>;
 }>;
-
-export type MapNamespace<CSS> = Readonly<
-  _MapNamespace<CSS> & Readonly<{ $$css: true }>
->;
 
 export type MapNamespaces<
   S extends {
@@ -124,34 +105,29 @@ export type Stylex$Create = <
   styles: S,
 ) => MapNamespaces<S>;
 
-export type CompiledStyles = Readonly<
-  {
-    [key: NonDollarStr]:
-      | StyleXClassName
-      | Readonly<{ [key: NonDollarStr]: StyleXClassName }>;
-  } & { $$css: true }
->;
+export type CompiledStyles = Readonly<{
+  [key: string]: StyleXClassName | null | void | never;
+}>;
 
-export type InlineStyles = Readonly<
-  { [key: NonDollarStr]: string } & { $$css?: void }
->;
+declare const StyleXInlineStylesTag: unique symbol;
+
+export type InlineStyles = typeof StyleXInlineStylesTag;
 
 type _GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, Readonly<CSS[Key]>>;
 }>;
 type GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<
-  _GenStylePropType<CSS> & { $$css: true } & Partial<{
-      [Key in Exclude<
-        keyof CSSPropertiesWithExtras,
-        keyof CSS | '$$css'
-      >]: never;
+  _GenStylePropType<CSS> &
+    Partial<{
+      [Key in Exclude<keyof CSSPropertiesWithExtras, keyof CSS>]: never;
     }>
 >;
 
 // Replace `XStyle` with this.
 export type StaticStyles<
   CSS extends UserAuthoredStyles = CSSPropertiesWithExtras,
-> = StyleXArray<false | null | void | GenStylePropType<CSS>>;
+> = StyleXArray<false | null | GenStylePropType<CSS>>;
+
 export type StaticStylesWithout<CSS extends UserAuthoredStyles> = StaticStyles<
   Omit<CSSPropertiesWithExtras, keyof CSS>
 >;
@@ -160,7 +136,6 @@ export type StyleXStyles<
   CSS extends UserAuthoredStyles = CSSPropertiesWithExtras,
 > = StyleXArray<
   | null
-  | void
   | false
   | GenStylePropType<CSS>
   | Readonly<[GenStylePropType<CSS>, InlineStyles]>
@@ -171,19 +146,19 @@ export type StyleXStylesWithout<CSS extends UserAuthoredStyles> = StyleXStyles<
 
 declare const StyleXThemeTag: unique symbol;
 export type Theme<
-  Tokens extends { [key: NonDollarStr]: unknown },
+  Tokens extends { [key: string]: unknown },
   ID extends symbol = symbol,
-> = Readonly<{ [_Key in keyof Tokens]: string }> & {
+> = Readonly<{ [Key in keyof Tokens]: Tokens[Key] & typeof StyleXThemeTag }> & {
   $opaqueId: ID;
   $tokens: Tokens;
-} & typeof StyleXThemeTag;
+};
 
 export type TokensFromTheme<T extends Theme<TTokens>> = T['$tokens'];
 
 export type IDFromTheme<T extends Theme<TTokens>> = T['$opaqueId'];
 
 type TTokens = {
-  [key: NonDollarStr]: string | { default: string; [key: AtRuleStr]: string };
+  [key: string]: string | { default: string; [key: AtRuleStr]: string };
 };
 
 export type FlattenTokens<T extends TTokens> = Readonly<{

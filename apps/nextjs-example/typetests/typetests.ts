@@ -1,5 +1,3 @@
-// @flow strict
-
 import stylex from '@stylexjs/stylex';
 import type {
   StaticStyles,
@@ -8,6 +6,7 @@ import type {
   StyleXStylesWithout,
   StyleXClassNameFor,
   InlineStyles,
+  StyleXVar,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 
 /* eslint-disable no-unused-vars */
@@ -15,7 +14,7 @@ import type {
 /**
  * EMPTY STYLES
  */
-const styles1: Readonly<{ foo: Readonly<{ $$css: true }> }> = stylex.create({
+const styles1: Readonly<{ foo: Readonly<{}> }> = stylex.create({
   foo: {},
 });
 styles1.foo as StaticStyles;
@@ -29,12 +28,14 @@ styles1.foo as StyleXStyles<{ width?: number | string }>;
 styles1.foo as StyleXStyles<{ width?: unknown }>;
 styles1.foo as StyleXStylesWithout<{ width: unknown }>;
 
+stylex(styles1.foo);
+stylex.spread(styles1.foo);
+
 /**
  * SIMPLE STYLES
  */
 const styles2: Readonly<{
   foo: Readonly<{
-    $$css: true;
     width: StyleXClassNameFor<'width', '100%'>;
   }>;
 }> = stylex.create({
@@ -64,12 +65,14 @@ styles2.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 // @ts-expect-error - The style does have `width`
 styles2.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 
+stylex(styles2.foo);
+stylex.spread(styles2.foo);
+
 /**
  * FALLBACK STYLES
  */
 const styles3: Readonly<{
   foo: Readonly<{
-    $$css: true;
     width: StyleXClassNameFor<'width', '100%' | '200%'>;
   }>;
 }> = stylex.create({
@@ -95,12 +98,14 @@ styles3.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 // @ts-expect-error - The style does have `width`
 styles3.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 
+stylex(styles3.foo);
+stylex.spread(styles3.foo);
+
 /**
  * CONDITIONAL STYLES
  */
 const styles4: Readonly<{
   foo: Readonly<{
-    $$css: true;
     width: StyleXClassNameFor<'width', '100%' | '100dvw'>;
   }>;
 }> = stylex.create({
@@ -123,12 +128,14 @@ styles4.foo satisfies StyleXStyles<{ width: '100%' | '100dvw' }>;
 styles4.foo satisfies StyleXStyles<{ width: number | string }>;
 styles4.foo satisfies StyleXStyles<{ width?: unknown }>;
 
+stylex(styles4.foo);
+stylex.spread(styles4.foo);
+
 /**
  * NESTED CONDITIONAL STYLES
  */
 const styles5: Readonly<{
   foo: Readonly<{
-    $$css: true;
     width: StyleXClassNameFor<'width', '100%' | '100dvw' | '200%'>;
   }>;
 }> = stylex.create({
@@ -154,6 +161,9 @@ styles5.foo satisfies StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>;
 styles5.foo satisfies StyleXStyles<{ width: number | string }>;
 styles5.foo satisfies StyleXStyles<{ width?: unknown }>;
 
+stylex(styles5.foo);
+stylex.spread(styles5.foo);
+
 /**
  * DYNAMIC NESTED CONDITIONAL STYLES
  */
@@ -161,7 +171,6 @@ const styles6: Readonly<{
   foo: (mobile: number) => Readonly<
     [
       Readonly<{
-        $$css: true;
         width: StyleXClassNameFor<'width', '100%' | '100dvw' | number>;
       }>,
       InlineStyles,
@@ -195,12 +204,17 @@ styles6.foo(100) satisfies StyleXStyles<{ width: '100%' | '100dvw' | number }>;
 styles6.foo(100) satisfies StyleXStyles<{ width: number | string }>;
 styles6.foo(100) satisfies StyleXStyles<{ width?: unknown }>;
 
+// @ts-expect-error - `stylex()` can't accept dynamic styles.
+stylex(styles6.foo(100));
+
+stylex(styles6.foo(100)[0]);
+stylex.spread(styles6.foo(100));
+
 /**
  * PSEUDO-ELEMENT STYLES
  */
 const styles7: Readonly<{
   foo: Readonly<{
-    $$css: true;
     '::before': StyleXClassNameFor<
       '::before',
       Readonly<{
@@ -227,3 +241,54 @@ styles7.foo satisfies StyleXStyles<{ '::before': { width: '100%' } }>;
 styles7.foo satisfies StyleXStyles<{
   '::before': { width: number | string; height?: unknown };
 }>;
+
+stylex(styles7.foo);
+stylex.spread(styles7.foo);
+
+// CSS variables
+
+const vars = stylex.unstable_createVars({
+  accent: 'red' as const,
+});
+
+const styles8: Readonly<{
+  foo: Readonly<{
+    color: StyleXClassNameFor<'color', 'red'>;
+  }>;
+}> = stylex.create({
+  foo: {
+    color: vars.accent,
+  },
+});
+
+vars.accent satisfies StyleXVar<'red'>;
+
+// ts-expect-error - We want to disallow extra keys
+vars.accent satisfies StyleXVar<'blue'>;
+
+styles8.foo satisfies StaticStyles;
+// @ts-expect-error - We want to disallow extra keys
+styles8.foo satisfies StaticStyles<{}>;
+styles8.foo satisfies StaticStyles<{ color: 'red' }>;
+styles8.foo satisfies StaticStyles<{ color: unknown }>;
+styles8.foo satisfies StaticStylesWithout<{ height: unknown }>;
+// @ts-expect-error - The style does have `width`
+styles8.foo satisfies StaticStylesWithout<{ color: unknown }>;
+// @ts-expect-error - 'number' is not assignable to 'red'.
+styles8.foo satisfies StaticStyles<{ color: 100 }>;
+// @ts-expect-error - 'blue' is not assignable to 'red'.
+styles8.foo satisfies StaticStyles<{ color: 'blue' }>;
+styles8.foo satisfies StaticStyles<{ color: number | string }>;
+styles8.foo satisfies StaticStyles<{ color?: unknown; height?: string }>;
+styles8.foo satisfies StyleXStyles;
+// @ts-expect-error - We want to disallow extra keys
+styles8.foo satisfies StyleXStyles<{}>;
+styles8.foo satisfies StyleXStyles<{ color: 'red' }>;
+styles8.foo satisfies StyleXStyles<{ color: number | string }>;
+styles8.foo satisfies StyleXStyles<{ color?: unknown }>;
+styles8.foo satisfies StyleXStylesWithout<{ height: unknown }>;
+// @ts-expect-error - The style does have `color`
+styles8.foo satisfies StyleXStylesWithout<{ color: unknown }>;
+
+stylex(styles8.foo);
+stylex.spread(styles8.foo);

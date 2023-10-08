@@ -23,7 +23,7 @@ import TabItem from '@theme/TabItem';
 ```tsx
 type Props = {
   // ...
-  xstyle?: StyleXStyle<{
+  xstyle?: StyleXStyles<{
     color?: string;
     backgroundColor?: string;
     borderColor?: string;
@@ -41,7 +41,7 @@ type Props = {
 ```tsx
 type Props = $ReadOnly<{
   // ...
-  xstyle?: StyleXStyle<{
+  xstyle?: StyleXStyles<{
     color?: string;
     backgroundColor?: string;
     borderColor?: string;
@@ -89,7 +89,7 @@ type Props = {
   ...
   // Only accept styles for marginTop and nothing else.
   // the value for marginTop can only be 0, 4, or 8.
-  xstyle?: StyleXStyle<{
+  xstyle?: StyleXStyles<{
     marginTop: 0 | 4 | 8 | 16
   }>,
 };
@@ -103,7 +103,7 @@ type Props = $ReadOnly<{
   ...
   // Only accept styles for marginTop and nothing else.
   // the value for marginTop can only be 0, 4, or 8.
-  xstyle?: StyleXStyle<{
+  xstyle?: StyleXStyles<{
     marginTop: 0 | 4 | 8 | 16
   }>,
 }>;
@@ -112,6 +112,17 @@ type Props = $ReadOnly<{
   </TabItem>
 </Tabs>
 
-With the `StyleXClassNameForValue<>` type you can pass in a type argument with a
-union of literal types that provide the set of possible values that the style
-property can have.
+Now, this component only accepts styles that have a `marginTop` property and no
+other properties. The value for `marginTop` can only be one of `0`, `4`, `8`, or
+`16`.
+
+:::info
+
+StyleX accepts numbers instead of strings for pixel values for convenience.
+However, strings and numbers have separate types. So, if someone passes in
+StyleXStyles for `marginTop: '4px'`, it will cause a type error.
+
+To keep things simple, we recommend using numbers for pixel values in all cases
+and we plan to create an Elint rule to enforce this.
+
+:::

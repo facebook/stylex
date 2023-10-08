@@ -1,0 +1,35 @@
+// @flow strict
+/* eslint-disable no-unused-vars */
+
+import React from 'react';
+import stylex from '@stylexjs/stylex';
+import type {
+  StaticStyles,
+  StyleXStyles,
+  StaticStylesWithout,
+  StyleXStylesWithout,
+  StyleXClassNameFor,
+  InlineStyles,
+  XStyle,
+} from '@stylexjs/stylex/lib/StyleXTypes';
+
+type Props = {
+  xstyle?: StyleXStyles<>,
+};
+
+function Component({ xstyle }: Props) {
+  // $FlowExpectedError - `stylex()` can't handle dynamic styles
+  <div className={stylex(xstyle)} />;
+
+  <div {...stylex.spread([xstyle])} />;
+}
+
+const styles = stylex.create({
+  base: {
+    color: 'red',
+  },
+});
+
+function OtherComponent() {
+  return <Component xstyle={styles.base} />;
+}

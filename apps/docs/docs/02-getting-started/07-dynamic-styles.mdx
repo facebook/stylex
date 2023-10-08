@@ -35,8 +35,6 @@ comes with some big downsides, including:
 StyleX provides a way to define styles that can have dynamic values resolved at
 runtime by using functions instead of objects to define styles.
 
-````tsx
-
 ```tsx
 import stylex from '@stylexjs/stylex';
 
@@ -53,7 +51,7 @@ const g = Math.floor(Math.random() * 255);
 const b = Math.floor(Math.random() * 255);
 
 <div {...stylex.spread(styles.base(r, g, b))} />;
-````
+```
 
 **NOTE**: The function body _must_ be an object literal. You cannot use a
 function body with multiple statements.

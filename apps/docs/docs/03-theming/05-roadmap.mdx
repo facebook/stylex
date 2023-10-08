@@ -7,7 +7,7 @@ sidebar_position: 4
 Support for CSS variables in StyleX is unstable and incomplete. We're working on
 the following enhancements to make it more useful.
 
-## Declaring CSS `<syntax>` types for variables
+### Declaring CSS `<syntax>` types for variables
 
 Using `@property` rules, it is possible to declare the type of a CSS variable.
 These types can add additional meaning to variables such as make them animatable
@@ -16,17 +16,22 @@ or restrict them to a certain range of values.
 We are currently in the process of adding API to StyleX to allow declaring these
 types for variables.
 
-## Less Configuration
+### Less Configuration
 
-You need to currently manually configure StyleX to provide the root directory
-containing your application to be able to even use variables. We are
-investigating ways to make this configuration step unnecessary by looking for
-the `package.json` file automatically
+Today StyleX needs to be manually configuration with the root path of your
+project. We are looking into ways to make this configuration automatic.
 
-## Performance Enhancements?
+### Performance Enhancements?
 
 There are many situations where variables may be used for a better developer
 experience where they don't need to CSS variables in production. We are looking
 into detecting CSS variables that are never overridden and replacing them with
 their values at build time and thus reducing the CSS bundle-size and improving
 performance.
+
+### Constants?
+
+Variables is a safe way to extract data into external modules without needing
+cross-module compilation. It might be useful to have a way to declare constants
+that can never be changed which can then be replaced in the generated CSS file
+with their values.
