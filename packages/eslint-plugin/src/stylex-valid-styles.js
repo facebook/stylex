@@ -1803,6 +1803,15 @@ const CSSProperties = {
   gridTemplateColumns: gridTemplateColumns,
   gridTemplateRows: gridTemplateRows,
 
+  hangingPunctuation: makeUnionRule(
+    'none',
+    'first',
+    'last',
+    'allow-end',
+    'force-end',
+    isString,
+  ),
+  hyphenateCharacter: isString,
   hyphens: hyphens,
   imageOrientation: imageOrientation,
   imageRendering: imageRendering,
@@ -1843,6 +1852,19 @@ const CSSProperties = {
   justifyContent: justifyContent,
   justifyItems: justifyItems,
   justifySelf: justifySelf,
+  // Not supported in any browser yet.
+  // justifyTracks: makeUnionRule(
+  //   'start',
+  //   'end',
+  //   'center',
+  //   'normal',
+  //   'space-between',
+  //   'space-around',
+  //   'space-evenly',
+  //   'stretch',
+  //   'left',
+  //   'right',
+  // ),
   kerning: kerning,
   letterSpacing: letterSpacing,
   lineBreak: lineBreak,
@@ -1874,6 +1896,12 @@ const CSSProperties = {
   markerOffset: markerOffset,
   markerStart: markerStart,
   mask: mask,
+  maskBorderMode: makeUnionRule('alpha', 'luminance'),
+  maskBorderOutset: isString,
+  maskBorderRepeat: makeUnionRule('stretch', 'repeat', 'round', 'space'),
+  maskBorderSlice: isString,
+  maskBorderSource: isString,
+  maskBorderWidth: isString,
   maskClip: maskClip,
   maskComposite: maskComposite,
   maskImage: maskImage,
@@ -1891,10 +1919,15 @@ const CSSProperties = {
   motionRotation: motionRotation,
   objectFit: objectFit,
   objectPosition: objectPosition,
+
+  offsetAnchor: isString,
+  offsetPath: isString,
+  offsetDistance: width,
   offsetBlockEnd: offsetBlockEnd,
   offsetBlockStart: offsetBlockStart,
   offsetInlineEnd: offsetInlineEnd,
   offsetInlineStart: offsetInlineStart,
+  offsetRotate: isString,
   opacity: opacity,
   order: order,
   orphans: orphans,
@@ -1920,8 +1953,15 @@ const CSSProperties = {
   overflowX: overflowX,
   overflowY: overflowY,
   overscrollBehavior: overscrollBehavior,
+  // Currently Unsupported
+  // overscrollBehaviorInline: overscrollBehaviorX,
   overscrollBehaviorX: overscrollBehaviorX,
   overscrollBehaviorY: overscrollBehaviorY,
+  // Currently Unsupported
+  // overscrollBehaviorBlock: overscrollBehaviorY,
+  overflowClipMargin: isString,
+
+  paintOrder: makeUnionRule('normal', 'fill', 'stroke', 'markers', isString),
 
   padding: padding,
   paddingBlock: paddingTop,
@@ -1949,11 +1989,20 @@ const CSSProperties = {
   perspectiveOrigin: perspectiveOrigin,
   pointerEvents: pointerEvents,
   position: position,
+
+  // Shorthand not yet supported
+  // placeContent: isString,
+  printColorAdjust: makeUnionRule('economy', 'exact'),
+
   quotes: quotes,
   resize: resize,
   rest: rest,
   restAfter: restAfter,
   restBefore: restBefore,
+
+  rotate: isString, // angle
+  scale: makeUnionRule(isString, isNumber),
+  translate: makeUnionRule(isString, isNumber),
 
   rowGap: rowGap,
   rubyAlign: rubyAlign,
@@ -1964,6 +2013,29 @@ const CSSProperties = {
   scrollSnapPaddingTop: scrollSnapPaddingTop,
   scrollSnapAlign: scrollSnapAlign,
   scrollSnapType: scrollSnapType,
+
+  // scrollMargin: makeUnionRule(isNumber, isString),
+  scrollMarginBlockEnd: makeUnionRule(isNumber, isString),
+  scrollMarginBlockStart: makeUnionRule(isNumber, isString),
+  scrollMarginBottom: makeUnionRule(isNumber, isString),
+  scrollMarginInlineEnd: makeUnionRule(isNumber, isString),
+  scrollMarginInlineStart: makeUnionRule(isNumber, isString),
+  scrollMarginLeft: makeUnionRule(isNumber, isString),
+  scrollMarginRight: makeUnionRule(isNumber, isString),
+  scrollMarginTop: makeUnionRule(isNumber, isString),
+  scrollPaddingBlockEnd: makeUnionRule(isNumber, isString),
+  scrollPaddingBlockStart: makeUnionRule(isNumber, isString),
+  scrollPaddingBottom: makeUnionRule(isNumber, isString),
+  scrollPaddingInlineEnd: makeUnionRule(isNumber, isString),
+  scrollPaddingInlineStart: makeUnionRule(isNumber, isString),
+  scrollPaddingLeft: makeUnionRule(isNumber, isString),
+  scrollPaddingRight: makeUnionRule(isNumber, isString),
+  scrollPaddingTop: makeUnionRule(isNumber, isString),
+  scrollSnapMarginBottom: makeUnionRule(isNumber, isString),
+  scrollSnapMarginLeft: makeUnionRule(isNumber, isString),
+  scrollSnapMarginRight: makeUnionRule(isNumber, isString),
+  scrollSnapMarginTop: makeUnionRule(isNumber, isString),
+
   shapeImageThreshold: shapeImageThreshold,
   shapeMargin: shapeMargin,
   shapeOutside: shapeOutside,
@@ -2045,6 +2117,9 @@ const CSSProperties = {
   wordWrap: wordWrap,
   writingMode: writingMode,
   zIndex: zIndex,
+
+  // Purposely not supported because it is not supported in Firefox.
+  // zoom: makeUnionRule('normal', 'reset', isNumber),
 };
 const CSSPropertyKeys = Object.keys(CSSProperties);
 for (const key of CSSPropertyKeys) {

@@ -84,6 +84,7 @@ const unitlessNumberProperties = new Set([
   'strokeMiterlimit',
   'strokeOpacity',
   'strokeWidth',
+  'scale',
 ]);
 
 // List of properties that have custom suffixes for numbers
