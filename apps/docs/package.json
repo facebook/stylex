@@ -22,14 +22,16 @@
     "@docusaurus/preset-classic": "2.4.1",
     "@mdx-js/react": "^1.6.22",
     "@orama/plugin-docusaurus": "^1.2.4",
+    "@stylexjs/stylex": "0.2.0-beta.21",
     "clsx": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-syntax-highlighter": "^15.5.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.18.2",
-    "clean-css": "^5.3.1",
+    "@babel/eslint-parser": "^7.22.15",
+    "@stylexjs/babel-plugin": "0.2.0-beta.21",
+    "clean-css": "^5.3.2",
     "eslint": "^8.19.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-header": "^3.1.1",

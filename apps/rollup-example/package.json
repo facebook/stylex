@@ -12,7 +12,7 @@
     "@stylexjs/stylex": "0.2.0-beta.21"
   },
   "devDependencies": {
-    "rollup": "^3.2.3",
+    "rollup": "^4.0.2",
     "@stylexjs/rollup-plugin": "0.2.0-beta.21"
   }
 }

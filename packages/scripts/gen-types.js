@@ -72,7 +72,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
             continue;
           }
           const outputTSContents = await translate.translateFlowToTSDef(
-            fileContents,
+            fileContents.replace(/\$ReadOnlyMap/g, 'ReadonlyMap'),
             monorepoPackage.prettier,
           );
           await fsPromises.writeFile(

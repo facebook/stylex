@@ -181,7 +181,7 @@ export type TokensFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
 >
   ? Tokens
   : empty;
-type IDFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
+type IDFromTheme<+T: Theme<{ +[string]: mixed }>> = T extends Theme<
   { +[string]: mixed },
   infer ID,
 >
