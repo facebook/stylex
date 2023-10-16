@@ -11,7 +11,8 @@
     "test": "jest"
   },
   "devDependencies": {
-    "hermes-eslint": "^0.16.0"
+    "hermes-eslint": "^0.16.0",
+    "micromatch": "^4.0.5"
   },
   "dependencies": {},
   "files": [

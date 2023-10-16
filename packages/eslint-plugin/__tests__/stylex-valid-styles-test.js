@@ -142,7 +142,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           }
         });
       `,
-      options: [{ allowOuterPsuedoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: true }],
     },
     {
       code: `
@@ -156,7 +156,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           }
         });
       `,
-      options: [{ allowOuterPsuedoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: true }],
     },
     // test for positive numbers
     'import stylex from "stylex"; stylex.create({default: {marginStart: 5}});',
@@ -518,7 +518,7 @@ revert`,
     },
     {
       code: "import stylex from 'stylex'; stylex.create({default: {':hover': {textAlin: 'left'}}});",
-      options: [{ allowOuterPsuedoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -527,7 +527,7 @@ revert`,
     },
     {
       code: "import stylex from 'stylex'; stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
-      options: [{ allowOuterPsuedoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message: `textAlign value must be one of:
@@ -563,7 +563,7 @@ revert`,
           }
         });
       `,
-      options: [{ allowOuterPsuedoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message:
@@ -584,7 +584,7 @@ revert`,
           }
         });
       `,
-      options: [{ allowOuterPsuedoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
           message: 'You cannot nest styles more than one level deep',
@@ -1220,6 +1220,172 @@ revert`,
             'inherit\n' +
             'unset\n' +
             'revert',
+        },
+      ],
+    },
+  ],
+});
+
+eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
+  valid: [
+    `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        default: {
+          display: 'grid',
+          grid: 'repeat(3, 80px) / auto-flow',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateRows: 'repeat(3, 1fr)',
+        }
+      });
+    `,
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+            grid: 'repeat(3, 80px) / auto-flow',
+          }
+        });
+      `,
+      options: [
+        {
+          propLimits: {
+            'grid+([a-zA-Z])': {
+              limit: null,
+              reason: 'disallow `grid-*` props but not `grid` for testing',
+            },
+          },
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+          }
+        });
+      `,
+      options: [
+        {
+          propLimits: {
+            display: {
+              limit: ['grid', 'block', 'flex'],
+              reason: 'disallow `grid-*` props but not `grid` for testing',
+            },
+          },
+        },
+      ],
+    },
+  ],
+  invalid: [
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+          }
+        });
+      `,
+      options: [
+        {
+          propLimits: {
+            display: {
+              limit: ['block', 'flex'],
+              reason: 'disallow `grid-*` props but not `grid` for testing',
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          message: `display value must be one of:
+block
+flex
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+            grid: 'repeat(3, 80px) / auto-flow',
+          }
+        });
+      `,
+      options: [
+        {
+          propLimits: {
+            grid: {
+              limit: null,
+              reason: 'grid properties disallowed for testing',
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          message: `grid value must be one of:
+grid properties disallowed for testing`,
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+          }
+        });
+      `,
+      options: [
+        {
+          propLimits: {
+            'grid*': {
+              limit: null,
+              reason: 'grid properties disallowed for testing',
+            },
+          },
+        },
+      ],
+      errors: [
+        {
+          message: `gridTemplateColumns value must be one of:
+grid properties disallowed for testing`,
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+            grid: 'repeat(3, 80px) / auto-flow',
+          }
+        });
+      `,
+      options: [
+        {
+          banPropsForLegacy: true,
+        },
+      ],
+      errors: [
+        {
+          message: `grid value must be one of:
+This property is not supported in legacy StyleX resolution.`,
         },
       ],
     },

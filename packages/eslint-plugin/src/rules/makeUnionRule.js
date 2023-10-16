@@ -17,7 +17,7 @@ import type { Expression, Pattern, Property } from 'estree';
 import makeLiteralRule from './makeLiteralRule';
 
 export default function makeUnionRule(
-  ...rules: $ReadOnlyArray<string | RuleCheck>
+  ...rules: $ReadOnlyArray<number | string | RuleCheck>
 ): RuleCheck {
   return (
     node: Expression | Pattern,
@@ -35,7 +35,12 @@ export default function makeUnionRule(
     }
     const failedRules = [];
     for (const _rule of rules) {
-      const rule = typeof _rule === 'string' ? makeLiteralRule(_rule) : _rule;
+      const rule =
+        typeof _rule === 'string'
+          ? makeLiteralRule(_rule)
+          : typeof _rule === 'number'
+          ? makeLiteralRule(_rule)
+          : _rule;
 
       const check = rule(node, variables, prop);
       if (check === undefined) {

@@ -29,6 +29,7 @@ import type {
   VariableDeclarator,
   PrivateIdentifier,
 } from 'estree';
+import micromatch from 'micromatch';
 /*:: import { Rule } from 'eslint'; */
 import isCSSVariable from './rules/isCSSVariable';
 import makeLiteralRule from './rules/makeLiteralRule';
@@ -2184,9 +2185,6 @@ const pseudoClassesAndAtRules = makeUnionRule(
 
 const allModifiers = makeUnionRule(pseudoElements, pseudoClassesAndAtRules);
 
-// Maybe add this later.
-// const pseudoAllowlist = new Set([]);
-
 const stylexValidStyles = {
   meta: {
     type: 'problem',
@@ -2203,8 +2201,9 @@ const stylexValidStyles = {
           validImports: {
             type: 'array',
             items: { type: 'string' },
+            default: ['stylex', '@stylexjs/stylex'],
           },
-          allowOuterPsuedoAndMedia: {
+          allowOuterPseudoAndMedia: {
             type: 'boolean',
             default: false,
           },
@@ -2241,12 +2240,77 @@ const stylexValidStyles = {
   create(context: Rule.RuleContext): { ... } {
     const variables = new Map<string, Expression>();
 
+    const legacyReason =
+      'This property is not supported in legacy StyleX resolution.';
+
+    type PropLimits = {
+      [string]: {
+        limit: null | string | number | Array<string | number>,
+        reason: string,
+      },
+    };
+
+    type Schema = {
+      validImports: Array<string>,
+      allowOuterPseudoAndMedia: boolean,
+      banPropsForLegacy: boolean,
+      propLimits?: PropLimits,
+    };
+
+    const legacyProps: PropLimits = {
+      'grid*': { limit: null, reason: legacyReason },
+      rowGap: { limit: null, reason: legacyReason },
+      columnGap: { limit: null, reason: legacyReason },
+      'mask+([a-zA-Z])': { limit: null, reason: legacyReason },
+      blockOverflow: { limit: null, reason: legacyReason },
+      inlineOverflow: { limit: null, reason: legacyReason },
+    };
+
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
-      allowOuterPsuedoAndMedia,
-      // banPropsForLegacy,
-      // propLimits,
-    } = context.options[0] || {};
+      allowOuterPseudoAndMedia,
+      banPropsForLegacy = false,
+      propLimits = {},
+    }: Schema = context.options[0] || {};
+
+    const overrides: PropLimits = {
+      ...(banPropsForLegacy ? legacyProps : {}),
+      ...propLimits,
+    };
+
+    const CSSPropertiesWithOverrides: { [string]: RuleCheck } = {
+      ...CSSProperties,
+    };
+    for (const overrideKey in overrides) {
+      const { limit, reason } = overrides[overrideKey];
+      const overrideValue =
+        limit === null
+          ? showError(reason)
+          : limit === '*'
+          ? makeUnionRule(isString, isNumber, all)
+          : limit === 'string'
+          ? makeUnionRule(isString, all)
+          : limit === 'number'
+          ? makeUnionRule(isNumber, all)
+          : typeof limit === 'string' || typeof limit === 'number'
+          ? makeUnionRule(limit, all)
+          : Array.isArray(limit)
+          ? makeUnionRule(...limit, all)
+          : undefined;
+      if (overrideValue === undefined) {
+        // skip
+        continue;
+      }
+      if (overrideKey.includes('*') || overrideKey.includes('+')) {
+        for (const key in CSSPropertiesWithOverrides) {
+          if (micromatch.isMatch(key, overrideKey)) {
+            CSSPropertiesWithOverrides[key] = overrideValue;
+          }
+        }
+      } else {
+        CSSPropertiesWithOverrides[overrideKey] = overrideValue;
+      }
+    }
 
     const stylexCreateVarsFileExtension = '.stylex';
     const stylexCreateVarsTokenImports = new Set<string>();
@@ -2317,7 +2381,7 @@ const stylexValidStyles = {
           if (keyName.startsWith('@') || keyName.startsWith(':')) {
             if (level === 0) {
               const ruleCheck = (
-                allowOuterPsuedoAndMedia ? allModifiers : pseudoElements
+                allowOuterPseudoAndMedia ? allModifiers : pseudoElements
               )(key, variables);
 
               if (ruleCheck !== undefined) {
@@ -2325,7 +2389,7 @@ const stylexValidStyles = {
                   ({
                     node: style.value,
                     loc: style.value.loc,
-                    message: allowOuterPsuedoAndMedia
+                    message: allowOuterPseudoAndMedia
                       ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
                       : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
                   }: $ReadOnly<Rule.ReportDescriptor>),
@@ -2416,7 +2480,7 @@ const stylexValidStyles = {
             return context.report(diagnostic);
           }
         }
-        const ruleChecker = CSSProperties[key];
+        const ruleChecker = CSSPropertiesWithOverrides[key];
         if (ruleChecker == null) {
           const closestKey = CSSPropertyKeys.find((cssProp) => {
             const distance = getDistance(key, cssProp, 2);
