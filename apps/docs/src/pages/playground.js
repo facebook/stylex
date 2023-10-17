@@ -8,13 +8,13 @@
  */
 
 import * as React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 
 export default function Playground() {
   return (
     <Layout>
-      <div className={stylex(styles.container)}>
+      <div {...stylex.spread(styles.container)}>
         <h1>Playground</h1>
         <p>Coming soon...</p>
       </div>

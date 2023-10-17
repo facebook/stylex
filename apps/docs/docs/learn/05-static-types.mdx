@@ -1,0 +1,320 @@
+---
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Static Types
+
+## Types for Style Props
+
+StyleX comes with full support for Static Types. Apart from having to use a few
+helper types, the type definitions should feel no different from types used for
+simple inline style objects. The most common type you might need to use is
+called `StyleXStyle<>`. This lets you accept an object of arbitrary StyleX
+styles.
+
+<Tabs>
+  <TabItem value="typescript" label="Typescript" default>
+
+```tsx
+type Props = {
+  ...
+  style?: StyleXStyles,
+};
+
+function MyComponent({style, ...otherProps}: Props): React.MixedElement {
+  return (
+    <div
+      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+    >
+      {/* ... */}
+    </div>
+  );
+}
+```
+
+  </TabItem>
+  <TabItem value="flow" label="Flow">
+
+```tsx
+type Props = $ReadOnly<{
+  ...
+  style?: StyleXStyles<>,
+}>;
+
+function MyComponent({style, ...otherProps}: Props): React.MixedElement {
+  return (
+    <div
+      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+    >
+      {/* ... */}
+    </div>
+  );
+}
+```
+
+  </TabItem>
+</Tabs>
+
+Since `style` is just a regular prop, you can use an arbitrary name for it and
+you can use multiple props if you want to be able accept styles for multiple
+HTML elements within your component.
+
+<details>
+<summary>
+Disallowing dynamic inline styles
+</summary>
+
+When you author styles with dynamic values that cannot be known ahead of time,
+the `StyleXStyle` object returns contains bother atomic classNames _and_ inline
+styles. The type `StyleXStyles` allows a mix of both. As such, you should
+usually default to using `StyleXStyles` and `stylex.spread` in your code.
+
+However, if you’re using StyleX in a codebase without client-side JavaScript,
+you can choose to disallow any dynamic styles by using the `StaticStyles` type
+instead of `StyleXStyles`.
+
+The rest of the code can remain unchanged.
+
+</details>
+
+## Constraining styles
+
+When you want to accept external styles, but not arbitrary styles, it might make
+sense to create an allow list for the styles properties (and values) that can be
+accepted. To do this, you can simply use the `StyleXStyle<{...}>` type with a
+type argument.
+
+## Accepting from a set of style properties
+
+Say you wanted to accept styles that allowed changing the colors of the
+component but nothing else, you could write types that looked like this:
+
+<Tabs>
+  <TabItem value="typescript" label="Typescript" default>
+
+```tsx
+type Props = {
+  // ...
+  style?: StyleXStyles<{
+    color?: string;
+    backgroundColor?: string;
+    borderColor?: string;
+    borderTopColor?: string;
+    borderEndColor?: string;
+    borderBottomColor?: string;
+    borderStartColor?: string;
+  }>;
+};
+```
+
+  </TabItem>
+  <TabItem value="flow" label="Flow">
+
+```tsx
+type Props = $ReadOnly<{
+  // ...
+  style?: StyleXStyles<{
+    color?: string;
+    backgroundColor?: string;
+    borderColor?: string;
+    borderTopColor?: string;
+    borderEndColor?: string;
+    borderBottomColor?: string;
+    borderStartColor?: string;
+  }>;
+}>;
+```
+
+  </TabItem>
+</Tabs>
+
+Now, the `style` prop will accept only the properties that you have defined but
+disallow anything else.
+
+:::info Good Default Styles
+
+It is a good practice to make the keys of the style types optional and have
+baseline styles in the component itself.
+
+:::
+
+:::danger Typescript may not catch extra style properties
+
+Typescript object types don’t error when given objects with extra properties.
+We’ve taken steps to mitigate this issue, but there may be edge-cases where
+you’ll be able to pass in extra, disallowed styles without a type error.
+
+:::
+
+## Limiting the possible values for Styles
+
+While it’s useful to limit what style properties can be passed in, sometimes it
+makes sense to go a step further and limit the possible values for those styles
+too. For example, if your component wants to accept `marginTop` but only accept
+one of `0`, `4`, or `8` pixels as values, you can do that too!
+
+<Tabs>
+  <TabItem value="typescript" label="Typescript" default>
+
+```tsx
+type Props = {
+  ...
+  // Only accept styles for marginTop and nothing else.
+  // the value for marginTop can only be 0, 4, or 8.
+  style?: StyleXStyles<{
+    marginTop: 0 | 4 | 8 | 16
+  }>,
+};
+```
+
+  </TabItem>
+  <TabItem value="flow" label="Flow">
+
+```tsx
+type Props = $ReadOnly<{
+  ...
+  // Only accept styles for marginTop and nothing else.
+  // the value for marginTop can only be 0, 4, or 8.
+  style?: StyleXStyles<{
+    marginTop: 0 | 4 | 8 | 16
+  }>,
+}>;
+```
+
+  </TabItem>
+</Tabs>
+
+Now, this component only accepts styles that have a `marginTop` property and no
+other properties. The value for `marginTop` can only be one of `0`, `4`, `8`, or
+`16`.
+
+:::info
+
+StyleX accepts numbers instead of strings for pixel values for convenience.
+However, strings and numbers have separate types. So, if someone passes in
+StyleXStyles for `marginTop: '4px'`, it will cause a type error.
+
+To keep things simple, we recommend using numbers for pixel values in all cases
+and we plan to create an Elint rule to enforce this.
+
+:::
+
+## Disallowing specific properties
+
+There are cases where allowing arbitrary styles may be too permissive for your
+custom component and you want to ensure that certain style properties are never
+overridden.
+
+For example, you may want to disallow overriding layout properties while
+allowing other styles that won’t break the layout.
+
+For these use cases, you can use the `StyleXStylesWithout<>` type. This type is
+similar to Typescript’s `Omit<>`.
+
+<Tabs>
+  <TabItem value="typescript" label="Typescript" default>
+
+```tsx
+type NoLayout = StyleXStylesWithout<{
+  postion: unknown,
+  display: unknown,
+  top: unknown,
+  start: unknown,
+  end: unknown,
+  bottom: unknown,
+  border: unknown,
+  borderWidth: unknown,
+  borderBottomWidth: unknown,
+  borderEndWidth: unknown,
+  borderStartWidth: unknown,
+  borderTopWidth: unknown,
+  margin: unknown,
+  marginBottom: unknown,
+  marginEnd: unknown,
+  marginStart: unknown,
+  marginTop: unknown,
+  padding: unknown,
+  paddingBottom: unknown,
+  paddingEnd: unknown,
+  paddingStart: unknown,
+  paddingTop: unknown,
+  width: unknown,
+  height: unknown,
+  flexBasis: unknown,
+  overflow: unknown,
+  overflowX: unknown,
+  overflowY: unknown,
+}>;
+
+type Props = {
+  // ...
+  style?: NoLayout,
+};
+
+function MyComponent({style, ...}: Props) {
+  return (
+    <div
+      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+    >
+      {/* ... */}
+    </div>
+  );
+}
+```
+
+</TabItem>
+<TabItem value="flow" label="Flow">
+
+```tsx
+type NoLayout = StyleXStylesWithout<{
+  postion: mixed,
+  display: mixed,
+  top: mixed,
+  start: mixed,
+  end: mixed,
+  bottom: mixed,
+  border: mixed,
+  borderWidth: mixed,
+  borderBottomWidth: mixed,
+  borderEndWidth: mixed,
+  borderStartWidth: mixed,
+  borderTopWidth: mixed,
+  margin: mixed,
+  marginBottom: mixed,
+  marginEnd: mixed,
+  marginStart: mixed,
+  marginTop: mixed,
+  padding: mixed,
+  paddingBottom: mixed,
+  paddingEnd: mixed,
+  paddingStart: mixed,
+  paddingTop: mixed,
+  width: mixed,
+  height: mixed,
+  flexBasis: mixed,
+  overflow: mixed,
+  overflowX: mixed,
+  overflowY: mixed,
+}>;
+
+type Props = $ReadOnly<{
+  // ...
+  style?: NoLayout,
+}>;
+
+function MyComponent({style, ...}: Props): React.MixedElement {
+  return (
+    <div
+      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+    >
+      {/* ... */}
+    </div>
+  );
+}
+```
+
+</TabItem>
+</Tabs>

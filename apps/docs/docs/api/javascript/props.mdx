@@ -1,0 +1,46 @@
+---
+sidebar_position: 2
+---
+
+# `stylex.props`
+
+Takes an StyleX style or array of StyleX styles, and returns a props object.
+Values can be also be `null`, `undefined`, or `false`.
+
+The return value should be onto an element to apply the styles directly.
+
+```ts
+function props(styles: StyleXStyles | StyleXStyles[]): {
+  className: string;
+  style: {[key: string]: string};
+};
+```
+
+### Example use:
+
+```jsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  root: {
+    backgroundColor: 'red',
+    padding: '1rem',
+    paddingInlineStart: '2rem',
+  },
+  conditional: {
+    backgroundColor: 'blue',
+  },
+  dynamic: (opacity) => ({
+    opacity,
+  }),
+});
+
+<div
+  {...styles.props([
+    styles.root,
+    condition && styles.conditional,
+    props.style,
+    styles.dynamic(state.opacity),
+  ])}
+/>;
+```

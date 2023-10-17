@@ -1,0 +1,263 @@
+---
+sidebar_position: 1
+---
+
+# Defining styles
+
+StyleX uses an expressive JavaScript API that is similar to working with inline
+styles in React DOM, or styles in React Native.
+
+## Constraints
+
+Since `StyleX` depends on ahead-of-time compilation, it is important for all
+your styles to be statically analyzable. This means that every "Raw Style
+Object" must only contain:
+
+- Plain Object Literals
+- String Literals
+- Number Literals
+- Array Literals
+- `null` or `undefined`
+- Constants, simple expressions, and built-in methods (e.g., `.toString()`) that
+  resolve to one of the above.
+- And arrow functions for dynamic styles
+
+The following are **not** allowed:
+
+- Function calls (except StyleX functions)
+- Values imported from other modules (except for CSS Variables created using
+  StyleX from a `.stylex.js` file.)
+
+## Creating styles
+
+Styles must be created with the `stylex.create` function. You can define one or
+more "namespaces", or objects of styles. In the example below, there are 2
+"namespaces" - one called `base` and the other `highlighted`. The names are
+arbitrary and represent the constant used to capture the result of the
+`create()` function call.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  base: {
+    fontSize: 16,
+    lineHeight: 1.5,
+    color: 'rgb(60,60,60)',
+  },
+  highlighted: {
+    color: 'rebeccapurple',
+  },
+});
+```
+
+## Pseudo-classes
+
+Pseudo-classes represent different states of an element. In StyleX, declarations
+for pseudo-classes are nested within properties. For example, let's say we have
+a button that currently has a `lightblue` background.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  button: {
+    backgroundColor: 'lightblue',
+  },
+});
+```
+
+If we want to add pseudo-classes to change the background color for different
+states, we replace the `lightblue` string literal with an object of
+pseudo-states.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  button: {
+    backgroundColor: {
+      default: 'lightblue',
+      ':hover': 'blue',
+      ':active': 'darkblue',
+    },
+  },
+});
+```
+
+## Pseudo-elements
+
+:::note Avoid Pseudo Elements
+
+We recommend avoiding pseudo-elements when possible and relying on actual HTML
+elements instead, i.e., replace `::before` and `::after` with elements like
+`div` or `span`.
+
+:::
+
+Pseudo-elements are a way of targeting shadow DOM elements contained within the
+native HTML elements provided by user agents. For example, `::placeholder`
+references the element that contains placeholder text within an `input` or
+`textarea` element. To target pseudo-elements in StyleX, they must be defined as
+a top-level key within a namespace.
+
+```tsx
+const styles = stylex.create({
+  input: {
+    // pseudo-element
+    '::placeholder': {
+      color: '#999',
+    },
+    color: {
+      default: '#333',
+      // pseudo-class
+      ':invalid': 'red',
+    },
+  },
+});
+```
+
+## Media Queries (and other `@` Rules)
+
+Media Queries can, similarly, be nested within style definitions.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  base: {
+    width: {
+      default: 800,
+      '@media (max-width: 800px)': '100%',
+    },
+  },
+});
+```
+
+## Combining conditions
+
+Your Style Values can be be nested more than one level deep when you need to
+combine Media Queries and Pseudo Selectors
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  button: {
+    color: {
+      default: 'var(--blue-link)',
+      ':hover': {
+        default: null,
+        '@media (hover: hover)': 'scale(1.1)',
+      },
+      ':active': 'scale(0.9)',
+    },
+  },
+});
+```
+
+:::info
+
+The `default` case is required when authoring conditional styles. If you don't
+want any style to be applied in the default case, you can use `null` as the
+value.
+
+Using `null` for a (non-`default`) condition has no effect and should be
+considered invalid.
+
+:::
+
+## Dynamic styles
+
+:::warning Use Sparingly
+
+Dynamic styles are an advanced feature and should be used sparingly. For the
+majority of use-cases,
+[conditional styles](./02-using-styles.mdx#conditional-styles) should be
+sufficient.
+
+:::
+
+StyleX generates all styles at compile-time which means you need to _know_ all
+those styles ahead of time as well. But sometimes you just don't know what you
+will need until runtime. For example, you may be styling a bar chart where the
+bar changes colors based on the data.
+
+Usually, you need to resort to using inline styles for something like this. This
+comes with some big downsides, including:
+
+- Inability to use pseudo-classes or media queries
+- Inline Styles have a much higher specificity and overriding them with static
+  styles can be problematic.
+
+StyleX provides a way to define styles that can have dynamic values resolved at
+runtime by using functions instead of objects to define styles.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  base: (r, g, b) => ({
+    fontSize: 16,
+    lineHeight: 1.5,
+    color: `rgb(${r},${g},${b})`,
+  }),
+});
+
+const r = Math.floor(Math.random() * 255);
+const g = Math.floor(Math.random() * 255);
+const b = Math.floor(Math.random() * 255);
+
+<div {...stylex.props(styles.base(r, g, b))} />;
+```
+
+**NOTE**: The function body _must_ be an object literal. You cannot use a
+function body with multiple statements.
+
+## Fallback styles
+
+There are situations in StyleX where, when you need fallback styles for browsers
+that don't support a certain new style property.
+
+In CSS you may do something like this:
+
+```css
+.header {
+  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
+}
+```
+
+This kind of syntax is not possible when using Javascript objects. So in StyleX
+you can use the `firstThatWorks` function to achieve the same thing.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  header: {
+    position: stylex.firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
+  },
+});
+```
+
+## Keyframe animations
+
+You can use the `stylex.keyframes()` function to define keyframe animations.
+
+```tsx
+import stylex from '@stylexjs/stylex';
+
+const fadeIn = stylex.keyframes({
+  from: {opacity: 0},
+  to: {opacity: 1},
+});
+
+const styles = stylex.create({
+  base: {
+    animationName: fadeIn,
+    animationDuration: '1s',
+  },
+});
+```

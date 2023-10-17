@@ -67,19 +67,29 @@ const config = {
         },
         items: [
           {
-            to: '/docs',
+            label: 'Learn',
+            to: '/docs/learn',
             position: 'left',
-            label: 'Docs',
           },
           {
+            label: 'API',
+            to: '/docs/api',
+            position: 'left',
+          },
+          {
+            label: 'Playground',
             to: '/playground',
             position: 'left',
-            label: 'Playground',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
+            label: 'Blog',
+            to: '/blog',
+            position: 'right',
+          },
+          {
+            'aria-label': 'GitHub',
+            className: 'navbar-github-link',
+            href: 'https://github.com/facebook/stylex',
             position: 'right',
           },
         ],
@@ -87,48 +97,48 @@ const config = {
       footer: {
         links: [
           {
-            title: 'Learn',
+            title: 'Develop',
             items: [
               {
-                label: 'Style Guide',
-                to: 'docs/',
+                label: 'Learn',
+                to: '/docs/learn',
+              },
+              {
+                label: 'API',
+                to: '/docs/api',
               },
             ],
           },
           {
-            title: 'Community',
+            title: 'Explore',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Playground',
+                to: '/playground',
               },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
               {
                 label: 'Blog',
-                to: 'blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: '/blog',
               },
             ],
           },
           {
-            title: 'Legal',
-            // Please do not remove the privacy and terms, it's a legal requirement.
+            title: 'Participate',
             items: [
+              {
+                label: 'GitHub',
+                href: 'https://github.com/facebook/stylex/',
+              },
+              {
+                label: 'Acknowledgements',
+                href: '/docs/learn/acknowledgements',
+              },
+            ],
+          },
+          {
+            title: 'Other',
+            items: [
+              // Please do not remove the privacy and terms, it's a legal requirement.
               {
                 label: 'Privacy',
                 href: 'https://opensource.fb.com/legal/privacy/',
@@ -136,14 +146,6 @@ const config = {
               {
                 label: 'Terms',
                 href: 'https://opensource.fb.com/legal/terms/',
-              },
-              {
-                label: 'Data Policy',
-                href: 'https://opensource.fb.com/legal/data-policy/',
-              },
-              {
-                label: 'Cookie Policy',
-                href: 'https://opensource.fb.com/legal/cookie-policy/',
               },
             ],
           },

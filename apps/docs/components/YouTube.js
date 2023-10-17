@@ -7,8 +7,8 @@
  * @format
  */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as React from 'react';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   container: {
@@ -28,7 +28,7 @@ const styles = stylex.create({
 
 export default function YouTube({width: _w, height: _h, src, title}) {
   return (
-    <div className={stylex(styles.container)}>
+    <div {...stylex.spread(styles.container)}>
       <iframe
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen={true}

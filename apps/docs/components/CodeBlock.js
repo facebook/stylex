@@ -7,8 +7,8 @@
  * @format
  */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as React from 'react';
+import * as stylex from '@stylexjs/stylex';
 import {PrismLight as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {useColorMode} from '@docusaurus/theme-common';
 import tsx from 'react-syntax-highlighter/dist/cjs/languages/prism/tsx';
@@ -71,7 +71,7 @@ const darkThemeH = tweakStyleH(themeDark);
 
 export default function CodeBlock({
   children,
-  xstyle,
+  style,
   language = 'tsx',
   highlight = false,
 }) {
@@ -85,7 +85,7 @@ export default function CodeBlock({
     : lightTheme;
   return (
     <SyntaxHighlighter
-      className={stylex(xstyle)}
+      {...stylex.spread(style)}
       language={language}
       style={finalTheme}>
       {children}

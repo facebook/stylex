@@ -8,12 +8,24 @@
  */
 
 import * as React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 
-const STEP_1 = `import stylex from '@stylexjs/stylex';
+const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
+
+const config = () => ({
+  plugins: [
+    plugin({ ...options })
+  ]
+})
+
+export default config;
+
+`;
+
+const STEP_CREATE = `import stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   hello: {
@@ -26,72 +38,80 @@ const styles = stylex.create({
 
 `;
 
-const STEP_2 = `import stylex from '@stylexjs/stylex';
-const styles = stylex.create({
-  hello: {
-    //...
-    fontSize: '8rem',
-  }
-});
+const STEP_USE = `import stylex from '@stylexjs/stylex';
 
-<div {...stylex.spread([styles.hello])}>
-  🎉
-</div>
+const HelloWorld = (props) => (
+  <div {...stylex.props([
+    styles.hello,
+    props.world
+  ])} >
+    🎉
+  </div>
+)
 
 `;
+
+const Card = ({children}) => (
+  <div {...stylex.spread(styles.card)}>{children}</div>
+);
+
+const CardTitle = ({children}) => (
+  <h3 {...stylex.spread(styles.cardTitle)}>{children}</h3>
+);
+
+const CardDescription = ({children}) => (
+  <p {...stylex.spread(styles.cardDescription)}>{children}</p>
+);
+
+const CodeContainer = ({children}) => (
+  <div {...stylex.spread(styles.codeContainer)}>
+    <CodeBlock style={styles.code}>{children}</CodeBlock>
+  </div>
+);
 
 export default function Home() {
   return (
     <Layout>
-      <main className={stylex(styles.main)}>
-        <section className={stylex(styles.hero)}>
-          <h1 className={stylex(styles.title)}>
-            <StylexAnimatedLogo xstyle={styles.logo} />
-            {/* <StylexAnimatedLogo /> */}
+      <main {...stylex.spread(styles.main)}>
+        <section {...stylex.spread(styles.hero)}>
+          <h1 {...stylex.spread(styles.title)}>
+            <StylexAnimatedLogo style={styles.logo} />
           </h1>
-          <h2 className={stylex(styles.subtitle)}>
+          <h2 {...stylex.spread(styles.subtitle)}>
             The{' '}
             <span
-              className={stylex(
+              {...stylex.spread([
                 styles.subtitleHighlight,
                 styles.highlightBlue,
-              )}>
+              ])}>
               Power
             </span>{' '}
             of Inline Styles.
             <br />
             The Speed of{' '}
-            <span className={stylex(styles.subtitleHighlight)}>
+            <span {...stylex.spread(styles.subtitleHighlight)}>
               Atomic
             </span>{' '}
             CSS.
           </h2>
         </section>
-        <section className={stylex(styles.getStarted)}>
-          <h1 className={stylex(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
-          <div className={stylex(styles.card)}>
-            <h3 className={stylex(styles.cardTitle)}>Step 1</h3>
-            <p className={stylex(styles.cardDescription)}>Define Your Styles</p>
-            <div className={stylex(styles.codeContainer)}>
-              <CodeBlock xstyle={styles.code}>{STEP_1}</CodeBlock>
-            </div>
-          </div>
-          <div className={stylex(styles.card)}>
-            <h3 className={stylex(styles.cardTitle)}>Step 2</h3>
-            <p className={stylex(styles.cardDescription)}>Use Your Styles</p>
-            <div className={stylex(styles.codeContainer)}>
-              <CodeBlock xstyle={styles.code}>{STEP_2}</CodeBlock>
-            </div>
-          </div>
-          <div className={stylex(styles.card)}>
-            <h3 className={stylex(styles.cardTitle)}>Step 3</h3>
-            <p className={stylex(styles.cardDescription)}>
-              There is no step 3!
-            </p>
-            <div className={stylex(styles.codeContainer, styles.codeEmpty)}>
-              🎉
-            </div>
-          </div>
+        <section {...stylex.spread(styles.getStarted)}>
+          <h1 {...stylex.spread(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
+          <Card>
+            <CardTitle>Step 1</CardTitle>
+            <CardDescription>Configure the compiler</CardDescription>
+            <CodeContainer>{STEP_CONFIGURE}</CodeContainer>
+          </Card>
+          <Card>
+            <CardTitle>Step 2</CardTitle>
+            <CardDescription>Create your styles</CardDescription>
+            <CodeContainer>{STEP_CREATE}</CodeContainer>
+          </Card>
+          <Card>
+            <CardTitle>Step 3</CardTitle>
+            <CardDescription>Use your styles</CardDescription>
+            <CodeContainer>{STEP_USE}</CodeContainer>
+          </Card>
         </section>
       </main>
     </Layout>
@@ -100,7 +120,6 @@ export default function Home() {
 
 const styles = stylex.create({
   main: {
-    minHeight: '100vh',
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
@@ -111,7 +130,8 @@ const styles = stylex.create({
       'radial-gradient(hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.15), var(--bg1) 70%)',
   },
   hero: {
-    minHeight: 'calc((100vh - 72px))',
+    paddingBlock: 50,
+    minHeight: 'calc(60vh)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -121,6 +141,7 @@ const styles = stylex.create({
     position: 'relative',
     boxSizing: 'border-box',
     margin: 0,
+    marginBottom: 24,
     overflow: 'hidden',
     zIndex: 0,
   },
@@ -131,7 +152,7 @@ const styles = stylex.create({
     zIndex: 1,
   },
   subtitle: {
-    marginTop: 24,
+    margin: 0,
     paddingInline: 24,
     fontWeight: '400',
     textAlign: 'center',
@@ -178,9 +199,10 @@ const styles = stylex.create({
     borderRadius: 16,
     flexBasis: {
       default: 0,
-      '@media (max-width: 1100px)': '100%',
+      '@media (max-width: 1250px)': '100%',
     },
     flexGrow: 1,
+    flexShrink: 1,
     margin: 16,
     display: 'flex',
     flexDirection: 'column',
@@ -211,7 +233,9 @@ const styles = stylex.create({
     borderRadius: 16,
     fontSize: {
       default: '1rem',
-      '@media (max-width: 1100px)': '0.8rem',
+      '@media (min-width: 1250px) and (max-width: 1500px)': '0.8rem',
+      '@media (min-width: 420px) and (max-width: 550px)': '0.8rem',
+      '@media (max-width: 419px)': '0.65rem',
     },
   },
   code: {

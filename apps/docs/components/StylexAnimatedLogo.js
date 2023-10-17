@@ -7,8 +7,8 @@
  * @format
  */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as React from 'react';
+import * as stylex from '@stylexjs/stylex';
 import {LogoText, viewBox} from './Logo';
 
 const ANIM_DURATION = '6s';
@@ -35,6 +35,7 @@ const fade2 = stylex.keyframes({
   '68%': {opacity: 0, transform: 'scale(0.5)'},
   '100%': {opacity: 0, transform: 'scale(0.5)'},
 });
+
 const styles = stylex.create({
   root: {
     position: 'relative',
@@ -117,11 +118,11 @@ const styles = stylex.create({
   },
 });
 
-export default function StylexAnimatedLogo({xstyle}) {
+export default function StylexAnimatedLogo({style}) {
   return (
     <div {...stylex.spread(styles.root)}>
-      <svg className={stylex(xstyle)} viewBox={viewBox}>
-        <LogoText xstyle={xstyle} />
+      <svg {...stylex.spread(style)} viewBox={viewBox}>
+        <LogoText />
       </svg>
       <div {...stylex.spread([styles.arc, styles.arc2])}>
         <div {...stylex.spread([styles.arcOrbit, styles.mask2])} />

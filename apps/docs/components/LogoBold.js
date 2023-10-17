@@ -7,14 +7,14 @@
  * @format
  */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as React from 'react';
+import * as stylex from '@stylexjs/stylex';
 
 export default function LogoBold({xstyle}) {
   const id = 'logo-bold';
 
   return (
-    <svg className={stylex(xstyle)} viewBox="0 0 644 435">
+    <svg {...stylex.spread(xstyle)} viewBox="0 0 644 435">
       <defs>
         <linearGradient
           id={`${id}-a`}

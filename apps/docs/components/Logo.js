@@ -7,8 +7,8 @@
  * @format
  */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as React from 'react';
+import * as stylex from '@stylexjs/stylex';
 
 export const viewBox = '0 0 644 435';
 
@@ -31,7 +31,7 @@ export default function Logo({xstyle}) {
   const idH = 'h';
 
   return (
-    <svg className={stylex(xstyle)} viewBox={viewBox}>
+    <svg {...stylex.spread(xstyle)} viewBox={viewBox}>
       <defs>
         <radialGradient
           cx="62.144%"

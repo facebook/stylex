@@ -8,7 +8,7 @@
  */
 
 import React from 'react';
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const {useEffect, useState} = React;
 
@@ -54,12 +54,12 @@ export default function ZStack({children, xstyle}) {
   }, [children.length]);
 
   return (
-    <span className={stylex(styles.container, xstyle)}>
+    <span {...stylex.spread(styles.container, xstyle)}>
       {children.map((child, _i) => (
-        <span className={stylex(styles.itemLayout)}>{child}</span>
+        <span {...stylex.spread(styles.itemLayout)}>{child}</span>
       ))}
       {children.map((child, i) => (
-        <span className={stylex(styles.item, i === active && styles.visible)}>
+        <span {...stylex.spread(styles.item, i === active && styles.visible)}>
           {child}
         </span>
       ))}
