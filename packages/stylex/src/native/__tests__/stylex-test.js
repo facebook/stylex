@@ -9,6 +9,7 @@ import { stylex } from '../stylex';
 
 const mockOptions = {
   customProperties: {},
+  hover: false,
   viewportHeight: 600,
   viewportWidth: 320,
 };
@@ -451,7 +452,12 @@ describe('styles', () => {
       },
     });
 
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot(
+      'not hovered',
+    );
+
+    const hoverOptions = { ...mockOptions, hover: true };
+    expect(stylex.spread(styles.root, hoverOptions)).toMatchSnapshot('hovered');
   });
 });
 

@@ -530,7 +530,15 @@ exports[`logical styles textAlign: start 1`] = `
 }
 `;
 
-exports[`styles :hover syntax 1`] = `
+exports[`styles :hover syntax: hovered 1`] = `
+{
+  "style": {
+    "backgroundColor": "blue",
+  },
+}
+`;
+
+exports[`styles :hover syntax: not hovered 1`] = `
 {
   "style": {
     "backgroundColor": "red",

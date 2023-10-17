@@ -314,8 +314,12 @@ function finalizeValue(unfinalizedValue: mixed, options: SpreadOptions): mixed {
     styleValue != null &&
     Object.hasOwn(styleValue, 'default')
   ) {
-    // TODO: resolve :hover syntax and media queries
-    styleValue = styleValue.default;
+    if (options.hover === true && Object.hasOwn(styleValue, ':hover')) {
+      styleValue = styleValue[':hover'];
+    } else {
+      // TODO: resolve media queries
+      styleValue = styleValue.default;
+    }
   }
 
   // resolve custom property references

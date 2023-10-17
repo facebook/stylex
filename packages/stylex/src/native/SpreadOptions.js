@@ -11,6 +11,7 @@ export type SpreadOptions = {|
   customProperties: {},
   inheritedFontSize: ?number,
   fontScale: number | void,
+  hover?: ?boolean,
   passthroughProperties: Array<string>,
   viewportHeight: number,
   viewportWidth: number,
