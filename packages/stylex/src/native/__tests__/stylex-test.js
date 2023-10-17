@@ -440,6 +440,19 @@ describe('styles', () => {
     expect(stylex.spread(styles.middle, mockOptions)).toMatchSnapshot('middle');
     expect(stylex.spread(styles.top, mockOptions)).toMatchSnapshot('top');
   });
+
+  test(':hover syntax', () => {
+    const styles = stylex.create({
+      root: {
+        backgroundColor: {
+          default: 'red',
+          ':hover': 'blue',
+        },
+      },
+    });
+
+    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+  });
 });
 
 describe('logical styles', () => {

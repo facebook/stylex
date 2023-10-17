@@ -309,6 +309,15 @@ function preprocessCreate<S: { [string]: mixed }>(style: S): S {
 function finalizeValue(unfinalizedValue: mixed, options: SpreadOptions): mixed {
   let styleValue = unfinalizedValue;
 
+  if (
+    typeof styleValue === 'object' &&
+    styleValue != null &&
+    Object.hasOwn(styleValue, 'default')
+  ) {
+    // TODO: resolve :hover syntax and media queries
+    styleValue = styleValue.default;
+  }
+
   // resolve custom property references
   while (styleValue instanceof CSSCustomPropertyValue) {
     const customProperties = options.customProperties || {};

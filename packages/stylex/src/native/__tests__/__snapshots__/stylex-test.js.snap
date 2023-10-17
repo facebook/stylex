@@ -530,6 +530,14 @@ exports[`logical styles textAlign: start 1`] = `
 }
 `;
 
+exports[`styles :hover syntax 1`] = `
+{
+  "style": {
+    "backgroundColor": "red",
+  },
+}
+`;
+
 exports[`styles animation-delay 1`] = `
 {
   "style": {
