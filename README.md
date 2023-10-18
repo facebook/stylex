@@ -80,7 +80,7 @@ tolerated.
 ### Contributing Guide
 
 Read the
-[contributing guide](https://github.com/facebookexternal/styles/blob/master/.github/CONTRIBUTING.md)
+[contributing guide](https://github.com/facebookexternal/stylex/blob/main/.github/CONTRIBUTING.md)
 to learn about our development process, how to propose bugfixes and
 improvements, and how to build and test your changes.
 
