@@ -1,6 +1,8 @@
 import stylex from '@stylexjs/stylex';
 import Card from '../components/Card';
 
+const DARK = '@media (prefers-color-scheme: dark)';
+
 const styles = stylex.create({
   main: {
     padding: 0,
@@ -33,25 +35,29 @@ const styles = stylex.create({
     fontSize: '1.5rem',
   },
   code: {
-    backgroundColor: '#fafafa',
+    backgroundColor: {
+      default: '#fafafa',
+      [DARK]: '#111',
+    },
     borderRadius: '5px',
     padding: '0.75rem',
     fontSize: '1.1rem',
     fontFamily:
       'Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace',
-    '@media (prefers-color-scheme: dark)': {
-      backgroundColor: '#111',
-    },
   },
   grid: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
+    width: {
+      default: null,
+      '@media (max-width: 600px)': '100%',
+    },
     maxWidth: 800,
-    '@media (max-width: 600px)': {
-      width: '100%',
-      flexDirection: 'column',
+    flexDirection: {
+      default: 'row',
+      '@media (max-width: 600px)': 'column',
     },
   },
 });

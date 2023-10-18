@@ -422,6 +422,7 @@ right
 center
 justify
 match-parent
+null
 initial
 inherit
 unset
@@ -448,6 +449,7 @@ lighter
 800
 900
 a CSS Variable
+null
 initial
 inherit
 unset
@@ -461,54 +463,7 @@ revert`,
         {
           message: `content value must be one of:
 a string literal
-initial
-inherit
-unset
-revert`,
-        },
-      ],
-    },
-    {
-      code: "import stylex from 'stylex'; stylex.create({default: {transitionProperty: 'all'}});",
-      errors: [
-        {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
-initial
-inherit
-unset
-revert`,
-        },
-      ],
-    },
-    {
-      code: "import stylex from 'stylex'; stylex.create({default: {transitionProperty: 'height'}});",
-      errors: [
-        {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
-initial
-inherit
-unset
-revert`,
-        },
-      ],
-    },
-    {
-      code: "import stylex from 'stylex'; stylex.create({default: {transitionProperty: 'transfrom'}});",
-      errors: [
-        {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
+null
 initial
 inherit
 unset
@@ -538,6 +493,7 @@ right
 center
 justify
 match-parent
+null
 initial
 inherit
 unset
@@ -592,59 +548,6 @@ revert`,
       ],
     },
     {
-      code: 'import stylex from "stylex"; stylex.create({default: {transitionProperty: "opasity"}});',
-      errors: [
-        {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
-initial
-inherit
-unset
-revert`,
-          suggestions: [
-            {
-              desc: 'Did you mean "opacity"? Replace "opasity" with "opacity"',
-              output:
-                'import stylex from "stylex"; stylex.create({default: {transitionProperty: "opacity"}});',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: `
-        import stylex from 'stylex';
-        const tp = "opasity";
-        const styles = stylex.create({default: {transitionProperty: tp}});
-      `,
-      errors: [
-        {
-          message: `transitionProperty value must be one of:
-opacity
-transform
-opacity, transform
-none
-initial
-inherit
-unset
-revert`,
-          suggestions: [
-            {
-              desc: 'Did you mean "opacity"? Replace "opasity" with "opacity"',
-              output: `
-        import stylex from 'stylex';
-        const tp = "opacity";
-        const styles = stylex.create({default: {transitionProperty: tp}});
-      `,
-            },
-          ],
-        },
-      ],
-    },
-    {
       code: `
         import stylex from 'stylex';
         const bounce = stylex.keyframes({
@@ -671,6 +574,7 @@ revert`,
           message: `animationName value must be one of:
 none
 a \`stylex.keyframes(...)\` function call, a reference to it or a many such valid
+null
 initial
 inherit
 unset
@@ -1207,15 +1111,7 @@ revert`,
             'yellowgreen\n' +
             'rebeccapurple\n' +
             'a valid hex color (#FFAADD or #FFAADDFF)\n' +
-            'initial\n' +
-            'inherit\n' +
-            'unset\n' +
-            'revert',
-        },
-        {
-          message:
-            'fontFamily value must be one of:\n' +
-            'a string literal\n' +
+            'null\n' +
             'initial\n' +
             'inherit\n' +
             'unset\n' +
@@ -1306,6 +1202,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
           message: `display value must be one of:
 block
 flex
+null
 initial
 inherit
 unset

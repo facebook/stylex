@@ -21,10 +21,12 @@ import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
 // All these helper functions receive a list of locally defined variables
 // as well. This lets them recursively resolve values that are defined locally.
 const MAX_DISTANCE = 4;
-export default function makeLiteralRule(value: number | string): RuleCheck {
+export default function makeLiteralRule(
+  value: number | string | null,
+): RuleCheck {
   function literalChecker(node: Node, _variables?: Variables): RuleResponse {
     const defaultFailure = {
-      message: `${value}`,
+      message: `${value ?? 'null'}`,
     };
     if (node.type === 'Literal') {
       if (node.value === value) {
@@ -37,16 +39,16 @@ export default function makeLiteralRule(value: number | string): RuleCheck {
       const suggest =
         distance < MAX_DISTANCE
           ? {
-              desc: `Did you mean "${value}"? Replace "${String(
+              desc: `Did you mean "${value ?? 'null'}"? Replace "${String(
                 node.value,
-              )}" with "${value}"`,
+              )}" with "${value ?? 'null'}"`,
               fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
                 const raw = node.raw;
                 if (raw != null) {
                   const quoteType = raw.substr(0, 1);
                   return fixer.replaceText(
                     node,
-                    `${quoteType}${value}${quoteType}`,
+                    `${quoteType}${value ?? 'null'}${quoteType}`,
                   );
                 }
                 return null;

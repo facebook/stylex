@@ -139,6 +139,7 @@ const isLength = makeUnionRule(isAbsoluteLength, isRelativeLength);
 // NOTE: converted from Flow types to function calls using this
 // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
 const all: RuleCheck = makeUnionRule(
+  makeLiteralRule(null),
   makeLiteralRule('initial'),
   makeLiteralRule('inherit'),
   makeLiteralRule('unset'),
@@ -1282,14 +1283,7 @@ const transformStyle = makeUnionRule(
 );
 const transitionDelay = time;
 const transitionDuration = time;
-const transitionProperty = makeUnionRule(
-  makeLiteralRule('opacity'),
-  makeLiteralRule('transform'),
-  makeLiteralRule('opacity, transform'),
-  // All is bad for animation performance.
-  // makeLiteralRule('all'),
-  makeLiteralRule('none'),
-);
+const transitionProperty = isString;
 const transitionTimingFunction = singleTransitionTimingFunction;
 const unicodeBidi = makeUnionRule(
   makeLiteralRule('normal'),
@@ -2239,6 +2233,7 @@ const stylexValidStyles = {
   },
   create(context: Rule.RuleContext): { ... } {
     const variables = new Map<string, Expression>();
+    const dynamicStyleVariables = new Set<string>();
 
     const legacyReason =
       'This property is not supported in legacy StyleX resolution.';
@@ -2264,6 +2259,10 @@ const stylexValidStyles = {
       'mask+([a-zA-Z])': { limit: null, reason: legacyReason },
       blockOverflow: { limit: null, reason: legacyReason },
       inlineOverflow: { limit: null, reason: legacyReason },
+      transitionProperty: {
+        limit: ['opacity', 'transform', 'opacity, transform', 'none'],
+        reason: legacyReason,
+      },
     };
 
     const {
@@ -2712,18 +2711,53 @@ const stylexValidStyles = {
             });
           }
 
-          if (namespace.value.type !== 'ObjectExpression') {
-            return context.report({
-              node: namespace.value,
-              loc: namespace.value.loc,
-              message: 'Styles must be represented as javascript objects',
-            });
-          }
+          let styles = namespace.value;
 
-          const styles = namespace.value;
+          if (styles.type !== 'ObjectExpression') {
+            if (
+              styles.type === 'ArrowFunctionExpression' &&
+              (styles.body.type === 'ObjectExpression' ||
+                (styles.body.type === 'TSAsExpression' &&
+                  styles.body.expression.type === 'ObjectExpression'))
+            ) {
+              const params = styles.params;
+              styles = styles.body;
+              // $FlowFixMe
+              if (styles.type === 'TSAsExpression') {
+                styles = styles.expression;
+              }
+              if (params.some((param) => param.type !== 'Identifier')) {
+                return params
+                  .filter((param) => param.type !== 'Identifier')
+                  .forEach((param) => {
+                    context.report({
+                      node: param,
+                      loc: param.loc,
+                      message:
+                        'Dynamic Styles can only accept named parameters',
+                    });
+                  });
+              }
+              params.forEach((param) => {
+                if (param.type === 'Identifier') {
+                  dynamicStyleVariables.add(param.name);
+                }
+              });
+            } else {
+              return context.report({
+                node: namespace.value,
+                loc: namespace.value.loc,
+                message:
+                  'Styles must be represented as javascript objects, not ' +
+                  styles.type,
+              });
+            }
+          }
           styles.properties.forEach((prop) =>
             checkStyleProperty(prop, 0, null),
           );
+          // Reset local variables.
+          dynamicStyleVariables.clear();
         });
       },
       'Program:exit'() {

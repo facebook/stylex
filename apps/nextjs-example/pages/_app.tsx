@@ -13,12 +13,14 @@ const styles = stylex.create({
   footer: {
     display: 'flex',
     padding: '2rem 0',
-    borderTop: '1px solid #eaeaea',
+    borderTopWidth: 1,
+    borderTopStyle: 'solid',
+    borderTopColor: {
+      default: '#eaeaea',
+      '@media (prefers-color-scheme: dark)': '#222',
+    },
     justifyContent: 'center',
     alignItems: 'center',
-    '@media (prefers-color-scheme: dark)': {
-      borderTop: '1px solid #222',
-    },
   },
   footerLink: {
     display: 'flex',
@@ -31,10 +33,14 @@ const styles = stylex.create({
     marginStart: '0.5rem',
   },
   footerLogoImage: {
-    '@media (prefers-color-scheme: dark)': {
-      filter: 'invert(1)',
+    filter: {
+      default: null,
+      '@media (prefers-color-scheme: dark)': 'invert(1)',
     },
   },
+  dynamic: (r, g, b) => ({
+    color: `rgb(${r}, ${g}, ${b})`,
+  }),
 });
 
 export default function App({ Component, pageProps }: AppProps) {

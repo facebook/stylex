@@ -14,25 +14,17 @@ import type {
 } from '../stylex-valid-styles';
 import type { Node } from 'estree';
 import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
-import isNumber from './isNumber';
-import makeUnionRule from './makeUnionRule';
 
-function isStringImpl(node: Node, variables?: Variables): RuleResponse {
+function isStringImpl(node: Node, _variables?: Variables): RuleResponse {
   if (node.type === 'Literal' && typeof node.value === 'string') {
     return undefined;
   }
-  if (
-    node.type === 'TemplateLiteral' &&
-    node.expressions.every((expression) =>
-      isStringOrNumber(expression, variables),
-    )
-  ) {
-    undefined;
+  if (node.type === 'TemplateLiteral') {
+    return undefined;
   }
   return {
     message: 'a string literal',
   };
 }
 const isString: RuleCheck = makeVariableCheckingRule(isStringImpl);
-const isStringOrNumber = makeUnionRule(isString, isNumber);
 export default (isString: RuleCheck);
