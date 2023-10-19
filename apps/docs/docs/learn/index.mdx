@@ -96,23 +96,24 @@ import * as stylex from '@stylexjs/stylex';
 const styles = stylex.create({ ... });
 
 function reactDiv({ color, isActive, style }) {
-  return (
-    <div {...stylex.props([
-      styles.main,
-      // conditionals
-      isActive && styles.active,
-      // variants from props
-      colorStyles[color]
-      // styles passed as props
-      style,
-    ])} />
-  );
+  const styleProps = stylex.props([
+    styles.main,
+    // conditionals
+    isActive && styles.active,
+    // variants from props
+    colorStyles[color]
+    // styles passed as props
+    style,
+  ]);
+
+  return <div {...styleProps} />;
 ```
 
 The example above uses JSX. StyleX itself is framework agnostic. For example, here is how you would use StyleX with an `html` template literal in Lit HTML:
 
 ```tsx
 import { html } from 'lit-html';
+import { styleMap } from 'lit-html/directives/style-map.js';
 import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({ ... });
@@ -128,6 +129,6 @@ function litDiv(color, isActive, style) {
     style
   ]);
 
-  return html`<div class=${className} style=${inlineStyle} />`;
+  return html`<div class=${className} style=${styleMap(inlineStyle)} />`;
 }
 ```
