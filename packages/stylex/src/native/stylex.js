@@ -364,8 +364,13 @@ export const firstThatWorks = <T: string | number>(
   return values[0];
 };
 
-export function keyframes(): void {
+type Keyframes = {
+  +[key: string]: { +[k: string]: string | number },
+};
+
+export function keyframes(k: Keyframes): Keyframes {
   errorMsg('keyframes are not supported in React Native.');
+  return k;
 }
 
 const timeValuedProperties = [
