@@ -55,6 +55,21 @@ async function generateTypes(inputDir, outputDir, rootDir) {
             fileContents,
             monorepoPackage.prettier,
           );
+
+          if (outputFlowContents.includes('__monkey_patch__')) {
+            const lines = outputFlowContents.split('\n');
+            const line = lines.find((line) =>
+              line.includes('__monkey_patch__'),
+            );
+            const startIndex = lines.indexOf(line);
+            const endIndex = startIndex + 4;
+
+            outputFlowContents = lines
+              .slice(0, startIndex)
+              .concat(lines.slice(endIndex))
+              .join('\n');
+          }
+
           outputFlowContents = patchFlowModulePaths(
             outputFullPath,
             outputFlowContents,
@@ -71,8 +86,8 @@ async function generateTypes(inputDir, outputDir, rootDir) {
           if (dTsFiles.includes(tsOutputName)) {
             continue;
           }
-          const outputTSContents = await translate.translateFlowToTSDef(
-            fileContents.replace(/\$ReadOnlyMap/g, 'ReadonlyMap'),
+          const outputTSContents = await translate.translateFlowDefToTSDef(
+            outputFlowContents.replace(/\$ReadOnlyMap/g, 'ReadonlyMap'),
             monorepoPackage.prettier,
           );
           await fsPromises.writeFile(

@@ -17,9 +17,10 @@ import type {
   StyleXArray,
   Theme,
   FlattenTokens,
-  MapNamespace,
   CompiledStyles,
   InlineStyles,
+  StyleXClassNameFor,
+  MapNamespaces,
 } from './StyleXTypes';
 
 export type { Theme, Variant } from './StyleXTypes';
@@ -45,11 +46,18 @@ export function spread(
   className: string,
   style: $ReadOnly<{ [string]: string | number }>,
 }> {
+  if (__implementations.spread) {
+    return __implementations.spread(styles, _options);
+  }
   const [className, style] = styleq(styles);
   return { className, style };
 }
 
-function stylexCreate(_styles: { ... }) {
+function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
+  if (__implementations.create != null) {
+    const create: Stylex$Create = __implementations.create;
+    return create<S>(styles);
+  }
   throw new Error(
     'stylex.create should never be called. It should be compiled away.',
   );
@@ -60,29 +68,46 @@ function stylexCreateVars<
     +[string]: string | { +default: string, +[string]: string },
   },
   ID: string = string,
->(_styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {
+>(styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {
+  if (__implementations.unstable_createVars) {
+    return __implementations.unstable_createVars(styles);
+  }
   throw new Error(
     'stylex.createVars should never be called. It should be compiled away.',
   );
 }
 
-function stylexOverrideVars(_styles: { ... }) {
+const stylexOverrideVars: StyleX$OverrideVars = (baseTokens, overrides) => {
+  if (__implementations.unstable_overrideVars) {
+    // $FlowFixMe
+    return __implementations.unstable_overrideVars(baseTokens, overrides);
+  }
   throw new Error(
     'stylex.overrideVars should never be called. It should be compiled away.',
   );
-}
+};
 
-function stylexIncludes<TStyles: { +[string]: string | number }>(
-  _styles: MapNamespace<TStyles>,
-): TStyles {
+type Stylex$Include = <
+  TStyles: { +[string]: StyleXClassNameFor<string, mixed> },
+>(
+  styles: TStyles,
+) => {
+  +[Key in keyof TStyles]: TStyles[Key] extends StyleXClassNameFor<
+    mixed,
+    infer V,
+  >
+    ? V
+    : string,
+};
+
+const stylexInclude: Stylex$Include = (styles) => {
+  if (__implementations.include) {
+    return __implementations.include(styles);
+  }
   throw new Error(
     'stylex.extends should never be called. It should be compiled away.',
   );
-}
-
-type Stylex$Include = <TStyles: { +[string]: string | number }>(
-  _styles: MapNamespace<TStyles>,
-) => TStyles;
+};
 
 export const create: Stylex$Create = stylexCreate;
 
@@ -90,7 +115,7 @@ export const unstable_createVars: StyleX$CreateVars = stylexCreateVars;
 
 export const unstable_overrideVars: StyleX$OverrideVars = stylexOverrideVars;
 
-export const include: Stylex$Include = stylexIncludes;
+export const include: Stylex$Include = stylexInclude;
 
 type ValueWithDefault<+T> =
   | T
@@ -171,23 +196,23 @@ export const types = {
 const errorForType = (type: $Keys<typeof types>) =>
   `stylex.types.${type} should be compiled away by @stylexjs/babel-plugin`;
 
-export const keyframes = (_keyframes: Keyframes): string => {
+export const keyframes = (keyframes: Keyframes): string => {
+  if (__implementations.keyframes) {
+    return __implementations.keyframes(keyframes);
+  }
   throw new Error('stylex.keyframes should never be called');
 };
 
 export const firstThatWorks = <T: string | number>(
-  ..._styles: $ReadOnlyArray<T>
+  ...styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
+  if (__implementations.firstThatWorks) {
+    return __implementations.firstThatWorks(...styles);
+  }
   throw new Error('stylex.firstThatWorks should never be called.');
 };
 
 export const inject: typeof injectStyle = injectStyle;
-
-export const UNSUPPORTED_PROPERTY = <T>(_props: T): T => {
-  throw new Error(
-    'stylex.UNSUPPORTED_PROPERTY should never be called. It should be compiled away.',
-  );
-};
 
 function _stylex(
   ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
@@ -203,7 +228,6 @@ _stylex.include = include;
 _stylex.keyframes = keyframes;
 _stylex.firstThatWorks = firstThatWorks;
 _stylex.inject = inject;
-_stylex.UNSUPPORTED_PROPERTY = UNSUPPORTED_PROPERTY;
 _stylex.types = types;
 
 type IStyleX = {
@@ -227,9 +251,21 @@ type IStyleX = {
   ) => $ReadOnlyArray<T>,
   inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
   keyframes: (keyframes: Keyframes) => string,
-  UNSUPPORTED_PROPERTY: <T>(props: T) => T,
   ...
 };
+
+const __implementations: { [string]: $FlowFixMe } = {};
+
+export function __monkey_patch__(
+  key: string,
+  implementation: $FlowFixMe,
+): void {
+  if (key === 'types') {
+    Object.assign(types, implementation);
+  } else {
+    __implementations[key] = implementation;
+  }
+}
 
 export const stylex: IStyleX = _stylex;
 export default (_stylex: IStyleX);

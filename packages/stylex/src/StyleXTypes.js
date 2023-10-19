@@ -177,7 +177,7 @@ export opaque type Theme<
 }>;
 
 export type TokensFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
-  infer Tokens,
+  infer Tokens extends { +[string]: mixed },
 >
   ? Tokens
   : empty;

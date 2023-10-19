@@ -7,10 +7,9 @@
  * @flow strict
  */
 
-import stylex, { types } from '@stylexjs/stylex';
+import { __monkey_patch__ } from '@stylexjs/stylex';
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
 import type {
-  MapNamespace,
   OverridesForTokenType,
   Theme,
   TokensFromTheme,
@@ -47,23 +46,26 @@ export default function inject({
   insert = defaultInsert,
   ...config
 }: RuntimeOptions): void {
-  stylex.create = getStyleXCreate({ ...config, insert });
+  __monkey_patch__('create', getStyleXCreate({ ...config, insert }));
 
-  (types: $FlowFixMe).angle = shared.types.angle;
-  (types: $FlowFixMe).color = shared.types.color;
-  (types: $FlowFixMe).url = shared.types.url;
-  (types: $FlowFixMe).image = shared.types.image;
-  (types: $FlowFixMe).integer = shared.types.integer;
-  (types: $FlowFixMe).lengthPercentage = shared.types.lengthPercentage;
-  (types: $FlowFixMe).length = shared.types.length;
-  (types: $FlowFixMe).percentage = shared.types.percentage;
-  (types: $FlowFixMe).number = shared.types.number;
-  (types: $FlowFixMe).resolution = shared.types.resolution;
-  (types: $FlowFixMe).time = shared.types.time;
-  (types: $FlowFixMe).transformFunction = shared.types.transformFunction;
-  (types: $FlowFixMe).transformList = shared.types.transformList;
+  const types = {
+    angle: shared.types.angle,
+    color: shared.types.color,
+    url: shared.types.url,
+    image: shared.types.image,
+    integer: shared.types.integer,
+    lengthPercentage: shared.types.lengthPercentage,
+    length: shared.types.length,
+    percentage: shared.types.percentage,
+    number: shared.types.number,
+    resolution: shared.types.resolution,
+    time: shared.types.time,
+    transformFunction: shared.types.transformFunction,
+    transformList: shared.types.transformList,
+  };
+  __monkey_patch__('types', (types: $FlowFixMe));
 
-  stylex.unstable_createVars = <
+  const unstable_createVars = <
     DefaultTokens: {
       +[string]: string | { +default: string, +[string]: string },
     },
@@ -81,6 +83,7 @@ export default function inject({
     // $FlowFixMe
     return cssVarsObject;
   };
+  __monkey_patch__('unstable_createVars', unstable_createVars);
 
   const overrideVars: $FlowFixMe = <
     BaseTokens: Theme<{ +[string]: mixed }>,
@@ -99,9 +102,9 @@ export default function inject({
     return js;
   };
 
-  stylex.unstable_overrideVars = overrideVars;
+  __monkey_patch__('unstable_overrideVars', overrideVars);
 
-  stylex.keyframes = (frames) => {
+  const keyframes = (frames: $ReadOnly<{ [name: string]: mixed, ... }>) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(
       (frames: $FlowFixMe),
       config,
@@ -109,14 +112,14 @@ export default function inject({
     insert(animationName, ltr, priority, rtl);
     return animationName;
   };
+  __monkey_patch__('keyframes', keyframes);
 
-  stylex.firstThatWorks = shared.firstThatWorks;
+  const firstThatWorks = shared.firstThatWorks;
+  __monkey_patch__('firstThatWorks', firstThatWorks);
 
-  const stylexInclude = <TStyles: { +[string]: string | number }>(
-    includedStyles: MapNamespace<TStyles>,
-  ): TStyles => {
-    return (shared.include({ node: includedStyles }): $FlowFixMe);
+  const stylexInclude = (includedStyles: $FlowFixMe) => {
+    return shared.include({ node: includedStyles });
   };
 
-  stylex.include = stylexInclude;
+  __monkey_patch__('include', (stylexInclude: $FlowFixMe));
 }

@@ -50,19 +50,19 @@ describe('Development Plugin Transformation', () => {
         ),
       ).toMatchInlineSnapshot(`
         {
-          "__themeName__": "x7fqapl",
-          "bgColor": "var(--xiwovr5)",
-          "bgColorDisabled": "var(--xdg0pry)",
-          "cornerRadius": "var(--x1j3mert)",
-          "fgColor": "var(--x1wgda7f)",
+          "__themeName__": "x1y709cs",
+          "bgColor": "var(--x4ocsy0)",
+          "bgColorDisabled": "var(--x1hi3uh4)",
+          "cornerRadius": "var(--x1r1ahgb)",
+          "fgColor": "var(--xrbea40)",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
         [
           [
-            "x7fqapl",
+            "x1y709cs",
             {
-              "ltr": ":root{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}@media (prefers-color-scheme: dark){:root{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}@media print{:root{--xiwovr5:white;}}",
+              "ltr": ":root{--x4ocsy0:blue;--x1hi3uh4:grey;--x1r1ahgb:10px;--xrbea40:pink;}@media (prefers-color-scheme: dark){:root{--x4ocsy0:lightblue;--x1hi3uh4:rgba(0, 0, 0, 0.8);}}@media print{:root{--x4ocsy0:white;}}",
               "rtl": undefined,
             },
             0,
