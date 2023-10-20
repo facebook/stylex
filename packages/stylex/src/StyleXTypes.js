@@ -198,7 +198,7 @@ export type FlattenTokens<T: TTokens> = {
     : T[Key],
 };
 
-export type StyleX$CreateVars = <DefaultTokens: TTokens, ID: string = string>(
+export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
 ) => Theme<FlattenTokens<DefaultTokens>, ID>;
 
@@ -216,7 +216,7 @@ export type OverridesForTokenType<Config: { +[string]: mixed }> = {
     | { +default: Config[Key], +[string]: Config[Key] },
 };
 
-export type StyleX$OverrideVars = <
+export type StyleX$CreateTheme = <
   BaseTokens: Theme<{ +[string]: mixed }>,
   ID: string = string,
 >(

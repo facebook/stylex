@@ -42,11 +42,11 @@ export function readImportDeclarations(
           if (specifier.imported.name === 'firstThatWorks') {
             state.stylexFirstThatWorksImport.add(specifier.local.name);
           }
-          if (specifier.imported.name === 'unstable_createVars') {
-            state.stylexCreateVarsImport.add(specifier.local.name);
+          if (specifier.imported.name === 'defineVars') {
+            state.stylexDefineVarsImport.add(specifier.local.name);
           }
-          if (specifier.imported.name === 'unstable_overrideVars') {
-            state.stylexCreateVarsImport.add(specifier.local.name);
+          if (specifier.imported.name === 'createTheme') {
+            state.stylexCreateThemeImport.add(specifier.local.name);
           }
           if (specifier.imported.name === 'types') {
             state.stylexTypesImport.add(specifier.local.name);
@@ -65,11 +65,11 @@ export function readImportDeclarations(
           if (specifier.imported.value === 'firstThatWorks') {
             state.stylexFirstThatWorksImport.add(specifier.local.name);
           }
-          if (specifier.imported.value === 'unstable_createVars') {
-            state.stylexCreateVarsImport.add(specifier.local.name);
+          if (specifier.imported.value === 'defineVars') {
+            state.stylexDefineVarsImport.add(specifier.local.name);
           }
-          if (specifier.imported.value === 'unstable_overrideVars  ') {
-            state.stylexCreateVarsImport.add(specifier.local.name);
+          if (specifier.imported.value === 'createTheme') {
+            state.stylexCreateThemeImport.add(specifier.local.name);
           }
           if (specifier.imported.value === 'types  ') {
             state.stylexTypesImport.add(specifier.local.name);
@@ -118,11 +118,11 @@ export function readRequires(
           if (prop.key.name === 'firstThatWorks') {
             state.stylexFirstThatWorksImport.add(value.name);
           }
-          if (prop.key.name === 'unstable_createVars') {
-            state.stylexCreateVarsImport.add(value.name);
+          if (prop.key.name === 'defineVars') {
+            state.stylexDefineVarsImport.add(value.name);
           }
-          if (prop.key.name === 'unstable_overrideVars') {
-            state.stylexCreateVarsImport.add(value.name);
+          if (prop.key.name === 'createTheme') {
+            state.stylexCreateThemeImport.add(value.name);
           }
           if (prop.key.name === 'types') {
             state.stylexTypesImport.add(value.name);

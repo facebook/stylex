@@ -239,7 +239,7 @@ const styles7: $ReadOnly<{
 stylex(styles7.foo);
 stylex.spread([styles7.foo]);
 
-const vars = stylex.unstable_createVars({
+const vars = stylex.defineVars({
   accent: 'red',
 });
 

@@ -247,7 +247,7 @@ stylex.spread(styles7.foo);
 
 // CSS variables
 
-const vars = stylex.unstable_createVars({
+const vars = stylex.defineVars({
   accent: 'red' as const,
 });
 

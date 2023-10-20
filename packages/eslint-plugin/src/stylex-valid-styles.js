@@ -40,7 +40,7 @@ import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isPercentage from './rules/isPercentage';
 import isAnimationName from './rules/isAnimationName';
-import isStylexCreateVarsToken from './rules/isStylexCreateVarsToken';
+import isStylexDefineVarsToken from './rules/isStylexDefineVarsToken';
 import { borderSplitter } from './utils/split-css-value';
 
 export type Variables = $ReadOnlyMap<string, Expression>;
@@ -2311,8 +2311,8 @@ const stylexValidStyles = {
       }
     }
 
-    const stylexCreateVarsFileExtension = '.stylex';
-    const stylexCreateVarsTokenImports = new Set<string>();
+    const stylexDefineVarsFileExtension = '.stylex';
+    const stylexDefineVarsTokenImports = new Set<string>();
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
 
@@ -2527,10 +2527,10 @@ const stylexValidStyles = {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
         }
 
-        const isReferencingStylexCreateVarsTokens =
-          stylexCreateVarsTokenImports.size > 0 &&
-          isStylexCreateVarsToken(style.value, stylexCreateVarsTokenImports);
-        if (!isReferencingStylexCreateVarsTokens) {
+        const isReferencingStylexDefineVarsTokens =
+          stylexDefineVarsTokenImports.size > 0 &&
+          isStylexDefineVarsToken(style.value, stylexDefineVarsTokenImports);
+        if (!isReferencingStylexDefineVarsTokens) {
           const check = ruleChecker(style.value, variables, style);
           if (check != null) {
             const { message, suggest } = check;
@@ -2654,10 +2654,10 @@ const stylexValidStyles = {
         }
         const sourceValue = node.source.value;
         const isStylexImport = importsToLookFor.includes(sourceValue);
-        const isStylexCreateVarsImport = sourceValue.endsWith(
-          stylexCreateVarsFileExtension,
+        const isStylexDefineVarsImport = sourceValue.endsWith(
+          stylexDefineVarsFileExtension,
         );
-        if (!(isStylexImport || isStylexCreateVarsImport)) {
+        if (!(isStylexImport || isStylexDefineVarsImport)) {
           return;
         }
         if (isStylexImport) {
@@ -2677,10 +2677,10 @@ const stylexValidStyles = {
           });
         }
 
-        if (isStylexCreateVarsImport) {
+        if (isStylexDefineVarsImport) {
           node.specifiers.forEach((specifier) => {
             if (specifier.type === 'ImportSpecifier') {
-              stylexCreateVarsTokenImports.add(specifier.local.name);
+              stylexDefineVarsTokenImports.add(specifier.local.name);
             }
           });
         }

@@ -34,56 +34,54 @@ function transform(source: string, opts: any = {}) {
 
 describe('@stylexjs/babel-plugin', () => {
   /**
-   * stylex.unstable_overrideVars
+   * stylex.defineVars
    */
 
-  describe('[validation] stylex.unstable_overrideVars()', () => {
-    test('must be bound to a variable', () => {
+  describe('[validation] stylex.defineVars()', () => {
+    test('must be bound to a named export', () => {
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          stylex.unstable_overrideVars({__themeName__: 'x568ih9'}, {});
+          const styles = stylex.defineVars({});
+          `);
+      }).toThrow(messages.NON_EXPORT_NAMED_DECLARATION);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          stylex.defineVars({});
           `);
       }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
     });
 
-    test('it must have two arguments', () => {
+    test('its only argument must be a single object', () => {
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars();
-          `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
-      expect(() => {
-        transform(`
-          import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars({});
-          `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
-      expect(() => {
-        transform(`
-          import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars(genStyles(), {});
+          export const styles = stylex.defineVars(genStyles());
           `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars({}, {});
+          export const styles = stylex.defineVars(1);
           `);
-      }).toThrow(
-        'Can only override variables theme created with stylex.unstable_createVars().',
-      );
+      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars({__themeName__: 'x568ih9'}, genStyles());
+          export const styles = stylex.defineVars();
           `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars({__themeName__: 'x568ih9'}, {});
+          export const styles = stylex.defineVars({}, {});
+          `);
+      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.defineVars({});
           `);
       }).not.toThrow();
     });
@@ -93,54 +91,50 @@ describe('@stylexjs/babel-plugin', () => {
     test('variable keys must be a static value', () => {
       expect(() => {
         transform(`
-          import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars(
-            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
-            {[labelColor]: 'red',});
-          `);
+            import stylex from 'stylex';
+            export const styles = stylex.defineVars({
+                [labelColor]: 'red',
+            });
+            `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });
 
     /* Values */
 
-    test('values must be static number or string in stylex.unstable_overrideVars()', () => {
+    test('values must be static number or string in stylex.defineVars()', () => {
       // number
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars(
-            {__themeName__: 'x568ih9', cornerRadius: 'var(--cornerRadiusHash)'},
-            {cornerRadius: 5,}
-          );
+          export const styles = stylex.defineVars({
+              cornerRadius: 5,
+          });
           `);
       }).not.toThrow();
       // string
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars(
-            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
-            {labelColor: 'red',}
-          );
+          export const styles = stylex.defineVars({
+              labelColor: 'red',
+          });
           `);
       }).not.toThrow();
       // not static
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars(
-            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
-            {labelColor: labelColor,}
-          );
+          export const styles = stylex.defineVars({
+              labelColor: labelColor,
+          });
           `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const variables = stylex.unstable_overrideVars(
-            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
-            {labelColor: labelColor(),}
-          );
+          export const styles = stylex.defineVars({
+              labelColor: labelColor(),
+          });
           `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });

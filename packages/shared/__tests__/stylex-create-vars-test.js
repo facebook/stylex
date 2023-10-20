@@ -8,7 +8,7 @@
  *
  */
 
-import styleXCreateVars from '../src/stylex-create-vars';
+import styleXDefineVars from '../src/stylex-define-vars';
 import createHash from '../src/hash';
 
 describe('stylex-create-vars test', () => {
@@ -30,7 +30,7 @@ describe('stylex-create-vars test', () => {
         default: 'pink',
       },
     };
-    const [jsOutput, cssOutput] = styleXCreateVars(defaultVars, { themeName });
+    const [jsOutput, cssOutput] = styleXDefineVars(defaultVars, { themeName });
 
     expect(jsOutput).toEqual({
       __themeName__: classNamePrefix + createHash(themeName),

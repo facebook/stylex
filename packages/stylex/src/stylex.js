@@ -12,8 +12,8 @@
 import type {
   Keyframes,
   Stylex$Create,
-  StyleX$CreateVars,
-  StyleX$OverrideVars,
+  StyleX$DefineVars,
+  StyleX$CreateTheme,
   StyleXArray,
   Theme,
   FlattenTokens,
@@ -63,27 +63,27 @@ function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
   );
 }
 
-function stylexCreateVars<
+function stylexDefineVars<
   DefaultTokens: {
     +[string]: string | { +default: string, +[string]: string },
   },
   ID: string = string,
 >(styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {
-  if (__implementations.unstable_createVars) {
-    return __implementations.unstable_createVars(styles);
+  if (__implementations.defineVars) {
+    return __implementations.defineVars(styles);
   }
   throw new Error(
-    'stylex.createVars should never be called. It should be compiled away.',
+    'stylex.defineVars should never be called. It should be compiled away.',
   );
 }
 
-const stylexOverrideVars: StyleX$OverrideVars = (baseTokens, overrides) => {
-  if (__implementations.unstable_overrideVars) {
+const stylexCreateTheme: StyleX$CreateTheme = (baseTokens, overrides) => {
+  if (__implementations.createTheme) {
     // $FlowFixMe
-    return __implementations.unstable_overrideVars(baseTokens, overrides);
+    return __implementations.createTheme(baseTokens, overrides);
   }
   throw new Error(
-    'stylex.overrideVars should never be called. It should be compiled away.',
+    'stylex.createTheme should never be called. It should be compiled away.',
   );
 };
 
@@ -111,9 +111,9 @@ const stylexInclude: Stylex$Include = (styles) => {
 
 export const create: Stylex$Create = stylexCreate;
 
-export const unstable_createVars: StyleX$CreateVars = stylexCreateVars;
+export const defineVars: StyleX$DefineVars = stylexDefineVars;
 
-export const unstable_overrideVars: StyleX$OverrideVars = stylexOverrideVars;
+export const createTheme: StyleX$CreateTheme = stylexCreateTheme;
 
 export const include: Stylex$Include = stylexInclude;
 
@@ -222,8 +222,8 @@ function _stylex(
 }
 _stylex.spread = spread;
 _stylex.create = create;
-_stylex.unstable_createVars = unstable_createVars;
-_stylex.unstable_overrideVars = unstable_overrideVars;
+_stylex.defineVars = defineVars;
+_stylex.createTheme = createTheme;
 _stylex.include = include;
 _stylex.keyframes = keyframes;
 _stylex.firstThatWorks = firstThatWorks;
@@ -242,8 +242,8 @@ type IStyleX = {
     style: $ReadOnly<{ [string]: string | number }>,
   }>,
   create: Stylex$Create,
-  unstable_createVars: StyleX$CreateVars,
-  unstable_overrideVars: StyleX$OverrideVars,
+  defineVars: StyleX$DefineVars,
+  createTheme: StyleX$CreateTheme,
   include: Stylex$Include,
   types: typeof types,
   firstThatWorks: <T: string | number>(

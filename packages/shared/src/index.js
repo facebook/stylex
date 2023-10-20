@@ -21,8 +21,8 @@ export type {
 // These are the implementations of those functions.
 
 import styleXCreateSet from './stylex-create';
-import styleXCreateVars from './stylex-create-vars';
-import styleXOverrideVars from './stylex-override-vars';
+import styleXDefineVars from './stylex-define-vars';
+import styleXCreateTheme from './stylex-create-theme';
 import stylexKeyframes from './stylex-keyframes';
 import stylexInclude, {
   IncludedStyles as _IncludedStyles,
@@ -41,8 +41,8 @@ import type {
 } from './common-types';
 
 export const create: typeof styleXCreateSet = styleXCreateSet;
-export const createVars: typeof styleXCreateVars = styleXCreateVars;
-export const overrideVars: typeof styleXOverrideVars = styleXOverrideVars;
+export const defineVars: typeof styleXDefineVars = styleXDefineVars;
+export const createTheme: typeof styleXCreateTheme = styleXCreateTheme;
 export const keyframes: typeof stylexKeyframes = stylexKeyframes;
 export const include: typeof stylexInclude = stylexInclude;
 export const utils: {

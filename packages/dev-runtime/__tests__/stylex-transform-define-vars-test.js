@@ -13,7 +13,7 @@ import inject from '../src';
 import stylex from '@stylexjs/stylex';
 
 describe('Development Plugin Transformation', () => {
-  describe('[transform] stylex.unstable_createVars()', () => {
+  describe('[transform] stylex.defineVars()', () => {
     let metadata = [];
     beforeEach(() => {
       metadata = [];
@@ -28,7 +28,7 @@ describe('Development Plugin Transformation', () => {
 
     test('transforms style object', () => {
       expect(
-        stylex.unstable_createVars(
+        stylex.defineVars(
           {
             bgColor: {
               default: 'blue',

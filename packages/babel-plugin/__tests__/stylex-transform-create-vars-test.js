@@ -33,12 +33,12 @@ function transform(source, opts = defaultOpts) {
 }
 
 describe('@stylexjs/babel-plugin', () => {
-  describe('[transform] stylex.unstable_createVars()', () => {
+  describe('[transform] stylex.defineVars()', () => {
     test('transforms variables object', () => {
       expect(
         transform(`
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -84,7 +84,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           };
-          export const buttonTheme = stylex.unstable_createVars(defaultButtonTokens);
+          export const buttonTheme = stylex.defineVars(defaultButtonTokens);
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -118,7 +118,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -154,7 +154,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -192,7 +192,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -232,7 +232,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -247,7 +247,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           });
-          export const textInputTheme = stylex.unstable_createVars({
+          export const textInputTheme = stylex.defineVars({
             bgColor: 'white',
             labelColor: {
               default: 'black',
@@ -280,7 +280,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -295,7 +295,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           });
-          export const textInputTheme = stylex.unstable_createVars({
+          export const textInputTheme = stylex.defineVars({
             bgColor: 'white',
             labelColor: {
               default: 'black',
@@ -335,7 +335,7 @@ describe('@stylexjs/babel-plugin', () => {
           `
           import stylex from 'stylex';
           const RADIUS = 10;
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -373,7 +373,7 @@ describe('@stylexjs/babel-plugin', () => {
           `
           import stylex from 'stylex';
           const color = 'blue';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: color,
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -411,7 +411,7 @@ describe('@stylexjs/babel-plugin', () => {
           `
           import stylex from 'stylex';
           const name = 'light';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: \`\${name}blue\`,
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -449,7 +449,7 @@ describe('@stylexjs/babel-plugin', () => {
           `
           import stylex from 'stylex';
           const RADIUS = 2;
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -486,7 +486,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(
           `
           import stylex from 'stylex';
-          export const buttonTheme = stylex.unstable_createVars({
+          export const buttonTheme = stylex.defineVars({
             bgColor: {
               default: 'blue',
               '@media (prefers-color-scheme: dark)': 'lightblue',

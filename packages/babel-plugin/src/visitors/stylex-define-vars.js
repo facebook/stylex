@@ -11,7 +11,7 @@ import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
 import {
-  createVars as stylexCreateVars,
+  defineVars as stylexDefineVars,
   messages,
   utils,
 } from '@stylexjs/shared';
@@ -19,14 +19,14 @@ import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
 import * as pathUtils from '../babel-path-utils';
 
-/// This function looks for `stylex.createVars` calls and transforms them.
-//. 1. It finds the first argument to `stylex.createVars` and validates it.
+/// This function looks for `stylex.defineVars` calls and transforms them.
+//. 1. It finds the first argument to `stylex.defineVars` and validates it.
 /// 2. It envalues the style object to get a JS object. This also handles local constants automatically.
-/// 4. It uses the `stylexCreateVars` from `@stylexjs/shared` to transform the JS
+/// 4. It uses the `stylexDefineVars` from `@stylexjs/shared` to transform the JS
 ///    object and to get a list of injected styles.
 /// 5. It converts the resulting Object back into an AST and replaces the call with it.
 /// 6. It also inserts `stylex.inject` calls above the current statement as needed.
-export default function transformStyleXCreateVars(
+export default function transformStyleXDefineVars(
   callExpressionPath: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
@@ -38,14 +38,14 @@ export default function transformStyleXCreateVars(
 
   if (
     (callExpressionNode.callee.type === 'Identifier' &&
-      state.stylexCreateVarsImport.has(callExpressionNode.callee.name)) ||
+      state.stylexDefineVarsImport.has(callExpressionNode.callee.name)) ||
     (callExpressionNode.callee.type === 'MemberExpression' &&
-      callExpressionNode.callee.property.name === 'unstable_createVars' &&
+      callExpressionNode.callee.property.name === 'defineVars' &&
       callExpressionNode.callee.object.type === 'Identifier' &&
       callExpressionNode.callee.property.type === 'Identifier' &&
       state.stylexImport.has(callExpressionNode.callee.object.name))
   ) {
-    validateStyleXCreateVars(callExpressionPath);
+    validateStyleXDefineVars(callExpressionPath);
 
     // We know that parent is a variable declaration
     const variableDeclaratorPath = callExpressionPath.parentPath;
@@ -91,7 +91,7 @@ export default function transformStyleXCreateVars(
 
     const exportName = varId.name;
 
-    const [variablesObj, { css }] = stylexCreateVars(value, {
+    const [variablesObj, { css }] = stylexDefineVars(value, {
       ...state.options,
       themeName: utils.genFileBasedIdentifier({ fileName, exportName }),
     });
@@ -142,8 +142,8 @@ export default function transformStyleXCreateVars(
   }
 }
 
-// Validates the call of `stylex.createVars`.
-function validateStyleXCreateVars(
+// Validates the call of `stylex.defineVars`.
+function validateStyleXDefineVars(
   callExpressionPath: NodePath<t.CallExpression>,
 ) {
   const variableDeclaratorPath: any = callExpressionPath.parentPath;

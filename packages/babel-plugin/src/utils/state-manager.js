@@ -53,8 +53,8 @@ export default class StateManager {
   +stylexIncludeImport: Set<string> = new Set();
   +stylexFirstThatWorksImport: Set<string> = new Set();
   +stylexKeyframesImport: Set<string> = new Set();
-  +stylexCreateVarsImport: Set<string> = new Set();
-  +stylexOverrideVarsImport: Set<string> = new Set();
+  +stylexDefineVarsImport: Set<string> = new Set();
+  +stylexCreateThemeImport: Set<string> = new Set();
   +stylexTypesImport: Set<string> = new Set();
 
   // `stylex.create` calls
@@ -95,7 +95,7 @@ export default class StateManager {
 
   get canReferenceTheme(): boolean {
     return !!this.inStyleXCreate;
-    // || this.isStyleXCreateVars
+    // || this.isStyleXDefineVars
   }
 
   get metadata(): { [key: string]: any } {

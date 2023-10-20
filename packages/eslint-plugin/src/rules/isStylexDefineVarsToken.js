@@ -10,16 +10,16 @@
 'use strict';
 import type { Expression, Pattern } from 'estree';
 
-export default function isStylexCreateVarsToken(
+export default function isStylexDefineVarsToken(
   node: Expression | Pattern,
-  stylexCreateVarsTokenImports: Set<string>,
+  stylexDefineVarsTokenImports: Set<string>,
 ): boolean {
   if (node != null) {
     if (node.type === 'MemberExpression' && node.object.type === 'Identifier') {
-      return stylexCreateVarsTokenImports.has(node.object.name);
+      return stylexDefineVarsTokenImports.has(node.object.name);
     }
     if (node.type === 'Identifier') {
-      return stylexCreateVarsTokenImports.has(node.name);
+      return stylexDefineVarsTokenImports.has(node.name);
     }
     if (node.type === 'TemplateLiteral' && node.expressions.length > 0) {
       return (
@@ -29,7 +29,7 @@ export default function isStylexCreateVarsToken(
               expression.type === 'MemberExpression' &&
               expression.object.type === 'Identifier'
             ) {
-              return stylexCreateVarsTokenImports.has(expression.object.name)
+              return stylexDefineVarsTokenImports.has(expression.object.name)
                 ? invalidTokenCounter
                 : invalidTokenCounter + 1;
             }

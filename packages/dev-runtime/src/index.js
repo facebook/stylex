@@ -65,7 +65,7 @@ export default function inject({
   };
   __monkey_patch__('types', (types: $FlowFixMe));
 
-  const unstable_createVars = <
+  const defineVars = <
     DefaultTokens: {
       +[string]: string | { +default: string, +[string]: string },
     },
@@ -76,23 +76,23 @@ export default function inject({
       themeName: themeNameUUID(),
     },
   ): Theme<DefaultTokens, ID> => {
-    const [cssVarsObject, { css }] = shared.createVars(variables, {
+    const [cssVarsObject, { css }] = shared.defineVars(variables, {
       themeName,
     });
     insert(cssVarsObject.__themeName__, css, 0);
     // $FlowFixMe
     return cssVarsObject;
   };
-  __monkey_patch__('unstable_createVars', unstable_createVars);
+  __monkey_patch__('defineVars', defineVars);
 
-  const overrideVars: $FlowFixMe = <
+  const createTheme: $FlowFixMe = <
     BaseTokens: Theme<{ +[string]: mixed }>,
     ID: string = string,
   >(
     variablesTheme: BaseTokens,
     variablesOverride: OverridesForTokenType<TokensFromTheme<$FlowFixMe>>,
   ): Variant<BaseTokens, ID> => {
-    const [js, css] = shared.overrideVars(
+    const [js, css] = shared.createTheme(
       (variablesTheme: $FlowFixMe),
       variablesOverride,
     );
@@ -102,7 +102,7 @@ export default function inject({
     return js;
   };
 
-  __monkey_patch__('unstable_overrideVars', overrideVars);
+  __monkey_patch__('createTheme', createTheme);
 
   const keyframes = (frames: $ReadOnly<{ [name: string]: mixed, ... }>) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(

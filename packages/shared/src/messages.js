@@ -54,4 +54,6 @@ export const DUPLICATE_CONDITIONAL =
 export const NO_PROJECT_ROOT_DIRECTORY =
   'The project root directory `rootDir` is not configured.';
 export const NON_EXPORT_NAMED_DECLARATION =
-  'The return value of stylex.createVars() must be bound to a named export.';
+  'The return value of stylex.defineVars() must be bound to a named export.';
+export const ANONYMOUS_THEME =
+  'stylex.createTheme() must be bound to a named constant.';

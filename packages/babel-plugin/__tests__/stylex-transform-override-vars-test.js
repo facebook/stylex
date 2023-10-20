@@ -31,9 +31,9 @@ function transform(source, opts = defaultOpts) {
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
   }).code;
 }
-let createVarsOutput = '';
+let defineVarsOutput = '';
 
-const overrideVars = `{
+const createTheme = `{
   bgColor: {
     default: 'green',
     '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -47,7 +47,7 @@ const overrideVars = `{
   fgColor: 'coral',
 }`;
 
-const overrideVarsWithDifferentOrder = `{
+const createThemeWithDifferentOrder = `{
   bgColorDisabled: {
     default: 'antiquewhite',
     '@media (prefers-color-scheme: dark)': 'floralwhite',
@@ -63,9 +63,9 @@ const overrideVarsWithDifferentOrder = `{
 
 describe('@stylexjs/babel-plugin', () => {
   beforeEach(() => {
-    createVarsOutput = transform(`
+    defineVarsOutput = transform(`
       import stylex from 'stylex';
-      export const buttonTheme = stylex.unstable_createVars({
+      export const buttonTheme = stylex.defineVars({
         bgColor: {
           default: 'blue',
           '@media (prefers-color-scheme: dark)': 'lightblue',
@@ -82,8 +82,8 @@ describe('@stylexjs/babel-plugin', () => {
       });
     `);
   });
-  test('ouput of stylex.unstable_createVars()', () => {
-    expect(createVarsOutput).toMatchInlineSnapshot(`
+  test('ouput of stylex.defineVars()', () => {
+    expect(defineVarsOutput).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
       export const buttonTheme = {
         bgColor: "var(--xgck17p)",
@@ -94,19 +94,19 @@ describe('@stylexjs/babel-plugin', () => {
       };"
     `);
   });
-  describe('[transform] stylex.unstable_overrideVars()', () => {
+  describe('[transform] stylex.createTheme()', () => {
     test('variables order does not change the className hash', () => {
       const output1 = transform(
         `
-         ${createVarsOutput}
-         const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
+         ${defineVarsOutput}
+         const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
        `,
         { dev: true, ...defaultOpts },
       );
       const output2 = transform(
         `
-         ${createVarsOutput}
-         const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVarsWithDifferentOrder});
+         ${defineVarsOutput}
+         const buttonThemePositive = stylex.createTheme(buttonTheme, ${createThemeWithDifferentOrder});
        `,
         { dev: true, ...defaultOpts },
       );
@@ -122,7 +122,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xfmksyk",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
       expect(output1).toEqual(output2);
@@ -131,8 +132,8 @@ describe('@stylexjs/babel-plugin', () => {
     test('transforms variables object', () => {
       expect(
         transform(`
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -154,8 +155,8 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
          `,
           { dev: true, ...defaultOpts },
         ),
@@ -171,7 +172,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xfmksyk",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });
@@ -180,8 +182,8 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
          `,
           {
             moduleSystem: 'commonjs',
@@ -208,8 +210,8 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
          `,
           {
             dev: true,
@@ -229,7 +231,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xfmksyk",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });
@@ -238,9 +241,9 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
-           const buttonThemeNew = stylex.unstable_overrideVars(buttonTheme, {
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
+           const buttonThemeNew = stylex.createTheme(buttonTheme, {
             bgColor: 'skyblue',
             cornerRadius: '8px',
           });
@@ -270,9 +273,9 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
-           const buttonThemeMonochromatic = stylex.unstable_overrideVars(
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
+           const buttonThemeMonochromatic = stylex.createTheme(
             buttonTheme, {
               bgColor: 'white',
               bgColorDisabled: 'black',
@@ -296,12 +299,14 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xfmksyk",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };
         stylex.inject(".xpsjjyf{--xgck17p:white;--xpegid5:black;--xrqfjmn:0px;}", 0.99);
         const buttonThemeMonochromatic = {
           $$css: true,
-          x568ih9: "xpsjjyf"
+          x568ih9: "xpsjjyf",
+          "TestTheme.stylex.js__buttonThemeMonochromatic": "TestTheme.stylex.js__buttonThemeMonochromatic"
         };"
       `);
     });
@@ -310,9 +315,9 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
+           ${defineVarsOutput}
            const RADIUS = 10;
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
+           const buttonThemePositive = stylex.createTheme(buttonTheme, {
             bgColor: {
               default: 'green',
               '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -341,7 +346,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xrpt93l{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:10;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xrpt93l{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xrpt93l"
+          x568ih9: "xrpt93l",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });
@@ -350,9 +356,9 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
+           ${defineVarsOutput}
            const COLOR = 'coral';
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
+           const buttonThemePositive = stylex.createTheme(buttonTheme, {
             bgColor: {
               default: 'green',
               '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -381,7 +387,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xfmksyk",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });
@@ -390,9 +397,9 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
+           ${defineVarsOutput}
            const name = 'light';
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
+           const buttonThemePositive = stylex.createTheme(buttonTheme, {
             bgColor: {
               default: \`\${name}green\`,
               '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -421,7 +428,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1u43pop{--xgck17p:lightgreen;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1u43pop{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1u43pop"
+          x568ih9: "x1u43pop",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });
@@ -430,9 +438,9 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
+           ${defineVarsOutput}
            const RADIUS = 2;
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, {
+           const buttonThemePositive = stylex.createTheme(buttonTheme, {
             bgColor: {
               default: 'green',
               '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -461,7 +469,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1ubmxd4{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:4;--x4y59db:coral;}@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.x1ubmxd4{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "x1ubmxd4"
+          x568ih9: "x1ubmxd4",
+          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });
@@ -470,8 +479,8 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           ${createVarsOutput}
-           const buttonThemePositive = stylex.unstable_overrideVars(buttonTheme, ${overrideVars});
+           ${defineVarsOutput}
+           const buttonThemePositive = stylex.createTheme(buttonTheme, ${createTheme});
          `,
           {
             dev: true,
@@ -494,7 +503,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}", 0.99);
         const buttonThemePositive = {
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xfmksyk",
+          "utils/NestedTheme.stylex.js__buttonThemePositive": "utils/NestedTheme.stylex.js__buttonThemePositive"
         };"
       `);
     });

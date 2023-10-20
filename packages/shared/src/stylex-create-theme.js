@@ -15,14 +15,14 @@ import { defaultOptions } from './utils/default-options';
 // It takes an object of variables with their values and the original set of variables to override
 // and returns a hashed className with variables overrides.
 //
-export default function styleXOverrideVars(
+export default function styleXCreateTheme(
   themeVars: { +__themeName__: string, +[string]: string },
   variables: { +[string]: string | { default: string, +[string]: string } },
   options?: StyleXOptions,
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__themeName__ !== 'string') {
     throw new Error(
-      'Can only override variables theme created with stylex.unstable_createVars().',
+      'Can only override variables theme created with stylex.defineVars().',
     );
   }
 

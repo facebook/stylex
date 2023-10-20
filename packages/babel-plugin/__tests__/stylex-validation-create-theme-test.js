@@ -34,54 +34,56 @@ function transform(source: string, opts: any = {}) {
 
 describe('@stylexjs/babel-plugin', () => {
   /**
-   * stylex.unstable_createVars
+   * stylex.createTheme
    */
 
-  describe('[validation] stylex.unstable_createVars()', () => {
-    test('must be bound to a named export', () => {
+  describe('[validation] stylex.createTheme()', () => {
+    test('must be bound to a variable', () => {
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          const styles = stylex.unstable_createVars({});
-          `);
-      }).toThrow(messages.NON_EXPORT_NAMED_DECLARATION);
-      expect(() => {
-        transform(`
-          import stylex from 'stylex';
-          stylex.unstable_createVars({});
+          stylex.createTheme({__themeName__: 'x568ih9'}, {});
           `);
       }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
     });
 
-    test('its only argument must be a single object', () => {
+    test('it must have two arguments', () => {
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars(genStyles());
+          const variables = stylex.createTheme();
+          `);
+      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const variables = stylex.createTheme({});
+          `);
+      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const variables = stylex.createTheme(genStyles(), {});
           `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars(1);
+          const variables = stylex.createTheme({}, {});
           `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      }).toThrow(
+        'Can only override variables theme created with stylex.defineVars().',
+      );
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars();
+          const variables = stylex.createTheme({__themeName__: 'x568ih9'}, genStyles());
           `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars({}, {});
-          `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
-      expect(() => {
-        transform(`
-          import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars({});
+          const variables = stylex.createTheme({__themeName__: 'x568ih9'}, {});
           `);
       }).not.toThrow();
     });
@@ -91,50 +93,54 @@ describe('@stylexjs/babel-plugin', () => {
     test('variable keys must be a static value', () => {
       expect(() => {
         transform(`
-            import stylex from 'stylex';
-            export const styles = stylex.unstable_createVars({
-                [labelColor]: 'red',
-            });
-            `);
+          import stylex from 'stylex';
+          const variables = stylex.createTheme(
+            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
+            {[labelColor]: 'red',});
+          `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });
 
     /* Values */
 
-    test('values must be static number or string in stylex.unstable_createVars()', () => {
+    test('values must be static number or string in stylex.createTheme()', () => {
       // number
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars({
-              cornerRadius: 5,
-          });
+          const variables = stylex.createTheme(
+            {__themeName__: 'x568ih9', cornerRadius: 'var(--cornerRadiusHash)'},
+            {cornerRadius: 5,}
+          );
           `);
       }).not.toThrow();
       // string
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars({
-              labelColor: 'red',
-          });
+          const variables = stylex.createTheme(
+            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
+            {labelColor: 'red',}
+          );
           `);
       }).not.toThrow();
       // not static
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars({
-              labelColor: labelColor,
-          });
+          const variables = stylex.createTheme(
+            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
+            {labelColor: labelColor,}
+          );
           `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
-          export const styles = stylex.unstable_createVars({
-              labelColor: labelColor(),
-          });
+          const variables = stylex.createTheme(
+            {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
+            {labelColor: labelColor(),}
+          );
           `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });

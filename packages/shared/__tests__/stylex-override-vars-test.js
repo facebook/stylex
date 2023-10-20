@@ -8,7 +8,7 @@
  *
  */
 
-import styleXOverrideVars from '../src/stylex-override-vars';
+import stylexCreateTheme from '../src/stylex-create-theme';
 
 describe('stylex-override-vars test', () => {
   test('overrides set of vars with CSS class', () => {
@@ -20,7 +20,7 @@ describe('stylex-override-vars test', () => {
       fgColor: 'var(--x4y59db)',
     };
 
-    const overrideVars = {
+    const createTheme = {
       bgColor: {
         default: 'green',
         '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -34,9 +34,9 @@ describe('stylex-override-vars test', () => {
       fgColor: 'coral',
     };
 
-    const [classNameOutput, cssOutput] = styleXOverrideVars(
+    const [classNameOutput, cssOutput] = stylexCreateTheme(
       defaultVars,
-      overrideVars,
+      createTheme,
     );
 
     expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
@@ -58,7 +58,7 @@ describe('stylex-override-vars test', () => {
       fgColor: 'var(--x4y59db)',
     };
 
-    const overrideVars1 = {
+    const createTheme1 = {
       bgColor: {
         default: 'green',
         '@media (prefers-color-scheme: dark)': 'lightgreen',
@@ -72,7 +72,7 @@ describe('stylex-override-vars test', () => {
       fgColor: 'coral',
     };
 
-    const overrideVars2 = {
+    const createTheme2 = {
       bgColorDisabled: {
         default: 'antiquewhite',
         '@media (prefers-color-scheme: dark)': 'floralwhite',
@@ -86,9 +86,9 @@ describe('stylex-override-vars test', () => {
       cornerRadius: '6px',
     };
 
-    const [classNameOutput1] = styleXOverrideVars(defaultVars, overrideVars1);
+    const [classNameOutput1] = stylexCreateTheme(defaultVars, createTheme1);
 
-    const [classNameOutput2] = styleXOverrideVars(defaultVars, overrideVars2);
+    const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
 
     expect(classNameOutput1[defaultVars.__themeName__]).toEqual(
       classNameOutput2[defaultVars.__themeName__],

@@ -165,7 +165,7 @@ export type FlattenTokens<T extends TTokens> = Readonly<{
   [Key in keyof T]: T[Key] extends { [key: string]: infer X } ? X : T[Key];
 }>;
 
-export type StyleX$CreateVars = <
+export type StyleX$DefineVars = <
   DefaultTokens extends TTokens,
   ID extends symbol = symbol,
 >(
@@ -187,7 +187,7 @@ type OverridesForTokenType<Config extends { [key: string]: any }> = {
     | { default: Config[Key]; [atRule: AtRuleStr]: Config[Key] };
 };
 
-export type StyleX$OverrideVars = <
+export type StyleX$CreateTheme = <
   BaseTokens extends Theme<any>,
   ID extends symbol = symbol,
 >(

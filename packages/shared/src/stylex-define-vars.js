@@ -22,7 +22,7 @@ type VarsObject<
 
 // Similar to `stylex.create` it takes an object of variables with their values
 // and returns a string after hashing it.
-export default function styleXCreateVars<
+export default function styleXDefineVars<
   Vars: {
     +[string]: string | { +default: string, +[string]: string },
   },
