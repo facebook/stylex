@@ -43,6 +43,43 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('transforms style object with import *', () => {
+      expect(
+        transform(`
+           import * as foo from 'stylex';
+           const styles = foo.create({
+             default: {
+               backgroundColor: 'red',
+               color: 'blue',
+             }
+           });
+         `),
+      ).toMatchInlineSnapshot(`
+        "import * as foo from 'stylex';
+        foo.inject(".xrkmrrc{background-color:red}", 4);
+        foo.inject(".xju2f9n{color:blue}", 4);"
+      `);
+    });
+
+    test('transforms style object with named imports', () => {
+      expect(
+        transform(`
+           import {create} from 'stylex';
+           const styles = create({
+             default: {
+               backgroundColor: 'red',
+               color: 'blue',
+             }
+           });
+         `),
+      ).toMatchInlineSnapshot(`
+        "import { create } from 'stylex';
+        import __stylex__ from "stylex";
+        __stylex__.inject(".xrkmrrc{background-color:red}", 4);
+        __stylex__.inject(".xju2f9n{color:blue}", 4);"
+      `);
+    });
+
     test('transforms style object with custom propety', () => {
       expect(
         transform(`

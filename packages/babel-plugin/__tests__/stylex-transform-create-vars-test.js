@@ -65,6 +65,71 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
     });
+
+    test('transforms variables object with import *', () => {
+      expect(
+        transform(`
+          import * as foo from 'stylex';
+          export const buttonTheme = foo.defineVars({
+            bgColor: {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            bgColorDisabled: {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
+            cornerRadius: 10,
+            fgColor: {
+              default: 'pink',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import * as foo from 'stylex';
+        export const buttonTheme = {
+          bgColor: "var(--xgck17p)",
+          bgColorDisabled: "var(--xpegid5)",
+          cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
+
+    test('transforms variables object with named import', () => {
+      expect(
+        transform(`
+          import {defineVars} from 'stylex';
+          export const buttonTheme = defineVars({
+            bgColor: {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            bgColorDisabled: {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
+            cornerRadius: 10,
+            fgColor: {
+              default: 'pink',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import { defineVars } from 'stylex';
+        export const buttonTheme = {
+          bgColor: "var(--xgck17p)",
+          bgColorDisabled: "var(--xpegid5)",
+          cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
+
     test('transforms referenced local variables object', () => {
       expect(
         transform(`

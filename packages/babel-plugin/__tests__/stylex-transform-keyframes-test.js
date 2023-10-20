@@ -45,6 +45,49 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('converts keyframes to CSS with import *', () => {
+      expect(
+        transform(`
+          import * as stylex from 'stylex';
+          const name = stylex.keyframes({
+            from: {
+              backgroundColor: 'red',
+            },
+
+            to: {
+              backgroundColor: 'blue',
+            }
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import * as stylex from 'stylex';
+        stylex.inject("@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}", 1);
+        const name = "xbopttm-B";"
+      `);
+    });
+
+    test('converts keyframes to CSS with named import', () => {
+      expect(
+        transform(`
+          import { keyframes } from 'stylex';
+          const name = keyframes({
+            from: {
+              backgroundColor: 'red',
+            },
+
+            to: {
+              backgroundColor: 'blue',
+            }
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import { keyframes } from 'stylex';
+        import __stylex__ from "stylex";
+        __stylex__.inject("@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}", 1);
+        const name = "xbopttm-B";"
+      `);
+    });
+
     test('allows template literal references to keyframes', () => {
       expect(
         transform(`
