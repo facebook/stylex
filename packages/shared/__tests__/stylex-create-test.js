@@ -44,6 +44,96 @@ describe('stylex-create-test', () => {
     `);
   });
 
+  test('transitionProperty:marginTop', () => {
+    const camelCase = styleXCreate({
+      default: {
+        transitionProperty: 'marginTop',
+      },
+    });
+    const dashCase = styleXCreate({
+      default: {
+        transitionProperty: 'margin-top',
+      },
+    });
+    expect(camelCase).toEqual(dashCase);
+
+    expect(camelCase).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "transitionProperty": "x1cfch2b",
+          },
+        },
+        {
+          "x1cfch2b": {
+            "ltr": ".x1cfch2b{transition-property:margin-top}",
+            "priority": 4,
+            "rtl": null,
+          },
+        },
+      ]
+    `);
+  });
+
+  test('transitionProperty:--foo', () => {
+    expect(
+      styleXCreate({
+        default: {
+          transitionProperty: '--foo',
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "transitionProperty": "x17389it",
+          },
+        },
+        {
+          "x17389it": {
+            "ltr": ".x17389it{transition-property:--foo}",
+            "priority": 4,
+            "rtl": null,
+          },
+        },
+      ]
+    `);
+  });
+
+  test('transitionProperty:opacity, marginTop', () => {
+    const camelCase = styleXCreate({
+      default: {
+        transitionProperty: 'opacity, marginTop',
+      },
+    });
+    const dashCase = styleXCreate({
+      default: {
+        transitionProperty: 'opacity, margin-top',
+      },
+    });
+    expect(camelCase).toEqual(dashCase);
+
+    expect(camelCase).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "transitionProperty": "x95ccmk",
+          },
+        },
+        {
+          "x95ccmk": {
+            "ltr": ".x95ccmk{transition-property:opacity,margin-top}",
+            "priority": 4,
+            "rtl": null,
+          },
+        },
+      ]
+    `);
+  });
+
   test('padding shorthand', () => {
     expect(
       styleXCreate({

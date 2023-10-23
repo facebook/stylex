@@ -28,14 +28,14 @@ describe('@stylexjs/babel-plugin', () => {
     test('transforms style object', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               backgroundColor: 'red',
-               color: 'blue',
-             }
-           });
-         `),
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              backgroundColor: 'red',
+              color: 'blue',
+            }
+          });
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -83,13 +83,13 @@ describe('@stylexjs/babel-plugin', () => {
     test('transforms style object with custom propety', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               '--background-color': 'red',
-             }
-           });
-         `),
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              '--background-color': 'red',
+            }
+          });
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xgau0yw{--background-color:red}", 4);"
@@ -99,13 +99,13 @@ describe('@stylexjs/babel-plugin', () => {
     test('transforms style object with custom propety as value', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               '--final-color': 'var(--background-color)',
-             }
-           });
-         `),
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              '--final-color': 'var(--background-color)',
+            }
+          });
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".x13tgbkp{--final-color:var(--background-color)}", 4);"
@@ -115,16 +115,16 @@ describe('@stylexjs/babel-plugin', () => {
     test('transforms multiple namespaces', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               backgroundColor: 'red',
-             },
-             default2: {
-               color: 'blue',
-             },
-           });
-         `),
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              backgroundColor: 'red',
+            },
+            default2: {
+              color: 'blue',
+            },
+          });
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -135,16 +135,58 @@ describe('@stylexjs/babel-plugin', () => {
     test('does not transform attr() value', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               content: 'attr(some-attribute)',
-             },
-           });
-         `),
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              content: 'attr(some-attribute)',
+            },
+          });
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         stylex.inject(".xd71okc{content:attr(some-attribute)}", 4);"
+      `);
+    });
+
+    test('handles camelCased transition properties', () => {
+      const camelCased = transform(`
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            transitionProperty: 'marginTop',
+          },
+        });
+      `);
+      const kebabCased = transform(`
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          default: {
+            transitionProperty: 'margin-top',
+          },
+        });
+      `);
+
+      expect(camelCased).toEqual(kebabCased);
+
+      expect(camelCased).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".x1cfch2b{transition-property:margin-top}", 4);"
+      `);
+    });
+
+    test('leaves transition properties of custom properties alone', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              transitionProperty: '--foo',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        stylex.inject(".x17389it{transition-property:--foo}", 4);"
       `);
     });
 
@@ -309,19 +351,23 @@ describe('@stylexjs/babel-plugin', () => {
     test('Uses stylex.firstThatWorks correctly', () => {
       expect(
         transform(`
-           export const styles = stylex.create({
-             foo: {
-               position: stylex.firstThatWorks('sticky', 'fixed'),
-             }
-           });
-         `),
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              position: stylex.firstThatWorks('sticky', 'fixed'),
+            }
+          });
+        `),
       ).toMatchInlineSnapshot(`
-        "export const styles = stylex.create({
-          foo: {
-            position: stylex.firstThatWorks('sticky', 'fixed')
-          }
-        });"
-      `);
+"import stylex from 'stylex';
+stylex.inject(".x15oojuh{position:fixed;position:sticky}", 4);
+export const styles = {
+  foo: {
+    position: "x15oojuh",
+    $$css: true
+  }
+};"
+`);
     });
 
     test('transforms complex property values containing custom properties variables', () => {
@@ -345,15 +391,15 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms invalid pseudo-class', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               ':invalpwdijad': {
-                 backgroundColor: 'red',
-                 color: 'blue',
-               },
-             },
-           });
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                ':invalpwdijad': {
+                  backgroundColor: 'red',
+                  color: 'blue',
+                },
+              },
+            });
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
@@ -365,23 +411,23 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms valid pseudo-classes in order', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               ':hover': {
-                 color: 'blue',
-               },
-               ':active': {
-                 color: 'red',
-               },
-               ':focus': {
-                 color: 'yellow',
-               },
-               ':nth-child(2n)': {
-                 color: 'purple'
-               }
-             },
-           });
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                ':hover': {
+                  color: 'blue',
+                },
+                ':active': {
+                  color: 'red',
+                },
+                ':focus': {
+                  color: 'yellow',
+                },
+                ':nth-child(2n)': {
+                  color: 'purple'
+                }
+              },
+            });
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
@@ -395,14 +441,14 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms pseudo-class with array value as fallbacks', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               ':hover': {
-                 position: ['sticky', 'fixed'],
-               }
-             },
-           });
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                ':hover': {
+                  position: ['sticky', 'fixed'],
+                }
+              },
+            });
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
@@ -434,17 +480,17 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms valid pseudo-classes in order', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-           const styles = stylex.create({
-             default: {
-               color: {
-                ':hover': 'blue',
-                ':active':'red',
-                ':focus': 'yellow',
-                ':nth-child(2n)': 'purple',
-               },
-             },
-           });
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                color: {
+                  ':hover': 'blue',
+                  ':active':'red',
+                  ':focus': 'yellow',
+                  ':nth-child(2n)': 'purple',
+                },
+              },
+            });
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
@@ -501,15 +547,15 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms ::placeholder', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-             const styles = stylex.create({
-               foo: {
-                 '::placeholder': {
-                   color: 'gray',
-                 },
-               },
-             });
-           `),
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                '::placeholder': {
+                  color: 'gray',
+                },
+              },
+            });
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x6yu8oj::placeholder{color:gray}", 8);"
@@ -519,15 +565,15 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms ::thumb', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-             const styles = stylex.create({
-               foo: {
-                 '::thumb': {
-                   width: 16,
-                 },
-               },
-             });
-           `),
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                '::thumb': {
+                  width: 16,
+                },
+              },
+            });
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 8);"
@@ -539,19 +585,19 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms media queries', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-       const styles = stylex.create({
-         default: {
-           backgroundColor: 'red',
-           '@media (min-width: 1000px)': {
-             backgroundColor: 'blue',
-           },
-           '@media (min-width: 2000px)': {
-             backgroundColor: 'purple',
-           },
-         },
-       });
-           `),
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                backgroundColor: 'red',
+                '@media (min-width: 1000px)': {
+                  backgroundColor: 'blue',
+                },
+                '@media (min-width: 2000px)': {
+                  backgroundColor: 'purple',
+                },
+              },
+            });
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -563,20 +609,19 @@ describe('@stylexjs/babel-plugin', () => {
       test('transforms supports queries', () => {
         expect(
           transform(`
-             import stylex from 'stylex';
-             const styles = stylex.create({
-               default: {
-                 backgroundColor: 'red',
-                 '@supports (hover: hover)': {
-                   backgroundColor: 'blue',
-                 },
-                 '@supports not (hover: hover)': {
-                   backgroundColor: 'purple',
-                 },
-               },
-             });
-
-           `),
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              default: {
+                backgroundColor: 'red',
+                '@supports (hover: hover)': {
+                  backgroundColor: 'blue',
+                },
+                '@supports not (hover: hover)': {
+                  backgroundColor: 'purple',
+                },
+              },
+            });
+          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
           stylex.inject(".xrkmrrc{background-color:red}", 4);
@@ -635,33 +680,33 @@ describe('@stylexjs/babel-plugin', () => {
     test('auto-expands shorthands', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           const borderRadius = 2;
-           const styles = stylex.create({
-             default: {
-               margin: 'calc((100% - 50px) * 0.5) 20px 0',
-             },
-             error: {
-               borderColor: 'red blue',
-               borderStyle: 'dashed',
-               borderWidth: '0 0 2px 0',
-             },
-             root: {
-               border: '1px solid var(--divider)',
-               borderRadius: borderRadius * 2,
-               borderBottom: '5px solid red',
-             },
-             short: {
-               padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
-               paddingTop: 0,
-             },
-             valid: {
-               borderColor: 'green',
-               borderStyle: 'solid',
-               borderWidth: 1,
-             }
-           });
-         `),
+          import stylex from 'stylex';
+          const borderRadius = 2;
+          const styles = stylex.create({
+            default: {
+              margin: 'calc((100% - 50px) * 0.5) 20px 0',
+            },
+            error: {
+              borderColor: 'red blue',
+              borderStyle: 'dashed',
+              borderWidth: '0 0 2px 0',
+            },
+            root: {
+              border: '1px solid var(--divider)',
+              borderRadius: borderRadius * 2,
+              borderBottom: '5px solid red',
+            },
+            short: {
+              padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
+              paddingTop: 0,
+            },
+            valid: {
+              borderColor: 'green',
+              borderStyle: 'solid',
+              borderWidth: 1,
+            }
+          });
+        `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;
@@ -689,26 +734,23 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('Last property wins, even if shorthand', () => {
       expect(
-        transform(
-          `
-            import stylex from 'stylex';
-            const borderRadius = 2;
-            const styles = stylex.create({
-              default: {
-                marginTop: 5,
-                marginEnd: 10,
-                marginBottom: 15,
-                marginStart: 20,
-              },
-              override: {
-                marginBottom: 100,
-                margin: 0,
-              }
-            });
-            stylex(styles.default, styles.override);
-          `,
-        ),
-
+        transform(`
+          import stylex from 'stylex';
+          const borderRadius = 2;
+          const styles = stylex.create({
+            default: {
+              marginTop: 5,
+              marginEnd: 10,
+              marginBottom: 15,
+              marginStart: 20,
+            },
+            override: {
+              marginBottom: 100,
+              margin: 0,
+            }
+          });
+          stylex(styles.default, styles.override);
+        `),
         // Expect the className to reflect override entirely
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -726,36 +768,36 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-           import stylex from 'stylex';
-           const borderRadius = 2;
-           export const styles = stylex.create({
-             default: {
-               margin: 'calc((100% - 50px) * 0.5) 20px 0',
-             },
-             error: {
-               borderColor: 'red blue',
-               borderStyle: 'dashed',
-               borderWidth: '0 0 2px 0',
-             },
-             root: {
-               border: '1px solid var(--divider)',
-               borderRadius: borderRadius * 2,
-               borderBottom: '5px solid red',
-             },
-             short: {
-               padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
-               paddingTop: 0,
-             },
-             shortReversed: {
-              paddingTop: 0,
-              padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
-            },
-             valid: {
-               borderColor: 'green',
-               borderStyle: 'solid',
-               borderWidth: 1,
-             }
-           });
+            import stylex from 'stylex';
+            const borderRadius = 2;
+            export const styles = stylex.create({
+              default: {
+                margin: 'calc((100% - 50px) * 0.5) 20px 0',
+              },
+              error: {
+                borderColor: 'red blue',
+                borderStyle: 'dashed',
+                borderWidth: '0 0 2px 0',
+              },
+              root: {
+                border: '1px solid var(--divider)',
+                borderRadius: borderRadius * 2,
+                borderBottom: '5px solid red',
+              },
+              short: {
+                padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
+                paddingTop: 0,
+              },
+              shortReversed: {
+                paddingTop: 0,
+                padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
+              },
+              valid: {
+                borderColor: 'green',
+                borderStyle: 'solid',
+                borderWidth: 1,
+              }
+            });
          `,
           { stylexSheetName: '<>' },
         ),
@@ -998,13 +1040,13 @@ describe('@stylexjs/babel-plugin', () => {
     test('adds units for numbers in style object with function', () => {
       expect(
         transform(`
-           import stylex from 'stylex';
-           export const styles = stylex.create({
-             default: (width) => ({
-               backgroundColor: 'red',
-               width,
-             })
-           });
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (width) => ({
+              backgroundColor: 'red',
+              width,
+            })
+          });
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
