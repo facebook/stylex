@@ -76,6 +76,38 @@ describe('stylex-create-test', () => {
     `);
   });
 
+  test('willChange:marginTop', () => {
+    const camelCase = styleXCreate({
+      default: {
+        willChange: 'marginTop',
+      },
+    });
+    const dashCase = styleXCreate({
+      default: {
+        willChange: 'margin-top',
+      },
+    });
+    expect(camelCase).toEqual(dashCase);
+
+    expect(camelCase).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "willChange": "x1a6dnx1",
+          },
+        },
+        {
+          "x1a6dnx1": {
+            "ltr": ".x1a6dnx1{will-change:margin-top}",
+            "priority": 4,
+            "rtl": null,
+          },
+        },
+      ]
+    `);
+  });
+
   test('transitionProperty:--foo', () => {
     expect(
       styleXCreate({
@@ -94,6 +126,32 @@ describe('stylex-create-test', () => {
         {
           "x17389it": {
             "ltr": ".x17389it{transition-property:--foo}",
+            "priority": 4,
+            "rtl": null,
+          },
+        },
+      ]
+    `);
+  });
+
+  test('willChange:--foo', () => {
+    expect(
+      styleXCreate({
+        default: {
+          willChange: '--foo',
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "willChange": "x1lxaxzv",
+          },
+        },
+        {
+          "x1lxaxzv": {
+            "ltr": ".x1lxaxzv{will-change:--foo}",
             "priority": 4,
             "rtl": null,
           },

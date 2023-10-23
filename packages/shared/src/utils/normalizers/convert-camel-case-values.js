@@ -14,11 +14,11 @@
  */
 import dashify from '../dashify';
 
-export default function convertCamelCasedTransitionProps(
+export default function convertCamelCasedValues(
   ast: PostCSSValueAST,
   key: string,
 ): PostCSSValueAST {
-  if (key !== 'transitionProperty') {
+  if (key !== 'transitionProperty' && key !== 'willChange') {
     return ast;
   }
   const nodes = ast.nodes;

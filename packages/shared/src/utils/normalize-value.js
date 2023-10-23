@@ -19,7 +19,7 @@ import normalizeZeroDimensions from './normalizers/zero-dimensions';
 
 import detectUnclosedFns from './normalizers/detect-unclosed-fns';
 import parser from 'postcss-value-parser';
-import convertCamelCaseTransitionProps from './normalizers/convert-camel-case-transition-props';
+import convertCamelCaseValues from './normalizers/convert-camel-case-values';
 
 // `Timings` should be before `LeadingZero`, because it
 // changes 500ms to 0.5s, then `LeadingZero` makes it .5s
@@ -31,7 +31,7 @@ const normalizers = [
   normalizeLeadingZero,
   normalizeQuotes,
   convertFontSizeToRem,
-  convertCamelCaseTransitionProps,
+  convertCamelCaseValues,
 ];
 
 export default function normalizeValue(value: string, key: string): string {
