@@ -29,7 +29,7 @@ styles1.foo as StyleXStyles<{ width?: unknown }>;
 styles1.foo as StyleXStylesWithout<{ width: unknown }>;
 
 stylex(styles1.foo);
-stylex.spread(styles1.foo);
+stylex.props(styles1.foo);
 
 /**
  * SIMPLE STYLES
@@ -66,7 +66,7 @@ styles2.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 styles2.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 
 stylex(styles2.foo);
-stylex.spread(styles2.foo);
+stylex.props(styles2.foo);
 
 /**
  * FALLBACK STYLES
@@ -99,7 +99,7 @@ styles3.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 styles3.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 
 stylex(styles3.foo);
-stylex.spread(styles3.foo);
+stylex.props(styles3.foo);
 
 /**
  * CONDITIONAL STYLES
@@ -129,7 +129,7 @@ styles4.foo satisfies StyleXStyles<{ width: number | string }>;
 styles4.foo satisfies StyleXStyles<{ width?: unknown }>;
 
 stylex(styles4.foo);
-stylex.spread(styles4.foo);
+stylex.props(styles4.foo);
 
 /**
  * NESTED CONDITIONAL STYLES
@@ -162,7 +162,7 @@ styles5.foo satisfies StyleXStyles<{ width: number | string }>;
 styles5.foo satisfies StyleXStyles<{ width?: unknown }>;
 
 stylex(styles5.foo);
-stylex.spread(styles5.foo);
+stylex.props(styles5.foo);
 
 /**
  * DYNAMIC NESTED CONDITIONAL STYLES
@@ -208,7 +208,7 @@ styles6.foo(100) satisfies StyleXStyles<{ width?: unknown }>;
 stylex(styles6.foo(100));
 
 stylex(styles6.foo(100)[0]);
-stylex.spread(styles6.foo(100));
+stylex.props(styles6.foo(100));
 
 /**
  * PSEUDO-ELEMENT STYLES
@@ -243,7 +243,7 @@ styles7.foo satisfies StyleXStyles<{
 }>;
 
 stylex(styles7.foo);
-stylex.spread(styles7.foo);
+stylex.props(styles7.foo);
 
 // CSS variables
 
@@ -291,4 +291,4 @@ styles8.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 styles8.foo satisfies StyleXStylesWithout<{ color: unknown }>;
 
 stylex(styles8.foo);
-stylex.spread(styles8.foo);
+stylex.props(styles8.foo);

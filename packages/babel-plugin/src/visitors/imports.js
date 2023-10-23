@@ -33,6 +33,9 @@ export function readImportDeclarations(
           if (specifier.imported.name === 'create') {
             state.stylexCreateImport.add(specifier.local.name);
           }
+          if (specifier.imported.name === 'props') {
+            state.stylexPropsImport.add(specifier.local.name);
+          }
           if (specifier.imported.name === 'keyframes') {
             state.stylexKeyframesImport.add(specifier.local.name);
           }
@@ -55,6 +58,9 @@ export function readImportDeclarations(
         if (specifier.imported.type === 'StringLiteral') {
           if (specifier.imported.value === 'create') {
             state.stylexCreateImport.add(specifier.local.name);
+          }
+          if (specifier.imported.value === 'props') {
+            state.stylexPropsImport.add(specifier.local.name);
           }
           if (specifier.imported.value === 'keyframes') {
             state.stylexKeyframesImport.add(specifier.local.name);
@@ -108,6 +114,9 @@ export function readRequires(
           const value: t.Identifier = prop.value;
           if (prop.key.name === 'create') {
             state.stylexCreateImport.add(value.name);
+          }
+          if (prop.key.name === 'props') {
+            state.stylexPropsImport.add(value.name);
           }
           if (prop.key.name === 'keyframes') {
             state.stylexKeyframesImport.add(value.name);

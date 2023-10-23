@@ -30,7 +30,7 @@ describe('styles', () => {
         animationDelay: '0.3s',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('animation-duration', () => {
@@ -39,7 +39,7 @@ describe('styles', () => {
         animationDuration: '0.5s',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('background-image', () => {
@@ -48,7 +48,7 @@ describe('styles', () => {
         backgroundImage: 'url(https://placehold.it/300/300',
       },
     });
-    stylex.spread(styles.root, mockOptions);
+    stylex.props(styles.root, mockOptions);
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -62,9 +62,9 @@ describe('styles', () => {
         borderStyle: 'solid',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
     expect(
-      stylex.spread([styles.root, styles.override], mockOptions),
+      stylex.props([styles.root, styles.override], mockOptions),
     ).toMatchSnapshot();
   });
 
@@ -74,14 +74,14 @@ describe('styles', () => {
         boxShadow: '1px 2px 3px 4px red',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
 
     const styles2 = stylex.create({
       root: {
         boxShadow: '1px 2px 3px 4px red, 2px 3px 4px 5px blue',
       },
     });
-    stylex.spread(styles2.root, mockOptions);
+    stylex.props(styles2.root, mockOptions);
     expect(console.warn).toHaveBeenCalledTimes(1);
 
     const styles3 = stylex.create({
@@ -89,7 +89,7 @@ describe('styles', () => {
         boxShadow: 'inset 1px 2px 3px 4px red',
       },
     });
-    stylex.spread(styles3.root, mockOptions);
+    stylex.props(styles3.root, mockOptions);
     expect(console.warn).toHaveBeenCalledTimes(2);
   });
 
@@ -162,25 +162,25 @@ describe('styles', () => {
         width: 'auto',
       },
     });
-    expect(stylex.spread(styles.width, mockOptions)).toMatchSnapshot('width');
-    expect(stylex.spread(styles.height, mockOptions)).toMatchSnapshot('height');
-    expect(stylex.spread(styles.maxWidth, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.width, mockOptions)).toMatchSnapshot('width');
+    expect(stylex.props(styles.height, mockOptions)).toMatchSnapshot('height');
+    expect(stylex.props(styles.maxWidth, mockOptions)).toMatchSnapshot(
       'maxWidth',
     );
-    expect(stylex.spread(styles.maxHeight, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.maxHeight, mockOptions)).toMatchSnapshot(
       'maxHeight',
     );
-    expect(stylex.spread(styles.minWidth, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.minWidth, mockOptions)).toMatchSnapshot(
       'minWidth',
     );
-    expect(stylex.spread(styles.minHeight, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.minHeight, mockOptions)).toMatchSnapshot(
       'minHeight',
     );
-    expect(stylex.spread(styles.units, mockOptions)).toMatchSnapshot('units');
-    expect(stylex.spread(styles.allDifferent, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.units, mockOptions)).toMatchSnapshot('units');
+    expect(stylex.props(styles.allDifferent, mockOptions)).toMatchSnapshot(
       'allDifferent',
     );
-    expect(stylex.spread(styles.auto, mockOptions)).toMatchSnapshot('auto');
+    expect(stylex.props(styles.auto, mockOptions)).toMatchSnapshot('auto');
   });
 
   test('direction', () => {
@@ -189,14 +189,14 @@ describe('styles', () => {
         direction: 'ltr',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
 
     const styles2 = stylex.create({
       root: {
         direction: 'rtl',
       },
     });
-    expect(stylex.spread(styles2.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles2.root, mockOptions)).toMatchSnapshot();
   });
 
   test('font-size', () => {
@@ -205,10 +205,10 @@ describe('styles', () => {
         fontSize: '2.5rem',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot('default');
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot('default');
 
     expect(
-      stylex.spread(styles.root, { ...mockOptions, fontScale: 2 }),
+      stylex.props(styles.root, { ...mockOptions, fontScale: 2 }),
     ).toMatchSnapshot('fontScale:2');
   });
 
@@ -218,7 +218,7 @@ describe('styles', () => {
         fontVariant: 'common-ligatures small-caps',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('font-weight', () => {
@@ -227,12 +227,12 @@ describe('styles', () => {
         fontWeight: 900,
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
 
     const styles2 = stylex.create({
       root: { fontWeight: 'bold' },
     });
-    expect(stylex.spread(styles2.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles2.root, mockOptions)).toMatchSnapshot();
   });
 
   test('line-clamp', () => {
@@ -241,7 +241,7 @@ describe('styles', () => {
         lineClamp: 3,
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('line-height', () => {
@@ -259,14 +259,14 @@ describe('styles', () => {
         lineHeight: '24px',
       },
     });
-    expect(stylex.spread(styles.numeric, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.numeric, mockOptions)).toMatchSnapshot(
       'unitless number',
     );
-    expect(stylex.spread(styles.string, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.string, mockOptions)).toMatchSnapshot(
       'unitless string',
     );
-    expect(stylex.spread(styles.rem, mockOptions)).toMatchSnapshot('rem');
-    expect(stylex.spread(styles.px, mockOptions)).toMatchSnapshot('px');
+    expect(stylex.props(styles.rem, mockOptions)).toMatchSnapshot('rem');
+    expect(stylex.props(styles.px, mockOptions)).toMatchSnapshot('px');
   });
 
   test('object-fit', () => {
@@ -287,15 +287,15 @@ describe('styles', () => {
         objectFit: 'none',
       },
     });
-    expect(stylex.spread(styles.contain, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.contain, mockOptions)).toMatchSnapshot(
       'contain',
     );
-    expect(stylex.spread(styles.cover, mockOptions)).toMatchSnapshot('contain');
-    expect(stylex.spread(styles.fill, mockOptions)).toMatchSnapshot('fill');
-    expect(stylex.spread(styles.scaleDown, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.cover, mockOptions)).toMatchSnapshot('contain');
+    expect(stylex.props(styles.fill, mockOptions)).toMatchSnapshot('fill');
+    expect(stylex.props(styles.scaleDown, mockOptions)).toMatchSnapshot(
       'scaleDown',
     );
-    expect(stylex.spread(styles.none, mockOptions)).toMatchSnapshot('none');
+    expect(stylex.props(styles.none, mockOptions)).toMatchSnapshot('none');
   });
 
   test('pointer-events', () => {
@@ -304,7 +304,7 @@ describe('styles', () => {
         pointerEvents: 'none',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('position', () => {
@@ -325,15 +325,15 @@ describe('styles', () => {
         position: 'sticky',
       },
     });
-    expect(stylex.spread(styles.static, mockOptions)).toMatchSnapshot('static');
-    expect(stylex.spread(styles.relative, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.static, mockOptions)).toMatchSnapshot('static');
+    expect(stylex.props(styles.relative, mockOptions)).toMatchSnapshot(
       'relative',
     );
-    expect(stylex.spread(styles.absolute, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.absolute, mockOptions)).toMatchSnapshot(
       'absolute',
     );
-    expect(stylex.spread(styles.fixed, mockOptions)).toMatchSnapshot('fixed');
-    expect(stylex.spread(styles.sticky, mockOptions)).toMatchSnapshot('sticky');
+    expect(stylex.props(styles.fixed, mockOptions)).toMatchSnapshot('fixed');
+    expect(stylex.props(styles.sticky, mockOptions)).toMatchSnapshot('sticky');
     expect(console.warn).toHaveBeenCalledTimes(3);
   });
 
@@ -343,14 +343,14 @@ describe('styles', () => {
         textShadow: '1px 2px 3px red',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
 
     const styles2 = stylex.create({
       root: {
         textShadow: '1px 2px 3px red, 2px 3px 4px blue',
       },
     });
-    expect(stylex.spread(styles2.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles2.root, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalledTimes(1);
   });
 
@@ -387,19 +387,19 @@ describe('styles', () => {
         `,
       },
     });
-    expect(stylex.spread(styles.none, mockOptions)).toMatchSnapshot('none');
-    expect(stylex.spread(styles.matrix, mockOptions)).toMatchSnapshot('matrix');
-    expect(stylex.spread(styles.perspective, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.none, mockOptions)).toMatchSnapshot('none');
+    expect(stylex.props(styles.matrix, mockOptions)).toMatchSnapshot('matrix');
+    expect(stylex.props(styles.perspective, mockOptions)).toMatchSnapshot(
       'perspective',
     );
-    expect(stylex.spread(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
-    expect(stylex.spread(styles.scale, mockOptions)).toMatchSnapshot('scale');
-    expect(stylex.spread(styles.skew, mockOptions)).toMatchSnapshot('skew');
-    expect(stylex.spread(styles.translate, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
+    expect(stylex.props(styles.scale, mockOptions)).toMatchSnapshot('scale');
+    expect(stylex.props(styles.skew, mockOptions)).toMatchSnapshot('skew');
+    expect(stylex.props(styles.translate, mockOptions)).toMatchSnapshot(
       'translate',
     );
-    expect(stylex.spread(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
-    expect(stylex.spread(styles.mixed, mockOptions)).toMatchSnapshot('mixed');
+    expect(stylex.props(styles.rotate, mockOptions)).toMatchSnapshot('rotate');
+    expect(stylex.props(styles.mixed, mockOptions)).toMatchSnapshot('mixed');
   });
 
   test('transition-delay', () => {
@@ -408,7 +408,7 @@ describe('styles', () => {
         transitionDelay: '0.3s',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('transition-duration', () => {
@@ -417,7 +417,7 @@ describe('styles', () => {
         transitionDuration: '0.5s',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('user-select', () => {
@@ -426,7 +426,7 @@ describe('styles', () => {
         userSelect: 'none',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('vertical-align', () => {
@@ -438,8 +438,8 @@ describe('styles', () => {
         verticalAlign: 'top',
       },
     });
-    expect(stylex.spread(styles.middle, mockOptions)).toMatchSnapshot('middle');
-    expect(stylex.spread(styles.top, mockOptions)).toMatchSnapshot('top');
+    expect(stylex.props(styles.middle, mockOptions)).toMatchSnapshot('middle');
+    expect(stylex.props(styles.top, mockOptions)).toMatchSnapshot('top');
   });
 
   test(':hover syntax', () => {
@@ -452,12 +452,12 @@ describe('styles', () => {
       },
     });
 
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot(
       'not hovered',
     );
 
     const hoverOptions = { ...mockOptions, hover: true };
-    expect(stylex.spread(styles.root, hoverOptions)).toMatchSnapshot('hovered');
+    expect(stylex.props(styles.root, hoverOptions)).toMatchSnapshot('hovered');
   });
 });
 
@@ -474,23 +474,23 @@ describe('logical styles', () => {
         minBlockSize: '100px',
       },
     });
-    expect(stylex.spread(styles.blockSize, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.blockSize, mockOptions)).toMatchSnapshot(
       'blockSize',
     );
     expect(
-      stylex.spread([{ height: 200 }, styles.blockSize], mockOptions),
+      stylex.props([{ height: 200 }, styles.blockSize], mockOptions),
     ).toMatchSnapshot('blockSize after height');
-    expect(stylex.spread(styles.maxBlockSize, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.maxBlockSize, mockOptions)).toMatchSnapshot(
       'maxBlockSize',
     );
     expect(
-      stylex.spread([{ maxHeight: 200 }, styles.maxBlockSize], mockOptions),
+      stylex.props([{ maxHeight: 200 }, styles.maxBlockSize], mockOptions),
     ).toMatchSnapshot('maxBlockSize after maxHeight');
-    expect(stylex.spread(styles.minBlockSize, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.minBlockSize, mockOptions)).toMatchSnapshot(
       'minBlockSize',
     );
     expect(
-      stylex.spread([{ minHeight: 200 }, styles.minBlockSize], mockOptions),
+      stylex.props([{ minHeight: 200 }, styles.minBlockSize], mockOptions),
     ).toMatchSnapshot('minBlockSize after minHeight');
   });
 
@@ -506,23 +506,23 @@ describe('logical styles', () => {
         minInlineSize: '100px',
       },
     });
-    expect(stylex.spread(styles.inlineSize, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.inlineSize, mockOptions)).toMatchSnapshot(
       'inlineSize',
     );
     expect(
-      stylex.spread([{ width: 200 }, styles.inlineSize], mockOptions),
+      stylex.props([{ width: 200 }, styles.inlineSize], mockOptions),
     ).toMatchSnapshot('inlineSize after width');
-    expect(stylex.spread(styles.maxInlineSize, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.maxInlineSize, mockOptions)).toMatchSnapshot(
       'maxInlineSize',
     );
     expect(
-      stylex.spread([{ maxWidth: 200 }, styles.maxInlineSize], mockOptions),
+      stylex.props([{ maxWidth: 200 }, styles.maxInlineSize], mockOptions),
     ).toMatchSnapshot('maxInlineSize after maxWidth');
-    expect(stylex.spread(styles.minInlineSize, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.minInlineSize, mockOptions)).toMatchSnapshot(
       'minInlineSize',
     );
     expect(
-      stylex.spread([{ minWidth: 200 }, styles.minInlineSize], mockOptions),
+      stylex.props([{ minWidth: 200 }, styles.minInlineSize], mockOptions),
     ).toMatchSnapshot('minInlineSize after minWidth');
   });
 
@@ -544,21 +544,21 @@ describe('logical styles', () => {
         borderBlockStartWidth: 3,
       },
     });
-    expect(stylex.spread(styles.borderBlock, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.borderBlock, mockOptions)).toMatchSnapshot(
       'borderBlock',
     );
-    expect(stylex.spread(styles.borderBlockEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.borderBlockEnd, mockOptions)).toMatchSnapshot(
       'borderBlockEnd',
     );
-    expect(stylex.spread(styles.borderBlockStart, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.borderBlockStart, mockOptions)).toMatchSnapshot(
       'borderBlockStart',
     );
 
     expect(
-      stylex.spread([styles.borderBlockEnd, styles.borderBlock], mockOptions),
+      stylex.props([styles.borderBlockEnd, styles.borderBlock], mockOptions),
     ).toMatchSnapshot('borderBlock after borderBlockEnd');
     expect(
-      stylex.spread([styles.borderBlockStart, styles.borderBlock], mockOptions),
+      stylex.props([styles.borderBlockStart, styles.borderBlock], mockOptions),
     ).toMatchSnapshot('borderBlock after borderBlockStart');
   });
 
@@ -580,21 +580,21 @@ describe('logical styles', () => {
         borderInlineStartWidth: 3,
       },
     });
-    expect(stylex.spread(styles.borderInline, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.borderInline, mockOptions)).toMatchSnapshot(
       'borderInline',
     );
-    expect(stylex.spread(styles.borderInlineEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.borderInlineEnd, mockOptions)).toMatchSnapshot(
       'borderInlineEnd',
     );
-    expect(
-      stylex.spread(styles.borderInlineStart, mockOptions),
-    ).toMatchSnapshot('borderInlineStart');
+    expect(stylex.props(styles.borderInlineStart, mockOptions)).toMatchSnapshot(
+      'borderInlineStart',
+    );
 
     expect(
-      stylex.spread([styles.borderInlineEnd, styles.borderInline], mockOptions),
+      stylex.props([styles.borderInlineEnd, styles.borderInline], mockOptions),
     ).toMatchSnapshot('borderInline after borderInlineEnd');
     expect(
-      stylex.spread(
+      stylex.props(
         [styles.borderInlineStart, styles.borderInline],
         mockOptions,
       ),
@@ -616,30 +616,30 @@ describe('logical styles', () => {
         borderEndEndRadius: 10,
       },
     });
-    expect(stylex.spread(styles.startstart, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.startstart, mockOptions)).toMatchSnapshot(
       'startstart',
     );
-    expect(stylex.spread(styles.startend, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.startend, mockOptions)).toMatchSnapshot(
       'startend',
     );
-    expect(stylex.spread(styles.endstart, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.endstart, mockOptions)).toMatchSnapshot(
       'endstart',
     );
-    expect(stylex.spread(styles.endend, mockOptions)).toMatchSnapshot('endend');
+    expect(stylex.props(styles.endend, mockOptions)).toMatchSnapshot('endend');
   });
 
   test.skip('borderStyle', () => {
     const styles = stylex.create({
       root: {},
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test.skip('borderWidth', () => {
     const styles = stylex.create({
       root: {},
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('inset', () => {
@@ -666,28 +666,28 @@ describe('logical styles', () => {
         insetInlineEnd: 7,
       },
     });
-    expect(stylex.spread(styles.inset, mockOptions)).toMatchSnapshot('inset');
-    expect(stylex.spread(styles.insetBlock, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.inset, mockOptions)).toMatchSnapshot('inset');
+    expect(stylex.props(styles.insetBlock, mockOptions)).toMatchSnapshot(
       'insetBlock',
     );
-    expect(stylex.spread(styles.insetBlockStart, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.insetBlockStart, mockOptions)).toMatchSnapshot(
       'insetBlockStart',
     );
-    expect(stylex.spread(styles.insetBlockEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.insetBlockEnd, mockOptions)).toMatchSnapshot(
       'insetBlockEnd',
     );
-    expect(stylex.spread(styles.insetInline, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.insetInline, mockOptions)).toMatchSnapshot(
       'insetInline',
     );
-    expect(stylex.spread(styles.insetInlineStart, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.insetInlineStart, mockOptions)).toMatchSnapshot(
       'insetInlineStart',
     );
-    expect(stylex.spread(styles.insetInlineEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.insetInlineEnd, mockOptions)).toMatchSnapshot(
       'insetInlineEnd',
     );
 
     expect(
-      stylex.spread(
+      stylex.props(
         [
           { left: 10, right: 10, bottom: 100, top: 100 },
           styles.insetBlockStart,
@@ -696,16 +696,16 @@ describe('logical styles', () => {
       ),
     ).toMatchSnapshot('inset vs top');
     expect(
-      stylex.spread(
+      stylex.props(
         [{ bottom: 100, top: 100 }, styles.insetBlockStart],
         mockOptions,
       ),
     ).toMatchSnapshot('insetBlock vs top');
     expect(
-      stylex.spread([{ top: 100 }, styles.insetBlockStart], mockOptions),
+      stylex.props([{ top: 100 }, styles.insetBlockStart], mockOptions),
     ).toMatchSnapshot('insetBlockStart vs top');
     expect(
-      stylex.spread([{ bottom: 100 }, styles.insetBlockEnd], mockOptions),
+      stylex.props([{ bottom: 100 }, styles.insetBlockEnd], mockOptions),
     ).toMatchSnapshot('insetBlockEnd vs bottom');
   });
 
@@ -730,22 +730,22 @@ describe('logical styles', () => {
         marginInlineEnd: 3,
       },
     });
-    expect(stylex.spread(styles.marginBlock, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.marginBlock, mockOptions)).toMatchSnapshot(
       'marginBlock',
     );
-    expect(stylex.spread(styles.marginBlockStart, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.marginBlockStart, mockOptions)).toMatchSnapshot(
       'marginBlockStart',
     );
-    expect(stylex.spread(styles.marginBlockEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.marginBlockEnd, mockOptions)).toMatchSnapshot(
       'marginBlockEnd',
     );
-    expect(stylex.spread(styles.marginInline, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.marginInline, mockOptions)).toMatchSnapshot(
       'marginInline',
     );
-    expect(
-      stylex.spread(styles.marginInlineStart, mockOptions),
-    ).toMatchSnapshot('marginInlineStart');
-    expect(stylex.spread(styles.marginInlineEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.marginInlineStart, mockOptions)).toMatchSnapshot(
+      'marginInlineStart',
+    );
+    expect(stylex.props(styles.marginInlineEnd, mockOptions)).toMatchSnapshot(
       'marginInlineEnd',
     );
   });
@@ -771,22 +771,22 @@ describe('logical styles', () => {
         paddingInlineEnd: 3,
       },
     });
-    expect(stylex.spread(styles.paddingBlock, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.paddingBlock, mockOptions)).toMatchSnapshot(
       'paddingBlock',
     );
-    expect(
-      stylex.spread(styles.paddingBlockStart, mockOptions),
-    ).toMatchSnapshot('paddingBlockStart');
-    expect(stylex.spread(styles.paddingBlockEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.paddingBlockStart, mockOptions)).toMatchSnapshot(
+      'paddingBlockStart',
+    );
+    expect(stylex.props(styles.paddingBlockEnd, mockOptions)).toMatchSnapshot(
       'paddingBlockEnd',
     );
-    expect(stylex.spread(styles.paddingInline, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.paddingInline, mockOptions)).toMatchSnapshot(
       'paddingInline',
     );
     expect(
-      stylex.spread(styles.paddingInlineStart, mockOptions),
+      stylex.props(styles.paddingInlineStart, mockOptions),
     ).toMatchSnapshot('paddingInlineStart');
-    expect(stylex.spread(styles.paddingInlineEnd, mockOptions)).toMatchSnapshot(
+    expect(stylex.props(styles.paddingInlineEnd, mockOptions)).toMatchSnapshot(
       'paddingInlineEnd',
     );
   });
@@ -800,8 +800,8 @@ describe('logical styles', () => {
         textAlign: 'end',
       },
     });
-    expect(stylex.spread(styles.start, mockOptions)).toMatchSnapshot('start');
-    expect(stylex.spread(styles.end, mockOptions)).toMatchSnapshot('end');
+    expect(stylex.props(styles.start, mockOptions)).toMatchSnapshot('start');
+    expect(stylex.props(styles.end, mockOptions)).toMatchSnapshot('end');
   });
 });
 
@@ -816,7 +816,7 @@ describe('length units', () => {
           width: `${value}${unitToTest}`,
         },
       });
-      expect(stylex.spread(styles.underTest, mockOptions)).toMatchSnapshot();
+      expect(stylex.props(styles.underTest, mockOptions)).toMatchSnapshot();
     });
   }
 
@@ -827,7 +827,7 @@ describe('length units', () => {
       },
     });
     expect(
-      stylex.spread(styles.underTest, {
+      stylex.props(styles.underTest, {
         ...mockOptions,
         inheritedFontSize: 12,
       }),
@@ -851,7 +851,7 @@ describe('custom properties', () => {
         width: 'var(--unprovided)',
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.error).toHaveBeenCalledWith(
       'stylex: Unrecognized custom property "--unprovided"',
     );
@@ -865,7 +865,7 @@ describe('custom properties', () => {
       },
     });
     expect(
-      stylex.spread(underTest, {
+      stylex.props(underTest, {
         ...mockOptions,
         customProperties: {
           slightlyDarkerBlack: '#333',
@@ -887,7 +887,7 @@ expect.extend({
         },
       },
     });
-    const props = stylex.spread(underTest, {
+    const props = stylex.props(underTest, {
       viewportHeight: height,
       viewportWidth: width,
     });
@@ -970,7 +970,7 @@ describe('unsupported style properties', () => {
         filter: 'blur(1px)',
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -980,7 +980,7 @@ describe('unsupported style properties', () => {
         marginStart: 10,
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -990,7 +990,7 @@ describe('unsupported style properties', () => {
         marginEnd: 10,
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1000,7 +1000,7 @@ describe('unsupported style properties', () => {
         marginHorizontal: 10,
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1010,7 +1010,7 @@ describe('unsupported style properties', () => {
         marginVertical: 10,
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1020,7 +1020,7 @@ describe('unsupported style properties', () => {
         paddingHorizontal: 10,
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1030,7 +1030,7 @@ describe('unsupported style properties', () => {
         paddingVertical: 10,
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1041,7 +1041,7 @@ describe('unsupported style properties', () => {
       },
     });
     expect(
-      stylex.spread(underTest, {
+      stylex.props(underTest, {
         ...mockOptions,
         passthroughProperties: ['transitionProperty'],
       }),
@@ -1066,7 +1066,7 @@ describe('unsupported style values', () => {
         width: 'calc(2 * 1rem)',
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1076,7 +1076,7 @@ describe('unsupported style values', () => {
         fontSize: 'inherit',
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 
@@ -1086,7 +1086,7 @@ describe('unsupported style values', () => {
         fontSize: 'initial',
       },
     });
-    expect(stylex.spread(underTest, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(underTest, mockOptions)).toMatchSnapshot();
     expect(console.warn).toHaveBeenCalled();
   });
 });

@@ -14,7 +14,7 @@ export default function LogoBold({xstyle}) {
   const id = 'logo-bold';
 
   return (
-    <svg {...stylex.spread(xstyle)} viewBox="0 0 644 435">
+    <svg {...stylex.props(xstyle)} viewBox="0 0 644 435">
       <defs>
         <linearGradient
           id={`${id}-a`}

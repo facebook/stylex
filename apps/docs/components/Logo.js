@@ -31,7 +31,7 @@ export default function Logo({xstyle}) {
   const idH = 'h';
 
   return (
-    <svg {...stylex.spread(xstyle)} viewBox={viewBox}>
+    <svg {...stylex.props(xstyle)} viewBox={viewBox}>
       <defs>
         <radialGradient
           cx="62.144%"

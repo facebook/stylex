@@ -120,20 +120,20 @@ const styles = stylex.create({
 
 export default function StylexAnimatedLogo({style}) {
   return (
-    <div {...stylex.spread(styles.root)}>
-      <svg {...stylex.spread(style)} viewBox={viewBox}>
+    <div {...stylex.props(styles.root)}>
+      <svg {...stylex.props(style)} viewBox={viewBox}>
         <LogoText />
       </svg>
-      <div {...stylex.spread([styles.arc, styles.arc2])}>
-        <div {...stylex.spread([styles.arcOrbit, styles.mask2])} />
-        <div {...stylex.spread([styles.dotPath, styles.dotPath2])}>
-          <div {...stylex.spread([styles.dot, styles.dotBlue])} />
+      <div {...stylex.props([styles.arc, styles.arc2])}>
+        <div {...stylex.props([styles.arcOrbit, styles.mask2])} />
+        <div {...stylex.props([styles.dotPath, styles.dotPath2])}>
+          <div {...stylex.props([styles.dot, styles.dotBlue])} />
         </div>
       </div>
-      <div {...stylex.spread([styles.arc, styles.arc1])}>
-        <div {...stylex.spread([styles.arcOrbit, styles.mask1])} />
-        <div {...stylex.spread(styles.dotPath)}>
-          <div {...stylex.spread([styles.dot, styles.dotPink])} />
+      <div {...stylex.props([styles.arc, styles.arc1])}>
+        <div {...stylex.props([styles.arcOrbit, styles.mask1])} />
+        <div {...stylex.props(styles.dotPath)}>
+          <div {...stylex.props([styles.dot, styles.dotPink])} />
         </div>
       </div>
     </div>

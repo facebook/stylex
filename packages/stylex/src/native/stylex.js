@@ -384,7 +384,7 @@ const timeValuedProperties = [
  * The spread method shim
  */
 
-export function spread(
+export function props(
   style: ?{ [key: string]: mixed },
   options: SpreadOptions,
 ): { [string]: { ... } } {
@@ -650,9 +650,9 @@ export type IStyleX = {
   create: typeof create,
   firstThatWorks: typeof firstThatWorks,
   keyframes: typeof keyframes,
-  spread: typeof spread,
+  props: typeof props,
 };
 
-export const stylex: IStyleX = { create, firstThatWorks, keyframes, spread };
+export const stylex: IStyleX = { create, firstThatWorks, keyframes, props };
 
 export default (stylex: IStyleX);

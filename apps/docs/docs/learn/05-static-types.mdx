@@ -27,7 +27,7 @@ type Props = {
 function MyComponent({style, ...otherProps}: Props): React.MixedElement {
   return (
     <div
-      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+      {...stylex.props(localStyles.foo, localStyles.bar, style)}
     >
       {/* ... */}
     </div>
@@ -47,7 +47,7 @@ type Props = $ReadOnly<{
 function MyComponent({style, ...otherProps}: Props): React.MixedElement {
   return (
     <div
-      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+      {...stylex.props(localStyles.foo, localStyles.bar, style)}
     >
       {/* ... */}
     </div>
@@ -70,7 +70,7 @@ Disallowing dynamic inline styles
 When you author styles with dynamic values that cannot be known ahead of time,
 the `StyleXStyle` object returns contains bother atomic classNames _and_ inline
 styles. The type `StyleXStyles` allows a mix of both. As such, you should
-usually default to using `StyleXStyles` and `stylex.spread` in your code.
+usually default to using `StyleXStyles` and `stylex.props` in your code.
 
 However, if you’re using StyleX in a codebase without client-side JavaScript,
 you can choose to disallow any dynamic styles by using the `StaticStyles` type
@@ -257,7 +257,7 @@ type Props = {
 function MyComponent({style, ...}: Props) {
   return (
     <div
-      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+      {...stylex.props(localStyles.foo, localStyles.bar, style)}
     >
       {/* ... */}
     </div>
@@ -308,7 +308,7 @@ type Props = $ReadOnly<{
 function MyComponent({style, ...}: Props): React.MixedElement {
   return (
     <div
-      {...stylex.spread(localStyles.foo, localStyles.bar, style)}
+      {...stylex.props(localStyles.foo, localStyles.bar, style)}
     >
       {/* ... */}
     </div>

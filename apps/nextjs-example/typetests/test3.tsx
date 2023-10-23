@@ -22,9 +22,9 @@ function Component({ xstyle, staticXstyle }: Props): null {
 
   <div className={stylex(staticXstyle)} />;
 
-  <div {...stylex.spread(xstyle)} />;
+  <div {...stylex.props(xstyle)} />;
 
-  <div {...stylex.spread([staticXstyle])} />;
+  <div {...stylex.props([staticXstyle])} />;
 
   return null;
 }

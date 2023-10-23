@@ -121,7 +121,7 @@ There is no runtime cost to this.
 When passing styles across file boundaries, you pay a small cost for the
 additional power and expressivity. The `stylex.create` call is not deleted
 entirely and instead leaves behind very simple object mapping keys to
-classNames. And the `stylex()` or `stylex.spread()` calls are executed at
+classNames. And the `stylex()` or `stylex.props()` calls are executed at
 runtime.
 
 This code, for example:
@@ -161,7 +161,7 @@ function MyComponent((xstyle)) {
 ```
 
 This definitely a little more code, but the runtime cost is still minimal
-because of how fast the `stylex()` and `stylex.spread()` functions are.
+because of how fast the `stylex()` and `stylex.props()` functions are.
 
 Most other styling solutions don't enable composition of styles across file
 boundaries. The state of the art is to combine lists of classNames.
@@ -175,10 +175,10 @@ patterns where possible and give you the smallest API surface possible.
 At it's core StyleX can be boiled down to just two functions:
 
 1. `stylex.create`
-2. `stylex.spread`
+2. `stylex.props`
 
 You use `stylex.create` to create a bunch of styles and then you use
-`stylex.spread` to apply those styles to an element.
+`stylex.props` to apply those styles to an element.
 
 Other than the fact that `stylex.create` takes static values, you don't really
 need to learn anything else about how StyleX works. Things work the way you
@@ -262,7 +262,8 @@ Your styles being typed allows you to set up some extremely sophisticated rules
 about the ways in which a component styles can be customized with **zero-runtime
 cost**.
 
-**Strings don't have Types**. By using JavaScript objects for styles, we retain type information when you define styles.
+**Strings don't have Types**. By using JavaScript objects for styles, we retain
+type information when you define styles.
 
 ### Shareable constants
 
@@ -292,7 +293,7 @@ StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
 been tailored to works best with React today, It's designed to be used with any
 Javascript framework that lets you author your markup in your Javacript.
 
-Some APIs, such as `stylex.spread` return an object with `className` and `style`
+Some APIs, such as `stylex.props` return an object with `className` and `style`
 keys today. You may need to use a wrapper function to make this work with your
 framework of choice.
 

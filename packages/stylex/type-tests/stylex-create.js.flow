@@ -39,7 +39,7 @@ const styles1: $ReadOnly<{ foo: $ReadOnly<{ $$css: true }> }> = stylex.create({
 (styles1.foo: XStyle<{ width?: StyleXClassName }>);
 
 stylex(styles1.foo);
-stylex.spread([styles1.foo]);
+stylex.props([styles1.foo]);
 
 /**
  * SIMPLE STYLES
@@ -72,7 +72,7 @@ const styles2: $ReadOnly<{
 (styles2.foo: XStyle<{ width?: StyleXClassName }>);
 
 stylex(styles2.foo);
-stylex.spread([styles2.foo]);
+stylex.props([styles2.foo]);
 
 /**
  * FALLBACK STYLES
@@ -103,7 +103,7 @@ const styles3: $ReadOnly<{
 (styles3.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
 
 stylex(styles3.foo);
-stylex.spread([styles3.foo]);
+stylex.props([styles3.foo]);
 
 /**
  * CONDITIONAL STYLES
@@ -130,7 +130,7 @@ const styles4: $ReadOnly<{
 (styles4.foo: StyleXStyles<{ width?: mixed }>);
 
 stylex(styles4.foo);
-stylex.spread([styles4.foo]);
+stylex.props([styles4.foo]);
 
 /**
  * NESTED CONDITIONAL STYLES
@@ -160,7 +160,7 @@ const styles5: $ReadOnly<{
 (styles5.foo: StyleXStyles<{ width?: mixed }>);
 
 stylex(styles5.foo);
-stylex.spread([styles5.foo]);
+stylex.props([styles5.foo]);
 
 /**
  * DYNAMIC NESTED CONDITIONAL STYLES
@@ -205,7 +205,7 @@ const styles6: $ReadOnly<{
 // $FlowExpectedError[incompatible-call] - `stylex()` can't handle dynamic styles.
 stylex(styles6.foo(100));
 stylex(styles6.foo(100)[0]);
-stylex.spread(styles6.foo(100));
+stylex.props(styles6.foo(100));
 
 /**
  * PSEUDO-ELEMENT STYLES
@@ -237,7 +237,7 @@ const styles7: $ReadOnly<{
 }>);
 
 stylex(styles7.foo);
-stylex.spread([styles7.foo]);
+stylex.props([styles7.foo]);
 
 const vars = stylex.defineVars({
   accent: 'red',
@@ -281,4 +281,4 @@ const styles8: $ReadOnly<{
 // (styles8.foo: StyleXStylesWithout<{ color: unknown }>);
 
 stylex(styles8.foo);
-stylex.spread(styles8.foo);
+stylex.props(styles8.foo);

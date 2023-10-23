@@ -37,20 +37,30 @@ type Cache = WeakMap<
   },
 >;
 
-export function spread(
+export function props(
   styles: StyleXArray<
     ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
   >,
   _options?: { ... },
 ): $ReadOnly<{
-  className: string,
-  style: $ReadOnly<{ [string]: string | number }>,
+  className?: string,
+  style?: $ReadOnly<{ [string]: string | number }>,
 }> {
-  if (__implementations.spread) {
-    return __implementations.spread(styles, _options);
+  if (__implementations.props) {
+    return __implementations.props(styles, _options);
   }
   const [className, style] = styleq(styles);
-  return { className, style };
+  const result: {
+    className?: string,
+    style?: $ReadOnly<{ [string]: string | number }>,
+  } = {};
+  if (className != null && className !== '') {
+    result.className = className;
+  }
+  if (style != null && Object.keys(style).length > 0) {
+    result.style = style;
+  }
+  return result;
 }
 
 function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
@@ -220,7 +230,7 @@ function _stylex(
   const [className] = styleq(styles);
   return className;
 }
-_stylex.spread = spread;
+_stylex.props = props;
 _stylex.create = create;
 _stylex.defineVars = defineVars;
 _stylex.createTheme = createTheme;
@@ -232,14 +242,14 @@ _stylex.types = types;
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
-  spread: (
+  props: (
     styles: StyleXArray<
       ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
     >,
     _options?: { ... },
   ) => $ReadOnly<{
-    className: string,
-    style: $ReadOnly<{ [string]: string | number }>,
+    className?: string,
+    style?: $ReadOnly<{ [string]: string | number }>,
   }>,
   create: Stylex$Create,
   defineVars: StyleX$DefineVars,

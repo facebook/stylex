@@ -29,7 +29,7 @@ function resolveColorValue(colorValue) {
       color: colorValue,
     },
   });
-  return stylex.spread(styles.root, mockOptions).style.color;
+  return stylex.props(styles.root, mockOptions).style.color;
 }
 
 describe('stylex CSSCustomProperty value test', () => {
@@ -66,7 +66,7 @@ describe('stylex CSSCustomProperty value test', () => {
         boxShadow: 'var(--boxShadowVar1, 0px 0px 0px black)',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('falls back to a default value with spaces', () => {
@@ -75,7 +75,7 @@ describe('stylex CSSCustomProperty value test', () => {
         boxShadow: 'var(--boxShadowVarNotFound, 0px 0px 0px black)',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('parses and falls back to default value containing a variable', () => {
@@ -84,7 +84,7 @@ describe('stylex CSSCustomProperty value test', () => {
         color: 'var(--colorNotFound, var(--testVar2))',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('parses and falls back to a default value containing spaces and embedded variables', () => {
@@ -93,7 +93,7 @@ describe('stylex CSSCustomProperty value test', () => {
         boxShadow: 'var(--boxShadowVarNotFound, 0px 0px 0px var(--testVar2))',
       },
     });
-    expect(stylex.spread(styles.root, mockOptions)).toMatchSnapshot();
+    expect(stylex.props(styles.root, mockOptions)).toMatchSnapshot();
   });
 
   test('does not parse malformed vars', () => {
@@ -116,10 +116,10 @@ describe('stylex CSSCustomProperty value test', () => {
         borderWidth: 'var(--rawNumber)',
       },
     });
-    const rootStyle = stylex.spread(styles.root, mockOptions).style;
+    const rootStyle = stylex.props(styles.root, mockOptions).style;
     expect(rootStyle.borderWidth).toEqual(10);
     expect(
-      stylex.spread(styles.withVars, mockOptions).style.borderWidth,
+      stylex.props(styles.withVars, mockOptions).style.borderWidth,
     ).toEqual(rootStyle.borderWidth);
   });
 
@@ -132,10 +132,10 @@ describe('stylex CSSCustomProperty value test', () => {
         borderWidth: 'var(--pixelNumber)',
       },
     });
-    const rootStyle = stylex.spread(styles.root, mockOptions).style;
+    const rootStyle = stylex.props(styles.root, mockOptions).style;
     expect(rootStyle.borderWidth).toEqual(10);
     expect(
-      stylex.spread(styles.withVars, mockOptions).style.borderWidth,
+      stylex.props(styles.withVars, mockOptions).style.borderWidth,
     ).toEqual(rootStyle.borderWidth);
   });
 
@@ -148,9 +148,9 @@ describe('stylex CSSCustomProperty value test', () => {
         fontSize: 'var(--emNumber)',
       },
     });
-    const rootStyle = stylex.spread(styles.root, mockOptions).style;
+    const rootStyle = stylex.props(styles.root, mockOptions).style;
     expect(rootStyle.fontSize).toEqual(160);
-    expect(stylex.spread(styles.withVars, mockOptions).style.fontSize).toEqual(
+    expect(stylex.props(styles.withVars, mockOptions).style.fontSize).toEqual(
       rootStyle.fontSize,
     );
   });
@@ -164,10 +164,10 @@ describe('stylex CSSCustomProperty value test', () => {
         borderWidth: 'var(--refToPixelNumber)',
       },
     });
-    const rootStyle = stylex.spread(styles.root, mockOptions).style;
+    const rootStyle = stylex.props(styles.root, mockOptions).style;
     expect(rootStyle.borderWidth).toEqual(10);
     expect(
-      stylex.spread(styles.withVars, mockOptions).style.borderWidth,
+      stylex.props(styles.withVars, mockOptions).style.borderWidth,
     ).toEqual(rootStyle.borderWidth);
   });
 
@@ -177,7 +177,7 @@ describe('stylex CSSCustomProperty value test', () => {
         borderWidth: 'var(--refToRefToRawNumber)',
       },
     });
-    const rootStyle = stylex.spread(styles.root, mockOptions).style;
+    const rootStyle = stylex.props(styles.root, mockOptions).style;
     expect(rootStyle.borderWidth).toEqual(10);
   });
 });

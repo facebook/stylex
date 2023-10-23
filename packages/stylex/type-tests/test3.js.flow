@@ -21,7 +21,7 @@ function Component({ xstyle }: Props) {
   // $FlowExpectedError - `stylex()` can't handle dynamic styles
   <div className={stylex(xstyle)} />;
 
-  <div {...stylex.spread([xstyle])} />;
+  <div {...stylex.props([xstyle])} />;
 }
 
 const styles = stylex.create({

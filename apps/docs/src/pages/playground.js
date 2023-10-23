@@ -14,7 +14,7 @@ import Layout from '@theme/Layout';
 export default function Playground() {
   return (
     <Layout>
-      <div {...stylex.spread(styles.container)}>
+      <div {...stylex.props(styles.container)}>
         <h1>Playground</h1>
         <p>Coming soon...</p>
       </div>

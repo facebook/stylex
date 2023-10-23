@@ -54,12 +54,12 @@ export default function ZStack({children, xstyle}) {
   }, [children.length]);
 
   return (
-    <span {...stylex.spread(styles.container, xstyle)}>
+    <span {...stylex.props(styles.container, xstyle)}>
       {children.map((child, _i) => (
-        <span {...stylex.spread(styles.itemLayout)}>{child}</span>
+        <span {...stylex.props(styles.itemLayout)}>{child}</span>
       ))}
       {children.map((child, i) => (
-        <span {...stylex.spread(styles.item, i === active && styles.visible)}>
+        <span {...stylex.props(styles.item, i === active && styles.visible)}>
           {child}
         </span>
       ))}

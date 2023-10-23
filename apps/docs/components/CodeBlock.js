@@ -85,7 +85,7 @@ export default function CodeBlock({
     : lightTheme;
   return (
     <SyntaxHighlighter
-      {...stylex.spread(style)}
+      {...stylex.props(style)}
       language={language}
       style={finalTheme}>
       {children}

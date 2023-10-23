@@ -11,7 +11,13 @@ import * as t from '@babel/types';
 import { IncludedStyles } from '@stylexjs/shared';
 
 type NestedStringObject = $ReadOnly<{
-  [key: string]: string | null | boolean | NestedStringObject | IncludedStyles,
+  [key: string]:
+    | string
+    | number
+    | null
+    | boolean
+    | NestedStringObject
+    | IncludedStyles,
 }>;
 
 export function convertObjectToAST(
@@ -25,6 +31,8 @@ export function convertObjectToAST(
             canBeIdentifier(key) ? t.identifier(key) : t.stringLiteral(key),
             typeof value === 'string'
               ? t.stringLiteral(value)
+              : typeof value === 'number'
+              ? t.numericLiteral(value)
               : typeof value === 'boolean'
               ? t.booleanLiteral(value)
               : value === null

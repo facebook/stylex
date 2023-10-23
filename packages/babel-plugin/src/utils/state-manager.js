@@ -49,6 +49,7 @@ export default class StateManager {
 
   // Imports
   +stylexImport: Set<string> = new Set();
+  +stylexPropsImport: Set<string> = new Set();
   +stylexCreateImport: Set<string> = new Set();
   +stylexIncludeImport: Set<string> = new Set();
   +stylexFirstThatWorksImport: Set<string> = new Set();

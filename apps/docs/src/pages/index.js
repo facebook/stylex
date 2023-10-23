@@ -52,19 +52,19 @@ const HelloWorld = (props) => (
 `;
 
 const Card = ({children}) => (
-  <div {...stylex.spread(styles.card)}>{children}</div>
+  <div {...stylex.props(styles.card)}>{children}</div>
 );
 
 const CardTitle = ({children}) => (
-  <h3 {...stylex.spread(styles.cardTitle)}>{children}</h3>
+  <h3 {...stylex.props(styles.cardTitle)}>{children}</h3>
 );
 
 const CardDescription = ({children}) => (
-  <p {...stylex.spread(styles.cardDescription)}>{children}</p>
+  <p {...stylex.props(styles.cardDescription)}>{children}</p>
 );
 
 const CodeContainer = ({children}) => (
-  <div {...stylex.spread(styles.codeContainer)}>
+  <div {...stylex.props(styles.codeContainer)}>
     <CodeBlock style={styles.code}>{children}</CodeBlock>
   </div>
 );
@@ -72,15 +72,15 @@ const CodeContainer = ({children}) => (
 export default function Home() {
   return (
     <Layout>
-      <main {...stylex.spread(styles.main)}>
-        <section {...stylex.spread(styles.hero)}>
-          <h1 {...stylex.spread(styles.title)}>
+      <main {...stylex.props(styles.main)}>
+        <section {...stylex.props(styles.hero)}>
+          <h1 {...stylex.props(styles.title)}>
             <StylexAnimatedLogo style={styles.logo} />
           </h1>
-          <h2 {...stylex.spread(styles.subtitle)}>
+          <h2 {...stylex.props(styles.subtitle)}>
             The{' '}
             <span
-              {...stylex.spread([
+              {...stylex.props([
                 styles.subtitleHighlight,
                 styles.highlightBlue,
               ])}>
@@ -89,14 +89,11 @@ export default function Home() {
             of Inline Styles.
             <br />
             The Speed of{' '}
-            <span {...stylex.spread(styles.subtitleHighlight)}>
-              Atomic
-            </span>{' '}
-            CSS.
+            <span {...stylex.props(styles.subtitleHighlight)}>Atomic</span> CSS.
           </h2>
         </section>
-        <section {...stylex.spread(styles.getStarted)}>
-          <h1 {...stylex.spread(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
+        <section {...stylex.props(styles.getStarted)}>
+          <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
           <Card>
             <CardTitle>Step 1</CardTitle>
             <CardDescription>Configure the compiler</CardDescription>

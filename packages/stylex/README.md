@@ -1,10 +1,12 @@
 # @stylexjs/stylex
 
-StyleX is a JavaScript library for defining styles for optimized user interfaces.
+StyleX is a JavaScript library for defining styles for optimized user
+interfaces.
 
 ## Installation
 
-To start playing with StyleX without having to set up any build settings you can install just two packages:
+To start playing with StyleX without having to set up any build settings you can
+install just two packages:
 
 ```sh
 npm install --save @stylexjs/stylex
@@ -12,13 +14,17 @@ npm install --save @stylexjs/stylex
 
 ### Compiler
 
-StyleX is designed to extract styles to a static CSS style sheet during an app's build process. StyleX provides a Babel plugin along with plugin integrations for Webpack, Rollup and NextJS.
+StyleX is designed to extract styles to a static CSS style sheet during an app's
+build process. StyleX provides a Babel plugin along with plugin integrations for
+Webpack, Rollup and NextJS.
 
 ```sh
 npm install --save-dev @stylexjs/babel-plugin
 ```
 
-For more information on working with the compiler, please see the documentation for [`@stylexjs/babel-plugin`](https://www.npmjs.com/package/@stylexjs/babel-plugin).
+For more information on working with the compiler, please see the documentation
+for
+[`@stylexjs/babel-plugin`](https://www.npmjs.com/package/@stylexjs/babel-plugin).
 
 ### Runtime compiler
 
@@ -43,13 +49,17 @@ if (process.env.NODE_ENV !== 'production') {
 }
 ```
 
-For more information on working with the compiler, please see the documentation for [`@stylexjs/dev-runtime`](https://www.npmjs.com/package/@stylexjs/dev-runtime).
+For more information on working with the compiler, please see the documentation
+for
+[`@stylexjs/dev-runtime`](https://www.npmjs.com/package/@stylexjs/dev-runtime).
 
 ## API
 
 ### stylex.create()
 
-Styles are defined as a map of CSS rules using `stylex.create()`. In the example below, there are 2 different CSS rules. The names "root" and "highlighted" are arbitrary names given to the rules.
+Styles are defined as a map of CSS rules using `stylex.create()`. In the example
+below, there are 2 different CSS rules. The names "root" and "highlighted" are
+arbitrary names given to the rules.
 
 ```tsx
 import stylex from '@stylexjs/stylex';
@@ -61,7 +71,7 @@ const styles = stylex.create({
   },
   highlighted: {
     color: 'yellow',
-  }
+  },
 });
 ```
 
@@ -82,63 +92,74 @@ const styles = stylex.create({
     color: 'yellow',
     ':hover': {
       opacity: '0.9',
-    }
-  }
+    },
+  },
 });
 ```
 
-The compiler will extract the rules to CSS and replace the rules in the source code with a "compiled style" object.
+The compiler will extract the rules to CSS and replace the rules in the source
+code with a "compiled style" object.
 
-### stylex.spread()
+### stylex.props()
 
-Applying style rules to specific elements is done using `stylex.spread`. Each argument to this function must be a reference to a compiled style object, or an array of compiled style objects. The function merges styles from left to right.
+Applying style rules to specific elements is done using `stylex.props`. Each
+argument to this function must be a reference to a compiled style object, or an
+array of compiled style objects. The function merges styles from left to right.
 
 ```tsx
-<div {...stylex.spread(styles.root, styles.highlighted)} />
+<div {...stylex.props(styles.root, styles.highlighted)} />
 ```
 
-The `stylex.spread` function returns React props as required to render an element. StyleX styles can still be passed to other components via props, but only the components rendering host platform elements will use `stylex.spread()`. For example:
+The `stylex.props` function returns React props as required to render an
+element. StyleX styles can still be passed to other components via props, but
+only the components rendering host platform elements will use `stylex.props()`.
+For example:
 
 ```tsx
 const styles = stylex.create({
   internalRoot: {
-    padding: 10
+    padding: 10,
   },
   exportedRoot: {
-    position: 'relative'
-  }
+    position: 'relative',
+  },
 });
 
 function InternalComponent(props) {
-  return <div {...props} {...stylex.spread([ styles.internalRoot, props.style ])} />
+  return (
+    <div {...props} {...stylex.props([styles.internalRoot, props.style])} />
+  );
 }
 
 export function ExportedComponent(props) {
-  return <InternalComponent style={[ styles.exportedRoot, props.style ]} />
+  return <InternalComponent style={[styles.exportedRoot, props.style]} />;
 }
 ```
 
 Styles can be conditionally included using standard JavaScript.
 
 ```tsx
-<div {...stylex.spread(styles.root, isHighlighted && styles.highlighted)} />
+<div {...stylex.props(styles.root, isHighlighted && styles.highlighted)} />
 ```
 
-And the local merging of styles can be used to control the relative priority of rules. For example, to allow a component's local styles to take priority over style property values passed in via props.
+And the local merging of styles can be used to control the relative priority of
+rules. For example, to allow a component's local styles to take priority over
+style property values passed in via props.
 
 ```tsx
-<div {...stylex.spread(props.style, styles.root)} />
+<div {...stylex.props(props.style, styles.root)} />
 ```
 
 You can even mix compiled styles with inline styles
 
 ```tsx
-<div {...stylex.spread(styles.root, { opacity })} />
+<div {...stylex.props(styles.root, { opacity })} />
 ```
 
 ### stylex.firstThatWorks()
 
-Defining fallback styles is done with `stylex.firstThatWorks()`. This is useful for engines that may not support a specific style property.
+Defining fallback styles is done with `stylex.firstThatWorks()`. This is useful
+for engines that may not support a specific style property.
 
 ```tsx
 import stylex from '@stylexjs/stylex';
@@ -166,7 +187,8 @@ StyleX comes with full support for Static Types.
 
 ### `XStyle<>`
 
-The most common type you might need to use is `XStyle<>`. This lets you accept an object of arbitrary StyleX styles.
+The most common type you might need to use is `XStyle<>`. This lets you accept
+an object of arbitrary StyleX styles.
 
 ```tsx
 type Props = {
@@ -176,7 +198,7 @@ type Props = {
 
 function MyComponent({style, ...}: Props) {
   return (
-    <div {...stylex.spread(localStyles.foo, localStyles.bar, style)} />
+    <div {...stylex.props(localStyles.foo, localStyles.bar, style)} />
   );
 }
 ```
@@ -189,34 +211,39 @@ To disallow specific style properties, use the `XStyleWithout<>` type.
 type Props = {
   // ...
   style?: XStyleWithout<{
-    postion: unknown,
-    display: unknown
-  }>
+    postion: unknown;
+    display: unknown;
+  }>;
 };
 ```
 
 ### `XStyleValue<>`
 
-To accept specific style properties only, use the `XStyle<{...}>` and `XStyleValue` types. For example, to allow only color-related style props:
+To accept specific style properties only, use the `XStyle<{...}>` and
+`XStyleValue` types. For example, to allow only color-related style props:
 
 ```tsx
 type Props = {
   // ...
   style?: XStyle<{
-    color?: StyleXValue,
-    backgroundColor?: StyleXValue,
-    borderColor?: StyleXValue,
-    borderTopColor?: StyleXValue,
-    borderEndColor?: StyleXValue,
-    borderBottomColor?: StyleXValue,
-    borderStartColor?: StyleXValue,
-  }>,
+    color?: StyleXValue;
+    backgroundColor?: StyleXValue;
+    borderColor?: StyleXValue;
+    borderTopColor?: StyleXValue;
+    borderEndColor?: StyleXValue;
+    borderBottomColor?: StyleXValue;
+    borderStartColor?: StyleXValue;
+  }>;
 };
 ```
 
 ### `XStyleValueFor<>`
 
-To limit the possible values for style properties, use the `XStyleValueFor<>` type.  Pass in a type argument with a union of literal types that provide the set of possible values that the style property can have. For example, if a component should accept `marginTop` but only accept one of `0`, `4`, or `8` pixels as values.
+To limit the possible values for style properties, use the `XStyleValueFor<>`
+type. Pass in a type argument with a union of literal types that provide the set
+of possible values that the style property can have. For example, if a component
+should accept `marginTop` but only accept one of `0`, `4`, or `8` pixels as
+values.
 
 ```tsx
 type Props = {
@@ -229,7 +256,8 @@ type Props = {
 
 ## How StyleX works
 
-StyleX produces atomic styles, which means that each CSS rule contains only a single declaration and uses a unique class name. For example:
+StyleX produces atomic styles, which means that each CSS rule contains only a
+single declaration and uses a unique class name. For example:
 
 ```tsx
 import stylex from '@stylexjs/stylex';
@@ -242,6 +270,15 @@ const styles = stylex.create({
 }
 ```
 
-From this code, StyleX will generate 2 classes. One for the `width: '100%'` declaration, and one for the `color: 'red'` declaration. If you use the declaration `width: '100%'` anywhere else in your application, it will *reuse the same CSS class* rather than creating a new one.
+From this code, StyleX will generate 2 classes. One for the `width: '100%'`
+declaration, and one for the `color: 'red'` declaration. If you use the
+declaration `width: '100%'` anywhere else in your application, it will _reuse
+the same CSS class_ rather than creating a new one.
 
-One of the benefits of this approach is that the generated CSS file grows *logarithmically* as you add new styled components to your app. As more style declarations are added to components, they are more likely to already be in use elsehwere in the app. As a result of this CSS optimization, the generated CSS style sheet for an app is usually small enough to be contained in a single file and used across routes, avoiding style recalculation and layout thrashing as users navigate through your app.
+One of the benefits of this approach is that the generated CSS file grows
+_logarithmically_ as you add new styled components to your app. As more style
+declarations are added to components, they are more likely to already be in use
+elsehwere in the app. As a result of this CSS optimization, the generated CSS
+style sheet for an app is usually small enough to be contained in a single file
+and used across routes, avoiding style recalculation and layout thrashing as
+users navigate through your app.

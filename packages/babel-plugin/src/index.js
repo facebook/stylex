@@ -20,6 +20,8 @@ import transformStylexCall, {
   skipStylexMergeChildren,
 } from './visitors/stylex-merge';
 import * as pathUtils from './babel-path-utils';
+import transformStylexProps from './visitors/stylex-props';
+import { skipStylexPropsChildren } from './visitors/stylex-props';
 
 const NAME = 'stylex';
 
@@ -86,6 +88,7 @@ export default function styleXTransform(): PluginObj<> {
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
+              transformStylexProps(path, state);
             },
           });
 
@@ -107,6 +110,7 @@ export default function styleXTransform(): PluginObj<> {
         // This is important for detecting which `stylex.create()` calls
         // should be kept.
         skipStylexMergeChildren(path, state);
+        skipStylexPropsChildren(path, state);
       },
 
       Identifier(path: NodePath<t.Identifier>) {
