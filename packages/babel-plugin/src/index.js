@@ -168,7 +168,10 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  * End-users can choose to not use this function and use their own logic instead.
  */
 type Rule = [string, { ltr: string, rtl?: null | string }, number];
-function processStylexRules(rules: Array<Rule>): string {
+function processStylexRules(
+  rules: Array<Rule>,
+  useLayers: boolean = false,
+): string {
   if (rules.length === 0) {
     return '';
   }
@@ -193,20 +196,57 @@ function processStylexRules(rules: Array<Rule>): string {
     },
   );
 
-  const collectedCSS = Array.from(
-    new Map(sortedRules.map(([a, b, _c]: Rule) => [a, b])).values(),
-  )
-    .flatMap(({ ltr, rtl }: any): Array<string> =>
-      rtl != null
-        ? [
-            addAncestorSelector(ltr, "html:not([dir='rtl'])"),
-            addAncestorSelector(rtl, "html[dir='rtl']"),
-          ]
-        : [ltr],
-    )
+  let lastKPri = -1; //Math.floor(sortedRules[0][2] / 1000);
+  const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
+    const [_key, _value, priority] = rule;
+    const priorityLevel = Math.floor(priority / 1000);
+
+    if (priorityLevel === lastKPri) {
+      const last = acc[acc.length - 1];
+      last.push(rule);
+      return acc;
+    }
+
+    lastKPri = priorityLevel;
+    acc.push([rule]);
+    return acc;
+  }, []);
+
+  const header = useLayers
+    ? '\n@layer ' +
+      grouped.map((_, index) => `priority${index + 1}`).join(', ') +
+      ';\n'
+    : '';
+
+  const collectedCSS = grouped
+    .map((group, index) => {
+      const collectedCSS = Array.from(
+        new Map(group.map(([a, b, _c]: Rule) => [a, b])).values(),
+      )
+        .flatMap(({ ltr, rtl }: any): Array<string> => {
+          let ltrRule = ltr,
+            rtlRule = rtl;
+          if (!useLayers) {
+            ltrRule = addSpecificityLevel(ltrRule, index);
+            rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
+          }
+
+          return rtlRule != null
+            ? [
+                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                addAncestorSelector(rtlRule, "html[dir='rtl']"),
+              ]
+            : [ltrRule];
+        })
+        .join('\n');
+
+      return useLayers
+        ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
+        : collectedCSS;
+    })
     .join('\n');
 
-  return collectedCSS;
+  return header + collectedCSS;
 }
 
 styleXTransform.processStylexRules = processStylexRules;
@@ -220,12 +260,34 @@ function addAncestorSelector(
   selector: string,
   ancestorSelector: string,
 ): string {
+  if (selector.startsWith('@keyframes')) {
+    return selector;
+  }
   if (!selector.startsWith('@')) {
     return `${ancestorSelector} ${selector}`;
   }
 
-  const firstBracketIndex = selector.indexOf('{');
-  const mediaQueryPart = selector.slice(0, firstBracketIndex + 1);
-  const rest = selector.slice(firstBracketIndex + 1);
+  const lastAtRule = selector.lastIndexOf('@');
+  const atRuleBracketIndex = selector.indexOf('{', lastAtRule);
+  const mediaQueryPart = selector.slice(0, atRuleBracketIndex + 1);
+  const rest = selector.slice(atRuleBracketIndex + 1);
   return `${mediaQueryPart}${ancestorSelector} ${rest}`;
+}
+
+/**
+ * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
+ */
+function addSpecificityLevel(selector: string, index: number): string {
+  if (selector.startsWith('@keyframes')) {
+    return selector;
+  }
+  const pseudo = Array.from({ length: index + 1 })
+    .map(() => ':not(#\\#)')
+    .join('');
+
+  const lastOpenCurly = selector.lastIndexOf('{');
+  const beforeCurly = selector.slice(0, lastOpenCurly);
+  const afterCurly = selector.slice(lastOpenCurly);
+
+  return `${beforeCurly}${pseudo}${afterCurly}`;
 }

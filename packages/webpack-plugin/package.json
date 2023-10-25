@@ -17,7 +17,8 @@
       "__builds__",
       "/__fixtures__/"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "prettierPath": null
   },
   "dependencies": {
     "@babel/core": "^7.15.5",

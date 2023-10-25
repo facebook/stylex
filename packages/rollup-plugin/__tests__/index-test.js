@@ -56,17 +56,27 @@ describe('rollup-plugin-stylex', () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 
     expect(css).toMatchInlineSnapshot(`
-      "@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}
+      "
+      @layer priority1, priority2, priority3, priority4;
+      @layer priority1{
+      @keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}
+      }
+      @layer priority2{
+      .x1kflwvg:hover{background:red}
+      }
+      @layer priority3{
       .x1nrqb13{animation-name:x11gtny7-B}
       .xntgbld{display:block}
       .x1c4r43l{display:flex}
       .x1wdx05y{display:inline}
-      .x1je5kxa{height:500px}
       .xo3gju4{margin-inline-start:10px}
+      }
+      @layer priority4{
+      .x1je5kxa{height:500px}
       .x1h9ru99{margin-top:99px}
       .x6mlivy{width:100%}
       .x1u78jha{width:50%}
-      .x1kflwvg:hover{background:red}"
+      }"
     `);
 
     expect(js).toMatchInlineSnapshot(`
@@ -111,6 +121,8 @@ describe('rollup-plugin-stylex', () => {
           ":hover_backgroundImage": null,
           ":hover_backgroundOrigin": null,
           ":hover_backgroundPosition": null,
+          ":hover_backgroundPositionX": null,
+          ":hover_backgroundPositionY": null,
           ":hover_backgroundRepeat": null,
           ":hover_backgroundSize": null,
           $$css: true
@@ -139,8 +151,8 @@ describe('rollup-plugin-stylex', () => {
 
         // otherStyles.js
 
-        stylex.inject(".xntgbld{display:block}", 4);
-        stylex.inject(".x6mlivy{width:100%}", 4);
+        stylex.inject(".xntgbld{display:block}", 3000);
+        stylex.inject(".x6mlivy{width:100%}", 4000);
         var styles$2 = {
           bar: {
             "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -152,9 +164,9 @@ describe('rollup-plugin-stylex', () => {
 
         // npmStyles.js
 
-        stylex.inject(".x1wdx05y{display:inline}", 4);
-        stylex.inject(".x1je5kxa{height:500px}", 4);
-        stylex.inject(".x1u78jha{width:50%}", 4);
+        stylex.inject(".x1wdx05y{display:inline}", 3000);
+        stylex.inject(".x1je5kxa{height:500px}", 4000);
+        stylex.inject(".x1u78jha{width:50%}", 4000);
         const styles$1 = {
           baz: {
             "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -168,12 +180,12 @@ describe('rollup-plugin-stylex', () => {
         // index.js
 
         stylex.inject("@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
-        stylex.inject(".x1nrqb13{animation-name:x11gtny7-B}", 4);
-        stylex.inject(".x1c4r43l{display:flex}", 4);
-        stylex.inject(".xo3gju4{margin-inline-start:10px}", 4);
-        stylex.inject(".x1h9ru99{margin-top:99px}", 4);
-        stylex.inject(".x1je5kxa{height:500px}", 4);
-        stylex.inject(".x1kflwvg:hover{background:red}", 16);
+        stylex.inject(".x1nrqb13{animation-name:x11gtny7-B}", 3000);
+        stylex.inject(".x1c4r43l{display:flex}", 3000);
+        stylex.inject(".xo3gju4{margin-inline-start:10px}", 3000);
+        stylex.inject(".x1h9ru99{margin-top:99px}", 4000);
+        stylex.inject(".x1je5kxa{height:500px}", 4000);
+        stylex.inject(".x1kflwvg:hover{background:red}", 1130);
         var styles = {
           foo: {
             "index__styles.foo": "index__styles.foo",
@@ -191,6 +203,8 @@ describe('rollup-plugin-stylex', () => {
             ":hover_backgroundImage": null,
             ":hover_backgroundOrigin": null,
             ":hover_backgroundPosition": null,
+            ":hover_backgroundPositionX": null,
+            ":hover_backgroundPositionY": null,
             ":hover_backgroundRepeat": null,
             ":hover_backgroundSize": null,
             $$css: true

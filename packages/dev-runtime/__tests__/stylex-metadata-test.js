@@ -49,49 +49,49 @@ describe('Development Plugin Metadata', () => {
       });
 
       expect(metadata).toMatchInlineSnapshot(`
-        [
-          [
-            "x1e2nbdu",
-            {
-              "ltr": ".x1e2nbdu{color:red}",
-              "rtl": null,
-            },
-            4,
-          ],
-          [
-            "x1ycjhwn",
-            {
-              "ltr": ".x1ycjhwn{height:5px}",
-              "rtl": null,
-            },
-            4,
-          ],
-          [
-            "xaiupp8",
-            {
-              "ltr": ".xaiupp8:hover{inset-inline-start:10px}",
-              "rtl": null,
-            },
-            17,
-          ],
-          [
-            "x1uy60zq",
-            {
-              "ltr": "@media (min-width: 1000px){.x1uy60zq.x1uy60zq{inset-inline-end:5px}}",
-              "rtl": null,
-            },
-            25,
-          ],
-          [
-            "xqv9ub1-B",
-            {
-              "ltr": "@keyframes xqv9ub1-B{from{inset-inline-start:0;}to{inset-inline-start:100px;}}",
-              "rtl": null,
-            },
-            1,
-          ],
-        ]
-      `);
+[
+  [
+    "x1e2nbdu",
+    {
+      "ltr": ".x1e2nbdu{color:red}",
+      "rtl": null,
+    },
+    3000,
+  ],
+  [
+    "x1ycjhwn",
+    {
+      "ltr": ".x1ycjhwn{height:5px}",
+      "rtl": null,
+    },
+    4000,
+  ],
+  [
+    "xaiupp8",
+    {
+      "ltr": ".xaiupp8:hover{inset-inline-start:10px}",
+      "rtl": null,
+    },
+    3130,
+  ],
+  [
+    "x1uy60zq",
+    {
+      "ltr": "@media (min-width: 1000px){.x1uy60zq.x1uy60zq{inset-inline-end:5px}}",
+      "rtl": null,
+    },
+    3200,
+  ],
+  [
+    "xqv9ub1-B",
+    {
+      "ltr": "@keyframes xqv9ub1-B{from{inset-inline-start:0;}to{inset-inline-start:100px;}}",
+      "rtl": null,
+    },
+    1,
+  ],
+]
+`);
     });
   });
 });

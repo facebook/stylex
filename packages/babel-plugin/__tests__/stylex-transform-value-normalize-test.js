@@ -41,7 +41,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x18qx21s{transform:rotate(10deg) translate3d(0,0,0)}", 4);"
+        stylex.inject(".x18qx21s{transform:rotate(10deg) translate3d(0,0,0)}", 3000);"
       `);
       expect(
         transform(`
@@ -50,7 +50,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xe1l9yr{color:rgba(1,222,33,.5)}", 4);"
+        stylex.inject(".xe1l9yr{color:rgba(1,222,33,.5)}", 3000);"
       `);
     });
 
@@ -65,8 +65,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1ghz6dp{margin:0}", 3);
-        stylex.inject(".xgsvwom{margin-left:1px}", 4.1);"
+        stylex.inject(".x1ghz6dp{margin:0}", 1000);
+        stylex.inject(".xgsvwom{margin-left:1px}", 4000);"
       `);
     });
 
@@ -78,7 +78,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1wsgiic{transition-duration:.5s}", 4);"
+        stylex.inject(".x1wsgiic{transition-duration:.5s}", 3000);"
       `);
     });
 
@@ -94,7 +94,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1jpfit1{transform:0deg}", 4);"
+        stylex.inject(".x1jpfit1{transform:0deg}", 3000);"
       `);
     });
 
@@ -106,7 +106,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1hauit9{width:calc((100% + 3% - 100px) / 7)}", 4);"
+        stylex.inject(".x1hauit9{width:calc((100% + 3% - 100px) / 7)}", 4000);"
       `);
     });
 
@@ -121,8 +121,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xpvlhck{transition-duration:.01s}", 4);
-        stylex.inject(".xxziih7{transition-timing-function:cubic-bezier(.08,.52,.52,1)}", 4);"
+        stylex.inject(".xpvlhck{transition-duration:.01s}", 3000);
+        stylex.inject(".xxziih7{transition-timing-function:cubic-bezier(.08,.52,.52,1)}", 3000);"
       `);
     });
 
@@ -134,7 +134,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x169joja{quotes:\\"\\"}", 4);"
+        stylex.inject(".x169joja{quotes:\\"\\"}", 3000);"
       `);
     });
 
@@ -150,9 +150,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xsa3hc2{transition-duration:1.234s}", 4);
-        stylex.inject(".xpvlhck{transition-duration:.01s}", 4);
-        stylex.inject(".xjd9b36{transition-duration:1ms}", 4);"
+        stylex.inject(".xsa3hc2{transition-duration:1.234s}", 3000);
+        stylex.inject(".xpvlhck{transition-duration:.01s}", 3000);
+        stylex.inject(".xjd9b36{transition-duration:1ms}", 3000);"
       `);
     });
 
@@ -175,12 +175,12 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1egiwwb{height:500px}", 4);
-        stylex.inject(".x1oin6zd{margin:10px}", 3);
-        stylex.inject(".xvue9z{width:500px}", 4);
-        stylex.inject(".xk50ysn{font-weight:500}", 4);
-        stylex.inject(".x1evy7pa{line-height:1.5}", 4);
-        stylex.inject(".xbyyjgo{opacity:.5}", 4);"
+        stylex.inject(".x1egiwwb{height:500px}", 4000);
+        stylex.inject(".x1oin6zd{margin:10px}", 1000);
+        stylex.inject(".xvue9z{width:500px}", 4000);
+        stylex.inject(".xk50ysn{font-weight:500}", 3000);
+        stylex.inject(".x1evy7pa{line-height:1.5}", 3000);
+        stylex.inject(".xbyyjgo{opacity:.5}", 3000);"
       `);
     });
 
@@ -192,7 +192,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1vvwc6p{height:33.3333px}", 4);"
+        stylex.inject(".x1vvwc6p{height:33.3333px}", 4000);"
       `);
     });
 
@@ -214,9 +214,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14axycx{content:\\"\\"}", 4);
-        stylex.inject(".xmmpjw1{content:\\"next\\"}", 4);
-        stylex.inject(".x12vzfr8{content:\\"prev\\"}", 4);"
+        stylex.inject(".x14axycx{content:\\"\\"}", 3000);
+        stylex.inject(".xmmpjw1{content:\\"next\\"}", 3000);
+        stylex.inject(".x12vzfr8{content:\\"prev\\"}", 3000);"
       `);
     });
 
@@ -241,10 +241,10 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xngnso2{font-size:1.5rem}", 4);
-        stylex.inject(".x1c3i2sq{font-size:1.125rem}", 4);
-        stylex.inject(".x1603h9y{font-size:1.25rem}", 4);
-        stylex.inject(".x1qlqyl8{font-size:inherit}", 4);"
+        stylex.inject(".xngnso2{font-size:1.5rem}", 3000);
+        stylex.inject(".x1c3i2sq{font-size:1.125rem}", 3000);
+        stylex.inject(".x1603h9y{font-size:1.25rem}", 3000);
+        stylex.inject(".x1qlqyl8{font-size:inherit}", 3000);"
       `);
     });
 
@@ -260,7 +260,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x37c5sx{font-size:calc(100% - 1.5rem)}", 4);"
+        stylex.inject(".x37c5sx{font-size:calc(100% - 1.5rem)}", 3000);"
       `);
     });
 
@@ -272,7 +272,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xzw3067{color:red!important}", 4);"
+        stylex.inject(".xzw3067{color:red!important}", 3000);"
       `);
     });
   });

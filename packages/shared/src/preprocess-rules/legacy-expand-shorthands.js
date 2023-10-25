@@ -108,10 +108,6 @@ const shorthands = {
       ['borderStart', rawValue],
       ['borderEnd', rawValue],
     ];
-    // return [
-    //   ...expansions.borderStart(rawValue),
-    //   ...expansions.borderEnd(rawValue),
-    // ];
   },
   borderStyle: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
@@ -128,10 +124,6 @@ const shorthands = {
       ['borderTop', rawValue],
       ['borderBottom', rawValue],
     ];
-    // return [
-    //   ...expansions.borderTop(rawValue),
-    //   ...expansions.borderBottom(rawValue),
-    // ];
   },
   borderWidth: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
@@ -179,6 +171,7 @@ const shorthands = {
       ['borderBottomStartRadius', left],
     ];
   },
+
   inset: (rawValue: TStyleValue): TReturn => [
     ['top', rawValue],
     ['end', rawValue],
@@ -186,13 +179,42 @@ const shorthands = {
     ['start', rawValue],
   ],
   insetInline: (rawValue: TStyleValue): TReturn => [
-    ['start', rawValue],
-    ['end', rawValue],
+    ...shorthands.start(rawValue),
+    ...shorthands.end(rawValue),
   ],
   insetBlock: (rawValue: TStyleValue): TReturn => [
     ['top', rawValue],
     ['bottom', rawValue],
   ],
+  start: (rawValue: TStyleValue): TReturn => [
+    ['start', rawValue],
+    ['left', null],
+    ['right', null],
+  ],
+  end: (rawValue: TStyleValue): TReturn => [
+    ['end', rawValue],
+    ['left', null],
+    ['right', null],
+  ],
+  left: (rawValue: TStyleValue): TReturn => [
+    ['left', rawValue],
+    ['start', null],
+    ['end', null],
+  ],
+  right: (rawValue: TStyleValue): TReturn => [
+    ['right', rawValue],
+    ['start', null],
+    ['end', null],
+  ],
+
+  gap: (rawValue: TStyleValue): TReturn => {
+    const [row, column = row] = splitValue(rawValue);
+
+    return [
+      ['rowGap', row],
+      ['columnGap', column],
+    ];
+  },
   margin: (rawValue: TStyleValue): TReturn => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
@@ -203,12 +225,30 @@ const shorthands = {
       ['marginStart', left],
     ];
   },
-  marginHorizontal: (rawValue: TStyleValue): TReturn => {
-    return [
-      ['marginStart', rawValue],
-      ['marginEnd', rawValue],
-    ];
-  },
+  marginHorizontal: (rawValue: TStyleValue): TReturn => [
+    ...shorthands.marginStart(rawValue),
+    ...shorthands.marginEnd(rawValue),
+  ],
+  marginStart: (rawValue: TStyleValue): TReturn => [
+    ['marginStart', rawValue],
+    ['marginLeft', null],
+    ['marginRight', null],
+  ],
+  marginEnd: (rawValue: TStyleValue): TReturn => [
+    ['marginEnd', rawValue],
+    ['marginLeft', null],
+    ['marginRight', null],
+  ],
+  marginLeft: (rawValue: TStyleValue): TReturn => [
+    ['marginLeft', rawValue],
+    ['marginStart', null],
+    ['marginEnd', null],
+  ],
+  marginRight: (rawValue: TStyleValue): TReturn => [
+    ['marginRight', rawValue],
+    ['marginStart', null],
+    ['marginEnd', null],
+  ],
   marginVertical: (rawValue: TStyleValue): TReturn => {
     return [
       ['marginTop', rawValue],
@@ -233,25 +273,41 @@ const shorthands = {
       ['paddingStart', left],
     ];
   },
-  paddingHorizontal: (val: TStyleValue): TReturn => {
-    return [
-      ['paddingStart', val],
-      ['paddingEnd', val],
-    ];
-  },
-  paddingVertical: (val: TStyleValue): TReturn => {
-    return [
-      ['paddingTop', val],
-      ['paddingBottom', val],
-    ];
-  },
+  paddingHorizontal: (val: TStyleValue): TReturn => [
+    ...shorthands.paddingStart(val),
+    ...shorthands.paddingEnd(val),
+  ],
+  paddingStart: (val: TStyleValue): TReturn => [
+    ['paddingStart', val],
+    ['paddingLeft', null],
+    ['paddingRight', null],
+  ],
+  paddingEnd: (val: TStyleValue): TReturn => [
+    ['paddingEnd', val],
+    ['paddingLeft', null],
+    ['paddingRight', null],
+  ],
+  paddingLeft: (val: TStyleValue): TReturn => [
+    ['paddingLeft', val],
+    ['paddingStart', null],
+    ['paddingEnd', null],
+  ],
+  paddingRight: (val: TStyleValue): TReturn => [
+    ['paddingRight', val],
+    ['paddingStart', null],
+    ['paddingEnd', null],
+  ],
+  paddingVertical: (val: TStyleValue): TReturn => [
+    ['paddingTop', val],
+    ['paddingBottom', val],
+  ],
 };
 
 const aliases = {
   insetBlockStart: (val: TStyleValue): TReturn => [['top', val]],
   insetBlockEnd: (val: TStyleValue): TReturn => [['bottom', val]],
-  insetInlineStart: (val: TStyleValue): TReturn => [['start', val]],
-  insetInlineEnd: (val: TStyleValue): TReturn => [['end', val]],
+  insetInlineStart: shorthands.start,
+  insetInlineEnd: shorthands.end,
 
   blockSize: (val: TStyleValue): TReturn => [['height', val]],
   inlineSize: (val: TStyleValue): TReturn => [['width', val]],
@@ -315,18 +371,33 @@ const aliases = {
     ['borderBottomEndRadius', val],
   ],
 
+  gridGap: shorthands.gap,
+  gridRowGap: (value: TStyleValue): TReturn => [['rowGap', value]],
+  gridColumnGap: (value: TStyleValue): TReturn => [['columnGap', value]],
+
   marginBlock: shorthands.marginVertical,
   marginBlockStart: (val: TStyleValue): TReturn => [['marginTop', val]],
   marginBlockEnd: (val: TStyleValue): TReturn => [['marginBottom', val]],
   marginInline: shorthands.marginHorizontal,
   marginInlineStart: (val: TStyleValue): TReturn => [['marginStart', val]],
   marginInlineEnd: (val: TStyleValue): TReturn => [['marginEnd', val]],
+
+  overflowBlock: (value: TStyleValue): TReturn => [['overflowY', value]],
+  overflowInline: (value: TStyleValue): TReturn => [['overflowX', value]],
+
   paddingBlock: shorthands.paddingVertical,
   paddingBlockStart: (val: TStyleValue): TReturn => [['paddingTop', val]],
   paddingBlockEnd: (val: TStyleValue): TReturn => [['paddingBottom', val]],
   paddingInline: shorthands.paddingHorizontal,
   paddingInlineStart: (val: TStyleValue): TReturn => [['paddingStart', val]],
   paddingInlineEnd: (val: TStyleValue): TReturn => [['paddingEnd', val]],
+
+  scrollMarginBlockStart: (value: TStyleValue): TReturn => [
+    ['scrollMarginTop', value],
+  ],
+  scrollMarginBlockEnd: (value: TStyleValue): TReturn => [
+    ['scrollMarginBottom', value],
+  ],
 };
 
 const expansions = {

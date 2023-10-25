@@ -7,7 +7,11 @@
  * @flow strict
  */
 
-import { PreRule, PreRuleSet } from '../../src/preprocess-rules/PreRule';
+import {
+  NullPreRule,
+  PreRule,
+  PreRuleSet,
+} from '../../src/preprocess-rules/PreRule';
 import { flattenRawStyleObject } from '../../src/preprocess-rules/flatten-raw-style-obj';
 
 const options = {
@@ -31,6 +35,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
       ).toEqual([
         ['color', new PreRule('color', 'red')],
         ['marginStart', new PreRule('marginStart', 10)],
+        ['marginLeft', new NullPreRule()],
+        ['marginRight', new NullPreRule()],
       ]);
     });
 
@@ -100,8 +106,12 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
       ).toEqual([
         ['color', new PreRule('color', 'blue')],
         ['marginStart', new PreRule('marginStart', 0)],
+        ['marginLeft', new NullPreRule()],
+        ['marginRight', new NullPreRule()],
         [':hover_color', new PreRule('color', 'red', [':hover'], [])],
         [':hover_marginStart', new PreRule('marginStart', 10, [':hover'], [])],
+        [':hover_marginLeft', new NullPreRule()],
+        [':hover_marginRight', new NullPreRule()],
       ]);
     });
     test('Modern Pseudo classes', () => {
@@ -133,6 +143,14 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
             new PreRule('marginStart', 0),
             new PreRule('marginStart', 10, [':hover'], []),
           ]),
+        ],
+        [
+          'marginLeft',
+          PreRuleSet.create([new NullPreRule(), new NullPreRule()]),
+        ],
+        [
+          'marginRight',
+          PreRuleSet.create([new NullPreRule(), new NullPreRule()]),
         ],
       ]);
     });
@@ -273,6 +291,14 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
             new PreRule('marginStart', 0),
             new PreRule('marginStart', 10, [':hover'], []),
           ]),
+        ],
+        [
+          'marginLeft',
+          PreRuleSet.create([new NullPreRule(), new NullPreRule()]),
+        ],
+        [
+          'marginRight',
+          PreRuleSet.create([new NullPreRule(), new NullPreRule()]),
         ],
       ]);
     });

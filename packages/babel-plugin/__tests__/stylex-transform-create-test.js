@@ -38,8 +38,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 4);
-        stylex.inject(".xju2f9n{color:blue}", 4);"
+        stylex.inject(".xrkmrrc{background-color:red}", 3000);
+        stylex.inject(".xju2f9n{color:blue}", 3000);"
       `);
     });
 
@@ -56,8 +56,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import * as foo from 'stylex';
-        foo.inject(".xrkmrrc{background-color:red}", 4);
-        foo.inject(".xju2f9n{color:blue}", 4);"
+        foo.inject(".xrkmrrc{background-color:red}", 3000);
+        foo.inject(".xju2f9n{color:blue}", 3000);"
       `);
     });
 
@@ -75,8 +75,8 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import { create } from 'stylex';
         import __stylex__ from "stylex";
-        __stylex__.inject(".xrkmrrc{background-color:red}", 4);
-        __stylex__.inject(".xju2f9n{color:blue}", 4);"
+        __stylex__.inject(".xrkmrrc{background-color:red}", 3000);
+        __stylex__.inject(".xju2f9n{color:blue}", 3000);"
       `);
     });
 
@@ -92,7 +92,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xgau0yw{--background-color:red}", 4);"
+        stylex.inject(".xgau0yw{--background-color:red}", 1);"
       `);
     });
 
@@ -108,7 +108,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x13tgbkp{--final-color:var(--background-color)}", 4);"
+        stylex.inject(".x13tgbkp{--final-color:var(--background-color)}", 1);"
       `);
     });
 
@@ -127,8 +127,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 4);
-        stylex.inject(".xju2f9n{color:blue}", 4);"
+        stylex.inject(".xrkmrrc{background-color:red}", 3000);
+        stylex.inject(".xju2f9n{color:blue}", 3000);"
       `);
     });
 
@@ -144,7 +144,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xd71okc{content:attr(some-attribute)}", 4);"
+        stylex.inject(".xd71okc{content:attr(some-attribute)}", 3000);"
       `);
     });
 
@@ -170,7 +170,7 @@ describe('@stylexjs/babel-plugin', () => {
 
       expect(camelCased).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1cfch2b{transition-property:margin-top}", 4);"
+        stylex.inject(".x1cfch2b{transition-property:margin-top}", 3000);"
       `);
     });
 
@@ -186,7 +186,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x17389it{transition-property:--foo}", 4);"
+        stylex.inject(".x17389it{transition-property:--foo}", 3000);"
       `);
     });
 
@@ -205,8 +205,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
-        stylex.inject(".x17z2mba:hover{color:blue}", 17);"
+        stylex.inject(".x1gykpug:hover{background-color:red}", 3130);
+        stylex.inject(".x17z2mba:hover{color:blue}", 3130);"
       `);
     });
 
@@ -227,8 +227,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
-        stylex.inject(".x17z2mba:hover{color:blue}", 17);"
+        stylex.inject(".x1gykpug:hover{background-color:red}", 3130);
+        stylex.inject(".x17z2mba:hover{color:blue}", 3130);"
       `);
     });
 
@@ -244,7 +244,7 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1ruww2u{position:sticky;position:fixed}", 4);"
+        stylex.inject(".x1ruww2u{position:sticky;position:fixed}", 3000);"
       `);
     });
 
@@ -263,8 +263,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xixxii4{position:fixed}", 4);
-        stylex.inject("@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}", 25);"
+        stylex.inject(".xixxii4{position:fixed}", 3000);
+        stylex.inject("@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}", 3200);"
       `);
     });
 
@@ -281,7 +281,7 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x87ps6o{user-select:none}", 4);"
+        stylex.inject(".x87ps6o{user-select:none}", 3000);"
       `);
     });
 
@@ -300,9 +300,9 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xb3r6kr{overflow:hidden}", 3);
-        stylex.inject(".xbsl7fq{border-style:dashed}", 3);
-        stylex.inject(".xmkeg23{border-width:1px}", 3);"
+        stylex.inject(".xb3r6kr{overflow:hidden}", 2000);
+        stylex.inject(".xbsl7fq{border-style:dashed}", 2000);
+        stylex.inject(".xmkeg23{border-width:1px}", 2000);"
       `);
     });
 
@@ -359,15 +359,15 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `),
       ).toMatchInlineSnapshot(`
-"import stylex from 'stylex';
-stylex.inject(".x15oojuh{position:fixed;position:sticky}", 4);
-export const styles = {
-  foo: {
-    position: "x15oojuh",
-    $$css: true
-  }
-};"
-`);
+        "import stylex from 'stylex';
+        stylex.inject(".x15oojuh{position:fixed;position:sticky}", 3000);
+        export const styles = {
+          foo: {
+            position: "x15oojuh",
+            $$css: true
+          }
+        };"
+      `);
     });
 
     test('transforms complex property values containing custom properties variables', () => {
@@ -382,7 +382,7 @@ export const styles = {
          `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 4);"
+        stylex.inject(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 3000);"
       `);
     });
 
@@ -403,8 +403,8 @@ export const styles = {
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 8);
-          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 8);"
+          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 3040);
+          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 3040);"
         `);
       });
 
@@ -431,10 +431,10 @@ export const styles = {
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x17z2mba:hover{color:blue}", 17);
-          stylex.inject(".x96fq8s:active{color:red}", 21);
-          stylex.inject(".x1wvtd7d:focus{color:yellow}", 20);
-          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 10);"
+          stylex.inject(".x17z2mba:hover{color:blue}", 3130);
+          stylex.inject(".x96fq8s:active{color:red}", 3170);
+          stylex.inject(".x1wvtd7d:focus{color:yellow}", 3150);
+          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 3060);"
         `);
       });
 
@@ -452,7 +452,7 @@ export const styles = {
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 17);"
+          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 3130);"
         `);
       });
     });
@@ -472,8 +472,8 @@ export const styles = {
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 8);
-          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 8);"
+          stylex.inject(".x19iys6w:invalpwdijad{background-color:red}", 3040);
+          stylex.inject(".x5z3o4w:invalpwdijad{color:blue}", 3040);"
         `);
       });
 
@@ -494,10 +494,10 @@ export const styles = {
          `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x17z2mba:hover{color:blue}", 17);
-          stylex.inject(".x96fq8s:active{color:red}", 21);
-          stylex.inject(".x1wvtd7d:focus{color:yellow}", 20);
-          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 10);"
+          stylex.inject(".x17z2mba:hover{color:blue}", 3130);
+          stylex.inject(".x96fq8s:active{color:red}", 3170);
+          stylex.inject(".x1wvtd7d:focus{color:yellow}", 3150);
+          stylex.inject(".x126ychx:nth-child(2n){color:purple}", 3060);"
         `);
       });
 
@@ -515,7 +515,7 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 17);"
+          stylex.inject(".x1nxcus0:hover{position:sticky;position:fixed}", 3130);"
         `);
       });
     });
@@ -539,8 +539,8 @@ export const styles = {
            `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x16oeupf::before{color:red}", 8);
-          stylex.inject(".xdaarc3::after{color:blue}", 8);"
+          stylex.inject(".x16oeupf::before{color:red}", 8000);
+          stylex.inject(".xdaarc3::after{color:blue}", 8000);"
         `);
       });
 
@@ -558,7 +558,7 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x6yu8oj::placeholder{color:gray}", 8);"
+          stylex.inject(".x6yu8oj::placeholder{color:gray}", 8000);"
         `);
       });
 
@@ -576,7 +576,7 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 8);"
+          stylex.inject(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 9000);"
         `);
       });
     });
@@ -600,9 +600,9 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 4);
-          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 25);
-          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 25);"
+          stylex.inject(".xrkmrrc{background-color:red}", 3000);
+          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
+          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 3200);"
         `);
       });
 
@@ -624,9 +624,9 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 4);
-          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 24);
-          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 24);"
+          stylex.inject(".xrkmrrc{background-color:red}", 3000);
+          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 3030);
+          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 3030);"
         `);
       });
     });
@@ -648,9 +648,9 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 4);
-          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 25);
-          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 25);"
+          stylex.inject(".xrkmrrc{background-color:red}", 3000);
+          stylex.inject("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
+          stylex.inject("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 3200);"
         `);
       });
 
@@ -670,9 +670,9 @@ export const styles = {
           `),
         ).toMatchInlineSnapshot(`
           "import stylex from 'stylex';
-          stylex.inject(".xrkmrrc{background-color:red}", 4);
-          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 24);
-          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 24);"
+          stylex.inject(".xrkmrrc{background-color:red}", 3000);
+          stylex.inject("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 3030);
+          stylex.inject("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 3030);"
         `);
       });
     });
@@ -692,9 +692,13 @@ export const styles = {
               borderWidth: '0 0 2px 0',
             },
             root: {
-              border: '1px solid var(--divider)',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderColor: 'var(--divider)',
               borderRadius: borderRadius * 2,
-              borderBottom: '5px solid red',
+              borderBottomWidth: '5px',
+              borderBottomStyle: 'solid',
+              borderBottomColor: 'red',
             },
             short: {
               padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
@@ -710,25 +714,22 @@ export const styles = {
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;
-        stylex.inject(".xxsse2n{margin-top:calc((100% - 50px) * .5)}", 4);
-        stylex.inject(".x3aesyq{margin-inline-end:20px}", 4);
-        stylex.inject(".xat24cr{margin-bottom:0}", 4);
-        stylex.inject(".xqsn43r{margin-inline-start:20px}", 4);
-        stylex.inject(".xs4buau{border-color:red blue}", 3);
-        stylex.inject(".xbsl7fq{border-style:dashed}", 3);
-        stylex.inject(".xn43iik{border-width:0 0 2px 0}", 3);
-        stylex.inject(".xmkeg23{border-width:1px}", 3);
-        stylex.inject(".xa309fb{border-bottom-width:5px}", 4);
-        stylex.inject(".x1y0btm7{border-style:solid}", 3);
-        stylex.inject(".x1q0q8m5{border-bottom-style:solid}", 4);
-        stylex.inject(".x1lh7sze{border-color:var(--divider)}", 3);
-        stylex.inject(".xud65wk{border-bottom-color:red}", 4);
-        stylex.inject(".x12oqio5{border-radius:4px}", 3);
-        stylex.inject(".xexx8yu{padding-top:0}", 4);
-        stylex.inject(".xcrpjku{padding-right:var(--rightpadding,20px)}", 4, ".xcrpjku{padding-left:var(--rightpadding,20px)}");
-        stylex.inject(".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}", 4);
-        stylex.inject(".xyv1419{padding-left:var(--rightpadding,20px)}", 4, ".xyv1419{padding-right:var(--rightpadding,20px)}");
-        stylex.inject(".x1bg2uv5{border-color:green}", 3);"
+        stylex.inject(".xe4njm9{margin:calc((100% - 50px) * .5) 20px 0}", 1000);
+        stylex.inject(".xs4buau{border-color:red blue}", 2000);
+        stylex.inject(".xbsl7fq{border-style:dashed}", 2000);
+        stylex.inject(".xn43iik{border-width:0 0 2px 0}", 2000);
+        stylex.inject(".xmkeg23{border-width:1px}", 2000);
+        stylex.inject(".xa309fb{border-bottom-width:5px}", 4000);
+        stylex.inject(".x1y0btm7{border-style:solid}", 2000);
+        stylex.inject(".x1q0q8m5{border-bottom-style:solid}", 4000);
+        stylex.inject(".x1lh7sze{border-color:var(--divider)}", 2000);
+        stylex.inject(".xud65wk{border-bottom-color:red}", 4000);
+        stylex.inject(".x12oqio5{border-radius:4px}", 2000);
+        stylex.inject(".xexx8yu{padding-top:0}", 4000);
+        stylex.inject(".xcrpjku{padding-right:var(--rightpadding,20px)}", 3000, ".xcrpjku{padding-left:var(--rightpadding,20px)}");
+        stylex.inject(".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}", 4000);
+        stylex.inject(".xyv1419{padding-left:var(--rightpadding,20px)}", 3000, ".xyv1419{padding-right:var(--rightpadding,20px)}");
+        stylex.inject(".x1bg2uv5{border-color:green}", 2000);"
       `);
     });
 
@@ -751,15 +752,14 @@ export const styles = {
           });
           stylex(styles.default, styles.override);
         `),
-        // Expect the className to reflect override entirely
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const borderRadius = 2;
-        stylex.inject(".x1ok221b{margin-top:5px}", 4);
-        stylex.inject(".x1sa5p1d{margin-inline-end:10px}", 4);
-        stylex.inject(".x1fqp7bg{margin-bottom:15px}", 4);
-        stylex.inject(".xqsn43r{margin-inline-start:20px}", 4);
-        stylex.inject(".x1ghz6dp{margin:0}", 3);
+        stylex.inject(".x1ok221b{margin-top:5px}", 4000);
+        stylex.inject(".x1sa5p1d{margin-inline-end:10px}", 3000);
+        stylex.inject(".x1fqp7bg{margin-bottom:15px}", 4000);
+        stylex.inject(".xqsn43r{margin-inline-start:20px}", 3000);
+        stylex.inject(".x1ghz6dp{margin:0}", 1000);
         "x1ghz6dp";"
       `);
     });
@@ -780,9 +780,13 @@ export const styles = {
                 borderWidth: '0 0 2px 0',
               },
               root: {
-                border: '1px solid var(--divider)',
+                borderWidth: 1,
+                borderStyle: 'solid',
+                borderColor: 'var(--divider)',
                 borderRadius: borderRadius * 2,
-                borderBottom: '5px solid red',
+                borderBottomWidth: '5px',
+                borderBottomStyle: 'solid',
+                borderBottomColor: 'red',
               },
               short: {
                 padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
@@ -806,60 +810,75 @@ export const styles = {
         const borderRadius = 2;
         export const styles = {
           default: {
-            marginTop: "xxsse2n",
-            marginInlineEnd: "x3aesyq",
-            marginBottom: "xat24cr",
-            marginInlineStart: "xqsn43r",
+            margin: "xe4njm9",
+            marginInline: null,
+            marginInlineStart: null,
             marginLeft: null,
+            marginInlineEnd: null,
             marginRight: null,
+            marginBlock: null,
+            marginTop: null,
+            marginBottom: null,
             $$css: true
           },
           error: {
             borderColor: "xs4buau",
-            borderTopColor: null,
-            borderInlineEndColor: null,
-            borderRightColor: null,
-            borderBottomColor: null,
+            borderInlineColor: null,
             borderInlineStartColor: null,
             borderLeftColor: null,
+            borderInlineEndColor: null,
+            borderRightColor: null,
+            borderBlockColor: null,
+            borderTopColor: null,
+            borderBottomColor: null,
             borderStyle: "xbsl7fq",
-            borderTopStyle: null,
-            borderInlineEndStyle: null,
-            borderRightStyle: null,
-            borderBottomStyle: null,
+            borderInlineStyle: null,
             borderInlineStartStyle: null,
             borderLeftStyle: null,
+            borderInlineEndStyle: null,
+            borderRightStyle: null,
+            borderBlockStyle: null,
+            borderTopStyle: null,
+            borderBottomStyle: null,
             borderWidth: "xn43iik",
-            borderTopWidth: null,
-            borderInlineEndWidth: null,
-            borderRightWidth: null,
-            borderBottomWidth: null,
+            borderInlineWidth: null,
             borderInlineStartWidth: null,
             borderLeftWidth: null,
+            borderInlineEndWidth: null,
+            borderRightWidth: null,
+            borderBlockWidth: null,
+            borderTopWidth: null,
+            borderBottomWidth: null,
             $$css: true
           },
           root: {
             borderWidth: "xmkeg23",
-            borderTopWidth: null,
-            borderInlineEndWidth: null,
-            borderRightWidth: null,
-            borderBottomWidth: "xa309fb",
+            borderInlineWidth: null,
             borderInlineStartWidth: null,
             borderLeftWidth: null,
+            borderInlineEndWidth: null,
+            borderRightWidth: null,
+            borderBlockWidth: null,
+            borderTopWidth: null,
+            borderBottomWidth: "xa309fb",
             borderStyle: "x1y0btm7",
-            borderTopStyle: null,
-            borderInlineEndStyle: null,
-            borderRightStyle: null,
-            borderBottomStyle: "x1q0q8m5",
+            borderInlineStyle: null,
             borderInlineStartStyle: null,
             borderLeftStyle: null,
+            borderInlineEndStyle: null,
+            borderRightStyle: null,
+            borderBlockStyle: null,
+            borderTopStyle: null,
+            borderBottomStyle: "x1q0q8m5",
             borderColor: "x1lh7sze",
-            borderTopColor: null,
-            borderInlineEndColor: null,
-            borderRightColor: null,
-            borderBottomColor: "xud65wk",
+            borderInlineColor: null,
             borderInlineStartColor: null,
             borderLeftColor: null,
+            borderInlineEndColor: null,
+            borderRightColor: null,
+            borderBlockColor: null,
+            borderTopColor: null,
+            borderBottomColor: "xud65wk",
             borderRadius: "x12oqio5",
             borderStartStartRadius: null,
             borderStartEndRadius: null,
@@ -887,26 +906,32 @@ export const styles = {
           },
           valid: {
             borderColor: "x1bg2uv5",
-            borderTopColor: null,
-            borderInlineEndColor: null,
-            borderRightColor: null,
-            borderBottomColor: null,
+            borderInlineColor: null,
             borderInlineStartColor: null,
             borderLeftColor: null,
+            borderInlineEndColor: null,
+            borderRightColor: null,
+            borderBlockColor: null,
+            borderTopColor: null,
+            borderBottomColor: null,
             borderStyle: "x1y0btm7",
-            borderTopStyle: null,
-            borderInlineEndStyle: null,
-            borderRightStyle: null,
-            borderBottomStyle: null,
+            borderInlineStyle: null,
             borderInlineStartStyle: null,
             borderLeftStyle: null,
+            borderInlineEndStyle: null,
+            borderRightStyle: null,
+            borderBlockStyle: null,
+            borderTopStyle: null,
+            borderBottomStyle: null,
             borderWidth: "xmkeg23",
-            borderTopWidth: null,
-            borderInlineEndWidth: null,
-            borderRightWidth: null,
-            borderBottomWidth: null,
+            borderInlineWidth: null,
             borderInlineStartWidth: null,
             borderLeftWidth: null,
+            borderInlineEndWidth: null,
+            borderRightWidth: null,
+            borderBlockWidth: null,
+            borderTopWidth: null,
+            borderBottomWidth: null,
             $$css: true
           }
         };"
@@ -1023,8 +1048,8 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 4);
-        stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
+        stylex.inject(".xrkmrrc{background-color:red}", 3000);
+        stylex.inject(".x19dipnz{color:var(--color,revert)}", 3000);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
@@ -1050,8 +1075,8 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 4);
-        stylex.inject(".x17fnjtu{width:var(--width,revert)}", 4);
+        stylex.inject(".xrkmrrc{background-color:red}", 3000);
+        stylex.inject(".x17fnjtu{width:var(--width,revert)}", 4000);
         export const styles = {
           default: width => [{
             backgroundColor: "xrkmrrc",
@@ -1080,9 +1105,9 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 4);
-        stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
-        stylex.inject(".x1mqxbix{color:black}", 4);
+        stylex.inject(".xrkmrrc{background-color:red}", 3000);
+        stylex.inject(".x19dipnz{color:var(--color,revert)}", 3000);
+        stylex.inject(".x1mqxbix{color:black}", 3000);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
@@ -1111,7 +1136,7 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 4);
+        stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
         export const styles = {
           default: bgColor => [{
             "--background-color": "xyv4n8w",
@@ -1137,8 +1162,8 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
-        stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 17);
+        stylex.inject(".x1gykpug:hover{background-color:red}", 3130);
+        stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 3130);
         export const styles = {
           default: color => [{
             ":hover_backgroundColor": "x1gykpug",
@@ -1166,9 +1191,9 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrkmrrc{background-color:red}", 4);
-        stylex.inject(".x19dipnz{color:var(--color,revert)}", 4);
-        stylex.inject(".x1mqxbix{color:black}", 4);
+        stylex.inject(".xrkmrrc{background-color:red}", 3000);
+        stylex.inject(".x19dipnz{color:var(--color,revert)}", 3000);
+        stylex.inject(".x1mqxbix{color:black}", 3000);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
@@ -1197,7 +1222,7 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 4);
+        stylex.inject(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
         export const styles = {
           default: bgColor => [{
             "--background-color": "xyv4n8w",
@@ -1223,8 +1248,8 @@ export const styles = {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gykpug:hover{background-color:red}", 17);
-        stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 17);
+        stylex.inject(".x1gykpug:hover{background-color:red}", 3130);
+        stylex.inject(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 3130);
         export const styles = {
           default: color => [{
             ":hover_backgroundColor": "x1gykpug",

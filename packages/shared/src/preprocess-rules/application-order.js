@@ -70,6 +70,7 @@ const shorthands = {
   },
   animation: (value: TStyleValue): Array<[string, TStyleValue]> => [
     ['animation', value],
+    ['animationComposition', null],
     ['animationName', null],
     ['animationDuration', null],
     ['animationTimingFunction', null],
@@ -78,6 +79,14 @@ const shorthands = {
     ['animationDirection', null],
     ['animationFillMode', null],
     ['animationPlayState', null],
+    ...shorthands.animationRange(null),
+    ['animationTimeline', null],
+  ],
+
+  animationRange: (value: TStyleValue): TReturn => [
+    ['animationRange', value],
+    ['animationRangeEnd', null],
+    ['animationRangeStart', null],
   ],
 
   background: (value: TStyleValue): TReturn => [
@@ -87,115 +96,69 @@ const shorthands = {
     ['backgroundColor', null],
     ['backgroundImage', null],
     ['backgroundOrigin', null],
-    ['backgroundPosition', null],
+    ...shorthands.backgroundPosition(null),
     ['backgroundRepeat', null],
     ['backgroundSize', null],
+  ],
+
+  backgroundPosition: (value: TStyleValue): TReturn => [
+    ['backgroundPosition', value],
+    ['backgroundPositionX', null],
+    ['backgroundPositionY', null],
   ],
 
   // These will be removed later, matching the properties with React Native.
   // For now, we're compiling them to the React Native properties.
   // @Deprecated
-  border: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return shorthands.borderWidth(rawValue);
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ...shorthands.borderWidth(width),
-      ...shorthands.borderStyle(style),
-      ...shorthands.borderColor(color),
-    ];
+  border: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`border` shorthand is not supported. Use `borderWidth`, `borderStyle` and `borderColor` instead.',
+    );
+  },
+  borderInline: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`borderInline` shorthand is not supported. Use `borderInlineWidth`, `borderInlineStyle` and `borderInlineColor` instead.',
+    );
   },
   // @Deprecated
-  borderInline: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [
-        ['borderInlineWidth', rawValue],
-        ['borderInlineStartWidth', null],
-        ['borderInlineEndWidth', null],
-      ];
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ...shorthands.borderInlineWidth(width),
-      ...shorthands.borderInlineStyle(style),
-      ...shorthands.borderInlineColor(color),
-    ];
-  },
-  // @Deprecated
-  borderBlock: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [
-        ['borderBlockWidth', rawValue],
-        ['borderTopWidth', null],
-        ['borderBottomWidth', null],
-      ];
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ...shorthands.borderBlockWidth(width),
-      ...shorthands.borderBlockStyle(style),
-      ...shorthands.borderBlockColor(color),
-    ];
+  borderBlock: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`borderBlock` shorthand is not supported. Use `borderBlockWidth`, `borderBlockStyle` and `borderBlockColor` instead.',
+    );
   },
 
   // @Deprecated
-  borderTop: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderTopWidth', rawValue]];
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ['borderTopWidth', width],
-      ['borderTopStyle', style],
-      ['borderTopColor', color],
-    ];
-  },
-  // @Deprecated
-  borderInlineEnd: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderInlineEndWidth', rawValue]];
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ['borderInlineEndWidth', width],
-      ['borderInlineEndStyle', style],
-      ['borderInlineEndColor', color],
-    ];
-  },
-  // @Deprecated
-  borderRight: (_rawValue: TStyleValue): TReturn => {
+  borderTop: (_rawValue: TStyleValue): TReturn => {
     throw new Error(
       [
-        '`borderRight` is not supported.',
-        'You could use `borderRightWidth`, `borderRightStyle` and `borderRightColor`,',
-        'but it is preferable to use `borderInlineEndWidth`, `borderInlineEndStyle` and `borderInlineEndColor`.',
+        '`borderTop` is not supported.',
+        'Use `borderTopWidth`, `borderTopStyle` and `borderTopColor`,',
       ].join(' '),
     );
   },
   // @Deprecated
-  borderBottom: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderBottomWidth', rawValue]];
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ['borderBottomWidth', width],
-      ['borderBottomStyle', style],
-      ['borderBottomColor', color],
-    ];
+  borderInlineEnd: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`borderInlineEnd` shorthand is not supported. Use `borderInlineEndWidth`, `borderInlineEndStyle` and `borderInlineEndColor` instead.',
+    );
   },
   // @Deprecated
-  borderInlineStart: (rawValue: TStyleValue): TReturn => {
-    if (typeof rawValue === 'number') {
-      return [['borderInlineStartWidth', rawValue]];
-    }
-    const [width, style, color] = splitValue(rawValue);
-    return [
-      ['borderInlineStartWidth', width],
-      ['borderInlineStartStyle', style],
-      ['borderInlineStartColor', color],
-    ];
+  borderRight: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`borderRight` shorthand is not supported. Use `borderRightWidth`, `borderRightStyle` and `borderRightColor` instead.',
+    );
+  },
+  // @Deprecated
+  borderBottom: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`borderBottom` shorthand is not supported. Use `borderBottomWidth`, `borderBottomStyle` and `borderBottomColor` instead.',
+    );
+  },
+  // @Deprecated
+  borderInlineStart: (_rawValue: TStyleValue): TReturn => {
+    throw new Error(
+      '`borderInlineStart` shorthand is not supported. Use `borderInlineStartWidth`, `borderInlineStartStyle` and `borderInlineStartColor` instead.',
+    );
   },
   // @Deprecated
   borderLeft: (_rawValue: TStyleValue): TReturn => {
@@ -245,30 +208,18 @@ const shorthands = {
   ],
   borderColor: (value: TStyleValue): TReturn => [
     ['borderColor', value],
-    ['borderTopColor', null],
-    ['borderInlineEndColor', null],
-    ['borderRightColor', null],
-    ['borderBottomColor', null],
-    ['borderInlineStartColor', null],
-    ['borderLeftColor', null],
+    ...shorthands.borderInlineColor(null),
+    ...shorthands.borderBlockColor(null),
   ],
   borderStyle: (value: TStyleValue): TReturn => [
     ['borderStyle', value],
-    ['borderTopStyle', null],
-    ['borderInlineEndStyle', null],
-    ['borderRightStyle', null],
-    ['borderBottomStyle', null],
-    ['borderInlineStartStyle', null],
-    ['borderLeftStyle', null],
+    ...shorthands.borderInlineStyle(null),
+    ...shorthands.borderBlockStyle(null),
   ],
   borderWidth: (value: TStyleValue): TReturn => [
     ['borderWidth', value],
-    ['borderTopWidth', null],
-    ['borderInlineEndWidth', null],
-    ['borderRightWidth', null],
-    ['borderBottomWidth', null],
-    ['borderInlineStartWidth', null],
-    ['borderLeftWidth', null],
+    ...shorthands.borderInlineWidth(null),
+    ...shorthands.borderBlockWidth(null),
   ],
   borderInlineStartColor: (value: TStyleValue): TReturn => [
     ['borderInlineStartColor', value],
@@ -331,44 +282,20 @@ const shorthands = {
     ['borderInlineEndWidth', null],
   ],
 
-  borderRadius: (value: TStyleValue): TReturn => {
-    const values = typeof value === 'number' ? [value] : splitValue(value);
-    if (values.length === 1) {
-      return [
-        ['borderRadius', value],
-        // // logical constituents
-        ['borderStartStartRadius', null],
-        ['borderStartEndRadius', null],
-        ['borderEndStartRadius', null],
-        ['borderEndEndRadius', null],
-        // physical constituents
-        ['borderTopLeftRadius', null],
-        ['borderTopRightRadius', null],
-        ['borderBottomLeftRadius', null],
-        ['borderBottomRightRadius', null],
-      ];
-    }
+  borderRadius: (value: TStyleValue): TReturn => [
+    ['borderRadius', value],
+    // // logical constituents
+    ['borderStartStartRadius', null],
+    ['borderStartEndRadius', null],
+    ['borderEndStartRadius', null],
+    ['borderEndEndRadius', null],
+    // physical constituents
+    ['borderTopLeftRadius', null],
+    ['borderTopRightRadius', null],
+    ['borderBottomLeftRadius', null],
+    ['borderBottomRightRadius', null],
+  ],
 
-    // @Deprecated
-    const [
-      startStart,
-      startEnd = startStart,
-      endEnd = startStart,
-      endStart = startEnd,
-    ] = values;
-    return [
-      // split into logical consituents
-      ['borderStartStartRadius', startStart],
-      ['borderStartEndRadius', startEnd],
-      ['borderEndEndRadius', endEnd],
-      ['borderEndStartRadius', endStart],
-      // unset physical consituents
-      ['borderTopLeftRadius', null],
-      ['borderTopRightRadius', null],
-      ['borderBottomLeftRadius', null],
-      ['borderBottomRightRadius', null],
-    ];
-  },
   borderStartStartRadius: (value: TStyleValue): TReturn => [
     ['borderStartStartRadius', value],
     ['borderTopLeftRadius', null],
@@ -410,11 +337,20 @@ const shorthands = {
     ['borderEndEndRadius', null],
   ],
 
+  borderImage: (value: TStyleValue): TReturn => [
+    ['borderImage', value],
+    ['borderImageOutset', null],
+    ['borderImageRepeat', null],
+    ['borderImageSlice', null],
+    ['borderImageSource', null],
+    ['borderImageWidth', null],
+  ],
+
   columnRule: (value: TStyleValue): TReturn => [
     ['columnRule', value],
-    ['columnRuleWidth', null],
-    ['columnRuleStyle', null],
     ['columnRuleColor', null],
+    ['columnRuleStyle', null],
+    ['columnRuleWidth', null],
   ],
   columns: (value: TStyleValue): TReturn => [
     ['columns', value],
@@ -426,6 +362,12 @@ const shorthands = {
     ['container', value],
     ['containerName', null],
     ['containerType', null],
+  ],
+
+  containIntrinsicSize: (value: TStyleValue): TReturn => [
+    ['containIntrinsicSize', value],
+    ['containIntrinsicWidth', null],
+    ['containIntrinsicHeight', null],
   ],
 
   flex: (value: TStyleValue): TReturn => [
@@ -446,9 +388,19 @@ const shorthands = {
     ['fontSize', null],
     ['fontStretch', null],
     ['fontStyle', null],
-    ['fontVariant', null],
+    ...shorthands.fontVariant(null),
     ['fontWeight', null],
     ['lineHeight', null],
+  ],
+  fontVariant: (value: TStyleValue): TReturn => [
+    ['fontVariant', value],
+    ['fontVariantAlternates', null],
+    ['fontVariantCaps', null],
+    ['fontVariantEastAsian', null],
+    ['fontVariantEmoji', null],
+    ['fontVariantLigatures', null],
+    ['fontVariantNumeric', null],
+    ['fontVariantPosition', null],
   ],
   gap: (value: TStyleValue): TReturn => [
     ['gap', value],
@@ -457,11 +409,7 @@ const shorthands = {
   ],
   grid: (value: TStyleValue): TReturn => [
     ['grid', value],
-    ['gridTemplate', null],
-    ['gridTemplateAreas', null],
-    ['gridTemplateColumns', null],
-    ['gridTemplateRows', null],
-
+    ...shorthands.gridTemplate(null),
     ['gridAutoRows', null],
     ['gridAutoColumns', null],
     ['gridAutoFlow', null],
@@ -493,14 +441,8 @@ const shorthands = {
   ],
   inset: (value: TStyleValue): TReturn => [
     ['inset', value],
-    ['insetInline', null],
-    ['insetBlock', null],
-    ['insetInlineStart', null],
-    ['insetInlineEnd', null],
-    ['top', null],
-    ['right', null],
-    ['bottom', null],
-    ['left', null],
+    ...shorthands.insetInline(null),
+    ...shorthands.insetBlock(null),
   ],
   insetInline: (value: TStyleValue): TReturn => [
     ['insetInline', value],
@@ -542,30 +484,11 @@ const shorthands = {
     ['listStyleType', null],
   ],
 
-  margin: (value: TStyleValue): TReturn => {
-    const values = typeof value === 'number' ? [value] : splitValue(value);
-    if (values.length === 1) {
-      return [
-        ['margin', values[0]],
-        ['marginInlineStart', null],
-        ['marginLeft', null],
-        ['marginInlineEnd', null],
-        ['marginRight', null],
-        ['marginTop', null],
-        ['marginBottom', null],
-      ];
-    }
-    // @Deprecated
-    const [top, right = top, bottom = top, left = right] = values;
-    return [
-      ['marginTop', top],
-      ['marginInlineEnd', right],
-      ['marginBottom', bottom],
-      ['marginInlineStart', left],
-      ['marginLeft', null],
-      ['marginRight', null],
-    ];
-  },
+  margin: (value: TStyleValue): TReturn => [
+    ['margin', value],
+    ...shorthands.marginInline(null),
+    ...shorthands.marginBlock(null),
+  ],
   marginInline: (value: TStyleValue): TReturn => [
     ['marginInline', value],
     ['marginInlineStart', null],
@@ -611,6 +534,16 @@ const shorthands = {
     ['maskSize', null],
   ],
 
+  maskBorder: (value: TStyleValue): TReturn => [
+    ['maskBorder', value],
+    ['maskBorderMode', null],
+    ['maskBorderOutset', null],
+    ['maskBorderRepeat', null],
+    ['maskBorderSlice', null],
+    ['maskBorderSource', null],
+    ['maskBorderWidth', null],
+  ],
+
   offset: (value: TStyleValue): TReturn => [
     ['offset', value],
     ['offsetAnchor', null],
@@ -623,6 +556,7 @@ const shorthands = {
   outline: (value: TStyleValue): TReturn => [
     ['outline', value],
     ['outlineColor', null],
+    ['outlineOffset', null],
     ['outlineStyle', null],
     ['outlineWidth', null],
   ],
@@ -705,21 +639,82 @@ const shorthands = {
   ],
   scrollMargin: (value: TStyleValue): TReturn => [
     ['scrollMargin', value],
-    ['scrollMarginBottom', null],
-    ['scrollMarginLeft', null],
-    ['scrollMarginStart', null],
-    ['scrollMarginRight', null],
-    ['scrollMarginEnd', null],
+    ...shorthands.scrollMarginBlock(null),
+    ...shorthands.scrollMarginInline(null),
+  ],
+  scrollMarginBlock: (value: TStyleValue): TReturn => [
+    ['scrollMarginBlock', value],
     ['scrollMarginTop', null],
+    ['scrollMarginBottom', null],
+  ],
+  scrollMarginInline: (value: TStyleValue): TReturn => [
+    ['scrollMarginInline', value],
+    ['scrollMarginInlineStart', null],
+    ['scrollMarginInlineEnd', null],
+    ['scrollMarginLeft', null],
+    ['scrollMarginRight', null],
+  ],
+  scrollMarginInlineStart: (value: TStyleValue): TReturn => [
+    ['scrollMarginInlineStart', value],
+    ['scrollMarginLeft', null],
+    ['scrollMarginRight', null],
+  ],
+  scrollMarginInlineEnd: (value: TStyleValue): TReturn => [
+    ['scrollMarginInlineEnd', value],
+    ['scrollMarginLeft', null],
+    ['scrollMarginRight', null],
+  ],
+  scrollMarginLeft: (value: TStyleValue): TReturn => [
+    ['scrollMarginLeft', value],
+    ['scrollMarginInlineStart', null],
+    ['scrollMarginInlineEnd', null],
+  ],
+  scrollMarginRight: (value: TStyleValue): TReturn => [
+    ['scrollMarginRight', value],
+    ['scrollMarginInlineStart', null],
+    ['scrollMarginInlineEnd', null],
   ],
   scrollPadding: (value: TStyleValue): TReturn => [
     ['scrollPadding', value],
-    ['scrollPaddingBottom', null],
-    ['scrollPaddingLeft', null],
-    ['scrollPaddingStart', null],
-    ['scrollPaddingRight', null],
-    ['scrollPaddingEnd', null],
+    ...shorthands.scrollPaddingBlock(null),
+    ...shorthands.scrollPaddingInline(null),
+  ],
+  scrollPaddingBlock: (value: TStyleValue): TReturn => [
+    ['scrollPaddingBlock', value],
     ['scrollPaddingTop', null],
+    ['scrollPaddingBottom', null],
+  ],
+  scrollPaddingInline: (value: TStyleValue): TReturn => [
+    ['scrollPaddingInline', value],
+    ['scrollPaddingInlineStart', null],
+    ['scrollPaddingInlineEnd', null],
+    ['scrollPaddingLeft', null],
+    ['scrollPaddingRight', null],
+  ],
+  scrollPaddingInlineStart: (value: TStyleValue): TReturn => [
+    ['scrollPaddingInlineStart', value],
+    ['scrollPaddingLeft', null],
+    ['scrollPaddingRight', null],
+  ],
+  scrollPaddingInlineEnd: (value: TStyleValue): TReturn => [
+    ['scrollPaddingInlineEnd', value],
+    ['scrollPaddingLeft', null],
+    ['scrollPaddingRight', null],
+  ],
+  scrollPaddingLeft: (value: TStyleValue): TReturn => [
+    ['scrollPaddingLeft', value],
+    ['scrollPaddingInlineStart', null],
+    ['scrollPaddingInlineEnd', null],
+  ],
+  scrollPaddingRight: (value: TStyleValue): TReturn => [
+    ['scrollPaddingRight', value],
+    ['scrollPaddingInlineStart', null],
+    ['scrollPaddingInlineEnd', null],
+  ],
+  scrollSnapType: (value: TStyleValue): TReturn => [
+    ['scrollSnapType', value],
+    ['scrollSnapTypeX', null],
+    ['scrollSnapTypeY', null],
   ],
   scrollTimeline: (value: TStyleValue): TReturn => [
     ['scrollTimeline', value],
@@ -740,6 +735,7 @@ const shorthands = {
   ],
   transition: (value: TStyleValue): TReturn => [
     ['transition', value],
+    ['transitionBehavior', null],
     ['transitionDelay', null],
     ['transitionDuration', null],
     ['transitionProperty', null],
@@ -814,12 +810,26 @@ const aliases = {
     ['borderEndEndRadius', value],
   ],
 
+  containIntrinsicBlockSize: (value: TStyleValue): TReturn => [
+    ['containIntrinsicHeight', value],
+  ],
+  containIntrinsicInlineSize: (value: TStyleValue): TReturn => [
+    ['containIntrinsicWidth', value],
+  ],
+
+  gridGap: shorthands.gap,
+  gridRowGap: (value: TStyleValue): TReturn => [['rowGap', value]],
+  gridColumnGap: (value: TStyleValue): TReturn => [['columnGap', value]],
+
   marginBlockStart: (value: TStyleValue): TReturn => [['marginTop', value]],
   marginBlockEnd: (value: TStyleValue): TReturn => [['marginBottom', value]],
   marginStart: shorthands.marginInlineStart,
   marginEnd: shorthands.marginInlineEnd,
   marginHorizontal: shorthands.marginInline,
   marginVertical: shorthands.marginBlock,
+
+  overflowBlock: (value: TStyleValue): TReturn => [['overflowY', value]],
+  overflowInline: (value: TStyleValue): TReturn => [['overflowX', value]],
 
   paddingBlockStart: (rawValue: TStyleValue): TReturn => [
     ['paddingTop', rawValue],
@@ -831,6 +841,13 @@ const aliases = {
   paddingEnd: shorthands.paddingInlineEnd,
   paddingHorizontal: shorthands.paddingInline,
   paddingVertical: shorthands.paddingBlock,
+
+  scrollMarginBlockStart: (value: TStyleValue): TReturn => [
+    ['scrollMarginTop', value],
+  ],
+  scrollMarginBlockEnd: (value: TStyleValue): TReturn => [
+    ['scrollMarginBottom', value],
+  ],
 
   insetBlockStart: (value: TStyleValue): TReturn => [['top', value]],
   insetBlockEnd: (value: TStyleValue): TReturn => [['bottom', value]],

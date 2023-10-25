@@ -108,16 +108,16 @@ describe('webpack-plugin-stylex', () => {
 
       expect(css).toMatchInlineSnapshot(`
         "@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
-        .xeuoslp{animation-name:xgnty7z-B}
-        .x1lliihq{display:block}
-        .x78zum5{display:flex}
-        .xt0psk2{display:inline}
-        .x1egiwwb{height:500px}
-        .x1hm9lzh{margin-inline-start:10px}
-        .xlrshdv{margin-top:99px}
-        .xh8yej3{width:100%}
-        .x3hqpx7{width:50%}
-        .x1oz5o6v:hover{background:red}"
+        .x1oz5o6v:hover:not(#\\#):not(#\\#){background:red}
+        .xeuoslp:not(#\\#):not(#\\#):not(#\\#){animation-name:xgnty7z-B}
+        .x1lliihq:not(#\\#):not(#\\#):not(#\\#){display:block}
+        .x78zum5:not(#\\#):not(#\\#):not(#\\#){display:flex}
+        .xt0psk2:not(#\\#):not(#\\#):not(#\\#){display:inline}
+        .x1hm9lzh:not(#\\#):not(#\\#):not(#\\#){margin-inline-start:10px}
+        .x1egiwwb:not(#\\#):not(#\\#):not(#\\#):not(#\\#){height:500px}
+        .xlrshdv:not(#\\#):not(#\\#):not(#\\#):not(#\\#){margin-top:99px}
+        .xh8yej3:not(#\\#):not(#\\#):not(#\\#):not(#\\#){width:100%}
+        .x3hqpx7:not(#\\#):not(#\\#):not(#\\#):not(#\\#){width:50%}"
       `);
 
       expect(js).toMatchInlineSnapshot(`
@@ -190,6 +190,8 @@ describe('webpack-plugin-stylex', () => {
             ":hover_backgroundImage": null,
             ":hover_backgroundOrigin": null,
             ":hover_backgroundPosition": null,
+            ":hover_backgroundPositionX": null,
+            ":hover_backgroundPositionY": null,
             ":hover_backgroundRepeat": null,
             ":hover_backgroundSize": null,
             $$css: true
@@ -250,8 +252,8 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".x1lliihq{display:block}", 4);
-          external_stylex_default().inject(".xh8yej3{width:100%}", 4);
+          external_stylex_default().inject(".x1lliihq{display:block}", 3000);
+          external_stylex_default().inject(".xh8yej3{width:100%}", 4000);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -267,9 +269,9 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".xt0psk2{display:inline}", 4);
-          external_stylex_default().inject(".x1egiwwb{height:500px}", 4);
-          external_stylex_default().inject(".x3hqpx7{width:50%}", 4);
+          external_stylex_default().inject(".xt0psk2{display:inline}", 3000);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
+          external_stylex_default().inject(".x3hqpx7{width:50%}", 4000);
           const npmStyles_styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -290,12 +292,12 @@ describe('webpack-plugin-stylex', () => {
 
           external_stylex_default().inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 4);
-          external_stylex_default().inject(".x78zum5{display:flex}", 4);
-          external_stylex_default().inject(".x1hm9lzh{margin-inline-start:10px}", 4);
-          external_stylex_default().inject(".xlrshdv{margin-top:99px}", 4);
-          external_stylex_default().inject(".x1egiwwb{height:500px}", 4);
-          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 16);
+          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+          external_stylex_default().inject(".x78zum5{display:flex}", 3000);
+          external_stylex_default().inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          external_stylex_default().inject(".xlrshdv{margin-top:99px}", 4000);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
+          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 1130);
           var index_styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
@@ -313,6 +315,8 @@ describe('webpack-plugin-stylex', () => {
               ":hover_backgroundImage": null,
               ":hover_backgroundOrigin": null,
               ":hover_backgroundPosition": null,
+              ":hover_backgroundPositionX": null,
+              ":hover_backgroundPositionY": null,
               ":hover_backgroundRepeat": null,
               ":hover_backgroundSize": null,
               $$css: true

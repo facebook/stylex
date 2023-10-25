@@ -31,12 +31,12 @@ describe('stylex-create-test', () => {
         {
           "xju2f9n": {
             "ltr": ".xju2f9n{color:blue}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
           "xrkmrrc": {
             "ltr": ".xrkmrrc{background-color:red}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -68,7 +68,7 @@ describe('stylex-create-test', () => {
         {
           "x1cfch2b": {
             "ltr": ".x1cfch2b{transition-property:margin-top}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -100,7 +100,7 @@ describe('stylex-create-test', () => {
         {
           "x1a6dnx1": {
             "ltr": ".x1a6dnx1{will-change:margin-top}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -126,7 +126,7 @@ describe('stylex-create-test', () => {
         {
           "x17389it": {
             "ltr": ".x17389it{transition-property:--foo}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -152,7 +152,7 @@ describe('stylex-create-test', () => {
         {
           "x1lxaxzv": {
             "ltr": ".x1lxaxzv{will-change:--foo}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -184,7 +184,7 @@ describe('stylex-create-test', () => {
         {
           "x95ccmk": {
             "ltr": ".x95ccmk{transition-property:opacity,margin-top}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -214,22 +214,22 @@ describe('stylex-create-test', () => {
         {
           "x18xuxqe": {
             "ltr": ".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}",
-            "priority": 4,
+            "priority": 4000,
             "rtl": null,
           },
           "xcrpjku": {
             "ltr": ".xcrpjku{padding-right:var(--rightpadding,20px)}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": ".xcrpjku{padding-left:var(--rightpadding,20px)}",
           },
           "xexx8yu": {
             "ltr": ".xexx8yu{padding-top:0}",
-            "priority": 4,
+            "priority": 4000,
             "rtl": null,
           },
           "xyv1419": {
             "ltr": ".xyv1419{padding-left:var(--rightpadding,20px)}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": ".xyv1419{padding-right:var(--rightpadding,20px)}",
           },
         },
@@ -255,7 +255,7 @@ describe('stylex-create-test', () => {
         {
           "xgau0yw": {
             "ltr": ".xgau0yw{--background-color:red}",
-            "priority": 4,
+            "priority": 1,
             "rtl": null,
           },
         },
@@ -281,7 +281,7 @@ describe('stylex-create-test', () => {
         {
           "x13tgbkp": {
             "ltr": ".x13tgbkp{--final-color:var(--background-color)}",
-            "priority": 4,
+            "priority": 1,
             "rtl": null,
           },
         },
@@ -315,12 +315,12 @@ describe('stylex-create-test', () => {
         {
           "xju2f9n": {
             "ltr": ".xju2f9n{color:blue}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
           "xrkmrrc": {
             "ltr": ".xrkmrrc{background-color:red}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -346,7 +346,7 @@ describe('stylex-create-test', () => {
         {
           "xd71okc": {
             "ltr": ".xd71okc{content:attr(some-attribute)}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -376,12 +376,12 @@ describe('stylex-create-test', () => {
         {
           "x17z2mba": {
             "ltr": ".x17z2mba:hover{color:blue}",
-            "priority": 17,
+            "priority": 3130,
             "rtl": null,
           },
           "x1gykpug": {
             "ltr": ".x1gykpug:hover{background-color:red}",
-            "priority": 17,
+            "priority": 3130,
             "rtl": null,
           },
         },
@@ -408,7 +408,7 @@ describe('stylex-create-test', () => {
         {
           "x1ruww2u": {
             "ltr": ".x1ruww2u{position:sticky;position:fixed}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },
@@ -430,12 +430,16 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
+            "borderBlockStyle": null,
+            "borderBlockWidth": null,
             "borderBottomStyle": null,
             "borderBottomWidth": null,
             "borderInlineEndStyle": null,
             "borderInlineEndWidth": null,
             "borderInlineStartStyle": null,
             "borderInlineStartWidth": null,
+            "borderInlineStyle": null,
+            "borderInlineWidth": null,
             "borderLeftStyle": null,
             "borderLeftWidth": null,
             "borderRightStyle": null,
@@ -452,17 +456,17 @@ describe('stylex-create-test', () => {
         {
           "xb3r6kr": {
             "ltr": ".xb3r6kr{overflow:hidden}",
-            "priority": 3,
+            "priority": 2000,
             "rtl": null,
           },
           "xbsl7fq": {
             "ltr": ".xbsl7fq{border-style:dashed}",
-            "priority": 3,
+            "priority": 2000,
             "rtl": null,
           },
           "xmkeg23": {
             "ltr": ".xmkeg23{border-width:1px}",
-            "priority": 3,
+            "priority": 2000,
             "rtl": null,
           },
         },
@@ -497,17 +501,17 @@ describe('stylex-create-test', () => {
         {
           "x1ssfqz5": {
             "ltr": "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
-            "priority": 25,
+            "priority": 3200,
             "rtl": null,
           },
           "xc445zv": {
             "ltr": "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-            "priority": 25,
+            "priority": 3200,
             "rtl": null,
           },
           "xrkmrrc": {
             "ltr": ".xrkmrrc{background-color:red}",
-            "priority": 4,
+            "priority": 3000,
             "rtl": null,
           },
         },

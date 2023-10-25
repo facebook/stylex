@@ -7,8 +7,6 @@
  * @flow strict
  */
 
-import splitValue from '../utils/split-css-value';
-
 import type { TStyleValue } from '../common-types';
 
 /// # Handle CSS shorthands in a React Native compatible way.
@@ -89,42 +87,20 @@ const shorthands = {
       ].join(' '),
     );
   },
-
-  margin: (value: TStyleValue): TReturn => {
-    const values = splitValue(value);
-    if (values.length === 1) {
-      return [['margin', values[0]]];
-    } else {
-      throw new Error(
-        'margin shorthand with multiple values is not supported. Use marginTop, marginInlineEnd, marginBottom and marginInlineStart instead.',
-      );
-    }
-  },
-
-  padding: (rawValue: TStyleValue): TReturn => {
-    const values = splitValue(rawValue);
-    if (values.length === 1) {
-      return [['padding', values[0]]];
-    }
-
-    throw new Error(
-      'padding shorthand with multiple values is not supported. Use paddingTop, paddingInlineEnd, paddingBottom and paddingInlineStart instead.',
-    );
-  },
 };
 
 const aliases = {
-  // @UNSUPPORTED
+  // @Deprecated
   borderHorizontal: shorthands.borderInline,
-  // @UNSUPPORTED
+  // @Deprecated
   borderVertical: shorthands.borderBlock,
-  // @UNSUPPORTED
+  // @Deprecated
   borderBlockStart: shorthands.borderTop,
-  // @UNSUPPORTED
+  // @Deprecated
   borderEnd: shorthands.borderInlineEnd,
-  // @UNSUPPORTED
+  // @Deprecated
   borderBlockEnd: shorthands.borderBottom,
-  // @UNSUPPORTED
+  // @Deprecated
   borderStart: shorthands.borderInlineStart,
 
   blockSize: (val: TStyleValue): TReturn => [['height', val]],
@@ -134,23 +110,23 @@ const aliases = {
   maxBlockSize: (val: TStyleValue): TReturn => [['maxHeight', val]],
   maxInlineSize: (val: TStyleValue): TReturn => [['maxWidth', val]],
 
-  borderHorizontalWidth: (value: TStyleValue): TReturn => [
-    ['borderInlineWidth', value],
+  borderHorizontalWidth: (val: TStyleValue): TReturn => [
+    ['borderInlineWidth', val],
   ],
-  borderHorizontalStyle: (value: TStyleValue): TReturn => [
-    ['borderInlineStyle', value],
+  borderHorizontalStyle: (val: TStyleValue): TReturn => [
+    ['borderInlineStyle', val],
   ],
-  borderHorizontalColor: (value: TStyleValue): TReturn => [
-    ['borderInlineColor', value],
+  borderHorizontalColor: (val: TStyleValue): TReturn => [
+    ['borderInlineColor', val],
   ],
-  borderVerticalWidth: (value: TStyleValue): TReturn => [
-    ['borderBlockWidth', value],
+  borderVerticalWidth: (val: TStyleValue): TReturn => [
+    ['borderBlockWidth', val],
   ],
-  borderVerticalStyle: (value: TStyleValue): TReturn => [
-    ['borderBlockStyle', value],
+  borderVerticalStyle: (val: TStyleValue): TReturn => [
+    ['borderBlockStyle', val],
   ],
-  borderVerticalColor: (value: TStyleValue): TReturn => [
-    ['borderBlockColor', value],
+  borderVerticalColor: (val: TStyleValue): TReturn => [
+    ['borderBlockColor', val],
   ],
 
   borderBlockStartColor: (value: TStyleValue): TReturn => [
@@ -172,23 +148,23 @@ const aliases = {
     ['borderBottomWidth', value],
   ],
 
-  borderStartColor: (value: TStyleValue): TReturn => [
-    ['borderInlineStartColor', value],
+  borderStartColor: (val: TStyleValue): TReturn => [
+    ['borderInlineStartColor', val],
   ],
-  borderEndColor: (value: TStyleValue): TReturn => [
-    ['borderInlineEndColor', value],
+  borderEndColor: (val: TStyleValue): TReturn => [
+    ['borderInlineEndColor', val],
   ],
-  borderStartStyle: (value: TStyleValue): TReturn => [
-    ['borderInlineStartStyle', value],
+  borderStartStyle: (val: TStyleValue): TReturn => [
+    ['borderInlineStartStyle', val],
   ],
-  borderEndStyle: (value: TStyleValue): TReturn => [
-    ['borderInlineEndStyle', value],
+  borderEndStyle: (val: TStyleValue): TReturn => [
+    ['borderInlineEndStyle', val],
   ],
-  borderStartWidth: (value: TStyleValue): TReturn => [
-    ['borderInlineStartWidth', value],
+  borderStartWidth: (val: TStyleValue): TReturn => [
+    ['borderInlineStartWidth', val],
   ],
-  borderEndWidth: (value: TStyleValue): TReturn => [
-    ['borderInlineEndWidth', value],
+  borderEndWidth: (val: TStyleValue): TReturn => [
+    ['borderInlineEndWidth', val],
   ],
 
   borderTopStartRadius: (value: TStyleValue): TReturn => [
@@ -204,13 +180,22 @@ const aliases = {
     ['borderEndEndRadius', value],
   ],
 
+  containIntrinsicBlockSize: (value: TStyleValue): TReturn => [
+    ['containIntrinsicHeight', value],
+  ],
+  containIntrinsicInlineSize: (value: TStyleValue): TReturn => [
+    ['containIntrinsicWidth', value],
+  ],
+
   marginBlockStart: (value: TStyleValue): TReturn => [['marginTop', value]],
   marginBlockEnd: (value: TStyleValue): TReturn => [['marginBottom', value]],
+  marginStart: (val: TStyleValue): TReturn => [['marginInlineStart', val]],
+  marginEnd: (val: TStyleValue): TReturn => [['marginInlineEnd', val]],
+  marginHorizontal: (val: TStyleValue): TReturn => [['marginInline', val]],
+  marginVertical: (val: TStyleValue): TReturn => [['marginBlock', val]],
 
-  marginStart: (value: TStyleValue): TReturn => [['marginInlineStart', value]],
-  marginEnd: (value: TStyleValue): TReturn => [['marginInlineEnd', value]],
-  marginHorizontal: (value: TStyleValue): TReturn => [['marginInline', value]],
-  marginVertical: (value: TStyleValue): TReturn => [['marginBlock', value]],
+  overflowBlock: (value: TStyleValue): TReturn => [['overflowY', value]],
+  overflowInline: (value: TStyleValue): TReturn => [['overflowX', value]],
 
   paddingBlockStart: (rawValue: TStyleValue): TReturn => [
     ['paddingTop', rawValue],
@@ -218,19 +203,22 @@ const aliases = {
   paddingBlockEnd: (rawValue: TStyleValue): TReturn => [
     ['paddingBottom', rawValue],
   ],
-  paddingStart: (value: TStyleValue): TReturn => [
-    ['paddingInlineStart', value],
+  paddingStart: (val: TStyleValue): TReturn => [['paddingInlineStart', val]],
+  paddingEnd: (val: TStyleValue): TReturn => [['paddingInlineEnd', val]],
+  paddingHorizontal: (val: TStyleValue): TReturn => [['paddingInline', val]],
+  paddingVertical: (val: TStyleValue): TReturn => [['paddingBlock', val]],
+
+  scrollMarginBlockStart: (value: TStyleValue): TReturn => [
+    ['scrollMarginTop', value],
   ],
-  paddingEnd: (value: TStyleValue): TReturn => [['paddingInlineEnd', value]],
-  paddingHorizontal: (value: TStyleValue): TReturn => [
-    ['paddingInline', value],
+  scrollMarginBlockEnd: (value: TStyleValue): TReturn => [
+    ['scrollMarginBottom', value],
   ],
-  paddingVertical: (value: TStyleValue): TReturn => [['paddingBlock', value]],
 
   insetBlockStart: (value: TStyleValue): TReturn => [['top', value]],
   insetBlockEnd: (value: TStyleValue): TReturn => [['bottom', value]],
-  start: (value: TStyleValue): TReturn => [['insetInlineStart', value]],
-  end: (value: TStyleValue): TReturn => [['insetInlineEnd', value]],
+  start: (val: TStyleValue): TReturn => [['insetInlineStart', val]],
+  end: (val: TStyleValue): TReturn => [['insetInlineEnd', val]],
 };
 
 const expansions = {

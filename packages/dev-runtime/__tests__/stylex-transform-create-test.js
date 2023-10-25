@@ -118,17 +118,17 @@ describe('Development Plugin Transformation', () => {
       });
 
       expect(metadata).toMatchInlineSnapshot(`
-        [
-          [
-            "xd71okc",
-            {
-              "ltr": ".xd71okc{content:attr(some-attribute)}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "xd71okc",
+    {
+      "ltr": ".xd71okc{content:attr(some-attribute)}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
 
     test('transforms nested pseudo-class to CSS', () => {
@@ -152,25 +152,25 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-        [
-          [
-            "x1gykpug",
-            {
-              "ltr": ".x1gykpug:hover{background-color:red}",
-              "rtl": null,
-            },
-            17,
-          ],
-          [
-            "x17z2mba",
-            {
-              "ltr": ".x17z2mba:hover{color:blue}",
-              "rtl": null,
-            },
-            17,
-          ],
-        ]
-      `);
+[
+  [
+    "x1gykpug",
+    {
+      "ltr": ".x1gykpug:hover{background-color:red}",
+      "rtl": null,
+    },
+    3130,
+  ],
+  [
+    "x17z2mba",
+    {
+      "ltr": ".x17z2mba:hover{color:blue}",
+      "rtl": null,
+    },
+    3130,
+  ],
+]
+`);
     });
 
     test('transforms array values as fallbacks', () => {
@@ -190,17 +190,17 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-        [
-          [
-            "x1ruww2u",
-            {
-              "ltr": ".x1ruww2u{position:sticky;position:fixed}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "x1ruww2u",
+    {
+      "ltr": ".x1ruww2u{position:sticky;position:fixed}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
 
     // TODO: add more vendor-prefixed properties and values
@@ -221,17 +221,17 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-        [
-          [
-            "x87ps6o",
-            {
-              "ltr": ".x87ps6o{user-select:none}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "x87ps6o",
+    {
+      "ltr": ".x87ps6o{user-select:none}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
 
     // Legacy, short?
@@ -248,12 +248,16 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
+            "borderBlockStyle": null,
+            "borderBlockWidth": null,
             "borderBottomStyle": null,
             "borderBottomWidth": null,
             "borderInlineEndStyle": null,
             "borderInlineEndWidth": null,
             "borderInlineStartStyle": null,
             "borderInlineStartWidth": null,
+            "borderInlineStyle": null,
+            "borderInlineWidth": null,
             "borderLeftStyle": null,
             "borderLeftWidth": null,
             "borderRightStyle": null,
@@ -277,7 +281,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xb3r6kr{overflow:hidden}",
               "rtl": null,
             },
-            3,
+            2000,
           ],
           [
             "xbsl7fq",
@@ -285,7 +289,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xbsl7fq{border-style:dashed}",
               "rtl": null,
             },
-            3,
+            2000,
           ],
           [
             "xmkeg23",
@@ -293,7 +297,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xmkeg23{border-width:1px}",
               "rtl": null,
             },
-            3,
+            2000,
           ],
         ]
       `);
@@ -348,17 +352,17 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-        [
-          [
-            "xxnfx33",
-            {
-              "ltr": ".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "xxnfx33",
+    {
+      "ltr": ".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
 
     describe('pseudo-classes', () => {
@@ -391,7 +395,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x19iys6w:invalpwdijad{background-color:red}",
                 "rtl": null,
               },
-              8,
+              3040,
             ],
             [
               "x5z3o4w",
@@ -399,7 +403,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x5z3o4w:invalpwdijad{color:blue}",
                 "rtl": null,
               },
-              8,
+              3040,
             ],
           ]
         `);
@@ -443,7 +447,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x17z2mba:hover{color:blue}",
                 "rtl": null,
               },
-              17,
+              3130,
             ],
             [
               "x96fq8s",
@@ -451,7 +455,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x96fq8s:active{color:red}",
                 "rtl": null,
               },
-              21,
+              3170,
             ],
             [
               "x1wvtd7d",
@@ -459,7 +463,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x1wvtd7d:focus{color:yellow}",
                 "rtl": null,
               },
-              20,
+              3150,
             ],
             [
               "x126ychx",
@@ -467,7 +471,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x126ychx:nth-child(2n){color:purple}",
                 "rtl": null,
               },
-              10,
+              3060,
             ],
           ]
         `);
@@ -499,7 +503,7 @@ describe('Development Plugin Transformation', () => {
                 "ltr": ".x1nxcus0:hover{position:sticky;position:fixed}",
                 "rtl": null,
               },
-              17,
+              3130,
             ],
           ]
         `);
@@ -549,7 +553,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xrkmrrc{background-color:red}",
               "rtl": null,
             },
-            4,
+            3000,
           ],
           [
             "x19dipnz",
@@ -557,7 +561,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".x19dipnz{color:var(--color,revert)}",
               "rtl": null,
             },
-            4,
+            3000,
           ],
         ]
       `);
@@ -592,7 +596,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xrkmrrc{background-color:red}",
               "rtl": null,
             },
-            4,
+            3000,
           ],
           [
             "x17fnjtu",
@@ -600,7 +604,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".x17fnjtu{width:var(--width,revert)}",
               "rtl": null,
             },
-            4,
+            4000,
           ],
         ]
       `);
@@ -650,7 +654,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xrkmrrc{background-color:red}",
               "rtl": null,
             },
-            4,
+            3000,
           ],
           [
             "x19dipnz",
@@ -658,7 +662,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".x19dipnz{color:var(--color,revert)}",
               "rtl": null,
             },
-            4,
+            3000,
           ],
           [
             "x1mqxbix",
@@ -666,7 +670,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".x1mqxbix{color:black}",
               "rtl": null,
             },
-            4,
+            3000,
           ],
         ]
       `);
@@ -699,7 +703,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xyv4n8w{--background-color:var(----background-color,revert)}",
               "rtl": null,
             },
-            4,
+            1,
           ],
         ]
       `);
@@ -738,7 +742,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".x1gykpug:hover{background-color:red}",
               "rtl": null,
             },
-            17,
+            3130,
           ],
           [
             "x11bf1mc",
@@ -746,7 +750,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".x11bf1mc:hover{color:var(--1ijzsae,revert)}",
               "rtl": null,
             },
-            17,
+            3130,
           ],
         ]
       `);

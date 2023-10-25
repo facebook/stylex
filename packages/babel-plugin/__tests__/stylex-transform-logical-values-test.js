@@ -41,7 +41,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xof8tvn{clear:inline-end}", 4);
+        stylex.inject(".xof8tvn{clear:inline-end}", 3000);
         const classnames = "xof8tvn";"
       `);
     });
@@ -55,7 +55,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x18lmvvi{clear:inline-start}", 4);
+        stylex.inject(".x18lmvvi{clear:inline-start}", 3000);
         const classnames = "x18lmvvi";"
       `);
     });
@@ -69,7 +69,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1h0q493{float:inline-end}", 4);
+        stylex.inject(".x1h0q493{float:inline-end}", 3000);
         const classnames = "x1h0q493";"
       `);
     });
@@ -83,7 +83,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1kmio9f{float:inline-start}", 4);
+        stylex.inject(".x1kmio9f{float:inline-start}", 3000);
         const classnames = "x1kmio9f";"
       `);
     });
@@ -97,7 +97,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xp4054r{text-align:right}", 4, ".xp4054r{text-align:left}");
+        stylex.inject(".xp4054r{text-align:right}", 3000, ".xp4054r{text-align:left}");
         const classnames = "xp4054r";"
       `);
     });
@@ -111,7 +111,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1yc453h{text-align:left}", 4, ".x1yc453h{text-align:right}");
+        stylex.inject(".x1yc453h{text-align:left}", 3000, ".x1yc453h{text-align:right}");
         const classnames = "x1yc453h";"
       `);
     });
@@ -129,7 +129,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xodj72a{clear:right}", 4, ".xodj72a{clear:left}");
+        stylex.inject(".xodj72a{clear:right}", 3000, ".xodj72a{clear:left}");
         const classnames = "xodj72a";"
       `);
     });
@@ -143,7 +143,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x390i0x{clear:left}", 4, ".x390i0x{clear:right}");
+        stylex.inject(".x390i0x{clear:left}", 3000, ".x390i0x{clear:right}");
         const classnames = "x390i0x";"
       `);
     });
@@ -157,7 +157,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1guec7k{float:right}", 4, ".x1guec7k{float:left}");
+        stylex.inject(".x1guec7k{float:right}", 3000, ".x1guec7k{float:left}");
         const classnames = "x1guec7k";"
       `);
     });
@@ -171,7 +171,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrbpyxo{float:left}", 4, ".xrbpyxo{float:right}");
+        stylex.inject(".xrbpyxo{float:left}", 3000, ".xrbpyxo{float:right}");
         const classnames = "xrbpyxo";"
       `);
     });
@@ -189,7 +189,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14mnfz1{cursor:e-resize}", 4, ".x14mnfz1{cursor:w-resize}");
+        stylex.inject(".x14mnfz1{cursor:e-resize}", 3000, ".x14mnfz1{cursor:w-resize}");
         const classnames = "x14mnfz1";"
       `);
     });
@@ -203,7 +203,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x14isd7o{cursor:w-resize}", 4, ".x14isd7o{cursor:e-resize}");
+        stylex.inject(".x14isd7o{cursor:w-resize}", 3000, ".x14isd7o{cursor:e-resize}");
         const classnames = "x14isd7o";"
       `);
     });
@@ -217,7 +217,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xc7edbc{cursor:ne-resize}", 4, ".xc7edbc{cursor:nw-resize}");
+        stylex.inject(".xc7edbc{cursor:ne-resize}", 3000, ".xc7edbc{cursor:nw-resize}");
         const classnames = "xc7edbc";"
       `);
     });
@@ -231,7 +231,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xrpsa6j{cursor:nw-resize}", 4, ".xrpsa6j{cursor:ne-resize}");
+        stylex.inject(".xrpsa6j{cursor:nw-resize}", 3000, ".xrpsa6j{cursor:ne-resize}");
         const classnames = "xrpsa6j";"
       `);
     });
@@ -245,7 +245,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xp35lg9{cursor:se-resize}", 4, ".xp35lg9{cursor:sw-resize}");
+        stylex.inject(".xp35lg9{cursor:se-resize}", 3000, ".xp35lg9{cursor:sw-resize}");
         const classnames = "xp35lg9";"
       `);
     });
@@ -259,7 +259,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1egwzy8{cursor:sw-resize}", 4, ".x1egwzy8{cursor:se-resize}");
+        stylex.inject(".x1egwzy8{cursor:sw-resize}", 3000, ".x1egwzy8{cursor:se-resize}");
         const classnames = "x1egwzy8";"
       `);
     });
@@ -278,7 +278,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x13xdq3h{animation-name:ignore}", 4);
+        stylex.inject(".x13xdq3h{animation-name:ignore}", 3000);
         const classnames = "x13xdq3h";"
       `);
     });
@@ -292,7 +292,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xl0ducr{background-position:top right}", 4, ".xl0ducr{background-position:top left}");
+        stylex.inject(".xl0ducr{background-position:top right}", 2000, ".xl0ducr{background-position:top left}");
         const classnames = "xl0ducr";"
       `);
       expect(
@@ -303,7 +303,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xgg80n4{background-position:top left}", 4, ".xgg80n4{background-position:top right}");
+        stylex.inject(".xgg80n4{background-position:top left}", 2000, ".xgg80n4{background-position:top right}");
         const classnames = "xgg80n4";"
       `);
     });
@@ -317,7 +317,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1gnnqk1{box-shadow:none}", 4);
+        stylex.inject(".x1gnnqk1{box-shadow:none}", 3000);
         const classnames = "x1gnnqk1";"
       `);
       expect(
@@ -328,7 +328,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xtgyqtp{box-shadow:1px 1px #000}", 4, ".xtgyqtp{box-shadow:-1px 1px #000}");
+        stylex.inject(".xtgyqtp{box-shadow:1px 1px #000}", 3000, ".xtgyqtp{box-shadow:-1px 1px #000}");
         const classnames = "xtgyqtp";"
       `);
       expect(
@@ -339,7 +339,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1d2r41h{box-shadow:-1px -1px #000}", 4, ".x1d2r41h{box-shadow:1px -1px #000}");
+        stylex.inject(".x1d2r41h{box-shadow:-1px -1px #000}", 3000, ".x1d2r41h{box-shadow:1px -1px #000}");
         const classnames = "x1d2r41h";"
       `);
       expect(
@@ -350,7 +350,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1x0mpz7{box-shadow:inset 1px 1px #000}", 4, ".x1x0mpz7{box-shadow:inset -1px 1px #000}");
+        stylex.inject(".x1x0mpz7{box-shadow:inset 1px 1px #000}", 3000, ".x1x0mpz7{box-shadow:inset -1px 1px #000}");
         const classnames = "x1x0mpz7";"
       `);
       expect(
@@ -361,7 +361,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1fumi7f{box-shadow:1px 1px 1px 1px #000}", 4, ".x1fumi7f{box-shadow:-1px 1px 1px 1px #000}");
+        stylex.inject(".x1fumi7f{box-shadow:1px 1px 1px 1px #000}", 3000, ".x1fumi7f{box-shadow:-1px 1px 1px 1px #000}");
         const classnames = "x1fumi7f";"
       `);
       expect(
@@ -372,7 +372,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1fs23zf{box-shadow:inset 1px 1px 1px 1px #000}", 4, ".x1fs23zf{box-shadow:inset -1px 1px 1px 1px #000}");
+        stylex.inject(".x1fs23zf{box-shadow:inset 1px 1px 1px 1px #000}", 3000, ".x1fs23zf{box-shadow:inset -1px 1px 1px 1px #000}");
         const classnames = "x1fs23zf";"
       `);
       expect(
@@ -383,7 +383,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".xtgmjod{box-shadow:2px 2px 2px 2px red,inset 1px 1px 1px 1px #000}", 4, ".xtgmjod{box-shadow:-2px 2px 2px 2px red, inset -1px 1px 1px 1px #000}");
+        stylex.inject(".xtgmjod{box-shadow:2px 2px 2px 2px red,inset 1px 1px 1px 1px #000}", 3000, ".xtgmjod{box-shadow:-2px 2px 2px 2px red, inset -1px 1px 1px 1px #000}");
         const classnames = "xtgmjod";"
       `);
     });
@@ -397,7 +397,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x19pm5ym{text-shadow:none}", 4);
+        stylex.inject(".x19pm5ym{text-shadow:none}", 3000);
         const classnames = "x19pm5ym";"
       `);
       expect(
@@ -408,7 +408,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x12y90mb{text-shadow:1px 1px #000}", 4, ".x12y90mb{text-shadow:-1px 1px #000}");
+        stylex.inject(".x12y90mb{text-shadow:1px 1px #000}", 3000, ".x12y90mb{text-shadow:-1px 1px #000}");
         const classnames = "x12y90mb";"
       `);
       expect(
@@ -419,7 +419,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x1l3mtsg{text-shadow:-1px -1px #000}", 4, ".x1l3mtsg{text-shadow:1px -1px #000}");
+        stylex.inject(".x1l3mtsg{text-shadow:-1px -1px #000}", 3000, ".x1l3mtsg{text-shadow:1px -1px #000}");
         const classnames = "x1l3mtsg";"
       `);
       expect(
@@ -430,7 +430,7 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
-        stylex.inject(".x67hq7l{text-shadow:1px 1px 1px #000}", 4, ".x67hq7l{text-shadow:-1px 1px 1px #000}");
+        stylex.inject(".x67hq7l{text-shadow:1px 1px 1px #000}", 3000, ".x67hq7l{text-shadow:-1px 1px 1px #000}");
         const classnames = "x67hq7l";"
       `);
     });

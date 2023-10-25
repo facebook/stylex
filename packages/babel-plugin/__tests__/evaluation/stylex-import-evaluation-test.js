@@ -57,23 +57,23 @@ describe('Evaluation of imported values works based on configuration', () => {
       );
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        import { MyTheme } from 'otherFile.stylex';
-        stylex.inject(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 4);
-        "__hashed_var__1r7rkhg";"
-      `);
+"import stylex from 'stylex';
+import { MyTheme } from 'otherFile.stylex';
+stylex.inject(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 3000);
+"__hashed_var__1r7rkhg";"
+`);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
-        [
-          [
-            "__hashed_var__1r7rkhg",
-            {
-              "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "__hashed_var__1r7rkhg",
+    {
+      "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
     test('Importing file with ".stylex.js" suffix works', () => {
       const transformation = transform(`
@@ -94,23 +94,23 @@ describe('Evaluation of imported values works based on configuration', () => {
       );
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        import { MyTheme } from 'otherFile.stylex.js';
-        stylex.inject(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 4);
-        "__hashed_var__1r7rkhg";"
-      `);
+"import stylex from 'stylex';
+import { MyTheme } from 'otherFile.stylex.js';
+stylex.inject(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 3000);
+"__hashed_var__1r7rkhg";"
+`);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
-        [
-          [
-            "__hashed_var__1r7rkhg",
-            {
-              "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "__hashed_var__1r7rkhg",
+    {
+      "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
     test('Importing file with ".stylex.js" with an alias suffix works', () => {
       const transformation = transform(`
@@ -131,23 +131,23 @@ describe('Evaluation of imported values works based on configuration', () => {
       );
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        import { MyTheme as mt } from 'otherFile.stylex.js';
-        stylex.inject(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 4);
-        "__hashed_var__1r7rkhg";"
-      `);
+"import stylex from 'stylex';
+import { MyTheme as mt } from 'otherFile.stylex.js';
+stylex.inject(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 3000);
+"__hashed_var__1r7rkhg";"
+`);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
-        [
-          [
-            "__hashed_var__1r7rkhg",
-            {
-              "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
-              "rtl": null,
-            },
-            4,
-          ],
-        ]
-      `);
+[
+  [
+    "__hashed_var__1r7rkhg",
+    {
+      "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+      "rtl": null,
+    },
+    3000,
+  ],
+]
+`);
     });
     test('Importing file without a ".stylex" suffix fails', () => {
       const transformation = () =>

@@ -39,7 +39,7 @@ const fade2 = stylex.keyframes({
 const styles = stylex.create({
   root: {
     position: 'relative',
-    transformSytle: 'preserve-3d',
+    transformStyle: 'preserve-3d',
     perspective: '1000px',
   },
   arc: {

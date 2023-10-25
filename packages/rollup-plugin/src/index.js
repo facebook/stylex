@@ -31,7 +31,7 @@ module.exports = function stylexPlugin({
     generateBundle() {
       const rules = Object.values(stylexRules).flat();
       if (rules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(rules);
+        const collectedCSS = stylexBabelPlugin.processStylexRules(rules, true);
 
         this.emitFile({
           fileName,

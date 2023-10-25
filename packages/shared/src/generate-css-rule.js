@@ -40,7 +40,8 @@ export function generateRule(
 
   const priority =
     getPriority(key) +
-    Math.max(...pseudos.map(getPriority), ...atRules.map(getPriority), 0);
+    pseudos.map(getPriority).reduce((a, b) => a + b, 0) +
+    atRules.map(getPriority).reduce((a, b) => a + b, 0);
 
   return { priority, ltr: ltrRule, rtl: rtlRule };
 }
