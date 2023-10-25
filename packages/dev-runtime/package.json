@@ -6,6 +6,7 @@
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src/ --out-dir lib/ --copy-files",
     "test": "jest"
   },
