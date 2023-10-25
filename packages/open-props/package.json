@@ -1,0 +1,47 @@
+{
+  "name": "@stylexjs/open-props",
+  "version": "0.2.0-beta.21",
+  "description": "A library common values as variables to be used with Stylex.",
+  "exports": {
+    "./animationNames": "./lib/animationNames.js",
+    "./animations": "./lib/animations.js",
+    "./aspects": "./lib/aspects.js",
+    "./borders": "./lib/borders.js",
+    "./colors": "./lib/colors.js",
+    "./colorsHSL": "./lib/colorsHSL.js",
+    "./colorsOKLCH": "./lib/colorsOKLCH.js",
+    "./colorsOKLCHHues": "./lib/colorsOKLCHHues.js",
+    "./easings": "./lib/easings.js",
+    "./fonts": "./lib/fonts.js",
+    "./gradients": "./lib/gradients.js",
+    "./grayOKLCH": "./lib/grayOKLCH.js",
+    "./highlights": "./lib/highlights.js",
+    "./layouts": "./lib/layouts.js",
+    "./masksCornerCuts": "./lib/masksCornerCuts.js",
+    "./masksEdges": "./lib/masksEdges.js",
+    "./shadows": "./lib/shadows.js",
+    "./sizes": "./lib/sizes.js",
+    "./svg": "./lib/svg.js",
+    "./zIndex": "./lib/zIndex.js"
+  },
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "babel src/ --out-dir lib/ --copy-files"
+  },
+  "dependencies": {
+    "css-mediaquery": "^0.1.2",
+    "invariant": "^2.2.4",
+    "styleq": "0.1.3",
+    "utility-types": "^3.10.0"
+  },
+  "devDependencies": {
+    "@stylexjs/scripts": "0.2.0-beta.21"
+  },
+  "jest": {},
+  "files": [
+    "lib/*"
+  ]
+}

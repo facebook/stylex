@@ -3,11 +3,43 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
  */
+
+import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
-export const masks_edges = defineVars({
+type TMasksEdges = $ReadOnly<{
+  scoopBottom: string,
+  scoopTop: string,
+  scoopVertical: string,
+  scoopLeft: string,
+  scoopRight: string,
+  scoopHorizontal: string,
+  scalloped: string,
+  scallopedBottom: string,
+  scallopedTop: string,
+  scallopedVertical: string,
+  scallopedLeft: string,
+  scallopedRight: string,
+  scallopedHorizontal: string,
+  dripBottom: string,
+  dripTop: string,
+  dripVertical: string,
+  dripLeft: string,
+  dripRight: string,
+  dripHorizontal: string,
+  zigZagTop: string,
+  zigZagBottom: string,
+  zigZagLeft: string,
+  zigZagRight: string,
+  zigZagHorizontal: string,
+  zigZagVertical: string,
+}>;
+
+export const masksEdges: Theme<TMasksEdges> = defineVars({
   scoopBottom:
     'radial-gradient(20px at 50% 100%,#0000 97%,#000) 50% / calc(1.9 * 20px) 100%',
   scoopTop:

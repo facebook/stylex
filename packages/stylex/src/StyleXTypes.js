@@ -189,7 +189,10 @@ type IDFromTheme<+T: Theme<{ +[string]: mixed }>> = T extends Theme<
   : empty;
 
 type TTokens = $ReadOnly<{
-  [string]: string | $ReadOnly<{ default: string, [string]: string }>,
+  [string]:
+    | number
+    | string
+    | $ReadOnly<{ default: number | string, [string]: number | string }>,
 }>;
 
 export type FlattenTokens<T: TTokens> = {

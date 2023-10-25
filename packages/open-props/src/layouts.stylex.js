@@ -3,7 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
  */
+
+import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -13,7 +17,24 @@ const gridAdaptMixinBreak2 = '480px';
 const aboveBreak1Columns = '5';
 const aboveBreak2Columns = '2';
 
-export const layouts = defineVars({
+type TLayouts = $ReadOnly<{
+  gridCell: string,
+  gridCellName: string,
+
+  gridRam: string,
+  gridHolyGrail: string,
+  gridAdaptMixinViewportContext: string,
+  gridAdaptMixinContainerContext: string,
+  gridAdaptMixinContext: string,
+
+  gridAdaptMixinBreak1: string,
+  aboveBreak1Columns: string,
+  gridAdaptMixinBreak2: string,
+  aboveBreak2Columns: string,
+  gridAdaptMixin: string,
+}>;
+
+export const layouts: Theme<TLayouts> = defineVars({
   gridCell: '[stack] 1fr / [stack] 1fr',
   gridCellName: 'stack',
 

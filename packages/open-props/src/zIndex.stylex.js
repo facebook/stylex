@@ -3,11 +3,24 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
  */
+
+import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
-export const z_index = defineVars({
+type TZindex = $ReadOnly<{
+  layer1: number,
+  layer2: number,
+  layer3: number,
+  layer4: number,
+  layer5: number,
+  layerImportant: number,
+}>;
+
+export const zIndex: Theme<TZindex> = defineVars({
   layer1: 1,
   layer2: 2,
   layer3: 3,

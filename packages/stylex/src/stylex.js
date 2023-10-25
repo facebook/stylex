@@ -75,7 +75,10 @@ function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
 
 function stylexDefineVars<
   DefaultTokens: {
-    +[string]: string | { +default: string, +[string]: string },
+    +[string]:
+      | number
+      | string
+      | { +default: number | string, +[string]: number | string },
   },
   ID: string = string,
 >(styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {

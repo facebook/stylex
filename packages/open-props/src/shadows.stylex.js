@@ -3,7 +3,11 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
  */
+
+import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -17,7 +21,22 @@ const innerShadowHighlight = 'inset 0 -.5px 0 0 #fff2, inset 0 .5px 0 0 #0007';
 
 const DARK = '@media (prefers-color-scheme: dark)';
 
-export const shadows = defineVars({
+type TShadows = $ReadOnly<{
+  shadow1: string,
+  shadow2: string,
+  shadow3: string,
+  shadow4: string,
+  shadow5: string,
+  shadow6: string,
+
+  innerShadow0: string,
+  innerShadow1: string,
+  innerShadow2: string,
+  innerShadow3: string,
+  innerShadow4: string,
+}>;
+
+export const shadows: Theme<TShadows> = defineVars({
   shadow1: {
     default: `0 1px 2px -1px hsl(${shadowColor} / calc(${shadowStrength} + 9%))`,
     [DARK]: `0 1px 2px -1px hsl(${shadowColorDark} / calc(${shadowStrengthDark} + 9%))`,

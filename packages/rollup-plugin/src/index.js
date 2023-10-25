@@ -20,6 +20,7 @@ module.exports = function stylexPlugin({
   dev = IS_DEV_ENV,
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
+  ...options
 } = {}) {
   let stylexRules = {};
 
@@ -55,7 +56,7 @@ module.exports = function stylexPlugin({
             ? flowSyntaxPlugin
             : typescriptSyntaxPlugin,
           jsxSyntaxPlugin,
-          [stylexBabelPlugin, { dev, stylexSheetName: fileName }],
+          [stylexBabelPlugin, { dev, stylexSheetName: fileName, ...options }],
         ],
       });
 

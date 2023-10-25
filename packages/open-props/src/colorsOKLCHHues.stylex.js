@@ -3,11 +3,30 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
  */
+
+import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
-export const colors_oklch_hues = defineVars({
+type TColorsOKLCHHues = $ReadOnly<{
+  red: string,
+  pink: string,
+  purple: string,
+  violet: string,
+  indigo: string,
+  blue: string,
+  cyan: string,
+  teal: string,
+  green: string,
+  lime: string,
+  yellow: string,
+  orange: string,
+}>;
+
+export const colorsOKLCHHues: Theme<TColorsOKLCHHues> = defineVars({
   red: '25',
   pink: '350',
   purple: '310',
