@@ -78,18 +78,24 @@ export default function Home() {
             <StylexAnimatedLogo style={styles.logo} />
           </h1>
           <h2 {...stylex.props(styles.subtitle)}>
-            The{' '}
             <span
               {...stylex.props([
                 styles.subtitleHighlight,
                 styles.highlightBlue,
               ])}>
-              Power
+              Predictable
             </span>{' '}
-            of Inline Styles.
-            <br />
-            The Speed of{' '}
-            <span {...stylex.props(styles.subtitleHighlight)}>Atomic</span> CSS.
+            & <span {...stylex.props(styles.subtitleHighlight)}>scalable</span>{' '}
+            styling
+            <br /> for{' '}
+            <span
+              {...stylex.props([
+                styles.subtitleHighlight,
+                styles.highlightPrimary,
+              ])}>
+              ambitious
+            </span>{' '}
+            user-interfaces.
           </h2>
         </section>
         <section {...stylex.props(styles.getStarted)}>
@@ -173,6 +179,10 @@ const styles = stylex.create({
     color: 'var(--cyan)',
     textShadow:
       '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.5)',
+  },
+  highlightPrimary: {
+    color: 'currentColor',
+    textShadow: null,
   },
   sectionTitle: {
     fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',

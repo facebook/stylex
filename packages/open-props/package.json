@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/open-props",
-  "version": "0.2.0-beta.21",
+  "version": "0.2.0-beta.22",
   "description": "A library common values as variables to be used with Stylex.",
   "exports": {
     "./animationNames": "./lib/animationNames.js",
@@ -38,7 +38,7 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.2.0-beta.21"
+    "@stylexjs/scripts": "0.2.0-beta.22"
   },
   "jest": {},
   "files": [

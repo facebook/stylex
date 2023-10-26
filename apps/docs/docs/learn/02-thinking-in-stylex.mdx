@@ -4,17 +4,18 @@ sidebar_position: 2
 
 # Thinking in StyleX
 
-<!--
+{/*
 CSS-in-JS original goals
-* Local namespace
-* Local dependencies
-* Dead code elimination
-* Sharing constants
-* Deterministic resolution
-* Encapsulation / Isolation
-* JavaScript conditionals
-* Customization / Props / Styles merging
--->
+
+- Local namespace
+- Local dependencies
+- Dead code elimination
+- Sharing constants
+- Deterministic resolution
+- Encapsulation / Isolation
+- JavaScript conditionals
+- Customization / Props / Styles merging
+*/}
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -73,21 +74,21 @@ runtime performance.
 
 Here's how this plays out in practice:
 
-1. Styles created and applied locally
+#### 1. Styles created and applied locally
 
 If you authors styles within a file and then consume all those styles in the
 same file, the cost of StyleX is zero. This is because in addition to compiling
-away your `stylex.create` calls, StyleX also compiles away your `stylex` calls
+away your `stylex.create` calls, StyleX also compiles away your `stylex.props` calls
 when possible.
 
 So,
 
 ```tsx
-import stylex from 'stylex';
+import * as stylex from 'stylex';
 const styles = stylex.create({
   red: {color: 'red'},
 });
-let a = stylex(styles.red);
+let a = stylex.props(styles.red);
 ```
 
 Compiles down to just:
@@ -96,27 +97,24 @@ Compiles down to just:
 <TabItem label="JS Output" value="js-output">
 
 ```tsx
-import stylex from 'stylex';
+import * as stylex from 'stylex';
 
-let a = 'x1e2nbdu';
+let a = {className: 'x1e2nbdu'};
 ```
 
 </TabItem>
 <TabItem label="CSS Output" value="css-output">
 
 ```css
-.x1e2nbdu {
-  /* The same CSS is used for all instances of color: red in your app */
-  color: red;
-}
+.x1e2nbdu {color: red}
 ```
 
 </TabItem>
 </Tabs>
 
-There is no runtime cost to this.
+There is no runtime overhead here.
 
-2. Using styles across files
+#### 2. Using styles across files
 
 When passing styles across file boundaries, you pay a small cost for the
 additional power and expressivity. The `stylex.create` call is not deleted
@@ -127,7 +125,9 @@ runtime.
 This code, for example:
 
 ```tsx
-const styles = stylex.create({
+import {create, props} from 'stylex';
+
+const styles = create({
   foo: {
     color: 'red',
   },
@@ -137,13 +137,15 @@ const styles = stylex.create({
 });
 
 function MyComponent({xstyle}) {
-  return <div className={stylex(styles.foo, styles.bar, xstyle)} />;
+  return <div {...props([styles.foo, styles.bar, xstyle])} />;
 }
 ```
 
 Compiles down to:
 
 ```tsx
+import {create, props} from 'stylex';
+
 const styles = {
   foo: {
     color: 'x1e2nbdu',
@@ -156,7 +158,7 @@ const styles = {
 };
 
 function MyComponent((xstyle)) {
-  return <div className={stylex(styles.foo, styles.bar, xstyle)} />;
+  return <div {...props([styles.foo, styles.bar, xstyle])} />;
 }
 ```
 
@@ -231,7 +233,7 @@ component may or may not accept. You may make a component that only accepts
 ```ts
 type Props = {
   //...
-  style?: StyleXStyle<{color?: string; backgroundColor?: string}>;
+  style?: StyleXStyles<{color?: string; backgroundColor?: string}>;
   //...
 };
 ```
@@ -241,7 +243,7 @@ In another example, you may disallow margins while allowing any other styles:
 ```ts
 type Props = {
   //...
-  style?: StyleXStyleWithout<{
+  style?: StyleXStylesWithout<{
     margin: unknown;
     marginBlock: unknown;
     marginInline: unknown;
@@ -293,9 +295,9 @@ StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
 been tailored to works best with React today, It's designed to be used with any
 Javascript framework that lets you author your markup in your Javacript.
 
-Some APIs, such as `stylex.props` return an object with `className` and `style`
-keys today. You may need to use a wrapper function to make this work with your
-framework of choice.
+`stylex.props` returns an object with `className` and `style` properties. You may 
+need to use a wrapper function to convert this to make it work with your framework
+of choice.
 
 ### Encapsulation over Expressivity
 
@@ -322,11 +324,13 @@ This is often not the case when using complex selectors as the complex selectors
 usually have higher specificity than the simple classname selectors used for
 styles applied directly on the element.
 
-StyleX disallows this entire class of selectors. This sometimes makes common
+StyleX disallows this entire class of selectors. This currently makes some
 patterns in CSS impossible:
 
 - e.g. It is currently impossible for a child element to have conditional styles
   when it's parent is hovered.
+
+Our goal is to support these patterns without sacrificing style encapsulation.
 
 StyleX is not CSS pre-processor. It intentionally puts constraints on the power
 of CSS selectors in order to give you a fast and predictable system.
@@ -445,9 +449,9 @@ others.
 
 StyleX is a CSS-in-JS library, which means that it is most useful when you are
 authoring your UI in Javascript. If you're using a framework such as `React`,
-`Preact`, `Solid`, `Lit`, or `Angular`, using StyleX should be a breeze.
+`Preact`, `Solid`, `lit-html`, or `Angular`, using StyleX should be a breeze.
 
-Some frameworks, such as Svete and Vue use custom file formats that are compiled
+Some frameworks, such as Svelte and Vue use custom file formats that are compiled
 to Javascript at build time. StyleX can still be used in these frameworks, but
 may need some extra configuration.
 
@@ -477,11 +481,6 @@ that are completely unstyled.
 StyleX finally lets you build UI components that can have default styles _and_
 still be customizable.
 
-### NPM packages of UI components
-
-Because StyleX is able to merge styles across components and files in a
-predictable and deterministic way, it is uniquely well-suited for building
-reusable UI components that can be published to NPM.
-
-By accepting `StyleXStyles` as props, these components can, trivially, be made
-fully customizable.
+Further, the consistency enables sharing these components by publishing them to NPM.
+As long as the consumer of your component is also using StyleX, the styles will
+be merged and composed correctly without any additional configuration.

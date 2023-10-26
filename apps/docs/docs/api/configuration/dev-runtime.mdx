@@ -4,4 +4,41 @@ sidebar_position: 3
 
 # `@stylexjs/dev-runtime`
 
-...
+## Configuration options
+
+```ts
+export type DevRuntimeOptions = {
+  // Prefix to applied to every generated className
+  // Default: 'x'
+  classNamePrefix?: string,
+  
+  // Strategy to use for merging styles
+  // Default: 'application-order'
+  styleResolution?:
+    // The last style applied wins. Consistent with how inline styles work on the web.
+    | 'application-order' 
+    // More specific styles will win over less specific styles. (margin-top wins over margin)
+    // Consistent with how React Native works.
+    | 'property-specificity'
+    // @deprecated
+    // Similar to 'application-order' but incomplete and error-prone.
+    // Will be removed in a future release.
+    | 'legacy-expand-shorthands',
+
+  // A custom function to handle inserting styles into the DOM.
+  insert?: insert?: (
+    // Unique key for the style.
+    // aka the className.
+    key: string,
+    // The CSS rule to insert as string.
+    ltrRule: string,
+    // The priority of the rule.
+    // priorities should be sorted in ascending order.
+    // The priority jumps by 1000 for every `@layer` needed.
+    priority: number,
+    // There may sometimes be a RTL equivalent of the rule.
+    // Usually this will be `void`
+    rtlRule?: ?string,
+  ) => void,
+};
+```

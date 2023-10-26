@@ -25,7 +25,7 @@ styles deterministically and based on the usage order.
 Consider that a couple of style objects are defined as so:
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: {
@@ -45,7 +45,7 @@ You can use the result of merging both style objects like so:
 <div {...stylex.props([styles.base, styles.highlighted])} />
 ```
 
-:::info
+:::info Like `Object.assign`
 
 A simple way to think about the `stylex.props` function is that it does what
 `Object.assign` does. It merges many objects and the later objects have
@@ -78,7 +78,7 @@ conditionally.
 />
 ```
 
-:::info
+:::info Inline conditional logic
 
 It is recommended that you inline the conditional logic to apply your styles
 directly with the `stylex.props()` calls for readability.
@@ -100,7 +100,7 @@ First to define your variant styles, you can define a set of style with
 `Style Names` that match your variant names.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 // Base Styles:
 const styles = stylex.create({
@@ -181,17 +181,20 @@ Array literal instead:
 />;
 ```
 
-:::info
+:::info Prop names are arbitrary
 
 The prop name `style` is an arbitrary name. You can choose your own prop names
-for your codebase.
+for your codebase. 
+
+We recommend using `style` when sharing your components with
+the community.
 
 :::
 
 Accepting custom `StyleX Styles` is as simple as accepting any other prop.
 
 ```tsx
-import stylex from '@stylexjs/runtime';
+import * as stylex from '@stylexjs/stylex';
 
 // Local Styles
 const styles = stylex.create({
@@ -245,7 +248,7 @@ const styles = stylex.create({
 });
 
 function CustomComponent({style}) {
-  return <div {...stylex.props(styles.base, style, styles.essential)} />;
+  return <div {...stylex.props([styles.base, style, styles.essential])} />;
 }
 ```
 

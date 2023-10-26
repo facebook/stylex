@@ -37,7 +37,7 @@ arbitrary and represent the constant used to capture the result of the
 `create()` function call.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: {
@@ -58,7 +58,7 @@ for pseudo-classes are nested within properties. For example, let's say we have
 a button that currently has a `lightblue` background.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   button: {
@@ -87,7 +87,7 @@ const styles = stylex.create({
 
 ## Pseudo-elements
 
-:::note Avoid Pseudo Elements
+:::note Avoid pseudo elements
 
 We recommend avoiding pseudo-elements when possible and relying on actual HTML
 elements instead, i.e., replace `::before` and `::after` with elements like
@@ -117,9 +117,9 @@ const styles = stylex.create({
 });
 ```
 
-## Media Queries (and other `@` Rules)
+## Media queries (and other `@` rules)
 
-Media Queries can, similarly, be nested within style definitions.
+Media Queries can, similarly, be as "conditions" within style values.
 
 ```tsx
 import stylex from '@stylexjs/stylex';
@@ -162,10 +162,58 @@ The `default` case is required when authoring conditional styles. If you don't
 want any style to be applied in the default case, you can use `null` as the
 value.
 
-Using `null` for a (non-`default`) condition has no effect and should be
+Using `null` for a non-`default` condition has no effect and should be
 considered invalid.
 
 :::
+
+## Fallback styles
+
+There are situations in StyleX where, when you need fallback styles for browsers
+that don't support a certain new style property.
+
+In CSS you may do something like this:
+
+```css
+.header {
+  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
+}
+```
+
+This kind of syntax is not possible when using Javascript objects. So in StyleX
+you can use the `firstThatWorks` function to achieve the same thing.
+
+```tsx
+import {create, firstThatWorks} from '@stylexjs/stylex';
+
+const styles = create({
+  header: {
+    position: firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
+  },
+});
+```
+
+## Keyframe animations
+
+You can use the `stylex.keyframes()` function to define keyframe animations.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+const fadeIn = stylex.keyframes({
+  from: {opacity: 0},
+  to: {opacity: 1},
+});
+
+const styles = stylex.create({
+  base: {
+    animationName: fadeIn,
+    animationDuration: '1s',
+  },
+});
+```
 
 ## Dynamic styles
 
@@ -194,7 +242,7 @@ StyleX provides a way to define styles that can have dynamic values resolved at
 runtime by using functions instead of objects to define styles.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: (r, g, b) => ({
@@ -208,56 +256,10 @@ const r = Math.floor(Math.random() * 255);
 const g = Math.floor(Math.random() * 255);
 const b = Math.floor(Math.random() * 255);
 
-<div {...stylex.props(styles.base(r, g, b))} />;
+<div {...stylex.props([styles.base(r, g, b)])} />;
 ```
 
 **NOTE**: The function body _must_ be an object literal. You cannot use a
 function body with multiple statements.
 
-## Fallback styles
 
-There are situations in StyleX where, when you need fallback styles for browsers
-that don't support a certain new style property.
-
-In CSS you may do something like this:
-
-```css
-.header {
-  position: fixed;
-  position: -webkit-sticky;
-  position: sticky;
-}
-```
-
-This kind of syntax is not possible when using Javascript objects. So in StyleX
-you can use the `firstThatWorks` function to achieve the same thing.
-
-```tsx
-import stylex from '@stylexjs/stylex';
-
-const styles = stylex.create({
-  header: {
-    position: stylex.firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
-  },
-});
-```
-
-## Keyframe animations
-
-You can use the `stylex.keyframes()` function to define keyframe animations.
-
-```tsx
-import stylex from '@stylexjs/stylex';
-
-const fadeIn = stylex.keyframes({
-  from: {opacity: 0},
-  to: {opacity: 1},
-});
-
-const styles = stylex.create({
-  base: {
-    animationName: fadeIn,
-    animationDuration: '1s',
-  },
-});
-```

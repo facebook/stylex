@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/nextjs-plugin",
-  "version": "0.2.0-beta.21",
+  "version": "0.2.0-beta.22",
   "description": "Next.js plugin for StyleX",
   "main": "src/index.js",
   "repository": "https://www.github.com/facebook/stylex",

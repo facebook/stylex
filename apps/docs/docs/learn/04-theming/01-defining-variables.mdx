@@ -32,7 +32,7 @@ values for particular sub-trees within your UI.
 You define variables by using the `stylex.defineVars` function:
 
 ```tsx title="tokens.stylex.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 export const colors = stylex.defineVars({
   primaryText: 'black',
@@ -67,7 +67,7 @@ Your CSS variables can have different values depending on a media query. The API
 usage is identical to the `stylex.create()` function:
 
 ```tsx title="tokens.stylex.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 // A constant can be used to avoid repeating the media query
 const DARK = '@media (prefers-color-scheme: dark)';
@@ -83,6 +83,7 @@ export const colors = stylex.defineVars({
   fontSize: '16px',
 });
 ```
+You can use `@supports` similarly.
 
 ### Rules when defining variables
 
@@ -115,10 +116,9 @@ export const colors = stylex.defineVars({
   /* ... */
 });
 
+const sizeVars = { ... };
 // ✅ - Another Named export
-export const sizes = stylex.defineVars({
-  /* ... */
-});
+export const sizes = stylex.defineVars(sizeVars);
 ```
 
 ##### Not Allowed:

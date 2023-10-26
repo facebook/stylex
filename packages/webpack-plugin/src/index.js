@@ -49,13 +49,17 @@ class StylexPlugin {
     filename = appendTo == null ? 'stylex.css' : undefined,
     stylexImports = ['stylex', '@stylexjs/stylex'],
     babelConfig: { plugins = [], presets = [], babelrc = false } = {},
+    ...options
   } /*: PluginOptions */ = {}) {
     this.dev = dev;
     this.appendTo = appendTo;
     this.filename = filename;
     this.babelConfig = { plugins, presets, babelrc };
     this.stylexImports = stylexImports;
-    this.babelPlugin = [stylexBabelPlugin, { dev, stylexSheetName: '<>' }];
+    this.babelPlugin = [
+      stylexBabelPlugin,
+      { dev, stylexSheetName: '<>', ...options },
+    ];
   }
 
   apply(compiler) {

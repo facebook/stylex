@@ -14,10 +14,10 @@ subject to change.
 
 :::
 
-Once you have defined your variables in a `.stylex.js` file, you can create
-"providers" for them using the `stylex.createTheme` function. The providers
-created are the same type as the `StyleXStyle` type that is returned from
-`stylex.create` and can be be used on any UI sub-tree in your app.
+Once you have defined your variables in a `.stylex.js` file, you can alternate
+themes for them with different values using the `stylex.createTheme` function. 
+The providers created are the same type as the `StyleXStyles` type that is returned 
+from `stylex.create` and can be be used on any UI sub-tree in your app.
 
 You can only create a provider for a set of variables that have already been
 defined using the `stylex.defineVars` function. Similar to React's Context API.
@@ -28,7 +28,7 @@ defined using the `stylex.defineVars` function. Similar to React's Context API.
 <TabItem label="Declaring Variables" value="var-export">
 
 ```tsx title="tokens.stylex.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 // A constant can be used to avoid repeating the media query
 const DARK = '@media (prefers-color-scheme: dark)';
@@ -55,7 +55,7 @@ export const spacing = stylex.defineVars({
 <TabItem label="Variable Override Provider" value="var-override" default>
 
 ```tsx title="themes.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import {colors, spacing} from './tokens.styles';
 
 // A constant can be used to avoid repeating the media query
@@ -78,7 +78,7 @@ export const dracula = stylex.createTheme(colors, {
 <TabItem label="Using Variables" value="var-import">
 
 ```tsx title="components/MyComponent.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import {colors, spacing} from '../tokens.styles';
 import {dracula} from '../themes';
 
@@ -112,11 +112,11 @@ It is not currently possible to override a subset of variables in a variable
 set. We made this decision to catch mistakes where a developer may accidentally
 forget to override a variable.
 
-We know this is not ideal and working on the right API to allow this while
-continuing to catch mistakes.
+To override a one-off variable, you will soon be able to use variables as *keys*
+while defining styles with `stylex.create`.
 
 :::
 
-The value returned from `stylex.createTheme` is of the `StyleXStyle` type that
+The value returned from `stylex.createTheme` is of the `StyleXStyles` type that
 can be used in a `stylex()` or `stylex.props()` call to apply your overrides on
 an element and all its descendent element.

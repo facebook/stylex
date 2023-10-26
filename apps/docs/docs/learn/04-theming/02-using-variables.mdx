@@ -21,7 +21,7 @@ them in your styles:
 <TabItem label="Declaring Variables" value="var-export">
 
 ```tsx title="tokens.stylex.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 // A constant can be used to avoid repeating the media query
 const DARK = '@media (prefers-color-scheme: dark)';
@@ -42,7 +42,7 @@ export const colors = stylex.defineVars({
 <TabItem label="Using Variables" value="var-import" default>
 
 ```tsx title="components/MyComponent.js"
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import {colors, spacing} from '../tokens.styles';
 
 const styles = stylex.create({
@@ -72,5 +72,5 @@ When using variables, there are a few rules to keep in mind:
    - Do not rely on import aliases or other custom import paths that are only
      understood by your bundler.
 
-Also, remember that these references to variable strings. Do not try to use
-these references in your non-stylex JavaScript code.
+Also, remember that these are references to strings containing variable names. 
+Do not try to use these references in your non-stylex JavaScript code.

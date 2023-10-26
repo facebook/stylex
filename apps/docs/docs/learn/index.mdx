@@ -4,26 +4,28 @@ sidebar_position: 0
 
 # Quick start
 
-StyleX is a simple, easy to use JavaScript syntax and compiler for styling web apps.
+StyleX is a simple, easy to use JavaScript syntax and compiler for styling web
+apps.
 
 ## Features at a glance
 
 ### Expressive
 
-- Easy-to-use API that is as simple as Inline styles
+- Easy-to-use API
 - Apply styles conditionally
 - Merge and compose arbitrary styles across component and file boundaries.
 - Use local constants and expressions to keep your styles DRY
-- Or repeat yourself without worrying about performance
-- Ability to use dynamic styles when needed with minimal overhead.
-- An expressive and simple API for theming with CSS variables
+  - Or repeat yourself without worrying about performance
+- Use dynamic styles when needed with minimal overhead.
+- Easy yet flexible APIs for defining and using variables
 
 ### Predictable
 
 - "The last style applied always wins!" - StyleX will always give you
   predictable results
   - No need to worry about using CSS shorthands vs specific styles
-  - No need to think about specificity of Media Queries or Pseudo Classes
+  - No need to think about the selector specificity of Media Queries or Pseudo
+    Classes
 - Style Encapsulation - All styles are caused by classNames applied directly set
   on an element
   - Complex selectors never "style at a distance"
@@ -33,12 +35,16 @@ StyleX is a simple, easy to use JavaScript syntax and compiler for styling web a
 - StyleX compiles styles to atomic CSS rules.
 - StyleX generates a minimimal set of rules and eliminates unused styling code.
 - StyleX generates CSS at build time and produces a single CSS file.
-- StyleX avoids runtime style injection, and avoids sources of runtime style recalculation.
-
+- StyleX avoids runtime style injection, and avoids sources of runtime style
+  recalculation.
 
 ## StyleX in 5 minutes
 
-StyleX combines the strengths and avoids the weaknesses of both inline styles and static CSS. Defining and using styles requires only local knowledge within a component, and avoids specificity issues while retaining features like Media Queries. StyleX builds optimized styles using collision-free atomic CSS which is superior what could be authored and maintained by hand.
+StyleX combines the strengths and avoids the weaknesses of both inline styles
+and static CSS. Defining and using styles requires only local knowledge within a
+component, and avoids specificity issues while retaining features like Media
+Queries. StyleX builds optimized styles using collision-free atomic CSS which is
+superior what could be authored and maintained by hand.
 
 ### Defining styles
 
@@ -52,11 +58,12 @@ const styles = stylex.create({
     width: '100%',
     maxWidth: 800,
     minHeight: 40,
-  }
+  },
 });
 ```
 
-Any number of rules can be created, by using additional keys and additional calls to `create()`:
+Any number of rules can be created, by using additional keys and additional
+calls to `create()`:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -69,66 +76,106 @@ const styles = stylex.create({
   },
   child: {
     backgroundColor: 'black',
-    marginBlock: '1rem'
-  }
+    marginBlock: '1rem',
+  },
 });
 
 const colorStyles = stylex.create({
   red: {
     backgroundColor: 'lightred',
-    borderColor: 'darkred'
+    borderColor: 'darkred',
   },
   green: {
     backgroundColor: 'lightgreen',
-    borderColor: 'darkgreen'
-  }
-})
+    borderColor: 'darkgreen',
+  },
+});
 ```
 
 ### Using styles
 
-To use styles they must be passed to the `props()` function. Styles can be combined using an array, and applied conditionally using standard JavaScript expressions.
+To use styles they must be passed to the `props()` function. Styles can be
+combined using an array, and applied conditionally using standard JavaScript
+expressions.
 
 ```tsx
 import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
+import {create, props} from '@stylexjs/stylex';
 
-const styles = stylex.create({ ... });
+const styles = create({ ... });
 
-function reactDiv({ color, isActive, style }) {
-  const styleProps = stylex.props([
+function ReactDiv({ color, isActive, style }) {
+  return <div {...props([
     styles.main,
-    // conditionals
+    // apply styles conditionally
     isActive && styles.active,
-    // variants from props
+    // choose a style variant based on a prop
     colorStyles[color]
     // styles passed as props
     style,
-  ]);
-
-  return <div {...styleProps} />;
-```
-
-The example above uses JSX. StyleX itself is framework agnostic. For example, here is how you would use StyleX with an `html` template literal in Lit HTML:
-
-```tsx
-import { html } from 'lit-html';
-import { styleMap } from 'lit-html/directives/style-map.js';
-import * as stylex from '@stylexjs/stylex';
-
-const styles = stylex.create({ ... });
-
-function litDiv(color, isActive, style) {
-  const {className, style: inlineStyle} = stylex.props([
-    styles.main,
-    // conditionals
-    isActive && styles.active,
-    // variants from arguments
-    colorStyles[color],
-    // styles passed as arguments
-    style
-  ]);
-
-  return html`<div class=${className} style=${styleMap(inlineStyle)} />`;
+  ])} />;
 }
 ```
+
+The example above uses JSX. StyleX itself is framework agnostic. The same code
+works with other frameworks that accept `className` strings and `style` objects
+such as `SolidJS`, `Preact` or `Qwik`.
+
+For other frameworks, it's easy to write simple helpers functions to convert the
+output of `props()` to the appropriate format. For example, here is how you
+would use StyleX with an `html` template literal in a component built with
+Enhance:
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+
+<TabItem label="Enhance Component" value="enhance">
+
+```tsx
+import {create, props} from '@stylexjs/stylex';
+import {StyleXStyles} from '@stylexjs/stylex/lib/StyleXTypes';
+
+import { spread } from './helpers';
+
+const styles = create({ ... });
+
+export default function EnhanceDiv({ html, state }) {
+  const { attrs } = state;
+  const { color, isActive = false, style } = state;
+  // Enhance only accepts string attributes.
+  const stylesObj = style ? JSON.parse(style) : null;
+
+  return html`
+    <div ${spread(props([
+      styles.main,
+      // apply styles conditionally
+      isActive && styles.active,
+      // choose a style variant based on a prop
+      colorStyles[color],
+      // styles passed as arguments
+      stylesObj
+    ]))}>
+      <slot></slot>
+    </div>
+  `;
+}
+```
+
+</TabItem>
+<TabItem label="Spread helper" value="spread">
+
+```tsx title="helpers.js"
+const styleStr = (style) =>
+  Object.entries(style)
+    .map(([key, value]) => `${key}:${value}`)
+    .join(';');
+
+export const spread = ({className, style}) =>
+  `class="${className}" style="${styleStr(style)}"`;
+```
+
+</TabItem>
+
+</Tabs>
