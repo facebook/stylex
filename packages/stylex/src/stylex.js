@@ -264,6 +264,7 @@ type IStyleX = {
   ) => $ReadOnlyArray<T>,
   inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
   keyframes: (keyframes: Keyframes) => string,
+  __customProperties?: { [string]: mixed },
   ...
 };
 

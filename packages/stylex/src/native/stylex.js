@@ -19,6 +19,7 @@ import { flattenStyle } from './flattenStyle';
 import { parseShadow } from './parseShadow';
 import { parseTimeValue } from './parseTimeValue';
 import { type SpreadOptions } from './SpreadOptions';
+import type { StyleX$CreateTheme, StyleX$DefineVars } from '../StyleXTypes';
 
 const stylePropertyAllowlistSet = new Set<string>([
   'alignContent',
@@ -646,13 +647,52 @@ export function props(
   return nativeProps;
 }
 
-export type IStyleX = {
+export const __customProperties: { [string]: mixed } = {};
+
+let count = 1;
+export const defineVars: StyleX$DefineVars = (tokens: $FlowFixMe) => {
+  const result: { [string]: string } = {};
+  for (const key in tokens) {
+    const value = tokens[key];
+    result[key] = `var(--${key}-${count++})`;
+    // NOTE: it's generally not a good idea to mutate the default context,
+    // but defineVars is always called before any component body is evaluated,
+    // and so it's safe to do so here.
+    __customProperties[result[key]] = value;
+  }
+  return (result: $FlowFixMe);
+};
+
+export const createTheme: $FlowFixMe = (
+  baseTokens: $FlowFixMe,
+  overrides: $FlowFixMe,
+): $FlowFixMe => {
+  const result: { [string]: string | number } = {};
+  for (const key in baseTokens) {
+    const varName: string = (baseTokens[key]: $FlowFixMe);
+    result[varName] = overrides[key];
+  }
+  return (result: $FlowFixMe);
+};
+
+export type IStyleX = $ReadOnly<{
   create: typeof create,
   firstThatWorks: typeof firstThatWorks,
   keyframes: typeof keyframes,
   props: typeof props,
-};
+  defineVars: StyleX$DefineVars,
+  createTheme: StyleX$CreateTheme,
+  __customProperties?: { [string]: mixed },
+}>;
 
-export const stylex: IStyleX = { create, firstThatWorks, keyframes, props };
+export const stylex: IStyleX = {
+  create,
+  firstThatWorks,
+  keyframes,
+  props,
+  defineVars,
+  createTheme,
+  __customProperties,
+};
 
 export default (stylex: IStyleX);
