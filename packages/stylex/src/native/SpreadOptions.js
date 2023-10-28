@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-export type SpreadOptions = {|
+export type SpreadOptions = $ReadOnly<{
   customProperties: {},
   inheritedFontSize: ?number,
   fontScale: number | void,
@@ -16,4 +16,4 @@ export type SpreadOptions = {|
   viewportHeight: number,
   viewportWidth: number,
   writingDirection: 'ltr' | 'rtl',
-|};
+}>;

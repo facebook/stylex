@@ -386,9 +386,10 @@ const timeValuedProperties = [
  */
 
 export function props(
-  style: ?{ [key: string]: mixed },
-  options: SpreadOptions,
+  this: SpreadOptions,
+  ...style: $ReadOnlyArray<?{ [key: string]: mixed }>
 ): { [string]: { ... } } {
+  const options = this;
   /* eslint-disable prefer-const */
   let { lineClamp, ...flatStyle }: { [key: string]: mixed } =
     flattenStyle(style);

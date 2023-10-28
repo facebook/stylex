@@ -38,16 +38,19 @@ type Cache = WeakMap<
 >;
 
 export function props(
-  styles: StyleXArray<
-    ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
-  >,
-  _options?: { ... },
+  this: ?mixed,
+  ...styles: $ReadOnlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
 ): $ReadOnly<{
   className?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
 }> {
+  const options = this;
   if (__implementations.props) {
-    return __implementations.props(styles, _options);
+    return __implementations.props.call(options, styles);
   }
   const [className, style] = styleq(styles);
   const result: {
@@ -246,10 +249,12 @@ _stylex.types = types;
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
   props: (
-    styles: StyleXArray<
-      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
-    >,
-    _options?: { ... },
+    this: ?mixed,
+    ...styles: $ReadOnlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
   ) => $ReadOnly<{
     className?: string,
     style?: $ReadOnly<{ [string]: string | number }>,

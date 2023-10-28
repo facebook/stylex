@@ -59,10 +59,9 @@ export default function transformStylexProps(
   let bailOut = false;
   let conditional = 0;
 
-  const args =
-    node.arguments[0]?.type === 'ArrayExpression'
-      ? node.arguments[0].elements
-      : node.arguments.slice(0, 1);
+  const args = node.arguments.flatMap((arg) =>
+    arg.type === 'ArrayExpression' ? arg.elements : [arg],
+  );
 
   // console.log('args', args);
 
