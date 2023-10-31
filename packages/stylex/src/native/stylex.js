@@ -354,7 +354,15 @@ export function create<S: { [string]: { ... } }>(styles: S): {
 } {
   const result: { [string]: { ... } } = {};
   for (const styleName in styles) {
-    result[styleName] = preprocessCreate(styles[styleName]);
+    const val = styles[styleName];
+    if (typeof val === 'function') {
+      result[styleName] = (...args: $FlowFixMe) => {
+        const style = val(...args);
+        return preprocessCreate(style);
+      };
+    } else {
+      result[styleName] = preprocessCreate(styles[styleName]);
+    }
   }
   return result;
 }

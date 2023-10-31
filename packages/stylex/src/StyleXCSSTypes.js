@@ -880,6 +880,7 @@ export type CSSProperties = $ReadOnly<{
   WebkitTapHighlightColor?: null | color,
   // ENDOF ...$Exact<SupportedVendorSpecificCSSProperties>,
 
+  aspectRatio?: null | number | string,
   alignContent?: null | alignContent,
   alignItems?: null | alignItems,
   alignSelf?: null | alignSelf,

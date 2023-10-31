@@ -25,7 +25,6 @@ import { parseSync } from '@babel/core';
 import traverse from '@babel/traverse';
 import type { NodePath, Binding } from '@babel/traverse';
 import * as t from '@babel/types';
-import fs from 'fs';
 import StateManager from './state-manager';
 import { utils } from '@stylexjs/shared';
 import * as pathUtils from '../babel-path-utils';
@@ -94,6 +93,7 @@ function evaluateImportedFile(
   namedExport: string,
   state: State,
 ): any {
+  const fs = require('fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   // It's safe to use `.babelrc` here because we're only
   // interested in the JS runtime, and not the CSS.
