@@ -46,13 +46,19 @@ type CSSPropertiesWithExtras = Partial<
       '::grammar-error': CSSProperties;
       '::marker': CSSProperties;
       // This is a pattern and not a static key so it cannot be typed correctly.
-      // '::part()': CSSProperties;
+      // [key: `::part(${string})` | `::slotted(${string})`]: CSSProperties;
       '::placeholder': CSSProperties;
       '::selection': CSSProperties;
       // This is a pattern and not a static key so it cannot be typed correctly.
       // '::slotted()': CSSProperties;
       '::spelling-error': CSSProperties;
       '::target-text': CSSProperties;
+      '::-webkit-scrollbar'?: CSSProperties;
+      // webkit styles used for Search in Safari
+      '::-webkit-search-decoration'?: CSSProperties;
+      '::-webkit-search-cancel-button'?: CSSProperties;
+      '::-webkit-search-results-button'?: CSSProperties;
+      '::-webkit-search-results-decoration'?: CSSProperties;
     }
   >
 >;
