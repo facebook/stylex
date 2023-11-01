@@ -15,8 +15,10 @@ export default function Playground() {
   return (
     <Layout>
       <div {...stylex.props(styles.container)}>
-        <h1>Playground</h1>
-        <p>Coming soon...</p>
+        <iframe
+          {...stylex.props(styles.iframe)}
+          src="https://stackblitz.com/edit/stylex-next?embed=1&file=README.md"
+        />
       </div>
     </Layout>
   );
@@ -32,5 +34,11 @@ const styles = stylex.create({
     borderBottomWidth: 2,
     borderBottomStyle: 'solid',
     borderBottomColor: 'var(--cyan)',
+  },
+  iframe: {
+    width: '100%',
+    height: '100%',
+    borderWidth: 0,
+    borderStyle: 'none',
   },
 });
