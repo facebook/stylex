@@ -15,15 +15,22 @@ import type {
   StyleX$DefineVars,
   StyleX$CreateTheme,
   StyleXArray,
-  Theme,
   FlattenTokens,
   CompiledStyles,
   InlineStyles,
   StyleXClassNameFor,
   MapNamespaces,
+  VarGroup,
 } from './StyleXTypes';
 
-export type { Theme, Variant } from './StyleXTypes';
+export type {
+  VarGroup,
+  Theme,
+  StyleXStyles,
+  StyleXStylesWithout,
+  StaticStyles,
+  StaticStylesWithout,
+} from './StyleXTypes';
 
 import injectStyle from './stylex-inject';
 import { styleq } from 'styleq';
@@ -84,7 +91,7 @@ function stylexDefineVars<
       | { +default: number | string, +[string]: number | string },
   },
   ID: string = string,
->(styles: DefaultTokens): Theme<FlattenTokens<DefaultTokens>, ID> {
+>(styles: DefaultTokens): VarGroup<FlattenTokens<DefaultTokens>, ID> {
   if (__implementations.defineVars) {
     return __implementations.defineVars(styles);
   }

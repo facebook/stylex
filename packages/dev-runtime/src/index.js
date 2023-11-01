@@ -11,9 +11,9 @@ import { __monkey_patch__ } from '@stylexjs/stylex';
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
 import type {
   OverridesForTokenType,
+  VarGroup,
+  TokensFromVarGroup,
   Theme,
-  TokensFromTheme,
-  Variant,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
 import type { RuntimeOptions } from './types';
@@ -29,7 +29,7 @@ const defaultInsert = (
 ): void => {
   if (priority === 0) {
     if (injectedVariableObjs.has(key)) {
-      throw new Error('A Theme with this name already exists: ' + key);
+      throw new Error('A VarGroup with this name already exists: ' + key);
     } else {
       injectedVariableObjs.add(key);
     }
@@ -75,7 +75,7 @@ export default function inject({
     { themeName }: { themeName: string } = {
       themeName: themeNameUUID(),
     },
-  ): Theme<DefaultTokens, ID> => {
+  ): VarGroup<DefaultTokens, ID> => {
     const [cssVarsObject, { css }] = shared.defineVars(variables, {
       themeName,
     });
@@ -86,12 +86,12 @@ export default function inject({
   __monkey_patch__('defineVars', defineVars);
 
   const createTheme: $FlowFixMe = <
-    BaseTokens: Theme<{ +[string]: mixed }>,
+    BaseTokens: VarGroup<{ +[string]: mixed }>,
     ID: string = string,
   >(
     variablesTheme: BaseTokens,
-    variablesOverride: OverridesForTokenType<TokensFromTheme<$FlowFixMe>>,
-  ): Variant<BaseTokens, ID> => {
+    variablesOverride: OverridesForTokenType<TokensFromVarGroup<$FlowFixMe>>,
+  ): Theme<BaseTokens, ID> => {
     const [js, css] = shared.createTheme(
       (variablesTheme: $FlowFixMe),
       variablesOverride,

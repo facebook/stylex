@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -23,7 +23,7 @@ type TMasksCornerCuts = $ReadOnly<{
   angles3: string,
 }>;
 
-export const masksCornerCuts: Theme<TMasksCornerCuts> = defineVars({
+export const masksCornerCuts: VarGroup<TMasksCornerCuts> = defineVars({
   circles1: 'radial-gradient(1rem at 1rem 1rem,#0000 99%,#000) -1rem -1rem',
   circles2: 'radial-gradient(2rem at 2rem 2rem,#0000 99%,#000) -2rem -2rem',
   circles3: 'radial-gradient(4rem at 4rem 4rem,#0000 99%,#000) -4rem -4rem',

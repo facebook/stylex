@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -85,7 +85,7 @@ type TEasings = $ReadOnly<{
   bounce5: string,
 }>;
 
-export const easings: Theme<TEasings> = defineVars({
+export const easings: VarGroup<TEasings> = defineVars({
   ease1: 'cubic-bezier(.25, 0, .5, 1)',
   ease2: 'cubic-bezier(.25, 0, .4, 1)',
   ease3: 'cubic-bezier(.25, 0, .3, 1)',

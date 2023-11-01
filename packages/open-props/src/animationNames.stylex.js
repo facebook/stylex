@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { keyframes, defineVars } from '@stylexjs/stylex';
 
@@ -190,7 +190,7 @@ type TAnimationNames = $ReadOnly<{
   pulse: string,
 }>;
 
-export const animationNames: Theme<TAnimationNames> = defineVars({
+export const animationNames: VarGroup<TAnimationNames> = defineVars({
   fadeIn,
   fadeInBloom: {
     default: fadeInBloom,

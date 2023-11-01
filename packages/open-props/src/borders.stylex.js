@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -44,7 +44,7 @@ type TBorders = $ReadOnly<{
   radiusConditional6: string,
 }>;
 
-export const borders: Theme<TBorders> = defineVars({
+export const borders: VarGroup<TBorders> = defineVars({
   size1: '1px',
   size2: '2px',
   size3: '5px',

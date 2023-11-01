@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -39,7 +39,7 @@ type TMasksEdges = $ReadOnly<{
   zigZagVertical: string,
 }>;
 
-export const masksEdges: Theme<TMasksEdges> = defineVars({
+export const masksEdges: VarGroup<TMasksEdges> = defineVars({
   scoopBottom:
     'radial-gradient(20px at 50% 100%,#0000 97%,#000) 50% / calc(1.9 * 20px) 100%',
   scoopTop:

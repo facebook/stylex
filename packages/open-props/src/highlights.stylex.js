@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -23,7 +23,7 @@ type THighlights = $ReadOnly<{
   highlight: string,
 }>;
 
-export const highlights: Theme<THighlights> = defineVars({
+export const highlights: VarGroup<THighlights> = defineVars({
   highlightSize: highlightSize,
   highlightColor: {
     default: highlightColor,

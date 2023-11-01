@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -261,7 +261,7 @@ type TColorsHSL = $ReadOnly<{
   jungle12: string,
 }>;
 
-export const colorsHSL: Theme<TColorsHSL> = defineVars({
+export const colorsHSL: VarGroup<TColorsHSL> = defineVars({
   gray0: '210 17% 98%',
   gray1: '210 17% 95%',
   gray2: '210 16% 93%',

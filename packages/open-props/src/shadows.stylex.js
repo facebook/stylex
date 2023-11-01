@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -36,7 +36,7 @@ type TShadows = $ReadOnly<{
   innerShadow4: string,
 }>;
 
-export const shadows: Theme<TShadows> = defineVars({
+export const shadows: VarGroup<TShadows> = defineVars({
   shadow1: {
     default: `0 1px 2px -1px hsl(${shadowColor} / calc(${shadowStrength} + 9%))`,
     [DARK]: `0 1px 2px -1px hsl(${shadowColorDark} / calc(${shadowStrengthDark} + 9%))`,

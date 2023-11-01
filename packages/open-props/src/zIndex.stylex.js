@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -20,7 +20,7 @@ type TZindex = $ReadOnly<{
   layerImportant: number,
 }>;
 
-export const zIndex: Theme<TZindex> = defineVars({
+export const zIndex: VarGroup<TZindex> = defineVars({
   layer1: 1,
   layer2: 2,
   layer3: 3,

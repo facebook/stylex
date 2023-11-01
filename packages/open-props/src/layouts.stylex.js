@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -34,7 +34,7 @@ type TLayouts = $ReadOnly<{
   gridAdaptMixin: string,
 }>;
 
-export const layouts: Theme<TLayouts> = defineVars({
+export const layouts: VarGroup<TLayouts> = defineVars({
   gridCell: '[stack] 1fr / [stack] 1fr',
   gridCellName: 'stack',
 

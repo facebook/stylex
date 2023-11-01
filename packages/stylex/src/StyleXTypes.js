@@ -97,7 +97,10 @@ export type XStyleWithout<+T: { +[string]: mixed }> = XStyle<
 
 export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
 
-export type LegacyTheme = $ReadOnly<{ [constantName: string]: string, ... }>;
+export type LegacyThemeStyles = $ReadOnly<{
+  [constantName: string]: string,
+  ...
+}>;
 
 type ComplexStyleValueType<+T> = T extends StyleXVar<infer U>
   ? U
@@ -169,19 +172,18 @@ declare class Var<+T> {
 // This is the type for the variables object
 export opaque type StyleXVar<+Val: mixed> = Var<Val>;
 
-export opaque type Theme<
+export opaque type VarGroup<
   +Tokens: { +[string]: mixed },
   +_ID: string = string,
 >: $ReadOnly<{ [Key in keyof Tokens]: StyleXVar<Tokens[Key]> }> = $ReadOnly<{
   [Key in keyof Tokens]: StyleXVar<Tokens[Key]>,
 }>;
 
-export type TokensFromTheme<T: Theme<{ +[string]: mixed }>> = T extends Theme<
-  infer Tokens extends { +[string]: mixed },
->
-  ? Tokens
-  : empty;
-type IDFromTheme<+T: Theme<{ +[string]: mixed }>> = T extends Theme<
+export type TokensFromVarGroup<T: VarGroup<{ +[string]: mixed }>> =
+  T extends VarGroup<infer Tokens extends { +[string]: mixed }>
+    ? Tokens
+    : empty;
+type IDFromVarGroup<+T: VarGroup<{ +[string]: mixed }>> = T extends VarGroup<
   { +[string]: mixed },
   infer ID,
 >
@@ -203,14 +205,14 @@ export type FlattenTokens<T: TTokens> = {
 
 export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
-) => Theme<FlattenTokens<DefaultTokens>, ID>;
+) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-export type Variant<
-  +T: Theme<{ +[string]: mixed }, string>,
+export type Theme<
+  +T: VarGroup<{ +[string]: mixed }, string>,
   +_Tag: string = string,
 > = $ReadOnly<{
   $$css: true,
-  [string]: StyleXClassNameFor<string, IDFromTheme<T>>,
+  [string]: StyleXClassNameFor<string, IDFromVarGroup<T>>,
 }>;
 
 export type OverridesForTokenType<Config: { +[string]: mixed }> = {
@@ -220,9 +222,9 @@ export type OverridesForTokenType<Config: { +[string]: mixed }> = {
 };
 
 export type StyleX$CreateTheme = <
-  BaseTokens: Theme<{ +[string]: mixed }>,
+  BaseTokens: VarGroup<{ +[string]: mixed }>,
   ID: string = string,
 >(
   baseTokens: BaseTokens,
-  overrides: OverridesForTokenType<TokensFromTheme<BaseTokens>>,
-) => Variant<BaseTokens, ID>;
+  overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
+) => Theme<BaseTokens, ID>;

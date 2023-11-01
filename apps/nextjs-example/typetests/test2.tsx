@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
 import stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { StaticStyles } from '@stylexjs/stylex';
 
 type Props = {
   xstyle?: StaticStyles<{

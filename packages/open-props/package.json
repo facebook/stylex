@@ -1,28 +1,28 @@
 {
   "name": "@stylexjs/open-props",
-  "version": "0.2.0-beta.23",
+  "version": "0.2.0-beta.24",
   "description": "A library common values as variables to be used with Stylex.",
   "exports": {
-    "./animationNames.stylex": "./lib/animationNames.stylex.js",
-    "./animations.stylex": "./lib/animations.stylex.js",
-    "./aspects.stylex": "./lib/aspects.stylex.js",
-    "./borders.stylex": "./lib/borders.stylex.js",
-    "./colors.stylex": "./lib/colors.stylex.js",
-    "./colorsHSL.stylex": "./lib/colorsHSL.stylex.js",
-    "./colorsOKLCH.stylex": "./lib/colorsOKLCH.stylex.js",
-    "./colorsOKLCHHues.stylex": "./lib/colorsOKLCHHues.stylex.js",
-    "./easings.stylex": "./lib/easings.stylex.js",
-    "./fonts.stylex": "./lib/fonts.stylex.js",
-    "./gradients.stylex": "./lib/gradients.stylex.js",
-    "./grayOKLCH.stylex": "./lib/grayOKLCH.stylex.js",
-    "./highlights.stylex": "./lib/highlights.stylex.js",
-    "./layouts.stylex": "./lib/layouts.stylex.js",
-    "./masksCornerCuts.stylex": "./lib/masksCornerCuts.stylex.js",
-    "./masksEdges.stylex": "./lib/masksEdges.stylex.js",
-    "./shadows.stylex": "./lib/shadows.stylex.js",
-    "./sizes.stylex": "./lib/sizes.stylex.js",
-    "./svg.stylex": "./lib/svg.stylex.js",
-    "./zIndex.stylex": "./lib/zIndex.stylex.js"
+    "./lib/animationNames.stylex": "./lib/animationNames.stylex.js",
+    "./lib/animations.stylex": "./lib/animations.stylex.js",
+    "./lib/aspects.stylex": "./lib/aspects.stylex.js",
+    "./lib/borders.stylex": "./lib/borders.stylex.js",
+    "./lib/colors.stylex": "./lib/colors.stylex.js",
+    "./lib/colorsHSL.stylex": "./lib/colorsHSL.stylex.js",
+    "./lib/colorsOKLCH.stylex": "./lib/colorsOKLCH.stylex.js",
+    "./lib/colorsOKLCHHues.stylex": "./lib/colorsOKLCHHues.stylex.js",
+    "./lib/easings.stylex": "./lib/easings.stylex.js",
+    "./lib/fonts.stylex": "./lib/fonts.stylex.js",
+    "./lib/gradients.stylex": "./lib/gradients.stylex.js",
+    "./lib/grayOKLCH.stylex": "./lib/grayOKLCH.stylex.js",
+    "./lib/highlights.stylex": "./lib/highlights.stylex.js",
+    "./lib/layouts.stylex": "./lib/layouts.stylex.js",
+    "./lib/masksCornerCuts.stylex": "./lib/masksCornerCuts.stylex.js",
+    "./lib/masksEdges.stylex": "./lib/masksEdges.stylex.js",
+    "./lib/shadows.stylex": "./lib/shadows.stylex.js",
+    "./lib/sizes.stylex": "./lib/sizes.stylex.js",
+    "./lib/svg.stylex": "./lib/svg.stylex.js",
+    "./lib/zIndex.stylex": "./lib/zIndex.stylex.js"
   },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
@@ -38,7 +38,7 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.2.0-beta.23"
+    "@stylexjs/scripts": "0.2.0-beta.24"
   },
   "jest": {},
   "files": [

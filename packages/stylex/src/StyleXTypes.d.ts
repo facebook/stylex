@@ -71,7 +71,7 @@ export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 // NOTE: `XStyle` has been deprecated in favor of `StaticStyles` and `StyleXStyles`.
 
 export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
-export type LegacyTheme = Readonly<{ [constantName: string]: string }>;
+export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
 type ComplexStyleValueType<T> = T extends string | number | null
   ? T
@@ -144,25 +144,29 @@ export type StyleXStylesWithout<CSS extends UserAuthoredStyles> = StyleXStyles<
   Omit<CSSPropertiesWithExtras, keyof CSS>
 >;
 
-declare const StyleXThemeTag: unique symbol;
-export type Theme<
+declare const StyleXVarGroupTag: unique symbol;
+export type VarGroup<
   Tokens extends { [key: string]: unknown },
   ID extends symbol = symbol,
-> = Readonly<{ [Key in keyof Tokens]: Tokens[Key] & typeof StyleXThemeTag }> & {
+> = Readonly<{
+  [Key in keyof Tokens]: Tokens[Key] & typeof StyleXVarGroupTag;
+}> & {
   $opaqueId: ID;
   $tokens: Tokens;
 };
 
-export type TokensFromTheme<T extends Theme<TTokens>> = T['$tokens'];
+export type TokensFromVarGroup<T extends VarGroup<TTokens>> = T['$tokens'];
 
-export type IDFromTheme<T extends Theme<TTokens>> = T['$opaqueId'];
+export type IDFromVarGroup<T extends VarGroup<TTokens>> = T['$opaqueId'];
 
 type TTokens = {
   [key: string]: string | { default: string; [key: AtRuleStr]: string };
 };
 
 export type FlattenTokens<T extends TTokens> = Readonly<{
-  [Key in keyof T]: T[Key] extends { [key: string]: infer X } ? X : T[Key];
+  [Key in keyof T]: T[Key] extends { [key: string]: infer X }
+    ? StyleXVar<X>
+    : StyleXVar<T[Key]>;
 }>;
 
 export type StyleX$DefineVars = <
@@ -170,15 +174,15 @@ export type StyleX$DefineVars = <
   ID extends symbol = symbol,
 >(
   tokens: DefaultTokens,
-) => Theme<FlattenTokens<DefaultTokens>, ID>;
+) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-export type Variant<
-  T extends Theme<TTokens, symbol>,
+export type Theme<
+  T extends VarGroup<TTokens, symbol>,
   // eslint-disable-next-line no-unused-vars
   Tag extends symbol = symbol,
 > = Tag &
   Readonly<{
-    theme: StyleXClassNameFor<string, IDFromTheme<T>>;
+    theme: StyleXClassNameFor<string, IDFromVarGroup<T>>;
   }>;
 
 type OverridesForTokenType<Config extends { [key: string]: any }> = {
@@ -188,9 +192,9 @@ type OverridesForTokenType<Config extends { [key: string]: any }> = {
 };
 
 export type StyleX$CreateTheme = <
-  BaseTokens extends Theme<any>,
+  BaseTokens extends VarGroup<any>,
   ID extends symbol = symbol,
 >(
   baseTokens: BaseTokens,
-  overrides: OverridesForTokenType<TokensFromTheme<BaseTokens>>,
-) => Variant<BaseTokens, ID>;
+  overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
+) => Theme<BaseTokens, ID>;

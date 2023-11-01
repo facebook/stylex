@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -26,7 +26,7 @@ type TColorsOKLCHHues = $ReadOnly<{
   orange: string,
 }>;
 
-export const colorsOKLCHHues: Theme<TColorsOKLCHHues> = defineVars({
+export const colorsOKLCHHues: VarGroup<TColorsOKLCHHues> = defineVars({
   red: '25',
   pink: '350',
   purple: '310',

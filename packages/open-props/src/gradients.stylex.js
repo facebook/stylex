@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -56,7 +56,7 @@ type TGradients = $ReadOnly<{
   noiseFilter5: string,
 }>;
 
-export const gradients: Theme<TGradients> = defineVars({
+export const gradients: VarGroup<TGradients> = defineVars({
   gradient1:
     'linear-gradient(to bottom right,#1f005c, #5b0060, #870160, #ac255e, #ca485c, #e16b5c, #f39060, #ffb56b)',
   gradient2: 'linear-gradient(to bottom right,#48005c, #8300e2, #a269ff)',

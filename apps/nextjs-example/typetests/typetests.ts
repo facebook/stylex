@@ -4,6 +4,8 @@ import type {
   StyleXStyles,
   StaticStylesWithout,
   StyleXStylesWithout,
+} from '@stylexjs/stylex';
+import type {
   StyleXClassNameFor,
   InlineStyles,
   StyleXVar,

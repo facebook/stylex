@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -20,7 +20,7 @@ type TAspects = $ReadOnly<{
   ratioGolden: string,
 }>;
 
-export const aspects: Theme<TAspects> = defineVars({
+export const aspects: VarGroup<TAspects> = defineVars({
   ratioSquare: '1',
   ratioLandscape: '4/3',
   ratioPortrait: '3/4',

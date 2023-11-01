@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -55,7 +55,7 @@ type TFonts = $ReadOnly<{
   sizeFluid3: string,
 }>;
 
-export const fonts: Theme<TFonts> = defineVars({
+export const fonts: VarGroup<TFonts> = defineVars({
   sans: 'system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif',
   serif: 'ui-serif,serif',
   mono: 'Dank Mono,Operator Mono,Inconsolata,Fira Mono,ui-monospace,SF Mono,Monaco,Droid Sans Mono,Source Code Pro,monospace',

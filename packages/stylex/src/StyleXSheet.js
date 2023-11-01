@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type { LegacyTheme as Theme } from './StyleXTypes';
+import type { LegacyThemeStyles as Theme } from './StyleXTypes';
 
 // import rtlDetect from 'rtl-detect';
 

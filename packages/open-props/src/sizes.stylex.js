@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Theme } from '@stylexjs/stylex/lib/StyleXTypes';
+import type { VarGroup } from '@stylexjs/stylex/lib/StyleXTypes';
 
 import { defineVars } from '@stylexjs/stylex';
 
@@ -76,7 +76,7 @@ type TSizes = $ReadOnly<{
   relative15: string,
 }>;
 
-export const sizes: Theme<TSizes> = defineVars({
+export const sizes: VarGroup<TSizes> = defineVars({
   spacing000: '-.5rem',
   spacing00: '-.25rem',
   spacing1: '.25rem',
