@@ -48,6 +48,7 @@ export default class StateManager {
   +_state: PluginPass;
 
   // Imports
+  +importPaths: Set<string> = new Set();
   +stylexImport: Set<string> = new Set();
   +stylexPropsImport: Set<string> = new Set();
   +stylexCreateImport: Set<string> = new Set();
@@ -92,6 +93,17 @@ export default class StateManager {
     };
     this._state.opts = (opts: $FlowFixMe);
     return this._state.opts;
+  }
+
+  get importPathString(): string {
+    if (this.importPaths.has('@stylexjs/stylex')) {
+      return '@stylexjs/stylex';
+    }
+    if (this.importPaths.size > 0) {
+      // get the first one
+      return [...this.importPaths][0];
+    }
+    return '@stylexjs/stylex';
   }
 
   get canReferenceTheme(): boolean {
@@ -217,7 +229,10 @@ const filePathResolver = (
   }
   for (const ext of EXTENSIONS) {
     try {
-      const resolvedFilePath = require.resolve(fileToLookFor + ext, {
+      const importPathStr = fileToLookFor.startsWith('.')
+        ? fileToLookFor + ext
+        : fileToLookFor;
+      const resolvedFilePath = require.resolve(importPathStr, {
         paths: [path.dirname(sourceFilePath)],
       });
       return resolvedFilePath;

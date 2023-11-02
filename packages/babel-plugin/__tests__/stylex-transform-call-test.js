@@ -99,6 +99,39 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex call with computed number', () => {
+      expect(
+        transform(`
+          import {create} from '@stylexjs/stylex';
+          const styles = create({
+            [0]: {
+              color: 'red',
+            },
+            [1]: {
+              backgroundColor: 'blue',
+            }
+          });
+          stylex(styles[0], styles[1]);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import { create } from '@stylexjs/stylex';
+        import __stylex__ from "@stylexjs/stylex";
+        __stylex__.inject(".x1e2nbdu{color:red}", 3000);
+        __stylex__.inject(".x1t391ir{background-color:blue}", 3000);
+        const styles = {
+          "0": {
+            color: "x1e2nbdu",
+            $$css: true
+          },
+          "1": {
+            backgroundColor: "x1t391ir",
+            $$css: true
+          }
+        };
+        stylex(styles[0], styles[1]);"
+      `);
+    });
+
     test('stylex call with computed string', () => {
       expect(
         transform(`

@@ -120,7 +120,7 @@ export default function transformStyleXCreateTheme(
         statementPath?.insertBefore(
           t.importDeclaration(
             [t.importDefaultSpecifier(t.identifier(stylexName))],
-            t.stringLiteral('stylex'),
+            t.stringLiteral(state.importPathString),
           ),
         );
       }

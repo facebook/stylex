@@ -332,7 +332,7 @@ function getStylexDefaultImport(path: NodePath<>, state: StateManager): string {
     statementPath.insertBefore(
       t.importDeclaration(
         [t.importDefaultSpecifier(t.identifier(stylexName))],
-        t.stringLiteral('stylex'),
+        t.stringLiteral(state.importPathString),
       ),
     );
     state.stylexImport.add(stylexName);

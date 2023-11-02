@@ -21,6 +21,7 @@ export function readImportDeclarations(
     return;
   }
   if (state.options.importSources.includes(node.source.value)) {
+    state.importPaths.add(node.source.value);
     for (const specifier of node.specifiers) {
       if (specifier.type === 'ImportDefaultSpecifier') {
         state.stylexImport.add(specifier.local.name);
@@ -92,15 +93,18 @@ export function readRequires(
   state: StateManager,
 ): void {
   const { node } = path;
+  const init = node.init;
   if (
-    node.init?.type === 'CallExpression' &&
-    node.init?.callee?.type === 'Identifier' &&
-    node.init?.callee?.name === 'require' &&
-    node.init?.arguments?.length === 1 &&
-    node.init?.arguments?.[0].type === 'StringLiteral' &&
-    (node.init?.arguments?.[0].value === 'stylex' ||
-      state.options.importSources.includes(node.init?.arguments?.[0].value))
+    init != null &&
+    init.type === 'CallExpression' &&
+    init.callee?.type === 'Identifier' &&
+    init.callee?.name === 'require' &&
+    init.arguments?.length === 1 &&
+    init.arguments?.[0].type === 'StringLiteral' &&
+    state.options.importSources.includes(init.arguments[0].value)
   ) {
+    const importPath = init.arguments[0].value;
+    importPath != null && state.importPaths.add(importPath);
     if (node.id.type === 'Identifier') {
       state.stylexImport.add(node.id.name);
     }
