@@ -209,23 +209,17 @@ const filePathResolver = (
   const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
   if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
     try {
-      const resolvedFilePath =
-        fileToLookFor.startsWith('./') || fileToLookFor.startsWith('../')
-          ? path.join(path.dirname(sourceFilePath), fileToLookFor)
-          : require.resolve(fileToLookFor, {
-              paths: [path.dirname(sourceFilePath)],
-            });
+      const resolvedFilePath = require.resolve(fileToLookFor, {
+        paths: [path.dirname(sourceFilePath)],
+      });
       return resolvedFilePath;
     } catch {}
   }
   for (const ext of EXTENSIONS) {
     try {
-      const resolvedFilePath =
-        fileToLookFor.startsWith('./') || fileToLookFor.startsWith('../')
-          ? path.join(path.dirname(sourceFilePath), fileToLookFor + ext)
-          : require.resolve(fileToLookFor + ext, {
-              paths: [path.dirname(sourceFilePath)],
-            });
+      const resolvedFilePath = require.resolve(fileToLookFor + ext, {
+        paths: [path.dirname(sourceFilePath)],
+      });
       return resolvedFilePath;
     } catch {}
   }
