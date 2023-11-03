@@ -71,6 +71,7 @@ type State = {
   confident: boolean,
   deoptPath: NodePath<> | null,
   seen: Map<t.Node, Result>,
+  addedImports: Set<string>,
   functions: FunctionConfig,
   traversalState: StateManager,
 };
@@ -351,6 +352,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       binding &&
       bindingPath &&
       !pathUtils.isImportDefaultSpecifier(bindingPath) &&
+      !pathUtils.isImportNamespaceSpecifier(bindingPath) &&
       pathUtils.isImportSpecifier(bindingPath)
     ) {
       const importSpecifierPath: NodePath<t.ImportSpecifier> = bindingPath;
@@ -375,6 +377,12 @@ function _evaluate(path: NodePath<>, state: State): any {
             ? evaluateThemeRef(value, importedName, state)
             : evaluateImportedFile(value, importedName, state);
         if (state.confident) {
+          if (!state.addedImports.has(importPath.node.source.value)) {
+            importPath.insertBefore(
+              t.importDeclaration([], importPath.node.source),
+            );
+            state.addedImports.add(importPath.node.source.value);
+          }
           return returnValue;
         } else {
           deopt(binding.path, state);
@@ -752,6 +760,11 @@ function evaluateQuasis(
  *
  */
 
+// Track all the imports added to the file, so we don't add them multiple times
+// Instead of polluting StateManager with this, we use a WeakMap
+// so the logic can be localized this file.
+const importsForState = new WeakMap<StateManager, Set<string>>();
+
 export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
@@ -761,10 +774,14 @@ export function evaluate(
   value: any,
   deopt?: null | NodePath<>,
 }> {
+  const addedImports = importsForState.get(traversalState) ?? new Set();
+  importsForState.set(traversalState, addedImports);
+
   const state: State = {
     confident: true,
     deoptPath: null,
     seen: new Map(),
+    addedImports,
     functions,
     traversalState,
   };

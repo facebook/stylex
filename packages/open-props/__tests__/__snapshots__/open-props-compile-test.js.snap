@@ -277,7 +277,9 @@ exports[`commonJS results of exported styles and variables animations.stylex.js 
  */
 
 import { create } from '@stylexjs/stylex';
+import './animationNames.stylex';
 import { animationNames } from './animationNames.stylex';
+import './easings.stylex';
 import { easings } from './easings.stylex';
 export const animations = {
   fadeIn: {
