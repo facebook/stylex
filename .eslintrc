@@ -30,7 +30,8 @@
     "coverage",
     "dist",
     "lib",
-    "node_modules"
+    "node_modules",
+    "nextjs-example"
   ],
   "globals": {
     "$Call": "readonly",

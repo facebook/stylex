@@ -6,6 +6,7 @@
 .*/dist/.*
 .*/lib/.*
 .*/malformed_package_json/.*
+.*/next-example/.*
 
 [include]
 

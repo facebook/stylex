@@ -6,9 +6,11 @@
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/webpack-plugin": "^0.2.0-beta.9",
-    "css-loader": "^6.5.0",
-    "mini-css-extract-plugin": "^2.7.6"
+    "@babel/core": "^7.23.2",
+    "@babel/plugin-syntax-flow": "^7.22.5",
+    "@babel/plugin-syntax-jsx": "^7.22.5",
+    "@babel/plugin-syntax-typescript": "^7.22.5",
+    "@stylexjs/babel-plugin": "^0.2.0-beta.25"
   },
   "peerDependencies": {
     "next": ">=12.0.7"
