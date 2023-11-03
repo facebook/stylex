@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/rollup-plugin",
-  "version": "0.2.0-beta.24",
+  "version": "0.2.0-beta.25",
   "description": "Rollup plugin for StyleX",
   "main": "src/index.js",
   "repository": "https://www.github.com/facebook/stylex",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
-    "@stylexjs/babel-plugin": "0.2.0-beta.24"
+    "@stylexjs/babel-plugin": "0.2.0-beta.25"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.8",
@@ -27,6 +27,6 @@
     "@rollup/plugin-commonjs": "^25.0.3",
     "@rollup/plugin-node-resolve": "^15.0.0",
     "rollup": "^3.26.3 || ^4.0.2",
-    "@stylexjs/stylex": "0.2.0-beta.24"
+    "@stylexjs/stylex": "0.2.0-beta.25"
   }
 }
