@@ -100,12 +100,12 @@ expressions.
 
 ```tsx
 import * as React from 'react';
-import {create, props} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
-const styles = create({ ... });
+const styles = stylex.create({ ... });
 
 function ReactDiv({ color, isActive, style }) {
-  return <div {...props([
+  return <div {...stylex.props([
     styles.main,
     // apply styles conditionally
     isActive && styles.active,
@@ -134,7 +134,8 @@ import TabItem from '@theme/TabItem';
 <TabItem label="Enhance Component" value="enhance">
 
 ```tsx
-import {create, props, type StyleXStyles} from '@stylexjs/stylex';
+import type {StyleXStyles} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 import { spread } from './helpers';
 
@@ -147,7 +148,7 @@ export default function EnhanceDiv({ html, state }) {
   const stylesObj = style ? JSON.parse(style) : null;
 
   return html`
-    <div ${spread(props([
+    <div ${spread(stylex.props([
       styles.main,
       // apply styles conditionally
       isActive && styles.active,

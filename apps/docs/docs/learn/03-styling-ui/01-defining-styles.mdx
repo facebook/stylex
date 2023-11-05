@@ -102,6 +102,8 @@ references the element that contains placeholder text within an `input` or
 a top-level key within a namespace.
 
 ```tsx
+import * as stylex from '@stylexjs/stylex';
+
 const styles = stylex.create({
   input: {
     // pseudo-element
@@ -122,7 +124,7 @@ const styles = stylex.create({
 Media Queries can, similarly, be as "conditions" within style values.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: {
@@ -140,7 +142,7 @@ Your Style Values can be be nested more than one level deep when you need to
 combine Media Queries and Pseudo Selectors
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   button: {
@@ -186,11 +188,11 @@ This kind of syntax is not possible when using Javascript objects. So in StyleX
 you can use the `firstThatWorks` function to achieve the same thing.
 
 ```tsx
-import {create, firstThatWorks} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
-const styles = create({
+const styles = stylex.create({
   header: {
-    position: firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
+    position: stylex.firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
   },
 });
 ```
@@ -261,5 +263,3 @@ const b = Math.floor(Math.random() * 255);
 
 **NOTE**: The function body _must_ be an object literal. You cannot use a
 function body with multiple statements.
-
-

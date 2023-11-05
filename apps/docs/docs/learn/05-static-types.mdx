@@ -19,6 +19,9 @@ styles.
   <TabItem value="typescript" label="Typescript" default>
 
 ```tsx
+import type {StyleXStyles} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
+
 type Props = {
   ...
   style?: StyleXStyles,
@@ -39,6 +42,9 @@ function MyComponent({style, ...otherProps}: Props): React.MixedElement {
   <TabItem value="flow" label="Flow">
 
 ```tsx
+import type {StyleXStyles} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
+
 type Props = $ReadOnly<{
   ...
   style?: StyleXStyles<>,
@@ -96,6 +102,8 @@ component but nothing else, you could write types that looked like this:
   <TabItem value="typescript" label="Typescript" default>
 
 ```tsx
+import type {StyleXStyles} from '@stylexjs/stylex';
+
 type Props = {
   // ...
   style?: StyleXStyles<{
@@ -114,6 +122,8 @@ type Props = {
   <TabItem value="flow" label="Flow">
 
 ```tsx
+import type {StyleXStyles} from '@stylexjs/stylex';
+
 type Props = $ReadOnly<{
   // ...
   style?: StyleXStyles<{
@@ -160,6 +170,8 @@ one of `0`, `4`, or `8` pixels as values, you can do that too!
   <TabItem value="typescript" label="Typescript" default>
 
 ```tsx
+import type {StyleXStyles} from '@stylexjs/stylex';
+
 type Props = {
   ...
   // Only accept styles for marginTop and nothing else.
@@ -174,6 +186,8 @@ type Props = {
   <TabItem value="flow" label="Flow">
 
 ```tsx
+import type {StyleXStyles} from '@stylexjs/stylex';
+
 type Props = $ReadOnly<{
   ...
   // Only accept styles for marginTop and nothing else.
@@ -218,6 +232,9 @@ similar to Typescript’s `Omit<>`.
   <TabItem value="typescript" label="Typescript" default>
 
 ```tsx
+import type {StyleXStylesWithout} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
+
 type NoLayout = StyleXStylesWithout<{
   postion: unknown,
   display: unknown,
@@ -269,6 +286,9 @@ function MyComponent({style, ...}: Props) {
 <TabItem value="flow" label="Flow">
 
 ```tsx
+import type {StyleXStylesWithout} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
+
 type NoLayout = StyleXStylesWithout<{
   postion: mixed,
   display: mixed,

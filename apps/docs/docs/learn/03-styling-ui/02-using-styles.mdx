@@ -184,7 +184,7 @@ Array literal instead:
 :::info Prop names are arbitrary
 
 The prop name `style` is an arbitrary name. You can choose your own prop names
-for your codebase. 
+for your codebase.
 
 We recommend using `style` when sharing your components with
 the community.
@@ -235,7 +235,7 @@ that should not be override-able after `style` to the `stylex()` or
 `stylex.props()` function call.
 
 ```tsx
-import stylex from '@stylexjs/runtime';
+import * as stylex from '@stylexjs/stylex';
 
 // Local Styles
 const styles = stylex.create({
@@ -267,6 +267,8 @@ styles for a particular property you can set it's value to `null`.
 Here is an example to remove the `color` style from a component:
 
 ```tsx
+import * as stylex from '@stylexjs/stylex';
+
 const styles = stylex.create({
   base: {
     color: null,

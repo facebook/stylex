@@ -112,9 +112,9 @@ runtime.
 This code, for example:
 
 ```tsx
-import {create, props} from 'stylex';
+import * as stylex from '@stylexjs/stylex';
 
-const styles = create({
+const styles = stylex.create({
   foo: {
     color: 'red',
   },
@@ -124,16 +124,16 @@ const styles = create({
 });
 
 function MyComponent({xstyle}) {
-  return <div {...props([styles.foo, styles.bar, xstyle])} />;
+  return <div {...stylex.props([styles.foo, styles.bar, xstyle])} />;
 }
 ```
 
 Compiles down to:
 
 ```tsx
-import {create, props} from 'stylex';
+import * as stylex from '@stylexjs/stylex';
 
-const styles = {
+const styles = stylex.create({
   foo: {
     color: 'x1e2nbdu',
     $$css: true,
@@ -142,10 +142,10 @@ const styles = {
     backgroundColor: 'x1t391ir',
     $$css: true,
   },
-};
+});
 
 function MyComponent((xstyle)) {
-  return <div {...props([styles.foo, styles.bar, xstyle])} />;
+  return <div {...stylex.props([styles.foo, styles.bar, xstyle])} />;
 }
 ```
 
@@ -218,6 +218,8 @@ component may or may not accept. You may make a component that only accepts
 `color` and `backgroundColor` but no other styles.
 
 ```ts
+import type {StyleXStyles} from '@stylexjs/stylex';
+
 type Props = {
   //...
   style?: StyleXStyles<{color?: string; backgroundColor?: string}>;
@@ -228,6 +230,8 @@ type Props = {
 In another example, you may disallow margins while allowing any other styles:
 
 ```ts
+import type {StyleXStylesWithout} from '@stylexjs/stylex';
+
 type Props = {
   //...
   style?: StyleXStylesWithout<{
@@ -267,7 +271,7 @@ far this is reflected in the following APIs:
 1. `stylex.create` abstracts away the generated classNames entirely. You deal
    with "opaque" javascript objects with strong types to indicate the styles
    they represent.
-2. `stylex.createVars` abstracts away the names of CSS variables generated. You
+2. `stylex.defineVars` abstracts away the names of CSS variables generated. You
    import and use them as constants in your styles directly. The type of values
    these variables represent is maintained in the typesystem.
 3. `stylex.keyframes` abstracts away the names of keyframe animations. Instead
@@ -282,7 +286,7 @@ StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
 been tailored to works best with React today, It's designed to be used with any
 Javascript framework that lets you author your markup in your Javacript.
 
-`stylex.props` returns an object with `className` and `style` properties. You may 
+`stylex.props` returns an object with `className` and `style` properties. You may
 need to use a wrapper function to convert this to make it work with your framework
 of choice.
 
