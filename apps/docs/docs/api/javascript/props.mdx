@@ -36,11 +36,11 @@ const styles = stylex.create({
 });
 
 <div
-  {...styles.props([
+  {...styles.props(
     styles.root,
     condition && styles.conditional,
     props.style,
     styles.dynamic(state.opacity),
-  ])}
+  )}
 />;
 ```

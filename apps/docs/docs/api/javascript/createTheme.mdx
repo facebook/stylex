@@ -33,7 +33,7 @@ const theme = stylex.createTheme(colors, {
 
 function App() {
   return (
-    <div {...stylex.props([theme /* , ... */])}>
+    <div {...stylex.props(theme /* , ... */)}>
       <ContentToBeThemed />
     </div>
   );

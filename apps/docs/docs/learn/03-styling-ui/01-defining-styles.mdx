@@ -230,36 +230,32 @@ sufficient.
 
 StyleX generates all styles at compile-time which means you need to _know_ all
 those styles ahead of time as well. But sometimes you just don't know what you
-will need until runtime. For example, you may be styling a bar chart where the
-bar changes colors based on the data.
+will need until runtime.
 
-Usually, you need to resort to using inline styles for something like this. This
-comes with some big downsides, including:
+For such situations, you can define your styles as a function instead of an object
+and pass in the dynamic components of the needed styles as parameters.
 
-- Inability to use pseudo-classes or media queries
-- Inline Styles have a much higher specificity and overriding them with static
-  styles can be problematic.
+**NOTE**: The function body _must_ be an object literal. You cannot use a
+function body with multiple statements.
 
-StyleX provides a way to define styles that can have dynamic values resolved at
-runtime by using functions instead of objects to define styles.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
-  base: (r, g, b) => ({
-    fontSize: 16,
-    lineHeight: 1.5,
-    color: `rgb(${r},${g},${b})`,
+  bar: (height) => ({
+    height,
   }),
 });
 
-const r = Math.floor(Math.random() * 255);
-const g = Math.floor(Math.random() * 255);
-const b = Math.floor(Math.random() * 255);
+function MyComponent() {
+  // The value of `height` cannot be known at compile time.
+  const [height, setHeight] = useState(10);
 
-<div {...stylex.props([styles.base(r, g, b)])} />;
+  return <div {...stylex.props(styles.bar(height))} />;
+}
 ```
 
-**NOTE**: The function body _must_ be an object literal. You cannot use a
-function body with multiple statements.
+Behind the scenes, will generate static styles that depend on a CSS variable
+and set the value of that variable at runtime. This means, that any part of your
+styles can be dynamic, including within Media Queries and Pseudo Classes.

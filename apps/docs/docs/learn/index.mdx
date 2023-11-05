@@ -9,34 +9,38 @@ apps.
 
 ## Features at a glance
 
-### Expressive
+### Predictable
 
-- Easy-to-use API
+- Style Encapsulation - All styles are caused by classNames applied directly set
+  on an element
+- No specificity issues
+- “The last style applied always wins!”
+
+### Scalable
+
+- Minimize CSS output with atomic CSS
+- The CSS size plateaus even as the number of components grows.
+- Styles remain readable and maintainable within growing codebases.
+
+### Flexible & Composable
+
 - Apply styles conditionally
 - Merge and compose arbitrary styles across component and file boundaries.
 - Use local constants and expressions to keep your styles DRY
   - Or repeat yourself without worrying about performance
-- Use dynamic styles when needed with minimal overhead.
-- Easy yet flexible APIs for defining and using variables
 
-### Predictable
+### Static & Fast
 
-- "The last style applied always wins!" - StyleX will always give you
-  predictable results
-  - No need to worry about using CSS shorthands vs specific styles
-  - No need to think about the selector specificity of Media Queries or Pseudo
-    Classes
-- Style Encapsulation - All styles are caused by classNames applied directly set
-  on an element
-  - Complex selectors never "style at a distance"
+- No runtime style injections
+- All styles are bundled in a static CSS file at compile-time
+- Optimized runtime for merging class names.
 
-### Fast
+### Type-Safe
 
-- StyleX compiles styles to atomic CSS rules.
-- StyleX generates a minimimal set of rules and eliminates unused styling code.
-- StyleX generates CSS at build time and produces a single CSS file.
-- StyleX avoids runtime style injection, and avoids sources of runtime style
-  recalculation.
+- Type-safe APIs
+- Type-safe styles
+- Type-safe theming
+- Type-safe style props
 
 ## StyleX in 5 minutes
 
@@ -105,7 +109,7 @@ import * as stylex from '@stylexjs/stylex';
 const styles = stylex.create({ ... });
 
 function ReactDiv({ color, isActive, style }) {
-  return <div {...stylex.props([
+  return <div {...stylex.props(
     styles.main,
     // apply styles conditionally
     isActive && styles.active,
@@ -113,7 +117,7 @@ function ReactDiv({ color, isActive, style }) {
     colorStyles[color]
     // styles passed as props
     style,
-  ])} />;
+  )} />;
 }
 ```
 
@@ -148,7 +152,7 @@ export default function EnhanceDiv({ html, state }) {
   const stylesObj = style ? JSON.parse(style) : null;
 
   return html`
-    <div ${spread(stylex.props([
+    <div ${spread(stylex.props(
       styles.main,
       // apply styles conditionally
       isActive && styles.active,
@@ -156,7 +160,7 @@ export default function EnhanceDiv({ html, state }) {
       colorStyles[color],
       // styles passed as arguments
       stylesObj
-    ]))}>
+    ))}>
       <slot></slot>
     </div>
   `;

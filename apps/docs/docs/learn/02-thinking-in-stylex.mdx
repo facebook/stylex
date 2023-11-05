@@ -15,6 +15,18 @@ your decision to decide if StyleX is the right solution for you.
 
 These principles should also be helpful when designing new APIs for StyleX.
 
+### Co-location
+
+There are benefits to making your code DRY, but we don't think that's true when
+it comes to writing your styles.
+
+The best and most readable way to write your styles is to write them in the same
+file as the markup where you use them. Repeating yourself is not a bad thing
+when it comes to styles.
+
+StyleX is designed to let you author, apply and reason about your styles
+locally.
+
 ### Deterministic resolution
 
 CSS is a powerful and extremely expressive language. However, it can sometimes
@@ -65,8 +77,8 @@ Here's how this plays out in practice:
 
 If you authors styles within a file and then consume all those styles in the
 same file, the cost of StyleX is zero. This is because in addition to compiling
-away your `stylex.create` calls, StyleX also compiles away your `stylex.props` calls
-when possible.
+away your `stylex.create` calls, StyleX also compiles away your `stylex.props`
+calls when possible.
 
 So,
 
@@ -93,7 +105,9 @@ let a = {className: 'x1e2nbdu'};
 <TabItem label="CSS Output" value="css-output">
 
 ```css
-.x1e2nbdu {color: red}
+.x1e2nbdu {
+  color: red;
+}
 ```
 
 </TabItem>
@@ -124,7 +138,7 @@ const styles = stylex.create({
 });
 
 function MyComponent({xstyle}) {
-  return <div {...stylex.props([styles.foo, styles.bar, xstyle])} />;
+  return <div {...stylex.props(styles.foo, styles.bar, xstyle)} />;
 }
 ```
 
@@ -145,7 +159,7 @@ const styles = stylex.create({
 });
 
 function MyComponent((xstyle)) {
-  return <div {...stylex.props([styles.foo, styles.bar, xstyle])} />;
+  return <div {...stylex.props(styles.foo, styles.bar, xstyle)} />;
 }
 ```
 
@@ -155,7 +169,7 @@ because of how fast the `stylex()` and `stylex.props()` functions are.
 Most other styling solutions don't enable composition of styles across file
 boundaries. The state of the art is to combine lists of classNames.
 
-### Small API Surfaces
+### Small API Surface
 
 Our goal is to make StyleX feel simple and obvious. As such we don't want to
 invent too many APIs. Instead, we want to be able to lean on common Javascript
@@ -169,28 +183,13 @@ At it's core StyleX can be boiled down to just two functions:
 You use `stylex.create` to create a bunch of styles and then you use
 `stylex.props` to apply those styles to an element.
 
-Other than the fact that `stylex.create` takes static values, you don't really
-need to learn anything else about how StyleX works. Things work the way you
-expect when dealing with JavaScript objects and arrays. No surprises.
-
 Within these two functions, we choose to rely on common JS patterns rather than
 introduce unique API or patterns for StyleX. e.g. we don't have an API for
 conditional styles. Instead we let you apply styles conditionally with a `&&`
-boolean expression or ternary expressions. For variants, we recommend using a
-computed key access on the styles object. `styles[variant]`.
+boolean expression or ternary expressions.
 
-### Co-location of Styles and Markup
-
-There are benefits to making your code DRY, but we don't think that's true when
-it comes to writing your styles.
-
-The best and most readable way to write your styles is to write them in the same
-file as the markup where you use them. Repeating yourself is not a bad thing
-when it comes to styles.
-
-StyleX enables you to write your styles in every file where you use them and
-repeat yourself as many times as you want and it automatically de-duplicates all
-the generated CSS to give you the smallest CSS bundle possible.
+Things work the way you expect when dealing with JavaScript objects and arrays.
+No surprises.
 
 ### Type-Safe styles
 
@@ -286,11 +285,11 @@ StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
 been tailored to works best with React today, It's designed to be used with any
 Javascript framework that lets you author your markup in your Javacript.
 
-`stylex.props` returns an object with `className` and `style` properties. You may
-need to use a wrapper function to convert this to make it work with your framework
-of choice.
+`stylex.props` returns an object with `className` and `style` properties. You
+may need to use a wrapper function to convert this to make it work with your
+framework of choice.
 
-### Encapsulation over Expressivity
+### Encapsulation
 
 > All styles on an element should be caused by classNames on that element
 > itself.
@@ -442,9 +441,9 @@ StyleX is a CSS-in-JS library, which means that it is most useful when you are
 authoring your UI in Javascript. If you're using a framework such as `React`,
 `Preact`, `Solid`, `lit-html`, or `Angular`, using StyleX should be a breeze.
 
-Some frameworks, such as Svelte and Vue use custom file formats that are compiled
-to Javascript at build time. StyleX can still be used in these frameworks, but
-may need some extra configuration.
+Some frameworks, such as Svelte and Vue use custom file formats that are
+compiled to Javascript at build time. StyleX can still be used in these
+frameworks, but may need some extra configuration.
 
 There are also UI solutions such as `htmx` and various templating engines where
 you author your markup in files that can't contain arbitrary Javascript. Even if
@@ -472,6 +471,6 @@ that are completely unstyled.
 StyleX finally lets you build UI components that can have default styles _and_
 still be customizable.
 
-Further, the consistency enables sharing these components by publishing them to NPM.
-As long as the consumer of your component is also using StyleX, the styles will
-be merged and composed correctly without any additional configuration.
+Further, the consistency enables sharing these components by publishing them to
+NPM. As long as the consumer of your component is also using StyleX, the styles
+will be merged and composed correctly without any additional configuration.

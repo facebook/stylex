@@ -12,6 +12,7 @@ import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
+import Link from '@docusaurus/Link';
 
 const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
@@ -40,11 +41,11 @@ const styles = stylex.create({
 
 const STEP_USE = `import stylex from '@stylexjs/stylex';
 
-const HelloWorld = (props) => (
-  <div {...stylex.props([
+const HelloWorld = ({style}) => (
+  <div {...stylex.props(
     styles.hello,
-    props.world
-  ])} >
+    style
+  )} >
     🎉
   </div>
 )
@@ -97,6 +98,18 @@ export default function Home() {
             </span>{' '}
             user-interfaces.
           </h2>
+          <section {...stylex.props(styles.ctaSection)}>
+            <Link
+              {...stylex.props(styles.cta)}
+              to="/docs/learn/#defining-styles">
+              Learn →
+            </Link>
+            <Link
+              {...stylex.props(styles.cta, styles.ctaBlue)}
+              to="/docs/learn/installation/">
+              Get Started →
+            </Link>
+          </section>
         </section>
         <section {...stylex.props(styles.getStarted)}>
           <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
@@ -168,6 +181,50 @@ const styles = stylex.create({
     fontSize: 'clamp(1rem, 0.8rem + 5vw, 2rem)',
     textAlign: 'center',
     opacity: 0.7,
+  },
+  ctaSection: {
+    display: 'flex',
+    gap: '1rem',
+    margin: '4rem',
+  },
+  cta: {
+    borderRadius: 8,
+    color: {
+      default: 'var(--fg1)',
+      ':hover': 'var(--fg1)',
+    },
+    textDecoration: {
+      default: 'none',
+      ':hover': 'none',
+    },
+    backgroundColor: 'hsl(var(--pink-h), var(--pink-s), var(--pink-l))',
+    paddingBlock: '0.75rem',
+    paddingInline: '2rem',
+    boxShadow: {
+      default:
+        '0 0 4px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.35)',
+      ':hover':
+        '0 0 10px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.75)',
+    },
+    scale: {
+      default: '1',
+      ':hover': '1.02',
+      ':active': '0.98',
+    },
+    transitionProperty: 'scale, boxShadow',
+    transitionDuration: {
+      default: '0.2s',
+      ':active': '0.1s',
+    },
+  },
+  ctaBlue: {
+    backgroundColor: 'hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))',
+    boxShadow: {
+      default:
+        '0 0 4px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.35)',
+      ':hover':
+        '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.75)',
+    },
   },
   subtitleHighlight: {
     color: 'var(--pink)',

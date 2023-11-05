@@ -20,21 +20,19 @@ reliable, predictable and type-safe way.
 
 ### Design Inspiration
 
-The design of the theming APIs in StyleX is directly inspired by React's Context
-APIs. Similar to React's Context, CSS variables are defined globally and should
-generally have default values.
-
-Once the variables have been created, you can create "provider" to overridde the
-values for particular sub-trees within your UI.
+The design of the theming APIs in StyleX are directly inspired by React's
+Context APIs. Variables are defined with default values similar to how React
+Contexts are created, and themes can be created to “provide” different values
+for these variables for UI sub-trees.
 
 ## Defining Variables
 
-You define variables by using the `stylex.defineVars` function:
+A group of variables are defined using the `stylex.defineVars` function:
 
 ```tsx title="tokens.stylex.js"
 import * as stylex from '@stylexjs/stylex';
 
-export const colors = stylex.defineVars({
+export const tokens = stylex.defineVars({
   primaryText: 'black',
   secondaryText: '#333',
   accent: 'blue',
@@ -46,25 +44,15 @@ export const colors = stylex.defineVars({
 });
 ```
 
-These variables are declared globally and can be used anywhere in your
-application. The values provided here are the default values for these variables
-which is what you get unless the variables are overridden.
+This function, too, is processed at compile-time and CSS variable names are
+automatically generated.
 
-This function, too, is processed at compile-time. CSS variable names are
-automatically generated during the compilation process by hashing the
-combination of:
-
-1. the file name relative to project root
-2. the variable name
-3. the object key
-
-Each of the keys in the object passed to `stylex.defineVars` points to a
-`var(--<varname>)` CSS variable after compilation.
+This defines the variables at `:root` of the HTML document. They can be imported
+as constants and used within `stylex.create` calls.
 
 ### Using Media Queries
 
-Your CSS variables can have different values depending on a media query. The API
-usage is identical to the `stylex.create()` function:
+Variables values can vary based on a media queries:
 
 ```tsx title="tokens.stylex.js"
 import * as stylex from '@stylexjs/stylex';
@@ -83,19 +71,17 @@ export const colors = stylex.defineVars({
   fontSize: '16px',
 });
 ```
-You can use `@supports` similarly.
 
-### Rules when defining variables
+Similarly, `@supports` can be used as well.
 
-CSS variables are the one exception when it comes to the rules of StyleX. You
-_can_ import CSS variables from a different file and use them when authoring
-your styles with `stylex.create`.
+## Rules when defining variables
 
-But you need to follow a few rules to make this possible:
+Variables are the only type of non-local value that can be used within a
+`stylex.create` call. This is made possible by enforcing a few rules:
 
-#### 1. CSS variables must be authored in a file with the `.stylex.js` extension
+#### 1. Variables must be defined in `.stylex.js` files
 
-You may only define CSS variables in a file with the extensions:
+Variables must be in a file with one of the following extensions:
 
 1. `.stylex.js`
 2. `.stylex.mjs`
@@ -104,9 +90,9 @@ You may only define CSS variables in a file with the extensions:
 5. `.stylex.tsx`
 6. `.stylex.jsx`
 
-#### 2. CSS variables must be exported from the file as named exports
+#### 2. Variables must be named exports
 
-Every `stylex.defineVars` call _must_ be part of a named export.
+Every `stylex.defineVars` call _must_ be a named export.
 
 ##### Allowed:
 
@@ -123,31 +109,18 @@ export const sizes = stylex.defineVars(sizeVars);
 
 ##### Not Allowed:
 
-<Tabs>
-<TabItem label="Default Export" value="default-export">
-
 ```tsx
 // ❌ - Only named exports are allowed
 export default stylex.defineVars({
   /* ... */
 });
-```
 
-</TabItem>
-<TabItem label="Alias" value="re-export">
-
-```tsx
 // ❌ - The variable must be exported directly
 const x = stylex.defineVars({
   /* ... */
 });
 export const colors = x;
-```
 
-</TabItem>
-<TabItem label="Nested" value="nested">
-
-```tsx
 // ❌ - The variables cannot be nested within another object
 export const colors = {
   foregrounds: stylex.defineVars({
@@ -159,20 +132,6 @@ export const colors = {
 };
 ```
 
-</TabItem>
-</Tabs>
-
 #### 3. No other exports are allowed in the file
 
 For now, `.stylex.js` files are exclusively for defining CSS variables.
-
-:::info
-
-StyleX _could_ work without the need for these strict rules. However, by
-enforcing these rules we can build a build pipeline with strict file boundaries
-where we can confidently cache the results of the compilation process on a
-per-file basis.
-
-With better and faster tooling, we remove these restrictions in the future.
-
-:::

@@ -14,45 +14,12 @@ subject to change.
 
 :::
 
-Once you have defined your variables in a `.stylex.js` file, you can alternate
-themes for them with different values using the `stylex.createTheme` function. 
-The providers created are the same type as the `StyleXStyles` type that is returned 
-from `stylex.create` and can be be used on any UI sub-tree in your app.
+Once variables have been defined, alternate “themes” can be created to override
+the values of those variables for specific UI sub-trees.
 
-You can only create a provider for a set of variables that have already been
-defined using the `stylex.defineVars` function. Similar to React's Context API.
+## Creating Themes
 
-## Example
-
-<Tabs>
-<TabItem label="Declaring Variables" value="var-export">
-
-```tsx title="tokens.stylex.js"
-import * as stylex from '@stylexjs/stylex';
-
-// A constant can be used to avoid repeating the media query
-const DARK = '@media (prefers-color-scheme: dark)';
-
-export const colors = stylex.defineVars({
-  primaryText: {default: 'black', [DARK]: 'white'},
-  secondaryText: {default: '#333', [DARK]: '#ccc'},
-  accent: {default: 'blue', [DARK]: 'lightblue'},
-  background: {default: 'white', [DARK]: 'black'},
-  lineColor: {default: 'gray', [DARK]: 'lightgray'},
-  borderRadius: '4px',
-  fontFamily: 'system-ui, sans-serif',
-  fontSize: '16px',
-});
-
-export const spacing = stylex.defineVars({
-  small: '4px',
-  medium: '8px',
-  large: '16px',
-});
-```
-
-</TabItem>
-<TabItem label="Variable Override Provider" value="var-override" default>
+Any variable group can imported to create a theme like so:
 
 ```tsx title="themes.js"
 import * as stylex from '@stylexjs/stylex';
@@ -74,8 +41,11 @@ export const dracula = stylex.createTheme(colors, {
 });
 ```
 
-</TabItem>
-<TabItem label="Using Variables" value="var-import">
+## Applying Themes
+
+A “theme” is a style object similar to the ones created with `stylex.create()`.
+They can be applied to an element using `stylex.props()` to override variables
+for that element and all its descendents.
 
 ```tsx title="components/MyComponent.js"
 import * as stylex from '@stylexjs/stylex';
@@ -90,33 +60,20 @@ const styles = stylex.create({
   },
 });
 
-<div {...stylex.props([dracula /*...*/])}>
-  <div {...stylex.props([styles.container])}>Hello World</div>
-</div>;
+<div {...stylex.props(dracula, styles.container)}>{children}</div>;
 ```
 
-</TabItem>
-</Tabs>
+**NOTE:** All variables in a variable group must be overridden when creating a
+theme. This choice has been to help catch accidental omissions. Even at the cost
+of occasional tedium.
 
-Unlike when you define variables, your can create these `createTheme`s anywhere
-in your codebase. Same as `stylex.create()`.
+Unlike when defining and using variables, themes can be created with
+`stylex.createTheme()` anywhere in a codebase, and passed around across files or
+components.
 
-The `createTheme` function takes two arguments, the first is the set of
-variables you want to override and the second is the set of overrides. The
-static types will ensure that you only override variables that already exist
-_and_ that you override them all.
+:::info
 
-:::tip
-
-It is not currently possible to override a subset of variables in a variable
-set. We made this decision to catch mistakes where a developer may accidentally
-forget to override a variable.
-
-To override a one-off variable, you will soon be able to use variables as *keys*
-while defining styles with `stylex.create`.
+If multiple themes for the same variable group are applied on the same HTML
+element, the last applied theme wins.
 
 :::
-
-The value returned from `stylex.createTheme` is of the `StyleXStyles` type that
-can be used in a `stylex()` or `stylex.props()` call to apply your overrides on
-an element and all its descendent element.
