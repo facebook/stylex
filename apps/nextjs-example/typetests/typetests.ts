@@ -265,7 +265,7 @@ const styles8: Readonly<{
 
 vars.accent satisfies StyleXVar<'red'>;
 
-// ts-expect-error - We want to disallow extra keys
+// @ts-expect-error - We want to disallow extra keys
 vars.accent satisfies StyleXVar<'blue'>;
 
 styles8.foo satisfies StaticStyles;

@@ -2,13 +2,9 @@ import stylex from '@stylexjs/stylex';
 import Card from './Card';
 import { globalTokens as $, spacing, text } from './globalTokens.stylex';
 
-const MEDIA_MOBILE: '@media (max-width: 700px)' = '@media (max-width: 700px)';
-const MEDIA_TABLET: '@media (min-width: 701px) and (max-width: 1120px)' =
-  '@media (min-width: 701px) and (max-width: 1120px)';
-
-const bgImage = `linear-gradient(to bottom, ${$.bgStartRGB}, ${$.calloutRGB50})`;
-const xBorderColor = `rgba(${$.calloutBorderR}, ${$.calloutBorderG}, ${$.calloutBorderB}, 0.3)`;
-const xBorderBottomColor = `rgba(${$.calloutBorderR}, ${$.calloutBorderG}, ${$.calloutBorderB}, 0.25)`;
+const MEDIA_MOBILE = '@media (max-width: 700px)' as const;
+const MEDIA_TABLET =
+  '@media (min-width: 701px) and (max-width: 1120px)' as const;
 
 const s = stylex.create({
   main: {
@@ -90,17 +86,17 @@ const s = stylex.create({
     backgroundColor: $.calloutRGB50,
     backgroundImage: {
       default: null,
-      [MEDIA_MOBILE]: bgImage,
+      [MEDIA_MOBILE]: `linear-gradient(to bottom, ${$.bgStartRGB}, ${$.calloutRGB50})`,
     },
     borderWidth: {
       default: '1px',
       [MEDIA_MOBILE]: '0',
     },
     borderStyle: 'solid',
-    borderColor: xBorderColor,
+    borderColor: `rgba(${$.calloutBorderR}, ${$.calloutBorderG}, ${$.calloutBorderB}, 0.3)`,
     borderBottomColor: {
       default: null,
-      [MEDIA_MOBILE]: xBorderBottomColor,
+      [MEDIA_MOBILE]: `rgba(${$.calloutBorderR}, ${$.calloutBorderG}, ${$.calloutBorderB}, 0.25)`,
     },
     borderRadius: {
       default: spacing.xs,

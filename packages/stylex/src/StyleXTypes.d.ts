@@ -22,7 +22,10 @@ export type StyleXClassName = StyleXClassNameFor<any, any>;
 export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
 
 declare const StyleXVarTag: unique symbol;
-export type StyleXVar<_Val> = string & typeof StyleXVarTag;
+declare class StyleXVar<out Val> extends String {
+  private _opaque: typeof StyleXVarTag;
+  private _value: Val;
+}
 
 // Strings that don't start with a dollar sign.
 // So that we can `&` with {$$css: true} without type errors.
@@ -155,11 +158,11 @@ export type VarGroup<
   Tokens extends { [key: string]: unknown },
   ID extends symbol = symbol,
 > = Readonly<{
-  [Key in keyof Tokens]: Tokens[Key] & typeof StyleXVarGroupTag;
+  [Key in keyof Tokens]: Tokens[Key];
 }> & {
   $opaqueId: ID;
   $tokens: Tokens;
-};
+} & typeof StyleXVarGroupTag;
 
 export type TokensFromVarGroup<T extends VarGroup<TTokens>> = T['$tokens'];
 

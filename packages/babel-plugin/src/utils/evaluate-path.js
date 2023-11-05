@@ -254,6 +254,16 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
+  if (pathUtils.isTSAsExpression(path)) {
+    const expr: NodePath<t.Expression> = path.get('expression');
+    return evaluateCached(expr, state);
+  }
+
+  if (path.node.type === 'TSSatisfiesExpression') {
+    const expr: NodePath<t.Expression> = (path: $FlowFixMe).get('expression');
+    return evaluateCached(expr, state);
+  }
+
   if (pathUtils.isSequenceExpression(path)) {
     const exprs = path.get('expressions');
     return evaluateCached(exprs[exprs.length - 1], state);

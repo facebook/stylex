@@ -20,7 +20,6 @@ export default function RootLayout({
 }
 
 const DARK = '@media (prefers-color-scheme: dark)';
-const fgColor = `rgba(${$.foregroundR}, ${$.foregroundG}, ${$.foregroundB}, 1)`;
 
 const styles = stylex.create({
   html: {
@@ -32,7 +31,7 @@ const styles = stylex.create({
     padding: 0,
   },
   body: {
-    color: fgColor,
+    color: `rgba(${$.foregroundR}, ${$.foregroundG}, ${$.foregroundB}, 1)`,
     backgroundImage: {
       default: 'linear-gradient(to bottom, rgb(214, 219, 220), white)',
       [DARK]: 'linear-gradient(to bottom, rgb(20, 22, 27), black)',
