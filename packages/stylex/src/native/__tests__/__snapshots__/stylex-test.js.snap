@@ -671,6 +671,23 @@ exports[`styles box-sizing: content-box: minWidth 1`] = `
 }
 `;
 
+exports[`styles box-sizing: content-box: percentageWidth 1`] = `
+{
+  "style": {
+    "padding": 10,
+    "width": "100%",
+  },
+}
+`;
+
+exports[`styles box-sizing: content-box: percentageWidthOnly 1`] = `
+{
+  "style": {
+    "width": "100%",
+  },
+}
+`;
+
 exports[`styles box-sizing: content-box: units 1`] = `
 {
   "style": {

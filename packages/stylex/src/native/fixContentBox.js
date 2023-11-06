@@ -81,7 +81,7 @@ export function fixContentBox(flatStyle: FlatStyle): FlatStyle {
   for (const styleProp of Object.keys(flatStyle)) {
     const correction = correctionMapping.get(styleProp);
     const styleValue = flatStyle[styleProp];
-    if (correction != null) {
+    if (correction != null && correction !== 0) {
       if (styleValue == null) {
         nextStyle[styleProp] = null;
         continue;

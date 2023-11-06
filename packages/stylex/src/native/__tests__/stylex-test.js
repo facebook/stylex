@@ -100,7 +100,6 @@ describe('styles', () => {
         borderWidth: 2,
         padding: 10,
         width: 100,
-
         // Properties unrelated to box sizing pass through
         overflow: 'hidden',
       },
@@ -161,6 +160,15 @@ describe('styles', () => {
         height: 50,
         width: 'auto',
       },
+      percentageWidthOnly: {
+        boxSizing: 'content-box',
+        width: '100%',
+      },
+      percentageWidth: {
+        boxSizing: 'content-box',
+        padding: 10,
+        width: '100%',
+      },
     });
     expect(stylex.props.call(mockOptions, styles.width)).toMatchSnapshot(
       'width',
@@ -187,6 +195,16 @@ describe('styles', () => {
       'allDifferent',
     );
     expect(stylex.props.call(mockOptions, styles.auto)).toMatchSnapshot('auto');
+    // percentage width (without other box properties)
+    expect(
+      stylex.props.call(mockOptions, styles.percentageWidthOnly),
+    ).toMatchSnapshot('percentageWidthOnly');
+    expect(console.warn).not.toHaveBeenCalled();
+    // percentage width (with other box properties)
+    expect(
+      stylex.props.call(mockOptions, styles.percentageWidth),
+    ).toMatchSnapshot('percentageWidth');
+    expect(console.warn).toHaveBeenCalledTimes(1);
   });
 
   test('direction', () => {
