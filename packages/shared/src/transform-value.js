@@ -22,7 +22,12 @@ export default function transformValue(
 
   // content is one of the values that needs to wrapped in quotes.
   // Users may write `''` without thinking about it, so we fix that.
-  if (key === 'content' && typeof value === 'string') {
+  if (
+    (key === 'content' ||
+      key === 'hyphenateCharacter' ||
+      key === 'hyphenate-character') &&
+    typeof value === 'string'
+  ) {
     const val = value.trim();
     if (val.match(/^attr\([a-zA-Z0-9-]+\)$/)) {
       return val;
@@ -54,11 +59,13 @@ export function getNumberSuffix(key: string): string {
 }
 
 const unitlessNumberProperties = new Set([
+  'WebkitLineClamp',
   'animationIterationCount',
   'aspectRatio',
   'borderImageOutset',
   'borderImageSlice',
   'borderImageWidth',
+  'counterSet',
   'columnCount',
   'flex', // Unsupported
   'flexGrow',
@@ -68,8 +75,12 @@ const unitlessNumberProperties = new Set([
   'gridRow',
   'gridColumn',
   'fontWeight',
+  'hyphenateLimitChars',
   'lineClamp',
   'lineHeight',
+  'maskBorderOutset',
+  'maskBorderSlice',
+  'maskBorderWidth',
   'opacity',
   'order',
   'orphans',
@@ -78,6 +89,8 @@ const unitlessNumberProperties = new Set([
   'zIndex',
   'fillOpacity',
   'floodOpacity',
+  'rotate',
+  'scale',
   'stopOpacity',
   'strokeDasharray',
   'strokeDashoffset',
@@ -85,6 +98,8 @@ const unitlessNumberProperties = new Set([
   'strokeOpacity',
   'strokeWidth',
   'scale',
+
+  'mathDepth',
 ]);
 
 // List of properties that have custom suffixes for numbers

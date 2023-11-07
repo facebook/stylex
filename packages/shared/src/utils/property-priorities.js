@@ -302,7 +302,7 @@ longHandLogical.add('font-optical-sizing');
 longHandLogical.add('font-palette');
 longHandLogical.add('font-variation-settings');
 longHandLogical.add('font-size-adjust');
-longHandLogical.add('font-smooth');
+longHandLogical.add('font-smooth'); // Non-standard
 longHandLogical.add('font-synthesis-position');
 longHandLogical.add('font-synthesis-small-caps');
 longHandLogical.add('font-synthesis-style');
@@ -436,7 +436,7 @@ longHandPhysical.add('right');
 
 longHandLogical.add('clear');
 longHandLogical.add('float');
-longHandLogical.add('overlay');
+// longHandLogical.add('overlay');
 longHandLogical.add('position');
 longHandLogical.add('z-index');
 
@@ -474,14 +474,14 @@ longHandLogical.add('scroll-padding-inline-end');
 longHandPhysical.add('scroll-padding-right');
 
 longHandLogical.add('scroll-snap-align');
-longHandLogical.add('scroll-snap-coordinate');
-longHandLogical.add('scroll-snap-destination');
-longHandLogical.add('scroll-snap-points-x');
-longHandLogical.add('scroll-snap-points-y');
+// longHandLogical.add('scroll-snap-coordinate');
+// longHandLogical.add('scroll-snap-destination');
+// longHandLogical.add('scroll-snap-points-x');
+// longHandLogical.add('scroll-snap-points-y');
 longHandLogical.add('scroll-snap-stop');
 shorthandsOfLonghands.add('scroll-snap-type');
-longHandLogical.add('scroll-snap-type-x');
-longHandLogical.add('scroll-snap-type-y');
+// longHandLogical.add('scroll-snap-type-x');
+// longHandLogical.add('scroll-snap-type-y');
 
 // CSS Scrollbars
 longHandLogical.add('scrollbar-color');
@@ -539,7 +539,7 @@ longHandLogical.add('text-transform');
 longHandLogical.add('text-wrap');
 longHandLogical.add('white-space');
 longHandLogical.add('white-space-collapse');
-longHandLogical.add('white-space-trim');
+// longHandLogical.add('white-space-trim');
 longHandLogical.add('word-break');
 longHandLogical.add('word-spacing');
 longHandLogical.add('word-wrap');
@@ -558,7 +558,7 @@ longHandLogical.add('translate');
 
 // CSS Transitions
 shorthandsOfLonghands.add('transition');
-longHandLogical.add('transition-behavior');
+// longHandLogical.add('transition-behavior');
 longHandLogical.add('transition-delay');
 longHandLogical.add('transition-duration');
 longHandLogical.add('transition-property');

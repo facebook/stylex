@@ -109,67 +109,66 @@ const shorthands = {
 
   // These will be removed later, matching the properties with React Native.
   // For now, we're compiling them to the React Native properties.
-  // @Deprecated
-  border: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`border` shorthand is not supported. Use `borderWidth`, `borderStyle` and `borderColor` instead.',
-    );
-  },
-  borderInline: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`borderInline` shorthand is not supported. Use `borderInlineWidth`, `borderInlineStyle` and `borderInlineColor` instead.',
-    );
-  },
-  // @Deprecated
-  borderBlock: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`borderBlock` shorthand is not supported. Use `borderBlockWidth`, `borderBlockStyle` and `borderBlockColor` instead.',
-    );
-  },
+  border: (rawValue: TStyleValue): TReturn => [
+    ['border', rawValue],
+    ...shorthands.borderWidth(null),
+    ...shorthands.borderStyle(null),
+    ...shorthands.borderColor(null),
+  ],
+  borderInline: (rawValue: TStyleValue): TReturn => [
+    ['borderInline', rawValue],
+    ...shorthands.borderInlineWidth(null),
+    ...shorthands.borderInlineStyle(null),
+    ...shorthands.borderInlineColor(null),
+  ],
+  borderBlock: (rawValue: TStyleValue): TReturn => [
+    ['borderBlock', rawValue],
+    ...shorthands.borderBlockWidth(null),
+    ...shorthands.borderBlockStyle(null),
+    ...shorthands.borderBlockColor(null),
+  ],
 
+  borderTop: (rawValue: TStyleValue): TReturn => [
+    ['borderTop', rawValue],
+    ['borderTopWidth', null],
+    ['borderTopStyle', null],
+    ['borderTopColor', null],
+  ],
   // @Deprecated
-  borderTop: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      [
-        '`borderTop` is not supported.',
-        'Use `borderTopWidth`, `borderTopStyle` and `borderTopColor`,',
-      ].join(' '),
-    );
-  },
+  borderInlineEnd: (rawValue: TStyleValue): TReturn => [
+    ['borderInlineEnd', rawValue],
+    ...shorthands.borderInlineEndWidth(null),
+    ...shorthands.borderInlineEndStyle(null),
+    ...shorthands.borderInlineEndColor(null),
+  ],
   // @Deprecated
-  borderInlineEnd: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`borderInlineEnd` shorthand is not supported. Use `borderInlineEndWidth`, `borderInlineEndStyle` and `borderInlineEndColor` instead.',
-    );
-  },
+  borderRight: (rawValue: TStyleValue): TReturn => [
+    ['borderRight', rawValue],
+    ...shorthands.borderRightWidth(null),
+    ...shorthands.borderRightStyle(null),
+    ...shorthands.borderRightColor(null),
+  ],
   // @Deprecated
-  borderRight: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`borderRight` shorthand is not supported. Use `borderRightWidth`, `borderRightStyle` and `borderRightColor` instead.',
-    );
-  },
+  borderBottom: (rawValue: TStyleValue): TReturn => [
+    ['borderBottom', rawValue],
+    ['borderBottomWidth', null],
+    ['borderBottomStyle', null],
+    ['borderBottomColor', null],
+  ],
   // @Deprecated
-  borderBottom: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`borderBottom` shorthand is not supported. Use `borderBottomWidth`, `borderBottomStyle` and `borderBottomColor` instead.',
-    );
-  },
+  borderInlineStart: (_rawValue: TStyleValue): TReturn => [
+    ['borderInlineStart', null],
+    ...shorthands.borderInlineStartWidth(null),
+    ...shorthands.borderInlineStartStyle(null),
+    ...shorthands.borderInlineStartColor(null),
+  ],
   // @Deprecated
-  borderInlineStart: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      '`borderInlineStart` shorthand is not supported. Use `borderInlineStartWidth`, `borderInlineStartStyle` and `borderInlineStartColor` instead.',
-    );
-  },
-  // @Deprecated
-  borderLeft: (_rawValue: TStyleValue): TReturn => {
-    throw new Error(
-      [
-        '`borderLeft` is not supported.',
-        'You could use `borderLeftWidth`, `borderLeftStyle` and `borderLeftColor`,',
-        'but it is preferable to use `borderInlineStartWidth`, `borderInlineStartStyle` and `borderInlineStartColor`.',
-      ].join(' '),
-    );
-  },
+  borderLeft: (_rawValue: TStyleValue): TReturn => [
+    ['borderLeft', null],
+    ...shorthands.borderLeftWidth(null),
+    ...shorthands.borderLeftStyle(null),
+    ...shorthands.borderLeftColor(null),
+  ],
   borderInlineWidth: (rawValue: TStyleValue): TReturn => [
     ['borderInlineWidth', rawValue],
     ['borderInlineStartWidth', null],

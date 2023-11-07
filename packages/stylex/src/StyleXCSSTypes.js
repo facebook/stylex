@@ -474,10 +474,6 @@ type MsOverflowStyle =
   | '-ms-autohiding-scrollbar';
 type objectFit = 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
 type objectPosition = string;
-type offsetBlockEnd = string;
-type offsetBlockStart = string;
-type offsetInlineEnd = string;
-type offsetInlineStart = string;
 type opacity = number;
 type order = number;
 type orphans = number;
@@ -488,7 +484,6 @@ type outlineStyle = 'auto' | brStyle;
 type outlineWidth = borderWidth;
 type overflow = 'visible' | 'hidden' | 'scroll' | 'auto';
 type overflowAnchor = 'auto' | 'none';
-type overflowClipBox = 'padding-box' | 'content-box';
 type overflowWrap = 'normal' | 'break-word';
 type overflowX = 'visible' | 'hidden' | 'scroll' | 'auto';
 type overflowY = 'visible' | 'hidden' | 'scroll' | 'auto';
@@ -878,14 +873,38 @@ export type CSSProperties = $ReadOnly<{
   WebkitAppearance?: null | appearance,
   WebkitFontSmoothing?: null | 'antialiased',
   WebkitTapHighlightColor?: null | color,
+
+  WebkitBoxOrient?:
+    | null
+    | 'vertical'
+    | 'horizontal'
+    | 'inline-axis'
+    | 'block-axis',
+  WebkitLineClamp?: null | number,
   // ENDOF ...$Exact<SupportedVendorSpecificCSSProperties>,
 
+  accentColor?: null | color,
+
   aspectRatio?: null | number | string,
+
+  placeContent?: null | string,
   alignContent?: null | alignContent,
+  justifyContent?: null | justifyContent,
+  placeItems?: null | string,
   alignItems?: null | alignItems,
+  justifyItems?: null | justifyItems,
   alignSelf?: null | alignSelf,
+  justifySelf?: null | justifySelf,
+
   alignmentBaseline?: null | alignmentBaseline,
-  all?: null | all,
+  alignTracks?: null | string,
+  justifyTracks?: null | string,
+  masonryAutoFlow?: null | string,
+
+  // Not Allowed:
+  // all?: null | all,
+  animation?: null | string,
+  animationComposition?: null | string,
   animationDelay?: null | OptionalArray<animationDelay>,
   animationDirection?: null | OptionalArray<animationDirection>,
   animationDuration?: null | OptionalArray<animationDuration>,
@@ -894,9 +913,16 @@ export type CSSProperties = $ReadOnly<{
   animationName?: null | OptionalArray<animationName>,
   animationPlayState?: null | OptionalArray<animationPlayState>,
   animationTimingFunction?: null | OptionalArray<animationTimingFunction>,
+  animationTimeline?: null | string,
+  animationRange?: null | string,
+  animationRangeStart?: null | string,
+  animationRangeEnd?: null | string,
   appearance?: null | appearance,
+  azimuth?: null | string,
+
   backdropFilter?: null | backdropFilter,
   backfaceVisibility?: null | backfaceVisibility,
+  background?: null | string,
   backgroundAttachment?: null | OptionalArray<backgroundAttachment>,
   backgroundBlendMode?: null | OptionalArray<backgroundBlendMode>,
   backgroundClip?: null | OptionalArray<backgroundClip>,
@@ -912,6 +938,10 @@ export type CSSProperties = $ReadOnly<{
   behavior?: null | behavior,
   blockSize?: null | blockSize,
   border?: null | border,
+  borderBlock?: null | borderBlockEnd,
+  borderBlockColor?: null | borderBlockEndColor,
+  borderBlockStyle?: null | borderBlockEndStyle,
+  borderBlockWidth?: null | borderBlockEndWidth,
   borderBlockEnd?: null | borderBlockEnd,
   borderBlockEndColor?: null | borderBlockEndColor,
   borderBlockEndStyle?: null | borderBlockEndStyle,
@@ -922,10 +952,6 @@ export type CSSProperties = $ReadOnly<{
   borderBlockStartWidth?: null | borderBlockStartWidth,
   borderBottom?: null | border,
   borderBottomColor?: null | color,
-  borderBottomEndRadius?: null | borderBottomRightRadius,
-  borderBottomLeftRadius?: null | borderBottomLeftRadius,
-  borderBottomRightRadius?: null | borderBottomRightRadius,
-  borderBottomStartRadius?: null | borderBottomLeftRadius,
   borderBottomStyle?: null | borderBottomStyle,
   borderBottomWidth?: null | borderBottomWidth,
   borderCollapse?: null | borderCollapse,
@@ -940,6 +966,10 @@ export type CSSProperties = $ReadOnly<{
   borderImageSlice?: null | borderImageSlice,
   borderImageSource?: null | borderImageSource,
   borderImageWidth?: null | borderImageWidth,
+  borderInline?: null | borderInlineEnd,
+  borderInlineColor?: null | borderInlineEndColor,
+  borderInlineStyle?: null | borderInlineEndStyle,
+  borderInlineWidth?: null | borderInlineEndWidth,
   borderInlineEnd?: null | borderInlineEnd,
   borderInlineEndColor?: null | borderInlineEndColor,
   borderInlineEndStyle?: null | borderInlineEndStyle,
@@ -952,7 +982,6 @@ export type CSSProperties = $ReadOnly<{
   borderLeftColor?: null | borderLeftColor,
   borderLeftStyle?: null | borderLeftStyle,
   borderLeftWidth?: null | borderLeftWidth,
-  borderRadius?: null | borderRadius,
   borderRight?: null | border,
   borderRightColor?: null | borderRightColor,
   borderRightStyle?: null | borderRightStyle,
@@ -965,10 +994,17 @@ export type CSSProperties = $ReadOnly<{
   borderStyle?: null | borderStyle,
   borderTop?: null | border,
   borderTopColor?: null | color,
-  borderTopEndRadius?: null | borderTopRightRadius,
+
+  borderRadius?: null | borderRadius,
+  borderEndStartRadius?: null | borderBottomLeftRadius,
+  borderStartStartRadius?: null | borderTopLeftRadius,
+  borderStartEndRadius?: null | borderTopRightRadius,
+  borderEndEndRadius?: null | borderBottomRightRadius,
   borderTopLeftRadius?: null | borderTopLeftRadius,
   borderTopRightRadius?: null | borderTopRightRadius,
-  borderTopStartRadius?: null | borderTopLeftRadius,
+  borderBottomLeftRadius?: null | borderBottomLeftRadius,
+  borderBottomRightRadius?: null | borderBottomRightRadius,
+
   borderTopStyle?: null | borderTopStyle,
   borderTopWidth?: null | borderTopWidth,
   borderWidth?: null | borderWidth,
@@ -987,26 +1023,60 @@ export type CSSProperties = $ReadOnly<{
   breakAfter?: null | breakAfter,
   breakBefore?: null | breakBefore,
   breakInside?: null | breakInside,
+
   captionSide?: null | captionSide,
+  caret?: null | string,
+  caretColor?: null | color,
+  caretShape?: null | string,
   clear?: null | clear,
   clip?: null | clip,
   clipPath?: null | clipPath,
   clipRule?: null | clipRule,
   color?: null | color,
+
+  colorScheme?:
+    | null
+    | 'normal'
+    | 'light'
+    | 'dark'
+    | 'light dark'
+    | 'only light'
+    | 'only dark',
+  forcedColorAdjust?: null | 'auto' | 'none',
+  printColorAdjust?: null | 'economy' | 'exact',
+
+  columns?: null | columns,
   columnCount?: null | columnCount,
-  columnFill?: null | columnFill,
-  columnGap?: null | columnGap,
+  columnWidth?: null | columnWidth,
+
   columnRule?: null | columnRule,
   columnRuleColor?: null | columnRuleColor,
   columnRuleStyle?: null | columnRuleStyle,
   columnRuleWidth?: null | columnRuleWidth,
+
+  columnFill?: null | columnFill,
+  columnGap?: null | columnGap,
   columnSpan?: null | columnSpan,
-  columnWidth?: null | columnWidth,
-  columns?: null | columns,
+
   contain?: null | contain,
+  containIntrinsicSize?: null | number | string,
+  containIntrinsicBlockSize?: null | number | string,
+  containIntrinsicInlineSize?: null | number | string,
+  containIntrinsicHeightSize?: null | number | string,
+  containIntrinsicWidthSize?: null | number | string,
+
+  container?: null | string,
+  containerName?: null | string,
+  containerType?: null | 'size' | 'inline-size' | 'normal',
+
+  contentVisibility?: null | 'visible' | 'hidden' | 'auto',
+
   content?: null | content,
+
   counterIncrement?: null | counterIncrement,
   counterReset?: null | counterReset,
+  counterSet?: null | string | number,
+
   cue?: null | cue,
   cueAfter?: null | cueAfter,
   cueBefore?: null | cueBefore,
@@ -1031,6 +1101,8 @@ export type CSSProperties = $ReadOnly<{
   flexShrink?: null | flexShrink,
   flexWrap?: null | flexWrap,
   float?: null | float,
+
+  font?: null | string,
   fontFamily?: null | fontFamily,
   fontFeatureSettings?: null | fontFeatureSettings,
   fontKerning?: null | fontKerning,
@@ -1040,6 +1112,11 @@ export type CSSProperties = $ReadOnly<{
   fontStretch?: null | fontStretch,
   fontStyle?: null | fontStyle,
   fontSynthesis?: null | fontSynthesis,
+  fontSynthesisWeight?: null | 'auto' | 'none',
+  fontSynthesisStyle?: null | 'auto' | 'none',
+  fontSynthesisSmallCaps?: null | 'auto' | 'none',
+  fontSynthesisPosition?: null | 'auto' | 'none',
+
   fontVariant?: null | fontVariant,
   fontVariantAlternates?: null | fontVariantAlternates,
   fontVariantCaps?: null | fontVariantCaps,
@@ -1048,6 +1125,15 @@ export type CSSProperties = $ReadOnly<{
   fontVariantNumeric?: null | fontVariantNumeric,
   fontVariantPosition?: null | fontVariantPosition,
   fontWeight?: null | fontWeight,
+  // fontHeight?: null | number | string,
+  // fontWidth?: null | number | string,
+  fontFeatureSettings?: null | string,
+  fontKerning?: null | 'auto' | 'normal' | 'none',
+  fontLanguageOverride?: null | string,
+  fontOpticalSizing?: null | 'auto' | 'none',
+  fontPalette?: null | 'light' | 'dark' | string,
+  fontVariationSettings?: null | string,
+
   gap?: null | gap,
   glyphOrientationHorizontal?: null | glyphOrientationHorizontal,
   glyphOrientationVertical?: null | glyphOrientationVertical,
@@ -1069,41 +1155,70 @@ export type CSSProperties = $ReadOnly<{
   gridTemplateAreas?: null | gridTemplateAreas,
   gridTemplateColumns?: null | gridTemplateColumns,
   gridTemplateRows?: null | gridTemplateRows,
-  height?: null | number | string,
+
+  hangingPunctuation?: null | string,
+  hyphenateCharacter?: null | string,
+  hyphenateLimitChars?: null | string | number,
   hyphens?: null | hyphens,
+
+  height?: null | number | string,
+
   imageOrientation?: null | imageOrientation,
   imageRendering?: null | imageRendering,
   imageResolution?: null | imageResolution,
   imeMode?: null | imeMode,
+  // inputSecurity?: null | string,
   initialLetter?: null | initialLetter,
   initialLetterAlign?: null | initialLetterAlign,
   inlineSize?: null | inlineSize,
+
+  inset?: null | number | string,
+  insetBlock?: null | number | string,
+  insetBlockEnd?: null | number | string,
+  insetBlockStart?: null | number | string,
+  insetInline?: null | number | string,
+  insetInlineEnd?: null | number | string,
+  insetInlineStart?: null | number | string,
+
   isolation?: null | isolation,
-  justifyContent?: null | justifyContent,
-  justifyItems?: null | justifyItems,
-  justifySelf?: null | justifySelf,
   kerning?: null | kerning,
   left?: null | number | string,
   letterSpacing?: null | letterSpacing,
   lineBreak?: null | lineBreak,
   lineHeight?: null | lineHeight,
+  lineHeightStep?: null | number | string,
   listStyle?: null | listStyle,
   listStyleImage?: null | listStyleImage,
   listStylePosition?: null | listStylePosition,
   listStyleType?: null | listStyleType,
   margin?: null | margin,
+  marginBlock?: null | marginBlockEnd,
   marginBlockEnd?: null | marginBlockEnd,
   marginBlockStart?: null | marginBlockStart,
   marginBottom?: null | marginBottom,
   marginEnd?: null | marginRight,
+  // @deprecated
   marginHorizontal?: null | marginLeft,
+  marginInline?: null | marginInlineEnd,
   marginInlineEnd?: null | marginInlineEnd,
   marginInlineStart?: null | marginInlineStart,
   marginLeft?: null | marginLeft,
   marginRight?: null | marginRight,
   marginStart?: null | marginLeft,
   marginTop?: null | marginTop,
+  // @deprecated
   marginVertical?: null | marginTop,
+
+  marginTrim?:
+    | null
+    | 'none'
+    | 'block'
+    | 'block-start'
+    | 'block-end'
+    | 'inline'
+    | 'inline-start'
+    | 'inline-end',
+
   marker?: null | marker,
   markerEnd?: null | markerEnd,
   markerMid?: null | markerMid,
@@ -1119,6 +1234,15 @@ export type CSSProperties = $ReadOnly<{
   maskRepeat?: null | maskRepeat,
   maskSize?: null | maskSize,
   maskType?: null | maskType,
+
+  maskBorder?: null | string,
+  maskBorderMode?: null | 'alpha' | 'luminance',
+  maskBorderOutset?: null | string | number,
+  maskBorderRepeat?: null | 'stretch' | 'repeat' | 'round' | 'space',
+  maskBorderSlice?: null | string | number,
+  maskBorderSource?: null | string,
+  maskBorderWidth?: null | string | number,
+
   maxBlockSize?: null | maxBlockSize,
   maxHeight?: null | maxHeight,
   maxInlineSize?: null | maxInlineSize,
@@ -1135,10 +1259,14 @@ export type CSSProperties = $ReadOnly<{
   MsOverflowStyle?: null | MsOverflowStyle,
   objectFit?: null | objectFit,
   objectPosition?: null | objectPosition,
-  offsetBlockEnd?: null | offsetBlockEnd,
-  offsetBlockStart?: null | offsetBlockStart,
-  offsetInlineEnd?: null | offsetInlineEnd,
-  offsetInlineStart?: null | offsetInlineStart,
+
+  offset?: null | string,
+  offsetAnchor?: null | string,
+  offsetDistance?: null | string | number,
+  offsetPath?: null | string,
+  offsetPosition?: null | string,
+  offsetRotate?: null | string,
+
   opacity?: null | opacity,
   order?: null | order,
   orphans?: null | orphans,
@@ -1147,18 +1275,32 @@ export type CSSProperties = $ReadOnly<{
   outlineOffset?: null | outlineOffset,
   outlineStyle?: null | outlineStyle,
   outlineWidth?: null | outlineWidth,
+
   overflow?: null | overflow,
-  overflowAnchor?: null | overflowAnchor,
-  overflowClipBox?: null | overflowClipBox,
-  overflowWrap?: null | overflowWrap,
+  overflowBlock?: null | overflowY,
+  overflowBlockX?: null | overflowX,
   overflowX?: null | overflowX,
   overflowY?: null | overflowY,
+
+  overflowAnchor?: null | overflowAnchor,
+  // overflowClipBox?: null | overflowClipBox,
+  overflowClipMargin?: null | string,
+
+  overflowWrap?: null | overflowWrap,
+
   overscrollBehavior?: null | overscrollBehavior,
-  overscrollBehaviorX?: null | overscrollBehaviorX,
+  overscrollBehaviorBlock?: null | overscrollBehaviorY,
   overscrollBehaviorY?: null | overscrollBehaviorY,
+  overscrollBehaviorInline?: null | overscrollBehaviorX,
+  overscrollBehaviorX?: null | overscrollBehaviorX,
+
   padding?: null | padding,
+  paddingBlock?: null | paddingBlockEnd,
   paddingBlockEnd?: null | paddingBlockEnd,
   paddingBlockStart?: null | paddingBlockStart,
+  paddingInline?: null | paddingBlockEnd,
+  paddingInlineEnd?: null | paddingBlockEnd,
+  paddingInlineStart?: null | paddingBlockStart,
   paddingBottom?: null | paddingBottom,
   paddingEnd?: null | paddingBottom,
   paddingHorizontal?: null | paddingLeft,
@@ -1167,9 +1309,21 @@ export type CSSProperties = $ReadOnly<{
   paddingStart?: null | paddingLeft,
   paddingTop?: null | paddingTop,
   paddingVertical?: null | paddingTop,
+
+  page?: null | string,
   pageBreakAfter?: null | pageBreakAfter,
   pageBreakBefore?: null | pageBreakBefore,
   pageBreakInside?: null | pageBreakInside,
+  paintOrder?:
+    | null
+    | 'normal'
+    | 'stroke'
+    | 'fill'
+    | 'markers'
+    | 'stroke fill'
+    | 'stroke markers'
+    | 'fill markers'
+    | 'stroke fill markers',
   pause?: null | pause,
   pauseAfter?: null | pauseAfter,
   pauseBefore?: null | pauseBefore,
@@ -1184,16 +1338,54 @@ export type CSSProperties = $ReadOnly<{
   restBefore?: null | restBefore,
   right?: null | number | string,
   rowGap?: null | rowGap,
+
+  // Ruby properties.
   rubyAlign?: null | rubyAlign,
   rubyMerge?: null | rubyMerge,
   rubyPosition?: null | rubyPosition,
+  // Math properties
+  mathDepth?: null | number | string,
+  mathShift?: null | 'normal' | 'compact',
+  mathStyle?: null | 'normal' | 'compact',
+
   scrollbarWidth?: null | string | number,
   scrollBehavior?: null | scrollBehavior,
-  scrollPadding?: null | number,
-  scrollPaddingTop?: null | number,
-  scrollPaddingBottom?: null | number,
+
+  scrollMargin?: null | number | string,
+  scrollMarginTop?: null | number | string,
+  scrollMarginRight?: null | number | string,
+  scrollMarginBottom?: null | number | string,
+  scrollMarginLeft?: null | number | string,
+  scrollMarginBlock?: null | number | string,
+  scrollMarginBlockEnd?: null | number | string,
+  scrollMarginBlockStart?: null | number | string,
+  scrollMarginInline?: null | number | string,
+  scrollMarginInlineEnd?: null | number | string,
+  scrollMarginInlineStart?: null | number | string,
+
+  scrollPadding?: null | number | string,
+  scrollPaddingTop?: null | number | string,
+  scrollPaddingRight?: null | number | string,
+  scrollPaddingBottom?: null | number | string,
+  scrollPaddingLeft?: null | number | string,
+  scrollPaddingBlock?: null | number | string,
+  scrollPaddingBlockEnd?: null | number | string,
+  scrollPaddingBlockStart?: null | number | string,
+  scrollPaddingInline?: null | number | string,
+  scrollPaddingInlineEnd?: null | number | string,
+  scrollPaddingInlineStart?: null | number | string,
+
   scrollSnapAlign?: null | scrollSnapAlign,
+  scrollSnapStop?: null | 'normal' | 'always',
   scrollSnapType?: null | scrollSnapType,
+
+  scrollTimeline?: null | string,
+  scrollTimelineAxis?: null | 'block' | 'inline' | 'x' | 'y',
+  scrollTimelineName?: null | string,
+
+  scrollbarColor?: null | color,
+  scrollbarWidth?: null | width,
+
   shapeImageThreshold?: null | shapeImageThreshold,
   shapeMargin?: null | shapeMargin,
   shapeOutside?: null | shapeOutside,
@@ -1216,29 +1408,49 @@ export type CSSProperties = $ReadOnly<{
   textAlignLast?: null | textAlignLast,
   textAnchor?: null | textAnchor,
   textCombineUpright?: null | textCombineUpright,
+
   textDecoration?: null | textDecoration,
   textDecorationColor?: null | textDecorationColor,
   textDecorationLine?: null | textDecorationLine,
   textDecorationSkip?: null | textDecorationSkip,
+  textDecorationSkipInk?: null | 'auto' | 'none' | 'all',
   textDecorationStyle?: null | textDecorationStyle,
+  textDecorationThickness?: null | number | string,
+
   textEmphasis?: null | textEmphasis,
   textEmphasisColor?: null | textEmphasisColor,
   textEmphasisPosition?: null | textEmphasisPosition,
   textEmphasisStyle?: null | textEmphasisStyle,
   textIndent?: null | textIndent,
+  textJustify?:
+    | null
+    | 'none'
+    | 'auto'
+    | 'inter-word'
+    | 'inter-character'
+    | 'distribute',
   textOrientation?: null | textOrientation,
   textOverflow?: null | textOverflow,
   textRendering?: null | textRendering,
   textShadow?: null | OptionalArray<textShadow>,
   textSizeAdjust?: null | textSizeAdjust,
   textTransform?: null | textTransform,
+  textUnderlineOffset?: null | number | string,
   textUnderlinePosition?: null | textUnderlinePosition,
+  textWrap?: null | 'wrap' | 'nowrap' | 'balance',
+
+  timelineScope?: null | string,
   top?: null | top,
   touchAction?: null | touchAction,
+
   transform?: null | transform,
   transformBox?: null | transformBox,
   transformOrigin?: null | transformOrigin,
   transformStyle?: null | transformStyle,
+  rotate?: null | number | string,
+  scale?: null | number | string,
+  translate?: null | number | string,
+
   transition?: null | OptionalArray<transition>,
   transitionDelay?: null | OptionalArray<transitionDelay>,
   transitionDuration?: null | OptionalArray<transitionDuration>,
@@ -1248,6 +1460,14 @@ export type CSSProperties = $ReadOnly<{
   unicodeRange?: null | unicodeRange,
   userSelect?: null | userSelect,
   verticalAlign?: null | verticalAlign,
+
+  viewTimeline?: null | string,
+  viewTimelineAxis?: null | 'block' | 'inline' | 'x' | 'y',
+  viewTimelineName?: null | string,
+  viewTimelineInset?: null | number | string,
+
+  viewTransitionName?: null | string,
+
   visibility?: null | visibility,
   voiceBalance?: null | voiceBalance,
   voiceDuration?: null | voiceDuration,
@@ -1258,6 +1478,8 @@ export type CSSProperties = $ReadOnly<{
   voiceStress?: null | voiceStress,
   voiceVolume?: null | voiceVolume,
   whiteSpace?: null | whiteSpace,
+  // whiteSpaceCollapse?: null | string,
+
   widows?: null | widows,
   width?: null | width,
   willChange?: null | willChange,
