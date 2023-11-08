@@ -99,9 +99,7 @@ export default function Home() {
             user-interfaces.
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
-            <Link
-              {...stylex.props(styles.cta)}
-              to="/docs/learn/#defining-styles">
+            <Link {...stylex.props(styles.cta)} to="/docs/learn/">
               Learn →
             </Link>
             <Link
