@@ -85,6 +85,12 @@ Read the
 to learn about our development process, how to propose bugfixes and
 improvements, and how to build and test your changes.
 
+### Architectural Principles
+
+When thinking about making a big change the StyleX APIs, it might be helpful to
+familiarize yourself with the
+[StyleX's architectural principles](https://stylex-docusaurus.vercel.app/docs/learn/thinking-in-stylex/).
+
 ### License
 
 stylex is [MIT licensed](./LICENSE).

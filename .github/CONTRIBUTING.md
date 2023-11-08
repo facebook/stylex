@@ -2,7 +2,9 @@
 
 ## Reporting Issues and Asking Questions
 
-Before opening an issue, please search the issue tracker to make sure your issue hasn't already been reported. Please note that your issue may be closed if it doesn't include the information requested in the issue template.
+Before opening an issue, please search the issue tracker to make sure your issue
+hasn't already been reported. Please note that your issue may be closed if it
+doesn't include the information requested in the issue template.
 
 ## Getting started
 
@@ -14,7 +16,8 @@ Fork, then clone the repo:
 git clone https://github.com/your-username/stylex.git
 ```
 
-Make sure you have npm@>=7 and node@>=16 installed. Then install the package dependencies:
+Make sure you have npm@>=7 and node@>=16 installed. Then install the package
+dependencies:
 
 ```
 npm install
@@ -56,7 +59,11 @@ npm run build
 
 ### New Features
 
-Please open an issue with a proposal for a new feature or refactoring before starting on the work. We don't want you to waste your efforts on a pull request that we won't want to accept.
+Please, familiarize yourself with
+[StyleX's architectural principles](https://stylex-docusaurus.vercel.app/docs/learn/thinking-in-stylex/),
+and open an issue with a proposal when suggesting a new feature of behavioural
+change. We don't want you to waste your efforts on a pull request that we won't
+want to accept.
 
 ## Pull requests
 
@@ -69,8 +76,10 @@ Please open an issue with a proposal for a new feature or refactoring before sta
 
 You can now submit a pull request, referencing any issues it addresses.
 
-Please try to keep your pull request focused in scope and avoid including unrelated commits.
+Please try to keep your pull request focused in scope and avoid including
+unrelated commits.
 
-After you have submitted your pull request, we'll try to get back to you as soon as possible. We may suggest some changes or improvements.
+After you have submitted your pull request, we'll try to get back to you as soon
+as possible. We may suggest some changes or improvements.
 
 Thank you for contributing!
