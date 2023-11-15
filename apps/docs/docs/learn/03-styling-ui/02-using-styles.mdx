@@ -6,7 +6,7 @@ sidebar_position: 2
 
 Once styles have been defined, they can be converted to props that can be spread
 on HTML elements using the `stylex.props` function. The `stylex.props` function
-set the appropriate `className` prop on the HTML element and, when using
+sets the appropriate `className` prop on the HTML element and, when using
 [dynamic styles](/docs/learn/styling-ui/defining-styles/#dynamic-styles), the
 `style` prop.
 
@@ -80,11 +80,9 @@ ignores falsy values such as `null`, `undefined` or `false`.
 ## Style variants
 
 A common styling pattern called "variants" lets you apply one of a list of
-possible styles based on the value of the prop named `variant`.
+possible styles based on the value of the prop named `variant`. StyleX supports this pattern without an additional API. Instead, an object property lookup can be used to achieve the same result.
 
-StyleX supports this pattern without additional API. Instead, object property
-lookup can be used to achieve the same result. First, each variant can defined
-with the appropriate variant name for the style object.
+First, each variant can be defined with the appropriate variant name for the style object.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -145,7 +143,7 @@ The `stylex.props` function should only be used directly on HTML elements.
 
 :::
 
-Multiple style style objects, including conditional styles, can be passed in
+Multiple style objects, including conditional styles, can be passed in
 using an array literal:
 
 ```tsx
@@ -161,7 +159,7 @@ codebase.
 
 ### Accepting styles in components
 
-Accepting custom `StyleX Styles` is as simple as accepting any other prop. and
+Accepting custom `StyleXStyles` is as simple as accepting any other prop. and
 applying it with the `stylex.props` function. Just like local styles.
 
 ```tsx

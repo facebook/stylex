@@ -26,7 +26,7 @@ export default config;
 
 `;
 
-const STEP_CREATE = `import stylex from '@stylexjs/stylex';
+const STEP_CREATE = `import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   hello: {
@@ -39,7 +39,7 @@ const styles = stylex.create({
 
 `;
 
-const STEP_USE = `import stylex from '@stylexjs/stylex';
+const STEP_USE = `import * as stylex from '@stylexjs/stylex';
 
 const HelloWorld = ({style}) => (
   <div {...stylex.props(

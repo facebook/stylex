@@ -72,7 +72,7 @@ states, we replace the `lightblue` string literal with an object of
 pseudo-states.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   button: {
@@ -256,6 +256,6 @@ function MyComponent() {
 }
 ```
 
-Behind the scenes, will generate static styles that depend on a CSS variable
+Behind the scenes, StyleX will generate static styles that depend on a CSS variable
 and set the value of that variable at runtime. This means, that any part of your
-styles can be dynamic, including within Media Queries and Pseudo Classes.
+styles can be dynamic, including within Media Queries and pseudo-classes.
