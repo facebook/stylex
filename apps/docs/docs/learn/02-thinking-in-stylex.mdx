@@ -35,14 +35,17 @@ Most existing solutions to this problem rely on rules and conventions.
 
 <details>
   <summary>BEM and OOCSS Conventions</summary>
-  BEM and OOCSS introduce naming conventions such that we don't run into many of
-  these problems, but it puts the burden on the developer to follow the rules and
-  it mostly just tells you not to merge styles at all. This can lead to bloated CSS.
+  BEM and OOCSS introduce naming conventions to avoid these problems relying on
+  developers to consistently follow the rules, frequently avoiding merging styles at all.
+  This can lead to bloated CSS.
 </details>
 
 <details>
   <summary>Utility Classes</summary>
-  Atomic utility class names like Tailwind CSS and Tachyons relies on a convention to ensure you don't apply conflicting class names on the same element. The tooling to enforce this rule relies on all your styles being present inline in the same string. This makes it harder to refactor your styles into separate groups and merge them. Within the same file or across file boundaries.
+  Atomic utility class names like Tailwind CSS and Tachyons rely on a convention to ensure you don't
+  apply conflicting class names on the same element. The tooling to enforce this rule relies on all
+  your styles being present inline in the same string. This makes it harder to refactor your styles
+  into separate groups and merge them within the same file or across file boundaries.
 </details>
 
 StyleX aims to improve on both the consistency and predictability of styles
@@ -107,7 +110,7 @@ There is no runtime overhead here.
 
 When passing styles across file boundaries, you pay a small cost for the
 additional power and expressivity. The `stylex.create` call is not deleted
-entirely and instead leaves behind very simple object mapping keys to
+entirely and instead leaves behind an object mapping keys to
 class names. And the `stylex()` or `stylex.props()` calls are executed at
 runtime.
 
@@ -159,11 +162,12 @@ boundaries. The state of the art is to combine lists of class names.
 
 ### Small API Surface
 
-Our goal is to make StyleX feel simple and obvious. As such we don't want to
-invent too many APIs. Instead, we want to be able to lean on common JavaScript
-patterns where possible and give you the smallest API surface possible.
+Our goal is to make StyleX as minimal and easy-to-learn as possible. As such we
+don't want to invent too many APIs. Instead, we want to be able to lean on 
+common JavaScript patterns where possible and give you the smallest API surface
+possible.
 
-At it's core StyleX can be boiled down to just two functions:
+At its core StyleX can be boiled down to two functions:
 
 1. `stylex.create`
 2. `stylex.props`
@@ -424,8 +428,8 @@ others.
 ### When authoring your UI in JavaScript
 
 StyleX is a CSS-in-JS library, which means that it is most useful when you are
-authoring your UI in JavaScript. If you're using a framework such as `React`,
-`Preact`, `Solid`, `lit-html`, or `Angular`, using StyleX should be a breeze.
+authoring your UI in JavaScript. If you're using a framework such as React,
+Preact, Solid, lit-html, or Angular, using StyleX should be a breeze.
 
 Some frameworks, such as Svelte and Vue use custom file formats that are
 compiled to JavaScript at build time. StyleX can still be used in these
