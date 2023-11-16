@@ -728,11 +728,11 @@ interface JestExpectType {
    */
   toMatch(regexpOrString: RegExp | string): void;
   /**
-   * Use .toMatchObject to check that a javascript object matches a subset of the properties of an object.
+   * Use .toMatchObject to check that a JavaScript object matches a subset of the properties of an object.
    */
   toMatchObject(object: Object | Array<Object>): void;
   /**
-   * Use .toStrictEqual to check that a javascript object matches a subset of the properties of an object.
+   * Use .toStrictEqual to check that a JavaScript object matches a subset of the properties of an object.
    */
   toStrictEqual(value: any): void;
   /**

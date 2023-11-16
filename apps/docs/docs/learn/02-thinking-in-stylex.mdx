@@ -160,7 +160,7 @@ boundaries. The state of the art is to combine lists of class names.
 ### Small API Surface
 
 Our goal is to make StyleX feel simple and obvious. As such we don't want to
-invent too many APIs. Instead, we want to be able to lean on common Javascript
+invent too many APIs. Instead, we want to be able to lean on common JavaScript
 patterns where possible and give you the smallest API surface possible.
 
 At it's core StyleX can be boiled down to just two functions:
@@ -198,7 +198,7 @@ constrain what styles you will accept. Styles should be as type-safe as
 any other props for your components.
 
 The StyleX API is strongly typed. Every style you author has types as well. This is
-only really possible because we use Javascript objects to author `RawStyles`.
+only really possible because we use JavaScript objects to author `RawStyles`.
 
 These types can then be leveraged to set contracts for the styles that your
 component will accept You may make a component that only accepts
@@ -248,7 +248,7 @@ type information when you define styles.
 ### Shareable constants
 
 CSS class names, CSS variables and other CSS identifiers are defined in a global
-namespace. The obvious and common API to bring them into javascript is as
+namespace. The obvious and common API to bring them into JavaScript is as
 strings. However, this means losing type-safety and composability.
 
 We want styles to be type-safe and so we've spent a lot of time coming up with
@@ -256,7 +256,7 @@ APIs to replace these magic strings with references to Javacript constants. So
 far this is reflected in the following APIs:
 
 1. `stylex.create` Abstracts away the generated class names entirely. You deal
-   with "opaque" javascript objects with strong types to indicate the styles
+   with "opaque" JavaScript objects with strong types to indicate the styles
    they represent.
 2. `stylex.defineVars` Abstracts away the names of CSS variables generated. You
    import and use them as constants in your styles directly. The type of values
@@ -271,7 +271,7 @@ We're looking into ways to make other CSS identifiers such as
 
 StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
 been tailored to works best with React today, It's designed to be used with any
-Javascript framework that lets you author your markup in your Javacript.
+JavaScript framework that lets you author your markup in your Javacript.
 
 `stylex.props` returns an object with `className` and `style` properties. You
 may need to use a wrapper function to convert this to make it work with your
@@ -313,7 +313,7 @@ Our goal is to support these patterns without sacrificing style encapsulation.
 StyleX is not CSS pre-processor. It intentionally puts constraints on the power
 of CSS selectors in order to give you a fast and predictable system.
 
-Using a Javascript object as an API transparently nudges you into writing valid
+Using a JavaScript object as an API transparently nudges you into writing valid
 styles, as writing complex selectors _feels_ out of place.
 
 An API that allows template strings signals a freedom where developers
@@ -421,18 +421,18 @@ StyleX works well in a wide variety of projects, and you will usually not regret
 choosing it. However, there are some conditions that are more ideal for using StyleX than
 others.
 
-### When authoring your UI in Javascript
+### When authoring your UI in JavaScript
 
 StyleX is a CSS-in-JS library, which means that it is most useful when you are
-authoring your UI in Javascript. If you're using a framework such as `React`,
+authoring your UI in JavaScript. If you're using a framework such as `React`,
 `Preact`, `Solid`, `lit-html`, or `Angular`, using StyleX should be a breeze.
 
 Some frameworks, such as Svelte and Vue use custom file formats that are
-compiled to Javascript at build time. StyleX can still be used in these
+compiled to JavaScript at build time. StyleX can still be used in these
 frameworks, but may need some extra configuration.
 
 There are also UI solutions such as `htmx` and various templating engines where
-you author your markup in files that can't contain arbitrary Javascript. Even if
+you author your markup in files that can't contain arbitrary JavaScript. Even if
 you can make StyleX work in these environments, it may not be worth the effort.
 
 ### Large or growing projects

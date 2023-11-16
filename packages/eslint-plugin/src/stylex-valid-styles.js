@@ -2697,7 +2697,7 @@ const stylexValidStyles = {
             ({
               node: namespaces,
               loc: namespaces.loc,
-              message: 'Styles must be represented as javascript objects',
+              message: 'Styles must be represented as JavaScript objects',
             }: Rule.ReportDescriptor),
           );
         }
@@ -2748,7 +2748,7 @@ const stylexValidStyles = {
                 node: namespace.value,
                 loc: namespace.value.loc,
                 message:
-                  'Styles must be represented as javascript objects, not ' +
+                  'Styles must be represented as JavaScript objects, not ' +
                   styles.type,
               });
             }

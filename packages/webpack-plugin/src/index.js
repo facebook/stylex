@@ -69,7 +69,7 @@ class StylexPlugin {
         PLUGIN_NAME,
         (loaderContext, module) => {
           if (
-            // Javascript (and Flow) modules
+            // JavaScript (and Flow) modules
             /\.jsx?/.test(path.extname(module.resource)) ||
             // Typescript modules
             /\.tsx?/.test(path.extname(module.resource))
