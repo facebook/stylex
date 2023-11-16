@@ -87,9 +87,10 @@ improvements, and how to build and test your changes.
 
 ### Architectural Principles
 
-When thinking about making a big change the StyleX APIs, it might be helpful to
-familiarize yourself with the
-[StyleX's architectural principles](https://stylex-docusaurus.vercel.app/docs/learn/thinking-in-stylex/).
+Before proposing a change or addition to the StyleX API, you should familiarize
+yourself with the
+[goals and architectural principles](https://stylex-docusaurus.vercel.app/docs/learn/thinking-in-stylex/)
+of the project/
 
 ### License
 
