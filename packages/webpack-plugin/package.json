@@ -1,0 +1,38 @@
+{
+  "name": "@stylexjs/webpack-plugin",
+  "version": "0.2.0-beta.26",
+  "description": "Webpack plugin for StyleX",
+  "main": "src/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "fixtures:webpack": "webpack build --config __tests__/__fixtures__/webpack.config.js",
+    "fixtures:webpack:watch": "NODE_ENV=development webpack build --watch --config __tests__/__fixtures__/webpack.config.js",
+    "build": "webpack build --config __tests__/__fixtures__/webpack.config.js",
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "__builds__",
+      "/__fixtures__/"
+    ],
+    "testEnvironment": "node",
+    "prettierPath": null
+  },
+  "dependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/plugin-syntax-flow": "^7.18.6",
+    "@babel/plugin-syntax-jsx": "^7.14.5",
+    "@babel/plugin-syntax-typescript": "^7.14.5",
+    "@stylexjs/babel-plugin": "0.2.0-beta.26",
+    "webpack": "^5.88.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.8",
+    "babel-loader": "^8.2.2",
+    "memfs": "4.2.0",
+    "@stylexjs/stylex": "0.2.0-beta.26",
+    "webpack-cli": "^5.1.4"
+  }
+}

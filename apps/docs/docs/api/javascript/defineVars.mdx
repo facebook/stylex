@@ -1,0 +1,49 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 5
+---
+
+# `stylex.defineVars`
+
+Creates global CSS Custom Properties (Variables) that can be imported and used
+within `stylex.create` calls anywhere within a codebase.
+
+```ts
+function defineVars<Styles extends {[key: string]: Value}>(
+  styles: Styles,
+): Vars<{[key in keyof Styles]: string}>;
+```
+
+### Example use:
+
+You must define your variables as named exports in a `.stylex.js` (or
+`.stylex.ts`) file.
+
+```tsx title="vars.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+const colors = stylex.defineVars({
+  accent: 'blue',
+  background: 'white',
+  line: 'gray',
+  textPrimary: 'black',
+  textSecondary: '#333',
+});
+```
+
+You can then import and use these variables in any `stylex.create` call.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import {colors} from './vars.stylex.js';
+
+const styles = stylex.create({
+  container: {
+    color: colors.textPrimary,
+    backgroundColor: colors.background,
+  },
+});
+```

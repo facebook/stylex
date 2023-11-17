@@ -1,0 +1,96 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+/* global $ReadOnly:readonly, $ReadOnlyArray:readonly, Iterable:readonly, Iterator:readonly */
+
+import * as ESTree from '../estree';
+import * as AST from './eslint-ast.js.flow';
+
+// Rule.RuleFixer
+// Rule.Fix
+
+export type Fix = {
+  range: AST.Range,
+  text: string,
+};
+
+export type RuleFixer = {
+  insertTextAfter(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
+  insertTextAfterRange(range: AST.Range, text: string): Fix,
+  insertTextBefore(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
+  insertTextBeforeRange(range: AST.Range, text: string): Fix,
+  remove(nodeOrToken: ESTree.Node | AST.Token): Fix,
+  removeRange(range: AST.Range): Fix,
+  replaceText(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
+  replaceTextRange(range: AST.Range, text: string): Fix,
+};
+
+export type ReportFixer = (
+  fixer: RuleFixer,
+) => null | Fix | Iterable<Fix> | Iterator<Fix> | Fix[];
+
+type ReportDescriptorOptionsBase = {
+  data?: { [key: string]: string },
+  fix?: ?ReportFixer,
+};
+type ReportDescriptorOptions = $ReadOnly<{
+  ...ReportDescriptorOptionsBase,
+  suggest?: ?$ReadOnlyArray<SuggestionReportDescriptor>,
+}>;
+
+type SuggestionReportOptions = {
+  data?: { [key: string]: string },
+  fix: ReportFixer,
+};
+export type SuggestionDescriptorMessage =
+  | { desc: string }
+  | { messageId: string };
+type SuggestionReportDescriptor =
+  | $ReadOnly<{ ...SuggestionReportOptions, desc: string }>
+  | $ReadOnly<{ ...SuggestionReportOptions, messageId: string }>;
+
+type ReportDescriptorMessage = { message: string }; // | { messageId: string };
+export type ReportDescriptor = $ReadOnly<{
+  ...ReportDescriptorOptions,
+  ...ReportDescriptorMessage,
+  node: ESTree.Node,
+  loc?: ?AST.SourceLocation | $ReadOnly<{ line: number, column: number }>,
+}>;
+
+export type NodeParentExtension = {
+  parent: Node,
+};
+type Node = ESTree.Node & NodeParentExtension;
+
+export type RuleContext = {
+  id: string,
+  options: Array<$FlowFixMe>,
+  settings: { [name: string]: $FlowFixMe },
+  parserPath: string,
+  // parserOptions: Linter.ParserOptions;
+  // parserServices: SourceCode.ParserServices;
+
+  getAncestors(): Array<ESTree.Node>,
+
+  // getDeclaredVariables(node: ESTree.Node): Scope.Variable[];
+
+  getFilename(): string,
+
+  getPhysicalFilename(): string,
+
+  getCwd(): string,
+
+  // getScope(): Scope.Scope;
+
+  // getSourceCode(): SourceCode;
+
+  markVariableAsUsed(name: string): boolean,
+
+  report(descriptor: $ReadOnly<ReportDescriptor>): void,
+};

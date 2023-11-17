@@ -1,0 +1,14 @@
+{
+  "name": "@stylexjs/scripts",
+  "version": "0.2.0-beta.26",
+  "description": "Helper scripts for stylex monorepo.",
+  "license": "MIT",
+  "bin": {
+    "gen-types": "./gen-types.js",
+    "rewrite-imports": "./rewrite-imports.js"
+  },
+  "dependencies": {
+    "flow-api-translator": "0.16.0",
+    "yargs": "17.7.2"
+  }
+}

@@ -1,0 +1,141 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Defining variables
+
+:::danger
+
+Theming APIs for defining and overriding CSS variables are experimental and
+subject to change.
+
+:::
+
+In addition to authoring styles for your components that generate atomic styles,
+StyleX also has APIs for defining CSS Custom Properties (CSS variables) in a
+reliable, predictable and type-safe way.
+
+### Design Inspiration
+
+The design of the theming APIs in StyleX are directly inspired by React's
+Context APIs. Variables are defined with default values similar to how React
+Contexts are created, and themes can be created to “provide” different values
+for these variables for UI sub-trees.
+
+## Defining Variables
+
+A group of variables are defined using the `stylex.defineVars` function:
+
+```tsx title="tokens.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+export const tokens = stylex.defineVars({
+  primaryText: 'black',
+  secondaryText: '#333',
+  accent: 'blue',
+  background: 'white',
+  lineColor: 'gray',
+  borderRadius: '4px',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '16px',
+});
+```
+
+This function, too, is processed at compile-time and CSS variable names are
+automatically generated.
+
+This defines the variables at `:root` of the HTML document. They can be imported
+as constants and used within `stylex.create` calls.
+
+### Using Media Queries
+
+Variables values can vary based on a media queries:
+
+```tsx title="tokens.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+// A constant can be used to avoid repeating the media query
+const DARK = '@media (prefers-color-scheme: dark)';
+
+export const colors = stylex.defineVars({
+  primaryText: {default: 'black', [DARK]: 'white'},
+  secondaryText: {default: '#333', [DARK]: '#ccc'},
+  accent: {default: 'blue', [DARK]: 'lightblue'},
+  background: {default: 'white', [DARK]: 'black'},
+  lineColor: {default: 'gray', [DARK]: 'lightgray'},
+  borderRadius: '4px',
+  fontFamily: 'system-ui, sans-serif',
+  fontSize: '16px',
+});
+```
+
+Similarly, `@supports` can be used as well.
+
+## Rules when defining variables
+
+Variables are the only type of non-local value that can be used within a
+`stylex.create` call. This is made possible by enforcing a few rules:
+
+#### 1. Variables must be defined in `.stylex.js` files
+
+Variables must be in a file with one of the following extensions:
+
+1. `.stylex.js`
+2. `.stylex.mjs`
+3. `.stylex.cjs`
+4. `.stylex.ts`
+5. `.stylex.tsx`
+6. `.stylex.jsx`
+
+#### 2. Variables must be named exports
+
+Every `stylex.defineVars` call _must_ be a named export.
+
+##### Allowed:
+
+```tsx
+// ✅ - Named export
+export const colors = stylex.defineVars({
+  /* ... */
+});
+
+const sizeVars = { ... };
+// ✅ - Another Named export
+export const sizes = stylex.defineVars(sizeVars);
+```
+
+##### Not Allowed:
+
+```tsx
+// ❌ - Only named exports are allowed
+export default stylex.defineVars({
+  /* ... */
+});
+
+// ❌ - The variable must be exported directly
+const x = stylex.defineVars({
+  /* ... */
+});
+export const colors = x;
+
+// ❌ - The variables cannot be nested within another object
+export const colors = {
+  foregrounds: stylex.defineVars({
+    /* ... */
+  }),
+  backgrounds: stylex.defineVars({
+    /* ... */
+  }),
+};
+```
+
+#### 3. No other exports are allowed in the file
+
+For now, `.stylex.js` files are exclusively for defining CSS variables.

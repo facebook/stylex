@@ -1,0 +1,35 @@
+[version]
+0.220.0
+
+[ignore]
+.*/build/.*
+.*/dist/.*
+.*/lib/.*
+.*/malformed_package_json/.*
+.*/next-example/.*
+
+[include]
+
+[libs]
+flow-typed
+
+[lints]
+
+[options]
+emoji=true
+exact_by_default=true
+experimental.const_params=true
+module.use_strict=true
+munge_underscores=true
+suppress_type=$FlowFixMe
+suppress_type=$FlowTODO
+module.name_mapper='^@stylexjs\/shared$' -> '<PROJECT_ROOT>/packages/shared/src/index.js'
+module.name_mapper='^@stylexjs\/shared\/lib\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/shared/src/\1'
+module.name_mapper='^@stylexjs/stylex$' -> '<PROJECT_ROOT>/packages/stylex/src/stylex.js'
+module.name_mapper='^@stylexjs/stylex\/lib\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/stylex/src/\1'
+; type-stubs
+module.system.node.resolve_dirname=flow_modules
+module.system.node.resolve_dirname=node_modules
+
+
+[strict]

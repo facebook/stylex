@@ -1,0 +1,36 @@
+{
+  "name": "@stylexjs/babel-plugin",
+  "version": "0.2.0-beta.26",
+  "description": "StyleX babel plugin.",
+  "main": "lib/index.js",
+  "repository": "https://github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "rollup --config ./rollup.config.mjs",
+    "build-haste": "HASTE=true rollup --config ./rollup.config.mjs",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@stylexjs/shared": "0.2.0-beta.26"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/traverse": "^7.0.0-0",
+    "@babel/types": "^7.15.6"
+  },
+  "devDependencies": {
+    "ts-node": "^10.8.1"
+  },
+  "jest": {
+    "verbose": true,
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    },
+    "prettierPath": null
+  },
+  "files": [
+    "flow_modules/*",
+    "lib/*"
+  ]
+}

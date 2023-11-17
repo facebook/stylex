@@ -1,0 +1,20 @@
+{
+  "name": "webpack-example",
+  "version": "0.2.0-beta.26",
+  "description": "A simple rollup example to test stylexjs/rollup-plugin",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack --watch"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/stylex": "0.2.0-beta.26"
+  },
+  "devDependencies": {
+    "@stylexjs/webpack-plugin": "0.2.0-beta.26",
+    "html-webpack-plugin": "^5.5.3",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0"
+  }
+}

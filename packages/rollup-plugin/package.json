@@ -1,0 +1,32 @@
+{
+  "name": "@stylexjs/rollup-plugin",
+  "version": "0.2.0-beta.26",
+  "description": "Rollup plugin for StyleX",
+  "main": "src/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "__builds__",
+      "/__fixtures__/"
+    ],
+    "testEnvironment": "node",
+    "prettierPath": null
+  },
+  "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@stylexjs/babel-plugin": "0.2.0-beta.26"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.8",
+    "@rollup/plugin-babel": "^6.0.0",
+    "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "rollup": "^3.26.3 || ^4.0.2",
+    "@stylexjs/stylex": "0.2.0-beta.26"
+  }
+}

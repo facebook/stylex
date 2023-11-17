@@ -1,0 +1,18 @@
+{
+  "name": "rollup-example",
+  "version": "0.2.0-beta.26",
+  "description": "A simple rollup example to test stylexjs/rollup-plugin",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup --config ./rollup.config.mjs",
+    "start": "rollup --config ./rollup.config.mjs --watch"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/stylex": "0.2.0-beta.26"
+  },
+  "devDependencies": {
+    "rollup": "^4.0.2",
+    "@stylexjs/rollup-plugin": "0.2.0-beta.26"
+  }
+}

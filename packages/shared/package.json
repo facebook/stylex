@@ -1,0 +1,27 @@
+{
+  "name": "@stylexjs/shared",
+  "version": "0.2.0-beta.26",
+  "main": "lib/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "babel src/ --out-dir lib/ --copy-files",
+    "test": "jest"
+  },
+  "dependencies": {
+    "postcss-value-parser": "^4.1.0"
+  },
+  "devDependencies": {
+    "@stylexjs/scripts": "0.2.0-beta.26"
+  },
+  "jest": {
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    },
+    "prettierPath": null
+  },
+  "files": [
+    "lib/*"
+  ]
+}

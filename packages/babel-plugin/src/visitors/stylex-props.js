@@ -1,0 +1,307 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+import type { NodePath } from '@babel/traverse';
+
+import * as t from '@babel/types';
+import StateManager from '../utils/state-manager';
+import { props } from '@stylexjs/stylex';
+
+import { IncludedStyles } from '@stylexjs/shared';
+import { convertObjectToAST } from '../utils/js-to-ast';
+
+type ClassNameValue = string | null | boolean | NonStringClassNameValue;
+type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
+
+type StyleObject = {
+  [key: string]: string | null | boolean | IncludedStyles,
+};
+
+type ConditionalStyle = [t.Expression, ?StyleObject, ?StyleObject];
+type ResolvedArg = ?StyleObject | ConditionalStyle;
+type ResolvedArgs = Array<ResolvedArg>;
+
+export function skipStylexPropsChildren(
+  path: NodePath<t.CallExpression>,
+  state: StateManager,
+) {
+  if (
+    !isCalleeIdentifier(path, state) &&
+    !isCalleeMemberExpression(path, state)
+  ) {
+    return;
+  }
+  path.skip();
+}
+
+// If a `stylex()` call uses styles that are all locally defined,
+// This function is able to pre-compute that into a single string or
+// a single expression of strings and ternary expressions.
+export default function transformStylexProps(
+  path: NodePath<t.CallExpression>,
+  state: StateManager,
+) {
+  const { node } = path;
+
+  if (
+    !isCalleeIdentifier(path, state) &&
+    !isCalleeMemberExpression(path, state)
+  ) {
+    return;
+  }
+
+  let bailOut = false;
+  let conditional = 0;
+
+  const args = node.arguments.flatMap((arg) =>
+    arg.type === 'ArrayExpression' ? arg.elements : [arg],
+  );
+
+  // console.log('args', args);
+
+  const resolvedArgs: ResolvedArgs = [];
+  for (const arg of args) {
+    switch (arg.type) {
+      case 'MemberExpression': {
+        const resolved = parseNullableStyle(arg, state);
+        if (resolved === 'other') {
+          bailOut = true;
+        } else {
+          resolvedArgs.push(resolved);
+        }
+        break;
+      }
+      case 'ConditionalExpression': {
+        const { test, consequent, alternate } = arg;
+        const primary = parseNullableStyle(consequent, state);
+        const fallback = parseNullableStyle(alternate, state);
+        if (primary === 'other' || fallback === 'other') {
+          bailOut = true;
+        } else {
+          resolvedArgs.push([test, primary, fallback]);
+          conditional++;
+        }
+        break;
+      }
+      case 'LogicalExpression': {
+        if (arg.operator !== '&&') {
+          bailOut = true;
+          break;
+        }
+        const { left, right } = arg;
+        const leftResolved = parseNullableStyle(left, state);
+        const rightResolved = parseNullableStyle(right, state);
+        if (leftResolved !== 'other' || rightResolved === 'other') {
+          bailOut = true;
+        } else {
+          resolvedArgs.push([left, rightResolved, null]);
+          conditional++;
+        }
+        break;
+      }
+      default:
+        bailOut = true;
+        break;
+    }
+    if (conditional > 4) {
+      bailOut = true;
+    }
+    if (bailOut) {
+      break;
+    }
+  }
+  if (!state.options.genConditionalClasses && conditional) {
+    bailOut = true;
+  }
+  if (bailOut) {
+    path.traverse({
+      MemberExpression(path) {
+        const object = path.get('object').node;
+        const property = path.get('property').node;
+        const computed = path.node.computed;
+        let objName: string | null = null;
+        let propName: number | string | null = null;
+        if (object.type === 'Identifier' && state.styleMap.has(object.name)) {
+          objName = object.name;
+
+          if (property.type === 'Identifier' && !computed) {
+            propName = property.name;
+          }
+          if (
+            (property.type === 'StringLiteral' ||
+              property.type === 'NumericLiteral') &&
+            computed
+          ) {
+            propName = property.value;
+          }
+        }
+        if (objName != null) {
+          state.styleVarsToKeep.add([
+            objName,
+            propName != null ? String(propName) : null,
+          ]);
+        }
+      },
+    });
+  } else {
+    path.skip();
+    // convert resolvedStyles to a string + ternary expressions
+    // We no longer need the keys, so we can just use the values.
+    const stringExpression = makeStringExpression(resolvedArgs);
+    path.replaceWith(stringExpression);
+  }
+}
+
+// Looks for Null or locally defined style namespaces.
+// Otherwise it returns the string "other"
+// Which is used as an indicator to bail out of this optimization.
+function parseNullableStyle(
+  node: t.Expression,
+  state: StateManager,
+): null | StyleObject | 'other' {
+  if (
+    t.isNullLiteral(node) ||
+    (t.isIdentifier(node) && node.name === 'undefined')
+  ) {
+    return null;
+  }
+
+  if (t.isMemberExpression(node)) {
+    const { object, property, computed: computed } = node;
+    let objName = null;
+    let propName: null | number | string = null;
+    if (
+      object.type === 'Identifier' &&
+      state.styleMap.has(object.name) &&
+      property.type === 'Identifier' &&
+      !computed
+    ) {
+      objName = object.name;
+      propName = property.name;
+    }
+    if (
+      object.type === 'Identifier' &&
+      state.styleMap.has(object.name) &&
+      (property.type === 'StringLiteral' ||
+        property.type === 'NumericLiteral') &&
+      computed
+    ) {
+      objName = object.name;
+      propName = property.value;
+    }
+
+    if (objName != null && propName != null) {
+      const style = state.styleMap.get(objName);
+      if (style != null && style[String(propName)] != null) {
+        // $FlowFixMe
+        return style[String(propName)];
+      }
+    }
+  }
+
+  return 'other';
+}
+
+function makeStringExpression(values: ResolvedArgs): t.Expression {
+  const conditions = values
+    .filter((v: ResolvedArg): v is ConditionalStyle => Array.isArray(v))
+    .map((v: ConditionalStyle) => v[0]);
+
+  if (conditions.length === 0) {
+    const result = props((values: any));
+    return convertObjectToAST(result);
+  }
+
+  const conditionPermutations = genConditionPermutations(conditions.length);
+  const objEntries = conditionPermutations.map((permutation) => {
+    let i = 0;
+    const args = values.map((v) => {
+      if (Array.isArray(v)) {
+        const [_test, primary, fallback] = v;
+        return permutation[i++] ? primary : fallback;
+      } else {
+        return v;
+      }
+    });
+    const key = permutation.reduce(
+      (soFar, bool) => (soFar << 1) | (bool ? 1 : 0),
+      0,
+    );
+    return t.objectProperty(
+      t.numericLiteral(key),
+      convertObjectToAST(props((args: any))),
+    );
+  });
+  const objExpressions = t.objectExpression(objEntries);
+  const conditionsToKey = genBitwiseOrOfConditions(conditions);
+  return t.memberExpression(objExpressions, conditionsToKey, true);
+}
+
+// A function to generate a list of all possible permutations of true and false for a given count of conditional expressions.
+// For example, if there are 2 conditional expressions, this function will return:
+// [[true, true], [true, false], [false, true], [false, false]]
+function genConditionPermutations(count: number): Array<Array<boolean>> {
+  const result = [];
+  for (let i = 0; i < 2 ** count; i++) {
+    const combination = [];
+    for (let j = 0; j < count; j++) {
+      combination.push(Boolean(i & (1 << j)));
+    }
+    result.push(combination);
+  }
+  return result;
+}
+
+// A function to generate a bitwise or of all the conditions.
+// For example, if there are 2 conditional expressions, this function will return:
+// `!!test1 << 2 | !!test2 << 1
+function genBitwiseOrOfConditions(
+  conditions: Array<t.Expression>,
+): t.Expression {
+  const binaryExpressions = conditions.map((condition, i) => {
+    const shift = conditions.length - i - 1;
+    return t.binaryExpression(
+      '<<',
+      t.unaryExpression('!', t.unaryExpression('!', condition)),
+      t.numericLiteral(shift),
+    );
+  });
+  return binaryExpressions.reduce((acc, expr) => {
+    return t.binaryExpression('|', acc, expr);
+  });
+}
+
+function isCalleeIdentifier(
+  path: NodePath<t.CallExpression>,
+  state: StateManager,
+): boolean {
+  const { node } = path;
+  return (
+    node != null &&
+    node.callee != null &&
+    node.callee.type === 'Identifier' &&
+    state.stylexPropsImport.has(node.callee.name)
+  );
+}
+
+function isCalleeMemberExpression(
+  path: NodePath<t.CallExpression>,
+  state: StateManager,
+): boolean {
+  const { node } = path;
+  return (
+    node != null &&
+    node.callee != null &&
+    node.callee.type === 'MemberExpression' &&
+    node.callee.object.type === 'Identifier' &&
+    node.callee.property.type === 'Identifier' &&
+    node.callee.property.name === 'props' &&
+    state.stylexImport.has(node.callee.object.name)
+  );
+}

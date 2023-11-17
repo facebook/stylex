@@ -1,0 +1,788 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+// Type definitions for non-npm package estree 1.0
+// Project: https://github.com/estree/estree
+// Definitions by: RReverser <https://github.com/RReverser>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+
+export type BaseNodeWithoutComments = $ReadOnly<{
+  // Every leaf interface that extends BaseNode must specify a type property.
+  // The type property should be a string literal. For example, Identifier
+  // has: `type: "Identifier"`
+  type: string,
+  loc?: ?SourceLocation,
+  range?: ?[number, number],
+}>;
+
+export type BaseNode = $ReadOnly<{
+  ...BaseNodeWithoutComments,
+  leadingComments?: ?$ReadOnlyArray<Comment>,
+  trailingComments?: ?$ReadOnlyArray<Comment>,
+}>;
+
+export type NodeMap = $ReadOnly<{
+  AssignmentProperty: AssignmentProperty,
+  CatchClause: CatchClause,
+  Class: Class,
+  ClassBody: ClassBody,
+  Expression: Expression,
+  Function: Function,
+  Identifier: Identifier,
+  Literal: Literal,
+  MethodDefinition: MethodDefinition,
+  ModuleDeclaration: ModuleDeclaration,
+  ModuleSpecifier: ModuleSpecifier,
+  Pattern: Pattern,
+  PrivateIdentifier: PrivateIdentifier,
+  Program: Program,
+  Property: Property,
+  PropertyDefinition: PropertyDefinition,
+  SpreadElement: SpreadElement,
+  Statement: Statement,
+  Super: Super,
+  SwitchCase: SwitchCase,
+  TemplateElement: TemplateElement,
+  VariableDeclarator: VariableDeclarator,
+}>;
+
+export type Node = NodeMap[$Keys<NodeMap>];
+
+export type Comment = $ReadOnly< {
+  ...BaseNodeWithoutComments,
+  type: 'Line' | 'Block',
+  value: string,
+}>;
+
+export type SourceLocation = $ReadOnly<{
+  source?: ?string,
+  start: Position,
+  end: Position,
+}>;
+
+export type Position = $ReadOnly<{
+  // >= 1
+  line: number, 
+  // >= 0
+  column: number,
+}>;
+
+export type Program = $ReadOnly<{
+  ...BaseNode,
+  type: 'Program',
+  sourceType: 'script' | 'module',
+  body: $ReadOnlyArray<Directive | Statement | ModuleDeclaration>,
+  comments?: ?$ReadOnlyArray<Comment>,
+}>;
+
+export type Directive = $ReadOnly<{
+  ...BaseNode,
+  type: 'ExpressionStatement',
+  expression: Literal,
+  directive: string,
+}>;
+
+export type BaseFunction = $ReadOnly<{
+  ...BaseNode,
+  params: $ReadOnlyArray<Pattern>,
+  generator?: ?boolean,
+  async?: ?boolean,
+  // The body is either BlockStatement or Expression because arrow functions
+  // can have a body that's either. FunctionDeclarations and
+  // FunctionExpressions have only BlockStatement bodies.
+  body: BlockStatement | Expression,
+}>;
+
+export type Function =
+  | FunctionDeclaration
+  | FunctionExpression
+  | ArrowFunctionExpression;
+
+export type Statement =
+  | ExpressionStatement
+  | BlockStatement
+  | StaticBlock
+  | EmptyStatement
+  | DebuggerStatement
+  | WithStatement
+  | ReturnStatement
+  | LabeledStatement
+  | BreakStatement
+  | ContinueStatement
+  | IfStatement
+  | SwitchStatement
+  | ThrowStatement
+  | TryStatement
+  | WhileStatement
+  | DoWhileStatement
+  | ForStatement
+  | ForInStatement
+  | ForOfStatement
+  | Declaration;
+
+export type BaseStatement = BaseNode;
+
+export type EmptyStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'EmptyStatement',
+}>;
+
+export type BlockStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'BlockStatement',
+  body: $ReadOnlyArray<Statement>,
+  innerComments?: $ReadOnlyArray<Comment> | void,
+}>;
+
+export type StaticBlock = $ReadOnly<{
+  ...Omit<BlockStatement, 'type'>,
+  type: 'StaticBlock',
+}>;
+
+export type ExpressionStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'ExpressionStatement',
+  expression: Expression,
+}>;
+
+export type IfStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'IfStatement',
+  test: Expression,
+  consequent: Statement,
+  alternate?: ?Statement,
+}>;
+
+export type LabeledStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'LabeledStatement',
+  label: Identifier,
+  body: Statement,
+}>;
+
+export type BreakStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'BreakStatement',
+  label?: ?Identifier,
+}>;
+
+export type ContinueStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'ContinueStatement',
+  label?: ?Identifier,
+}>;
+
+export type WithStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'WithStatement',
+  object: Expression,
+  body: Statement,
+}>;
+
+export type SwitchStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'SwitchStatement',
+  discriminant: Expression,
+  cases: $ReadOnlyArray<SwitchCase>,
+}>;
+
+export type ReturnStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'ReturnStatement',
+  argument?: ?Expression,
+}>;
+
+export type ThrowStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'ThrowStatement',
+  argument: Expression,
+}>;
+
+export type TryStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'TryStatement',
+  block: BlockStatement,
+  handler?: ?CatchClause,
+  finalizer?: ?BlockStatement,
+}>;
+
+export type WhileStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'WhileStatement',
+  test: Expression,
+  body: Statement,
+}>;
+
+export type DoWhileStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'DoWhileStatement',
+  body: Statement,
+  test: Expression,
+}>;
+
+export type ForStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'ForStatement',
+  init?: VariableDeclaration | ?Expression,
+  test?: ?Expression,
+  update?: ?Expression,
+  body: Statement,
+}>;
+
+export type BaseForXStatement = $ReadOnly<{
+  ...BaseStatement,
+  left: VariableDeclaration | Pattern,
+  right: Expression,
+  body: Statement,
+}>;
+
+export type ForInStatement = $ReadOnly<{
+  ...BaseForXStatement,
+  type: 'ForInStatement',
+}>;
+
+export type DebuggerStatement = $ReadOnly<{
+  ...BaseStatement,
+  type: 'DebuggerStatement',
+}>;
+
+export type Declaration =
+  | FunctionDeclaration
+  | VariableDeclaration
+  | ClassDeclaration;
+
+export type BaseDeclaration = BaseStatement;
+
+export type FunctionDeclaration = $ReadOnly<{
+  ...BaseFunction,
+  ...BaseDeclaration,
+  type: 'FunctionDeclaration',
+  /** It is null when a function declaration is a part of the `declare export default function` statement */
+  id: ?Identifier,
+  body: BlockStatement,
+}>;
+
+export type VariableDeclaration = $ReadOnly<{
+  ...BaseDeclaration,
+  type: 'VariableDeclaration',
+  declarations: $ReadOnlyArray<VariableDeclarator>,
+  kind: 'var' | 'let' | 'const',
+}>;
+
+export type VariableDeclarator = $ReadOnly<{
+  ...BaseNode,
+  type: 'VariableDeclarator',
+  id: Pattern,
+  init?: ?Expression,
+}>;
+
+export type ExpressionMap = $ReadOnly<{
+  ArrayExpression: ArrayExpression,
+  ArrowFunctionExpression: ArrowFunctionExpression,
+  AssignmentExpression: AssignmentExpression,
+  AwaitExpression: AwaitExpression,
+  BinaryExpression: BinaryExpression,
+  CallExpression: CallExpression,
+  ChainExpression: ChainExpression,
+  ClassExpression: ClassExpression,
+  ConditionalExpression: ConditionalExpression,
+  FunctionExpression: FunctionExpression,
+  Identifier: Identifier,
+  ImportExpression: ImportExpression,
+  Literal: Literal,
+  LogicalExpression: LogicalExpression,
+  MemberExpression: MemberExpression,
+  MetaProperty: MetaProperty,
+  NewExpression: NewExpression,
+  ObjectExpression: ObjectExpression,
+  SequenceExpression: SequenceExpression,
+  TaggedTemplateExpression: TaggedTemplateExpression,
+  TemplateLiteral: TemplateLiteral,
+  ThisExpression: ThisExpression,
+  UnaryExpression: UnaryExpression,
+  UpdateExpression: UpdateExpression,
+  YieldExpression: YieldExpression,
+}>;
+
+export type Expression = ExpressionMap[$Keys<ExpressionMap>];
+
+export type BaseExpression = BaseNode;
+
+export type ChainElement = SimpleCallExpression | MemberExpression;
+
+export type ChainExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'ChainExpression',
+  expression: ChainElement,
+}>;
+
+export type ThisExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'ThisExpression',
+}>;
+
+export type ArrayExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'ArrayExpression',
+  elements: $ReadOnlyArray<?Expression | SpreadElement>,
+}>;
+
+export type ObjectExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'ObjectExpression',
+  properties: $ReadOnlyArray<Property | SpreadElement>,
+}>;
+
+export type PrivateIdentifier = $ReadOnly<{
+  ...BaseNode,
+  type: 'PrivateIdentifier',
+  name: string,
+}>;
+
+export type Property = $ReadOnly<{
+  ...BaseNode,
+  type: 'Property',
+  key: Expression | PrivateIdentifier,
+  value: Expression | Pattern, // Could be an AssignmentProperty
+  kind: 'init' | 'get' | 'set',
+  method: boolean,
+  shorthand: boolean,
+  computed: boolean,
+}>;
+
+export type PropertyDefinition = $ReadOnly<{
+  ...BaseNode,
+  type: 'PropertyDefinition',
+  key: Expression | PrivateIdentifier,
+  value?: ?Expression,
+  computed: boolean,
+  static: boolean,
+}>;
+
+export type FunctionExpression = $ReadOnly<{
+  ...BaseFunction,
+  ...BaseExpression,
+  id?: ?Identifier,
+  type: 'FunctionExpression',
+  body: BlockStatement,
+}>;
+
+export type SequenceExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'SequenceExpression',
+  expressions: $ReadOnlyArray<Expression>,
+}>;
+
+export type UnaryExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'UnaryExpression',
+  operator: UnaryOperator,
+  prefix: true,
+  argument: Expression,
+}>;
+
+export type BinaryExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'BinaryExpression',
+  operator: BinaryOperator,
+  left: Expression,
+  right: Expression,
+}>;
+
+export type AssignmentExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'AssignmentExpression',
+  operator: AssignmentOperator,
+  left: Pattern | MemberExpression,
+  right: Expression,
+}>;
+
+export type UpdateExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'UpdateExpression',
+  operator: UpdateOperator,
+  argument: Expression,
+  prefix: boolean,
+}>;
+
+export type LogicalExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'LogicalExpression',
+  operator: LogicalOperator,
+  left: Expression,
+  right: Expression,
+}>;
+
+export type ConditionalExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'ConditionalExpression',
+  test: Expression,
+  alternate: Expression,
+  consequent: Expression,
+}>;
+
+export type BaseCallExpression = $ReadOnly<{
+  ...BaseExpression,
+  callee: Expression | Super,
+  arguments: $ReadOnlyArray<Expression | SpreadElement>,
+}>;
+export type CallExpression = SimpleCallExpression | NewExpression;
+
+export type SimpleCallExpression = $ReadOnly<{
+  ...BaseCallExpression,
+  type: 'CallExpression',
+  optional: boolean,
+}>;
+
+export type NewExpression = $ReadOnly<{
+  ...BaseCallExpression,
+  type: 'NewExpression',
+}>;
+
+export type MemberExpression = $ReadOnly<{
+  ...BaseExpression,
+  ...BasePattern,
+  type: 'MemberExpression',
+  object: Expression | Super,
+  property: Expression | PrivateIdentifier,
+  computed: boolean,
+  optional: boolean,
+}>;
+
+export type Pattern =
+  | Identifier
+  | ObjectPattern
+  | ArrayPattern
+  | RestElement
+  | AssignmentPattern
+  | MemberExpression;
+
+export type BasePattern = BaseNode;
+
+export type SwitchCase = $ReadOnly<{
+  ...BaseNode,
+  type: 'SwitchCase',
+  test?: ?Expression,
+  consequent: $ReadOnlyArray<Statement>,
+}>;
+
+export type CatchClause = $ReadOnly<{
+  ...BaseNode,
+  type: 'CatchClause',
+  param: ?Pattern,
+  body: BlockStatement,
+}>;
+
+export type Identifier = $ReadOnly<{
+  ...BaseNode,
+  ...BaseExpression,
+  ...BasePattern,
+  type: 'Identifier',
+  name: string,
+}>;
+
+export type Literal = SimpleLiteral | RegExpLiteral | BigIntLiteral;
+
+export type SimpleLiteral = $ReadOnly<{
+  ...BaseNode,
+  ...BaseExpression,
+  type: 'Literal',
+  value: string | boolean | ?number,
+  raw?: string | void,
+}>;
+
+export type RegExpLiteral = $ReadOnly<{
+  ...BaseNode,
+  ...BaseExpression,
+  type: 'Literal',
+  value?: ?RegExp,
+  regex: {
+    pattern: string,
+    flags: string,
+  },
+  raw?: string | void,
+}>;
+
+export type BigIntLiteral = $ReadOnly<{
+  ...BaseNode,
+  ...BaseExpression,
+  type: 'Literal',
+  value?: ?bigint,
+  bigint: string,
+  raw?: string | void,
+}>;
+
+export type UnaryOperator =
+  | '-'
+  | '+'
+  | '!'
+  | '~'
+  | 'typeof'
+  | 'void'
+  | 'delete';
+
+export type BinaryOperator =
+  | '=='
+  | '!='
+  | '==='
+  | '!=='
+  | '<'
+  | '<='
+  | '>'
+  | '>='
+  | '<<'
+  | '>>'
+  | '>>>'
+  | '+'
+  | '-'
+  | '*'
+  | '/'
+  | '%'
+  | '**'
+  | '|'
+  | '^'
+  | '&'
+  | 'in'
+  | 'instanceof';
+
+export type LogicalOperator = '||' | '&&' | '??';
+
+export type AssignmentOperator =
+  | '='
+  | '+='
+  | '-='
+  | '*='
+  | '/='
+  | '%='
+  | '**='
+  | '<<='
+  | '>>='
+  | '>>>='
+  | '|='
+  | '^='
+  | '&=';
+
+export type UpdateOperator = '++' | '--';
+
+export type ForOfStatement = $ReadOnly<{
+  ...BaseForXStatement,
+  type: 'ForOfStatement',
+  await: boolean,
+}>;
+
+export type Super = $ReadOnly<{
+  ...BaseNode,
+  type: 'Super',
+}>;
+
+export type SpreadElement = $ReadOnly<{
+  ...BaseNode,
+  type: 'SpreadElement',
+  argument: Expression,
+}>;
+
+export type ArrowFunctionExpression = $ReadOnly<{
+  ...BaseExpression,
+  ...BaseFunction,
+  type: 'ArrowFunctionExpression',
+  expression: boolean,
+  body: BlockStatement | Expression,
+}>;
+
+export type YieldExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'YieldExpression',
+  argument?: ?Expression,
+  delegate: boolean,
+}>;
+
+export type TemplateLiteral = $ReadOnly<{
+  ...BaseExpression,
+  type: 'TemplateLiteral',
+  quasis: $ReadOnlyArray<TemplateElement>,
+  expressions: $ReadOnlyArray<Expression>,
+}>;
+
+export type TaggedTemplateExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'TaggedTemplateExpression',
+  tag: Expression,
+  quasi: TemplateLiteral,
+}>;
+
+export type TemplateElement = $ReadOnly<{
+  ...BaseNode,
+  type: 'TemplateElement',
+  tail: boolean,
+  value: {
+    /** It is null when the template literal is tagged and the text has an invalid escape (e.g. - tag`\unicode and \u{55}`) */
+    cooked?: ?string,
+    raw: string,
+  },
+}>;
+
+export type AssignmentProperty = $ReadOnly<{
+  ...Property,
+  value: Pattern,
+  kind: 'init',
+  method: boolean, // false
+}>;
+
+export type ObjectPattern = $ReadOnly<{
+  ...BasePattern,
+  type: 'ObjectPattern',
+  properties: $ReadOnlyArray<AssignmentProperty | RestElement>,
+}>;
+
+export type ArrayPattern = $ReadOnly<{
+  ...BasePattern,
+  type: 'ArrayPattern',
+  elements: $ReadOnlyArray<?Pattern>,
+}>;
+
+export type RestElement = $ReadOnly<{
+  ...BasePattern,
+  type: 'RestElement',
+  argument: Pattern,
+}>;
+
+export type AssignmentPattern = $ReadOnly<{
+  ...BasePattern,
+  type: 'AssignmentPattern',
+  left: Pattern,
+  right: Expression,
+}>;
+
+export type Class = ClassDeclaration | ClassExpression;
+export type BaseClass = $ReadOnly<{
+  ...BaseNode,
+  superClass?: ?Expression,
+  body: ClassBody,
+}>;
+
+export type ClassBody = $ReadOnly<{
+  ...BaseNode,
+  type: 'ClassBody',
+  body: $ReadOnlyArray<MethodDefinition | PropertyDefinition | StaticBlock>,
+}>;
+
+export type MethodDefinition = $ReadOnly<{
+  ...BaseNode,
+  type: 'MethodDefinition',
+  key: Expression | PrivateIdentifier,
+  value: FunctionExpression,
+  kind: 'constructor' | 'method' | 'get' | 'set',
+  computed: boolean,
+  static: boolean,
+}>;
+
+export type ClassDeclaration = $ReadOnly<{
+  ...BaseClass,
+  ...BaseDeclaration,
+  type: 'ClassDeclaration',
+  /** It is null when a class declaration is a part of the `declare export default class` statement */
+  id: ?Identifier,
+}>;
+
+export type ClassExpression = $ReadOnly<{
+  ...BaseClass,
+  ...BaseExpression,
+  type: 'ClassExpression',
+  id?: ?Identifier,
+}>;
+
+export type MetaProperty = $ReadOnly<{
+  ...BaseExpression,
+  type: 'MetaProperty',
+  meta: Identifier,
+  property: Identifier,
+}>;
+
+export type ModuleDeclaration =
+  | ImportDeclaration
+  | ExportNamedDeclaration
+  | ExportDefaultDeclaration
+  | ExportAllDeclaration;
+
+export type BaseModuleDeclaration = BaseNode;
+
+export type ModuleSpecifier =
+  | ImportSpecifier
+  | ImportDefaultSpecifier
+  | ImportNamespaceSpecifier
+  | ExportSpecifier;
+
+export type BaseModuleSpecifier = $ReadOnly<{
+  ...BaseNode,
+  local: Identifier,
+}>;
+
+export type ImportDeclaration = $ReadOnly<{
+  ...BaseModuleDeclaration,
+  type: 'ImportDeclaration',
+  specifiers: $ReadOnlyArray<
+    ImportSpecifier | ImportDefaultSpecifier | ImportNamespaceSpecifier
+  >,
+  source: Literal,
+}>;
+
+export type ImportSpecifier = $ReadOnly<{
+  ...BaseModuleSpecifier,
+  type: 'ImportSpecifier',
+  imported: Identifier,
+}>;
+
+export type ImportExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'ImportExpression',
+  source: Expression,
+}>;
+
+export type ImportDefaultSpecifier = $ReadOnly<{
+  ...BaseModuleSpecifier,
+  type: 'ImportDefaultSpecifier',
+}>;
+
+export type ImportNamespaceSpecifier = $ReadOnly<{
+  ...BaseModuleSpecifier,
+  type: 'ImportNamespaceSpecifier',
+}>;
+
+export type ExportNamedDeclaration = $ReadOnly<{
+  ...BaseModuleDeclaration,
+  type: 'ExportNamedDeclaration',
+  declaration?: ?Declaration,
+  specifiers: $ReadOnlyArray<ExportSpecifier>,
+  source?: ?Literal,
+}>;
+
+export type ExportSpecifier = $ReadOnly<{
+  ...BaseModuleSpecifier,
+  type: 'ExportSpecifier',
+  exported: Identifier,
+}>;
+
+export type ExportDefaultDeclaration = $ReadOnly<{
+  ...BaseModuleDeclaration,
+  type: 'ExportDefaultDeclaration',
+  declaration: Declaration | Expression,
+}>;
+
+export type ExportAllDeclaration = $ReadOnly<{
+  ...BaseModuleDeclaration,
+  type: 'ExportAllDeclaration',
+  exported: ?Identifier,
+  source: Literal,
+}>;
+
+export type AwaitExpression = $ReadOnly<{
+  ...BaseExpression,
+  type: 'AwaitExpression',
+  argument: Expression,
+}>;
