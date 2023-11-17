@@ -3,7 +3,6 @@
   "version": "0.2.0-beta.25",
   "description": "A library for defining styles for optimized user interfaces.",
   "main": "lib/stylex.js",
-  "react-native": "lib/native/stylex.js",
   "types": "lib/stylex.d.ts",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",

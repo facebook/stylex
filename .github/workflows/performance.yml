@@ -7,22 +7,22 @@ jobs:
     name: runtime-size
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: necolas/compressed-size-action@master
-      with:
-        name: "runtime library"
-        build-script: "build -w @stylexjs/stylex"
-        pattern: "./packages/stylex/lib/{stylex.js,StyleXSheet.js,native/stylex.js}"
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v3
+      - uses: necolas/compressed-size-action@master
+        with:
+          name: 'runtime library'
+          build-script: 'build -w @stylexjs/stylex'
+          pattern: './packages/stylex/lib/{stylex.js,StyleXSheet.js}'
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
 
   bundle-size:
     name: bundle-size
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: necolas/compressed-size-action@master
-      with:
-        name: "e2e bundles"
-        build-script: "build"
-        pattern: "./apps/rollup-example/.build/{stylex.css,bundle.js}"
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v3
+      - uses: necolas/compressed-size-action@master
+        with:
+          name: 'e2e bundles'
+          build-script: 'build'
+          pattern: './apps/rollup-example/.build/{stylex.css,bundle.js}'
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
