@@ -8,8 +8,8 @@
 
 import stylex from '@stylexjs/stylex';
 import { globalTokens as $, spacing, text } from './globalTokens.stylex';
-import '@stylexjs/open-props/lib/colors.stylex';
 import { colors } from '@stylexjs/open-props/lib/colors.stylex';
+import { tokens } from './CardTokens.stylex';
 
 type Props = Readonly<{
   title: string;
@@ -20,15 +20,15 @@ type Props = Readonly<{
 export default function Card({ title, body, href }: Props) {
   return (
     <a
-      className={stylex(styles.link)}
+      {...stylex.props(styles.link)}
       href={href}
       rel="noopener noreferrer"
       target="_blank"
     >
-      <h2 className={stylex(styles.h2)}>
-        {title} <span className={stylex(styles.span)}>→</span>
+      <h2 {...stylex.props(styles.h2)}>
+        {title} <span {...stylex.props(styles.span)}>→</span>
       </h2>
-      <p className={stylex(styles.p)}>{body}</p>
+      <p {...stylex.props(styles.p)}>{body}</p>
     </a>
   );
 }
@@ -65,12 +65,12 @@ const styles = stylex.create({
     padding: spacing.sm,
     transitionProperty: 'background-color, border-color',
     transitionDuration: '400ms',
-    transform: {
-      default: 'translateX(0)',
-      ':hover span': 'translateX(4px)',
-    },
     textAlign: 'center',
     textDecoration: 'none',
+    [tokens.arrowTransform]: {
+      default: 'translateX(0)',
+      ':hover': 'translateX(4px)',
+    },
   },
   h2: {
     color: colors.blue3,
@@ -84,6 +84,7 @@ const styles = stylex.create({
   span: {
     display: 'inline-block',
     transitionProperty: 'transform',
+    transform: tokens.arrowTransform,
     transitionDuration: {
       default: '200ms',
       [REDUCE_MOTION]: '0s',

@@ -36,8 +36,11 @@ export function _flattenRawStyleObject(
   const flattened: Array<
     $ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>,
   > = [];
-  for (const key in style) {
-    const value = style[key];
+  for (const _key in style) {
+    const value = style[_key];
+    const key: string = _key.match(/var\(--[a-z0-9]+\)/)
+      ? _key.slice(4, -1)
+      : _key;
 
     // Included Styles
     if (typeof value === 'object' && value instanceof IncludedStyles) {

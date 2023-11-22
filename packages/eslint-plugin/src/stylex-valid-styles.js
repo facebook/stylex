@@ -2360,12 +2360,24 @@ const stylexValidStyles = {
             );
           }
           const key = style.key;
+          if (key.type === 'PrivateIdentifier') {
+            return context.report(
+              ({
+                node: key,
+                loc: key.loc,
+                message: 'Private properties are not allowed in stylex',
+              }: Rule.ReportDescriptor),
+            );
+          }
           const keyName =
             key.type === 'Literal'
               ? key.value
               : key.type === 'Identifier' && !style.computed
               ? key.name
               : null;
+          if (isStylexDefineVarsToken(key, stylexDefineVarsTokenImports)) {
+            return undefined;
+          }
           if (
             typeof keyName !== 'string' ||
             (key.type !== 'Literal' && key.type !== 'Identifier')
