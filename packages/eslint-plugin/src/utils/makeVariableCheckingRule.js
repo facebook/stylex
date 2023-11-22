@@ -15,13 +15,29 @@ import type {
 } from '../stylex-valid-styles';
 
 export default function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
-  return (node: Expression | Pattern, variables?: Variables): RuleResponse => {
+  const varCheckingRule = (
+    node: Expression | Pattern,
+    variables?: Variables,
+  ): RuleResponse => {
+    if (
+      // $FlowFixMe
+      node.type === 'TSSatisfiesExpression' ||
+      // $FlowFixMe
+      node.type === 'TSAsExpression'
+    ) {
+      return varCheckingRule(node.expression, variables);
+    }
     if (node.type === 'Identifier' && variables != null) {
       const existingVar = variables.get(node.name);
+      if (existingVar === 'ARG') {
+        return undefined;
+      }
       if (existingVar != null) {
-        return rule(existingVar);
+        return varCheckingRule(existingVar, variables);
       }
     }
     return rule(node);
   };
+
+  return varCheckingRule;
 }

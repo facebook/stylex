@@ -43,10 +43,10 @@ import isAnimationName from './rules/isAnimationName';
 import isStylexDefineVarsToken from './rules/isStylexDefineVarsToken';
 import { borderSplitter } from './utils/split-css-value';
 
-export type Variables = $ReadOnlyMap<string, Expression>;
+export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
 export type RuleCheck = (
   node: $ReadOnly<Expression | Pattern>,
-  variables?: $ReadOnly<Variables>,
+  variables?: Variables,
   prop?: $ReadOnly<Property>,
 ) => RuleResponse;
 export type RuleResponse = void | {
@@ -2232,7 +2232,7 @@ const stylexValidStyles = {
     ],
   },
   create(context: Rule.RuleContext): { ... } {
-    const variables = new Map<string, Expression>();
+    const variables = new Map<string, Expression | 'ARG'>();
     const dynamicStyleVariables = new Set<string>();
 
     const legacyReason =
@@ -2427,6 +2427,15 @@ const stylexValidStyles = {
         if (style.computed && style.key.type !== 'Literal') {
           if (style.key.type === 'Identifier') {
             const varValue = variables.get(style.key.name);
+            if (varValue === 'ARG') {
+              return context.report(
+                ({
+                  node: style.key,
+                  loc: style.key.loc,
+                  message: 'Computed key cannot depend on function argument',
+                }: Rule.ReportDescriptor),
+              );
+            }
             if (varValue != null) {
               styleKey = varValue;
             } else {
@@ -2531,7 +2540,18 @@ const stylexValidStyles = {
           stylexDefineVarsTokenImports.size > 0 &&
           isStylexDefineVarsToken(style.value, stylexDefineVarsTokenImports);
         if (!isReferencingStylexDefineVarsTokens) {
-          const check = ruleChecker(style.value, variables, style);
+          let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables;
+          if (dynamicStyleVariables.size > 0) {
+            varsWithFnArgs = new Map();
+            for (const [key, value] of variables) {
+              varsWithFnArgs.set(key, value);
+            }
+            for (const key of dynamicStyleVariables) {
+              varsWithFnArgs.set(key, 'ARG');
+            }
+          }
+
+          const check = ruleChecker(style.value, varsWithFnArgs, style);
           if (check != null) {
             const { message, suggest } = check;
             return context.report(

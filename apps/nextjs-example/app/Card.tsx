@@ -33,8 +33,12 @@ export default function Card({ title, body, href }: Props) {
   );
 }
 
-const MOBILE = '@media (max-width: 700px)' as const;
+type TMobile = '@media (max-width: 700px)';
+
+const MOBILE: TMobile = '@media (max-width: 700px)' as TMobile;
 const REDUCE_MOTION = '@media (prefers-reduced-motion: reduce)' as const;
+
+const bgDefault = `rgba(${$.cardR}, ${$.cardG}, ${$.cardB}, 0)` as const;
 
 const styles = stylex.create({
   link: {
@@ -47,7 +51,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     borderRadius: spacing.xs,
     backgroundColor: {
-      default: `rgba(${$.cardR}, ${$.cardG}, ${$.cardB}, 0)`,
+      default: bgDefault,
       ':hover': `rgba(${$.cardR}, ${$.cardG}, ${$.cardB}, 0.1)`,
     },
     borderWidth: 1,
@@ -93,4 +97,6 @@ const styles = stylex.create({
     lineHeight: 1.5,
     maxWidth: '30ch',
   },
+  color: (color: string) => ({ color }),
+  width: (width: string) => ({ width }),
 });

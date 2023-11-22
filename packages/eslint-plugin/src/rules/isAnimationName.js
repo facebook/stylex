@@ -27,6 +27,9 @@ export default function isAnimationName(
   }
   if (node.type === 'Identifier' && variables && variables.has(node.name)) {
     const variable = variables.get(node.name);
+    if (variable === 'ARG') {
+      return undefined;
+    }
     if (variable != null) {
       return isAnimationName(variable, variables);
     } else {

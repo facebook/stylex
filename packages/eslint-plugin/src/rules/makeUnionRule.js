@@ -24,15 +24,6 @@ export default function makeUnionRule(
     variables?: Variables,
     prop?: Property,
   ): RuleResponse => {
-    let isBorder = false;
-    if (
-      prop != null &&
-      prop.key.type === 'Identifier' &&
-      prop.key.name === 'border'
-    ) {
-      console.log('UNION OF BORDER', prop);
-      isBorder = true;
-    }
     const failedRules = [];
     for (const _rule of rules) {
       const rule =
@@ -50,10 +41,8 @@ export default function makeUnionRule(
       failedRules.push(check);
     }
     const fixable = failedRules.filter((a) => a.suggest != null);
-    if (isBorder) {
-      console.log('UNION OF BORDER fixable Rules:', fixable, node);
-    }
     fixable.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+
     return {
       message: failedRules.map((a) => a.message).join('\n'),
       suggest: fixable[0] != null ? fixable[0].suggest : undefined,
