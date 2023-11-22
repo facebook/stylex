@@ -94,4 +94,4 @@ of the project/
 
 ### License
 
-stylex is [MIT licensed](./LICENSE).
+StyleX is [MIT licensed](./LICENSE).

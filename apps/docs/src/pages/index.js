@@ -132,6 +132,8 @@ export default function Home() {
   );
 }
 
+const CTA_BREAK = '@media (max-width: 360px)';
+
 const styles = stylex.create({
   main: {
     flexGrow: 1,
@@ -181,11 +183,23 @@ const styles = stylex.create({
     opacity: 0.7,
   },
   ctaSection: {
+    alignItems: 'center',
     display: 'flex',
     gap: '1rem',
-    margin: '4rem',
+    justifyContent: 'center',
+    marginBlock: {
+      default: '4rem',
+      [CTA_BREAK]: '2rem',
+    },
+    flexDirection: {
+      default: 'row',
+      [CTA_BREAK]: 'column',
+    },
   },
   cta: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 8,
     color: {
       default: 'var(--fg1)',
@@ -194,6 +208,10 @@ const styles = stylex.create({
     textDecoration: {
       default: 'none',
       ':hover': 'none',
+    },
+    width: {
+      default: 'null',
+      [CTA_BREAK]: '100%',
     },
     backgroundColor: 'hsl(var(--pink-h), var(--pink-s), var(--pink-l))',
     paddingBlock: '0.75rem',
