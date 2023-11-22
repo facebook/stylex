@@ -1,0 +1,78 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+/* eslint-disable no-unused-vars */
+
+import stylex from '../src/stylex';
+import type { StyleXVar, VarGroup, Theme } from '../src/StyleXTypes';
+
+const DARK = '@media (prefers-color-scheme: dark)';
+
+const buttonTokens = stylex.defineVars({
+  bgColor: {
+    default: 'cyan',
+    [DARK]: 'navy',
+  },
+  textColor: {
+    default: 'black',
+    [DARK]: 'white',
+  },
+  cornerRadius: '4px',
+  paddingBlock: '4px',
+  paddingInline: '8px',
+});
+
+// DefineVars creates the right type.
+(buttonTokens: VarGroup<
+  $ReadOnly<{
+    bgColor: string,
+    textColor: string,
+    cornerRadius: string,
+    paddingBlock: string,
+    paddingInline: string,
+  }>,
+  string,
+>);
+(buttonTokens.bgColor: StyleXVar<string>);
+
+const correctTheme = stylex.createTheme(buttonTokens, {
+  bgColor: 'red',
+  textColor: 'white',
+  cornerRadius: '4px',
+  paddingBlock: '4px',
+  paddingInline: '8px',
+});
+
+(correctTheme: Theme<typeof buttonTokens, string>);
+
+const result: string = stylex(correctTheme);
+const result2: $ReadOnly<{
+  className?: string,
+  style?: $ReadOnly<{ [string]: string | number }>,
+}> = stylex.props(correctTheme);
+
+const wrongTheme1 = stylex.createTheme(buttonTokens, {
+  bgColor: 'red',
+  textColor: 'white',
+  // $FlowExpectedError[incompatible-call] - cornerRadius must be a string
+  cornerRadius: 1,
+  paddingBlock: '4px',
+  paddingInline: '8px',
+});
+
+const wrongTheme2 = stylex.createTheme(
+  buttonTokens,
+  // $FlowExpectedError[prop-missing] - cornerRadius missing
+  {
+    bgColor: 'red',
+    textColor: 'white',
+    paddingBlock: '4px',
+    paddingInline: '8px',
+  },
+);

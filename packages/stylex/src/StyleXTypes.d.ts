@@ -114,9 +114,13 @@ export type Stylex$Create = <
   styles: S,
 ) => MapNamespaces<S>;
 
-export type CompiledStyles = Readonly<{
-  [key: string]: StyleXClassName | null | void | never;
-}>;
+export type CompiledStyles =
+  | Readonly<{
+      [key: string]: StyleXClassName | null | void | never;
+    }>
+  | Readonly<{
+      theme: StyleXClassName;
+    }>;
 
 declare const StyleXInlineStylesTag: unique symbol;
 
@@ -155,27 +159,29 @@ export type StyleXStylesWithout<CSS extends UserAuthoredStyles> = StyleXStyles<
 
 declare const StyleXVarGroupTag: unique symbol;
 export type VarGroup<
-  Tokens extends { [key: string]: unknown },
+  Tokens extends { [key: string]: any },
   ID extends symbol = symbol,
 > = Readonly<{
-  [Key in keyof Tokens]: Tokens[Key];
-}> & {
-  $opaqueId: ID;
-  $tokens: Tokens;
-} & typeof StyleXVarGroupTag;
+  [Key in keyof Tokens]: StyleXVar<Tokens[Key]>;
+}> &
+  Readonly<{
+    $opaqueId: ID;
+    $tokens: Tokens;
+  }> &
+  typeof StyleXVarGroupTag;
 
-export type TokensFromVarGroup<T extends VarGroup<TTokens>> = T['$tokens'];
+export type TokensFromVarGroup<T extends VarGroup<unknown, unknown>> =
+  T['$tokens'];
 
-export type IDFromVarGroup<T extends VarGroup<TTokens>> = T['$opaqueId'];
+export type IDFromVarGroup<T extends VarGroup<unknown, unknown>> =
+  T['$opaqueId'];
 
-type TTokens = {
-  [key: string]: string | { default: string; [key: AtRuleStr]: string };
-};
+type TTokens = Readonly<{
+  [key: string]: string | { [key: string]: string };
+}>;
 
 export type FlattenTokens<T extends TTokens> = Readonly<{
-  [Key in keyof T]: T[Key] extends { [key: string]: infer X }
-    ? StyleXVar<X>
-    : StyleXVar<T[Key]>;
+  [Key in keyof T]: T[Key] extends { [key: string]: infer X } ? X : T[Key];
 }>;
 
 export type StyleX$DefineVars = <
@@ -186,24 +192,23 @@ export type StyleX$DefineVars = <
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
 export type Theme<
-  T extends VarGroup<TTokens, symbol>,
-  // eslint-disable-next-line no-unused-vars
+  T extends VarGroup<unknown, symbol>,
   Tag extends symbol = symbol,
 > = Tag &
   Readonly<{
     theme: StyleXClassNameFor<string, IDFromVarGroup<T>>;
   }>;
 
-type OverridesForTokenType<Config extends { [key: string]: any }> = {
+type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
   [Key in keyof Config]:
     | Config[Key]
     | { default: Config[Key]; [atRule: AtRuleStr]: Config[Key] };
 };
 
 export type StyleX$CreateTheme = <
-  BaseTokens extends VarGroup<any>,
-  ID extends symbol = symbol,
+  TVars extends VarGroup<unknown, unknown>,
+  ThemeID extends symbol = symbol,
 >(
-  baseTokens: BaseTokens,
-  overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
-) => Theme<BaseTokens, ID>;
+  baseTokens: TVars,
+  overrides: OverridesForTokenType<TokensFromVarGroup<TVars>>,
+) => Theme<TVars, ThemeID>;
