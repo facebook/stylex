@@ -42,6 +42,7 @@ import isPercentage from './rules/isPercentage';
 import isAnimationName from './rules/isAnimationName';
 import isStylexDefineVarsToken from './rules/isStylexDefineVarsToken';
 import { borderSplitter } from './utils/split-css-value';
+import evaluate from './utils/evaluate';
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
 export type RuleCheck = (
@@ -2424,29 +2425,35 @@ const stylexValidStyles = {
           );
         }
         let styleKey: Expression | PrivateIdentifier = style.key;
-        if (style.computed && style.key.type !== 'Literal') {
-          if (style.key.type === 'Identifier') {
-            const varValue = variables.get(style.key.name);
-            if (varValue === 'ARG') {
-              return context.report(
-                ({
-                  node: style.key,
-                  loc: style.key.loc,
-                  message: 'Computed key cannot depend on function argument',
-                }: Rule.ReportDescriptor),
-              );
-            }
-            if (varValue != null) {
-              styleKey = varValue;
-            } else {
-              return context.report(
-                ({
-                  node: style.key,
-                  loc: style.key.loc,
-                  message: 'Computed key cannot be resolved.',
-                }: Rule.ReportDescriptor),
-              );
-            }
+        if (styleKey.type === 'PrivateIdentifier') {
+          return context.report(
+            ({
+              node: styleKey,
+              loc: styleKey.loc,
+              message: 'Private properties are not allowed in stylex',
+            }: Rule.ReportDescriptor),
+          );
+        }
+        if (style.computed && styleKey.type !== 'Literal') {
+          const val = evaluate(styleKey, variables);
+          if (val == null) {
+            return context.report(
+              ({
+                node: style.key,
+                loc: style.key.loc,
+                message: 'Computed key cannot be resolved.',
+              }: Rule.ReportDescriptor),
+            );
+          } else if (val === 'ARG') {
+            return context.report(
+              ({
+                node: style.key,
+                loc: style.key.loc,
+                message: 'Computed key cannot depend on function argument',
+              }: Rule.ReportDescriptor),
+            );
+          } else {
+            styleKey = val;
           }
         }
         if (styleKey.type !== 'Literal' && styleKey.type !== 'Identifier') {
