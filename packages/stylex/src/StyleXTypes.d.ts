@@ -26,7 +26,7 @@ declare class _StyleXVar<out Val> {
   private _opaque: typeof StyleXVarTag;
   private _value: Val;
 }
-type StyleXVar<Val> = _StyleXVar<Val> & string;
+export type StyleXVar<Val> = _StyleXVar<Val> & string;
 
 // Strings that don't start with a dollar sign.
 // So that we can `&` with {$$css: true} without type errors.
@@ -83,10 +83,10 @@ export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
 export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
-type ComplexStyleValueType<T> = T extends string | number | null
-  ? T
-  : T extends StyleXVar<infer U>
+type ComplexStyleValueType<T> = T extends StyleXVar<infer U>
   ? U
+  : T extends string | number | null
+  ? T
   : T extends ReadonlyArray<infer U>
   ? U
   : T extends Readonly<{ default: infer A; [cond: CondStr]: infer B }>
