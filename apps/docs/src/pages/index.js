@@ -13,6 +13,7 @@ import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 import Link from '@docusaurus/Link';
+import FeatureCard from '../../components/FeatureCard';
 
 const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
@@ -66,7 +67,9 @@ const CardDescription = ({children}) => (
 
 const CodeContainer = ({children}) => (
   <div {...stylex.props(styles.codeContainer)}>
-    <CodeBlock style={styles.code}>{children}</CodeBlock>
+    <span {...stylex.props(styles.code)}>
+      <CodeBlock>{children}</CodeBlock>
+    </span>
   </div>
 );
 
@@ -99,13 +102,11 @@ export default function Home() {
             user-interfaces.
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
-            <Link {...stylex.props(styles.cta)} to="/docs/learn/">
-              Learn →
-            </Link>
-            <Link
-              {...stylex.props(styles.cta, styles.ctaBlue)}
-              to="/docs/learn/installation/">
+            <Link {...stylex.props(styles.cta)} to="/docs/learn/installation/">
               Get Started →
+            </Link>
+            <Link {...stylex.props(styles.cta, styles.ctaBlue)} to="/docs/api/">
+              API Reference →
             </Link>
           </section>
         </section>
@@ -126,6 +127,46 @@ export default function Home() {
             <CardDescription>Use your styles</CardDescription>
             <CodeContainer>{STEP_USE}</CodeContainer>
           </Card>
+        </section>
+        <section {...stylex.props(styles.hero)}>
+          <div {...stylex.props(styles.grid)}>
+            <FeatureCard
+              emoji="🧗‍♂️"
+              subtitle="Atomic CSS for small bundles"
+              title="Scalable">
+              Scale new heights without worrying about the weight CSS bundles.
+            </FeatureCard>
+            <FeatureCard
+              emoji="🔮"
+              style={styles.double}
+              subtitle="“The last style applied always wins”"
+              title="Predictable">
+              You shouldn't need a crystal ball to know what your styles are
+              applied on an element.
+            </FeatureCard>
+            <FeatureCard
+              emoji="🧩"
+              subtitle="Styles are data too"
+              title="Composable">
+              Composing styles as component props fit together like a puzzle.
+            </FeatureCard>
+            <FeatureCard
+              emoji="🏎️"
+              style={styles.smallOnLarge}
+              subtitle="Ship a single static CSS file"
+              title="Fast">
+              The StyleX compiler bundles styles into a static CSS file. No
+              runtime style injections!
+            </FeatureCard>
+            <FeatureCard
+              emoji="🥽"
+              style={styles.small}
+              subtitle="Strongly types for all styles"
+              title="Type-Safe">
+              Safety first! Static types catch common styling mistakes as you
+              code.
+            </FeatureCard>
+          </div>
         </section>
       </main>
     </Layout>
@@ -152,6 +193,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   title: {
     position: 'relative',
@@ -310,26 +352,48 @@ const styles = stylex.create({
     marginTop: 16,
     fontFamily:
       'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-    borderRadius: 16,
-    fontSize: {
-      default: '1rem',
-      '@media (min-width: 1250px) and (max-width: 1500px)': '0.8rem',
-      '@media (min-width: 420px) and (max-width: 550px)': '0.8rem',
-      '@media (max-width: 419px)': '0.65rem',
-    },
+    borderRadius: 32,
+    containerType: 'inline-size',
   },
   code: {
     flexGrow: 1,
-  },
-  codeEmpty: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '8rem',
+    fontSize: 'clamp(0.6rem, 0.15rem + 3cqi, 1rem)',
   },
   zstack: {
     alignItems: {
       default: 'flex-start',
       '@media (max-width: 1135px)': 'center',
     },
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: {
+      default: '1fr 1fr 1fr 1fr',
+      '@media (min-width: 940.1px) and (max-width: 1230px)': '1fr 1fr 1fr',
+      '@media (max-width: 940px)': '1fr',
+    },
+    gridAutoRows: '1fr',
+    gap: 16,
+    width: '100%',
+    alignItems: 'center',
+    padding: 32,
+  },
+  double: {
+    gridColumn: {
+      default: null,
+      '@media (min-width: 940.1px)': 'span 2',
+    },
+    gridRow: null,
+  },
+  small: {
+    gridColumn: null,
+    gridRow: null,
+  },
+  smallOnLarge: {
+    gridRow: {
+      default: null,
+      '@media (min-width: 940px) and (max-width: 1230px)': 'span 2',
+    },
+    gridColumn: null,
   },
 });

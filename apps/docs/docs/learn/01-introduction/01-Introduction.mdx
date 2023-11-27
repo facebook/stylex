@@ -1,0 +1,99 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 0
+---
+
+# Introduction to StyleX
+
+StyleX is a simple, easy to use JavaScript syntax and compiler for styling web
+apps.
+
+StyleX combines the strengths and avoids the weaknesses of both inline styles
+and static CSS. Defining and using styles requires only local knowledge within a
+component, and avoids specificity issues while retaining features like Media
+Queries. StyleX builds optimized styles using collision-free atomic CSS which is
+superior to what could be authored and maintained by hand.
+
+## Features at a glance
+
+### Predictable
+
+- Style Encapsulation - All styles are caused by class names applied directly set
+  on an element
+- No specificity issues
+- “The last style applied always wins!”
+
+### Scalable
+
+- Minimize CSS output with atomic CSS
+- The CSS size plateaus even as the number of components grows
+- Styles remain readable and maintainable within growing codebases
+
+### Flexible & Composable
+
+- Apply styles conditionally
+- Merge and compose arbitrary styles across component and file boundaries
+- Use local constants and expressions to keep your styles DRY
+  - Or repeat yourself without worrying about performance
+
+### Static & Fast
+
+- No runtime style injections
+- All styles are bundled in a static CSS file at compile-time
+- Optimized runtime for merging class names
+
+### Type-Safe
+
+- Type-safe APIs
+- Type-safe styles
+- Type-safe theming
+- Type-safe style props
+
+## Ideal conditions for using StyleX?
+
+StyleX works well in a wide variety of projects, and you will usually not regret
+choosing it. However, there are some conditions that are more ideal for using StyleX than
+others.
+
+### When authoring your UI in JavaScript
+
+StyleX is a CSS-in-JS library, which means that it is most useful when you are
+authoring your UI in JavaScript. If you're using a framework such as React,
+Preact, Solid, lit-html, or Angular, using StyleX should be a breeze.
+
+Some frameworks, such as Svelte and Vue use custom file formats that are
+compiled to JavaScript at build time. StyleX can still be used in these
+frameworks, but may need some extra configuration.
+
+There are also UI solutions such as `htmx` and various templating engines where
+you author your markup in files that can't contain arbitrary JavaScript. Even if
+you can make StyleX work in these environments, it may not be worth the effort.
+
+### Large or growing projects
+
+While StyleX works well for projects of all sizes, it really shines in larger
+applications.
+
+Since StyleX compiles to atomic class names, a big performance benefit is that
+the size of your CSS bundle plateaus as your project grows.
+
+For smaller projects, it may still make sense to choose StyleX for its
+expressive API, but the performance benefits may not be as meaningful.
+
+### Reusable components
+
+StyleX makes the most sense when being used alongside reusable UI components.
+
+For years, we have had to choose between "Design System" components that come
+with styles baked in but can be difficult to customize or "Headless" components
+that are completely unstyled.
+
+StyleX finally lets you build UI components that can have default styles _and_
+still be customizable.
+
+Further, the consistency enables sharing these components by publishing them to
+NPM. As long as the consumer of your component is also using StyleX, the styles
+will be merged and composed correctly without any additional configuration.
