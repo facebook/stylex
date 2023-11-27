@@ -285,7 +285,9 @@ function addSpecificityLevel(selector: string, index: number): string {
     .map(() => ':not(#\\#)')
     .join('');
 
-  const lastOpenCurly = selector.lastIndexOf('{');
+  const lastOpenCurly = selector.includes('::')
+    ? selector.indexOf('::')
+    : selector.lastIndexOf('{');
   const beforeCurly = selector.slice(0, lastOpenCurly);
   const afterCurly = selector.slice(lastOpenCurly);
 

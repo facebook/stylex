@@ -13,7 +13,7 @@ import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 import Link from '@docusaurus/Link';
-import FeatureCard from '../../components/FeatureCard';
+import FeaturePile from '../../components/FeaturePile';
 
 const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
@@ -105,68 +105,39 @@ export default function Home() {
             <Link {...stylex.props(styles.cta)} to="/docs/learn/installation/">
               Get Started →
             </Link>
-            <Link {...stylex.props(styles.cta, styles.ctaBlue)} to="/docs/api/">
-              API Reference →
+            <Link
+              {...stylex.props(styles.cta, styles.ctaBlue)}
+              to="/docs/learn/thinking-in-stylex/">
+              Thinking in StyleX →
             </Link>
           </section>
         </section>
-        <section {...stylex.props(styles.getStarted)}>
-          <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
-          <Card>
-            <CardTitle>Step 1</CardTitle>
-            <CardDescription>Configure the compiler</CardDescription>
-            <CodeContainer>{STEP_CONFIGURE}</CodeContainer>
-          </Card>
-          <Card>
-            <CardTitle>Step 2</CardTitle>
-            <CardDescription>Create your styles</CardDescription>
-            <CodeContainer>{STEP_CREATE}</CodeContainer>
-          </Card>
-          <Card>
-            <CardTitle>Step 3</CardTitle>
-            <CardDescription>Use your styles</CardDescription>
-            <CodeContainer>{STEP_USE}</CodeContainer>
-          </Card>
+        <section
+          {...stylex.props(
+            styles.getStarted,
+            styles.getStartedLayout,
+            styles.heroPadding,
+          )}>
+          <FeaturePile />
         </section>
         <section {...stylex.props(styles.hero)}>
-          <div {...stylex.props(styles.grid)}>
-            <FeatureCard
-              emoji="🧗‍♂️"
-              subtitle="Atomic CSS for small bundles"
-              title="Scalable">
-              Scale new heights without being weighed down by the size of CSS
-              bundles.
-            </FeatureCard>
-            <FeatureCard
-              emoji="🔮"
-              style={styles.double}
-              subtitle="“The last style applied always wins”"
-              title="Predictable">
-              You shouldn't need a crystal ball to know what styles are applied
-              on an element.
-            </FeatureCard>
-            <FeatureCard
-              emoji="🧩"
-              subtitle="Styles are data too"
-              title="Composable">
-              Styles can be passed around as props, and merged
-              deterministically. It all fits together.
-            </FeatureCard>
-            <FeatureCard
-              emoji="🏎️"
-              style={styles.smallOnLarge}
-              subtitle="Ship a single static CSS file"
-              title="Fast">
-              The StyleX compiler bundles styles into a static CSS file. No
-              runtime style injection.
-            </FeatureCard>
-            <FeatureCard
-              emoji="🥽"
-              style={styles.small}
-              subtitle="Strongly types for all styles"
-              title="Type-Safe">
-              Safety first! Static types catch common styling mistakes in code.
-            </FeatureCard>
+          <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
+          <div {...stylex.props(styles.getStartedLayout)}>
+            <Card>
+              <CardTitle>Step 1</CardTitle>
+              <CardDescription>Configure the compiler</CardDescription>
+              <CodeContainer>{STEP_CONFIGURE}</CodeContainer>
+            </Card>
+            <Card>
+              <CardTitle>Step 2</CardTitle>
+              <CardDescription>Create your styles</CardDescription>
+              <CodeContainer>{STEP_CREATE}</CodeContainer>
+            </Card>
+            <Card>
+              <CardTitle>Step 3</CardTitle>
+              <CardDescription>Use your styles</CardDescription>
+              <CodeContainer>{STEP_USE}</CodeContainer>
+            </Card>
           </div>
         </section>
       </main>
@@ -195,6 +166,9 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+  },
+  heroPadding: {
+    padding: 32,
   },
   title: {
     position: 'relative',
@@ -309,6 +283,8 @@ const styles = stylex.create({
   },
   getStarted: {
     backgroundColor: 'var(--bg2)',
+  },
+  getStartedLayout: {
     width: '100%',
     padding: 16,
     display: 'flex',
@@ -365,36 +341,5 @@ const styles = stylex.create({
       default: 'flex-start',
       '@media (max-width: 1135px)': 'center',
     },
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: {
-      default: '1fr 1fr 1fr 1fr',
-      '@media (min-width: 940.1px) and (max-width: 1230px)': '1fr 1fr 1fr',
-      '@media (max-width: 940px)': '1fr',
-    },
-    gridAutoRows: '1fr',
-    gap: 16,
-    width: '100%',
-    alignItems: 'center',
-    padding: 32,
-  },
-  double: {
-    gridColumn: {
-      default: null,
-      '@media (min-width: 940.1px)': 'span 2',
-    },
-    gridRow: null,
-  },
-  small: {
-    gridColumn: null,
-    gridRow: null,
-  },
-  smallOnLarge: {
-    gridRow: {
-      default: null,
-      '@media (min-width: 940px) and (max-width: 1230px)': 'span 2',
-    },
-    gridColumn: null,
   },
 });

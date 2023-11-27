@@ -3,141 +3,90 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-sidebar_position: 2
+sidebar_position: 0
+title: Introduction
 ---
 
-# Quick start
+# Introduction to StyleX
 
-### Defining styles
+StyleX is a simple, easy to use JavaScript syntax and compiler for styling web
+apps.
 
-Styles are defined using an object syntax and the `create()` API.
+StyleX combines the strengths and avoids the weaknesses of both inline styles
+and static CSS. Defining and using styles requires only local knowledge within a
+component, and avoids specificity issues while retaining features like Media
+Queries. StyleX builds optimized styles using collision-free atomic CSS which is
+superior to what could be authored and maintained by hand.
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
+## Features at a glance
 
-const styles = stylex.create({
-  root: {
-    width: '100%',
-    maxWidth: 800,
-    minHeight: 40,
-  },
-});
-```
+### Predictable
 
-Any number of rules can be created by using additional keys and additional
-calls to `create()`:
+- Style Encapsulation - All styles are applied as class names applied directly
+  on elements
+- No specificity issues
+- “The last style applied always wins!”
 
-```tsx
-import * as stylex from '@stylexjs/stylex';
+### Scalable
 
-const styles = stylex.create({
-  root: {
-    width: '100%',
-    maxWidth: 800,
-    minHeight: 40,
-  },
-  child: {
-    backgroundColor: 'black',
-    marginBlock: '1rem',
-  },
-});
+- Minimize CSS output with atomic CSS
+- The CSS size plateaus even as the number of components grows
+- Styles remain readable and maintainable within growing codebases
 
-const colorStyles = stylex.create({
-  red: {
-    backgroundColor: 'lightred',
-    borderColor: 'darkred',
-  },
-  green: {
-    backgroundColor: 'lightgreen',
-    borderColor: 'darkgreen',
-  },
-});
-```
+### Flexible & Composable
 
-### Using styles
+- Apply styles conditionally
+- Merge and compose arbitrary styles across component and file boundaries
+- Use local constants and expressions to keep your styles DRY
+  - Or repeat yourself without worrying about performance
 
-To use styles they must be passed to the `props()` function. Styles can be
-combined using an array, and applied conditionally using standard JavaScript
-expressions.
+### Static & Fast
 
-```tsx
-import * as React from 'react';
-import * as stylex from '@stylexjs/stylex';
+- No runtime style injection
+- All styles are bundled in a static CSS file at compile-time
+- Optimized runtime for merging class names
 
-const styles = stylex.create({ ... });
+### Type-Safe
 
-function ReactDiv({ color, isActive, style }) {
-  return <div {...stylex.props(
-    styles.main,
-    // apply styles conditionally
-    isActive && styles.active,
-    // choose a style variant based on a prop
-    colorStyles[color]
-    // styles passed as props
-    style,
-  )} />;
-}
-```
+- Type-safe APIs
+- Type-safe styles
+- Type-safe theming
+- Type-safe style props
 
-The example above uses JSX. StyleX itself is framework agnostic. The same code
-works with other frameworks that accept `className` strings and `style` objects
-such as `SolidJS`, `Preact` or `Qwik`.
+## Ideal conditions for using StyleX?
 
-For other frameworks, it's easy to write simple helpers functions to convert the
-output of `props()` to the appropriate format. For example, here is how you
-would use StyleX with an `html` template literal in a component built with
-Enhance:
+StyleX works well in a wide variety of projects. However, there are some conditions 
+that are more ideal for using StyleX than others.
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+### When authoring your UI in JavaScript
 
-<Tabs>
+StyleX is a CSS-in-JS library, which means that it is most useful when an app's UI is
+authored in Javascript. If an application uses a framework like React, Preact, Solid,
+lit-html, or Angular, using StyleX should be a good fit.
 
-<TabItem label="Enhance Component" value="enhance">
+Some frameworks, such as Svelte and Vue use custom file formats that are
+compiled to JavaScript at build time. StyleX can still be used in these
+frameworks, but may need some custom configuration.
 
-```tsx
-import type {StyleXStyles} from '@stylexjs/stylex';
-import * as stylex from '@stylexjs/stylex';
+### Large or growing projects
 
-import { spread } from './helpers';
+While StyleX works well for projects of all sizes, it really shines in larger
+applications.
 
-const styles = create({ ... });
+Since StyleX compiles to atomic class names, a big performance benefit is that
+the size of your CSS bundle plateaus as your project grows.
 
-export default function EnhanceDiv({ html, state }) {
-  const { attrs } = state;
-  const { color, isActive = false, style } = state;
-  // Enhance only accepts string attributes.
-  const stylesObj = style ? JSON.parse(style) : null;
+### Reusable components
 
-  return html`
-    <div ${spread(stylex.props(
-      styles.main,
-      // apply styles conditionally
-      isActive && styles.active,
-      // choose a style variant based on a prop
-      colorStyles[color],
-      // styles passed as arguments
-      stylesObj
-    ))}>
-      <slot></slot>
-    </div>
-  `;
-}
-```
+The benefits of StyleX are greatest when used alongside reusable UI components.
 
-</TabItem>
-<TabItem label="Spread helper" value="spread">
+For years, we have had to choose between "Design System" components that come
+with styles baked in but can be difficult to customize or "Headless" components
+that are completely unstyled.
 
-```tsx title="helpers.js"
-const styleStr = (style) =>
-  Object.entries(style)
-    .map(([key, value]) => `${key}:${value}`)
-    .join(';');
+StyleX empowers developers to build UI components that can have default styles _and_
+still be customizable.
 
-export const spread = ({className, style}) =>
-  `class="${className}" style="${styleStr(style)}"`;
-```
-
-</TabItem>
-
-</Tabs>
+Further, the consistency enables sharing these components by publishing them to
+NPM. As long as the consumer of a component is also using StyleX, the styles
+will be merged and composed correctly without any additional configuration.

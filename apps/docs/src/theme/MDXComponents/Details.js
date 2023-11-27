@@ -1,5 +1,15 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @format
+ */
+
 import React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import {tokens} from './DetailsTokens.stylex';
 
 export default function MDXDetails({children: _children, style, ...props}) {
   const items = React.Children.toArray(_children);
@@ -35,21 +45,22 @@ const styles = stylex.create({
     },
     borderStyle: 'solid',
     borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.5)',
-    // HACK: This is a temprory workaround
-    ':is([open]) > summary::before': {
-      transform: 'rotate(90deg)',
+    [tokens.arrowRotate]: {
+      default: '0deg',
+      ':is([open])': '90deg',
     },
-    ':is([open]) > summary': {
-      marginBottom: '1rem',
+    [tokens.summaryGap]: {
+      default: '0rem',
+      ':is([open])': '1rem',
     },
   },
   summary: {
-    position: 'relative',
-    paddingInlineStart: '1.2rem',
     cursor: 'pointer',
     fontWeight: 'bold',
-    // marginBottom: '0.5rem',
     listStyleType: 'none',
+    marginBottom: tokens.summaryGap,
+    paddingInlineStart: '1.2rem',
+    position: 'relative',
     '::-webkit-details-marker': {
       display: 'none',
     },
@@ -66,9 +77,11 @@ const styles = stylex.create({
       position: 'absolute',
       top: '0.5rem',
       insetInlineStart: '0.25rem',
-      transform: 'rotate(0)',
+      transform: `rotate(${tokens.arrowRotate})`,
       transformOrigin: '0.2rem 50%',
-      transition: 'transform 0.2s ease-in-out',
+      transitionProperty: 'transform',
+      transitionDuration: '0.2s',
+      transitionTimingFunction: 'ease-in-out',
     },
   },
 });
