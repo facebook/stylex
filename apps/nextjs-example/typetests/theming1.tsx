@@ -21,10 +21,7 @@ import type {
 const DARK = '@media (prefers-color-scheme: dark)';
 
 const buttonTokens = stylex.defineVars({
-  bgColor: {
-    default: 'cyan',
-    [DARK]: 'navy',
-  },
+  bgColor: 'cyan',
   textColor: {
     default: 'black',
     [DARK]: 'white',
@@ -74,7 +71,11 @@ type TokensType = TokensFromVarGroup<typeof buttonTokens>;
 }) satisfies TokensType;
 
 const correctTheme = stylex.createTheme(buttonTokens, {
-  bgColor: 'red',
+  bgColor: {
+    default: 'pink',
+    [DARK]: 'navy',
+    '@media (max-width: 700px)': 'red',
+  },
   textColor: 'white',
   cornerRadius: '4px',
   paddingBlock: '4px',

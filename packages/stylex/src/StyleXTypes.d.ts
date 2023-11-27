@@ -22,14 +22,12 @@ export type StyleXClassName = StyleXClassNameFor<any, any>;
 export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
 
 declare const StyleXVarTag: unique symbol;
-declare class StyleXVar<out Val> extends String {
+declare class _StyleXVar<out Val> {
   private _opaque: typeof StyleXVarTag;
   private _value: Val;
 }
+export type StyleXVar<Val> = _StyleXVar<Val> & string;
 
-// Strings that don't start with a dollar sign.
-// So that we can `&` with {$$css: true} without type errors.
-type string = `${NonDollarChars}${string}`;
 type PseudoClassStr = `:${string}`;
 type AtRuleStr = `@${string}`;
 
@@ -82,10 +80,10 @@ export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
 export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
-type ComplexStyleValueType<T> = T extends string | number | null
-  ? T
-  : T extends StyleXVar<infer U>
+type ComplexStyleValueType<T> = T extends StyleXVar<infer U>
   ? U
+  : T extends string | number | null
+  ? T
   : T extends ReadonlyArray<infer U>
   ? U
   : T extends Readonly<{ default: infer A; [cond: CondStr]: infer B }>
@@ -165,16 +163,16 @@ export type VarGroup<
   [Key in keyof Tokens]: StyleXVar<Tokens[Key]>;
 }> &
   Readonly<{
-    $opaqueId: ID;
-    $tokens: Tokens;
+    __opaqueId: ID;
+    __tokens: Tokens;
   }> &
   typeof StyleXVarGroupTag;
 
 export type TokensFromVarGroup<T extends VarGroup<unknown, unknown>> =
-  T['$tokens'];
+  T['__tokens'];
 
 export type IDFromVarGroup<T extends VarGroup<unknown, unknown>> =
-  T['$opaqueId'];
+  T['__opaqueId'];
 
 type TTokens = Readonly<{
   [key: string]: string | { [key: string]: string };
