@@ -28,9 +28,6 @@ declare class _StyleXVar<out Val> {
 }
 export type StyleXVar<Val> = _StyleXVar<Val> & string;
 
-// Strings that don't start with a dollar sign.
-// So that we can `&` with {$$css: true} without type errors.
-type string = `${NonDollarChars}${string}`;
 type PseudoClassStr = `:${string}`;
 type AtRuleStr = `@${string}`;
 
