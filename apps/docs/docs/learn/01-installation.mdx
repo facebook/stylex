@@ -69,8 +69,9 @@ StyleX plugin. See the API reference for more details on the
 To make this easier for commonly used packagers and meta-frameworks, StyleX
 provides plugins for Webpack, Rollup, and Next.js.
 
-<Tabs>
-<TabItem label="Rollup" value="rollup">
+<details>
+  <summary>Rollup</summary>
+
   <DevInstallExample dev={[`@stylexjs/rollup-plugin`]} />
 
   ```tsx title="rollup.config.js"
@@ -103,9 +104,11 @@ provides plugins for Webpack, Rollup, and Next.js.
 
   export default config;
   ```
+</details>
 
-</TabItem>
-<TabItem label="Webpack" value="webpack">
+<details>
+  <summary>Webpack</summary>
+
   <DevInstallExample dev={[`@stylexjs/webpack-plugin`]} />
 
   ```tsx title="webpack.config.js"
@@ -153,8 +156,11 @@ provides plugins for Webpack, Rollup, and Next.js.
   module.exports = config;
   ```
 
-</TabItem>
-<TabItem label="NextJS" value="next">
+</details>
+
+<details>
+  <summary>Next.js</summary>
+
   <DevInstallExample dev={[`@stylexjs/nextjs-plugin`]} />
 
   ```tsx title=".babelrc.js"
@@ -185,8 +191,7 @@ provides plugins for Webpack, Rollup, and Next.js.
   })({});
   ```
 
-</TabItem>
-</Tabs>
+</details>
 
 Please refer to the
 [StyleX examples apps](https://github.com/facebookexternal/stylex/tree/main/apps)

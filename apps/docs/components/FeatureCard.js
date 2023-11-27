@@ -79,9 +79,9 @@ const styles = stylex.create({
 
 export default function FeatureCard({emoji, title, subtitle, children, style}) {
   return (
-    <div {...stylex.props(styles.card, style)}>
+    <article {...stylex.props(styles.card, style)}>
       <div {...stylex.props(styles.layout)}>
-        <div role="presentation" {...stylex.props(styles.emoji)}>
+        <div {...stylex.props(styles.emoji)} aria-hidden>
           {emoji}
         </div>
         <div>
@@ -90,6 +90,6 @@ export default function FeatureCard({emoji, title, subtitle, children, style}) {
           <p {...stylex.props(styles.body)}>{children}</p>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

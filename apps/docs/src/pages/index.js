@@ -134,21 +134,23 @@ export default function Home() {
               emoji="🧗‍♂️"
               subtitle="Atomic CSS for small bundles"
               title="Scalable">
-              Scale new heights without worrying about the weight CSS bundles.
+              Scale new heights without being weighed down by the size of CSS
+              bundles.
             </FeatureCard>
             <FeatureCard
               emoji="🔮"
               style={styles.double}
               subtitle="“The last style applied always wins”"
               title="Predictable">
-              You shouldn't need a crystal ball to know what your styles are
-              applied on an element.
+              You shouldn't need a crystal ball to know what styles are applied
+              on an element.
             </FeatureCard>
             <FeatureCard
               emoji="🧩"
               subtitle="Styles are data too"
               title="Composable">
-              Composing styles as component props fit together like a puzzle.
+              Styles can be passed around as props, and merged
+              deterministically. It all fits together.
             </FeatureCard>
             <FeatureCard
               emoji="🏎️"
@@ -156,15 +158,14 @@ export default function Home() {
               subtitle="Ship a single static CSS file"
               title="Fast">
               The StyleX compiler bundles styles into a static CSS file. No
-              runtime style injections!
+              runtime style injection.
             </FeatureCard>
             <FeatureCard
               emoji="🥽"
               style={styles.small}
               subtitle="Strongly types for all styles"
               title="Type-Safe">
-              Safety first! Static types catch common styling mistakes as you
-              code.
+              Safety first! Static types catch common styling mistakes in code.
             </FeatureCard>
           </div>
         </section>

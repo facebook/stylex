@@ -13,13 +13,16 @@ import TabItem from '@theme/TabItem';
 
 ## Core Principles
 
-To understand why StyleX exists and the reasoning behind its decisions, it may be beneficial to familiarize oneself with the fundamental principles that guide it. This may help you decide if StyleX is the right solution for you.
+To understand why StyleX exists and the reasoning behind its decisions, it may be 
+beneficial to familiarize oneself with the fundamental principles that guide it. 
+This may help you decide if StyleX is the right solution for you.
 
 These principles should also be helpful when designing new APIs for StyleX.
 
 ### Co-location
 
-There are benefits to making your code DRY, but we don't think that's true when it comes to writing your styles.
+There are benefits to making your code DRY, but we don't think that's true when it 
+comes to writing your styles.
 
 The best and most readable way to write your styles is to write them in the same
 file as the markup where you use them. Repeating yourself is not a bad thing
@@ -57,7 +60,9 @@ _and_ the expressive power available. We believe this is possible through
 build-tools.
 
 StyleX provides a completely predictable and deterministic styling
-system that works across files. It produces deterministic results not only when merging multiple selectors, but also when merging multiple shorthand and longhand properties. (e.g. `margin` vs `margin-top`).
+system that works across files. It produces deterministic results not only when 
+merging multiple selectors, but also when merging multiple shorthand and longhand
+properties. (e.g. `margin` vs `margin-top`).
 
 > "The last style applied always wins."
 
@@ -73,7 +78,9 @@ Here's how this plays out in practice:
 
 #### 1. Styles created and applied locally
 
-When authoring and consuming styles within the same file, the cost of StyleX is zero. This is because in addition to compiling away your `stylex.create` calls, StyleX also compiles away your `stylex.props` calls when possible.
+When authoring and consuming styles within the same file, the cost of StyleX is zero.
+This is because in addition to compiling away your `stylex.create` calls, StyleX also
+compiles away your `stylex.props` calls when possible.
 
 So,
 
@@ -115,8 +122,7 @@ There is no runtime overhead here.
 When passing styles across file boundaries, you pay a small cost for the
 additional power and expressivity. The `stylex.create` call is not deleted
 entirely and instead leaves behind an object mapping keys to
-class names. And the `stylex()` or `stylex.props()` calls are executed at
-runtime.
+class names. And the `stylex.props()` calls are executed at runtime.
 
 This code, for example:
 
@@ -311,12 +317,13 @@ usually have higher specificity than the simple classname selectors used for
 styles applied directly on the element.
 
 StyleX disallows this entire class of selectors. This currently makes some
-patterns in CSS impossible:
-
-- e.g. It is currently impossible for a child element to have conditional styles
-  when it's parent is hovered.
+patterns in CSS impossible: e.g. It is currently impossible for a child element
+to have conditional styles when it's parent is hovered.
 
 Our goal is to support these patterns without sacrificing style encapsulation.
+For example, child elements can be conditionally styled when their parent is
+hovered by setting a variable in the parent styles and using that variable in the
+child styles.
 
 StyleX is not CSS pre-processor. It intentionally puts constraints on the power
 of CSS selectors in order to give you a fast and predictable system.
@@ -335,11 +342,8 @@ direction while the tooling gets noisy and tries to keep you within the bounds.
 
 ### Readability & Maintainabity over Terseness
 
-Many recent styling solutions are extremely terse and easy to write. Tailwind
-CSS is popular and lets you author your styles by putting extremely terse
-utility class names directly on your markup. This is great for authoring styles
-quickly, but in our opinion, in the long run, it makes the styles harder to read
-and maintain. It can also have a steeper learning curve up-front.
+Many recent utility-based styling solutions are extremely terse and easy to write.
+StyleX chooses to prioritize readability and maintainability over terseness.
 
 StyleX makes the choice to use the same CSS property names that you're already
 used to. _(We did decide to use camelCase instead of kebab-case as that makes
