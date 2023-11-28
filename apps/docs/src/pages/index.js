@@ -14,6 +14,7 @@ import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 import Link from '@docusaurus/Link';
 import FeaturePile from '../../components/FeaturePile';
+import ZStack from '../../components/ZStack';
 
 const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
@@ -82,24 +83,49 @@ export default function Home() {
             <StylexAnimatedLogo style={styles.logo} />
           </h1>
           <h2 {...stylex.props(styles.subtitle)}>
-            <span
-              {...stylex.props([
-                styles.subtitleHighlight,
-                styles.highlightBlue,
-              ])}>
-              Predictable
+            The
+            <span {...stylex.props([styles.subtitleHighlight])}>
+              {' '}
+              Styling System{' '}
             </span>{' '}
-            & <span {...stylex.props(styles.subtitleHighlight)}>scalable</span>{' '}
-            styling
-            <br /> for{' '}
-            <span
-              {...stylex.props([
-                styles.subtitleHighlight,
-                styles.highlightPrimary,
-              ])}>
-              ambitious
-            </span>{' '}
-            user-interfaces.
+            that powers
+            <br />
+            <ZStack>
+              {[
+                <span
+                  {...stylex.props([
+                    styles.subtitleHighlight,
+                    styles.highlightBlue,
+                  ])}>
+                  {' '}
+                  Facebook.com{' '}
+                </span>,
+                <span
+                  {...stylex.props([
+                    styles.subtitleHighlight,
+                    styles.highlightBlue,
+                  ])}>
+                  {' '}
+                  Instagram.com{' '}
+                </span>,
+                <span
+                  {...stylex.props([
+                    styles.subtitleHighlight,
+                    styles.highlightBlue,
+                  ])}>
+                  {' '}
+                  WhatsApp.com{' '}
+                </span>,
+                <span
+                  {...stylex.props([
+                    styles.subtitleHighlight,
+                    styles.highlightBlue,
+                  ])}>
+                  {' '}
+                  Threads.net{' '}
+                </span>,
+              ]}
+            </ZStack>
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
             <Link {...stylex.props(styles.cta)} to="/docs/learn/installation/">
