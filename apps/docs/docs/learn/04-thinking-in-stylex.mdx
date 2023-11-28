@@ -1,0 +1,390 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 3
+---
+
+# Thinking in StyleX
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+## Core Principles
+
+To understand why StyleX exists and the reasoning behind its decisions, it may be 
+beneficial to familiarize oneself with the fundamental principles that guide it. 
+This may help you decide if StyleX is the right solution for you.
+
+These principles should also be helpful when designing new APIs for StyleX.
+
+### Co-location
+
+There are benefits of DRY code, but we don't think that's usually true when it 
+comes to authoring styles. The best and most readable way to write styles is to 
+write them in the same file as the markup.
+
+StyleX is designed to for authoring, applying and reasoning about styles locally.
+
+### Deterministic resolution
+
+CSS is a powerful and expressive language. However, it can sometimes
+feel fragile. Some of this stems from a misunderstanding of how CSS works, but a
+lot of it stems from the discipline and organization required to keep CSS
+selectors with different specificities from conflicting.
+
+Most existing solutions to this problem rely on rules and conventions.
+
+<details>
+  <summary>BEM and OOCSS Conventions</summary>
+  BEM and OOCSS introduce naming conventions to avoid these problems relying on
+  developers to consistently follow the rules, frequently avoiding merging styles at all.
+  This can lead to bloated CSS.
+</details>
+
+<details>
+  <summary>Utility Classes</summary>
+  Atomic utility class names like Tailwind CSS and Tachyons rely on a conventions and lint rules 
+  to ensure that conflicting class names are not applied on the same element. Such tooling adds
+  constraints on where and how styles can be applied putting architectural limitations on styling.  
+</details>
+
+StyleX aims to improve on both the consistency and predictability of styles
+_and_ the expressive power available. We believe this is possible through
+build-tools.
+
+StyleX provides a completely predictable and deterministic styling
+system that works across files. It produces deterministic results not only when 
+merging multiple selectors, but also when merging multiple shorthand and longhand
+properties. (e.g. `margin` vs `margin-top`).
+
+> "The last style applied always wins."
+
+### Low-cost Abstractions
+
+When it comes to the performance cost of StyleX, our guiding principle is that
+StyleX should always be the fastest way to achieve a particular pattern.
+Common patterns should have no runtime cost and advanced patterns should be
+as fast as possible. We make the trade-off of doing more work at build-time to improve
+runtime performance.
+
+Here's how this plays out in practice:
+
+#### 1. Styles created and applied locally
+
+When authoring and consuming styles within the same file, the cost of StyleX is zero.
+This is because in addition to compiling away `stylex.create` calls, StyleX also
+compiles away `stylex.props` calls when possible.
+
+So,
+
+```tsx
+import * as stylex from 'stylex';
+const styles = stylex.create({
+  red: {color: 'red'},
+});
+let a = stylex.props(styles.red);
+```
+
+Compiles down to:
+
+<Tabs>
+<TabItem label="JS Output" value="js-output">
+
+```tsx
+import * as stylex from 'stylex';
+
+let a = {className: 'x1e2nbdu'};
+```
+
+</TabItem>
+<TabItem label="CSS Output" value="css-output">
+
+```css
+.x1e2nbdu {
+  color: red;
+}
+```
+
+</TabItem>
+</Tabs>
+
+There is no runtime overhead here.
+
+#### 2. Using styles across files
+
+Passing styles across file boundaries incurs a small cost for the
+additional power and expressivity. The `stylex.create` call is not deleted
+entirely and instead leaves behind an object mapping keys to
+class names. And the `stylex.props()` calls are executed at runtime.
+
+This code, for example:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  foo: {
+    color: 'red',
+  },
+  bar: {
+    backgroundColor: 'blue',
+  },
+});
+
+function MyComponent({xstyle}) {
+  return <div {...stylex.props(styles.foo, styles.bar, xstyle)} />;
+}
+```
+
+Compiles down to:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  foo: {
+    color: 'x1e2nbdu',
+    $$css: true,
+  },
+  bar: {
+    backgroundColor: 'x1t391ir',
+    $$css: true,
+  },
+});
+
+function MyComponent((xstyle)) {
+  return <div {...stylex.props(styles.foo, styles.bar, xstyle)} />;
+}
+```
+
+This definitely a little more code, but the runtime cost is still minimal
+because of how fast the `stylex()` and `stylex.props()` functions are.
+
+Most other styling solutions don't enable composition of styles across file
+boundaries. The state of the art is to combine lists of class names.
+
+### Small API Surface
+
+Our goal is to make StyleX as minimal and easy-to-learn as possible. As such we
+don't want to invent too many APIs. Instead, we want to be able to lean on 
+common JavaScript patterns where possible and provide the smallest API surface
+possible.
+
+At its core StyleX can be boiled down to two functions:
+
+1. `stylex.create`
+2. `stylex.props`
+
+`stylex.create` is used to create styles and `stylex.props` is used to apply 
+those styles to an element.
+
+Within these two functions, we choose to rely on common JS patterns rather than
+introduce unique API or patterns for StyleX. e.g. we don't have an API for
+conditional styles. Instead we support applying styles conditionally with
+boolean or ternary expressions.
+
+Things should work as expected when dealing with JavaScript objects and arrays.
+There should be no surprises.
+
+### Type-Safe Styles
+
+Typescript has becomes massively popular due to the experience and safety it
+provides. Our styles, however, have largly remained untyped and unreliable.
+Except for some path-breaking projects such as
+[Vanilla Extract](https://vanilla-extract.style/), styles are just bags of
+strings in most styling solutions.
+
+StyleX is authored in Flow with strong static types. It's packages on NPM come
+with auto-generated types for both Flow and TypeScript. When there are
+incompatibilies between the two type-systems we take the time to ensure that we
+write custom Typescript types to achieve at least the same level of power and safety
+as the original Flow.
+
+_All styles are typed_. When accepting styles as props, types can be used to
+constrain what styles are accepted. Styles should be as type-safe as
+any other component props.
+
+The StyleX API is strongly typed. The styles defiend with StyleX are typed too. 
+This is made possible by using JavaScript objects to author raw styles. This is
+one of the big reasons we have chosen objects over template strings.
+
+These types can then be leveraged to set contracts for the styles that a
+component will accept. For example, a component props can defined to only accept
+`color` and `backgroundColor` but no other styles.
+
+```ts
+import type {StyleXStyles} from '@stylexjs/stylex';
+
+type Props = {
+  //...
+  style?: StyleXStyles<{color?: string; backgroundColor?: string}>;
+  //...
+};
+```
+
+In another example, the props may disallow margins while allowing all other styles.
+
+```ts
+import type {StyleXStylesWithout} from '@stylexjs/stylex';
+
+type Props = {
+  //...
+  style?: StyleXStylesWithout<{
+    margin: unknown;
+    marginBlock: unknown;
+    marginInline: unknown;
+    marginTop: unknown;
+    marginBottom: unknown;
+    marginLeft: unknown;
+    marginRight: unknown;
+    marginBlockStart: unknown;
+    marginBlockEnd: unknown;
+    marginInlineStart: unknown;
+    marginInlineEnd: unknown;
+  }>;
+  //...
+};
+```
+
+Styles being typed enables extremely sophisticated rules about the ways in which
+a component styles can be customized with **zero-runtime cost**.
+
+### Shareable constants
+
+CSS class names, CSS variables and other CSS identifiers are defined in a global
+namespace. The obvious and common API to bring them into JavaScript is as
+strings. However, this means losing type-safety and composability.
+
+We want styles to be type-safe and so we've spent a lot of time coming up with
+APIs to replace these magic strings with references to Javacript constants. So
+far this is reflected in the following APIs:
+
+1. `stylex.create` Abstracts away the generated class names entirely. You deal
+   with "opaque" JavaScript objects with strong types to indicate the styles
+   they represent.
+2. `stylex.defineVars` Abstracts away the names of CSS variables generated. 
+   They can be imported as constants and used within styles directly.
+3. `stylex.keyframes` Abstracts away the names of keyframe animations. Instead
+   they are declared as constants and used by reference.
+
+We're looking into ways to make other CSS identifiers such as
+`container-name` and `@font-face` type-safe as well.
+
+### Framework-agnostic
+
+StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
+been tailored to works best with React today, It's designed to be used with any
+JavaScript framework that allows authoring markup in Javacript. This includes frameworks
+that use JSX, template strings, etc.
+
+`stylex.props` returns an object with `className` and `style` properties. A wrapper 
+function may be needed to convert this to make it work with various frameworks.
+
+### Encapsulation
+
+> All styles on an element should be caused by class names on that element
+> itself.
+
+CSS makes it very easy to author styles in a way that can cause "styles at a
+distance":
+
+- `.className > *`
+- `.className ~ *`
+- `.className:hover > div:first-child`
+
+All of these patterns, while powerful, makes styles fragile and less predictable.
+Applying class names on one element and can affect a completely different element.
+
+Inheritable styles such as `color` will still be inherited, but that is the
+_only_ form of style-at-a-distance that StyleX allows. And in those cases too,
+the styles applied directly on an element always take precedence over inherited
+styles.
+
+This is often not the case when using complex selectors as the complex selectors
+usually have higher specificity than the simple classname selectors used for
+styles applied directly on the element.
+
+StyleX disallows this entire class of selectors. This currently makes certain CSS 
+patterns impossible to achieve with StyleX. Our goal is to support these patterns 
+without sacrificing style encapsulation.
+
+StyleX is not CSS pre-processor. It intentionally puts constraints on the power
+of CSS selectors in order to build a fast and predictable system. The API, based
+on Javascript objects instead of template strings, is designed to make these
+constraints feel natural.
+
+### Readability & Maintainabity over Terseness
+
+Some recent utility-based styling solutions are extremely terse and easy to write.
+StyleX chooses to prioritize readability and maintainability over terseness.
+
+StyleX makes the choice to use familiar CSS property names to prioritize readability
+and a shallow learning curve. _(We did decide to use camelCase instead of kebab-case
+for convenience.)_
+
+We also enforce that styles are authored in objects separate from the HTML
+elements where they are used. We made this decision to help with the readabiliy
+of HTML markup and so appropriate names for styles to indicate their purpose. 
+E.g. Using a name `styles.active` like emphasizes *why* styles are being applied
+without having to dig through *what* styles are being applied.
+
+This principle leads to trade-offs where authoring styles may take more typing
+with StyleX than some other solutions.
+
+We believe these costs are worth the improved readability over time. Giving each
+HTML element a semantic name can communicate a lot more than the styles
+themselves.
+
+:::info
+
+One side benefit of using references to styles rather than using the styles
+inline is **testability**. In a unit-testing environment, StyleX can be
+configured to remove all atomic styles and only output single debugging
+class names to indicate the source location of styles rather than the actual 
+styles.
+
+Among other benefits, it makes snapshot tests more resilient as they won't
+change for every style change.
+
+:::
+
+### Modularity and Composability
+
+NPM has made it extremely easy to share code across projects. However, sharing
+CSS has remained a challenge. Third-party components, either have styles baked
+in that are hard or impossible to customize, or are completely unstyled.
+
+The lack of a good system to predictably merge and compose styles across
+packages has also been an obstacle when sharing styles within packages.
+
+StyleX aims to create a system to easily and reliably share styles along with
+components within packages on NPM.
+
+### Avoid Global Configuration
+
+StyleX should work similarly across projects. Creating preoject-specific
+configurations that change the syntax or behaviour of StyleX should be avoided.
+We have chosen to prioritise composability and consistency over short-term 
+convenience.
+
+We lean on tooling to provide convenience and customizability. For example, the
+StyleX ESlint rule can be configured to allow or disallow certain CSS properties
+within a project. This can be used in concert with static types to create
+styling rules for a project.
+
+### One small file over many smaller files
+
+When dealing with a large amount CSS, lazy loading CSS is a way to speed up
+the initial load time of a page. However, it comes at the cost of a slower
+update times, or the *Interation to Next Paint (INP)* metric. Lazy loading 
+any CSS on a page triggers a recalculation of styles for the entire page.
+
+StyleX is optimized for generating a single, highly optimized, CSS bundle that
+is loaded upfront. Our is to create a system where the total amount of CSS is
+small-enough that all the CSS can be loaded upfront without a noticeable
+performance impact.
+
+Other techniques to make the initial load times faster, such as "critical CSS"
+are compatible with StyleX, but should usually be unnecessary.

@@ -71,6 +71,9 @@
   --pink-s: 62%;
   --pink-l: 60%;
 
+  --ifm-alert-border-color: hsla(202, 100%, 50%, 1);
+  --ifm-alert-background-color: hsla(202, 100%, 50%, 1);
+
   --ifm-navbar-background-color: var(--bg2);
   --ifm-footer-background-color: var(--bg1);
   --ifm-heading-font-family: 'Avenir Next', system-ui, -apple-system, 'Segoe UI',
@@ -153,6 +156,9 @@ html[data-theme='dark']:root {
   --pink-s: 62%;
   --pink-l: 66%;
 
+  --ifm-alert-border-color: hsl(249, 70%, 57%);
+  --ifm-alert-background-color: hsl(249, 70%, 57%);
+
   --purple-navy: hsla(251, 19%, 39%, 1);
   --black-coffee: hsla(330, 6%, 20%, 1);
   --ifm-toc-border-color: hsla(330, 6%, 75%, 0.1);
@@ -232,7 +238,7 @@ html[data-theme='dark'] .aa-DetachedSearchButton {
 
 .navbar-github-link:after {
   transition: opacity 0.2s;
-  content: "";
+  content: '';
   width: 24px;
   height: 24px;
   display: flex;

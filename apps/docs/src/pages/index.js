@@ -13,6 +13,7 @@ import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import CodeBlock from '@site/components/CodeBlock';
 import Link from '@docusaurus/Link';
+import FeaturePile from '../../components/FeaturePile';
 
 const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
@@ -66,7 +67,9 @@ const CardDescription = ({children}) => (
 
 const CodeContainer = ({children}) => (
   <div {...stylex.props(styles.codeContainer)}>
-    <CodeBlock style={styles.code}>{children}</CodeBlock>
+    <span {...stylex.props(styles.code)}>
+      <CodeBlock>{children}</CodeBlock>
+    </span>
   </div>
 );
 
@@ -99,33 +102,43 @@ export default function Home() {
             user-interfaces.
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
-            <Link {...stylex.props(styles.cta)} to="/docs/learn/">
-              Learn →
+            <Link {...stylex.props(styles.cta)} to="/docs/learn/installation/">
+              Get Started →
             </Link>
             <Link
               {...stylex.props(styles.cta, styles.ctaBlue)}
-              to="/docs/learn/installation/">
-              Get Started →
+              to="/docs/learn/thinking-in-stylex/">
+              Thinking in StyleX →
             </Link>
           </section>
         </section>
-        <section {...stylex.props(styles.getStarted)}>
+        <section
+          {...stylex.props(
+            styles.getStarted,
+            styles.getStartedLayout,
+            styles.heroPadding,
+          )}>
+          <FeaturePile />
+        </section>
+        <section {...stylex.props(styles.hero)}>
           <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
-          <Card>
-            <CardTitle>Step 1</CardTitle>
-            <CardDescription>Configure the compiler</CardDescription>
-            <CodeContainer>{STEP_CONFIGURE}</CodeContainer>
-          </Card>
-          <Card>
-            <CardTitle>Step 2</CardTitle>
-            <CardDescription>Create your styles</CardDescription>
-            <CodeContainer>{STEP_CREATE}</CodeContainer>
-          </Card>
-          <Card>
-            <CardTitle>Step 3</CardTitle>
-            <CardDescription>Use your styles</CardDescription>
-            <CodeContainer>{STEP_USE}</CodeContainer>
-          </Card>
+          <div {...stylex.props(styles.getStartedLayout)}>
+            <Card>
+              <CardTitle>Step 1</CardTitle>
+              <CardDescription>Configure the compiler</CardDescription>
+              <CodeContainer>{STEP_CONFIGURE}</CodeContainer>
+            </Card>
+            <Card>
+              <CardTitle>Step 2</CardTitle>
+              <CardDescription>Create your styles</CardDescription>
+              <CodeContainer>{STEP_CREATE}</CodeContainer>
+            </Card>
+            <Card>
+              <CardTitle>Step 3</CardTitle>
+              <CardDescription>Use your styles</CardDescription>
+              <CodeContainer>{STEP_USE}</CodeContainer>
+            </Card>
+          </div>
         </section>
       </main>
     </Layout>
@@ -152,6 +165,10 @@ const styles = stylex.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+  },
+  heroPadding: {
+    padding: 32,
   },
   title: {
     position: 'relative',
@@ -266,6 +283,8 @@ const styles = stylex.create({
   },
   getStarted: {
     backgroundColor: 'var(--bg2)',
+  },
+  getStartedLayout: {
     width: '100%',
     padding: 16,
     display: 'flex',
@@ -310,21 +329,12 @@ const styles = stylex.create({
     marginTop: 16,
     fontFamily:
       'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-    borderRadius: 16,
-    fontSize: {
-      default: '1rem',
-      '@media (min-width: 1250px) and (max-width: 1500px)': '0.8rem',
-      '@media (min-width: 420px) and (max-width: 550px)': '0.8rem',
-      '@media (max-width: 419px)': '0.65rem',
-    },
+    borderRadius: 32,
+    containerType: 'inline-size',
   },
   code: {
     flexGrow: 1,
-  },
-  codeEmpty: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '8rem',
+    fontSize: 'clamp(0.6rem, 0.15rem + 3cqi, 1rem)',
   },
   zstack: {
     alignItems: {

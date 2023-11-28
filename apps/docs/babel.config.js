@@ -7,12 +7,18 @@
  * @format
  */
 
+const path = require('path');
 const isProd = process.env.NODE_ENV === 'production';
 
 const options = {
   dev: !isProd,
   test: false,
-  stylexSheetName: isProd ? 'custom' : undefined,
+  stylexSheetName: '<>',
+  genConditionalClasses: true,
+  unstable_moduleResolution: {
+    type: 'commonJS',
+    rootDir: path.join(__dirname, '../..'),
+  },
 };
 
 module.exports = {

@@ -29,7 +29,12 @@ async function transformFile(filePath) {
         {
           dev: false,
           test: false,
-          stylexSheetName: 'custom',
+          stylexSheetName: '<>',
+          genConditionalClasses: true,
+          unstable_moduleResolution: {
+            type: 'commonJS',
+            rootDir: path.join(__dirname, '../../..'),
+          },
         },
       ],
     ],
@@ -64,10 +69,7 @@ async function genSheet() {
     path.join(__dirname, '../components'),
     '.js',
   );
-  const pagesPromise = getAllFilesOfType(
-    path.join(__dirname, '../src/pages'),
-    '.js',
-  );
+  const pagesPromise = getAllFilesOfType(path.join(__dirname, '../src'), '.js');
   const docsPromise = getAllFilesOfType(path.join(__dirname, '../docs'), '.js');
   const components = await componentsPromise;
   const pages = await pagesPromise;
@@ -84,8 +86,6 @@ async function genSheet() {
     path.join(__dirname, '../build/assets/css'),
     '.css',
   );
-
-  console.log(generatedCSSPaths);
 
   if (generatedCSSPaths.length !== 1) {
     console.error(
