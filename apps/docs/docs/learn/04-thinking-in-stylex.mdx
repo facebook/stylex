@@ -133,8 +133,8 @@ const styles = stylex.create({
   },
 });
 
-function MyComponent({xstyle}) {
-  return <div {...stylex.props(styles.foo, styles.bar, xstyle)} />;
+function MyComponent({style}) {
+  return <div {...stylex.props(styles.foo, styles.bar, style)} />;
 }
 ```
 
@@ -143,7 +143,7 @@ Compiles down to:
 ```tsx
 import * as stylex from '@stylexjs/stylex';
 
-const styles = stylex.create({
+const styles = {
   foo: {
     color: 'x1e2nbdu',
     $$css: true,
@@ -152,10 +152,10 @@ const styles = stylex.create({
     backgroundColor: 'x1t391ir',
     $$css: true,
   },
-});
+};
 
-function MyComponent((xstyle)) {
-  return <div {...stylex.props(styles.foo, styles.bar, xstyle)} />;
+function MyComponent({style}) {
+  return <div {...stylex.props(styles.foo, styles.bar, style)} />;
 }
 ```
 
@@ -192,7 +192,7 @@ There should be no surprises.
 
 Typescript has becomes massively popular due to the experience and safety it
 provides. Our styles, however, have largly remained untyped and unreliable.
-Except for some path-breaking projects such as
+Other than some path-breaking projects such as
 [Vanilla Extract](https://vanilla-extract.style/), styles are just bags of
 strings in most styling solutions.
 

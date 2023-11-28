@@ -75,7 +75,7 @@ export default function CodeBlock({
   language = 'tsx',
   highlight = false,
 }) {
-  const {isDarkTheme} = useColorMode();
+  const isDarkTheme = useColorMode().colorMode === 'dark';
   const finalTheme = highlight
     ? isDarkTheme
       ? darkThemeH

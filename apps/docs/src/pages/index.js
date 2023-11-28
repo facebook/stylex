@@ -227,7 +227,7 @@ const styles = stylex.create({
       ':hover': 'none',
     },
     width: {
-      default: 'null',
+      default: null,
       [CTA_BREAK]: '100%',
     },
     backgroundColor: 'hsl(var(--pink-h), var(--pink-s), var(--pink-l))',
