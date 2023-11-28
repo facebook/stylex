@@ -12,68 +12,67 @@ import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import Link from '@docusaurus/Link';
-import FeaturePile from '../../components/FeaturePile';
+// import FeaturePile from '../../components/FeaturePile';
 import {ZStack, ZStackItem} from '../../components/ZStack';
-// import ThinkingInStylex from '../../docs/learn/04-thinking-in-stylex.mdx';
-import CodeBlock from '@theme/CodeBlock';
+// import CodeBlock from '@theme/CodeBlock';
 
-const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
+// const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
-const config = () => ({
-  plugins: [
-    plugin({ ...options })
-  ]
-})
+// const config = () => ({
+//   plugins: [
+//     plugin({ ...options })
+//   ]
+// })
 
-export default config;
+// export default config;
 
-`;
+// `;
 
-const STEP_CREATE = `import * as stylex from '@stylexjs/stylex';
+// const STEP_CREATE = `import * as stylex from '@stylexjs/stylex';
 
-const styles = stylex.create({
-  hello: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '8rem',
-  }
-});
+// const styles = stylex.create({
+//   hello: {
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     fontSize: '8rem',
+//   }
+// });
 
-`;
+// `;
 
-const STEP_USE = `import * as stylex from '@stylexjs/stylex';
+// const STEP_USE = `import * as stylex from '@stylexjs/stylex';
 
-const HelloWorld = ({style}) => (
-  <div {...stylex.props(
-    styles.hello,
-    style
-  )} >
-    🎉
-  </div>
-)
+// const HelloWorld = ({style}) => (
+//   <div {...stylex.props(
+//     styles.hello,
+//     style
+//   )} >
+//     🎉
+//   </div>
+// )
 
-`;
+// `;
 
-const Card = ({children}) => (
-  <div {...stylex.props(styles.card)}>{children}</div>
-);
+// const Card = ({children}) => (
+//   <div {...stylex.props(styles.card)}>{children}</div>
+// );
 
-const CardTitle = ({children}) => (
-  <h3 {...stylex.props(styles.cardTitle)}>{children}</h3>
-);
+// const CardTitle = ({children}) => (
+//   <h3 {...stylex.props(styles.cardTitle)}>{children}</h3>
+// );
 
-const CardDescription = ({children}) => (
-  <p {...stylex.props(styles.cardDescription)}>{children}</p>
-);
+// const CardDescription = ({children}) => (
+//   <p {...stylex.props(styles.cardDescription)}>{children}</p>
+// );
 
-const CodeContainer = ({children}) => (
-  <div {...stylex.props(styles.codeContainer)}>
-    <span {...stylex.props(styles.code)}>
-      <CodeBlock language="tsx">{children}</CodeBlock>
-    </span>
-  </div>
-);
+// const CodeContainer = ({children}) => (
+//   <div {...stylex.props(styles.codeContainer)}>
+//     <span {...stylex.props(styles.code)}>
+//       <CodeBlock language="tsx">{children}</CodeBlock>
+//     </span>
+//   </div>
+// );
 
 export default function Home() {
   return (
@@ -117,15 +116,15 @@ export default function Home() {
             </Link>
           </section>
         </section>
-        <section
+        {/* <section
           {...stylex.props(
             styles.hero,
             styles.getStartedLayout,
             styles.bentoContainer,
           )}>
           <FeaturePile />
-        </section>
-        <section {...stylex.props(styles.hero)}>
+        </section> */}
+        {/* <section {...stylex.props(styles.hero)}>
           <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
           <div {...stylex.props(styles.getStartedLayout)}>
             <Card>
@@ -144,7 +143,7 @@ export default function Home() {
               <CodeContainer>{STEP_USE}</CodeContainer>
             </Card>
           </div>
-        </section>
+        </section> */}
         {/* <section {...stylex.props(styles.secondaryBg)}>
           <div {...stylex.props(styles.contentSection)}>
             <ThinkingInStylex />
@@ -170,7 +169,7 @@ const styles = stylex.create({
   },
   hero: {
     paddingBlock: 50,
-    minHeight: 'calc(60vh)',
+    minHeight: 'calc(80vh - 120px)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -315,66 +314,60 @@ const styles = stylex.create({
     maxWidth: 768,
     marginInline: 'auto',
   },
-  getStartedLayout: {
-    width: '100%',
-    padding: 16,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  card: {
-    backgroundColor: 'var(--bg3)',
-    borderRadius: 16,
-    flexBasis: {
-      default: 0,
-      '@media (max-width: 1250px)': '100%',
-    },
-    flexGrow: 1,
-    flexShrink: 1,
-    margin: 16,
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '100%',
-  },
-  cardTitle: {
-    fontSize: '1.8rem',
-    margin: 0,
-    fontWeight: '800',
-    marginVertical: '1rem',
-    paddingHorizontal: 24,
-    color: 'var(--pink)',
-  },
-  cardDescription: {
-    fontSize: '1.2rem',
-    margin: 0,
-    paddingHorizontal: 24,
-  },
-  codeContainer: {
-    backgroundColor: '#282A36',
-    borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.25)',
-    borderRadius: 16,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    containerType: 'inline-size',
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-    fontFamily:
-      'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-    marginTop: 16,
-    '--ifm-leading': '0px',
-    overflow: 'hidden',
-  },
-  code: {
-    flexGrow: 1,
-    fontSize: 'clamp(0.6rem, 0.15rem + 3cqi, 1rem)',
-  },
-  zstack: {
-    alignItems: {
-      default: 'flex-start',
-      '@media (max-width: 1135px)': 'center',
-    },
-  },
+  // getStartedLayout: {
+  //   width: '100%',
+  //   padding: 16,
+  //   display: 'flex',
+  //   flexDirection: 'row',
+  //   alignItems: 'stretch',
+  //   justifyContent: 'center',
+  //   flexWrap: 'wrap',
+  // },
+  // card: {
+  //   backgroundColor: 'var(--bg3)',
+  //   borderRadius: 16,
+  //   flexBasis: {
+  //     default: 0,
+  //     '@media (max-width: 1250px)': '100%',
+  //   },
+  //   flexGrow: 1,
+  //   flexShrink: 1,
+  //   margin: 16,
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   maxWidth: '100%',
+  // },
+  // cardTitle: {
+  //   fontSize: '1.8rem',
+  //   margin: 0,
+  //   fontWeight: '800',
+  //   marginVertical: '1rem',
+  //   paddingHorizontal: 24,
+  //   color: 'var(--pink)',
+  // },
+  // cardDescription: {
+  //   fontSize: '1.2rem',
+  //   margin: 0,
+  //   paddingHorizontal: 24,
+  // },
+  // codeContainer: {
+  //   backgroundColor: '#282A36',
+  //   borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.25)',
+  //   borderRadius: 16,
+  //   borderStyle: 'solid',
+  //   borderWidth: 1,
+  //   containerType: 'inline-size',
+  //   display: 'flex',
+  //   flexDirection: 'column',
+  //   flexGrow: 1,
+  //   fontFamily:
+  //     'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
+  //   marginTop: 16,
+  //   '--ifm-leading': '0px',
+  //   overflow: 'hidden',
+  // },
+  // code: {
+  //   flexGrow: 1,
+  //   fontSize: 'clamp(0.6rem, 0.15rem + 3cqi, 1rem)',
+  // },
 });
