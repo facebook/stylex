@@ -5,7 +5,7 @@ interfaces.
 
 ## Documentation
 
-[Beta Documentation Website](https://stylex-docusaurus.vercel.app/)
+[Documentation Website](https://stylex-docusaurus.vercel.app/)
 
 Documentation for individual packages can be found in their respective README
 files. Start with
