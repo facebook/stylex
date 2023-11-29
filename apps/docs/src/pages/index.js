@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
+ *
  */
 
 import * as React from 'react';
@@ -199,14 +199,14 @@ const styles = stylex.create({
   subtitle: {
     margin: 0,
     paddingInline: 24,
-    fontWeight: '400',
+    fontWeight: 400,
     textAlign: 'center',
     color: 'var(--fg1)',
     fontSize: 'clamp(1rem, 1rem + 2vw, 3rem)',
   },
   h3: {
     width: '100%',
-    fontWeight: '400',
+    fontWeight: 400,
     fontSize: 'clamp(1rem, 0.8rem + 5vw, 2rem)',
     textAlign: 'center',
     opacity: 0.7,
@@ -273,7 +273,7 @@ const styles = stylex.create({
     },
   },
   subtitleHighlight: {
-    fontWeight: '700',
+    fontWeight: 700,
   },
   highlightBlue: {
     color: 'var(--cyan)',
@@ -292,9 +292,13 @@ const styles = stylex.create({
     backgroundColor: '#d6249f',
     backgroundImage:
       'radial-gradient(circle at 30% 107%, #ddd477 0%, #ddd477 5%, #fd5949 45%,#d6249f 60%, #285AEB 90%)',
+    // eslint-disable-next-line @stylexjs/valid-styles
     WebkitBackgroundClip: 'text',
+    // eslint-disable-next-line @stylexjs/valid-styles
     WebkitTextFillColor: 'transparent',
+    // eslint-disable-next-line @stylexjs/valid-styles
     backgroundClip: 'text',
+    // eslint-disable-next-line @stylexjs/valid-styles
     textFillColor: 'transparent',
   },
   threads: {},
@@ -341,7 +345,7 @@ const styles = stylex.create({
   cardTitle: {
     fontSize: '1.8rem',
     margin: 0,
-    fontWeight: '800',
+    fontWeight: 800,
     marginVertical: '1rem',
     paddingHorizontal: 24,
     color: 'var(--pink)',
@@ -364,6 +368,7 @@ const styles = stylex.create({
     fontFamily:
       'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
     marginTop: 16,
+    // eslint-disable-next-line @stylexjs/valid-styles
     '--ifm-leading': '0px',
     overflow: 'hidden',
   },
