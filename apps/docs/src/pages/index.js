@@ -13,7 +13,7 @@ import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import Link from '@docusaurus/Link';
 import FeaturePile from '../../components/FeaturePile';
-import ZStack from '../../components/ZStack';
+import {ZStack, ZStackItem} from '../../components/ZStack';
 // import ThinkingInStylex from '../../docs/learn/04-thinking-in-stylex.mdx';
 import CodeBlock from '@theme/CodeBlock';
 
@@ -92,27 +92,18 @@ export default function Home() {
             that powers
             <br />
             <ZStack>
-              {[
-                <span
-                  {...stylex.props(styles.subtitleHighlight, styles.facebook)}>
-                  {' '}
-                  facebook.com{' '}
-                </span>,
-                <span
-                  {...stylex.props(styles.subtitleHighlight, styles.instagram)}>
-                  {' '}
-                  instagram.com{' '}
-                </span>,
-                <span
-                  {...stylex.props(styles.subtitleHighlight, styles.whatsapp)}>
-                  {' '}
-                  whatsapp.com{' '}
-                </span>,
-                <span {...stylex.props(styles.subtitleHighlight)}>
-                  {' '}
-                  threads.net{' '}
-                </span>,
-              ]}
+              <ZStackItem style={[styles.subtitleHighlight, styles.facebook]}>
+                facebook.com
+              </ZStackItem>
+              <ZStackItem style={[styles.subtitleHighlight, styles.instagram]}>
+                instagram.com
+              </ZStackItem>
+              <ZStackItem style={[styles.subtitleHighlight, styles.whatsapp]}>
+                whatsapp.com
+              </ZStackItem>
+              <ZStackItem style={[styles.subtitleHighlight]}>
+                threads.net
+              </ZStackItem>
             </ZStack>
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
@@ -208,7 +199,7 @@ const styles = stylex.create({
     paddingInline: 24,
     fontWeight: '400',
     textAlign: 'center',
-    color: 'var(--fg2)',
+    color: 'var(--fg1)',
     fontSize: 'clamp(1rem, 1rem + 2vw, 3rem)',
   },
   h3: {
@@ -238,7 +229,10 @@ const styles = stylex.create({
     justifyContent: 'center',
     borderRadius: 8,
     fontWeight: 'bold',
-    color: 'white',
+    color: {
+      default: 'white',
+      ':hover': 'white',
+    },
     textDecoration: {
       default: 'none',
       ':hover': 'none',

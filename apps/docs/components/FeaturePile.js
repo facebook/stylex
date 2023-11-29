@@ -52,10 +52,11 @@ export default function FeaturePile() {
         <FeatureCard
           emoji="🥽"
           style={styles.small}
-          subtitle="Strongly types for all styles"
+          subtitle="Strong types for all styles"
           title="Type-Safe"
           to="/docs/learn/#type-safe">
-          Safety first! Static types catch common styling mistakes in code.
+          Safety first! Static types catch common styling mistakes{' '}
+          <em>before</em> they reach the browser.
         </FeatureCard>
       </div>
     </div>

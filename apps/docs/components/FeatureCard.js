@@ -10,16 +10,7 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Link from '@docusaurus/Link';
-
-let count = 0;
-
-function useId() {
-  const [id, setId] = React.useState(null);
-  React.useEffect(() => {
-    setId(`id-${++count}`);
-  }, []);
-  return id;
-}
+import useId from './hooks/useId';
 
 export default function FeatureCard({
   to,
@@ -131,6 +122,6 @@ const styles = stylex.create({
     marginTop: '1em',
     fontSize: '1rem',
     lineHeight: 1.4,
-    opacity: 0.5,
+    color: 'var(--fg2)',
   },
 });
