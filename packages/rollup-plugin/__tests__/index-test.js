@@ -3,6 +3,8 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 'use strict';
@@ -87,6 +89,8 @@ describe('rollup-plugin-stylex', () => {
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 var styles$2 = {
@@ -102,6 +106,8 @@ var styles$2 = {
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 const styles$1 = {
@@ -118,6 +124,8 @@ const styles$1 = {
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 var styles = {
@@ -169,6 +177,8 @@ export { App as default };
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 stylex.inject(".xntgbld{display:block}", 3000);
@@ -187,6 +197,8 @@ var styles$2 = {
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 stylex.inject(".x1wdx05y{display:inline}", 3000);
@@ -207,6 +219,8 @@ const styles$1 = {
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ *
  */
 
 stylex.inject("@keyframes x11gtny7-B{0%{opacity:.25;}100%{opacity:1;}}", 1);

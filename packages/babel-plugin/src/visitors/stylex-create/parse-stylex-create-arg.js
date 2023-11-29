@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
@@ -8,6 +7,7 @@
  * @flow strict
  */
 
+/* eslint-disable no-unused-vars */
 import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../../utils/state-manager';

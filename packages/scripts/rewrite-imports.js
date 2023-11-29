@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 /**
  * Copyright (c) Meta Platforms, Inc. and affiliates.
  *

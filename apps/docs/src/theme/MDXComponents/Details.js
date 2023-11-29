@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
+ *
  */
 
 import * as React from 'react';
@@ -81,6 +81,7 @@ const styles = stylex.create({
     marginBottom: tokens.summaryGap,
     paddingInlineStart: '1.2rem',
     position: 'relative',
+    // eslint-disable-next-line @stylexjs/valid-styles
     '::-webkit-details-marker': {
       display: 'none',
     },

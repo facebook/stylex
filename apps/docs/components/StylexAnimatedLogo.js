@@ -70,10 +70,12 @@ const styles = stylex.create({
   },
   mask1: {
     maskImage: 'linear-gradient(125deg, white 30%, transparent 65%)',
+    // eslint-disable-next-line @stylexjs/valid-styles
     WebkitMaskImage: 'linear-gradient(125deg, white 30%, transparent 65%)',
   },
   mask2: {
     maskImage: 'linear-gradient(80deg, white 30%, transparent 65%)',
+    // eslint-disable-next-line @stylexjs/valid-styles
     WebkitMaskImage: 'linear-gradient(80deg, white 30%, transparent 65%)',
   },
   dotPath: {
