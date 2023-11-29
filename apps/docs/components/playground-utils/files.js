@@ -21,7 +21,7 @@ module.exports = {
     [
       "@stylexjs/babel-plugin",
       {
-        dev: true,
+        dev: false,
         stylexSheetName: "<>",
         genConditionalClasses: true,
         unstable_moduleResolution: {
@@ -64,8 +64,8 @@ module.exports = {
 import * as React from 'react';
 import * as stylex from "@stylexjs/stylex";
 
-export default function Card({ onClick, children, theme, variant, em = false }) {
-  const props = stylex.props(theme, styles.base, em && styles.emphasise, variantStyles[variant]);
+export default function Card({ onClick, children, em = false }) {
+  const props = stylex.props(styles.base, em && styles.emphasise);
 }
 
 const styles = stylex.create({
@@ -81,16 +81,6 @@ const styles = stylex.create({
   emphasise: {
     transform: "scale(1.1)",
   }
-});
-
-const variantStyles = stylex.create({
-  danger: {
-    backgroundColor: "red",
-    color: "white",
-  },
-  primary: {
-    fontWeight: "bold",
-  },
 });
 `,
     },
