@@ -73,7 +73,7 @@ const styles = stylex.create({
       '@container (max-width: 940px)': 'span 1',
     },
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     position: 'relative',
     transitionProperty: 'box-shadow',
     transitionDuration: '0.2s',
@@ -86,25 +86,17 @@ const styles = stylex.create({
       [LARGE]: 'row',
     },
     width: '100%',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: {
       default: 'center',
       [LARGE]: 'flex-start',
     },
-    // textAlign: {
-    //   default: 'center',
-    //   [LARGE]: 'left',
-    // },
-    padding: {
-      default: 16,
-      [LARGE]: 32,
-    },
+    paddingBlock: 16,
     paddingInline: 32,
     columnGap: 32,
   },
   emoji: {
     fontSize: '8rem',
-    alignSelf: 'center',
     marginBlock: '-0.16em',
   },
   title: {
