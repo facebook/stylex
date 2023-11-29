@@ -1,5 +1,5 @@
 {
-  "name": "website",
+  "name": "docs",
   "version": "0.0.0",
   "scripts": {
     "docusaurus": "docusaurus",
