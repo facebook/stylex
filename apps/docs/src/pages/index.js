@@ -11,10 +11,11 @@ import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
-import CodeBlock from '@site/components/CodeBlock';
 import Link from '@docusaurus/Link';
 import FeaturePile from '../../components/FeaturePile';
 import ZStack from '../../components/ZStack';
+// import ThinkingInStylex from '../../docs/learn/04-thinking-in-stylex.mdx';
+import CodeBlock from '@theme/CodeBlock';
 
 const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
 
@@ -69,7 +70,7 @@ const CardDescription = ({children}) => (
 const CodeContainer = ({children}) => (
   <div {...stylex.props(styles.codeContainer)}>
     <span {...stylex.props(styles.code)}>
-      <CodeBlock>{children}</CodeBlock>
+      <CodeBlock language="tsx">{children}</CodeBlock>
     </span>
   </div>
 );
@@ -84,63 +85,50 @@ export default function Home() {
           </h1>
           <h2 {...stylex.props(styles.subtitle)}>
             The
-            <span {...stylex.props([styles.subtitleHighlight])}>
+            <span {...stylex.props(styles.subtitleHighlight)}>
               {' '}
-              Styling System{' '}
+              styling system{' '}
             </span>{' '}
             that powers
             <br />
             <ZStack>
               {[
                 <span
-                  {...stylex.props([
-                    styles.subtitleHighlight,
-                    styles.highlightBlue,
-                  ])}>
+                  {...stylex.props(styles.subtitleHighlight, styles.facebook)}>
                   {' '}
-                  Facebook.com{' '}
+                  facebook.com{' '}
                 </span>,
                 <span
-                  {...stylex.props([
-                    styles.subtitleHighlight,
-                    styles.highlightBlue,
-                  ])}>
+                  {...stylex.props(styles.subtitleHighlight, styles.instagram)}>
                   {' '}
-                  Instagram.com{' '}
+                  instagram.com{' '}
                 </span>,
                 <span
-                  {...stylex.props([
-                    styles.subtitleHighlight,
-                    styles.highlightBlue,
-                  ])}>
+                  {...stylex.props(styles.subtitleHighlight, styles.whatsapp)}>
                   {' '}
-                  WhatsApp.com{' '}
+                  whatsapp.com{' '}
                 </span>,
-                <span
-                  {...stylex.props([
-                    styles.subtitleHighlight,
-                    styles.highlightBlue,
-                  ])}>
+                <span {...stylex.props(styles.subtitleHighlight)}>
                   {' '}
-                  Threads.net{' '}
+                  threads.net{' '}
                 </span>,
               ]}
             </ZStack>
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
             <Link {...stylex.props(styles.cta)} to="/docs/learn/installation/">
-              Get Started →
+              Get Started
             </Link>
             <Link
               {...stylex.props(styles.cta, styles.ctaBlue)}
               to="/docs/learn/thinking-in-stylex/">
-              Thinking in StyleX →
+              Thinking in StyleX
             </Link>
           </section>
         </section>
         <section
           {...stylex.props(
-            styles.getStarted,
+            styles.hero,
             styles.getStartedLayout,
             styles.heroPadding,
           )}>
@@ -166,6 +154,11 @@ export default function Home() {
             </Card>
           </div>
         </section>
+        {/* <section {...stylex.props(styles.secondaryBg)}>
+          <div {...stylex.props(styles.contentSection)}>
+            <ThinkingInStylex />
+          </div>
+        </section> */}
       </main>
     </Layout>
   );
@@ -182,7 +175,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: 'var(--bg1)',
     backgroundImage:
-      'radial-gradient(hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.15), var(--bg1) 70%)',
+      'radial-gradient(hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.3), var(--bg1) 70%)',
   },
   hero: {
     paddingBlock: 50,
@@ -244,10 +237,8 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
-    color: {
-      default: 'var(--fg1)',
-      ':hover': 'var(--fg1)',
-    },
+    fontWeight: 'bold',
+    color: 'white',
     textDecoration: {
       default: 'none',
       ':hover': 'none',
@@ -261,7 +252,7 @@ const styles = stylex.create({
     paddingInline: '2rem',
     boxShadow: {
       default:
-        '0 0 4px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.35)',
+        '0 0 2px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.35)',
       ':hover':
         '0 0 10px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.75)',
     },
@@ -280,26 +271,37 @@ const styles = stylex.create({
     backgroundColor: 'hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))',
     boxShadow: {
       default:
-        '0 0 4px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.35)',
+        '0 0 2px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.35)',
       ':hover':
         '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.75)',
     },
   },
   subtitleHighlight: {
-    color: 'var(--pink)',
     fontWeight: '700',
-    textShadow:
-      '0 0 10px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.5)',
   },
   highlightBlue: {
     color: 'var(--cyan)',
-    textShadow:
-      '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.5)',
   },
   highlightPrimary: {
     color: 'currentColor',
     textShadow: null,
   },
+  facebook: {
+    color: '#0866FF',
+  },
+  whatsapp: {
+    color: 'rgb(30, 169, 82)',
+  },
+  instagram: {
+    backgroundColor: '#d6249f',
+    backgroundImage:
+      'radial-gradient(circle at 30% 107%, #ddd477 0%, #ddd477 5%, #fd5949 45%,#d6249f 60%, #285AEB 90%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+    textFillColor: 'transparent',
+  },
+  threads: {},
   sectionTitle: {
     fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',
     width: '100%',
@@ -307,8 +309,15 @@ const styles = stylex.create({
     marginVertical: '1rem',
     color: 'var(--fg1)',
   },
-  getStarted: {
+  secondaryBg: {
+    width: '100%',
     backgroundColor: 'var(--bg2)',
+    paddingBlock: 64,
+    paddingInline: 32,
+  },
+  contentSection: {
+    maxWidth: 768,
+    marginInline: 'auto',
   },
   getStartedLayout: {
     width: '100%',
@@ -347,16 +356,20 @@ const styles = stylex.create({
     paddingHorizontal: 24,
   },
   codeContainer: {
-    flexGrow: 1,
+    backgroundColor: '#282A36',
+    borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.25)',
+    borderRadius: 16,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    containerType: 'inline-size',
     display: 'flex',
     flexDirection: 'column',
-    paddingHorizontal: '1rem',
-    backgroundColor: 'var(--code-bg)',
-    marginTop: 16,
+    flexGrow: 1,
     fontFamily:
       'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-    borderRadius: 32,
-    containerType: 'inline-size',
+    marginTop: 16,
+    '--ifm-leading': '0px',
+    overflow: 'hidden',
   },
   code: {
     flexGrow: 1,

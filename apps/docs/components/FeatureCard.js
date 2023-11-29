@@ -57,16 +57,16 @@ const styles = stylex.create({
   card: {
     alignItems: 'center',
     backgroundColor: 'var(--bg1)',
-    borderColor: 'hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.1)',
+    borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.25)',
     borderRadius: 32,
     borderStyle: 'solid',
     borderWidth: 1,
-    boxShadow: {
-      default:
-        '0 2px 4px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.1)',
-      ':hover':
-        '0 2px 8px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.5)',
-    },
+    // boxShadow: {
+    //   default:
+    //     '0 2px 4px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.1)',
+    //   ':hover':
+    //     '0 2px 8px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.5)',
+    // },
     boxSizing: 'border-box',
     color: {
       default: 'inherit',

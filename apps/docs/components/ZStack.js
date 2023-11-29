@@ -18,11 +18,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     height: '1.3em',
     position: 'relative',
-    // borderWidth: 1,
-    // borderStyle: 'solid',
-    // borderColor: 'rgba(200, 200, 200, 0.1)',
-    alignItems: 'flex-start',
-    // marginInlineStart: '0.5em',
+    alignItems: 'center',
     overflow: 'hidden',
   },
   itemLayout: {
@@ -30,10 +26,10 @@ const styles = stylex.create({
   },
   item: {
     position: 'absolute',
-    // top: 0,
-    // start: 0,
     opacity: 0,
-    transition: 'opacity 0.5s ease-in-out',
+    transitionProperty: 'opacity',
+    transitionDuration: '0.5s',
+    transitionTimingFunction: 'linear',
   },
   visible: {
     opacity: 1,
@@ -46,7 +42,7 @@ export default function ZStack({children, xstyle}) {
   useEffect(() => {
     const interval = setInterval(() => {
       setActive((active) => (active + 1) % children.length);
-    }, 2500);
+    }, 3000);
     return () => {
       setActive(0);
       clearInterval(interval);
