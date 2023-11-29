@@ -190,8 +190,12 @@ function evaluatePartialObjectRecursively(
                         t.identifier('val'),
                         t.stringLiteral(unit),
                       ),
-                      t.logicalExpression(
-                        '??',
+                      t.conditionalExpression(
+                        t.binaryExpression(
+                          '!=',
+                          t.identifier('val'),
+                          t.nullLiteral(),
+                        ),
                         t.identifier('val'),
                         t.stringLiteral('initial'),
                       ),
@@ -199,8 +203,8 @@ function evaluatePartialObjectRecursively(
                   ),
                   [(expression: t.Expression)],
                 )
-              : t.logicalExpression(
-                  '??',
+              : t.conditionalExpression(
+                  t.binaryExpression('!=', expression, t.nullLiteral()),
                   expression,
                   t.stringLiteral('initial'),
                 );
