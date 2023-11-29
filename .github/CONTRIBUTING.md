@@ -57,6 +57,14 @@ To compile the source code:
 npm run build
 ```
 
+## Documentation
+
+First build the StyleX packages, then run the docs locally:
+
+```
+npm run start -w docs
+```
+
 ### New Features
 
 Please, familiarize yourself with

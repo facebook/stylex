@@ -12,68 +12,7 @@ import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
 import Link from '@docusaurus/Link';
-import FeaturePile from '../../components/FeaturePile';
 import {ZStack, ZStackItem} from '../../components/ZStack';
-// import ThinkingInStylex from '../../docs/learn/04-thinking-in-stylex.mdx';
-import CodeBlock from '@theme/CodeBlock';
-
-const STEP_CONFIGURE = `import plugin from '@stylexjs/rollup-plugin';
-
-const config = () => ({
-  plugins: [
-    plugin({ ...options })
-  ]
-})
-
-export default config;
-
-`;
-
-const STEP_CREATE = `import * as stylex from '@stylexjs/stylex';
-
-const styles = stylex.create({
-  hello: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '8rem',
-  }
-});
-
-`;
-
-const STEP_USE = `import * as stylex from '@stylexjs/stylex';
-
-const HelloWorld = ({style}) => (
-  <div {...stylex.props(
-    styles.hello,
-    style
-  )} >
-    🎉
-  </div>
-)
-
-`;
-
-const Card = ({children}) => (
-  <div {...stylex.props(styles.card)}>{children}</div>
-);
-
-const CardTitle = ({children}) => (
-  <h3 {...stylex.props(styles.cardTitle)}>{children}</h3>
-);
-
-const CardDescription = ({children}) => (
-  <p {...stylex.props(styles.cardDescription)}>{children}</p>
-);
-
-const CodeContainer = ({children}) => (
-  <div {...stylex.props(styles.codeContainer)}>
-    <span {...stylex.props(styles.code)}>
-      <CodeBlock language="tsx">{children}</CodeBlock>
-    </span>
-  </div>
-);
 
 export default function Home() {
   return (
@@ -107,7 +46,7 @@ export default function Home() {
             </ZStack>
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
-            <Link {...stylex.props(styles.cta)} to="/docs/learn/installation/">
+            <Link {...stylex.props(styles.cta)} to="/docs/learn/">
               Get Started
             </Link>
             <Link
@@ -117,39 +56,6 @@ export default function Home() {
             </Link>
           </section>
         </section>
-        <section
-          {...stylex.props(
-            styles.hero,
-            styles.getStartedLayout,
-            styles.bentoContainer,
-          )}>
-          <FeaturePile />
-        </section>
-        <section {...stylex.props(styles.hero)}>
-          <h1 {...stylex.props(styles.sectionTitle)}>{'Easy as 1, 2, 3'}</h1>
-          <div {...stylex.props(styles.getStartedLayout)}>
-            <Card>
-              <CardTitle>Step 1</CardTitle>
-              <CardDescription>Configure the compiler</CardDescription>
-              <CodeContainer>{STEP_CONFIGURE}</CodeContainer>
-            </Card>
-            <Card>
-              <CardTitle>Step 2</CardTitle>
-              <CardDescription>Create your styles</CardDescription>
-              <CodeContainer>{STEP_CREATE}</CodeContainer>
-            </Card>
-            <Card>
-              <CardTitle>Step 3</CardTitle>
-              <CardDescription>Use your styles</CardDescription>
-              <CodeContainer>{STEP_USE}</CodeContainer>
-            </Card>
-          </div>
-        </section>
-        {/* <section {...stylex.props(styles.secondaryBg)}>
-          <div {...stylex.props(styles.contentSection)}>
-            <ThinkingInStylex />
-          </div>
-        </section> */}
       </main>
     </Layout>
   );
@@ -159,14 +65,11 @@ const CTA_BREAK = '@media (max-width: 360px)';
 
 const styles = stylex.create({
   main: {
-    flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'var(--bg1)',
-    backgroundImage:
-      'radial-gradient(hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.3), var(--bg1) 70%)',
   },
   hero: {
     paddingBlock: 50,
@@ -176,11 +79,6 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-  },
-  bentoContainer: {
-    width: '100%',
-    maxWidth: 900,
-    padding: 32,
   },
   title: {
     position: 'relative',
@@ -275,13 +173,6 @@ const styles = stylex.create({
   subtitleHighlight: {
     fontWeight: 700,
   },
-  highlightBlue: {
-    color: 'var(--cyan)',
-  },
-  highlightPrimary: {
-    color: 'currentColor',
-    textShadow: null,
-  },
   facebook: {
     color: '#0866FF',
   },
@@ -302,84 +193,4 @@ const styles = stylex.create({
     textFillColor: 'transparent',
   },
   threads: {},
-  sectionTitle: {
-    fontSize: 'clamp(2rem, 1rem + 5vw, 4rem)',
-    width: '100%',
-    textAlign: 'center',
-    marginVertical: '1rem',
-    color: 'var(--fg1)',
-  },
-  secondaryBg: {
-    width: '100%',
-    backgroundColor: 'var(--bg2)',
-    paddingBlock: 64,
-    paddingInline: 32,
-  },
-  contentSection: {
-    maxWidth: 768,
-    marginInline: 'auto',
-  },
-  getStartedLayout: {
-    width: '100%',
-    padding: 16,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-  },
-  card: {
-    backgroundColor: 'var(--bg3)',
-    borderRadius: 16,
-    flexBasis: {
-      default: 0,
-      '@media (max-width: 1250px)': '100%',
-    },
-    flexGrow: 1,
-    flexShrink: 1,
-    margin: 16,
-    display: 'flex',
-    flexDirection: 'column',
-    maxWidth: '100%',
-  },
-  cardTitle: {
-    fontSize: '1.8rem',
-    margin: 0,
-    fontWeight: 800,
-    marginVertical: '1rem',
-    paddingHorizontal: 24,
-    color: 'var(--pink)',
-  },
-  cardDescription: {
-    fontSize: '1.2rem',
-    margin: 0,
-    paddingHorizontal: 24,
-  },
-  codeContainer: {
-    backgroundColor: '#282A36',
-    borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.25)',
-    borderRadius: 16,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    containerType: 'inline-size',
-    display: 'flex',
-    flexDirection: 'column',
-    flexGrow: 1,
-    fontFamily:
-      'ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace',
-    marginTop: 16,
-    // eslint-disable-next-line @stylexjs/valid-styles
-    '--ifm-leading': '0px',
-    overflow: 'hidden',
-  },
-  code: {
-    flexGrow: 1,
-    fontSize: 'clamp(0.6rem, 0.15rem + 3cqi, 1rem)',
-  },
-  zstack: {
-    alignItems: {
-      default: 'flex-start',
-      '@media (max-width: 1135px)': 'center',
-    },
-  },
 });
