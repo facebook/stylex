@@ -7,9 +7,9 @@
  *
  */
 
-import * as React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Layout from '@theme/Layout';
+import * as React from 'react';
 
 export default function PlaygroundPage() {
   return (
