@@ -135,16 +135,26 @@ describe('custom path evaluation works as expected', () => {
                 "async": false,
                 "body": {
                   "alternate": {
-                    "left": {
-                      "name": "val",
-                      "type": "Identifier",
-                    },
-                    "operator": "??",
-                    "right": {
+                    "alternate": {
                       "type": "StringLiteral",
                       "value": "initial",
                     },
-                    "type": "LogicalExpression",
+                    "consequent": {
+                      "name": "val",
+                      "type": "Identifier",
+                    },
+                    "test": {
+                      "left": {
+                        "name": "val",
+                        "type": "Identifier",
+                      },
+                      "operator": "!=",
+                      "right": {
+                        "type": "NullLiteral",
+                      },
+                      "type": "BinaryExpression",
+                    },
+                    "type": "ConditionalExpression",
                   },
                   "consequent": {
                     "left": {
@@ -257,16 +267,26 @@ describe('custom path evaluation works as expected', () => {
                 "async": false,
                 "body": {
                   "alternate": {
-                    "left": {
-                      "name": "val",
-                      "type": "Identifier",
-                    },
-                    "operator": "??",
-                    "right": {
+                    "alternate": {
                       "type": "StringLiteral",
                       "value": "initial",
                     },
-                    "type": "LogicalExpression",
+                    "consequent": {
+                      "name": "val",
+                      "type": "Identifier",
+                    },
+                    "test": {
+                      "left": {
+                        "name": "val",
+                        "type": "Identifier",
+                      },
+                      "operator": "!=",
+                      "right": {
+                        "type": "NullLiteral",
+                      },
+                      "type": "BinaryExpression",
+                    },
+                    "type": "ConditionalExpression",
                   },
                   "consequent": {
                     "left": {

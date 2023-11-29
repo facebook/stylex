@@ -1058,7 +1058,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "x19dipnz",
             $$css: true
           }, {
-            "--color": color ?? "initial"
+            "--color": color != null ? color : "initial"
           }]
         };"
       `);
@@ -1085,7 +1085,7 @@ describe('@stylexjs/babel-plugin', () => {
             width: "x17fnjtu",
             $$css: true
           }, {
-            "--width": (val => typeof val === "number" ? val + "px" : val ?? "initial")(width)
+            "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : "initial")(width)
           }]
         };"
       `);
@@ -1116,7 +1116,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "x19dipnz",
             $$css: true
           }, {
-            "--color": color ?? "initial"
+            "--color": color != null ? color : "initial"
           }],
           mono: {
             color: "x1mqxbix",
@@ -1144,7 +1144,7 @@ describe('@stylexjs/babel-plugin', () => {
             "--background-color": "xyv4n8w",
             $$css: true
           }, {
-            "----background-color": bgColor ?? "initial"
+            "----background-color": bgColor != null ? bgColor : "initial"
           }]
         };"
       `);
@@ -1172,7 +1172,7 @@ describe('@stylexjs/babel-plugin', () => {
             ":hover_color": "x11bf1mc",
             $$css: true
           }, {
-            "--1ijzsae": color ?? "initial"
+            "--1ijzsae": color != null ? color : "initial"
           }]
         };"
       `);
@@ -1202,7 +1202,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "x19dipnz",
             $$css: true
           }, {
-            "--color": color ?? "initial"
+            "--color": color != null ? color : "initial"
           }],
           mono: {
             color: "x1mqxbix",
@@ -1230,7 +1230,7 @@ describe('@stylexjs/babel-plugin', () => {
             "--background-color": "xyv4n8w",
             $$css: true
           }, {
-            "----background-color": bgColor ?? "initial"
+            "----background-color": bgColor != null ? bgColor : "initial"
           }]
         };"
       `);
@@ -1258,7 +1258,7 @@ describe('@stylexjs/babel-plugin', () => {
             ":hover_color": "x11bf1mc",
             $$css: true
           }, {
-            "--1ijzsae": color ?? "initial"
+            "--1ijzsae": color != null ? color : "initial"
           }]
         };"
       `);
