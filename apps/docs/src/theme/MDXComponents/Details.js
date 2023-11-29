@@ -7,22 +7,42 @@
  * @format
  */
 
-import React from 'react';
+import * as React from 'react';
+import {useState} from 'react';
 import * as stylex from '@stylexjs/stylex';
 import {tokens} from './DetailsTokens.stylex';
 
-export default function MDXDetails({children: _children, style, ...props}) {
+export default function MDXDetails({
+  children: _children,
+  style,
+  mdxType: _1,
+  originalType: _2,
+  open = false,
+  ...props
+}) {
+  const [isOpen, setIsOpen] = useState(open);
+
+  const onToggle = (e) => {
+    e.preventDefault();
+    setIsOpen(!isOpen);
+  };
+
   const items = React.Children.toArray(_children);
   // Split summary item from the rest to pass it as a separate prop to the
   // Details theme component
   const summary = items.find(
     (item) => React.isValidElement(item) && item.props?.mdxType === 'summary',
   );
+  const {mdxType: _3, originalType: _4, ...summaryProps} = summary.props;
   const children = <>{items.filter((item) => item !== summary)}</>;
 
   return (
-    <details {...props} {...stylex.props(styles.details, style)}>
-      <summary {...summary.props} {...stylex.props(styles.summary)} />
+    <details
+      {...props}
+      {...stylex.props(styles.details, style)}
+      {...(isOpen && {open: true})}
+      onClick={onToggle}>
+      <summary {...summaryProps} {...stylex.props(styles.summary)} />
       {children}
     </details>
   );

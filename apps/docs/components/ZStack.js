@@ -14,55 +14,50 @@ const {useEffect, useState} = React;
 
 const styles = stylex.create({
   container: {
-    display: 'inline-flex',
-    flexDirection: 'column',
-    height: '1.3em',
-    position: 'relative',
-    // borderWidth: 1,
-    // borderStyle: 'solid',
-    // borderColor: 'rgba(200, 200, 200, 0.1)',
-    alignItems: 'flex-start',
-    // marginInlineStart: '0.5em',
-    overflow: 'hidden',
-  },
-  itemLayout: {
-    visibility: 'hidden',
+    display: 'inline-grid',
   },
   item: {
-    position: 'absolute',
-    // top: 0,
-    // start: 0,
+    gridArea: '1 / 1',
     opacity: 0,
-    transition: 'opacity 0.5s ease-in-out',
+    transitionProperty: 'opacity',
+    transitionDuration: '0.5s',
+    transitionTimingFunction: 'linear',
   },
   visible: {
     opacity: 1,
   },
 });
 
-export default function ZStack({children, xstyle}) {
+const ActiveItemContext = React.createContext(false);
+
+export function ZStack({children, xstyle}) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setActive((active) => (active + 1) % children.length);
-    }, 2500);
+    }, 3000);
     return () => {
-      setActive(0);
       clearInterval(interval);
     };
   }, [children.length]);
 
   return (
     <span {...stylex.props(styles.container, xstyle)}>
-      {children.map((child, _i) => (
-        <span {...stylex.props(styles.itemLayout)}>{child}</span>
-      ))}
       {children.map((child, i) => (
-        <span {...stylex.props(styles.item, i === active && styles.visible)}>
+        <ActiveItemContext.Provider key={i} value={i === active}>
           {child}
-        </span>
+        </ActiveItemContext.Provider>
       ))}
+    </span>
+  );
+}
+
+export function ZStackItem({children, style}) {
+  const active = React.useContext(ActiveItemContext);
+  return (
+    <span {...stylex.props(styles.item, active && styles.visible, style)}>
+      {children}
     </span>
   );
 }

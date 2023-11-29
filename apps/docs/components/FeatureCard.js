@@ -9,17 +9,7 @@
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import Link from '@docusaurus/Link';
-
-let count = 0;
-
-function useId() {
-  const [id, setId] = React.useState(null);
-  React.useEffect(() => {
-    setId(`id-${++count}`);
-  }, []);
-  return id;
-}
+import useId from './hooks/useId';
 
 export default function FeatureCard({
   to,
@@ -31,7 +21,7 @@ export default function FeatureCard({
 }) {
   const titleId = useId();
   return (
-    <Link
+    <div
       {...stylex.props(styles.card, style)}
       aria-labelledby={titleId}
       to={to}>
@@ -47,7 +37,7 @@ export default function FeatureCard({
           <p {...stylex.props(styles.body)}>{children}</p>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
@@ -57,16 +47,16 @@ const styles = stylex.create({
   card: {
     alignItems: 'center',
     backgroundColor: 'var(--bg1)',
-    borderColor: 'hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.1)',
+    borderColor: 'hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.25)',
     borderRadius: 32,
     borderStyle: 'solid',
     borderWidth: 1,
-    boxShadow: {
-      default:
-        '0 2px 4px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.1)',
-      ':hover':
-        '0 2px 8px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.5)',
-    },
+    // boxShadow: {
+    //   default:
+    //     '0 2px 4px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.1)',
+    //   ':hover':
+    //     '0 2px 8px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.5)',
+    // },
     boxSizing: 'border-box',
     color: {
       default: 'inherit',
@@ -83,7 +73,7 @@ const styles = stylex.create({
       '@container (max-width: 940px)': 'span 1',
     },
     height: '100%',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     position: 'relative',
     transitionProperty: 'box-shadow',
     transitionDuration: '0.2s',
@@ -96,24 +86,17 @@ const styles = stylex.create({
       [LARGE]: 'row',
     },
     width: '100%',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: {
       default: 'center',
       [LARGE]: 'flex-start',
     },
-    textAlign: {
-      default: 'center',
-      [LARGE]: 'left',
-    },
-    padding: {
-      default: 16,
-      [LARGE]: 32,
-    },
+    paddingBlock: 16,
+    paddingInline: 32,
     columnGap: 32,
   },
   emoji: {
     fontSize: '8rem',
-    alignSelf: 'center',
     marginBlock: '-0.16em',
   },
   title: {
@@ -131,6 +114,6 @@ const styles = stylex.create({
     marginTop: '1em',
     fontSize: '1rem',
     lineHeight: 1.4,
-    opacity: 0.5,
+    color: 'var(--fg2)',
   },
 });
