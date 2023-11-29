@@ -121,7 +121,7 @@ export default function Home() {
           {...stylex.props(
             styles.hero,
             styles.getStartedLayout,
-            styles.heroPadding,
+            styles.bentoContainer,
           )}>
           <FeaturePile />
         </section>
@@ -177,7 +177,9 @@ const styles = stylex.create({
     justifyContent: 'center',
     width: '100%',
   },
-  heroPadding: {
+  bentoContainer: {
+    width: '100%',
+    maxWidth: 900,
     padding: 32,
   },
   title: {

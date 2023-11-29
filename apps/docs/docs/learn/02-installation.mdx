@@ -237,10 +237,10 @@ your styles.
 
 <DevInstallExample dev={[`@stylexjs/eslint-plugin`]} />
 
-```json
-{
-  "plugins": ["@stylexjs"],
-  "rules": {
+```tsx title=".eslintrc.js"
+module.exports = {
+  plugins: ["@stylexjs"],
+  rules: {
     "@stylexjs/valid-styles": ["error", {...options}],
   },
 };
