@@ -1,4 +1,4 @@
-# stylex &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebookexternal/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/@stylexjs/stylex.svg?style=flat)](https://www.npmjs.com/package/@stylexjs/stylex) [![Build Status](https://github.com/facebookexternal/stylex/workflows/tests/badge.svg)](https://github.com/facebookexternal/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebookexternal/stylex/blob/main/.github/CONTRIBUTING.md)
+# stylex &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/@stylexjs/stylex.svg?style=flat)](https://www.npmjs.com/package/@stylexjs/stylex) [![Build Status](https://github.com/facebook/stylex/workflows/tests/badge.svg)](https://github.com/facebook/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebook/stylex/blob/main/.github/CONTRIBUTING.md)
 
 StyleX is a JavaScript library for defining styles for optimized user
 interfaces.
@@ -9,7 +9,7 @@ interfaces.
 
 Documentation for individual packages can be found in their respective README
 files. Start with
-[`@stylexjs/stylex`](https://github.com/facebookexternal/stylex/blob/main/packages/stylex).
+[`@stylexjs/stylex`](https://github.com/facebook/stylex/blob/main/packages/stylex).
 
 ### Example
 
@@ -43,15 +43,15 @@ This is the development monorepo for stylex.
   - Contains example apps using stylex and integration with build tools.
 - `packages`
   - Contains the individual packages managed in the monorepo.
-  - [babel-plugin](https://github.com/facebookexternal/stylex/blob/main/packages/babel-plugin)
-  - [dev-runtime](https://github.com/facebookexternal/stylex/blob/main/packages/dev-runtime)
-  - [eslint-plugin](https://github.com/facebookexternal/stylex/blob/main/packages/eslint-plugin)
-  - [nextjs-plugin](https://github.com/facebookexternal/stylex/blob/main/packages/nextjs-plugin)
-  - [open-props](https://github.com/facebookexternal/stylex/blob/main/packages/open-props)
-  - [rollup-plugin](https://github.com/facebookexternal/stylex/blob/main/packages/rollup-plugin)
-  - [shared](https://github.com/facebookexternal/stylex/blob/main/packages/shared)
-  - [stylex](https://github.com/facebookexternal/stylex/blob/main/packages/stylex)
-  - [webpack-plugin](https://github.com/facebookexternal/stylex/blob/main/packages/webpack-plugin)
+  - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
+  - [dev-runtime](https://github.com/facebook/stylex/blob/main/packages/dev-runtime)
+  - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/eslint-plugin)
+  - [nextjs-plugin](https://github.com/facebook/stylex/blob/main/packages/nextjs-plugin)
+  - [open-props](https://github.com/facebook/stylex/blob/main/packages/open-props)
+  - [rollup-plugin](https://github.com/facebook/stylex/blob/main/packages/rollup-plugin)
+  - [shared](https://github.com/facebook/stylex/blob/main/packages/shared)
+  - [stylex](https://github.com/facebook/stylex/blob/main/packages/stylex)
+  - [webpack-plugin](https://github.com/facebook/stylex/blob/main/packages/webpack-plugin)
 
 ### Tasks
 
@@ -81,7 +81,7 @@ tolerated.
 ### Contributing Guide
 
 Read the
-[contributing guide](https://github.com/facebookexternal/stylex/blob/main/.github/CONTRIBUTING.md)
+[contributing guide](https://github.com/facebook/stylex/blob/main/.github/CONTRIBUTING.md)
 to learn about our development process, how to propose bugfixes and
 improvements, and how to build and test your changes.
 
