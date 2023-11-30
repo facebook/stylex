@@ -13,7 +13,7 @@
 const config = {
   title: 'StyleX',
   tagline: 'Super fast atomic styles, no thought required.',
-  url: 'https://stylex-docusaurus-nmn.vercel.app',
+  url: 'https://stylexjs.com',
   baseUrl: '/',
   trailingSlash: true,
   onBrokenLinks: 'throw',
