@@ -46,6 +46,7 @@ class StylexPlugin {
 
   constructor({
     dev = IS_DEV_ENV,
+    runtimeInjection,
     appendTo,
     filename = appendTo == null ? 'stylex.css' : undefined,
     stylexImports = ['stylex', '@stylexjs/stylex'],
@@ -59,7 +60,7 @@ class StylexPlugin {
     this.stylexImports = stylexImports;
     this.babelPlugin = [
       stylexBabelPlugin,
-      { dev, stylexSheetName: '<>', ...options },
+      { dev, runtimeInjection, ...options },
     ];
   }
 

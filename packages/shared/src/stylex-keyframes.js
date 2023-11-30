@@ -34,7 +34,7 @@ export default function styleXKeyframes(
   frames: { +[string]: { +[string]: string | number } },
   options: StyleXOptions = defaultOptions,
 ): [string, InjectableStyle] {
-  const { stylexSheetName = '<>', classNamePrefix = 'x' } = options;
+  const { classNamePrefix = 'x' } = options;
   const expandedObject = objMap(frames, (frame) =>
     Pipe.create(frame)
       .pipe((frame) => expandFrameShorthands(frame, options))
@@ -53,9 +53,9 @@ export default function styleXKeyframes(
   const ltrString = constructKeyframesObj(ltrStyles);
   const rtlString = constructKeyframesObj(rtlStyles);
 
-  // This extra `-B` is kept for some idiosyncratic legacy compatibility for now.
-  const animationName =
-    classNamePrefix + createHash(stylexSheetName + ltrString) + '-B';
+  // NOTE: '<>' and '-B' is used to keep existing hashes stable.
+  // They should be removed in a future version.
+  const animationName = classNamePrefix + createHash('<>' + ltrString) + '-B';
 
   const ltr = `@keyframes ${animationName}{${ltrString}}`;
   const rtl =

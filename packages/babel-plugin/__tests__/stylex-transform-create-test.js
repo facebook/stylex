@@ -21,7 +21,7 @@ function transform(source, opts = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [flowPlugin, [stylexPlugin, opts]],
+    plugins: [flowPlugin, [stylexPlugin, { runtimeInjection: true, ...opts }]],
   }).code;
 }
 
@@ -805,7 +805,7 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
          `,
-          { stylexSheetName: '<>' },
+          { runtimeInjection: false },
         ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
@@ -984,7 +984,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
          `,
-          { stylexSheetName: '<>', styleResolution: 'property-specificity' },
+          { runtimeInjection: false, styleResolution: 'property-specificity' },
         ),
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';

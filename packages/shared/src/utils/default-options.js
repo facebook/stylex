@@ -24,6 +24,7 @@ import type { StyleXOptions } from '../common-types';
 
 export const defaultOptions: StyleXOptions = {
   dev: false,
+  runtimeInjection: false,
   test: false,
   classNamePrefix: 'x',
   styleResolution: 'application-order',

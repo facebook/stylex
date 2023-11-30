@@ -45,7 +45,6 @@ describe('commonJS results of exported styles and variables', () => {
       const source = fs.readFileSync(filename, 'utf8');
       const { code, metadata } = transform(source, {
         dev: false,
-        stylexSheetName: 'stylex.css',
         filename: filename,
       });
 

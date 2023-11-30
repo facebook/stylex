@@ -81,7 +81,8 @@ export default class StateManager {
       ...options,
       dev: !!(options: $FlowFixMe).dev,
       test: !!(options: $FlowFixMe).test,
-      stylexSheetName: (options: $FlowFixMe).stylexSheetName ?? undefined,
+      runtimeInjection:
+        (options: $FlowFixMe).runtimeInjection ?? !!(options: $FlowFixMe).dev,
       classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
       importSources: (options: $FlowFixMe).importSources ?? [name, 'stylex'],
       definedStylexCSSVariables:
@@ -117,8 +118,8 @@ export default class StateManager {
     return this._state.file.metadata;
   }
 
-  get stylexSheetName(): string | void {
-    return this.options.stylexSheetName ?? undefined;
+  get runtimeInjection(): boolean {
+    return !!this.options.runtimeInjection;
   }
 
   get isDev(): boolean {

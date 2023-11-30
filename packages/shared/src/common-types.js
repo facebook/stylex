@@ -44,9 +44,7 @@ export type FlatCompiledStyles = $ReadOnly<{
 export type StyleXOptions = {
   dev: boolean,
   test: boolean,
-  moduleSystem?: 'haste' | 'commonjs',
-  rootDir?: string | void,
-  stylexSheetName?: string | void,
+  runtimeInjection: boolean,
   classNamePrefix: string,
   definedStylexCSSVariables?: { [key: string]: mixed },
   styleResolution:

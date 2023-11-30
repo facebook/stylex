@@ -21,7 +21,7 @@ function transform(source, opts = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [jsx, [stylexPlugin, opts]],
+    plugins: [jsx, [stylexPlugin, { runtimeInjection: true, ...opts }]],
   }).code;
 }
 

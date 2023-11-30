@@ -194,7 +194,7 @@ export default function transformStyleXCreate(
     if (Object.keys(injectedStyles).length === 0) {
       return;
     }
-    if (state.isDev || state.stylexSheetName == null) {
+    if (state.runtimeInjection) {
       const statementPath = findNearestStatementAncestor(path);
       const stylexName = getStylexDefaultImport(path, state);
 

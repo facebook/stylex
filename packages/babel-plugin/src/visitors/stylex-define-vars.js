@@ -99,7 +99,7 @@ export default function transformStyleXDefineVars(
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(variablesObj));
 
-    if (state.isDev || state.stylexSheetName == null) {
+    if (state.runtimeInjection) {
       // We know that the top level parent path is an export named declaration
       const maybeStatementPath: ?NodePath<> =
         variableDeclaratorPath.parentPath.parentPath;

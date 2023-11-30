@@ -17,7 +17,7 @@ const stylexPlugin = require('../src/index');
 function transform(source, opts = {}) {
   const options = {
     filename: opts.filename,
-    plugins: [[stylexPlugin, opts]],
+    plugins: [[stylexPlugin, { ...opts, runtimeInjection: true }]],
   };
   const result = transformSync(source, options);
   return result;

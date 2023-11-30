@@ -20,7 +20,7 @@ function transform(source, opts = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [[stylexPlugin, opts]],
+    plugins: [[stylexPlugin, { ...opts, runtimeInjection: true }]],
   }).code;
 }
 

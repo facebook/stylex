@@ -77,7 +77,7 @@ export default function transformStyleXKeyframes(
     const { ltr, priority, rtl } = injectedStyle;
 
     if (
-      (state.isDev || state.stylexSheetName == null) &&
+      state.runtimeInjection &&
       pathUtils.isVariableDeclaration(path.parentPath)
     ) {
       // We know that the parent path is a variable declaration

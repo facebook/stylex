@@ -26,10 +26,7 @@ export function convertStyleToClassName(
   objEntry: [string, TRawValue],
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
-  {
-    stylexSheetName = '<>',
-    classNamePrefix = 'x',
-  }: StyleXOptions = defaultOptions,
+  { classNamePrefix = 'x' }: StyleXOptions = defaultOptions,
 ): StyleRule {
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
@@ -50,8 +47,9 @@ export function convertStyleToClassName(
     ? dashedKey + value.join(', ') + modifierHashString
     : dashedKey + value + modifierHashString;
 
-  const className =
-    classNamePrefix + createHash(stylexSheetName + stringToHash);
+  // NOTE: '<>' is used to keep existing hashes stable.
+  // This should be removed in a future version.
+  const className = classNamePrefix + createHash('<>' + stringToHash);
 
   const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
 
