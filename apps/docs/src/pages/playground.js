@@ -10,15 +10,16 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
+import CtaButton from '../../components/CtaButton';
 
 export default function Playground() {
   return (
     <Layout>
       <div {...stylex.props(styles.container)}>
-        <iframe
-          {...stylex.props(styles.iframe)}
-          src="https://stackblitz.com/edit/stylex-next?embed=1&file=README.md"
-        />
+        <CtaButton to="https://stackblitz.com/edit/stylex-next">
+          StyleX + Next Demo
+        </CtaButton>
+        <span>A full playground is coming soon.</span>
       </div>
     </Layout>
   );
@@ -30,15 +31,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    height: stylex.firstThatWorks('calc(100dvh - 60px)', 'calc(100vh - 60px)'),
-    borderBottomWidth: 2,
-    borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--cyan)',
-  },
-  iframe: {
-    width: '100%',
-    height: '100%',
-    borderWidth: 0,
-    borderStyle: 'none',
+    height: '60vh',
+    gap: '0.5rem',
   },
 });
