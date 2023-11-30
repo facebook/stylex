@@ -11,8 +11,8 @@ import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
-import Link from '@docusaurus/Link';
 import {ZStack, ZStackItem} from '../../components/ZStack';
+import CtaButton from '../../components/CtaButton';
 
 export default function Home() {
   return (
@@ -46,14 +46,12 @@ export default function Home() {
             </ZStack>
           </h2>
           <section {...stylex.props(styles.ctaSection)}>
-            <Link {...stylex.props(styles.cta)} to="/docs/learn/">
+            <CtaButton color="pink" to="/docs/learn/">
               Get Started
-            </Link>
-            <Link
-              {...stylex.props(styles.cta, styles.ctaBlue)}
-              to="/docs/learn/thinking-in-stylex/">
+            </CtaButton>
+            <CtaButton color="blue" to="/docs/learn/thinking-in-stylex/">
               Thinking in StyleX
-            </Link>
+            </CtaButton>
           </section>
         </section>
       </main>
@@ -110,7 +108,7 @@ const styles = stylex.create({
     opacity: 0.7,
   },
   ctaSection: {
-    alignItems: 'center',
+    alignItems: 'stretch',
     display: 'flex',
     gap: '1rem',
     justifyContent: 'center',
@@ -121,53 +119,6 @@ const styles = stylex.create({
     flexDirection: {
       default: 'row',
       [CTA_BREAK]: 'column',
-    },
-  },
-  cta: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    fontWeight: 'bold',
-    color: {
-      default: 'white',
-      ':hover': 'white',
-    },
-    textDecoration: {
-      default: 'none',
-      ':hover': 'none',
-    },
-    width: {
-      default: null,
-      [CTA_BREAK]: '100%',
-    },
-    backgroundColor: 'hsl(var(--pink-h), var(--pink-s), var(--pink-l))',
-    paddingBlock: '0.75rem',
-    paddingInline: '2rem',
-    boxShadow: {
-      default:
-        '0 0 2px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.35)',
-      ':hover':
-        '0 0 10px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.75)',
-    },
-    scale: {
-      default: '1',
-      ':hover': '1.02',
-      ':active': '0.98',
-    },
-    transitionProperty: 'scale, boxShadow',
-    transitionDuration: {
-      default: '0.2s',
-      ':active': '0.1s',
-    },
-  },
-  ctaBlue: {
-    backgroundColor: 'hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))',
-    boxShadow: {
-      default:
-        '0 0 2px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.35)',
-      ':hover':
-        '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.75)',
     },
   },
   subtitleHighlight: {
