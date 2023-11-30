@@ -33,13 +33,11 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/facebookexternal/stylex/tree/main/apps/docs/',
+          editUrl: 'https://github.com/facebook/stylex/tree/main/apps/docs/',
         },
         blog: {
           showReadingTime: true,
-          editUrl:
-            'https://github.com/facebookexternal/stylex/tree/main/apps/docs/',
+          editUrl: 'https://github.com/facebook/stylex/tree/main/apps/docs/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
