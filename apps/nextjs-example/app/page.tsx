@@ -133,7 +133,7 @@ const s = stylex.create({
   },
 });
 
-const HOMEPAGE = 'http://stylex-docusaurus.vercel.app';
+const HOMEPAGE = 'https://stylexjs.com';
 
 export default function Home() {
   return (

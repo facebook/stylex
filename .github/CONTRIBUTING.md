@@ -68,7 +68,7 @@ npm run start -w docs
 ### New Features
 
 Please, familiarize yourself with
-[StyleX's goals and architectural principles](https://stylex-docusaurus.vercel.app/docs/learn/thinking-in-stylex/),
+[StyleX's goals and architectural principles](https://stylexjs.com/docs/learn/thinking-in-stylex/),
 and open an issue with a proposal when suggesting a new feature of behavioural
 change. We don't want you to waste your efforts on a pull request that we won't
 want to accept.
