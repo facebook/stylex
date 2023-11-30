@@ -21,8 +21,8 @@ function getDistanceMin(
       ? d2 + 1
       : d0 + 1
     : bx === ay
-    ? d1
-    : d1 + 1;
+      ? d1
+      : d1 + 1;
 }
 /*
  * This a fork of Gustaf Andersson's levenshtein implmentation

@@ -66,12 +66,12 @@ export type LegacyThemeStyles = $ReadOnly<{
 type ComplexStyleValueType<+T> = T extends StyleXVar<infer U>
   ? U
   : T extends string | number | null
-  ? T
-  : T extends $ReadOnlyArray<infer U>
-  ? U
-  : T extends $ReadOnly<{ default: infer A, +[string]: infer B }>
-  ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
-  : $ReadOnly<T>;
+    ? T
+    : T extends $ReadOnlyArray<infer U>
+      ? U
+      : T extends $ReadOnly<{ default: infer A, +[string]: infer B }>
+        ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
+        : $ReadOnly<T>;
 
 type _MapNamespace<+CSS: { +[string]: mixed }> = $ReadOnly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>,

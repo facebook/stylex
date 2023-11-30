@@ -123,124 +123,124 @@ describe('webpack-plugin-stylex', () => {
       `);
 
       expect(js).toMatchInlineSnapshot(`
-""use strict";
-(() => {
-var exports = {};
-exports.id = 179;
-exports.ids = [179];
-exports.modules = {
+        ""use strict";
+        (() => {
+        var exports = {};
+        exports.id = 179;
+        exports.ids = [179];
+        exports.modules = {
 
-/***/ "./index.js":
-/***/ (() => {
-
-
-// UNUSED EXPORTS: default
-
-;// CONCATENATED MODULE: external "stylex"
-const external_stylex_namespaceObject = stylex;
-;// CONCATENATED MODULE: ./otherStyles.js
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
-
-// otherStyles.js
+        /***/ "./index.js":
+        /***/ (() => {
 
 
+        // UNUSED EXPORTS: default
 
+        ;// CONCATENATED MODULE: external "stylex"
+        const external_stylex_namespaceObject = stylex;
+        ;// CONCATENATED MODULE: ./otherStyles.js
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
 
-var styles = {
-  bar: {
-    display: "x1lliihq",
-    width: "xh8yej3",
-    $$css: true
-  }
-};
-/* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
-;// CONCATENATED MODULE: ./npmStyles.js
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
-
-// npmStyles.js
+        // otherStyles.js
 
 
 
 
-const npmStyles_styles = {
-  baz: {
-    display: "xt0psk2",
-    height: "x1egiwwb",
-    width: "x3hqpx7",
-    $$css: true
-  }
-};
-/* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-;// CONCATENATED MODULE: ./index.js
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
+        var styles = {
+          bar: {
+            display: "x1lliihq",
+            width: "xh8yej3",
+            $$css: true
+          }
+        };
+        /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
+        ;// CONCATENATED MODULE: ./npmStyles.js
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
+
+        // npmStyles.js
+
+
+
+
+        const npmStyles_styles = {
+          baz: {
+            display: "xt0psk2",
+            height: "x1egiwwb",
+            width: "x3hqpx7",
+            $$css: true
+          }
+        };
+        /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
+        ;// CONCATENATED MODULE: ./index.js
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
 
 
 
 
 
 
-var fadeAnimation = "xgnty7z-B";
-var index_styles = {
-  foo: {
-    animationName: "xeuoslp",
-    display: "x78zum5",
-    marginInlineStart: "x1hm9lzh",
-    marginLeft: null,
-    marginRight: null,
-    marginTop: "xlrshdv",
-    height: "x1egiwwb",
-    ":hover_background": "x1oz5o6v",
-    ":hover_backgroundAttachment": null,
-    ":hover_backgroundClip": null,
-    ":hover_backgroundColor": null,
-    ":hover_backgroundImage": null,
-    ":hover_backgroundOrigin": null,
-    ":hover_backgroundPosition": null,
-    ":hover_backgroundPositionX": null,
-    ":hover_backgroundPositionY": null,
-    ":hover_backgroundRepeat": null,
-    ":hover_backgroundSize": null,
-    $$css: true
-  }
-};
-function App() {
-  return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
-}
+        var fadeAnimation = "xgnty7z-B";
+        var index_styles = {
+          foo: {
+            animationName: "xeuoslp",
+            display: "x78zum5",
+            marginInlineStart: "x1hm9lzh",
+            marginLeft: null,
+            marginRight: null,
+            marginTop: "xlrshdv",
+            height: "x1egiwwb",
+            ":hover_background": "x1oz5o6v",
+            ":hover_backgroundAttachment": null,
+            ":hover_backgroundClip": null,
+            ":hover_backgroundColor": null,
+            ":hover_backgroundImage": null,
+            ":hover_backgroundOrigin": null,
+            ":hover_backgroundPosition": null,
+            ":hover_backgroundPositionX": null,
+            ":hover_backgroundPositionY": null,
+            ":hover_backgroundRepeat": null,
+            ":hover_backgroundSize": null,
+            $$css: true
+          }
+        };
+        function App() {
+          return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
+        }
 
-/***/ })
+        /***/ })
 
-};
-;
+        };
+        ;
 
-// load runtime
-var __webpack_require__ = require("./runtime.js");
-__webpack_require__.C(exports);
-var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = (__webpack_exec__("./index.js"));
+        // load runtime
+        var __webpack_require__ = require("./runtime.js");
+        __webpack_require__.C(exports);
+        var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+        var __webpack_exports__ = (__webpack_exec__("./index.js"));
 
-})();"
-`);
+        })();"
+      `);
       done();
     });
   });
@@ -257,140 +257,140 @@ var __webpack_exports__ = (__webpack_exec__("./index.js"));
         expect(cssExists).toEqual(true);
 
         expect(js).toMatchInlineSnapshot(`
-""use strict";
-(() => {
-var exports = {};
-exports.id = 179;
-exports.ids = [179];
-exports.modules = {
+          ""use strict";
+          (() => {
+          var exports = {};
+          exports.id = 179;
+          exports.ids = [179];
+          exports.modules = {
 
-/***/ "./index.js":
-/***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
-
-
-// UNUSED EXPORTS: default
-
-;// CONCATENATED MODULE: external "stylex"
-const external_stylex_namespaceObject = stylex;
-var external_stylex_default = /*#__PURE__*/__webpack_require__.n(external_stylex_namespaceObject);
-;// CONCATENATED MODULE: ./otherStyles.js
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
-
-// otherStyles.js
+          /***/ "./index.js":
+          /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
+          // UNUSED EXPORTS: default
 
+          ;// CONCATENATED MODULE: external "stylex"
+          const external_stylex_namespaceObject = stylex;
+          var external_stylex_default = /*#__PURE__*/__webpack_require__.n(external_stylex_namespaceObject);
+          ;// CONCATENATED MODULE: ./otherStyles.js
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
 
-external_stylex_default().inject(".x1lliihq{display:block}", 3000);
-external_stylex_default().inject(".xh8yej3{width:100%}", 4000);
-var styles = {
-  bar: {
-    "otherStyles__styles.bar": "otherStyles__styles.bar",
-    display: "x1lliihq",
-    width: "xh8yej3",
-    $$css: true
-  }
-};
-/* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
-;// CONCATENATED MODULE: ./npmStyles.js
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
-
-// npmStyles.js
+          // otherStyles.js
 
 
 
 
-external_stylex_default().inject(".xt0psk2{display:inline}", 3000);
-external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
-external_stylex_default().inject(".x3hqpx7{width:50%}", 4000);
-const npmStyles_styles = {
-  baz: {
-    "npmStyles__styles.baz": "npmStyles__styles.baz",
-    display: "xt0psk2",
-    height: "x1egiwwb",
-    width: "x3hqpx7",
-    $$css: true
-  }
-};
-/* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-;// CONCATENATED MODULE: ./index.js
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
+          external_stylex_default().inject(".x1lliihq{display:block}", 3000);
+          external_stylex_default().inject(".xh8yej3{width:100%}", 4000);
+          var styles = {
+            bar: {
+              "otherStyles__styles.bar": "otherStyles__styles.bar",
+              display: "x1lliihq",
+              width: "xh8yej3",
+              $$css: true
+            }
+          };
+          /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
+          ;// CONCATENATED MODULE: ./npmStyles.js
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
+
+          // npmStyles.js
+
+
+
+
+          external_stylex_default().inject(".xt0psk2{display:inline}", 3000);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
+          external_stylex_default().inject(".x3hqpx7{width:50%}", 4000);
+          const npmStyles_styles = {
+            baz: {
+              "npmStyles__styles.baz": "npmStyles__styles.baz",
+              display: "xt0psk2",
+              height: "x1egiwwb",
+              width: "x3hqpx7",
+              $$css: true
+            }
+          };
+          /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
+          ;// CONCATENATED MODULE: ./index.js
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
 
 
 
 
 
 
-external_stylex_default().inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
-var fadeAnimation = "xgnty7z-B";
-external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-external_stylex_default().inject(".x78zum5{display:flex}", 3000);
-external_stylex_default().inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
-external_stylex_default().inject(".xlrshdv{margin-top:99px}", 4000);
-external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
-external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 1130);
-var index_styles = {
-  foo: {
-    "index__styles.foo": "index__styles.foo",
-    animationName: "xeuoslp",
-    display: "x78zum5",
-    marginInlineStart: "x1hm9lzh",
-    marginLeft: null,
-    marginRight: null,
-    marginTop: "xlrshdv",
-    height: "x1egiwwb",
-    ":hover_background": "x1oz5o6v",
-    ":hover_backgroundAttachment": null,
-    ":hover_backgroundClip": null,
-    ":hover_backgroundColor": null,
-    ":hover_backgroundImage": null,
-    ":hover_backgroundOrigin": null,
-    ":hover_backgroundPosition": null,
-    ":hover_backgroundPositionX": null,
-    ":hover_backgroundPositionY": null,
-    ":hover_backgroundRepeat": null,
-    ":hover_backgroundSize": null,
-    $$css: true
-  }
-};
-function App() {
-  return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
-}
+          external_stylex_default().inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+          var fadeAnimation = "xgnty7z-B";
+          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+          external_stylex_default().inject(".x78zum5{display:flex}", 3000);
+          external_stylex_default().inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          external_stylex_default().inject(".xlrshdv{margin-top:99px}", 4000);
+          external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
+          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 1130);
+          var index_styles = {
+            foo: {
+              "index__styles.foo": "index__styles.foo",
+              animationName: "xeuoslp",
+              display: "x78zum5",
+              marginInlineStart: "x1hm9lzh",
+              marginLeft: null,
+              marginRight: null,
+              marginTop: "xlrshdv",
+              height: "x1egiwwb",
+              ":hover_background": "x1oz5o6v",
+              ":hover_backgroundAttachment": null,
+              ":hover_backgroundClip": null,
+              ":hover_backgroundColor": null,
+              ":hover_backgroundImage": null,
+              ":hover_backgroundOrigin": null,
+              ":hover_backgroundPosition": null,
+              ":hover_backgroundPositionX": null,
+              ":hover_backgroundPositionY": null,
+              ":hover_backgroundRepeat": null,
+              ":hover_backgroundSize": null,
+              $$css: true
+            }
+          };
+          function App() {
+            return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
+          }
 
-/***/ })
+          /***/ })
 
-};
-;
+          };
+          ;
 
-// load runtime
-var __webpack_require__ = require("./runtime.js");
-__webpack_require__.C(exports);
-var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = (__webpack_exec__("./index.js"));
+          // load runtime
+          var __webpack_require__ = require("./runtime.js");
+          __webpack_require__.C(exports);
+          var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+          var __webpack_exports__ = (__webpack_exec__("./index.js"));
 
-})();"
-`);
+          })();"
+        `);
         done();
       });
     });

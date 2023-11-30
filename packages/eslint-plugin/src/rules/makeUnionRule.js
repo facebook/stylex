@@ -30,8 +30,8 @@ export default function makeUnionRule(
         typeof _rule === 'string'
           ? makeLiteralRule(_rule)
           : typeof _rule === 'number'
-          ? makeLiteralRule(_rule)
-          : _rule;
+            ? makeLiteralRule(_rule)
+            : _rule;
 
       const check = rule(node, variables, prop);
       if (check === undefined) {

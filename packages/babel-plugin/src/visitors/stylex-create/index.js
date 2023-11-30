@@ -163,8 +163,8 @@ export default function transformStyleXCreate(
             prop.key.type === 'Identifier' && !prop.computed
               ? prop.key.name
               : prop.key.type === 'StringLiteral'
-              ? prop.key.value
-              : null;
+                ? prop.key.value
+                : null;
           if (key != null && Object.keys(fns).includes(key)) {
             const [params, inlineStyles] = fns[key];
 
