@@ -732,8 +732,8 @@ function evaluateQuasis(
   const exprs: $ReadOnlyArray<NodePath<>> = pathUtils.isTemplateLiteral(path)
     ? path.get('expressions')
     : pathUtils.isTaggedTemplateExpression(path)
-      ? path.get('quasi').get('expressions')
-      : [];
+    ? path.get('quasi').get('expressions')
+    : [];
 
   // const exprs: Array<NodePath<t.Node>> = path.isTemplateLiteral()
   //   ? path.get('expressions')
