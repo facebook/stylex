@@ -387,7 +387,10 @@ function _evaluate(path: NodePath<>, state: State): any {
             ? evaluateThemeRef(value, importedName, state)
             : evaluateImportedFile(value, importedName, state);
         if (state.confident) {
-          if (!state.addedImports.has(importPath.node.source.value)) {
+          if (
+            !state.addedImports.has(importPath.node.source.value) &&
+            state.traversalState.treeshakeCompensation
+          ) {
             importPath.insertBefore(
               t.importDeclaration([], importPath.node.source),
             );

@@ -25,6 +25,7 @@ function transform(source, opts = {}) {
         stylexPlugin,
         {
           ...opts,
+          treeshakeCompensation: true,
           unstable_moduleResolution: {
             type: 'commonJS',
             rootDir: path.join(__dirname, '../../'),
