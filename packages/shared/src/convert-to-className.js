@@ -26,14 +26,15 @@ export function convertStyleToClassName(
   objEntry: [string, TRawValue],
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
-  { classNamePrefix = 'x' }: StyleXOptions = defaultOptions,
+  options: StyleXOptions = defaultOptions,
 ): StyleRule {
+  const { classNamePrefix = 'x' } = options;
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
 
   const value = Array.isArray(rawValue)
-    ? rawValue.map((eachValue) => transformValue(key, eachValue))
-    : transformValue(key, rawValue);
+    ? rawValue.map((eachValue) => transformValue(key, eachValue, options))
+    : transformValue(key, rawValue, options);
 
   const sortedPseudos = arraySort(pseudos ?? []);
   const sortedAtRules = arraySort(atRules ?? []);

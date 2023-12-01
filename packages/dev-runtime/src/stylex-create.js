@@ -68,6 +68,7 @@ function splitStaticObj<
   Obj: { +[string]: mixed },
 >(
   fn: (...args: Args) => Obj,
+  options: RuntimeOptions,
 ): [Obj, (...args: Args) => { [string]: string | number }] {
   const args1 = Array.from({ length: fn.length }, () => 0);
   const args2 = Array.from({ length: fn.length }, () => 1);
@@ -89,7 +90,7 @@ function splitStaticObj<
         path.find((prop) => !prop.startsWith(':') && !prop.startsWith('@')) ??
         path[0];
       styles[key] =
-        value != null ? transformValue(styleProp, value) : 'initial';
+        value != null ? transformValue(styleProp, value, options) : 'initial';
     }
     return styles;
   };
@@ -113,7 +114,7 @@ function createWithFns<S: { ... }>(
   for (const key in styles) {
     const value = styles[key];
     if (typeof value === 'function') {
-      const [staticObj, inlineStylesFn] = splitStaticObj(value);
+      const [staticObj, inlineStylesFn] = splitStaticObj(value, config);
       stylesWithoutFns[key] = staticObj;
       stylesWithFns[key] = inlineStylesFn;
     } else {
