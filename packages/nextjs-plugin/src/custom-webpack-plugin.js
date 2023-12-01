@@ -29,6 +29,7 @@ const { RawSource, ConcatSource } = webpack.sources;
 /*::
 type PluginOptions = $ReadOnly<{
   dev?: boolean,
+  useRemForFontSize?: boolean,
   stylexImports?: $ReadOnlyArray<string>,
   babelConfig?: $ReadOnly<{
     plugins?: $ReadOnlyArray<mixed>,
@@ -50,6 +51,7 @@ class StylexPlugin {
 
   constructor({
     dev = IS_DEV_ENV,
+    useRemForFontSize,
     appendTo,
     filename = appendTo == null ? 'stylex.css' : undefined,
     stylexImports = ['stylex', '@stylexjs/stylex'],
@@ -74,8 +76,10 @@ class StylexPlugin {
       stylexBabelPlugin,
       {
         dev,
-        stylexSheetName: '<>',
+        useRemForFontSize,
+        runtimeInjection: false,
         genConditionalClasses: true,
+        treeshakeCompensation: true,
         unstable_moduleResolution: {
           type: 'commonJS',
           rootDir,

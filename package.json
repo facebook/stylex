@@ -41,23 +41,23 @@
     "@rollup/plugin-replace": "^5.0.3",
     "@types/estree": "^1.0.2",
     "@types/jest": "^29.5.5",
-    "babel-plugin-syntax-hermes-parser": "^0.16.0",
+    "babel-plugin-syntax-hermes-parser": "^0.18.0",
     "benchmark": "^2.1.4",
     "eslint": "8.47.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-ft-flow": "^3.0.0",
     "eslint-plugin-react": "^7.33.2",
-    "flow-bin": "^0.220.0",
-    "hermes-eslint": "^0.16.0",
-    "jest": "^29.7.0",
-    "prettier": "^3.0.3",
-    "prettier-plugin-hermes-parser": "^0.16.0",
+    "flow-bin": "^0.223.0",
+    "hermes-eslint": "^0.18.0",
+    "jest": "^30.0.0-alpha.1",
+    "prettier": "^3.1.0",
+    "prettier-plugin-hermes-parser": "^0.18.0",
     "rollup": "^4.0.2",
     "typescript": "^5.1.6"
   },
   "overrides": {
     "eslint-plugin-ft-flow": {
-      "hermes-eslint": "^0.16.0"
+      "hermes-eslint": "^0.18.0"
     }
   },
   "prettier": {

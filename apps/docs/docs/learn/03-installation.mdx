@@ -138,6 +138,9 @@ provides plugins for Webpack, Rollup, and Next.js.
         filename: 'styles.css',
         // get webpack mode and set value for dev
         dev: argv.mode === 'development',
+        // Use statically generated CSS files and not runtime injected CSS.
+        // Even in development.
+        runtimeInjection: false,
         // optional. default: 'x'
         classNamePrefix: 'x',
         // Required for CSS variable support
@@ -171,7 +174,7 @@ provides plugins for Webpack, Rollup, and Next.js.
         '@stylexjs/babel-plugin',
         {
           dev: process.env.NODE_ENV === 'development',
-          stylexSheetName: '<>',
+          runtimeInjection: false,
           genConditionalClasses: true,
           unstable_moduleResolution: {
             type: 'commonJS',

@@ -120,17 +120,17 @@ describe('Development Plugin Transformation', () => {
       });
 
       expect(metadata).toMatchInlineSnapshot(`
-[
-  [
-    "xd71okc",
-    {
-      "ltr": ".xd71okc{content:attr(some-attribute)}",
-      "rtl": null,
-    },
-    3000,
-  ],
-]
-`);
+        [
+          [
+            "xd71okc",
+            {
+              "ltr": ".xd71okc{content:attr(some-attribute)}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
     });
 
     test('transforms nested pseudo-class to CSS', () => {
@@ -154,25 +154,25 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-[
-  [
-    "x1gykpug",
-    {
-      "ltr": ".x1gykpug:hover{background-color:red}",
-      "rtl": null,
-    },
-    3130,
-  ],
-  [
-    "x17z2mba",
-    {
-      "ltr": ".x17z2mba:hover{color:blue}",
-      "rtl": null,
-    },
-    3130,
-  ],
-]
-`);
+        [
+          [
+            "x1gykpug",
+            {
+              "ltr": ".x1gykpug:hover{background-color:red}",
+              "rtl": null,
+            },
+            3130,
+          ],
+          [
+            "x17z2mba",
+            {
+              "ltr": ".x17z2mba:hover{color:blue}",
+              "rtl": null,
+            },
+            3130,
+          ],
+        ]
+      `);
     });
 
     test('transforms array values as fallbacks', () => {
@@ -192,17 +192,17 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-[
-  [
-    "x1ruww2u",
-    {
-      "ltr": ".x1ruww2u{position:sticky;position:fixed}",
-      "rtl": null,
-    },
-    3000,
-  ],
-]
-`);
+        [
+          [
+            "x1ruww2u",
+            {
+              "ltr": ".x1ruww2u{position:sticky;position:fixed}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
     });
 
     // TODO: add more vendor-prefixed properties and values
@@ -223,17 +223,17 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-[
-  [
-    "x87ps6o",
-    {
-      "ltr": ".x87ps6o{user-select:none}",
-      "rtl": null,
-    },
-    3000,
-  ],
-]
-`);
+        [
+          [
+            "x87ps6o",
+            {
+              "ltr": ".x87ps6o{user-select:none}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
     });
 
     // Legacy, short?
@@ -354,17 +354,17 @@ describe('Development Plugin Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-[
-  [
-    "xxnfx33",
-    {
-      "ltr": ".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}",
-      "rtl": null,
-    },
-    3000,
-  ],
-]
-`);
+        [
+          [
+            "xxnfx33",
+            {
+              "ltr": ".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
     });
 
     describe('pseudo-classes', () => {

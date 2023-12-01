@@ -43,13 +43,13 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const styles = stylex.defineVars({});
-          `);
+        `);
       }).toThrow(messages.NON_EXPORT_NAMED_DECLARATION);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           stylex.defineVars({});
-          `);
+        `);
       }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
     });
 
@@ -58,31 +58,31 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           export const styles = stylex.defineVars(genStyles());
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           export const styles = stylex.defineVars(1);
-          `);
+        `);
       }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           export const styles = stylex.defineVars();
-          `);
+        `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           export const styles = stylex.defineVars({}, {});
-          `);
+        `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           export const styles = stylex.defineVars({});
-          `);
+        `);
       }).not.toThrow();
     });
 
@@ -91,11 +91,11 @@ describe('@stylexjs/babel-plugin', () => {
     test('variable keys must be a static value', () => {
       expect(() => {
         transform(`
-            import stylex from 'stylex';
-            export const styles = stylex.defineVars({
-                [labelColor]: 'red',
-            });
-            `);
+          import stylex from 'stylex';
+          export const styles = stylex.defineVars({
+              [labelColor]: 'red',
+          });
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });
 
@@ -109,7 +109,7 @@ describe('@stylexjs/babel-plugin', () => {
           export const styles = stylex.defineVars({
               cornerRadius: 5,
           });
-          `);
+        `);
       }).not.toThrow();
       // string
       expect(() => {
@@ -118,7 +118,7 @@ describe('@stylexjs/babel-plugin', () => {
           export const styles = stylex.defineVars({
               labelColor: 'red',
           });
-          `);
+        `);
       }).not.toThrow();
       // not static
       expect(() => {
@@ -127,7 +127,7 @@ describe('@stylexjs/babel-plugin', () => {
           export const styles = stylex.defineVars({
               labelColor: labelColor,
           });
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
@@ -135,7 +135,7 @@ describe('@stylexjs/babel-plugin', () => {
           export const styles = stylex.defineVars({
               labelColor: labelColor(),
           });
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });
   });

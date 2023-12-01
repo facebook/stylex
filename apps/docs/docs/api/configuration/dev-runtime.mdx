@@ -15,6 +15,13 @@ export type DevRuntimeOptions = {
   // Prefix to applied to every generated className
   // Default: 'x'
   classNamePrefix?: string,
+
+  // Should `px` values for `fontSize` be converted to `rem`?
+  // It is a best practice to use `rem` for font sizes to allow
+  // users to scale the font size up or down.
+  //
+  // Default: `true`
+  useRemForFontSize?: boolean,
   
   // Strategy to use for merging styles
   // Default: 'application-order'

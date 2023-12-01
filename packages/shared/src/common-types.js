@@ -44,6 +44,7 @@ export type FlatCompiledStyles = $ReadOnly<{
 export type StyleXOptions = {
   dev: boolean,
   test: boolean,
+  useRemForFontSize: boolean,
   runtimeInjection: boolean,
   classNamePrefix: string,
   definedStylexCSSVariables?: { [key: string]: mixed },

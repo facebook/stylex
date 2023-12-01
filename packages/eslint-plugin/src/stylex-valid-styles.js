@@ -2287,16 +2287,16 @@ const stylexValidStyles = {
         limit === null
           ? showError(reason)
           : limit === '*'
-          ? makeUnionRule(isString, isNumber, all)
-          : limit === 'string'
-          ? makeUnionRule(isString, all)
-          : limit === 'number'
-          ? makeUnionRule(isNumber, all)
-          : typeof limit === 'string' || typeof limit === 'number'
-          ? makeUnionRule(limit, all)
-          : Array.isArray(limit)
-          ? makeUnionRule(...limit, all)
-          : undefined;
+            ? makeUnionRule(isString, isNumber, all)
+            : limit === 'string'
+              ? makeUnionRule(isString, all)
+              : limit === 'number'
+                ? makeUnionRule(isNumber, all)
+                : typeof limit === 'string' || typeof limit === 'number'
+                  ? makeUnionRule(limit, all)
+                  : Array.isArray(limit)
+                    ? makeUnionRule(...limit, all)
+                    : undefined;
       if (overrideValue === undefined) {
         // skip
         continue;
@@ -2373,8 +2373,8 @@ const stylexValidStyles = {
             key.type === 'Literal'
               ? key.value
               : key.type === 'Identifier' && !style.computed
-              ? key.name
-              : null;
+                ? key.name
+                : null;
           if (isStylexDefineVarsToken(key, stylexDefineVarsTokenImports)) {
             return undefined;
           }

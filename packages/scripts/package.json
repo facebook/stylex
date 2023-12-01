@@ -8,7 +8,7 @@
     "rewrite-imports": "./rewrite-imports.js"
   },
   "dependencies": {
-    "flow-api-translator": "0.16.0",
+    "flow-api-translator": "0.18.0",
     "yargs": "17.7.2"
   }
 }

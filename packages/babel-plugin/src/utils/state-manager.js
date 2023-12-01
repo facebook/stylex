@@ -88,6 +88,7 @@ export default class StateManager {
       definedStylexCSSVariables:
         (options: $FlowFixMe).definedStylexCSSVariables ?? {},
       genConditionalClasses: !!(options: $FlowFixMe).genConditionalClasses,
+      useRemForFontSize: (options: $FlowFixMe).useRemForFontSize ?? true,
       styleResolution:
         (options: $FlowFixMe).styleResolution ?? 'application-order',
       unstable_moduleResolution:
