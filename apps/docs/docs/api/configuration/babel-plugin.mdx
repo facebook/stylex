@@ -12,8 +12,8 @@ sidebar_position: 1
 
 ```ts
 type StyleXOptions = {
-  // Are you in development mode?
-  // When true, stylex will inject styles at runtime.
+  // Should insert debug class names to identify the source of the styles
+  // Also, sets the default value of `runtimeInjection`
   //
   // Default: `false`
   dev: boolean,
@@ -26,15 +26,27 @@ type StyleXOptions = {
   // Default: `false`
   test: boolean,
 
-  // The name of the CSS file that will be generated.
-  // Required in production.
-  stylexSheetName?: string | void,
+  // Should StyleX generate code to inject styles at runtime?
+  // This may be useful during development but should be disabled
+  // in production.
+  //
+  // Default: the value of `dev`
+  runtimeInjection?: boolean,
 
   // Prefix to applied to every generated className
+  //
   // Default: 'x'
   classNamePrefix: string,
 
+  // Should `px` values for `fontSize` be converted to `rem`?
+  // It is a best practice to use `rem` for font sizes to allow
+  // users to scale the font size up or down.
+  //
+  // Default: `true`
+  useRemForFontSize?: boolean,
+
   // Strategy to use for merging styles
+  //
   // Default: 'application-order'
   styleResolution:
     // The last style applied wins. Consistent with how inline styles work on the web.
@@ -48,6 +60,7 @@ type StyleXOptions = {
     | 'legacy-expand-shorthands',
 
   // Override the name of the package where you can import stylex from.
+  //
   // Default: ['@stylexjs/stylex']
   importSources: Array<string>,
 
@@ -55,7 +68,17 @@ type StyleXOptions = {
   // `stylex.props` and `stylex()` function calls with conditional styles
   // when all possible styles used are defined in the same file and known 
   // at compile-time.
-  genConditionalClasses: boolean,
+  //
+  // Default: `false`
+  genConditionalClasses?: boolean,
+
+  // Named imports of StyleX variables are unused after compilation.
+  // Some bundlers may remove them as dead code. Causing variables to be undefined.
+  // Enable this option to prevent that by adding an import with no specifier.
+  // (e.g. `import './my-vars.stylex.js'`)
+  //
+  // Default: `false`
+  treeshakeCompensation?: boolean,
 
   // Strategy to use for resolving variables defined with 
   // `stylex.defineVars()`
