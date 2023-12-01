@@ -30,7 +30,16 @@ function transform(source, opts = options) {
       flow: 'all',
     },
     babelrc: false,
-    plugins: [jsx, [stylexPlugin, opts]],
+    plugins: [
+      jsx,
+      [
+        stylexPlugin,
+        {
+          treeshakeCompensation: true,
+          ...opts,
+        },
+      ],
+    ],
   });
 }
 

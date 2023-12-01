@@ -39,6 +39,7 @@ type ModuleResolution =
 type StyleXOptions = {
   ...RuntimeOptions,
   importSources: Array<string>,
+  treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
   unstable_moduleResolution: void | ModuleResolution,
   ...
@@ -90,6 +91,7 @@ export default class StateManager {
         (options: $FlowFixMe).styleResolution ?? 'application-order',
       unstable_moduleResolution:
         (options: $FlowFixMe).unstable_moduleResolution ?? undefined,
+      treeshakeCompensation: !!(options: $FlowFixMe).treeshakeCompensation,
     };
     this._state.opts = (opts: $FlowFixMe);
     return this._state.opts;
@@ -133,6 +135,10 @@ export default class StateManager {
 
   get cssVars(): any {
     return this.options.definedStylexCSSVariables;
+  }
+
+  get treeshakeCompensation(): boolean {
+    return !!this.options.treeshakeCompensation;
   }
 
   get fileNameForHashing(): null | string {
