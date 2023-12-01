@@ -32,12 +32,12 @@ export function convertObjectToAST(
             typeof value === 'string'
               ? t.stringLiteral(value)
               : typeof value === 'number'
-              ? t.numericLiteral(value)
-              : typeof value === 'boolean'
-              ? t.booleanLiteral(value)
-              : value === null
-              ? t.nullLiteral()
-              : convertObjectToAST(value),
+                ? t.numericLiteral(value)
+                : typeof value === 'boolean'
+                  ? t.booleanLiteral(value)
+                  : value === null
+                    ? t.nullLiteral()
+                    : convertObjectToAST(value),
           ),
     ),
   );

@@ -20,6 +20,7 @@ const IS_DEV_ENV =
 
 module.exports = function stylexPlugin({
   dev = IS_DEV_ENV,
+  runtimeInjection,
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
   ...options
@@ -58,7 +59,7 @@ module.exports = function stylexPlugin({
             ? flowSyntaxPlugin
             : typescriptSyntaxPlugin,
           jsxSyntaxPlugin,
-          [stylexBabelPlugin, { dev, stylexSheetName: fileName, ...options }],
+          [stylexBabelPlugin, { dev, runtimeInjection, ...options }],
         ],
       });
 

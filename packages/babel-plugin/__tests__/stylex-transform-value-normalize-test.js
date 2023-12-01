@@ -20,7 +20,7 @@ function transform(source, opts = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [[stylexPlugin, opts]],
+    plugins: [[stylexPlugin, { runtimeInjection: true, ...opts }]],
   }).code;
 }
 
@@ -221,50 +221,6 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('[legacy] transforms font size from px to rem', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({
-            foo: {
-              fontSize: '24px',
-            },
-            bar: {
-              fontSize: 18,
-            },
-            baz: {
-              fontSize: '1.25rem',
-            },
-            qux: {
-              fontSize: 'inherit',
-            }
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        stylex.inject(".xngnso2{font-size:1.5rem}", 3000);
-        stylex.inject(".x1c3i2sq{font-size:1.125rem}", 3000);
-        stylex.inject(".x1603h9y{font-size:1.25rem}", 3000);
-        stylex.inject(".x1qlqyl8{font-size:inherit}", 3000);"
-      `);
-    });
-
-    test('[legacy] transforms font size from px to rem even with calc', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({
-            foo: {
-              fontSize: 'calc(100% - 24px)',
-            },
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        stylex.inject(".x37c5sx{font-size:calc(100% - 1.5rem)}", 3000);"
-      `);
-    });
-
     test('[legacy] no space before "!important"', () => {
       expect(
         transform(`
@@ -275,6 +231,105 @@ describe('@stylexjs/babel-plugin', () => {
         "import stylex from 'stylex';
         stylex.inject(".xzw3067{color:red!important}", 3000);"
       `);
+    });
+  });
+
+  describe('[transform] fontSize with:', () => {
+    describe('useRemForFontSize: true', () => {
+      test('transforms font size from px to rem', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                fontSize: '24px',
+              },
+              bar: {
+                fontSize: 18,
+              },
+              baz: {
+                fontSize: '1.25rem',
+              },
+              qux: {
+                fontSize: 'inherit',
+              }
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".xngnso2{font-size:1.5rem}", 3000);
+          stylex.inject(".x1c3i2sq{font-size:1.125rem}", 3000);
+          stylex.inject(".x1603h9y{font-size:1.25rem}", 3000);
+          stylex.inject(".x1qlqyl8{font-size:inherit}", 3000);"
+        `);
+      });
+
+      test('transforms font size from px to rem even with calc', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                fontSize: 'calc(100% - 24px)',
+              },
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x37c5sx{font-size:calc(100% - 1.5rem)}", 3000);"
+        `);
+      });
+    });
+    describe('useRemForFontSize: false', () => {
+      test('ignores px font size', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                fontSize: '24px',
+              },
+              bar: {
+                fontSize: 18,
+              },
+              baz: {
+                fontSize: '1.25rem',
+              },
+              qux: {
+                fontSize: 'inherit',
+              }
+            });
+          `,
+            { useRemForFontSize: false },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1pvqxga{font-size:24px}", 3000);
+          stylex.inject(".xosj86m{font-size:18px}", 3000);
+          stylex.inject(".x1603h9y{font-size:1.25rem}", 3000);
+          stylex.inject(".x1qlqyl8{font-size:inherit}", 3000);"
+        `);
+      });
+
+      test('ignores px font size within calc', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              foo: {
+                fontSize: 'calc(100% - 24px)',
+              },
+            });
+          `,
+            { useRemForFontSize: false },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex.inject(".x1upkca{font-size:calc(100% - 24px)}", 3000);"
+        `);
+      });
     });
   });
 });

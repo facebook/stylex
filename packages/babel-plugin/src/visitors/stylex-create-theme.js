@@ -107,7 +107,7 @@ export default function transformStyleXCreateTheme(
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(overridesObj));
 
-    if (state.isDev || state.stylexSheetName == null) {
+    if (state.runtimeInjection) {
       // We know that the top level parent path is an variable declarator
       const statementPath: ?NodePath<> = variableDeclaratorPath.parentPath;
 

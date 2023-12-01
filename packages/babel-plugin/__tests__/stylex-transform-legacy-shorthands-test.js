@@ -25,7 +25,14 @@ function transform(source, opts = {}) {
     },
     plugins: [
       jsx,
-      [stylexPlugin, { styleResolution: 'legacy-expand-shorthands', ...opts }],
+      [
+        stylexPlugin,
+        {
+          runtimeInjection: true,
+          styleResolution: 'legacy-expand-shorthands',
+          ...opts,
+        },
+      ],
     ],
   }).code;
 }

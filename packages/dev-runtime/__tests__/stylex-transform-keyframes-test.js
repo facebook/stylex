@@ -98,25 +98,25 @@ describe('Development Runtime Transformation', () => {
       `);
 
       expect(metadata).toMatchInlineSnapshot(`
-[
-  [
-    "x1jkcf39-B",
-    {
-      "ltr": "@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}",
-      "rtl": null,
-    },
-    1,
-  ],
-  [
-    "x1vfi257",
-    {
-      "ltr": ".x1vfi257{animation-name:x1jkcf39-B}",
-      "rtl": null,
-    },
-    3000,
-  ],
-]
-`);
+        [
+          [
+            "x1jkcf39-B",
+            {
+              "ltr": "@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}",
+              "rtl": null,
+            },
+            1,
+          ],
+          [
+            "x1vfi257",
+            {
+              "ltr": ".x1vfi257{animation-name:x1jkcf39-B}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
     });
   });
 });

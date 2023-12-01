@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { StyleXOptions } from './common-types';
+
 import normalizeValue from './utils/normalize-value';
 
 /**
@@ -15,6 +17,7 @@ import normalizeValue from './utils/normalize-value';
 export default function transformValue(
   key: string,
   rawValue: string | number,
+  options: StyleXOptions,
 ): string {
   const value =
     typeof rawValue === 'number'
@@ -43,7 +46,7 @@ export default function transformValue(
     }
   }
 
-  return normalizeValue(value, key);
+  return normalizeValue(value, key, options);
 }
 
 export function getNumberSuffix(key: string): string {

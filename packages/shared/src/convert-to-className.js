@@ -26,17 +26,15 @@ export function convertStyleToClassName(
   objEntry: [string, TRawValue],
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
-  {
-    stylexSheetName = '<>',
-    classNamePrefix = 'x',
-  }: StyleXOptions = defaultOptions,
+  options: StyleXOptions = defaultOptions,
 ): StyleRule {
+  const { classNamePrefix = 'x' } = options;
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
 
   const value = Array.isArray(rawValue)
-    ? rawValue.map((eachValue) => transformValue(key, eachValue))
-    : transformValue(key, rawValue);
+    ? rawValue.map((eachValue) => transformValue(key, eachValue, options))
+    : transformValue(key, rawValue, options);
 
   const sortedPseudos = arraySort(pseudos ?? []);
   const sortedAtRules = arraySort(atRules ?? []);
@@ -50,8 +48,9 @@ export function convertStyleToClassName(
     ? dashedKey + value.join(', ') + modifierHashString
     : dashedKey + value + modifierHashString;
 
-  const className =
-    classNamePrefix + createHash(stylexSheetName + stringToHash);
+  // NOTE: '<>' is used to keep existing hashes stable.
+  // This should be removed in a future version.
+  const className = classNamePrefix + createHash('<>' + stringToHash);
 
   const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
 

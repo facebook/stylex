@@ -34,10 +34,7 @@ function transform(source, opts = options) {
       jsx,
       [
         stylexPlugin,
-        {
-          treeshakeCompensation: true,
-          ...opts,
-        },
+        { treeshakeCompensation: true, runtimeInjection: true, ...opts },
       ],
     ],
   });

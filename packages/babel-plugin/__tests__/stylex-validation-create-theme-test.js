@@ -43,7 +43,7 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           stylex.createTheme({__themeName__: 'x568ih9'}, {});
-          `);
+        `);
       }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
     });
 
@@ -52,25 +52,25 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme();
-          `);
+        `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({});
-          `);
+        `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme(genStyles(), {});
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({}, {});
-          `);
+        `);
       }).toThrow(
         'Can only override variables theme created with stylex.defineVars().',
       );
@@ -78,13 +78,13 @@ describe('@stylexjs/babel-plugin', () => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({__themeName__: 'x568ih9'}, genStyles());
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({__themeName__: 'x568ih9'}, {});
-          `);
+        `);
       }).not.toThrow();
     });
 
@@ -97,7 +97,7 @@ describe('@stylexjs/babel-plugin', () => {
           const variables = stylex.createTheme(
             {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
             {[labelColor]: 'red',});
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });
 
@@ -112,7 +112,7 @@ describe('@stylexjs/babel-plugin', () => {
             {__themeName__: 'x568ih9', cornerRadius: 'var(--cornerRadiusHash)'},
             {cornerRadius: 5,}
           );
-          `);
+        `);
       }).not.toThrow();
       // string
       expect(() => {
@@ -122,7 +122,7 @@ describe('@stylexjs/babel-plugin', () => {
             {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
             {labelColor: 'red',}
           );
-          `);
+        `);
       }).not.toThrow();
       // not static
       expect(() => {
@@ -132,7 +132,7 @@ describe('@stylexjs/babel-plugin', () => {
             {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
             {labelColor: labelColor,}
           );
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
       expect(() => {
         transform(`
@@ -141,7 +141,7 @@ describe('@stylexjs/babel-plugin', () => {
             {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
             {labelColor: labelColor(),}
           );
-          `);
+        `);
       }).toThrow(messages.NON_STATIC_VALUE);
     });
   });

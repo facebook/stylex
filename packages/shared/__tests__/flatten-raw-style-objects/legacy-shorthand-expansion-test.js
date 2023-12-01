@@ -17,6 +17,8 @@ import { flattenRawStyleObject } from '../../src/preprocess-rules/flatten-raw-st
 const options = {
   classNamePrefix: 'x',
   styleResolution: 'legacy-expand-shorthands',
+  runtimeInjection: false,
+  useRemForFontSize: true,
   dev: false,
   test: false,
 };
