@@ -78,26 +78,30 @@ async function generateTypes(inputDir, outputDir, rootDir) {
               .join('\n');
           }
 
-          outputFlowContents = patchFlowModulePaths(
-            outputFullPath,
-            outputFlowContents,
-            flowModules,
-          );
-
-          await fsPromises.writeFile(
-            `${outputFullPath}.flow`,
-            outputFlowContents,
-          );
           const tsOutputName = dirent.name
             .replace(/\.js$/, '.d.ts')
             .replace(/\.js\.flow$/, '.d.ts');
+
+          await fsPromises.writeFile(
+            `${outputFullPath}.flow`,
+            patchFlowModulePaths(
+              outputFullPath,
+              outputFlowContents,
+              flowModules,
+            ),
+          );
+
           if (dTsFiles.includes(tsOutputName)) {
             continue;
           }
+
           const outputTSContents = await translate.translateFlowDefToTSDef(
-            outputFlowContents.replace(/\$ReadOnlyMap/g, 'ReadonlyMap'),
+            outputFlowContents
+              .replace(/\$ReadOnlyMap/g, 'ReadonlyMap')
+              .replace(/\$ReadOnlySet/g, 'ReadonlySet'),
             monorepoPackage.prettier,
           );
+
           await fsPromises.writeFile(
             outputFullPath.replace(/\.js$/, '.d.ts'),
             // Typescript Prefers `NodePath` unlike `NodePath<>` in Flow
@@ -130,10 +134,7 @@ function preprocessFileContents(inputCode) {
 }
 
 function postProcessTSOutput(outputCode) {
-  const result = outputCode
-    .replace(/<>/g, '')
-    .replace(/\$ReadOnlyMap/g, 'ReadonlyMap')
-    .replace(/\$ReadOnlySet/g, 'ReadonlySet');
+  const result = outputCode.replace(/<>/g, '');
 
   return result;
 }

@@ -46,10 +46,10 @@ class StylexPlugin {
 
   constructor({
     dev = IS_DEV_ENV,
-    runtimeInjection,
     appendTo,
     filename = appendTo == null ? 'stylex.css' : undefined,
-    stylexImports = ['stylex', '@stylexjs/stylex'],
+    stylexImports = ['stylex', '@stylex/css'],
+    unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
     babelConfig: { plugins = [], presets = [], babelrc = false } = {},
     ...options
   } /*: PluginOptions */ = {}) {
@@ -60,7 +60,7 @@ class StylexPlugin {
     this.stylexImports = stylexImports;
     this.babelPlugin = [
       stylexBabelPlugin,
-      { dev, runtimeInjection, ...options },
+      { dev, unstable_moduleResolution, stylexImports, ...options },
     ];
   }
 
