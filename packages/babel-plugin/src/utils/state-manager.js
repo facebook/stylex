@@ -36,7 +36,7 @@ type ModuleResolution =
       themeFileExtension?: string,
     };
 
-type StyleXOptions = {
+export type StyleXOptions = {
   ...RuntimeOptions,
   importSources: Array<string>,
   treeshakeCompensation?: boolean,
