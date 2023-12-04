@@ -20,13 +20,12 @@ const IS_DEV_ENV =
 
 module.exports = function stylexPlugin({
   dev = IS_DEV_ENV,
-  runtimeInjection,
+  unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
   ...options
 } = {}) {
   let stylexRules = {};
-
   return {
     name: 'rollup-plugin-stylex',
     buildStart() {
@@ -36,7 +35,6 @@ module.exports = function stylexPlugin({
       const rules = Object.values(stylexRules).flat();
       if (rules.length > 0) {
         const collectedCSS = stylexBabelPlugin.processStylexRules(rules, true);
-
         this.emitFile({
           fileName,
           source: collectedCSS,
@@ -59,14 +57,13 @@ module.exports = function stylexPlugin({
             ? flowSyntaxPlugin
             : typescriptSyntaxPlugin,
           jsxSyntaxPlugin,
-          [stylexBabelPlugin, { dev, runtimeInjection, ...options }],
+          [stylexBabelPlugin, { dev, unstable_moduleResolution, ...options }],
         ],
       });
 
       if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
         stylexRules[id] = metadata.stylex;
       }
-
       return { code, map, meta: metadata };
     },
   };

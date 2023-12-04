@@ -10,6 +10,7 @@
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import type { PluginObj } from '@babel/core';
+import type { StyleXOptions } from './utils/state-manager';
 import StateManager from './utils/state-manager';
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
@@ -24,6 +25,8 @@ import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 
 const NAME = 'stylex';
+
+export type Options = StyleXOptions;
 
 /**
  * Entry point for the StyleX babel plugin.
@@ -139,6 +142,12 @@ export default function styleXTransform(): PluginObj<> {
   };
 }
 
+styleXTransform.withOptions = function stylexPluginWithOptions(
+  options: StyleXOptions,
+): [typeof styleXTransform, StyleXOptions] {
+  return [styleXTransform, options];
+};
+
 function isExported(path: null | NodePath<t.Node>): boolean {
   if (path == null || pathUtils.isProgram(path)) {
     return false;
@@ -167,7 +176,7 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  *
  * End-users can choose to not use this function and use their own logic instead.
  */
-type Rule = [string, { ltr: string, rtl?: null | string }, number];
+export type Rule = [string, { ltr: string, rtl?: null | string }, number];
 function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
