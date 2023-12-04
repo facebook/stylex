@@ -15,7 +15,7 @@ const config = {
     file: './.build/bundle.js',
     format: 'es',
   },
-  plugins: [stylexPlugin({ fileName: 'stylex.css' })],
+  plugins: [stylexPlugin.default({ fileName: 'stylex.css' })],
 };
 
 export default config;

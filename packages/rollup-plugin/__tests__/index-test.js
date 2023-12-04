@@ -14,7 +14,7 @@ const rollup = require('rollup');
 const { babel } = require('@rollup/plugin-babel');
 const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const stylexPlugin = require('../src/index');
+const stylexPlugin = require('../src/index').default;
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {
