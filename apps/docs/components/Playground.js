@@ -10,10 +10,10 @@
 import * as React from 'react';
 import {useEffect, useState, useRef} from 'react';
 import * as stylex from '@stylexjs/stylex';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import {WebContainer} from '@webcontainer/api';
 import {files} from './playground-utils/files';
 import {UnControlled as CodeMirror} from 'react-codemirror2';
-import 'codemirror/mode/javascript/javascript';
 
 async function wcSpawn(instance, ...args) {
   console.log('Running:', args.join(' '));
@@ -53,18 +53,35 @@ async function makeWebcontainer() {
 
 export default function Playground() {
   const instance = useRef(null);
-  const [output, setOutput] = useState('');
+  const [url, setUrl] = useState(null);
 
   const build = async () => {
     const containerInstance = instance.current;
     if (!containerInstance) return;
 
-    await wcSpawn(containerInstance, 'npm', ['run', 'build']);
-    const output = await containerInstance.fs.readFile('output.js', 'utf-8');
-    setOutput(output);
+    console.log('Trying to run `npm start`...');
+    const process = await containerInstance.spawn('npm', ['start']);
+    console.log('Spawned `npm start`...');
+    process.output.pipeTo(
+      new WritableStream({
+        write(data) {
+          console.log(data);
+        },
+      }),
+    );
+
+    console.log('Waiting for server-ready event...');
+    containerInstance.on('server-ready', (port, url) => {
+      console.log('server-ready', port, url);
+      setUrl(url);
+    });
+
+    // const output = await containerInstance.fs.readFile('output.js', 'utf-8');
+    // setOutput(output);
   };
 
   useEffect(() => {
+    require('codemirror/mode/javascript/javascript');
     makeWebcontainer().then((i) => {
       instance.current = i;
       build();
@@ -76,19 +93,26 @@ export default function Playground() {
 
   return (
     <div {...stylex.props(styles.container)}>
-      <CodeMirror
-        {...stylex.props(styles.textarea)}
-        options={{
-          mode: 'javascript',
-          theme: 'material-darker',
-          lineNumbers: true,
-        }}
-        value={files['input.js'].file.contents}
-      />
-      {/* <pre {...stylex.props(styles.textarea)}>
-        {files['input.js'].file.contents}
-      </pre> */}
-      <pre {...stylex.props(styles.textarea)}>{output}</pre>
+      <BrowserOnly>
+        {() => (
+          <>
+            <CodeMirror
+              {...stylex.props(styles.textarea)}
+              options={{
+                mode: 'javascript',
+                theme: 'material-darker',
+                lineNumbers: true,
+              }}
+              value={files.src.directory['app.jsx'].file.contents}
+            />
+            {url ? (
+              <iframe {...stylex.props(styles.textarea)} src={url} />
+            ) : (
+              <div {...stylex.props(styles.textarea)}>Loading...</div>
+            )}
+          </>
+        )}
+      </BrowserOnly>
     </div>
   );
 }
