@@ -504,7 +504,12 @@ const backfaceVisibility = makeUnionRule(
 // type background = string | finalBgLayer;
 const backgroundAttachment = attachment;
 const backgroundBlendMode = blendMode;
-const backgroundClip = box;
+const backgroundClip = makeUnionRule(
+  'border-box',
+  'padding-box',
+  'content-box',
+  'text',
+);
 const backgroundColor = color;
 const backgroundImage = makeUnionRule(makeLiteralRule('none'), isString);
 const backgroundOrigin = box;
@@ -1540,6 +1545,19 @@ const SupportedVendorSpecificCSSProperties = {
   WebkitAppearance: makeLiteralRule('textfield'),
   WebkitTapHighlightColor: color,
   WebkitOverflowScrolling: makeLiteralRule('touch'),
+
+  WebkitMaskImage: maskImage,
+
+  WebkitTextFillColor: color,
+  textFillColor: color,
+  WebkitTextStrokeWidth: borderWidth,
+  WebkitTextStrokeColor: color,
+  WebkitBackgroundClip: makeUnionRule(
+    'border-box',
+    'padding-box',
+    'content-box',
+    'text',
+  ),
 };
 
 /* eslint-disable object-shorthand */
@@ -1552,11 +1570,7 @@ const CSSProperties = {
   alignSelf: alignSelf,
   alignmentBaseline: alignmentBaseline,
   all: all,
-  animationComposition: makeUnionRule(
-    makeLiteralRule('replace'),
-    makeLiteralRule('add'),
-    makeLiteralRule('accumulate'),
-  ),
+  animationComposition: makeUnionRule('replace', 'add', 'accumulate'),
   animationDelay: animationDelay,
   animationDirection: animationDirection,
   animationDuration: animationDuration,

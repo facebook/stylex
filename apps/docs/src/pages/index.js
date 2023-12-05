@@ -134,13 +134,9 @@ const styles = stylex.create({
     backgroundColor: '#d6249f',
     backgroundImage:
       'radial-gradient(circle at 30% 107%, #ddd477 0%, #ddd477 5%, #fd5949 45%,#d6249f 60%, #285AEB 90%)',
-    // eslint-disable-next-line @stylexjs/valid-styles
     WebkitBackgroundClip: 'text',
-    // eslint-disable-next-line @stylexjs/valid-styles
     WebkitTextFillColor: 'transparent',
-    // eslint-disable-next-line @stylexjs/valid-styles
     backgroundClip: 'text',
-    // eslint-disable-next-line @stylexjs/valid-styles
     textFillColor: 'transparent',
   },
   threads: {},
