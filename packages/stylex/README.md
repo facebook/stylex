@@ -84,14 +84,14 @@ const styles = stylex.create({
   root: {
     width: '100%',
     color: 'rgb(60,60,60)',
-    '@media (min-width: 800px)': {
-      maxWidth: '800px',
+    maxWidth: {
+      '@media (min-width: 800px)': '800px',
     },
   },
   highlighted: {
     color: 'yellow',
-    ':hover': {
-      opacity: '0.9',
+    opacity: {
+      ':hover': '0.9',
     },
   },
 });
@@ -127,7 +127,7 @@ const styles = stylex.create({
 
 function InternalComponent(props) {
   return (
-    <div {...props} {...stylex.props([styles.internalRoot, props.style])} />
+    <div {...props} {...stylex.props(styles.internalRoot, props.style)} />
   );
 }
 
@@ -148,12 +148,6 @@ style property values passed in via props.
 
 ```tsx
 <div {...stylex.props(props.style, styles.root)} />
-```
-
-You can even mix compiled styles with inline styles
-
-```tsx
-<div {...stylex.props(styles.root, { opacity })} />
 ```
 
 ### stylex.firstThatWorks()
@@ -185,15 +179,15 @@ This is equivalent to defining CSS as follows:
 
 StyleX comes with full support for Static Types.
 
-### `XStyle<>`
+### `StyleXStyles<>`
 
-The most common type you might need to use is `XStyle<>`. This lets you accept
+The most common type you might need to use is `StyleXStyles<>`. This lets you accept
 an object of arbitrary StyleX styles.
 
 ```tsx
 type Props = {
   ...
-  style?: XStyle<>,
+  style?: StyleXStyles<>,
 };
 
 function MyComponent({style, ...}: Props) {
@@ -203,53 +197,34 @@ function MyComponent({style, ...}: Props) {
 }
 ```
 
-### `XStyleWithout<>`
+### `StyleXStylesWithout<>`
 
-To disallow specific style properties, use the `XStyleWithout<>` type.
+To disallow specific style properties, use the `StyleXStylesWithout<>` type.
 
 ```tsx
 type Props = {
   // ...
-  style?: XStyleWithout<{
+  style?: StyleXStylesWithout<{
     postion: unknown;
     display: unknown;
   }>;
 };
 ```
 
-### `XStyleValue<>`
 
-To accept specific style properties only, use the `XStyle<{...}>` and
-`XStyleValue` types. For example, to allow only color-related style props:
 
-```tsx
-type Props = {
-  // ...
-  style?: XStyle<{
-    color?: StyleXValue;
-    backgroundColor?: StyleXValue;
-    borderColor?: StyleXValue;
-    borderTopColor?: StyleXValue;
-    borderEndColor?: StyleXValue;
-    borderBottomColor?: StyleXValue;
-    borderStartColor?: StyleXValue;
-  }>;
-};
-```
+### `StaticStyles<>`
 
-### `XStyleValueFor<>`
-
-To limit the possible values for style properties, use the `XStyleValueFor<>`
-type. Pass in a type argument with a union of literal types that provide the set
-of possible values that the style property can have. For example, if a component
+To constrain the styles to specific properties and values, use the `StaticStyles<>`
+type. For example, if a component
 should accept `marginTop` but only accept one of `0`, `4`, or `8` pixels as
 values.
 
 ```tsx
 type Props = {
   ...
-  style?: XStyle<{
-    marginTop: XStyleValueFor<0 | 4 | 8>
+  style?: StaticStyles<{
+    marginTop?: 0 | 4 | 8;
   }>,
 };
 ```

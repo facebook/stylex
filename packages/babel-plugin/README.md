@@ -5,8 +5,6 @@ In addition to transforming JS code, this plugin also produces an Array of CSS r
 generated from all JS files within your project should be concatenated together and converted to a CSS
 file using the `processStyles` function which is also exported from the same module.
 
-(NOTE: StyleX only uses RTL-friendly logical values of `start` and `end` and disallows using `left` and `right` entirely.)
-
 `@stylexjs/babel-plugin` is fairly lightweight. It pre-computes `stylex` related functions like
 `stylex.create` and `stylex.keyframes` by converting the argument AST to a JS object and transforming them
 by passing them to the functions of the corresponding names within `@stylex/shared`

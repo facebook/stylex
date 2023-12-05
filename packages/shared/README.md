@@ -4,8 +4,8 @@ This package contains most of the core JavaScript logic for stylex.
 
 It exports two primary functions `create` and `keyframes`.
 
-1. `create` - takes a map of style rules. The return value include: a) the map with each style value replaced by a unique, reproducible, hashed className string, and b) a list of the CSS styles to be inserted into the document.
-2. `keyframes` - takes a `@keyframes` animation as JS object. Returns a hashed string and the style ot be injected.
+1. `create` - takes a map of style rules. The return value includes: a) the map with each style value replaced by a unique, reproducible, hashed `className` string, and b) a list of the CSS styles to be inserted into the document.
+2. `keyframes` - takes a `@keyframes` animation as JS object. Returns a hashed string and the style to be injected.
 
 #### ⭐️ `create`
 
