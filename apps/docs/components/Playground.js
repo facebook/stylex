@@ -73,11 +73,12 @@ export default function Playground() {
     console.log('Waiting for server-ready event...');
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
-      setUrl(url);
+      // TODO: Figure out hot reloading
+      // TODO: Figure out how to start server *after* build
+      setTimeout(() => {
+        setUrl(url);
+      }, 5000);
     });
-
-    // const output = await containerInstance.fs.readFile('output.js', 'utf-8');
-    // setOutput(output);
   };
 
   useEffect(() => {
