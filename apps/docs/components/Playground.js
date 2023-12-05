@@ -40,6 +40,12 @@ library.add(
   faRotateRight,
 );
 
+/**
+ * Function to spawn a command in the WebContainer instance.
+ * @param {WebContainer} instance - The WebContainer instance.
+ * @param {...string} args - Command arguments to be executed.
+ * @returns {Promise} - Promise that resolves when the command execution is successful.
+ */
 async function wcSpawn(instance, ...args) {
   const process = await instance.spawn(...args);
   process.output.pipeTo(
@@ -56,6 +62,10 @@ async function wcSpawn(instance, ...args) {
   return process;
 }
 
+/**
+ * Function to initialize and configure the WebContainer.
+ * @returns {Promise} - Promise that resolves with the configured WebContainer instance.
+ */
 async function makeWebcontainer() {
   const instance = await WebContainer.boot();
   await instance.mount(files);
@@ -63,6 +73,10 @@ async function makeWebcontainer() {
   return instance;
 }
 
+/**
+ * Main component for the Playground.
+ * @returns {JSX.Element} - The rendered JSX element.
+ */
 export default function Playground() {
   const instance = useRef(null);
   const codeChangeTimeout = useRef(null);
@@ -321,6 +335,9 @@ export default function Playground() {
     }, 1000); // 1000ms or less otherwise sidebar files don't render properly
   };
 
+  /**
+   * Function to build the WebContainer and start the development server.
+   */
   const build = async () => {
     const containerInstance = instance.current;
     if (!containerInstance) {
@@ -340,7 +357,6 @@ export default function Playground() {
         },
       }),
     );
-
     console.log('Waiting for server-ready event...');
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
@@ -369,8 +385,68 @@ export default function Playground() {
     }
   };
 
+  const reloadContainerPreview = async () => {
+    if (!url) return;
+    try {
+      const iframe = document.querySelector('iframe');
+      if (!iframe.src.includes(urlRef.current)) {
+        throw new Error('Cannot reload preview due to invalid iframe.');
+      }
+      if (error) setError(null);
+      await reloadPreview(iframe);
+    } catch (error) {
+      console.error(`Error reloading preview: ${error.message}`);
+      setError(
+        'WebContainer failed to load. Please try reloading or use a different browser.',
+      );
+    }
+  };
+
+  /**
+   * Function to update files in the WebContainer.
+   */
+  const updateFiles = async (updatedCode) => {
+    const containerInstance = instance.current;
+    const filePath = './src/App.jsx';
+    await containerInstance.fs.writeFile(filePath, updatedCode);
+  };
+
+  const debouncedUpdateFiles = useDebounced(async (newCode) => {
+    await updateFiles(newCode);
+  }, 1000);
+
+  /**
+   * Function to handle code changes in the CodeMirror editor.
+   * @param {string} newCode - The new code content from the editor.
+   */
+  const handleCodeChange = (newCode) => {
+    // setCode(newCode);
+    debouncedUpdateFiles(newCode);
+  };
+
+  /**
+   * Function to reload the WebContainer preview.
+   */
+  const reloadWebContainer = async () => {
+    if (!url) return;
+    const iframe = document.querySelector('iframe');
+    if (!iframe) return;
+    try {
+      if (error) {
+        setError(null);
+      }
+      await reloadPreview(iframe);
+    } catch (err) {
+      console.error(`Error reloading preview: ${err.message}`);
+      setError(
+        'WebContainer failed to load. Please try reloading or use a different browser.',
+      );
+    }
+  };
+
+  // useEffect to initialize the WebContainer and build it
   useEffect(() => {
-    require('codemirror/mode/javascript/javascript');
+    let loadingTimeout;
     makeWebcontainer().then((i) => {
       instance.current = i;
       build().then(() => {
@@ -384,7 +460,9 @@ export default function Playground() {
         }, 10000);
       });
     });
-    () => {
+
+    // Cleanup function to unmount the WebContainer and clear timeouts
+    return () => {
       instance.current.unmount();
       if (codeChangeTimeout.current) {
         clearTimeout(codeChangeTimeout.current);
@@ -408,6 +486,20 @@ export default function Playground() {
     }
   };
 
+  const addNewFile = () => {
+    const filename = prompt('Enter new file name:');
+    if (filename && !files[filename]) {
+      setFiles((prev) => ({
+        ...prev,
+        [filename]: { name: filename, content: '' },
+      }));
+      setActiveFile(filename);
+    } else {
+      alert('Invalid or duplicate file name.');
+    }
+  };
+
+  // Render the Playground component
   return (
     <div {...stylex.props(styles.root)}>
       <header {...stylex.props(styles.header)}>
@@ -638,6 +730,7 @@ export default function Playground() {
   );
 }
 
+// Style definitions for the Playground component
 const styles = stylex.create({
   root: {
     minHeight: '100vh',
@@ -834,5 +927,9 @@ const styles = stylex.create({
     height: '100%',
     borderWidth: 0,
     borderStyle: 'none',
+  },
+  centered: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

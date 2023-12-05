@@ -79,7 +79,6 @@
     ]
   },
   "dependencies": {
-    "react-loading-indicators": "^1.0.0",
     "serve": "^14.2.4"
   }
 }
