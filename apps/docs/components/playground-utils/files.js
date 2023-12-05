@@ -16,7 +16,7 @@ const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
 
 module.exports = {
   plugins: [
-    tsSyntaxPlugin,
+    [tsSyntaxPlugin, { isTSX: true }],
     jsxSyntaxPlugin,
     [
       "@stylexjs/babel-plugin",
@@ -64,8 +64,12 @@ module.exports = {
 import * as React from 'react';
 import * as stylex from "@stylexjs/stylex";
 
-export default function Card({ onClick, children, em = false }) {
-  const props = stylex.props(styles.base, em && styles.emphasise);
+export default function Card({ children, em = false, ...props }) {
+  return (
+    <div {...props} {...stylex.props(styles.base, em && styles.emphasise)}>
+      {children}
+    </div>
+  );
 }
 
 const styles = stylex.create({
