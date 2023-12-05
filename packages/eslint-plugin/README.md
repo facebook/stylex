@@ -1,12 +1,14 @@
-# ESLint Plugin for stylex
+# @stylexjs/eslint-plugin
 
 The ESLint rule is a standalone ESLint plugin that mostly maintains an `allowlist` for valid styles and their valid values.
 
 This was originally created from Flow types which is why it's currently not very powerful.
 
-## Installing the plugin
+## Installation
 
-`$ npm i @stylexjs/eslint-plugin@beta --save-dev`
+```sh
+npm install --save-dev @stylexjs/eslint-plugin
+```
 
 ## Enable Flow Types
 
