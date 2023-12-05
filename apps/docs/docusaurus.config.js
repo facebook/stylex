@@ -21,9 +21,8 @@ const config = {
   favicon: 'img/favicon.svg',
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'facebook',
+  projectName: 'stylex',
   plugins: ['@orama/plugin-docusaurus'],
 
   presets: [
@@ -159,6 +158,17 @@ const config = {
         // Please do not remove the credits, help to publicize Docusaurus :)
         copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc. Built with Docusaurus.`,
       },
+      metadata: [
+        {name: 'og:title', content: 'StyleX'},
+        {
+          name: 'og:description',
+          content: 'The styling system that powers Meta.',
+        },
+        {
+          name: 'og:image',
+          content: '/img/stylex-cover-photo.png',
+        },
+      ],
     },
 };
 
