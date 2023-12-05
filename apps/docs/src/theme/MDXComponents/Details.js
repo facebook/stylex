@@ -40,9 +40,12 @@ export default function MDXDetails({
     <details
       {...props}
       {...stylex.props(styles.details, style)}
-      {...(isOpen && {open: true})}
-      onClick={onToggle}>
-      <summary {...summaryProps} {...stylex.props(styles.summary)} />
+      {...(isOpen && {open: true})}>
+      <summary
+        {...summaryProps}
+        {...stylex.props(styles.summary)}
+        onClick={onToggle}
+      />
       {children}
     </details>
   );
