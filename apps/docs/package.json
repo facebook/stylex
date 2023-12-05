@@ -22,7 +22,9 @@
     "@stylexjs/stylex": "0.8.0",
     "@vercel/analytics": "^1.1.1",
     "clsx": "^1.2.1",
+    "codemirror": "^5.65.16",
     "react": "^17.0.2",
+    "react-codemirror2": "^7.3.0",
     "react-dom": "^17.0.2",
     "react-syntax-highlighter": "^15.5.0"
   },

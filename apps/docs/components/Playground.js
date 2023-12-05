@@ -12,6 +12,8 @@ import {useEffect, useState, useRef} from 'react';
 import * as stylex from '@stylexjs/stylex';
 import {WebContainer} from '@webcontainer/api';
 import {files} from './playground-utils/files';
+import {UnControlled as CodeMirror} from 'react-codemirror2';
+import 'codemirror/mode/javascript/javascript';
 
 async function wcSpawn(instance, ...args) {
   console.log('Running:', args.join(' '));
@@ -74,9 +76,18 @@ export default function Playground() {
 
   return (
     <div {...stylex.props(styles.container)}>
-      <pre {...stylex.props(styles.textarea)}>
+      <CodeMirror
+        {...stylex.props(styles.textarea)}
+        options={{
+          mode: 'javascript',
+          theme: 'material-darker',
+          lineNumbers: true,
+        }}
+        value={files['input.js'].file.contents}
+      />
+      {/* <pre {...stylex.props(styles.textarea)}>
         {files['input.js'].file.contents}
-      </pre>
+      </pre> */}
       <pre {...stylex.props(styles.textarea)}>{output}</pre>
     </div>
   );
@@ -93,6 +104,10 @@ const styles = stylex.create({
     borderBottomColor: 'var(--cyan)',
   },
   textarea: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'stretch',
     width: '50%',
     height: '100%',
     borderWidth: 0,
