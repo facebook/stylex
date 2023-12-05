@@ -20,7 +20,16 @@ function transform(source, opts = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [[stylexPlugin, { runtimeInjection: true, ...opts }]],
+    plugins: [
+      [
+        stylexPlugin,
+        {
+          runtimeInjection: true,
+          useRemForFontSize: true,
+          ...opts,
+        },
+      ],
+    ],
   }).code;
 }
 
