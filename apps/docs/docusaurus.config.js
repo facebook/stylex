@@ -166,7 +166,7 @@ const config = {
         },
         {
           name: 'og:image',
-          content: '/img/stylex-logo-small.svg',
+          content: '/img/stylex-cover-photo.png',
         },
       ],
     },
