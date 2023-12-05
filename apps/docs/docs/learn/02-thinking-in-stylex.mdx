@@ -254,11 +254,11 @@ a component's styles can be customized with **zero-runtime cost**.
 ### Shareable constants
 
 CSS class names, CSS variables, and other CSS identifiers are defined in a global
-namespace. The obvious and common API to bring them into JavaScript are as
-strings. However, this means losing type-safety and composability.
+namespace. Bringing CSS strings into JavaScript can mean losing type-safety and 
+composability.
 
 We want styles to be type-safe, so we've spent a lot of time coming up with
-APIs to replace these magic strings with references to Javacript constants. So
+APIs to replace these magic strings with references to JavaScript constants. So
 far this is reflected in the following APIs:
 
 1. `stylex.create` Abstracts away the generated class names entirely. You deal
@@ -312,7 +312,7 @@ without sacrificing style encapsulation.
 
 StyleX is not a CSS pre-processor. It intentionally puts constraints on the power
 of CSS selectors in order to build a fast and predictable system. The API, based
-on Javascript objects instead of template strings, is designed to make these
+on JavaScript objects instead of template strings, is designed to make these
 constraints feel natural.
 
 ### Readability & maintainability over terseness
