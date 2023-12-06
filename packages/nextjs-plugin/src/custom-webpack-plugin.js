@@ -84,6 +84,7 @@ class StylexPlugin {
           type: 'commonJS',
           rootDir,
         },
+        importSources: stylexImports,
       },
     ];
   }
@@ -97,7 +98,7 @@ class StylexPlugin {
           if (
             // JavaScript (and Flow) modules
             /\.jsx?/.test(path.extname(module.resource)) ||
-            // Typescript modules
+            // TypeScript modules
             /\.tsx?/.test(path.extname(module.resource))
           ) {
             // We use .push() here instead of .unshift()
@@ -194,7 +195,7 @@ class StylexPlugin {
         {
           babelrc: this.babelConfig.babelrc,
           filename,
-          // Use Typescript syntax plugin if the filename ends with `.ts` or `.tsx`
+          // Use TypeScript syntax plugin if the filename ends with `.ts` or `.tsx`
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,

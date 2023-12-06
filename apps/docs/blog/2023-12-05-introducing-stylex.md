@@ -74,7 +74,7 @@ always merge with predictable results.
 
 ### Type-Safe
 
-You can constrain the styles a component accepts by using Typescript or Flow
+You can constrain the styles a component accepts by using TypeScript or Flow
 types. Every style property and variable is fully typed.
 
 ### Colocation

@@ -190,7 +190,7 @@ There should be no surprises.
 
 ### Type-Safe styles
 
-Typescript has become massively popular due to the experience and safety it
+TypeScript has become massively popular due to the experience and safety it
 provides. Our styles, however, have largely remained untyped and unreliable.
 Other than some path-breaking projects such as
 [Vanilla Extract](https://vanilla-extract.style/), styles are just bags of
@@ -199,7 +199,7 @@ strings in most styling solutions.
 StyleX is authored in Flow with strong static types. Its packages on NPM come
 with auto-generated types for both Flow and TypeScript. When there are
 incompatibilities between the two type-systems, we take the time to ensure that we
-write custom Typescript types to achieve at least the same level of power and safety
+write custom TypeScript types to achieve at least the same level of power and safety
 as the original Flow.
 
 _All styles are typed_. When accepting styles as props, types can be used to
@@ -254,7 +254,7 @@ a component's styles can be customized with **zero-runtime cost**.
 ### Shareable constants
 
 CSS class names, CSS variables, and other CSS identifiers are defined in a global
-namespace. Bringing CSS strings into JavaScript can mean losing type-safety and 
+namespace. Bringing CSS strings into JavaScript can mean losing type-safety and
 composability.
 
 We want styles to be type-safe, so we've spent a lot of time coming up with
