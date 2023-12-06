@@ -1,0 +1,10 @@
+[files]
+extend-exclude = [
+  "*.snap",
+  "apps/rollup-example/lotsOfStyles.js", 
+  "flow-typed/*",
+]
+
+[default.extend-words]
+# Ignore false-positives
+stylex = "stylex"

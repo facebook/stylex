@@ -108,7 +108,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('calc() preserves spaces aroung "+" and "-"', () => {
+    test('calc() preserves spaces around "+" and "-"', () => {
       expect(
         transform(`
           import stylex from 'stylex';

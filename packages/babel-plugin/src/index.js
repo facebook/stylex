@@ -165,7 +165,7 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  *
  * @param rules An array of CSS rules that has been generated and collected from all JS files
  * in a project
- * @returns A string that represets the final CSS file.
+ * @returns A string that represents the final CSS file.
  *
  * This function take an Array of CSS rules, de-duplicates them, sorts them priority and generates
  * a final CSS file.

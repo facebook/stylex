@@ -1252,7 +1252,7 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         export const styles = {
           sidebar: {
-            "UnkownFile__styles.sidebar": "UnkownFile__styles.sidebar",
+            "UnknownFile__styles.sidebar": "UnknownFile__styles.sidebar",
             boxSizing: "x9f619",
             gridArea: "x1yc5d2u",
             gridRow: null,
@@ -1264,7 +1264,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           content: {
-            "UnkownFile__styles.content": "UnkownFile__styles.content",
+            "UnknownFile__styles.content": "UnknownFile__styles.content",
             gridArea: "x1fdo2jl",
             gridRow: null,
             gridRowStart: null,
@@ -1275,14 +1275,14 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           root: {
-            "UnkownFile__styles.root": "UnkownFile__styles.root",
+            "UnknownFile__styles.root": "UnknownFile__styles.root",
             display: "xrvj5dj",
             gridTemplateRows: "x7k18q3",
             gridTemplateAreas: "x5gp9wm",
             $$css: true
           },
           withSidebar: {
-            "UnkownFile__styles.withSidebar": "UnkownFile__styles.withSidebar",
+            "UnknownFile__styles.withSidebar": "UnknownFile__styles.withSidebar",
             gridTemplateColumns: "x1rkzygb",
             gridTemplateRows: "x7k18q3",
             gridTemplateAreas: "x17lh93j",
@@ -1292,14 +1292,14 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           noSidebar: {
-            "UnkownFile__styles.noSidebar": "UnkownFile__styles.noSidebar",
+            "UnknownFile__styles.noSidebar": "UnknownFile__styles.noSidebar",
             gridTemplateColumns: "x1mkdm3x",
             $$css: true
           }
         };
         ({
-          0: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
-          1: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x"
+          0: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
+          1: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x"
         })[!!(sidebar == null) << 0];"
       `);
     });
@@ -1359,7 +1359,7 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         export const styles = {
           sidebar: {
-            "UnkownFile__styles.sidebar": "UnkownFile__styles.sidebar",
+            "UnknownFile__styles.sidebar": "UnknownFile__styles.sidebar",
             boxSizing: "x9f619",
             gridArea: "x1yc5d2u",
             gridRow: null,
@@ -1371,7 +1371,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           content: {
-            "UnkownFile__styles.content": "UnkownFile__styles.content",
+            "UnknownFile__styles.content": "UnknownFile__styles.content",
             gridArea: "x1fdo2jl",
             gridRow: null,
             gridRowStart: null,
@@ -1382,14 +1382,14 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           root: {
-            "UnkownFile__styles.root": "UnkownFile__styles.root",
+            "UnknownFile__styles.root": "UnknownFile__styles.root",
             display: "xrvj5dj",
             gridTemplateRows: "x7k18q3",
             gridTemplateAreas: "x5gp9wm",
             $$css: true
           },
           withSidebar: {
-            "UnkownFile__styles.withSidebar": "UnkownFile__styles.withSidebar",
+            "UnknownFile__styles.withSidebar": "UnknownFile__styles.withSidebar",
             gridTemplateColumns: "x1rkzygb",
             gridTemplateRows: "x7k18q3",
             gridTemplateAreas: "x17lh93j",
@@ -1399,7 +1399,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           noSidebar: {
-            "UnkownFile__styles.noSidebar": "UnkownFile__styles.noSidebar",
+            "UnknownFile__styles.noSidebar": "UnknownFile__styles.noSidebar",
             gridTemplateColumns: "x1mkdm3x",
             $$css: true
           }
@@ -1464,14 +1464,14 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 3200);
         stylex.inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         const complex = {
-          0: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
-          4: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x",
-          2: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnkownFile__styles.sidebar x9f619 x1yc5d2u",
-          6: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x UnkownFile__styles.sidebar x9f619 x1yc5d2u",
-          1: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnkownFile__styles.content x1fdo2jl",
-          5: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x UnkownFile__styles.content x1fdo2jl",
-          3: "UnkownFile__styles.root xrvj5dj UnkownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnkownFile__styles.sidebar x9f619 UnkownFile__styles.content x1fdo2jl",
-          7: "UnkownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnkownFile__styles.noSidebar x1mkdm3x UnkownFile__styles.sidebar x9f619 UnkownFile__styles.content x1fdo2jl"
+          0: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
+          4: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x",
+          2: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.sidebar x9f619 x1yc5d2u",
+          6: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.sidebar x9f619 x1yc5d2u",
+          1: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.content x1fdo2jl",
+          5: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.content x1fdo2jl",
+          3: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.sidebar x9f619 UnknownFile__styles.content x1fdo2jl",
+          7: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.sidebar x9f619 UnknownFile__styles.content x1fdo2jl"
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
     });

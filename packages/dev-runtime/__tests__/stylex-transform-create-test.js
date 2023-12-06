@@ -47,7 +47,7 @@ describe('Development Plugin Transformation', () => {
       `);
     });
 
-    test('transforms style object with custom propety', () => {
+    test('transforms style object with custom property', () => {
       expect(
         stylex.create({
           default: {
@@ -64,7 +64,7 @@ describe('Development Plugin Transformation', () => {
       `);
     });
 
-    test('transforms style object with custom propety as value', () => {
+    test('transforms style object with custom property as value', () => {
       expect(
         stylex.create({
           default: {
@@ -237,7 +237,7 @@ describe('Development Plugin Transformation', () => {
     });
 
     // Legacy, short?
-    test('tranforms valid shorthands', () => {
+    test('transforms valid shorthands', () => {
       expect(
         stylex.create({
           default: {
@@ -678,7 +678,7 @@ describe('Development Plugin Transformation', () => {
       `);
     });
 
-    test('transforms style object with custom propety', () => {
+    test('transforms style object with custom property', () => {
       const styles = stylex.create({
         default: (bgColor) => ({
           '--background-color': bgColor,

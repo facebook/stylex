@@ -29,7 +29,7 @@ The first step here is expanding all [shorthands](#shorthands) into their indivi
 
 **Step 2**
 
-We hash each style `[key, value]` pair and generate a className and an associated CSS rule. Thie is done in the `convertToClassName(...)` function defined within [`convert-to-className.js`](#convert-to-classname-shared-package). (Explained below)
+We hash each style `[key, value]` pair and generate a className and an associated CSS rule. This is done in the `convertToClassName(...)` function defined within [`convert-to-className.js`](#convert-to-classname-shared-package). (Explained below)
 
 **Step 3**
 

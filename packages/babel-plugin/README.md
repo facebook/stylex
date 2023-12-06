@@ -17,7 +17,7 @@ The StyleX Babel plugin does more than transform JavaScript (or Typescript) file
 An example of this can be seen in some of the tests, but the result of using Babel's `transform(...)` function returns an object contains at least two keys:
 
 1. `code` which is the transformed JS code
-2. `metadata` is an object of metatdata that the plugin may want to return as a side-effect.
+2. `metadata` is an object of metadata that the plugin may want to return as a side-effect.
 
 e.g.
 

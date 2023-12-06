@@ -396,7 +396,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('transforms variables objects with refrences to local variables', () => {
+    test('transforms variables objects with references to local variables', () => {
       expect(
         transform(
           `
@@ -434,7 +434,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('allows refrences to local variables with static values', () => {
+    test('allows references to local variables with static values', () => {
       expect(
         transform(
           `

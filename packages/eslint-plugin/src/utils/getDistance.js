@@ -25,7 +25,7 @@ function getDistanceMin(
       : d1 + 1;
 }
 /*
- * This a fork of Gustaf Andersson's levenshtein implmentation
+ * This a fork of Gustaf Andersson's levenshtein implementation
  * https://github.com/gustf/js-levenshtein
  *
  * Includes a naive bailout using max distance for stopping early

@@ -262,7 +262,7 @@ describe('stylex-create-test', () => {
     `);
   });
 
-  test('transforms style object with custom propety as value', () => {
+  test('transforms style object with custom property as value', () => {
     expect(
       styleXCreate({
         default: {
@@ -415,7 +415,7 @@ describe('stylex-create-test', () => {
     `);
   });
 
-  test('tranforms valid shorthands', () => {
+  test('transforms valid shorthands', () => {
     expect(
       styleXCreate({
         default: {

@@ -39,7 +39,7 @@ export function injectDevClassNames(
     const devClassName = namespaceToDevClassName(
       key,
       varName,
-      state.filename ?? 'UnkownFile',
+      state.filename ?? 'UnknownFile',
     );
     result[key] = {
       [devClassName]: devClassName,
@@ -59,7 +59,7 @@ export function convertToTestStyles(
     const devClassName = namespaceToDevClassName(
       key,
       varName,
-      state.filename ?? 'UnkownFile',
+      state.filename ?? 'UnknownFile',
     );
     result[key] = {
       [devClassName]: devClassName,
