@@ -84,6 +84,7 @@ class StylexPlugin {
           type: 'commonJS',
           rootDir,
         },
+        importSources: stylexImports,
       },
     ];
   }

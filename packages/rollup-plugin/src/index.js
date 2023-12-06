@@ -23,6 +23,7 @@ module.exports = function stylexPlugin({
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
+  stylexImports = ['stylex', '@stylexjs/stylex'],
   ...options
 } = {}) {
   let stylexRules = {};
@@ -47,6 +48,11 @@ module.exports = function stylexPlugin({
       return false;
     },
     async transform(inputCode, id) {
+      if (!stylexImports.some((importName) => inputCode.includes(importName))) {
+        // In rollup, returning null from any plugin phase means "no changes made".
+        return null;
+      }
+
       const { code, map, metadata } = await babel.transformAsync(inputCode, {
         babelrc: false,
         filename: id,
