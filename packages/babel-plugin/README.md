@@ -12,7 +12,7 @@ by passing them to the functions of the corresponding names within `@stylex/shar
 
 ## Babel Metadata
 
-The StyleX Babel plugin does more than transform JavaScript (or Typescript) files. It also returns a list of injected styles. The way that such a value can be returned while transforming a JS file is by using Babel's `metadata` API.
+The StyleX Babel plugin does more than transform JavaScript (or TypeScript) files. It also returns a list of injected styles. The way that such a value can be returned while transforming a JS file is by using Babel's `metadata` API.
 
 An example of this can be seen in some of the tests, but the result of using Babel's `transform(...)` function returns an object contains at least two keys:
 

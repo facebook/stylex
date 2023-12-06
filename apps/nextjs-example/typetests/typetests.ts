@@ -197,7 +197,7 @@ const styles6: Readonly<{
           '@media (max-width: 1000px)': mobile,
         },
       },
-    }) as const, // Typescript limitation
+    }) as const, // TypeScript limitation
 });
 // @ts-expect-error - Functions don't return static styles.
 styles6.foo(100) satisfies StaticStyles;

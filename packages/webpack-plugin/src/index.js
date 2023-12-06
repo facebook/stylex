@@ -73,7 +73,7 @@ class StylexPlugin {
           if (
             // JavaScript (and Flow) modules
             /\.jsx?/.test(path.extname(module.resource)) ||
-            // Typescript modules
+            // TypeScript modules
             /\.tsx?/.test(path.extname(module.resource))
           ) {
             // It might make sense to use .push() here instead of .unshift()
@@ -165,7 +165,7 @@ class StylexPlugin {
         {
           babelrc: this.babelConfig.babelrc,
           filename,
-          // Use Typescript syntax plugin if the filename ends with `.ts` or `.tsx`
+          // Use TypeScript syntax plugin if the filename ends with `.ts` or `.tsx`
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,
