@@ -90,7 +90,7 @@ improvements, and how to build and test your changes.
 Before proposing a change or addition to the StyleX API, you should familiarize
 yourself with the
 [goals and architectural principles](https://stylexjs.com/docs/learn/thinking-in-stylex/)
-of the project/
+of the project.
 
 ### License
 
