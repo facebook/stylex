@@ -4,3 +4,7 @@ extend-exclude = [
   "apps/rollup-example/lotsOfStyles.js", 
   "flow-typed/*",
 ]
+
+[default.extend-words]
+# Ignore false-positives
+stylex = "stylex"
