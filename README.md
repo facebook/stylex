@@ -74,7 +74,7 @@ including bugfixes, improvements, and ideas.
 ### Code of Conduct
 
 This project expects all participants to adhere to Meta's OSS
-[Code of Conduct](<(https://opensource.fb.com/code-of-conduct/)>). Please read
+[Code of Conduct](https://opensource.fb.com/code-of-conduct/). Please read
 the full text so that you can understand what actions will and will not be
 tolerated.
 
@@ -90,7 +90,7 @@ improvements, and how to build and test your changes.
 Before proposing a change or addition to the StyleX API, you should familiarize
 yourself with the
 [goals and architectural principles](https://stylexjs.com/docs/learn/thinking-in-stylex/)
-of the project/
+of the project.
 
 ### License
 
