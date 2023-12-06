@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "StyleX babel plugin.",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": "https://github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {

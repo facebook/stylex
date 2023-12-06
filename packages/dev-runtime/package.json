@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "A development-only package that makes StyleX work entirely at runtime",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
