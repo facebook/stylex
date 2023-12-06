@@ -199,8 +199,8 @@ strings in most styling solutions.
 StyleX is authored in Flow with strong static types. Its packages on NPM come
 with auto-generated types for both Flow and TypeScript. When there are
 incompatibilities between the two type-systems, we take the time to ensure that we
-write custom TypeScript types to achieve at least the same level of power and safety
-as the original Flow.
+write custom TypeScript types to achieve the same level of power and safety as the
+original Flow.
 
 _All styles are typed_. When accepting styles as props, types can be used to
 constrain what styles are accepted. Styles should be as type-safe as
@@ -211,7 +211,7 @@ This is made possible by using JavaScript objects to author raw styles. This is
 one of the big reasons we have chosen objects over template strings.
 
 These types can then be leveraged to set contracts for the styles that a
-component will accept. For example, a component props can defined to only accept
+component will accept. For example, a component props can be defined to only accept
 `color` and `backgroundColor` but no other styles.
 
 ```ts
@@ -258,8 +258,8 @@ namespace. Bringing CSS strings into JavaScript can mean losing type-safety and
 composability.
 
 We want styles to be type-safe, so we've spent a lot of time coming up with
-APIs to replace these magic strings with references to JavaScript constants. So
-far this is reflected in the following APIs:
+APIs to replace these strings with references to JavaScript constants. So far this
+is reflected in the following APIs:
 
 1. `stylex.create` Abstracts away the generated class names entirely. You deal
    with "opaque" JavaScript objects with strong types to indicate the styles
@@ -303,8 +303,8 @@ the styles applied directly on an element always take precedence over inherited
 styles.
 
 This is often not the case when using complex selectors, as the complex selectors
-usually have higher specificity than the simple classname selectors used for
-styles applied directly on the element.
+usually have higher specificity than the simple class selectors used for styles
+applied directly on the element.
 
 StyleX disallows this entire class of selectors. This currently makes certain CSS
 patterns impossible to achieve with StyleX. Our goal is to support these patterns
@@ -326,8 +326,8 @@ for convenience.)_
 
 We also enforce that styles are authored in objects separate from the HTML
 elements where they are used. We made this decision to help with the readability
-of HTML markup and for appropriate names for styles to indicate their purpose.
-For example, using a name `styles.active` like emphasizes *why* styles are being applied
+of HTML markup and for appropriatelu named styles to indicate their purpose. For
+example, using a name like `styles.active` emphasizes *why* styles are being applied
 without having to dig through *what* styles are being applied.
 
 This principle leads to trade-offs where authoring styles may take more typing
@@ -365,8 +365,8 @@ components within packages on NPM.
 ### Avoid global configuration
 
 StyleX should work similarly across projects. Creating project-specific
-configurations that change the syntax or behaviour of StyleX should be avoided.
-We have chosen to prioritise composability and consistency over short-term
+configurations that change the syntax or behavior of StyleX should be avoided.
+We have chosen to prioritize composability and consistency over short-term
 convenience.
 
 We lean on tooling to provide convenience and customizability. For example, the
