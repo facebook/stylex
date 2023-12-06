@@ -10,4 +10,5 @@ module.exports = {
   rules: {
     'docusaurus/copyright-header': true,
   },
+  ignoreFiles: ['**/build/**'],
 };
