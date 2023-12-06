@@ -8,7 +8,7 @@ This website is built using [Docusaurus 2](https://docusaurus.io/), a modern sta
 
 In the project root directory (workspace)
 ```bash
-$ npm build -w @stylexjs/stylex && npm build -w @stylexjs/babel-plugin
+$ npm run build -w @stylexjs/stylex && npm run build -w @stylexjs/babel-plugin
 ```
 
 ### Installation
