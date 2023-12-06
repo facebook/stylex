@@ -37,7 +37,7 @@ export function validateNamespace(
       if (conditions.length === 0) {
         continue;
       }
-      throw new Error(messages.ONLY_TOP_LEVEL_INLCUDES);
+      throw new Error(messages.ONLY_TOP_LEVEL_INCLUDES);
     }
     if (isPlainObject(val)) {
       if (key.startsWith('@') || key.startsWith(':')) {
@@ -79,7 +79,7 @@ function validateConditionalStyles(
       continue;
     }
     if (v instanceof IncludedStyles) {
-      throw new Error(messages.ONLY_TOP_LEVEL_INLCUDES);
+      throw new Error(messages.ONLY_TOP_LEVEL_INCLUDES);
     }
     if (isPlainObject(v)) {
       validateConditionalStyles(v, [...conditions, key]);

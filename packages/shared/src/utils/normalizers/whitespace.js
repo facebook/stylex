@@ -11,7 +11,7 @@
 
 /**
  * Use single spaces and remove spaces when not needed: around functions,
- * commas. But preserve spece around + and - as they are required in calc()
+ * commas. But preserve space around + and - as they are required in calc()
  */
 
 export default function normalizeWhitespace(

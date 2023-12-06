@@ -23,7 +23,7 @@ function printNode(node: PostCSSValueASTNode): string {
   }
 }
 
-// Using split(' ') Isn't enough bcause of values like calc.
+// Using split(' ') Isn't enough because of values like calc.
 export default function splitValue(
   str: TStyleValue,
 ): $ReadOnlyArray<number | string | null> {

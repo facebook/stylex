@@ -135,7 +135,7 @@ export const text = stylex.defineVars({
  * However, when talking about spacing, it is the best practice to
  * use `px` because using `rems` here makes font-size behave like zoom.
  *
- * Users that prefer larger text, don't neccessarily want larger spacing as well.
+ * Users that prefer larger text, don't necessarily want larger spacing as well.
  *
  */
 
