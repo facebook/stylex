@@ -221,6 +221,10 @@ html[data-theme='dark'] .aa-DetachedSearchButton {
   --key-gradient: linear-gradient(-26.5deg, #565872, #31355b);
 }
 
+.footer{
+  text-align: center;
+}
+
 .footer .container {
   max-width: 960px;
 }
