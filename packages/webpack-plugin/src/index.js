@@ -60,7 +60,12 @@ class StylexPlugin {
     this.stylexImports = stylexImports;
     this.babelPlugin = [
       stylexBabelPlugin,
-      { dev, unstable_moduleResolution, importSources: stylexImports, ...options },
+      {
+        dev,
+        unstable_moduleResolution,
+        importSources: stylexImports,
+        ...options,
+      },
     ];
   }
 
