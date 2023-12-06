@@ -1,39 +1,24 @@
-# Description
+## What changed / motivation ?
 
-Please include a summary of the changes and the related issue. Please also
-include relevant motivation and context. List any dependencies that are required
-for this change.
+Please include relevant motivation and context
+
+## Linked PR/Issues
 
 Fixes # (issue)
 
-**Snapshots/Videos:**
+## Additional Context
 
-## Type of change
+<!--- Screenshots, Tests, Breaking Change, Anything Else ? --->
 
-<!-- Please delete options that are not relevant. -->
+Screenshots, Tests, Anything Else
 
-- [ ] 🍕 Feature
-- [ ] 🐛 Bug Fix
-- [ ] 📝 Documentation Update
-- [ ] 🎨 Style
-- [ ] 🧑‍💻 Code Refactor
-- [ ] 🔥 Performance Improvements
-- [ ] ✅ Test
-- [ ] 🤖 Build
-- [ ] 🔁 CI
-- [ ] 📦 Chore (Release)
-- [ ] ⏩ Revert
-- [ ] ✏️ Updated Test Cases
+## Pre-flight checklist
 
-## Added tests?
-
-- [ ] 👍 yes
-- [ ] 🙅 no, because they aren't needed
-- [ ] 🙋 no, because I need help
-
-**Steps to test the feature:**
-
-**Snapshot of the test-cases that are passing:**
+- [ ] I have read the contributing guidelines
+      [Contribution Guidelines](../CONTRIBUTING.md)
+- [ ] I have signed the contributing agreements
+- [ ] I have written unit tests where necessary (If it is a feature commit)
+- [ ] Performed a self-review of my code
 
 **Does this PR introduce a breaking change?** (What changes might users need to
 make in their application due to this PR?)
