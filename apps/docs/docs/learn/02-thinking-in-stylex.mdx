@@ -191,14 +191,14 @@ There should be no surprises.
 ### Type-Safe styles
 
 Typescript has becomes massively popular due to the experience and safety it
-provides. Our styles, however, have largly remained untyped and unreliable.
+provides. Our styles, however, have largely remained untyped and unreliable.
 Other than some path-breaking projects such as
 [Vanilla Extract](https://vanilla-extract.style/), styles are just bags of
 strings in most styling solutions.
 
 StyleX is authored in Flow with strong static types. It's packages on NPM come
 with auto-generated types for both Flow and TypeScript. When there are
-incompatibilies between the two type-systems we take the time to ensure that we
+incompatibilities between the two type-systems we take the time to ensure that we
 write custom Typescript types to achieve at least the same level of power and safety
 as the original Flow.
 
@@ -206,7 +206,7 @@ _All styles are typed_. When accepting styles as props, types can be used to
 constrain what styles are accepted. Styles should be as type-safe as
 any other component props.
 
-The StyleX API is strongly typed. The styles defiend with StyleX are typed too.
+The StyleX API is strongly typed. The styles defined with StyleX are typed too.
 This is made possible by using JavaScript objects to author raw styles. This is
 one of the big reasons we have chosen objects over template strings.
 
@@ -258,7 +258,7 @@ namespace. The obvious and common API to bring them into JavaScript is as
 strings. However, this means losing type-safety and composability.
 
 We want styles to be type-safe and so we've spent a lot of time coming up with
-APIs to replace these magic strings with references to Javacript constants. So
+APIs to replace these magic strings with references to JavaScript constants. So
 far this is reflected in the following APIs:
 
 1. `stylex.create` Abstracts away the generated class names entirely. You deal
@@ -276,7 +276,7 @@ We're looking into ways to make other CSS identifiers such as
 
 StyleX is a CSS-in-JS solution, not a CSS-in-React solution. Although StyleX
 been tailored to works best with React today, It's designed to be used with any
-JavaScript framework that allows authoring markup in Javacript. This includes frameworks
+JavaScript framework that allows authoring markup in JavaScript. This includes frameworks
 that use JSX, template strings, etc.
 
 `stylex.props` returns an object with `className` and `style` properties. A wrapper
@@ -303,7 +303,7 @@ the styles applied directly on an element always take precedence over inherited
 styles.
 
 This is often not the case when using complex selectors as the complex selectors
-usually have higher specificity than the simple classname selectors used for
+usually have higher specificity than the simple `className` selectors used for
 styles applied directly on the element.
 
 StyleX disallows this entire class of selectors. This currently makes certain CSS
@@ -315,7 +315,7 @@ of CSS selectors in order to build a fast and predictable system. The API, based
 on Javascript objects instead of template strings, is designed to make these
 constraints feel natural.
 
-### Readability & maintainabity over terseness
+### Readability & maintainability over terseness
 
 Some recent utility-based styling solutions are extremely terse and easy to write.
 StyleX chooses to prioritize readability and maintainability over terseness.
@@ -325,7 +325,7 @@ and a shallow learning curve. _(We did decide to use camelCase instead of kebab-
 for convenience.)_
 
 We also enforce that styles are authored in objects separate from the HTML
-elements where they are used. We made this decision to help with the readabiliy
+elements where they are used. We made this decision to help with the readability
 of HTML markup and so appropriate names for styles to indicate their purpose.
 E.g. Using a name `styles.active` like emphasizes *why* styles are being applied
 without having to dig through *what* styles are being applied.
@@ -364,9 +364,9 @@ components within packages on NPM.
 
 ### Avoid global configuration
 
-StyleX should work similarly across projects. Creating preoject-specific
-configurations that change the syntax or behaviour of StyleX should be avoided.
-We have chosen to prioritise composability and consistency over short-term
+StyleX should work similarly across projects. Creating project-specific
+configurations that change the syntax or behavior of StyleX should be avoided.
+We have chosen to prioritize composability and consistency over short-term
 convenience.
 
 We lean on tooling to provide convenience and customizability. For example, the
@@ -378,7 +378,7 @@ styling rules for a project.
 
 When dealing with a large amount CSS, lazy loading CSS is a way to speed up
 the initial load time of a page. However, it comes at the cost of a slower
-update times, or the *Interation to Next Paint (INP)* metric. Lazy loading
+update times, or the *Iteration to Next Paint (INP)* metric. Lazy loading
 any CSS on a page triggers a recalculation of styles for the entire page.
 
 StyleX is optimized for generating a single, highly optimized, CSS bundle that

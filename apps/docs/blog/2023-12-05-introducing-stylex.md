@@ -120,7 +120,7 @@ extremely fast and the results are then memoized.
 
 ## The origins of StyleX
 
-The previous Facebook website used something akin to CSS modules and sufferred
+The previous Facebook website used something akin to CSS modules and suffered
 from various problems that inspired
 [the initial idea for CSS-in-JS](https://blog.vjeux.com/2014/javascript/react-css-in-js-nationjs.html).
 The average visitor to [facebook.com](https://www.facebook.com/) would download
