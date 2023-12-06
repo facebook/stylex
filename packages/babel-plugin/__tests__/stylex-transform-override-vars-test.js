@@ -84,7 +84,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
     `);
   });
-  test('ouput of stylex.defineVars()', () => {
+  test('output of stylex.defineVars()', () => {
     expect(defineVarsOutput).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
       export const buttonTheme = {
@@ -313,7 +313,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('transforms variables objects with refrences to local variables', () => {
+    test('transforms variables objects with references to local variables', () => {
       expect(
         transform(
           `
@@ -354,7 +354,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('allows refrences to local variables with static values', () => {
+    test('allows references to local variables with static values', () => {
       expect(
         transform(
           `

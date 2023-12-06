@@ -82,7 +82,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('transforms style object with custom propety', () => {
+    test('transforms style object with custom property', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -98,7 +98,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('transforms style object with custom propety as value', () => {
+    test('transforms style object with custom property as value', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -288,7 +288,7 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     // Legacy, short?
-    test('tranforms valid shorthands', () => {
+    test('transforms valid shorthands', () => {
       expect(
         transform(`
            import stylex from 'stylex';

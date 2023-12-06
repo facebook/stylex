@@ -1,0 +1,6 @@
+[files]
+extend-exclude = [
+  "*.snap",
+  "apps/rollup-example/lotsOfStyles.js", 
+  "flow-typed/*",
+]
