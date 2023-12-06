@@ -205,7 +205,7 @@ To disallow specific style properties, use the `StyleXStylesWithout<>` type.
 type Props = {
   // ...
   style?: StyleXStylesWithout<{
-    postion: unknown;
+    position: unknown;
     display: unknown;
   }>;
 };
@@ -253,7 +253,7 @@ the same CSS class_ rather than creating a new one.
 One of the benefits of this approach is that the generated CSS file grows
 _logarithmically_ as you add new styled components to your app. As more style
 declarations are added to components, they are more likely to already be in use
-elsehwere in the app. As a result of this CSS optimization, the generated CSS
+elsewhere in the app. As a result of this CSS optimization, the generated CSS
 style sheet for an app is usually small enough to be contained in a single file
 and used across routes, avoiding style recalculation and layout thrashing as
 users navigate through your app.
