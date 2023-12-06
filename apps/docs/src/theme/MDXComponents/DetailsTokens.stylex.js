@@ -11,5 +11,5 @@ import * as stylex from '@stylexjs/stylex';
 
 export const tokens = stylex.defineVars({
   arrowRotate: '0deg',
-  summaryGap: '0rem',
+  summaryGap: '-1rem',
 });

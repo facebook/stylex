@@ -22,7 +22,7 @@ export default function MDXDetails({
 }) {
   const [isOpen, setIsOpen] = useState(open);
 
-  const onToggle = (e) => {
+  const toggleDetails = (e) => {
     e.preventDefault();
     setIsOpen(!isOpen);
   };
@@ -44,7 +44,7 @@ export default function MDXDetails({
       <summary
         {...summaryProps}
         {...stylex.props(styles.summary)}
-        onClick={onToggle}
+        onClick={toggleDetails}
       />
       {children}
     </details>
@@ -73,16 +73,18 @@ const styles = stylex.create({
       ':is([open])': '90deg',
     },
     [tokens.summaryGap]: {
-      default: '0rem',
-      ':is([open])': '1rem',
+      default: '-1rem',
+      ':is([open])': '0rem',
     },
   },
   summary: {
     cursor: 'pointer',
     fontWeight: 'bold',
     listStyleType: 'none',
+    margin: '-1rem',
     marginBottom: tokens.summaryGap,
-    paddingInlineStart: '1.2rem',
+    paddingInlineStart: '2.2rem',
+    padding: '1rem',
     position: 'relative',
     // eslint-disable-next-line @stylexjs/valid-styles
     '::-webkit-details-marker': {
@@ -93,14 +95,13 @@ const styles = stylex.create({
     },
     '::before': {
       content: '',
-      marginRight: '0.5rem',
       borderWidth: '.4rem',
       borderStyle: 'solid',
       borderColor: 'transparent',
       borderInlineStartColor: 'var(--pink)',
       position: 'absolute',
-      top: '0.5rem',
-      insetInlineStart: '0.25rem',
+      top: '1.5rem',
+      insetInlineStart: '1.25rem',
       transform: `rotate(${tokens.arrowRotate})`,
       transformOrigin: '0.2rem 50%',
       transitionProperty: 'transform',
