@@ -8,3 +8,14 @@ node_modules
 apps/docs/.stylex/*
 apps/rollup-example/.build
 apps/webpack-example/.build
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
