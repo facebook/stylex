@@ -38,4 +38,4 @@ Once you've installed the npm package you can enable the plugin and rules by ope
 
 ### stylex/valid-styles
 
-Stylex requires styles that are statically analyzable. This rule will detect invalid styles that stylex cannot handle.
+StyleX requires styles that are statically analyzable. This rule will detect invalid styles that stylex cannot handle.
