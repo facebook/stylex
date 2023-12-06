@@ -28,7 +28,7 @@ type Props = {
   style?: StyleXStyles,
 };
 
-function MyComponent({style, ...otherProps}: Props): React.MixedElement {
+function MyComponent({style, ...otherProps}: Props) {
   return (
     <div
       {...stylex.props(localStyles.foo, localStyles.bar, style)}
