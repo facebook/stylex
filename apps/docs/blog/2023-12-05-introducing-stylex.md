@@ -20,7 +20,7 @@ StyleX takes the developer experience of CSS-in-JS libraries and uses
 compile-time tooling to bridge it with the performance and scalability of static
 CSS. However, StyleX is not just another compiler-based CSS-in-JS library.
 StyleX has been carefully designed to meet the requirements of large
-application, reusable component libraries, and statically typed codebases.
+applications, reusable component libraries, and statically typed codebases.
 
 1. StyleX supports an expressive subset of CSS. It avoids complex selectors and
    guarantees no specificity conflicts in the generated CSS.
@@ -36,7 +36,7 @@ application, reusable component libraries, and statically typed codebases.
 
 ### Fast
 
-StyleX is designed to be fast at both compile-time and runtime. The babel
+StyleX is designed to be fast at both compile-time and runtime. The Babel
 transforms do not significantly slow down builds.
 
 At runtime, StyleX entirely avoids the costs associated with using JavaScript to
@@ -48,7 +48,7 @@ browsers.
 ### Scalable
 
 StyleX is designed to scale to extremely large codebases, like the ones we have
-at Meta. The babel plugin can handle processing styles in many thousands of
+at Meta. The Babel plugin can handle processing styles in many thousands of
 components at compile-time by leveraging atomic builds and file-level caching.
 And because StyleX is designed to encapsulate styles, it allows new components
 to be developed in isolation with the expectation that they will render
@@ -149,7 +149,7 @@ web, but to unify styling for React across web and native.
 
 ## How does Meta use StyleX?
 
-StyleX has became the preferred way to style components for every web surface
+StyleX has become the preferred way to style components for every web surface
 within Meta. StyleX is used to style React components for every major external
 and internal product at Meta including Facebook, WhatsApp, Instagram, Workplace,
 and Threads. It has changed the way we author components, and resolved the
