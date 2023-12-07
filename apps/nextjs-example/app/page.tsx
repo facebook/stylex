@@ -136,6 +136,29 @@ const s = stylex.create({
 const HOMEPAGE = 'https://stylexjs.com';
 
 export default function Home() {
+  const cards = [
+    {
+      body: 'Learn how to use StyleX to build UIs',
+      href: `${HOMEPAGE}/docs/learn/`,
+      title: 'Docs',
+    },
+    {
+      body: 'Browse through the StyleX API reference',
+      href: `${HOMEPAGE}/docs/api/`,
+      title: 'API',
+    },
+    {
+      body: 'Playing with StyleX and look at look at the compile outputs',
+      href: `${HOMEPAGE}/playground/`,
+      title: 'Playground',
+    },
+    {
+      body: 'Get started with a NextJS+StyleX project.',
+      href: 'https://github.com/nmn/nextjs-app-dir-stylex',
+      title: 'Templates',
+    },
+  ];
+
   return (
     <main className={stylex(s.main)}>
       <div className={stylex(s.description)}>
@@ -151,26 +174,14 @@ export default function Home() {
       </div>
 
       <div className={stylex(s.grid)}>
-        <Card
-          body="Learn how to use StyleX to build UIs"
-          href={`${HOMEPAGE}/docs/learn/`}
-          title="Docs"
-        />
-        <Card
-          body="Browse through the StyleX API reference"
-          href={`${HOMEPAGE}/docs/api/`}
-          title="API"
-        />
-        <Card
-          body="Playing with StyleX and look at look at the compile outputs"
-          href={`${HOMEPAGE}/playground/`}
-          title="Playground"
-        />
-        <Card
-          body="Get started with a NextJS+StyleX project."
-          href="https://github.com/nmn/nextjs-app-dir-stylex"
-          title="Templates"
-        />
+        {cards.map((card, index) => (
+          <Card
+            body={card.body}
+            href={card.href}
+            key={index}
+            title={card.title}
+          />
+        ))}
       </div>
     </main>
   );
