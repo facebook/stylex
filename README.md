@@ -69,7 +69,7 @@ First, `npm install` the npm workspace.
 ## Contributing
 
 Development happens in the open on GitHub and we are grateful for contributions
-including bugfixes, improvements, and ideas.
+including bug fixes, improvements, and ideas.
 
 ### Code of Conduct
 
@@ -82,7 +82,7 @@ tolerated.
 
 Read the
 [contributing guide](https://github.com/facebook/stylex/blob/main/.github/CONTRIBUTING.md)
-to learn about our development process, how to propose bugfixes and
+to learn about our development process, how to propose bug fixes and
 improvements, and how to build and test your changes.
 
 ### Architectural Principles
