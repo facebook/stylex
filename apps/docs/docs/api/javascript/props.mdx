@@ -40,7 +40,7 @@ const styles = stylex.create({
 });
 
 <div
-  {...styles.props(
+  {...stylex.props(
     styles.root,
     condition && styles.conditional,
     props.style,
