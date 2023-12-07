@@ -1,10 +1,16 @@
 [files]
 extend-exclude = [
   "*.snap",
-  "apps/rollup-example/lotsOfStyles.js", 
+  "apps/rollup-example/lotsOfStyles.js",
   "flow-typed/*",
 ]
 
 [default.extend-words]
 # Ignore false-positives
 stylex = "stylex"
+
+[type.md]
+extend-glob = ["*.md", ".mdx"]
+[type.md.extend-words]
+stylex = "StyleX"
+typescript = "TypeScript"
