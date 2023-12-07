@@ -61,8 +61,8 @@ const styles = stylex.create({
   },
   pink: {
     color: {
-      default: 'black',
-      ':hover': 'black',
+      default: 'white',
+      ':hover': 'white',
     },
     backgroundColor: 'hsl(var(--pink-h), var(--pink-s), var(--pink-l))',
     boxShadow: {

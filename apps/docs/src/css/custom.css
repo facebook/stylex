@@ -201,7 +201,7 @@ article .theme-doc-markdown.markdown {
 }
 
 .aa-DetachedSearchButtonPlaceholder {
-  color: var(--ifm-color-content);
+  color: rgba(var(--aa-input-border-color-rgb));
 }
 
 .aa-FooterSearchCredit {
