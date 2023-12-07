@@ -148,12 +148,12 @@ export default function Home() {
       title: 'API',
     },
     {
-      body: 'Playing with StyleX and look at look at the compile outputs',
+      body: 'Play with StyleX and look at the compiled outputs',
       href: `${HOMEPAGE}/playground/`,
       title: 'Playground',
     },
     {
-      body: 'Get started with a NextJS+StyleX project.',
+      body: 'Get started with a NextJS+StyleX project',
       href: 'https://github.com/nmn/nextjs-app-dir-stylex',
       title: 'Templates',
     },
