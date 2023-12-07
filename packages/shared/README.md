@@ -1,6 +1,6 @@
 # @stylexjs/shared
 
-This package contains most of the core JavaScript logic for stylex.
+This package contains most of the core JavaScript logic for StyleX.
 
 It exports two primary functions `create` and `keyframes`.
 
@@ -9,17 +9,17 @@ It exports two primary functions `create` and `keyframes`.
 
 #### ⭐️ `create`
 
-The `stylex.create` function is implemented here and can be found within `stylex-create.js` and is the default export of a function named `styleXCreateSet(...)`.
+The `StyleX.create` function is implemented here and can be found within `StyleX-create.js` and is the default export of a function named `styleXCreateSet(...)`.
 
 ##### `styleXCreateSet(...)`
 
-> The function is called `styleXCreateSet` because `stylex.create` transforms a "set" or collection of multiple style [namespaces](#namespace)
+> The function is called `styleXCreateSet` because `StyleX.create` transforms a "set" or collection of multiple style [namespaces](#namespace)
 
 This function itself mostly just traverses over the objects to run each [namespaces](#namespace) through the `styleXCreateNamespace(...)` function. Other than that, it takes the styles to be injected from each namespace in a [Namespace Set](#namespace-set) and deduplicates them so the style isn't injected multiple times if it's used within multiple Namespaces in the same set.
 
 ##### `styleXCreateNamespace(...)`
 
-> This function has been kept separate in case we want to add a new function to the StyleX API in the future called `stylex.createOne` which transforms a single [namespace](#namespace) instead of a [Namespace Set](#namespace-set)
+> This function has been kept separate in case we want to add a new function to the StyleX API in the future called `StyleX.createOne` which transforms a single [namespace](#namespace) instead of a [Namespace Set](#namespace-set)
 
 This function is responsible to transforming a [namespace](#namespace) to a [Compiled Namespace](#compiled-namespace) by hashing each key value pair and returning an object where the values have been replaced by classNames.
 
@@ -45,26 +45,26 @@ The `[resolvedNamespace, injectedStyles]` is returned.
 
 ### Back to `create` with the `@stylexjs/babel-plugin` package
 
-The `create` function within the babel plugin package takes the `stylex.create(...)` function call and replaces it with the `compiledNamespaceSet`.
+The `create` function within the babel plugin package takes the `StyleX.create(...)` function call and replaces it with the `compiledNamespaceSet`.
 
 It also takes each of the `injectedStyles` and:
 
-1. Either injects it as a `stylex.inject` call (if in `dev` mode)
+1. Either injects it as a `StyleX.inject` call (if in `dev` mode)
 2. Or, adds it to the array of injected styles on [`babel.state.metadata`](#babel-metadata)
 
 #### ⭐️ `keyframes`
 
-This is the function backing `stylex.keyframes`. It works similarly to `create` but it's more simplified since it only defines a single CSS `@keyframes` rule and returns a single string.
+This is the function backing `StyleX.keyframes`. It works similarly to `create` but it's more simplified since it only defines a single CSS `@keyframes` rule and returns a single string.
 
-Here again, the source AST is converted to a JS object and passed to `stylex-keyframes.js` within the `shared` package.
+Here again, the source AST is converted to a JS object and passed to `StyleX-keyframes.js` within the `shared` package.
 
 There, first the shorthands are expanded and then the whole objects is hashed. The resulting hash is used as the generated `animation name` for a `@keyframes` rule.
 
 The "name" and the CSS `@keyframes` rules are returned as a tuple.
 
-The `stylex.keyframes` call is replaced with the final string.
+The `StyleX.keyframes` call is replaced with the final string.
 
-The CSS `@keyframes` rule is either injected using `stylex.inject` in dev mode or set onto the `stylex` array on [`babel.state.metadata`](#babel-metadata).
+The CSS `@keyframes` rule is either injected using `StyleX.inject` in dev mode or set onto the `StyleX` array on [`babel.state.metadata`](#babel-metadata).
 
 #### `convert-to-className` (`shared` package)
 

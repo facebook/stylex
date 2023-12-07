@@ -2,9 +2,9 @@
 
 This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
 
-### build stylex packages
+### build StyleX packages
 
-- stylex actual package, and then the @stylexjs/babel-plugin plugin in node_modules
+- StyleX actual package, and then the @stylexjs/babel-plugin plugin in node_modules
 
 ```bash
 $ npm run build -w @stylexjs/stylex -w @stylexjs/shared -w @stylexjs/eslint-plugin -w @stylexjs/babel-plugin

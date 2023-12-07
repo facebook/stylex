@@ -1,4 +1,4 @@
-# stylex &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/@stylexjs/stylex.svg?style=flat)](https://www.npmjs.com/package/@stylexjs/stylex) [![Build Status](https://github.com/facebook/stylex/workflows/tests/badge.svg)](https://github.com/facebook/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebook/stylex/blob/main/.github/CONTRIBUTING.md)
+# StyleX &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/facebook/stylex/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/@stylexjs/stylex.svg?style=flat)](https://www.npmjs.com/package/@stylexjs/stylex) [![Build Status](https://github.com/facebook/stylex/workflows/tests/badge.svg)](https://github.com/facebook/stylex/actions) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/facebook/stylex/blob/main/.github/CONTRIBUTING.md)
 
 StyleX is a JavaScript library for defining styles for optimized user
 interfaces.
@@ -13,12 +13,12 @@ files. Start with
 
 ### Example
 
-Here is a simple example of stylex use:
+Here is a simple example of StyleX use:
 
 ```js
-import stylex from '@stylexjs/stylex';
+import StyleX from '@stylexjs/stylex';
 
-const styles = stylex.create({
+const styles = StyleX.create({
   root: {
     padding: 10,
   },
@@ -27,12 +27,12 @@ const styles = stylex.create({
   },
 });
 
-const styleProps = stylex.apply(styles.root, styles.element);
+const styleProps = StyleX.apply(styles.root, styles.element);
 ```
 
 ## Development
 
-This is the development monorepo for stylex.
+This is the development monorepo for StyleX.
 
 ### Structure
 
@@ -40,7 +40,7 @@ This is the development monorepo for stylex.
   - Contains workflows used by GitHub Actions.
   - Contains issue templates and contribution guidelines.
 - `apps`
-  - Contains example apps using stylex and integration with build tools.
+  - Contains example apps using StyleX and integration with build tools.
 - `packages`
   - Contains the individual packages managed in the monorepo.
   - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
@@ -50,7 +50,7 @@ This is the development monorepo for stylex.
   - [open-props](https://github.com/facebook/stylex/blob/main/packages/open-props)
   - [rollup-plugin](https://github.com/facebook/stylex/blob/main/packages/rollup-plugin)
   - [shared](https://github.com/facebook/stylex/blob/main/packages/shared)
-  - [stylex](https://github.com/facebook/stylex/blob/main/packages/stylex)
+  - [StyleX](https://github.com/facebook/stylex/blob/main/packages/stylex)
   - [webpack-plugin](https://github.com/facebook/stylex/blob/main/packages/webpack-plugin)
 
 ### Tasks

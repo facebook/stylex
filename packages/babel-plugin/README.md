@@ -5,8 +5,8 @@ In addition to transforming JS code, this plugin also produces an Array of CSS r
 generated from all JS files within your project should be concatenated together and converted to a CSS
 file using the `processStyles` function which is also exported from the same module.
 
-`@stylexjs/babel-plugin` is fairly lightweight. It pre-computes `stylex` related functions like
-`stylex.create` and `stylex.keyframes` by converting the argument AST to a JS object and transforming them
+`@stylexjs/babel-plugin` is fairly lightweight. It pre-computes `StyleX` related functions like
+`StyleX.create` and `StyleX.keyframes` by converting the argument AST to a JS object and transforming them
 by passing them to the functions of the corresponding names within `@stylex/shared`
 
 
@@ -25,9 +25,9 @@ e.g.
 const result = transformSync(sourceCode, {
   filename: opts.filename,
   parserOpts: { flow: { all: true } },
-  plugins: [stylexPlugin, opts],
+  plugins: [StyleXPlugin, opts],
 });
 
 const transformedCode = result.code;
-const injectedStyles = result.metadata.stylex;
+const injectedStyles = result.metadata.StyleX;
 ```

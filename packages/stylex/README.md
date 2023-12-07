@@ -55,16 +55,16 @@ for
 
 ## API
 
-### stylex.create()
+### StyleX.create()
 
-Styles are defined as a map of CSS rules using `stylex.create()`. In the example
+Styles are defined as a map of CSS rules using `StyleX.create()`. In the example
 below, there are 2 different CSS rules. The names "root" and "highlighted" are
 arbitrary names given to the rules.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import StyleX from '@stylexjs/stylex';
 
-const styles = stylex.create({
+const styles = StyleX.create({
   root: {
     width: '100%',
     color: 'rgb(60,60,60)',
@@ -78,9 +78,9 @@ const styles = stylex.create({
 Pseudo-classes and Media Queries can be nested within style definitions:
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import StyleX from '@stylexjs/stylex';
 
-const styles = stylex.create({
+const styles = StyleX.create({
   root: {
     width: '100%',
     color: 'rgb(60,60,60)',
@@ -100,23 +100,23 @@ const styles = stylex.create({
 The compiler will extract the rules to CSS and replace the rules in the source
 code with a "compiled style" object.
 
-### stylex.props()
+### StyleX.props()
 
-Applying style rules to specific elements is done using `stylex.props`. Each
+Applying style rules to specific elements is done using `StyleX.props`. Each
 argument to this function must be a reference to a compiled style object, or an
 array of compiled style objects. The function merges styles from left to right.
 
 ```tsx
-<div {...stylex.props(styles.root, styles.highlighted)} />
+<div {...StyleX.props(styles.root, styles.highlighted)} />
 ```
 
-The `stylex.props` function returns React props as required to render an
+The `StyleX.props` function returns React props as required to render an
 element. StyleX styles can still be passed to other components via props, but
-only the components rendering host platform elements will use `stylex.props()`.
+only the components rendering host platform elements will use `StyleX.props()`.
 For example:
 
 ```tsx
-const styles = stylex.create({
+const styles = StyleX.create({
   internalRoot: {
     padding: 10,
   },
@@ -127,7 +127,7 @@ const styles = stylex.create({
 
 function InternalComponent(props) {
   return (
-    <div {...props} {...stylex.props(styles.internalRoot, props.style)} />
+    <div {...props} {...StyleX.props(styles.internalRoot, props.style)} />
   );
 }
 
@@ -139,7 +139,7 @@ export function ExportedComponent(props) {
 Styles can be conditionally included using standard JavaScript.
 
 ```tsx
-<div {...stylex.props(styles.root, isHighlighted && styles.highlighted)} />
+<div {...StyleX.props(styles.root, isHighlighted && styles.highlighted)} />
 ```
 
 And the local merging of styles can be used to control the relative priority of
@@ -147,20 +147,20 @@ rules. For example, to allow a component's local styles to take priority over
 style property values passed in via props.
 
 ```tsx
-<div {...stylex.props(props.style, styles.root)} />
+<div {...StyleX.props(props.style, styles.root)} />
 ```
 
-### stylex.firstThatWorks()
+### StyleX.firstThatWorks()
 
-Defining fallback styles is done with `stylex.firstThatWorks()`. This is useful
+Defining fallback styles is done with `StyleX.firstThatWorks()`. This is useful
 for engines that may not support a specific style property.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import StyleX from '@stylexjs/stylex';
 
-const styles = stylex.create({
+const styles = StyleX.create({
   header: {
-    position: stylex.firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
+    position: StyleX.firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
   },
 });
 ```
@@ -192,7 +192,7 @@ type Props = {
 
 function MyComponent({style, ...}: Props) {
   return (
-    <div {...stylex.props(localStyles.foo, localStyles.bar, style)} />
+    <div {...StyleX.props(localStyles.foo, localStyles.bar, style)} />
   );
 }
 ```
@@ -235,9 +235,9 @@ StyleX produces atomic styles, which means that each CSS rule contains only a
 single declaration and uses a unique class name. For example:
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import StyleX from '@stylexjs/stylex';
 
-const styles = stylex.create({
+const styles = StyleX.create({
   root: {
     width: '100%',
     color: 'red',
