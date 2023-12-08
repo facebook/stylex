@@ -162,12 +162,12 @@ export default function Home() {
           title="API"
         />
         <Card
-          body="Playing with StyleX and look at look at the compile outputs"
+          body="Play with StyleX and look at the compile outputs"
           href={`${HOMEPAGE}/playground/`}
           title="Playground"
         />
         <Card
-          body="Get started with a NextJS+StyleX project."
+          body="Get started with a NextJS+StyleX project"
           href="https://github.com/nmn/nextjs-app-dir-stylex"
           title="Templates"
         />
