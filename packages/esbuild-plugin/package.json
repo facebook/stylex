@@ -1,0 +1,12 @@
+{
+  "name": "@stylexjs/esbuild-plugin",
+  "version": "0.0.0",
+  "description": "StyleX esbuild plugin",
+  "main": "src/index.js",
+  "repository": "https://github.com/facebook/stylex.git",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.23.5",
+    "@stylexjs/babel-plugin": "^0.3.0"
+  }
+}
