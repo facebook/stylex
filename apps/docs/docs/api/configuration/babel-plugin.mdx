@@ -26,7 +26,7 @@ When `true`, StyleX will insert debug class names to identify the source of the 
 test: boolean // Default: false
 ```
 
-When `true`, StyleX will only output debug classNames identifying the 
+When `true`, StyleX will only output debug classNames identifying the
 source of the styles.
 
 It will *not* generate any styles or functional classNames.
@@ -105,8 +105,8 @@ genConditionalClasses: boolean // Default: false
 ```
 
 Enable experimental compile-time optimization to pre-compute
-`stylex.props` and `stylex()` function calls with conditional styles
-when all possible styles used are defined in the same file and known
+`stylex.props` function calls with conditional styles when all
+possible styles used are defined in the same file and known
 at compile-time.
 
 <hr />
@@ -152,5 +152,3 @@ This is required if you plan to use StyleX's theming APIs.
 
 **NOTE**: While theming APIs are stable, the shape of this configuration option
 may change in the future.
-
-

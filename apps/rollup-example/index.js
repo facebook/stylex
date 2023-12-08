@@ -15,5 +15,5 @@ import { lotsOfStyles } from './lotsOfStyles';
 const styles = lotsOfStyles.map((defs) => Object.values(defs));
 
 export default function App() {
-  return stylex(styles);
+  return stylex.props(styles);
 }
