@@ -31,7 +31,7 @@ export type Options = StyleXOptions;
 /**
  * Entry point for the StyleX babel plugin.
  */
-export default function styleXTransform(): PluginObj<> {
+function styleXTransform(): PluginObj<> {
   // To simplify state management, we use a StateManager object to abstract
   // away some of the details.
   let state: StateManager;
@@ -302,3 +302,12 @@ function addSpecificityLevel(selector: string, index: number): string {
 
   return `${beforeCurly}${pseudo}${afterCurly}`;
 }
+
+export type StyleXTransformObj = {
+  (): PluginObj<>,
+  withOptions: typeof styleXTransform.withOptions,
+  processStylexRules: typeof processStylexRules,
+  ...
+};
+
+export default (styleXTransform: StyleXTransformObj);
