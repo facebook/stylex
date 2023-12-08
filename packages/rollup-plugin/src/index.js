@@ -24,6 +24,7 @@ module.exports = function stylexPlugin({
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
   stylexImports = ['stylex', '@stylexjs/stylex'],
+  useCSSLayers = false,
   ...options
 } = {}) {
   let stylexRules = {};
@@ -35,7 +36,10 @@ module.exports = function stylexPlugin({
     generateBundle() {
       const rules = Object.values(stylexRules).flat();
       if (rules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(rules, true);
+        const collectedCSS = stylexBabelPlugin.processStylexRules(
+          rules,
+          useCSSLayers,
+        );
         this.emitFile({
           fileName,
           source: collectedCSS,

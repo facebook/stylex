@@ -37,7 +37,8 @@ type PluginOptions = $ReadOnly<{
     babelrc?: boolean,
   }>,
   filename?: string,
-  appendTo?: string | (string) => boolean
+  appendTo?: string | (string) => boolean,
+  useCSSLayers?: boolean,
 }>
 */
 
@@ -57,13 +58,11 @@ class StylexPlugin {
     stylexImports = ['stylex', '@stylexjs/stylex'],
     rootDir,
     babelConfig = {},
+    useCSSLayers = false,
   } /*: PluginOptions */ = {}) {
     this.dev = dev;
     this.appendTo = appendTo;
     this.filename = filename;
-    // if (filename.includes("stylex")) {
-    //   console.log("filename", filename);
-    // }
 
     this.babelConfig = {
       plugins: [],
@@ -87,6 +86,7 @@ class StylexPlugin {
         importSources: stylexImports,
       },
     ];
+    this.useCSSLayers = useCSSLayers;
   }
 
   apply(compiler) {
@@ -127,7 +127,10 @@ class StylexPlugin {
         const allRules = Object.keys(stylexRules)
           .map((filename) => stylexRules[filename])
           .flat();
-        return stylexBabelPlugin.processStylexRules(allRules);
+        return stylexBabelPlugin.processStylexRules(
+          allRules,
+          this.useCSSLayers,
+        );
       };
 
       if (this.appendTo) {
