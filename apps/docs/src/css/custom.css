@@ -200,6 +200,10 @@ article .theme-doc-markdown.markdown {
   border: 1px solid rgba(128, 126, 163, 0.8);
 }
 
+.aa-DetachedSearchButtonPlaceholder {
+  color: rgba(var(--aa-input-border-color-rgb));
+}
+
 .aa-FooterSearchCredit {
   font-size: 0.5rem;
 }
