@@ -18,4 +18,5 @@ const rootDir = options.unstable_moduleResolution.rootDir ?? __dirname;
 
 module.exports = stylexPlugin({
   rootDir,
+  useCSSLayers: true,
 })({});
