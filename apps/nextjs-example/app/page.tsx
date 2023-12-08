@@ -15,7 +15,7 @@ const MEDIA_MOBILE = '@media (max-width: 700px)' as const;
 const MEDIA_TABLET =
   '@media (min-width: 701px) and (max-width: 1120px)' as const;
 
-const s = stylex.create({
+const style = stylex.create({
   main: {
     display: 'flex',
     flexDirection: 'column',
@@ -136,52 +136,41 @@ const s = stylex.create({
 const HOMEPAGE = 'https://stylexjs.com';
 
 export default function Home() {
-  const cards = [
-    {
-      body: 'Learn how to use StyleX to build UIs',
-      href: `${HOMEPAGE}/docs/learn/`,
-      title: 'Docs',
-    },
-    {
-      body: 'Browse through the StyleX API reference',
-      href: `${HOMEPAGE}/docs/api/`,
-      title: 'API',
-    },
-    {
-      body: 'Play with StyleX and look at the compiled outputs',
-      href: `${HOMEPAGE}/playground/`,
-      title: 'Playground',
-    },
-    {
-      body: 'Get started with a NextJS+StyleX project',
-      href: 'https://github.com/nmn/nextjs-app-dir-stylex',
-      title: 'Templates',
-    },
-  ];
-
   return (
-    <main className={stylex(s.main)}>
-      <div className={stylex(s.description)}>
-        <p className={stylex(s.descP)}>
+    <main {...stylex.props(style.main)}>
+      <div {...stylex.props(style.description)}>
+        <p {...stylex.props(style.descP)}>
           Get started by editing&nbsp;
-          <code className={stylex(s.code)}>app/page.tsx</code>
+          <code {...stylex.props(style.code)}>app/page.tsx</code>
         </p>
       </div>
-      <div className={stylex(s.hero)}>
-        <h1 className={stylex(s.h1)}>
-          Next.js App Dir<span className={stylex(s.emoji)}>♥️</span>️StyleX
+      <div {...stylex.props(style.hero)}>
+        <h1 {...stylex.props(style.h1)}>
+          Next.js App Dir<span {...stylex.props(style.emoji)}>♥️</span>️StyleX
         </h1>
       </div>
 
-      <div className={stylex(s.grid)}>
-        {cards.map((card, index) => (
-          <Card
-            body={card.body}
-            href={card.href}
-            key={index}
-            title={card.title}
-          />
-        ))}
+      <div {...stylex.props(style.grid)}>
+        <Card
+          body="Learn how to use StyleX to build UIs"
+          href={`${HOMEPAGE}/docs/learn/`}
+          title="Docs"
+        />
+        <Card
+          body="Browse through the StyleX API reference"
+          href={`${HOMEPAGE}/docs/api/`}
+          title="API"
+        />
+        <Card
+          body="Play with StyleX and look at the compile outputs"
+          href={`${HOMEPAGE}/playground/`}
+          title="Playground"
+        />
+        <Card
+          body="Get started with a NextJS+StyleX project"
+          href="https://github.com/nmn/nextjs-app-dir-stylex"
+          title="Templates"
+        />
       </div>
     </main>
   );
