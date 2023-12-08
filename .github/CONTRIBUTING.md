@@ -59,7 +59,8 @@ npm run build
 
 ## Documentation
 
-First build the StyleX packages, then run the docs locally:
+If necessary, first build the StyleX packages (`npm run build`), then start the
+docs locally:
 
 ```
 npm run start -w docs
