@@ -1246,6 +1246,46 @@ describe('@stylexjs/babel-plugin', () => {
         "x1e2nbdu";"
       `);
     });
+    test('Named import from custom source', () => {
+      expect(
+        transform(
+          `
+          import {css as stylex} from 'custom-stylex-path';
+          const styles = stylex.create({
+            red: {
+              color: 'red',
+            }
+          });
+          stylex(styles.red);
+        `,
+          { importSources: [{ from: 'custom-stylex-path', as: 'css' }] },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import { css as stylex } from 'custom-stylex-path';
+        stylex.inject(".x1e2nbdu{color:red}", 3000);
+        "x1e2nbdu";"
+      `);
+    });
+    test('Named import with other name from custom source', () => {
+      expect(
+        transform(
+          `
+          import {css} from 'custom-stylex-path';
+          const styles = css.create({
+            red: {
+              color: 'red',
+            }
+          });
+          css(styles.red);
+        `,
+          { importSources: [{ from: 'custom-stylex-path', as: 'css' }] },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import { css } from 'custom-stylex-path';
+        css.inject(".x1e2nbdu{color:red}", 3000);
+        "x1e2nbdu";"
+      `);
+    });
   });
   describe('Specific edge-case bugs', () => {
     test('Basic stylex call', () => {
