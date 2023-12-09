@@ -16,7 +16,7 @@ const stylexPlugin = require('../src/index');
 async function build(options = {}) {
   const { outputFiles } = await esbuild.build({
     entryPoints: [path.resolve(__dirname, '__fixtures__/index.js')],
-    external: ['stylex'],
+    external: ['@stylexjs/stylex'],
     minify: false,
     bundle: true,
     write: false,

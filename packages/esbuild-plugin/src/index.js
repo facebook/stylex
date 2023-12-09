@@ -21,7 +21,7 @@ const IS_DEV_ENV =
 function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
-  stylexImports = ['stylex', '@stylexjs/stylex'],
+  stylexImports = ['@stylexjs/stylex'],
   // path
   outPath = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
@@ -43,7 +43,7 @@ function stylexPlugin({
         const shouldWriteToDisk =
           initialOptions.write === undefined || initialOptions.write;
 
-        if (!shouldWriteToDisk) {
+        if (shouldWriteToDisk) {
           // write to disk
           // fs.writeFile(path.resolve(__dirname, outPath))
           return;

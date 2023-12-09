@@ -9,7 +9,7 @@
 
 'use strict';
 
-import stylex from 'stylex';
+import stylex from '@stylexjs/stylex';
 import fooStyles from './fooStyles';
 
 const fadeInAnimation = stylex.keyframes({
@@ -27,13 +27,13 @@ const styles = stylex.create({
     display: 'flex',
     marginLeft: 10,
     height: 700,
-    backgroundColor: 'red',
-    ':hover': {
-      backgroundColor: 'pink',
+    backgroundColor: {
+      default: 'red',
+      ':hover': 'pink',
     },
   },
 });
 
 export default function App() {
-  return stylex(fooStyles.foo, styles.bar);
+  return stylex.props(fooStyles.foo, styles.bar);
 }

@@ -9,7 +9,7 @@
 
 'use strict';
 
-import stylex from 'stylex';
+import stylex from '@stylexjs/stylex';
 
 export default stylex.create({
   foo: {
