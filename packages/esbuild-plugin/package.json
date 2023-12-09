@@ -17,10 +17,13 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.5",
+    "@babel/plugin-syntax-flow": "^7.23.3",
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/plugin-syntax-typescript": "^7.23.3",
     "@stylexjs/babel-plugin": "^0.3.0"
   },
   "devDependencies": {
-    "eslint": "^8.55.0",
-    "@stylexjs/stylex": "0.3.0"
+    "@stylexjs/stylex": "0.3.0",
+    "eslint": "^8.55.0"
   }
 }

@@ -9,6 +9,9 @@
 
 const babel = require('@babel/core');
 const stylexBabelPlugin = require('@stylexjs/babel-plugin');
+const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
+const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
+const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
 const path = require('path');
 const fs = require('fs/promises');
 
@@ -22,8 +25,8 @@ function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   stylexImports = ['@stylexjs/stylex'],
-  // path
-  outPath = 'stylex.css',
+  // absolute path to bundled CSS file
+  absolutePath = path.resolve(__dirname, 'stylex.css'),
   babelConfig: { plugins = [], presets = [] } = {},
   ...options
 } = {}) {
@@ -32,7 +35,7 @@ function stylexPlugin({
     async setup({ onLoad, onEnd, initialOptions }) {
       const stylexRules = {};
 
-      onEnd(({ outputFiles }) => {
+      onEnd(async ({ outputFiles }) => {
         const rules = Object.values(stylexRules).flat();
 
         if (rules.length === 0) {
@@ -44,8 +47,8 @@ function stylexPlugin({
           initialOptions.write === undefined || initialOptions.write;
 
         if (shouldWriteToDisk) {
-          // write to disk
-          // fs.writeFile(path.resolve(__dirname, outPath))
+          await fs.writeFile(absolutePath, collectedCSS, 'utf8');
+
           return;
         }
 
@@ -70,16 +73,18 @@ function stylexPlugin({
           return;
         }
 
-        // sourcemap?
         const { code, metadata } = await babel.transformAsync(inputCode, {
           babelrc: false,
           filename: currFileName,
           presets,
           plugins: [
             ...plugins,
+            /\.jsx?/.test(path.extname(currFileName))
+              ? flowSyntaxPlugin
+              : typescriptSyntaxPlugin,
+            jsxSyntaxPlugin,
             [
               stylexBabelPlugin,
-              // handle Flow or TS plugin here
               {
                 dev,
                 unstable_moduleResolution,
