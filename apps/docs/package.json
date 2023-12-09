@@ -4,8 +4,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "prebuild": "rm -rf ./build ./docusaurus",
-    "build": "NODE_ENV=production docusaurus build",
+    "prebuild": "rimraf ./build ./docusaurus",
+    "build": "cross-env NODE_ENV=production docusaurus build",
     "postbuild": "node ./scripts/make-stylex-sheet.js",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
