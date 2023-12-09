@@ -6,9 +6,10 @@
  *
  *
  */
+
 const babel = require('@babel/core');
 const stylexBabelPlugin = require('@stylexjs/babel-plugin');
-// const path = require('path');
+const path = require('path');
 const fs = require('fs/promises');
 
 const PACKAGE_NAME = 'esbuild-plugin-stylex';
@@ -21,44 +22,67 @@ function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   stylexImports = ['stylex', '@stylexjs/stylex'],
-  // fileName = 'stylex.css',
+  // path
+  outPath = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
   ...options
 } = {}) {
   return {
     name: PACKAGE_NAME,
-    async setup({ onLoad, onEnd }) {
+    async setup({ onLoad, onEnd, initialOptions }) {
       const stylexRules = {};
 
-      onEnd(() => {
-        console.log('build ended');
-        console.log(stylexRules);
+      onEnd(({ outputFiles }) => {
         const rules = Object.values(stylexRules).flat();
-        if (rules.length > 0) {
-          const collectedCSS = stylexBabelPlugin.processStylexRules(
-            rules,
-            true,
-          );
-          console.log(collectedCSS);
+
+        if (rules.length === 0) {
+          return;
         }
+
+        const collectedCSS = stylexBabelPlugin.processStylexRules(rules, true);
+        const shouldWriteToDisk =
+          initialOptions.write === undefined || initialOptions.write;
+
+        if (!shouldWriteToDisk) {
+          // write to disk
+          // fs.writeFile(path.resolve(__dirname, outPath))
+          return;
+        }
+
+        outputFiles.push({
+          path: '<stdout>',
+          contents: new TextEncoder().encode(collectedCSS),
+          get text() {
+            return collectedCSS;
+          },
+        });
       });
 
       onLoad({ filter: /\.[jt]sx?$/ }, async (args) => {
-        const inputCode = await fs.readFile(args.path, 'utf8');
+        const currFileName = args.path;
+        const inputCode = await fs.readFile(currFileName, 'utf8');
 
-        // include source map in emit
+        if (
+          !stylexImports.some((importName) => inputCode.includes(importName))
+        ) {
+          // avoid transform if file doesn't have stylex imports
+          // esbuild proceeds to the next callback
+          return;
+        }
+
+        // sourcemap?
         const { code, metadata } = await babel.transformAsync(inputCode, {
           babelrc: false,
-          filename: args.path,
+          filename: currFileName,
           presets,
           plugins: [
             ...plugins,
             [
               stylexBabelPlugin,
+              // handle Flow or TS plugin here
               {
                 dev,
                 unstable_moduleResolution,
-                importSources: stylexImports,
                 ...options,
               },
             ],
@@ -69,20 +93,13 @@ function stylexPlugin({
           stylexRules[args.path] = metadata.stylex;
         }
 
-        return { contents: code, loader: getLoader(args) };
+        return {
+          contents: code,
+          loader: currFileName.endsWith('.js') ? 'js' : 'tsx',
+        };
       });
-
-      // onLoad({ filter: /\.[jt]sx?$})
     },
   };
-}
-
-function getLoader(args) {
-  if (args.path.endsWith('.js')) {
-    return 'js';
-  }
-
-  return 'tsx';
 }
 
 module.exports = stylexPlugin;

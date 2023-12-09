@@ -13,24 +13,31 @@ const path = require('path');
 const esbuild = require('esbuild');
 const stylexPlugin = require('../src/index');
 
-async function build() {
-  const result = await esbuild.build({
+async function build(options = {}) {
+  const { outputFiles } = await esbuild.build({
     entryPoints: [path.resolve(__dirname, '__fixtures__/index.js')],
     external: ['stylex'],
     minify: false,
     bundle: true,
     write: false,
-    plugins: [stylexPlugin()],
+    plugins: [stylexPlugin({ ...options })],
   });
 
-  return result;
+  return { js: outputFiles[0], css: outputFiles[1] };
 }
 
 describe('esbuild-plugin-stylex', () => {
-  it('test', async () => {
-    const output = await build();
-    console.log(output.outputFiles[0].text);
+  it('prod', async () => {
+    const { js, css } = await build();
 
-    expect(true).toBeTruthy();
+    expect(js).toBeDefined();
+    expect(css).toBeDefined();
+  });
+
+  it('dev', async () => {
+    const { js, css } = await build({ dev: true });
+
+    expect(js).toBeDefined();
+    expect(css).toBeUndefined();
   });
 });
