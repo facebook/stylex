@@ -16,9 +16,4 @@ Screenshots, Tests, Anything Else
 
 - [ ] I have read the contributing guidelines
       [Contribution Guidelines](../CONTRIBUTING.md)
-- [ ] I have signed the contributing agreements
-- [ ] I have written unit tests where necessary (If it is a feature commit)
 - [ ] Performed a self-review of my code
-
-**Does this PR introduce a breaking change?** (What changes might users need to
-make in their application due to this PR?)
