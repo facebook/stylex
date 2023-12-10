@@ -83,7 +83,7 @@ const styles = stylex.create({
     boxSizing: 'border-box',
     margin: 0,
     marginBottom: 24,
-    overflow: 'hidden',
+    overflow: 'visible',
     zIndex: 0,
   },
   logo: {
