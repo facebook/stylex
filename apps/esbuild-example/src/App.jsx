@@ -12,7 +12,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import * as stylex from '@stylexjs/stylex';
-import { spacings, colors } from './tokens.stylex.js';
+import { spacing, color } from './tokens.stylex.js';
 
 const styles = stylex.create({
   main: {
@@ -21,13 +21,12 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.pink,
+    backgroundColor: color.pink,
   },
   card: {
-    width: 100,
-    height: 100,
-    backgroundColor: colors.blue,
-    padding: spacings.medium,
+    backgroundColor: color.blue,
+    padding: spacing.medium,
+    borderRadius: spacing.small,
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
@@ -39,7 +38,7 @@ function App() {
   return (
     <div {...stylex.props(styles.main)}>
       <div {...stylex.props(styles.card)}>
-        <span>Blue box</span>
+        <span>Blue rounded rectangle</span>
       </div>
     </div>
   );

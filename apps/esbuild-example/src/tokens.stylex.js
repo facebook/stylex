@@ -11,13 +11,13 @@
 
 import * as stylex from '@stylexjs/stylex';
 
-export const spacings = stylex.defineVars({
-  small: 10,
-  medium: 20,
-  large: 30,
+export const spacing = stylex.defineVars({
+  small: '10px',
+  medium: '20px',
+  large: '30px',
 });
 
-export const colors = stylex.defineVars({
+export const color = stylex.defineVars({
   blue: 'blue',
   pink: 'pink',
 });
