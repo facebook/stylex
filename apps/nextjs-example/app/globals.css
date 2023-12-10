@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+@layer reset {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
 }
