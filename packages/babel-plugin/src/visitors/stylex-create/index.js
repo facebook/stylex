@@ -66,10 +66,6 @@ export default function transformStyleXCreate(
     > = path.get('arguments');
     const firstArg = args[0];
 
-    if (!pathUtils.isObjectExpression(firstArg)) {
-      throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
-    }
-
     // TODO: This should be removed soon since we should disallow spreads without
     // `stylex.include` in the future.
     // preProcessStyleArg(firstArg, state);

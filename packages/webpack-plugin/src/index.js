@@ -36,7 +36,8 @@ type PluginOptions = $ReadOnly<{
     babelrc?: boolean,
   }>,
   filename?: string,
-  appendTo?: string | (string) => boolean
+  appendTo?: string | (string) => boolean,
+  useCSSLayers?: boolean,
 }>
 */
 
@@ -51,6 +52,7 @@ class StylexPlugin {
     stylexImports = ['stylex', '@stylexjs/stylex'],
     unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
     babelConfig: { plugins = [], presets = [], babelrc = false } = {},
+    useCSSLayers = false,
     ...options
   } /*: PluginOptions */ = {}) {
     this.dev = dev;
@@ -67,6 +69,7 @@ class StylexPlugin {
         ...options,
       },
     ];
+    this.useCSSLayers = useCSSLayers;
   }
 
   apply(compiler) {
@@ -112,7 +115,10 @@ class StylexPlugin {
           )
           .map((filename) => stylexRules[filename])
           .flat();
-        return stylexBabelPlugin.processStylexRules(allRules);
+        return stylexBabelPlugin.processStylexRules(
+          allRules,
+          this.useCSSLayers,
+        );
       };
 
       if (this.appendTo) {

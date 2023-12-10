@@ -60,7 +60,8 @@ async function generateTypes(inputDir, outputDir, rootDir) {
           let fileContents = await fsPromises.readFile(inputFullPath, 'utf8');
           fileContents = preprocessFileContents(fileContents);
           let outputFlowContents = await translate.translateFlowToFlowDef(
-            fileContents,
+            // Workaround for making the script work on Windows
+            fileContents.replace(/\r\n/g, '\n'),
             monorepoPackage.prettier,
           );
 

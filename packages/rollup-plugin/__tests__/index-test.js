@@ -31,7 +31,7 @@ describe('rollup-plugin-stylex', () => {
           configFile: path.resolve(__dirname, '__fixtures__/.babelrc.json'),
           exclude: [/npmStyles\.js/],
         }),
-        stylexPlugin(options),
+        stylexPlugin({ useCSSLayers: true, ...options }),
       ],
     });
 

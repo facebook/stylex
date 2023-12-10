@@ -4,8 +4,8 @@
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
-    "prebuild": "rm -rf ./build ./docusaurus",
-    "build": "NODE_ENV=production docusaurus build",
+    "prebuild": "rimraf ./build ./docusaurus",
+    "build": "cross-env NODE_ENV=production docusaurus build",
     "postbuild": "node ./scripts/make-stylex-sheet.js",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -13,10 +13,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "ci": "npm run lint && npm run format:diff",
-    "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\"",
-    "format": "prettier --config .prettierrc --write \"**/*.{js,jsx,ts,tsx,md,mdx}\"",
-    "format:diff": "prettier --config .prettierrc --list-different \"**/*.{js,jsx,ts,tsx,md,mdx}\""
+    "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\""
   },
   "dependencies": {
     "@docusaurus/core": "2.4.1",

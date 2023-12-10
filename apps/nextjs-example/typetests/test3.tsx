@@ -14,7 +14,6 @@ import type { StaticStyles, StyleXStyles } from '@stylexjs/stylex';
 
 type Props = {
   xstyle?: StyleXStyles;
-
   staticXstyle?: StaticStyles;
 };
 

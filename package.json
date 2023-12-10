@@ -10,6 +10,7 @@
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
     "lint:report": "eslint packages apps",
+    "postinstall": "npm run build",
     "precommit": "npm run prettier && npm run flow && npm run lint && npm run test",
     "pretest": "npm run build",
     "test": "npm run test --workspaces --if-present",
@@ -44,6 +45,7 @@
     "babel-plugin-syntax-hermes-parser": "^0.18.0",
     "benchmark": "^2.1.4",
     "esbuild": "^0.19.8",
+    "cross-env": "^7.0.3",
     "eslint": "8.47.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-ft-flow": "^3.0.0",
@@ -53,6 +55,7 @@
     "jest": "^30.0.0-alpha.1",
     "prettier": "^3.1.0",
     "prettier-plugin-hermes-parser": "^0.18.0",
+    "rimraf": "^5.0.5",
     "rollup": "^4.0.2",
     "typescript": "^5.1.6"
   },

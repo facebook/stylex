@@ -1,10 +1,9 @@
 *.log*
+.build
+.docusaurus
+.stylex
 build
 coverage
 dist
 lib
 node_modules
-.turbo
-apps/docs/.stylex/*
-apps/rollup-example/.build
-apps/webpack-example/.build
