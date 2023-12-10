@@ -80,7 +80,7 @@ function stylexPlugin({
 
         const { code, metadata } = await babel.transformAsync(inputCode, {
           babelrc: false,
-          filename: currFileName,
+          filename: currFilePath,
           presets,
           plugins: [
             ...plugins,
