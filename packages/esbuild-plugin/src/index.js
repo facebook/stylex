@@ -26,8 +26,9 @@ function stylexPlugin({
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   stylexImports = ['@stylexjs/stylex'],
   // absolute path to bundled CSS file
-  absolutePath = path.resolve(__dirname, 'stylex.css'),
+  absoluteFilePath = path.resolve(__dirname, 'stylex.css'),
   babelConfig: { plugins = [], presets = [] } = {},
+  useCSSLayers = false,
   ...options
 } = {}) {
   return {
@@ -42,12 +43,16 @@ function stylexPlugin({
           return;
         }
 
-        const collectedCSS = stylexBabelPlugin.processStylexRules(rules, true);
+        const collectedCSS = stylexBabelPlugin.processStylexRules(
+          rules,
+          useCSSLayers,
+        );
         const shouldWriteToDisk =
           initialOptions.write === undefined || initialOptions.write;
 
         if (shouldWriteToDisk) {
-          await fs.writeFile(absolutePath, collectedCSS, 'utf8');
+          await fs.mkdir(path.dirname(absoluteFilePath), { recursive: true });
+          await fs.writeFile(absoluteFilePath, collectedCSS, 'utf8');
 
           return;
         }
@@ -62,8 +67,8 @@ function stylexPlugin({
       });
 
       onLoad({ filter: /\.[jt]sx?$/ }, async (args) => {
-        const currFileName = args.path;
-        const inputCode = await fs.readFile(currFileName, 'utf8');
+        const currFilePath = args.path;
+        const inputCode = await fs.readFile(currFilePath, 'utf8');
 
         if (
           !stylexImports.some((importName) => inputCode.includes(importName))
@@ -79,9 +84,9 @@ function stylexPlugin({
           presets,
           plugins: [
             ...plugins,
-            /\.jsx?/.test(path.extname(currFileName))
+            /\.jsx?/.test(path.extname(currFilePath))
               ? flowSyntaxPlugin
-              : typescriptSyntaxPlugin,
+              : [typescriptSyntaxPlugin, { isTSX: true }],
             jsxSyntaxPlugin,
             [
               stylexBabelPlugin,
@@ -100,7 +105,7 @@ function stylexPlugin({
 
         return {
           contents: code,
-          loader: currFileName.endsWith('.js') ? 'js' : 'tsx',
+          loader: currFilePath.endsWith('.js') ? 'js' : 'tsx',
         };
       });
     },
