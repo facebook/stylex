@@ -1,0 +1,19 @@
+{
+  "name": "esbuild-example",
+  "version": "0.0.0",
+  "description": "Simple esbuild example for @stylexjs/esbuild-plugin",
+  "main": "src/App.jsx",
+  "scripts": {
+    "build": "node scripts/build.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/stylex": "^0.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@stylexjs/esbuild-plugin": "^0.0.0",
+    "esbuild": "^0.19.9"
+  }
+}
