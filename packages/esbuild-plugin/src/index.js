@@ -78,13 +78,15 @@ function stylexPlugin({
           return;
         }
 
+        const currFileExtension = path.extname(currFilePath);
+
         const { code, metadata } = await babel.transformAsync(inputCode, {
           babelrc: false,
           filename: currFilePath,
           presets,
           plugins: [
             ...plugins,
-            /\.jsx?/.test(path.extname(currFilePath))
+            /\.jsx?/.test(currFileExtension)
               ? flowSyntaxPlugin
               : [typescriptSyntaxPlugin, { isTSX: true }],
             jsxSyntaxPlugin,
@@ -105,7 +107,8 @@ function stylexPlugin({
 
         return {
           contents: code,
-          loader: currFilePath.endsWith('.js') ? 'js' : 'tsx',
+          // remove dot from extension
+          loader: currFileExtension.slice(1),
         };
       });
     },
