@@ -20,66 +20,64 @@ export function readImportDeclarations(
   if (node?.importKind === 'type' || node?.importKind === 'typeof') {
     return;
   }
-  if (state.options.importSources.includes(node.source.value)) {
-    state.importPaths.add(node.source.value);
+  const sourcePath = node.source.value;
+  if (state.importSources.includes(sourcePath)) {
     for (const specifier of node.specifiers) {
-      if (specifier.type === 'ImportDefaultSpecifier') {
+      if (
+        specifier.type === 'ImportDefaultSpecifier' &&
+        state.importAs(sourcePath) === null
+      ) {
+        state.importPaths.add(sourcePath);
         state.stylexImport.add(specifier.local.name);
       }
-      if (specifier.type === 'ImportNamespaceSpecifier') {
+      if (
+        specifier.type === 'ImportNamespaceSpecifier' &&
+        state.importAs(sourcePath) === null
+      ) {
+        state.importPaths.add(sourcePath);
         state.stylexImport.add(specifier.local.name);
       }
       if (specifier.type === 'ImportSpecifier') {
-        if (specifier.imported.type === 'Identifier') {
-          if (specifier.imported.name === 'create') {
-            state.stylexCreateImport.add(specifier.local.name);
+        if (
+          specifier.imported.type === 'Identifier' ||
+          specifier.imported.type === 'StringLiteral'
+        ) {
+          const importedName =
+            specifier.imported.type === 'Identifier'
+              ? specifier.imported.name
+              : specifier.imported.value;
+          const localName = specifier.local.name;
+
+          if (state.importAs(sourcePath) === importedName) {
+            state.importPaths.add(sourcePath);
+            state.stylexImport.add(localName);
           }
-          if (specifier.imported.name === 'props') {
-            state.stylexPropsImport.add(specifier.local.name);
-          }
-          if (specifier.imported.name === 'keyframes') {
-            state.stylexKeyframesImport.add(specifier.local.name);
-          }
-          if (specifier.imported.name === 'include') {
-            state.stylexIncludeImport.add(specifier.local.name);
-          }
-          if (specifier.imported.name === 'firstThatWorks') {
-            state.stylexFirstThatWorksImport.add(specifier.local.name);
-          }
-          if (specifier.imported.name === 'defineVars') {
-            state.stylexDefineVarsImport.add(specifier.local.name);
-          }
-          if (specifier.imported.name === 'createTheme') {
-            state.stylexCreateThemeImport.add(specifier.local.name);
-          }
-          if (specifier.imported.name === 'types') {
-            state.stylexTypesImport.add(specifier.local.name);
-          }
-        }
-        if (specifier.imported.type === 'StringLiteral') {
-          if (specifier.imported.value === 'create') {
-            state.stylexCreateImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'props') {
-            state.stylexPropsImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'keyframes') {
-            state.stylexKeyframesImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'include') {
-            state.stylexIncludeImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'firstThatWorks') {
-            state.stylexFirstThatWorksImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'defineVars') {
-            state.stylexDefineVarsImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'createTheme') {
-            state.stylexCreateThemeImport.add(specifier.local.name);
-          }
-          if (specifier.imported.value === 'types  ') {
-            state.stylexTypesImport.add(specifier.local.name);
+          if (state.importAs(sourcePath) === null) {
+            state.importPaths.add(sourcePath);
+            if (importedName === 'create') {
+              state.stylexCreateImport.add(localName);
+            }
+            if (importedName === 'props') {
+              state.stylexPropsImport.add(localName);
+            }
+            if (importedName === 'keyframes') {
+              state.stylexKeyframesImport.add(localName);
+            }
+            if (importedName === 'include') {
+              state.stylexIncludeImport.add(localName);
+            }
+            if (importedName === 'firstThatWorks') {
+              state.stylexFirstThatWorksImport.add(localName);
+            }
+            if (importedName === 'defineVars') {
+              state.stylexDefineVarsImport.add(localName);
+            }
+            if (importedName === 'createTheme') {
+              state.stylexCreateThemeImport.add(localName);
+            }
+            if (importedName === 'types') {
+              state.stylexTypesImport.add(localName);
+            }
           }
         }
       }
@@ -101,10 +99,14 @@ export function readRequires(
     init.callee?.name === 'require' &&
     init.arguments?.length === 1 &&
     init.arguments?.[0].type === 'StringLiteral' &&
-    state.options.importSources.includes(init.arguments[0].value)
+    state.importSources.includes(init.arguments[0].value)
   ) {
     const importPath = init.arguments[0].value;
-    importPath != null && state.importPaths.add(importPath);
+    if (importPath == null) {
+      // Impossible.
+      return;
+    }
+    state.importPaths.add(importPath);
     if (node.id.type === 'Identifier') {
       state.stylexImport.add(node.id.name);
     }
