@@ -89,7 +89,7 @@ function stylexPlugin({
           presets,
           plugins: [
             ...plugins,
-            ...getFlowOrTypeScriptBabelSyntaxPlugin(currFilePath),
+            ...getFlowOrTypeScriptBabelSyntaxPlugins(currFilePath),
             jsxSyntaxPlugin,
             [
               stylexBabelPlugin,
@@ -131,7 +131,7 @@ function getEsbuildLoader(fileName) {
   return 'js';
 }
 
-function getFlowOrTypeScriptBabelSyntaxPlugin(fileName) {
+function getFlowOrTypeScriptBabelSyntaxPlugins(fileName) {
   if (/\.jsx?/.test(path.extname(fileName))) {
     return [flowSyntaxPlugin, hermesParserPlugin];
   }
