@@ -77,6 +77,29 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
 "
 `;
 
+exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bundles JS 2`] = `
+"
+@layer priority1, priority2, priority3;
+@layer priority1{
+@keyframes xekv6nw-B{0%{opacity:0;}100%{opacity:1;}}
+}
+@layer priority2{
+.x127lhb5{animation-name:xekv6nw-B}
+.xrkmrrc{background-color:red}
+.x1lliihq{display:block}
+.x78zum5{display:flex}
+.xt0psk2{display:inline}
+.x1r3o6fz:hover{background-color:pink}
+}
+@layer priority3{
+.x1xa6b72{height:700px}
+.xnsd7bc{height:900px}
+.x16ydxro{margin-left:10px}
+.xh8yej3{width:100%}
+.x3hqpx7{width:50%}
+}"
+`;
+
 exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extract CSS in development mode 1`] = `
 ""use strict";
 (() => {

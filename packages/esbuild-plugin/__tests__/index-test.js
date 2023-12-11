@@ -32,7 +32,7 @@ describe('esbuild-plugin-stylex', () => {
 
     expect(js.text).toMatchSnapshot();
 
-    expect(css.text).toMatchSnapshot;
+    expect(css.text).toMatchSnapshot();
   });
 
   it('preserves stylex.inject calls and does not extract CSS in development mode', async () => {
