@@ -4,7 +4,8 @@
   "description": "Simple esbuild example for @stylexjs/esbuild-plugin",
   "main": "src/App.jsx",
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "lint": "eslint \"**/*.{js,jsx}\""
   },
   "license": "MIT",
   "dependencies": {
@@ -14,6 +15,8 @@
   },
   "devDependencies": {
     "@stylexjs/esbuild-plugin": "^0.0.0",
-    "esbuild": "^0.19.9"
+    "@stylexjs/eslint-plugin": "^0.3.0",
+    "esbuild": "^0.19.9",
+    "eslint": "^8.55.0"
   }
 }

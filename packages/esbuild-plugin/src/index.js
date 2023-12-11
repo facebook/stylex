@@ -10,6 +10,7 @@
 const babel = require('@babel/core');
 const stylexBabelPlugin = require('@stylexjs/babel-plugin');
 const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
+const hermesParserPlugin = require('babel-plugin-syntax-hermes-parser');
 const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
 const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
 const path = require('path');
@@ -21,14 +22,16 @@ const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
   process.env.BABEL_ENV === 'development';
 
+const STYLEX_PLUGIN_ONLOAD_FILTER = /\.(jsx|js|tsx|ts|mjs|cjs|mts|cts)$/;
+
 function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   stylexImports = ['@stylexjs/stylex'],
-  // absolute path to bundled CSS file
-  absoluteFilePath = path.resolve(__dirname, 'stylex.css'),
+  // file path for the generated CSS file
+  generatedCSSFileName = path.resolve(__dirname, 'stylex.css'),
   babelConfig: { plugins = [], presets = [] } = {},
-  useCSSLayers = false,
+  useCSSLayers,
   ...options
 } = {}) {
   return {
@@ -51,8 +54,10 @@ function stylexPlugin({
           initialOptions.write === undefined || initialOptions.write;
 
         if (shouldWriteToDisk) {
-          await fs.mkdir(path.dirname(absoluteFilePath), { recursive: true });
-          await fs.writeFile(absoluteFilePath, collectedCSS, 'utf8');
+          await fs.mkdir(path.dirname(generatedCSSFileName), {
+            recursive: true,
+          });
+          await fs.writeFile(generatedCSSFileName, collectedCSS, 'utf8');
 
           return;
         }
@@ -66,7 +71,7 @@ function stylexPlugin({
         });
       });
 
-      onLoad({ filter: /\.[jt]sx?$/ }, async (args) => {
+      onLoad({ filter: STYLEX_PLUGIN_ONLOAD_FILTER }, async (args) => {
         const currFilePath = args.path;
         const inputCode = await fs.readFile(currFilePath, 'utf8');
 
@@ -78,17 +83,13 @@ function stylexPlugin({
           return;
         }
 
-        const currFileExtension = path.extname(currFilePath);
-
         const { code, metadata } = await babel.transformAsync(inputCode, {
           babelrc: false,
           filename: currFilePath,
           presets,
           plugins: [
             ...plugins,
-            /\.jsx?/.test(currFileExtension)
-              ? flowSyntaxPlugin
-              : [typescriptSyntaxPlugin, { isTSX: true }],
+            ...getFlowOrTypeScriptBabelSyntaxPlugin(currFilePath),
             jsxSyntaxPlugin,
             [
               stylexBabelPlugin,
@@ -107,12 +108,35 @@ function stylexPlugin({
 
         return {
           contents: code,
-          // remove dot from extension
-          loader: currFileExtension.slice(1),
+          loader: getEsbuildLoader(currFilePath),
         };
       });
     },
   };
+}
+
+function getEsbuildLoader(fileName) {
+  if (fileName.endsWith('.tsx')) {
+    return 'tsx';
+  }
+
+  if (fileName.endsWith('.jsx')) {
+    return 'jsx';
+  }
+
+  if (fileName.endsWith('ts')) {
+    return 'ts';
+  }
+
+  return 'js';
+}
+
+function getFlowOrTypeScriptBabelSyntaxPlugin(fileName) {
+  if (/\.jsx?/.test(path.extname(fileName))) {
+    return [flowSyntaxPlugin, hermesParserPlugin];
+  }
+
+  return [[typescriptSyntaxPlugin, { isTSX: true }]];
 }
 
 module.exports = stylexPlugin;

@@ -12,7 +12,9 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import * as stylex from '@stylexjs/stylex';
-import { spacing, color } from './tokens.stylex';
+import { colors } from '@stylexjs/open-props/lib/colors.stylex';
+import { sizes } from '@stylexjs/open-props/lib/sizes.stylex';
+import { fonts } from '@stylexjs/open-props/lib/fonts.stylex';
 
 const styles = stylex.create({
   main: {
@@ -21,16 +23,17 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: color.pink,
+    backgroundColor: colors.pink7,
   },
   card: {
-    backgroundColor: color.blue,
-    padding: spacing.medium,
-    borderRadius: spacing.small,
+    backgroundColor: colors.blue9,
+    padding: sizes.spacing5,
+    borderRadius: sizes.spacing2,
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    color: 'white',
+    color: colors.gray0,
+    fontFamily: fonts.mono,
   },
 });
 

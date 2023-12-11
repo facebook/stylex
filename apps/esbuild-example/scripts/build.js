@@ -28,10 +28,11 @@ esbuild
     plugins: [
       stylexPlugin({
         useCSSLayers: true,
-        absoluteFilePath: STYLEX_BUNDLE_PATH,
+        generatedCSSFileName: STYLEX_BUNDLE_PATH,
+        stylexImports: ['@stylexjs/stylex'],
         unstable_moduleResolution: {
           type: 'commonJS',
-          rootDir: path.resolve(__dirname, '..'),
+          rootDir: path.resolve(__dirname, '../../..'),
         },
       }),
     ],
