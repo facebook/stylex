@@ -64,7 +64,7 @@ describe('esbuild-plugin-stylex', () => {
         ));
 
         // __tests__/__fixtures__/index.js
-        var import_stylex2 = __toESM(__require("@stylexjs/stylex"));
+        var import_stylex3 = __toESM(__require("@stylexjs/stylex"));
 
         // __tests__/__fixtures__/fooStyles.js
         var import_stylex = __toESM(__require("@stylexjs/stylex"));
@@ -72,6 +72,17 @@ describe('esbuild-plugin-stylex', () => {
           foo: {
             display: "xt0psk2",
             width: "xh8yej3",
+            $$css: true
+          }
+        };
+
+        // __tests__/__fixtures__/bazStyles.js
+        var import_stylex2 = __toESM(__require("@stylexjs/stylex"));
+        var bazStyles_default = {
+          baz: {
+            display: "x1lliihq",
+            height: "xnsd7bc",
+            width: "x3hqpx7",
             $$css: true
           }
         };
@@ -90,7 +101,7 @@ describe('esbuild-plugin-stylex', () => {
           }
         };
         function App() {
-          return import_stylex2.default.props(fooStyles_default.foo, styles.bar);
+          return import_stylex3.default.props(fooStyles_default.foo, styles.bar, bazStyles_default.baz);
         }
       })();
       "
@@ -105,14 +116,17 @@ describe('esbuild-plugin-stylex', () => {
       @layer priority2{
       .x127lhb5{animation-name:xekv6nw-B}
       .xrkmrrc{background-color:red}
+      .x1lliihq{display:block}
       .x78zum5{display:flex}
       .xt0psk2{display:inline}
       .x1r3o6fz:hover{background-color:pink}
       }
       @layer priority3{
       .x1xa6b72{height:700px}
+      .xnsd7bc{height:900px}
       .x16ydxro{margin-left:10px}
       .xh8yej3{width:100%}
+      .x3hqpx7{width:50%}
       }"
     `);
   });
@@ -154,7 +168,7 @@ describe('esbuild-plugin-stylex', () => {
         ));
 
         // __tests__/__fixtures__/index.js
-        var import_stylex2 = __toESM(__require("@stylexjs/stylex"));
+        var import_stylex3 = __toESM(__require("@stylexjs/stylex"));
 
         // __tests__/__fixtures__/fooStyles.js
         var import_stylex = __toESM(__require("@stylexjs/stylex"));
@@ -169,14 +183,29 @@ describe('esbuild-plugin-stylex', () => {
           }
         };
 
+        // __tests__/__fixtures__/bazStyles.js
+        var import_stylex2 = __toESM(__require("@stylexjs/stylex"));
+        import_stylex2.default.inject(".x1lliihq{display:block}", 3e3);
+        import_stylex2.default.inject(".xnsd7bc{height:900px}", 4e3);
+        import_stylex2.default.inject(".x3hqpx7{width:50%}", 4e3);
+        var bazStyles_default = {
+          baz: {
+            bazStyles__baz: "bazStyles__baz",
+            display: "x1lliihq",
+            height: "xnsd7bc",
+            width: "x3hqpx7",
+            $$css: true
+          }
+        };
+
         // __tests__/__fixtures__/index.js
-        import_stylex2.default.inject("@keyframes xekv6nw-B{0%{opacity:0;}100%{opacity:1;}}", 1);
-        import_stylex2.default.inject(".x127lhb5{animation-name:xekv6nw-B}", 3e3);
-        import_stylex2.default.inject(".x78zum5{display:flex}", 3e3);
-        import_stylex2.default.inject(".x16ydxro{margin-left:10px}", 4e3);
-        import_stylex2.default.inject(".x1xa6b72{height:700px}", 4e3);
-        import_stylex2.default.inject(".xrkmrrc{background-color:red}", 3e3);
-        import_stylex2.default.inject(".x1r3o6fz:hover{background-color:pink}", 3130);
+        import_stylex3.default.inject("@keyframes xekv6nw-B{0%{opacity:0;}100%{opacity:1;}}", 1);
+        import_stylex3.default.inject(".x127lhb5{animation-name:xekv6nw-B}", 3e3);
+        import_stylex3.default.inject(".x78zum5{display:flex}", 3e3);
+        import_stylex3.default.inject(".x16ydxro{margin-left:10px}", 4e3);
+        import_stylex3.default.inject(".x1xa6b72{height:700px}", 4e3);
+        import_stylex3.default.inject(".xrkmrrc{background-color:red}", 3e3);
+        import_stylex3.default.inject(".x1r3o6fz:hover{background-color:pink}", 3130);
         var styles = {
           bar: {
             "index__styles.bar": "index__styles.bar",
@@ -191,7 +220,7 @@ describe('esbuild-plugin-stylex', () => {
           }
         };
         function App() {
-          return import_stylex2.default.props(fooStyles_default.foo, styles.bar);
+          return import_stylex3.default.props(fooStyles_default.foo, styles.bar, bazStyles_default.baz);
         }
       })();
       "
