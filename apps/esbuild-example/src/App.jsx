@@ -12,7 +12,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import * as stylex from '@stylexjs/stylex';
-import { spacing, color } from './tokens.stylex.js';
+import { spacing, color } from './tokens.stylex';
 
 const styles = stylex.create({
   main: {
