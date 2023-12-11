@@ -103,7 +103,7 @@ export function readRequires(
   ) {
     const importPath = init.arguments[0].value;
     if (importPath == null) {
-      console.log('importPath is null');
+      // Impossible.
       return;
     }
     state.importPaths.add(importPath);
