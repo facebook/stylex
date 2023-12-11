@@ -30,6 +30,7 @@ export type PluginOptions = {
     plugins: Array<mixed>,
     presets: Array<mixed>,
   },
+  useCSSLayers?: boolean,
   ...
 };
 
@@ -38,7 +39,7 @@ export default function stylexPlugin({
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
-  stylexImports = ['stylex', '@stylexjs/stylex'],
+  importSources = ['stylex', '@stylexjs/stylex'],
   useCSSLayers = false,
   ...options
 }: PluginOptions = {}): Plugin<> {
@@ -69,7 +70,7 @@ export default function stylexPlugin({
       return false;
     },
     async transform(inputCode, id): Promise<null | TransformResult> {
-      if (!stylexImports.some((importName) => inputCode.includes(importName))) {
+      if (!importSources.some((importName) => inputCode.includes(importName))) {
         // In rollup, returning null from any plugin phase means "no changes made".
         return null;
       }

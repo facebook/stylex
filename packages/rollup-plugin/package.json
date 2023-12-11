@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "Rollup plugin for StyleX",
   "main": "lib/index.js",
+  "type": "module",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
