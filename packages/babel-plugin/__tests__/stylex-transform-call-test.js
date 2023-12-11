@@ -1142,6 +1142,57 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('stylex call with composition border shorthands with external styles', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            stylex(styles.default, props);
+            const styles = stylex.create({
+              default: {
+                borderTop: '5px solid blue',
+                borderLeft: '5px solid blue',
+                borderRight: '5px solid blue',
+                borderBottom: '5px solid blue',
+              },
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import stylex from 'stylex';
+          stylex(styles.default, props);
+          stylex.inject(".x16gpukw{border-top:5px solid blue}", 2000);
+          stylex.inject(".x13nwy86{border-left:5px solid blue}", 2000);
+          stylex.inject(".x2ekbea{border-right:5px solid blue}", 2000);
+          stylex.inject(".x1o3008b{border-bottom:5px solid blue}", 2000);
+          const styles = {
+            default: {
+              borderTop: "x16gpukw",
+              borderTopWidth: null,
+              borderTopStyle: null,
+              borderTopColor: null,
+              borderLeft: "x13nwy86",
+              borderLeftWidth: null,
+              borderInlineStartWidth: null,
+              borderInlineEndWidth: null,
+              borderLeftStyle: null,
+              borderInlineStartStyle: null,
+              borderInlineEndStyle: null,
+              borderLeftColor: null,
+              borderInlineStartColor: null,
+              borderInlineEndColor: null,
+              borderRight: "x2ekbea",
+              borderRightWidth: null,
+              borderRightStyle: null,
+              borderRightColor: null,
+              borderBottom: "x1o3008b",
+              borderBottomWidth: null,
+              borderBottomStyle: null,
+              borderBottomColor: null,
+              $$css: true
+            }
+          };"
+        `);
+      });
+
       test('stylex call using exported styles with pseudo selectors, and queries', () => {
         expect(
           transform(`

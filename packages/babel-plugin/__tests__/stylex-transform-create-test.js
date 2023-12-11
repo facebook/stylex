@@ -727,10 +727,8 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.inject(".x1lh7sze{border-color:var(--divider)}", 2000);
         stylex.inject(".xud65wk{border-bottom-color:red}", 4000);
         stylex.inject(".x12oqio5{border-radius:4px}", 2000);
+        stylex.inject(".x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}", 1000);
         stylex.inject(".xexx8yu{padding-top:0}", 4000);
-        stylex.inject(".xcrpjku{padding-right:var(--rightpadding,20px)}", 3000, ".xcrpjku{padding-left:var(--rightpadding,20px)}");
-        stylex.inject(".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}", 4000);
-        stylex.inject(".xyv1419{padding-left:var(--rightpadding,20px)}", 3000, ".xyv1419{padding-right:var(--rightpadding,20px)}");
         stylex.inject(".x1bg2uv5{border-color:green}", 2000);"
       `);
     });
@@ -893,17 +891,23 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           short: {
+            padding: "x1lmef92",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
             paddingTop: "xexx8yu",
-            paddingEnd: "xcrpjku",
-            paddingBottom: "x18xuxqe",
-            paddingStart: "xyv1419",
+            paddingBottom: null,
             $$css: true
           },
           shortReversed: {
-            paddingTop: "xx5yw1q",
-            paddingEnd: "xcrpjku",
-            paddingBottom: "x18xuxqe",
-            paddingStart: "xyv1419",
+            paddingTop: null,
+            padding: "x1lmef92",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
+            paddingBottom: null,
             $$css: true
           },
           valid: {
