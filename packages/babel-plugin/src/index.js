@@ -142,11 +142,12 @@ function styleXTransform(): PluginObj<> {
   };
 }
 
-styleXTransform.withOptions = function stylexPluginWithOptions(
-  options: StyleXOptions,
-): [typeof styleXTransform, StyleXOptions] {
+function stylexPluginWithOptions(
+  options: Partial<StyleXOptions>,
+): [typeof styleXTransform, Partial<StyleXOptions>] {
   return [styleXTransform, options];
-};
+}
+styleXTransform.withOptions = stylexPluginWithOptions;
 
 function isExported(path: null | NodePath<t.Node>): boolean {
   if (path == null || pathUtils.isProgram(path)) {
@@ -303,11 +304,11 @@ function addSpecificityLevel(selector: string, index: number): string {
   return `${beforeCurly}${pseudo}${afterCurly}`;
 }
 
-export type StyleXTransformObj = {
+export type StyleXTransformObj = $ReadOnly<{
   (): PluginObj<>,
-  withOptions: typeof styleXTransform.withOptions,
+  withOptions: typeof stylexPluginWithOptions,
   processStylexRules: typeof processStylexRules,
   ...
-};
+}>;
 
 export default (styleXTransform: StyleXTransformObj);
