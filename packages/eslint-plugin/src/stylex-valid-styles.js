@@ -2347,8 +2347,7 @@ const stylexValidStyles = {
         node &&
         node.type === 'CallExpression' &&
         isStylexCallee(node.callee) &&
-        node.arguments.length === 1 &&
-        node.arguments[0].type === 'ObjectExpression'
+        node.arguments.length === 1
       );
     }
 
