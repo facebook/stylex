@@ -25,6 +25,8 @@ export default function CtaButton({children, color, to}) {
   );
 }
 
+const CTA_BREAK = '@media (max-width: 390px)';
+
 const styles = stylex.create({
   base: {
     display: 'flex',
@@ -43,7 +45,10 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     backgroundColor: 'var(--fg1)',
     paddingBlock: '0.75rem',
-    paddingInline: '2rem',
+    paddingInline: {
+      default: '2rem',
+      [CTA_BREAK]: '1.5rem',
+    },
     boxShadow: {
       default: '0 0 2px rgba(0,0,0,0.35)',
       ':hover': '0 0 10px rgba(0,0,0,0.75)',
