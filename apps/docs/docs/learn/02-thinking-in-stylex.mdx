@@ -46,7 +46,7 @@ Most existing solutions to this problem rely on rules and conventions.
 <details>
   <summary>Utility Classes</summary>
   Atomic utility class names like Tailwind CSS and Tachyons rely on conventions and lint rules
-  to ensure that conflicting class names are not applied to the same element. Such tooling adds
+  to ensure that conflicting class names are not applied on the same element. Such tooling adds
   constraints on where and how styles can be applied, putting architectural limitations on styling.
 </details>
 
@@ -162,7 +162,7 @@ function MyComponent({style}) {
 This is a little more code, but the runtime cost is still minimal
 because of how fast the `stylex.props()` function is.
 
-Most other styling solutions don't enable the composition of styles across file
+Most other styling solutions don't enable composition of styles across file
 boundaries. The state of the art is to combine lists of class names.
 
 ### Small API surface
