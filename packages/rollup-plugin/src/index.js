@@ -7,13 +7,10 @@
  * @flow strict
  */
 
-import { transformAsync } from '@babel/core';
+import { transformAsync, type PluginItem } from '@babel/core';
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
-// $FlowFixMe[cannot-resolve-module]
 import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
-// $FlowFixMe[cannot-resolve-module]
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
-// $FlowFixMe[cannot-resolve-module]
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
@@ -23,16 +20,16 @@ const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
   process.env.BABEL_ENV === 'development';
 
-export type PluginOptions = {
+export type PluginOptions = $ReadOnly<{
   ...Partial<Options>,
   fileName?: string,
-  babelConfig?: {
-    plugins: Array<mixed>,
-    presets: Array<mixed>,
-  },
+  babelConfig?: $ReadOnly<{
+    plugins?: $ReadOnlyArray<PluginItem>,
+    presets?: $ReadOnlyArray<PluginItem>,
+  }>,
   useCSSLayers?: boolean,
   ...
-};
+}>;
 
 export default function stylexPlugin({
   dev = IS_DEV_ENV,
@@ -57,6 +54,7 @@ export default function stylexPlugin({
           useCSSLayers,
         );
 
+        // This is the intended API, but Flow doesn't support this pattern.
         // $FlowExpectedError[object-this-reference]
         this.emitFile({
           fileName,
@@ -70,25 +68,33 @@ export default function stylexPlugin({
       return false;
     },
     async transform(inputCode, id): Promise<null | TransformResult> {
-      if (!importSources.some((importName) => inputCode.includes(importName))) {
-        // In rollup, returning null from any plugin phase means "no changes made".
+      if (
+        !importSources.some((importName) =>
+          typeof importName === 'string'
+            ? inputCode.includes(importName)
+            : inputCode.includes(importName.from),
+        )
+      ) {
+        // In rollup, returning null from any plugin phase means
+        // "no changes made".
         return null;
       }
 
       const result = await transformAsync(inputCode, {
         babelrc: false,
         filename: id,
-        // $FlowFixMe
         presets,
-        // $FlowFixMe
         plugins: [
           ...plugins,
           /\.jsx?/.test(path.extname(id))
             ? flowSyntaxPlugin
             : typescriptSyntaxPlugin,
           jsxSyntaxPlugin,
-          // $FlowFixMe
-          [stylexBabelPlugin, { dev, unstable_moduleResolution, ...options }],
+          stylexBabelPlugin.withOptions({
+            ...options,
+            dev,
+            unstable_moduleResolution,
+          }),
         ],
       });
       if (result == null) {
@@ -109,8 +115,7 @@ export default function stylexPlugin({
         stylexRules[id] = (metadata: $FlowFixMe).stylex;
       }
 
-      // $FlowFixMe
-      return { code, map, meta: metadata };
+      return { code, map: (map: $FlowFixMe), meta: (metadata: $FlowFixMe) };
     },
   };
 }
