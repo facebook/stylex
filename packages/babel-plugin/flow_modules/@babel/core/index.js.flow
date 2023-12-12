@@ -301,14 +301,14 @@ export interface TransformOptions {
    *
    * Default: `[]`
    */
-  plugins?: ?Array<PluginItem>;
+  plugins?: ?$ReadOnlyArray<PluginItem>;
 
   /**
    * List of presets (a set of plugins) to load and use
    *
    * Default: `[]`
    */
-  presets?: ?Array<PluginItem>;
+  presets?: ?$ReadOnlyArray<PluginItem>;
 
   /**
    * Retain line numbers. This will lead to wacky code but is handy for scenarios where you can't use source maps. (**NOTE**: This will not retain the columns)
@@ -685,19 +685,19 @@ export interface ConfigItem {
   };
 }
 
-export type PluginOptions = { [string]: mixed } | void | false;
+export type PluginOptions = $ReadOnly<{ [string]: mixed }> | void | false;
 
 export type PluginTarget =
   | string
-  | { [string]: mixed }
+  | $ReadOnly<{ [string]: mixed }>
   | ((...args: any[]) => any);
 
 export type PluginItem =
   | ConfigItem
   | PluginObj<any>
   | PluginTarget
-  | [PluginTarget, PluginOptions]
-  | [PluginTarget, PluginOptions, string | void];
+  | $ReadOnly<[PluginTarget, PluginOptions]>
+  | $ReadOnly<[PluginTarget, PluginOptions, string | void]>;
 
 declare export function resolvePlugin(
   name: string,
