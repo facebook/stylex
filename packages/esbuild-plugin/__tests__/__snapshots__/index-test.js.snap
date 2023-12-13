@@ -34,10 +34,10 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   ));
 
   // __tests__/__fixtures__/index.js
-  var import_stylex3 = __toESM(__require("@stylexjs/stylex"));
+  var import_stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
 
   // __tests__/__fixtures__/fooStyles.js
-  var import_stylex = __toESM(__require("@stylexjs/stylex"));
+  var import_stylex = __toESM(__require("@stylexjs/stylex"), 1);
   var fooStyles_default = {
     foo: {
       display: "xt0psk2",
@@ -47,7 +47,7 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   };
 
   // __tests__/__fixtures__/bazStyles.js
-  var import_stylex2 = __toESM(__require("@stylexjs/stylex"));
+  var import_stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
   var bazStyles_default = {
     baz: {
       display: "x1lliihq",
@@ -134,10 +134,10 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   ));
 
   // __tests__/__fixtures__/index.js
-  var import_stylex3 = __toESM(__require("@stylexjs/stylex"));
+  var import_stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
 
   // __tests__/__fixtures__/fooStyles.js
-  var import_stylex = __toESM(__require("@stylexjs/stylex"));
+  var import_stylex = __toESM(__require("@stylexjs/stylex"), 1);
   import_stylex.default.inject(".xt0psk2{display:inline}", 3e3);
   import_stylex.default.inject(".xh8yej3{width:100%}", 4e3);
   var fooStyles_default = {
@@ -150,7 +150,7 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   };
 
   // __tests__/__fixtures__/bazStyles.js
-  var import_stylex2 = __toESM(__require("@stylexjs/stylex"));
+  var import_stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
   import_stylex2.default.inject(".x1lliihq{display:block}", 3e3);
   import_stylex2.default.inject(".xnsd7bc{height:900px}", 4e3);
   import_stylex2.default.inject(".x3hqpx7{width:50%}", 4e3);
