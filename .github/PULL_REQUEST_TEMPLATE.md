@@ -15,5 +15,5 @@ Screenshots, Tests, Anything Else
 ## Pre-flight checklist
 
 - [ ] I have read the contributing guidelines
-      [Contribution Guidelines](../CONTRIBUTING.md)
+      [Contribution Guidelines](./CONTRIBUTING.md)
 - [ ] Performed a self-review of my code
