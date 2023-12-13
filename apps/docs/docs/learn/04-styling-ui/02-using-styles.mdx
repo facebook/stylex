@@ -23,7 +23,7 @@ use them conditionally, or even compose styles across module boundaries.
 
 ## Merging styles
 
-The `stylex.props` function can take a list of styles and merges them in a
+The `stylex.props` function can take a list of styles and merge them in a
 deterministic way, where “the last style applied always wins”.
 
 Consider that a couple of style objects are defined as so:
@@ -69,7 +69,7 @@ The actual implementation is optimized for performance.
 
 Styles can be applied conditionally at runtime by using common JavaScript
 patterns such as ternary expressions and the `&&` operator. `stylex.props`
-ignores falsy values such as `null`, `undefined` or `false`.
+ignores falsy values such as `null`, `undefined` or `false` and empty objects.
 
 ```tsx
 <div
