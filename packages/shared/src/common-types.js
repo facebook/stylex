@@ -41,11 +41,10 @@ export type FlatCompiledStyles = $ReadOnly<{
   $$css: true,
 }>;
 
-export type StyleXOptions = {
+export type StyleXOptions = $ReadOnly<{
   dev: boolean,
   test: boolean,
   useRemForFontSize: boolean,
-  runtimeInjection: boolean,
   classNamePrefix: string,
   definedStylexCSSVariables?: { [key: string]: mixed },
   styleResolution:
@@ -56,7 +55,7 @@ export type StyleXOptions = {
     // This is not recommended, and will be removed in a future version.
     | 'legacy-expand-shorthands',
   ...
-};
+}>;
 
 export type MutableCompiledNamespaces = {
   [key: string]: FlatCompiledStyles,

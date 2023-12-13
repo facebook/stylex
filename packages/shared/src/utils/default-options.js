@@ -24,7 +24,6 @@ import type { StyleXOptions } from '../common-types';
 
 export const defaultOptions: StyleXOptions = {
   dev: false,
-  runtimeInjection: false,
   useRemForFontSize: true,
   test: false,
   classNamePrefix: 'x',

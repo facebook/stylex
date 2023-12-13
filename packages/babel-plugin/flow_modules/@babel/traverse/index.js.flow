@@ -3,6 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  * @flow strict
  */
 
@@ -307,8 +308,8 @@ declare export class NodePath<+T: Node = Node> {
   type: T extends null | void
     ? void
     : T extends Node
-    ? T['type']
-    : string | void;
+      ? T['type']
+      : string | void;
 
   typeAnnotation: { ... };
 
@@ -996,7 +997,7 @@ export type NodePathResult<T: Node | $ReadOnlyArray<Node>> =
   T extends $ReadOnlyArray<infer TNode>
     ? $ReadOnlyArray<NodePath<TNode>>
     : T extends null | void
-    ? void
-    : T extends Node
-    ? NodePath<T>
-    : T;
+      ? void
+      : T extends Node
+        ? NodePath<T>
+        : T;
