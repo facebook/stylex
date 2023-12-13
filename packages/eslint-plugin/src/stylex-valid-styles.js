@@ -1942,18 +1942,11 @@ const CSSProperties = {
   order: order,
   orphans: orphans,
   outline: outline,
-  outlineColor: showError(
-    "'outlineColor' is not supported yet. Please use 'outline' instead",
-  ),
-  outlineOffset: showError(
-    "'outlineOffset' is not supported yet. Please use 'outline' instead",
-  ),
-  outlineStyle: showError(
-    "'outlineStyle' is not supported yet. Please use 'outline' instead",
-  ),
-  outlineWidth: showError(
-    "'outlineWidth' is not supported yet. Please use 'outline' instead",
-  ),
+  outlineColor: outlineColor,
+  outlineOffset: width,
+  outlineStyle: outlineStyle, 
+  outlineWidth: width, 
+
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
