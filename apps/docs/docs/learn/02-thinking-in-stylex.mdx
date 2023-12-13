@@ -50,7 +50,7 @@ Most existing solutions to this problem rely on rules and conventions.
   constraints on where and how styles can be applied, putting architectural limitations on styling.
 </details>
 
-StyleX aims to improve on both the consistency and predictability of styles
+StyleX aims to improve both the consistency and predictability of styles
 _and_ the expressive power available. We believe this is possible through
 build-tools.
 
@@ -181,8 +181,8 @@ At its core, StyleX can be boiled down to two functions:
 those styles to an element.
 
 Within these two functions, we choose to rely on common JS patterns rather than
-introduce unique API or patterns for StyleX. For example, we don't have an API for
-conditional styles. Instead we support applying styles conditionally with
+introduce unique APIs or patterns for StyleX. For example, we don't have an API for
+conditional styles. Instead, we support applying styles conditionally with
 boolean or ternary expressions.
 
 Things should work as expected when dealing with JavaScript objects and arrays.
@@ -248,7 +248,7 @@ type Props = {
 };
 ```
 
-Styles being typed enables extremely sophisticated rules about the ways in which
+Styles being typed enables extremely sophisticated rules about how
 a component's styles can be customized with **zero-runtime cost**.
 
 ### Shareable constants
@@ -294,11 +294,11 @@ distance":
 - `.className ~ *`
 - `.className:hover > div:first-child`
 
-All of these patterns, while powerful, makes styles fragile and less predictable.
+All of these patterns, while powerful, make styles fragile and less predictable.
 Applying class names on one element can affect a completely different element.
 
 Inheritable styles such as `color` will still be inherited, but that is the
-_only_ form of style-at-a-distance that StyleX allows. And in those cases too,
+_only_ form of style-at-a-distance that StyleX allows. In those cases too,
 the styles applied directly on an element always take precedence over inherited
 styles.
 

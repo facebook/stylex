@@ -360,6 +360,18 @@ eslintTester.run('stylex-valid-styles', rule.default, {
   ],
   invalid: [
     {
+      code: `
+        import stylex from 'stylex';
+        const styles = {default: {width: '30pt'}};
+        stylex.create(styles);
+      `,
+      errors: [
+        {
+          message: 'Styles must be represented as JavaScript objects',
+        },
+      ],
+    },
+    {
       code: "import stylex from 'stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {

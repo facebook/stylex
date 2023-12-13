@@ -337,7 +337,9 @@ type fontWeight =
   | 600
   | 700
   | 800
-  | 900;
+  | 900
+  | string
+  | number;
 type gap = number | string;
 type grid = gridTemplate | string;
 type gridArea = gridLine | string;

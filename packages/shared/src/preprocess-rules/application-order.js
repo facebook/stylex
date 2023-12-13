@@ -9,8 +9,6 @@
 
 import type { TStyleValue } from '../common-types';
 
-import splitValue from '../utils/split-css-value';
-
 /**
  * Shorthand properties:
  * - [x] all - Should be banned
@@ -156,15 +154,15 @@ const shorthands = {
     ['borderBottomColor', null],
   ],
   // @Deprecated
-  borderInlineStart: (_rawValue: TStyleValue): TReturn => [
-    ['borderInlineStart', null],
+  borderInlineStart: (rawValue: TStyleValue): TReturn => [
+    ['borderInlineStart', rawValue],
     ...shorthands.borderInlineStartWidth(null),
     ...shorthands.borderInlineStartStyle(null),
     ...shorthands.borderInlineStartColor(null),
   ],
   // @Deprecated
-  borderLeft: (_rawValue: TStyleValue): TReturn => [
-    ['borderLeft', null],
+  borderLeft: (rawValue: TStyleValue): TReturn => [
+    ['borderLeft', rawValue],
     ...shorthands.borderLeftWidth(null),
     ...shorthands.borderLeftStyle(null),
     ...shorthands.borderLeftColor(null),
@@ -567,26 +565,14 @@ const shorthands = {
   ],
 
   padding: (rawValue: TStyleValue): TReturn => {
-    const values =
-      typeof rawValue === 'number' ? [rawValue] : splitValue(rawValue);
-    if (values.length === 1) {
-      return [
-        ['padding', values[0]],
-        ['paddingStart', null],
-        ['paddingLeft', null],
-        ['paddingEnd', null],
-        ['paddingRight', null],
-        ['paddingTop', null],
-        ['paddingBottom', null],
-      ];
-    }
-    // @Deprecated
-    const [top, right = top, bottom = top, left = right] = values;
     return [
-      ['paddingTop', top],
-      ['paddingEnd', right],
-      ['paddingBottom', bottom],
-      ['paddingStart', left],
+      ['padding', rawValue],
+      ['paddingStart', null],
+      ['paddingLeft', null],
+      ['paddingEnd', null],
+      ['paddingRight', null],
+      ['paddingTop', null],
+      ['paddingBottom', null],
     ];
   },
   paddingInline: (rawValue: TStyleValue): TReturn => [
