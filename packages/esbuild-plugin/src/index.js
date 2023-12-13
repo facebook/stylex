@@ -8,7 +8,7 @@
  */
 
 import path from 'path';
-import createHash from '@stylexjs/shared/lib/hash'
+import createHash from '@stylexjs/shared/lib/hash';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { transformAsync, type PluginItem } from '@babel/core';
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
@@ -65,7 +65,8 @@ export default function stylexPlugin({
           useCSSLayers,
         );
         const shouldWriteToDisk =
-          build.initialOptions.write === undefined || build.initialOptions.write;
+          build.initialOptions.write === undefined ||
+          build.initialOptions.write;
 
         if (shouldWriteToDisk) {
           await mkdir(path.dirname(generatedCSSFileName), {
@@ -118,28 +119,31 @@ export default function stylexPlugin({
             ],
           });
 
-          const loader = getEsbuildLoader(currFilePath)
+          const loader = getEsbuildLoader(currFilePath);
 
           if (transformResult === null) {
-            console.warn('StyleX: transformAsync returned null')
-            return { code: inputCode, loader }
+            console.warn('StyleX: transformAsync returned null');
+            return { code: inputCode, loader };
           }
 
-          const {code, metadata} = transformResult
+          const { code, metadata } = transformResult;
 
           if (code === null) {
-            console.warn('StyleX: transformAsync returned null code')
-            return { code: inputCode, loader }
+            console.warn('StyleX: transformAsync returned null code');
+            return { code: inputCode, loader };
           }
 
-
-          if (!dev && (metadata: $FlowFixMe).stylex !== null && (metadata: $FlowFixMe).stylex.length > 0) {
+          if (
+            !dev &&
+            (metadata: $FlowFixMe).stylex !== null &&
+            (metadata: $FlowFixMe).stylex.length > 0
+          ) {
             stylexRules[args.path] = (metadata: $FlowFixMe).stylex;
           }
 
           return {
             contents: code,
-            loader
+            loader,
           };
         },
       );
