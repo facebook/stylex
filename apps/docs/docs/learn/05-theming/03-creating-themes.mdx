@@ -1,4 +1,4 @@
----
+ ---
 # Copyright (c) Meta Platforms, Inc. and affiliates.
 #
 # This source code is licensed under the MIT license found in the
@@ -11,7 +11,7 @@ sidebar_position: 3
 :::info Note
 
 The [`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
-option must be enabled in the StyleX Babel configuration to enable theming APIs.
+option needs to be enabled in the StyleX Babel configuration to enable theming APIs.
 
 :::
 
@@ -24,7 +24,7 @@ Any variable group can be imported to create a theme like so:
 
 ```tsx title="themes.js"
 import * as stylex from '@stylexjs/stylex';
-import { colors, spacing } from './tokens.styles';
+import {colors, spacing} from './tokens.styles';
 
 // A constant can be used to avoid repeating the media query
 const DARK = '@media (prefers-color-scheme: dark)';
@@ -50,8 +50,8 @@ for that element and all its descendants.
 
 ```tsx title="components/MyComponent.js"
 import * as stylex from '@stylexjs/stylex';
-import { colors, spacing } from '../tokens.styles';
-import { dracula } from '../themes';
+import {colors, spacing} from '../tokens.styles';
+import {dracula} from '../themes';
 
 const styles = stylex.create({
   container: {
@@ -74,7 +74,7 @@ components.
 
 :::info
 
-If multiple themes for the same variable group are applied to the same HTML
+If multiple themes for the same variable group are applied on the same HTML
 element, the last applied theme wins.
 
 :::
