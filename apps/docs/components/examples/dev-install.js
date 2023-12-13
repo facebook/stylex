@@ -13,8 +13,8 @@ import {versionTag} from '../VersionTag';
 
 const codeForCLI = ({prod, dev}) => ({
   npm: [
-    prod?.length > 0 ? `$ npm install --save ${prod.join(' ')}` : null,
-    dev?.length > 0 ? `$ npm install --save-dev ${dev.join(' ')}` : null,
+    prod?.length > 0 ? `npm install --save ${prod.join(' ')}` : null,
+    dev?.length > 0 ? `npm install --save-dev ${dev.join(' ')}` : null,
   ]
     .filter(Boolean)
     .join('\n'),
