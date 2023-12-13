@@ -9,12 +9,12 @@
 
 'use strict';
 
-const path = require('path');
-const rollup = require('rollup');
-const { babel } = require('@rollup/plugin-babel');
-const commonjs = require('@rollup/plugin-commonjs');
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const stylexPlugin = require('../src/index');
+import path from 'path';
+import rollup from 'rollup';
+import { babel } from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
+import stylexPlugin from '../src/index';
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {

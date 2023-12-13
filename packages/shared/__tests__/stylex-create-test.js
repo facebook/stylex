@@ -204,32 +204,25 @@ describe('stylex-create-test', () => {
         {
           "short": {
             "$$css": true,
-            "paddingBottom": "x18xuxqe",
-            "paddingEnd": "xcrpjku",
-            "paddingStart": "xyv1419",
+            "padding": "x1lmef92",
+            "paddingBottom": null,
+            "paddingEnd": null,
+            "paddingLeft": null,
+            "paddingRight": null,
+            "paddingStart": null,
             "paddingTop": "xexx8yu",
           },
         },
         {
-          "x18xuxqe": {
-            "ltr": ".x18xuxqe{padding-bottom:calc((100% - 50px) * .5)}",
-            "priority": 4000,
+          "x1lmef92": {
+            "ltr": ".x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}",
+            "priority": 1000,
             "rtl": null,
-          },
-          "xcrpjku": {
-            "ltr": ".xcrpjku{padding-right:var(--rightpadding,20px)}",
-            "priority": 3000,
-            "rtl": ".xcrpjku{padding-left:var(--rightpadding,20px)}",
           },
           "xexx8yu": {
             "ltr": ".xexx8yu{padding-top:0}",
             "priority": 4000,
             "rtl": null,
-          },
-          "xyv1419": {
-            "ltr": ".xyv1419{padding-left:var(--rightpadding,20px)}",
-            "priority": 3000,
-            "rtl": ".xyv1419{padding-right:var(--rightpadding,20px)}",
           },
         },
       ]
