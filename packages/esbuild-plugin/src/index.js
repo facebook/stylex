@@ -14,7 +14,7 @@ import hermesParserPlugin from 'babel-plugin-syntax-hermes-parser';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import path from 'path';
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import type { Plugin, PluginBuild, BuildResult, OnLoadArgs } from 'esbuild';
 
@@ -30,7 +30,7 @@ export type PluginOptions = $ReadOnly<{
   ...Partial<Options>,
   generatedCSSFileName?: string,
   stylexImports?: $ReadOnlyArray<string>,
-  babelConfig ?: $ReadOnly<{
+  babelConfig?: $ReadOnly<{
     plugins?: $ReadOnlyArray<PluginItem>,
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
@@ -84,43 +84,46 @@ export default function stylexPlugin({
         });
       });
 
-      onLoad({ filter: STYLEX_PLUGIN_ONLOAD_FILTER }, async (args: OnLoadArgs) => {
-        const currFilePath = args.path;
-        const inputCode = await readFile(currFilePath, 'utf8');
+      onLoad(
+        { filter: STYLEX_PLUGIN_ONLOAD_FILTER },
+        async (args: OnLoadArgs) => {
+          const currFilePath = args.path;
+          const inputCode = await readFile(currFilePath, 'utf8');
 
-        if (
-          !stylexImports.some((importName) => inputCode.includes(importName))
-        ) {
-          // avoid transform if file doesn't have stylex imports
-          // esbuild proceeds to the next callback
-          return;
-        }
+          if (
+            !stylexImports.some((importName) => inputCode.includes(importName))
+          ) {
+            // avoid transform if file doesn't have stylex imports
+            // esbuild proceeds to the next callback
+            return;
+          }
 
-        const { code, metadata } = await transformAsync(inputCode, {
-          babelrc: false,
-          filename: currFilePath,
-          presets,
-          plugins: [
-            ...plugins,
-            ...getFlowOrTypeScriptBabelSyntaxPlugins(currFilePath),
-            jsxSyntaxPlugin,
-            stylexBabelPlugin.withOptions({
-              ...options,
-              dev,
-              unstable_moduleResolution
-            }),
-          ],
-        });
+          const { code, metadata } = await transformAsync(inputCode, {
+            babelrc: false,
+            filename: currFilePath,
+            presets,
+            plugins: [
+              ...plugins,
+              ...getFlowOrTypeScriptBabelSyntaxPlugins(currFilePath),
+              jsxSyntaxPlugin,
+              stylexBabelPlugin.withOptions({
+                ...options,
+                dev,
+                unstable_moduleResolution,
+              }),
+            ],
+          });
 
-        if (!dev && metadata.stylex !== null && metadata.stylex.length > 0) {
-          stylexRules[args.path] = metadata.stylex;
-        }
+          if (!dev && metadata.stylex !== null && metadata.stylex.length > 0) {
+            stylexRules[args.path] = metadata.stylex;
+          }
 
-        return {
-          contents: code,
-          loader: getEsbuildLoader(currFilePath),
-        };
-      });
+          return {
+            contents: code,
+            loader: getEsbuildLoader(currFilePath),
+          };
+        },
+      );
     },
   };
 }
