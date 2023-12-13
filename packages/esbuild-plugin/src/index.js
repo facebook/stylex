@@ -7,14 +7,15 @@
  * @flow strict
  */
 
+import path from 'path';
+import createHash from '@stylexjs/shared/lib/hash'
+import { readFile, writeFile, mkdir } from 'fs/promises';
 import { transformAsync, type PluginItem } from '@babel/core';
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
 import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
 import hermesParserPlugin from 'babel-plugin-syntax-hermes-parser';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
-import path from 'path';
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import type { Plugin, PluginBuild, BuildResult, OnLoadArgs } from 'esbuild';
 
@@ -49,10 +50,10 @@ export default function stylexPlugin({
 }: PluginOptions = {}): Plugin {
   return {
     name: PACKAGE_NAME,
-    async setup({ onLoad, onEnd, initialOptions }: PluginBuild) {
+    async setup(build: PluginBuild) {
       const stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
 
-      onEnd(async ({ outputFiles }: BuildResult) => {
+      build.onEnd(async ({ outputFiles }: BuildResult<>) => {
         const rules: Array<Rule> = Object.values(stylexRules).flat();
 
         if (rules.length === 0) {
@@ -64,7 +65,7 @@ export default function stylexPlugin({
           useCSSLayers,
         );
         const shouldWriteToDisk =
-          initialOptions.write === undefined || initialOptions.write;
+          build.initialOptions.write === undefined || build.initialOptions.write;
 
         if (shouldWriteToDisk) {
           await mkdir(path.dirname(generatedCSSFileName), {
@@ -75,16 +76,19 @@ export default function stylexPlugin({
           return;
         }
 
-        outputFiles.push({
-          path: '<stdout>',
-          contents: new TextEncoder().encode(collectedCSS),
-          get text() {
-            return collectedCSS;
-          },
-        });
+        if (outputFiles !== undefined) {
+          outputFiles.push({
+            path: '<stdout>',
+            contents: new TextEncoder().encode(collectedCSS),
+            hash: createHash(new Date().getTime().toString()),
+            get text() {
+              return collectedCSS;
+            },
+          });
+        }
       });
 
-      onLoad(
+      build.onLoad(
         { filter: STYLEX_PLUGIN_ONLOAD_FILTER },
         async (args: OnLoadArgs) => {
           const currFilePath = args.path;
@@ -98,7 +102,7 @@ export default function stylexPlugin({
             return;
           }
 
-          const { code, metadata } = await transformAsync(inputCode, {
+          const transformResult = await transformAsync(inputCode, {
             babelrc: false,
             filename: currFilePath,
             presets,
@@ -114,13 +118,28 @@ export default function stylexPlugin({
             ],
           });
 
-          if (!dev && metadata.stylex !== null && metadata.stylex.length > 0) {
-            stylexRules[args.path] = metadata.stylex;
+          const loader = getEsbuildLoader(currFilePath)
+
+          if (transformResult === null) {
+            console.warn('StyleX: transformAsync returned null')
+            return { code: inputCode, loader }
+          }
+
+          const {code, metadata} = transformResult
+
+          if (code === null) {
+            console.warn('StyleX: transformAsync returned null code')
+            return { code: inputCode, loader }
+          }
+
+
+          if (!dev && (metadata: $FlowFixMe).stylex !== null && (metadata: $FlowFixMe).stylex.length > 0) {
+            stylexRules[args.path] = (metadata: $FlowFixMe).stylex;
           }
 
           return {
             contents: code,
-            loader: getEsbuildLoader(currFilePath),
+            loader
           };
         },
       );
