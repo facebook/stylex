@@ -31,7 +31,7 @@ const config = (env, argv) => ({
   },
   plugins: [
     new StylexPlugin({
-      filename: 'styles.[contenthash].css',
+      filename: 'styles.css',
       // get webpack mode and set value for dev
       dev: argv.mode === 'development',
     }),

@@ -135,7 +135,7 @@ provides plugins for Webpack, Rollup, and Next.js.
     plugins: [
       // Ensure that the stylex plugin is used before Babel
       new StylexPlugin({
-        filename: 'styles.[contenthash].css',
+        filename: 'styles.css',
         // get webpack mode and set value for dev
         dev: argv.mode === 'development',
         // Use statically generated CSS files and not runtime injected CSS.
