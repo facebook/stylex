@@ -38,7 +38,9 @@ type ModuleResolution =
 
 export type StyleXOptions = {
   ...RuntimeOptions,
-  importSources: Array<string>,
+  importSources: $ReadOnlyArray<
+    string | $ReadOnly<{ from: string, as: string }>,
+  >,
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
   unstable_moduleResolution: void | ModuleResolution,
@@ -84,7 +86,11 @@ export default class StateManager {
       runtimeInjection:
         (options: $FlowFixMe).runtimeInjection ?? !!(options: $FlowFixMe).dev,
       classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
-      importSources: (options: $FlowFixMe).importSources ?? [name, 'stylex'],
+      importSources: [
+        name,
+        'stylex',
+        ...((options: $FlowFixMe).importSources ?? []),
+      ],
       definedStylexCSSVariables:
         (options: $FlowFixMe).definedStylexCSSVariables ?? {},
       genConditionalClasses: !!(options: $FlowFixMe).genConditionalClasses,
@@ -108,6 +114,21 @@ export default class StateManager {
       return [...this.importPaths][0];
     }
     return '@stylexjs/stylex';
+  }
+
+  get importSources(): $ReadOnlyArray<string> {
+    return this.options.importSources.map((source) =>
+      typeof source === 'string' ? source : source.from,
+    );
+  }
+
+  importAs(source: string): null | string {
+    for (const importSource of this.options.importSources) {
+      if (typeof importSource !== 'string' && importSource.from === source) {
+        return importSource.as;
+      }
+    }
+    return null;
   }
 
   get canReferenceTheme(): boolean {

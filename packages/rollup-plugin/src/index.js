@@ -4,42 +4,58 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @format
+ * @flow strict
  */
 
-const babel = require('@babel/core');
-const stylexBabelPlugin = require('@stylexjs/babel-plugin');
-const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
-const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
-const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
-const path = require('path');
+import { transformAsync, type PluginItem } from '@babel/core';
+import stylexBabelPlugin from '@stylexjs/babel-plugin';
+import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
+import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
+import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
+import path from 'path';
+import type { Options, Rule } from '@stylexjs/babel-plugin';
+import type { Plugin, PluginContext, TransformResult } from 'rollup';
 
 const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
   process.env.BABEL_ENV === 'development';
 
-module.exports = function stylexPlugin({
+export type PluginOptions = $ReadOnly<{
+  ...Partial<Options>,
+  fileName?: string,
+  babelConfig?: $ReadOnly<{
+    plugins?: $ReadOnlyArray<PluginItem>,
+    presets?: $ReadOnlyArray<PluginItem>,
+  }>,
+  useCSSLayers?: boolean,
+  ...
+}>;
+
+export default function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
-  stylexImports = ['stylex', '@stylexjs/stylex'],
+  importSources = ['stylex', '@stylexjs/stylex'],
   useCSSLayers = false,
   ...options
-} = {}) {
-  let stylexRules = {};
+}: PluginOptions = {}): Plugin<> {
+  let stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
   return {
     name: 'rollup-plugin-stylex',
     buildStart() {
       stylexRules = {};
     },
-    generateBundle() {
-      const rules = Object.values(stylexRules).flat();
+    generateBundle(this: PluginContext) {
+      const rules: Array<Rule> = Object.values(stylexRules).flat();
       if (rules.length > 0) {
         const collectedCSS = stylexBabelPlugin.processStylexRules(
           rules,
           useCSSLayers,
         );
+
+        // This is the intended API, but Flow doesn't support this pattern.
+        // $FlowExpectedError[object-this-reference]
         this.emitFile({
           fileName,
           source: collectedCSS,
@@ -47,17 +63,24 @@ module.exports = function stylexPlugin({
         });
       }
     },
-    shouldTransformCachedModule({ code: _code, id, cache: _cache, meta }) {
+    shouldTransformCachedModule({ code: _code, id, meta }) {
       stylexRules[id] = meta.stylex;
       return false;
     },
-    async transform(inputCode, id) {
-      if (!stylexImports.some((importName) => inputCode.includes(importName))) {
-        // In rollup, returning null from any plugin phase means "no changes made".
+    async transform(inputCode, id): Promise<null | TransformResult> {
+      if (
+        !importSources.some((importName) =>
+          typeof importName === 'string'
+            ? inputCode.includes(importName)
+            : inputCode.includes(importName.from),
+        )
+      ) {
+        // In rollup, returning null from any plugin phase means
+        // "no changes made".
         return null;
       }
 
-      const { code, map, metadata } = await babel.transformAsync(inputCode, {
+      const result = await transformAsync(inputCode, {
         babelrc: false,
         filename: id,
         presets,
@@ -67,14 +90,32 @@ module.exports = function stylexPlugin({
             ? flowSyntaxPlugin
             : typescriptSyntaxPlugin,
           jsxSyntaxPlugin,
-          [stylexBabelPlugin, { dev, unstable_moduleResolution, ...options }],
+          stylexBabelPlugin.withOptions({
+            ...options,
+            dev,
+            unstable_moduleResolution,
+          }),
         ],
       });
-
-      if (!dev && metadata.stylex != null && metadata.stylex.length > 0) {
-        stylexRules[id] = metadata.stylex;
+      if (result == null) {
+        console.warn('stylex: transformAsync returned null');
+        return { code: inputCode };
       }
-      return { code, map, meta: metadata };
+      const { code, map, metadata } = result;
+      if (code == null) {
+        console.warn('stylex: transformAsync returned null code');
+        return { code: inputCode };
+      }
+
+      if (
+        !dev &&
+        (metadata: $FlowFixMe).stylex != null &&
+        (metadata: $FlowFixMe).stylex.length > 0
+      ) {
+        stylexRules[id] = (metadata: $FlowFixMe).stylex;
+      }
+
+      return { code, map: (map: $FlowFixMe), meta: (metadata: $FlowFixMe) };
     },
   };
-};
+}
