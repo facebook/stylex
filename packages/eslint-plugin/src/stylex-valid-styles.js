@@ -1945,9 +1945,7 @@ const CSSProperties = {
   outlineColor: showError(
     "'outlineColor' is not supported yet. Please use 'outline' instead",
   ),
-  outlineOffset: showError(
-    "'outlineOffset' is not supported yet. Please use 'outline' instead",
-  ),
+  outlineOffset: showError("'outlineOffset' is not supported yet."),
   outlineStyle: showError(
     "'outlineStyle' is not supported yet. Please use 'outline' instead",
   ),
