@@ -59,7 +59,7 @@ export default function Home() {
   );
 }
 
-const CTA_BREAK = '@media (max-width: 360px)';
+const CTA_BREAK = '@media (max-width: 385px)';
 
 const styles = stylex.create({
   main: {
