@@ -75,8 +75,8 @@ export type NestedCSSPropTypes = Partial<
 
 type UserAuthoredStyles = {
   [P in keyof CSSPropertiesWithExtras]?:
-    | CSSPropertiesWithExtras[P]
-    | { [key: string]: unknown };
+    | (CSSPropertiesWithExtras[P] | (string & {}))
+    | { [key: string]: CSSProperties[P] | (string & {}) };
 };
 export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 // NOTE: `XStyle` has been deprecated in favor of `StaticStyles` and `StyleXStyles`.
