@@ -7,9 +7,13 @@
  *
  */
 
-const path = require('path');
-const esbuild = require('esbuild');
-const stylexPlugin = require('@stylexjs/esbuild-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import esbuild from 'esbuild';
+import stylexPlugin from '@stylexjs/esbuild-plugin';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const BUILD_DIR_NAME = 'public/dist';
 const OUTFILE = `${BUILD_DIR_NAME}/bundle.js`;
