@@ -79,13 +79,7 @@ export default function transformStyleXKeyframes(
 
     const statementPath: ?NodePath<t.Statement> = path.getStatementParent();
 
-    if (
-      // TODO: remove this check and traverse up to find a top level statment
-      statementPath != null &&
-      state.runtimeInjection != null
-    ) {
-      // We know that the parent path is a variable declaration
-
+    if (statementPath != null && state.runtimeInjection != null) {
       let injectName: t.Identifier;
       if (state.injectImportInserted != null) {
         injectName = state.injectImportInserted;
