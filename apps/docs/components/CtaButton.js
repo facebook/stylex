@@ -24,7 +24,6 @@ export default function CtaButton({children, color, to}) {
     </Link>
   );
 }
-
 const styles = stylex.create({
   base: {
     display: 'flex',
@@ -44,7 +43,6 @@ const styles = stylex.create({
     backgroundColor: 'var(--fg1)',
     paddingBlock: '0.75rem',
     paddingInline: '2rem',
-      
     boxShadow: {
       default: '0 0 2px rgba(0,0,0,0.35)',
       ':hover': '0 0 10px rgba(0,0,0,0.75)',
