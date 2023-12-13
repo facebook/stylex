@@ -4,17 +4,19 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- *
+ * @flow strict
  */
 
-const babel = require('@babel/core');
-const stylexBabelPlugin = require('@stylexjs/babel-plugin');
-const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
-const hermesParserPlugin = require('babel-plugin-syntax-hermes-parser');
-const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
-const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
-const path = require('path');
-const fs = require('fs/promises');
+import { transformAsync, type PluginItem } from '@babel/core';
+import stylexBabelPlugin from '@stylexjs/babel-plugin';
+import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
+import hermesParserPlugin from 'babel-plugin-syntax-hermes-parser';
+import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
+import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
+import path from 'path';
+import { readFile, writeFile, mkdir } from 'fs/promises';
+import type { Options, Rule } from '@stylexjs/babel-plugin';
+import type { Plugin, PluginBuild, BuildResult, OnLoadArgs } from 'esbuild';
 
 const PACKAGE_NAME = 'esbuild-plugin-stylex';
 
@@ -24,23 +26,34 @@ const IS_DEV_ENV =
 
 const STYLEX_PLUGIN_ONLOAD_FILTER = /\.(jsx|js|tsx|ts|mjs|cjs|mts|cts)$/;
 
-function stylexPlugin({
+export type PluginOptions = $ReadOnly<{
+  ...Partial<Options>,
+  generatedCSSFileName?: string,
+  stylexImports?: $ReadOnlyArray<string>,
+  babelConfig ?: $ReadOnly<{
+    plugins?: $ReadOnlyArray<PluginItem>,
+    presets?: $ReadOnlyArray<PluginItem>,
+  }>,
+  useCSSLayers?: boolean,
+  ...
+}>;
+
+export default function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
   stylexImports = ['@stylexjs/stylex'],
-  // file path for the generated CSS file
   generatedCSSFileName = path.resolve(__dirname, 'stylex.css'),
   babelConfig: { plugins = [], presets = [] } = {},
   useCSSLayers,
   ...options
-} = {}) {
+}: PluginOptions = {}): Plugin {
   return {
     name: PACKAGE_NAME,
-    async setup({ onLoad, onEnd, initialOptions }) {
-      const stylexRules = {};
+    async setup({ onLoad, onEnd, initialOptions }: PluginBuild) {
+      const stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
 
-      onEnd(async ({ outputFiles }) => {
-        const rules = Object.values(stylexRules).flat();
+      onEnd(async ({ outputFiles }: BuildResult) => {
+        const rules: Array<Rule> = Object.values(stylexRules).flat();
 
         if (rules.length === 0) {
           return;
@@ -54,10 +67,10 @@ function stylexPlugin({
           initialOptions.write === undefined || initialOptions.write;
 
         if (shouldWriteToDisk) {
-          await fs.mkdir(path.dirname(generatedCSSFileName), {
+          await mkdir(path.dirname(generatedCSSFileName), {
             recursive: true,
           });
-          await fs.writeFile(generatedCSSFileName, collectedCSS, 'utf8');
+          await writeFile(generatedCSSFileName, collectedCSS, 'utf8');
 
           return;
         }
@@ -71,9 +84,9 @@ function stylexPlugin({
         });
       });
 
-      onLoad({ filter: STYLEX_PLUGIN_ONLOAD_FILTER }, async (args) => {
+      onLoad({ filter: STYLEX_PLUGIN_ONLOAD_FILTER }, async (args: OnLoadArgs) => {
         const currFilePath = args.path;
-        const inputCode = await fs.readFile(currFilePath, 'utf8');
+        const inputCode = await readFile(currFilePath, 'utf8');
 
         if (
           !stylexImports.some((importName) => inputCode.includes(importName))
@@ -83,7 +96,7 @@ function stylexPlugin({
           return;
         }
 
-        const { code, metadata } = await babel.transformAsync(inputCode, {
+        const { code, metadata } = await transformAsync(inputCode, {
           babelrc: false,
           filename: currFilePath,
           presets,
@@ -91,14 +104,11 @@ function stylexPlugin({
             ...plugins,
             ...getFlowOrTypeScriptBabelSyntaxPlugins(currFilePath),
             jsxSyntaxPlugin,
-            [
-              stylexBabelPlugin,
-              {
-                dev,
-                unstable_moduleResolution,
-                ...options,
-              },
-            ],
+            stylexBabelPlugin.withOptions({
+              ...options,
+              dev,
+              unstable_moduleResolution
+            }),
           ],
         });
 
@@ -115,7 +125,7 @@ function stylexPlugin({
   };
 }
 
-function getEsbuildLoader(fileName) {
+function getEsbuildLoader(fileName: string) {
   if (fileName.endsWith('.tsx')) {
     return 'tsx';
   }
@@ -131,12 +141,10 @@ function getEsbuildLoader(fileName) {
   return 'js';
 }
 
-function getFlowOrTypeScriptBabelSyntaxPlugins(fileName) {
+function getFlowOrTypeScriptBabelSyntaxPlugins(fileName: string) {
   if (/\.jsx?/.test(path.extname(fileName))) {
     return [flowSyntaxPlugin, hermesParserPlugin];
   }
 
   return [[typescriptSyntaxPlugin, { isTSX: true }]];
 }
-
-module.exports = stylexPlugin;

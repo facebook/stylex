@@ -9,9 +9,9 @@
 
 'use strict';
 
-const path = require('path');
-const esbuild = require('esbuild');
-const stylexPlugin = require('../src/index');
+import path from 'path';
+import esbuild from 'esbuild';
+import stylexPlugin from '../src/index';
 
 async function build(options = {}) {
   const { outputFiles } = await esbuild.build({
