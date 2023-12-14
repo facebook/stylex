@@ -24,7 +24,6 @@ export default function CtaButton({children, color, to}) {
     </Link>
   );
 }
-
 const styles = stylex.create({
   base: {
     display: 'flex',
