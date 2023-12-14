@@ -32,7 +32,7 @@ const styleProps = stylex.apply(styles.root, styles.element);
 
 ## Development
 
-This is the development monorepo for stylex.
+This is the development mono repo for stylex.
 
 ### Structure
 
@@ -42,7 +42,7 @@ This is the development monorepo for stylex.
 - `apps`
   - Contains example apps using stylex and integration with build tools.
 - `packages`
-  - Contains the individual packages managed in the monorepo.
+  - Contains the individual packages managed in the mono repo.
   - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
   - [dev-runtime](https://github.com/facebook/stylex/blob/main/packages/dev-runtime)
   - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/eslint-plugin)
@@ -68,14 +68,14 @@ First, `npm install` the npm workspace.
 
 ## Contributing
 
-Development happens in the open on GitHub and we are grateful for contributions
+Development happens in the open on GitHub and we are grateful for your contributions
 including bug fixes, improvements, and ideas.
 
 ### Code of Conduct
 
 This project expects all participants to adhere to Meta's OSS
 [Code of Conduct](https://opensource.fb.com/code-of-conduct/). Please read
-the full text so that you can understand what actions will and will not be
+the full text to understand what actions will and will not be
 tolerated.
 
 ### Contributing Guide
