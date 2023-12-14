@@ -245,6 +245,25 @@ describe('webpack-plugin-stylex', () => {
     });
   });
 
+  it('supports [contenthash] in output filename', async () => {
+    const compiler = createCompiler('index.js', {
+      filename: 'stylex.[contenthash].css',
+    });
+    return new Promise((resolve, reject) => {
+      compiler.run((error, stats) => {
+        try {
+          expect(error).toBe(null);
+          expect(
+            assetExists('stylex.09fffeec3686166d4767.css', compiler, stats),
+          ).toBe(true);
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+  });
+
   describe('when in dev mode', () => {
     it('preserves stylex.inject calls and does not extract CSS', (done) => {
       const compiler = createCompiler('index.js', { dev: true });
