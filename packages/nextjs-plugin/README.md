@@ -16,6 +16,8 @@ or with yarn:
 yarn add --dev @stylexjs/nextjs-plugin
 ```
 
+> :warning: `@/` alias is unsupported at the moment.
+
 Add the following to your `.babelrc.js`
 ```javascript
 module.exports = {
