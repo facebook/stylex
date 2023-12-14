@@ -254,15 +254,17 @@ export interface BuildResult<ProvidedOptions: BuildOptions = BuildOptions> {
   errors: Message[];
   warnings: Message[];
   /** Only when "write: false" */
-  outputFiles:
-    | OutputFile[]
-    | ProvidedOptions['write'] extends false ? empty : void;
+  outputFiles: OutputFile[] | ProvidedOptions['write'] extends false
+    ? empty
+    : void;
   /** Only when "metafile: true" */
   metafile: Metafile | ProvidedOptions['metafile'] extends true ? empty : void;
   /** Only when "mangleCache" is present */
   mangleCache:
     | Record<string, string | false>
-    | ProvidedOptions['mangleCache'] extends Object ? empty : void;
+    | ProvidedOptions['mangleCache'] extends Object
+    ? empty
+    : void;
 }
 
 export interface BuildFailure extends Error {
@@ -316,11 +318,13 @@ export interface TransformResult<
   /** Only when "mangleCache" is present */
   mangleCache:
     | Record<string, string | false>
-    | ProvidedOptions['mangleCache'] extends Object ? empty : void;
+    | ProvidedOptions['mangleCache'] extends Object
+    ? empty
+    : void;
   /** Only when "legalComments" is "external" */
-  legalComments:
-    | string
-    | ProvidedOptions['legalComments'] extends 'external' ? empty : void;
+  legalComments: string | ProvidedOptions['legalComments'] extends 'external'
+    ? empty
+    : void;
 }
 
 export interface TransformFailure extends Error {
