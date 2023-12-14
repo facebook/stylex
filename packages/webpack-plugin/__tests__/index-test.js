@@ -38,10 +38,11 @@ function createCompiler(fixture, pluginOptions = {}, config = {}) {
     },
     plugins: [stylexPlugin],
     devtool: false, //'cheap-source-map',
-    externals: {
-      // Remove stylex runtime from bundle
-      stylex: 'stylex',
-    },
+    externals: [
+      'stylex',
+      '@stylexjs/stylex',
+      // '@stylexjs/stylex/lib/stylex-inject',
+    ],
     mode: 'production',
     output: {
       path: path.resolve(__dirname, '__builds__'),
@@ -264,15 +265,215 @@ describe('webpack-plugin-stylex', () => {
           exports.ids = [179];
           exports.modules = {
 
+          /***/ "../../../stylex/lib/StyleXSheet.js":
+          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+
+          Object.defineProperty(exports, "__esModule", ({
+            value: true
+          }));
+          exports.styleSheet = exports.StyleXSheet = void 0;
+          var _invariant = _interopRequireDefault(__webpack_require__("../../../../node_modules/invariant/invariant.js"));
+          function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : {
+              default: obj
+            };
+          }
+          const LIGHT_MODE_CLASS_NAME = '__fb-light-mode';
+          const DARK_MODE_CLASS_NAME = '__fb-dark-mode';
+          function buildTheme(selector, theme) {
+            const lines = [];
+            lines.push(\`\${selector} {\`);
+            for (const key in theme) {
+              const value = theme[key];
+              lines.push(\`  --\${key}: \${value};\`);
+            }
+            lines.push('}');
+            return lines.join('\\n');
+          }
+          function makeStyleTag() {
+            const tag = document.createElement('style');
+            tag.setAttribute('type', 'text/css');
+            tag.setAttribute('data-stylex', 'true');
+            const head = document.head || document.getElementsByTagName('head')[0];
+            (0, _invariant.default)(head, 'expected head');
+            head.appendChild(tag);
+            return tag;
+          }
+          function doesSupportCSSVariables() {
+            return globalThis.CSS != null && globalThis.CSS.supports != null && globalThis.CSS.supports('--fake-var:0');
+          }
+          const VARIABLE_MATCH = /var\\(--(.*?)\\)/g;
+          class StyleXSheet {
+            static LIGHT_MODE_CLASS_NAME = LIGHT_MODE_CLASS_NAME;
+            static DARK_MODE_CLASS_NAME = DARK_MODE_CLASS_NAME;
+            constructor(opts) {
+              this.tag = null;
+              this.injected = false;
+              this.ruleForPriority = new Map();
+              this.rules = [];
+              this.rootTheme = opts.rootTheme;
+              this.rootDarkTheme = opts.rootDarkTheme;
+              this.supportsVariables = opts.supportsVariables ?? doesSupportCSSVariables();
+            }
+            getVariableMatch() {
+              return VARIABLE_MATCH;
+            }
+            isHeadless() {
+              return this.tag == null || globalThis?.document?.body == null;
+            }
+            getTag() {
+              const {
+                tag
+              } = this;
+              (0, _invariant.default)(tag != null, 'expected tag');
+              return tag;
+            }
+            getCSS() {
+              return this.rules.join('\\n');
+            }
+            getRulePosition(rule) {
+              return this.rules.indexOf(rule);
+            }
+            getRuleCount() {
+              return this.rules.length;
+            }
+            inject() {
+              if (this.injected) {
+                return;
+              }
+              this.injected = true;
+              if (globalThis.document?.body == null) {
+                this.injectTheme();
+                return;
+              }
+              this.tag = makeStyleTag();
+              this.injectTheme();
+            }
+            injectTheme() {
+              if (this.rootTheme != null) {
+                this.insert(buildTheme(\`:root, .\${LIGHT_MODE_CLASS_NAME}\`, this.rootTheme), 0);
+              }
+              if (this.rootDarkTheme != null) {
+                this.insert(buildTheme(\`.\${DARK_MODE_CLASS_NAME}:root, .\${DARK_MODE_CLASS_NAME}\`, this.rootDarkTheme), 0);
+              }
+            }
+            __injectCustomThemeForTesting(selector, theme) {
+              if (theme != null) {
+                this.insert(buildTheme(selector, theme), 0);
+              }
+            }
+            delete(rule) {
+              const index = this.rules.indexOf(rule);
+              (0, _invariant.default)(index >= 0, "Couldn't find the index for rule %s", rule);
+              this.rules.splice(index, 1);
+              if (this.isHeadless()) {
+                return;
+              }
+              const tag = this.getTag();
+              const sheet = tag.sheet;
+              (0, _invariant.default)(sheet, 'expected sheet');
+              sheet.deleteRule(index);
+            }
+            normalizeRule(rule) {
+              const {
+                rootTheme
+              } = this;
+              if (this.supportsVariables || rootTheme == null) {
+                return rule;
+              }
+              return rule.replace(VARIABLE_MATCH, (_match, name) => {
+                return rootTheme[name];
+              });
+            }
+            getInsertPositionForPriority(priority) {
+              const priorityRule = this.ruleForPriority.get(priority);
+              if (priorityRule != null) {
+                return this.rules.indexOf(priorityRule) + 1;
+              }
+              const priorities = Array.from(this.ruleForPriority.keys()).sort((a, b) => b - a).filter(num => num > priority ? 1 : 0);
+              if (priorities.length === 0) {
+                return this.getRuleCount();
+              }
+              const lastPriority = priorities.pop();
+              return this.rules.indexOf(this.ruleForPriority.get(lastPriority));
+            }
+            insert(rawLTRRule, priority, rawRTLRule) {
+              if (this.injected === false) {
+                this.inject();
+              }
+              if (rawRTLRule != null) {
+                this.insert(addAncestorSelector(rawLTRRule, "html:not([dir='rtl'])"), priority);
+                this.insert(addAncestorSelector(rawRTLRule, "html[dir='rtl']"), priority);
+                return;
+              }
+              const rawRule = rawLTRRule;
+              if (this.rules.includes(rawRule)) {
+                return;
+              }
+              const rule = this.normalizeRule(rawRule);
+              const insertPos = this.getInsertPositionForPriority(priority);
+              this.rules.splice(insertPos, 0, rule);
+              this.ruleForPriority.set(priority, rule);
+              if (this.isHeadless()) {
+                return;
+              }
+              const tag = this.getTag();
+              const sheet = tag.sheet;
+              if (sheet != null) {
+                try {
+                  sheet.insertRule(rule, insertPos);
+                } catch {}
+              }
+            }
+          }
+          exports.StyleXSheet = StyleXSheet;
+          function addAncestorSelector(selector, ancestorSelector) {
+            if (!selector.startsWith('@')) {
+              return \`\${ancestorSelector} \${selector}\`;
+            }
+            const firstBracketIndex = selector.indexOf('{');
+            const mediaQueryPart = selector.slice(0, firstBracketIndex + 1);
+            const rest = selector.slice(firstBracketIndex + 1);
+            return \`\${mediaQueryPart}\${ancestorSelector} \${rest}\`;
+          }
+          const styleSheet = exports.styleSheet = new StyleXSheet({
+            supportsVariables: true,
+            rootTheme: {},
+            rootDarkTheme: {}
+          });
+
+          /***/ }),
+
+          /***/ "../../../stylex/lib/stylex-inject.js":
+          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+          var __webpack_unused_export__;
+
+
+          __webpack_unused_export__ = ({
+            value: true
+          });
+          exports.Z = inject;
+          var _StyleXSheet = __webpack_require__("../../../stylex/lib/StyleXSheet.js");
+          function inject(ltrRule, priority) {
+            let rtlRule = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+            _StyleXSheet.styleSheet.insert(ltrRule, priority, rtlRule);
+          }
+
+          /***/ }),
+
           /***/ "./index.js":
           /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
 
 
           // UNUSED EXPORTS: default
 
+          // EXTERNAL MODULE: ../../../stylex/lib/stylex-inject.js
+          var stylex_inject = __webpack_require__("../../../stylex/lib/stylex-inject.js");
           ;// CONCATENATED MODULE: external "stylex"
           const external_stylex_namespaceObject = stylex;
-          var external_stylex_default = /*#__PURE__*/__webpack_require__.n(external_stylex_namespaceObject);
           ;// CONCATENATED MODULE: ./otherStyles.js
           /**
            * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -288,8 +489,9 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".x1lliihq{display:block}", 3000);
-          external_stylex_default().inject(".xh8yej3{width:100%}", 4000);
+
+          (0,stylex_inject/* default */.Z)(".x1lliihq{display:block}", 3000);
+          (0,stylex_inject/* default */.Z)(".xh8yej3{width:100%}", 4000);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -314,9 +516,10 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject(".xt0psk2{display:inline}", 3000);
-          external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
-          external_stylex_default().inject(".x3hqpx7{width:50%}", 4000);
+
+          (0,stylex_inject/* default */.Z)(".xt0psk2{display:inline}", 3000);
+          (0,stylex_inject/* default */.Z)(".x1egiwwb{height:500px}", 4000);
+          (0,stylex_inject/* default */.Z)(".x3hqpx7{width:50%}", 4000);
           const npmStyles_styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -342,14 +545,15 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          external_stylex_default().inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+
+          (0,stylex_inject/* default */.Z)("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          external_stylex_default().inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-          external_stylex_default().inject(".x78zum5{display:flex}", 3000);
-          external_stylex_default().inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
-          external_stylex_default().inject(".xlrshdv{margin-top:99px}", 4000);
-          external_stylex_default().inject(".x1egiwwb{height:500px}", 4000);
-          external_stylex_default().inject(".x1oz5o6v:hover{background:red}", 1130);
+          (0,stylex_inject/* default */.Z)(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+          (0,stylex_inject/* default */.Z)(".x78zum5{display:flex}", 3000);
+          (0,stylex_inject/* default */.Z)(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          (0,stylex_inject/* default */.Z)(".xlrshdv{margin-top:99px}", 4000);
+          (0,stylex_inject/* default */.Z)(".x1egiwwb{height:500px}", 4000);
+          (0,stylex_inject/* default */.Z)(".x1oz5o6v:hover{background:red}", 1130);
           var index_styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
@@ -377,6 +581,64 @@ describe('webpack-plugin-stylex', () => {
           function App() {
             return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
           }
+
+          /***/ }),
+
+          /***/ "../../../../node_modules/invariant/invariant.js":
+          /***/ ((module) => {
+
+          /**
+           * Copyright (c) 2013-present, Facebook, Inc.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           */
+
+
+
+          /**
+           * Use invariant() to assert state which your program assumes to be true.
+           *
+           * Provide sprintf-style format (only %s is supported) and arguments
+           * to provide information about what broke and what you were
+           * expecting.
+           *
+           * The invariant message will be stripped in production, but the invariant
+           * will remain to ensure logic does not differ in production.
+           */
+
+          var NODE_ENV = "production";
+
+          var invariant = function(condition, format, a, b, c, d, e, f) {
+            if (NODE_ENV !== 'production') {
+              if (format === undefined) {
+                throw new Error('invariant requires an error message argument');
+              }
+            }
+
+            if (!condition) {
+              var error;
+              if (format === undefined) {
+                error = new Error(
+                  'Minified exception occurred; use the non-minified dev environment ' +
+                  'for the full error message and additional helpful warnings.'
+                );
+              } else {
+                var args = [a, b, c, d, e, f];
+                var argIndex = 0;
+                error = new Error(
+                  format.replace(/%s/g, function() { return args[argIndex++]; })
+                );
+                error.name = 'Invariant Violation';
+              }
+
+              error.framesToPop = 1; // we don't care about invariant's own frame
+              throw error;
+            }
+          };
+
+          module.exports = invariant;
+
 
           /***/ })
 

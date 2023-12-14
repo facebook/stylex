@@ -12,6 +12,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@babel/helper-module-imports": "^7.22.15",
     "@stylexjs/shared": "0.3.0"
   },
   "peerDependencies": {

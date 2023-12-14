@@ -7,6 +7,7 @@
  * @flow strict
  */
 
+import * as t from '@babel/types';
 import type { PluginPass } from '@babel/core';
 import type { NodePath } from '@babel/traverse';
 import type {
@@ -36,16 +37,25 @@ type ModuleResolution =
       themeFileExtension?: string,
     };
 
-export type StyleXOptions = {
+export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
+  runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
   unstable_moduleResolution: void | ModuleResolution,
   ...
-};
+}>;
+
+type StyleXStateOptions = $ReadOnly<{
+  ...StyleXOptions,
+  runtimeInjection: ?string | $ReadOnly<{ from: string, as: string }>,
+  ...
+}>;
+
+const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
 export default class StateManager {
   +_state: PluginPass;
@@ -62,6 +72,8 @@ export default class StateManager {
   +stylexCreateThemeImport: Set<string> = new Set();
   +stylexTypesImport: Set<string> = new Set();
 
+  injectImportInserted: ?t.Identifier = null;
+
   // `stylex.create` calls
   +styleMap: Map<string, CompiledNamespaces> = new Map();
   +styleVars: Map<string, NodePath<>> = new Map();
@@ -76,15 +88,21 @@ export default class StateManager {
     (state.file.metadata: $FlowFixMe).stylex = [];
   }
 
-  get options(): StyleXOptions {
+  get options(): StyleXStateOptions {
     const options: Partial<StyleXOptions> =
       (this._state.opts: $FlowFixMe) || {};
-    const opts: StyleXOptions = {
+    const opts: StyleXStateOptions = {
       ...options,
       dev: !!(options: $FlowFixMe).dev,
       test: !!(options: $FlowFixMe).test,
       runtimeInjection:
-        (options: $FlowFixMe).runtimeInjection ?? !!(options: $FlowFixMe).dev,
+        options.runtimeInjection === true
+          ? DEFAULT_INJECT_PATH
+          : options.runtimeInjection
+            ? options.runtimeInjection
+            : options.dev
+              ? DEFAULT_INJECT_PATH
+              : undefined,
       classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
       importSources: [
         name,
@@ -140,8 +158,10 @@ export default class StateManager {
     return this._state.file.metadata;
   }
 
-  get runtimeInjection(): boolean {
-    return !!this.options.runtimeInjection;
+  get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
+    return typeof this.options.runtimeInjection === 'string'
+      ? { from: this.options.runtimeInjection }
+      : this.options.runtimeInjection || null;
   }
 
   get isDev(): boolean {

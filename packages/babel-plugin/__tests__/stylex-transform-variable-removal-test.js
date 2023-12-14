@@ -37,9 +37,10 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
       styles;
     `);
     expect(result.code).toMatchInlineSnapshot(`
-      "import stylex from 'stylex';
-      stylex.inject(".xrkmrrc{background-color:red}", 3000);
-      stylex.inject(".xju2f9n{color:blue}", 3000);
+      "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+      import stylex from 'stylex';
+      _inject(".xrkmrrc{background-color:red}", 3000);
+      _inject(".xju2f9n{color:blue}", 3000);
       const styles = {
         default: {
           backgroundColor: "xrkmrrc",
@@ -85,9 +86,10 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
       });
     `);
     expect(result.code).toMatchInlineSnapshot(`
-      "import stylex from 'stylex';
-      stylex.inject(".xrkmrrc{background-color:red}", 3000);
-      stylex.inject(".xju2f9n{color:blue}", 3000);"
+      "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+      import stylex from 'stylex';
+      _inject(".xrkmrrc{background-color:red}", 3000);
+      _inject(".xju2f9n{color:blue}", 3000);"
     `);
     expect(result.metadata).toMatchInlineSnapshot(`
       {

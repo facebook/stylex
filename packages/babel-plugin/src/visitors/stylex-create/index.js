@@ -9,6 +9,7 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+import { addDefault, addNamed } from '@babel/helper-module-imports';
 import type { FunctionConfig } from '../../utils/evaluate-path';
 import StateManager from '../../utils/state-manager';
 import {
@@ -190,26 +191,32 @@ export default function transformStyleXCreate(
     if (Object.keys(injectedStyles).length === 0) {
       return;
     }
-    if (state.runtimeInjection) {
-      const statementPath = findNearestStatementAncestor(path);
-      const stylexName = getStylexDefaultImport(path, state);
+
+    const statementPath = path.getStatementParent();
+    if (state.runtimeInjection != null && statementPath != null) {
+      let injectName: t.Identifier;
+      if (state.injectImportInserted != null) {
+        injectName = state.injectImportInserted;
+      } else {
+        const { from, as } = state.runtimeInjection;
+        injectName =
+          as != null
+            ? addNamed(statementPath, as, from, { nameHint: 'inject' })
+            : addDefault(statementPath, from, { nameHint: 'inject' });
+
+        state.injectImportInserted = injectName;
+      }
 
       for (const [_key, { ltr, priority, rtl }] of Object.entries(
         injectedStyles,
       )) {
         statementPath.insertBefore(
           t.expressionStatement(
-            t.callExpression(
-              t.memberExpression(
-                t.identifier(stylexName),
-                t.identifier('inject'),
-              ),
-              [
-                t.stringLiteral(ltr),
-                t.numericLiteral(priority),
-                ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-              ],
-            ),
+            t.callExpression(injectName, [
+              t.stringLiteral(ltr),
+              t.numericLiteral(priority),
+              ...(rtl != null ? [t.stringLiteral(rtl)] : []),
+            ]),
           ),
         );
       }
@@ -254,84 +261,4 @@ function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
     throw new Error('Unexpected Path found that is not part of the AST.');
   }
   return findNearestStatementAncestor(path.parentPath);
-}
-
-// Converts typed spreads to `stylex.include` calls.
-// function preProcessStyleArg(
-//   objPath: NodePath<t.ObjectExpression>,
-//   state: StateManager,
-// ): void {
-//   objPath.traverse({
-//     SpreadElement(path) {
-//       const argument = path.get('argument');
-//       if (!pathUtils.isTypeCastExpression(argument)) {
-//         return;
-//       }
-//       const expression = argument.get('expression');
-//       if (
-//         !pathUtils.isIdentifier(expression) &&
-//         !pathUtils.isMemberExpression(expression)
-//       ) {
-//         throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
-//       }
-//       if (
-//         !(
-//           (
-//             pathUtils.isObjectExpression(path.parentPath) && // namespaceObject
-//             pathUtils.isObjectProperty(path.parentPath.parentPath) && // namespaceProperty
-//             pathUtils.isObjectExpression(
-//               path.parentPath.parentPath.parentPath,
-//             ) && // stylex.create argument
-//             pathUtils.isCallExpression(
-//               path.parentPath.parentPath.parentPath.parentPath,
-//             )
-//           ) // stylex.create
-//         )
-//       ) {
-//         // Disallow spreads within pseudo or media query objects
-//         throw new Error(messages.ILLEGAL_NESTED_PSEUDO);
-//       }
-
-//       const stylexName = getStylexDefaultImport(path, state);
-
-//       argument.replaceWith(
-//         t.callExpression(
-//           t.memberExpression(t.identifier(stylexName), t.identifier('include')),
-//           [expression.node],
-//         ),
-//       );
-//     },
-//   });
-// }
-
-// A function to deterministicly convert a spreadded expression to a string.
-// function toString(path: NodePath): string {
-//   if (path.isIdentifier()) {
-//     return path.node.name;
-//   } else if (path.isStringLiteral() || path.isNumericLiteral()) {
-//     return String(path.node.value);
-//   } else if (path.isMemberExpression()) {
-//     return `${toString(path.get('object'))}.${toString(path.get('property'))}`;
-//   }
-//   throw new Error(path.node.type);
-// }
-
-function getStylexDefaultImport(path: NodePath<>, state: StateManager): string {
-  const statementPath = findNearestStatementAncestor(path);
-
-  let stylexName: string;
-  state.stylexImport.forEach((importName) => {
-    stylexName = importName;
-  });
-  if (stylexName == null) {
-    stylexName = '__stylex__';
-    statementPath.insertBefore(
-      t.importDeclaration(
-        [t.importDefaultSpecifier(t.identifier(stylexName))],
-        t.stringLiteral(state.importPathString),
-      ),
-    );
-    state.stylexImport.add(stylexName);
-  }
-  return stylexName;
 }
