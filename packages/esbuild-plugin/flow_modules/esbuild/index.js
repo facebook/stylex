@@ -587,8 +587,8 @@ export interface BuildContext<ProvidedOptions: BuildOptions = BuildOptions> {
 // This is a TypeScript type-level function which replaces any keys in "In"
 // that aren't in "Out" with "never". We use this to reject properties with
 // typos in object literals. See: https://stackoverflow.com/questions/49580725
-// eslint-disable-next-line no-unused-vars
 type SameShape<Out, In: Out> = In & {
+  // eslint-disable-next-line no-unused-vars
   [Key in Exclude<$Keys<In>, $Keys<Out>>]: empty,
 };
 
