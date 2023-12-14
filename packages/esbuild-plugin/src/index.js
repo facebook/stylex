@@ -8,7 +8,6 @@
  */
 
 import path from 'path';
-import createHash from '@stylexjs/shared/lib/hash';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import { transformAsync, type PluginItem } from '@babel/core';
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
@@ -16,6 +15,7 @@ import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
 import hermesParserPlugin from 'babel-plugin-syntax-hermes-parser';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
+import { utils } from '@stylexjs/shared';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import type { Plugin, PluginBuild, BuildResult, OnLoadArgs } from 'esbuild';
 
@@ -81,7 +81,7 @@ export default function stylexPlugin({
           outputFiles.push({
             path: '<stdout>',
             contents: new TextEncoder().encode(collectedCSS),
-            hash: createHash(new Date().getTime().toString()),
+            hash: utils.hash(new Date().getTime().toString()),
             get text() {
               return collectedCSS;
             },

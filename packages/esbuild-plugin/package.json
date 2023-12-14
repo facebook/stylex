@@ -24,7 +24,7 @@
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3",
     "@stylexjs/babel-plugin": "^0.3.0",
-    "@stylexjs/shared": "^0.3.0",
+    "@stylexjs/shared": "0.3.0",
     "babel-plugin-syntax-hermes-parser": "^0.18.0",
     "esbuild": "^0.19.9"
   },
