@@ -79,10 +79,8 @@ class StylexPlugin {
         PLUGIN_NAME,
         (loaderContext, module) => {
           if (
-            // JavaScript (and Flow) modules
-            /\.jsx?/.test(path.extname(module.resource)) ||
-            // TypeScript modules
-            /\.tsx?/.test(path.extname(module.resource))
+            // .js, .jsx, .mjs, .cjs, .ts, .tsx, .mts, .cts
+            /\.[mc]?[jt]sx?$/.test(path.extname(module.resource))
           ) {
             // It might make sense to use .push() here instead of .unshift()
             // Webpack usually runs loaders in reverse order and we want to ideally run
@@ -180,9 +178,13 @@ class StylexPlugin {
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,
-            /\.jsx?/.test(path.extname(filename))
-              ? flowSyntaxPlugin
-              : typescriptSyntaxPlugin,
+
+            path.extname(filename) === '.ts'
+              ? typescriptSyntaxPlugin
+              : path.extname(filename) === '.tsx'
+                ? [typescriptSyntaxPlugin, { isTSX: true }]
+                : flowSyntaxPlugin,
+
             jsxSyntaxPlugin,
             this.babelPlugin,
           ],
