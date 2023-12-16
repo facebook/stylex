@@ -11,7 +11,7 @@ import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
-import {ZStack, ZStackItem} from '../../components/ZStack';
+import { ZStack, ZStackItem } from '../../components/ZStack';
 import CtaButton from '../../components/CtaButton';
 
 export default function Home() {

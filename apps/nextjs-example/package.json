@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "next:lint": "next lint"
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.3.0",

@@ -8,9 +8,9 @@
  */
 
 import * as React from 'react';
-import {useState} from 'react';
+import { useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
-import {tokens} from './DetailsTokens.stylex';
+import { tokens } from './DetailsTokens.stylex';
 
 export default function MDXDetails({
   children: _children,
@@ -33,14 +33,15 @@ export default function MDXDetails({
   const summary = items.find(
     (item) => React.isValidElement(item) && item.props?.mdxType === 'summary',
   );
-  const {mdxType: _3, originalType: _4, ...summaryProps} = summary.props;
+  const { mdxType: _3, originalType: _4, ...summaryProps } = summary.props;
   const children = <>{items.filter((item) => item !== summary)}</>;
 
   return (
     <details
       {...props}
       {...stylex.props(styles.details, style)}
-      {...(isOpen && {open: true})}>
+      {...(isOpen && { open: true })}
+    >
       <summary
         {...summaryProps}
         {...stylex.props(styles.summary)}
