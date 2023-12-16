@@ -11,7 +11,7 @@ import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Link from '@docusaurus/Link';
 
-export default function CtaButton({children, color, to}) {
+export default function CtaButton({ children, color, to }) {
   return (
     <Link
       {...stylex.props(
@@ -19,7 +19,8 @@ export default function CtaButton({children, color, to}) {
         color === 'pink' && styles.pink,
         color === 'blue' && styles.blue,
       )}
-      to={to}>
+      to={to}
+    >
       {children}
     </Link>
   );

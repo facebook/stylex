@@ -10,7 +10,7 @@
 'use strict';
 
 const fs = require('fs/promises');
-const {transformAsync} = require('@babel/core');
+const { transformAsync } = require('@babel/core');
 const stylexBabelPlugin = require('@stylexjs/babel-plugin');
 const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
 const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
@@ -46,7 +46,7 @@ async function transformFile(filePath) {
 }
 
 async function getAllFilesOfType(folder, type) {
-  const contents = await fs.readdir(folder, {withFileTypes: true});
+  const contents = await fs.readdir(folder, { withFileTypes: true });
 
   const files = await Promise.all(
     contents.map(async (dirent) => {

@@ -6,13 +6,18 @@
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "^7.23.2",
+    "@babel/core": "^7.23.6",
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-syntax-jsx": "^7.22.5",
     "@babel/plugin-syntax-typescript": "^7.22.5",
     "@stylexjs/babel-plugin": "^0.3.0"
   },
   "peerDependencies": {
-    "next": ">=12.0.7"
+    "next": ">=14.0.1"
+  },
+  "devDependencies": {
+    "next": "^14.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
