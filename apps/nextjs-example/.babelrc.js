@@ -1,5 +1,4 @@
 const path = require('path');
-console.log(path.join(__dirname));
 module.exports = {
   presets: ['next/babel'],
   plugins: [
