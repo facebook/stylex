@@ -9,13 +9,13 @@ module.exports = {
         runtimeInjection: false,
         genConditionalClasses: true,
         treeshakeCompensation: true,
+        aliases: {
+          '@/app/*': './app/*',
+          '@/components/*': './components/*',
+        },
         unstable_moduleResolution: {
           type: 'commonJS',
           rootDir: path.join(__dirname, '../..'),
-          aliases: {
-            '@/app/*': './app/*',
-            '@/components/*': './components/*',
-          },
         },
       },
     ],

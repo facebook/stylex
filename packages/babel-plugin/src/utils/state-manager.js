@@ -26,18 +26,15 @@ type ModuleResolution =
       type: 'commonJS',
       rootDir: string,
       themeFileExtension?: string,
-      aliases?: any,
     }
   | {
       type: 'haste',
       themeFileExtension?: string,
-      aliases?: any,
     }
   | {
       type: 'experimental_crossFileParsing',
       rootDir: string,
       themeFileExtension?: string,
-      aliases?: any,
     };
 
 export type StyleXOptions = $ReadOnly<{
@@ -49,7 +46,7 @@ export type StyleXOptions = $ReadOnly<{
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
   unstable_moduleResolution: void | ModuleResolution,
-  aliases: any,
+  aliases: $ReadOnly<{ [string]: string }>,
   ...
 }>;
 
@@ -221,12 +218,9 @@ export default class StateManager {
     switch (this.options.unstable_moduleResolution?.type) {
       case 'commonJS': {
         const rootDir = this.options.unstable_moduleResolution.rootDir;
-        const aliases =
-          this.options.unstable_moduleResolution.aliases ??
-          this.options.aliases ??
-          undefined;
+        const aliases = this.options.aliases;
         const themeFileExtension =
-          this.options.unstable_moduleResolution.themeFileExtension ??
+          this.options.unstable_moduleResolution?.themeFileExtension ??
           '.stylex';
         if (!matchesFileSuffix(themeFileExtension)(importPath)) {
           return false;
@@ -250,7 +244,7 @@ export default class StateManager {
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
       }
       case 'experimental_crossFileParsing': {
-        const aliases = this.options.aliases ?? undefined;
+        const aliases = this.options.aliases;
         const themeFileExtension =
           this.options.unstable_moduleResolution.themeFileExtension ??
           '.stylex';
@@ -280,7 +274,7 @@ export default class StateManager {
   }
 }
 // a function generate Regex to match the path of files with aliases
-function generateAliasRegex(alias: string) {
+function generateAliasRegex(alias: string): RegExp {
   const regex = new RegExp('^' + alias + '/(.*)');
   return regex;
 }
