@@ -9,7 +9,7 @@ sidebar_position: 2
 # `stylex.props`
 
 Takes an StyleX style or array of StyleX styles, and returns a props object.
-Values can be also be `null`, `undefined`, or `false`.
+Values can also be `null`, `undefined`, or `false`.
 
 The return value should be onto an element to apply the styles directly.
 
@@ -40,7 +40,7 @@ const styles = stylex.create({
 });
 
 <div
-  {...styles.props(
+  {...stylex.props(
     styles.root,
     condition && styles.conditional,
     props.style,

@@ -29,7 +29,7 @@ const config = {
     [
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
+      {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/facebook/stylex/tree/main/apps/docs/',
@@ -41,7 +41,7 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
-      }),
+      },
     ],
   ],
 
@@ -159,7 +159,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc. Built with Docusaurus.`,
       },
       metadata: [
-        {name: 'og:title', content: 'StyleX'},
+        { name: 'og:title', content: 'StyleX' },
         {
           name: 'og:description',
           content: 'The styling system that powers Meta.',

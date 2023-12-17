@@ -17,7 +17,7 @@ StyleX comes with full support for Static Types. The most common utility type is
 `StyleXStyles` which is used to accept any arbitrary StyleX styles.
 
 <Tabs>
-  <TabItem value="typescript" label="Typescript" default>
+  <TabItem value="typescript" label="TypeScript" default>
 
 ```tsx
 import type {StyleXStyles} from '@stylexjs/stylex';
@@ -28,7 +28,7 @@ type Props = {
   style?: StyleXStyles,
 };
 
-function MyComponent({style, ...otherProps}: Props): React.MixedElement {
+function MyComponent({style, ...otherProps}: Props) {
   return (
     <div
       {...stylex.props(localStyles.foo, localStyles.bar, style)}
@@ -83,7 +83,7 @@ To limit the accepted style properties to a given set, an object type with the
 allowed properties can be used:
 
 <Tabs>
-  <TabItem value="typescript" label="Typescript" default>
+  <TabItem value="typescript" label="TypeScript" default>
 
 ```tsx
 import type {StyleXStyles} from '@stylexjs/stylex';
@@ -135,9 +135,9 @@ baseline styles in the component itself.
 
 :::
 
-:::danger Typescript may not catch extra style properties
+:::danger TypeScript may not catch extra style properties
 
-Typescript object types don’t error when given objects with extra properties.
+TypeScript object types don’t error when given objects with extra properties.
 We’ve taken steps to mitigate this issue, but there may be edge-cases where
 you’ll be able to pass in extra, disallowed styles without a type error.
 
@@ -149,7 +149,7 @@ In addition to the accepted style properties, the values for those properties
 can be constrained too.
 
 <Tabs>
-  <TabItem value="typescript" label="Typescript" default>
+  <TabItem value="typescript" label="TypeScript" default>
 
 ```tsx
 import type {StyleXStyles} from '@stylexjs/stylex';
@@ -157,7 +157,7 @@ import type {StyleXStyles} from '@stylexjs/stylex';
 type Props = {
   ...
   // Only accept styles for marginTop and nothing else.
-  // the value for marginTop can only be 0, 4, or 8.
+  // The value for marginTop can only be 0, 4, 8 or 16.
   style?: StyleXStyles<{
     marginTop: 0 | 4 | 8 | 16
   }>,
@@ -173,7 +173,7 @@ import type {StyleXStyles} from '@stylexjs/stylex';
 type Props = $ReadOnly<{
   ...
   // Only accept styles for marginTop and nothing else.
-  // the value for marginTop can only be 0, 4, or 8.
+  // The value for marginTop can only be 0, 4, 8 or 16.
   style?: StyleXStyles<{
     marginTop: 0 | 4 | 8 | 16
   }>,
@@ -192,7 +192,7 @@ other properties. The value for `marginTop` can only be one of `0`, `4`, `8`, or
 It is sometimes more convenient to define a blocklist instead of an allowlist.
 
 <Tabs>
-  <TabItem value="typescript" label="Typescript" default>
+  <TabItem value="typescript" label="TypeScript" default>
 
 ```tsx
 import type {StyleXStylesWithout} from '@stylexjs/stylex';

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import json from '@stylexjs/stylex/package.json';
-const {version} = json;
+const { version } = json;
 
 export const versionTag = version.includes('beta') ? '@beta' : '';
 
@@ -17,14 +17,14 @@ export function VersionTag() {
   return <span>{versionTag}</span>;
 }
 
-export function IfBeta({children}) {
+export function IfBeta({ children }) {
   if (version.includes('beta')) {
     return children;
   }
   return null;
 }
 
-export function IfNotBeta({children}) {
+export function IfNotBeta({ children }) {
   if (version.includes('beta')) {
     return null;
   }

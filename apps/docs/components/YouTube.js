@@ -26,18 +26,18 @@ const styles = stylex.create({
   },
 });
 
-export default function YouTube({width: _w, height: _h, src, title}) {
+export default function YouTube({ width: _w, height: _h, src, title }) {
   return (
     <div {...stylex.props(styles.container)}>
       <iframe
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen={true}
-        className={stylex(styles.iframe)}
         frameBorder={0}
         height={'100%'}
         src={src}
         title={title}
         width={'100%'}
+        {...stylex.props(styles.iframe)}
       />
     </div>
   );

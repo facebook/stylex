@@ -36,7 +36,8 @@ type PluginOptions = $ReadOnly<{
     babelrc?: boolean,
   }>,
   filename?: string,
-  appendTo?: string | (string) => boolean
+  appendTo?: string | (string) => boolean,
+  useCSSLayers?: boolean,
 }>
 */
 
@@ -57,13 +58,11 @@ class StylexPlugin {
     rootDir,
     babelConfig = {},
     aliases,
+    useCSSLayers = false,
   } /*: PluginOptions */ = {}) {
     this.dev = dev;
     this.appendTo = appendTo;
     this.filename = filename;
-    // if (filename.includes("stylex")) {
-    //   console.log("filename", filename);
-    // }
     this.babelConfig = {
       plugins: [],
       presets: [],
@@ -84,8 +83,10 @@ class StylexPlugin {
           type: 'commonJS',
           rootDir,
         },
+        importSources: stylexImports,
       },
     ];
+    this.useCSSLayers = useCSSLayers;
   }
 
   apply(compiler) {
@@ -97,7 +98,7 @@ class StylexPlugin {
           if (
             // JavaScript (and Flow) modules
             /\.jsx?/.test(path.extname(module.resource)) ||
-            // Typescript modules
+            // TypeScript modules
             /\.tsx?/.test(path.extname(module.resource))
           ) {
             // We use .push() here instead of .unshift()
@@ -126,7 +127,10 @@ class StylexPlugin {
         const allRules = Object.keys(stylexRules)
           .map((filename) => stylexRules[filename])
           .flat();
-        return stylexBabelPlugin.processStylexRules(allRules);
+        return stylexBabelPlugin.processStylexRules(
+          allRules,
+          this.useCSSLayers,
+        );
       };
 
       if (this.appendTo) {
@@ -194,7 +198,7 @@ class StylexPlugin {
         {
           babelrc: this.babelConfig.babelrc,
           filename,
-          // Use Typescript syntax plugin if the filename ends with `.ts` or `.tsx`
+          // Use TypeScript syntax plugin if the filename ends with `.ts` or `.tsx`
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,

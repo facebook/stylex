@@ -10,7 +10,7 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 
-export default function LogoBold({xstyle}) {
+export default function LogoBold({ xstyle }) {
   const id = 'logo-bold';
 
   return (
@@ -21,7 +21,8 @@ export default function LogoBold({xstyle}) {
           x1="40.855%"
           x2="74.131%"
           y1="31.719%"
-          y2="59.893%">
+          y2="59.893%"
+        >
           <stop offset="0%" stopColor="var(--fg1)" stopOpacity="0" />
           <stop offset="100%" stopColor="var(--fg1)" />
         </linearGradient>
@@ -30,7 +31,8 @@ export default function LogoBold({xstyle}) {
           x1="42.121%"
           x2="65.327%"
           y1="56.078%"
-          y2="39.384%">
+          y2="39.384%"
+        >
           <stop offset="0%" stopColor="var(--fg1)" stopOpacity="0" />
           <stop offset="100%" stopColor="var(--fg1)" />
         </linearGradient>

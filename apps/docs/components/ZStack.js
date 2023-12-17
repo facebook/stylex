@@ -10,7 +10,7 @@
 import React from 'react';
 import * as stylex from '@stylexjs/stylex';
 
-const {useEffect, useState} = React;
+const { useEffect, useState } = React;
 
 const styles = stylex.create({
   container: {
@@ -30,7 +30,7 @@ const styles = stylex.create({
 
 const ActiveItemContext = React.createContext(false);
 
-export function ZStack({children, xstyle}) {
+export function ZStack({ children, xstyle }) {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export function ZStack({children, xstyle}) {
   );
 }
 
-export function ZStackItem({children, style}) {
+export function ZStackItem({ children, style }) {
   const active = React.useContext(ActiveItemContext);
   return (
     <span {...stylex.props(styles.item, active && styles.visible, style)}>

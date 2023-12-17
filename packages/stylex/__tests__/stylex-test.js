@@ -15,7 +15,7 @@ import stylex from '../src/stylex';
 // TODO: priorities need testing
 test('stylex.inject', () => {
   const prevCount = styleSheet.getRuleCount();
-  stylex.inject('hey {}', 0);
+  styleSheet.inject('hey {}', 0);
   expect(styleSheet.getRuleCount()).toBeGreaterThan(prevCount);
 });
 

@@ -22,4 +22,5 @@ module.exports = stylexPlugin({
     '@/app/*': './app/*',
     '@/components/*': './components/*',
   },
+  useCSSLayers: true,
 })({});

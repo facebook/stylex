@@ -1,5 +1,7 @@
 .build
+.docusaurus
 .next
+.stylex
 build
 coverage
 lib

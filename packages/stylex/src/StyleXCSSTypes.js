@@ -337,7 +337,9 @@ type fontWeight =
   | 600
   | 700
   | 800
-  | 900;
+  | 900
+  | string
+  | number;
 type gap = number | string;
 type grid = gridTemplate | string;
 type gridArea = gridLine | string;
@@ -868,7 +870,7 @@ export type CSSProperties = $ReadOnly<{
   // NOTE: adding a non-CSS property here for support themes in Stylex.
   theme?: all | string,
 
-  // ...$Exact<SupportedVendorSpecificCSSProperties>, for Typescript compatibility
+  // ...$Exact<SupportedVendorSpecificCSSProperties>, for TypeScript compatibility
   MozOsxFontSmoothing?: all | 'grayscale',
   WebkitAppearance?: all | appearance,
   WebkitFontSmoothing?: all | 'antialiased',

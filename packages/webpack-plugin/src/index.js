@@ -36,7 +36,8 @@ type PluginOptions = $ReadOnly<{
     babelrc?: boolean,
   }>,
   filename?: string,
-  appendTo?: string | (string) => boolean
+  appendTo?: string | (string) => boolean,
+  useCSSLayers?: boolean,
 }>
 */
 
@@ -48,9 +49,10 @@ class StylexPlugin {
     dev = IS_DEV_ENV,
     appendTo,
     filename = appendTo == null ? 'stylex.css' : undefined,
-    stylexImports = ['stylex', '@stylex/css'],
+    stylexImports = ['stylex', '@stylexjs/stylex'],
     unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
     babelConfig: { plugins = [], presets = [], babelrc = false } = {},
+    useCSSLayers = false,
     ...options
   } /*: PluginOptions */ = {}) {
     this.dev = dev;
@@ -60,8 +62,14 @@ class StylexPlugin {
     this.stylexImports = stylexImports;
     this.babelPlugin = [
       stylexBabelPlugin,
-      { dev, unstable_moduleResolution, stylexImports, ...options },
+      {
+        dev,
+        unstable_moduleResolution,
+        importSources: stylexImports,
+        ...options,
+      },
     ];
+    this.useCSSLayers = useCSSLayers;
   }
 
   apply(compiler) {
@@ -71,10 +79,8 @@ class StylexPlugin {
         PLUGIN_NAME,
         (loaderContext, module) => {
           if (
-            // JavaScript (and Flow) modules
-            /\.jsx?/.test(path.extname(module.resource)) ||
-            // Typescript modules
-            /\.tsx?/.test(path.extname(module.resource))
+            // .js, .jsx, .mjs, .cjs, .ts, .tsx, .mts, .cts
+            /\.[mc]?[jt]sx?$/.test(path.extname(module.resource))
           ) {
             // It might make sense to use .push() here instead of .unshift()
             // Webpack usually runs loaders in reverse order and we want to ideally run
@@ -107,7 +113,10 @@ class StylexPlugin {
           )
           .map((filename) => stylexRules[filename])
           .flat();
-        return stylexBabelPlugin.processStylexRules(allRules);
+        return stylexBabelPlugin.processStylexRules(
+          allRules,
+          this.useCSSLayers,
+        );
       };
 
       if (this.appendTo) {
@@ -135,17 +144,66 @@ class StylexPlugin {
           },
         );
       } else {
-        // Consume collected rules and emit the stylex CSS asset
-        compilation.hooks.additionalAssets.tap(PLUGIN_NAME, () => {
-          try {
-            const collectedCSS = getStyleXRules();
-            if (collectedCSS) {
-              compilation.emitAsset(this.filename, new RawSource(collectedCSS));
-            }
-          } catch (e) {
-            compilation.errors.push(e);
+        // We'll emit an asset ourselves. This comes with some complications in from Webpack.
+        // If the filename contains replacement tokens, like [contenthash], we need to
+        // process those tokens ourselves. Webpack does provide a way to reuse the configured
+        // hashing functions. We'll take advantage of that to process tokens.
+        const getContentHash = (source) => {
+          const { outputOptions } = compilation;
+          const { hashDigest, hashDigestLength, hashFunction, hashSalt } =
+            outputOptions;
+          const hash = compiler.webpack.util.createHash(hashFunction);
+
+          if (hashSalt) {
+            hash.update(hashSalt);
           }
-        });
+
+          hash.update(source);
+
+          const fullContentHash = hash.digest(hashDigest);
+
+          return fullContentHash.toString().slice(0, hashDigestLength);
+        };
+        // Consume collected rules and emit the stylex CSS asset
+        compilation.hooks.processAssets.tap(
+          {
+            name: PLUGIN_NAME,
+            stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+          },
+          () => {
+            try {
+              const collectedCSS = getStyleXRules();
+
+              if (collectedCSS) {
+                // build up a content hash for the rules using webpack's configured hashing functions
+                const contentHash = getContentHash(collectedCSS);
+
+                // pretend to be a chunk so we can reuse the webpack routine to process the filename and do token replacement
+                // see https://github.com/webpack/webpack/blob/main/lib/Compilation.js#L4733
+                // see https://github.com/webpack/webpack/blob/main/lib/TemplatedPathPlugin.js#L102
+                const data = {
+                  filename: this.filename,
+                  contentHash: contentHash,
+                  chunk: {
+                    id: this.filename,
+                    name: path.parse(this.filename).name,
+                    hash: contentHash,
+                  },
+                };
+
+                const { path: hashedPath, info: assetsInfo } =
+                  compilation.getPathWithInfo(data.filename, data);
+                compilation.emitAsset(
+                  hashedPath,
+                  new RawSource(collectedCSS),
+                  assetsInfo,
+                );
+              }
+            } catch (e) {
+              compilation.errors.push(e);
+            }
+          },
+        );
       }
     });
   }
@@ -165,13 +223,17 @@ class StylexPlugin {
         {
           babelrc: this.babelConfig.babelrc,
           filename,
-          // Use Typescript syntax plugin if the filename ends with `.ts` or `.tsx`
+          // Use TypeScript syntax plugin if the filename ends with `.ts` or `.tsx`
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,
-            /\.jsx?/.test(path.extname(filename))
-              ? flowSyntaxPlugin
-              : typescriptSyntaxPlugin,
+
+            path.extname(filename) === '.ts'
+              ? typescriptSyntaxPlugin
+              : path.extname(filename) === '.tsx'
+                ? [typescriptSyntaxPlugin, { isTSX: true }]
+                : flowSyntaxPlugin,
+
             jsxSyntaxPlugin,
             this.babelPlugin,
           ],

@@ -32,7 +32,6 @@ export type {
   StaticStylesWithout,
 } from './StyleXTypes';
 
-import injectStyle from './stylex-inject';
 import { styleq } from 'styleq';
 
 type Cache = WeakMap<
@@ -235,8 +234,6 @@ export const firstThatWorks = <T: string | number>(
   throw new Error('stylex.firstThatWorks should never be called.');
 };
 
-export const inject: typeof injectStyle = injectStyle;
-
 function _stylex(
   ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
 ): string {
@@ -250,7 +247,6 @@ _stylex.createTheme = createTheme;
 _stylex.include = include;
 _stylex.keyframes = keyframes;
 _stylex.firstThatWorks = firstThatWorks;
-_stylex.inject = inject;
 _stylex.types = types;
 
 type IStyleX = {
@@ -274,7 +270,6 @@ type IStyleX = {
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
-  inject: (ltrRule: string, priority: number, rtlRule: ?string) => void,
   keyframes: (keyframes: Keyframes) => string,
   __customProperties?: { [string]: mixed },
   ...

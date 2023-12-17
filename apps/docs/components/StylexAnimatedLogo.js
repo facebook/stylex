@@ -9,7 +9,7 @@
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import {LogoText, viewBox} from './Logo';
+import { LogoText, viewBox } from './Logo';
 
 const ANIM_DURATION = '6s';
 const STAGGER = '-2.5s';
@@ -23,17 +23,17 @@ const rotate = stylex.keyframes({
   },
 });
 const fade = stylex.keyframes({
-  '0%': {opacity: 1, transform: 'scale(1)'},
-  '45%': {opacity: 1, transform: 'scale(1)'},
-  '55%': {opacity: 0, transform: 'scale(0.5)'},
-  '90%': {opacity: 0, transform: 'scale(0.5)'},
+  '0%': { opacity: 1, transform: 'scale(1)' },
+  '45%': { opacity: 1, transform: 'scale(1)' },
+  '55%': { opacity: 0, transform: 'scale(0.5)' },
+  '90%': { opacity: 0, transform: 'scale(0.5)' },
 });
 const fade2 = stylex.keyframes({
-  '0%': {opacity: 0, transform: 'scale(0)'},
-  '10%': {opacity: 1, transform: 'scale(1)'},
-  '58%': {opacity: 1, transform: 'scale(1)'},
-  '68%': {opacity: 0, transform: 'scale(0.5)'},
-  '100%': {opacity: 0, transform: 'scale(0.5)'},
+  '0%': { opacity: 0, transform: 'scale(0)' },
+  '10%': { opacity: 1, transform: 'scale(1)' },
+  '58%': { opacity: 1, transform: 'scale(1)' },
+  '68%': { opacity: 0, transform: 'scale(0.5)' },
+  '100%': { opacity: 0, transform: 'scale(0.5)' },
 });
 
 const styles = stylex.create({
@@ -118,7 +118,7 @@ const styles = stylex.create({
   },
 });
 
-export default function StylexAnimatedLogo({style}) {
+export default function StylexAnimatedLogo({ style }) {
   return (
     <div {...stylex.props(styles.root)}>
       <svg {...stylex.props(style)} viewBox={viewBox}>

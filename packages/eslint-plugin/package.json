@@ -12,11 +12,9 @@
     "build-haste": "rollup --config ./rollup.config.mjs",
     "test": "jest"
   },
-  "devDependencies": {
-    "hermes-eslint": "^0.16.0",
+  "dependencies": {
     "micromatch": "^4.0.5"
   },
-  "dependencies": {},
   "files": [
     "flow_modules/*",
     "lib/*"

@@ -9,6 +9,7 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+import { addDefault, addNamed } from '@babel/helper-module-imports';
 import StateManager from '../utils/state-manager';
 import { createTheme as stylexCreateTheme, messages } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
@@ -107,36 +108,28 @@ export default function transformStyleXCreateTheme(
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(overridesObj));
 
-    if (state.runtimeInjection) {
-      // We know that the top level parent path is an variable declarator
-      const statementPath: ?NodePath<> = variableDeclaratorPath.parentPath;
+    const statementPath: ?NodePath<> = variableDeclaratorPath.parentPath;
 
-      let stylexName: string;
-      state.stylexImport.forEach((importName) => {
-        stylexName = importName;
-      });
-      if (stylexName == null) {
-        stylexName = '__stylex__';
-        statementPath?.insertBefore(
-          t.importDeclaration(
-            [t.importDefaultSpecifier(t.identifier(stylexName))],
-            t.stringLiteral(state.importPathString),
-          ),
-        );
+    if (state.runtimeInjection != null && statementPath != null) {
+      let injectName: t.Identifier;
+      if (state.injectImportInserted != null) {
+        injectName = state.injectImportInserted;
+      } else {
+        const { from, as } = state.runtimeInjection;
+        injectName =
+          as != null
+            ? addNamed(statementPath, as, from, { nameHint: 'inject' })
+            : addDefault(statementPath, from, { nameHint: 'inject' });
+
+        state.injectImportInserted = injectName;
       }
 
       statementPath?.insertBefore(
         t.expressionStatement(
-          t.callExpression(
-            t.memberExpression(
-              t.identifier(stylexName),
-              t.identifier('inject'),
-            ),
-            [
-              t.stringLiteral(css[styleKey].ltr),
-              t.numericLiteral(css[styleKey].priority),
-            ],
-          ),
+          t.callExpression(injectName, [
+            t.stringLiteral(css[styleKey].ltr),
+            t.numericLiteral(css[styleKey].priority),
+          ]),
         ),
       );
     }

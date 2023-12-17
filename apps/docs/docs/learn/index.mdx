@@ -9,7 +9,7 @@ title: Introduction
 
 # Introduction to StyleX
 
-StyleX is a simple, easy to use JavaScript syntax and compiler for styling web
+StyleX is a simple, easy-to-use JavaScript syntax and compiler for styling web
 apps.
 
 StyleX combines the strengths and avoids the weaknesses of both inline styles
@@ -129,7 +129,7 @@ function ReactDiv({ color, isActive, style }) {
     // apply styles conditionally
     isActive && styles.active,
     // choose a style variant based on a prop
-    colorStyles[color]
+    colorStyles[color],
     // styles passed as props
     style,
   )} />;
@@ -143,12 +143,12 @@ such as `SolidJS`, `Preact` or `Qwik`.
 ## Ideal use cases
 
 StyleX works well in a wide variety of projects. However, it was designed to meet the
-challenges of particular uses cases.
+challenges of particular use cases.
 
 ### Authoring UI in JavaScript
 
 StyleX is a CSS-in-JS library, which means that it is most useful when an app's UI is
-authored in Javascript. If an application uses a framework like React, Preact, Solid,
+authored in JavaScript. If an application uses a framework like React, Preact, Solid,
 lit-html, or Angular, using StyleX should be a good fit.
 
 Some frameworks, such as Svelte and Vue use custom file formats that are

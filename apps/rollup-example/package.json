@@ -9,10 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/stylex": "0.3.0"
-  },
-  "devDependencies": {
-    "rollup": "^4.0.2",
+    "@stylexjs/stylex": "0.3.0",
     "@stylexjs/rollup-plugin": "0.3.0"
   }
 }
