@@ -288,15 +288,15 @@ function generateAliasRegex(alias: string) {
 function aliasPathResolver(importPath: string = '', aliases: any) {
   let output = importPath;
   Object.keys(aliases ?? {}).forEach((alias) => {
-    let replacementToken = alias.split('*')[0];
-    let aliasedImportPathStr = importPath;
+    const replacementToken = alias.split('*')[0];
+    const aliasedImportPathStr = importPath;
     const regex = generateAliasRegex(aliases[alias]) ?? '';
     const value = aliases[alias] ?? '';
     if (
       aliasedImportPathStr.startsWith(replacementToken) &&
       regex.test(importPath)
     ) {
-      let modifiedAliasedImportPath = aliasedImportPathStr.replace(
+      const modifiedAliasedImportPath = aliasedImportPathStr.replace(
         replacementToken,
         '',
       );
