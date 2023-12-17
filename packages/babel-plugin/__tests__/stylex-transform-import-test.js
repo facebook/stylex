@@ -64,8 +64,9 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `),
       ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 3000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x1e2nbdu{color:red}", 3000);
         export const styles = {
           foo: {
             color: "x1e2nbdu",
@@ -105,8 +106,9 @@ describe('@stylexjs/babel-plugin', () => {
           export {styles}
         `),
       ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 3000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x1e2nbdu{color:red}", 3000);
         const styles = {
           foo: {
             color: "x1e2nbdu",
@@ -128,8 +130,9 @@ describe('@stylexjs/babel-plugin', () => {
           }));
         `),
       ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 3000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x1e2nbdu{color:red}", 3000);
         export default {
           foo: {
             color: "x1e2nbdu",
@@ -151,8 +154,9 @@ describe('@stylexjs/babel-plugin', () => {
           module.export = styles;
         `),
       ).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
-        stylex.inject(".x1e2nbdu{color:red}", 3000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x1e2nbdu{color:red}", 3000);
         const styles = {
           foo: {
             color: "x1e2nbdu",
@@ -180,10 +184,11 @@ describe('@stylexjs/babel-plugin', () => {
           styles;
         `),
       ).toMatchInlineSnapshot(`
-        "import foobar from 'stylex';
-        foobar.inject(".xrkmrrc{background-color:red}", 3000);
-        foobar.inject(".xju2f9n{color:blue}", 3000);
-        foobar.inject(".x14odnwx{padding:5px}", 1000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import foobar from 'stylex';
+        _inject(".xrkmrrc{background-color:red}", 3000);
+        _inject(".xju2f9n{color:blue}", 3000);
+        _inject(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
@@ -217,10 +222,11 @@ describe('@stylexjs/babel-plugin', () => {
           styles;
         `),
       ).toMatchInlineSnapshot(`
-        "import * as foobar from 'stylex';
-        foobar.inject(".xrkmrrc{background-color:red}", 3000);
-        foobar.inject(".xju2f9n{color:blue}", 3000);
-        foobar.inject(".x14odnwx{padding:5px}", 1000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import * as foobar from 'stylex';
+        _inject(".xrkmrrc{background-color:red}", 3000);
+        _inject(".xju2f9n{color:blue}", 3000);
+        _inject(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
@@ -254,11 +260,11 @@ describe('@stylexjs/babel-plugin', () => {
           styles;
         `),
       ).toMatchInlineSnapshot(`
-        "import { create } from 'stylex';
-        import __stylex__ from "stylex";
-        __stylex__.inject(".xrkmrrc{background-color:red}", 3000);
-        __stylex__.inject(".xju2f9n{color:blue}", 3000);
-        __stylex__.inject(".x14odnwx{padding:5px}", 1000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import { create } from 'stylex';
+        _inject(".xrkmrrc{background-color:red}", 3000);
+        _inject(".xju2f9n{color:blue}", 3000);
+        _inject(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",
@@ -292,11 +298,11 @@ describe('@stylexjs/babel-plugin', () => {
           styles;
         `),
       ).toMatchInlineSnapshot(`
-        "import { create as css } from 'stylex';
-        import __stylex__ from "stylex";
-        __stylex__.inject(".xrkmrrc{background-color:red}", 3000);
-        __stylex__.inject(".xju2f9n{color:blue}", 3000);
-        __stylex__.inject(".x14odnwx{padding:5px}", 1000);
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import { create as css } from 'stylex';
+        _inject(".xrkmrrc{background-color:red}", 3000);
+        _inject(".xju2f9n{color:blue}", 3000);
+        _inject(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
             backgroundColor: "xrkmrrc",

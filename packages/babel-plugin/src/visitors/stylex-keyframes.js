@@ -9,6 +9,7 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+import { addDefault, addNamed } from '@babel/helper-module-imports';
 import StateManager from '../utils/state-manager';
 import { keyframes as stylexKeyframes, messages } from '@stylexjs/shared';
 import * as pathUtils from '../babel-path-utils';
@@ -76,40 +77,29 @@ export default function transformStyleXKeyframes(
 
     const { ltr, priority, rtl } = injectedStyle;
 
-    if (
-      state.runtimeInjection &&
-      pathUtils.isVariableDeclaration(path.parentPath)
-    ) {
-      // We know that the parent path is a variable declaration
-      const statementPath: NodePath<t.VariableDeclaration> = path.parentPath;
+    const statementPath: ?NodePath<t.Statement> = path.getStatementParent();
 
-      let stylexName: string;
-      state.stylexImport.forEach((importName) => {
-        stylexName = importName;
-      });
-      if (stylexName == null) {
-        stylexName = '__stylex__';
-        statementPath.insertBefore(
-          t.importDeclaration(
-            [t.importDefaultSpecifier(t.identifier(stylexName))],
-            t.stringLiteral(state.importPathString),
-          ),
-        );
+    if (statementPath != null && state.runtimeInjection != null) {
+      let injectName: t.Identifier;
+      if (state.injectImportInserted != null) {
+        injectName = state.injectImportInserted;
+      } else {
+        const { from, as } = state.runtimeInjection;
+        injectName =
+          as != null
+            ? addNamed(statementPath, as, from, { nameHint: 'inject' })
+            : addDefault(statementPath, from, { nameHint: 'inject' });
+
+        state.injectImportInserted = injectName;
       }
 
       statementPath.insertBefore(
         t.expressionStatement(
-          t.callExpression(
-            t.memberExpression(
-              t.identifier(stylexName),
-              t.identifier('inject'),
-            ),
-            [
-              t.stringLiteral(ltr),
-              t.numericLiteral(priority),
-              ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-            ],
-          ),
+          t.callExpression(injectName, [
+            t.stringLiteral(ltr),
+            t.numericLiteral(priority),
+            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
+          ]),
         ),
       );
     }

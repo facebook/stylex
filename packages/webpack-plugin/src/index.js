@@ -79,10 +79,8 @@ class StylexPlugin {
         PLUGIN_NAME,
         (loaderContext, module) => {
           if (
-            // JavaScript (and Flow) modules
-            /\.jsx?/.test(path.extname(module.resource)) ||
-            // TypeScript modules
-            /\.tsx?/.test(path.extname(module.resource))
+            // .js, .jsx, .mjs, .cjs, .ts, .tsx, .mts, .cts
+            /\.[mc]?[jt]sx?$/.test(path.extname(module.resource))
           ) {
             // It might make sense to use .push() here instead of .unshift()
             // Webpack usually runs loaders in reverse order and we want to ideally run
@@ -146,17 +144,66 @@ class StylexPlugin {
           },
         );
       } else {
-        // Consume collected rules and emit the stylex CSS asset
-        compilation.hooks.additionalAssets.tap(PLUGIN_NAME, () => {
-          try {
-            const collectedCSS = getStyleXRules();
-            if (collectedCSS) {
-              compilation.emitAsset(this.filename, new RawSource(collectedCSS));
-            }
-          } catch (e) {
-            compilation.errors.push(e);
+        // We'll emit an asset ourselves. This comes with some complications in from Webpack.
+        // If the filename contains replacement tokens, like [contenthash], we need to
+        // process those tokens ourselves. Webpack does provide a way to reuse the configured
+        // hashing functions. We'll take advantage of that to process tokens.
+        const getContentHash = (source) => {
+          const { outputOptions } = compilation;
+          const { hashDigest, hashDigestLength, hashFunction, hashSalt } =
+            outputOptions;
+          const hash = compiler.webpack.util.createHash(hashFunction);
+
+          if (hashSalt) {
+            hash.update(hashSalt);
           }
-        });
+
+          hash.update(source);
+
+          const fullContentHash = hash.digest(hashDigest);
+
+          return fullContentHash.toString().slice(0, hashDigestLength);
+        };
+        // Consume collected rules and emit the stylex CSS asset
+        compilation.hooks.processAssets.tap(
+          {
+            name: PLUGIN_NAME,
+            stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+          },
+          () => {
+            try {
+              const collectedCSS = getStyleXRules();
+
+              if (collectedCSS) {
+                // build up a content hash for the rules using webpack's configured hashing functions
+                const contentHash = getContentHash(collectedCSS);
+
+                // pretend to be a chunk so we can reuse the webpack routine to process the filename and do token replacement
+                // see https://github.com/webpack/webpack/blob/main/lib/Compilation.js#L4733
+                // see https://github.com/webpack/webpack/blob/main/lib/TemplatedPathPlugin.js#L102
+                const data = {
+                  filename: this.filename,
+                  contentHash: contentHash,
+                  chunk: {
+                    id: this.filename,
+                    name: path.parse(this.filename).name,
+                    hash: contentHash,
+                  },
+                };
+
+                const { path: hashedPath, info: assetsInfo } =
+                  compilation.getPathWithInfo(data.filename, data);
+                compilation.emitAsset(
+                  hashedPath,
+                  new RawSource(collectedCSS),
+                  assetsInfo,
+                );
+              }
+            } catch (e) {
+              compilation.errors.push(e);
+            }
+          },
+        );
       }
     });
   }
@@ -180,9 +227,13 @@ class StylexPlugin {
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,
-            /\.jsx?/.test(path.extname(filename))
-              ? flowSyntaxPlugin
-              : typescriptSyntaxPlugin,
+
+            path.extname(filename) === '.ts'
+              ? typescriptSyntaxPlugin
+              : path.extname(filename) === '.tsx'
+                ? [typescriptSyntaxPlugin, { isTSX: true }]
+                : flowSyntaxPlugin,
+
             jsxSyntaxPlugin,
             this.babelPlugin,
           ],

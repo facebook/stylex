@@ -7,7 +7,7 @@
  * @format
  */
 
-import {useLayoutEffect, useRef} from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 export default function useViewTransition() {
   const promise = useRef(null);
@@ -39,7 +39,7 @@ export default function useViewTransition() {
     transition.current = document.startViewTransition(
       () =>
         new Promise((resolve, reject) => {
-          promise.current = {resolve, reject};
+          promise.current = { resolve, reject };
           callback();
         }),
     );

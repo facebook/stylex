@@ -20,7 +20,7 @@ export function LogoText() {
   );
 }
 
-export default function Logo({xstyle}) {
+export default function Logo({ xstyle }) {
   const idA = 'a';
   const idB = 'b';
   const idC = 'c';
@@ -39,7 +39,8 @@ export default function Logo({xstyle}) {
           fx="62.144%"
           fy="40.669%"
           id={idC}
-          r="55.819%">
+          r="55.819%"
+        >
           <stop offset="0%" stopColor="#E5F9FF" />
           <stop offset="21.605%" stopColor="#B2EEFE" />
           <stop offset="57.356%" stopColor="#5ED9FB" />
@@ -52,7 +53,8 @@ export default function Logo({xstyle}) {
           fx="69.561%"
           fy="37.427%"
           id={idF}
-          r="62.945%">
+          r="62.945%"
+        >
           <stop offset="0%" stopColor="#FCD5FD" />
           <stop offset="19.619%" stopColor="#FD9EFF" />
           <stop offset="51.352%" stopColor="#F53BFA" />
@@ -64,7 +66,8 @@ export default function Logo({xstyle}) {
           x1="40.797%"
           x2="74.283%"
           y1="31.719%"
-          y2="59.893%">
+          y2="59.893%"
+        >
           <stop offset="0%" stopColor="var(--fg1)" stopOpacity="0" />
           <stop offset="100%" stopColor="var(--fg1)" />
         </linearGradient>
@@ -73,7 +76,8 @@ export default function Logo({xstyle}) {
           x1="42.442%"
           x2="64.703%"
           y1="56.078%"
-          y2="39.384%">
+          y2="39.384%"
+        >
           <stop offset="0%" stopColor="var(--fg1)" stopOpacity="0" />
           <stop offset="100%" stopColor="var(--fg1)" />
         </linearGradient>
@@ -83,7 +87,8 @@ export default function Logo({xstyle}) {
           id={idE}
           width="133.3%"
           x="-16.7%"
-          y="-16.7%">
+          y="-16.7%"
+        >
           <feGaussianBlur
             in="SourceAlpha"
             result="shadowBlurInner1"
@@ -114,7 +119,8 @@ export default function Logo({xstyle}) {
           id={idH}
           width="124.1%"
           x="-12.1%"
-          y="-12.1%">
+          y="-12.1%"
+        >
           <feGaussianBlur
             in="SourceAlpha"
             result="shadowBlurInner1"

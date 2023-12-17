@@ -21,7 +21,11 @@ describe('rollup-plugin-stylex', () => {
     // Configure a rollup bundle
     const bundle = await rollup.rollup({
       // Remove stylex runtime from bundle
-      external: ['stylex'],
+      external: [
+        'stylex',
+        '@stylexjs/stylex',
+        '@stylexjs/stylex/lib/stylex-inject',
+      ],
       input: path.resolve(__dirname, '__fixtures__/index.js'),
       plugins: [
         nodeResolve(),
@@ -169,7 +173,8 @@ describe('rollup-plugin-stylex', () => {
       expect(css).toBeUndefined();
 
       expect(js).toMatchInlineSnapshot(`
-        "import stylex from 'stylex';
+        "import _inject from '@stylexjs/stylex/lib/stylex-inject';
+        import stylex from 'stylex';
 
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -180,8 +185,8 @@ describe('rollup-plugin-stylex', () => {
          *
          */
 
-        stylex.inject(".x1lliihq{display:block}", 3000);
-        stylex.inject(".xh8yej3{width:100%}", 4000);
+        _inject(".x1lliihq{display:block}", 3000);
+        _inject(".xh8yej3{width:100%}", 4000);
         var styles$2 = {
           bar: {
             "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -200,9 +205,9 @@ describe('rollup-plugin-stylex', () => {
          *
          */
 
-        stylex.inject(".xt0psk2{display:inline}", 3000);
-        stylex.inject(".x1egiwwb{height:500px}", 4000);
-        stylex.inject(".x3hqpx7{width:50%}", 4000);
+        _inject(".xt0psk2{display:inline}", 3000);
+        _inject(".x1egiwwb{height:500px}", 4000);
+        _inject(".x3hqpx7{width:50%}", 4000);
         const styles$1 = {
           baz: {
             "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -222,13 +227,13 @@ describe('rollup-plugin-stylex', () => {
          *
          */
 
-        stylex.inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
-        stylex.inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-        stylex.inject(".x78zum5{display:flex}", 3000);
-        stylex.inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
-        stylex.inject(".xlrshdv{margin-top:99px}", 4000);
-        stylex.inject(".x1egiwwb{height:500px}", 4000);
-        stylex.inject(".x1oz5o6v:hover{background:red}", 1130);
+        _inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+        _inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+        _inject(".x78zum5{display:flex}", 3000);
+        _inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
+        _inject(".xlrshdv{margin-top:99px}", 4000);
+        _inject(".x1egiwwb{height:500px}", 4000);
+        _inject(".x1oz5o6v:hover{background:red}", 1130);
         var styles = {
           foo: {
             "index__styles.foo": "index__styles.foo",

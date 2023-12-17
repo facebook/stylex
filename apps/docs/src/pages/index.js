@@ -11,7 +11,7 @@ import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
 import StylexAnimatedLogo from '@site/components/StylexAnimatedLogo';
-import {ZStack, ZStackItem} from '../../components/ZStack';
+import { ZStack, ZStackItem } from '../../components/ZStack';
 import CtaButton from '../../components/CtaButton';
 
 export default function Home() {
@@ -59,7 +59,7 @@ export default function Home() {
   );
 }
 
-const CTA_BREAK = '@media (max-width: 360px)';
+const CTA_BREAK = '@media (max-width: 385px)';
 
 const styles = stylex.create({
   main: {
@@ -82,7 +82,9 @@ const styles = stylex.create({
     position: 'relative',
     boxSizing: 'border-box',
     margin: 0,
-    marginBottom: 24,
+    marginBottom: 19,
+    paddingBlock: '5px',
+    marginBlockStart: '-5px',
     overflow: 'hidden',
     zIndex: 0,
   },
