@@ -25,15 +25,18 @@ type ModuleResolution =
       type: 'commonJS',
       rootDir: string,
       themeFileExtension?: string,
+      aliases?: any,
     }
   | {
       type: 'haste',
       themeFileExtension?: string,
+      aliases?: any,
     }
   | {
       type: 'experimental_crossFileParsing',
       rootDir: string,
       themeFileExtension?: string,
+      aliases?: any,
     };
 
 export type StyleXOptions = {
@@ -42,6 +45,7 @@ export type StyleXOptions = {
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
   unstable_moduleResolution: void | ModuleResolution,
+  aliases: any,
   ...
 };
 
@@ -81,6 +85,7 @@ export default class StateManager {
       ...options,
       dev: !!(options: $FlowFixMe).dev,
       test: !!(options: $FlowFixMe).test,
+      aliases: (options: $FlowFixMe).aliases,
       runtimeInjection:
         (options: $FlowFixMe).runtimeInjection ?? !!(options: $FlowFixMe).dev,
       classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
@@ -171,16 +176,25 @@ export default class StateManager {
     if (sourceFilePath == null) {
       return false;
     }
+
     switch (this.options.unstable_moduleResolution?.type) {
       case 'commonJS': {
         const rootDir = this.options.unstable_moduleResolution.rootDir;
+        const aliases =
+          this.options.unstable_moduleResolution.aliases ??
+          this.options.aliases ??
+          undefined;
         const themeFileExtension =
           this.options.unstable_moduleResolution.themeFileExtension ??
           '.stylex';
         if (!matchesFileSuffix(themeFileExtension)(importPath)) {
           return false;
         }
-        const resolvedFilePath = filePathResolver(importPath, sourceFilePath);
+        const resolvedFilePath = filePathResolver(
+          importPath,
+          sourceFilePath,
+          aliases,
+        );
         return resolvedFilePath
           ? ['themeNameRef', path.relative(rootDir, resolvedFilePath)]
           : false;
@@ -195,13 +209,18 @@ export default class StateManager {
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
       }
       case 'experimental_crossFileParsing': {
+        const aliases = this.options.aliases ?? undefined;
         const themeFileExtension =
           this.options.unstable_moduleResolution.themeFileExtension ??
           '.stylex';
         if (!matchesFileSuffix(themeFileExtension)(importPath)) {
           return false;
         }
-        const resolvedFilePath = filePathResolver(importPath, sourceFilePath);
+        const resolvedFilePath = filePathResolver(
+          importPath,
+          sourceFilePath,
+          aliases,
+        );
         return resolvedFilePath ? ['filePath', resolvedFilePath] : false;
       }
       default:
@@ -219,12 +238,40 @@ export default class StateManager {
     this.styleVarsToKeep.add(memberExpression);
   }
 }
-
+// a function generate Regex to match the path of files with aliases
+function generateAliasRegex(alias: string) {
+  const regex = new RegExp('^' + alias + '/(.*)');
+  return regex;
+}
+// a function that resolves the path of files with aliases
+function aliasPathResolver(importPath: string = '', aliases: any) {
+  let output = importPath;
+  Object.keys(aliases ?? {}).forEach((alias) => {
+    let replacementToken = alias.split('*')[0];
+    let aliasedImportPathStr = importPath;
+    const regex = generateAliasRegex(aliases[alias]) ?? '';
+    const value = aliases[alias] ?? '';
+    if (
+      aliasedImportPathStr.startsWith(replacementToken) &&
+      regex.test(importPath)
+    ) {
+      let modifiedAliasedImportPath = aliasedImportPathStr.replace(
+        replacementToken,
+        '',
+      );
+      let resolvedPath = value;
+      resolvedPath = resolvedPath.replace('*', modifiedAliasedImportPath);
+      output = resolvedPath;
+    }
+  });
+  return output;
+}
 // a function that resolves the absolute path of a file when given the
 // relative path of the file from the source file
 const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
+  aliases?: any,
 ): void | string => {
   const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
   if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
@@ -240,9 +287,20 @@ const filePathResolver = (
       const importPathStr = fileToLookFor.startsWith('.')
         ? fileToLookFor + ext
         : fileToLookFor;
-      const resolvedFilePath = require.resolve(importPathStr, {
-        paths: [path.dirname(sourceFilePath)],
-      });
+      let aliasedImportPathStr = importPathStr;
+      if (aliases) {
+        aliasedImportPathStr = aliasPathResolver(aliasedImportPathStr, aliases);
+      }
+
+      const resolvedFilePath =
+        aliasedImportPathStr === importPathStr //Check if the alias is resolved and the path is valid
+          ? require.resolve(aliasedImportPathStr, {
+              paths: [path.dirname(sourceFilePath)],
+            })
+          : require.resolve(path.resolve(aliasedImportPathStr + '.ts'), {
+              paths: [path.dirname(sourceFilePath)],
+            });
+
       return resolvedFilePath;
     } catch {}
   }

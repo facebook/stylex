@@ -8,7 +8,7 @@
  */
 
 import stylex from '@stylexjs/stylex';
-import Card from './Card';
+import Card from '@/components/Card';
 import { globalTokens as $, spacing, text } from './globalTokens.stylex';
 
 const MEDIA_MOBILE = '@media (max-width: 700px)' as const;

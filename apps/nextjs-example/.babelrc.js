@@ -1,5 +1,5 @@
 const path = require('path');
-
+console.log(path.join(__dirname));
 module.exports = {
   presets: ['next/babel'],
   plugins: [
@@ -13,6 +13,10 @@ module.exports = {
         unstable_moduleResolution: {
           type: 'commonJS',
           rootDir: path.join(__dirname, '../..'),
+          aliases: {
+            '@/app/*': './app/*',
+            '@/components/*': './components/*',
+          },
         },
       },
     ],

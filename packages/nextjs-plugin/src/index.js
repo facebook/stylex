@@ -12,7 +12,7 @@ const WebpackPluginStylex = require('./custom-webpack-plugin');
 let count = 0;
 
 module.exports =
-  ({ rootDir, filename = 'stylex-bundle.css' }) =>
+  ({ rootDir, filename = 'stylex-bundle.css', aliases }) =>
   (nextConfig = {}) => {
     return {
       ...nextConfig,
@@ -52,6 +52,7 @@ module.exports =
             count,
             dev,
           },
+          aliases,
           rootDir,
           appendTo: (name) => name.endsWith('.css'),
           filename,
@@ -59,7 +60,6 @@ module.exports =
         };
 
         const stylexPlugin = new WebpackPluginStylex(webpackPluginOptions);
-
         config.plugins.push(stylexPlugin);
 
         return config;
