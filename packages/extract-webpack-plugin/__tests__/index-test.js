@@ -13,6 +13,7 @@ const memfs = require('memfs');
 const path = require('path');
 const StylexPlugin = require('../src/index');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
  * Webpack compiler factory
@@ -38,7 +39,7 @@ function createCompiler(entry, pluginOptions = {}, config = {}) {
         },
       ],
     },
-    plugins: [stylexPlugin],
+    plugins: [stylexPlugin, new HtmlWebpackPlugin()],
     devtool: false, //'cheap-source-map',
     externals: [
       'stylex',
@@ -103,7 +104,7 @@ function assetExists(asset, compiler, stats) {
 }
 
 describe('extract-webpack-plugin', () => {
-  it('extracts CSS and removes stylex.inject calls', (done) => {
+  it('extracts CSS and removes stylex.inject calls for each entry', (done) => {
     const compiler = createCompiler({main: 'index.js', other: 'other.js'});
     compiler.run((error, stats) => {
       expect(error).toBe(null);
@@ -159,6 +160,32 @@ describe('extract-webpack-plugin', () => {
           expect(error).toBe(null);
           expect(assetExists('main.09fffeec3686166d4767.css', compiler, stats),).toBe(true);
           expect(assetExists('other.8896b6b37d6834340ed1.css', compiler, stats),).toBe(true);
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+  });
+
+  it('works with HtmlWebpackPlugin', async () => {
+    const compiler = createCompiler({
+      main: 'index.js',
+      other: 'other.js'
+    }, {
+      filename: '[name].[contenthash].css',
+    });
+    return new Promise((resolve, reject) => {
+      compiler.run((error, stats) => {
+        try {
+          expect(error).toBe(null);
+          expect(assetExists('index.html', compiler, stats),).toBe(true);
+          expect(assetExists('main.09fffeec3686166d4767.css', compiler, stats),).toBe(true);
+          expect(assetExists('other.8896b6b37d6834340ed1.css', compiler, stats),).toBe(true);
+
+          const html = readAsset('index.html', compiler, stats);
+          expect(html).toContain('<link href="main.09fffeec3686166d4767.css" rel="stylesheet">');
+          expect(html).toContain('<link href="other.8896b6b37d6834340ed1.css" rel="stylesheet">');
           resolve();
         } catch (e) {
           reject(e);

@@ -32,7 +32,16 @@ module.exports = {
     new StylexPlugin({
       filename: '[name].[contenthash].css'
     }),
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: path.resolve(__dirname,'index.html'),
+      excludeChunks: ['other']
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'other.html',
+      template: path.resolve(__dirname,'other.html'),
+      excludeChunks: ['main']
+    })
   ],
   devtool: false, //'cheap-source-map',
   externals: {
