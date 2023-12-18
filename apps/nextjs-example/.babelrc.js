@@ -10,8 +10,7 @@ module.exports = {
         genConditionalClasses: true,
         treeshakeCompensation: true,
         aliases: {
-          '@/app/*': './app/*',
-          '@/components/*': './components/*',
+          '@/*': './*',
         },
         unstable_moduleResolution: {
           type: 'commonJS',
