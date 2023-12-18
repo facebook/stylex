@@ -177,11 +177,12 @@ export type Theme<
   [string]: StyleXClassNameFor<string, IDFromVarGroup<T>>,
 }>;
 
-export type OverridesForTokenType<Config: { +[string]: mixed }> = {
+export type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
   [Key in keyof Config]:
     | Config[Key]
-    | { +default: Config[Key], +[string]: Config[Key] },
+    | { default: Config[Key]; [property: string]: Config[Key] };
 };
+
 
 export type StyleX$CreateTheme = <
   BaseTokens: VarGroup<{ +[string]: mixed }>,
