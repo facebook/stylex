@@ -42,6 +42,7 @@ type CSSPropertiesWithExtras = $ReadOnly<{
   '::-webkit-search-cancel-button'?: CSSProperties,
   '::-webkit-search-results-button'?: CSSProperties,
   '::-webkit-search-results-decoration'?: CSSProperties,
+  
 }>;
 
 export type NestedCSSPropTypes = $ReadOnly<{

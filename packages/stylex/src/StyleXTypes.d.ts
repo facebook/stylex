@@ -200,7 +200,7 @@ export type Theme<
 type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
   [Key in keyof Config]:
     | Config[Key]
-    | { default: Config[Key]; [atRule: AtRuleStr]: Config[Key] };
+    | { default: Config[Key]; [atRule: string]: Config[Key] };
 };
 
 export type StyleX$CreateTheme = <
