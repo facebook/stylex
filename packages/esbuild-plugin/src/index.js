@@ -8,7 +8,8 @@
  */
 
 import path from 'path';
-import { readFile, writeFile, mkdir } from 'fs/promises';
+// import { readFile, writeFile, mkdir } from 'fs/promises';
+import { promises } from 'fs';
 import { transformAsync, type PluginItem } from '@babel/core';
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
 import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
@@ -18,6 +19,8 @@ import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import { utils } from '@stylexjs/shared';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import type { Plugin, PluginBuild, BuildResult, OnLoadArgs } from 'esbuild';
+
+const { readFile, writeFile, mkdir } = promises;
 
 const PACKAGE_NAME = 'esbuild-plugin-stylex';
 
@@ -45,7 +48,7 @@ export default function stylexPlugin({
   stylexImports = ['@stylexjs/stylex'],
   generatedCSSFileName = path.resolve(__dirname, 'stylex.css'),
   babelConfig: { plugins = [], presets = [] } = {},
-  useCSSLayers,
+  useCSSLayers = false,
   ...options
 }: PluginOptions = {}): Plugin {
   return {
