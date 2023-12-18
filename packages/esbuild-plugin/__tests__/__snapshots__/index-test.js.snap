@@ -134,12 +134,14 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   ));
 
   // __tests__/__fixtures__/index.js
+  var import_stylex_inject3 = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
   var import_stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
 
   // __tests__/__fixtures__/fooStyles.js
+  var import_stylex_inject = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
   var import_stylex = __toESM(__require("@stylexjs/stylex"), 1);
-  import_stylex.default.inject(".xt0psk2{display:inline}", 3e3);
-  import_stylex.default.inject(".xh8yej3{width:100%}", 4e3);
+  (0, import_stylex_inject.default)(".xt0psk2{display:inline}", 3e3);
+  (0, import_stylex_inject.default)(".xh8yej3{width:100%}", 4e3);
   var fooStyles_default = {
     foo: {
       fooStyles__foo: "fooStyles__foo",
@@ -150,10 +152,11 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   };
 
   // __tests__/__fixtures__/bazStyles.js
+  var import_stylex_inject2 = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
   var import_stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
-  import_stylex2.default.inject(".x1lliihq{display:block}", 3e3);
-  import_stylex2.default.inject(".xnsd7bc{height:900px}", 4e3);
-  import_stylex2.default.inject(".x3hqpx7{width:50%}", 4e3);
+  (0, import_stylex_inject2.default)(".x1lliihq{display:block}", 3e3);
+  (0, import_stylex_inject2.default)(".xnsd7bc{height:900px}", 4e3);
+  (0, import_stylex_inject2.default)(".x3hqpx7{width:50%}", 4e3);
   var bazStyles_default = {
     baz: {
       bazStyles__baz: "bazStyles__baz",
@@ -165,13 +168,13 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   };
 
   // __tests__/__fixtures__/index.js
-  import_stylex3.default.inject("@keyframes xekv6nw-B{0%{opacity:0;}100%{opacity:1;}}", 1);
-  import_stylex3.default.inject(".x127lhb5{animation-name:xekv6nw-B}", 3e3);
-  import_stylex3.default.inject(".x78zum5{display:flex}", 3e3);
-  import_stylex3.default.inject(".x16ydxro{margin-left:10px}", 4e3);
-  import_stylex3.default.inject(".x1xa6b72{height:700px}", 4e3);
-  import_stylex3.default.inject(".xrkmrrc{background-color:red}", 3e3);
-  import_stylex3.default.inject(".x1r3o6fz:hover{background-color:pink}", 3130);
+  (0, import_stylex_inject3.default)("@keyframes xekv6nw-B{0%{opacity:0;}100%{opacity:1;}}", 1);
+  (0, import_stylex_inject3.default)(".x127lhb5{animation-name:xekv6nw-B}", 3e3);
+  (0, import_stylex_inject3.default)(".x78zum5{display:flex}", 3e3);
+  (0, import_stylex_inject3.default)(".x16ydxro{margin-left:10px}", 4e3);
+  (0, import_stylex_inject3.default)(".x1xa6b72{height:700px}", 4e3);
+  (0, import_stylex_inject3.default)(".xrkmrrc{background-color:red}", 3e3);
+  (0, import_stylex_inject3.default)(".x1r3o6fz:hover{background-color:pink}", 3130);
   var styles = {
     bar: {
       "index__styles.bar": "index__styles.bar",
