@@ -1,0 +1,34 @@
+{
+  "name": "@stylexjs/vite-plugin",
+  "version": "0.3.0",
+  "description": "Rollup plugin for StyleX",
+  "main": "lib/index.js",
+  "type": "module",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "babel src/ --out-dir lib/ --copy-files",
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "__builds__",
+      "/__fixtures__/"
+    ],
+    "testEnvironment": "node"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.6",
+    "@stylexjs/babel-plugin": "0.3.0",
+    "@babel/plugin-syntax-flow": "^7.23.3",
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/plugin-syntax-typescript": "^7.23.3"
+  },
+  "devDependencies": {
+    "vite": "^5.0.6",
+    "@types/connect": "^3.4.38",
+    "@stylexjs/stylex": "0.3.0"
+  }
+}
