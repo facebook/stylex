@@ -6,9 +6,11 @@
   "module": "./lib/es/stylex.js",
   "types": "./lib/stylex.d.ts",
   "exports": {
-    "import": "./lib/es/stylex.js",
-    "require": "./lib/stylex.js",
-    "types": "./lib/stylex.d.ts"
+    ".": {
+      "import": "./lib/es/stylex.js",
+      "require": "./lib/stylex.js",
+      "types": "./lib/stylex.d.ts"
+    }
   },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
