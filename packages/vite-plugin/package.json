@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "rollup --config ./rollup.config.mjs",
-    "test": "jest"
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "jest": {
     "testPathIgnorePatterns": [

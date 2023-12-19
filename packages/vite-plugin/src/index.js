@@ -110,7 +110,7 @@ export default function stylexPlugin({
       };
     },
     configResolved(conf) {
-      dev = conf.mode !== 'development' || conf.env.mode !== 'development';
+      dev = conf.mode === 'development' || conf.env.mode === 'development';
       viteCSSPlugins.push(
         ...conf.plugins.filter((p) =>
           VITE_INTERNAL_CSS_PLUGIN_NAMES.includes(p.name),
