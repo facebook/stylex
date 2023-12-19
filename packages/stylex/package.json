@@ -8,8 +8,12 @@
   "exports": {
     ".": {
       "import": "./lib/es/stylex.js",
-      "require": "./lib/stylex.js"
+      "require": "./lib/stylex.js",
+      "types": "./lib/stylex.d.ts"
     },
+    "./lib/StyleXCSSTypes": "./lib/StyleXCSSTypes.js",
+    "./lib/StyleXSheet": "./lib/StyleXSheet.js",
+    "./lib/StyleXTypes": "./lib/StyleXTypes.js",
     "./package.json": "./package.json"
   },
   "repository": "https://www.github.com/facebook/stylex",
