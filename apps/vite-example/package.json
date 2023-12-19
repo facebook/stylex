@@ -1,0 +1,21 @@
+{
+  "name": "vite-example",
+  "version": "0.3.0",
+  "description": "A simple rollup example to test stylexjs/vite-plugin",
+  "main": "index.js",
+  "scripts": {
+    "build": "vite build",
+    "start": "vite"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/stylex": "0.3.0",
+    "@stylexjs/vite-plugin": "0.3.0"
+  },
+  "devDependencies": {
+    "vite": "^5.0.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.1"
+  }
+}
