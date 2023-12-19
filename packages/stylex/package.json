@@ -14,6 +14,7 @@
     "./lib/StyleXCSSTypes": "./lib/StyleXCSSTypes.js",
     "./lib/StyleXSheet": "./lib/StyleXSheet.js",
     "./lib/StyleXTypes": "./lib/StyleXTypes.js",
+    "./lib/stylex-inject": "./lib/stylex-inject.js",
     "./package.json": "./package.json"
   },
   "repository": "https://www.github.com/facebook/stylex",
