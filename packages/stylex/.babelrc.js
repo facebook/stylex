@@ -29,16 +29,11 @@ const presets = process.env['HASTE']
   ? []
   : [
       [
-        [
-          '@babel/preset-env',
-          {
-            modules: BABEL_ENV === 'esm' ? false : 'auto',
-            targets: { node: 'current' },
-          },
-        ],
+        '@babel/preset-env',
         {
           exclude: ['@babel/plugin-transform-typeof-symbol'],
           targets: 'defaults',
+          modules: BABEL_ENV === 'esm' ? false : 'cjs',
         },
       ],
       '@babel/preset-flow',

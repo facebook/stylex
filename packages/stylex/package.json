@@ -3,15 +3,15 @@
   "version": "0.3.0",
   "description": "A library for defining styles for optimized user interfaces.",
   "main": "lib/stylex.js",
-  "module": "esm/stylex.js",
+  "module": "lib/es/stylex.js",
   "types": "lib/stylex.d.ts",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
-    "build:auto": "BABEL_ENV=auto babel src/ --out-dir lib/ --copy-files",
+    "build:cjs": "BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
     "build:esm": "BABEL_ENV=esm babel src/ --out-dir lib/es --copy-files",
-    "build": "npm run build:auto && npm run build:esm",
+    "build": "npm run build:cjs && npm run build:esm",
     "build-haste": "rewrite-imports -i src/ -o lib/",
     "test": "jest"
   },
