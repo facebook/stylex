@@ -8,9 +8,9 @@
   "exports": {
     ".": {
       "import": "./lib/es/stylex.js",
-      "require": "./lib/stylex.js",
-      "types": "./lib/stylex.d.ts"
-    }
+      "require": "./lib/stylex.js"
+    },
+    "./package.json": "./package.json"
   },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
