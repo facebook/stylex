@@ -13,7 +13,7 @@ import events from 'events';
 export type ServerHandle = HandleFunction | http.Server;
 
 export interface IncomingMessage extends http.IncomingMessage {
-  originalUrl?: http.IncomingMessage['url'];
+  originalUrl: http.IncomingMessage['url'];
 }
 
 type NextFunction = (err?: any) => void;

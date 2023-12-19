@@ -28,7 +28,6 @@
   },
   "devDependencies": {
     "vite": "^5.0.6",
-    "@types/connect": "^3.4.38",
     "@stylexjs/stylex": "0.3.0"
   }
 }
