@@ -159,22 +159,17 @@ export default class StateManager {
   }
 
   get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
-    const { runtimeInjection, rootDir } = this.options;
-    const filename = this.filename;
+    const { runtimeInjection, rootDir, filename } = this.options || {};
 
-    if (typeof runtimeInjection !== 'string') {
-      return runtimeInjection || null;
-    }
+    if (typeof runtimeInjection === 'string' && rootDir && filename) {
+      if (
+        runtimeInjection.startsWith('./') ||
+        runtimeInjection.startsWith('../')
+      ) {
+        const absolutePath = path.join(rootDir, runtimeInjection);
+        return { from: absolutePath };
+      }
 
-    if (
-      runtimeInjection.startsWith('./') ||
-      runtimeInjection.startsWith('../')
-    ) {
-      const absolutePath = path.join(rootDir, runtimeInjection);
-      return { from: absolutePath };
-    }
-
-    if (path.isAbsolute(runtimeInjection) && filename !== null) {
       const relativePath = path.relative(
         path.dirname(filename),
         runtimeInjection,
@@ -182,7 +177,7 @@ export default class StateManager {
       return { from: relativePath };
     }
 
-    return { from: runtimeInjection };
+    return runtimeInjection || null;
   }
 
   get isDev(): boolean {
