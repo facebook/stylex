@@ -1217,6 +1217,37 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
     });
+    test('transforms functions with nested dynamic values that have default params', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (props = { color: 'red' }) => ({
+              ':hover': {
+                backgroundColor: props.color,
+                color: 'blue',
+              },
+            }),
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x1vkaft9:hover{background-color:var(--b6ve2z,revert)}", 3130);
+        _inject(".x17z2mba:hover{color:blue}", 3130);
+        export const styles = {
+          default: (props = {
+            color: 'red'
+          }) => [{
+            ":hover_backgroundColor": "x1vkaft9",
+            ":hover_color": "x17z2mba",
+            $$css: true
+          }, {
+            "--b6ve2z": props.color != null ? props.color : "initial"
+          }]
+        };"
+      `);
+    });
     test('transforms mix of objects and functions', () => {
       expect(
         transform(`
