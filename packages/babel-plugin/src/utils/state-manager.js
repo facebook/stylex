@@ -159,9 +159,29 @@ export default class StateManager {
   }
 
   get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
-    return typeof this.options.runtimeInjection === 'string'
-      ? { from: this.options.runtimeInjection }
-      : this.options.runtimeInjection || null;
+    const { runtimeInjection, rootDir, filename } = this.options;
+
+    if (typeof runtimeInjection !== 'string') {
+      return runtimeInjection || null;
+    }
+
+    if (
+      runtimeInjection.startsWith('./') ||
+      runtimeInjection.startsWith('../')
+    ) {
+      const absolutePath = path.join(rootDir, runtimeInjection);
+      return { from: absolutePath };
+    }
+
+    if (path.isAbsolute(runtimeInjection) && filename !== null) {
+      const relativePath = path.relative(
+        path.dirname(filename),
+        runtimeInjection,
+      );
+      return { from: relativePath };
+    }
+
+    return { from: runtimeInjection };
   }
 
   get isDev(): boolean {
