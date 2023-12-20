@@ -31,7 +31,7 @@ export function evaluateStyleXCreateArg(
   deopt?: null | NodePath<>,
   fns?: {
     [string]: [
-      Array<t.Identifier>,
+      Array<t.Identifier | t.AssignmentPattern>,
       { +[string]: t.Expression | t.PatternLike },
     ],
   },
@@ -43,7 +43,7 @@ export function evaluateStyleXCreateArg(
   const value: { [string]: mixed } = {};
   const fns: {
     [string]: [
-      Array<t.Identifier>,
+      Array<t.Identifier | t.AssignmentPattern>,
       $ReadOnly<{ [string]: t.Expression | t.PatternLike }>,
     ],
   } = {};
@@ -72,9 +72,9 @@ export function evaluateStyleXCreateArg(
     const allParams: Array<
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
     > = fnPath.get('params');
-    const params: Array<t.Identifier> = allParams
-      .filter((param): param is NodePath<t.Identifier> =>
-        pathUtils.isIdentifier(param),
+    const params: Array<t.Identifier | t.AssignmentPattern> = allParams
+      .filter((param): param is NodePath<t.Identifier | t.AssignmentPattern> =>
+        pathUtils.isIdentifier(param) || pathUtils.isAssignmentPattern(param),
       )
       .map((param) => param.node);
     if (params.length !== allParams.length) {
