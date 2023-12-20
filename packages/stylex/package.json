@@ -12,6 +12,7 @@
       "types": "./lib/stylex.d.ts"
     },
     "./lib/StyleXTypes": "./lib/StyleXTypes.js",
+    "./lib/StyleXSheet": "./lib/StyleXSheet.js",
     "./lib/stylex-inject": "./lib/stylex-inject.js",
     "./package.json": "./package.json"
   },
