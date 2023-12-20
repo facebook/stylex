@@ -159,7 +159,10 @@ export default class StateManager {
   }
 
   get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
-    const { runtimeInjection, rootDir, filename } = this.options || {};
+    const options = this.options || {};
+    const runtimeInjection = options.runtimeInjection;
+    const rootDir = this.options.unstable_moduleResolution.rootDir || '';
+    const filename = this.filename || '';
 
     if (typeof runtimeInjection === 'string' && rootDir && filename) {
       if (
