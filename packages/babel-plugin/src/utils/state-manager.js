@@ -159,7 +159,8 @@ export default class StateManager {
   }
 
   get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
-    const { runtimeInjection, rootDir, filename } = this.options;
+    const { runtimeInjection, rootDir } = this.options;
+    const filename = this.filename;
 
     if (typeof runtimeInjection !== 'string') {
       return runtimeInjection || null;
