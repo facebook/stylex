@@ -73,8 +73,11 @@ export function evaluateStyleXCreateArg(
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
     > = fnPath.get('params');
     const params: Array<t.Identifier | t.AssignmentPattern> = allParams
-      .filter((param): param is NodePath<t.Identifier | t.AssignmentPattern> =>
-        pathUtils.isIdentifier(param) || pathUtils.isAssignmentPattern(param),
+      .filter(
+        (param): param is NodePath<t.Identifier | t.AssignmentPattern> =>
+          pathUtils.isIdentifier(param) ||
+          (pathUtils.isAssignmentPattern(param) &&
+            t.isIdentifier(param.node.left)),
       )
       .map((param) => param.node);
     if (params.length !== allParams.length) {
