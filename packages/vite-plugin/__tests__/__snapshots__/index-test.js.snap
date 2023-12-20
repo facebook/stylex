@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vite-stylex-plugin extracts CSS and removes stylex.inject calls 1`] = `
+"undefined@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
+.x1oz5o6v:hover:not(#\\#):not(#\\#){background:red}
+.xeuoslp:not(#\\#):not(#\\#):not(#\\#){animation-name:xgnty7z-B}
+.x1lliihq:not(#\\#):not(#\\#):not(#\\#){display:block}
+.x78zum5:not(#\\#):not(#\\#):not(#\\#){display:flex}
+.xt0psk2:not(#\\#):not(#\\#):not(#\\#){display:inline}
+.x1hm9lzh:not(#\\#):not(#\\#):not(#\\#){margin-inline-start:10px}
+.x1egiwwb:not(#\\#):not(#\\#):not(#\\#):not(#\\#){height:500px}
+.xlrshdv:not(#\\#):not(#\\#):not(#\\#):not(#\\#){margin-top:99px}
+.xh8yej3:not(#\\#):not(#\\#):not(#\\#):not(#\\#){width:100%}
+.x3hqpx7:not(#\\#):not(#\\#):not(#\\#):not(#\\#){width:50%}"
+`;
+
+exports[`vite-stylex-plugin extracts CSS and removes stylex.inject calls 2`] = `
+"import stylex from "stylex";
+const styles$2 = {
+  bar: {
+    display: "x1lliihq",
+    width: "xh8yej3",
+    $$css: true
+  }
+};
+const styles$1 = {
+  baz: {
+    display: "xt0psk2",
+    height: "x1egiwwb",
+    width: "x3hqpx7",
+    $$css: true
+  }
+};
+const styles = {
+  foo: {
+    animationName: "xeuoslp",
+    display: "x78zum5",
+    marginInlineStart: "x1hm9lzh",
+    marginLeft: null,
+    marginRight: null,
+    marginTop: "xlrshdv",
+    height: "x1egiwwb",
+    ":hover_background": "x1oz5o6v",
+    ":hover_backgroundAttachment": null,
+    ":hover_backgroundClip": null,
+    ":hover_backgroundColor": null,
+    ":hover_backgroundImage": null,
+    ":hover_backgroundOrigin": null,
+    ":hover_backgroundPosition": null,
+    ":hover_backgroundPositionX": null,
+    ":hover_backgroundPositionY": null,
+    ":hover_backgroundRepeat": null,
+    ":hover_backgroundSize": null,
+    $$css: true
+  }
+};
+function App() {
+  return stylex(styles$2.bar, styles.foo, styles$1.baz);
+}
+export {
+  App as default
+};
+"
+`;
