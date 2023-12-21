@@ -111,3 +111,38 @@ const wrongTheme2 = stylex.createTheme(
     paddingInline: '8px',
   },
 );
+
+declare const VarsA: unique symbol;
+const varsA = stylex.defineVars<{ varA1: string }, typeof VarsA>({
+  varA1: 'red',
+});
+
+const themeA = stylex.createTheme(varsA, {
+  varA1: 'green',
+});
+
+// Define a themeB
+
+declare const VarsB: unique symbol;
+const varsB = stylex.defineVars<{ varB1: string }, typeof VarsB>({
+  varB1: 'red',
+});
+
+const themeB = stylex.createTheme(varsB, {
+  varB1: 'green',
+});
+
+// Create a themeable component, allowing only themeA type
+
+const MyComponent: React.FC<{ theme: Theme<typeof varsA> }> = ({ theme }) => (
+  <div {...stylex.props(theme)} />
+);
+
+// @ts-expect-error - cornerRadius is missing.
+const x: Theme<typeof varsA> = themeB;
+
+// Instantiate component with themeA
+const Correct: React.FC = () => <MyComponent theme={themeA} />;
+
+// @ts-expect-error - cornerRadius is missing.
+const Incorrect: React.FC = () => <MyComponent theme={themeB} />;
