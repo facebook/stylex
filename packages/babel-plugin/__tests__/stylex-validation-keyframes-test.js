@@ -36,7 +36,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const name = stylex.keyframes(null);
         `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
       expect(() => {
         transform(`
           import stylex from 'stylex';
@@ -44,7 +44,7 @@ describe('@stylexjs/babel-plugin', () => {
             from: false
           });
         `);
-      }).toThrow(messages.ILLEGAL_NAMESPACE_VALUE);
+      }).toThrow(messages.NON_OBJECT_KEYFRAME);
       expect(() => {
         transform(`
           import stylex from 'stylex';

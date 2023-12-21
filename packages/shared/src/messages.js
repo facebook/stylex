@@ -23,6 +23,8 @@ export const ONLY_TOP_LEVEL =
   'stylex.create() is only allowed at the root of a program.';
 export const NON_OBJECT_FOR_STYLEX_CALL =
   'stylex.create() can only accept a style object.';
+export const NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL =
+  'stylex.keyframes() can only accept an object.';
 export const UNKNOWN_PROP_KEY = 'Unknown property key';
 export const INVALID_PSEUDO = 'Invalid pseudo selector, not on the whitelist.';
 export const INVALID_PSEUDO_OR_AT_RULE = 'Invalid pseudo or at-rule.';
@@ -38,6 +40,8 @@ export const ILLEGAL_PROP_VALUE =
 export const ILLEGAL_PROP_ARRAY_VALUE =
   'A style array value can only contain strings or numbers.';
 export const ILLEGAL_NAMESPACE_VALUE = 'A stylex namespace must be an object.';
+export const NON_OBJECT_KEYFRAME =
+  'Every frame within a stylex.keyframes() call must be an object.';
 export const INVALID_SPREAD =
   'Imported styles spread with a stylex.create call must be type cast as `XStyle<>` to verify their type.';
 export const LINT_UNCLOSED_FUNCTION = 'Rule contains an unclosed function';
