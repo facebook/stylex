@@ -155,29 +155,35 @@ type TTokens = $ReadOnly<{
   [string]:
     | number
     | string
-    | $ReadOnly<{ default: number | string, [string]: number | string }>,
+    | $ReadOnly<{ default: number | string, [string]: number | string }>
+    | StyleXVar<string | number>,
 }>;
 
+type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
 export type FlattenTokens<T: TTokens> = {
   +[Key in keyof T]: T[Key] extends { +default: infer X, +[string]: infer Y }
-    ? X | Y
-    : T[Key],
+    ? UnwrapVars<X | Y>
+    : UnwrapVars<T[Key]>,
 };
 
 export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-export type Theme<
+// opaque type ThemeKey<+_VG: VarGroup<{ +[string]: mixed }>>: string = string;
+export opaque type Theme<
   +T: VarGroup<{ +[string]: mixed }, string>,
   +_Tag: string = string,
-> = $ReadOnly<{
+>: $ReadOnly<{
+  $$css: true,
+  [string]: StyleXClassNameFor<string, IDFromVarGroup<T>>,
+}> = $ReadOnly<{
   $$css: true,
   [string]: StyleXClassNameFor<string, IDFromVarGroup<T>>,
 }>;
 
 export type OverridesForTokenType<Config: { +[string]: mixed }> = {
-  [Key in keyof Config]:
+  [Key in keyof Config]?:
     | Config[Key]
     | { +default: Config[Key], +[string]: Config[Key] },
 };
