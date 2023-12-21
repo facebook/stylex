@@ -50,12 +50,12 @@ export default function transformStyleXKeyframes(
       throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
     }
     if (nodeInit.arguments[0].type !== 'ObjectExpression') {
-      throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      throw new Error(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
     }
 
     const init: ?NodePath<t.Expression> = path.get('init');
     if (init == null || !pathUtils.isCallExpression(init)) {
-      throw new Error(messages.NON_STATIC_VALUE);
+      throw new Error(messages.NON_STATIC_KEYFRAME_VALUE);
     }
     const args: $ReadOnlyArray<NodePath<>> = init.get('arguments');
     const firstArg = args[0];

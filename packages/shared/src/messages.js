@@ -12,9 +12,14 @@
 // This file contains constants to be used within Error messages.
 // The URLs within will eventually be replaced by links to the documentation website for Stylex.
 
-export const ILLEGAL_ARGUMENT_LENGTH = 'stylex() should have 1 argument.';
+export const ILLEGAL_ARGUMENT_LENGTH =
+  'stylex.create() should have 1 argument.';
+export const ILLEGAL_ARG_LENGTH_FOR_KEYFRAMES =
+  'stylex.keyframes() should have 1 argument.';
 export const NON_STATIC_VALUE =
   'Only static values are allowed inside of a stylex.create() call.';
+export const NON_STATIC_KEYFRAME_VALUE =
+  'Only static values are allowed inside of a stylex.keyframes() call.';
 export const ESCAPED_STYLEX_VALUE =
   'Escaping a stylex.create() value is not allowed.';
 export const UNBOUND_STYLEX_CALL_VALUE =
