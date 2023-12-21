@@ -9,11 +9,69 @@
 
 import stylex from '@stylexjs/stylex';
 import Card from './Card';
-import { globalTokens as $, spacing, text } from './globalTokens.stylex';
+import {
+  globalTokens as $,
+  spacing,
+  text,
+  scales,
+} from './globalTokens.stylex';
+
+const HOMEPAGE = 'https://stylexjs.com';
+
+export default function Home() {
+  return (
+    <main {...stylex.props(style.main)}>
+      <div {...stylex.props(style.description)}>
+        <p {...stylex.props(style.descP)}>
+          Get started by editing&nbsp;
+          <code {...stylex.props(style.code)}>app/page.tsx</code>
+        </p>
+      </div>
+      <div {...stylex.props(style.hero)}>
+        <h1 {...stylex.props(style.h1)}>
+          Next.js App Dir<span {...stylex.props(style.emoji)}>♥️</span>️StyleX
+        </h1>
+      </div>
+
+      <div {...stylex.props(style.grid)}>
+        <Card
+          body="Learn how to use StyleX to build UIs"
+          href={`${HOMEPAGE}/docs/learn/`}
+          title="Docs"
+        />
+        <Card
+          body="Browse through the StyleX API reference"
+          href={`${HOMEPAGE}/docs/api/`}
+          title="API"
+        />
+        <Card
+          body="Play with StyleX and look at the compile outputs"
+          href={`${HOMEPAGE}/playground/`}
+          title="Playground"
+        />
+        <Card
+          body="Get started with a NextJS+StyleX project"
+          href="https://github.com/nmn/nextjs-app-dir-stylex"
+          title="Templates"
+        />
+      </div>
+    </main>
+  );
+}
 
 const MEDIA_MOBILE = '@media (max-width: 700px)' as const;
 const MEDIA_TABLET =
   '@media (min-width: 701px) and (max-width: 1120px)' as const;
+
+const beat = stylex.keyframes({
+  '0%': { transform: scales.medium },
+  '10%': { transform: scales.large },
+  '20%': { transform: scales.medium },
+  '30%': { transform: scales.large },
+  '40%': { transform: scales.medium },
+  '90%': { transform: scales.small },
+  '100%': { transform: scales.medium },
+});
 
 const style = stylex.create({
   main: {
@@ -55,6 +113,10 @@ const style = stylex.create({
       default: 0,
       [MEDIA_MOBILE]: spacing.xxxs,
     },
+    animationName: beat,
+    animationDuration: '2s',
+    animationIterationCount: 'infinite',
+    animationTimingFunction: 'linear',
   },
   description: {
     display: 'inherit',
@@ -132,46 +194,3 @@ const style = stylex.create({
     textAlign: { [MEDIA_MOBILE]: 'center' },
   },
 });
-
-const HOMEPAGE = 'https://stylexjs.com';
-
-export default function Home() {
-  return (
-    <main {...stylex.props(style.main)}>
-      <div {...stylex.props(style.description)}>
-        <p {...stylex.props(style.descP)}>
-          Get started by editing&nbsp;
-          <code {...stylex.props(style.code)}>app/page.tsx</code>
-        </p>
-      </div>
-      <div {...stylex.props(style.hero)}>
-        <h1 {...stylex.props(style.h1)}>
-          Next.js App Dir<span {...stylex.props(style.emoji)}>♥️</span>️StyleX
-        </h1>
-      </div>
-
-      <div {...stylex.props(style.grid)}>
-        <Card
-          body="Learn how to use StyleX to build UIs"
-          href={`${HOMEPAGE}/docs/learn/`}
-          title="Docs"
-        />
-        <Card
-          body="Browse through the StyleX API reference"
-          href={`${HOMEPAGE}/docs/api/`}
-          title="API"
-        />
-        <Card
-          body="Play with StyleX and look at the compile outputs"
-          href={`${HOMEPAGE}/playground/`}
-          title="Playground"
-        />
-        <Card
-          body="Get started with a NextJS+StyleX project"
-          href="https://github.com/nmn/nextjs-app-dir-stylex"
-          title="Templates"
-        />
-      </div>
-    </main>
-  );
-}
