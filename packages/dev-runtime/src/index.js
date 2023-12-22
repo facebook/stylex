@@ -79,7 +79,10 @@ export default function inject({
     const [cssVarsObject, { css }] = shared.defineVars(variables, {
       themeName,
     });
-    insert(cssVarsObject.__themeName__, css, 0);
+
+    css.forEach((rule) => {
+      insert(cssVarsObject.__themeName__, rule, 0);
+    });
     // $FlowFixMe
     return cssVarsObject;
   };

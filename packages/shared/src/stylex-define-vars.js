@@ -29,7 +29,7 @@ export default function styleXDefineVars<
 >(
   variables: Vars,
   options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
-): [VarsObject<Vars>, { css: string }] {
+): [VarsObject<Vars>, { css: [string, string] }] {
   const {
     classNamePrefix,
     themeName,
@@ -63,7 +63,7 @@ function constructCssVariablesString(variables: {
     nameHash: string,
     value: string | { +default: string, +[string]: string },
   },
-}): string {
+}): [string, string] {
   const atRules: any = {};
 
   const varsString = objEntries(variables)
@@ -95,5 +95,6 @@ function constructCssVariablesString(variables: {
       return `${atRule}{:root{${varsArr.join('')}}}`;
     })
     .join('');
-  return `:root{${varsString}}${atRulesString || ''}`;
+
+  return [`:root{${varsString}}`, atRulesString];
 }

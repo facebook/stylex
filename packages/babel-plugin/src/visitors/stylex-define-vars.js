@@ -116,17 +116,21 @@ export default function transformStyleXDefineVars(
         state.injectImportInserted = injectName;
       }
 
-      statementPath.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(css),
-            t.numericLiteral(0),
-          ]),
-        ),
-      );
+      css.forEach((rule) => {
+        statementPath.insertBefore(
+          t.expressionStatement(
+            t.callExpression(injectName, [
+              t.stringLiteral(rule),
+              t.numericLiteral(0),
+            ]),
+          ),
+        );
+      });
     }
 
-    state.addStyle([variablesObj.__themeName__, { ltr: css }, 0]);
+    css.forEach((rule) => {
+      state.addStyle([variablesObj.__themeName__, { ltr: rule }, 0]);
+    });
   }
 }
 
