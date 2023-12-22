@@ -205,7 +205,9 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
-        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -284,7 +286,9 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
-        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -380,7 +384,9 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
-        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -388,7 +394,8 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        _inject(":root{--xcateir:white;--xmj7ivn:black;--x13gxjix:8;}@media (prefers-color-scheme: dark){:root{--xmj7ivn:white;}}", 0);
+        _inject(":root{--xcateir:white;--xmj7ivn:black;--x13gxjix:8;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xmj7ivn:white;}}", 0);
         export const textInputTheme = {
           bgColor: "var(--xcateir)",
           labelColor: "var(--xmj7ivn)",
@@ -426,7 +433,9 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
         const RADIUS = 10;
-        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -465,7 +474,9 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
         const color = 'blue';
-        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -504,7 +515,9 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
         const name = 'light';
-        _inject(":root{--xgck17p:lightblue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:lightblue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -543,7 +556,9 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
         const RADIUS = 2;
-        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:4;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}", 0);
+        _inject(":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:4;--x4y59db:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--xgck17p:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -587,7 +602,9 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         import stylex from 'stylex';
-        _inject(":root{--x1sm8rlu:blue;--xxncinc:grey;--x4e1236:10;--xv9uic:pink;}@media (prefers-color-scheme: dark){:root{--x1sm8rlu:lightblue;--xxncinc:rgba(0, 0, 0, 0.8);}}@media print{:root{--x1sm8rlu:white;}}", 0);
+        _inject(":root{--x1sm8rlu:blue;--xxncinc:grey;--x4e1236:10;--xv9uic:pink;}", 0);
+        _inject("@media (prefers-color-scheme: dark){:root{--x1sm8rlu:lightblue;--xxncinc:rgba(0, 0, 0, 0.8);}}", 0);
+        _inject("@media print{:root{--x1sm8rlu:white;}}", 0);
         export const buttonTheme = {
           bgColor: "var(--x1sm8rlu)",
           bgColorDisabled: "var(--xxncinc)",

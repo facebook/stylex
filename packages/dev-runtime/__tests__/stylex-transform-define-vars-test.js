@@ -64,7 +64,23 @@ describe('Development Plugin Transformation', () => {
           [
             "x1y709cs",
             {
-              "ltr": ":root{--x4ocsy0:blue;--x1hi3uh4:grey;--x1r1ahgb:10px;--xrbea40:pink;}@media (prefers-color-scheme: dark){:root{--x4ocsy0:lightblue;--x1hi3uh4:rgba(0, 0, 0, 0.8);}}@media print{:root{--x4ocsy0:white;}}",
+              "ltr": ":root{--x4ocsy0:blue;--x1hi3uh4:grey;--x1r1ahgb:10px;--xrbea40:pink;}",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "x1y709cs-1lveb7",
+            {
+              "ltr": "@media (prefers-color-scheme: dark){:root{--x4ocsy0:lightblue;--x1hi3uh4:rgba(0, 0, 0, 0.8);}}",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "x1y709cs-bdddrq",
+            {
+              "ltr": "@media print{:root{--x4ocsy0:white;}}",
               "rtl": undefined,
             },
             0,

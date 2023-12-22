@@ -92,7 +92,7 @@ export default function transformStyleXDefineVars(
 
     const exportName = varId.name;
 
-    const [variablesObj, { css }] = stylexDefineVars(value, {
+    const [variablesObj, injectedStyles] = stylexDefineVars(value, {
       ...state.options,
       themeName: utils.genFileBasedIdentifier({ fileName, exportName }),
     });
@@ -101,6 +101,10 @@ export default function transformStyleXDefineVars(
     callExpressionPath.replaceWith(convertObjectToAST(variablesObj));
     const statementPath: ?NodePath<> =
       variableDeclaratorPath.parentPath.parentPath;
+
+    if (Object.keys(injectedStyles).length === 0) {
+      return;
+    }
 
     if (state.runtimeInjection != null && statementPath != null) {
       let injectName: t.Identifier;
@@ -116,17 +120,20 @@ export default function transformStyleXDefineVars(
         state.injectImportInserted = injectName;
       }
 
-      statementPath.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(css),
-            t.numericLiteral(0),
-          ]),
-        ),
-      );
+      for (const [_k, { ltr, priority }] of Object.entries(injectedStyles)) {
+        statementPath.insertBefore(
+          t.expressionStatement(
+            t.callExpression(injectName, [
+              t.stringLiteral(ltr),
+              t.numericLiteral(priority),
+            ]),
+          ),
+        );
+      }
     }
-
-    state.addStyle([variablesObj.__themeName__, { ltr: css }, 0]);
+    for (const [key, { priority, ltr }] of Object.entries(injectedStyles)) {
+      state.addStyle([key, { ltr }, priority]);
+    }
   }
 }
 
