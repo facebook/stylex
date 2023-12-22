@@ -107,18 +107,22 @@ export default function transformStyleXKeyframes(
         state.injectImportInserted = injectName;
       }
 
-      statementPath.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(ltr),
-            t.numericLiteral(priority),
-            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-          ]),
-        ),
-      );
+      ltr.forEach((rule) => {
+        statementPath.insertBefore(
+          t.expressionStatement(
+            t.callExpression(injectName, [
+              t.stringLiteral(rule),
+              t.numericLiteral(priority),
+              ...(rtl != null ? [t.stringLiteral(rtl)] : []),
+            ]),
+          ),
+        );
+      });
     }
 
-    state.addStyle([animationName, { ltr, rtl }, priority]);
+    ltr.forEach((rule) => {
+      state.addStyle([animationName, { ltr: rule, rtl }, priority]);
+    });
   }
 }
 

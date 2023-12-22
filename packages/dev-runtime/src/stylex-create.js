@@ -124,7 +124,9 @@ function createWithFns<S: { ... }>(
   const [compiledStyles, injectedStyles] = create(stylesWithoutFns, config);
   for (const key in injectedStyles) {
     const { ltr, priority, rtl } = injectedStyles[key];
-    insert(key, ltr, priority, rtl);
+    ltr.forEach((rule) => {
+      insert(key, rule, priority, rtl);
+    });
   }
   spreadStyles(compiledStyles);
 

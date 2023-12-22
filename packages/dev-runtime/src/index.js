@@ -100,7 +100,10 @@ export default function inject({
       variablesOverride,
     );
     const styleKey = js[String(variablesTheme.__themeName__)];
-    insert(styleKey, css[styleKey].ltr, css[styleKey].priority);
+    css[styleKey].ltr.forEach((rule) => {
+      insert(styleKey, rule, css[styleKey].priority);
+    });
+
     // $FlowFixMe[incompatible-return]
     return js;
   };
@@ -112,7 +115,9 @@ export default function inject({
       (frames: $FlowFixMe),
       config,
     );
-    insert(animationName, ltr, priority, rtl);
+    ltr.forEach((rule) => {
+      insert(animationName, rule, priority, rtl);
+    });
     return animationName;
   };
   __monkey_patch__('keyframes', keyframes);

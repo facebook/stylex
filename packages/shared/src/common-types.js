@@ -22,7 +22,7 @@ export type PrimitiveRawStyles = $ReadOnly<{
 
 export type InjectableStyle = {
   +priority: number,
-  +ltr: string,
+  +ltr: [string, string],
   +rtl: null | string,
 };
 

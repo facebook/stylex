@@ -94,7 +94,10 @@ export default function styleXCreateTheme(
     { $$css: true, [themeVars.__themeName__]: overrideClassName },
     {
       [overrideClassName]: {
-        ltr: `.${overrideClassName}{${cssVariablesOverrideString}}${atRulesCss}`,
+        ltr: [
+          `.${overrideClassName}{${cssVariablesOverrideString}}`,
+          atRulesCss,
+        ],
         priority: 0.99,
         rtl: undefined,
       },
