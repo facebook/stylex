@@ -85,13 +85,7 @@ export function evaluateStyleXCreateArg(
       );
     }
 
-    if (
-      allParams.some(
-        (param) =>
-          pathUtils.isAssignmentPattern(param) &&
-          t.isIdentifier(param.node.left),
-      )
-    ) {
+    if (allParams.some((param) => pathUtils.isAssignmentPattern(param))) {
       throw new Error(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
     }
 
