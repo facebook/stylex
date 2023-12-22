@@ -42,7 +42,7 @@ describe('stylex-override-vars test', () => {
       .toMatchInlineSnapshot(`
       {
         "ltr": ".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
-        "priority": 0.99,
+        "priority": 0.8,
         "rtl": undefined,
       }
     `);

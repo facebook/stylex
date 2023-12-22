@@ -83,7 +83,7 @@ export default function styleXCreateTheme(
   const stylesToInject: { [string]: InjectableStyle } = {
     [overrideClassName]: {
       ltr: `.${overrideClassName}{${cssVariablesOverrideString}}`,
-      priority: 0.99,
+      priority: 0.8,
       rtl: undefined,
     },
   };
@@ -91,7 +91,7 @@ export default function styleXCreateTheme(
   for (const atRule of sortedAtRules) {
     stylesToInject[overrideClassName + '-' + createHash(atRule)] = {
       ltr: `${atRule}{.${overrideClassName}{${atRules[atRule].join('')}}}`,
-      priority: 0.99,
+      priority: 0.9,
       rtl: null,
     };
   }

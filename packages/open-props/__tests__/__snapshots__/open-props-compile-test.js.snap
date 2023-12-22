@@ -268,7 +268,7 @@ exports[`commonJS results of exported styles and variables animationNames.stylex
     {
       "ltr": "@media (prefers-color-scheme: dark){:root{--xwpxwog:x1xhkb8m-B;--x1f9mpsk:x18q36hy-B;}}",
     },
-    0,
+    0.1,
   ],
 ]
 `;
@@ -1821,7 +1821,7 @@ exports[`commonJS results of exported styles and variables highlights.stylex.js 
     {
       "ltr": "@media (prefers-color-scheme: dark){:root{--xgorgio:hsl(0 0% 100% / 20%);--x27iylq:0 0 0 10px hsl(0 0% 100% / 20%);}}",
     },
-    0,
+    0.1,
   ],
 ]
 `;
@@ -2136,7 +2136,7 @@ exports[`commonJS results of exported styles and variables shadows.stylex.js 2`]
       0 41px 33px -2px hsl(220 40% 2% / calc(25% + 6%)),
       0 100px 80px -2px hsl(220 40% 2% / calc(25% + 7%));--x11qlsbw:inset 0 0 0 1px hsl(220 40% 2% / calc(25% + 9%));--xa5ok5s:inset 0 1px 2px 0 hsl(220 40% 2% / calc(25% + 9%)), inset 0 -.5px 0 0 #fff2, inset 0 .5px 0 0 #0007;--x15xf9dp:inset 0 1px 4px 0 hsl(220 40% 2% / calc(25% + 9%)), inset 0 -.5px 0 0 #fff2, inset 0 .5px 0 0 #0007;--x1dicv20:inset 0 2px 8px 0 hsl(220 40% 2% / calc(25% + 9%)), inset 0 -.5px 0 0 #fff2, inset 0 .5px 0 0 #0007;--x1yks3sz:inset 0 2px 14px 0 hsl(220 40% 2% / calc(25% + 9%)), inset 0 -.5px 0 0 #fff2, inset 0 .5px 0 0 #0007;}}",
     },
-    0,
+    0.1,
   ],
 ]
 `;

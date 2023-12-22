@@ -92,7 +92,7 @@ function constructCssVariablesString(
     result[themeNameHash + suffix] = {
       ltr,
       rtl: null,
-      priority: 0,
+      priority: key === 'default' ? 0 : 0.1,
     };
   }
 

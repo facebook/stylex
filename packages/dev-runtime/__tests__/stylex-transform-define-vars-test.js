@@ -75,7 +75,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": "@media (prefers-color-scheme: dark){:root{--x4ocsy0:lightblue;--x1hi3uh4:rgba(0, 0, 0, 0.8);}}",
               "rtl": undefined,
             },
-            0,
+            0.1,
           ],
           [
             "x1y709cs-bdddrq",
@@ -83,7 +83,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": "@media print{:root{--x4ocsy0:white;}}",
               "rtl": undefined,
             },
-            0,
+            0.1,
           ],
         ]
       `);

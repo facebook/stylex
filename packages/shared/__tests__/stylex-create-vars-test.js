@@ -52,12 +52,12 @@ describe('stylex-create-vars test', () => {
         },
         "x568ih9-1lveb7": {
           "ltr": "@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
-          "priority": 0,
+          "priority": 0.1,
           "rtl": null,
         },
         "x568ih9-bdddrq": {
           "ltr": "@media print{:root{--xgck17p:white;}}",
-          "priority": 0,
+          "priority": 0.1,
           "rtl": null,
         },
       }
