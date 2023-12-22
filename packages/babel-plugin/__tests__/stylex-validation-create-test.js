@@ -114,7 +114,7 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = stylex.create({
             dynamic: ({ color }) => ({
               color,
-            });
+            }),
           });
         `);
       }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
@@ -127,7 +127,7 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = stylex.create({
             dynamic: (props = {}) => ({
               color: props.color,
-            });
+            }),
           });
         `);
       }).toThrow(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
@@ -137,7 +137,7 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = stylex.create({
             dynamic: (color = 'red') => ({
               color,
-            });
+            }),
           });
         `);
       }).toThrow(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
