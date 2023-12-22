@@ -118,6 +118,16 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `);
       }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            dynamic: (...rest) => ({
+              color: rest[0],
+            }),
+          });
+        `);
+      }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
     });
 
     test('dynamic style function arguments cannot have default parameters', () => {

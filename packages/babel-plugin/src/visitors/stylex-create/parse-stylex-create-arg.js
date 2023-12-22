@@ -79,7 +79,12 @@ export function evaluateStyleXCreateArg(
       )
       .map((param) => param.node);
 
-    if (allParams.some((param) => pathUtils.isObjectPattern(param))) {
+    if (
+      allParams.some(
+        (param) =>
+          pathUtils.isObjectPattern(param) || pathUtils.isRestElement(param),
+      )
+    ) {
       throw new Error(
         messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS,
       );
