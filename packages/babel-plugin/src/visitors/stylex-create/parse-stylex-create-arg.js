@@ -14,6 +14,7 @@ import StateManager from '../../utils/state-manager';
 import { evaluate, type FunctionConfig } from '../../utils/evaluate-path';
 import * as pathUtils from '../../babel-path-utils';
 import { create, IncludedStyles, utils } from '@stylexjs/shared';
+import { messages } from '@stylexjs/shared';
 import {
   timeUnits,
   lengthUnits,
@@ -77,9 +78,27 @@ export function evaluateStyleXCreateArg(
         pathUtils.isIdentifier(param),
       )
       .map((param) => param.node);
+
+    if (allParams.some((param) => pathUtils.isObjectPattern(param))) {
+      throw new Error(
+        messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS,
+      );
+    }
+
+    if (
+      allParams.some(
+        (param) =>
+          pathUtils.isAssignmentPattern(param) &&
+          t.isIdentifier(param.node.left),
+      )
+    ) {
+      throw new Error(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
+    }
+
     if (params.length !== allParams.length) {
       return { confident: false, deopt: valPath, value: null };
     }
+
     const fnBody = fnPath.get('body');
     if (!pathUtils.isObjectExpression(fnBody)) {
       // We only allow arrow functions without block bodies.
