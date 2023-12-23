@@ -50,7 +50,9 @@ export function convertStyleToClassName(
 
   // NOTE: '<>' is used to keep existing hashes stable.
   // This should be removed in a future version.
-  const className = classNamePrefix + createHash('<>' + stringToHash);
+  const className =
+    classNamePrefix +
+    createHash((options.stylexSheetName ?? '<>') + stringToHash);
 
   const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
 

@@ -103,6 +103,8 @@ export default class StateManager {
             : options.dev
               ? DEFAULT_INJECT_PATH
               : undefined,
+      // TODO: Rename this to `hashKey` or `salt` or something
+      stylexSheetName: (options: $FlowFixMe).stylexSheetName ?? undefined,
       classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
       importSources: [
         name,

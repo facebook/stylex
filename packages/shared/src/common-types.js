@@ -45,6 +45,7 @@ export type StyleXOptions = $ReadOnly<{
   dev: boolean,
   test: boolean,
   useRemForFontSize: boolean,
+  stylexSheetName?: string | void,
   classNamePrefix: string,
   definedStylexCSSVariables?: { [key: string]: mixed },
   styleResolution:

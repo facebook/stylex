@@ -57,7 +57,10 @@ export default function styleXKeyframes(
 
   // NOTE: '<>' and '-B' is used to keep existing hashes stable.
   // They should be removed in a future version.
-  const animationName = classNamePrefix + createHash('<>' + ltrString) + '-B';
+  const animationName =
+    classNamePrefix +
+    createHash((options.stylexSheetName ?? '<>') + ltrString) +
+    '-B';
 
   const ltr = `@keyframes ${animationName}{${ltrString}}`;
   const rtl =
