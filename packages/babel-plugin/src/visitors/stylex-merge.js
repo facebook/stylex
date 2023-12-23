@@ -63,12 +63,17 @@ export default function transformStyleXMerge(
   let bailOut = false;
   let conditional = 0;
 
+  let currentIndex = -1;
+  let bailOutIndex: ?number = null;
+
   const resolvedArgs: ResolvedArgs = [];
   for (const arg of node.arguments) {
+    currentIndex++;
     switch (arg.type) {
       case 'MemberExpression': {
         const resolved = parseNullableStyle(arg, state);
         if (resolved === 'other') {
+          bailOutIndex = currentIndex;
           bailOut = true;
         } else {
           resolvedArgs.push(resolved);
@@ -80,6 +85,7 @@ export default function transformStyleXMerge(
         const primary = parseNullableStyle(consequent, state);
         const fallback = parseNullableStyle(alternate, state);
         if (primary === 'other' || fallback === 'other') {
+          bailOutIndex = currentIndex;
           bailOut = true;
         } else {
           resolvedArgs.push([test, primary, fallback]);
@@ -89,6 +95,7 @@ export default function transformStyleXMerge(
       }
       case 'LogicalExpression': {
         if (arg.operator !== '&&') {
+          bailOutIndex = currentIndex;
           bailOut = true;
           break;
         }
@@ -96,6 +103,7 @@ export default function transformStyleXMerge(
         const leftResolved = parseNullableStyle(left, state);
         const rightResolved = parseNullableStyle(right, state);
         if (leftResolved !== 'other' || rightResolved === 'other') {
+          bailOutIndex = currentIndex;
           bailOut = true;
         } else {
           resolvedArgs.push([left, rightResolved, null]);
@@ -104,6 +112,7 @@ export default function transformStyleXMerge(
         break;
       }
       default:
+        bailOutIndex = currentIndex;
         bailOut = true;
         break;
     }
@@ -122,7 +131,9 @@ export default function transformStyleXMerge(
 
     let nonNullProps: Array<string> | true = [];
 
+    let index = -1;
     for (const argPath of argumentPaths) {
+      index++;
       // eslint-disable-next-line no-inner-declarations, no-loop-func
       function MemberExpression(path: NodePath<t.MemberExpression>) {
         const object = path.get('object').node;
@@ -145,6 +156,10 @@ export default function transformStyleXMerge(
           }
         }
         let styleNonNullProps: true | Array<string> = [];
+        if (bailOutIndex != null && index > bailOutIndex) {
+          nonNullProps = true;
+          styleNonNullProps = true;
+        }
         if (nonNullProps === true) {
           styleNonNullProps = true;
         } else {

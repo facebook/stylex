@@ -567,12 +567,8 @@ const shorthands = {
   padding: (rawValue: TStyleValue): TReturn => {
     return [
       ['padding', rawValue],
-      ['paddingStart', null],
-      ['paddingLeft', null],
-      ['paddingEnd', null],
-      ['paddingRight', null],
-      ['paddingTop', null],
-      ['paddingBottom', null],
+      ...shorthands.paddingInline(null),
+      ...shorthands.paddingBlock(null),
     ];
   },
   paddingInline: (rawValue: TStyleValue): TReturn => [
