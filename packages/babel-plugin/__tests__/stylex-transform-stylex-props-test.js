@@ -1111,10 +1111,6 @@ describe('@stylexjs/babel-plugin', () => {
             foo: {
               color: "x1e2nbdu",
               $$css: true
-            },
-            bar: {
-              backgroundColor: "x1t391ir",
-              $$css: true
             }
           };"
         `);

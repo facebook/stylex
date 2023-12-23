@@ -314,6 +314,53 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex call keeps only the styles that are needed', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              padding: 5
+            },
+            bar: {
+              paddingBlock: 10,
+            },
+            baz: {
+              paddingTop: 7,
+            }
+          });
+          stylex(styles.foo);
+          stylex(styles.foo, styles.bar);
+          stylex(styles.bar, styles.foo);
+          stylex(styles.foo, styles.bar, styles.baz);
+          stylex(styles.foo, somethingElse);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x14odnwx{padding:5px}", 1000);
+        _inject(".xp59q4u{padding-block:10px}", 2000);
+        _inject(".xm7lytj{padding-top:7px}", 4000);
+        const styles = {
+          foo: {
+            padding: "x14odnwx",
+            paddingStart: null,
+            paddingLeft: null,
+            paddingEnd: null,
+            paddingRight: null,
+            paddingTop: null,
+            paddingBottom: null,
+            $$css: true
+          }
+        };
+        "x14odnwx";
+        "x14odnwx xp59q4u";
+        "xp59q4u x14odnwx";
+        "x14odnwx xp59q4u xm7lytj";
+        stylex(styles.foo, somethingElse);"
+      `);
+    });
+
     test('stylex call using styles with pseudo selectors', () => {
       expect(
         transform(`
@@ -1147,10 +1194,6 @@ describe('@stylexjs/babel-plugin', () => {
             foo: {
               color: "x1e2nbdu",
               $$css: true
-            },
-            bar: {
-              backgroundColor: "x1t391ir",
-              $$css: true
             }
           };"
         `);
@@ -1184,7 +1227,6 @@ describe('@stylexjs/babel-plugin', () => {
         expect(
           transform(`
             import stylex from 'stylex';
-            stylex(styles.default, props);
             const styles = stylex.create({
               default: {
                 borderTop: '5px solid blue',
@@ -1193,11 +1235,11 @@ describe('@stylexjs/babel-plugin', () => {
                 borderBottom: '5px solid blue',
               },
             });
+            stylex(styles.default, props);
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           import stylex from 'stylex';
-          stylex(styles.default, props);
           _inject(".x16gpukw{border-top:5px solid blue}", 2000);
           _inject(".x13nwy86{border-left:5px solid blue}", 2000);
           _inject(".x2ekbea{border-right:5px solid blue}", 2000);
@@ -1228,7 +1270,8 @@ describe('@stylexjs/babel-plugin', () => {
               borderBottomColor: null,
               $$css: true
             }
-          };"
+          };
+          stylex(styles.default, props);"
         `);
       });
 
@@ -1332,6 +1375,66 @@ describe('@stylexjs/babel-plugin', () => {
   });
   describe('Specific edge-case bugs', () => {
     test('Basic stylex call', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            sidebar: {
+              boxSizing: 'border-box',
+              gridArea: 'sidebar',
+            },
+            content: {
+              gridArea: 'content',
+            },
+            root: {
+              display: 'grid',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"content"',
+            },
+            withSidebar: {
+              gridTemplateColumns: 'auto minmax(0, 1fr)',
+              gridTemplateRows: '100%',
+              gridTemplateAreas: '"sidebar content"',
+              '@media (max-width: 640px)': {
+                gridTemplateRows: 'minmax(0, 1fr) auto',
+                gridTemplateAreas: '"content" "sidebar"',
+                gridTemplateColumns: '100%',
+              },
+            },
+            noSidebar: {
+              gridTemplateColumns: 'minmax(0, 1fr)',
+            },
+          });
+          stylex(
+            styles.root,
+            sidebar == null ? styles.noSidebar : styles.withSidebar,
+          );
+        `,
+          { dev: true, genConditionalClasses: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from '@stylexjs/stylex';
+        _inject(".x9f619{box-sizing:border-box}", 3000);
+        _inject(".x1yc5d2u{grid-area:sidebar}", 1000);
+        _inject(".x1fdo2jl{grid-area:content}", 1000);
+        _inject(".xrvj5dj{display:grid}", 3000);
+        _inject(".x7k18q3{grid-template-rows:100%}", 3000);
+        _inject(".x5gp9wm{grid-template-areas:\\"content\\"}", 2000);
+        _inject(".x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 3000);
+        _inject(".x17lh93j{grid-template-areas:\\"sidebar content\\"}", 2000);
+        _inject("@media (max-width: 640px){.xmr4b4k.xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 3200);
+        _inject("@media (max-width: 640px){.xesbpuc.xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2200);
+        _inject("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 3200);
+        _inject(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
+        ({
+          0: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
+          1: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x"
+        })[!!(sidebar == null) << 0];"
+      `);
+    });
+    test('Basic exported stylex.create call', () => {
       expect(
         transform(
           `
