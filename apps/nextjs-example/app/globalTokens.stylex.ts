@@ -284,3 +284,9 @@ export const globalTokens = stylex.defineVars({
       'linear-gradient(to bottom right, rgba(1, 65, 255, 0), rgba(1, 65, 255, 0), rgba(1, 65, 255, 0.3))',
   },
 });
+
+export const scales = stylex.defineVars({
+  small: 'scale(0.95)',
+  medium: 'scale(1)',
+  large: 'scale(1.2)',
+});

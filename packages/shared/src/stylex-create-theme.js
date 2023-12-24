@@ -26,10 +26,7 @@ export default function styleXCreateTheme(
     );
   }
 
-  const { classNamePrefix } = {
-    ...defaultOptions,
-    ...options,
-  };
+  const { classNamePrefix } = { ...defaultOptions, ...options };
 
   // Sort the set of variables to get a consistent unique hash value
   const sortedKeys = Object.keys(variables).sort();
@@ -83,21 +80,24 @@ export default function styleXCreateTheme(
     classNamePrefix +
     createHash(cssVariablesOverrideString + atRulesStringForHash);
 
-  // Create a class name hash
-  const atRulesCss = sortedAtRules
-    .map((atRule) => {
-      return `${atRule}{.${overrideClassName}{${atRules[atRule].join('')}}}`;
-    })
-    .join('');
+  const stylesToInject: { [string]: InjectableStyle } = {
+    [overrideClassName]: {
+      ltr: `.${overrideClassName}{${cssVariablesOverrideString}}`,
+      priority: 0.8,
+      rtl: undefined,
+    },
+  };
+
+  for (const atRule of sortedAtRules) {
+    stylesToInject[overrideClassName + '-' + createHash(atRule)] = {
+      ltr: `${atRule}{.${overrideClassName}{${atRules[atRule].join('')}}}`,
+      priority: 0.9,
+      rtl: null,
+    };
+  }
 
   return [
     { $$css: true, [themeVars.__themeName__]: overrideClassName },
-    {
-      [overrideClassName]: {
-        ltr: `.${overrideClassName}{${cssVariablesOverrideString}}${atRulesCss}`,
-        priority: 0.99,
-        rtl: undefined,
-      },
-    },
+    stylesToInject,
   ];
 }

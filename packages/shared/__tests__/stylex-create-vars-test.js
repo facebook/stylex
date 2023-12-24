@@ -43,8 +43,24 @@ describe('stylex-create-vars test', () => {
       fgColor: `var(--${classNamePrefix + createHash(`${themeName}.fgColor`)})`,
     });
 
-    expect(cssOutput).toEqual({
-      css: ':root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}@media print{:root{--xgck17p:white;}}',
-    });
+    expect(cssOutput).toMatchInlineSnapshot(`
+      {
+        "x568ih9": {
+          "ltr": ":root{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "x568ih9-bdddrq": {
+          "ltr": "@media print{:root{--xgck17p:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+      }
+    `);
   });
 });

@@ -21,6 +21,7 @@
     "@mdx-js/react": "^1.6.22",
     "@orama/plugin-docusaurus": "^1.2.4",
     "@stylexjs/stylex": "0.3.0",
+    "@vercel/analytics": "^1.1.1",
     "clsx": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

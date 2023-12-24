@@ -85,6 +85,62 @@ describe('Evaluation of imported values works based on configuration', () => {
         ]
       `);
     });
+
+    test('Importing file with ".stylex" suffix works with keyframes', () => {
+      const transformation = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const fade = stylex.keyframes({
+          from: {
+            color: MyTheme.foreground,
+          }
+        });
+        const styles = stylex.create({
+          red: {
+            animationName: fade,
+          }
+        });
+        stylex(styles.red);
+      `);
+      const expectedVarName = `var(--${options.classNamePrefix}${hash(
+        'otherFile.stylex.js//MyTheme.foreground',
+      )})`;
+      expect(expectedVarName).toMatchInlineSnapshot(
+        `"var(--__hashed_var__1jqb1tb)"`,
+      );
+      expect(transformation.code).toContain(expectedVarName);
+      expect(transformation.code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        import 'otherFile.stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        _inject("@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}", 1);
+        const fade = "__hashed_var__1cb153o-B";
+        _inject(".__hashed_var__1xwo6t1{animation-name:__hashed_var__1cb153o-B}", 3000);
+        "__hashed_var__1xwo6t1";"
+      `);
+      expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "__hashed_var__1cb153o-B",
+            {
+              "ltr": "@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}",
+              "rtl": null,
+            },
+            1,
+          ],
+          [
+            "__hashed_var__1xwo6t1",
+            {
+              "ltr": ".__hashed_var__1xwo6t1{animation-name:__hashed_var__1cb153o-B}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
+    });
+
     test('Importing file with ".stylex.js" suffix works', () => {
       const transformation = transform(`
         import stylex from 'stylex';
