@@ -73,30 +73,14 @@ export function evaluateStyleXCreateArg(
     const allParams: Array<
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
     > = fnPath.get('params');
+
+    validateDynamicStyleParams(allParams);
+
     const params: Array<t.Identifier> = allParams
       .filter((param): param is NodePath<t.Identifier> =>
         pathUtils.isIdentifier(param),
       )
       .map((param) => param.node);
-
-    if (
-      allParams.some(
-        (param) =>
-          pathUtils.isObjectPattern(param) || pathUtils.isRestElement(param),
-      )
-    ) {
-      throw new Error(
-        messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS,
-      );
-    }
-
-    if (allParams.some((param) => pathUtils.isAssignmentPattern(param))) {
-      throw new Error(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
-    }
-
-    if (params.length !== allParams.length) {
-      return { confident: false, deopt: valPath, value: null };
-    }
 
     const fnBody = fnPath.get('body');
     if (!pathUtils.isObjectExpression(fnBody)) {
@@ -262,4 +246,21 @@ function evaluateObjKey(
     confident: true,
     value: String(key),
   };
+}
+
+function validateDynamicStyleParams(
+  params: Array<NodePath<t.Identifier | t.SpreadElement | t.Pattern>>,
+) {
+  if (
+    params.some(
+      (param) =>
+        pathUtils.isObjectPattern(param) || pathUtils.isRestElement(param),
+    )
+  ) {
+    throw new Error(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+  }
+
+  if (params.some((param) => pathUtils.isAssignmentPattern(param))) {
+    throw new Error(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
+  }
 }
