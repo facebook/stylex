@@ -58,7 +58,5 @@ export const NON_EXPORT_NAMED_DECLARATION =
   'The return value of stylex.defineVars() must be bound to a named export.';
 export const ANONYMOUS_THEME =
   'stylex.createTheme() must be bound to a named constant.';
-export const NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS =
-  'Default parameters are not allowed in stylex.create() dynamic style functions';
 export const ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS =
-  'Only named parameters are allowed in stylex.create() dynamic style functions';
+  'Only named parameters are allowed in Dynamic Style functions. Destructuring, spreading or default values are not allowed.';

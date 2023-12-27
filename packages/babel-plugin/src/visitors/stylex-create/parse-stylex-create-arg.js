@@ -251,16 +251,7 @@ function evaluateObjKey(
 function validateDynamicStyleParams(
   params: Array<NodePath<t.Identifier | t.SpreadElement | t.Pattern>>,
 ) {
-  if (
-    params.some(
-      (param) =>
-        pathUtils.isObjectPattern(param) || pathUtils.isRestElement(param),
-    )
-  ) {
+  if (params.some((param) => !pathUtils.isIdentifier(param))) {
     throw new Error(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
-  }
-
-  if (params.some((param) => pathUtils.isAssignmentPattern(param))) {
-    throw new Error(messages.NO_DYNAMIC_STYLE_DEFAULT_PARAMETERS);
   }
 }

@@ -2786,9 +2786,7 @@ const stylexValidStyles = {
                       node: param,
                       loc: param.loc,
                       message:
-                        param.type === 'AssignmentPattern'
-                          ? 'Dynamic Styles cannot have default parameters'
-                          : 'Dynamic Styles can only accept named parameters',
+                        'Dynamic Styles can only accept named parameters. Destructuring, spreading or default parameters are not allowed.',
                     });
                   });
               }
