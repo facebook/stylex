@@ -43,7 +43,7 @@ export default function Counter() {
   );
 }
 
-const DARK = '@media (prefers-color-scheme: dark)';
+const DARK = '@media (prefers-color-scheme: dark)' as const;
 
 const styles = stylex.create({
   container: {
@@ -69,7 +69,6 @@ const styles = stylex.create({
     backgroundColor: {
       default: colors.gray3,
       ':hover': colors.gray4,
-      // eslint-disable-next-line @stylexjs/valid-styles
       [DARK]: {
         default: colors.gray9,
         ':hover': colors.gray8,
