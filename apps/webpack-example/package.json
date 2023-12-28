@@ -1,7 +1,7 @@
 {
   "name": "webpack-example",
   "version": "0.3.0",
-  "description": "A simple rollup example to test stylexjs/rollup-plugin",
+  "description": "A simple webpack example to test stylexjs/webpack-plugin",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
