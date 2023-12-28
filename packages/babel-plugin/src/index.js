@@ -401,7 +401,7 @@ function addSpecificityLevel(selector: string, index: number): string {
   if (selector.startsWith('@keyframes')) {
     return selector;
   }
-  const pseudo = Array.from({ length: index + 1 })
+  const pseudo = Array.from({ length: index })
     .map(() => ':not(#\\#)')
     .join('');
 

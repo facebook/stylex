@@ -7,7 +7,7 @@
  *
  */
 
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import { globalTokens as $, spacing, text } from './globalTokens.stylex';
 import { colors } from '@stylexjs/open-props/lib/colors.stylex';
 import { tokens } from './CardTokens.stylex';

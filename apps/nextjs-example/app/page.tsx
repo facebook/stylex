@@ -15,6 +15,7 @@ import {
   text,
   scales,
 } from './globalTokens.stylex';
+import Counter from './Counter';
 
 const HOMEPAGE = 'https://stylexjs.com';
 
@@ -31,6 +32,7 @@ export default function Home() {
         <h1 {...stylex.props(style.h1)}>
           Next.js App Dir<span {...stylex.props(style.emoji)}>♥️</span>️StyleX
         </h1>
+        <Counter />
       </div>
 
       <div {...stylex.props(style.grid)}>
@@ -89,8 +91,10 @@ const style = stylex.create({
   hero: {
     flexGrow: 1,
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: spacing.xl,
   },
   h1: {
     fontSize: text.h1,

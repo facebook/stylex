@@ -111,16 +111,16 @@ describe('webpack-plugin-stylex', () => {
 
       expect(css).toMatchInlineSnapshot(`
         "@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
-        .x1oz5o6v:hover:not(#\\#):not(#\\#){background:red}
-        .xeuoslp:not(#\\#):not(#\\#):not(#\\#){animation-name:xgnty7z-B}
-        .x1lliihq:not(#\\#):not(#\\#):not(#\\#){display:block}
-        .x78zum5:not(#\\#):not(#\\#):not(#\\#){display:flex}
-        .xt0psk2:not(#\\#):not(#\\#):not(#\\#){display:inline}
-        .x1hm9lzh:not(#\\#):not(#\\#):not(#\\#){margin-inline-start:10px}
-        .x1egiwwb:not(#\\#):not(#\\#):not(#\\#):not(#\\#){height:500px}
-        .xlrshdv:not(#\\#):not(#\\#):not(#\\#):not(#\\#){margin-top:99px}
-        .xh8yej3:not(#\\#):not(#\\#):not(#\\#):not(#\\#){width:100%}
-        .x3hqpx7:not(#\\#):not(#\\#):not(#\\#):not(#\\#){width:50%}"
+        .x1oz5o6v:hover:not(#\\#){background:red}
+        .xeuoslp:not(#\\#):not(#\\#){animation-name:xgnty7z-B}
+        .x1lliihq:not(#\\#):not(#\\#){display:block}
+        .x78zum5:not(#\\#):not(#\\#){display:flex}
+        .xt0psk2:not(#\\#):not(#\\#){display:inline}
+        .x1hm9lzh:not(#\\#):not(#\\#){margin-inline-start:10px}
+        .x1egiwwb:not(#\\#):not(#\\#):not(#\\#){height:500px}
+        .xlrshdv:not(#\\#):not(#\\#):not(#\\#){margin-top:99px}
+        .xh8yej3:not(#\\#):not(#\\#):not(#\\#){width:100%}
+        .x3hqpx7:not(#\\#):not(#\\#):not(#\\#){width:50%}"
       `);
 
       expect(js).toMatchInlineSnapshot(`
@@ -255,7 +255,7 @@ describe('webpack-plugin-stylex', () => {
         try {
           expect(error).toBe(null);
           expect(
-            assetExists('stylex.09fffeec3686166d4767.css', compiler, stats),
+            assetExists('stylex.ae864b39498ef34ea2aa.css', compiler, stats),
           ).toBe(true);
           resolve();
         } catch (e) {
@@ -431,7 +431,7 @@ describe('webpack-plugin-stylex', () => {
               if (this.rules.includes(rawRule)) {
                 return;
               }
-              const rule = this.normalizeRule(rawRule);
+              const rule = this.normalizeRule(addSpecificityLevel(rawRule, Math.floor(priority / 1000)));
               const insertPos = this.getInsertPositionForPriority(priority);
               this.rules.splice(insertPos, 0, rule);
               this.ruleForPriority.set(priority, rule);
@@ -442,8 +442,10 @@ describe('webpack-plugin-stylex', () => {
               const sheet = tag.sheet;
               if (sheet != null) {
                 try {
-                  sheet.insertRule(rule, insertPos);
-                } catch {}
+                  sheet.insertRule(rule, Math.min(insertPos, sheet.cssRules.length));
+                } catch (err) {
+                  console.error('insertRule error', err, rule, insertPos);
+                }
               }
             }
           }
@@ -456,6 +458,18 @@ describe('webpack-plugin-stylex', () => {
             const mediaQueryPart = selector.slice(0, firstBracketIndex + 1);
             const rest = selector.slice(firstBracketIndex + 1);
             return \`\${mediaQueryPart}\${ancestorSelector} \${rest}\`;
+          }
+          function addSpecificityLevel(selector, index) {
+            if (selector.startsWith('@keyframes')) {
+              return selector;
+            }
+            const pseudo = Array.from({
+              length: index
+            }).map(() => ':not(#\\\\#)').join('');
+            const lastOpenCurly = selector.includes('::') ? selector.indexOf('::') : selector.lastIndexOf('{');
+            const beforeCurly = selector.slice(0, lastOpenCurly);
+            const afterCurly = selector.slice(lastOpenCurly);
+            return \`\${beforeCurly}\${pseudo}\${afterCurly}\`;
           }
           const styleSheet = exports.styleSheet = new StyleXSheet({
             supportsVariables: true,
