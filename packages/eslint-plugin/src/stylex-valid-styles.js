@@ -43,6 +43,7 @@ import isAnimationName from './rules/isAnimationName';
 import isStylexDefineVarsToken from './rules/isStylexDefineVarsToken';
 import { borderSplitter } from './utils/split-css-value';
 import evaluate from './utils/evaluate';
+import resolveKey from './utils/resolveKey';
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
 export type RuleCheck = (
@@ -2385,8 +2386,10 @@ const stylexValidStyles = {
           const keyName =
             key.type === 'Literal'
               ? key.value
-              : key.type === 'Identifier' && !style.computed
-                ? key.name
+              : key.type === 'Identifier'
+                ? !style.computed
+                  ? key.name
+                  : resolveKey(key, variables)
                 : null;
           if (isStylexDefineVarsToken(key, stylexDefineVarsTokenImports)) {
             return undefined;
