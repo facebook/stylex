@@ -301,10 +301,12 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           foo: {
             padding: "x14odnwx",
+            paddingInline: null,
             paddingStart: null,
             paddingLeft: null,
             paddingEnd: null,
             paddingRight: null,
+            paddingBlock: null,
             paddingTop: null,
             paddingBottom: null,
             $$css: true
@@ -344,10 +346,53 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           foo: {
             padding: "x14odnwx",
+            $$css: true
+          }
+        };
+        "x14odnwx";
+        "x14odnwx xp59q4u";
+        "x14odnwx";
+        "x14odnwx xp59q4u xm7lytj";
+        stylex(styles.foo, somethingElse);"
+      `);
+    });
+
+    test('stylex keeps all null when applied after unknown', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              padding: 5
+            },
+            bar: {
+              paddingBlock: 10,
+            },
+            baz: {
+              paddingTop: 7,
+            }
+          });
+          stylex(styles.foo);
+          stylex(styles.foo, styles.bar);
+          stylex(styles.bar, styles.foo);
+          stylex(styles.foo, styles.bar, styles.baz);
+          stylex(somethingElse, styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x14odnwx{padding:5px}", 1000);
+        _inject(".xp59q4u{padding-block:10px}", 2000);
+        _inject(".xm7lytj{padding-top:7px}", 4000);
+        const styles = {
+          foo: {
+            padding: "x14odnwx",
+            paddingInline: null,
             paddingStart: null,
             paddingLeft: null,
             paddingEnd: null,
             paddingRight: null,
+            paddingBlock: null,
             paddingTop: null,
             paddingBottom: null,
             $$css: true
@@ -355,9 +400,98 @@ describe('@stylexjs/babel-plugin', () => {
         };
         "x14odnwx";
         "x14odnwx xp59q4u";
-        "xp59q4u x14odnwx";
+        "x14odnwx";
         "x14odnwx xp59q4u xm7lytj";
-        stylex(styles.foo, somethingElse);"
+        stylex(somethingElse, styles.foo);"
+      `);
+    });
+
+    test('stylex call keeps only the nulls that are needed', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              padding: 5
+            },
+            bar: {
+              paddingBlock: 10,
+            },
+            baz: {
+              paddingTop: 7,
+            }
+          });
+          stylex(styles.foo);
+          stylex(styles.foo, styles.bar);
+          stylex(styles.bar, styles.foo);
+          stylex(styles.foo, styles.bar, styles.baz);
+          stylex(styles.baz, styles.foo, somethingElse);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x14odnwx{padding:5px}", 1000);
+        _inject(".xp59q4u{padding-block:10px}", 2000);
+        _inject(".xm7lytj{padding-top:7px}", 4000);
+        const styles = {
+          foo: {
+            padding: "x14odnwx",
+            paddingTop: null,
+            $$css: true
+          },
+          baz: {
+            paddingTop: "xm7lytj",
+            $$css: true
+          }
+        };
+        "x14odnwx";
+        "x14odnwx xp59q4u";
+        "x14odnwx";
+        "x14odnwx xp59q4u xm7lytj";
+        stylex(styles.baz, styles.foo, somethingElse);"
+      `);
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              padding: 5
+            },
+            bar: {
+              paddingBlock: 10,
+            },
+            baz: {
+              paddingTop: 7,
+            }
+          });
+          stylex(styles.foo);
+          stylex(styles.foo, styles.bar);
+          stylex(styles.bar, styles.foo);
+          stylex(styles.foo, styles.bar, styles.baz);
+          stylex(styles.bar, styles.foo, somethingElse);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        _inject(".x14odnwx{padding:5px}", 1000);
+        _inject(".xp59q4u{padding-block:10px}", 2000);
+        _inject(".xm7lytj{padding-top:7px}", 4000);
+        const styles = {
+          foo: {
+            padding: "x14odnwx",
+            paddingBlock: null,
+            $$css: true
+          },
+          bar: {
+            paddingBlock: "xp59q4u",
+            $$css: true
+          }
+        };
+        "x14odnwx";
+        "x14odnwx xp59q4u";
+        "x14odnwx";
+        "x14odnwx xp59q4u xm7lytj";
+        stylex(styles.bar, styles.foo, somethingElse);"
       `);
     });
 
@@ -1247,27 +1381,9 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             default: {
               borderTop: "x16gpukw",
-              borderTopWidth: null,
-              borderTopStyle: null,
-              borderTopColor: null,
               borderLeft: "x13nwy86",
-              borderLeftWidth: null,
-              borderInlineStartWidth: null,
-              borderInlineEndWidth: null,
-              borderLeftStyle: null,
-              borderInlineStartStyle: null,
-              borderInlineEndStyle: null,
-              borderLeftColor: null,
-              borderInlineStartColor: null,
-              borderInlineEndColor: null,
               borderRight: "x2ekbea",
-              borderRightWidth: null,
-              borderRightStyle: null,
-              borderRightColor: null,
               borderBottom: "x1o3008b",
-              borderBottomWidth: null,
-              borderBottomStyle: null,
-              borderBottomColor: null,
               $$css: true
             }
           };

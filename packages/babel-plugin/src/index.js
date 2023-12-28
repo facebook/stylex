@@ -148,11 +148,57 @@ function styleXTransform(): PluginObj<> {
                             ? String(key.value)
                             : null;
 
-                    if (
-                      keyAsString != null &&
-                      !namespacesToKeep.includes(keyAsString)
-                    ) {
-                      prop.remove();
+                    if (keyAsString != null) {
+                      if (!namespacesToKeep.includes(keyAsString)) {
+                        prop.remove();
+                      } else {
+                        const allNullsToKeep = [
+                          ...state.styleVarsToKeep.values(),
+                        ]
+                          .filter(
+                            ([v, namespaceName]) =>
+                              v === varName && namespaceName === keyAsString,
+                          )
+                          .map(
+                            ([_v, _namespaceName, nullPropsToKeep]) =>
+                              nullPropsToKeep,
+                          );
+                        if (!allNullsToKeep.includes(true)) {
+                          const nullsToKeep = new Set<string>(
+                            allNullsToKeep
+                              .filter((x): x is Array<string> => x !== true)
+                              .flat(),
+                          );
+                          const styleObject = prop.get('value');
+                          if (pathUtils.isObjectExpression(styleObject)) {
+                            for (const styleProp of styleObject.get(
+                              'properties',
+                            )) {
+                              if (
+                                pathUtils.isObjectProperty(styleProp) &&
+                                pathUtils.isNullLiteral(styleProp.get('value'))
+                              ) {
+                                const styleKey = styleProp.get('key').node;
+                                const styleKeyAsString =
+                                  styleKey.type === 'Identifier'
+                                    ? styleKey.name
+                                    : styleKey.type === 'StringLiteral'
+                                      ? styleKey.value
+                                      : styleKey.type === 'NumericLiteral'
+                                        ? String(styleKey.value)
+                                        : null;
+
+                                if (
+                                  styleKeyAsString != null &&
+                                  !nullsToKeep.has(styleKeyAsString)
+                                ) {
+                                  styleProp.remove();
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
