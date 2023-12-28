@@ -2786,7 +2786,7 @@ const stylexValidStyles = {
                       node: param,
                       loc: param.loc,
                       message:
-                        'Dynamic Styles can only accept named parameters',
+                        'Dynamic Styles can only accept named parameters. Destructuring, spreading or default parameters are not allowed.',
                     });
                   });
               }

@@ -107,6 +107,59 @@ describe('@stylexjs/babel-plugin', () => {
       }).not.toThrow();
     });
 
+    test('dynamic style function only accepts named parameters', () => {
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            dynamic: (props = {}) => ({
+              color: props.color,
+            }),
+          });
+        `);
+      }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            dynamic: (color = 'red') => ({
+              color,
+            }),
+          });
+        `);
+      }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            dynamic: ({ color }) => ({
+              color,
+            }),
+          });
+        `);
+      }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            dynamic: (...rest) => ({
+              color: rest[0],
+            }),
+          });
+        `);
+      }).toThrow(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            dynamic: (backgroundColor) => ({
+              backgroundColor,
+            }),
+          });
+        `);
+      }).not.toThrow();
+    });
+
     /* Properties */
 
     test('properties must be a static value', () => {

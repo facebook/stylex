@@ -14,6 +14,7 @@ import StateManager from '../../utils/state-manager';
 import { evaluate, type FunctionConfig } from '../../utils/evaluate-path';
 import * as pathUtils from '../../babel-path-utils';
 import { create, IncludedStyles, utils } from '@stylexjs/shared';
+import { messages } from '@stylexjs/shared';
 import {
   timeUnits,
   lengthUnits,
@@ -72,14 +73,15 @@ export function evaluateStyleXCreateArg(
     const allParams: Array<
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
     > = fnPath.get('params');
+
+    validateDynamicStyleParams(allParams);
+
     const params: Array<t.Identifier> = allParams
       .filter((param): param is NodePath<t.Identifier> =>
         pathUtils.isIdentifier(param),
       )
       .map((param) => param.node);
-    if (params.length !== allParams.length) {
-      return { confident: false, deopt: valPath, value: null };
-    }
+
     const fnBody = fnPath.get('body');
     if (!pathUtils.isObjectExpression(fnBody)) {
       // We only allow arrow functions without block bodies.
@@ -244,4 +246,12 @@ function evaluateObjKey(
     confident: true,
     value: String(key),
   };
+}
+
+function validateDynamicStyleParams(
+  params: Array<NodePath<t.Identifier | t.SpreadElement | t.Pattern>>,
+) {
+  if (params.some((param) => !pathUtils.isIdentifier(param))) {
+    throw new Error(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+  }
 }
