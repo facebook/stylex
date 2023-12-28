@@ -7,7 +7,7 @@ jobs:
     name: runtime-size
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: necolas/compressed-size-action@master
         with:
           name: 'runtime library'
@@ -19,7 +19,7 @@ jobs:
     name: bundle-size
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: necolas/compressed-size-action@master
         with:
           name: 'e2e bundles'
