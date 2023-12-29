@@ -19,7 +19,7 @@ const rootDir = options.unstable_moduleResolution.rootDir ?? __dirname;
 module.exports = stylexPlugin({
   rootDir,
   aliases: {
-    '@/*': './*',
+    '@/*': ['./*'],
   },
   useCSSLayers: true,
 })({});

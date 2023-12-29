@@ -56,6 +56,64 @@ type StyleXStateOptions = $ReadOnly<{
   ...
 }>;
 
+function validateAliases(options: StyleXOptions): StyleXOptions {
+  const aliases = options.aliases;
+  if (aliases == null) {
+    return options;
+  }
+
+  Object.keys(aliases).forEach((alias) => {
+    let value = aliases[alias];
+    if (!Array.isArray(value)) {
+      throw new Error(
+        `Invalid alias value for ${alias}. It should be an array.
+        
+        Example:
+        aliases: {
+          "@/*": ["./src/*"]
+        }
+        `,
+      );
+    }
+    if (value.length > 1) {
+      throw new Error(
+        `Invalid alias value for ${alias}. It should contain at most one value.
+
+        Example:
+        aliases: {
+          "@/*": ["./src/*"]
+        }
+        `,
+      );
+    }
+
+    value = value[0];
+
+    if (typeof value !== 'string') {
+      throw new Error(
+        `Invalid alias value for ${alias}. It should be a string.`,
+      );
+    }
+    if (!alias.startsWith('@')) {
+      throw new Error(
+        `Invalid alias key for ${alias}. It should start with @.`,
+      );
+    }
+    if (alias.split('*').length > 2) {
+      throw new Error(
+        `Invalid alias key for ${alias}. It should contain at most one * character.`,
+      );
+    }
+    if (value.split('*').length > 2) {
+      throw new Error(
+        `Invalid alias value for ${alias}. It should contain at most one * character.`,
+      );
+    }
+  });
+
+  return options;
+}
+
 const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
 export default class StateManager {
@@ -90,8 +148,9 @@ export default class StateManager {
   }
 
   get options(): StyleXStateOptions {
-    const options: Partial<StyleXOptions> =
-      (this._state.opts: $FlowFixMe) || {};
+    const options: Partial<StyleXOptions> = validateAliases(
+      (this._state.opts: $FlowFixMe) || {},
+    );
     const opts: StyleXStateOptions = {
       ...options,
       dev: !!(options: $FlowFixMe).dev,
@@ -229,6 +288,7 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
+          rootDir,
         );
         return resolvedFilePath
           ? ['themeNameRef', path.relative(rootDir, resolvedFilePath)]
@@ -244,6 +304,7 @@ export default class StateManager {
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
       }
       case 'experimental_crossFileParsing': {
+        const rootDir = this.options.unstable_moduleResolution.rootDir;
         const aliases = this.options.aliases;
         const themeFileExtension =
           this.options.unstable_moduleResolution.themeFileExtension ??
@@ -255,6 +316,7 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
+          rootDir,
         );
         return resolvedFilePath ? ['filePath', resolvedFilePath] : false;
       }
@@ -278,25 +340,51 @@ function generateAliasRegex(alias: string): RegExp {
   const regex = new RegExp('^' + alias + '/(.*)');
   return regex;
 }
+
+function aliasPathResolver(
+  importPath: string,
+  aliases: $ReadOnly<{ [string]: string }>,
+): [string, boolean] {
+  let isAliasResolved = false;
+  for (const [alias, value] of Object.entries(aliases)) {
+    if (alias.includes('*')) {
+      const [before, after] = alias.split('*');
+      if (importPath.startsWith(before) && importPath.endsWith(after)) {
+        const replacementString = importPath.slice(
+          before.length,
+          after.length > 0 ? -after.length : undefined,
+        );
+        isAliasResolved = true;
+        return [value[0].split('*').join(replacementString), isAliasResolved];
+      }
+    } else if (alias === importPath) {
+      isAliasResolved = true;
+      return [value[0], isAliasResolved];
+    }
+  }
+  return [importPath, isAliasResolved];
+}
+
 // a function that resolves the path of files with aliases
-function aliasPathResolver(importPath: string = '', aliases: any) {
+function aliasPathResolverOld(importPath: string = '', aliases: any) {
   let output = importPath;
   Object.keys(aliases ?? {}).forEach((alias) => {
     const replacementToken = alias.split('*')[0];
     const aliasedImportPathStr = importPath;
-    const regex = generateAliasRegex(aliases[alias]) ?? '';
-    const value = aliases[alias] ?? '';
-    if (
-      aliasedImportPathStr.startsWith(replacementToken) &&
-      regex.test(importPath)
-    ) {
-      const modifiedAliasedImportPath = aliasedImportPathStr.replace(
-        replacementToken,
-        '',
-      );
-      let resolvedPath = value;
-      resolvedPath = resolvedPath.replace('*', modifiedAliasedImportPath);
-      output = resolvedPath;
+    const value = aliases[alias][0] ?? '';
+
+    if (alias.endsWith('*')) {
+      if (importPath.startsWith(alias.replace('*', ''))) {
+        // If it does, replace the alias with the replacement at the beginning of the string
+        output = importPath.replace(
+          alias.replace('*', ''),
+          value.replace('*', ''),
+        );
+      }
+    } else {
+      if (importPath === value) {
+        return value;
+      }
     }
   });
   return output;
@@ -306,7 +394,8 @@ function aliasPathResolver(importPath: string = '', aliases: any) {
 const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
-  aliases?: any,
+  aliases?: $ReadOnly<{ [string]: string }>,
+  rootDir: string,
 ): void | string => {
   const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
   if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
@@ -323,18 +412,24 @@ const filePathResolver = (
         ? fileToLookFor + ext
         : fileToLookFor;
       let aliasedImportPathStr = importPathStr;
+      let isAliasResolved = false;
       if (aliases) {
-        aliasedImportPathStr = aliasPathResolver(aliasedImportPathStr, aliases);
+        [aliasedImportPathStr, isAliasResolved] = aliasPathResolver(
+          aliasedImportPathStr,
+          aliases,
+        );
+      }
+      if (isAliasResolved && aliasedImportPathStr.startsWith('.')) {
+        aliasedImportPathStr += ext; // attach extenstion to the resolved alias import path.
       }
 
-      const resolvedFilePath =
-        aliasedImportPathStr === importPathStr //Check if the alias is resolved and the path is valid
-          ? require.resolve(aliasedImportPathStr, {
-              paths: [path.dirname(sourceFilePath)],
-            })
-          : require.resolve(path.resolve(aliasedImportPathStr + '.ts'), {
-              paths: [path.dirname(sourceFilePath)],
-            });
+      const resolvedFilePath = isAliasResolved //Check if the alias is resolved and the path is valid
+        ? require.resolve(path.resolve(aliasedImportPathStr), {
+            paths: [path.dirname(sourceFilePath)],
+          })
+        : require.resolve(aliasedImportPathStr, {
+            paths: [path.dirname(sourceFilePath)],
+          });
 
       return resolvedFilePath;
     } catch {}
