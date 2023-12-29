@@ -138,7 +138,8 @@ export default class StateManager {
   +styleVars: Map<string, NodePath<>> = new Map();
 
   // resuls of `stylex.create` calls that should be kept
-  +styleVarsToKeep: Set<[string, null | string]> = new Set();
+  +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =
+    new Set();
 
   inStyleXCreate: boolean = false;
 
@@ -331,7 +332,9 @@ export default class StateManager {
     this.metadata.stylex.push(style);
   }
 
-  markComposedNamespace(memberExpression: [string, null | string]): void {
+  markComposedNamespace(
+    memberExpression: [string, true | string, true | Array<string>],
+  ): void {
     this.styleVarsToKeep.add(memberExpression);
   }
 }

@@ -91,11 +91,11 @@ const styles = stylex.create({
 
 ## Pseudo-elements
 
-:::note Avoid pseudo elements
+:::note Avoid unnecessary pseudo elements
 
 We recommend avoiding pseudo-elements when possible and relying on actual HTML
 elements instead, i.e., replace `::before` and `::after` with elements like
-`div` or `span`.
+`div` or `span`. This helps reduce the size of your CSS bundle.
 
 :::
 
@@ -135,6 +135,7 @@ const styles = stylex.create({
     width: {
       default: 800,
       '@media (max-width: 800px)': '100%',
+      '@media (min-width: 1540px)': 1366,
     },
   },
 });
@@ -247,8 +248,12 @@ function body with multiple statements.
 import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
+  // Function arguments must be simple identifiers
+  // -- No destructuring or default values
   bar: (height) => ({
     height,
+    // The function body must be an object literal
+    // -- { return {} } is not allowed
   }),
 });
 

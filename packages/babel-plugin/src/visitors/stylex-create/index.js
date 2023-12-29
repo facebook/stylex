@@ -113,6 +113,7 @@ export default function transformStyleXCreate(
       identifiers,
       memberExpressions,
     });
+
     if (!confident) {
       throw new Error(messages.NON_STATIC_VALUE);
     }

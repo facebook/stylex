@@ -88,7 +88,7 @@ export default function stylexPlugin({
           ...plugins,
           /\.jsx?/.test(path.extname(id))
             ? flowSyntaxPlugin
-            : typescriptSyntaxPlugin,
+            : [typescriptSyntaxPlugin, { isTSX: true }],
           jsxSyntaxPlugin,
           stylexBabelPlugin.withOptions({
             ...options,

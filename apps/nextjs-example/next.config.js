@@ -22,4 +22,6 @@ module.exports = stylexPlugin({
     '@/*': ['./*'],
   },
   useCSSLayers: true,
-})({});
+})({
+  transpilePackages: ['@stylexjs/open-props'],
+});

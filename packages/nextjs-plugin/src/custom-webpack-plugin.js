@@ -204,7 +204,7 @@ class StylexPlugin {
             ...this.babelConfig.plugins,
             /\.jsx?/.test(path.extname(filename))
               ? flowSyntaxPlugin
-              : typescriptSyntaxPlugin,
+              : [typescriptSyntaxPlugin, { isTSX: true }],
             jsxSyntaxPlugin,
             this.babelPlugin,
           ],

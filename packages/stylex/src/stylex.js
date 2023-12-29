@@ -21,6 +21,7 @@ import type {
   StyleXClassNameFor,
   MapNamespaces,
   VarGroup,
+  StyleXVar,
 } from './StyleXTypes';
 
 export type {
@@ -87,7 +88,8 @@ function stylexDefineVars<
     +[string]:
       | number
       | string
-      | { +default: number | string, +[string]: number | string },
+      | { +default: number | string, +[string]: number | string }
+      | StyleXVar<number | string>,
   },
   ID: string = string,
 >(styles: DefaultTokens): VarGroup<FlattenTokens<DefaultTokens>, ID> {

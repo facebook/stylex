@@ -93,7 +93,7 @@ export default function transformStyleXCreateTheme(
     }
 
     // eslint-disable-next-line prefer-const
-    let [overridesObj, css] = stylexCreateTheme(
+    let [overridesObj, injectedStyles] = stylexCreateTheme(
       variables,
       overrides,
       state.options,
@@ -103,12 +103,14 @@ export default function transformStyleXCreateTheme(
       overridesObj = { ...overridesObj, [debugName]: debugName };
     }
 
-    const styleKey: string = overridesObj[variables.__themeName__];
-
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(overridesObj));
 
     const statementPath: ?NodePath<> = variableDeclaratorPath.parentPath;
+
+    if (Object.keys(injectedStyles).length === 0) {
+      return;
+    }
 
     if (state.runtimeInjection != null && statementPath != null) {
       let injectName: t.Identifier;
@@ -124,21 +126,21 @@ export default function transformStyleXCreateTheme(
         state.injectImportInserted = injectName;
       }
 
-      statementPath?.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(css[styleKey].ltr),
-            t.numericLiteral(css[styleKey].priority),
-          ]),
-        ),
-      );
+      for (const [_k, { ltr, priority }] of Object.entries(injectedStyles)) {
+        statementPath.insertBefore(
+          t.expressionStatement(
+            t.callExpression(injectName, [
+              t.stringLiteral(ltr),
+              t.numericLiteral(priority),
+            ]),
+          ),
+        );
+      }
     }
 
-    state.addStyle([
-      styleKey,
-      { ltr: css[styleKey].ltr },
-      css[styleKey].priority,
-    ]);
+    for (const [key, { priority, ltr }] of Object.entries(injectedStyles)) {
+      state.addStyle([key, { ltr }, priority]);
+    }
   }
 }
 

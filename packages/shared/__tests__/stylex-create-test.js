@@ -205,8 +205,10 @@ describe('stylex-create-test', () => {
           "short": {
             "$$css": true,
             "padding": "x1lmef92",
+            "paddingBlock": null,
             "paddingBottom": null,
             "paddingEnd": null,
+            "paddingInline": null,
             "paddingLeft": null,
             "paddingRight": null,
             "paddingStart": null,

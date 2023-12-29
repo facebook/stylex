@@ -95,13 +95,117 @@ function styleXTransform(): PluginObj<> {
             },
           });
 
-          const varsToKeep = new Set(
+          const varsToKeep: { [string]: true | Array<string> } = {};
+          for (const [varName, namespaceName] of state.styleVarsToKeep) {
+            if (varsToKeep[varName] === true) {
+              continue;
+            }
+            if (varsToKeep[varName] == null) {
+              varsToKeep[varName] =
+                namespaceName === true ? true : [namespaceName];
+            } else if (Array.isArray(varsToKeep[varName])) {
+              if (namespaceName === true) {
+                varsToKeep[varName] = true;
+              } else {
+                varsToKeep[varName].push(namespaceName);
+              }
+            }
+          }
+
+          const varsToKeepOld = new Set(
             [...state.styleVarsToKeep.values()].map(
               ([varName, _namespaceName]) => varName,
             ),
           );
           state.styleVars.forEach((path, varName) => {
-            if (!varsToKeep.has(varName) && !isExported(path)) {
+            if (isExported(path)) {
+              return;
+            }
+
+            if (varsToKeep[varName] === true) {
+              return;
+            }
+
+            const namespacesToKeep: Array<string> = varsToKeep[varName];
+
+            if (namespacesToKeep == null) {
+              path.remove();
+              return;
+            }
+
+            if (pathUtils.isVariableDeclarator(path)) {
+              const init = path.get('init');
+              if (init != null && pathUtils.isObjectExpression(init)) {
+                for (const prop of init.get('properties')) {
+                  if (pathUtils.isObjectProperty(prop)) {
+                    const key = prop.get('key').node;
+                    const keyAsString =
+                      key.type === 'Identifier'
+                        ? key.name
+                        : key.type === 'StringLiteral'
+                          ? key.value
+                          : key.type === 'NumericLiteral'
+                            ? String(key.value)
+                            : null;
+
+                    if (keyAsString != null) {
+                      if (!namespacesToKeep.includes(keyAsString)) {
+                        prop.remove();
+                      } else {
+                        const allNullsToKeep = [
+                          ...state.styleVarsToKeep.values(),
+                        ]
+                          .filter(
+                            ([v, namespaceName]) =>
+                              v === varName && namespaceName === keyAsString,
+                          )
+                          .map(
+                            ([_v, _namespaceName, nullPropsToKeep]) =>
+                              nullPropsToKeep,
+                          );
+                        if (!allNullsToKeep.includes(true)) {
+                          const nullsToKeep = new Set<string>(
+                            allNullsToKeep
+                              .filter((x): x is Array<string> => x !== true)
+                              .flat(),
+                          );
+                          const styleObject = prop.get('value');
+                          if (pathUtils.isObjectExpression(styleObject)) {
+                            for (const styleProp of styleObject.get(
+                              'properties',
+                            )) {
+                              if (
+                                pathUtils.isObjectProperty(styleProp) &&
+                                pathUtils.isNullLiteral(styleProp.get('value'))
+                              ) {
+                                const styleKey = styleProp.get('key').node;
+                                const styleKeyAsString =
+                                  styleKey.type === 'Identifier'
+                                    ? styleKey.name
+                                    : styleKey.type === 'StringLiteral'
+                                      ? styleKey.value
+                                      : styleKey.type === 'NumericLiteral'
+                                        ? String(styleKey.value)
+                                        : null;
+
+                                if (
+                                  styleKeyAsString != null &&
+                                  !nullsToKeep.has(styleKeyAsString)
+                                ) {
+                                  styleProp.remove();
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            if (!varsToKeepOld.has(varName) && !isExported(path)) {
               path.remove();
             }
           });
@@ -126,14 +230,20 @@ function styleXTransform(): PluginObj<> {
             if (pathUtils.isMemberExpression(parentPath)) {
               const { property, computed } = parentPath.node;
               if (property.type === 'Identifier' && !computed) {
-                state.markComposedNamespace([name, property.name]);
+                state.markComposedNamespace([name, property.name, true]);
+              } else if (property.type === 'StringLiteral' && computed) {
+                state.markComposedNamespace([name, property.value, true]);
+              } else if (property.type === 'NumericLiteral' && computed) {
+                state.markComposedNamespace([
+                  name,
+                  String(property.value),
+                  true,
+                ]);
+              } else {
+                state.markComposedNamespace([name, true, true]);
               }
-              if (property.type === 'StringLiteral' && computed) {
-                state.markComposedNamespace([name, property.value]);
-              }
-              state.markComposedNamespace([name, null]);
             } else {
-              state.markComposedNamespace([name, null]);
+              state.markComposedNamespace([name, true, true]);
             }
           }
         }
@@ -291,7 +401,7 @@ function addSpecificityLevel(selector: string, index: number): string {
   if (selector.startsWith('@keyframes')) {
     return selector;
   }
-  const pseudo = Array.from({ length: index + 1 })
+  const pseudo = Array.from({ length: index })
     .map(() => ':not(#\\#)')
     .join('');
 

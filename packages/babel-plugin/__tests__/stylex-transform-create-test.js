@@ -923,10 +923,12 @@ describe('@stylexjs/babel-plugin', () => {
           },
           short: {
             padding: "x1lmef92",
+            paddingInline: null,
             paddingStart: null,
             paddingLeft: null,
             paddingEnd: null,
             paddingRight: null,
+            paddingBlock: null,
             paddingTop: "xexx8yu",
             paddingBottom: null,
             $$css: true
@@ -934,10 +936,12 @@ describe('@stylexjs/babel-plugin', () => {
           shortReversed: {
             paddingTop: null,
             padding: "x1lmef92",
+            paddingInline: null,
             paddingStart: null,
             paddingLeft: null,
             paddingEnd: null,
             paddingRight: null,
+            paddingBlock: null,
             paddingBottom: null,
             $$css: true
           },

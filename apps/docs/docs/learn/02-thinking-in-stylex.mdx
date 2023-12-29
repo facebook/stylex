@@ -102,9 +102,7 @@ let a = {className: 'x1e2nbdu'};
 <TabItem label="CSS Output" value="css-output">
 
 ```css
-.x1e2nbdu {
-  color: red;
-}
+.x1e2nbdu { color: red; }
 ```
 
 </TabItem>
@@ -140,6 +138,9 @@ function MyComponent({style}) {
 
 Compiles down to:
 
+<Tabs>
+<TabItem label="JS Output" value="js-output">
+
 ```tsx
 import * as stylex from '@stylexjs/stylex';
 
@@ -158,6 +159,19 @@ function MyComponent({style}) {
   return <div {...stylex.props(styles.foo, styles.bar, style)} />;
 }
 ```
+
+</TabItem>
+<TabItem label="CSS Output" value="css-output">
+
+```css
+.x1e2nbdu { color: red; }
+.x1t391ir { background-color: blue; }
+```
+
+</TabItem>
+</Tabs>
+
+
 
 This is a little more code, but the runtime cost is still minimal
 because of how fast the `stylex.props()` function is.
@@ -367,12 +381,12 @@ components within packages on NPM.
 StyleX should work similarly across projects. Creating project-specific
 configurations that change the syntax or behavior of StyleX should be avoided.
 We have chosen to prioritize composability and consistency over short-term
-convenience.
+convenience. We lean on linting and types to create project-specific rules.
 
-We lean on tooling to provide convenience and customizability. For example, the
-StyleX ESlint rule can be configured to allow or disallow certain CSS properties
-within a project. This can be used in concert with static types to create
-styling rules for a project.
+We also avoid magic strings that have special meaning within a project globally.
+Instead, every style, every variable, and every shared constant is a 
+JavaScript import without needing unique names or project configuration.
+
 
 ### One small file over many smaller files
 

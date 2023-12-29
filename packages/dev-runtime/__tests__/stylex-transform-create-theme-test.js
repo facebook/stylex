@@ -63,10 +63,26 @@ describe('Development Plugin Transformation', () => {
           [
             "xfmksyk",
             {
-              "ltr": ".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}@media print{.xfmksyk{--xgck17p:transparent;}}",
+              "ltr": ".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
               "rtl": undefined,
             },
-            0.99,
+            0.8,
+          ],
+          [
+            "xfmksyk-1lveb7",
+            {
+              "ltr": "@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
+              "rtl": undefined,
+            },
+            0.9,
+          ],
+          [
+            "xfmksyk-bdddrq",
+            {
+              "ltr": "@media print{.xfmksyk{--xgck17p:transparent;}}",
+              "rtl": undefined,
+            },
+            0.9,
           ],
         ]
       `);
