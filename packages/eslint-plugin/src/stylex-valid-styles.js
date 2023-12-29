@@ -1561,9 +1561,42 @@ const SupportedVendorSpecificCSSProperties = {
   ),
 };
 
+const SVGProperties = {
+  colorInterpolation: makeUnionRule('auto', 'sRGB', 'linearRGB'),
+  // colorRendering: color,
+
+  fill: fill,
+  fillOpacity: fillOpacity,
+  fillRule: fillRule,
+
+  floodColor: color,
+  floodOpacity: opacity,
+
+  stopColor: color,
+  stopOpacity: opacity,
+
+  stroke: stroke,
+  strokeDasharray: strokeDasharray,
+  strokeDashoffset: strokeDashoffset,
+  strokeLinecap: strokeLinecap,
+  strokeLinejoin: strokeLinejoin,
+  strokeMiterlimit: strokeMiterlimit,
+  strokeOpacity: strokeOpacity,
+  strokeWidth: strokeWidth,
+
+  vectorEffect: makeUnionRule(
+    'none',
+    'non-scaling-stroke',
+    'non-scaling-size',
+    'non-rotation',
+    'fixed-position',
+  ),
+};
+
 /* eslint-disable object-shorthand */
 const CSSProperties = {
   ...SupportedVendorSpecificCSSProperties,
+  ...SVGProperties,
   accentColor: color,
   alignTracks: isString,
   alignContent: alignContent,
@@ -1571,6 +1604,9 @@ const CSSProperties = {
   alignSelf: alignSelf,
   alignmentBaseline: alignmentBaseline,
   all: all,
+  animation: showError(
+    '`animation` is not recommended. Please use `animationName`, `animationDuration`, etc. instead',
+  ),
   animationComposition: makeUnionRule('replace', 'add', 'accumulate'),
   animationDelay: animationDelay,
   animationDirection: animationDirection,
@@ -1585,6 +1621,7 @@ const CSSProperties = {
   aspectRatio: isNumber,
   backdropFilter: backdropFilter,
   backfaceVisibility: backfaceVisibility,
+  background: isString,
   backgroundAttachment: backgroundAttachment,
   backgroundBlendMode: backgroundBlendMode,
   backgroundClip: backgroundClip,
@@ -1749,13 +1786,9 @@ const CSSProperties = {
   displayOutside: displayOutside,
   dominantBaseline: dominantBaseline,
   emptyCells: emptyCells,
-  fill: fill,
-  fillOpacity: fillOpacity,
-  fillRule: fillRule,
+
   filter: filter,
-  flex: showError(
-    '`flex` is not supported. Please use `flexGrow`, `flexShrink` and `flexBasis` instead',
-  ),
+  flex: isString,
   flexBasis: flexBasis,
   flexDirection: flexDirection,
   flexFlow: flexFlow,
@@ -1764,7 +1797,7 @@ const CSSProperties = {
   flexWrap: flexWrap,
   float: float,
   font: showError(
-    '`font` is not supported. Please use `fontSize`, `fontFamily`, `fontStyle` etc. instead',
+    '`font` is not recommended. Please use `fontSize`, `fontFamily`, `fontStyle` etc. instead',
   ),
   fontFamily: fontFamily,
   fontFeatureSettings: fontFeatureSettings,
@@ -1943,18 +1976,21 @@ const CSSProperties = {
   order: order,
   orphans: orphans,
   outline: outline,
-  outlineColor: showError(
-    "'outlineColor' is not supported yet. Please use 'outline' instead",
+  outlineColor: color,
+  outlineOffset: isLength,
+  outlineStyle: makeUnionRule(
+    'auto',
+    'none',
+    'dotted',
+    'dashed',
+    'solid',
+    'double',
+    'groove',
+    'ridge',
+    'inset',
+    'outset',
   ),
-  outlineOffset: showError(
-    "'outlineOffset' is not supported yet. Please use 'outline' instead",
-  ),
-  outlineStyle: showError(
-    "'outlineStyle' is not supported yet. Please use 'outline' instead",
-  ),
-  outlineWidth: showError(
-    "'outlineWidth' is not supported yet. Please use 'outline' instead",
-  ),
+  outlineWidth: isLength,
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
@@ -2002,7 +2038,8 @@ const CSSProperties = {
   position: position,
 
   // Shorthand not yet supported
-  // placeContent: isString,
+  placeContent: isString,
+  placeItems: isString,
   printColorAdjust: makeUnionRule('economy', 'exact'),
 
   quotes: quotes,
@@ -2055,34 +2092,34 @@ const CSSProperties = {
   speakAs: speakAs,
   src: src,
 
-  stroke: stroke,
-  strokeDasharray: strokeDasharray,
-  strokeDashoffset: strokeDashoffset,
-  strokeLinecap: strokeLinecap,
-  strokeLinejoin: strokeLinejoin,
-  strokeMiterlimit: strokeMiterlimit,
-  strokeOpacity: strokeOpacity,
-  strokeWidth: strokeWidth,
   tabSize: tabSize,
   tableLayout: tableLayout,
   textAlign: textAlign,
   textAlignLast: textAlignLast,
   textAnchor: textAnchor,
   textCombineUpright: textCombineUpright,
-  textDecoration: textDecoration,
 
-  textDecorationColor: showError(
-    '`textDecorationColor` is not supported. Please use `textDecoration` instead.',
+  textDecoration: textDecoration,
+  textDecorationColor: color,
+  textDecorationLine: isString, // TODO: Stricter support in the future
+  textDecorationSkip: makeUnionRule(
+    'none',
+    'objects',
+    'spaces',
+    'leading-spaces',
+    'trailing-spaces',
+    'edges',
+    'box-decoration',
   ),
-  textDecorationLine: showError(
-    '`textDecorationLine` is not supported. Please use `textDecoration` instead.',
+  textDecorationSkipInk: makeUnionRule('none', 'auto', 'all'),
+  textDecorationStyle: makeUnionRule(
+    'solid',
+    'double',
+    'dotted',
+    'dashed',
+    'wavy',
   ),
-  textDecorationSkip: showError(
-    '`textDecorationSkip` is not supported. Please use `textDecoration` instead.',
-  ),
-  textDecorationStyle: showError(
-    '`textDecorationStyle` is not supported. Please use `textDecoration` instead.',
-  ),
+  textDecorationThickness: isLength,
 
   textEmphasis: textEmphasis,
   textEmphasisColor: textEmphasisColor,
@@ -2103,6 +2140,7 @@ const CSSProperties = {
   transformBox: transformBox,
   transformOrigin: transformOrigin,
   transformStyle: transformStyle,
+  transition: isString,
   transitionDelay: transitionDelay,
   transitionDuration: transitionDuration,
   transitionProperty: transitionProperty,
