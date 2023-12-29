@@ -1,6 +1,6 @@
 {
   "name": "rollup-example",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A simple rollup example to test stylexjs/rollup-plugin",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/stylex": "0.4.0",
-    "@stylexjs/rollup-plugin": "0.4.0"
+    "@stylexjs/stylex": "0.4.1",
+    "@stylexjs/rollup-plugin": "0.4.1"
   }
 }

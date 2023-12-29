@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.4.0"
+    "@stylexjs/scripts": "0.4.1"
   },
   "jest": {
     "snapshotFormat": {
