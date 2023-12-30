@@ -50,6 +50,7 @@ export type RuleCheck = (
   node: $ReadOnly<Expression | Pattern>,
   variables?: Variables,
   prop?: $ReadOnly<Property>,
+  key?: string,
 ) => RuleResponse;
 export type RuleResponse = void | {
   message: string,
@@ -62,7 +63,7 @@ export type RuleResponse = void | {
 
 const showError =
   (message: string): RuleCheck =>
-  () => ({ message });
+  (_node, _variables, _props, key) => ({ message: key ? `Property ${key} is not allowed. ${message}` : message });
 
 const isStringOrNumber = makeUnionRule(isString, isNumber);
 
@@ -2624,14 +2625,14 @@ const stylexValidStyles = {
             }
           }
 
-          const check = ruleChecker(style.value, varsWithFnArgs, style);
+          const check = ruleChecker(style.value, varsWithFnArgs, style, key);
           if (check != null) {
             const { message, suggest } = check;
             return context.report(
               ({
                 node: style.value,
                 loc: style.value.loc,
-                message: `${key} value must be one of:\n${message}${
+                message: `${message}${
                   key === 'lineHeight'
                     ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
                     : ''
