@@ -25,7 +25,7 @@ You must define your variables as named exports in a `.stylex.js` (or
 ```tsx title="vars.stylex.js"
 import * as stylex from '@stylexjs/stylex';
 
-const colors = stylex.defineVars({
+export const colors = stylex.defineVars({
   accent: 'blue',
   background: 'white',
   line: 'gray',
@@ -38,7 +38,7 @@ You can then import and use these variables in any `stylex.create` call.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
-import {colors} from './vars.stylex.js';
+import { colors } from './vars.stylex.js';
 
 const styles = stylex.create({
   container: {
