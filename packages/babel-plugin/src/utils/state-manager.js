@@ -289,7 +289,6 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
-          rootDir,
         );
         return resolvedFilePath
           ? ['themeNameRef', path.relative(rootDir, resolvedFilePath)]
@@ -305,7 +304,6 @@ export default class StateManager {
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
       }
       case 'experimental_crossFileParsing': {
-        const rootDir = this.options.unstable_moduleResolution.rootDir;
         const aliases = this.options.aliases;
         const themeFileExtension =
           this.options.unstable_moduleResolution.themeFileExtension ??
@@ -317,7 +315,6 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
-          rootDir,
         );
         return resolvedFilePath ? ['filePath', resolvedFilePath] : false;
       }
@@ -337,11 +334,6 @@ export default class StateManager {
   ): void {
     this.styleVarsToKeep.add(memberExpression);
   }
-}
-// a function generate Regex to match the path of files with aliases
-function generateAliasRegex(alias: string): RegExp {
-  const regex = new RegExp('^' + alias + '/(.*)');
-  return regex;
 }
 
 function aliasPathResolver(
@@ -368,37 +360,12 @@ function aliasPathResolver(
   return [importPath, isAliasResolved];
 }
 
-// a function that resolves the path of files with aliases
-function aliasPathResolverOld(importPath: string = '', aliases: any) {
-  let output = importPath;
-  Object.keys(aliases ?? {}).forEach((alias) => {
-    const replacementToken = alias.split('*')[0];
-    const aliasedImportPathStr = importPath;
-    const value = aliases[alias][0] ?? '';
-
-    if (alias.endsWith('*')) {
-      if (importPath.startsWith(alias.replace('*', ''))) {
-        // If it does, replace the alias with the replacement at the beginning of the string
-        output = importPath.replace(
-          alias.replace('*', ''),
-          value.replace('*', ''),
-        );
-      }
-    } else {
-      if (importPath === value) {
-        return value;
-      }
-    }
-  });
-  return output;
-}
 // a function that resolves the absolute path of a file when given the
 // relative path of the file from the source file
 const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
   aliases?: $ReadOnly<{ [string]: string }>,
-  rootDir: string,
 ): void | string => {
   const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
   if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
