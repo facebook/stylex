@@ -84,47 +84,202 @@ export default class StateManager {
 
   inStyleXCreate: boolean = false;
 
+  +options: StyleXStateOptions;
+
   constructor(state: PluginPass) {
     this._state = state;
-    (state.file.metadata: $FlowFixMe).stylex = [];
+    state.file.metadata.stylex = [];
+    this.options = this.setOptions();
   }
 
-  get options(): StyleXStateOptions {
+  setOptions(): StyleXStateOptions {
     const options: Partial<StyleXOptions> =
       (this._state.opts: $FlowFixMe) || {};
+
+    let dev: StyleXStateOptions['dev'] = false;
+    if (options.dev != null) {
+      if (typeof options.dev !== 'boolean') {
+        console.error('[@stylexjs/babel-plugin] `dev` must be a boolean');
+      }
+      dev = !!options.dev;
+    }
+    let test: StyleXStateOptions['test'] = false;
+    if (options.test != null) {
+      if (typeof options.test !== 'boolean') {
+        console.error('[@stylexjs/babel-plugin] `test` must be a boolean');
+      }
+      test = !!options.test;
+    }
+    let runtimeInjection: StyleXStateOptions['runtimeInjection'] = dev
+      ? DEFAULT_INJECT_PATH
+      : undefined;
+    if (options.runtimeInjection != null) {
+      const optRuntimeInjection = options.runtimeInjection;
+      if (typeof optRuntimeInjection === 'string') {
+        runtimeInjection = optRuntimeInjection;
+      } else if (typeof optRuntimeInjection === 'boolean') {
+        runtimeInjection = optRuntimeInjection
+          ? DEFAULT_INJECT_PATH
+          : undefined;
+      } else if (typeof optRuntimeInjection === 'object') {
+        if (typeof optRuntimeInjection.from !== 'string') {
+          console.error(
+            '[@stylexjs/babel-plugin] `runtimeInjection.from` must be a string',
+          );
+        }
+        if (
+          optRuntimeInjection.as != null &&
+          typeof optRuntimeInjection.as !== 'string'
+        ) {
+          console.error(
+            '[@stylexjs/babel-plugin] `runtimeInjection.as` must be a string',
+          );
+        }
+        runtimeInjection = optRuntimeInjection;
+      } else {
+        console.error(
+          '[@stylexjs/babel-plugin] `runtimeInjection` must be a string, boolean, or object',
+        );
+      }
+    }
+    let classNamePrefix: StyleXStateOptions['classNamePrefix'] = 'x';
+    if (options.classNamePrefix != null) {
+      if (typeof options.classNamePrefix !== 'string') {
+        console.error(
+          '[@stylexjs/babel-plugin] `classNamePrefix` must be a string',
+        );
+      } else {
+        classNamePrefix = options.classNamePrefix;
+      }
+    }
+    let importSources: StyleXStateOptions['importSources'] = [name, 'stylex'];
+    if (options.importSources != null) {
+      const optImportSources = options.importSources;
+      if (!Array.isArray(optImportSources)) {
+        if (typeof optImportSources === 'string') {
+          importSources = [...importSources, optImportSources];
+        } else {
+          console.error(
+            '[@stylexjs/babel-plugin] `importSources` must be an array',
+          );
+        }
+      }
+      if (
+        optImportSources.some(
+          (source) =>
+            typeof source !== 'string' && typeof source.from !== 'string',
+        )
+      ) {
+        console.error(
+          '[@stylexjs/babel-plugin] `importSources` must be an array of strings or `{from: string, as?: string}` objects',
+        );
+      } else {
+        importSources = [...importSources, ...optImportSources];
+      }
+    }
+    let genConditionalClasses: StyleXStateOptions['genConditionalClasses'] =
+      false;
+    if (options.genConditionalClasses != null) {
+      if (typeof options.genConditionalClasses !== 'boolean') {
+        console.error(
+          '[@stylexjs/babel-plugin] `genConditionalClasses` must be a boolean',
+        );
+      } else {
+        genConditionalClasses = options.genConditionalClasses;
+      }
+    }
+    let useRemForFontSize: StyleXStateOptions['useRemForFontSize'] = false;
+    if (options.useRemForFontSize != null) {
+      if (typeof options.useRemForFontSize !== 'boolean') {
+        console.error(
+          '[@stylexjs/babel-plugin] `useRemForFontSize` must be a boolean',
+        );
+      } else {
+        useRemForFontSize = options.useRemForFontSize;
+      }
+    }
+    let styleResolution: StyleXStateOptions['styleResolution'] =
+      'application-order';
+    if (options.styleResolution != null) {
+      if (
+        ![
+          'application-order',
+          'property-specificity',
+          'legacy-expand-shorthands',
+        ].includes(options.styleResolution)
+      ) {
+        console.error(
+          '[@stylexjs/babel-plugin] `styleResolution` must be a string',
+        );
+      } else {
+        styleResolution = options.styleResolution;
+      }
+    }
+    let unstable_moduleResolution: StyleXStateOptions['unstable_moduleResolution'];
+    if (options.unstable_moduleResolution != null) {
+      const optModuleResolution = options.unstable_moduleResolution;
+      if (typeof optModuleResolution !== 'object') {
+        console.error(
+          '[@stylexjs/babel-plugin] `unstable_moduleResolution` must be an object',
+        );
+      } else {
+        if (optModuleResolution.type != null) {
+          if (typeof optModuleResolution.type !== 'string') {
+            console.error(
+              '[@stylexjs/babel-plugin] `unstable_moduleResolution.type` must be a string',
+            );
+          } else {
+            if (!['commonJS', 'haste'].includes(optModuleResolution.type)) {
+              console.error(
+                '[@stylexjs/babel-plugin] `unstable_moduleResolution.type` must be "commonJS" or "haste"',
+              );
+            }
+          }
+        }
+        if (optModuleResolution.rootDir != null) {
+          if (typeof optModuleResolution.rootDir !== 'string') {
+            console.error(
+              '[@stylexjs/babel-plugin] `unstable_moduleResolution.rootDir` must be a string',
+            );
+          }
+        }
+        if (optModuleResolution.themeFileExtension != null) {
+          if (typeof optModuleResolution.themeFileExtension !== 'string') {
+            console.error(
+              '[@stylexjs/babel-plugin] `unstable_moduleResolution.themeFileExtension` must be a string',
+            );
+          }
+        }
+        unstable_moduleResolution = optModuleResolution;
+      }
+    }
+    let treeshakeCompensation: StyleXStateOptions['treeshakeCompensation'] =
+      false;
+    if (options.treeshakeCompensation != null) {
+      if (typeof options.treeshakeCompensation !== 'boolean') {
+        console.error(
+          '[@stylexjs/babel-plugin] `treeshakeCompensation` must be a boolean',
+        );
+      } else {
+        treeshakeCompensation = options.treeshakeCompensation;
+      }
+    }
+
     const opts: StyleXStateOptions = {
       ...options,
-      dev: !!(options: $FlowFixMe).dev,
-      test: !!(options: $FlowFixMe).test,
-      runtimeInjection:
-        // prettier-ignore
-        options.runtimeInjection === true ? 
-          DEFAULT_INJECT_PATH
-        : options.runtimeInjection === false ?
-          undefined
-        : options.runtimeInjection != null ?
-          options.runtimeInjection
-        : options.dev ? 
-          DEFAULT_INJECT_PATH
-        : undefined,
-      classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
-      importSources: [
-        name,
-        'stylex',
-        ...((options: $FlowFixMe).importSources ?? []),
-      ],
-      definedStylexCSSVariables:
-        (options: $FlowFixMe).definedStylexCSSVariables ?? {},
-      genConditionalClasses: !!(options: $FlowFixMe).genConditionalClasses,
-      useRemForFontSize: !!(options: $FlowFixMe).useRemForFontSize,
-      styleResolution:
-        (options: $FlowFixMe).styleResolution ?? 'application-order',
-      unstable_moduleResolution:
-        (options: $FlowFixMe).unstable_moduleResolution ?? undefined,
-      treeshakeCompensation: !!(options: $FlowFixMe).treeshakeCompensation,
+      dev,
+      test,
+      runtimeInjection,
+      classNamePrefix,
+      importSources,
+      definedStylexCSSVariables: options.definedStylexCSSVariables ?? {},
+      genConditionalClasses,
+      useRemForFontSize,
+      styleResolution,
+      unstable_moduleResolution,
+      treeshakeCompensation,
     };
-    this._state.opts = (opts: $FlowFixMe);
-    return this._state.opts;
+    return opts;
   }
 
   get importPathString(): string {
