@@ -390,7 +390,7 @@ const filePathResolver = (
         );
       }
       if (isAliasResolved && aliasedImportPathStr.startsWith('.')) {
-        aliasedImportPathStr += ext; // attach extenstion to the resolved alias import path.
+        aliasedImportPathStr += ext; // attach extension to the resolved alias import path.
       }
 
       const resolvedFilePath = isAliasResolved //Check if the alias is resolved and the path is valid
