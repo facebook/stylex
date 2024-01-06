@@ -101,7 +101,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     /* Values */
 
-    test('values must be static number, string or keyframe in stylex.defineVars()', () => {
+    test('values must be static number or string, or keyframes in stylex.defineVars()', () => {
       // number
       expect(() => {
         transform(`
