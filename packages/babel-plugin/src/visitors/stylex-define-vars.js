@@ -15,6 +15,8 @@ import {
   defineVars as stylexDefineVars,
   messages,
   utils,
+  keyframes as stylexKeyframes,
+  type InjectableStyle
 } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
@@ -70,9 +72,35 @@ export default function transformStyleXDefineVars(
       >,
     > = callExpressionPath.get('arguments');
     const firstArg = args[0];
+ 
+    const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+
+    // eslint-disable-next-line no-inner-declarations
+    function keyframes<
+      Obj: {
+        +[key: string]: { +[k: string]: string | number },
+      },
+    >(animation: Obj): string {
+      const [animationName, injectedStyle] = stylexKeyframes(
+        animation,
+        state.options,
+      );
+      injectedKeyframes[animationName] = injectedStyle;
+      return animationName;
+    }
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    state.stylexKeyframesImport.forEach((name) => {
+      identifiers[name] = { fn: keyframes }
+    })
+    state.stylexImport.forEach((name) => {
+      if (memberExpressions[name] === undefined) {
+        memberExpressions[name] = {}
+      }
+
+      memberExpressions[name].keyframes = { fn: keyframes }
+    })
 
     const { confident, value } = evaluate(firstArg, state, {
       identifiers,
@@ -92,10 +120,15 @@ export default function transformStyleXDefineVars(
 
     const exportName = varId.name;
 
-    const [variablesObj, injectedStyles] = stylexDefineVars(value, {
+    const [variablesObj, injectedStylesSansKeyframes] = stylexDefineVars(value, {
       ...state.options,
       themeName: utils.genFileBasedIdentifier({ fileName, exportName }),
     });
+
+    const injectedStyles = {
+      ...injectedKeyframes,
+      ...injectedStylesSansKeyframes
+    }
 
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(variablesObj));
