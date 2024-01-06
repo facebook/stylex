@@ -43,7 +43,7 @@ export default function Counter() {
   );
 }
 
-const DARK = '@media (prefers-color-scheme: dark)' as const;
+const DARK = '@media (prefers-color-scheme: dark)';
 
 const styles = stylex.create({
   container: {
