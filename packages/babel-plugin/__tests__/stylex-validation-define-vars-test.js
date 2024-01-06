@@ -101,7 +101,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     /* Values */
 
-    test('values must be static number or string in stylex.defineVars()', () => {
+    test('values must be static number, string or keyframe in stylex.defineVars()', () => {
       // number
       expect(() => {
         transform(`
@@ -120,6 +120,18 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `);
       }).not.toThrow();
+      // keyframe
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.defineVars({
+            fadeIn: stylex.keyframes({
+              '0%': { opacity: 0 },
+              '100%': { opacity: 1}
+            }),
+          });
+        `)
+      }).not.toThrow()
       // not static
       expect(() => {
         transform(`
