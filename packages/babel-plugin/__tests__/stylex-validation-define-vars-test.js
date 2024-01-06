@@ -130,8 +130,8 @@ describe('@stylexjs/babel-plugin', () => {
               '100%': { opacity: 1}
             }),
           });
-        `)
-      }).not.toThrow()
+        `);
+      }).not.toThrow();
       // not static
       expect(() => {
         transform(`
