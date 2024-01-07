@@ -120,7 +120,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `);
       }).not.toThrow();
-      // keyframe
+      // keyframes
       expect(() => {
         transform(`
           import stylex from 'stylex';
