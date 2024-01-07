@@ -518,7 +518,7 @@ export interface BabelFile {
 export interface PluginPass {
   file: BabelFile;
   key: string;
-  opts: { [string]: mixed };
+  opts: { +[string]: mixed };
   cwd: string;
   filename: string | void;
   get(key: mixed): any;

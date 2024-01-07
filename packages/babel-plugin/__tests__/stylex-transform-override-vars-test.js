@@ -511,7 +511,7 @@ describe('@stylexjs/babel-plugin', () => {
           {
             dev: true,
             unstable_moduleResolution: {
-              type: 'commonjs',
+              type: 'commonJS',
               rootDir,
             },
             filename: '/stylex/packages/utils/NestedTheme.stylex.js',
