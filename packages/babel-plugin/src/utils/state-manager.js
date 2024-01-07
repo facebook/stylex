@@ -97,13 +97,16 @@ export default class StateManager {
       dev: !!(options: $FlowFixMe).dev,
       test: !!(options: $FlowFixMe).test,
       runtimeInjection:
-        options.runtimeInjection === true
-          ? DEFAULT_INJECT_PATH
-          : options.runtimeInjection
-            ? options.runtimeInjection
-            : options.dev
-              ? DEFAULT_INJECT_PATH
-              : undefined,
+        // prettier-ignore
+        options.runtimeInjection === true ? 
+          DEFAULT_INJECT_PATH
+        : options.runtimeInjection === false ?
+          undefined
+        : options.runtimeInjection != null ?
+          options.runtimeInjection
+        : options.dev ? 
+          DEFAULT_INJECT_PATH
+        : undefined,
       classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
       importSources: [
         name,
