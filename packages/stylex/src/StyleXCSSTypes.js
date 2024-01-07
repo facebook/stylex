@@ -475,7 +475,7 @@ type MsOverflowStyle =
   | 'scrollbar'
   | '-ms-autohiding-scrollbar';
 type objectFit = 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
-type objectPosition = string;
+type objectPosition = string | number ;
 type opacity = number;
 type order = number;
 type orphans = number;
