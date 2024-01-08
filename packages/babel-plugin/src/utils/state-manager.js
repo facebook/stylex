@@ -67,7 +67,7 @@ export type StyleXOptions = $ReadOnly<{
   genConditionalClasses: boolean,
 
   unstable_moduleResolution: ?ModuleResolution,
-  aliases: $ReadOnly<{ [string]: string }>,
+  aliases: ?$ReadOnly<{ [string]: string }>,
   ...
 }>;
 
@@ -77,10 +77,9 @@ type StyleXStateOptions = $ReadOnly<{
   ...
 }>;
 
-function validateAliases(options: StyleXOptions): StyleXOptions {
-  const aliases = options.aliases;
-  if (aliases == null) {
-    return options;
+function validateAliases(aliases: any): StyleXOptions['aliases'] {
+  if (!aliases) {
+    return aliases;
   }
 
   Object.keys(aliases).forEach((alias) => {
@@ -132,7 +131,7 @@ function validateAliases(options: StyleXOptions): StyleXOptions {
     }
   });
 
-  return options;
+  return aliases;
 }
 
 const checkImportSource = z.unionOf(
@@ -154,7 +153,6 @@ const checkRuntimeInjection: Check<StyleXOptions['runtimeInjection']> =
       as: z.string(),
     }),
   );
-
 
 const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
@@ -293,8 +291,12 @@ export default class StateManager {
         'options.treeshakeCompensation',
       );
 
+    const aliases: StyleXStateOptions['aliases'] = validateAliases(
+      options.aliases,
+    );
+
     const opts: StyleXStateOptions = {
-      ...options,
+      aliases,
       dev,
       test,
       runtimeInjection,
@@ -465,9 +467,10 @@ export default class StateManager {
 
 function aliasPathResolver(
   importPath: string,
-  aliases: $ReadOnly<{ [string]: string }>,
+  aliases: StyleXOptions['aliases'],
 ): [string, boolean] {
   let isAliasResolved = false;
+  if (!aliases) return [importPath, isAliasResolved];
   for (const [alias, value] of Object.entries(aliases)) {
     if (alias.includes('*')) {
       const [before, after] = alias.split('*');
@@ -492,7 +495,7 @@ function aliasPathResolver(
 const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
-  aliases?: $ReadOnly<{ [string]: string }>,
+  aliases: StyleXOptions['aliases'],
 ): void | string => {
   const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
   if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
