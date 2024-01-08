@@ -16,26 +16,46 @@ import type {
 } from '@stylexjs/shared';
 import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
+import type { Check } from './validate';
+import * as z from './validate';
 
 export type ImportPathResolution =
   | false
   | ['themeNameRef' | 'filePath', string];
 
 type ModuleResolution =
-  | {
+  | $ReadOnly<{
       type: 'commonJS',
       rootDir: string,
-      themeFileExtension?: string,
-    }
-  | {
+      themeFileExtension?: ?string,
+    }>
+  | $ReadOnly<{
       type: 'haste',
-      themeFileExtension?: string,
-    }
-  | {
+      themeFileExtension?: ?string,
+    }>
+  | $ReadOnly<{
       type: 'experimental_crossFileParsing',
       rootDir: string,
-      themeFileExtension?: string,
-    };
+      themeFileExtension?: ?string,
+    }>;
+
+// eslint-disable-next-line no-unused-vars
+const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
+  z.object({
+    type: z.literal('commonJS'),
+    rootDir: z.string(),
+    themeFileExtension: z.unionOf<null | void, string>(z.nullish(), z.string()),
+  }),
+  z.object({
+    type: z.literal('haste'),
+    themeFileExtension: z.unionOf(z.nullish(), z.string()),
+  }),
+  z.object({
+    type: z.literal('experimental_crossFileParsing'),
+    rootDir: z.string(),
+    themeFileExtension: z.unionOf(z.nullish(), z.string()),
+  }),
+);
 
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
@@ -45,14 +65,15 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
-  unstable_moduleResolution: void | ModuleResolution,
+
+  unstable_moduleResolution: ?ModuleResolution,
   aliases: $ReadOnly<{ [string]: string }>,
   ...
 }>;
 
 type StyleXStateOptions = $ReadOnly<{
   ...StyleXOptions,
-  runtimeInjection: ?string | $ReadOnly<{ from: string, as: string }>,
+  runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
   ...
 }>;
 
@@ -114,6 +135,27 @@ function validateAliases(options: StyleXOptions): StyleXOptions {
   return options;
 }
 
+const checkImportSource = z.unionOf(
+  z.string(),
+  z.object({
+    from: z.string(),
+    as: z.string(),
+  }),
+);
+const checkImportSources: Check<StyleXOptions['importSources']> =
+  z.array(checkImportSource);
+
+const checkRuntimeInjection: Check<StyleXOptions['runtimeInjection']> =
+  z.unionOf3(
+    z.boolean(),
+    z.string(),
+    z.object({
+      from: z.string(),
+      as: z.string(),
+    }),
+  );
+
+
 const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
 export default class StateManager {
@@ -143,46 +185,129 @@ export default class StateManager {
 
   inStyleXCreate: boolean = false;
 
+  +options: StyleXStateOptions;
+
   constructor(state: PluginPass) {
     this._state = state;
-    (state.file.metadata: $FlowFixMe).stylex = [];
+    state.file.metadata.stylex = [];
+
+    this.options = this.setOptions(state.opts ?? {});
   }
 
-  get options(): StyleXStateOptions {
-    const options: Partial<StyleXOptions> = validateAliases(
-      (this._state.opts: $FlowFixMe) || {},
+  setOptions(options: { +[string]: mixed }): StyleXStateOptions {
+    const dev: StyleXStateOptions['dev'] = z.logAndDefault(
+      z.boolean(),
+      options.dev ?? false,
+      false,
+      'options.dev',
     );
+
+    const test: StyleXStateOptions['test'] = z.logAndDefault(
+      z.boolean(),
+      options.test ?? false,
+      false,
+      'options.test',
+    );
+
+    const configRuntimeInjection: StyleXOptions['runtimeInjection'] =
+      z.logAndDefault(
+        checkRuntimeInjection,
+        options.runtimeInjection ?? dev,
+        dev,
+        'options.runtimeInjection',
+      );
+
+    // prettier-ignore
+    const runtimeInjection: StyleXStateOptions['runtimeInjection'] 
+      = configRuntimeInjection === true ? 
+        DEFAULT_INJECT_PATH
+      : configRuntimeInjection === false ? 
+        undefined
+      : 
+        configRuntimeInjection
+      ;
+
+    const classNamePrefix: StyleXStateOptions['classNamePrefix'] =
+      z.logAndDefault(
+        z.string(),
+        options.classNamePrefix ?? 'x',
+        'x',
+        'options.classNamePrefix',
+      );
+
+    const configuredImportSources: StyleXStateOptions['importSources'] =
+      z.logAndDefault(
+        checkImportSources,
+        options.importSources ?? [],
+        [],
+        'options.importSources',
+      );
+
+    const importSources: StyleXStateOptions['importSources'] = [
+      name,
+      'stylex',
+      ...configuredImportSources,
+    ];
+
+    const genConditionalClasses: StyleXStateOptions['genConditionalClasses'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.genConditionalClasses ?? false,
+        false,
+        'options.genConditionalClasses',
+      );
+
+    const useRemForFontSize: StyleXStateOptions['useRemForFontSize'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.useRemForFontSize ?? false,
+        false,
+        'options.useRemForFontSize',
+      );
+
+    const styleResolution: StyleXStateOptions['styleResolution'] =
+      z.logAndDefault(
+        z.unionOf3(
+          z.literal('application-order'),
+          z.literal('property-specificity'),
+          z.literal('legacy-expand-shorthands'),
+        ),
+        options.styleResolution ?? 'application-order',
+        'application-order',
+        'options.styleResolution',
+      );
+
+    const unstable_moduleResolution: StyleXStateOptions['unstable_moduleResolution'] =
+      z.logAndDefault(
+        z.unionOf(z.nullish(), CheckModuleResolution),
+        options.unstable_moduleResolution,
+        null,
+        'options.unstable_moduleResolution',
+      );
+
+    const treeshakeCompensation: StyleXStateOptions['treeshakeCompensation'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.treeshakeCompensation ?? false,
+        false,
+        'options.treeshakeCompensation',
+      );
+
     const opts: StyleXStateOptions = {
       ...options,
-      dev: !!(options: $FlowFixMe).dev,
-      test: !!(options: $FlowFixMe).test,
-      aliases: (options: $FlowFixMe).aliases,
-      runtimeInjection:
-        options.runtimeInjection === true
-          ? DEFAULT_INJECT_PATH
-          : options.runtimeInjection
-            ? options.runtimeInjection
-            : options.dev
-              ? DEFAULT_INJECT_PATH
-              : undefined,
-      classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
-      importSources: [
-        name,
-        'stylex',
-        ...((options: $FlowFixMe).importSources ?? []),
-      ],
-      definedStylexCSSVariables:
-        (options: $FlowFixMe).definedStylexCSSVariables ?? {},
-      genConditionalClasses: !!(options: $FlowFixMe).genConditionalClasses,
-      useRemForFontSize: !!(options: $FlowFixMe).useRemForFontSize,
-      styleResolution:
-        (options: $FlowFixMe).styleResolution ?? 'application-order',
-      unstable_moduleResolution:
-        (options: $FlowFixMe).unstable_moduleResolution ?? undefined,
-      treeshakeCompensation: !!(options: $FlowFixMe).treeshakeCompensation,
+      dev,
+      test,
+      runtimeInjection,
+      classNamePrefix,
+      importSources,
+      definedStylexCSSVariables: {},
+      genConditionalClasses,
+      useRemForFontSize,
+      styleResolution,
+      unstable_moduleResolution,
+      treeshakeCompensation,
     };
-    this._state.opts = (opts: $FlowFixMe);
-    return this._state.opts;
+    return opts;
   }
 
   get importPathString(): string {
@@ -220,10 +345,12 @@ export default class StateManager {
     return this._state.file.metadata;
   }
 
-  get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
-    return typeof this.options.runtimeInjection === 'string'
-      ? { from: this.options.runtimeInjection }
-      : this.options.runtimeInjection || null;
+  get runtimeInjection(): ?$ReadOnly<{ from: string, as?: ?string }> {
+    if (this.options.runtimeInjection == null) {
+      return null;
+    }
+    const runInj = this.options.runtimeInjection;
+    return typeof runInj === 'string' ? { from: runInj } : runInj || null;
   }
 
   get isDev(): boolean {

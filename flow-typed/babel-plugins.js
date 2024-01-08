@@ -21,3 +21,7 @@ declare module '@babel/plugin-syntax-flow' {
 declare module '@babel/plugin-syntax-jsx' {
   declare module.exports: any;
 }
+
+declare module 'babel-plugin-syntax-hermes-parser' {
+  declare module.exports: any;
+}
