@@ -284,12 +284,32 @@ export default class StateManager {
     return this._state.file.metadata;
   }
 
-  get runtimeInjection(): ?$ReadOnly<{ from: string, as?: ?string }> {
+  get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
     if (this.options.runtimeInjection == null) {
       return null;
     }
-    const runInj = this.options.runtimeInjection;
-    return typeof runInj === 'string' ? { from: runInj } : runInj || null;
+    const options = this.options || {};
+    const runtimeInjection = options.runtimeInjection;
+    const rootDir = this.options.unstable_moduleResolution.rootDir || '';
+    const filename = this.filename || '';
+
+    if (typeof runtimeInjection === 'string' && rootDir && filename) {
+      if (
+        runtimeInjection.startsWith('./') ||
+        runtimeInjection.startsWith('../')
+      ) {
+        const absolutePath = path.join(rootDir, runtimeInjection);
+        return { from: absolutePath };
+      }
+
+      const relativePath = path.relative(
+        path.dirname(filename),
+        runtimeInjection,
+      );
+      return { from: relativePath };
+    }
+
+    return runtimeInjection || null;
   }
 
   get isDev(): boolean {
