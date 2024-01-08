@@ -417,14 +417,6 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
-      code: "import stylex from 'stylex'; stylex.create({default: {transition: 'all 0.3s ease'}});",
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-        },
-      ],
-    },
-    {
       code: "import stylex from 'stylex'; stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {

@@ -132,18 +132,13 @@ styles to a component as props.
 
 :::warning
 
-Don't use the `stylex.props` functions when passing styles to a custom
-component.
+The `stylex.props` functions returns an object with `className` and `style`.
+Don't use it when the styles are to be merged within a component.
 
 ```tsx
 // NO!
-<CustomComponent {...stylex.props(styles.base)} />
-
-// NO!
 <CustomComponent style={stylex.props(styles.base)} />
 ```
-
-The `stylex.props` function should only be used directly on HTML elements.
 
 :::
 

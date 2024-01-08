@@ -15,6 +15,8 @@ import { props } from '@stylexjs/stylex';
 
 import { IncludedStyles } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
+import { evaluate } from '../utils/evaluate-path';
+import * as babelPathUtils from '../babel-path-utils';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -63,14 +65,17 @@ export default function transformStylexProps(
     arg.type === 'ArrayExpression' ? arg.elements : [arg],
   );
 
-  // console.log('args', args);
+  let currentIndex = -1;
+  let bailOutIndex: ?number = null;
 
   const resolvedArgs: ResolvedArgs = [];
   for (const arg of args) {
+    currentIndex++;
     switch (arg.type) {
       case 'MemberExpression': {
         const resolved = parseNullableStyle(arg, state);
         if (resolved === 'other') {
+          bailOutIndex = currentIndex;
           bailOut = true;
         } else {
           resolvedArgs.push(resolved);
@@ -82,6 +87,7 @@ export default function transformStylexProps(
         const primary = parseNullableStyle(consequent, state);
         const fallback = parseNullableStyle(alternate, state);
         if (primary === 'other' || fallback === 'other') {
+          bailOutIndex = currentIndex;
           bailOut = true;
         } else {
           resolvedArgs.push([test, primary, fallback]);
@@ -91,6 +97,7 @@ export default function transformStylexProps(
       }
       case 'LogicalExpression': {
         if (arg.operator !== '&&') {
+          bailOutIndex = currentIndex;
           bailOut = true;
           break;
         }
@@ -98,6 +105,7 @@ export default function transformStylexProps(
         const leftResolved = parseNullableStyle(left, state);
         const rightResolved = parseNullableStyle(right, state);
         if (leftResolved !== 'other' || rightResolved === 'other') {
+          bailOutIndex = currentIndex;
           bailOut = true;
         } else {
           resolvedArgs.push([left, rightResolved, null]);
@@ -106,6 +114,7 @@ export default function transformStylexProps(
         break;
       }
       default:
+        bailOutIndex = currentIndex;
         bailOut = true;
         break;
     }
@@ -120,8 +129,15 @@ export default function transformStylexProps(
     bailOut = true;
   }
   if (bailOut) {
-    path.traverse({
-      MemberExpression(path) {
+    const argumentPaths = path.get('arguments');
+
+    let nonNullProps: Array<string> | true = [];
+
+    let index = -1;
+    for (const argPath of argumentPaths) {
+      index++;
+      // eslint-disable-next-line no-loop-func, no-inner-declarations
+      function MemberExpression(path: NodePath<t.MemberExpression>) {
         const object = path.get('object').node;
         const property = path.get('property').node;
         const computed = path.node.computed;
@@ -141,14 +157,49 @@ export default function transformStylexProps(
             propName = property.value;
           }
         }
+        let styleNonNullProps: true | Array<string> = [];
+        if (bailOutIndex != null && index > bailOutIndex) {
+          nonNullProps = true;
+          styleNonNullProps = true;
+        }
+        if (nonNullProps === true) {
+          styleNonNullProps = true;
+        } else {
+          const { confident, value: styleValue } = evaluate(path, state);
+          if (!confident) {
+            nonNullProps = true;
+            styleNonNullProps = true;
+          } else {
+            styleNonNullProps =
+              nonNullProps === true ? true : [...nonNullProps];
+            if (nonNullProps !== true) {
+              nonNullProps = [
+                ...nonNullProps,
+                ...Object.keys(styleValue).filter(
+                  (key) => styleValue[key] !== null,
+                ),
+              ];
+            }
+          }
+        }
+
         if (objName != null) {
           state.styleVarsToKeep.add([
             objName,
-            propName != null ? String(propName) : null,
+            propName != null ? String(propName) : true,
+            styleNonNullProps,
           ]);
         }
-      },
-    });
+      }
+
+      if (babelPathUtils.isMemberExpression(argPath)) {
+        MemberExpression(argPath);
+      } else {
+        argPath.traverse({
+          MemberExpression,
+        });
+      }
+    }
   } else {
     path.skip();
     // convert resolvedStyles to a string + ternary expressions

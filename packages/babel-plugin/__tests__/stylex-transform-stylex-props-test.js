@@ -288,10 +288,12 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           foo: {
             padding: "x14odnwx",
+            paddingInline: null,
             paddingStart: null,
             paddingLeft: null,
             paddingEnd: null,
             paddingRight: null,
+            paddingBlock: null,
             paddingTop: null,
             paddingBottom: null,
             $$css: true
@@ -1110,10 +1112,6 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             foo: {
               color: "x1e2nbdu",
-              $$css: true
-            },
-            bar: {
-              backgroundColor: "x1t391ir",
               $$css: true
             }
           };"

@@ -13,6 +13,8 @@ import { addDefault, addNamed } from '@babel/helper-module-imports';
 import StateManager from '../utils/state-manager';
 import { keyframes as stylexKeyframes, messages } from '@stylexjs/shared';
 import * as pathUtils from '../babel-path-utils';
+import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
+import { firstThatWorks as stylexFirstThatWorks } from '@stylexjs/shared';
 
 /// This function looks for `stylex.keyframes` calls and transforms them.
 //. 1. It finds the first argument to `stylex.keyframes` and validates it.
@@ -48,20 +50,32 @@ export default function transformStyleXKeyframes(
       throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
     }
     if (nodeInit.arguments[0].type !== 'ObjectExpression') {
-      throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      throw new Error(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
     }
 
     const init: ?NodePath<t.Expression> = path.get('init');
     if (init == null || !pathUtils.isCallExpression(init)) {
-      throw new Error(messages.NON_STATIC_VALUE);
+      throw new Error(messages.NON_STATIC_KEYFRAME_VALUE);
     }
     const args: $ReadOnlyArray<NodePath<>> = init.get('arguments');
     const firstArg = args[0];
 
-    // TODO: This doesn't support nested function calls.
-    // So when we add those, we'll need to replace this with an
-    // expanded fork of `evaluate` from `@babel/traverse.
-    const { confident, value } = firstArg.evaluate();
+    const identifiers: FunctionConfig['identifiers'] = {};
+    const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    state.stylexFirstThatWorksImport.forEach((name) => {
+      identifiers[name] = { fn: stylexFirstThatWorks };
+    });
+    state.stylexImport.forEach((name) => {
+      if (memberExpressions[name] == null) {
+        memberExpressions[name] = {};
+      }
+      memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
+    });
+
+    const { confident, value } = evaluate(firstArg, state, {
+      identifiers,
+      memberExpressions,
+    });
     if (!confident) {
       throw new Error(messages.NON_STATIC_VALUE);
     }
@@ -111,11 +125,11 @@ export default function transformStyleXKeyframes(
 // Validation of `stylex.keyframes` function call.
 function assertValidKeyframes(obj: mixed) {
   if (typeof obj !== 'object' || Array.isArray(obj) || obj == null) {
-    throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+    throw new Error(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
   }
   for (const [_key, value] of Object.entries(obj)) {
     if (typeof value !== 'object' || Array.isArray(value)) {
-      throw new Error(messages.ILLEGAL_NAMESPACE_VALUE);
+      throw new Error(messages.NON_OBJECT_KEYFRAME);
     }
   }
 }

@@ -178,8 +178,11 @@ type TTokens = Readonly<{
   [key: string]: string | { [key: string]: string };
 }>;
 
+type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
 export type FlattenTokens<T extends TTokens> = Readonly<{
-  [Key in keyof T]: T[Key] extends { [key: string]: infer X } ? X : T[Key];
+  [Key in keyof T]: T[Key] extends { [key: string]: infer X }
+    ? UnwrapVars<X>
+    : UnwrapVars<T[Key]>;
 }>;
 
 export type StyleX$DefineVars = <
@@ -189,16 +192,19 @@ export type StyleX$DefineVars = <
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
+declare class ThemeKey<out VG extends VarGroup> extends String {
+  private varGroup: VG;
+}
 export type Theme<
   T extends VarGroup<unknown, symbol>,
   Tag extends symbol = symbol,
 > = Tag &
   Readonly<{
-    theme: StyleXClassNameFor<string, IDFromVarGroup<T>>;
+    theme: StyleXClassNameFor<ThemeKey<T>, IDFromVarGroup<T>>;
   }>;
 
 type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
-  [Key in keyof Config]:
+  [Key in keyof Config]?:
     | Config[Key]
     | { default: Config[Key]; [atRule: AtRuleStr]: Config[Key] };
 };

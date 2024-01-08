@@ -102,7 +102,7 @@ const styles = stylex.create({
 
 const colorStyles = stylex.create({
   red: {
-    backgroundColor: 'lightred',
+    backgroundColor: 'red',
     borderColor: 'darkred',
   },
   green: {
@@ -110,6 +110,8 @@ const colorStyles = stylex.create({
     borderColor: 'darkgreen',
   },
 });
+
+function ReactDiv({ color, isActive, style }) { /* ... */ }
 ```
 
 ### Use styles
@@ -122,6 +124,7 @@ import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({ ... });
+const colorStyles = stylex.create({ ... });
 
 function ReactDiv({ color, isActive, style }) {
   return <div {...stylex.props(

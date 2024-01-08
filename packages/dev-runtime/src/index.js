@@ -76,10 +76,14 @@ export default function inject({
       themeName: themeNameUUID(),
     },
   ): VarGroup<DefaultTokens, ID> => {
-    const [cssVarsObject, { css }] = shared.defineVars(variables, {
+    const [cssVarsObject, injectedStyles] = shared.defineVars(variables, {
       themeName,
     });
-    insert(cssVarsObject.__themeName__, css, 0);
+
+    for (const [key, { ltr, priority }] of Object.entries(injectedStyles)) {
+      insert(key, ltr, priority);
+    }
+
     // $FlowFixMe
     return cssVarsObject;
   };
@@ -92,12 +96,14 @@ export default function inject({
     variablesTheme: BaseTokens,
     variablesOverride: OverridesForTokenType<TokensFromVarGroup<$FlowFixMe>>,
   ): Theme<BaseTokens, ID> => {
-    const [js, css] = shared.createTheme(
+    const [js, injectedStyles] = shared.createTheme(
       (variablesTheme: $FlowFixMe),
       variablesOverride,
     );
-    const styleKey = js[String(variablesTheme.__themeName__)];
-    insert(styleKey, css[styleKey].ltr, css[styleKey].priority);
+
+    for (const [key, { ltr, priority }] of Object.entries(injectedStyles)) {
+      insert(key, ltr, priority);
+    }
     // $FlowFixMe[incompatible-return]
     return js;
   };

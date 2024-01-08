@@ -298,7 +298,9 @@ export class StyleXSheet {
       return;
     }
 
-    const rule = this.normalizeRule(rawRule);
+    const rule = this.normalizeRule(
+      addSpecificityLevel(rawRule, Math.floor(priority / 1000)),
+    );
 
     // Get the position where we should insert the rule
     const insertPos = this.getInsertPositionForPriority(priority);
@@ -316,9 +318,9 @@ export class StyleXSheet {
 
     if (sheet != null) {
       try {
-        sheet.insertRule(rule, insertPos);
-      } catch {
-        // Ignore: error likely due to inserting prefixed rules (e.g. `::-moz-range-thumb`).
+        sheet.insertRule(rule, Math.min(insertPos, sheet.cssRules.length));
+      } catch (err) {
+        console.error('insertRule error', err, rule, insertPos);
       }
     }
     // Ignore the case where sheet == null. It's an edge-case Edge 17 bug.
@@ -337,6 +339,26 @@ function addAncestorSelector(selector: string, ancestorSelector: string) {
   const mediaQueryPart = selector.slice(0, firstBracketIndex + 1);
   const rest = selector.slice(firstBracketIndex + 1);
   return `${mediaQueryPart}${ancestorSelector} ${rest}`;
+}
+
+/**
+ * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
+ */
+function addSpecificityLevel(selector: string, index: number): string {
+  if (selector.startsWith('@keyframes')) {
+    return selector;
+  }
+  const pseudo = Array.from({ length: index })
+    .map(() => ':not(#\\#)')
+    .join('');
+
+  const lastOpenCurly = selector.includes('::')
+    ? selector.indexOf('::')
+    : selector.lastIndexOf('{');
+  const beforeCurly = selector.slice(0, lastOpenCurly);
+  const afterCurly = selector.slice(lastOpenCurly);
+
+  return `${beforeCurly}${pseudo}${afterCurly}`;
 }
 
 export const styleSheet: StyleXSheet = new StyleXSheet({

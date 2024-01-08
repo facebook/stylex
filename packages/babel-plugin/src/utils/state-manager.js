@@ -16,26 +16,46 @@ import type {
 } from '@stylexjs/shared';
 import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
+import type { Check } from './validate';
+import * as z from './validate';
 
 export type ImportPathResolution =
   | false
   | ['themeNameRef' | 'filePath', string];
 
 type ModuleResolution =
-  | {
+  | $ReadOnly<{
       type: 'commonJS',
       rootDir: string,
-      themeFileExtension?: string,
-    }
-  | {
+      themeFileExtension?: ?string,
+    }>
+  | $ReadOnly<{
       type: 'haste',
-      themeFileExtension?: string,
-    }
-  | {
+      themeFileExtension?: ?string,
+    }>
+  | $ReadOnly<{
       type: 'experimental_crossFileParsing',
       rootDir: string,
-      themeFileExtension?: string,
-    };
+      themeFileExtension?: ?string,
+    }>;
+
+// eslint-disable-next-line no-unused-vars
+const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
+  z.object({
+    type: z.literal('commonJS'),
+    rootDir: z.string(),
+    themeFileExtension: z.unionOf<null | void, string>(z.nullish(), z.string()),
+  }),
+  z.object({
+    type: z.literal('haste'),
+    themeFileExtension: z.unionOf(z.nullish(), z.string()),
+  }),
+  z.object({
+    type: z.literal('experimental_crossFileParsing'),
+    rootDir: z.string(),
+    themeFileExtension: z.unionOf(z.nullish(), z.string()),
+  }),
+);
 
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
@@ -45,15 +65,35 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
-  unstable_moduleResolution: void | ModuleResolution,
+  unstable_moduleResolution: ?ModuleResolution,
   ...
 }>;
 
 type StyleXStateOptions = $ReadOnly<{
   ...StyleXOptions,
-  runtimeInjection: ?string | $ReadOnly<{ from: string, as: string }>,
+  runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
   ...
 }>;
+
+const checkImportSource = z.unionOf(
+  z.string(),
+  z.object({
+    from: z.string(),
+    as: z.string(),
+  }),
+);
+const checkImportSources: Check<StyleXOptions['importSources']> =
+  z.array(checkImportSource);
+
+const checkRuntimeInjection: Check<StyleXOptions['runtimeInjection']> =
+  z.unionOf3(
+    z.boolean(),
+    z.string(),
+    z.object({
+      from: z.string(),
+      as: z.string(),
+    }),
+  );
 
 const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
@@ -79,48 +119,134 @@ export default class StateManager {
   +styleVars: Map<string, NodePath<>> = new Map();
 
   // resuls of `stylex.create` calls that should be kept
-  +styleVarsToKeep: Set<[string, null | string]> = new Set();
+  +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =
+    new Set();
 
   inStyleXCreate: boolean = false;
 
+  +options: StyleXStateOptions;
+
   constructor(state: PluginPass) {
     this._state = state;
-    (state.file.metadata: $FlowFixMe).stylex = [];
+    state.file.metadata.stylex = [];
+
+    this.options = this.setOptions(state.opts ?? {});
   }
 
-  get options(): StyleXStateOptions {
-    const options: Partial<StyleXOptions> =
-      (this._state.opts: $FlowFixMe) || {};
+  setOptions(options: { +[string]: mixed }): StyleXStateOptions {
+    const dev: StyleXStateOptions['dev'] = z.logAndDefault(
+      z.boolean(),
+      options.dev ?? false,
+      false,
+      'options.dev',
+    );
+
+    const test: StyleXStateOptions['test'] = z.logAndDefault(
+      z.boolean(),
+      options.test ?? false,
+      false,
+      'options.test',
+    );
+
+    const configRuntimeInjection: StyleXOptions['runtimeInjection'] =
+      z.logAndDefault(
+        checkRuntimeInjection,
+        options.runtimeInjection ?? dev,
+        dev,
+        'options.runtimeInjection',
+      );
+
+    // prettier-ignore
+    const runtimeInjection: StyleXStateOptions['runtimeInjection'] 
+      = configRuntimeInjection === true ? 
+        DEFAULT_INJECT_PATH
+      : configRuntimeInjection === false ? 
+        undefined
+      : 
+        configRuntimeInjection
+      ;
+
+    const classNamePrefix: StyleXStateOptions['classNamePrefix'] =
+      z.logAndDefault(
+        z.string(),
+        options.classNamePrefix ?? 'x',
+        'x',
+        'options.classNamePrefix',
+      );
+
+    const configuredImportSources: StyleXStateOptions['importSources'] =
+      z.logAndDefault(
+        checkImportSources,
+        options.importSources ?? [],
+        [],
+        'options.importSources',
+      );
+
+    const importSources: StyleXStateOptions['importSources'] = [
+      name,
+      'stylex',
+      ...configuredImportSources,
+    ];
+
+    const genConditionalClasses: StyleXStateOptions['genConditionalClasses'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.genConditionalClasses ?? false,
+        false,
+        'options.genConditionalClasses',
+      );
+
+    const useRemForFontSize: StyleXStateOptions['useRemForFontSize'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.useRemForFontSize ?? false,
+        false,
+        'options.useRemForFontSize',
+      );
+
+    const styleResolution: StyleXStateOptions['styleResolution'] =
+      z.logAndDefault(
+        z.unionOf3(
+          z.literal('application-order'),
+          z.literal('property-specificity'),
+          z.literal('legacy-expand-shorthands'),
+        ),
+        options.styleResolution ?? 'application-order',
+        'application-order',
+        'options.styleResolution',
+      );
+
+    const unstable_moduleResolution: StyleXStateOptions['unstable_moduleResolution'] =
+      z.logAndDefault(
+        z.unionOf(z.nullish(), CheckModuleResolution),
+        options.unstable_moduleResolution,
+        null,
+        'options.unstable_moduleResolution',
+      );
+
+    const treeshakeCompensation: StyleXStateOptions['treeshakeCompensation'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.treeshakeCompensation ?? false,
+        false,
+        'options.treeshakeCompensation',
+      );
+
     const opts: StyleXStateOptions = {
       ...options,
-      dev: !!(options: $FlowFixMe).dev,
-      test: !!(options: $FlowFixMe).test,
-      runtimeInjection:
-        options.runtimeInjection === true
-          ? DEFAULT_INJECT_PATH
-          : options.runtimeInjection
-            ? options.runtimeInjection
-            : options.dev
-              ? DEFAULT_INJECT_PATH
-              : undefined,
-      classNamePrefix: (options: $FlowFixMe).classNamePrefix ?? 'x',
-      importSources: [
-        name,
-        'stylex',
-        ...((options: $FlowFixMe).importSources ?? []),
-      ],
-      definedStylexCSSVariables:
-        (options: $FlowFixMe).definedStylexCSSVariables ?? {},
-      genConditionalClasses: !!(options: $FlowFixMe).genConditionalClasses,
-      useRemForFontSize: !!(options: $FlowFixMe).useRemForFontSize,
-      styleResolution:
-        (options: $FlowFixMe).styleResolution ?? 'application-order',
-      unstable_moduleResolution:
-        (options: $FlowFixMe).unstable_moduleResolution ?? undefined,
-      treeshakeCompensation: !!(options: $FlowFixMe).treeshakeCompensation,
+      dev,
+      test,
+      runtimeInjection,
+      classNamePrefix,
+      importSources,
+      definedStylexCSSVariables: {},
+      genConditionalClasses,
+      useRemForFontSize,
+      styleResolution,
+      unstable_moduleResolution,
+      treeshakeCompensation,
     };
-    this._state.opts = (opts: $FlowFixMe);
-    return this._state.opts;
+    return opts;
   }
 
   get importPathString(): string {
@@ -159,6 +285,9 @@ export default class StateManager {
   }
 
   get runtimeInjection(): ?$ReadOnly<{ from: string, as?: string }> {
+    if (this.options.runtimeInjection == null) {
+      return null;
+    }
     const options = this.options || {};
     const runtimeInjection = options.runtimeInjection;
     const rootDir = this.options.unstable_moduleResolution.rootDir || '';
@@ -275,7 +404,9 @@ export default class StateManager {
     this.metadata.stylex.push(style);
   }
 
-  markComposedNamespace(memberExpression: [string, null | string]): void {
+  markComposedNamespace(
+    memberExpression: [string, true | string, true | Array<string>],
+  ): void {
     this.styleVarsToKeep.add(memberExpression);
   }
 }

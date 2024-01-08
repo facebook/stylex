@@ -10,7 +10,7 @@
 // import type { Color as ColorType } from './stylex-types-color';
 
 // We want all in one file?
-// option 1, creat interface an implement it in the class
+// option 1, create interface an implement it in the class
 // why? All the types have a single base definition of props
 // We want on type that defines CSS Types
 // Option 2: Do a union type and make

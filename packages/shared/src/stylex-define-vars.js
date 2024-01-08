@@ -7,33 +7,28 @@
  * @flow strict
  */
 
-import type { StyleXOptions } from './common-types';
+import type { InjectableStyle, StyleXOptions } from './common-types';
 
 import createHash from './hash';
 import { objEntries, objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
 
-type VarsObject<
-  Vars: { +[string]: string | { +default: string, +[string]: string } },
-> = $ReadOnly<{
+type VarsConfig = $ReadOnly<{
+  [string]: string | $ReadOnly<{ default: string, [string]: string }>,
+}>;
+
+type VarsObject<Vars: VarsConfig> = $ReadOnly<{
   ...$ObjMapConst<Vars, string>,
   __themeName__: string,
 }>;
 
 // Similar to `stylex.create` it takes an object of variables with their values
 // and returns a string after hashing it.
-export default function styleXDefineVars<
-  Vars: {
-    +[string]: string | { +default: string, +[string]: string },
-  },
->(
+export default function styleXDefineVars<Vars: VarsConfig>(
   variables: Vars,
   options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
-): [VarsObject<Vars>, { css: string }] {
-  const {
-    classNamePrefix,
-    themeName,
-  }: { ...StyleXOptions, themeName: string, ... } = {
+): [VarsObject<Vars>, { [string]: InjectableStyle }] {
+  const { classNamePrefix, themeName } = {
     ...defaultOptions,
     ...options,
   };
@@ -50,50 +45,56 @@ export default function styleXDefineVars<
     return `var(--${nameHash})`;
   });
 
-  const cssVariablesString = constructCssVariablesString(variablesMap);
+  const injectableStyles = constructCssVariablesString(
+    variablesMap,
+    themeNameHash,
+  );
 
   return [
     { ...themeVariablesObject, __themeName__: themeNameHash },
-    { css: cssVariablesString },
+    injectableStyles,
   ];
 }
 
-function constructCssVariablesString(variables: {
-  +[string]: {
-    nameHash: string,
-    value: string | { +default: string, +[string]: string },
-  },
-}): string {
-  const atRules: any = {};
+function constructCssVariablesString(
+  variables: { +[string]: { +nameHash: string, +value: VarsConfig[string] } },
+  themeNameHash: string,
+): { [string]: InjectableStyle } {
+  const ruleByAtRule: { [string]: Array<string> } = {};
 
-  const varsString = objEntries(variables)
-    .map(([key, { nameHash, value }]) => {
-      if (value !== null && typeof value === 'object') {
-        if (value.default === undefined) {
-          throw new Error(
-            'Default value is not defined for ' + key + ' variable.',
-          );
-        }
-        const definedVarString = `--${nameHash}:${value.default};`;
-        Object.keys(value).forEach((key) => {
-          if (key.startsWith('@')) {
-            const definedVarStringForAtRule = `--${nameHash}:${value[key]};`;
-            if (atRules[key] == null) {
-              atRules[key] = [definedVarStringForAtRule];
-            } else {
-              atRules[key].push(definedVarStringForAtRule);
-            }
-          }
-        });
-        return definedVarString;
+  for (const [key, { nameHash, value }] of objEntries(variables)) {
+    if (value !== null && typeof value === 'object') {
+      if (value.default === undefined) {
+        throw new Error(
+          'Default value is not defined for ' + key + ' variable.',
+        );
       }
-      return `--${nameHash}:${value};`;
-    })
-    .join('');
-  const atRulesString = objEntries(atRules)
-    .map(([atRule, varsArr]) => {
-      return `${atRule}{:root{${varsArr.join('')}}}`;
-    })
-    .join('');
-  return `:root{${varsString}}${atRulesString || ''}`;
+      const v = value;
+      for (const [key, value] of objEntries(v)) {
+        ruleByAtRule[key] ??= [];
+        ruleByAtRule[key].push(`--${nameHash}:${value};`);
+      }
+    } else {
+      ruleByAtRule.default ??= [];
+      ruleByAtRule.default.push(`--${nameHash}:${value};`);
+    }
+  }
+
+  const result: { [string]: InjectableStyle } = {};
+  for (const [key, value] of objEntries(ruleByAtRule)) {
+    const suffix = key === 'default' ? '' : `-${createHash(key)}`;
+
+    let ltr = `:root{${value.join('')}}`;
+    if (key !== 'default') {
+      ltr = `${key}{${ltr}}`;
+    }
+
+    result[themeNameHash + suffix] = {
+      ltr,
+      rtl: null,
+      priority: key === 'default' ? 0 : 0.1,
+    };
+  }
+
+  return result;
 }
