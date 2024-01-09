@@ -7,12 +7,15 @@
  *
  */
 
-const WebpackPluginStylex = require('./custom-webpack-plugin');
+import WebpackPluginStylex from './custom-webpack-plugin';
 
 let count = 0;
 
-module.exports =
-  ({ rootDir, filename = 'stylex-bundle.css', ...pluginOptions }) =>
+export default ({
+    rootDir,
+    filename = 'stylex-bundle.css',
+    ...pluginOptions
+  }) =>
   (nextConfig = {}) => {
     return {
       ...nextConfig,

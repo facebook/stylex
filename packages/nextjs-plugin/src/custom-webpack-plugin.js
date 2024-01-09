@@ -46,7 +46,7 @@ const stylexRules = {};
 const cssFiles = new Set();
 const compilers = new Set();
 
-class StylexPlugin {
+export default class StylexPlugin {
   filesInLastRun = null;
   filePath = null;
 
@@ -247,5 +247,3 @@ class StylexPlugin {
     return { code: inputCode };
   }
 }
-
-module.exports = StylexPlugin;

@@ -2,9 +2,14 @@
   "name": "@stylexjs/nextjs-plugin",
   "version": "0.4.1",
   "description": "Next.js plugin for StyleX",
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "type": "module",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "babel src/ --out-dir lib/ --copy-files"
+  },
   "dependencies": {
     "@babel/core": "^7.23.6",
     "@babel/plugin-syntax-flow": "^7.22.5",
