@@ -29,6 +29,8 @@ module.name_mapper='^@stylexjs/stylex$' -> '<PROJECT_ROOT>/packages/stylex/src/s
 module.name_mapper='^@stylexjs/stylex\/lib\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/stylex/src/\1'
 module.name_mapper='^@stylexjs/babel-plugin$' -> '<PROJECT_ROOT>/packages/babel-plugin/src/index.js'
 module.name_mapper='^@stylexjs/babel-plugin\/lib\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/babel-plugin/src/\1'
+module.name_mapper='^@stylexjs/nextjs-plugin$' -> '<PROJECT_ROOT>/packages/nextjs-plugin/src/index.js'
+module.name_mapper='^@stylexjs/nextjs-plugin\/lib\/\([a-zA-Z0-9_\-]+\)$' -> '<PROJECT_ROOT>/packages/nextjs-plugin/src/\1'
 ; type-stubs
 module.system.node.resolve_dirname=flow_modules
 module.system.node.resolve_dirname=node_modules
