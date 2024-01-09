@@ -77,7 +77,7 @@ type StyleXStateOptions = $ReadOnly<{
   ...
 }>;
 
-function validateAliases(aliases: any): StyleXOptions['aliases'] {
+function validateAliases(aliases: $FlowFixMe): StyleXOptions['aliases'] {
   if (!aliases) {
     return aliases;
   }
