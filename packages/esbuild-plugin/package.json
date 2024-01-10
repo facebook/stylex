@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/esbuild-plugin",
-  "version": "0.0.0",
+  "version": "0.5.0-beta.1",
   "description": "StyleX esbuild plugin",
   "main": "lib/index.js",
   "type": "module",
