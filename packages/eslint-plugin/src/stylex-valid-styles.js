@@ -2205,6 +2205,14 @@ const pseudoElements = makeUnionRule(
   makeLiteralRule('::-webkit-search-cancel-button'),
   makeLiteralRule('::-webkit-search-results-button'),
   makeLiteralRule('::-webkit-search-results-decoration'),
+  // For Scrollbars in Webkit and Chromium
+  makeLiteralRule('::-webkit-scrollbar'),
+  makeLiteralRule('::-webkit-scrollbar-button'),
+  makeLiteralRule('::-webkit-scrollbar-thumb'),
+  makeLiteralRule('::-webkit-scrollbar-track'),
+  makeLiteralRule('::-webkit-scrollbar-track-piece'),
+  makeLiteralRule('::-webkit-scrollbar-corner'),
+  makeLiteralRule('::-webkit-resizer'),
 );
 
 const pseudoClassesAndAtRules = makeUnionRule(
@@ -2451,6 +2459,15 @@ const stylexValidStyles = {
               )(key, variables);
 
               if (ruleCheck !== undefined) {
+                if (keyName.startsWith('::')) {
+                  return context.report(
+                    ({
+                      node: style.value,
+                      loc: style.value.loc,
+                      message: `Unknown pseudo element "${keyName}"`,
+                    }: $ReadOnly<Rule.ReportDescriptor>),
+                  );
+                }
                 return context.report(
                   ({
                     node: style.value,
