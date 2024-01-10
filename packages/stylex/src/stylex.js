@@ -290,5 +290,5 @@ export function __monkey_patch__(
   }
 }
 
-export const stylex: IStyleX = _stylex;
+export const legacyMerge: IStyleX = _stylex;
 export default (_stylex: IStyleX);
