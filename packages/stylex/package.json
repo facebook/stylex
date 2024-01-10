@@ -3,11 +3,11 @@
   "version": "0.5.0-beta.1",
   "description": "A library for defining styles for optimized user interfaces.",
   "main": "./lib/stylex.js",
-  "module": "./lib/es/stylex.js",
+  "module": "./lib/es/stylex.mjs",
   "types": "./lib/stylex.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/es/stylex.js",
+      "import": "./lib/es/stylex.mjs",
       "require": "./lib/stylex.js",
       "types": "./lib/stylex.d.ts"
     },
@@ -17,12 +17,12 @@
       "types": "./lib/StyleXTypes.d.ts"
     },
     "./lib/StyleXSheet": {
-      "import": "./lib/es/StyleXSheet.js",
+      "import": "./lib/es/StyleXSheet.mjs",
       "require": "./lib/StyleXSheet.js",
       "types": "./lib/StyleXSheet.d.ts"
     },
     "./lib/stylex-inject": {
-      "import": "./lib/es/stylex-inject.js",
+      "import": "./lib/es/stylex-inject.mjs",
       "require": "./lib/stylex-inject.js",
       "types": "./lib/stylex-inject.d.ts"
     },
@@ -33,7 +33,7 @@
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build:cjs": "BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
-    "build:esm": "BABEL_ENV=esm babel src/ --out-dir lib/es --copy-files",
+    "build:esm": "BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
     "postbuild:esm": "rollup -c ./rollup.config.mjs",
     "build": "npm run build:cjs && npm run build:esm",
     "build-haste": "rewrite-imports -i src/ -o lib/",
