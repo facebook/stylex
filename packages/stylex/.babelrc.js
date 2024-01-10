@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const BABEL_ENV = process.env['BABEL_ENV'];
+
 function makeHaste() {
   return {
     visitor: {
@@ -31,6 +33,7 @@ const presets = process.env['HASTE']
         {
           exclude: ['@babel/plugin-transform-typeof-symbol'],
           targets: 'defaults',
+          modules: BABEL_ENV === 'esm' ? false : 'cjs',
         },
       ],
       '@babel/preset-flow',
