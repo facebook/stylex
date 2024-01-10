@@ -12,7 +12,7 @@
       "types": "./lib/stylex.d.ts"
     },
     "./lib/StyleXTypes": {
-      "import": "./lib/es/StyleXTypes.js",
+      "import": "./lib/StyleXTypes.js",
       "require": "./lib/StyleXTypes.js",
       "types": "./lib/StyleXTypes.d.ts"
     },
