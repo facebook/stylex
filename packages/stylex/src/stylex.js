@@ -44,6 +44,12 @@ type Cache = WeakMap<
   },
 >;
 
+const errorForFn = (name: string) =>
+  new Error(
+    `'stylex.${name}' should never be called at runtime. It should be compiled away by '@stylexjs/babel-plugin'`,
+  );
+const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
+
 export function props(
   this: ?mixed,
   ...styles: $ReadOnlyArray<
@@ -103,9 +109,7 @@ function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
     const create: Stylex$Create = __implementations.create;
     return create<S>(styles);
   }
-  throw new Error(
-    'stylex.create should never be called. It should be compiled away.',
-  );
+  throw errorForFn('create');
 }
 
 function stylexDefineVars<
@@ -121,9 +125,7 @@ function stylexDefineVars<
   if (__implementations.defineVars) {
     return __implementations.defineVars(styles);
   }
-  throw new Error(
-    'stylex.defineVars should never be called. It should be compiled away.',
-  );
+  throw errorForFn('defineVars');
 }
 
 const stylexCreateTheme: StyleX$CreateTheme = (baseTokens, overrides) => {
@@ -131,9 +133,7 @@ const stylexCreateTheme: StyleX$CreateTheme = (baseTokens, overrides) => {
     // $FlowFixMe
     return __implementations.createTheme(baseTokens, overrides);
   }
-  throw new Error(
-    'stylex.createTheme should never be called. It should be compiled away.',
-  );
+  throw errorForFn('createTheme');
 };
 
 type Stylex$Include = <
@@ -153,9 +153,7 @@ const stylexInclude: Stylex$Include = (styles) => {
   if (__implementations.include) {
     return __implementations.include(styles);
   }
-  throw new Error(
-    'stylex.extends should never be called. It should be compiled away.',
-  );
+  throw errorForFn('include');
 };
 
 export const create: Stylex$Create = stylexCreate;
@@ -199,57 +197,55 @@ interface ICSSType<+T: string | number> {
 
 export const types = {
   angle: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('angle'));
+    throw errorForType('angle');
   },
   color: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('color'));
+    throw errorForType('color');
   },
   url: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('url'));
+    throw errorForType('url');
   },
   image: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('image'));
+    throw errorForType('image');
   },
   integer: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('integer'));
+    throw errorForType('integer');
   },
   lengthPercentage: <T: number | string>(
     _v: ValueWithDefault<T>,
   ): ICSSType<T> => {
-    throw new Error(errorForType('lengthPercentage'));
+    throw errorForType('lengthPercentage');
   },
   length: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('length'));
+    throw errorForType('length');
   },
   percentage: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('percentage'));
+    throw errorForType('percentage');
   },
   number: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('number'));
+    throw errorForType('number');
   },
   resolution: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('resolution'));
+    throw errorForType('resolution');
   },
   time: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('time'));
+    throw errorForType('time');
   },
   transformFunction: <T: number | string>(
     _v: ValueWithDefault<T>,
   ): ICSSType<T> => {
-    throw new Error(errorForType('transformFunction'));
+    throw errorForType('transformFunction');
   },
   transformList: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
-    throw new Error(errorForType('transformList'));
+    throw errorForType('transformList');
   },
 };
-const errorForType = (type: $Keys<typeof types>) =>
-  `stylex.types.${type} should be compiled away by @stylexjs/babel-plugin`;
 
 export const keyframes = (keyframes: Keyframes): string => {
   if (__implementations.keyframes) {
     return __implementations.keyframes(keyframes);
   }
-  throw new Error('stylex.keyframes should never be called');
+  throw errorForFn('keyframes');
 };
 
 export const firstThatWorks = <T: string | number>(
@@ -258,7 +254,7 @@ export const firstThatWorks = <T: string | number>(
   if (__implementations.firstThatWorks) {
     return __implementations.firstThatWorks(...styles);
   }
-  throw new Error('stylex.firstThatWorks should never be called.');
+  throw errorForFn('firstThatWorks');
 };
 
 function _stylex(
