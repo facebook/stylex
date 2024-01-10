@@ -72,6 +72,31 @@ export function props(
   }
   return result;
 }
+export function attrs(
+  ...styles: $ReadOnlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+): $ReadOnly<{
+  class?: string,
+  style?: string,
+}> {
+  const { className, style } = props(...styles);
+  const result: {
+    class?: string,
+    style?: string,
+  } = {};
+  if (className != null && className !== '') {
+    result.class = className;
+  }
+  if (style != null && Object.keys(style).length > 0) {
+    result.style = Object.keys(style)
+      .map((key) => `${key}:${style[key]};`)
+      .join('');
+  }
+  return result;
+}
 
 function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
   if (__implementations.create != null) {
@@ -243,6 +268,7 @@ function _stylex(
   return className;
 }
 _stylex.props = props;
+_stylex.attrs = attrs;
 _stylex.create = create;
 _stylex.defineVars = defineVars;
 _stylex.createTheme = createTheme;
@@ -263,6 +289,16 @@ type IStyleX = {
   ) => $ReadOnly<{
     className?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
+  }>,
+  attrs: (
+    ...styles: $ReadOnlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => $ReadOnly<{
+    class?: string,
+    style?: string,
   }>,
   create: Stylex$Create,
   defineVars: StyleX$DefineVars,
