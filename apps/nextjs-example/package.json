@@ -1,6 +1,6 @@
 {
   "name": "next-example",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "clean": "rimraf .next",
