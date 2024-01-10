@@ -227,15 +227,14 @@ class StylexPlugin {
           // and use the Flow syntax plugin otherwise.
           plugins: [
             ...this.babelConfig.plugins,
-
             path.extname(filename) === '.ts'
               ? typescriptSyntaxPlugin
               : path.extname(filename) === '.tsx'
                 ? [typescriptSyntaxPlugin, { isTSX: true }]
                 : flowSyntaxPlugin,
-
             jsxSyntaxPlugin,
             this.babelPlugin,
+            '@babel/plugin-transform-modules-commonjs',
           ],
           presets: this.babelConfig.presets,
         },
