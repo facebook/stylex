@@ -12,13 +12,14 @@ import commonjs from '@rollup/plugin-commonjs';
 
 const config = {
   input: {
-    stylex: './lib/es/stylex.js',
-    StyleXSheet: './lib/es/StyleXSheet.js',
+    stylex: './lib/es/stylex.mjs',
+    StyleXSheet: './lib/es/StyleXSheet.mjs',
   },
   output: {
     dir: './lib/es/',
-    // file: './lib/es/stylex.js',
-    // format: 'cjs',
+    format: 'es',
+    // ensure that output files use the `.mjs` extension
+    entryFileNames: '[name].mjs',
   },
   plugins: [nodeResolve(), commonjs()],
 };
