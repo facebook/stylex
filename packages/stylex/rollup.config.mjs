@@ -11,10 +11,14 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 
 const config = {
-  input: './lib/stylex.js',
+  input: {
+    stylex: './lib/es/stylex.js',
+    StyleXSheet: './lib/es/StyleXSheet.js',
+  },
   output: {
-    file: './lib/stylex.js',
-    format: 'cjs',
+    dir: './lib/es/',
+    // file: './lib/es/stylex.js',
+    // format: 'cjs',
   },
   plugins: [nodeResolve(), commonjs()],
 };
