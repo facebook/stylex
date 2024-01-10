@@ -65,7 +65,6 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
-
   unstable_moduleResolution: ?ModuleResolution,
   aliases: ?$ReadOnly<{ [string]: string }>,
   ...
@@ -76,63 +75,6 @@ type StyleXStateOptions = $ReadOnly<{
   runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
   ...
 }>;
-
-function validateAliases(aliases: $FlowFixMe): StyleXOptions['aliases'] {
-  if (!aliases) {
-    return aliases;
-  }
-
-  Object.keys(aliases).forEach((alias) => {
-    let value = aliases[alias];
-    if (!Array.isArray(value)) {
-      throw new Error(
-        `Invalid alias value for ${alias}. It should be an array.
-        
-        Example:
-        aliases: {
-          "@/*": ["./src/*"]
-        }
-        `,
-      );
-    }
-    if (value.length > 1) {
-      throw new Error(
-        `Invalid alias value for ${alias}. It should contain at most one value.
-
-        Example:
-        aliases: {
-          "@/*": ["./src/*"]
-        }
-        `,
-      );
-    }
-
-    value = value[0];
-
-    if (typeof value !== 'string') {
-      throw new Error(
-        `Invalid alias value for ${alias}. It should be a string.`,
-      );
-    }
-    if (!alias.startsWith('@')) {
-      throw new Error(
-        `Invalid alias key for ${alias}. It should start with @.`,
-      );
-    }
-    if (alias.split('*').length > 2) {
-      throw new Error(
-        `Invalid alias key for ${alias}. It should contain at most one * character.`,
-      );
-    }
-    if (value.split('*').length > 2) {
-      throw new Error(
-        `Invalid alias value for ${alias}. It should contain at most one * character.`,
-      );
-    }
-  });
-
-  return aliases;
-}
 
 const checkImportSource = z.unionOf(
   z.string(),
@@ -291,12 +233,9 @@ export default class StateManager {
         'options.treeshakeCompensation',
       );
 
-    const aliases: StyleXStateOptions['aliases'] = validateAliases(
-      options.aliases,
-    );
-
     const opts: StyleXStateOptions = {
-      aliases,
+      // $FlowFixMe
+      aliases: options.aliases,
       dev,
       test,
       runtimeInjection,
