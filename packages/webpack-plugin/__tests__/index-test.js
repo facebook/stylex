@@ -284,21 +284,60 @@ describe('webpack-plugin-stylex', () => {
           exports.ids = [179];
           exports.modules = {
 
-          /***/ "../../../stylex/lib/StyleXSheet.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+          /***/ "./index.js":
+          /***/ (() => {
 
 
+          // UNUSED EXPORTS: default
 
-          Object.defineProperty(exports, "__esModule", ({
-            value: true
-          }));
-          exports.styleSheet = exports.StyleXSheet = void 0;
-          var _invariant = _interopRequireDefault(__webpack_require__("../../../../node_modules/invariant/invariant.js"));
-          function _interopRequireDefault(obj) {
-            return obj && obj.__esModule ? obj : {
-              default: obj
-            };
+          ;// CONCATENATED MODULE: ../../../stylex/lib/es/StyleXSheet.js
+          function getDefaultExportFromCjs(x) {
+            return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
           }
+
+          /**
+           * Copyright (c) 2013-present, Facebook, Inc.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           */
+
+          /**
+           * Use invariant() to assert state which your program assumes to be true.
+           *
+           * Provide sprintf-style format (only %s is supported) and arguments
+           * to provide information about what broke and what you were
+           * expecting.
+           *
+           * The invariant message will be stripped in production, but the invariant
+           * will remain to ensure logic does not differ in production.
+           */
+
+          var NODE_ENV = "production";
+          var invariant = function (condition, format, a, b, c, d, e, f) {
+            if (NODE_ENV !== 'production') {
+              if (format === undefined) {
+                throw new Error('invariant requires an error message argument');
+              }
+            }
+            if (!condition) {
+              var error;
+              if (format === undefined) {
+                error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+              } else {
+                var args = [a, b, c, d, e, f];
+                var argIndex = 0;
+                error = new Error(format.replace(/%s/g, function () {
+                  return args[argIndex++];
+                }));
+                error.name = 'Invariant Violation';
+              }
+              error.framesToPop = 1; // we don't care about invariant's own frame
+              throw error;
+            }
+          };
+          var invariant_1 = invariant;
+          var invariant$1 = /*@__PURE__*/getDefaultExportFromCjs(invariant_1);
           const LIGHT_MODE_CLASS_NAME = '__fb-light-mode';
           const DARK_MODE_CLASS_NAME = '__fb-dark-mode';
           function buildTheme(selector, theme) {
@@ -316,7 +355,7 @@ describe('webpack-plugin-stylex', () => {
             tag.setAttribute('type', 'text/css');
             tag.setAttribute('data-stylex', 'true');
             const head = document.head || document.getElementsByTagName('head')[0];
-            (0, _invariant.default)(head, 'expected head');
+            invariant$1(head, 'expected head');
             head.appendChild(tag);
             return tag;
           }
@@ -346,7 +385,7 @@ describe('webpack-plugin-stylex', () => {
               const {
                 tag
               } = this;
-              (0, _invariant.default)(tag != null, 'expected tag');
+              invariant$1(tag != null, 'expected tag');
               return tag;
             }
             getCSS() {
@@ -385,14 +424,14 @@ describe('webpack-plugin-stylex', () => {
             }
             delete(rule) {
               const index = this.rules.indexOf(rule);
-              (0, _invariant.default)(index >= 0, "Couldn't find the index for rule %s", rule);
+              invariant$1(index >= 0, "Couldn't find the index for rule %s", rule);
               this.rules.splice(index, 1);
               if (this.isHeadless()) {
                 return;
               }
               const tag = this.getTag();
               const sheet = tag.sheet;
-              (0, _invariant.default)(sheet, 'expected sheet');
+              invariant$1(sheet, 'expected sheet');
               sheet.deleteRule(index);
             }
             normalizeRule(rule) {
@@ -449,7 +488,6 @@ describe('webpack-plugin-stylex', () => {
               }
             }
           }
-          exports.StyleXSheet = StyleXSheet;
           function addAncestorSelector(selector, ancestorSelector) {
             if (!selector.startsWith('@')) {
               return \`\${ancestorSelector} \${selector}\`;
@@ -471,40 +509,18 @@ describe('webpack-plugin-stylex', () => {
             const afterCurly = selector.slice(lastOpenCurly);
             return \`\${beforeCurly}\${pseudo}\${afterCurly}\`;
           }
-          const styleSheet = exports.styleSheet = new StyleXSheet({
+          const styleSheet = new StyleXSheet({
             supportsVariables: true,
             rootTheme: {},
             rootDarkTheme: {}
           });
 
-          /***/ }),
+          ;// CONCATENATED MODULE: ../../../stylex/lib/es/stylex-inject.js
 
-          /***/ "../../../stylex/lib/stylex-inject.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-          var __webpack_unused_export__;
-
-
-          __webpack_unused_export__ = ({
-            value: true
-          });
-          exports.Z = inject;
-          var _StyleXSheet = __webpack_require__("../../../stylex/lib/StyleXSheet.js");
           function inject(ltrRule, priority) {
             let rtlRule = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-            _StyleXSheet.styleSheet.insert(ltrRule, priority, rtlRule);
+            styleSheet.insert(ltrRule, priority, rtlRule);
           }
-
-          /***/ }),
-
-          /***/ "./index.js":
-          /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
-
-
-          // UNUSED EXPORTS: default
-
-          // EXTERNAL MODULE: ../../../stylex/lib/stylex-inject.js
-          var stylex_inject = __webpack_require__("../../../stylex/lib/stylex-inject.js");
           ;// CONCATENATED MODULE: external "stylex"
           const external_stylex_namespaceObject = stylex;
           ;// CONCATENATED MODULE: ./otherStyles.js
@@ -523,8 +539,8 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          (0,stylex_inject/* default */.Z)(".x1lliihq{display:block}", 3000);
-          (0,stylex_inject/* default */.Z)(".xh8yej3{width:100%}", 4000);
+          inject(".x1lliihq{display:block}", 3000);
+          inject(".xh8yej3{width:100%}", 4000);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -550,9 +566,9 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          (0,stylex_inject/* default */.Z)(".xt0psk2{display:inline}", 3000);
-          (0,stylex_inject/* default */.Z)(".x1egiwwb{height:500px}", 4000);
-          (0,stylex_inject/* default */.Z)(".x3hqpx7{width:50%}", 4000);
+          inject(".xt0psk2{display:inline}", 3000);
+          inject(".x1egiwwb{height:500px}", 4000);
+          inject(".x3hqpx7{width:50%}", 4000);
           const npmStyles_styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
@@ -579,14 +595,14 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          (0,stylex_inject/* default */.Z)("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+          inject("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          (0,stylex_inject/* default */.Z)(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-          (0,stylex_inject/* default */.Z)(".x78zum5{display:flex}", 3000);
-          (0,stylex_inject/* default */.Z)(".x1hm9lzh{margin-inline-start:10px}", 3000);
-          (0,stylex_inject/* default */.Z)(".xlrshdv{margin-top:99px}", 4000);
-          (0,stylex_inject/* default */.Z)(".x1egiwwb{height:500px}", 4000);
-          (0,stylex_inject/* default */.Z)(".x1oz5o6v:hover{background:red}", 1130);
+          inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+          inject(".x78zum5{display:flex}", 3000);
+          inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          inject(".xlrshdv{margin-top:99px}", 4000);
+          inject(".x1egiwwb{height:500px}", 4000);
+          inject(".x1oz5o6v:hover{background:red}", 1130);
           var index_styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
@@ -614,64 +630,6 @@ describe('webpack-plugin-stylex', () => {
           function App() {
             return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
           }
-
-          /***/ }),
-
-          /***/ "../../../../node_modules/invariant/invariant.js":
-          /***/ ((module) => {
-
-          /**
-           * Copyright (c) 2013-present, Facebook, Inc.
-           *
-           * This source code is licensed under the MIT license found in the
-           * LICENSE file in the root directory of this source tree.
-           */
-
-
-
-          /**
-           * Use invariant() to assert state which your program assumes to be true.
-           *
-           * Provide sprintf-style format (only %s is supported) and arguments
-           * to provide information about what broke and what you were
-           * expecting.
-           *
-           * The invariant message will be stripped in production, but the invariant
-           * will remain to ensure logic does not differ in production.
-           */
-
-          var NODE_ENV = "production";
-
-          var invariant = function(condition, format, a, b, c, d, e, f) {
-            if (NODE_ENV !== 'production') {
-              if (format === undefined) {
-                throw new Error('invariant requires an error message argument');
-              }
-            }
-
-            if (!condition) {
-              var error;
-              if (format === undefined) {
-                error = new Error(
-                  'Minified exception occurred; use the non-minified dev environment ' +
-                  'for the full error message and additional helpful warnings.'
-                );
-              } else {
-                var args = [a, b, c, d, e, f];
-                var argIndex = 0;
-                error = new Error(
-                  format.replace(/%s/g, function() { return args[argIndex++]; })
-                );
-                error.name = 'Invariant Violation';
-              }
-
-              error.framesToPop = 1; // we don't care about invariant's own frame
-              throw error;
-            }
-          };
-
-          module.exports = invariant;
-
 
           /***/ })
 
