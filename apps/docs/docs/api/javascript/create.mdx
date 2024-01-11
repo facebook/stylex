@@ -33,3 +33,13 @@ const styles = stylex.create({
   }),
 });
 ```
+
+:::danger Requires Typescript 5+
+
+Since `stylex.create` uses the new `const` keyword in its type definition, it requires Typescript 5+.
+
+See references: 
+- [New const keyword in Typescript](https://github.com/microsoft/TypeScript/pull/51865)
+- [Github issue](https://github.com/facebook/stylex/issues/313)
+
+:::
