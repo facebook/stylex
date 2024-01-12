@@ -60,6 +60,9 @@ export function readImportDeclarations(
             if (importedName === 'props') {
               state.stylexPropsImport.add(localName);
             }
+            if (importedName === 'attrs') {
+              state.stylexAttrsImport.add(localName);
+            }
             if (importedName === 'keyframes') {
               state.stylexKeyframesImport.add(localName);
             }
@@ -123,6 +126,9 @@ export function readRequires(
           }
           if (prop.key.name === 'props') {
             state.stylexPropsImport.add(value.name);
+          }
+          if (prop.key.name === 'attrs') {
+            state.stylexAttrsImport.add(value.name);
           }
           if (prop.key.name === 'keyframes') {
             state.stylexKeyframesImport.add(value.name);
