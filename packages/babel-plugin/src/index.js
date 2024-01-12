@@ -23,6 +23,9 @@ import transformStylexCall, {
 import * as pathUtils from './babel-path-utils';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
+import transformStylexAttrs, {
+  skipStylexAttrsChildren,
+} from './visitors/stylex-attrs';
 
 const NAME = 'stylex';
 
@@ -92,6 +95,7 @@ function styleXTransform(): PluginObj<> {
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
               transformStylexProps(path, state);
+              transformStylexAttrs(path, state);
             },
           });
 
@@ -218,6 +222,7 @@ function styleXTransform(): PluginObj<> {
         // should be kept.
         skipStylexMergeChildren(path, state);
         skipStylexPropsChildren(path, state);
+        skipStylexAttrsChildren(path, state);
       },
 
       Identifier(path: NodePath<t.Identifier>) {
