@@ -547,14 +547,15 @@ describe('webpack-plugin-stylex', () => {
           var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
           var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
           function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-          (0, _stylexInject.default)("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+          var _inject2 = _stylexInject.default;
+          _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          _inject(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-          _inject(".x78zum5{display:flex}", 3000);
-          _inject(".x1hm9lzh{margin-inline-start:10px}", 3000);
-          _inject(".xlrshdv{margin-top:99px}", 4000);
-          _inject(".x1egiwwb{height:500px}", 4000);
-          _inject(".x1oz5o6v:hover{background:red}", 1130);
+          _inject2(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+          _inject2(".x78zum5{display:flex}", 3000);
+          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          _inject2(".xlrshdv{margin-top:99px}", 4000);
+          _inject2(".x1egiwwb{height:500px}", 4000);
+          _inject2(".x1oz5o6v:hover{background:red}", 1130);
           var styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
@@ -608,8 +609,9 @@ describe('webpack-plugin-stylex', () => {
           var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
           function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-          (0, _stylexInject.default)(".x1lliihq{display:block}", 3000);
-          _inject(".xh8yej3{width:100%}", 4000);
+          var _inject2 = _stylexInject.default;
+          _inject2(".x1lliihq{display:block}", 3000);
+          _inject2(".xh8yej3{width:100%}", 4000);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
@@ -703,9 +705,10 @@ describe('webpack-plugin-stylex', () => {
           var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
           function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-          (0, _stylexInject.default)(".xt0psk2{display:inline}", 3000);
-          _inject(".x1egiwwb{height:500px}", 4000);
-          _inject(".x3hqpx7{width:50%}", 4000);
+          var _inject2 = _stylexInject.default;
+          _inject2(".xt0psk2{display:inline}", 3000);
+          _inject2(".x1egiwwb{height:500px}", 4000);
+          _inject2(".x3hqpx7{width:50%}", 4000);
           const styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
