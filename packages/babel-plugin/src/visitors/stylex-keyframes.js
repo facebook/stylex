@@ -9,7 +9,6 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
-import { addDefault, addNamed } from '@babel/helper-module-imports';
 import StateManager from '../utils/state-manager';
 import { keyframes as stylexKeyframes, messages } from '@stylexjs/shared';
 import * as pathUtils from '../babel-path-utils';
@@ -101,8 +100,12 @@ export default function transformStyleXKeyframes(
         const { from, as } = state.runtimeInjection;
         injectName =
           as != null
-            ? addNamed(statementPath, as, from, { nameHint: 'inject' })
-            : addDefault(statementPath, from, { nameHint: 'inject' });
+            ? state.addNamedImport(statementPath, as, from, {
+                nameHint: 'inject',
+              })
+            : state.addDefaultImport(statementPath, from, {
+                nameHint: 'inject',
+              });
 
         state.injectImportInserted = injectName;
       }
