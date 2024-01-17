@@ -9,7 +9,6 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
-import { addDefault, addNamed } from '@babel/helper-module-imports';
 import StateManager from '../utils/state-manager';
 import { createTheme as stylexCreateTheme, messages } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
@@ -120,8 +119,12 @@ export default function transformStyleXCreateTheme(
         const { from, as } = state.runtimeInjection;
         injectName =
           as != null
-            ? addNamed(statementPath, as, from, { nameHint: 'inject' })
-            : addDefault(statementPath, from, { nameHint: 'inject' });
+            ? state.addNamedImport(statementPath, as, from, {
+                nameHint: 'inject',
+              })
+            : state.addDefaultImport(statementPath, from, {
+                nameHint: 'inject',
+              });
 
         state.injectImportInserted = injectName;
       }
