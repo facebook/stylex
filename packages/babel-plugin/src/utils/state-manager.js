@@ -18,6 +18,14 @@ import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
 import type { Check } from './validate';
 import * as z from './validate';
+import { addDefault, addNamed } from '@babel/helper-module-imports';
+import type { ImportOptions } from '@babel/helper-module-imports';
+import * as pathUtils from '../babel-path-utils';
+
+type ImportAdditionOptions = Omit<
+  Partial<ImportOptions>,
+  'ensureLiveReference' | 'ensureNoContext',
+>;
 
 export type ImportPathResolution =
   | false
@@ -293,6 +301,79 @@ export default class StateManager {
     return typeof runInj === 'string' ? { from: runInj } : runInj || null;
   }
 
+  addNamedImport(
+    statementPath: NodePath<>,
+    as: string,
+    from: string,
+    options: ImportAdditionOptions,
+  ): t.Identifier {
+    const identifier = addNamed(statementPath, as, from, options);
+    const programPath = getProgramPath(statementPath);
+    if (programPath == null) {
+      return identifier;
+    }
+    const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
+    let lastImportIndex = -1;
+    for (let i = 0; i < bodyPath.length; i++) {
+      const statement = bodyPath[i];
+      if (pathUtils.isImportDeclaration(statement)) {
+        lastImportIndex = i;
+      }
+    }
+    if (lastImportIndex === -1) {
+      return identifier;
+    }
+    const lastImport = bodyPath[lastImportIndex];
+    if (lastImport == null) {
+      return identifier;
+    }
+    const importName = statementPath.scope.generateUidIdentifier(as);
+
+    lastImport.insertAfter(
+      t.variableDeclaration('var', [
+        t.variableDeclarator(importName, identifier),
+      ]),
+    );
+
+    return importName;
+  }
+
+  addDefaultImport(
+    statementPath: NodePath<>,
+    from: string,
+    options: ImportAdditionOptions,
+  ): t.Identifier {
+    const identifier = addDefault(statementPath, from, options);
+    const programPath = getProgramPath(statementPath);
+    if (programPath == null) {
+      return identifier;
+    }
+    const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
+    let lastImportIndex = -1;
+    for (let i = 0; i < bodyPath.length; i++) {
+      const statement = bodyPath[i];
+      if (pathUtils.isImportDeclaration(statement)) {
+        lastImportIndex = i;
+      }
+    }
+    if (lastImportIndex === -1) {
+      return identifier;
+    }
+    const lastImport = bodyPath[lastImportIndex];
+    if (lastImport == null) {
+      return identifier;
+    }
+    const importName = statementPath.scope.generateUidIdentifier('inject');
+
+    lastImport.insertAfter(
+      t.variableDeclaration('var', [
+        t.variableDeclarator(importName, identifier),
+      ]),
+    );
+
+    return importName;
+  }
+
   get isDev(): boolean {
     return !!this.options.dev;
   }
@@ -441,3 +522,15 @@ const matchesFileSuffix = (allowedSuffix: string) => (filename: string) =>
   filename.endsWith(`${allowedSuffix}.mjs`) ||
   filename.endsWith(`${allowedSuffix}.cjs`) ||
   filename.endsWith(allowedSuffix);
+
+const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
+  let programPath = path;
+  while (programPath != null && !pathUtils.isProgram(programPath)) {
+    if (programPath.parentPath) {
+      programPath = programPath.parentPath;
+    } else {
+      return null;
+    }
+  }
+  return programPath;
+};
