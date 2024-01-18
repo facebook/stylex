@@ -7,7 +7,7 @@
  *
  */
 
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 /**
  * o--o o    o   o o-O-o o-o       o--o  o-o  o   o o-O-o  o-o
