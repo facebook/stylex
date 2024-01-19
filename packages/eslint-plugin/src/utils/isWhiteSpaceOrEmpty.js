@@ -7,6 +7,6 @@
  * @flow strict
  */
 
-export default function isWhiteSpaceOrEmpty(str: String) {
+export default function isWhiteSpaceOrEmpty(str: string): boolean {
   return !str.trim();
 }

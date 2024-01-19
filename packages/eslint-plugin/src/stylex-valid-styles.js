@@ -2641,16 +2641,17 @@ const stylexValidStyles = {
               }: Rule.ReportDescriptor),
             );
           }
-          // eslint-disable-next-line no-debugger
-          // debugger;
           if (style.value.type === 'Literal') {
             if (typeof style.value.value === 'string') {
-              if (isWhiteSpaceOrEmpty(style.value.value)) {
+              if (
+                isWhiteSpaceOrEmpty(style.value.value) &&
+                styleKey.name !== 'content'
+              ) {
                 return context.report(
                   ({
                     node: style.value,
                     loc: style.value.loc,
-                    message: 'The empty string is not allowed by  Stylex.',
+                    message: 'The empty string is not allowed by Stylex.',
                   }: Rule.ReportDescriptor),
                 );
               }
