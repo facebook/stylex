@@ -1292,5 +1292,20 @@ This property is not supported in legacy StyleX resolution.`,
         },
       ],
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        base:{
+          background: ''
+        },
+      });
+    `,
+      errors: [
+        {
+          message: 'The empty string is not allowed by Stylex.',
+        },
+      ],
+    },
   ],
 });

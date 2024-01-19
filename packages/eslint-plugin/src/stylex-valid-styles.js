@@ -11,6 +11,7 @@
 
 import namedColors from './reference/namedColors';
 import getDistance from './utils/getDistance';
+import isWhiteSpaceOrEmpty from './utils/isWhiteSpaceOrEmpty';
 import type {
   CallExpression,
   Directive,
@@ -2639,6 +2640,21 @@ const stylexValidStyles = {
                 suggest: suggest != null ? [suggest] : undefined,
               }: Rule.ReportDescriptor),
             );
+          }
+          // eslint-disable-next-line no-debugger
+          // debugger;
+          if (style.value.type === 'Literal') {
+            if (typeof style.value.value === 'string') {
+              if (isWhiteSpaceOrEmpty(style.value.value)) {
+                return context.report(
+                  ({
+                    node: style.value,
+                    loc: style.value.loc,
+                    message: 'The empty string is not allowed by  Stylex.',
+                  }: Rule.ReportDescriptor),
+                );
+              }
+            }
           }
         }
       }
