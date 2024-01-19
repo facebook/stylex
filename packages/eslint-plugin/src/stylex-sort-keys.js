@@ -17,15 +17,15 @@ import type {
   SpreadElement,
   ObjectExpression,
 } from 'estree';
-
 import getStaticPropertyName from './utils/getStaticPropertyName';
+import getPropertyPriority from './utils/getPropertyPriority';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
   validImports: Array<string>,
   minKeys: number,
   allowLineSeparatedGroups: boolean,
-}
+};
 
 type Stack = null | {
   upper: Stack,
@@ -35,14 +35,30 @@ type Stack = null | {
   numKeys: number,
 };
 
+function isAtRule(key: string) {
+  return key.startsWith('@');
+}
+
+function isPseudoClassOrElement(key: string) {
+  return key.startsWith(':');
+}
+
 function isValidOrder(prevName: string, currName: string): boolean {
-  return prevName > currName;
+  if (
+    isAtRule(prevName) ||
+    isPseudoClassOrElement(prevName) ||
+    isAtRule(currName) || isPseudoClassOrElement(currName)
+  ) {
+    return getPropertyPriority(prevName) <= getPropertyPriority(currName);
+  }
+
+  return prevName <= currName;
 }
 
 function getPropertyName(node: Property): string | null {
   const staticName = getStaticPropertyName(node);
 
-  return staticName !== null ? staticName : (node.key.name || null)
+  return staticName !== null ? staticName : node.key.name || null;
 }
 
 const stylexSortKeys = {
@@ -68,17 +84,17 @@ const stylexSortKeys = {
         },
         allowLineSeparatedGroups: {
           type: 'boolean',
-          default: false
-        }
+          default: false,
+        },
       },
-      additionalProperties: false
+      additionalProperties: false,
     },
   ],
   create(context: Rule.RuleContext): { ... } {
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
       minKeys = 2,
-      allowLineSeparatedGroups = false
+      allowLineSeparatedGroups = false,
     }: Schema = context.options[0] || {};
 
     const styleXDefaultImports = new Set<string>();
@@ -104,11 +120,9 @@ const stylexSortKeys = {
       );
     }
 
+    let stack: Stack = null;
     let isInsideStyleXCreateCall = false;
     let objectExpressionNestingLevel = -1;
-
-    let stack: Stack = null;
-    const sourceCode = context.sourceCode;
 
     return {
       ImportDeclaration(node: ImportDeclaration) {
@@ -166,7 +180,11 @@ const stylexSortKeys = {
         }
       },
       'ObjectExpression:exit'() {
-        if (isInsideStyleXCreateCall && objectExpressionNestingLevel > 0 && stack) {
+        if (
+          isInsideStyleXCreateCall &&
+          objectExpressionNestingLevel > 0 &&
+          stack
+        ) {
           stack = stack.upper;
         }
 
@@ -201,24 +219,33 @@ const stylexSortKeys = {
 
         const tokens =
           stack?.prevNode &&
-          sourceCode.getTokensBetween<Property>(stack.prevNode, node, {
+          context.sourceCode.getTokensBetween<Property>(stack.prevNode, node, {
             includeComments: true,
           });
-        
-        if (tokens) {
+
+        if (tokens && tokens.length > 0) {
           tokens.forEach((token, index) => {
             const previousToken = tokens[index - 1];
 
-            if (previousToken && (token.loc.start.line - previousToken.loc.end.line > 1)) {
+            if (
+              previousToken &&
+              token.loc.start.line - previousToken.loc.end.line > 1
+            ) {
               isBlankLineBetweenNodes = true;
             }
           });
 
-          if (!isBlankLineBetweenNodes && (node.loc.start.line - tokens.at(-1).loc.end.line > 1)) {
+          if (
+            !isBlankLineBetweenNodes &&
+            node.loc?.start.line - tokens.at(-1).loc.end.line > 1
+          ) {
             isBlankLineBetweenNodes = true;
           }
 
-          if (!isBlankLineBetweenNodes && (tokens[0].loc.start.line - stack?.prevNode.loc.end.line > 1)) {
+          if (
+            !isBlankLineBetweenNodes &&
+            tokens[0].loc.start.line - stack?.prevNode?.loc?.end.line > 1
+          ) {
             isBlankLineBetweenNodes = true;
           }
         }
@@ -244,8 +271,8 @@ const stylexSortKeys = {
           context.report({
             node,
             loc: node.key.loc,
-            message: 'Sort the keys'
-          })
+            message: `StyleX property key "${currName}" should be above "${prevName}"`,
+          });
         }
       },
       'CallExpression:exit'() {
