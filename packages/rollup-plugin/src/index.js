@@ -14,7 +14,12 @@ import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
-import type { Plugin, PluginContext, TransformResult } from 'rollup';
+import type {
+  Plugin,
+  PluginContext,
+  TransformResult,
+  TransformPluginContext,
+} from 'rollup';
 
 const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
@@ -67,7 +72,11 @@ export default function stylexPlugin({
       stylexRules[id] = meta.stylex;
       return false;
     },
-    async transform(inputCode, id): Promise<null | TransformResult> {
+    async transform(
+      this: TransformPluginContext,
+      inputCode: string,
+      id: string,
+    ): Promise<null | TransformResult> {
       if (
         !importSources.some((importName) =>
           typeof importName === 'string'
@@ -112,6 +121,24 @@ export default function stylexPlugin({
       if (code == null) {
         console.warn('stylex: transformAsync returned null code');
         return { code: inputCode };
+      }
+
+      // $FlowExpectedError[object-this-reference]
+      const self = this;
+
+      if (self.meta.watchMode) {
+        const ast = self.parse(code);
+        for (const stmt of ast.body) {
+          if (stmt.type === 'ImportDeclaration') {
+            const resolved = await self.resolve(stmt.source.value, id);
+            if (resolved && !resolved.external) {
+              const result = await self.load(resolved);
+              if (result && result.meta && 'stylex' in result.meta) {
+                stylexRules[resolved.id] = result.meta.stylex;
+              }
+            }
+          }
+        }
       }
 
       if (
