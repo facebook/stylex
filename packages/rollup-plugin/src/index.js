@@ -41,10 +41,18 @@ export default function stylexPlugin({
   ...options
 }: PluginOptions = {}): Plugin<> {
   let stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
+  let isWatchMode = process.argv.some((c) => ['--watch', '-w'].includes(c));
   return {
     name: 'rollup-plugin-stylex',
+    options(option) {
+      if (option.watch && !isWatchMode) {
+        isWatchMode = true;
+      }
+    },
     buildStart() {
-      stylexRules = {};
+      if (!isWatchMode) {
+        stylexRules = {};
+      }
     },
     generateBundle(this: PluginContext) {
       const rules: Array<Rule> = Object.values(stylexRules).flat();
