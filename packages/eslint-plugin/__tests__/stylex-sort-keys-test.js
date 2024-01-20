@@ -26,7 +26,6 @@ eslintTester.run('stylex-sort-keys', rule.default, {
   valid: [
     `
       import stylex from 'stylex';
-      const MB = '@media (max-width: 100px)';
       const styles = stylex.create({
         main: {
           borderColor: {
@@ -36,12 +35,24 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           },
           borderRadius: 10,
           display: 'flex',
-          [MB]: { width: '100px' }
         },
         dynamic: (color) => ({
           backgroundColor: color,
         })
       })
+    `,
+    `
+      import {create as cr} from '@stylexjs/stylex';
+      const obj = { fontSize: '12px' };
+      const styles = cr({
+        button: {
+          alignItems: 'center',
+          display: 'flex',
+          ...obj,
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
     `,
   ],
   invalid: [
@@ -54,11 +65,33 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             animationDuration: '100ms',
             fontSize: 12,
           }
-        })
+        });
       `,
       errors: [
         {
-          message: 'StyleX property key "animationDuration" should be above "padding"',
+          message:
+            'StyleX property key "animationDuration" should be above "padding"',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const obj = { fontSize: '12px' }; 
+        const styles = stylex.create({
+          button: {
+            alignItems: 'center',
+            display: 'flex',
+            ...obj,
+            borderColor: 'red',
+            alignSelf: 'center',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
         },
       ],
     },

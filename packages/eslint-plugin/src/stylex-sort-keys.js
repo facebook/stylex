@@ -47,7 +47,8 @@ function isValidOrder(prevName: string, currName: string): boolean {
   if (
     isAtRule(prevName) ||
     isPseudoClassOrElement(prevName) ||
-    isAtRule(currName) || isPseudoClassOrElement(currName)
+    isAtRule(currName) ||
+    isPseudoClassOrElement(currName)
   ) {
     return getPropertyPriority(prevName) <= getPropertyPriority(currName);
   }
