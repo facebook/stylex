@@ -31,6 +31,17 @@ export type PluginOptions = $ReadOnly<{
   ...
 }>;
 
+function filterByImportSource(
+  importSources: Options['importSources'],
+  code: string,
+) {
+  return importSources.some((importName) =>
+    typeof importName === 'string'
+      ? code.includes(importName)
+      : code.includes(importName.from),
+  );
+}
+
 export default function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
@@ -41,18 +52,10 @@ export default function stylexPlugin({
   ...options
 }: PluginOptions = {}): Plugin<> {
   let stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
-  let isWatchMode = process.argv.some((c) => ['--watch', '-w'].includes(c));
   return {
     name: 'rollup-plugin-stylex',
-    options(option) {
-      if (option.watch && !isWatchMode) {
-        isWatchMode = true;
-      }
-    },
     buildStart() {
-      if (!isWatchMode) {
-        stylexRules = {};
-      }
+      stylexRules = {};
     },
     generateBundle(this: PluginContext) {
       const rules: Array<Rule> = Object.values(stylexRules).flat();
@@ -76,13 +79,7 @@ export default function stylexPlugin({
       return false;
     },
     async transform(inputCode, id): Promise<null | TransformResult> {
-      if (
-        !importSources.some((importName) =>
-          typeof importName === 'string'
-            ? inputCode.includes(importName)
-            : inputCode.includes(importName.from),
-        )
-      ) {
+      if (!filterByImportSource(importSources, inputCode)) {
         // In rollup, returning null from any plugin phase means
         // "no changes made".
         return null;
@@ -113,6 +110,27 @@ export default function stylexPlugin({
       if (code == null) {
         console.warn('stylex: transformAsync returned null code');
         return { code: inputCode };
+      }
+
+      // $FlowExpectedError[object-this-reference]
+      if (this.meta.watchMode) {
+        // $FlowExpectedError[object-this-reference]
+        const ast = this.parse(code);
+        for (const stmt of ast.body) {
+          if (stmt.type === 'ImportDeclaration') {
+            if (filterByImportSource(importSources, stmt.source.value)) {
+              // $FlowExpectedError[object-this-reference]
+              const resolved = await this.resolve(stmt.source.value, id);
+              if (resolved && !resolved.external) {
+                // $FlowExpectedError[object-this-reference]
+                const result = await this.load(resolved);
+                if (result) {
+                  stylexRules[resolved.id] = (result.meta: $FlowFixMe).stylex;
+                }
+              }
+            }
+          }
+        }
       }
 
       if (
