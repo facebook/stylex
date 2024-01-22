@@ -29,7 +29,7 @@ type Schema = {
 
 type Stack = null | {
   upper: Stack,
-  prevNode: Property | null,
+  prevNode: $ReadOnly<{ ...Property, ...Rule.NodeParentExtension }> | null,
   prevName: string | null,
   prevBlankLine: boolean,
   numKeys: number,
@@ -56,8 +56,8 @@ function isValidOrder(prevName: string, currName: string): boolean {
   return prevName <= currName;
 }
 
-function getPropertyName(node: Property): string | null {
-  const staticName = getStaticPropertyName(node);
+function getPropertyName(node: $ReadOnly<{ ...Property, ...Rule.NodeParentExtension }>): string | null {
+  const staticName = getStaticPropertyName((node: Node));
 
   return staticName !== null ? staticName : node.key.name || null;
 }
@@ -154,7 +154,7 @@ const stylexSortKeys = {
           }
         });
       },
-      CallExpression(node: { ...CallExpression, ...Rule.NodeParentExtension }) {
+      CallExpression(node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>) {
         if (
           !isStylexDeclaration(node) ||
           !node.arguments[0].properties ||
@@ -193,7 +193,7 @@ const stylexSortKeys = {
           objectExpressionNestingLevel--;
         }
       },
-      SpreadElement(node: { ...SpreadElement, ...Rule.NodeParentExtension }) {
+      SpreadElement(node: $ReadOnly<{ ...SpreadElement, ...Rule.NodeParentExtension }>) {
         if (
           isInsideStyleXCreateCall &&
           objectExpressionNestingLevel > 0 &&
@@ -203,7 +203,7 @@ const stylexSortKeys = {
           stack.prevName = null;
         }
       },
-      Property(node: Property) {
+      Property(node: $ReadOnly<{ ...Property, ...Rule.NodeParentExtension }>) {
         if (
           !isInsideStyleXCreateCall ||
           objectExpressionNestingLevel < 1 ||

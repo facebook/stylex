@@ -32,6 +32,7 @@ import hash from './hash';
 import genFileBasedIdentifier from './utils/file-based-identifier';
 import * as m from './messages';
 export * as types from './types';
+import { PSEUDO_CLASS_PRIORITIES as _PSEUDO_CLASS_PRIORITIES } from './utils/property-priorities';
 
 import type {
   InjectableStyle as _InjectableStyle,
@@ -55,6 +56,7 @@ export const utils: {
 export const messages: typeof m = m;
 export const IncludedStyles: typeof _IncludedStyles = _IncludedStyles;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
+export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES = _PSEUDO_CLASS_PRIORITIES;
 
 export type InjectableStyle = _InjectableStyle;
 export type CompiledNamespaces = _CompiledNamespaces;

@@ -589,7 +589,7 @@ longHandLogical.add('math-style');
 // CSS Pointer Events
 longHandLogical.add('touch-action');
 
-const PRIORITIES = {
+export const PSEUDO_CLASS_PRIORITIES = {
   ':is': 40,
   ':where': 40,
   ':not': 40,
@@ -678,7 +678,7 @@ export default function getPriority(key: string): number {
         ? key.slice(0, key.indexOf('('))
         : key;
 
-    return PRIORITIES[prop] ?? 40;
+    return PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
   }
 
   if (longHandPhysical.has(key)) {

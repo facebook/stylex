@@ -11,12 +11,9 @@
 
 import type {
   ChainExpression,
-  MemberExpression,
-  MethodDefinition,
   Node,
-  Property,
-  PropertyDefinition,
 } from 'estree';
+/*:: import { Rule } from 'eslint'; */
 
 function isNullLiteral(node: Node) {
   return (
@@ -27,7 +24,7 @@ function isNullLiteral(node: Node) {
   );
 }
 
-function getStaticStringValue(node: Node) {
+function getStaticStringValue(node: Node): string | null {
   switch (node.type) {
     case 'Literal':
       if (node.value === null) {
@@ -48,7 +45,7 @@ function getStaticStringValue(node: Node) {
       break;
     case 'TemplateLiteral':
       if (node.expressions.length === 0 && node.quasis.length === 1) {
-        return node.quasis[0].value.cooked;
+        return node.quasis[0].value.cooked || null;
       }
       break;
 
@@ -59,19 +56,15 @@ function getStaticStringValue(node: Node) {
 }
 
 export default function getStaticPropertyName(
-  node:
-    | Property
-    | ChainExpression
-    | PropertyDefinition
-    | MethodDefinition
-    | MemberExpression,
+  node: Node | ChainExpression
 ): string | null {
   let prop;
 
-  switch (node && node.type) {
-    case 'ChainExpression':
-      return getStaticPropertyName(node.expression);
+  if (node.type === 'ChainExpression' && node.expression) {
+    return getStaticPropertyName(node.expression);
+  }
 
+  switch (node && node.type) {
     case 'Property':
     case 'PropertyDefinition':
     case 'MethodDefinition':
