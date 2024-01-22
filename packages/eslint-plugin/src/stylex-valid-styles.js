@@ -186,11 +186,6 @@ const singleAnimationIterationCount = makeUnionRule(
   makeLiteralRule('infinite'),
   isNumber,
 );
-// TODO change this to a special function that looks for stylex.keyframes call
-const singleAnimationName = makeUnionRule(
-  makeLiteralRule('none'),
-  isAnimationName,
-);
 
 const singleAnimationPlayState = makeUnionRule(
   makeLiteralRule('running'),
@@ -489,7 +484,6 @@ const animationDirection = singleAnimationDirection;
 const animationDuration = time;
 const animationFillMode = singleAnimationFillMode;
 const animationIterationCount = singleAnimationIterationCount;
-const animationName = singleAnimationName;
 const animationPlayState = singleAnimationPlayState;
 const animationTimingFunction = singleTimingFunction;
 const appearance = makeUnionRule(
@@ -1613,7 +1607,6 @@ const CSSProperties = {
   animationDuration: animationDuration,
   animationFillMode: animationFillMode,
   animationIterationCount: animationIterationCount,
-  animationName: animationName,
   animationPlayState: animationPlayState,
   animationTimingFunction: animationTimingFunction,
   animationTimeline: isString,
@@ -2326,6 +2319,12 @@ const stylexValidStyles = {
       propLimits = {},
     }: Schema = context.options[0] || {};
 
+    const stylexDefineVarsFileExtension = '.stylex';
+    const stylexDefineVarsTokenImports = new Set<string>();
+    const styleXDefaultImports = new Set<string>();
+    const styleXCreateImports = new Set<string>();
+    const styleXKeyframesImports = new Set<string>();
+
     const overrides: PropLimits = {
       ...(banPropsForLegacy ? legacyProps : {}),
       ...propLimits,
@@ -2333,6 +2332,12 @@ const stylexValidStyles = {
 
     const CSSPropertiesWithOverrides: { [string]: RuleCheck } = {
       ...CSSProperties,
+      // TODO change this to a special function that looks for stylex.keyframes call
+      animationName: makeUnionRule(
+        makeLiteralRule('none'),
+        isAnimationName(styleXDefaultImports, styleXKeyframesImports),
+        all,
+      ),
     };
     for (const overrideKey in overrides) {
       const { limit, reason } = overrides[overrideKey];
@@ -2364,11 +2369,6 @@ const stylexValidStyles = {
         CSSPropertiesWithOverrides[overrideKey] = overrideValue;
       }
     }
-
-    const stylexDefineVarsFileExtension = '.stylex';
-    const stylexDefineVarsTokenImports = new Set<string>();
-    const styleXDefaultImports = new Set<string>();
-    const styleXCreateImports = new Set<string>();
 
     function isStylexCallee(node: Node) {
       return (
@@ -2766,6 +2766,12 @@ const stylexValidStyles = {
               specifier.imported.name === 'create'
             ) {
               styleXCreateImports.add(specifier.local.name);
+            }
+            if (
+              specifier.type === 'ImportSpecifier' &&
+              specifier.imported.name === 'keyframes'
+            ) {
+              styleXKeyframesImports.add(specifier.local.name);
             }
           });
         }
