@@ -68,52 +68,8 @@ export type NodeParentExtension = {
 };
 type Node = ESTree.Node & NodeParentExtension;
 
-type BinaryCursorWithCountOptions = {
-    <T: AST.Token>(
-        left: ESTree.Node | AST.Token | ESTree.Comment,
-        right: ESTree.Node | AST.Token | ESTree.Comment,
-        options:
-            | ((token: AST.Token) => token is T)
-            | {
-                filter: (token: AST.Token) => token is T;
-                includeComments?: false | void;
-                count?: number | void;
-            },
-    ): T[];
-    <T: AST.Token | ESTree.Comment>(
-        left: ESTree.Node | AST.Token | ESTree.Comment,
-        right: ESTree.Node | AST.Token | ESTree.Comment,
-        options: {
-            filter: (tokenOrComment: AST.Token | ESTree.Comment) => tokenOrComment is T;
-            includeComments: boolean;
-            count?: number | void;
-        },
-    ): T[];
-    (
-        left: ESTree.Node | AST.Token | ESTree.Comment,
-        right: ESTree.Node | AST.Token | ESTree.Comment,
-        options?:
-            | {
-                filter?: ((token: AST.Token) => boolean) | void;
-                includeComments?: false | void;
-                count?: number | void;
-            }
-            | ((token: AST.Token) => boolean)
-            | number,
-    ): AST.Token[];
-    (
-        left: ESTree.Node | AST.Token | ESTree.Comment,
-        right: ESTree.Node | AST.Token | ESTree.Comment,
-        options: {
-            filter?: ((token: AST.Token | ESTree.Comment) => boolean) | void;
-            includeComments: boolean;
-            count?: number | void;
-        },
-    ): Array<AST.Token | ESTree.Comment>;
-};
-
 export type SourceCode = {
-  getTokensBetween: BinaryCursorWithCountOptions;
+  getTokensBetween(left: $ReadOnly<{...ESTree.Property, ...}>, right: $ReadOnly<{...ESTree.Property, ...}>, options: { includeComments?: boolean }): Array<AST.Token | ESTree.Comment>;
 };
 
 export type RuleContext = {

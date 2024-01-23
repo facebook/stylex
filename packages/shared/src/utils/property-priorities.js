@@ -652,24 +652,33 @@ export const PSEUDO_CLASS_PRIORITIES = {
   ':active': 170,
 };
 
+export const AT_RULES_PRIORITIES = {
+  '@supports': 30,
+  '@media': 200,
+  '@container': 300,
+};
+
+export const PSEUDO_ELEMENT_PRIORITY = 5000;
+
 export default function getPriority(key: string): number {
   if (key.startsWith('--')) {
     return 1;
   }
 
   if (key.startsWith('@supports')) {
-    return 30;
-  }
-  if (key.startsWith('@media')) {
-    return 200;
-  }
-
-  if (key.startsWith('@container')) {
-    return 300;
+    return AT_RULES_PRIORITIES['@supports'];
   }
 
   if (key.startsWith('::')) {
-    return 5000;
+    return PSEUDO_ELEMENT_PRIORITY;
+  }
+
+  if (key.startsWith('@media')) {
+    return AT_RULES_PRIORITIES['@media'];
+  }
+
+  if (key.startsWith('@container')) {
+    return AT_RULES_PRIORITIES['@container'];
   }
 
   if (key.startsWith(':')) {

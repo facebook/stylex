@@ -17,8 +17,8 @@ import type {
   SpreadElement,
   ObjectExpression,
 } from 'estree';
-import getStaticPropertyName from './utils/getStaticPropertyName';
-import getPropertyPriority from './utils/getPropertyPriority';
+import getPropertyName from './utils/getPropertyName';
+import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
@@ -29,37 +29,21 @@ type Schema = {
 
 type Stack = null | {
   upper: Stack,
-  prevNode: $ReadOnly<{ ...Property, ...Rule.NodeParentExtension }> | null,
+  prevNode: $ReadOnly<{ ...Property, ... }> | null,
   prevName: string | null,
   prevBlankLine: boolean,
   numKeys: number,
 };
 
-function isAtRule(key: string) {
-  return key.startsWith('@');
-}
-
-function isPseudoClassOrElement(key: string) {
-  return key.startsWith(':');
-}
-
 function isValidOrder(prevName: string, currName: string): boolean {
-  if (
-    isAtRule(prevName) ||
-    isPseudoClassOrElement(prevName) ||
-    isAtRule(currName) ||
-    isPseudoClassOrElement(currName)
-  ) {
-    return getPropertyPriority(prevName) <= getPropertyPriority(currName);
+  const prev = getPropertyPriorityAndType(prevName);
+  const curr = getPropertyPriorityAndType(currName);
+
+  if (prev.type !== 'string' || curr.type !== 'string') {
+    return prev.priority <= curr.priority;
   }
 
   return prevName <= currName;
-}
-
-function getPropertyName(node: $ReadOnly<{ ...Property, ...Rule.NodeParentExtension }>): string | null {
-  const staticName = getStaticPropertyName((node: Node));
-
-  return staticName !== null ? staticName : node.key.name || null;
 }
 
 const stylexSortKeys = {
@@ -100,6 +84,7 @@ const stylexSortKeys = {
 
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
+    const styleXKeyframesImports = new Set<string>();
 
     function isStylexCallee(node: Node) {
       return (
@@ -107,8 +92,11 @@ const stylexSortKeys = {
           node.object.type === 'Identifier' &&
           styleXDefaultImports.has(node.object.name) &&
           node.property.type === 'Identifier' &&
-          node.property.name === 'create') ||
-        (node.type === 'Identifier' && styleXCreateImports.has(node.name))
+          (node.property.name === 'create' ||
+            node.property.name === 'keyframes')) ||
+        (node.type === 'Identifier' &&
+          (styleXCreateImports.has(node.name) ||
+            styleXKeyframesImports.has(node.name)))
       );
     }
 
@@ -152,9 +140,18 @@ const stylexSortKeys = {
           ) {
             styleXCreateImports.add(specifier.local.name);
           }
+
+          if (
+            specifier.type === 'ImportSpecifier' &&
+            specifier.imported.name === 'keyframes'
+          ) {
+            styleXKeyframesImports.add(specifier.local.name);
+          }
         });
       },
-      CallExpression(node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>) {
+      CallExpression(
+        node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
+      ) {
         if (
           !isStylexDeclaration(node) ||
           !node.arguments[0].properties ||
@@ -193,7 +190,9 @@ const stylexSortKeys = {
           objectExpressionNestingLevel--;
         }
       },
-      SpreadElement(node: $ReadOnly<{ ...SpreadElement, ...Rule.NodeParentExtension }>) {
+      SpreadElement(
+        node: $ReadOnly<{ ...SpreadElement, ...Rule.NodeParentExtension }>,
+      ) {
         if (
           isInsideStyleXCreateCall &&
           objectExpressionNestingLevel > 0 &&
@@ -220,7 +219,7 @@ const stylexSortKeys = {
 
         const tokens =
           stack?.prevNode &&
-          context.sourceCode.getTokensBetween<Property>(stack.prevNode, node, {
+          context.sourceCode.getTokensBetween(stack.prevNode, node, {
             includeComments: true,
           });
 
@@ -230,6 +229,8 @@ const stylexSortKeys = {
 
             if (
               previousToken &&
+              token.loc &&
+              previousToken.loc &&
               token.loc.start.line - previousToken.loc.end.line > 1
             ) {
               isBlankLineBetweenNodes = true;
@@ -238,13 +239,16 @@ const stylexSortKeys = {
 
           if (
             !isBlankLineBetweenNodes &&
-            node.loc?.start.line - tokens.at(-1).loc.end.line > 1
+            (node.loc?.start?.line ?? 0) - (tokens.at(-1)?.loc?.end.line ?? 0) >
+              1
           ) {
             isBlankLineBetweenNodes = true;
           }
 
           if (
             !isBlankLineBetweenNodes &&
+            tokens[0].loc &&
+            stack?.prevNode?.loc &&
             tokens[0].loc.start.line - stack?.prevNode?.loc?.end.line > 1
           ) {
             isBlankLineBetweenNodes = true;
@@ -270,6 +274,7 @@ const stylexSortKeys = {
 
         if (!isValidOrder(prevName, currName)) {
           context.report({
+            // $FlowFixMe
             node,
             loc: node.key.loc,
             message: `StyleX property key "${currName}" should be above "${prevName}"`,
@@ -284,6 +289,7 @@ const stylexSortKeys = {
       'Program:exit'() {
         styleXCreateImports.clear();
         styleXDefaultImports.clear();
+        styleXKeyframesImports.clear();
       },
     };
   },

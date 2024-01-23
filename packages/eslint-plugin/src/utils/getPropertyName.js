@@ -9,10 +9,7 @@
 
 'use strict';
 
-import type {
-  ChainExpression,
-  Node,
-} from 'estree';
+import type { ChainExpression, Node, Property } from 'estree';
 /*:: import { Rule } from 'eslint'; */
 
 function isNullLiteral(node: Node) {
@@ -55,9 +52,7 @@ function getStaticStringValue(node: Node): string | null {
   return null;
 }
 
-export default function getStaticPropertyName(
-  node: Node | ChainExpression
-): string | null {
+function getStaticPropertyName(node: Node | ChainExpression): string | null {
   let prop;
 
   if (node.type === 'ChainExpression' && node.expression) {
@@ -87,4 +82,13 @@ export default function getStaticPropertyName(
   }
 
   return null;
+}
+
+export default function getPropertyName(
+  node: $ReadOnly<{ ...Property, ... }>,
+): string | null {
+  // $FlowFixMe
+  const staticName = getStaticPropertyName(node);
+
+  return staticName !== null ? staticName : node.key.name || null;
 }
