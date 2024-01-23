@@ -10,7 +10,6 @@
 'use strict';
 
 import type { ChainExpression, Node, Property } from 'estree';
-/*:: import { Rule } from 'eslint'; */
 
 function isNullLiteral(node: Node) {
   return (
