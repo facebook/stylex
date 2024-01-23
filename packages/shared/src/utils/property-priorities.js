@@ -669,16 +669,16 @@ export default function getPriority(key: string): number {
     return AT_RULES_PRIORITIES['@supports'];
   }
 
-  if (key.startsWith('::')) {
-    return PSEUDO_ELEMENT_PRIORITY;
-  }
-
   if (key.startsWith('@media')) {
     return AT_RULES_PRIORITIES['@media'];
   }
 
   if (key.startsWith('@container')) {
     return AT_RULES_PRIORITIES['@container'];
+  }
+
+  if (key.startsWith('::')) {
+    return PSEUDO_ELEMENT_PRIORITY;
   }
 
   if (key.startsWith(':')) {
