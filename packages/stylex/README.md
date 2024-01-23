@@ -62,7 +62,7 @@ below, there are 2 different CSS rules. The names "root" and "highlighted" are
 arbitrary names given to the rules.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   root: {
@@ -78,7 +78,7 @@ const styles = stylex.create({
 Pseudo-classes and Media Queries can be nested within style definitions:
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   root: {
@@ -156,7 +156,7 @@ Defining fallback styles is done with `stylex.firstThatWorks()`. This is useful
 for engines that may not support a specific style property.
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   header: {
@@ -211,8 +211,6 @@ type Props = {
 };
 ```
 
-
-
 ### `StaticStyles<>`
 
 To constrain the styles to specific properties and values, use the `StaticStyles<>`
@@ -235,7 +233,7 @@ StyleX produces atomic styles, which means that each CSS rule contains only a
 single declaration and uses a unique class name. For example:
 
 ```tsx
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   root: {
