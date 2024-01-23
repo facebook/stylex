@@ -47,34 +47,36 @@ function isValidOrder(prevName: string, currName: string): boolean {
 }
 
 const stylexSortKeys = {
-  type: 'suggestion',
-  docs: {
-    description: 'Require style properties to be sorted by key',
-    recommended: false,
-    url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
-  },
-  schema: [
-    {
-      type: 'object',
-      properties: {
-        validImports: {
-          type: 'array',
-          items: { type: 'string' },
-          default: ['stylex', '@stylexjs/stylex'],
-        },
-        minKeys: {
-          type: 'integer',
-          minimum: 2,
-          default: 2,
-        },
-        allowLineSeparatedGroups: {
-          type: 'boolean',
-          default: false,
-        },
-      },
-      additionalProperties: false,
+  meta: {
+    type: 'suggestion',
+    docs: {
+      description: 'Require style properties to be sorted by key',
+      recommended: false,
+      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
     },
-  ],
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          validImports: {
+            type: 'array',
+            items: { type: 'string' },
+            default: ['stylex', '@stylexjs/stylex'],
+          },
+          minKeys: {
+            type: 'integer',
+            minimum: 2,
+            default: 2,
+          },
+          allowLineSeparatedGroups: {
+            type: 'boolean',
+            default: false,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
+  },
   create(context: Rule.RuleContext): { ... } {
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],

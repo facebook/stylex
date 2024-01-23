@@ -77,6 +77,47 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      options: [{ allowLineSeparatedGroups: true }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          alignItems: 'center',
+          display: 'flex',
+
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ minKeys: 5 }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          flex: 1,
+          display: 'flex',
+          borderColor: 'black',
+          alignItems: 'center',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ validImports: ['a'] }],
+      code: `
+      import { create as cr } from 'a';
+      const styles = cr({
+        button: {
+          borderColor: 'black',
+          display: 'flex',
+        }
+      });
+    `,
+    },
+    {
       code: `
         import { keyframes } from 'stylex';
         const someAnimation = keyframes({
