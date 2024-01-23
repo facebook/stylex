@@ -148,6 +148,42 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     },
     {
       code: `
+        import { keyframes as kf, create } from 'stylex';
+        const fadeIn = kf({
+          '0%': {
+            opacity: 0,
+          },
+          '100%': {
+            opacity: 1,
+          },
+        }); 
+        const styles = create({
+          main: {
+            animationName: fadeIn,
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stlx from 'stylex';
+        const fadeIn = stlx.keyframes({
+          '0%': {
+            opacity: 0,
+          },
+          '100%': {
+            opacity: 1,
+          },
+        }); 
+        const styles = create({
+          main: {
+            animationName: fadeIn,
+          },
+        });
+      `,
+    },
+    {
+      code: `
         import stylex from 'stylex';
         const styles = stylex.create({
           default: {
