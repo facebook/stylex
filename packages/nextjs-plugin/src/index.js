@@ -60,7 +60,6 @@ module.exports =
         };
 
         const stylexPlugin = new WebpackPluginStylex(webpackPluginOptions);
-
         config.plugins.push(stylexPlugin);
 
         return config;
