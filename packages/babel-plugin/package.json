@@ -9,6 +9,7 @@
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "rollup --config ./rollup.config.mjs",
     "build-haste": "HASTE=true rollup --config ./rollup.config.mjs",
+    "build-watch": "rollup --config ./rollup.config.mjs --watch",
     "test": "jest"
   },
   "dependencies": {

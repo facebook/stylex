@@ -177,6 +177,10 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
           runtimeInjection: false,
           genConditionalClasses: true,
           treeshakeCompensation: true,
+          // If you have opted for aliased paths in your Next.js App add it here as well
+          // aliases: { 
+          //   '@/*': ['./*'],
+          // },
           unstable_moduleResolution: {
             type: 'commonJS',
             rootDir: __dirname,
@@ -191,6 +195,10 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
   const stylexPlugin = require('@stylexjs/nextjs-plugin');
 
   module.exports = stylexPlugin({
+    // If you have opted for aliased paths in your Next.js App add it here as well
+    // aliases: { 
+    //   '@/*': ['./*'],
+    // },
     rootDir: __dirname,
   })({});
   ```
