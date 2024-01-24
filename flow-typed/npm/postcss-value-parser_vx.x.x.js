@@ -12,24 +12,28 @@ type PostCSSValueASTNode =
       type: 'word' | 'unicode-range',
       value: string,
       sourceIndex: number,
+      sourceEndIndex: number,
     }
   | {
       type: 'string' | 'comment',
       value: string,
       quote: '"' | "'",
       sourceIndex: number,
+      sourceEndIndex: number,
       unclosed?: boolean,
     }
   | {
       type: 'comment',
       value: string,
       sourceIndex: number,
+      sourceEndIndex: number,
       unclosed?: boolean,
     }
   | {
       type: 'div',
       value: ',' | '/' | ':',
       sourceIndex: number,
+      sourceEndIndex: number,
       before: '' | ' ' | '  ' | '   ',
       after: '' | ' ' | '  ' | '   ',
     }
@@ -37,6 +41,7 @@ type PostCSSValueASTNode =
       type: 'space',
       value: ' ' | '  ' | '   ',
       sourceIndex: number,
+      sourceEndIndex: number,
     }
   | {
       type: 'function',
@@ -46,6 +51,7 @@ type PostCSSValueASTNode =
       nodes: Array<PostCSSValueASTNode>,
       unclosed?: boolean,
       sourceIndex: number,
+      sourceEndIndex: number,
     };
 
 declare interface PostCSSValueAST {
