@@ -165,7 +165,10 @@ export const object: <T: { +[string]: Check<mixed> }>(
     return result;
   };
 
-export const objectOf: <T>(Check<T>, Msg) => Check<{ +[string]: T }> =
+export const objectOf: <T>(
+  Check<T>,
+  message?: Msg,
+) => Check<{ +[string]: T }> =
   <T>(
     check: Check<T>,
     message = defaultObjectMessage('an object'),
