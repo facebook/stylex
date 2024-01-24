@@ -74,13 +74,14 @@ export type StyleXOptions = $ReadOnly<{
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
   unstable_moduleResolution: ?ModuleResolution,
-  aliases: ?$ReadOnly<{ [string]: string }>,
+  aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
   ...
 }>;
 
 type StyleXStateOptions = $ReadOnly<{
   ...StyleXOptions,
   runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
+  aliases?: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
   ...
 }>;
 
@@ -242,9 +243,30 @@ export default class StateManager {
         'options.treeshakeCompensation',
       );
 
+    const aliasesOption: StyleXOptions['aliases'] = z.logAndDefault(
+      z.unionOf(
+        z.nullish(),
+        z.objectOf(z.unionOf(z.string(), z.array(z.string()))),
+      ),
+      options.aliases,
+      null,
+      'options.aliases',
+    );
+
+    const aliases: StyleXStateOptions['aliases'] =
+      aliasesOption == null
+        ? aliasesOption
+        : Object.fromEntries(
+            Object.entries(aliasesOption).map(([key, value]) => {
+              if (typeof value === 'string') {
+                return [key, [value]];
+              }
+              return [key, value];
+            }),
+          );
+
     const opts: StyleXStateOptions = {
-      // $FlowFixMe
-      aliases: options.aliases,
+      aliases,
       dev,
       test,
       runtimeInjection,
@@ -486,12 +508,15 @@ export default class StateManager {
   }
 }
 
-function aliasPathResolver(
+function possibleAliasedPaths(
   importPath: string,
-  aliases: StyleXOptions['aliases'],
-): [string, boolean] {
-  let isAliasResolved = false;
-  if (!aliases) return [importPath, isAliasResolved];
+  aliases: StyleXStateOptions['aliases'],
+): $ReadOnlyArray<string> {
+  const result = [importPath];
+  if (aliases == null || Object.keys(aliases).length === 0) {
+    return result;
+  }
+
   for (const [alias, value] of Object.entries(aliases)) {
     if (alias.includes('*')) {
       const [before, after] = alias.split('*');
@@ -500,15 +525,18 @@ function aliasPathResolver(
           before.length,
           after.length > 0 ? -after.length : undefined,
         );
-        isAliasResolved = true;
-        return [value[0].split('*').join(replacementString), isAliasResolved];
+        value.forEach((v) => {
+          result.push(v.split('*').join(replacementString));
+        });
       }
     } else if (alias === importPath) {
-      isAliasResolved = true;
-      return [value[0], isAliasResolved];
+      value.forEach((v) => {
+        result.push(v);
+      });
     }
   }
-  return [importPath, isAliasResolved];
+
+  return result;
 }
 
 // a function that resolves the absolute path of a file when given the
@@ -516,45 +544,34 @@ function aliasPathResolver(
 const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
-  aliases: StyleXOptions['aliases'],
-): void | string => {
-  const fileToLookFor = relativeFilePath; //addFileExtension(relativeFilePath, sourceFilePath);
-  if (EXTENSIONS.some((ext) => fileToLookFor.endsWith(ext))) {
-    try {
-      const resolvedFilePath = require.resolve(fileToLookFor, {
-        paths: [path.dirname(sourceFilePath)],
-      });
-      return resolvedFilePath;
-    } catch {}
-  }
-  for (const ext of EXTENSIONS) {
-    try {
-      const importPathStr = fileToLookFor.startsWith('.')
-        ? fileToLookFor + ext
-        : fileToLookFor;
-      let aliasedImportPathStr = importPathStr;
-      let isAliasResolved = false;
-      if (aliases) {
-        [aliasedImportPathStr, isAliasResolved] = aliasPathResolver(
-          aliasedImportPathStr,
-          aliases,
-        );
-      }
-      if (isAliasResolved && aliasedImportPathStr.startsWith('.')) {
-        aliasedImportPathStr += ext; // attach extension to the resolved alias import path.
-      }
+  aliases: StyleXStateOptions['aliases'],
+): ?string => {
+  // Try importing without adding any extension
+  // and then every supported extension
+  for (const ext of ['', ...EXTENSIONS]) {
+    const importPathStr = relativeFilePath + ext;
 
-      const resolvedFilePath = isAliasResolved //Check if the alias is resolved and the path is valid
-        ? require.resolve(path.resolve(aliasedImportPathStr), {
-            paths: [path.dirname(sourceFilePath)],
-          })
-        : require.resolve(aliasedImportPathStr, {
-            paths: [path.dirname(sourceFilePath)],
-          });
+    // Try to resolve relative paths as is
+    if (importPathStr.startsWith('.')) {
+      try {
+        return require.resolve(importPathStr, {
+          paths: [path.dirname(sourceFilePath)],
+        });
+      } catch {}
+    }
 
-      return resolvedFilePath;
-    } catch {}
+    // Otherwise, try to resolve the path with aliases
+    const allAliases = possibleAliasedPaths(importPathStr, aliases);
+    for (const possiblePath of allAliases) {
+      try {
+        return require.resolve(possiblePath, {
+          paths: [path.dirname(sourceFilePath)],
+        });
+      } catch {}
+    }
   }
+  // Failed to resolve the file path
+  return null;
 };
 
 const EXTENSIONS = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
