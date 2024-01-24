@@ -589,7 +589,7 @@ longHandLogical.add('math-style');
 // CSS Pointer Events
 longHandLogical.add('touch-action');
 
-export const PSEUDO_CLASS_PRIORITIES = {
+export const PSEUDO_CLASS_PRIORITIES: { [key: string]: number } = {
   ':is': 40,
   ':where': 40,
   ':not': 40,
@@ -652,13 +652,13 @@ export const PSEUDO_CLASS_PRIORITIES = {
   ':active': 170,
 };
 
-export const AT_RULES_PRIORITIES = {
+export const AT_RULES_PRIORITIES: { [key: string]: number } = {
   '@supports': 30,
   '@media': 200,
   '@container': 300,
 };
 
-export const PSEUDO_ELEMENT_PRIORITY = 5000;
+export const PSEUDO_ELEMENT_PRIORITY: number = 5000;
 
 export default function getPriority(key: string): number {
   if (key.startsWith('--')) {
