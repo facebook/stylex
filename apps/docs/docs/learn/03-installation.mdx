@@ -169,6 +169,7 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
   <DevInstallExample dev={[`@stylexjs/nextjs-plugin`]} />
 
   ```tsx title=".babelrc.js"
+  const path = require('path');
   module.exports = {
     presets: ['next/babel'],
     plugins: [
@@ -179,10 +180,9 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
           runtimeInjection: false,
           genConditionalClasses: true,
           treeshakeCompensation: true,
-          // If you have opted for aliased paths in your Next.js App add it here as well
-          // aliases: { 
-          //   '@/*': ['./*'],
-          // },
+          aliases: { 
+            '@/*': [path.join(__dirname, '*')],
+          },
           unstable_moduleResolution: {
             type: 'commonJS',
             rootDir: __dirname,
@@ -194,13 +194,13 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
   ```
 
   ```tsx title="next.config.js"
+  const path = require('path');
   const stylexPlugin = require('@stylexjs/nextjs-plugin');
 
   module.exports = stylexPlugin({
-    // If you have opted for aliased paths in your Next.js App add it here as well
-    // aliases: { 
-    //   '@/*': ['./*'],
-    // },
+    aliases: { 
+      '@/*': [path.join(__dirname, '*')],
+    },
     rootDir: __dirname,
   })({});
   ```

@@ -127,15 +127,12 @@ Enable this option to prevent that by adding an import with no specifier.
 ### `aliases`
 
 ```ts
-aliases: { // Default: undefined
-  '@/*': ['./*'],
-}, 
+aliases: {[key: string]: string | Array<string>} // Default: undefined
 ```
 
 `aliases` option allows you to alias project directories to absolute paths, making it easier to import modules. 
 
-For example: `'@/components/*': ['./src/components/*']`
-
+Example: `'@/components/*': [path.join(__dirname, './src/components/*')]`
 
 <hr />
 
