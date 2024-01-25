@@ -50,6 +50,7 @@ export function validateNamespace(
       }
       continue;
     }
+
     throw new Error(messages.ILLEGAL_PROP_VALUE);
   }
 }
