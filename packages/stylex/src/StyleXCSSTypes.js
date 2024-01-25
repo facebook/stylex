@@ -1364,7 +1364,6 @@ export type CSSProperties = $ReadOnly<{
   mathShift?: all | 'normal' | 'compact',
   mathStyle?: all | 'normal' | 'compact',
 
-  scrollbarWidth?: all | string | number,
   scrollBehavior?: all | scrollBehavior,
 
   scrollMargin?: all | number | string,
@@ -1400,7 +1399,8 @@ export type CSSProperties = $ReadOnly<{
   scrollTimelineName?: all | string,
 
   scrollbarColor?: all | color,
-  scrollbarWidth?: all | width,
+  scrollbarGutter?: all | 'auto' | 'stable' | 'stable both-edges',
+  scrollbarWidth?: all | 'auto' | 'thin' | 'none',
 
   shapeImageThreshold?: all | shapeImageThreshold,
   shapeMargin?: all | shapeMargin,
@@ -1504,4 +1504,6 @@ export type CSSProperties = $ReadOnly<{
   wordWrap?: all | wordWrap,
   writingMode?: all | writingMode,
   zIndex?: all | zIndex,
+
+  zoom?: all | 'normal' | number | string,
 }>;

@@ -2056,11 +2056,17 @@ const CSSProperties = {
   rubyAlign: rubyAlign,
   rubyMerge: rubyMerge,
   rubyPosition: rubyPosition,
+
+  scrollbarColor: color,
+  scrollbarGutter: makeUnionRule('auto', 'stable', 'stable both-edges'),
+  scrollbarWidth: makeUnionRule('auto', 'thin', 'none'),
+
   scrollBehavior: scrollBehavior,
   scrollSnapPaddingBottom: scrollSnapPaddingBottom,
   scrollSnapPaddingTop: scrollSnapPaddingTop,
   scrollSnapAlign: scrollSnapAlign,
   scrollSnapType: scrollSnapType,
+  scrollSnapStop: makeUnionRule('normal', 'always'),
 
   // scrollMargin: makeUnionRule(isNumber, isString),
   scrollMarginBlockEnd: makeUnionRule(isNumber, isString),
@@ -2168,7 +2174,7 @@ const CSSProperties = {
   zIndex: zIndex,
 
   // Purposely not supported because it is not supported in Firefox.
-  // zoom: makeUnionRule('normal', 'reset', isNumber),
+  zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage),
 };
 const CSSPropertyKeys = Object.keys(CSSProperties);
 for (const key of CSSPropertyKeys) {
