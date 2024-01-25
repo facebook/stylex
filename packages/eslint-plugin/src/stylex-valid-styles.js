@@ -2641,21 +2641,19 @@ const stylexValidStyles = {
               }: Rule.ReportDescriptor),
             );
           }
-          if (style.value.type === 'Literal') {
-            if (typeof style.value.value === 'string') {
-              if (
-                isWhiteSpaceOrEmpty(style.value.value) &&
-                styleKey.name !== 'content'
-              ) {
-                return context.report(
-                  ({
-                    node: style.value,
-                    loc: style.value.loc,
-                    message: 'The empty string is not allowed by Stylex.',
-                  }: Rule.ReportDescriptor),
-                );
-              }
-            }
+          if (
+            style.value.type === 'Literal' &&
+            typeof style.value.value === 'string' &&
+            isWhiteSpaceOrEmpty(style.value.value) &&
+            styleKey.name !== 'content'
+          ) {
+            return context.report(
+              ({
+                node: style.value,
+                loc: style.value.loc,
+                message: 'The empty string is not allowed by Stylex.',
+              }: Rule.ReportDescriptor),
+            );
           }
         }
       }
