@@ -238,5 +238,83 @@ describe('Evaluation of imported values works based on configuration', () => {
       `);
       expect(transformation).toThrow();
     });
+
+    test('Imported vars with ".stylex" suffix can be used as style keys', () => {
+      const transformation = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          red: {
+            [MyTheme.foreground]: 'red',
+          }
+        });
+        stylex(styles.red);
+      `);
+
+      expect(transformation.code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        import 'otherFile.stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        var _inject2 = _inject;
+        _inject2(".__hashed_var__1g7q0my{--__hashed_var__1jqb1tb:red}", 1);
+        "__hashed_var__1g7q0my";"
+      `);
+      expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "__hashed_var__1g7q0my",
+            {
+              "ltr": ".__hashed_var__1g7q0my{--__hashed_var__1jqb1tb:red}",
+              "rtl": null,
+            },
+            1,
+          ],
+        ]
+      `);
+    });
+
+    test('Imported vars with ".stylex" suffix can be used as style keys dynamically', () => {
+      const transformation = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          color: (color) => ({
+            [MyTheme.foreground]: color,
+          })
+        });
+        stylex.props(styles.color('red'));
+      `);
+
+      expect(transformation.code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from 'stylex';
+        import 'otherFile.stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        var _inject2 = _inject;
+        _inject2(".__hashed_var__15x39w1{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb,revert)}", 1);
+        const styles = {
+          color: color => [{
+            "--__hashed_var__1jqb1tb": "__hashed_var__15x39w1",
+            $$css: true
+          }, {
+            "----__hashed_var__1jqb1tb": color != null ? color : "initial"
+          }]
+        };
+        stylex.props(styles.color('red'));"
+      `);
+      expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "__hashed_var__15x39w1",
+            {
+              "ltr": ".__hashed_var__15x39w1{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb,revert)}",
+              "rtl": null,
+            },
+            1,
+          ],
+        ]
+      `);
+    });
   });
 });
