@@ -31,17 +31,6 @@ export type PluginOptions = $ReadOnly<{
   ...
 }>;
 
-function filterByImportSource(
-  importSources: Options['importSources'],
-  code: string,
-) {
-  return importSources.some((importName) =>
-    typeof importName === 'string'
-      ? code.includes(importName)
-      : code.includes(importName.from),
-  );
-}
-
 export default function stylexPlugin({
   dev = IS_DEV_ENV,
   unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
@@ -79,7 +68,13 @@ export default function stylexPlugin({
       return false;
     },
     async transform(inputCode, id): Promise<null | TransformResult> {
-      if (!filterByImportSource(importSources, inputCode)) {
+      if (
+        !importSources.some((importName) =>
+          typeof importName === 'string'
+            ? inputCode.includes(importName)
+            : inputCode.includes(importName.from),
+        )
+      ) {
         // In rollup, returning null from any plugin phase means
         // "no changes made".
         return null;
@@ -118,15 +113,13 @@ export default function stylexPlugin({
         const ast = this.parse(code);
         for (const stmt of ast.body) {
           if (stmt.type === 'ImportDeclaration') {
-            if (filterByImportSource(importSources, stmt.source.value)) {
+            // $FlowExpectedError[object-this-reference]
+            const resolved = await this.resolve(stmt.source.value, id);
+            if (resolved && !resolved.external) {
               // $FlowExpectedError[object-this-reference]
-              const resolved = await this.resolve(stmt.source.value, id);
-              if (resolved && !resolved.external) {
-                // $FlowExpectedError[object-this-reference]
-                const result = await this.load(resolved);
-                if (result) {
-                  stylexRules[resolved.id] = (result.meta: $FlowFixMe).stylex;
-                }
+              const result = await this.load(resolved);
+              if (result && result.meta && 'stylex' in result.meta) {
+                stylexRules[resolved.id] = result.meta.stylex;
               }
             }
           }
