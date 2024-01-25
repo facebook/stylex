@@ -11,7 +11,7 @@
 
 import {
   PSEUDO_CLASS_PRIORITIES,
-  AT_RULES_PRIORITIES,
+  AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY,
 } from '@stylexjs/shared';
 
@@ -24,7 +24,7 @@ export default function getPropertyPriorityAndType(
   key: string,
 ): PriorityAndType {
   if (key.startsWith('@supports')) {
-    return { priority: AT_RULES_PRIORITIES['@supports'], type: 'atRule' };
+    return { priority: AT_RULE_PRIORITIES['@supports'], type: 'atRule' };
   }
 
   if (key.startsWith('::')) {
@@ -44,11 +44,11 @@ export default function getPropertyPriorityAndType(
   }
 
   if (key.startsWith('@media')) {
-    return { priority: AT_RULES_PRIORITIES['@media'], type: 'atRule' };
+    return { priority: AT_RULE_PRIORITIES['@media'], type: 'atRule' };
   }
 
   if (key.startsWith('@container')) {
-    return { priority: AT_RULES_PRIORITIES['@container'], type: 'atRule' };
+    return { priority: AT_RULE_PRIORITIES['@container'], type: 'atRule' };
   }
 
   return { priority: 1, type: 'string' };

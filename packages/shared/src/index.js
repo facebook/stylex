@@ -34,7 +34,7 @@ import * as m from './messages';
 export * as types from './types';
 import {
   PSEUDO_CLASS_PRIORITIES as _PSEUDO_CLASS_PRIORITIES,
-  AT_RULES_PRIORITIES as _AT_RULES_PRIORITIES,
+  AT_RULE_PRIORITIES as _AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY as _PSEUDO_ELEMENT_PRIORITY,
 } from './utils/property-priorities';
 
@@ -62,8 +62,8 @@ export const IncludedStyles: typeof _IncludedStyles = _IncludedStyles;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
 export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES =
   _PSEUDO_CLASS_PRIORITIES;
-export const AT_RULES_PRIORITIES: typeof _AT_RULES_PRIORITIES =
-  _AT_RULES_PRIORITIES;
+export const AT_RULE_PRIORITIES: typeof _AT_RULE_PRIORITIES =
+  _AT_RULE_PRIORITIES;
 export const PSEUDO_ELEMENT_PRIORITY: typeof _PSEUDO_ELEMENT_PRIORITY =
   _PSEUDO_ELEMENT_PRIORITY;
 

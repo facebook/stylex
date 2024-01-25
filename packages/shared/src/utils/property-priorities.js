@@ -589,7 +589,7 @@ longHandLogical.add('math-style');
 // CSS Pointer Events
 longHandLogical.add('touch-action');
 
-type PseudoClasses = {
+type PseudoClassPriorities = {
   ':is': 40,
   ':where': 40,
   ':not': 40,
@@ -645,7 +645,7 @@ type PseudoClasses = {
   ':active': 170,
 };
 
-export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<PseudoClasses> = {
+export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<PseudoClassPriorities> = {
   ':is': 40,
   ':where': 40,
   ':not': 40,
@@ -708,13 +708,13 @@ export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<PseudoClasses> = {
   ':active': 170,
 };
 
-type AtRules = {
+type AtRulePriorities = {
   '@supports': 30,
   '@media': 200,
   '@container': 300,
 };
 
-export const AT_RULES_PRIORITIES: $ReadOnly<AtRules> = {
+export const AT_RULE_PRIORITIES: $ReadOnly<AtRulePriorities> = {
   '@supports': 30,
   '@media': 200,
   '@container': 300,
@@ -728,15 +728,15 @@ export default function getPriority(key: string): number {
   }
 
   if (key.startsWith('@supports')) {
-    return AT_RULES_PRIORITIES['@supports'];
+    return AT_RULE_PRIORITIES['@supports'];
   }
 
   if (key.startsWith('@media')) {
-    return AT_RULES_PRIORITIES['@media'];
+    return AT_RULE_PRIORITIES['@media'];
   }
 
   if (key.startsWith('@container')) {
-    return AT_RULES_PRIORITIES['@container'];
+    return AT_RULE_PRIORITIES['@container'];
   }
 
   if (key.startsWith('::')) {
