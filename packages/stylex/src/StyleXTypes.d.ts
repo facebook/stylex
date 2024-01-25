@@ -55,6 +55,12 @@ type CSSPropertiesWithExtras = Partial<
       '::spelling-error': CSSProperties;
       '::target-text': CSSProperties;
       '::-webkit-scrollbar'?: CSSProperties;
+      '::-webkit-scrollbar-button'?: CSSProperties;
+      '::-webkit-scrollbar-thumb'?: CSSProperties;
+      '::-webkit-scrollbar-track'?: CSSProperties;
+      '::-webkit-scrollbar-track-piece'?: CSSProperties;
+      '::-webkit-scrollbar-corner'?: CSSProperties;
+      '::-webkit-resizer'?: CSSProperties;
       // webkit styles used for Search in Safari
       '::-webkit-search-decoration'?: CSSProperties;
       '::-webkit-search-cancel-button'?: CSSProperties;
