@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const BABEL_ENV = process.env['BABEL_ENV'];
+
 function makeHaste() {
   return {
     visitor: {
@@ -23,6 +25,27 @@ function makeHaste() {
   };
 }
 
+function extensionsForESM() {
+  return {
+    visitor: {
+      ImportDeclaration(path) {
+        if (path.get('source').isStringLiteral()) {
+          const node = path.get('source').node;
+          const source = node.value;
+          if (!source.startsWith('.') || source.endsWith('.mjs')) {
+            return;
+          }
+          if (source.endsWith('.js')) {
+            node.value = source.slice(0, -3) + '.mjs';
+            return;
+          }
+          node.value = source + '.mjs';
+        }
+      },
+    },
+  };
+}
+
 const presets = process.env['HASTE']
   ? []
   : [
@@ -31,6 +54,7 @@ const presets = process.env['HASTE']
         {
           exclude: ['@babel/plugin-transform-typeof-symbol'],
           targets: 'defaults',
+          modules: BABEL_ENV === 'esm' ? false : 'cjs',
         },
       ],
       '@babel/preset-flow',
@@ -44,7 +68,10 @@ const plugins = process.env['HASTE']
       // '@babel/plugin-syntax-jsx',
       ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
     ]
-  : [['babel-plugin-syntax-hermes-parser', { flow: 'detect' }]];
+  : [
+      ...(BABEL_ENV === 'esm' ? [extensionsForESM] : []),
+      ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
+    ];
 
 module.exports = {
   assumptions: {

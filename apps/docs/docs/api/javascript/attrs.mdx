@@ -1,0 +1,57 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 3
+---
+
+# `stylex.attrs`
+
+:::info
+
+Just like [`stylex.props`](./props.mdx) but the return object uses `class` instead of `className`,
+and converts `style` to a string.
+
+:::
+
+Takes an StyleX style or array of StyleX styles, and returns a props object.
+Values can also be `null`, `undefined`, or `false`.
+
+The return value should be onto an element to apply the styles directly.
+
+```ts
+function attrs(styles: StyleXStyles | StyleXStyles[]): {
+  class?: string;
+  style?: string;
+};
+```
+
+### Example use:
+
+```jsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  root: {
+    backgroundColor: 'red',
+    padding: '1rem',
+    paddingInlineStart: '2rem',
+  },
+  conditional: {
+    backgroundColor: 'blue',
+  },
+  dynamic: (opacity) => ({
+    opacity,
+  }),
+});
+
+<div
+  {...stylex.attrs(
+    styles.root,
+    condition && styles.conditional,
+    props.style,
+    styles.dynamic(state.opacity),
+  )}
+/>;
+```

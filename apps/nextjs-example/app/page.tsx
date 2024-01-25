@@ -7,8 +7,9 @@
  *
  */
 
-import * as stylex from '@stylexjs/stylex';
-import Card from './Card';
+
+import stylex from '@stylexjs/stylex';
+import Card from '@/components/Card';
 import {
   globalTokens as $,
   spacing,

@@ -15,7 +15,6 @@ const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
 const jsxSyntaxPlugin = require('@babel/plugin-syntax-jsx');
 const typescriptSyntaxPlugin = require('@babel/plugin-syntax-typescript');
 const fs = require('fs/promises');
-
 const { NormalModule, Compilation } = webpack;
 
 const PLUGIN_NAME = 'stylex';
@@ -58,12 +57,12 @@ class StylexPlugin {
     stylexImports = ['stylex', '@stylexjs/stylex'],
     rootDir,
     babelConfig = {},
+    aliases,
     useCSSLayers = false,
   } /*: PluginOptions */ = {}) {
     this.dev = dev;
     this.appendTo = appendTo;
     this.filename = filename;
-
     this.babelConfig = {
       plugins: [],
       presets: [],
@@ -76,6 +75,7 @@ class StylexPlugin {
       {
         dev,
         useRemForFontSize,
+        aliases: aliases,
         runtimeInjection: false,
         genConditionalClasses: true,
         treeshakeCompensation: true,

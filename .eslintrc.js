@@ -35,6 +35,7 @@ module.exports = {
     'lib',
     'node_modules',
     'next-env.d.ts',
+    'next.config.js',
   ],
   globals: {
     $Call: 'readonly',

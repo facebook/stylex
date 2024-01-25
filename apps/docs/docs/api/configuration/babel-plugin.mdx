@@ -124,6 +124,18 @@ Enable this option to prevent that by adding an import with no specifier.
 
 <hr />
 
+### `aliases`
+
+```ts
+aliases: {[key: string]: string | Array<string>} // Default: undefined
+```
+
+`aliases` option allows you to alias project directories to absolute paths, making it easier to import modules. 
+
+Example: `'@/components/*': [path.join(__dirname, './src/components/*')]`
+
+<hr />
+
 ### `unstable_moduleResolution`
 
 ```ts
