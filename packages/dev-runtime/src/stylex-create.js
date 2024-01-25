@@ -34,9 +34,13 @@ function compareObjs<Obj: NestedObj>(
   path: $ReadOnlyArray<string> = [],
 ): Obj {
   const result: Partial<Obj> = ({}: $FlowFixMe);
-  for (const key in a) {
-    const val1 = a[key];
-    const val2 = b[key];
+  for (const origKey in a) {
+    let key = origKey;
+    if (origKey.startsWith('var(') && origKey.endsWith(')')) {
+      key = origKey.slice(4, -1);
+    }
+    const val1 = a[origKey];
+    const val2 = b[origKey];
     const keyPath = [...path, key];
     if (typeof val1 === 'object' && !Array.isArray(val1)) {
       result[key] = compareObjs(val1, (val2: $FlowFixMe), vars, keyPath);
@@ -83,8 +87,12 @@ function splitStaticObj<
   const inlineStylesFn = (...args: Args): { [string]: string | number } => {
     const obj = fn(...args);
     const styles: { [string]: string | number } = {};
-    for (const key in varPaths) {
-      const path = varPaths[key];
+    for (const origKey in varPaths) {
+      let key = origKey;
+      if (origKey.startsWith('var(') && origKey.endsWith(')')) {
+        key = origKey.slice(4, -1);
+      }
+      const path = varPaths[origKey];
       const value = objGet(obj, path);
       const styleProp =
         path.find((prop) => !prop.startsWith(':') && !prop.startsWith('@')) ??
@@ -111,8 +119,12 @@ function createWithFns<S: { ... }>(
   const stylesWithFns: {
     [string]: (...args: any) => { +[string]: string | number },
   } = {};
-  for (const key in styles) {
-    const value = styles[key];
+  for (const origKey in styles) {
+    let key = origKey;
+    if (origKey.startsWith('var(') && origKey.endsWith(')')) {
+      key = origKey.slice(4, -1);
+    }
+    const value = styles[origKey];
     if (typeof value === 'function') {
       const [staticObj, inlineStylesFn] = splitStaticObj(value, config);
       stylesWithoutFns[key] = staticObj;
@@ -121,6 +133,7 @@ function createWithFns<S: { ... }>(
       stylesWithoutFns[key] = value;
     }
   }
+
   const [compiledStyles, injectedStyles] = create(stylesWithoutFns, config);
   for (const key in injectedStyles) {
     const { ltr, priority, rtl } = injectedStyles[key];

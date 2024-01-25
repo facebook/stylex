@@ -31,7 +31,11 @@ export default function flatMapExpandedShorthands(
   objEntry: $ReadOnly<[string, TStyleValue]>,
   options: StyleXOptions,
 ): $ReadOnlyArray<[string, TStyleValue]> {
-  const [key, value] = objEntry;
+  // eslint-disable-next-line prefer-const
+  let [key, value] = objEntry;
+  if (key.startsWith('var(') && key.endsWith(')')) {
+    key = key.slice(4, -1);
+  }
   const expansion: (
     string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
