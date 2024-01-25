@@ -32,7 +32,16 @@ export default function normalizeWhitespace(
         node.value = ' ';
         break;
       }
-      case 'div':
+      case 'div': {
+        if (node.value === ',') {
+          node.before = '';
+          node.after = '';
+        } else {
+          node.before = ' ';
+          node.after = ' ';
+        }
+        break;
+      }
       case 'function': {
         node.before = '';
         node.after = '';

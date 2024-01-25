@@ -23,7 +23,15 @@ export default function normalizeZeroDimensions(
   ast: PostCSSValueAST,
   _: mixed,
 ): PostCSSValueAST {
+  let endFunction = 0;
+
   ast.walk((node) => {
+    if (node.type === 'function' && !endFunction) {
+      endFunction = node.sourceEndIndex ?? 0;
+    }
+    if (endFunction > 0 && node.sourceIndex > endFunction) {
+      endFunction = 0;
+    }
     if (node.type !== 'word') {
       return;
     }
@@ -35,7 +43,7 @@ export default function normalizeZeroDimensions(
       node.value = '0deg';
     } else if (timings.indexOf(dimension.unit) !== -1) {
       node.value = '0s';
-    } else {
+    } else if (!endFunction) {
       node.value = '0';
     }
   });
