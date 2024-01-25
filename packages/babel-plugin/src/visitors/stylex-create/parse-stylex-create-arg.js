@@ -139,7 +139,10 @@ function evaluatePartialObjectRecursively(
       if (!keyResult.confident) {
         return { confident: false, deopt: keyResult.deopt, value: null };
       }
-      const key = keyResult.value;
+      let key = keyResult.value;
+      if (key.startsWith('var(') && key.endsWith(')')) {
+        key = key.slice(4, -1);
+      }
 
       const valuePath: NodePath<t.Expression | t.PatternLike> =
         prop.get('value');

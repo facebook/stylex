@@ -711,6 +711,39 @@ describe('Development Plugin Transformation', () => {
       `);
     });
 
+    test('transforms style object with wrapped custom property', () => {
+      const styles = stylex.create({
+        default: (bgColor) => ({
+          'var(--background-color)': bgColor,
+        }),
+      });
+
+      expect(styles.default('red')).toMatchInlineSnapshot(`
+        [
+          {
+            "$$css": true,
+            "--background-color": "xyv4n8w",
+          },
+          {
+            "----background-color": "initial",
+          },
+        ]
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xyv4n8w",
+            {
+              "ltr": ".xyv4n8w{--background-color:var(----background-color,revert)}",
+              "rtl": null,
+            },
+            1,
+          ],
+        ]
+      `);
+    });
+
     test('transforms nested pseudo-class to CSS', () => {
       const styles = stylex.create({
         default: (color) => ({

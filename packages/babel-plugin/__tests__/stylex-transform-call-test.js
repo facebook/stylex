@@ -1200,6 +1200,33 @@ describe('@stylexjs/babel-plugin', () => {
         stylex(styles[variant]);"
       `);
     });
+
+    test('stylex keeps spaces around operators', () => {
+      expect(
+        transform(`
+          import stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            default: {
+              margin: 'max(0px, (48px - var(--x16dnrjz)) / 2)',
+            },
+          });
+          stylex(styles.default, props);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        import stylex from '@stylexjs/stylex';
+        var _inject2 = _inject;
+        _inject2(".x1d6cl6p{margin:max(0px,(48px - var(--x16dnrjz)) / 2)}", 1000);
+        const styles = {
+          default: {
+            margin: "x1d6cl6p",
+            $$css: true
+          }
+        };
+        stylex(styles.default, props);"
+      `);
+    });
+
     test('stylex call with composition of external styles', () => {
       expect(
         transform(`

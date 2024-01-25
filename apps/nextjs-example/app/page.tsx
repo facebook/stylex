@@ -7,7 +7,7 @@
  *
  */
 
-
+import React from 'react';
 import stylex from '@stylexjs/stylex';
 import Card from '@/components/Card';
 import {
