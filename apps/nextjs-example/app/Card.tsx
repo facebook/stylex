@@ -8,7 +8,6 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
-import { keyframes } from '@stylexjs/stylex';
 import { globalTokens as $, spacing, text } from './globalTokens.stylex';
 import { colors } from '@stylexjs/open-props/lib/colors.stylex';
 import { tokens } from './CardTokens.stylex';
@@ -42,15 +41,6 @@ const REDUCE_MOTION = '@media (prefers-reduced-motion: reduce)' as const;
 
 const bgDefault = `rgba(${$.cardR}, ${$.cardG}, ${$.cardB}, 0)` as const;
 
-const fadeIn = keyframes({
-  '0%': {
-    opacity: 0
-  },
-  '100%': {
-    opacity: 1
-  }
-});
-
 const styles = stylex.create({
   link: {
     display: {
@@ -73,7 +63,6 @@ const styles = stylex.create({
     },
     color: 'inherit',
     fontFamily: $.fontSans,
-    animationName: fadeIn,
     padding: spacing.sm,
     transitionProperty: 'background-color, border-color',
     transitionDuration: '400ms',
