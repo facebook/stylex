@@ -10,7 +10,7 @@
     "build": "babel src/ --out-dir lib/",
     "prebuild-haste": "gen-types -i src/ -o lib/",
     "build-haste": "rollup --config ./rollup.config.mjs",
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "micromatch": "^4.0.5"

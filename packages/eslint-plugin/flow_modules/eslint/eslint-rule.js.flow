@@ -68,6 +68,10 @@ export type NodeParentExtension = {
 };
 type Node = ESTree.Node & NodeParentExtension;
 
+export type SourceCode = {
+  getTokensBetween(left: $ReadOnly<{...ESTree.Property, ...}>, right: $ReadOnly<{...ESTree.Property, ...}>, options: { includeComments?: boolean }): Array<AST.Token | ESTree.Comment>;
+};
+
 export type RuleContext = {
   id: string,
   options: Array<$FlowFixMe>,
@@ -75,7 +79,7 @@ export type RuleContext = {
   parserPath: string,
   // parserOptions: Linter.ParserOptions;
   // parserServices: SourceCode.ParserServices;
-
+  sourceCode: SourceCode;
   getAncestors(): Array<ESTree.Node>,
 
   // getDeclaredVariables(node: ESTree.Node): Scope.Variable[];
