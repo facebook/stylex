@@ -241,6 +241,7 @@ type display =
   | 'inline-flex'
   | 'grid'
   | 'inline-grid'
+  | '-webkit-box'
   | 'run-in'
   | 'ruby'
   | 'ruby-base'

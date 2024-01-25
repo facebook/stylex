@@ -732,6 +732,7 @@ const display = makeUnionRule(
   makeLiteralRule('inline-flex'),
   makeLiteralRule('grid'),
   makeLiteralRule('inline-grid'),
+  makeLiteralRule('-webkit-box'),
   makeLiteralRule('run-in'),
   makeLiteralRule('ruby'),
   makeLiteralRule('ruby-base'),
@@ -1546,6 +1547,14 @@ const SupportedVendorSpecificCSSProperties = {
   WebkitAppearance: makeLiteralRule('textfield'),
   WebkitTapHighlightColor: color,
   WebkitOverflowScrolling: makeLiteralRule('touch'),
+
+  WebkitBoxOrient: makeUnionRule(
+    'horizontal',
+    'vertical',
+    'inline-axis',
+    'block-axis',
+  ),
+  WebkitLineClamp: isNumber,
 
   WebkitMaskImage: maskImage,
 
