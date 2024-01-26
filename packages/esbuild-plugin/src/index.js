@@ -8,7 +8,6 @@
  */
 
 import path from 'path';
-// import { readFile, writeFile, mkdir } from 'fs/promises';
 import { promises } from 'fs';
 import { transformAsync, type PluginItem } from '@babel/core';
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
