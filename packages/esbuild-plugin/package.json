@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/esbuild-plugin",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "StyleX esbuild plugin",
   "main": "lib/index.js",
   "type": "module",
@@ -23,14 +23,14 @@
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3",
-    "@stylexjs/babel-plugin": "^0.5.0",
-    "@stylexjs/shared": "^0.5.0",
+    "@stylexjs/babel-plugin": "^0.5.1",
+    "@stylexjs/shared": "^0.5.1",
     "babel-plugin-syntax-hermes-parser": "^0.18.0",
     "esbuild": "^0.19.9"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.4",
-    "@stylexjs/stylex": "^0.5.0",
+    "@stylexjs/stylex": "^0.5.1",
     "eslint": "^8.55.0"
   }
 }
