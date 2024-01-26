@@ -38,8 +38,8 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
     `);
     expect(result.code).toMatchInlineSnapshot(`
       "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-      import stylex from 'stylex';
       var _inject2 = _inject;
+      import stylex from 'stylex';
       _inject2(".xrkmrrc{background-color:red}", 3000);
       _inject2(".xju2f9n{color:blue}", 3000);
       const styles = {
@@ -88,8 +88,8 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
     `);
     expect(result.code).toMatchInlineSnapshot(`
       "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-      import stylex from 'stylex';
       var _inject2 = _inject;
+      import stylex from 'stylex';
       _inject2(".xrkmrrc{background-color:red}", 3000);
       _inject2(".xju2f9n{color:blue}", 3000);"
     `);

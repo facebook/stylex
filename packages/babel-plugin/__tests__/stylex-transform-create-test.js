@@ -40,8 +40,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".xju2f9n{color:blue}", 3000);"
       `);
@@ -60,8 +60,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import * as foo from 'stylex';
         var _inject2 = _inject;
+        import * as foo from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".xju2f9n{color:blue}", 3000);"
       `);
@@ -80,8 +80,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import { create } from 'stylex';
         var _inject2 = _inject;
+        import { create } from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".xju2f9n{color:blue}", 3000);"
       `);
@@ -99,8 +99,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xgau0yw{--background-color:red}", 1);"
       `);
     });
@@ -117,8 +117,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x13tgbkp{--final-color:var(--background-color)}", 1);"
       `);
     });
@@ -138,8 +138,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".xju2f9n{color:blue}", 3000);"
       `);
@@ -157,8 +157,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xd71okc{content:attr(some-attribute)}", 3000);"
       `);
     });
@@ -185,8 +185,8 @@ describe('@stylexjs/babel-plugin', () => {
 
       expect(camelCased).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x1cfch2b{transition-property:margin-top}", 3000);"
       `);
     });
@@ -203,8 +203,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x17389it{transition-property:--foo}", 3000);"
       `);
     });
@@ -224,8 +224,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x1gykpug:hover{background-color:red}", 3130);
         _inject2(".x17z2mba:hover{color:blue}", 3130);"
       `);
@@ -248,8 +248,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x1gykpug:hover{background-color:red}", 3130);
         _inject2(".x17z2mba:hover{color:blue}", 3130);"
       `);
@@ -267,8 +267,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x1ruww2u{position:sticky;position:fixed}", 3000);"
       `);
     });
@@ -288,8 +288,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xixxii4{position:fixed}", 3000);
         _inject2("@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}", 3200);"
       `);
@@ -308,8 +308,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x87ps6o{user-select:none}", 3000);"
       `);
     });
@@ -329,8 +329,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xb3r6kr{overflow:hidden}", 2000);
         _inject2(".xbsl7fq{border-style:dashed}", 2000);
         _inject2(".xmkeg23{border-width:1px}", 2000);"
@@ -391,8 +391,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x15oojuh{position:fixed;position:sticky}", 3000);
         export const styles = {
           foo: {
@@ -415,8 +415,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 3000);"
       `);
     });
@@ -438,8 +438,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x19iys6w:invalpwdijad{background-color:red}", 3040);
           _inject2(".x5z3o4w:invalpwdijad{color:blue}", 3040);"
         `);
@@ -468,8 +468,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x17z2mba:hover{color:blue}", 3130);
           _inject2(".x96fq8s:active{color:red}", 3170);
           _inject2(".x1wvtd7d:focus{color:yellow}", 3150);
@@ -491,8 +491,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x1nxcus0:hover{position:sticky;position:fixed}", 3130);"
         `);
       });
@@ -513,8 +513,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x19iys6w:invalpwdijad{background-color:red}", 3040);
           _inject2(".x5z3o4w:invalpwdijad{color:blue}", 3040);"
         `);
@@ -537,8 +537,8 @@ describe('@stylexjs/babel-plugin', () => {
          `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x17z2mba:hover{color:blue}", 3130);
           _inject2(".x96fq8s:active{color:red}", 3170);
           _inject2(".x1wvtd7d:focus{color:yellow}", 3150);
@@ -560,8 +560,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x1nxcus0:hover{position:sticky;position:fixed}", 3130);"
         `);
       });
@@ -586,8 +586,8 @@ describe('@stylexjs/babel-plugin', () => {
            `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x16oeupf::before{color:red}", 8000);
           _inject2(".xdaarc3::after{color:blue}", 8000);"
         `);
@@ -607,8 +607,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x6yu8oj::placeholder{color:gray}", 8000);"
         `);
       });
@@ -627,8 +627,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 9000);"
         `);
       });
@@ -653,8 +653,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".xrkmrrc{background-color:red}", 3000);
           _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
           _inject2("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 3200);"
@@ -679,8 +679,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".xrkmrrc{background-color:red}", 3000);
           _inject2("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 3030);
           _inject2("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 3030);"
@@ -705,8 +705,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".xrkmrrc{background-color:red}", 3000);
           _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
           _inject2("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 3200);"
@@ -729,8 +729,8 @@ describe('@stylexjs/babel-plugin', () => {
           `),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          import stylex from 'stylex';
           var _inject2 = _inject;
+          import stylex from 'stylex';
           _inject2(".xrkmrrc{background-color:red}", 3000);
           _inject2("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 3030);
           _inject2("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 3030);"
@@ -774,8 +774,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         const borderRadius = 2;
         _inject2(".xe4njm9{margin:calc((100% - 50px) * .5) 20px 0}", 1000);
         _inject2(".xs4buau{border-color:red blue}", 2000);
@@ -815,8 +815,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         const borderRadius = 2;
         _inject2(".x1ok221b{margin-top:5px}", 4000);
         _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
@@ -1121,8 +1121,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".x19dipnz{color:var(--color,revert)}", 3000);
         export const styles = {
@@ -1150,8 +1150,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".x17fnjtu{width:var(--width,revert)}", 4000);
         export const styles = {
@@ -1182,8 +1182,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".x19dipnz{color:var(--color,revert)}", 3000);
         _inject2(".x1mqxbix{color:black}", 3000);
@@ -1215,8 +1215,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
         export const styles = {
           default: bgColor => [{
@@ -1243,8 +1243,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x1gykpug:hover{background-color:red}", 3130);
         _inject2(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 3130);
         export const styles = {
@@ -1274,8 +1274,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
         _inject2(".x19dipnz{color:var(--color,revert)}", 3000);
         _inject2(".x1mqxbix{color:black}", 3000);
@@ -1307,8 +1307,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
         export const styles = {
           default: bgColor => [{
@@ -1335,8 +1335,8 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         _inject2(".x1gykpug:hover{background-color:red}", 3130);
         _inject2(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 3130);
         export const styles = {
