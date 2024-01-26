@@ -114,8 +114,8 @@ describe('@stylexjs/babel-plugin', () => {
       );
       expect(output1).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -168,8 +168,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -231,8 +231,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -303,8 +303,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -353,8 +353,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -398,8 +398,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -443,8 +443,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -488,8 +488,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",
@@ -527,8 +527,8 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        import stylex from 'stylex';
         var _inject2 = _inject;
+        import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",

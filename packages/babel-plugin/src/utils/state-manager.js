@@ -337,17 +337,27 @@ export default class StateManager {
       return identifier;
     }
     const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
-    let lastImportIndex = -1;
+    let targetImportIndex = -1;
     for (let i = 0; i < bodyPath.length; i++) {
       const statement = bodyPath[i];
       if (pathUtils.isImportDeclaration(statement)) {
-        lastImportIndex = i;
+        targetImportIndex = i;
+        if (
+          statement.node.specifiers.find(
+            (s) =>
+              s.type === 'ImportSpecifier' &&
+              s.local.type === 'Identifier' &&
+              s.local.name === identifier.name,
+          )
+        ) {
+          break;
+        }
       }
     }
-    if (lastImportIndex === -1) {
+    if (targetImportIndex === -1) {
       return identifier;
     }
-    const lastImport = bodyPath[lastImportIndex];
+    const lastImport = bodyPath[targetImportIndex];
     if (lastImport == null) {
       return identifier;
     }
@@ -373,17 +383,27 @@ export default class StateManager {
       return identifier;
     }
     const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
-    let lastImportIndex = -1;
+    let targetImportIndex = -1;
     for (let i = 0; i < bodyPath.length; i++) {
       const statement = bodyPath[i];
       if (pathUtils.isImportDeclaration(statement)) {
-        lastImportIndex = i;
+        targetImportIndex = i;
+        if (
+          statement.node.specifiers.find(
+            (s) =>
+              s.type === 'ImportDefaultSpecifier' &&
+              s.local.type === 'Identifier' &&
+              s.local.name === identifier.name,
+          )
+        ) {
+          break;
+        }
       }
     }
-    if (lastImportIndex === -1) {
+    if (targetImportIndex === -1) {
       return identifier;
     }
-    const lastImport = bodyPath[lastImportIndex];
+    const lastImport = bodyPath[targetImportIndex];
     if (lastImport == null) {
       return identifier;
     }
