@@ -16,7 +16,7 @@ files. Start with
 Here is a simple example of StyleX use:
 
 ```js
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   root: {

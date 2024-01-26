@@ -114,6 +114,7 @@ describe('@stylexjs/babel-plugin', () => {
       );
       expect(output1).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -122,9 +123,9 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        _inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk",
@@ -167,6 +168,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -175,9 +177,9 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        _inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk",
@@ -229,6 +231,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -237,9 +240,9 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        _inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk",
@@ -300,6 +303,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -308,15 +312,15 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        _inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk",
           "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
         };
-        _inject(".xpsjjyf{--xgck17p:white;--xpegid5:black;--xrqfjmn:0px;}", 0.8);
+        _inject2(".xpsjjyf{--xgck17p:white;--xpegid5:black;--xrqfjmn:0px;}", 0.8);
         const buttonThemeMonochromatic = {
           $$css: true,
           x568ih9: "xpsjjyf",
@@ -349,6 +353,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -358,9 +363,9 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const RADIUS = 10;
-        _inject(".xrpt93l{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:10;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xrpt93l{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xrpt93l{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:10;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xrpt93l{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xrpt93l",
@@ -393,6 +398,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -402,9 +408,9 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const COLOR = 'coral';
-        _inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk",
@@ -437,6 +443,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -446,9 +453,9 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const name = 'light';
-        _inject(".x1u43pop{--xgck17p:lightgreen;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.x1u43pop{--xgck17p:transparent;}}", 0.9);
+        _inject2(".x1u43pop{--xgck17p:lightgreen;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.x1u43pop{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "x1u43pop",
@@ -481,6 +488,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -490,9 +498,9 @@ describe('@stylexjs/babel-plugin', () => {
           __themeName__: "x568ih9"
         };
         const RADIUS = 2;
-        _inject(".x1ubmxd4{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:4;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.x1ubmxd4{--xgck17p:transparent;}}", 0.9);
+        _inject2(".x1ubmxd4{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:4;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.x1ubmxd4{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "x1ubmxd4",
@@ -511,7 +519,7 @@ describe('@stylexjs/babel-plugin', () => {
           {
             dev: true,
             unstable_moduleResolution: {
-              type: 'commonjs',
+              type: 'commonJS',
               rootDir,
             },
             filename: '/stylex/packages/utils/NestedTheme.stylex.js',
@@ -519,6 +527,7 @@ describe('@stylexjs/babel-plugin', () => {
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
@@ -527,9 +536,9 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };
-        _inject(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
-        _inject("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
-        _inject("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
+        _inject2(".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}", 0.8);
+        _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
+        _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
           $$css: true,
           x568ih9: "xfmksyk",

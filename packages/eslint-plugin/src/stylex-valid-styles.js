@@ -11,6 +11,7 @@
 
 import namedColors from './reference/namedColors';
 import getDistance from './utils/getDistance';
+import isWhiteSpaceOrEmpty from './utils/isWhiteSpaceOrEmpty';
 import type {
   CallExpression,
   Directive,
@@ -185,11 +186,6 @@ const singleAnimationFillMode = makeUnionRule(
 const singleAnimationIterationCount = makeUnionRule(
   makeLiteralRule('infinite'),
   isNumber,
-);
-// TODO change this to a special function that looks for stylex.keyframes call
-const singleAnimationName = makeUnionRule(
-  makeLiteralRule('none'),
-  isAnimationName,
 );
 
 const singleAnimationPlayState = makeUnionRule(
@@ -489,7 +485,6 @@ const animationDirection = singleAnimationDirection;
 const animationDuration = time;
 const animationFillMode = singleAnimationFillMode;
 const animationIterationCount = singleAnimationIterationCount;
-const animationName = singleAnimationName;
 const animationPlayState = singleAnimationPlayState;
 const animationTimingFunction = singleTimingFunction;
 const appearance = makeUnionRule(
@@ -732,6 +727,7 @@ const display = makeUnionRule(
   makeLiteralRule('inline-flex'),
   makeLiteralRule('grid'),
   makeLiteralRule('inline-grid'),
+  makeLiteralRule('-webkit-box'),
   makeLiteralRule('run-in'),
   makeLiteralRule('ruby'),
   makeLiteralRule('ruby-base'),
@@ -1547,6 +1543,14 @@ const SupportedVendorSpecificCSSProperties = {
   WebkitTapHighlightColor: color,
   WebkitOverflowScrolling: makeLiteralRule('touch'),
 
+  WebkitBoxOrient: makeUnionRule(
+    'horizontal',
+    'vertical',
+    'inline-axis',
+    'block-axis',
+  ),
+  WebkitLineClamp: isNumber,
+
   WebkitMaskImage: maskImage,
 
   WebkitTextFillColor: color,
@@ -1613,7 +1617,6 @@ const CSSProperties = {
   animationDuration: animationDuration,
   animationFillMode: animationFillMode,
   animationIterationCount: animationIterationCount,
-  animationName: animationName,
   animationPlayState: animationPlayState,
   animationTimingFunction: animationTimingFunction,
   animationTimeline: isString,
@@ -2056,11 +2059,17 @@ const CSSProperties = {
   rubyAlign: rubyAlign,
   rubyMerge: rubyMerge,
   rubyPosition: rubyPosition,
+
+  scrollbarColor: color,
+  scrollbarGutter: makeUnionRule('auto', 'stable', 'stable both-edges'),
+  scrollbarWidth: makeUnionRule('auto', 'thin', 'none'),
+
   scrollBehavior: scrollBehavior,
   scrollSnapPaddingBottom: scrollSnapPaddingBottom,
   scrollSnapPaddingTop: scrollSnapPaddingTop,
   scrollSnapAlign: scrollSnapAlign,
   scrollSnapType: scrollSnapType,
+  scrollSnapStop: makeUnionRule('normal', 'always'),
 
   // scrollMargin: makeUnionRule(isNumber, isString),
   scrollMarginBlockEnd: makeUnionRule(isNumber, isString),
@@ -2168,7 +2177,7 @@ const CSSProperties = {
   zIndex: zIndex,
 
   // Purposely not supported because it is not supported in Firefox.
-  // zoom: makeUnionRule('normal', 'reset', isNumber),
+  zoom: makeUnionRule('normal', 'reset', isNumber, isPercentage),
 };
 const CSSPropertyKeys = Object.keys(CSSProperties);
 for (const key of CSSPropertyKeys) {
@@ -2212,6 +2221,14 @@ const pseudoElements = makeUnionRule(
   makeLiteralRule('::-webkit-search-cancel-button'),
   makeLiteralRule('::-webkit-search-results-button'),
   makeLiteralRule('::-webkit-search-results-decoration'),
+  // For Scrollbars in Webkit and Chromium
+  makeLiteralRule('::-webkit-scrollbar'),
+  makeLiteralRule('::-webkit-scrollbar-button'),
+  makeLiteralRule('::-webkit-scrollbar-thumb'),
+  makeLiteralRule('::-webkit-scrollbar-track'),
+  makeLiteralRule('::-webkit-scrollbar-track-piece'),
+  makeLiteralRule('::-webkit-scrollbar-corner'),
+  makeLiteralRule('::-webkit-resizer'),
 );
 
 const pseudoClassesAndAtRules = makeUnionRule(
@@ -2326,6 +2343,12 @@ const stylexValidStyles = {
       propLimits = {},
     }: Schema = context.options[0] || {};
 
+    const stylexDefineVarsFileExtension = '.stylex';
+    const stylexDefineVarsTokenImports = new Set<string>();
+    const styleXDefaultImports = new Set<string>();
+    const styleXCreateImports = new Set<string>();
+    const styleXKeyframesImports = new Set<string>();
+
     const overrides: PropLimits = {
       ...(banPropsForLegacy ? legacyProps : {}),
       ...propLimits,
@@ -2333,6 +2356,12 @@ const stylexValidStyles = {
 
     const CSSPropertiesWithOverrides: { [string]: RuleCheck } = {
       ...CSSProperties,
+      // TODO change this to a special function that looks for stylex.keyframes call
+      animationName: makeUnionRule(
+        makeLiteralRule('none'),
+        isAnimationName(styleXDefaultImports, styleXKeyframesImports),
+        all,
+      ),
     };
     for (const overrideKey in overrides) {
       const { limit, reason } = overrides[overrideKey];
@@ -2364,11 +2393,6 @@ const stylexValidStyles = {
         CSSPropertiesWithOverrides[overrideKey] = overrideValue;
       }
     }
-
-    const stylexDefineVarsFileExtension = '.stylex';
-    const stylexDefineVarsTokenImports = new Set<string>();
-    const styleXDefaultImports = new Set<string>();
-    const styleXCreateImports = new Set<string>();
 
     function isStylexCallee(node: Node) {
       return (
@@ -2451,6 +2475,15 @@ const stylexValidStyles = {
               )(key, variables);
 
               if (ruleCheck !== undefined) {
+                if (keyName.startsWith('::')) {
+                  return context.report(
+                    ({
+                      node: style.value,
+                      loc: style.value.loc,
+                      message: `Unknown pseudo element "${keyName}"`,
+                    }: $ReadOnly<Rule.ReportDescriptor>),
+                  );
+                }
                 return context.report(
                   ({
                     node: style.value,
@@ -2640,6 +2673,20 @@ const stylexValidStyles = {
               }: Rule.ReportDescriptor),
             );
           }
+          if (
+            style.value.type === 'Literal' &&
+            typeof style.value.value === 'string' &&
+            isWhiteSpaceOrEmpty(style.value.value) &&
+            styleKey.name !== 'content'
+          ) {
+            return context.report(
+              ({
+                node: style.value,
+                loc: style.value.loc,
+                message: 'The empty string is not allowed by Stylex.',
+              }: Rule.ReportDescriptor),
+            );
+          }
         }
       }
     }
@@ -2766,6 +2813,12 @@ const stylexValidStyles = {
               specifier.imported.name === 'create'
             ) {
               styleXCreateImports.add(specifier.local.name);
+            }
+            if (
+              specifier.type === 'ImportSpecifier' &&
+              specifier.imported.name === 'keyframes'
+            ) {
+              styleXKeyframesImports.add(specifier.local.name);
             }
           });
         }

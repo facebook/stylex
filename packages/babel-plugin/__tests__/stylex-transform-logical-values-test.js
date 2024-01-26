@@ -43,8 +43,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xof8tvn{clear:inline-end}", 3000);
+        _inject2(".xof8tvn{clear:inline-end}", 3000);
         const classnames = "xof8tvn";"
       `);
     });
@@ -58,8 +59,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x18lmvvi{clear:inline-start}", 3000);
+        _inject2(".x18lmvvi{clear:inline-start}", 3000);
         const classnames = "x18lmvvi";"
       `);
     });
@@ -73,8 +75,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1h0q493{float:inline-end}", 3000);
+        _inject2(".x1h0q493{float:inline-end}", 3000);
         const classnames = "x1h0q493";"
       `);
     });
@@ -88,8 +91,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1kmio9f{float:inline-start}", 3000);
+        _inject2(".x1kmio9f{float:inline-start}", 3000);
         const classnames = "x1kmio9f";"
       `);
     });
@@ -103,8 +107,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xp4054r{text-align:right}", 3000, ".xp4054r{text-align:left}");
+        _inject2(".xp4054r{text-align:right}", 3000, ".xp4054r{text-align:left}");
         const classnames = "xp4054r";"
       `);
     });
@@ -118,8 +123,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1yc453h{text-align:left}", 3000, ".x1yc453h{text-align:right}");
+        _inject2(".x1yc453h{text-align:left}", 3000, ".x1yc453h{text-align:right}");
         const classnames = "x1yc453h";"
       `);
     });
@@ -137,8 +143,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xodj72a{clear:right}", 3000, ".xodj72a{clear:left}");
+        _inject2(".xodj72a{clear:right}", 3000, ".xodj72a{clear:left}");
         const classnames = "xodj72a";"
       `);
     });
@@ -152,8 +159,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x390i0x{clear:left}", 3000, ".x390i0x{clear:right}");
+        _inject2(".x390i0x{clear:left}", 3000, ".x390i0x{clear:right}");
         const classnames = "x390i0x";"
       `);
     });
@@ -167,8 +175,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1guec7k{float:right}", 3000, ".x1guec7k{float:left}");
+        _inject2(".x1guec7k{float:right}", 3000, ".x1guec7k{float:left}");
         const classnames = "x1guec7k";"
       `);
     });
@@ -182,8 +191,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xrbpyxo{float:left}", 3000, ".xrbpyxo{float:right}");
+        _inject2(".xrbpyxo{float:left}", 3000, ".xrbpyxo{float:right}");
         const classnames = "xrbpyxo";"
       `);
     });
@@ -201,8 +211,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x14mnfz1{cursor:e-resize}", 3000, ".x14mnfz1{cursor:w-resize}");
+        _inject2(".x14mnfz1{cursor:e-resize}", 3000, ".x14mnfz1{cursor:w-resize}");
         const classnames = "x14mnfz1";"
       `);
     });
@@ -216,8 +227,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x14isd7o{cursor:w-resize}", 3000, ".x14isd7o{cursor:e-resize}");
+        _inject2(".x14isd7o{cursor:w-resize}", 3000, ".x14isd7o{cursor:e-resize}");
         const classnames = "x14isd7o";"
       `);
     });
@@ -231,8 +243,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xc7edbc{cursor:ne-resize}", 3000, ".xc7edbc{cursor:nw-resize}");
+        _inject2(".xc7edbc{cursor:ne-resize}", 3000, ".xc7edbc{cursor:nw-resize}");
         const classnames = "xc7edbc";"
       `);
     });
@@ -246,8 +259,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xrpsa6j{cursor:nw-resize}", 3000, ".xrpsa6j{cursor:ne-resize}");
+        _inject2(".xrpsa6j{cursor:nw-resize}", 3000, ".xrpsa6j{cursor:ne-resize}");
         const classnames = "xrpsa6j";"
       `);
     });
@@ -261,8 +275,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xp35lg9{cursor:se-resize}", 3000, ".xp35lg9{cursor:sw-resize}");
+        _inject2(".xp35lg9{cursor:se-resize}", 3000, ".xp35lg9{cursor:sw-resize}");
         const classnames = "xp35lg9";"
       `);
     });
@@ -276,8 +291,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1egwzy8{cursor:sw-resize}", 3000, ".x1egwzy8{cursor:se-resize}");
+        _inject2(".x1egwzy8{cursor:sw-resize}", 3000, ".x1egwzy8{cursor:se-resize}");
         const classnames = "x1egwzy8";"
       `);
     });
@@ -296,8 +312,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x13xdq3h{animation-name:ignore}", 3000);
+        _inject2(".x13xdq3h{animation-name:ignore}", 3000);
         const classnames = "x13xdq3h";"
       `);
     });
@@ -311,8 +328,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xl0ducr{background-position:top right}", 2000, ".xl0ducr{background-position:top left}");
+        _inject2(".xl0ducr{background-position:top right}", 2000, ".xl0ducr{background-position:top left}");
         const classnames = "xl0ducr";"
       `);
       expect(
@@ -323,8 +341,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xgg80n4{background-position:top left}", 2000, ".xgg80n4{background-position:top right}");
+        _inject2(".xgg80n4{background-position:top left}", 2000, ".xgg80n4{background-position:top right}");
         const classnames = "xgg80n4";"
       `);
     });
@@ -338,8 +357,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1gnnqk1{box-shadow:none}", 3000);
+        _inject2(".x1gnnqk1{box-shadow:none}", 3000);
         const classnames = "x1gnnqk1";"
       `);
       expect(
@@ -350,8 +370,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xtgyqtp{box-shadow:1px 1px #000}", 3000, ".xtgyqtp{box-shadow:-1px 1px #000}");
+        _inject2(".xtgyqtp{box-shadow:1px 1px #000}", 3000, ".xtgyqtp{box-shadow:-1px 1px #000}");
         const classnames = "xtgyqtp";"
       `);
       expect(
@@ -362,8 +383,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1d2r41h{box-shadow:-1px -1px #000}", 3000, ".x1d2r41h{box-shadow:1px -1px #000}");
+        _inject2(".x1d2r41h{box-shadow:-1px -1px #000}", 3000, ".x1d2r41h{box-shadow:1px -1px #000}");
         const classnames = "x1d2r41h";"
       `);
       expect(
@@ -374,8 +396,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1x0mpz7{box-shadow:inset 1px 1px #000}", 3000, ".x1x0mpz7{box-shadow:inset -1px 1px #000}");
+        _inject2(".x1x0mpz7{box-shadow:inset 1px 1px #000}", 3000, ".x1x0mpz7{box-shadow:inset -1px 1px #000}");
         const classnames = "x1x0mpz7";"
       `);
       expect(
@@ -386,8 +409,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1fumi7f{box-shadow:1px 1px 1px 1px #000}", 3000, ".x1fumi7f{box-shadow:-1px 1px 1px 1px #000}");
+        _inject2(".x1fumi7f{box-shadow:1px 1px 1px 1px #000}", 3000, ".x1fumi7f{box-shadow:-1px 1px 1px 1px #000}");
         const classnames = "x1fumi7f";"
       `);
       expect(
@@ -398,8 +422,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1fs23zf{box-shadow:inset 1px 1px 1px 1px #000}", 3000, ".x1fs23zf{box-shadow:inset -1px 1px 1px 1px #000}");
+        _inject2(".x1fs23zf{box-shadow:inset 1px 1px 1px 1px #000}", 3000, ".x1fs23zf{box-shadow:inset -1px 1px 1px 1px #000}");
         const classnames = "x1fs23zf";"
       `);
       expect(
@@ -410,8 +435,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".xtgmjod{box-shadow:2px 2px 2px 2px red,inset 1px 1px 1px 1px #000}", 3000, ".xtgmjod{box-shadow:-2px 2px 2px 2px red, inset -1px 1px 1px 1px #000}");
+        _inject2(".xtgmjod{box-shadow:2px 2px 2px 2px red,inset 1px 1px 1px 1px #000}", 3000, ".xtgmjod{box-shadow:-2px 2px 2px 2px red, inset -1px 1px 1px 1px #000}");
         const classnames = "xtgmjod";"
       `);
     });
@@ -425,8 +451,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x19pm5ym{text-shadow:none}", 3000);
+        _inject2(".x19pm5ym{text-shadow:none}", 3000);
         const classnames = "x19pm5ym";"
       `);
       expect(
@@ -437,8 +464,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x12y90mb{text-shadow:1px 1px #000}", 3000, ".x12y90mb{text-shadow:-1px 1px #000}");
+        _inject2(".x12y90mb{text-shadow:1px 1px #000}", 3000, ".x12y90mb{text-shadow:-1px 1px #000}");
         const classnames = "x12y90mb";"
       `);
       expect(
@@ -449,8 +477,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x1l3mtsg{text-shadow:-1px -1px #000}", 3000, ".x1l3mtsg{text-shadow:1px -1px #000}");
+        _inject2(".x1l3mtsg{text-shadow:-1px -1px #000}", 3000, ".x1l3mtsg{text-shadow:1px -1px #000}");
         const classnames = "x1l3mtsg";"
       `);
       expect(
@@ -461,8 +490,9 @@ describe('@stylexjs/babel-plugin', () => {
         `),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject(".x67hq7l{text-shadow:1px 1px 1px #000}", 3000, ".x67hq7l{text-shadow:-1px 1px 1px #000}");
+        _inject2(".x67hq7l{text-shadow:1px 1px 1px #000}", 3000, ".x67hq7l{text-shadow:-1px 1px 1px #000}");
         const classnames = "x67hq7l";"
       `);
     });

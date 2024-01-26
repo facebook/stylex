@@ -132,61 +132,9 @@ describe('webpack-plugin-stylex', () => {
         exports.modules = {
 
         /***/ "./index.js":
-        /***/ (() => {
+        /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-
-        // UNUSED EXPORTS: default
-
-        ;// CONCATENATED MODULE: external "stylex"
-        const external_stylex_namespaceObject = stylex;
-        ;// CONCATENATED MODULE: ./otherStyles.js
-        /**
-         * Copyright (c) Meta Platforms, Inc. and affiliates.
-         *
-         * This source code is licensed under the MIT license found in the
-         * LICENSE file in the root directory of this source tree.
-         *
-         *
-         */
-
-        // otherStyles.js
-
-
-
-
-        var styles = {
-          bar: {
-            display: "x1lliihq",
-            width: "xh8yej3",
-            $$css: true
-          }
-        };
-        /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
-        ;// CONCATENATED MODULE: ./npmStyles.js
-        /**
-         * Copyright (c) Meta Platforms, Inc. and affiliates.
-         *
-         * This source code is licensed under the MIT license found in the
-         * LICENSE file in the root directory of this source tree.
-         *
-         *
-         */
-
-        // npmStyles.js
-
-
-
-
-        const npmStyles_styles = {
-          baz: {
-            display: "xt0psk2",
-            height: "x1egiwwb",
-            width: "x3hqpx7",
-            $$css: true
-          }
-        };
-        /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-        ;// CONCATENATED MODULE: ./index.js
+        var __webpack_unused_export__;
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
          *
@@ -198,11 +146,16 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-
-
-
+        __webpack_unused_export__ = ({
+          value: true
+        });
+        __webpack_unused_export__ = App;
+        var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
+        var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
+        var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
+        function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
         var fadeAnimation = "xgnty7z-B";
-        var index_styles = {
+        var styles = {
           foo: {
             animationName: "xeuoslp",
             display: "x78zum5",
@@ -226,8 +179,82 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         function App() {
-          return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
+          return (0, _stylex.default)(_otherStyles.default.bar, styles.foo, _npmStyles.default.baz);
         }
+
+        /***/ }),
+
+        /***/ "./otherStyles.js":
+        /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
+
+        // otherStyles.js
+
+
+
+        Object.defineProperty(exports, "__esModule", ({
+          value: true
+        }));
+        exports["default"] = void 0;
+        var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
+        function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+        var styles = {
+          bar: {
+            display: "x1lliihq",
+            width: "xh8yej3",
+            $$css: true
+          }
+        };
+        var _default = exports["default"] = styles;
+
+        /***/ }),
+
+        /***/ "./npmStyles.js":
+        /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
+
+        // npmStyles.js
+
+
+
+        Object.defineProperty(exports, "__esModule", ({
+          value: true
+        }));
+        exports["default"] = void 0;
+        var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
+        function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+        const styles = {
+          baz: {
+            display: "xt0psk2",
+            height: "x1egiwwb",
+            width: "x3hqpx7",
+            $$css: true
+          }
+        };
+        var _default = exports["default"] = styles;
+
+        /***/ }),
+
+        /***/ "stylex":
+        /***/ ((module) => {
+
+        module.exports = stylex;
 
         /***/ })
 
@@ -482,13 +509,12 @@ describe('webpack-plugin-stylex', () => {
           /***/ "../../../stylex/lib/stylex-inject.js":
           /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-          var __webpack_unused_export__;
 
 
-          __webpack_unused_export__ = ({
+          Object.defineProperty(exports, "__esModule", ({
             value: true
-          });
-          exports.Z = inject;
+          }));
+          exports["default"] = inject;
           var _StyleXSheet = __webpack_require__("../../../stylex/lib/StyleXSheet.js");
           function inject(ltrRule, priority) {
             let rtlRule = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
@@ -498,72 +524,9 @@ describe('webpack-plugin-stylex', () => {
           /***/ }),
 
           /***/ "./index.js":
-          /***/ ((__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) => {
+          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-
-          // UNUSED EXPORTS: default
-
-          // EXTERNAL MODULE: ../../../stylex/lib/stylex-inject.js
-          var stylex_inject = __webpack_require__("../../../stylex/lib/stylex-inject.js");
-          ;// CONCATENATED MODULE: external "stylex"
-          const external_stylex_namespaceObject = stylex;
-          ;// CONCATENATED MODULE: ./otherStyles.js
-          /**
-           * Copyright (c) Meta Platforms, Inc. and affiliates.
-           *
-           * This source code is licensed under the MIT license found in the
-           * LICENSE file in the root directory of this source tree.
-           *
-           *
-           */
-
-          // otherStyles.js
-
-
-
-
-
-          (0,stylex_inject/* default */.Z)(".x1lliihq{display:block}", 3000);
-          (0,stylex_inject/* default */.Z)(".xh8yej3{width:100%}", 4000);
-          var styles = {
-            bar: {
-              "otherStyles__styles.bar": "otherStyles__styles.bar",
-              display: "x1lliihq",
-              width: "xh8yej3",
-              $$css: true
-            }
-          };
-          /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
-          ;// CONCATENATED MODULE: ./npmStyles.js
-          /**
-           * Copyright (c) Meta Platforms, Inc. and affiliates.
-           *
-           * This source code is licensed under the MIT license found in the
-           * LICENSE file in the root directory of this source tree.
-           *
-           *
-           */
-
-          // npmStyles.js
-
-
-
-
-
-          (0,stylex_inject/* default */.Z)(".xt0psk2{display:inline}", 3000);
-          (0,stylex_inject/* default */.Z)(".x1egiwwb{height:500px}", 4000);
-          (0,stylex_inject/* default */.Z)(".x3hqpx7{width:50%}", 4000);
-          const npmStyles_styles = {
-            baz: {
-              "npmStyles__styles.baz": "npmStyles__styles.baz",
-              display: "xt0psk2",
-              height: "x1egiwwb",
-              width: "x3hqpx7",
-              $$css: true
-            }
-          };
-          /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-          ;// CONCATENATED MODULE: ./index.js
+          var __webpack_unused_export__;
           /**
            * Copyright (c) Meta Platforms, Inc. and affiliates.
            *
@@ -575,19 +538,25 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-
-
-
-
-          (0,stylex_inject/* default */.Z)("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+          __webpack_unused_export__ = ({
+            value: true
+          });
+          __webpack_unused_export__ = App;
+          var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
+          var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
+          var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
+          var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
+          function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+          var _inject2 = _stylexInject.default;
+          _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          (0,stylex_inject/* default */.Z)(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-          (0,stylex_inject/* default */.Z)(".x78zum5{display:flex}", 3000);
-          (0,stylex_inject/* default */.Z)(".x1hm9lzh{margin-inline-start:10px}", 3000);
-          (0,stylex_inject/* default */.Z)(".xlrshdv{margin-top:99px}", 4000);
-          (0,stylex_inject/* default */.Z)(".x1egiwwb{height:500px}", 4000);
-          (0,stylex_inject/* default */.Z)(".x1oz5o6v:hover{background:red}", 1130);
-          var index_styles = {
+          _inject2(".xeuoslp{animation-name:xgnty7z-B}", 3000);
+          _inject2(".x78zum5{display:flex}", 3000);
+          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          _inject2(".xlrshdv{margin-top:99px}", 4000);
+          _inject2(".x1egiwwb{height:500px}", 4000);
+          _inject2(".x1oz5o6v:hover{background:red}", 1130);
+          var styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
               animationName: "xeuoslp",
@@ -612,8 +581,46 @@ describe('webpack-plugin-stylex', () => {
             }
           };
           function App() {
-            return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
+            return (0, _stylex.default)(_otherStyles.default.bar, styles.foo, _npmStyles.default.baz);
           }
+
+          /***/ }),
+
+          /***/ "./otherStyles.js":
+          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
+
+          // otherStyles.js
+
+
+
+          Object.defineProperty(exports, "__esModule", ({
+            value: true
+          }));
+          exports["default"] = void 0;
+          var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
+          var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
+          function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+          var _inject2 = _stylexInject.default;
+          _inject2(".x1lliihq{display:block}", 3000);
+          _inject2(".xh8yej3{width:100%}", 4000);
+          var styles = {
+            bar: {
+              "otherStyles__styles.bar": "otherStyles__styles.bar",
+              display: "x1lliihq",
+              width: "xh8yej3",
+              $$css: true
+            }
+          };
+          var _default = exports["default"] = styles;
 
           /***/ }),
 
@@ -672,6 +679,53 @@ describe('webpack-plugin-stylex', () => {
 
           module.exports = invariant;
 
+
+          /***/ }),
+
+          /***/ "./npmStyles.js":
+          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
+
+          // npmStyles.js
+
+
+
+          Object.defineProperty(exports, "__esModule", ({
+            value: true
+          }));
+          exports["default"] = void 0;
+          var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
+          var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
+          function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+          var _inject2 = _stylexInject.default;
+          _inject2(".xt0psk2{display:inline}", 3000);
+          _inject2(".x1egiwwb{height:500px}", 4000);
+          _inject2(".x3hqpx7{width:50%}", 4000);
+          const styles = {
+            baz: {
+              "npmStyles__styles.baz": "npmStyles__styles.baz",
+              display: "xt0psk2",
+              height: "x1egiwwb",
+              width: "x3hqpx7",
+              $$css: true
+            }
+          };
+          var _default = exports["default"] = styles;
+
+          /***/ }),
+
+          /***/ "stylex":
+          /***/ ((module) => {
+
+          module.exports = stylex;
 
           /***/ })
 

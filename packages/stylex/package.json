@@ -1,14 +1,41 @@
 {
   "name": "@stylexjs/stylex",
-  "version": "0.4.1",
+  "version": "0.5.1",
   "description": "A library for defining styles for optimized user interfaces.",
-  "main": "lib/stylex.js",
-  "types": "lib/stylex.d.ts",
+  "main": "./lib/stylex.js",
+  "module": "./lib/es/stylex.mjs",
+  "types": "./lib/stylex.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/es/stylex.mjs",
+      "require": "./lib/stylex.js",
+      "types": "./lib/stylex.d.ts"
+    },
+    "./lib/StyleXTypes": {
+      "import": "./lib/StyleXTypes.js",
+      "require": "./lib/StyleXTypes.js",
+      "types": "./lib/StyleXTypes.d.ts"
+    },
+    "./lib/StyleXSheet": {
+      "import": "./lib/es/StyleXSheet.mjs",
+      "require": "./lib/StyleXSheet.js",
+      "types": "./lib/StyleXSheet.d.ts"
+    },
+    "./lib/stylex-inject": {
+      "import": "./lib/es/stylex-inject.mjs",
+      "require": "./lib/stylex-inject.js",
+      "types": "./lib/stylex-inject.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
-    "build": "babel src/ --out-dir lib/ --copy-files",
+    "build:cjs": "BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build:esm": "BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
+    "postbuild:esm": "rollup -c ./rollup.config.mjs",
+    "build": "npm run build:cjs && npm run build:esm",
     "build-haste": "rewrite-imports -i src/ -o lib/",
     "test": "jest"
   },
@@ -19,7 +46,7 @@
     "utility-types": "^3.10.0"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.4.1"
+    "@stylexjs/scripts": "0.5.1"
   },
   "jest": {},
   "files": [

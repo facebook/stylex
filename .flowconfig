@@ -7,6 +7,7 @@
 .*/lib/.*
 .*/malformed_package_json/.*
 .*/next-example/.*
+.*/esbuild-example/.*
 
 [include]
 

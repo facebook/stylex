@@ -9,7 +9,7 @@ sidebar_position: 2
 # Using styles
 
 Once styles have been defined, they can be converted to props that can be spread
-on HTML elements using the `stylex.props` function. The `stylex.props` function
+on HTML elements using the [`stylex.props`](../../api/javascript/props.mdx) function. The `stylex.props` function
 sets the appropriate `className` prop on the HTML element and, when using
 [dynamic styles](/docs/learn/styling-ui/defining-styles/#dynamic-styles), the
 `style` prop.
@@ -20,6 +20,16 @@ sets the appropriate `className` prop on the HTML element and, when using
 
 While this is the simplest case, it is trivial to merge multiple style objects,
 use them conditionally, or even compose styles across module boundaries.
+
+:::tip For Solid, Svelte, Qwik, Vue, & others: `stylex.attrs`
+
+For frameworks that expect `class` instead of `className`, use [`style.attrs`](../../api/javascript/attrs.mdx) instead.
+The usage is otherwise identical to `stylex.props`.
+
+`stylex.attrs` also converts any `style` value to a string, which is useful for
+server-side rendering and frameworks that don't accept objects for `style`.
+
+:::
 
 ## Merging styles
 
