@@ -6,7 +6,7 @@
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "^7.23.6",
+    "@babel/core": "^7.23.9",
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-syntax-jsx": "^7.22.5",
     "@babel/plugin-syntax-typescript": "^7.22.5",
