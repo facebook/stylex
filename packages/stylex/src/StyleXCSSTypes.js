@@ -140,7 +140,7 @@ type borderRightColor = color;
 type borderRightStyle = brStyle;
 type borderRightWidth = borderWidth;
 type borderRadius = lengthPercentage;
-type borderSpacing = number;
+type borderSpacing = number | string;
 type borderStyle = brStyle;
 type borderTopLeftRadius = lengthPercentage;
 type borderTopRightRadius = lengthPercentage;
@@ -405,7 +405,7 @@ type justifySelf =
   | 'right';
 type letterSpacing = 'normal' | lengthPercentage;
 type lineBreak = 'auto' | 'loose' | 'normal' | 'strict';
-type lineHeight = 'inherit' | number;
+type lineHeight = 'inherit' | number | string;
 type listStyle = listStyleType | listStylePosition | listStyleImage;
 type listStyleImage = string | 'none';
 type listStylePosition = 'inside' | 'outside';
