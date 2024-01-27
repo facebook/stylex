@@ -51,29 +51,54 @@ type CSSCursor =
   | '-webkit-grabbing';
 
 type alignContent =
-  | 'flex-start'
-  | 'flex-end'
   | 'center'
-  | 'space-between'
-  | 'space-around'
-  | 'stretch'
-  | all;
-type alignItems =
   | 'start'
   | 'end'
   | 'flex-start'
   | 'flex-end'
-  | 'center'
+  | 'normal'
   | 'baseline'
+  | 'first baseline'
+  | 'last baseline'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly'
   | 'stretch'
+  | 'safe center'
+  | 'unsafe center'
+  | all;
+type alignItems =
+  | 'normal'
+  | 'stretch'
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'flex-start'
+  | 'flex-end'
+  | 'self-start'
+  | 'self-end'
+  | 'baseline'
+  | 'first baseline'
+  | 'last baseline'
+  | 'safe center'
+  | 'unsafe center'
   | all;
 type alignSelf =
   | 'auto'
+  | 'normal'
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'self-start'
+  | 'self-end'
   | 'flex-start'
   | 'flex-end'
-  | 'center'
   | 'baseline'
+  | 'first baseline'
+  | 'last baseline'
   | 'stretch'
+  | 'safe center'
+  | 'unsafe center'
   | all;
 type all = null | 'initial' | 'inherit' | 'unset';
 type animationDelay = time;
@@ -376,21 +401,41 @@ type initialLetterAlign = string;
 type inlineSize = width;
 type isolation = 'auto' | 'isolate';
 type justifyContent =
-  | 'flex-start'
-  | 'flex-end'
   | 'center'
-  | 'space-between'
-  | 'space-around'
-  | 'space-evenly'
-  | 'inherit';
-type justifyItems =
   | 'start'
   | 'end'
   | 'flex-start'
   | 'flex-end'
-  | 'center'
-  | 'baseline'
+  | 'left'
+  | 'right'
+  | 'normal'
+  | 'space-between'
+  | 'space-around'
+  | 'space-evenly'
   | 'stretch'
+  | 'safe center'
+  | 'unsafe center'
+  | 'inherit';
+type justifyItems =
+  | 'normal'
+  | 'stretch'
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'flex-start'
+  | 'flex-end'
+  | 'self-start'
+  | 'self-end'
+  | 'left'
+  | 'right'
+  | 'baseline'
+  | 'first baseline'
+  | 'last baseline'
+  | 'safe center'
+  | 'unsafe center'
+  | 'legacy right'
+  | 'legacy left'
+  | 'legacy center'
   | all;
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
@@ -399,10 +444,21 @@ type justifySelf =
   | 'auto'
   | 'normal'
   | 'stretch'
-  | baselinePosition
-  | selfPosition
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'flex-start'
+  | 'flex-end'
+  | 'self-start'
+  | 'self-end'
   | 'left'
-  | 'right';
+  | 'right'
+  | 'baseline'
+  | 'first baseline'
+  | 'last baseline'
+  | 'safe center'
+  | 'unsafe center';
+
 type letterSpacing = 'normal' | lengthPercentage;
 type lineBreak = 'auto' | 'loose' | 'normal' | 'strict';
 type lineHeight = 'inherit' | number | string;
@@ -527,14 +583,6 @@ type rubyPosition = 'over' | 'under' | 'inter-character';
 type scrollBehavior = 'auto' | 'smooth';
 type scrollSnapAlign = 'none' | 'start' | 'end' | 'center';
 type scrollSnapType = 'none' | 'x mandatory' | 'y mandatory';
-type selfPosition =
-  | 'center'
-  | 'start'
-  | 'end'
-  | 'self-start'
-  | 'self-end'
-  | 'flex-start'
-  | 'flex-end';
 type shapeImageThreshold = number;
 type shapeMargin = lengthPercentage;
 type shapeOutside = 'none' | shapeBox | string;
@@ -660,7 +708,6 @@ type alignmentBaseline =
   | 'alphabetic'
   | 'hanging'
   | 'mathematical';
-type baselinePosition = 'baseline' | 'first baseline' | 'last baseline';
 type baselineShift = 'baseline' | 'sub' | 'super' | svgLength;
 type behavior = string;
 type clipRule = 'nonzero' | 'evenodd';
@@ -908,6 +955,7 @@ export type CSSProperties = $ReadOnly<{
   alignContent?: all | alignContent,
   justifyContent?: all | justifyContent,
   placeItems?: all | string,
+  placeSelf?: all | string,
   alignItems?: all | alignItems,
   justifyItems?: all | justifyItems,
   alignSelf?: all | alignSelf,

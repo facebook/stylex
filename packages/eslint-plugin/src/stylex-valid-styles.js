@@ -375,11 +375,6 @@ const absoluteSize = makeUnionRule(
   makeLiteralRule('x-large'),
   makeLiteralRule('xx-large'),
 );
-const baselinePosition = makeUnionRule(
-  makeLiteralRule('baseline'),
-  makeLiteralRule('first baseline'),
-  makeLiteralRule('last baseline'),
-);
 const fontFamily = isString;
 const gridLine = makeUnionRule(makeLiteralRule('auto'), isString);
 const gridTemplate = makeUnionRule(
@@ -405,15 +400,6 @@ const trackBreadth = makeUnionRule(
   makeLiteralRule('min-content'),
   makeLiteralRule('max-content'),
   makeLiteralRule('auto'),
-);
-const selfPosition = makeUnionRule(
-  makeLiteralRule('center'),
-  makeLiteralRule('start'),
-  makeLiteralRule('end'),
-  makeLiteralRule('self-start'),
-  makeLiteralRule('self-end'),
-  makeLiteralRule('flex-start'),
-  makeLiteralRule('flex-end'),
 );
 const listStyleType = makeUnionRule(isString, makeLiteralRule('none'));
 const trackSize = makeUnionRule(trackBreadth, isString);
@@ -456,29 +442,54 @@ const maskLayer = makeUnionRule(
 );
 
 const alignContent = makeUnionRule(
-  makeLiteralRule('flex-start'),
-  makeLiteralRule('flex-end'),
-  makeLiteralRule('center'),
-  makeLiteralRule('space-between'),
-  makeLiteralRule('space-around'),
-  makeLiteralRule('stretch'),
+  'center',
+  'start',
+  'end',
+  'flex-start',
+  'flex-end',
+  'normal',
+  'baseline',
+  'first baseline',
+  'last baseline',
+  'space-between',
+  'space-around',
+  'space-evenly',
+  'stretch',
+  'safe center',
+  'unsafe center',
 );
 const alignItems = makeUnionRule(
-  makeLiteralRule('start'),
-  makeLiteralRule('end'),
-  makeLiteralRule('flex-start'),
-  makeLiteralRule('flex-end'),
-  makeLiteralRule('center'),
-  makeLiteralRule('baseline'),
-  makeLiteralRule('stretch'),
+  'normal',
+  'stretch',
+  'center',
+  'start',
+  'end',
+  'flex-start',
+  'flex-end',
+  'self-start',
+  'self-end',
+  'baseline',
+  'first baseline',
+  'last baseline',
+  'safe center',
+  'unsafe center',
 );
 const alignSelf = makeUnionRule(
-  makeLiteralRule('auto'),
-  makeLiteralRule('flex-start'),
-  makeLiteralRule('flex-end'),
-  makeLiteralRule('center'),
-  makeLiteralRule('baseline'),
-  makeLiteralRule('stretch'),
+  'auto',
+  'normal',
+  'center',
+  'start',
+  'end',
+  'self-start',
+  'self-end',
+  'flex-start',
+  'flex-end',
+  'baseline',
+  'first baseline',
+  'last baseline',
+  'stretch',
+  'safe center',
+  'unsafe center',
 );
 const animationDelay = time;
 const animationDirection = singleAnimationDirection;
@@ -887,34 +898,63 @@ const isolation = makeUnionRule(
   makeLiteralRule('isolate'),
 );
 const justifyContent = makeUnionRule(
-  makeLiteralRule('flex-start'),
-  makeLiteralRule('flex-end'),
-  makeLiteralRule('center'),
-  makeLiteralRule('stretch'),
-  makeLiteralRule('space-between'),
-  makeLiteralRule('space-around'),
-  makeLiteralRule('space-evenly'),
+  'center',
+  'start',
+  'end',
+  'flex-start',
+  'flex-end',
+  'left',
+  'right',
+  'normal',
+  'space-between',
+  'space-around',
+  'space-evenly',
+  'stretch',
+  'safe center',
+  'unsafe center',
 );
 const justifyItems = makeUnionRule(
-  makeLiteralRule('start'),
-  makeLiteralRule('end'),
-  makeLiteralRule('flex-start'),
-  makeLiteralRule('flex-end'),
-  makeLiteralRule('center'),
-  makeLiteralRule('baseline'),
-  makeLiteralRule('stretch'),
+  'normal',
+  'stretch',
+  'center',
+  'start',
+  'end',
+  'flex-start',
+  'flex-end',
+  'self-start',
+  'self-end',
+  'left',
+  'right',
+  'baseline',
+  'first baseline',
+  'last baseline',
+  'safe center',
+  'unsafe center',
+  'legacy right',
+  'legacy left',
+  'legacy center',
 );
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
 // here.
 const justifySelf = makeUnionRule(
-  makeLiteralRule('auto'),
-  makeLiteralRule('normal'),
-  makeLiteralRule('stretch'),
-  baselinePosition,
-  selfPosition,
-  makeLiteralRule('left'),
-  makeLiteralRule('right'),
+  'auto',
+  'normal',
+  'stretch',
+  'center',
+  'start',
+  'end',
+  'flex-start',
+  'flex-end',
+  'self-start',
+  'self-end',
+  'left',
+  'right',
+  'baseline',
+  'first baseline',
+  'last baseline',
+  'safe center',
+  'unsafe center',
 );
 const letterSpacing = makeUnionRule(
   makeLiteralRule('normal'),
@@ -2043,6 +2083,7 @@ const CSSProperties = {
   // Shorthand not yet supported
   placeContent: isString,
   placeItems: isString,
+  placeSelf: isString,
   printColorAdjust: makeUnionRule('economy', 'exact'),
 
   quotes: quotes,
