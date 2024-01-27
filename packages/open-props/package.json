@@ -32,10 +32,7 @@
     "build": "babel src/ --out-dir lib/ --copy-files"
   },
   "dependencies": {
-    "css-mediaquery": "^0.1.2",
-    "invariant": "^2.2.4",
-    "styleq": "0.1.3",
-    "utility-types": "^3.10.0"
+    "@stylexjs/stylex": "0.5.1"
   },
   "devDependencies": {
     "@stylexjs/scripts": "0.5.1"

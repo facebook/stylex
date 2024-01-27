@@ -19,13 +19,13 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@babel/core": "^7.23.5",
+    "@babel/core": "^7.23.9",
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3",
     "@stylexjs/babel-plugin": "^0.5.1",
     "@stylexjs/shared": "^0.5.1",
-    "esbuild": "^0.19.9"
+    "esbuild": "^0.19.12"
   },
   "devDependencies": {
     "@stylexjs/stylex": "^0.5.1",
