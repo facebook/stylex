@@ -20,7 +20,7 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@babel/core": "^7.23.6",
+    "@babel/core": "^7.23.9",
     "@stylexjs/babel-plugin": "0.5.1",
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",

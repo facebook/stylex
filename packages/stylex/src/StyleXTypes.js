@@ -63,15 +63,16 @@ export type LegacyThemeStyles = $ReadOnly<{
   ...
 }>;
 
-type ComplexStyleValueType<+T> = T extends StyleXVar<infer U>
-  ? U
-  : T extends string | number | null
-    ? T
-    : T extends $ReadOnlyArray<infer U>
-      ? U
-      : T extends $ReadOnly<{ default: infer A, +[string]: infer B }>
-        ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
-        : $ReadOnly<T>;
+type ComplexStyleValueType<+T> =
+  T extends StyleXVar<infer U>
+    ? U
+    : T extends string | number | null
+      ? T
+      : T extends $ReadOnlyArray<infer U>
+        ? U
+        : T extends $ReadOnly<{ default: infer A, +[string]: infer B }>
+          ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
+          : $ReadOnly<T>;
 
 type _MapNamespace<+CSS: { +[string]: mixed }> = $ReadOnly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>,
@@ -144,12 +145,8 @@ export type TokensFromVarGroup<T: VarGroup<{ +[string]: mixed }>> =
   T extends VarGroup<infer Tokens extends { +[string]: mixed }>
     ? Tokens
     : empty;
-type IDFromVarGroup<+T: VarGroup<{ +[string]: mixed }>> = T extends VarGroup<
-  { +[string]: mixed },
-  infer ID,
->
-  ? ID
-  : empty;
+type IDFromVarGroup<+T: VarGroup<{ +[string]: mixed }>> =
+  T extends VarGroup<{ +[string]: mixed }, infer ID> ? ID : empty;
 
 type TTokens = $ReadOnly<{
   [string]:

@@ -42,8 +42,7 @@
   "dependencies": {
     "css-mediaquery": "^0.1.2",
     "invariant": "^2.2.4",
-    "styleq": "0.1.3",
-    "utility-types": "^3.10.0"
+    "styleq": "0.1.3"
   },
   "devDependencies": {
     "@stylexjs/scripts": "0.5.1"
