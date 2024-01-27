@@ -50,7 +50,7 @@
     "flow-bin": "^0.227.0",
     "hermes-eslint": "^0.18.2",
     "jest": "^30.0.0-alpha.1",
-    "prettier": "^3.1.1",
+    "prettier": "^3.2.4",
     "prettier-plugin-hermes-parser": "^0.18.2",
     "rimraf": "^5.0.5",
     "rollup": "^4.9.6",
