@@ -147,6 +147,19 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         });
       `,
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        nav: {
+          maxWidth: {
+            default: "1080px",
+            "@media (min-width: 2000px)": "calc((1080 / 24) * 1rem)"
+          },
+          paddingVertical: 0,
+        },
+      });`,
+    },
   ],
   invalid: [
     {
@@ -170,7 +183,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     {
       code: `
         import stylex from 'stylex';
-        const obj = { fontSize: '12px' }; 
+        const obj = { fontSize: '12px' };
         const styles = stylex.create({
           button: {
             alignItems: 'center',

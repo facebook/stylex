@@ -169,7 +169,7 @@ const stylexSortKeys = {
           objectExpressionNestingLevel++;
         }
 
-        if (objectExpressionNestingLevel === 1) {
+        if (objectExpressionNestingLevel > 0) {
           stack = {
             upper: stack,
             prevNode: null,
