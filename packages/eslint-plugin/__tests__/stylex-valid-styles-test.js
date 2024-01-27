@@ -393,6 +393,27 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       }
     })
     `,
+    // test for vendor prefixed properties
+    `
+    import stylex from'stylex';
+    stylex.create({
+      root: {
+        MozOsxFontSmoothing: 'grayscale',
+        WebkitAppearance: 'none',
+        WebkitBackdropFilter: 'blur(10px)',
+        WebkitBackgroundClip: 'border-box',
+        WebkitBoxOrient: 'horizontal',
+        WebkitFontSmoothing: 'antialiased',
+        WebkitLineClamp: 123,
+        WebkitMaskImage: 'image(url(mask.png), skyblue)',
+        WebkitOverflowScrolling: 'touch',
+        WebkitTapHighlightColor: '#fff',
+        WebkitTextFillColor: '#fff',
+        WebkitTextStrokeColor: '#fff',
+        WebkitTextStrokeWidth: '20px',
+      }
+    })
+    `,
   ],
   invalid: [
     {

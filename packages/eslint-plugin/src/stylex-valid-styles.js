@@ -1578,31 +1578,28 @@ const top = isStringOrNumber;
 
 const SupportedVendorSpecificCSSProperties = {
   MozOsxFontSmoothing: makeLiteralRule('grayscale'),
-  WebkitFontSmoothing: makeLiteralRule('antialiased'),
-  WebkitAppearance: makeLiteralRule('textfield'),
-  WebkitTapHighlightColor: color,
-  WebkitOverflowScrolling: makeLiteralRule('touch'),
-
-  WebkitBoxOrient: makeUnionRule(
-    'horizontal',
-    'vertical',
-    'inline-axis',
-    'block-axis',
-  ),
-  WebkitLineClamp: isNumber,
-
-  WebkitMaskImage: maskImage,
-
-  WebkitTextFillColor: color,
-  textFillColor: color,
-  WebkitTextStrokeWidth: borderWidth,
-  WebkitTextStrokeColor: color,
+  WebkitAppearance: appearance,
+  WebkitBackdropFilter: backdropFilter,
   WebkitBackgroundClip: makeUnionRule(
     'border-box',
     'padding-box',
     'content-box',
     'text',
   ),
+  WebkitBoxOrient: makeUnionRule(
+    'horizontal',
+    'vertical',
+    'inline-axis',
+    'block-axis',
+  ),
+  WebkitFontSmoothing: makeLiteralRule('antialiased'),
+  WebkitLineClamp: isNumber,
+  WebkitMaskImage: maskImage,
+  WebkitOverflowScrolling: makeLiteralRule('touch'),
+  WebkitTapHighlightColor: color,
+  WebkitTextFillColor: color,
+  WebkitTextStrokeColor: color,
+  WebkitTextStrokeWidth: borderWidth,
 };
 
 const SVGProperties = {
@@ -2175,6 +2172,7 @@ const CSSProperties = {
   textEmphasisColor: textEmphasisColor,
   textEmphasisPosition: textEmphasisPosition,
   textEmphasisStyle: textEmphasisStyle,
+  textFillColor: color,
   textIndent: textIndent,
   textOrientation: textOrientation,
   textOverflow: textOverflow,

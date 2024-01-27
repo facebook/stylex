@@ -1105,6 +1105,66 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
     });
+
+    test('Transforms vendor prefix', () => {
+      expect(
+        transform(`
+          import stylex from'stylex';
+          export const styles = stylex.create({
+            root: {
+              MozOsxFontSmoothing: 'grayscale',
+              WebkitAppearance: 'none',
+              WebkitBackdropFilter: 'blur(10px)',
+              WebkitBackgroundClip: 'border-box',
+              WebkitBoxOrient: 'horizontal',
+              WebkitFontSmoothing: 'antialiased',
+              WebkitLineClamp: 123,
+              WebkitMaskImage: 'image(url(mask.png), skyblue)',
+              WebkitOverflowScrolling: 'touch',
+              WebkitTapHighlightColor: '#fff',
+              WebkitTextFillColor: '#fff',
+              WebkitTextStrokeColor: '#fff',
+              WebkitTextStrokeWidth: '20px',
+            }
+          })
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xlh3980{-moz-osx-font-smoothing:grayscale}", 3000);
+        _inject2(".x1lugfcp{-webkit-appearance:none}", 3000);
+        _inject2(".x1fh82p7{-webkit-backdrop-filter:blur(10px)}", 3000);
+        _inject2(".xodbz5m{-webkit-background-clip:border-box}", 3000);
+        _inject2(".x1y52mlm{-webkit-box-orient:horizontal}", 3000);
+        _inject2(".xvmahel{-webkit-font-smoothing:antialiased}", 3000);
+        _inject2(".xrvxlg5{-webkit-line-clamp:123}", 3000);
+        _inject2(".x6b0i8a{-webkit-mask-image:image(url(mask.png),skyblue)}", 3000);
+        _inject2(".x5lxg6s{-webkit-overflow-scrolling:touch}", 3000);
+        _inject2(".xtdamnt{-webkit-tap-highlight-color:#fff}", 3000);
+        _inject2(".x13o35d1{-webkit-text-fill-color:#fff}", 3000);
+        _inject2(".x14s97nz{-webkit-text-stroke-color:#fff}", 3000);
+        _inject2(".x10gl3gy{-webkit-text-stroke-width:20px}", 3000);
+        export const styles = {
+          root: {
+            MozOsxFontSmoothing: "xlh3980",
+            WebkitAppearance: "x1lugfcp",
+            WebkitBackdropFilter: "x1fh82p7",
+            WebkitBackgroundClip: "xodbz5m",
+            WebkitBoxOrient: "x1y52mlm",
+            WebkitFontSmoothing: "xvmahel",
+            WebkitLineClamp: "xrvxlg5",
+            WebkitMaskImage: "x6b0i8a",
+            WebkitOverflowScrolling: "x5lxg6s",
+            WebkitTapHighlightColor: "xtdamnt",
+            WebkitTextFillColor: "x13o35d1",
+            WebkitTextStrokeColor: "x14s97nz",
+            WebkitTextStrokeWidth: "x10gl3gy",
+            $$css: true
+          }
+        };"
+      `);
+    });
   });
 
   describe('[transform] stylex.create() with functions', () => {

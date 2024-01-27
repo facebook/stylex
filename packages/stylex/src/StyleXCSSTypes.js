@@ -910,8 +910,27 @@ type OptionalArray<T> = Array<T> | T;
 export type SupportedVendorSpecificCSSProperties = $ReadOnly<{
   MozOsxFontSmoothing?: null | 'grayscale',
   WebkitAppearance?: null | appearance,
+  WebkitBackdropFilter?: all | backdropFilter,
+  WebkitBackgroundClip?:
+    | null
+    | 'border-box'
+    | 'padding-box'
+    | 'content-box'
+    | 'text',
+  WebkitBoxOrient?:
+    | null
+    | 'vertical'
+    | 'horizontal'
+    | 'inline-axis'
+    | 'block-axis',
   WebkitFontSmoothing?: null | 'antialiased',
+  WebkitLineClamp?: all | number,
+  WebkitMaskImage?: all | maskImage,
+  WebkitOverflowScrolling?: all | 'touch',
   WebkitTapHighlightColor?: null | color,
+  WebkitTextFillColor?: all | color,
+  WebkitTextStrokeColor?: all | color,
+  WebkitTextStrokeWidth?: all | number | string,
 }>;
 
 export type CSSProperties = $ReadOnly<{
@@ -919,32 +938,29 @@ export type CSSProperties = $ReadOnly<{
   theme?: all | string,
 
   // ...$Exact<SupportedVendorSpecificCSSProperties>, for TypeScript compatibility
-  MozOsxFontSmoothing?: all | 'grayscale',
-  WebkitAppearance?: all | appearance,
-  WebkitFontSmoothing?: all | 'antialiased',
-  WebkitTapHighlightColor?: all | color,
-
-  WebkitMaskImage?: all | maskImage,
-
-  WebkitTextFillColor?: all | color,
-  textFillColor?: all | color,
-  WebkitTextStrokeWidth?: all | number | string,
-  WebkitTextStrokeColor?: all | color,
+  MozOsxFontSmoothing?: null | 'grayscale',
+  WebkitAppearance?: null | appearance,
+  WebkitBackdropFilter?: all | backdropFilter,
   WebkitBackgroundClip?:
     | null
     | 'border-box'
     | 'padding-box'
     | 'content-box'
     | 'text',
-  backgroundClip?: all | 'border-box' | 'padding-box' | 'content-box' | 'text',
-
   WebkitBoxOrient?:
     | null
     | 'vertical'
     | 'horizontal'
     | 'inline-axis'
     | 'block-axis',
+  WebkitFontSmoothing?: null | 'antialiased',
   WebkitLineClamp?: all | number,
+  WebkitMaskImage?: all | maskImage,
+  WebkitOverflowScrolling?: all | 'touch',
+  WebkitTapHighlightColor?: null | color,
+  WebkitTextFillColor?: all | color,
+  WebkitTextStrokeColor?: all | color,
+  WebkitTextStrokeWidth?: all | number | string,
   // ENDOF ...$Exact<SupportedVendorSpecificCSSProperties>,
 
   accentColor?: all | color,
@@ -1486,6 +1502,7 @@ export type CSSProperties = $ReadOnly<{
   textEmphasisColor?: all | textEmphasisColor,
   textEmphasisPosition?: all | textEmphasisPosition,
   textEmphasisStyle?: all | textEmphasisStyle,
+  textFillColor?: all | color,
   textIndent?: all | textIndent,
   textJustify?:
     | null
