@@ -2574,6 +2574,9 @@ const stylexValidStyles = {
             }: Rule.ReportDescriptor),
           );
         }
+        if (isStylexDefineVarsToken(styleKey, stylexDefineVarsTokenImports)) {
+          return undefined;
+        }
         if (style.computed && styleKey.type !== 'Literal') {
           const val = evaluate(styleKey, variables);
           if (val == null) {
