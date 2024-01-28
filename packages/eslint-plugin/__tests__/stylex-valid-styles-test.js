@@ -393,6 +393,26 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       }
     })
     `,
+    // test using vars as keys
+    `
+    import stylex from'stylex';
+    import { componentVars } from './bug.stylex';
+    stylex.create({
+      host: {
+        [componentVars.color]: 'blue',
+      },
+    })
+    `,
+    // test using vars as keys in dynamic styles
+    `
+    import stylex from'stylex';
+    import { tokens } from 'tokens.stylex';
+    stylex.create({
+      root: (position) => ({
+        [tokens.position]: \`\${position}px\`,
+      })
+    })
+    `,
   ],
   invalid: [
     {
