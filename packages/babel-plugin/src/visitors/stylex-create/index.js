@@ -22,7 +22,10 @@ import {
   injectDevClassNames,
   convertToTestStyles,
 } from '../../utils/dev-classname';
-import { convertObjectToAST } from '../../utils/js-to-ast';
+import {
+  convertObjectToAST,
+  removeObjectsWithSpreads,
+} from '../../utils/js-to-ast';
 import { messages } from '@stylexjs/shared';
 import * as pathUtils from '../../babel-path-utils';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
@@ -147,7 +150,8 @@ export default function transformStyleXCreate(
     }
 
     if (varName != null) {
-      state.styleMap.set(varName, compiledStyles);
+      const stylesToRemember = removeObjectsWithSpreads(compiledStyles);
+      state.styleMap.set(varName, stylesToRemember);
       state.styleVars.set(varName, (path.parentPath: $FlowFixMe));
     }
 
