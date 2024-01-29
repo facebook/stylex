@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { FlatCompiledStyles } from '../../../shared/src/common-types';
+
 import * as t from '@babel/types';
 import { IncludedStyles } from '@stylexjs/shared';
 
@@ -40,6 +42,18 @@ export function convertObjectToAST(
                     : convertObjectToAST(value),
           ),
     ),
+  );
+}
+
+export function removeObjectsWithSpreads(obj: {
+  +[string]: FlatCompiledStyles,
+}): { +[string]: FlatCompiledStyles } {
+  return Object.fromEntries(
+    Object.entries(obj)
+      .filter(([_key, value]) =>
+        Object.values(value).every((val) => !(val instanceof IncludedStyles)),
+      )
+      .filter(Boolean),
   );
 }
 
