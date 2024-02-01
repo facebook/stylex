@@ -174,10 +174,10 @@ type borderTopWidth = borderWidth;
 type boxAlign = 'start' | 'center' | 'end' | 'baseline' | 'stretch';
 type boxDecorationBreak = 'slice' | 'clone';
 type boxDirection = 'normal' | 'reverse' | 'inherit';
-type boxFlex = number;
-type boxFlexGroup = number;
+type boxFlex = number | string;
+type boxFlexGroup = number | string;
 type boxLines = 'single' | 'multiple';
-type boxOrdinalGroup = number;
+type boxOrdinalGroup = number | string;
 type boxOrient =
   | 'horizontal'
   | 'vertical'
@@ -229,7 +229,7 @@ type captionSide =
 type clear = 'none' | 'left' | 'right' | 'both' | 'inline-start' | 'inline-end';
 type clip = string | 'auto';
 type clipPath = string | 'none';
-type columnCount = number | 'auto';
+type columnCount = number | 'auto' | string;
 type columnFill = 'auto' | 'balance';
 type columnGap = number | string | 'normal';
 type columnRule = columnRuleWidth | columnRuleStyle | columnRuleColor;
@@ -237,7 +237,7 @@ type columnRuleColor = color;
 type columnRuleStyle = brStyle;
 type columnRuleWidth = borderWidth;
 type columnSpan = 'none' | 'all';
-type columnWidth = number | 'auto';
+type columnWidth = number | 'auto' | string;
 type columns = columnWidth | columnCount;
 type contain = 'none' | 'strict' | 'content' | string;
 type content = string;
@@ -305,8 +305,8 @@ type flexDirection =
   | 'column-reverse'
   | 'inherit';
 type flexFlow = flexDirection | flexWrap;
-type flexGrow = number | 'inherit';
-type flexShrink = number | 'inherit';
+type flexGrow = all | number | string;
+type flexShrink = all | number | string;
 type flexWrap = 'nowrap' | 'wrap' | 'wrap-reverse' | 'inherit';
 type float =
   | 'left'
@@ -475,7 +475,7 @@ type marginInlineStart = marginLeft;
 type marginLeft = number | string | 'auto';
 type marginRight = number | string | 'auto';
 type marginTop = number | string | 'auto';
-type markerOffset = number | 'auto';
+type markerOffset = number | 'auto' | string;
 type mask = maskLayer;
 type maskClip = string;
 type maskComposite = compositeOperator;
@@ -534,11 +534,11 @@ type MsOverflowStyle =
 type objectFit = 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
 type objectPosition = string;
 type opacity = number | string;
-type order = number;
-type orphans = number;
+type order = number | string;
+type orphans = number | string;
 type outline = string;
 type outlineColor = color | 'invert';
-type outlineOffset = number;
+type outlineOffset = number | string;
 type outlineStyle = 'auto' | brStyle;
 type outlineWidth = borderWidth;
 type overflow = 'visible' | 'hidden' | 'scroll' | 'auto';
@@ -583,10 +583,10 @@ type rubyPosition = 'over' | 'under' | 'inter-character';
 type scrollBehavior = 'auto' | 'smooth';
 type scrollSnapAlign = 'none' | 'start' | 'end' | 'center';
 type scrollSnapType = 'none' | 'x mandatory' | 'y mandatory';
-type shapeImageThreshold = number;
+type shapeImageThreshold = number | string;
 type shapeMargin = lengthPercentage;
 type shapeOutside = 'none' | shapeBox | string;
-type tabSize = number;
+type tabSize = number | string;
 type tableLayout = 'auto' | 'fixed';
 type textAlign =
   | 'start'
@@ -674,7 +674,7 @@ type whiteSpace =
   | 'pre-line'
   | 'initial'
   | 'inherit';
-type widows = number;
+type widows = number | string;
 type width =
   | string
   | number
@@ -728,10 +728,10 @@ type dominantBaseline =
   | 'text-after-edge'
   | 'text-before-edge';
 type fill = paint;
-type fillOpacity = number;
+type fillOpacity = number | string;
 type fillRule = 'nonzero' | 'evenodd';
-type glyphOrientationHorizontal = number;
-type glyphOrientationVertical = number;
+type glyphOrientationHorizontal = number | string;
+type glyphOrientationVertical = number | string;
 type kerning = 'auto' | svgLength;
 type marker = 'none' | string;
 type markerEnd = 'none' | string;
@@ -784,8 +784,8 @@ type strokeDasharray = 'none' | string;
 type strokeDashoffset = svgLength;
 type strokeLinecap = 'butt' | 'round' | 'square';
 type strokeLinejoin = 'miter' | 'round' | 'bevel';
-type strokeMiterlimit = number;
-type strokeOpacity = number;
+type strokeMiterlimit = number | string;
+type strokeOpacity = number | string;
 type strokeWidth = svgLength;
 type textAnchor = 'start' | 'middle' | 'end';
 type unicodeRange = string;
@@ -944,7 +944,7 @@ export type CSSProperties = $ReadOnly<{
     | 'horizontal'
     | 'inline-axis'
     | 'block-axis',
-  WebkitLineClamp?: all | number,
+  WebkitLineClamp?: all | number | string,
   // ENDOF ...$Exact<SupportedVendorSpecificCSSProperties>,
 
   accentColor?: all | color,

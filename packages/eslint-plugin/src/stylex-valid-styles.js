@@ -354,8 +354,8 @@ const flexWrap = makeUnionRule(
   makeLiteralRule('wrap'),
   makeLiteralRule('wrap-reverse'),
 );
-const flexGrow = isNumber;
-const flexShrink = isNumber;
+const flexGrow = isStringOrNumber;
+const flexShrink = isStringOrNumber;
 const flexFlow = makeUnionRule(flexDirection, flexWrap);
 const float = makeUnionRule(
   makeLiteralRule('left'),
@@ -606,7 +606,7 @@ const borderRightColor = color;
 const borderRightStyle = brStyle;
 const borderRightWidth = borderWidth;
 const borderRadius = lengthPercentage;
-const borderSpacing = isNumber;
+const borderSpacing = isStringOrNumber;
 const borderTopLeftRadius = lengthPercentage;
 const borderTopRightRadius = lengthPercentage;
 const borderTopStyle = brStyle;
@@ -619,13 +619,13 @@ const boxDirection = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('reverse'),
 );
-const boxFlex = isNumber;
-const boxFlexGroup = isNumber;
+const boxFlex = isStringOrNumber;
+const boxFlexGroup = isStringOrNumber;
 const boxLines = makeUnionRule(
   makeLiteralRule('single'),
   makeLiteralRule('multiple'),
 );
-const boxOrdinalGroup = isNumber;
+const boxOrdinalGroup = isStringOrNumber;
 const boxOrient = makeUnionRule(
   makeLiteralRule('horizontal'),
   makeLiteralRule('vertical'),
@@ -695,7 +695,7 @@ const clear = makeUnionRule(
 );
 const clip = makeUnionRule(isString, makeLiteralRule('auto'));
 const clipPath = makeUnionRule(isString, makeLiteralRule('none'));
-const columnCount = makeUnionRule(isNumber, makeLiteralRule('auto'));
+const columnCount = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
 const columnFill = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('balance'),
@@ -705,7 +705,7 @@ const columnSpan = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('all'),
 );
-const columnWidth = makeUnionRule(isNumber, makeLiteralRule('auto'));
+const columnWidth = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
 const columns = makeUnionRule(columnWidth, columnCount);
 const contain = makeUnionRule(
   makeLiteralRule('none'),
@@ -786,7 +786,11 @@ const fontKerning = makeUnionRule(
 );
 const fontLanguageOverride = makeUnionRule(makeLiteralRule('normal'), isString);
 const fontSize = makeUnionRule(absoluteSize, relativeSize, lengthPercentage);
-const fontSizeAdjust = makeUnionRule(makeLiteralRule('none'), isNumber);
+const fontSizeAdjust = makeUnionRule(
+  makeLiteralRule('none'),
+  isNumber,
+  isString,
+);
 const fontStretch = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('ultra-condensed'),
@@ -966,7 +970,7 @@ const lineBreak = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('strict'),
 );
-const lineHeight = isNumber;
+const lineHeight = isStringOrNumber;
 const listStyleImage = makeUnionRule(isString, makeLiteralRule('none'));
 const listStylePosition = makeUnionRule(
   makeLiteralRule('inside'),
@@ -1055,14 +1059,10 @@ const offsetBlockEnd = isString;
 const offsetBlockStart = isString;
 const offsetInlineEnd = isString;
 const offsetInlineStart = isString;
-const opacity = isNumber;
-const order = isNumber;
-const orphans = isNumber;
+const opacity = isStringOrNumber;
+const order = isStringOrNumber;
+const orphans = isStringOrNumber;
 const outline = isString;
-// const outlineColor = makeUnionRule(color, makeLiteralRule('invert'));
-// const outlineOffset = isNumber;
-// const outlineStyle = makeUnionRule(makeLiteralRule('auto'), brStyle);
-// const outlineWidth = borderWidth;
 const overflow = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
@@ -1183,8 +1183,8 @@ const scrollBehavior = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('smooth'),
 );
-const scrollSnapPaddingBottom = isNumber;
-const scrollSnapPaddingTop = isNumber;
+const scrollSnapPaddingBottom = isStringOrNumber;
+const scrollSnapPaddingTop = isStringOrNumber;
 const scrollSnapAlign = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('start'),
@@ -1196,10 +1196,10 @@ const scrollSnapType = makeUnionRule(
   makeLiteralRule('x mandatory'),
   makeLiteralRule('y mandatory'),
 );
-const shapeImageThreshold = isNumber;
+const shapeImageThreshold = isStringOrNumber;
 const shapeMargin = lengthPercentage;
 const shapeOutside = makeUnionRule(makeLiteralRule('none'), shapeBox, isString);
-const tabSize = isNumber;
+const tabSize = isStringOrNumber;
 const tableLayout = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('fixed'),
@@ -1368,7 +1368,7 @@ const whiteSpace = makeUnionRule(
   makeLiteralRule('pre-line'),
   makeLiteralRule('break-spaces'),
 );
-const widows = isNumber;
+const widows = isStringOrNumber;
 const animatableFeature = makeUnionRule(
   makeLiteralRule('scroll-position'),
   makeLiteralRule('contents'),
@@ -1454,13 +1454,13 @@ const paint = makeUnionRule(
   isString,
 );
 const fill = paint;
-const fillOpacity = isNumber;
+const fillOpacity = isStringOrNumber;
 const fillRule = makeUnionRule(
   makeLiteralRule('nonzero'),
   makeLiteralRule('evenodd'),
 );
-const glyphOrientationHorizontal = isNumber;
-const glyphOrientationVertical = isNumber;
+const glyphOrientationHorizontal = isStringOrNumber;
+const glyphOrientationVertical = isStringOrNumber;
 const kerning = makeUnionRule(makeLiteralRule('auto'), svgLength);
 const marker = makeUnionRule(makeLiteralRule('none'), isString);
 const markerEnd = makeUnionRule(makeLiteralRule('none'), isString);
@@ -1535,8 +1535,8 @@ const strokeLinejoin = makeUnionRule(
   makeLiteralRule('round'),
   makeLiteralRule('bevel'),
 );
-const strokeMiterlimit = isNumber;
-const strokeOpacity = isNumber;
+const strokeMiterlimit = isStringOrNumber;
+const strokeOpacity = isStringOrNumber;
 const strokeWidth = svgLength;
 const textAnchor = makeUnionRule(
   makeLiteralRule('start'),
@@ -1589,7 +1589,7 @@ const SupportedVendorSpecificCSSProperties = {
     'inline-axis',
     'block-axis',
   ),
-  WebkitLineClamp: isNumber,
+  WebkitLineClamp: isStringOrNumber,
 
   WebkitMaskImage: maskImage,
 
@@ -1661,7 +1661,7 @@ const CSSProperties = {
   animationTimingFunction: animationTimingFunction,
   animationTimeline: isString,
   appearance: appearance,
-  aspectRatio: isNumber,
+  aspectRatio: isStringOrNumber,
   backdropFilter: backdropFilter,
   backfaceVisibility: backfaceVisibility,
   background: isString,
