@@ -14,6 +14,13 @@ npm install --save-dev @stylexjs/esbuild-plugin
 ## Usage
 
 ```typescript
+import esbuild from 'esbuild';
+import stylexPlugin from '@stylexjs/stylex';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 esbuild.build({
   entryPoints: ['src/index.js'],
   bundle: true,
