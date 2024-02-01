@@ -213,6 +213,13 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
   <DevInstallExample dev={[`@stylexjs/esbuild-plugin`]} />
 
   ```tsx title="build.mjs"
+  import esbuild from 'esbuild';
+  import stylexPlugin from '@stylexjs/stylex';
+  import path from 'path';
+  import { fileURLToPath } from 'url';
+
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
   esbuild.build({
     entryPoints: ['src/index.js'],
     bundle: true,
