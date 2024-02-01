@@ -1,0 +1,29 @@
+{
+  "name": "@stylexjs/cli",
+  "version": "0.5.1",
+  "description": "A cli to compile a folder with stylex",
+  "main": "./lib/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build:cjs": "BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build:esm": "BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
+    "postbuild:esm": "rollup -c ./rollup.config.mjs",
+    "build": "npm run build:cjs && npm run build:esm",
+    "build-haste": "rewrite-imports -i src/ -o lib/",
+    "test": "jest"
+  },
+  "dependencies": {
+    "fb-watchman": "^2.0.2",
+    "@stylexjs/babel-plugin": "0.5.1",
+    "@babel/core": "7.23.9"
+  },
+  "devDependencies": {
+    "@stylexjs/scripts": "0.5.1"
+  },
+  "jest": {},
+  "files": [
+    "lib/*"
+  ]
+}
