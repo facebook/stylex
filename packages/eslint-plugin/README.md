@@ -29,7 +29,7 @@ Once you've installed the npm package you can enable the plugin and rules by ope
 {
   "rules": {
     "stylex/valid-styles": "error",
-    "stylex/sort-keys": "warning"
+    "stylex/sort-keys": "warn"
   },
   "plugins": ["stylex"]
 }
