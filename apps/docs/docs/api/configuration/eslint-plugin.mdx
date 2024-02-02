@@ -8,7 +8,7 @@ sidebar_position: 2
 
 # `@stylexjs/eslint-plugin`
 
-## Configuration options 
+## Configuration options
 
 ### `@stylexjs/valid-styles` rule
 
@@ -23,25 +23,25 @@ type Options = {
   propLimits?: PropLimits,
 
   // @deprecated
-  // Allow At Rules and Pseudo Selectors outside of 
+  // Allow At Rules and Pseudo Selectors outside of
   // style values.
   //
   // Default: false
   allowOuterPseudoAndMedia: boolean,
-  
+
   // @deprecated
   // Disallow properties that are known to break
   // in 'legacy-expand-shorthands' style resolution mode.
   //
   // Default: false
   banPropsForLegacy: boolean,
-  
+
 };
 
 type PropLimits = {
   // The property name as a string or a glob pattern
   [propertyName: string]: {
-    limit: 
+    limit:
       // Disallow the property
       | null
       // Allow any string value
@@ -65,7 +65,7 @@ type PropLimits = {
 };
 ```
 #### Example
-  
+
 ```json
 {
   "rules": {
@@ -73,8 +73,8 @@ type PropLimits = {
       "error",
       {
         "propLimits": {
-          "mask+([a-zA-Z])": { 
-            "limit": null, 
+          "mask+([a-zA-Z])": {
+            "limit": null,
             "reason": "Use the `mask` shorthand property instead."
           },
           "fontSize": {
@@ -86,6 +86,44 @@ type PropLimits = {
             "reason": "Use a padding that conforms to the design system"
           }
         }
+      }
+    ]
+  }
+}
+```
+
+### `@stylexjs/sort-keys` rule
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  //
+  // Default: ['@stylexjs/stylex']
+  validImports: Array<string>,
+
+  // Minimum number of keys required after which the rule is enforced
+  //
+  // Default: 2
+  minKeys: number,
+
+  // Sort groups of keys that have a blank line between them separately
+  //
+  // Default: false
+  allowLineSeparatedGroups: boolean,
+};
+```
+
+#### Example
+
+```json
+{
+  "rules": {
+    "@stylexjs/valid-styles": "error",
+    "@stylexjs/sort-keys": [
+      "warning",
+      {
+        "minKeys": 3,
+        "allowLineSeparatedGroups": true
       }
     ]
   }
