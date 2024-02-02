@@ -86,15 +86,16 @@ export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
 export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
-type ComplexStyleValueType<T> = T extends StyleXVar<infer U>
-  ? U
-  : T extends string | number | null
-    ? T
-    : T extends ReadonlyArray<infer U>
-      ? U
-      : T extends Readonly<{ default: infer A; [cond: CondStr]: infer B }>
-        ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
-        : T;
+type ComplexStyleValueType<T> =
+  T extends StyleXVar<infer U>
+    ? U
+    : T extends string | number | null
+      ? T
+      : T extends ReadonlyArray<infer U>
+        ? U
+        : T extends Readonly<{ default: infer A; [cond: CondStr]: infer B }>
+          ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
+          : T;
 
 export type MapNamespace<CSS> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>;
