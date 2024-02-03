@@ -25,10 +25,11 @@ This will fix the missing types for `eslint` and `estree`.
 
 Once you've installed the npm package you can enable the plugin and rules by opening your ESLint configuration file and adding the plugin and rules.
 
-``` json
+```json
 {
   "rules": {
-    "stylex/valid-styles": "error"
+    "stylex/valid-styles": "error",
+    "stylex/sort-keys": "warn"
   },
   "plugins": ["stylex"]
 }
@@ -39,3 +40,8 @@ Once you've installed the npm package you can enable the plugin and rules by ope
 ### stylex/valid-styles
 
 StyleX requires styles that are statically analyzable. This rule will detect invalid styles that stylex cannot handle.
+
+### stylex/sort-keys
+
+This rule helps to sort the StyleX property keys according to
+[property priorities](https://github.com/facebook/stylex/blob/main/packages/shared/src/utils/property-priorities.js).
