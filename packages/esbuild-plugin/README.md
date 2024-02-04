@@ -3,7 +3,7 @@
 Use StyleX with _esbuild_ bundler.
 
 This plugin transforms files that contain `stylexjs` imports and generates a
-`stylexjs` `CSS` bundle.
+`stylexjs` CSS bundle.
 
 ## Installation
 
