@@ -493,7 +493,7 @@ revert`,
       ],
     },
     {
-      code: 'import stylex from "stylex"; stylex.create({default: {fontWeight: 99}});',
+      code: 'import stylex from "stylex"; stylex.create({default: {fontWeight: 10001}});',
       errors: [
         {
           message: `fontWeight value must be one of:
@@ -501,15 +501,7 @@ normal
 bold
 bolder
 lighter
-100
-200
-300
-400
-500
-600
-700
-800
-900
+a number between 1 and 1000
 a CSS Variable
 null
 initial
