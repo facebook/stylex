@@ -34,6 +34,7 @@ import micromatch from 'micromatch';
 /*:: import { Rule } from 'eslint'; */
 import isCSSVariable from './rules/isCSSVariable';
 import makeLiteralRule from './rules/makeLiteralRule';
+import makeRangeRule from './rules/makeRangeRule';
 import makeRegExRule from './rules/makeRegExRule';
 import isString from './rules/isString';
 import isHexColor from './rules/isHexColor';
@@ -843,15 +844,7 @@ const fontWeight = makeUnionRule(
   makeLiteralRule('bold'),
   makeLiteralRule('bolder'),
   makeLiteralRule('lighter'),
-  makeLiteralRule(100),
-  makeLiteralRule(200),
-  makeLiteralRule(300),
-  makeLiteralRule(400),
-  makeLiteralRule(500),
-  makeLiteralRule(600),
-  makeLiteralRule(700),
-  makeLiteralRule(800),
-  makeLiteralRule(900),
+  makeRangeRule(1, 1000, 'a number between 1 and 1000'),
   isCSSVariable,
 );
 const gap = isStringOrNumber;
