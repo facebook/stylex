@@ -28,20 +28,20 @@ Once you've installed the npm package you can enable the plugin and rules by ope
 ```json
 {
   "rules": {
-    "stylex/valid-styles": "error",
-    "stylex/sort-keys": "warn"
+    "@stylexjs/valid-styles": "error",
+    "@stylexjs/sort-keys": "warn"
   },
-  "plugins": ["stylex"]
+  "plugins": ["@stylexjs"]
 }
 ```
 
 ## All the rules
 
-### stylex/valid-styles
+### @stylexjs/valid-styles
 
 StyleX requires styles that are statically analyzable. This rule will detect invalid styles that stylex cannot handle.
 
-### stylex/sort-keys
+### @stylexjs/sort-keys
 
 This rule helps to sort the StyleX property keys according to
 [property priorities](https://github.com/facebook/stylex/blob/main/packages/shared/src/utils/property-priorities.js).
