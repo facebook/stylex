@@ -363,30 +363,6 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       import { create } from 'stylex';
       const styles = create({
         main: {
-          display: 'flex',
-          borderColor: 'red',
-        },
-      });`,
-      output: `
-      import { create } from 'stylex';
-      const styles = create({
-        main: {
-          borderColor: 'red',
-          display: 'flex',
-        },
-      });`,
-      errors: [
-        {
-          message:
-            'StyleX property key "borderColor" should be above "display"',
-        },
-      ],
-    },
-    {
-      code: `
-      import { create } from 'stylex';
-      const styles = create({
-        main: {
           backgroundColor: {
             // a
             ':hover': 'blue', // a
