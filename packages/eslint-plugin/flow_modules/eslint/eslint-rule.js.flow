@@ -25,7 +25,7 @@ export type RuleFixer = {
   insertTextAfterRange(range: AST.Range, text: string): Fix,
   insertTextBefore(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
   insertTextBeforeRange(range: AST.Range, text: string): Fix,
-  remove(nodeOrToken: ESTree.Node | AST.Token | ESTree.Comment): Fix,
+  remove(nodeOrToken: ESTree.Node | AST.Token): Fix,
   removeRange(range: AST.Range): Fix,
   replaceText(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
   replaceTextRange(range: AST.Range, text: string): Fix,
