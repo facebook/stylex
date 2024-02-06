@@ -54,6 +54,7 @@ const stylexSortKeys = {
       recommended: false,
       url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
     },
+    fixable: 'code',
     schema: [
       {
         type: 'object',
@@ -214,14 +215,16 @@ const stylexSortKeys = {
           return;
         }
 
+        const sourceCode = context.sourceCode;
         const prevName = stack.prevName;
+        const prevNode = stack?.prevNode;
         const numKeys = stack.numKeys;
         const currName = getPropertyName(node);
         let isBlankLineBetweenNodes = stack?.prevBlankLine;
 
         const tokens =
           stack?.prevNode &&
-          context.sourceCode.getTokensBetween(stack.prevNode, node, {
+          sourceCode.getTokensBetween(stack.prevNode, node, {
             includeComments: true,
           });
 
@@ -280,6 +283,24 @@ const stylexSortKeys = {
             node,
             loc: node.key.loc,
             message: `StyleX property key "${currName}" should be above "${prevName}"`,
+            fix(fixer) {
+              const fixes = [];
+
+              function moveProperty(fromNode: Property, toNode: Property) {
+                fixes.push(
+                  fixer.replaceText(toNode, sourceCode.getText(fromNode)),
+                );
+              }
+
+              if (prevNode) {
+                // $FlowFixMe
+                moveProperty(node, prevNode);
+                // $FlowFixMe
+                moveProperty(prevNode, node);
+              }
+
+              return fixes;
+            },
           });
         }
       },

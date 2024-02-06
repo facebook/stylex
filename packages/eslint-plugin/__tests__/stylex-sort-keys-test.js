@@ -173,6 +173,16 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           }
         });
       `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '100ms',
+            padding: 10,
+            fontSize: 12,
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -194,6 +204,19 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           }
         });
       `,
+      output: `
+        import stylex from 'stylex';
+        const obj = { fontSize: '12px' };
+        const styles = stylex.create({
+          button: {
+            alignItems: 'center',
+            display: 'flex',
+            ...obj,
+            alignSelf: 'center',
+            borderColor: 'red',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -209,6 +232,16 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             alignItems: 'center',
             display: 'flex',
             borderColor: 'red',
+          }
+        });
+      `,
+      output: `
+        import { create } from 'stylex';
+        const styles = create({
+          button: {
+            alignItems: 'center',
+            borderColor: 'red',
+            display: 'flex',
           }
         });
       `,
@@ -233,6 +266,19 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           },
         });
       `,
+      output: `
+        import stylex from 'stylex';
+        const someAnimation = stylex.keyframes({
+          '0%': {
+            borderColor: 'red',
+            display: 'none',
+          },
+          '100%': {
+            borderColor: 'green',
+            display: 'flex',
+          },
+        });
+      `,
       errors: [
         {
           message:
@@ -251,6 +297,19 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           '100%': {
             display: 'flex',
             borderColor: 'green',
+          },
+        });
+      `,
+      output: `
+        import { keyframes as kf } from 'stylex';
+        const someAnimation = kf({
+          '0%': {
+            borderColor: 'red',
+            display: 'none',
+          },
+          '100%': {
+            borderColor: 'green',
+            display: 'flex',
           },
         });
       `,
@@ -275,6 +334,19 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           borderRadius: 10,
         },
       });`,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          borderColor: {
+            default: 'green',
+            '@media (min-width: 1540px)': 1366,
+            ':hover': 'red',
+          },
+          display: 'flex',
+          borderRadius: 10,
+        },
+      });`,
       errors: [
         {
           message:
@@ -283,6 +355,61 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key ":hover" should be above "@media (min-width: 1540px)"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          display: 'flex',
+          borderColor: 'red',
+        },
+      });`,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          borderColor: 'red',
+          display: 'flex',
+        },
+      });`,
+      errors: [
+        {
+          message:
+            'StyleX property key "borderColor" should be above "display"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          backgroundColor: {
+            // a
+            ':hover': 'blue', // a
+            // b
+            default: 'red', // b
+          },
+        },
+      });`,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          backgroundColor: {
+            // a
+            default: 'red', // a
+            // b
+            ':hover': 'blue', // b
+          },
+        },
+      });`,
+      errors: [
+        {
+          message: 'StyleX property key "default" should be above ":hover"',
         },
       ],
     },

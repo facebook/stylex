@@ -25,7 +25,7 @@ export type RuleFixer = {
   insertTextAfterRange(range: AST.Range, text: string): Fix,
   insertTextBefore(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
   insertTextBeforeRange(range: AST.Range, text: string): Fix,
-  remove(nodeOrToken: ESTree.Node | AST.Token): Fix,
+  remove(nodeOrToken: ESTree.Node | AST.Token | ESTree.Comment): Fix,
   removeRange(range: AST.Range): Fix,
   replaceText(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
   replaceTextRange(range: AST.Range, text: string): Fix,
@@ -70,6 +70,7 @@ type Node = ESTree.Node & NodeParentExtension;
 
 export type SourceCode = {
   getTokensBetween(left: $ReadOnly<{...ESTree.Property, ...}>, right: $ReadOnly<{...ESTree.Property, ...}>, options: { includeComments?: boolean }): Array<AST.Token | ESTree.Comment>;
+  getText(node?: ESTree.Node, beforeCount?: number, afterCount?: number): string;
 };
 
 export type RuleContext = {
