@@ -389,5 +389,43 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         },
       ],
     },
+    {
+      code: `
+      import { create } from 'stylex';
+      const styles = create({
+        foo: {
+          display: 'flex',
+          backgroundColor: {
+            // foo
+            default: 'red',
+            // bar
+            /* Block comment */
+            ':hover': 'brown',
+          },
+        }
+      });
+      `,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        foo: {
+          backgroundColor: {
+            // foo
+            default: 'red',
+            // bar
+            /* Block comment */
+            ':hover': 'brown',
+          },
+          display: 'flex',
+        }
+      });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "backgroundColor" should be above "display"',
+        },
+      ],
+    },
   ],
 });
