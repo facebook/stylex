@@ -29,3 +29,7 @@ const styles = stylex.create({
 function OtherComponent() {
   return <Component xstyle={styles.base} />;
 }
+
+function OtherComponent2() {
+  return <Component xstyle={[styles.base, undefined]} />;
+}
