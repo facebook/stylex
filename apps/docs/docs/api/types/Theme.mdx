@@ -1,0 +1,47 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 5
+---
+
+# `Theme<>`
+
+```tsx
+type Theme<T extends VarGroup<unknown, symbol>, Tag extends symbol = symbol>
+```
+
+A `Theme` is a type that represents a style that *themes* a set of variables in a given
+`VarGroup`. It's the result of calling [`stylex.createTheme`](../javascript/createTheme.mdx).
+
+
+```tsx
+import type {VarGroup} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
+
+import {vars} from './vars.stylex';
+
+export const theme: Theme<typeof vars> = stylex.createTheme(vars, {
+  color: 'red', // OK
+  backgroundColor: 'blue', // OK
+});
+```
+
+The most common use-case for `Theme` is to accept a theme for a particular set of variables.
+
+By default, all themes for the same `VarGroup` are compatible with each other and have the same
+type. However, the second type argument to `Theme<>` can be used to give a theme a unique type.
+  
+```tsx
+import type {VarGroup} from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
+
+import {vars} from './vars.stylex';
+
+declare const DarkThemeTag: unique symbol;
+export const theme: Theme<typeof vars, DarkThemeTag> = stylex.createTheme(vars, {
+  color: 'red', // OK
+  backgroundColor: 'blue', // OK
+});
+```

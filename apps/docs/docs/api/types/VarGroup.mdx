@@ -1,0 +1,90 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 4
+---
+
+# `VarGroup<>` 
+
+```tsx
+type VarGroup<Tokens extends {}, ID extends symbol = symbol>
+```
+
+A `VarGroup` is the type of the object that is generated as a result of calling
+[`stylex.defineVars`](../javascript/defineVars.mdx). It maps keys to references 
+to CSS custom properties.
+
+`VarGroup` is also the required type for the first argument to 
+[`stylex.createTheme`](../javascript/createTheme.mdx)
+
+Usually, you don't need to specify the type of `VarGroup` explicitly, as it can be 
+inferred from the argument to `stylex.defineVars`.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+export const vars = stylex.defineVars({
+  color: 'red',
+  backgroundColor: 'blue',
+});
+
+export type Vars = typeof vars;
+/*
+  Vars = VarGroup<{
+    color: string,
+    backgroundColor: string,
+  }>
+*/
+```
+
+In some cases, however, you may need to specify the type of `VarGroup` explicitly, to
+constrain the values that variables can take when creating themes:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import type {VarGroup} from '@stylexjs/stylex';
+
+const vars: VarGroup<{
+  color: 'red' | 'blue' | 'green' | 'yellow',
+  backgroundColor: 'red' | 'blue' | 'green' | 'yellow',
+}> = stylex.defineVars({
+  color: 'red',
+  backgroundColor: 'blue',
+});
+```
+
+Now when a theme for `vars` is being created, the values for `color` and `backgroundColor`
+can only be one of the specified values.
+
+```tsx
+export const theme1 = stylex.createTheme(vars, {
+  color: 'red', // OK
+  backgroundColor: 'blue', // OK
+});
+
+export const theme2 = stylex.createTheme(vars, {
+  color: 'orange', // Error: 'orange' is not assignable to 'red' | 'blue' | 'green' | 'yellow'
+});
+```
+
+You can also pass the second type argument to `VarGroup` to specify the unique identifier.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import type {VarGroup} from '@stylexjs/stylex';
+
+declare const myVars: unique symbol;
+
+const vars: VarGroup<{
+  color: 'red' | 'blue' | 'green' | 'yellow',
+  backgroundColor: 'red' | 'blue' | 'green' | 'yellow',
+}, typeof myVars> = stylex.defineVars({
+  color: 'red',
+  backgroundColor: 'blue',
+});
+```
+
+This can be useful when you want to create multiple `VarGroup`s with the same shape, but
+different types.
