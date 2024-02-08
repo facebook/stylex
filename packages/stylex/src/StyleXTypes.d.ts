@@ -144,7 +144,7 @@ type GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<
 // Replace `XStyle` with this.
 export type StaticStyles<
   CSS extends UserAuthoredStyles = CSSPropertiesWithExtras,
-> = StyleXArray<false | null | GenStylePropType<CSS>>;
+> = StyleXArray<false | null | undefined | GenStylePropType<CSS>>;
 
 export type StaticStylesWithout<CSS extends UserAuthoredStyles> = StaticStyles<
   Omit<CSSPropertiesWithExtras, keyof CSS>
@@ -154,6 +154,7 @@ export type StyleXStyles<
   CSS extends UserAuthoredStyles = CSSPropertiesWithExtras,
 > = StyleXArray<
   | null
+  | undefined
   | false
   | GenStylePropType<CSS>
   | Readonly<[GenStylePropType<CSS>, InlineStyles]>
