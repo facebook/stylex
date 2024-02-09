@@ -180,7 +180,7 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
           runtimeInjection: false,
           genConditionalClasses: true,
           treeshakeCompensation: true,
-          aliases: { 
+          aliases: {
             '@/*': [path.join(__dirname, '*')],
           },
           unstable_moduleResolution: {
@@ -198,7 +198,7 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
   const stylexPlugin = require('@stylexjs/nextjs-plugin');
 
   module.exports = stylexPlugin({
-    aliases: { 
+    aliases: {
       '@/*': [path.join(__dirname, '*')],
     },
     rootDir: __dirname,
@@ -214,7 +214,7 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
 
   ```tsx title="build.mjs"
   import esbuild from 'esbuild';
-  import stylexPlugin from '@stylexjs/stylex';
+  import stylexPlugin from '@stylexjs/esbuild-plugin';
   import path from 'path';
   import { fileURLToPath } from 'url';
 
