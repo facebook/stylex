@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
-    "build:cjs": "BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
-    "build:esm": "BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
     "postbuild:esm": "rollup -c ./rollup.config.mjs",
     "build": "npm run build:cjs && npm run build:esm",
     "build-haste": "rewrite-imports -i src/ -o lib/",
@@ -21,6 +21,9 @@
   },
   "devDependencies": {
     "@stylexjs/scripts": "0.5.1"
+  },
+  "bin": {
+    "stylex": "./lib/index.js"
   },
   "jest": {},
   "files": [
