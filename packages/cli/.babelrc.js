@@ -1,4 +1,4 @@
-{
+module.exports = {
   "assumptions": {
     "iterableIsArray": true
   },
@@ -13,4 +13,4 @@
     "@babel/preset-react"
   ],
   "plugins": [["babel-plugin-syntax-hermes-parser", {"flow": "detect"}]]
-}
+};
