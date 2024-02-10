@@ -2,7 +2,7 @@
   "name": "@stylexjs/cli",
   "version": "0.5.1",
   "description": "A cli to compile a folder with stylex",
-  "main": "./lib/index.js",
+  "main": "./src/index.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
@@ -23,7 +23,7 @@
     "@stylexjs/scripts": "0.5.1"
   },
   "bin": {
-    "stylex": "./lib/index.js"
+    "stylex": "./src/index.js"
   },
   "jest": {},
   "files": [
