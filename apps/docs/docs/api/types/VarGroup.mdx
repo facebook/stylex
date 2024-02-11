@@ -19,7 +19,7 @@ to CSS custom properties.
 `VarGroup` is also the required type for the first argument to 
 [`stylex.createTheme`](../javascript/createTheme.mdx)
 
-Usually, you don't need to specify the type of `VarGroup` explicitly, as it can be 
+Usually, `VarGroup` is not needed explicitly, as it can be 
 inferred from the argument to `stylex.defineVars`.
 
 ```tsx
@@ -39,8 +39,8 @@ export type Vars = typeof vars;
 */
 ```
 
-In some cases, however, you may need to specify the type of `VarGroup` explicitly, to
-constrain the values that variables can take when creating themes:
+In some cases, however, `VarGroup` may be needed explicitly, to
+constrain the values of the variables within themes:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -73,7 +73,7 @@ export const theme2 = stylex.createTheme(vars, {
 });
 ```
 
-While, it’s not needed in most cases, `VarGroup` also accepts an optional second type type argument.
+While, it's not needed in most cases, `VarGroup` also accepts an optional second type type argument.
 
 
 <details>
@@ -87,7 +87,7 @@ While, it’s not needed in most cases, `VarGroup` also accepts an optional seco
 </summary>
 
 TypeScript (and Flow) use structural typing, which means that two objects with the same
-shape are considered to be the same type. However, each usage `stylex.defineVars` results
+shape are considered to be the same type. However, each usage of `stylex.defineVars` results
 in a new set of variables.
 
 It can be useful to have a unique type identity for each `VarGroup` created to be able to
