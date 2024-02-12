@@ -1,6 +1,7 @@
 *.log*
 .build
 .docusaurus
+.DS_Store
 .stylex
 build
 coverage
