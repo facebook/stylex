@@ -21,11 +21,14 @@ export type Fix = {
 };
 
 export type RuleFixer = {
-  insertTextAfter(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
+  insertTextAfter(
+    nodeOrToken: ESTree.Node | AST.Token | ESTree.Comment,
+    text: string,
+  ): Fix,
   insertTextAfterRange(range: AST.Range, text: string): Fix,
   insertTextBefore(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
   insertTextBeforeRange(range: AST.Range, text: string): Fix,
-  remove(nodeOrToken: ESTree.Node | AST.Token): Fix,
+  remove(nodeOrToken: ESTree.Node | ESTree.Comment | AST.Token): Fix,
   removeRange(range: AST.Range): Fix,
   replaceText(nodeOrToken: ESTree.Node | AST.Token, text: string): Fix,
   replaceTextRange(range: AST.Range, text: string): Fix,
@@ -68,9 +71,34 @@ export type NodeParentExtension = {
 };
 type Node = ESTree.Node & NodeParentExtension;
 
+type SkipOptions = {
+  includeComments?: false | void,
+  skip?: number | void,
+  filter?: ((token: AST.Token) => boolean) | undefined,
+};
+
 export type SourceCode = {
-  getTokensBetween(left: $ReadOnly<{...ESTree.Property, ...}>, right: $ReadOnly<{...ESTree.Property, ...}>, options: { includeComments?: boolean }): Array<AST.Token | ESTree.Comment>;
-  getText(node?: ESTree.Node, beforeCount?: number, afterCount?: number): string;
+  lines: string[],
+  getTokensBetween(
+    left: $ReadOnly<{ ...ESTree.Property, ... }>,
+    right: $ReadOnly<{ ...ESTree.Property, ... }>,
+    options: { includeComments?: boolean },
+  ): Array<AST.Token | ESTree.Comment>,
+  getTokenAfter(
+    node: ESTree.Node | ESTree.Comment | AST.Token,
+    options: SkipOptions,
+  ): AST.Token | null,
+  getTokenBefore(
+    node: ESTree.Node | ESTree.Comment | AST.Token,
+    options: SkipOptions,
+  ): AST.Token | null,
+  getText(
+    node?: ESTree.Node | ESTree.Comment,
+    beforeCount?: number,
+    afterCount?: number,
+  ): string,
+  getCommentsBefore(nodeOrToken: ESTree.Node | AST.Token): ESTree.Comment[],
+  getCommentsAfter(nodeOrToken: ESTree.Node | AST.Token): ESTree.Comment[],
 };
 
 export type RuleContext = {
@@ -80,7 +108,7 @@ export type RuleContext = {
   parserPath: string,
   // parserOptions: Linter.ParserOptions;
   // parserServices: SourceCode.ParserServices;
-  sourceCode: SourceCode;
+  sourceCode: SourceCode,
   getAncestors(): Array<ESTree.Node>,
 
   // getDeclaredVariables(node: ESTree.Node): Scope.Variable[];

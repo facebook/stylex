@@ -9,6 +9,8 @@
 
 'use strict';
 
+import type { Token } from 'eslint/eslint-ast';
+import type { RuleFixer, SourceCode } from 'eslint/eslint-rule';
 import type {
   CallExpression,
   ImportDeclaration,
@@ -16,6 +18,7 @@ import type {
   Property,
   SpreadElement,
   ObjectExpression,
+  Comment,
 } from 'estree';
 import getPropertyName from './utils/getPropertyName';
 import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
@@ -283,24 +286,8 @@ const stylexSortKeys = {
             node,
             loc: node.key.loc,
             message: `StyleX property key "${currName}" should be above "${prevName}"`,
-            fix(fixer) {
-              const fixes = [];
-
-              function moveProperty(fromNode: Property, toNode: Property) {
-                fixes.push(
-                  fixer.replaceText(toNode, sourceCode.getText(fromNode)),
-                );
-              }
-
-              if (prevNode) {
-                // $FlowFixMe
-                moveProperty(node, prevNode);
-                // $FlowFixMe
-                moveProperty(prevNode, node);
-              }
-
-              return fixes;
-            },
+            // $FlowFixMe
+            fix: createFix({ sourceCode, prevNode, currNode: node }),
           });
         }
       },
@@ -317,5 +304,194 @@ const stylexSortKeys = {
     };
   },
 };
+
+function createFix({
+  currNode,
+  prevNode,
+  sourceCode,
+}: {
+  currNode: Property,
+  prevNode: Property,
+  sourceCode: SourceCode,
+}) {
+  return function (fixer: RuleFixer) {
+    const fixes = [];
+    //
+    // function moveProperty(fromNode: Property, toNode: Property) {
+    //   const tokenAfter = sourceCode.getTokenAfter(fromNode, {
+    //     includeComments: false,
+    //   });
+    //
+    //   // const lines = sourceCode.lines;
+    //   let inLineComments: Comment[] = sourceCode.getCommentsAfter(fromNode);
+    //
+    //   // checking if there is a comma after property
+    //   if (
+    //     tokenAfter &&
+    //     tokenAfter.type === 'Punctuator' &&
+    //     tokenAfter.value === ','
+    //   ) {
+    //     inLineComments = sourceCode.getCommentsAfter(tokenAfter);
+    //   }
+    //
+    //   inLineComments = inLineComments.filter(
+    //     (comment) => comment.loc?.start.line === fromNode.loc?.start.line,
+    //   );
+    //
+    //   fixes.push(fixer.replaceText(toNode, `${sourceCode.getText(fromNode)}`));
+    //
+    //   if (inLineComments.length > 0) {
+    //     fixes.push(fixer.remove(inLineComments[0]));
+    //     fixes.push(
+    //       fixer.insertTextAfter(
+    //         tokenAfter ?? toNode,
+    //         sourceCode.getText(inLineComments[0]) + '\n',
+    //       ),
+    //     );
+    //   }
+    // }
+    //
+    // if (prevNode) {
+    //   moveProperty(currNode, prevNode);
+    //   moveProperty(prevNode, currNode);
+    // }
+    //
+
+    /*
+      there may be instances of code like this:
+      - stylex.create({ main: { display: 'flex', borderColor: 'red' }});
+      - because of this, i can't just copy lines -- i need to rely on ranges
+      - potential problems:
+        - if there are comments, figure out how many whitespace characters are before the comment:
+
+        stylex.create({
+          main: { // hello world? <- this will belong to the property below.
+            display: 'red'
+          }
+        })
+
+        Assumption 1: I think that comments that are not on the line by themselves or on the same line as property should be ignored
+
+        steps:
+          1. obtain range of the removable text, create a text copy of the slice
+            a. check for the prevNode location
+            b. check for the comments above prevNode
+            c. filter out the comments that do not satisfy the assumptions above
+            d. check for the whitespace of the first satisfying comment and include it in the range
+            e. find comments that are after the last token after prevNode (it must be a comma) and that are on the same line
+            f. find the last character on that line and include it in the range
+          2. create a slice of the required range from the sourceCode.getText()
+          3. insert the slice after the node (need to experiment with this)
+          also need to consider multiline block comments that happen to be on the same line as the node..
+
+      */
+
+    // Retrieve comments before previous node
+    // Filter only comments that are on the line by themselves
+    const prevNodeCommentsBefore = sourceCode
+      .getCommentsBefore(prevNode)
+      .filter((comment) => {
+        const firstTokenBefore = sourceCode.getTokenBefore(comment, {
+          includeComments: false,
+        });
+
+        if (firstTokenBefore === null) {
+          return true;
+        }
+
+        return !isSameLine(firstTokenBefore, comment);
+      });
+
+    const firstCommentIndentation = getCommentIndentation(
+      sourceCode,
+      prevNodeCommentsBefore[0],
+    );
+
+    const rangeStart =
+      prevNodeCommentsBefore[0].range[0] - firstCommentIndentation.length;
+
+    const prevNodeCommentsAfter = getCommentsAfterProperty(
+      sourceCode,
+      prevNode,
+    ).filter((comment) => isSameLine(prevNode, comment));
+
+    const rangeEnd =
+      prevNodeCommentsAfter.length === 0
+        ? prevNode.range[1]
+        : prevNodeCommentsAfter[0].range[1];
+
+    const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd);
+
+    fixes.push(fixer.removeRange([rangeStart, rangeEnd + 1]));
+
+    const currNodeCommentsAfter = getCommentsAfterProperty(
+      sourceCode,
+      currNode,
+    ).filter((comment) => isSameLine(currNode, comment));
+
+    const currNodeTokenAfter = sourceCode.getTokenAfter(currNode, {
+      includeComments: false,
+    });
+    const hasCommaAfterCurrNode =
+      currNodeTokenAfter && isComma(currNodeTokenAfter);
+
+    if (!hasCommaAfterCurrNode) {
+      fixes.push(fixer.insertTextAfter(currNode, ','));
+    }
+
+    const newLine = isSameLine(prevNode, currNode) ? '' : '\n';
+
+    fixes.push(
+      fixer.insertTextAfter(
+        currNodeCommentsAfter.length === 0
+          ? currNode
+          : currNodeCommentsAfter[0],
+        `${newLine}${textToMove}`,
+      ),
+    );
+
+    return fixes;
+  };
+}
+
+function isSameLine(
+  aNode: Property | Comment | Token,
+  bNode: Property | Comment | Token,
+) {
+  return (
+    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line
+  );
+}
+
+function isComma(token: Token) {
+  return token.type === 'Punctuator' && token.value === ',';
+}
+
+function getCommentsAfterProperty(
+  sourceCode: SourceCode,
+  node: Property,
+): Comment[] {
+  const tokenAfter = sourceCode.getTokenAfter(node, {
+    includeComments: false,
+  });
+
+  return sourceCode.getCommentsAfter(
+    tokenAfter && isComma(tokenAfter) ? tokenAfter : node,
+  );
+}
+
+function getCommentIndentation(
+  sourceCode: SourceCode,
+  comment: Comment | void,
+) {
+  if (!comment?.loc) {
+    return '';
+  }
+
+  return sourceCode.lines[comment.loc?.start.line].slice(
+    0,
+    comment.loc.start.column,
+  );
+}
 
 export default (stylexSortKeys: typeof stylexSortKeys);
