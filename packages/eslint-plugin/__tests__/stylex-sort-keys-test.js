@@ -376,10 +376,10 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       const styles = create({
         main: {
           backgroundColor: {
-            // a
-            default: 'red', // a
             // b
-            ':hover': 'blue', // b
+            default: 'red', // b
+            // a
+            ':hover': 'blue', // a
           },
         },
       });`,
@@ -450,7 +450,6 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         }
       })
       `,
-      only: true,
       errors: [
         {
           message:

@@ -316,47 +316,6 @@ function createFix({
 }) {
   return function (fixer: RuleFixer) {
     const fixes = [];
-    //
-    // function moveProperty(fromNode: Property, toNode: Property) {
-    //   const tokenAfter = sourceCode.getTokenAfter(fromNode, {
-    //     includeComments: false,
-    //   });
-    //
-    //   // const lines = sourceCode.lines;
-    //   let inLineComments: Comment[] = sourceCode.getCommentsAfter(fromNode);
-    //
-    //   // checking if there is a comma after property
-    //   if (
-    //     tokenAfter &&
-    //     tokenAfter.type === 'Punctuator' &&
-    //     tokenAfter.value === ','
-    //   ) {
-    //     inLineComments = sourceCode.getCommentsAfter(tokenAfter);
-    //   }
-    //
-    //   inLineComments = inLineComments.filter(
-    //     (comment) => comment.loc?.start.line === fromNode.loc?.start.line,
-    //   );
-    //
-    //   fixes.push(fixer.replaceText(toNode, `${sourceCode.getText(fromNode)}`));
-    //
-    //   if (inLineComments.length > 0) {
-    //     fixes.push(fixer.remove(inLineComments[0]));
-    //     fixes.push(
-    //       fixer.insertTextAfter(
-    //         tokenAfter ?? toNode,
-    //         sourceCode.getText(inLineComments[0]) + '\n',
-    //       ),
-    //     );
-    //   }
-    // }
-    //
-    // if (prevNode) {
-    //   moveProperty(currNode, prevNode);
-    //   moveProperty(prevNode, currNode);
-    // }
-    //
-
     /*
       there may be instances of code like this:
       - stylex.create({ main: { display: 'flex', borderColor: 'red' }});
@@ -402,13 +361,11 @@ function createFix({
         return !isSameLine(firstTokenBefore, comment);
       });
 
-    const firstCommentIndentation = getCommentIndentation(
-      sourceCode,
-      prevNodeCommentsBefore[0],
-    );
+    const firstNode =
+      prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode;
+    const firstLineIndentation = getIndentation(sourceCode, firstNode);
 
-    const rangeStart =
-      prevNodeCommentsBefore[0].range[0] - firstCommentIndentation.length;
+    const rangeStart = firstNode.range[0] - firstLineIndentation.length;
 
     const prevNodeCommentsAfter = getCommentsAfterProperty(
       sourceCode,
@@ -420,8 +377,13 @@ function createFix({
         ? prevNode.range[1]
         : prevNodeCommentsAfter[0].range[1];
 
+    // right now there is some issue that can be fixed here
+    // something with offsetting tokens, depending on whether there are comments or no
+    // for example, if there is a comment at top, then it requires rangeEnd; otherwise rangeEnd + 1
     const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd);
-
+    // rangeStart - 1 fixes the problem for a new line before
+    // fixes.push(fixer.removeRange([rangeStart, rangeEnd + 1]));
+    // same here with "rangeStart + 1" vs "rangeStart"
     fixes.push(fixer.removeRange([rangeStart, rangeEnd + 1]));
 
     const currNodeCommentsAfter = getCommentsAfterProperty(
@@ -440,11 +402,15 @@ function createFix({
     }
 
     const newLine = isSameLine(prevNode, currNode) ? '' : '\n';
+    const insertAfter =
+      hasCommaAfterCurrNode && currNodeTokenAfter
+        ? currNodeTokenAfter
+        : currNode;
 
     fixes.push(
       fixer.insertTextAfter(
         currNodeCommentsAfter.length === 0
-          ? currNode
+          ? insertAfter
           : currNodeCommentsAfter[0],
         `${newLine}${textToMove}`,
       ),
@@ -480,18 +446,12 @@ function getCommentsAfterProperty(
   );
 }
 
-function getCommentIndentation(
-  sourceCode: SourceCode,
-  comment: Comment | void,
-) {
-  if (!comment?.loc) {
+function getIndentation(sourceCode: SourceCode, node: Property | Comment) {
+  if (!node?.loc) {
     return '';
   }
 
-  return sourceCode.lines[comment.loc?.start.line].slice(
-    0,
-    comment.loc.start.column,
-  );
+  return sourceCode.lines[node.loc.start.line].slice(0, node.loc.start.column);
 }
 
 export default (stylexSortKeys: typeof stylexSortKeys);
