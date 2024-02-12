@@ -7,8 +7,6 @@
  * @flow strict
  */
 
-// import type { Rule } from '@stylexjs/babel-plugin';
-
 import fs from 'fs';
 import path from 'path';
 import errors from './errors';
@@ -16,8 +14,7 @@ import errors from './errors';
 // gets the directory for compiled styles (creates it if it doesn't exist)
 export function makeCompiledDir(compiledDir: string): void {
   if (!fs.existsSync(compiledDir)) {
-    console.log('made dir', compiledDir);
-    fs.mkdirSync(compiledDir);
+    makeDirExistRecursive(compiledDir);
   }
 }
 
@@ -38,13 +35,32 @@ export function writeCompiledCSS(filePath: string, compiledCSS: string): void {
   fs.writeFileSync(filePath, compiledCSS);
 }
 
-export function writeCompiledJS(path: string, code: string): void {
-  makeDirExistRecursive(path);
-  fs.writeFileSync(path, code, {});
+export function writeCompiledJS(filePath: string, code: string): void {
+  makeDirExistRecursive(filePath);
+  fs.writeFileSync(filePath, code, {});
 }
 
-export function isDir(path: string): boolean {
-  return fs.lstatSync(path).isDirectory();
+export function copyFile(filePath: string) {
+  fs.copyFileSync(
+    path.join(global.INPUT_DIR, filePath),
+    path.join(global.COMPILED_DIR, filePath),
+  );
+}
+
+export function isDir(filePath: string): boolean {
+  return fs.lstatSync(filePath).isDirectory();
+}
+
+export function isJSFile(filePath: string): boolean {
+  return path.parse(filePath).ext === '.js';
+}
+
+// e.g. ./pages/home/index.js -> ../../stylex_bundle.css
+export function getCssPathFromFilePath(filePath: string): string {
+  const from = path.resolve(filePath);
+  const to = path.resolve(global.INPUT_DIR);
+  const relativePath = path.relative(path.dirname(from), to);
+  return formatRelativePath(path.join(relativePath, global.CSS_BUNDLE_NAME));
 }
 
 function makeDirExistRecursive(filePath: string): ?boolean {
@@ -54,4 +70,8 @@ function makeDirExistRecursive(filePath: string): ?boolean {
   }
   makeDirExistRecursive(dirName);
   fs.mkdirSync(dirName);
+}
+
+function formatRelativePath(filePath: string) {
+  return filePath.startsWith('.') ? filePath : './' + filePath;
 }
