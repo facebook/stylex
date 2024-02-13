@@ -457,5 +457,50 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         },
       ],
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: { backgroundColor: 'red', alignItems: 'center', }
+      })
+      `,
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: { alignItems: 'center', backgroundColor: 'red', }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignItems" should be above "backgroundColor"',
+        },
+      ],
+    },
+    // {
+    //   code: `
+    //   import stylex from 'stylex';
+    //   const styles = stylex.create({
+    //     foo: { backgroundColor: 'red',
+    //       alignItems: 'center',
+    //     }
+    //   })
+    //   `,
+    //   output: `
+    //   import stylex from 'stylex';
+    //   const styles = stylex.create({
+    //     foo: { alignItems: 'center',
+    //       backgroundColor: 'red',
+    //     }
+    //   })
+    //   `,
+    //   only: true,
+    //   errors: [
+    //     {
+    //       message:
+    //         'StyleX property key "alignItems" should be above "backgroundColor"',
+    //     },
+    //   ],
+    // },
   ],
 });

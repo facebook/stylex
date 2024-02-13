@@ -316,34 +316,6 @@ function createFix({
 }) {
   return function (fixer: RuleFixer) {
     const fixes = [];
-    /*
-      there may be instances of code like this:
-      - stylex.create({ main: { display: 'flex', borderColor: 'red' }});
-      - because of this, i can't just copy lines -- i need to rely on ranges
-      - potential problems:
-        - if there are comments, figure out how many whitespace characters are before the comment:
-
-        stylex.create({
-          main: { // hello world? <- this will belong to the property below.
-            display: 'red'
-          }
-        })
-
-        Assumption 1: I think that comments that are not on the line by themselves or on the same line as property should be ignored
-
-        steps:
-          1. obtain range of the removable text, create a text copy of the slice
-            a. check for the prevNode location
-            b. check for the comments above prevNode
-            c. filter out the comments that do not satisfy the assumptions above
-            d. check for the whitespace of the first satisfying comment and include it in the range
-            e. find comments that are after the last token after prevNode (it must be a comma) and that are on the same line
-            f. find the last character on that line and include it in the range
-          2. create a slice of the required range from the sourceCode.getText()
-          3. insert the slice after the node (need to experiment with this)
-          also need to consider multiline block comments that happen to be on the same line as the node..
-
-      */
 
     // Retrieve comments before previous node
     // Filter only comments that are on the line by themselves
@@ -363,39 +335,43 @@ function createFix({
 
     const firstNode =
       prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode;
-    const firstLineIndentation = getIndentation(sourceCode, firstNode);
+
+    const { indentation: firstLineIndentation, isTokenBeforeSameLineAsNode } =
+      getNodeIndentation(sourceCode, firstNode);
 
     const rangeStart = firstNode.range[0] - firstLineIndentation.length;
 
     const prevNodeCommentsAfter = getCommentsAfterProperty(
       sourceCode,
       prevNode,
-    ).filter((comment) => isSameLine(prevNode, comment));
+    );
 
     const rangeEnd =
       prevNodeCommentsAfter.length === 0
-        ? prevNode.range[1]
+        ? sourceCode.getTokenAfter(prevNode, { includeComments: false })
+            .range[1]
         : prevNodeCommentsAfter[0].range[1];
 
-    // right now there is some issue that can be fixed here
-    // something with offsetting tokens, depending on whether there are comments or no
-    // for example, if there is a comment at top, then it requires rangeEnd; otherwise rangeEnd + 1
     const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd);
-    // rangeStart - 1 fixes the problem for a new line before
-    // fixes.push(fixer.removeRange([rangeStart, rangeEnd + 1]));
-    // same here with "rangeStart + 1" vs "rangeStart"
-    fixes.push(fixer.removeRange([rangeStart, rangeEnd + 1]));
+
+    fixes.push(
+      fixer.removeRange([
+        // If previous token is not in the same line, we remove an extra char to account for newline
+        rangeStart - Number(!isTokenBeforeSameLineAsNode),
+        rangeEnd,
+      ]),
+    );
 
     const currNodeCommentsAfter = getCommentsAfterProperty(
       sourceCode,
       currNode,
-    ).filter((comment) => isSameLine(currNode, comment));
+    );
 
     const currNodeTokenAfter = sourceCode.getTokenAfter(currNode, {
       includeComments: false,
     });
     const hasCommaAfterCurrNode =
-      currNodeTokenAfter && isComma(currNodeTokenAfter);
+      currNodeTokenAfter && isCommaToken(currNodeTokenAfter);
 
     if (!hasCommaAfterCurrNode) {
       fixes.push(fixer.insertTextAfter(currNode, ','));
@@ -423,13 +399,13 @@ function createFix({
 function isSameLine(
   aNode: Property | Comment | Token,
   bNode: Property | Comment | Token,
-) {
-  return (
-    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line
+): boolean {
+  return Boolean(
+    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line,
   );
 }
 
-function isComma(token: Token) {
+function isCommaToken(token: Token): boolean {
   return token.type === 'Punctuator' && token.value === ',';
 }
 
@@ -441,17 +417,38 @@ function getCommentsAfterProperty(
     includeComments: false,
   });
 
-  return sourceCode.getCommentsAfter(
-    tokenAfter && isComma(tokenAfter) ? tokenAfter : node,
-  );
+  return sourceCode
+    .getCommentsAfter(
+      tokenAfter && isCommaToken(tokenAfter) ? tokenAfter : node,
+    )
+    .filter((comment) => isSameLine(node, comment));
 }
 
-function getIndentation(sourceCode: SourceCode, node: Property | Comment) {
-  if (!node?.loc) {
-    return '';
-  }
+function getNodeIndentation(
+  sourceCode: SourceCode,
+  node: Property | Comment,
+): { indentation: string, isTokenBeforeSameLineAsNode: boolean } {
+  const tokenBefore = sourceCode.getTokenBefore(node, {
+    includeComments: false,
+  });
 
-  return sourceCode.lines[node.loc.start.line].slice(0, node.loc.start.column);
+  const isTokenBeforeSameLineAsNode =
+    !!tokenBefore && isSameLine(tokenBefore, node);
+
+  const sliceStart =
+    isTokenBeforeSameLineAsNode && tokenBefore?.loc
+      ? tokenBefore.loc.end.column
+      : 0;
+
+  return {
+    isTokenBeforeSameLineAsNode,
+    indentation: node?.loc
+      ? sourceCode.lines[node.loc.start.line - 1].slice(
+          sliceStart,
+          node.loc.start.column,
+        )
+      : '',
+  };
 }
 
 export default (stylexSortKeys: typeof stylexSortKeys);
