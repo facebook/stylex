@@ -23,6 +23,7 @@ export default function makeUnionRule(
     node: Expression | Pattern,
     variables?: Variables,
     prop?: Property,
+    key?: string,
   ): RuleResponse => {
     const failedRules = [];
     for (const _rule of rules) {
@@ -43,8 +44,10 @@ export default function makeUnionRule(
     const fixable = failedRules.filter((a) => a.suggest != null);
     fixable.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
 
+    const enumValues = failedRules.map((a) => a.message).join('\n')
+
     return {
-      message: failedRules.map((a) => a.message).join('\n'),
+      message: key ? `${key} value must be one of:\n${enumValues}` : enumValues,
       suggest: fixable[0] != null ? fixable[0].suggest : undefined,
     };
   };

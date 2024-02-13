@@ -1286,8 +1286,7 @@ revert`,
       ],
       errors: [
         {
-          message: `grid value must be one of:
-grid properties disallowed for testing`,
+          message: 'Property grid is not allowed. grid properties disallowed for testing',
         },
       ],
     },
@@ -1313,8 +1312,7 @@ grid properties disallowed for testing`,
       ],
       errors: [
         {
-          message: `gridTemplateColumns value must be one of:
-grid properties disallowed for testing`,
+          message: 'Property gridTemplateColumns is not allowed. grid properties disallowed for testing',
         },
       ],
     },
@@ -1335,8 +1333,7 @@ grid properties disallowed for testing`,
       ],
       errors: [
         {
-          message: `grid value must be one of:
-This property is not supported in legacy StyleX resolution.`,
+          message: 'Property grid is not allowed. This property is not supported in legacy StyleX resolution.',
         },
       ],
     },
