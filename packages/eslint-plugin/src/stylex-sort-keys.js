@@ -317,8 +317,7 @@ function createFix({
   return function (fixer: RuleFixer) {
     const fixes = [];
 
-    // Retrieve comments before previous node
-    // Filter only comments that are on the line by themselves
+    // Retrieve comments before the previous node
     const prevNodeCommentsBefore = getPropertyCommentsBefore(
       sourceCode,
       prevNode,
@@ -357,7 +356,7 @@ function createFix({
 
     fixes.push(
       fixer.removeRange([
-        // If previous token is not in the same line, we remove an extra char to account for newline
+        // If previous token is not on the same line, we remove an extra char to account for newline
         rangeStart - Number(!isTokenBeforeSameLineAsNode),
         rangeEnd,
       ]),
@@ -380,8 +379,8 @@ function createFix({
     }
 
     const newLine = isSameLine(prevNode, currNode) ? '' : '\n';
-    // If token after the current node is comma then we insert after the comma
-    // Otherwise we insert after current node because there is already a fix to add comma (code above)
+    // If token after the current node is a comma then we insert after the comma
+    // Otherwise we insert after the current node because there is a guaranteed fix to add comma (above)
     const fallbackNode =
       hasCommaAfterCurrNode && tokenAfterCurrNode
         ? tokenAfterCurrNode
