@@ -199,7 +199,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             alignItems: 'center',
             display: 'flex',
             ...obj,
-            borderColor: 'red',
+            borderColor: 'red', // ok
             alignSelf: 'center',
           }
         });
@@ -213,7 +213,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             display: 'flex',
             ...obj,
             alignSelf: 'center',
-            borderColor: 'red',
+            borderColor: 'red', // ok
           }
         });
       `,
@@ -477,30 +477,133 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         },
       ],
     },
-    // {
-    //   code: `
-    //   import stylex from 'stylex';
-    //   const styles = stylex.create({
-    //     foo: { backgroundColor: 'red',
-    //       alignItems: 'center',
-    //     }
-    //   })
-    //   `,
-    //   output: `
-    //   import stylex from 'stylex';
-    //   const styles = stylex.create({
-    //     foo: { alignItems: 'center',
-    //       backgroundColor: 'red',
-    //     }
-    //   })
-    //   `,
-    //   only: true,
-    //   errors: [
-    //     {
-    //       message:
-    //         'StyleX property key "alignItems" should be above "backgroundColor"',
-    //     },
-    //   ],
-    // },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: { // foo
+          // foo
+          backgroundColor: 'red', // bar
+          // bar
+          alignItems: 'center' // baz
+          // qux
+        }
+      })
+      `,
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: { // foo
+          // bar
+          alignItems: 'center', // baz
+          // foo
+          backgroundColor: 'red', // bar
+          // qux
+        }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignItems" should be above "backgroundColor"',
+        },
+      ],
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {
+          /*
+          *
+          * foo
+          * bar
+          * baz
+          *
+          */
+          backgroundColor: 'red',
+          alignItems: 'center'
+        }
+      })
+      `,
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {
+          alignItems: 'center',
+          /*
+          *
+          * foo
+          * bar
+          * baz
+          *
+          */
+          backgroundColor: 'red',
+        }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignItems" should be above "backgroundColor"',
+        },
+      ],
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {      
+          backgroundColor: 'red',             //       foo
+          alignItems: 'center'       // baz
+        }
+      })
+      `,
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {      
+          alignItems: 'center',       // baz
+          backgroundColor: 'red',             //       foo
+        }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignItems" should be above "backgroundColor"',
+        },
+      ],
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {
+          /*
+          * foo
+          */ backgroundColor: 'red',
+          alignItems: 'center'
+        }
+      })
+      `,
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {
+          alignItems: 'center',
+          /*
+          * foo
+          */ backgroundColor: 'red',
+        }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignItems" should be above "backgroundColor"',
+        },
+      ],
+    },
   ],
 });

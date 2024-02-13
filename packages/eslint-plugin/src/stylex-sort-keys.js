@@ -319,38 +319,39 @@ function createFix({
 
     // Retrieve comments before previous node
     // Filter only comments that are on the line by themselves
-    const prevNodeCommentsBefore = sourceCode
-      .getCommentsBefore(prevNode)
-      .filter((comment) => {
-        const firstTokenBefore = sourceCode.getTokenBefore(comment, {
-          includeComments: false,
-        });
-
-        if (firstTokenBefore === null) {
-          return true;
-        }
-
-        return !isSameLine(firstTokenBefore, comment);
-      });
-
-    const firstNode =
-      prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode;
-
-    const { indentation: firstLineIndentation, isTokenBeforeSameLineAsNode } =
-      getNodeIndentation(sourceCode, firstNode);
-
-    const rangeStart = firstNode.range[0] - firstLineIndentation.length;
-
-    const prevNodeCommentsAfter = getCommentsAfterProperty(
+    const prevNodeCommentsBefore = getPropertyCommentsBefore(
       sourceCode,
       prevNode,
     );
 
-    const rangeEnd =
-      prevNodeCommentsAfter.length === 0
-        ? sourceCode.getTokenAfter(prevNode, { includeComments: false })
-            .range[1]
-        : prevNodeCommentsAfter[0].range[1];
+    // Start node for the entire context with comments of prevNode
+    const prevNodeContextStartNode =
+      prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode;
+
+    const { indentation: startNodeIndentation, isTokenBeforeSameLineAsNode } =
+      getNodeIndentation(sourceCode, prevNodeContextStartNode);
+
+    const prevNodeSameLineComment = getPropertySameLineComment(
+      sourceCode,
+      prevNode,
+    );
+
+    const tokenAfterPrevNode = sourceCode.getTokenAfter(prevNode, {
+      includeComments: false,
+    });
+
+    const prevNodeContextEndNode =
+      prevNodeSameLineComment ?? tokenAfterPrevNode;
+
+    if (!prevNodeContextEndNode?.range || !prevNodeContextStartNode.range) {
+      // Early return if range or prevNode doesn't exist
+      return [];
+    }
+
+    const rangeStart =
+      prevNodeContextStartNode.range[0] - startNodeIndentation.length;
+
+    const rangeEnd = prevNodeContextEndNode.range[1];
 
     const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd);
 
@@ -362,32 +363,33 @@ function createFix({
       ]),
     );
 
-    const currNodeCommentsAfter = getCommentsAfterProperty(
+    const currNodeSameLineComment = getPropertySameLineComment(
       sourceCode,
       currNode,
     );
 
-    const currNodeTokenAfter = sourceCode.getTokenAfter(currNode, {
+    const tokenAfterCurrNode = sourceCode.getTokenAfter(currNode, {
       includeComments: false,
     });
+
     const hasCommaAfterCurrNode =
-      currNodeTokenAfter && isCommaToken(currNodeTokenAfter);
+      tokenAfterCurrNode && isCommaToken(tokenAfterCurrNode);
 
     if (!hasCommaAfterCurrNode) {
       fixes.push(fixer.insertTextAfter(currNode, ','));
     }
 
     const newLine = isSameLine(prevNode, currNode) ? '' : '\n';
-    const insertAfter =
-      hasCommaAfterCurrNode && currNodeTokenAfter
-        ? currNodeTokenAfter
+    // If token after the current node is comma then we insert after the comma
+    // Otherwise we insert after current node because there is already a fix to add comma (code above)
+    const fallbackNode =
+      hasCommaAfterCurrNode && tokenAfterCurrNode
+        ? tokenAfterCurrNode
         : currNode;
 
     fixes.push(
       fixer.insertTextAfter(
-        currNodeCommentsAfter.length === 0
-          ? insertAfter
-          : currNodeCommentsAfter[0],
+        currNodeSameLineComment ?? fallbackNode,
         `${newLine}${textToMove}`,
       ),
     );
@@ -409,19 +411,47 @@ function isCommaToken(token: Token): boolean {
   return token.type === 'Punctuator' && token.value === ',';
 }
 
-function getCommentsAfterProperty(
+function getPropertyCommentsBefore(
   sourceCode: SourceCode,
   node: Property,
 ): Comment[] {
+  return sourceCode.getCommentsBefore(node).filter((comment) => {
+    const tokenBefore = sourceCode.getTokenBefore(comment, {
+      includeComments: false,
+    });
+
+    if (tokenBefore === null) {
+      return true;
+    }
+
+    // Only comments that have no other tokens on the same line are considered
+    // For example:
+    //
+    //  create({
+    //    foo: { // comment above a <- this comment does not belong to property below
+    //      // comment above b <- this comment belongs to property below
+    //      display: 'red'
+    //    }
+    //  })
+    return !isSameLine(tokenBefore, comment);
+  });
+}
+
+function getPropertySameLineComment(
+  sourceCode: SourceCode,
+  node: Property,
+): Comment | void {
   const tokenAfter = sourceCode.getTokenAfter(node, {
     includeComments: false,
   });
 
-  return sourceCode
+  const comments = sourceCode
     .getCommentsAfter(
       tokenAfter && isCommaToken(tokenAfter) ? tokenAfter : node,
     )
     .filter((comment) => isSameLine(node, comment));
+
+  return comments[0];
 }
 
 function getNodeIndentation(
