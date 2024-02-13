@@ -8,9 +8,19 @@
  */
 import type { Rule } from '@stylexjs/babel-plugin';
 
+import path from 'path';
 import * as babel from '@babel/core';
 import styleXPlugin from '@stylexjs/babel-plugin';
-import { getCssPathFromFilePath } from './files';
+import {
+  copyFile,
+  getCssPathFromFilePath,
+  getInputDirectoryFiles,
+  isJSFile,
+  writeCompiledCSS,
+  writeCompiledJS,
+} from './files';
+
+type StyleXRules = Array<Rule>;
 
 export async function transformFile(
   dir: string,
@@ -45,4 +55,32 @@ export async function transformFile(
 
 export async function compileRules(rules: Array<Rule>): Promise<string> {
   return styleXPlugin.processStylexRules(rules);
+}
+
+const allStyleXRules: StyleXRules = [];
+const compiledJS = new Map<string, string>();
+
+export async function compileDirectory(dir: string) {
+  const dirFiles = getInputDirectoryFiles(dir);
+  for (const filePath of dirFiles) {
+    if (isJSFile(filePath)) {
+      await compileFile(filePath);
+    } else {
+      copyFile(filePath);
+    }
+  }
+  const compiledCSS = await compileRules(allStyleXRules);
+  writeCompiledCSS(global.CSS_BUNDLE_PATH, compiledCSS);
+}
+
+export async function compileFile(filePath: string) {
+  const [code, rules] = await transformFile(
+    global.INPUT_DIR,
+    path.join(global.INPUT_DIR, filePath),
+  );
+  if (code != null) {
+    compiledJS.set(filePath, code);
+    allStyleXRules.push(...rules);
+    writeCompiledJS(path.join(global.COMPILED_DIR, filePath), code);
+  }
 }
