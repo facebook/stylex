@@ -1,16 +1,17 @@
 module.exports = {
-  "assumptions": {
-    "iterableIsArray": true
+  assumptions: {
+    iterableIsArray: true,
   },
-  "presets": [
-    ["@babel/preset-env", {
-      "exclude": [
-        "@babel/plugin-transform-typeof-symbol"
-      ],
-      "targets": "defaults"
-    }],
-    "@babel/preset-flow",
-    "@babel/preset-react"
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        exclude: ['@babel/plugin-transform-typeof-symbol'],
+        targets: 'defaults',
+      },
+    ],
+    '@babel/preset-flow',
+    '@babel/preset-react',
   ],
-  "plugins": [["babel-plugin-syntax-hermes-parser", {"flow": "detect"}]]
+  plugins: [['babel-plugin-syntax-hermes-parser', { flow: 'detect' }]],
 };
