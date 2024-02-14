@@ -44,6 +44,6 @@ global.CSS_BUNDLE_PATH = path.join(global.COMPILED_DIR, global.CSS_BUNDLE_NAME);
 if (watchFiles) {
   watch();
 } else {
-  makeCompiledDir(global.COMPILED_DIR);
+  makeCompiledDir();
   compileDirectory(dir);
 }
