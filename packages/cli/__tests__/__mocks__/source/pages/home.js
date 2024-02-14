@@ -35,6 +35,6 @@ const styles = stylex.create({
   },
 });
 
-export default function App() {
+export default function Home() {
   return stylex.props(otherStyles.bar, styles.foo, npmStyles.baz).className;
 }

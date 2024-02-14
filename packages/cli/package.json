@@ -25,7 +25,9 @@
   "bin": {
     "stylex": "./src/index.js"
   },
-  "jest": {},
+  "jest": {
+    "testPathIgnorePatterns": ["__tests__/__mocks__"]
+  },
   "files": [
     "lib/*"
   ]

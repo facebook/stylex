@@ -12,9 +12,9 @@ import path from 'path';
 import errors from './errors';
 
 // gets the directory for compiled styles (creates it if it doesn't exist)
-export function makeCompiledDir(compiledDir: string): void {
-  if (!fs.existsSync(compiledDir)) {
-    makeDirExistRecursive(compiledDir);
+export function makeCompiledDir(): void {
+  if (!fs.existsSync(global.COMPILED_DIR)) {
+    makeDirExistRecursive(global.COMPILED_DIR);
   }
 }
 
@@ -63,7 +63,7 @@ export function getCssPathFromFilePath(filePath: string): string {
   return formatRelativePath(path.join(relativePath, global.CSS_BUNDLE_NAME));
 }
 
-function makeDirExistRecursive(filePath: string): ?boolean {
+export function makeDirExistRecursive(filePath: string): ?boolean {
   const dirName = path.dirname(filePath);
   if (fs.existsSync(dirName)) {
     return true;
