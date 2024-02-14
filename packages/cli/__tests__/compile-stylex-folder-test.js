@@ -28,7 +28,7 @@ global.COMPILED_DIR = path.join(global.INPUT_PARENT, 'src');
 global.CSS_BUNDLE_NAME = 'stylex_bundle.css';
 global.CSS_BUNDLE_PATH = path.join(global.COMPILED_DIR, global.CSS_BUNDLE_NAME);
 
-describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/output', () => {
+describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
   test(input, () => {
     expect(files.isDir(input)).toBe(true);
   });
@@ -59,7 +59,7 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
   });
 });
 
-describe('indivual testing of util functions', () => {
+describe('individual testing of util functions', () => {
   test('file to relative css path', () => {
     const mockFileName = './source/pages/home/page.js';
     const relativePath = files.getCssPathFromFilePath(mockFileName);
@@ -68,7 +68,7 @@ describe('indivual testing of util functions', () => {
 });
 
 describe('watch mode starts successfully', () => {
-  test('script', (done) => {
+  test('script start', (done) => {
     const cmd = 'node ' + path.resolve('../../lib/index.js -d source', ' -w');
     const script = cp.exec(cmd);
     script.stdout.on('data', (data) => {

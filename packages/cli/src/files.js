@@ -30,7 +30,6 @@ export function getInputDirectoryFiles(inputDir: string): Array<string> {
   }
 }
 
-// takes in the compiled rules and writes them to a file at the top of the compiled directory
 export function writeCompiledCSS(filePath: string, compiledCSS: string): void {
   fs.writeFileSync(filePath, compiledCSS);
 }
