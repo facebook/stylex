@@ -10,18 +10,26 @@
 
 import yargs from 'yargs';
 import path from 'path';
+import chalk from 'chalk';
 
 import { isDir, makeCompiledDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
 import watch from './watch';
-// make watchman look for directory changes
-// create cache from time changed on files and recompile only those files?
 
-// Accept list of node_modules files to ALSO compile and include in the css
-// Make a subfolder inside of output of compiled_modules
-// Can skip injecting css import in compiled_modules
+console.log(
+  chalk.green(`\n
+  ______   _             _         __   __
+  / ____| | |           | |        \\ \\ / /
+ | (___   | |_   _   _  | |   ___   \\ V / 
+  \\___ \\  | __| | | | | | |  / _ \\   > <  
+  ____) | | |_  | |_| | | | |  __/  / . \\ 
+ |_____/   \\__|  \\__, | |_|  \\___| /_/ \\_\\
+                  __/ |                   
+                 |___/                
+`),
+);
 
 const usage =
   '\n Usage: provide a directory to stylex in order to have it compiled.';

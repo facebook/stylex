@@ -71,7 +71,14 @@ describe('watch mode starts successfully', () => {
   test('script start', (done) => {
     const cmd = 'node ' + path.resolve('../../lib/index.js -d source', ' -w');
     const script = cp.exec(cmd);
+    // ignore ascii art
+    let firstStd = false;
     script.stdout.on('data', (data) => {
+      if (!firstStd) {
+        firstStd = true;
+        return;
+      }
+
       expect(data).toContain('watching for style changes');
       fs.rmSync(output, { recursive: true, force: true });
       process.kill(script.pid);
