@@ -401,7 +401,7 @@ function createFix({
     const lowerNodeLine = lowerNode.loc?.start.line;
 
     if (upperNodeLine === undefined || lowerNodeLine === undefined) {
-      throw new Error('Invalide node location');
+      throw new Error('Invalid node location');
     }
 
     return sourceCode.lines
