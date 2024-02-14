@@ -605,5 +605,72 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         },
       ],
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {
+          // foo
+
+          backgroundColor: 'red',
+          alignItems: 'center'
+        }
+      })
+      `,
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        foo: {
+          // foo
+
+          alignItems: 'center',
+          backgroundColor: 'red',
+        }
+      })
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignItems" should be above "backgroundColor"',
+        },
+      ],
+    },
+    {
+      options: [{ allowLineSeparatedGroups: true }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          alignItems: 'center',
+          display: 'flex',
+          // foo
+
+          // bar
+          borderColor: 'black',
+          alignSelf: 'center',
+        }
+      });
+      `,
+      output: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          alignItems: 'center',
+          display: 'flex',
+          // foo
+
+          alignSelf: 'center',
+          // bar
+          borderColor: 'black',
+        }
+      });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
+        },
+      ],
+    },
   ],
 });

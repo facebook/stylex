@@ -99,6 +99,10 @@ export type SourceCode = {
   ): string,
   getCommentsBefore(nodeOrToken: ESTree.Node | AST.Token): ESTree.Comment[],
   getCommentsAfter(nodeOrToken: ESTree.Node | AST.Token): ESTree.Comment[],
+  isSpaceBetween(
+    nodeOrToken: ESTree.Node | AST.Token | ESTree.Comment,
+    nodeOrToken: ESTree.Node | AST.Token | ESTree.Comment,
+  ): boolean,
 };
 
 export type RuleContext = {
