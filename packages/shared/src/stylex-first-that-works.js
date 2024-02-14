@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-export default function stylexFirstThatWorks<T>(
+export default function stylexFirstThatWorks<T: string>(
   ...args: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> {
   return [...args].reverse();

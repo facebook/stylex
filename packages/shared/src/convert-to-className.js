@@ -14,6 +14,7 @@ import transformValue from './transform-value';
 import { generateRule } from './generate-css-rule';
 import { defaultOptions } from './utils/default-options';
 import { arraySort } from './utils/object-utils';
+import * as messages from './messages';
 
 // This function takes a single style rule and transforms it into a CSS rule.
 // [color: 'red'] => ['color', 'classname-for-color-red', CSSRULE{ltr, rtl, priority}]
@@ -23,7 +24,7 @@ import { arraySort } from './utils/object-utils';
 // Hashes to get a className
 // Returns the final key, className a CSS Rule
 export function convertStyleToClassName(
-  objEntry: [string, TRawValue],
+  objEntry: $ReadOnly<[string, TRawValue]>,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
   options: StyleXOptions = defaultOptions,
@@ -32,9 +33,16 @@ export function convertStyleToClassName(
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
 
-  const value = Array.isArray(rawValue)
+  let value = Array.isArray(rawValue)
     ? rawValue.map((eachValue) => transformValue(key, eachValue, options))
     : transformValue(key, rawValue, options);
+
+  if (
+    Array.isArray(value) &&
+    value.find((val) => val.startsWith('var(') && val.endsWith(')'))
+  ) {
+    value = variableFallbacks(value);
+  }
 
   const sortedPseudos = arraySort(pseudos ?? []);
   const sortedAtRules = arraySort(atRules ?? []);
@@ -55,4 +63,42 @@ export function convertStyleToClassName(
   const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
 
   return [key, className, cssRules];
+}
+
+export default function variableFallbacks(
+  values: $ReadOnlyArray<string>,
+): Array<string> {
+  const firstVar = values.findIndex(
+    (val) => val.startsWith('var(') && val.endsWith(')'),
+  );
+  const lastVar = values.findLastIndex(
+    (val) => val.startsWith('var(') && val.endsWith(')'),
+  );
+
+  const valuesBeforeFirstVar = values.slice(0, firstVar);
+  let varValues = values.slice(firstVar, lastVar + 1).reverse();
+  const valuesAfterLastVar = values.slice(lastVar + 1);
+
+  if (varValues.find((val) => !val.startsWith('var(') || !val.endsWith(')'))) {
+    throw new Error(messages.NON_CONTIGUOUS_VARS);
+  }
+  varValues = varValues.map((val) => val.slice(4, -1));
+
+  return [
+    ...(valuesBeforeFirstVar.length > 0
+      ? valuesBeforeFirstVar.map((val) => composeVars(...varValues, val))
+      : composeVars(...varValues)),
+    ...valuesAfterLastVar,
+  ];
+}
+
+function composeVars(...vars: $ReadOnlyArray<string>): $FlowFixMe {
+  const [first, ...rest] = vars;
+  if (rest.length > 0) {
+    return `var(${first},${composeVars(...rest)})`;
+  } else if (first.startsWith('--')) {
+    return `var(${first})`;
+  } else {
+    return first;
+  }
 }
