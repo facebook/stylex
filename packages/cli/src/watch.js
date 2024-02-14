@@ -69,7 +69,6 @@ export default function watch() {
             console.log('warning: ', resp.warning);
           }
           subscribe(watchmanClient, resp.watch, resp.relative_path);
-          console.log('watching for style changes in', watchDir);
         },
       );
     },
@@ -91,11 +90,12 @@ function subscribe(
 
   client.command(
     ['subscribe', watcher, 'jsFileChanged', subscription],
-    function (error: string, _resp: Response) {
+    function (error: string, resp: Response) {
       if (error) {
         console.error('failed to subscribe: ', error);
         return;
       }
+      console.log('watching for style changes in', resp.relative_path);
     },
   );
 

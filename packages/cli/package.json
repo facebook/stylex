@@ -23,7 +23,7 @@
     "@stylexjs/scripts": "0.5.1"
   },
   "bin": {
-    "stylex": "./src/index.js"
+    "stylex": "./lib/index.js"
   },
   "jest": {
     "testPathIgnorePatterns": ["__tests__/__mocks__"]
