@@ -49,5 +49,17 @@ esbuild.build({
 });
 ```
 
+If your project is using **TypeScript**, you will need to set
+`verbatimModuleSyntax` compiler option to `true` in your
+[`tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html)
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "verbatimModuleSyntax": true
+  }
+}
+```
+
 You can see the example usage
 [here](https://github.com/facebook/stylex/apps/esbuild-example).
