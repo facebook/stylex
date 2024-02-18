@@ -521,6 +521,57 @@ export default class StateManager {
     this.metadata.stylex.push(style);
   }
 
+  registerStyles(
+    styles: $ReadOnlyArray<
+      [string, { ltr: string, rtl?: string | null }, number],
+    >,
+    path?: ?NodePath<>,
+  ): void {
+    if (styles.length === 0) {
+      return;
+    }
+
+    styles.forEach((style) => this.addStyle(style));
+
+    if (path == null || this.runtimeInjection == null) {
+      return;
+    }
+    const runtimeInjection = this.runtimeInjection;
+
+    const statementPath =
+      path.parentPath != null && pathUtils.isProgram(path.parentPath)
+        ? path
+        : getProgramStatement(path);
+
+    let injectName: t.Identifier;
+    if (this.injectImportInserted != null) {
+      injectName = this.injectImportInserted;
+    } else {
+      const { from, as } = runtimeInjection;
+      injectName =
+        as != null
+          ? this.addNamedImport(statementPath, as, from, {
+              nameHint: 'inject',
+            })
+          : this.addDefaultImport(statementPath, from, {
+              nameHint: 'inject',
+            });
+
+      this.injectImportInserted = injectName;
+    }
+    for (const [_key, { ltr, rtl }, priority] of styles) {
+      statementPath.insertBefore(
+        t.expressionStatement(
+          t.callExpression(injectName, [
+            t.stringLiteral(ltr),
+            t.numericLiteral(priority),
+            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
+          ]),
+        ),
+      );
+    }
+  }
+
   markComposedNamespace(
     memberExpression: [string, true | string, true | Array<string>],
   ): void {
@@ -624,6 +675,18 @@ const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
     } else {
       return null;
     }
+  }
+  return programPath;
+};
+
+const getProgramStatement = (path: NodePath<>): NodePath<> => {
+  let programPath = path;
+  while (
+    programPath.parentPath != null &&
+    !pathUtils.isProgram(programPath.parentPath) &&
+    programPath.parentPath != null
+  ) {
+    programPath = programPath.parentPath;
   }
   return programPath;
 };

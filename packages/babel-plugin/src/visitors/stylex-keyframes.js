@@ -80,7 +80,7 @@ export default function transformStyleXKeyframes(
     }
     const plainObject = value;
     assertValidKeyframes(plainObject);
-    const [animationName, injectedStyle] = stylexKeyframes(
+    const [animationName, { ltr, priority, rtl }] = stylexKeyframes(
       plainObject,
       state.options,
     );
@@ -88,40 +88,7 @@ export default function transformStyleXKeyframes(
     // This should be a string
     init.replaceWith(t.stringLiteral(animationName));
 
-    const { ltr, priority, rtl } = injectedStyle;
-
-    const statementPath: ?NodePath<t.Statement> = path.getStatementParent();
-
-    if (statementPath != null && state.runtimeInjection != null) {
-      let injectName: t.Identifier;
-      if (state.injectImportInserted != null) {
-        injectName = state.injectImportInserted;
-      } else {
-        const { from, as } = state.runtimeInjection;
-        injectName =
-          as != null
-            ? state.addNamedImport(statementPath, as, from, {
-                nameHint: 'inject',
-              })
-            : state.addDefaultImport(statementPath, from, {
-                nameHint: 'inject',
-              });
-
-        state.injectImportInserted = injectName;
-      }
-
-      statementPath.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(ltr),
-            t.numericLiteral(priority),
-            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-          ]),
-        ),
-      );
-    }
-
-    state.addStyle([animationName, { ltr, rtl }, priority]);
+    state.registerStyles([[animationName, { ltr, rtl }, priority]], path);
   }
 }
 
