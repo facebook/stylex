@@ -115,6 +115,7 @@ export default function stylexPlugin({
               jsxSyntaxPlugin,
               stylexBabelPlugin.withOptions({
                 ...options,
+                treeshakeCompensation: true,
                 dev,
                 unstable_moduleResolution,
               }),

@@ -103,20 +103,6 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
 exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bundles and transforms TS 1`] = `
 ""use strict";
 (() => {
-  var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-    get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
-  }) : x)(function(x) {
-    if (typeof require !== "undefined")
-      return require.apply(this, arguments);
-    throw Error('Dynamic require of "' + x + '" is not supported');
-  });
-
-  // __tests__/__fixtures__/index.ts
-  var import_stylex2 = __require("@stylexjs/stylex");
-
-  // __tests__/__fixtures__/vars.stylex.ts
-  var import_stylex = __require("@stylexjs/stylex");
-
   // __tests__/__fixtures__/index.ts
   function App() {
     return {

@@ -15,17 +15,12 @@ import stylexPlugin from '../src/index';
 
 async function build(options = {}) {
   const { isTS, ...rest } = options;
-  const tsConfigPath = path.resolve(
-    __dirname,
-    '__fixtures__/test-tsconfig.json',
-  );
 
   const { outputFiles } = await esbuild.build({
     entryPoints: [
       path.resolve(__dirname, `__fixtures__/index.${isTS ? 'ts' : 'js'}`),
     ],
     external: ['@stylexjs/stylex'],
-    tsconfig: isTS ? tsConfigPath : undefined,
     minify: false,
     bundle: true,
     write: false,
