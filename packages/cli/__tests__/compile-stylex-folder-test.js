@@ -36,26 +36,24 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
   test(output, async () => {
     fs.mkdirSync(output);
     expect(files.isDir(output)).toBe(true);
-    await transform
-      .compileDirectory(input)
-      .then(() => {
-        const outputDir = fs.readdirSync(output);
-        for (const file of outputDir) {
-          const outputPath = path.join(output, file);
-          const snapshotPath = path.join(snapshot, file);
-          expect(fs.existsSync(snapshotPath)).toBe(true);
-          if (path.extname(outputPath) === '.js') {
-            const outputContent = fs.readFileSync(outputPath).toString();
-            const snapshotContent = fs.readFileSync(snapshotPath).toString();
-            expect(outputContent).toEqual(snapshotContent);
-          }
+
+    try {
+      await transform.compileDirectory(input);
+
+      const outputDir = fs.readdirSync(output);
+      for (const file of outputDir) {
+        const outputPath = path.join(output, file);
+        const snapshotPath = path.join(snapshot, file);
+        expect(fs.existsSync(snapshotPath)).toBe(true);
+        if (path.extname(outputPath) === '.js') {
+          const outputContent = fs.readFileSync(outputPath).toString();
+          const snapshotContent = fs.readFileSync(snapshotPath).toString();
+          expect(outputContent).toEqual(snapshotContent);
         }
-        fs.rmSync(output, { recursive: true, force: true });
-      })
-      .catch((err) => {
-        fs.rmSync(output, { recursive: true, force: true });
-        throw err;
-      });
+      }
+    } finally {
+      fs.rmSync(output, { recursive: true, force: true });
+    }
   });
 });
 

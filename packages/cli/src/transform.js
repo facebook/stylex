@@ -10,6 +10,7 @@ import type { Rule } from '@stylexjs/babel-plugin';
 
 import path from 'path';
 import * as babel from '@babel/core';
+import * as t from '@babel/types';
 import styleXPlugin from '@stylexjs/babel-plugin';
 import {
   copyFile,
@@ -19,6 +20,7 @@ import {
   writeCompiledCSS,
   writeCompiledJS,
 } from './files';
+import type { NodePath } from '../../babel-plugin/flow_modules/@babel/traverse';
 
 type StyleXRules = Array<Rule>;
 
@@ -27,16 +29,16 @@ export async function transformFile(
   fileName: string,
 ): Promise<[?string, Array<Rule>]> {
   const relativeImport = getCssPathFromFilePath(fileName);
-  // $FlowFixMe[prop-missing]
-  // $FlowFixMe[incompatible-use] Is there flow typing for babel?
-  const importDeclaration = babel.template.statement.ast(
-    `import '${relativeImport}';`,
+
+  const importDeclaration = t.importDeclaration(
+    [],
+    t.stringLiteral(relativeImport),
   );
 
   const addImportPlugin = () => ({
     visitor: {
       Program: {
-        enter(path: any) {
+        enter(path: NodePath<t.Program>) {
           path.node.body.unshift(importDeclaration);
         },
       },
@@ -44,12 +46,19 @@ export async function transformFile(
   });
 
   const result = await babel.transformFileAsync(fileName, {
-    plugins: [styleXPlugin, addImportPlugin],
+    babelrc: false,
+    plugins: [
+      // TODO: Add support for passing in a custom config file
+      styleXPlugin,
+      addImportPlugin,
+    ],
   });
-  // $FlowFixMe
+  if (result == null) {
+    throw new Error(`Failed to transform file ${fileName}`);
+  }
   const { code, metadata } = result;
-  // $FlowFixMe
-  const styleXRules: Array<Rule> = metadata.stylex;
+
+  const styleXRules: Array<Rule> = (metadata: $FlowFixMe).stylex;
   return [code, styleXRules];
 }
 

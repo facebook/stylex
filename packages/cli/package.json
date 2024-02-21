@@ -1,7 +1,7 @@
 {
   "name": "@stylexjs/cli",
   "version": "0.5.1",
-  "description": "A cli to compile a folder with stylex",
+  "description": "A cli to compile a folder with StyleX",
   "main": "./src/index.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
@@ -26,7 +26,9 @@
     "stylex": "./lib/index.js"
   },
   "jest": {
-    "testPathIgnorePatterns": ["__tests__/__mocks__"]
+    "testPathIgnorePatterns": [
+      "__tests__/__mocks__"
+    ]
   },
   "files": [
     "lib/*"

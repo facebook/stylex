@@ -33,11 +33,16 @@ console.log(
 
 const usage =
   '\n Usage: provide a directory to stylex in order to have it compiled.';
-const _options = yargs.usage(usage).options(options).help(true);
+const args = yargs(process.argv)
+  .scriptName('stylex')
+  .usage(usage)
+  .options(options)
+  .help(true)
+  .parseSync();
 
-const dir: string = yargs.argv.directory;
-const output: string = yargs.argv.output;
-const watchFiles: boolean = yargs.argv.watch;
+const dir: string = args.directory;
+const output: string = args.output;
+const watchFiles: boolean = args.watch;
 
 if (!isDir(dir)) {
   throw errors.dirNotFound;

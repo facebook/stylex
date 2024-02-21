@@ -26,4 +26,7 @@ export default {
     type: 'boolean',
     demandOption: false,
   },
+  // TODO: Add support for passing in a custom config file
+  // This config file should be a JSON file, but paths within it
+  // must be resolved relative to the config file's location
 };
