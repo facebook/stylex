@@ -13,6 +13,9 @@
  * work well for content-centric websites.
  */
 
+@import 'codemirror/lib/codemirror.css';
+@import 'codemirror/theme/material-darker.css';
+
 /* You can override the default Infima variables here. */
 :root {
   --aa-text-color-rgb: 38, 38, 39;
@@ -262,4 +265,8 @@ html[data-theme='dark'] .navbar-github-link:after {
 
 .navbar--fixed-top {
   view-transition-name: navbar;
+}
+
+.CodeMirror {
+  height: 100%;
 }
