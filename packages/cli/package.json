@@ -15,11 +15,13 @@
     "test": "jest"
   },
   "dependencies": {
-    "fb-watchman": "^2.0.2",
+    "@babel/core": "7.23.9",
     "@stylexjs/babel-plugin": "0.5.1",
-    "@babel/core": "7.23.9"
+    "fb-watchman": "^2.0.2"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/plugin-syntax-typescript": "^7.23.3",
     "@stylexjs/scripts": "0.5.1"
   },
   "bin": {
