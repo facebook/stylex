@@ -114,6 +114,7 @@ export default function stylexPlugin({
               ...getFlowOrTypeScriptBabelSyntaxPlugins(currFilePath),
               jsxSyntaxPlugin,
               stylexBabelPlugin.withOptions({
+                treeshakeCompensation: true,
                 ...options,
                 dev,
                 unstable_moduleResolution,
