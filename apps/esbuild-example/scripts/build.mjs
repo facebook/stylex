@@ -30,6 +30,8 @@ esbuild
     outfile: OUTFILE,
     minify: true,
     plugins: [
+      // See all options in the babel plugin configuration docs:
+      // https://stylexjs.com/docs/api/configuration/babel-plugin/
       stylexPlugin({
         useCSSLayers: true,
         generatedCSSFileName: STYLEX_BUNDLE_PATH,
