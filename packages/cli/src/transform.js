@@ -12,6 +12,7 @@ import path from 'path';
 import * as babel from '@babel/core';
 import * as t from '@babel/types';
 import styleXPlugin from '@stylexjs/babel-plugin';
+import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import {
   copyFile,
   getCssPathFromFilePath,
@@ -48,6 +49,8 @@ export async function transformFile(
   const result = await babel.transformFileAsync(fileName, {
     babelrc: false,
     plugins: [
+      [typescriptSyntaxPlugin, { isTSX: true }],
+      jsxSyntaxPlugin,
       // TODO: Add support for passing in a custom config file
       styleXPlugin,
       addImportPlugin,
