@@ -109,13 +109,13 @@ export default function stylexPlugin({
 
       if (
         !dev &&
-        (metadata: $FlowFixMe).stylex != null &&
-        (metadata: $FlowFixMe).stylex.length > 0
+        (metadata as $FlowFixMe).stylex != null &&
+        (metadata as $FlowFixMe).stylex.length > 0
       ) {
-        stylexRules[id] = (metadata: $FlowFixMe).stylex;
+        stylexRules[id] = (metadata as $FlowFixMe).stylex;
       }
 
-      return { code, map: (map: $FlowFixMe), meta: (metadata: $FlowFixMe) };
+      return { code, map: map as $FlowFixMe, meta: metadata as $FlowFixMe };
     },
   };
 }

@@ -426,4 +426,4 @@ export type StyleXTransformObj = $ReadOnly<{
   ...
 }>;
 
-export default (styleXTransform: StyleXTransformObj);
+export default styleXTransform as StyleXTransformObj;

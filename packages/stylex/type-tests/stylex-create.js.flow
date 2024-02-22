@@ -29,21 +29,21 @@ import type {
 const styles1: $ReadOnly<{ foo: $ReadOnly<{ $$css: true }> }> = stylex.create({
   foo: {},
 });
-(styles1.foo: StaticStyles<>);
-(styles1.foo: StaticStyles<{}>);
-(styles1.foo: StaticStyles<{ width?: number | string }>);
-// (styles1.foo: StaticStylesWithout<{ width: mixed }>);
-(styles1.foo: StaticStyles<{ width?: mixed }>);
-(styles1.foo: StyleXStyles<>);
-(styles1.foo: StyleXStyles<{}>);
-// (styles1.foo: StyleXStylesWithout<{ width: mixed }>);
-(styles1.foo: StyleXStyles<{ width?: number | string }>);
-(styles1.foo: StyleXStyles<{ width?: mixed }>);
+styles1.foo as StaticStyles<>;
+styles1.foo as StaticStyles<{}>;
+styles1.foo as StaticStyles<{ width?: number | string }>;
+// styles1.foo as StaticStylesWithout<{ width: mixed }>;
+styles1.foo as StaticStyles<{ width?: mixed }>;
+styles1.foo as StyleXStyles<>;
+styles1.foo as StyleXStyles<{}>;
+// (styles1.foo as StyleXStylesWithout<{ width: mixed }>);
+styles1.foo as StyleXStyles<{ width?: number | string }>;
+styles1.foo as StyleXStyles<{ width?: mixed }>;
 
-(styles1.foo: XStyle<>);
-(styles1.foo: XStyle<{ width?: StyleXClassNameFor<'width', number | string> }>);
-(styles1.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
-(styles1.foo: XStyle<{ width?: StyleXClassName }>);
+styles1.foo as XStyle<>;
+styles1.foo as XStyle<{ width?: StyleXClassNameFor<'width', number | string> }>;
+styles1.foo as XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>;
+styles1.foo as XStyle<{ width?: StyleXClassName }>;
 
 stylex(styles1.foo);
 stylex.props([styles1.foo]);
@@ -61,22 +61,22 @@ const styles2: $ReadOnly<{
     width: '100%',
   },
 });
-(styles2.foo: StaticStyles<>);
-(styles2.foo: StaticStyles<{ width: '100%' }>);
-// (styles2.foo: StaticStylesWithout<{ width: '100%' }>);
-(styles2.foo: StaticStyles<{ width: number | string }>);
-(styles2.foo: StaticStyles<{ width?: mixed, height?: string }>);
-(styles2.foo: StyleXStyles<>);
-(styles2.foo: StyleXStyles<{ width: '100%' }>);
-(styles2.foo: StyleXStyles<{ width: number | string }>);
-(styles2.foo: StyleXStyles<{ width?: mixed }>);
+styles2.foo as StaticStyles<>;
+styles2.foo as StaticStyles<{ width: '100%' }>;
+// (styles2.foo as StaticStylesWithout<{ width: '100%' }>);
+styles2.foo as StaticStyles<{ width: number | string }>;
+styles2.foo as StaticStyles<{ width?: mixed, height?: string }>;
+styles2.foo as StyleXStyles<>;
+styles2.foo as StyleXStyles<{ width: '100%' }>;
+styles2.foo as StyleXStyles<{ width: number | string }>;
+styles2.foo as StyleXStyles<{ width?: mixed }>;
 
-(styles2.foo: XStyle<>);
-(styles2.foo: XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>);
-(styles2.foo: XStyle<{ width: StyleXClassNameFor<'width', number | string> }>);
-(styles2.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
-(styles2.foo: XStyle<{ width?: StyleXClassNameFor<string, mixed> }>);
-(styles2.foo: XStyle<{ width?: StyleXClassName }>);
+styles2.foo as XStyle<>;
+styles2.foo as XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>;
+styles2.foo as XStyle<{ width: StyleXClassNameFor<'width', number | string> }>;
+styles2.foo as XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>;
+styles2.foo as XStyle<{ width?: StyleXClassNameFor<string, mixed> }>;
+styles2.foo as XStyle<{ width?: StyleXClassName }>;
 
 stylex(styles2.foo);
 stylex.props([styles2.foo]);
@@ -94,20 +94,20 @@ const styles3: $ReadOnly<{
     width: stylex.firstThatWorks('100%', '200%'),
   },
 });
-(styles3.foo: StaticStyles<>);
-(styles3.foo: StaticStyles<{ width: '100%' | '200%' }>);
-(styles3.foo: StaticStyles<{ width: number | string }>);
-(styles3.foo: StyleXStyles<>);
-(styles3.foo: StyleXStyles<{ width: '100%' | '200%' }>);
-(styles3.foo: StyleXStyles<{ width: number | string }>);
-(styles3.foo: StyleXStyles<{ width?: mixed }>);
+styles3.foo as StaticStyles<>;
+styles3.foo as StaticStyles<{ width: '100%' | '200%' }>;
+styles3.foo as StaticStyles<{ width: number | string }>;
+styles3.foo as StyleXStyles<>;
+styles3.foo as StyleXStyles<{ width: '100%' | '200%' }>;
+styles3.foo as StyleXStyles<{ width: number | string }>;
+styles3.foo as StyleXStyles<{ width?: mixed }>;
 
-(styles3.foo: XStyle<>);
+styles3.foo as XStyle<>;
 // $FlowExpectedError[incompatible-cast] - value can be '100%' or '200%'.
-(styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>);
-(styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', '100%' | '200%'> }>);
-(styles3.foo: XStyle<{ width: StyleXClassNameFor<'width', number | string> }>);
-(styles3.foo: XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>);
+styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>;
+styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', '100%' | '200%'> }>;
+styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', number | string> }>;
+styles3.foo as XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>;
 
 stylex(styles3.foo);
 stylex.props([styles3.foo]);
@@ -128,13 +128,13 @@ const styles4: $ReadOnly<{
     },
   },
 });
-(styles4.foo: StaticStyles<>);
-(styles4.foo: StaticStyles<{ width: '100%' | '100dvw' }>);
-(styles4.foo: StaticStyles<{ width: number | string }>);
-(styles4.foo: StyleXStyles<>);
-(styles4.foo: StyleXStyles<{ width: '100%' | '100dvw' }>);
-(styles4.foo: StyleXStyles<{ width: number | string }>);
-(styles4.foo: StyleXStyles<{ width?: mixed }>);
+styles4.foo as StaticStyles<>;
+styles4.foo as StaticStyles<{ width: '100%' | '100dvw' }>;
+styles4.foo as StaticStyles<{ width: number | string }>;
+styles4.foo as StyleXStyles<>;
+styles4.foo as StyleXStyles<{ width: '100%' | '100dvw' }>;
+styles4.foo as StyleXStyles<{ width: number | string }>;
+styles4.foo as StyleXStyles<{ width?: mixed }>;
 
 stylex(styles4.foo);
 stylex.props([styles4.foo]);
@@ -158,13 +158,13 @@ const styles5: $ReadOnly<{
     },
   },
 });
-(styles5.foo: StaticStyles<>);
-(styles5.foo: StaticStyles<{ width: '100%' | '100dvw' | '200%' }>);
-(styles5.foo: StaticStyles<{ width: number | string }>);
-(styles5.foo: StyleXStyles<>);
-(styles5.foo: StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>);
-(styles5.foo: StyleXStyles<{ width: number | string }>);
-(styles5.foo: StyleXStyles<{ width?: mixed }>);
+styles5.foo as StaticStyles<>;
+styles5.foo as StaticStyles<{ width: '100%' | '100dvw' | '200%' }>;
+styles5.foo as StaticStyles<{ width: number | string }>;
+styles5.foo as StyleXStyles<>;
+styles5.foo as StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>;
+styles5.foo as StyleXStyles<{ width: number | string }>;
+styles5.foo as StyleXStyles<{ width?: mixed }>;
 
 stylex(styles5.foo);
 stylex.props([styles5.foo]);
@@ -194,20 +194,20 @@ const styles6: $ReadOnly<{
   }),
 });
 // $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
-(styles6.foo(100): StaticStyles<>);
+styles6.foo(100) as StaticStyles<>;
 // $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
-(styles6.foo(100): StaticStyles<{ width: '100%' | '100dvw' | number }>);
+styles6.foo(100) as StaticStyles<{ width: '100%' | '100dvw' | number }>;
 // $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
-(styles6.foo(100): StaticStyles<{ width: number | string }>);
+styles6.foo(100) as StaticStyles<{ width: number | string }>;
 // Functions return StyleXStyles!
-(styles6.foo(100): StyleXStyles<>);
-(styles6.foo(100): StyleXStyles<{ width: '100%' | '100dvw' | number }>);
-(styles6.foo(100): StyleXStyles<{ width: number | string }>);
-(styles6.foo(100): StyleXStyles<{ width?: mixed }>);
+styles6.foo(100) as StyleXStyles<>;
+styles6.foo(100) as StyleXStyles<{ width: '100%' | '100dvw' | number }>;
+styles6.foo(100) as StyleXStyles<{ width: number | string }>;
+styles6.foo(100) as StyleXStyles<{ width?: mixed }>;
 
-(styles6.foo(100)[0]: CompiledStyles);
-(styles6.foo(100)[1]: InlineStyles);
-(styles6.foo(100): $ReadOnly<[CompiledStyles, InlineStyles]>);
+styles6.foo(100)[0] as CompiledStyles;
+styles6.foo(100)[1] as InlineStyles;
+styles6.foo(100) as $ReadOnly<[CompiledStyles, InlineStyles]>;
 
 // $FlowExpectedError[incompatible-call] - `stylex()` can't handle dynamic styles.
 stylex(styles6.foo(100));
@@ -232,16 +232,16 @@ const styles7: $ReadOnly<{
     '::before': { width: '100%' },
   },
 });
-(styles7.foo: StaticStyles<>);
-(styles7.foo: StaticStyles<{ '::before': { width: '100%' } }>);
-(styles7.foo: StaticStyles<{
+styles7.foo as StaticStyles<>;
+styles7.foo as StaticStyles<{ '::before': { width: '100%' } }>;
+styles7.foo as StaticStyles<{
   '::before': { width: number | string, height?: mixed },
-}>);
-(styles7.foo: StyleXStyles<>);
-(styles7.foo: StyleXStyles<{ '::before': { width: '100%' } }>);
-(styles7.foo: StyleXStyles<{
+}>;
+styles7.foo as StyleXStyles<>;
+styles7.foo as StyleXStyles<{ '::before': { width: '100%' } }>;
+styles7.foo as StyleXStyles<{
   '::before': { width: number | string, height?: mixed },
-}>);
+}>;
 
 stylex(styles7.foo);
 stylex.props([styles7.foo]);
@@ -250,7 +250,7 @@ const vars = stylex.defineVars({
   accent: 'red',
 });
 
-(vars.accent: StyleXVar<'red'>);
+vars.accent as StyleXVar<'red'>;
 
 const styles8: $ReadOnly<{
   foo: $ReadOnly<{
@@ -263,29 +263,29 @@ const styles8: $ReadOnly<{
   },
 });
 
-(styles8.foo: StaticStyles<>);
+styles8.foo as StaticStyles<>;
 // $FlowExpectedError[incompatible-cast] - We want to disallow extra keys
-(styles8.foo: StaticStyles<{}>);
-(styles8.foo: StaticStyles<{ color: 'red' }>);
-(styles8.foo: StaticStyles<{ color: mixed }>);
-// (styles8.foo: StaticStylesWithout<{ height: mixed }>);
+styles8.foo as StaticStyles<{}>;
+styles8.foo as StaticStyles<{ color: 'red' }>;
+styles8.foo as StaticStyles<{ color: mixed }>;
+// (styles8.foo as StaticStylesWithout<{ height: mixed }>);
 // - @ts-expect-error - The style does have `width`
-// (styles8.foo: StaticStylesWithout<{ color: mixed }>);
+// (styles8.foo as StaticStylesWithout<{ color: mixed }>);
 // $FlowExpectedError[incompatible-cast] - 'number' is not assignable to 'red'.
-(styles8.foo: StaticStyles<{ color: 100 }>);
+styles8.foo as StaticStyles<{ color: 100 }>;
 // $FlowExpectedError[incompatible-cast] - 'blue' is not assignable to 'red'.
-(styles8.foo: StaticStyles<{ color: 'blue' }>);
-(styles8.foo: StaticStyles<{ color: number | string }>);
-(styles8.foo: StaticStyles<{ color?: mixed, height?: string }>);
-(styles8.foo: StyleXStyles<>);
+styles8.foo as StaticStyles<{ color: 'blue' }>;
+styles8.foo as StaticStyles<{ color: number | string }>;
+styles8.foo as StaticStyles<{ color?: mixed, height?: string }>;
+styles8.foo as StyleXStyles<>;
 // $FlowExpectedError[incompatible-cast] - We want to disallow extra keys
-(styles8.foo: StyleXStyles<{}>);
-(styles8.foo: StyleXStyles<{ color: 'red' }>);
-(styles8.foo: StyleXStyles<{ color: number | string }>);
-(styles8.foo: StyleXStyles<{ color?: mixed }>);
-// (styles8.foo: StyleXStylesWithout<{ height: unknown }>);
+styles8.foo as StyleXStyles<{}>;
+styles8.foo as StyleXStyles<{ color: 'red' }>;
+styles8.foo as StyleXStyles<{ color: number | string }>;
+styles8.foo as StyleXStyles<{ color?: mixed }>;
+// (styles8.foo as StyleXStylesWithout<{ height: unknown }>);
 // - @ts-expect-error - The style does have `color`
-// (styles8.foo: StyleXStylesWithout<{ color: unknown }>);
+// (styles8.foo as StyleXStylesWithout<{ color: unknown }>);
 
 stylex(styles8.foo);
 stylex.props(styles8.foo);

@@ -30,7 +30,7 @@ const buttonTokens = stylex.defineVars({
 });
 
 // DefineVars creates the right type.
-(buttonTokens: VarGroup<
+buttonTokens as VarGroup<
   $ReadOnly<{
     bgColor: string,
     textColor: string,
@@ -39,8 +39,8 @@ const buttonTokens = stylex.defineVars({
     paddingInline: string,
   }>,
   string,
->);
-(buttonTokens.bgColor: StyleXVar<string>);
+>;
+buttonTokens.bgColor as StyleXVar<string>;
 
 const correctTheme = stylex.createTheme(buttonTokens, {
   bgColor: 'red',
@@ -50,7 +50,7 @@ const correctTheme = stylex.createTheme(buttonTokens, {
   paddingInline: '8px',
 });
 
-(correctTheme: Theme<typeof buttonTokens, string>);
+correctTheme as Theme<typeof buttonTokens, string>;
 
 const result: string = stylex(correctTheme);
 const result2: $ReadOnly<{

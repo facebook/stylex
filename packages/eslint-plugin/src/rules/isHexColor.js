@@ -27,4 +27,4 @@ const isHexColor = makeVariableCheckingRule(
   },
 );
 
-export default (isHexColor: RuleCheck);
+export default isHexColor as RuleCheck;

@@ -263,7 +263,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     .map((v: ConditionalStyle) => v[0]);
 
   if (conditions.length === 0) {
-    return t.stringLiteral(stylex(...(values: any)));
+    return t.stringLiteral(stylex(...(values as any)));
   }
 
   const conditionPermutations = genConditionPermutations(conditions.length);
@@ -283,7 +283,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     );
     return t.objectProperty(
       t.numericLiteral(key),
-      t.stringLiteral(stylex(...(args: any))),
+      t.stringLiteral(stylex(...(args as any))),
     );
   });
   const objExpressions = t.objectExpression(objEntries);

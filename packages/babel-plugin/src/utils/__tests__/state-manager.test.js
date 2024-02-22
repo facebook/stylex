@@ -10,7 +10,7 @@
 import StateManager from '../state-manager';
 
 const defaultConfig = {
-  file: ({ metadata: {} }: any),
+  file: { metadata: {} } as any,
   key: 'key',
   opts: {},
   cwd: '/home/test/',

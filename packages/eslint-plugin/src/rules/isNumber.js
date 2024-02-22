@@ -56,4 +56,4 @@ export function isMathCall(node: Node, variables?: Variables): RuleResponse {
       };
 }
 
-export default (isNumber: RuleCheck);
+export default isNumber as RuleCheck;
