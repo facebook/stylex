@@ -77,8 +77,10 @@ export function evaluateStyleXCreateArg(
     validateDynamicStyleParams(allParams);
 
     const params: Array<t.Identifier> = allParams
-      .filter((param): param is NodePath<t.Identifier> =>
-        pathUtils.isIdentifier(param),
+      .filter(
+        (
+          param: NodePath<t.Identifier | t.Pattern | t.SpreadElement>,
+        ): param is NodePath<t.Identifier> => pathUtils.isIdentifier(param),
       )
       .map((param) => param.node);
 
@@ -172,7 +174,7 @@ function evaluatePartialObjectRecursively(
           if (!t.isExpression(node)) {
             throw new Error('Expected expression as style value');
           }
-          const expression: t.Expression = (node: $FlowFixMe);
+          const expression: t.Expression = node as $FlowFixMe;
 
           const unit =
             timeUnits.has(key) || lengthUnits.has(key)
@@ -206,7 +208,7 @@ function evaluatePartialObjectRecursively(
                       ),
                     ),
                   ),
-                  [(expression: t.Expression)],
+                  [expression as t.Expression],
                 )
               : t.conditionalExpression(
                   t.binaryExpression('!=', expression, t.nullLiteral()),
@@ -233,7 +235,7 @@ function evaluateObjKey(
 ): KeyResult {
   const keyPath: NodePath<t.ObjectProperty['key']> = prop.get('key');
   let key: string;
-  if ((prop.node: t.ObjectProperty).computed) {
+  if ((prop.node as t.ObjectProperty).computed) {
     const result = evaluate(keyPath, traversalState, functions);
     if (!result.confident) {
       return { confident: false, deopt: result.deopt };
@@ -243,7 +245,7 @@ function evaluateObjKey(
     key = keyPath.node.name;
   } else {
     // TODO: This is'nt handling all possible types that `keyPath` could be
-    key = (keyPath.node: $FlowFixMe).value;
+    key = (keyPath.node as $FlowFixMe).value;
   }
   return {
     confident: true,

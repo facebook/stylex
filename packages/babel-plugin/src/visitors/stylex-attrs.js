@@ -265,7 +265,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     .map((v: ConditionalStyle) => v[0]);
 
   if (conditions.length === 0) {
-    const result = attrs((values: any));
+    const result = attrs(values as any);
     return convertObjectToAST(result);
   }
 
@@ -286,7 +286,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     );
     return t.objectProperty(
       t.numericLiteral(key),
-      convertObjectToAST(attrs((args: any))),
+      convertObjectToAST(attrs(args as any)),
     );
   });
   const objExpressions = t.objectExpression(objEntries);

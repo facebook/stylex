@@ -30,4 +30,4 @@ function isPercentage(node: Node, _variables?: Variables): RuleResponse {
     message: 'A string literal representing a percentage (e.g. 100%)',
   };
 }
-export default (makeVariableCheckingRule(isPercentage): RuleCheck);
+export default makeVariableCheckingRule(isPercentage) as RuleCheck;

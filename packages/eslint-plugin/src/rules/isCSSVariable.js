@@ -39,4 +39,4 @@ function isCSSVariable(
   };
 }
 
-export default (makeVariableCheckingRule(isCSSVariable): RuleCheck);
+export default makeVariableCheckingRule(isCSSVariable) as RuleCheck;

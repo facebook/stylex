@@ -33,7 +33,7 @@ function compareObjs<Obj: NestedObj>(
   vars: { [string]: Array<string> },
   path: $ReadOnlyArray<string> = [],
 ): Obj {
-  const result: Partial<Obj> = ({}: $FlowFixMe);
+  const result: Partial<Obj> = {} as $FlowFixMe;
   for (const origKey in a) {
     let key = origKey;
     if (origKey.startsWith('var(') && origKey.endsWith(')')) {
@@ -43,7 +43,7 @@ function compareObjs<Obj: NestedObj>(
     const val2 = b[origKey];
     const keyPath = [...path, key];
     if (typeof val1 === 'object' && !Array.isArray(val1)) {
-      result[key] = compareObjs(val1, (val2: $FlowFixMe), vars, keyPath);
+      result[key] = compareObjs(val1, val2 as $FlowFixMe, vars, keyPath);
     } else if (val1 === val2) {
       result[key] = val1;
     } else {
@@ -82,7 +82,7 @@ function splitStaticObj<
   const b = fn(...args2);
 
   const varPaths: { [string]: Array<string> } = {};
-  const staticObj = compareObjs((a: $FlowFixMe), (b: $FlowFixMe), varPaths);
+  const staticObj = compareObjs(a as $FlowFixMe, b as $FlowFixMe, varPaths);
 
   const inlineStylesFn = (...args: Args): { [string]: string | number } => {
     const obj = fn(...args);
@@ -161,7 +161,7 @@ function createWithFns<S: { ... }>(
     // $FlowFixMe
     finalStyles[key] = (...args) => [temp[key], stylesWithFns[key](...args)];
   }
-  return (finalStyles: $FlowFixMe);
+  return finalStyles as $FlowFixMe;
 }
 
 function spreadStyles<S: { [string]: FlatCompiledStyles }>(

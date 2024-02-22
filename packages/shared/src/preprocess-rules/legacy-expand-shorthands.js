@@ -405,4 +405,4 @@ const expansions = {
   ...aliases,
 };
 
-export default (expansions: typeof expansions);
+export default expansions as typeof expansions;

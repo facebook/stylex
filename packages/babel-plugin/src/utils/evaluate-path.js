@@ -43,7 +43,7 @@ const INVALID_METHODS = [
 ];
 
 function isValidCallee(val: string): boolean {
-  return (VALID_CALLEES: $ReadOnlyArray<string>).includes(val);
+  return (VALID_CALLEES as $ReadOnlyArray<string>).includes(val);
 }
 
 function isInvalidMethod(val: string): boolean {
@@ -108,7 +108,7 @@ function evaluateImportedFile(
     return;
   }
 
-  const astNode: t.Node = (ast: $FlowFixMe);
+  const astNode: t.Node = ast as $FlowFixMe;
 
   let result: any;
 
@@ -122,8 +122,9 @@ function evaluateImportedFile(
         const finder = (decl: NodePath<t.Node>) => {
           if (pathUtils.isVariableDeclarator(decl)) {
             const id = decl.get('id');
-            const init: ?NodePath<t.Expression> =
-              (decl: NodePath<t.VariableDeclarator>).get('init');
+            const init: ?NodePath<t.Expression> = (
+              decl as NodePath<t.VariableDeclarator>
+            ).get('init');
             if (
               pathUtils.isIdentifier(id) &&
               id.node.name === namedExport &&
@@ -227,8 +228,10 @@ function _evaluate(path: NodePath<>, state: State): any {
       NodePath<t.Identifier | t.Pattern | t.RestElement>,
     > = path.get('params');
     const identParams = params
-      .filter((param): param is NodePath<t.Identifier> =>
-        pathUtils.isIdentifier(param),
+      .filter(
+        (
+          param: NodePath<t.Identifier | t.Pattern | t.RestElement>,
+        ): param is NodePath<t.Identifier> => pathUtils.isIdentifier(param),
       )
       .map((paramPath) => paramPath.node.name);
     if (pathUtils.isExpression(body) && identParams.length === params.length) {
@@ -260,7 +263,7 @@ function _evaluate(path: NodePath<>, state: State): any {
   }
 
   if (path.node.type === 'TSSatisfiesExpression') {
-    const expr: NodePath<t.Expression> = (path: $FlowFixMe).get('expression');
+    const expr: NodePath<t.Expression> = (path as $FlowFixMe).get('expression');
     return evaluateCached(expr, state);
   }
 
@@ -422,7 +425,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         return binding ? deopt(binding.path, state) : NaN;
       }
 
-      const resolved = (path: $FlowFixMe).resolve();
+      const resolved = (path as $FlowFixMe).resolve();
       if (resolved === path) {
         return deopt(path, state);
       } else {
@@ -502,7 +505,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (pathUtils.isObjectProperty(prop)) {
         const keyPath: NodePath<t.ObjectProperty['key']> = prop.get('key');
         let key: string | number | boolean;
-        if ((prop.node: t.ObjectProperty).computed) {
+        if ((prop.node as t.ObjectProperty).computed) {
           const {
             confident,
             deopt: resultDeopt,
@@ -517,7 +520,7 @@ function _evaluate(path: NodePath<>, state: State): any {
           key = keyPath.node.name;
         } else {
           // TODO: This is'nt handling all possible types that `keyPath` could be
-          key = (keyPath.node: $FlowFixMe).value;
+          key = (keyPath.node as $FlowFixMe).value;
         }
         // todo(flow->ts): remove typecast
         const valuePath: NodePath<> = prop.get('value');
@@ -562,7 +565,7 @@ function _evaluate(path: NodePath<>, state: State): any {
 
         return left ?? right;
       default:
-        (path.node.operator: empty);
+        path.node.operator as empty;
     }
   }
 
@@ -682,7 +685,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         pathUtils.isIdentifier(property)
       ) {
         const val: number | string = object.node.value;
-        func = (val: $FlowFixMe)[property.node.name];
+        func = (val as $FlowFixMe)[property.node.name];
       }
 
       const parsedObj = evaluate(object, state.traversalState, state.functions);

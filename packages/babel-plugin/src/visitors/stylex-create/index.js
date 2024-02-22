@@ -152,7 +152,7 @@ export default function transformStyleXCreate(
     if (varName != null) {
       const stylesToRemember = removeObjectsWithSpreads(compiledStyles);
       state.styleMap.set(varName, stylesToRemember);
-      state.styleVars.set(varName, (path.parentPath: $FlowFixMe));
+      state.styleVars.set(varName, path.parentPath as $FlowFixMe);
     }
 
     const resultAst = convertObjectToAST(compiledStyles);
@@ -170,7 +170,7 @@ export default function transformStyleXCreate(
             const [params, inlineStyles] = fns[key];
 
             if (t.isExpression(prop.value)) {
-              const value: t.Expression = (prop.value: $FlowFixMe);
+              const value: t.Expression = prop.value as $FlowFixMe;
               prop.value = t.arrowFunctionExpression(
                 params,
                 t.arrayExpression([

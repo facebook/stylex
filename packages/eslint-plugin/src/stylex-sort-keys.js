@@ -297,4 +297,4 @@ const stylexSortKeys = {
   },
 };
 
-export default (stylexSortKeys: typeof stylexSortKeys);
+export default stylexSortKeys as typeof stylexSortKeys;
