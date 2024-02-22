@@ -24,10 +24,13 @@
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3",
-    "@stylexjs/babel-plugin": "0.5.1",
-    "webpack": "^5.88.2"
+    "@stylexjs/babel-plugin": "0.5.1"
+  },
+  "peerDependencies": {
+    "webpack": ">=5.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.23.3"
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
+    "webpack": "^5.88.2"
   }
 }
