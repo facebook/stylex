@@ -494,4 +494,4 @@ function isCommaToken(token: Token): boolean {
   return token.type === 'Punctuator' && token.value === ',';
 }
 
-export default (stylexSortKeys: typeof stylexSortKeys);
+export default stylexSortKeys as typeof stylexSortKeys;

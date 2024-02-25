@@ -15,7 +15,7 @@ const defaultMessage =
   (value: mixed, name?: string): string =>
     name
       ? `Expected (${name}) to be ${expected}, but got \`${JSON.stringify(
-          (value: $FlowFixMe),
+          value as $FlowFixMe,
         )}\`.`
       : expected;
 
@@ -146,7 +146,7 @@ export const object: <T: { +[string]: Check<mixed> }>(
       if (item instanceof Error) {
         const objectDescription = Object.entries(shape)
           .map(([key, check]) => {
-            let msg = (check(Symbol()): any).message;
+            let msg = (check(Symbol()) as any).message;
             if (msg.includes('\n')) {
               msg = indent(indent(msg)).split('\n').slice(1).join('\n');
             }
@@ -156,7 +156,7 @@ export const object: <T: { +[string]: Check<mixed> }>(
 
         return new Error(
           `${message(value, name)}\n${objectDescription}\nBut got: ${indent(
-            JSON.stringify((value: $FlowFixMe)),
+            JSON.stringify(value as $FlowFixMe),
           )}`,
         );
       }
@@ -187,7 +187,7 @@ export const objectOf: <T>(
       if (item instanceof Error) {
         return new Error(
           `${message(value, name)}${indent(item.message)}\nBut got: ${indent(
-            JSON.stringify((value: $FlowFixMe)),
+            JSON.stringify(value as $FlowFixMe),
           )}`,
         );
       }
@@ -214,7 +214,7 @@ export const unionOf =
     return new Error(
       `${message(value, name)}${indent(resultA.message)}${indent(
         resultB.message,
-      )}\nBut got: ${JSON.stringify((value: $FlowFixMe))}`,
+      )}\nBut got: ${JSON.stringify(value as $FlowFixMe)}`,
     );
   };
 
@@ -242,7 +242,7 @@ export const unionOf3 =
       `${message(value, name)}${indent(resultA.message)}${indent(
         resultB.message,
       )}${indent(resultC.message)}\nBut got: ${JSON.stringify(
-        (value: $FlowFixMe),
+        value as $FlowFixMe,
       )}`,
     );
   };
@@ -277,7 +277,7 @@ export const unionOf4 =
         resultB.message,
       )}${indent(resultC.message)}${indent(
         resultD.message,
-      )}\nBut got: ${JSON.stringify((value: $FlowFixMe))}`,
+      )}\nBut got: ${JSON.stringify(value as $FlowFixMe)}`,
     );
   };
 

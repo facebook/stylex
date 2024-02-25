@@ -114,6 +114,7 @@ export default function stylexPlugin({
               ...getFlowOrTypeScriptBabelSyntaxPlugins(currFilePath),
               jsxSyntaxPlugin,
               stylexBabelPlugin.withOptions({
+                treeshakeCompensation: true,
                 ...options,
                 dev,
                 unstable_moduleResolution,
@@ -137,10 +138,10 @@ export default function stylexPlugin({
 
           if (
             !dev &&
-            (metadata: $FlowFixMe).stylex !== null &&
-            (metadata: $FlowFixMe).stylex.length > 0
+            (metadata as $FlowFixMe).stylex !== null &&
+            (metadata as $FlowFixMe).stylex.length > 0
           ) {
-            stylexRules[args.path] = (metadata: $FlowFixMe).stylex;
+            stylexRules[args.path] = (metadata as $FlowFixMe).stylex;
           }
 
           return {

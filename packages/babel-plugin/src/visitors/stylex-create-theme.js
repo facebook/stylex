@@ -105,45 +105,11 @@ export default function transformStyleXCreateTheme(
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(overridesObj));
 
-    const statementPath: ?NodePath<> = variableDeclaratorPath.parentPath;
+    const listOfStyles = Object.entries(injectedStyles).map(
+      ([key, { priority, ...rest }]) => [key, rest, priority],
+    );
 
-    if (Object.keys(injectedStyles).length === 0) {
-      return;
-    }
-
-    if (state.runtimeInjection != null && statementPath != null) {
-      let injectName: t.Identifier;
-      if (state.injectImportInserted != null) {
-        injectName = state.injectImportInserted;
-      } else {
-        const { from, as } = state.runtimeInjection;
-        injectName =
-          as != null
-            ? state.addNamedImport(statementPath, as, from, {
-                nameHint: 'inject',
-              })
-            : state.addDefaultImport(statementPath, from, {
-                nameHint: 'inject',
-              });
-
-        state.injectImportInserted = injectName;
-      }
-
-      for (const [_k, { ltr, priority }] of Object.entries(injectedStyles)) {
-        statementPath.insertBefore(
-          t.expressionStatement(
-            t.callExpression(injectName, [
-              t.stringLiteral(ltr),
-              t.numericLiteral(priority),
-            ]),
-          ),
-        );
-      }
-    }
-
-    for (const [key, { priority, ltr }] of Object.entries(injectedStyles)) {
-      state.addStyle([key, { ltr }, priority]);
-    }
+    state.registerStyles(listOfStyles, variableDeclaratorPath);
   }
 }
 

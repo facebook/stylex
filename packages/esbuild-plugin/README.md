@@ -3,7 +3,7 @@
 Use StyleX with _esbuild_ bundler.
 
 This plugin transforms files that contain `stylexjs` imports and generates a
-`stylexjs` `CSS` bundle.
+`stylexjs` CSS bundle.
 
 ## Installation
 
@@ -15,7 +15,7 @@ npm install --save-dev @stylexjs/esbuild-plugin
 
 ```typescript
 import esbuild from 'esbuild';
-import stylexPlugin from '@stylexjs/stylex';
+import stylexPlugin from '@stylexjs/esbuild-plugin';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

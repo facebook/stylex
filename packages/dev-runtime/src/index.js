@@ -63,7 +63,7 @@ export default function inject({
     transformFunction: shared.types.transformFunction,
     transformList: shared.types.transformList,
   };
-  __monkey_patch__('types', (types: $FlowFixMe));
+  __monkey_patch__('types', types as $FlowFixMe);
 
   const defineVars = <
     DefaultTokens: {
@@ -97,7 +97,7 @@ export default function inject({
     variablesOverride: OverridesForTokenType<TokensFromVarGroup<$FlowFixMe>>,
   ): Theme<BaseTokens, ID> => {
     const [js, injectedStyles] = shared.createTheme(
-      (variablesTheme: $FlowFixMe),
+      variablesTheme as $FlowFixMe,
       variablesOverride,
     );
 
@@ -112,7 +112,7 @@ export default function inject({
 
   const keyframes = (frames: $ReadOnly<{ [name: string]: mixed, ... }>) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(
-      (frames: $FlowFixMe),
+      frames as $FlowFixMe,
       config,
     );
     insert(animationName, ltr, priority, rtl);
@@ -127,5 +127,5 @@ export default function inject({
     return shared.include({ node: includedStyles });
   };
 
-  __monkey_patch__('include', (stylexInclude: $FlowFixMe));
+  __monkey_patch__('include', stylexInclude as $FlowFixMe);
 }

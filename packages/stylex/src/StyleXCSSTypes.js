@@ -936,7 +936,6 @@ export type CSSProperties = $ReadOnly<{
     | 'padding-box'
     | 'content-box'
     | 'text',
-  backgroundClip?: all | 'border-box' | 'padding-box' | 'content-box' | 'text',
 
   WebkitBoxOrient?:
     | null
@@ -1192,9 +1191,6 @@ export type CSSProperties = $ReadOnly<{
   fontWeight?: all | fontWeight,
   // fontHeight?: all | number | string,
   // fontWidth?: all | number | string,
-  fontFeatureSettings?: all | string,
-  fontKerning?: all | 'auto' | 'normal' | 'none',
-  fontLanguageOverride?: all | string,
   fontOpticalSizing?: all | 'auto' | 'none',
   fontPalette?: all | 'light' | 'dark' | string,
   fontVariationSettings?: all | string,

@@ -226,7 +226,7 @@ const expansions = {
   ...aliases,
 };
 
-export default (expansions: $ReadOnly<{
+export default expansions as $ReadOnly<{
   ...typeof shorthands,
   ...typeof aliases,
-}>);
+}>;

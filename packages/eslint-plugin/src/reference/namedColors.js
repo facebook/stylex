@@ -160,4 +160,4 @@ const namedColors = new Set<string>([
   'rebeccapurple',
 ]);
 
-export default (namedColors: Set<string>);
+export default namedColors as Set<string>;

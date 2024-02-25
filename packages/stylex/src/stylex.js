@@ -323,4 +323,4 @@ export function __monkey_patch__(
 }
 
 export const legacyMerge: IStyleX = _stylex;
-export default (_stylex: IStyleX);
+export default _stylex as IStyleX;

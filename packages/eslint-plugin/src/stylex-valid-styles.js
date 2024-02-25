@@ -34,6 +34,7 @@ import micromatch from 'micromatch';
 /*:: import { Rule } from 'eslint'; */
 import isCSSVariable from './rules/isCSSVariable';
 import makeLiteralRule from './rules/makeLiteralRule';
+import makeRangeRule from './rules/makeRangeRule';
 import makeRegExRule from './rules/makeRegExRule';
 import isString from './rules/isString';
 import isHexColor from './rules/isHexColor';
@@ -843,15 +844,7 @@ const fontWeight = makeUnionRule(
   makeLiteralRule('bold'),
   makeLiteralRule('bolder'),
   makeLiteralRule('lighter'),
-  makeLiteralRule(100),
-  makeLiteralRule(200),
-  makeLiteralRule(300),
-  makeLiteralRule(400),
-  makeLiteralRule(500),
-  makeLiteralRule(600),
-  makeLiteralRule(700),
-  makeLiteralRule(800),
-  makeLiteralRule(900),
+  makeRangeRule(1, 1000, 'a number between 1 and 1000'),
   isCSSVariable,
 );
 const gap = isStringOrNumber;
@@ -2468,23 +2461,19 @@ const stylexValidStyles = {
           // TODO: Remove this soon
           // But we want to make sure that the same "condition" isn't repeated
           if (level > 0 && propName == null) {
-            return context.report(
-              ({
-                node: (style.value: Node),
-                loc: style.value.loc,
-                message: 'You cannot nest styles more than one level deep',
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: style.value as Node,
+              loc: style.value.loc,
+              message: 'You cannot nest styles more than one level deep',
+            } as Rule.ReportDescriptor);
           }
           const key = style.key;
           if (key.type === 'PrivateIdentifier') {
-            return context.report(
-              ({
-                node: key,
-                loc: key.loc,
-                message: 'Private properties are not allowed in stylex',
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: key,
+              loc: key.loc,
+              message: 'Private properties are not allowed in stylex',
+            } as Rule.ReportDescriptor);
           }
           const keyName =
             key.type === 'Literal'
@@ -2501,13 +2490,11 @@ const stylexValidStyles = {
             typeof keyName !== 'string' ||
             (key.type !== 'Literal' && key.type !== 'Identifier')
           ) {
-            return context.report(
-              ({
-                node: key,
-                loc: key.loc,
-                message: 'Keys must be strings',
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: key,
+              loc: key.loc,
+              message: 'Keys must be strings',
+            } as Rule.ReportDescriptor);
           }
           if (keyName.startsWith('@') || keyName.startsWith(':')) {
             if (level === 0) {
@@ -2517,36 +2504,30 @@ const stylexValidStyles = {
 
               if (ruleCheck !== undefined) {
                 if (keyName.startsWith('::')) {
-                  return context.report(
-                    ({
-                      node: style.value,
-                      loc: style.value.loc,
-                      message: `Unknown pseudo element "${keyName}"`,
-                    }: $ReadOnly<Rule.ReportDescriptor>),
-                  );
-                }
-                return context.report(
-                  ({
+                  return context.report({
                     node: style.value,
                     loc: style.value.loc,
-                    message: allowOuterPseudoAndMedia
-                      ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
-                      : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
-                  }: $ReadOnly<Rule.ReportDescriptor>),
-                );
+                    message: `Unknown pseudo element "${keyName}"`,
+                  } as $ReadOnly<Rule.ReportDescriptor>);
+                }
+                return context.report({
+                  node: style.value,
+                  loc: style.value.loc,
+                  message: allowOuterPseudoAndMedia
+                    ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
+                    : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
+                } as $ReadOnly<Rule.ReportDescriptor>);
               }
             } else {
               const ruleCheck = pseudoClassesAndAtRules(key, variables);
 
               if (ruleCheck !== undefined) {
-                return context.report(
-                  ({
-                    node: style.value,
-                    loc: style.value.loc,
-                    message:
-                      'Invalid Pseudo class or At Rule used for conditional style value',
-                  }: $ReadOnly<Rule.ReportDescriptor>),
-                );
+                return context.report({
+                  node: style.value,
+                  loc: style.value.loc,
+                  message:
+                    'Invalid Pseudo class or At Rule used for conditional style value',
+                } as $ReadOnly<Rule.ReportDescriptor>);
               }
             }
           }
@@ -2566,13 +2547,11 @@ const stylexValidStyles = {
         }
         let styleKey: Expression | PrivateIdentifier = style.key;
         if (styleKey.type === 'PrivateIdentifier') {
-          return context.report(
-            ({
-              node: styleKey,
-              loc: styleKey.loc,
-              message: 'Private properties are not allowed in stylex',
-            }: Rule.ReportDescriptor),
-          );
+          return context.report({
+            node: styleKey,
+            loc: styleKey.loc,
+            message: 'Private properties are not allowed in stylex',
+          } as Rule.ReportDescriptor);
         }
         if (isStylexDefineVarsToken(styleKey, stylexDefineVarsTokenImports)) {
           return undefined;
@@ -2580,47 +2559,39 @@ const stylexValidStyles = {
         if (style.computed && styleKey.type !== 'Literal') {
           const val = evaluate(styleKey, variables);
           if (val == null) {
-            return context.report(
-              ({
-                node: style.key,
-                loc: style.key.loc,
-                message: 'Computed key cannot be resolved.',
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: style.key,
+              loc: style.key.loc,
+              message: 'Computed key cannot be resolved.',
+            } as Rule.ReportDescriptor);
           } else if (val === 'ARG') {
-            return context.report(
-              ({
-                node: style.key,
-                loc: style.key.loc,
-                message: 'Computed key cannot depend on function argument',
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: style.key,
+              loc: style.key.loc,
+              message: 'Computed key cannot depend on function argument',
+            } as Rule.ReportDescriptor);
           } else {
             styleKey = val;
           }
         }
         if (styleKey.type !== 'Literal' && styleKey.type !== 'Identifier') {
-          return context.report(
-            ({
-              node: styleKey,
-              loc: styleKey.loc,
-              message:
-                'All keys in a stylex object must be static literal values.',
-            }: Rule.ReportDescriptor),
-          );
+          return context.report({
+            node: styleKey,
+            loc: styleKey.loc,
+            message:
+              'All keys in a stylex object must be static literal values.',
+          } as Rule.ReportDescriptor);
         }
         const key =
           propName ??
           (styleKey.type === 'Identifier' ? styleKey.name : styleKey.value);
         if (typeof key !== 'string') {
-          return context.report(
-            ({
-              node: styleKey,
-              loc: styleKey.loc,
-              message:
-                'All keys in a stylex object must be static literal string values.',
-            }: Rule.ReportDescriptor),
-          );
+          return context.report({
+            node: styleKey,
+            loc: styleKey.loc,
+            message:
+              'All keys in a stylex object must be static literal string values.',
+          } as Rule.ReportDescriptor);
         }
         if (CSSPropertyReplacements[key] != null) {
           const propCheck: RuleCheck = CSSPropertyReplacements[key];
@@ -2644,43 +2615,41 @@ const stylexValidStyles = {
             const distance = getDistance(key, cssProp, 2);
             return distance <= 2;
           });
-          return context.report(
-            ({
-              node: style.key,
-              loc: style.key.loc,
-              message: 'This is not a key that is allowed by stylex',
-              suggest:
-                closestKey != null
-                  ? [
-                      {
-                        desc: `Did you mean "${closestKey}"?`,
-                        fix: (fixer) => {
-                          if (style.key.type === 'Identifier') {
-                            return fixer.replaceText(style.key, closestKey);
-                          } else if (
-                            style.key.type === 'Literal' &&
-                            (typeof style.key.value === 'string' ||
-                              typeof style.key.value === 'number' ||
-                              typeof style.key.value === 'boolean' ||
-                              style.key.value == null)
-                          ) {
-                            const styleKey: Literal = style.key;
-                            const raw = style.key.raw;
-                            if (raw != null) {
-                              const quoteType = raw.substr(0, 1);
-                              return fixer.replaceText(
-                                styleKey,
-                                `${quoteType}${closestKey}${quoteType}`,
-                              );
-                            }
+          return context.report({
+            node: style.key,
+            loc: style.key.loc,
+            message: 'This is not a key that is allowed by stylex',
+            suggest:
+              closestKey != null
+                ? [
+                    {
+                      desc: `Did you mean "${closestKey}"?`,
+                      fix: (fixer) => {
+                        if (style.key.type === 'Identifier') {
+                          return fixer.replaceText(style.key, closestKey);
+                        } else if (
+                          style.key.type === 'Literal' &&
+                          (typeof style.key.value === 'string' ||
+                            typeof style.key.value === 'number' ||
+                            typeof style.key.value === 'boolean' ||
+                            style.key.value == null)
+                        ) {
+                          const styleKey: Literal = style.key;
+                          const raw = style.key.raw;
+                          if (raw != null) {
+                            const quoteType = raw.substr(0, 1);
+                            return fixer.replaceText(
+                              styleKey,
+                              `${quoteType}${closestKey}${quoteType}`,
+                            );
                           }
-                          return null;
-                        },
+                        }
+                        return null;
                       },
-                    ]
-                  : undefined,
-            }: Rule.ReportDescriptor),
-          );
+                    },
+                  ]
+                : undefined,
+          } as Rule.ReportDescriptor);
         }
         if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
@@ -2704,18 +2673,16 @@ const stylexValidStyles = {
           const check = ruleChecker(style.value, varsWithFnArgs, style);
           if (check != null) {
             const { message, suggest } = check;
-            return context.report(
-              ({
-                node: style.value,
-                loc: style.value.loc,
-                message: `${key} value must be one of:\n${message}${
-                  key === 'lineHeight'
-                    ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
-                    : ''
-                }`,
-                suggest: suggest != null ? [suggest] : undefined,
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: style.value,
+              loc: style.value.loc,
+              message: `${key} value must be one of:\n${message}${
+                key === 'lineHeight'
+                  ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
+                  : ''
+              }`,
+              suggest: suggest != null ? [suggest] : undefined,
+            } as Rule.ReportDescriptor);
           }
           if (
             style.value.type === 'Literal' &&
@@ -2723,13 +2690,11 @@ const stylexValidStyles = {
             isWhiteSpaceOrEmpty(style.value.value) &&
             styleKey.name !== 'content'
           ) {
-            return context.report(
-              ({
-                node: style.value,
-                loc: style.value.loc,
-                message: 'The empty string is not allowed by Stylex.',
-              }: Rule.ReportDescriptor),
-            );
+            return context.report({
+              node: style.value,
+              loc: style.value.loc,
+              message: 'The empty string is not allowed by Stylex.',
+            } as Rule.ReportDescriptor);
           }
         }
       }
@@ -2785,7 +2750,7 @@ const stylexValidStyles = {
             }
             return acc;
           },
-          [([]: Array<VariableDeclarator>), ([]: Array<VariableDeclarator>)],
+          [[] as Array<VariableDeclarator>, [] as Array<VariableDeclarator>],
         );
 
         requires.forEach((decl: VariableDeclarator) => {
@@ -2883,13 +2848,11 @@ const stylexValidStyles = {
         const namespaces = node.arguments[0];
         // const loc: ?AST['SourceLocation'] = namespaces.loc;
         if (namespaces.type !== 'ObjectExpression') {
-          return context.report(
-            ({
-              node: namespaces,
-              loc: namespaces.loc,
-              message: 'Styles must be represented as JavaScript objects',
-            }: Rule.ReportDescriptor),
-          );
+          return context.report({
+            node: namespaces,
+            loc: namespaces.loc,
+            message: 'Styles must be represented as JavaScript objects',
+          } as Rule.ReportDescriptor);
         }
 
         namespaces.properties.forEach((namespace) => {
@@ -2956,5 +2919,5 @@ const stylexValidStyles = {
     };
   },
 };
-export default (stylexValidStyles: typeof stylexValidStyles);
+export default stylexValidStyles as typeof stylexValidStyles;
 /* eslint-enable object-shorthand */
