@@ -40,10 +40,10 @@ export function writeCompiledJS(filePath: string, code: string): void {
 }
 
 export function copyFile(filePath: string) {
-  fs.copyFileSync(
-    path.join(global.INPUT_DIR, filePath),
-    path.join(global.COMPILED_DIR, filePath),
-  );
+  const src = path.join(global.INPUT_DIR, filePath);
+  const dst = path.join(global.COMPILED_DIR, filePath);
+  makeDirExistRecursive(dst);
+  fs.copyFileSync(src, dst);
 }
 
 export function isDir(filePath: string): boolean {
@@ -51,7 +51,15 @@ export function isDir(filePath: string): boolean {
 }
 
 export function isJSFile(filePath: string): boolean {
-  return path.parse(filePath).ext === '.js';
+  const parsed = path.parse(filePath);
+  return (
+    parsed.ext === '.js' ||
+    parsed.ext === '.ts' ||
+    parsed.ext === '.jsx' ||
+    parsed.ext === '.tsx' ||
+    parsed.ext === '.cjs' ||
+    parsed.ext === '.mjs'
+  );
 }
 
 // e.g. ./pages/home/index.js -> ../../stylex_bundle.css
@@ -64,11 +72,19 @@ export function getCssPathFromFilePath(filePath: string): string {
 
 export function makeDirExistRecursive(filePath: string): ?boolean {
   const dirName = path.dirname(filePath);
-  if (fs.existsSync(dirName)) {
+  if (fs.existsSync(dirName) && dirName !== '.') {
     return true;
+  }
+  if (dirName === '.') {
+    fs.mkdirSync(filePath);
+    return;
   }
   makeDirExistRecursive(dirName);
   fs.mkdirSync(dirName);
+}
+
+export function removeCompiledDir(): void {
+  fs.rmSync(global.COMPILED_DIR, { recursive: true, force: true });
 }
 
 function formatRelativePath(filePath: string) {

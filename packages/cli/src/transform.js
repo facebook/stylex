@@ -11,6 +11,7 @@ import type { Rule } from '@stylexjs/babel-plugin';
 import path from 'path';
 import * as babel from '@babel/core';
 import * as t from '@babel/types';
+import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import styleXPlugin from '@stylexjs/babel-plugin';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import {
@@ -19,9 +20,10 @@ import {
   getInputDirectoryFiles,
   isJSFile,
   writeCompiledCSS,
+  removeCompiledDir,
   writeCompiledJS,
 } from './files';
-import type { NodePath } from '../../babel-plugin/flow_modules/@babel/traverse';
+import type { NodePath } from '@babel/traverse';
 
 type StyleXRules = Array<Rule>;
 
@@ -52,7 +54,15 @@ export async function transformFile(
       [typescriptSyntaxPlugin, { isTSX: true }],
       jsxSyntaxPlugin,
       // TODO: Add support for passing in a custom config file
-      styleXPlugin,
+      [
+        styleXPlugin,
+        {
+          unstable_moduleResolution: {
+            type: 'commonJS',
+            rootDir: global.INPUT_DIR,
+          },
+        },
+      ],
       addImportPlugin,
     ],
   });
@@ -73,16 +83,25 @@ const allStyleXRules: StyleXRules = [];
 const compiledJS = new Map<string, string>();
 
 export async function compileDirectory(dir: string) {
-  const dirFiles = getInputDirectoryFiles(dir);
-  for (const filePath of dirFiles) {
-    if (isJSFile(filePath)) {
-      await compileFile(filePath);
-    } else {
-      copyFile(filePath);
+  try {
+    const dirFiles = getInputDirectoryFiles(dir);
+    writeCompiledCSS(global.CSS_BUNDLE_PATH, '');
+    for (const filePath of dirFiles) {
+      const parsed = path.parse(filePath);
+      // TODO: add support for also transforming a list of node_modules as well
+      if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
+        console.log('transforming', filePath);
+        await compileFile(filePath);
+      } else {
+        copyFile(filePath);
+      }
     }
+    const compiledCSS = await compileRules(allStyleXRules);
+    writeCompiledCSS(global.CSS_BUNDLE_PATH, compiledCSS);
+  } catch (err) {
+    removeCompiledDir();
+    throw err;
   }
-  const compiledCSS = await compileRules(allStyleXRules);
-  writeCompiledCSS(global.CSS_BUNDLE_PATH, compiledCSS);
 }
 
 export async function compileFile(filePath: string) {
