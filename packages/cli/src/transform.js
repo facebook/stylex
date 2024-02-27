@@ -14,6 +14,7 @@ import * as t from '@babel/types';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import styleXPlugin from '@stylexjs/babel-plugin';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
+import type { NodePath } from '@babel/traverse';
 import {
   copyFile,
   getCssPathFromFilePath,
@@ -23,15 +24,15 @@ import {
   removeCompiledDir,
   writeCompiledJS,
 } from './files';
-import type { NodePath } from '@babel/traverse';
+import type { Config } from './config';
 
 type StyleXRules = Array<Rule>;
 
 export async function transformFile(
-  dir: string,
-  fileName: string,
+  filePath: string,
+  config: Config,
 ): Promise<[?string, Array<Rule>]> {
-  const relativeImport = getCssPathFromFilePath(fileName);
+  const relativeImport = getCssPathFromFilePath(filePath, config);
 
   const importDeclaration = t.importDeclaration(
     [],
@@ -48,7 +49,7 @@ export async function transformFile(
     },
   });
 
-  const result = await babel.transformFileAsync(fileName, {
+  const result = await babel.transformFileAsync(filePath, {
     babelrc: false,
     plugins: [
       [typescriptSyntaxPlugin, { isTSX: true }],
@@ -59,15 +60,16 @@ export async function transformFile(
         {
           unstable_moduleResolution: {
             type: 'commonJS',
-            rootDir: global.INPUT_DIR,
+            rootDir: config.input,
           },
         },
       ],
+      // typescriptPlugin to resolve aliases
       addImportPlugin,
     ],
   });
   if (result == null) {
-    throw new Error(`Failed to transform file ${fileName}`);
+    throw new Error(`Failed to transform file ${filePath}`);
   }
   const { code, metadata } = result;
 
@@ -82,36 +84,37 @@ export async function compileRules(rules: Array<Rule>): Promise<string> {
 const allStyleXRules: StyleXRules = [];
 const compiledJS = new Map<string, string>();
 
-export async function compileDirectory(dir: string) {
+export async function compileDirectory(config: Config) {
   try {
-    const dirFiles = getInputDirectoryFiles(dir);
-    writeCompiledCSS(global.CSS_BUNDLE_PATH, '');
+    const cssBundlePath = path.join(config.output, config.cssBundleName);
+    const dirFiles = getInputDirectoryFiles(config.input);
+    writeCompiledCSS(cssBundlePath, '');
     for (const filePath of dirFiles) {
       const parsed = path.parse(filePath);
       // TODO: add support for also transforming a list of node_modules as well
+      // compile node_modules then update imports of those modules to compiled version
       if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
         console.log('transforming', filePath);
-        await compileFile(filePath);
+        await compileFile(filePath, config);
       } else {
-        copyFile(filePath);
+        copyFile(filePath, config);
       }
     }
     const compiledCSS = await compileRules(allStyleXRules);
-    writeCompiledCSS(global.CSS_BUNDLE_PATH, compiledCSS);
+    writeCompiledCSS(cssBundlePath, compiledCSS);
   } catch (err) {
-    removeCompiledDir();
+    removeCompiledDir(config);
     throw err;
   }
 }
 
-export async function compileFile(filePath: string) {
-  const [code, rules] = await transformFile(
-    global.INPUT_DIR,
-    path.join(global.INPUT_DIR, filePath),
-  );
+export async function compileFile(filePath: string, config: Config) {
+  const inputFilePath = path.join(config.input, filePath);
+  const outputFilePath = path.join(config.output, filePath);
+  const [code, rules] = await transformFile(inputFilePath, config);
   if (code != null) {
     compiledJS.set(filePath, code);
     allStyleXRules.push(...rules);
-    writeCompiledJS(path.join(global.COMPILED_DIR, filePath), code);
+    writeCompiledJS(outputFilePath, code);
   }
 }
