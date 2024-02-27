@@ -18,16 +18,22 @@ import options from './options';
 import errors from './errors';
 import watch from './watch';
 
+const primary = '#5B45DE';
+const secondary = '#D573DD';
+
 console.log(
-  chalk.green(`\n
-  ______   _             _         __   __
-  / ____| | |           | |        \\ \\ / /
- | (___   | |_   _   _  | |   ___   \\ V / 
-  \\___ \\  | __| | | | | | |  / _ \\   > <  
-  ____) | | |_  | |_| | | | |  __/  / . \\ 
- |_____/   \\__|  \\__, | |_|  \\___| /_/ \\_\\
-                  __/ |                   
-                 |___/                
+  chalk.hex(primary).bold(`\n
+   .d8888b.  888             888         ${chalk.hex(secondary).bold('Y88b   d88P')} 
+  d88P  Y88b 888             888          ${chalk.hex(secondary).bold('Y88b d88P')}  
+  Y88b.      888             888           ${chalk.hex(secondary).bold('Y88o88P')}   
+   "Y888b.   888888 888  888 888  .d88b.    ${chalk.hex(secondary).bold('Y888P')}    
+      "Y88b. 888    888  888 888 d8P  Y8b   ${chalk.hex(secondary).bold('d888b')}    
+        "888 888    888  888 888 88888888  ${chalk.hex(secondary).bold('d88888b')}   
+  Y88b  d88P Y88b.  Y88b 888 888 Y8b.     ${chalk.hex(secondary).bold('d88P Y88b')}  
+   "Y8888P"   "Y888  "Y88888 888  "Y8888 ${chalk.hex(secondary).bold('cd88P   Y88b')} 
+                         888                         
+                    Y8b d88P                         
+                     "Y88P"          
 `),
 );
 
