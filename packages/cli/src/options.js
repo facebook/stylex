@@ -8,15 +8,15 @@
  */
 
 export default {
-  directory: {
-    alias: 'd',
-    describe: 'The directory to compile with Stylex',
+  input: {
+    alias: 'i',
+    describe: 'The input directory to compile with Stylex',
     type: 'string',
-    demandOption: true,
+    demandOption: false,
   },
   output: {
     alias: 'o',
-    describe: 'Name of the output folder',
+    describe: 'Name of the output directory',
     type: 'string',
     demandOption: false,
   },
@@ -25,6 +25,12 @@ export default {
     describe: 'Enable automatic recompiling of files on change',
     type: 'boolean',
     demandOption: false,
+  },
+  config: {
+    alias: 'c',
+    describe: 'Location of a .stylex.json file',
+    type: 'string',
+    demandOptions: false,
   },
   // TODO: Add support for passing in a custom config file
   // This config file should be a JSON file, but paths within it

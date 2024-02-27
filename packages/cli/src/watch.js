@@ -7,10 +7,12 @@
  * @flow strict
  */
 
+import type { Config } from './config';
+
 import { compileDirectory } from './transform';
 
+import chalk from 'chalk';
 import watchman from 'fb-watchman';
-import path from 'path';
 
 type Subscription = {
   expression: Array<string | Array<string>>,
@@ -44,9 +46,8 @@ declare class WatchmanClient {
   end(): void;
 }
 
-export default function watch() {
+export default function watch(config: Config) {
   const watchmanClient: WatchmanClient = new watchman.Client();
-  const watchDir = path.resolve(global.INPUT_DIR);
 
   watchmanClient.capabilityCheck(
     { optional: [], required: ['relative_root'] },
@@ -59,7 +60,7 @@ export default function watch() {
 
       // Initiate the watch
       watchmanClient.command(
-        ['watch-project', watchDir],
+        ['watch-project', config.input],
         function (error, resp) {
           if (error) {
             console.error('Error initiating watch:', error);
@@ -68,7 +69,11 @@ export default function watch() {
           if ('warning' in resp) {
             console.log('warning: ', resp.warning);
           }
-          subscribe(watchmanClient, resp.watch, resp.relative_path);
+          subscribe(watchmanClient, resp.watch, resp.relative_path, config);
+          console.log(
+            'Watching for style changes in',
+            chalk.green(resp.relative_path),
+          );
         },
       );
     },
@@ -79,9 +84,18 @@ function subscribe(
   client: WatchmanClient,
   watcher: Watcher,
   relative_path: string,
+  config: Config,
 ) {
   const subscription: Subscription = {
-    expression: ['allof', ['match', '*.js']],
+    expression: [
+      'anyof',
+      ['match', '*.js'],
+      ['match', '*.ts'],
+      ['match', '*.jsx'],
+      ['match', '*.tsx'],
+      ['match', '*.cjs'],
+      ['match', '*.mjs'],
+    ],
     fields: ['name', 'size', 'mtime_ms', 'exists', 'type'],
   };
   if (relative_path) {
@@ -90,18 +104,17 @@ function subscribe(
 
   client.command(
     ['subscribe', watcher, 'jsFileChanged', subscription],
-    function (error: string, resp: Response) {
+    function (error: string, _resp: Response) {
       if (error) {
         console.error('failed to subscribe: ', error);
         return;
       }
-      console.log('watching for style changes in', resp.relative_path);
     },
   );
 
   client.on('subscription', function (resp: OnEvent) {
     if (resp.subscription !== 'jsFileChanged') return;
     // on file change, recompile the whole directory for now
-    compileDirectory(global.INPUT_DIR);
+    compileDirectory(config);
   });
 }
