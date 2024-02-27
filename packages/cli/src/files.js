@@ -40,8 +40,17 @@ export function writeCompiledCSS(filePath: string, compiledCSS: string): void {
 }
 
 export function writeCompiledJS(filePath: string, code: string): void {
-  mkdirp.sync(path.parse(filePath).dir);
-  fs.writeFileSync(filePath, code, {});
+  const parsedFile = path.parse(filePath);
+  mkdirp.sync(parsedFile.dir);
+  if (parsedFile.ext !== '.js') {
+    parsedFile.ext = '.js';
+  }
+  const newPath = path.join(
+    parsedFile.dir,
+    `${parsedFile.name}${parsedFile.ext}`,
+  );
+  console.log(newPath);
+  fs.writeFileSync(newPath, code, {});
 }
 
 export function copyFile(filePath: string, config: Config) {

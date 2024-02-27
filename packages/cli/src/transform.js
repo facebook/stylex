@@ -12,8 +12,8 @@ import path from 'path';
 import * as babel from '@babel/core';
 import * as t from '@babel/types';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
+import typescriptPlugin from '@babel/plugin-transform-typescript';
 import styleXPlugin from '@stylexjs/babel-plugin';
-import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import type { NodePath } from '@babel/traverse';
 import {
   copyFile,
@@ -52,8 +52,8 @@ export async function transformFile(
   const result = await babel.transformFileAsync(filePath, {
     babelrc: false,
     plugins: [
-      [typescriptSyntaxPlugin, { isTSX: true }],
       jsxSyntaxPlugin,
+      [typescriptPlugin, { isTSX: true }],
       // TODO: Add support for passing in a custom config file
       [
         styleXPlugin,
@@ -73,7 +73,7 @@ export async function transformFile(
   }
   const { code, metadata } = result;
 
-  const styleXRules: Array<Rule> = (metadata: $FlowFixMe).stylex;
+  const styleXRules: Array<Rule> = (metadata as $FlowFixMe).stylex;
   return [code, styleXRules];
 }
 
