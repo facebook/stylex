@@ -11,12 +11,22 @@
 import yargs from 'yargs';
 import path from 'path';
 import chalk from 'chalk';
+import JSON5 from 'json5';
 
 import { isDir, makeCompiledDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
 import watch from './watch';
+import fs from 'fs';
+
+export type Config = {
+  input: string,
+  output: string,
+  cssBundleName: string,
+  modules?: $ReadOnlyArray<string>,
+  mode?: 'watch',
+};
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -46,23 +56,53 @@ const args = yargs(process.argv)
   .help(true)
   .parseSync();
 
-const dir: string = args.directory;
-const output: string = args.output;
+const inputDir: string = args.input;
+const outputDir: string = args.output;
 const watchFiles: boolean = args.watch;
+const configFile: string = args.config;
 
-if (!isDir(dir)) {
-  throw errors.dirNotFound;
+const absolutePath = process.cwd();
+
+if (configFile) {
+  const jsonConfig = fs.readFileSync(configFile);
+  const parsed: Config = JSON5.parse(jsonConfig);
+  console.log(parsed);
+  // validate parsed input?
+  const config = {
+    input: path.normalize(path.join(absolutePath, parsed.input)),
+    output: path.normalize(path.join(absolutePath, parsed.output)),
+    cssBundleName: parsed.cssBundleName,
+    mode: parsed.mode,
+  };
+  start(config);
+} else {
+  const config = {
+    input: path.normalize(path.join(absolutePath, inputDir)),
+    output: path.normalize(
+      path.join(absolutePath, outputDir != null ? outputDir : 'src'),
+    ),
+    cssBundleName: 'stylex_bundle.css',
+    mode: watchFiles ? 'watch' : undefined,
+  };
+  start(config);
 }
 
-global.INPUT_DIR = path.normalize(dir);
-global.INPUT_PARENT = path.dirname(global.INPUT_DIR);
-global.COMPILED_DIR = path.join(global.INPUT_PARENT, output ?? 'src');
-global.CSS_BUNDLE_NAME = 'stylex_bundle.css';
-global.CSS_BUNDLE_PATH = path.join(global.COMPILED_DIR, global.CSS_BUNDLE_NAME);
+// loading config automatically https://github.com/unjs/c12
+// don't start with this
 
-if (watchFiles) {
-  watch();
-} else {
-  makeCompiledDir();
-  compileDirectory(dir);
+// use this to load the json
+// https://json5.org/
+
+// 1. json config
+
+function start(config: Config) {
+  if (!isDir(config.input)) {
+    throw errors.dirNotFound;
+  }
+  if (config.mode === 'watch') {
+    watch(config);
+  } else {
+    makeCompiledDir(config);
+    compileDirectory(config);
+  }
 }

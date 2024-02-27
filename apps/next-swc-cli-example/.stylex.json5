@@ -1,0 +1,7 @@
+{
+  input: './source',
+  output: './src',
+  modules: [],
+  cssBundleName: 'stylex_bundle.css',
+  mode: 'watch',
+}

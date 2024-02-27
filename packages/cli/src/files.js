@@ -11,10 +11,14 @@ import fs from 'fs';
 import path from 'path';
 import errors from './errors';
 
+// $FlowFixMe
+import { mkdirp } from 'mkdirp';
+import type { Config } from './config';
+
 // gets the directory for compiled styles (creates it if it doesn't exist)
-export function makeCompiledDir(): void {
-  if (!fs.existsSync(global.COMPILED_DIR)) {
-    makeDirExistRecursive(global.COMPILED_DIR);
+export function makeCompiledDir(config: Config): void {
+  if (!fs.existsSync(config.output)) {
+    mkdirp.sync(config.output);
   }
 }
 
@@ -31,18 +35,19 @@ export function getInputDirectoryFiles(inputDir: string): Array<string> {
 }
 
 export function writeCompiledCSS(filePath: string, compiledCSS: string): void {
+  mkdirp.sync(path.parse(filePath).dir);
   fs.writeFileSync(filePath, compiledCSS);
 }
 
 export function writeCompiledJS(filePath: string, code: string): void {
-  makeDirExistRecursive(filePath);
+  mkdirp.sync(path.parse(filePath).dir);
   fs.writeFileSync(filePath, code, {});
 }
 
-export function copyFile(filePath: string) {
-  const src = path.join(global.INPUT_DIR, filePath);
-  const dst = path.join(global.COMPILED_DIR, filePath);
-  makeDirExistRecursive(dst);
+export function copyFile(filePath: string, config: Config) {
+  const src = path.join(config.input, filePath);
+  const dst = path.join(config.output, filePath);
+  mkdirp.sync(path.parse(dst).dir);
   fs.copyFileSync(src, dst);
 }
 
@@ -63,28 +68,16 @@ export function isJSFile(filePath: string): boolean {
 }
 
 // e.g. ./pages/home/index.js -> ../../stylex_bundle.css
-export function getCssPathFromFilePath(filePath: string): string {
-  const from = path.resolve(filePath);
-  const to = path.resolve(global.INPUT_DIR);
-  const relativePath = path.relative(path.dirname(from), to);
-  return formatRelativePath(path.join(relativePath, global.CSS_BUNDLE_NAME));
+export function getCssPathFromFilePath(
+  filePath: string,
+  config: Config,
+): string {
+  const relativePath = path.relative(path.dirname(filePath), config.input);
+  return formatRelativePath(path.join(relativePath, config.cssBundleName));
 }
 
-export function makeDirExistRecursive(filePath: string): ?boolean {
-  const dirName = path.dirname(filePath);
-  if (fs.existsSync(dirName) && dirName !== '.') {
-    return true;
-  }
-  if (dirName === '.') {
-    fs.mkdirSync(filePath);
-    return;
-  }
-  makeDirExistRecursive(dirName);
-  fs.mkdirSync(dirName);
-}
-
-export function removeCompiledDir(): void {
-  fs.rmSync(global.COMPILED_DIR, { recursive: true, force: true });
+export function removeCompiledDir(config: Config): void {
+  fs.rmSync(config.output, { recursive: true, force: true });
 }
 
 function formatRelativePath(filePath: string) {

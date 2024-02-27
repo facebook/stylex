@@ -18,15 +18,11 @@ const cp = require('child_process');
 
 process.chdir('__tests__/__mocks__');
 
-const input = 'source';
-const output = 'src';
-const snapshot = 'snapshot';
-
-global.INPUT_DIR = path.normalize(input);
-global.INPUT_PARENT = path.dirname(global.INPUT_DIR);
-global.COMPILED_DIR = path.join(global.INPUT_PARENT, 'src');
-global.CSS_BUNDLE_NAME = 'stylex_bundle.css';
-global.CSS_BUNDLE_PATH = path.join(global.COMPILED_DIR, global.CSS_BUNDLE_NAME);
+config = {
+  input: path.normalize(input),
+  output: path.normalize('./src'),
+  cssBundleName: 'stylex_bundle.css',
+};
 
 describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
   test(input, () => {
@@ -38,9 +34,9 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
     expect(files.isDir(output)).toBe(true);
 
     try {
-      await transform.compileDirectory(input);
+      await transform.compileDirectory(config);
 
-      const outputDir = fs.readdirSync(output);
+      const outputDir = fs.readdirSync(config.output);
       for (const file of outputDir) {
         const outputPath = path.join(output, file);
         const snapshotPath = path.join(snapshot, file);
@@ -60,8 +56,8 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
 describe('individual testing of util functions', () => {
   test('file to relative css path', () => {
     const mockFileName = './source/pages/home/page.js';
-    const relativePath = files.getCssPathFromFilePath(mockFileName);
-    expect(relativePath).toEqual('../../stylex_bundle.css');
+    const relativePath = files.getCssPathFromFilePath(mockFileName, config);
+    expect(relativePath).toEqual(`../../${config.cssBundleName}`);
   });
 });
 
