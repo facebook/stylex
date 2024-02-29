@@ -9,7 +9,6 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { globalTokens as $, spacing, text } from '../app/globalTokens.stylex';
-import { colors } from '@stylexjs/open-props/lib/colors.stylex';
 import { tokens } from '../app/CardTokens.stylex';
 
 type Props = Readonly<{
@@ -74,7 +73,7 @@ const styles = stylex.create({
     },
   },
   h2: {
-    color: colors.blue3,
+    color: 'blue',
     fontSize: text.h4,
     fontWeight: 600,
     marginBottom: {

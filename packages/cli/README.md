@@ -9,7 +9,24 @@ with exotic setups.
 Simply install the CLI to start using it
 
 ```sh
+
 npm install --save-dev @stylexjs/cli
+
 ```
 
-### Usage
+### Basic Usage
+
+```sh
+stylex -i [input_directory] -o [output_directory]
+```
+
+### CLI Commands
+
+`--input` | `-i`: The input directory to compile with Stylex
+
+`--output` | `-o`: Name of the output directory (Optional) (Default: `src`)
+
+`--watch` | `-w`: Enable automatic recompiling of files on change (Optional)
+(Default: `false`)
+
+`--config` | `-c`: Location of a .stylex.json file (Optional) (Default: `null`)
