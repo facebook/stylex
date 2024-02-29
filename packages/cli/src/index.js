@@ -66,7 +66,6 @@ const absolutePath = process.cwd();
 if (configFile) {
   const jsonConfig = fs.readFileSync(configFile);
   const parsed: Config = JSON5.parse(jsonConfig);
-  console.log(parsed);
   // validate parsed input?
   const config = {
     input: path.normalize(path.join(absolutePath, parsed.input)),

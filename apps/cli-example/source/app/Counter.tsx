@@ -11,7 +11,6 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { spacing, text, globalTokens as $ } from './globalTokens.stylex';
-import { colors } from '@stylexjs/open-props/lib/colors.stylex';
 import { useState } from 'react';
 
 export default function Counter() {
@@ -54,7 +53,7 @@ const styles = stylex.create({
     borderRadius: spacing.md,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: colors.blue7,
+    borderColor: 'blue',
     padding: spacing.xxxs,
     fontFamily: $.fontSans,
     gap: spacing.xs,
@@ -65,13 +64,13 @@ const styles = stylex.create({
     justifyContent: 'center',
     height: '6rem',
     aspectRatio: 1,
-    color: colors.blue7,
+    color: 'blue',
     backgroundColor: {
-      default: colors.gray3,
-      ':hover': colors.gray4,
+      default: 'blue',
+      ':hover': 'blue',
       [DARK]: {
-        default: colors.gray9,
-        ':hover': colors.gray8,
+        default: 'blue',
+        ':hover': 'blue',
       },
     },
     borderWidth: 0,
@@ -90,7 +89,7 @@ const styles = stylex.create({
   count: {
     fontSize: text.h2,
     fontWeight: 100,
-    color: colors.lime7,
+    color: 'blue',
     minWidth: '6rem',
     textAlign: 'center',
     fontFamily: $.fontMono,
