@@ -102,6 +102,7 @@ export async function compileDirectory(config: Config) {
     }
     const compiledCSS = await compileRules(allStyleXRules);
     writeCompiledCSS(cssBundlePath, compiledCSS);
+    console.log(`Successfully compiled ${config.input} with StyleX.`);
   } catch (err) {
     removeCompiledDir(config);
     throw err;
