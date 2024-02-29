@@ -49,7 +49,6 @@ export function writeCompiledJS(filePath: string, code: string): void {
     parsedFile.dir,
     `${parsedFile.name}${parsedFile.ext}`,
   );
-  console.log(newPath);
   fs.writeFileSync(newPath, code, {});
 }
 

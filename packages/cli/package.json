@@ -2,7 +2,7 @@
   "name": "@stylexjs/cli",
   "version": "0.5.1",
   "description": "A cli to compile a folder with StyleX",
-  "main": "./src/index.js",
+  "main": "./lib/transform.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
