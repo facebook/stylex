@@ -9,10 +9,10 @@
 
 'use strict';
 
+import "../stylex_bundle.css";
 import * as stylex from '@stylexjs/stylex';
 import otherStyles from './otherStyles';
 import npmStyles from './npmStyles';
-
 const fadeAnimation = "xgnty7z-B";
 const styles = {
   foo: {
@@ -37,6 +37,6 @@ const styles = {
     $$css: true
   }
 };
-function Home() {
-  return stylex.props(_otherStyles.default.bar, styles.foo, _npmStyles.default.baz).className;
+export default function Home() {
+  return stylex.props(otherStyles.bar, styles.foo, npmStyles.baz).className;
 }
