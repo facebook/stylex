@@ -27,7 +27,7 @@ const styles = stylex.create({
   },
 });
 
-const styleProps = stylex.apply(styles.root, styles.element);
+const styleProps = stylex.props(styles.root, styles.element);
 ```
 
 ## Development
