@@ -41,9 +41,9 @@ describe('stylex-override-vars test', () => {
     expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
       .toMatchInlineSnapshot(`
       {
-        "ltr": ".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+        "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
         "priority": 0.8,
-        "rtl": undefined,
+        "rtl": null,
       }
     `);
   });
