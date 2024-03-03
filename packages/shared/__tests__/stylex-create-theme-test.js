@@ -9,7 +9,7 @@
 
 import stylexCreateTheme from '../src/stylex-create-theme';
 
-describe('stylex-override-vars test', () => {
+describe('stylex-create-theme test', () => {
   test('overrides set of vars with CSS class', () => {
     const defaultVars = {
       __themeName__: 'TestTheme.stylex.js//buttonTheme',
@@ -42,7 +42,7 @@ describe('stylex-override-vars test', () => {
       .toMatchInlineSnapshot(`
       {
         "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
-        "priority": 0.8,
+        "priority": 0.5,
         "rtl": null,
       }
     `);
@@ -92,5 +92,81 @@ describe('stylex-override-vars test', () => {
     expect(classNameOutput1[defaultVars.__themeName__]).toEqual(
       classNameOutput2[defaultVars.__themeName__],
     );
+  });
+
+  test('Adding an at-rule changes the hash', () => {
+    const defaultVars = {
+      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      bgColor: 'var(--xgck17p)',
+    };
+
+    const createTheme1 = {
+      bgColor: 'green',
+    };
+
+    const createTheme2 = {
+      bgColor: {
+        default: 'green',
+        '@media (prefers-color-scheme: dark)': 'lightgreen',
+      },
+    };
+
+    const [classNameOutput1] = stylexCreateTheme(defaultVars, createTheme1);
+
+    const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
+
+    expect(classNameOutput1[defaultVars.__themeName__]).not.toEqual(
+      classNameOutput2[defaultVars.__themeName__],
+    );
+  });
+
+  test('Generates styles for nested at-rules', () => {
+    const defaultVars = {
+      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      bgColor: 'var(--xgck17p)',
+    };
+
+    const createTheme = {
+      bgColor: {
+        default: {
+          default: 'green',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+        '@media (prefers-color-scheme: dark)': {
+          default: 'lightgreen',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.2 -0.4)',
+        },
+      },
+    };
+
+    const [_classNameOutput, cssOutput] = stylexCreateTheme(
+      defaultVars,
+      createTheme as $FlowFixMe,
+    );
+
+    expect(cssOutput).toMatchInlineSnapshot(`
+      {
+        "x2y918k": {
+          "ltr": ".x2y918k{--xgck17p:green;}",
+          "priority": 0.5,
+          "rtl": null,
+        },
+        "x2y918k-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
+          "priority": 0.7,
+          "rtl": null,
+        },
+        "x2y918k-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:lightgreen;}}",
+          "priority": 0.6,
+          "rtl": null,
+        },
+        "x2y918k-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.6,
+          "rtl": null,
+        },
+      }
+    `);
   });
 });

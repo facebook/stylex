@@ -42,10 +42,12 @@ export function collectVarsByAtRule(
       throw new Error('Default value is not defined for ' + key + ' variable.');
     }
     for (const atRule of Object.keys(value)) {
-      collectVarsByAtRule(key, { nameHash, value: value[atRule] }, collection, [
-        ...atRules,
-        atRule,
-      ]);
+      collectVarsByAtRule(
+        key,
+        { nameHash, value: value[atRule] },
+        collection,
+        atRule === 'default' ? atRules : [...atRules, atRule],
+      );
     }
   }
 }
@@ -55,4 +57,11 @@ export function wrapWithAtRules(ltr: string, atRule: string): string {
     .split(SPLIT_TOKEN)
     .reduce((acc, atRule) => `${atRule}{${acc}}`, ltr);
   // Wrapper in alphabetic order such that `@supports` wraps `@media`
+}
+
+export function priorityForAtRule(atRule: string): number {
+  if (atRule === 'default') {
+    return 0;
+  }
+  return atRule.split(SPLIT_TOKEN).length;
 }

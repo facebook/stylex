@@ -13,7 +13,11 @@ import type { VarsConfig, VarsConfigValue } from './stylex-vars-utils';
 import createHash from './hash';
 import { objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
-import { collectVarsByAtRule, wrapWithAtRules } from './stylex-vars-utils';
+import {
+  collectVarsByAtRule,
+  priorityForAtRule,
+  wrapWithAtRules,
+} from './stylex-vars-utils';
 
 type VarsObject<Vars: VarsConfig> = $ReadOnly<{
   ...$ObjMapConst<Vars, string>,
@@ -77,7 +81,7 @@ function constructCssVariablesString(
     result[themeNameHash + suffix] = {
       ltr,
       rtl: null,
-      priority: atRule === 'default' ? 0 : 0.1,
+      priority: priorityForAtRule(atRule) * 0.1,
     };
   }
 

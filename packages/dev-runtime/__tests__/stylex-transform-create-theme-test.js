@@ -66,7 +66,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
               "rtl": undefined,
             },
-            0.8,
+            0.5,
           ],
           [
             "xtrlmmh-1lveb7",
@@ -74,7 +74,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
               "rtl": undefined,
             },
-            0.9,
+            0.6,
           ],
           [
             "xtrlmmh-bdddrq",
@@ -82,7 +82,7 @@ describe('Development Plugin Transformation', () => {
               "ltr": "@media print{.xtrlmmh{--xgck17p:transparent;}}",
               "rtl": undefined,
             },
-            0.9,
+            0.6,
           ],
         ]
       `);

@@ -10,7 +10,11 @@
 import type { InjectableStyle, StyleXOptions } from './common-types';
 
 import createHash from './hash';
-import { collectVarsByAtRule, wrapWithAtRules } from './stylex-vars-utils';
+import {
+  collectVarsByAtRule,
+  priorityForAtRule,
+  wrapWithAtRules,
+} from './stylex-vars-utils';
 import { defaultOptions } from './utils/default-options';
 
 // It takes an object of variables with their values and the original set of variables to override
@@ -63,13 +67,13 @@ export default function styleXCreateTheme(
     if (atRule === 'default') {
       stylesToInject[overrideClassName] = {
         ltr: rule,
-        priority: 0.8,
+        priority: 0.5,
         rtl: null,
       };
     } else {
       stylesToInject[overrideClassName + '-' + createHash(atRule)] = {
         ltr: wrapWithAtRules(rule, atRule),
-        priority: 0.9,
+        priority: 0.5 + 0.1 * priorityForAtRule(atRule),
         rtl: null,
       };
     }
