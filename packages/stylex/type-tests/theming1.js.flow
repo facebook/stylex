@@ -121,3 +121,64 @@ const varsC = stylex.defineVars({
 const themeC = stylex.createTheme(varsC, {
   varC1: 'green',
 });
+
+const typedTokens = stylex.defineVars({
+  bgColor: stylex.types.color<string>({
+    default: 'cyan',
+    [DARK]: 'navy',
+  }),
+  cornerRadius: stylex.types.length<string | number>({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number<number>(0.5),
+  shortAnimation: stylex.types.time<string | 0>('0.5s'),
+});
+
+const correctlyTypedTheme = stylex.createTheme(typedTokens, {
+  bgColor: stylex.types.color('red'),
+  cornerRadius: stylex.types.length('4px'),
+  translucent: stylex.types.number(0.5),
+  shortAnimation: stylex.types.time('0.5s'),
+});
+
+const correctlyTypedThemeNested = stylex.createTheme(typedTokens, {
+  bgColor: stylex.types.color<string>({
+    default: 'red',
+    [DARK]: 'hotpink',
+  }),
+  cornerRadius: stylex.types.length<>({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number<number>({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time<>({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
+});
+
+const wronglyTypedTheme1 = stylex.createTheme(typedTokens, {
+  // $FlowExpectedError[incompatible-call] - bgColor must be be wrapped with stylex.types.color
+  bgColor: {
+    default: 'red',
+    [DARK]: 'hotpink',
+  },
+  cornerRadius: stylex.types.length<>({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number<number>({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time<>({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
+});

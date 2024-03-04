@@ -159,3 +159,63 @@ const varsC = stylex.defineVars({
 const themeC = stylex.createTheme(varsC, {
   varC1: 'green',
 });
+
+const typedTokens = stylex.defineVars({
+  bgColor: stylex.types.color({
+    default: 'cyan',
+    [DARK]: 'navy',
+  }),
+  cornerRadius: stylex.types.length({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number(0.5),
+  shortAnimation: stylex.types.time('0.5s'),
+});
+
+const correctlyTypedTheme = stylex.createTheme(typedTokens, {
+  bgColor: stylex.types.color('red'),
+  cornerRadius: stylex.types.length('4px'),
+  translucent: stylex.types.number(0.5),
+  shortAnimation: stylex.types.time('0.5s'),
+});
+
+const correctlyTypedThemeNested = stylex.createTheme(typedTokens, {
+  bgColor: stylex.types.color({
+    default: 'red',
+    [DARK]: 'hotpink',
+  }),
+  cornerRadius: stylex.types.length({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
+});
+
+const wronglyTypedTheme1 = stylex.createTheme(typedTokens, {
+  bgColor: {
+    default: 'red',
+    [DARK]: 'hotpink',
+  },
+  cornerRadius: stylex.types.length({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
+});
