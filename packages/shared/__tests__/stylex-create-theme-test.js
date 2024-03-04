@@ -8,6 +8,7 @@
  */
 
 import stylexCreateTheme from '../src/stylex-create-theme';
+import * as t from '../src/types';
 
 describe('stylex-create-theme test', () => {
   test('overrides set of vars with CSS class', () => {
@@ -137,6 +138,56 @@ describe('stylex-create-theme test', () => {
           '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.2 -0.4)',
         },
       },
+    };
+
+    const [_classNameOutput, cssOutput] = stylexCreateTheme(
+      defaultVars,
+      createTheme as $FlowFixMe,
+    );
+
+    expect(cssOutput).toMatchInlineSnapshot(`
+      {
+        "x2y918k": {
+          "ltr": ".x2y918k{--xgck17p:green;}",
+          "priority": 0.5,
+          "rtl": null,
+        },
+        "x2y918k-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
+          "priority": 0.7,
+          "rtl": null,
+        },
+        "x2y918k-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:lightgreen;}}",
+          "priority": 0.6,
+          "rtl": null,
+        },
+        "x2y918k-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.6,
+          "rtl": null,
+        },
+      }
+    `);
+  });
+
+  test('Generates styles for typed nested at-rules', () => {
+    const defaultVars = {
+      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      bgColor: 'var(--xgck17p)',
+    };
+
+    const createTheme = {
+      bgColor: t.color({
+        default: {
+          default: 'green',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+        '@media (prefers-color-scheme: dark)': {
+          default: 'lightgreen',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.2 -0.4)',
+        },
+      }),
     };
 
     const [_classNameOutput, cssOutput] = stylexCreateTheme(

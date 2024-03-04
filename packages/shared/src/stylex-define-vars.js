@@ -15,9 +15,11 @@ import { objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
 import {
   collectVarsByAtRule,
+  getDefaultValue,
   priorityForAtRule,
   wrapWithAtRules,
 } from './stylex-vars-utils';
+import { type CSSType, isCSSType } from './types';
 
 type VarsObject<Vars: VarsConfig> = $ReadOnly<{
   ...$ObjMapConst<Vars, string>,
@@ -37,9 +39,24 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 
   const themeNameHash = classNamePrefix + createHash(themeName);
 
+  const typedVariables: {
+    [string]: $ReadOnly<{
+      initialValue: ?string,
+      syntax: string,
+    }>,
+  } = {};
+
   const variablesMap = objMap(variables, (value, key) => {
     // Created hashed variable names with fileName//themeName//key
     const nameHash = classNamePrefix + createHash(`${themeName}.${key}`);
+    if (isCSSType(value)) {
+      const v: CSSType<> = value;
+      typedVariables[nameHash] = {
+        initialValue: getDefaultValue(v.value),
+        syntax: v.syntax,
+      };
+      return { nameHash, value: v.value };
+    }
     return { nameHash, value };
   });
 
@@ -53,9 +70,18 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     themeNameHash,
   );
 
+  const injectableTypes: { +[string]: InjectableStyle } = objMap(
+    typedVariables,
+    ({ initialValue: iv, syntax }, nameHash) => ({
+      ltr: `@property --${nameHash} { syntax: "${syntax}"; inherits: true;${iv != null ? ` initial-value: ${iv}` : ''} }`,
+      rtl: null,
+      priority: 0,
+    }),
+  );
+
   return [
     { ...themeVariablesObject, __themeName__: themeNameHash },
-    injectableStyles,
+    { ...injectableTypes, ...injectableStyles },
   ];
 }
 

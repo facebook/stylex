@@ -15,6 +15,7 @@ import {
   priorityForAtRule,
   wrapWithAtRules,
 } from './stylex-vars-utils';
+import { isCSSType } from './types';
 import { defaultOptions } from './utils/default-options';
 
 // It takes an object of variables with their values and the original set of variables to override
@@ -40,7 +41,9 @@ export default function styleXCreateTheme(
   const sortedKeys = Object.keys(variables).sort();
 
   for (const key of sortedKeys) {
-    const value = variables[key];
+    const value = isCSSType(variables[key])
+      ? variables[key].value
+      : variables[key];
     const nameHash = themeVars[key].slice(6, -1);
     collectVarsByAtRule(key, { nameHash, value }, rulesByAtRule);
   }

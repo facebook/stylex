@@ -7,12 +7,14 @@
  * @flow strict
  */
 
+import type { CSSType } from './types';
+
 export type VarsConfigValue =
   | string
   | $ReadOnly<{ default: VarsConfigValue, [string]: VarsConfigValue }>;
 
 export type VarsConfig = $ReadOnly<{
-  [string]: VarsConfigValue,
+  [string]: VarsConfigValue | CSSType<>,
 }>;
 
 const SPLIT_TOKEN = '__$$__';
@@ -64,4 +66,23 @@ export function priorityForAtRule(atRule: string): number {
     return 0;
   }
   return atRule.split(SPLIT_TOKEN).length;
+}
+
+export function getDefaultValue(value: VarsConfigValue): ?string {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return value.toString();
+  }
+  if (value == null) {
+    return null;
+  }
+  if (Array.isArray(value)) {
+    throw new Error('Array is not supported in stylex.defineVars');
+  }
+  if (typeof value === 'object') {
+    if (value.default === undefined) {
+      throw new Error('Default value is not defined for variable.');
+    }
+    return getDefaultValue(value.default);
+  }
+  throw new Error('Invalid value in stylex.defineVars');
 }
