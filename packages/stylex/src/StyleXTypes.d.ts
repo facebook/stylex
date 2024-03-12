@@ -184,7 +184,7 @@ export type IDFromVarGroup<T extends VarGroup<unknown, unknown>> =
   T['__opaqueId'];
 
 type TTokens = Readonly<{
-  [key: string]: string | { [key: string]: string } | CSSType;
+  [key: string]: CSSType | string | { [key: string]: string };
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;

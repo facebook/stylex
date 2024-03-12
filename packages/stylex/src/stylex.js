@@ -168,15 +168,13 @@ export const createTheme: StyleX$CreateTheme = stylexCreateTheme;
 
 export const include: Stylex$Include = stylexInclude;
 
-function color<T: string = string>(_v: ValueWithDefault<T>): Color<T> {
-  throw errorForType('color');
-}
-
 export const types = {
   angle: <T: string | 0 = string | 0>(_v: ValueWithDefault<T>): Angle<T> => {
     throw errorForType('angle');
   },
-  color,
+  color: <T: string = string>(_v: ValueWithDefault<T>): Color<T> => {
+    throw errorForType('color');
+  },
   url: <T: string = string>(_v: ValueWithDefault<T>): Url<T> => {
     throw errorForType('url');
   },
