@@ -9,9 +9,7 @@ with exotic setups.
 Simply install the CLI to start using it
 
 ```sh
-
 npm install --save-dev @stylexjs/cli
-
 ```
 
 ### Basic Usage
@@ -20,26 +18,80 @@ npm install --save-dev @stylexjs/cli
 stylex -i [input_directory] -o [output_directory]
 ```
 
-### CLI Commands
+### CLI Options
 
-`--input` | `-i`: The input directory to compile with Stylex
+#### `--input`
 
-`--output` | `-o`: Name of the output directory (Optional) (Default: `src`)
+The input directory to compile with Stylex `[string] [Required]`
 
-`--watch` | `-w`: Enable automatic recompiling of files on change (Optional)
-(Default: `false`)
+alias: `-i`
 
-`--config` | `-c`: Location of a .stylex.json file (Optional) (Default: `null`)
+type: `string`
 
-### Config File
+required: `true`
 
-You can specify a `.stylex.json` config file and pass it to the CLI.
+#### `--output`
+
+Name of the StyleX output directory
+
+alias: `-o`
+
+type: `string`
+
+required: `true`
+
+#### `--styleXBundleName`
+
+The name of the core compiled css file StyleX creates
+
+alias: `-b`
+
+type: `string`
+
+required: `false`
+
+default: `stylex_bundle.css`
+
+#### `--watch`
+
+Flag to enable automatic recompiling of files in the input directory on change
+
+alias: `-w`
+
+type: `boolean`
+
+required: `false`
+
+default: `false`
+
+#### `--modules`
+
+A list of node modules to also compile with StyleX
+
+alias: `-w`
+
+type: `array`
+
+required: `false`
+
+default: `[]`
+
+#### `--config`
+
+path of a .json (or .json5) config file
+
+default: `undefined`
+
+### Config Structure
+
+You can create a `.json` or `.json5` config file and pass it to the CLI.
 
 ```json
 {
   "input": "./source",
   "output": "./src",
-  "cssBundleName": "stylex_bundle.css"
-  // mode: 'watch',
+  "modules": ["@stylexjs/open-props"],
+  "styleXBundleName": "stylex_bundle.css",
+  "watch": true
 }
 ```

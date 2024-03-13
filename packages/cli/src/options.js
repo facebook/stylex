@@ -7,32 +7,40 @@
  * @flow strict
  */
 
-export default {
+import type { Config } from './config';
+import type { Options } from 'yargs';
+
+const options: { [$Keys<Config>]: Options } = {
   input: {
     alias: 'i',
     describe: 'The input directory to compile with Stylex',
     type: 'string',
-    demandOption: false,
+    demandOption: true,
   },
   output: {
     alias: 'o',
     describe: 'Name of the output directory',
     type: 'string',
-    demandOption: false,
+    demandOption: true,
+  },
+  styleXBundleName: {
+    alias: 'b',
+    describe: 'The name of the core compiled css file StyleX creates',
+    type: 'string',
+    default: 'stylex_bundle.css',
   },
   watch: {
     alias: 'w',
     describe: 'Enable automatic recompiling of files on change',
     type: 'boolean',
-    demandOption: false,
+    default: false,
   },
-  config: {
-    alias: 'c',
-    describe: 'Location of a .stylex.json file',
-    type: 'string',
-    demandOptions: false,
+  modules: {
+    alias: 'm',
+    describe: 'a list of node modules to also compile with StyleX',
+    type: 'array',
+    default: [],
   },
-  // TODO: Add support for passing in a custom config file
-  // This config file should be a JSON file, but paths within it
-  // must be resolved relative to the config file's location
 };
+
+export default options;

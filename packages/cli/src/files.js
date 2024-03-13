@@ -13,7 +13,6 @@ import errors from './errors';
 
 // $FlowFixMe
 import { mkdirp } from 'mkdirp';
-import type { Config } from './config';
 
 export function getInputDirectoryFiles(inputDir: string): Array<string> {
   if (!fs.existsSync(inputDir)) {
@@ -28,11 +27,14 @@ export function getInputDirectoryFiles(inputDir: string): Array<string> {
 }
 
 export function writeCompiledCSS(filePath: string, compiledCSS: string): void {
+  if (fs.existsSync(filePath)) {
+    fs.rmSync(filePath);
+  }
   mkdirp.sync(path.parse(filePath).dir);
   fs.writeFileSync(filePath, compiledCSS);
 }
 
-export function writeCompiledJS(filePath: string, code: string): void {
+export function writeCompiledJS(filePath: string, code: string): string {
   const parsedFile = path.parse(filePath);
   mkdirp.sync(parsedFile.dir);
   if (parsedFile.ext !== '.js') {
@@ -43,17 +45,17 @@ export function writeCompiledJS(filePath: string, code: string): void {
     `${parsedFile.name}${parsedFile.ext}`,
   );
   fs.writeFileSync(newPath, code, {});
+
+  return newPath;
 }
 
-export function copyFile(filePath: string, config: Config) {
-  const src = path.join(config.input, filePath);
-  const dst = path.join(config.output, filePath);
+export function copyFile(src: string, dst: string) {
   mkdirp.sync(path.parse(dst).dir);
   fs.copyFileSync(src, dst);
 }
 
 export function isDir(filePath: string): boolean {
-  return fs.lstatSync(filePath).isDirectory();
+  return fs.statSync(filePath).isDirectory();
 }
 
 export function isJSFile(filePath: string): boolean {
@@ -69,16 +71,9 @@ export function isJSFile(filePath: string): boolean {
 }
 
 // e.g. ./pages/home/index.js -> ../../stylex_bundle.css
-export function getCssPathFromFilePath(
-  filePath: string,
-  config: Config,
-): string {
-  const relativePath = path.relative(path.dirname(filePath), config.input);
-  return formatRelativePath(path.join(relativePath, config.cssBundleName));
-}
-
-export function removeCompiledDir(config: Config): void {
-  fs.rmSync(config.output, { recursive: true, force: true });
+export function getRelativePath(from: string, to: string): string {
+  const relativePath = path.relative(path.parse(from).dir, to);
+  return formatRelativePath(relativePath);
 }
 
 function formatRelativePath(filePath: string) {

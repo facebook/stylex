@@ -20,13 +20,18 @@ process.chdir('__tests__/__mocks__');
 
 const snapshot = './snapshot';
 
-const config = {
-  input: './source',
-  output: './src',
-  cssBundleName: 'stylex_bundle.css',
-};
-
 describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
+  // need to resolve to absolute paths because the compileDirectory function is expecting them.
+  const config = {
+    input: path.resolve('./source'),
+    output: path.resolve('./src'),
+    styleXBundleName: 'stylex_bundle.css',
+    modules: [] as Array<string>,
+    watch: false,
+  };
+
+  afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));
+
   test(config.input, () => {
     expect(files.isDir(config.input)).toBe(true);
   });
@@ -35,8 +40,42 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
     fs.mkdirSync(config.output);
     expect(files.isDir(config.output)).toBe(true);
 
-    try {
-      await transform.compileDirectory(config);
+    await transform.compileDirectory(config);
+    const outputDir = fs.readdirSync(config.output, { recursive: true });
+    for (const file of outputDir) {
+      const outputPath = path.join(config.output, file);
+      const snapshotPath = path.join(snapshot, file);
+      expect(fs.existsSync(snapshotPath)).toBe(true);
+      if (path.extname(outputPath) === '.js') {
+        const outputContent = fs.readFileSync(outputPath).toString();
+        const snapshotContent = fs.readFileSync(snapshotPath).toString();
+        expect(outputContent).toEqual(snapshotContent);
+      }
+    }
+  });
+});
+
+describe('cli works with -i and -o args', () => {
+  const config = {
+    input: './source',
+    output: './src',
+    cssBundleName: 'stylex_bundle.css',
+  };
+
+  afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));
+
+  test('script start', (done) => {
+    const cmd =
+      'node ' +
+      path.resolve('../../lib/index.js ') +
+      `-i ${config.input} -o ${config.output}`;
+    const script = cp.exec(cmd);
+
+    script.addListener('error', (err) => {
+      throw new Error('failed to start StyleX CLI watch mode:', err);
+    });
+
+    script.addListener('close', () => {
       const outputDir = fs.readdirSync(config.output, { recursive: true });
       for (const file of outputDir) {
         const outputPath = path.join(config.output, file);
@@ -48,64 +87,30 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
           expect(outputContent).toEqual(snapshotContent);
         }
       }
-    } finally {
       fs.rmSync(config.output, { recursive: true, force: true });
-    }
+      done();
+    });
+
+    script.stderr.on('data', (data) => {
+      process.kill(script.pid);
+      fs.rmSync(config.output, { recursive: true, force: true });
+      throw new Error('failed to start StyleX CLI watch mode:', data);
+    });
   });
 });
 
 describe('individual testing of util functions', () => {
+  const config = {
+    input: './source',
+    output: './src',
+    cssBundleName: 'stylex_bundle.css',
+  };
   test('file to relative css path', () => {
-    const mockFileName = './source/pages/home/page.js';
-    const relativePath = files.getCssPathFromFilePath(mockFileName, config);
+    const mockFileName = './src/pages/home/page.js';
+    const relativePath = files.getRelativePath(
+      mockFileName,
+      path.join(config.output, config.cssBundleName),
+    );
     expect(relativePath).toEqual(`../../${config.cssBundleName}`);
-  });
-});
-
-describe('cli works with -i and -o args', () => {
-  test('script start', (done) => {
-    const cmd =
-      'node ' +
-      path.resolve('../../lib/index.js ') +
-      `-i ${config.input} -o ${config.output}`;
-    const script = cp.exec(cmd);
-
-    script.stdout.on('data', (data) => {
-      if (
-        data.includes(`[stylex] transforming ${path.resolve(config.input)}`)
-      ) {
-        done();
-        process.kill(script.pid);
-        fs.rmSync(config.output, { recursive: true, force: true });
-      }
-    });
-    script.stderr.on('data', (data) => {
-      process.kill(script.pid);
-      fs.rmSync(config.output, { recursive: true, force: true });
-      throw new Error('failed to start StyleX CLI watch mode:', data);
-    });
-  });
-});
-
-describe.skip('watch mode starts successfully', () => {
-  test('script start', (done) => {
-    const cmd =
-      'node ' +
-      path.resolve('../../lib/index.js ') +
-      `-i ${config.input} -o ${config.output}  -w`;
-    const script = cp.exec(cmd);
-
-    script.stdout.on('data', (data) => {
-      if (data.includes('Watching for style changes')) {
-        done();
-        process.kill(script.pid);
-        fs.rmSync(config.output, { recursive: true, force: true });
-      }
-    });
-    script.stderr.on('data', (data) => {
-      process.kill(script.pid);
-      fs.rmSync(config.output, { recursive: true, force: true });
-      throw new Error('failed to start StyleX CLI watch mode:', data);
-    });
   });
 });

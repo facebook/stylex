@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "@stylexjs/open-props": "0.5.1"
   },
   "devDependencies": {
     "@stylexjs/cli": "0.5.1",
