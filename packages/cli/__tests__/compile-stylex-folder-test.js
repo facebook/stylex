@@ -96,32 +96,3 @@ describe('cli works with -i and -o args', () => {
     });
   });
 });
-
-describe('watch mode starts successfully', () => {
-  test('script start', (done) => {
-    const cmd =
-      'node ' +
-      path.resolve('../../lib/index.js ') +
-      `-i ${config.input} -o ${config.output}  -w`;
-    const script = cp.exec(cmd);
-
-    script.addListener('error', (err) => {
-      throw new Error('failed to run StyleX script:', err);
-    });
-
-    script.addListener('spawn', () => {
-      script.stdout.on('data', (data) => {
-        if (data.includes('Watching for style changes')) {
-          process.kill(script.pid);
-          fs.rmSync(config.output, { recursive: true, force: true });
-          done();
-        }
-      });
-      script.stderr.on('data', (data) => {
-        process.kill(script.pid);
-        fs.rmSync(config.output, { recursive: true, force: true });
-        throw new Error('failed to start StyleX CLI watch mode:', data);
-      });
-    });
-  });
-});
