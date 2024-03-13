@@ -30,3 +30,16 @@ stylex -i [input_directory] -o [output_directory]
 (Default: `false`)
 
 `--config` | `-c`: Location of a .stylex.json file (Optional) (Default: `null`)
+
+### Config File
+
+You can specifiy a `.stylex.json` config file and pass it to the CLI.
+
+```json
+{
+  "input": "./source",
+  "output": "./src",
+  "cssBundleName": "stylex_bundle.css"
+  // mode: 'watch',
+}
+```
