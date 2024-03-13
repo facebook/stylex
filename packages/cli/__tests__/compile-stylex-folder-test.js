@@ -70,15 +70,21 @@ describe('cli works with -i and -o args', () => {
       `-i ${config.input} -o ${config.output}`;
     const script = cp.exec(cmd);
 
-    script.stdout.on('data', (data) => {
-      if (
-        data.includes(`[stylex] transforming ${path.resolve(config.input)}`)
-      ) {
-        done();
-        process.kill(script.pid);
-        fs.rmSync(config.output, { recursive: true, force: true });
+    script.addListener('close', () => {
+      const outputDir = fs.readdirSync(config.output, { recursive: true });
+      for (const file of outputDir) {
+        const outputPath = path.join(config.output, file);
+        const snapshotPath = path.join(snapshot, file);
+        expect(fs.existsSync(snapshotPath)).toBe(true);
+        if (path.extname(outputPath) === '.js') {
+          const outputContent = fs.readFileSync(outputPath).toString();
+          const snapshotContent = fs.readFileSync(snapshotPath).toString();
+          expect(outputContent).toEqual(snapshotContent);
+        }
       }
+      done();
     });
+
     script.stderr.on('data', (data) => {
       process.kill(script.pid);
       fs.rmSync(config.output, { recursive: true, force: true });
@@ -97,9 +103,9 @@ describe('watch mode starts successfully', () => {
 
     script.stdout.on('data', (data) => {
       if (data.includes('Watching for style changes')) {
-        done();
         process.kill(script.pid);
         fs.rmSync(config.output, { recursive: true, force: true });
+        done();
       }
     });
     script.stderr.on('data', (data) => {

@@ -105,7 +105,7 @@ export async function compileDirectory(
       // TODO: add support for also transforming a list of node_modules as well
       // compile node_modules then update imports of those modules to compiled version
       if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
-        console.log(`${chalk.green('[stylex]')} transforming ${config.input}`);
+        console.log(`${chalk.green('[stylex]')} transforming ${filePath}`);
         await compileFile(filePath, config);
       } else {
         copyFile(filePath, config);

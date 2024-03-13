@@ -33,7 +33,7 @@ stylex -i [input_directory] -o [output_directory]
 
 ### Config File
 
-You can specifiy a `.stylex.json` config file and pass it to the CLI.
+You can specify a `.stylex.json` config file and pass it to the CLI.
 
 ```json
 {
