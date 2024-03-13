@@ -115,6 +115,10 @@ function subscribe(
   client.on('subscription', function (resp: OnEvent) {
     if (resp.subscription !== 'jsFileChanged') return;
     // on file change, recompile the whole directory for now
-    compileDirectory(config);
+    compileDirectory(
+      config,
+      resp.files.filter((file) => file.exists).map((file) => file.name),
+      resp.files.filter((file) => !file.exists).map((file) => file.name),
+    );
   });
 }

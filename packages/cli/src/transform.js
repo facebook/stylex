@@ -25,8 +25,8 @@ import {
   writeCompiledJS,
 } from './files';
 import type { Config } from './config';
-
-type StyleXRules = Array<Rule>;
+import chalk from 'chalk';
+import fs from 'fs';
 
 export async function transformFile(
   filePath: string,
@@ -81,28 +81,40 @@ export async function compileRules(rules: Array<Rule>): Promise<string> {
   return styleXPlugin.processStylexRules(rules);
 }
 
-const allStyleXRules: StyleXRules = [];
+const allStyleXRules = new Map<string, Array<Rule>>();
 const compiledJS = new Map<string, string>();
 
-export async function compileDirectory(config: Config) {
+export async function compileDirectory(
+  config: Config,
+  filesToCompile?: Array<string>,
+  filesToDelete?: Array<string>,
+) {
+  console.log(allStyleXRules.keys());
+  if (filesToDelete) {
+    filesToDelete.forEach((file) => {
+      allStyleXRules.delete(file);
+      fs.rmSync(path.join(config.output, file));
+    });
+  }
   try {
     const cssBundlePath = path.join(config.output, config.cssBundleName);
-    const dirFiles = getInputDirectoryFiles(config.input);
+    const dirFiles = filesToCompile ?? getInputDirectoryFiles(config.input);
     writeCompiledCSS(cssBundlePath, '');
     for (const filePath of dirFiles) {
       const parsed = path.parse(filePath);
       // TODO: add support for also transforming a list of node_modules as well
       // compile node_modules then update imports of those modules to compiled version
       if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
-        console.log('transforming', filePath);
+        console.log(`${chalk.green('[stylex]')} transforming ${config.input}`);
         await compileFile(filePath, config);
       } else {
         copyFile(filePath, config);
       }
     }
-    const compiledCSS = await compileRules(allStyleXRules);
+    const compiledCSS = await compileRules(
+      Array.from(allStyleXRules.values()).flat(),
+    );
     writeCompiledCSS(cssBundlePath, compiledCSS);
-    console.log(`Successfully compiled ${config.input} with StyleX.`);
   } catch (err) {
     removeCompiledDir(config);
     throw err;
@@ -115,7 +127,7 @@ export async function compileFile(filePath: string, config: Config) {
   const [code, rules] = await transformFile(inputFilePath, config);
   if (code != null) {
     compiledJS.set(filePath, code);
-    allStyleXRules.push(...rules);
+    allStyleXRules.set(filePath, rules);
     writeCompiledJS(outputFilePath, code);
   }
 }
