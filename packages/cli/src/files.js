@@ -15,13 +15,6 @@ import errors from './errors';
 import { mkdirp } from 'mkdirp';
 import type { Config } from './config';
 
-// gets the directory for compiled styles (creates it if it doesn't exist)
-export function makeCompiledDir(config: Config): void {
-  if (!fs.existsSync(config.output)) {
-    mkdirp.sync(config.output);
-  }
-}
-
 export function getInputDirectoryFiles(inputDir: string): Array<string> {
   if (!fs.existsSync(inputDir)) {
     throw errors.dirNotFound;

@@ -13,7 +13,7 @@ import path from 'path';
 import chalk from 'chalk';
 import JSON5 from 'json5';
 
-import { isDir, makeCompiledDir } from './files';
+import { isDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
@@ -101,7 +101,6 @@ function start(config: Config) {
   if (config.mode === 'watch') {
     watch(config);
   } else {
-    makeCompiledDir(config);
     compileDirectory(config);
   }
 }
