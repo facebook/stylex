@@ -6,80 +6,30 @@
  *
  * @flow strict
  */
+
 import type { Rule } from '@stylexjs/babel-plugin';
 
 import path from 'path';
 import * as babel from '@babel/core';
-import * as t from '@babel/types';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import typescriptPlugin from '@babel/plugin-transform-typescript';
 import styleXPlugin from '@stylexjs/babel-plugin';
-import type { NodePath } from '@babel/traverse';
 import {
   copyFile,
-  getCssPathFromFilePath,
   getInputDirectoryFiles,
   isJSFile,
   writeCompiledCSS,
-  removeCompiledDir,
   writeCompiledJS,
+  getRelativePath,
 } from './files';
 import type { Config } from './config';
 import chalk from 'chalk';
 import fs from 'fs';
-
-export async function transformFile(
-  filePath: string,
-  config: Config,
-): Promise<[?string, Array<Rule>]> {
-  const relativeImport = getCssPathFromFilePath(filePath, config);
-
-  const importDeclaration = t.importDeclaration(
-    [],
-    t.stringLiteral(relativeImport),
-  );
-
-  const addImportPlugin = () => ({
-    visitor: {
-      Program: {
-        enter(path: NodePath<t.Program>) {
-          path.node.body.unshift(importDeclaration);
-        },
-      },
-    },
-  });
-
-  const result = await babel.transformFileAsync(filePath, {
-    babelrc: false,
-    plugins: [
-      jsxSyntaxPlugin,
-      [typescriptPlugin, { isTSX: true }],
-      // TODO: Add support for passing in a custom config file
-      [
-        styleXPlugin,
-        {
-          unstable_moduleResolution: {
-            type: 'commonJS',
-            rootDir: config.input,
-          },
-        },
-      ],
-      // typescriptPlugin to resolve aliases
-      addImportPlugin,
-    ],
-  });
-  if (result == null) {
-    throw new Error(`Failed to transform file ${filePath}`);
-  }
-  const { code, metadata } = result;
-
-  const styleXRules: Array<Rule> = (metadata as $FlowFixMe).stylex;
-  return [code, styleXRules];
-}
-
-export async function compileRules(rules: Array<Rule>): Promise<string> {
-  return styleXPlugin.processStylexRules(rules);
-}
+import {
+  createImportPlugin,
+  createModuleImportModifierPlugin,
+} from './plugins';
+import { clearModuleDir } from './modules';
 
 const allStyleXRules = new Map<string, Array<Rule>>();
 const compiledJS = new Map<string, string>();
@@ -97,37 +47,85 @@ export async function compileDirectory(
     });
   }
   try {
-    const cssBundlePath = path.join(config.output, config.cssBundleName);
     const dirFiles = filesToCompile ?? getInputDirectoryFiles(config.input);
-    writeCompiledCSS(cssBundlePath, '');
     for (const filePath of dirFiles) {
       const parsed = path.parse(filePath);
-      // TODO: add support for also transforming a list of node_modules as well
-      // compile node_modules then update imports of those modules to compiled version
       if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
-        console.log(`${chalk.green('[stylex]')} transforming ${config.input}`);
+        console.log(
+          `${chalk.green('[stylex]')} transforming ${path.join(config.input, filePath)}`,
+        );
         await compileFile(filePath, config);
       } else {
-        copyFile(filePath, config);
+        const src = path.join(config.input, filePath);
+        const dst = path.join(config.output, filePath);
+        copyFile(src, dst);
       }
     }
-    const compiledCSS = await compileRules(
+    const compiledCSS = await styleXPlugin.processStylexRules(
       Array.from(allStyleXRules.values()).flat(),
     );
+
+    const cssBundlePath = path.join(config.output, config.styleXBundleName);
     writeCompiledCSS(cssBundlePath, compiledCSS);
   } catch (err) {
-    removeCompiledDir(config);
+    fs.rmSync(config.output, { recursive: true, force: true });
+    clearModuleDir(config);
     throw err;
   }
 }
 
-export async function compileFile(filePath: string, config: Config) {
+export async function compileFile(
+  filePath: string,
+  config: Config,
+): Promise<?string> {
   const inputFilePath = path.join(config.input, filePath);
   const outputFilePath = path.join(config.output, filePath);
-  const [code, rules] = await transformFile(inputFilePath, config);
+
+  const [code, rules] = await transformFile(
+    inputFilePath,
+    outputFilePath,
+    config,
+  );
   if (code != null) {
     compiledJS.set(filePath, code);
     allStyleXRules.set(filePath, rules);
     writeCompiledJS(outputFilePath, code);
   }
+}
+
+export async function transformFile(
+  inputFilePath: string,
+  outputFilePath: string,
+  config: Config,
+): Promise<[?string, Array<Rule>]> {
+  const relativeImport = getRelativePath(
+    outputFilePath,
+    path.join(config.output, config.styleXBundleName),
+  );
+  const result = await babel.transformFileAsync(inputFilePath, {
+    babelrc: false,
+    plugins: [
+      createModuleImportModifierPlugin(outputFilePath, config),
+      jsxSyntaxPlugin,
+      [typescriptPlugin, { isTSX: true }],
+      [
+        styleXPlugin,
+        {
+          unstable_moduleResolution: {
+            type: 'commonJS',
+            // This assumes that your input and output are at the same level
+            rootDir: path.parse(config.output).dir,
+          },
+        },
+      ],
+      createImportPlugin(relativeImport),
+    ],
+  });
+  if (result == null) {
+    throw new Error(`Failed to transform file ${inputFilePath}`);
+  }
+  const { code, metadata } = result;
+
+  const styleXRules: Array<Rule> = (metadata as $FlowFixMe).stylex;
+  return [code, styleXRules];
 }

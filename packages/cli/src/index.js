@@ -8,6 +8,7 @@
  * @flow strict
  */
 
+import type { Argv } from 'yargs';
 import yargs from 'yargs';
 import path from 'path';
 import chalk from 'chalk';
@@ -17,16 +18,10 @@ import { isDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
-import watch from './watch';
+import watcher from './watcher';
 import fs from 'fs';
-
-export type Config = {
-  input: string,
-  output: string,
-  cssBundleName: string,
-  modules?: $ReadOnlyArray<string>,
-  mode?: 'watch',
-};
+import { clearModuleDir, fetchModule } from './modules';
+import type { Config } from './config';
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -49,60 +44,58 @@ console.log(
 
 const usage =
   '\n Usage: provide a directory to stylex in order to have it compiled.';
-const args = yargs(process.argv)
+const args: Argv = yargs(process.argv)
   .scriptName('stylex')
   .usage(usage)
+  // $FlowFixMe[incompatible-call] Flow typings for Yargs doesn't infer options type, it requires {[key: string]: Options}, but Typescript can infer options<MyOptions>. I'd rather FlowFixMe than cast
   .options(options)
   .help(true)
+  .config(
+    'config',
+    'path of a .json (or .json5) config file',
+    (configPath: string) => {
+      return JSON5.parse(fs.readFileSync(configPath));
+    },
+  )
   .parseSync();
 
-const inputDir: string = args.input;
-const outputDir: string = args.output;
-const watchFiles: boolean = args.watch;
-const configFile: string = args.config;
+const absolutePath = process.cwd();
 
-const cwd = process.cwd();
+const input: string = path.normalize(path.join(absolutePath, args.input));
+const output: string = path.normalize(path.join(absolutePath, args.output));
+const watch: boolean = args.watch;
+const modules: Array<string> = args.modules;
+const styleXBundleName: string = args.styleXBundleName;
 
-let config = {
-  input: path.normalize(path.join(cwd, inputDir)),
-  output: path.normalize(path.join(cwd, outputDir != null ? outputDir : 'src')),
-  cssBundleName: 'stylex_bundle.css',
-  mode: watchFiles ? 'watch' : undefined,
+const config: Config = {
+  input,
+  output,
+  modules,
+  watch,
+  styleXBundleName,
 };
+styleXCompile(config);
 
-if (configFile) {
-  const jsonConfig = fs.readFileSync(configFile);
-  const parsed: Config = JSON5.parse(jsonConfig);
-  // validate parsed input?
-  config = {
-    ...config,
-    input:
-      config.input ??
-      path.normalize(path.join(path.dirname(configFile), parsed.input)),
-    output:
-      config.output ??
-      path.normalize(path.join(path.dirname(configFile), parsed.output)),
-    cssBundleName: config.cssBundleName ?? parsed.cssBundleName,
-    mode: config.mode ?? parsed.mode,
-  };
-}
-start(config);
-
-// loading config automatically https://github.com/unjs/c12
-// don't start with this
-
-// use this to load the json
-// https://json5.org/
-
-// 1. json config
-
-function start(config: Config) {
+async function styleXCompile(config: Config) {
   if (!isDir(config.input)) {
     throw errors.dirNotFound;
   }
-  if (config.mode === 'watch') {
-    watch(config);
+  let addedModules = false;
+  if (config.modules.length > 0)
+    // copy any node modules to also compile to the input folder first, and then compile them directly
+    // need to do this in the output directory. We should be able to do output now because we figured out the issue with babel.
+    clearModuleDir(config);
+  for (const moduleName of config.modules) {
+    fetchModule(moduleName, config);
+    addedModules = true;
+  }
+
+  if (config.watch) {
+    watcher(config);
   } else {
-    compileDirectory(config);
+    await compileDirectory(config);
+    if (addedModules) {
+      clearModuleDir(config);
+    }
   }
 }
