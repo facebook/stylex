@@ -70,6 +70,10 @@ describe('cli works with -i and -o args', () => {
       `-i ${config.input} -o ${config.output}`;
     const script = cp.exec(cmd);
 
+    script.addListener('error', (err) => {
+      throw new Error('failed to start StyleX CLI watch mode:', err);
+    });
+
     script.addListener('close', () => {
       const outputDir = fs.readdirSync(config.output, { recursive: true });
       for (const file of outputDir) {
@@ -101,17 +105,23 @@ describe('watch mode starts successfully', () => {
       `-i ${config.input} -o ${config.output}  -w`;
     const script = cp.exec(cmd);
 
-    script.stdout.on('data', (data) => {
-      if (data.includes('Watching for style changes')) {
+    script.addListener('error', (err) => {
+      throw new Error('failed to run StyleX script:', err);
+    });
+
+    script.addListener('spawn', () => {
+      script.stdout.on('data', (data) => {
+        if (data.includes('Watching for style changes')) {
+          process.kill(script.pid);
+          fs.rmSync(config.output, { recursive: true, force: true });
+          done();
+        }
+      });
+      script.stderr.on('data', (data) => {
         process.kill(script.pid);
         fs.rmSync(config.output, { recursive: true, force: true });
-        done();
-      }
-    });
-    script.stderr.on('data', (data) => {
-      process.kill(script.pid);
-      fs.rmSync(config.output, { recursive: true, force: true });
-      throw new Error('failed to start StyleX CLI watch mode:', data);
+        throw new Error('failed to start StyleX CLI watch mode:', data);
+      });
     });
   });
 });
