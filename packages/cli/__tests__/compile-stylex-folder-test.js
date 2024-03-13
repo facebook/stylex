@@ -74,9 +74,9 @@ describe('cli works with -i and -o args', () => {
       if (
         data.includes(`[stylex] transforming ${path.resolve(config.input)}`)
       ) {
+        done();
         process.kill(script.pid);
         fs.rmSync(config.output, { recursive: true, force: true });
-        done();
       }
     });
     script.stderr.on('data', (data) => {
@@ -97,9 +97,9 @@ describe('watch mode starts successfully', () => {
 
     script.stdout.on('data', (data) => {
       if (data.includes('Watching for style changes')) {
+        done();
         process.kill(script.pid);
         fs.rmSync(config.output, { recursive: true, force: true });
-        done();
       }
     });
     script.stderr.on('data', (data) => {
