@@ -72,9 +72,7 @@ describe('cli works with -i and -o args', () => {
 
     script.stdout.on('data', (data) => {
       if (
-        data.includes(
-          `Successfully compiled ${path.resolve(config.input)} with StyleX.`,
-        )
+        data.includes(`[stylex] transforming ${path.resolve(config.input)}`)
       ) {
         process.kill(script.pid);
         fs.rmSync(config.output, { recursive: true, force: true });
