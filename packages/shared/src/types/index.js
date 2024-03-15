@@ -53,38 +53,31 @@ type CSSSyntax =
 
 type CSSSyntaxType = CSSSyntax;
 
-export const isCSSType = (value: mixed): value is CSSType<string | number> => {
-  return (
-    value instanceof Angle ||
-    value instanceof Color ||
-    value instanceof Url ||
-    value instanceof Image ||
-    value instanceof Integer ||
-    value instanceof LengthPercentage ||
-    value instanceof Length ||
-    value instanceof Percentage ||
-    value instanceof Num ||
-    value instanceof Resolution ||
-    value instanceof Time ||
-    value instanceof TransformFunction ||
-    value instanceof TransformList
-  );
-};
-
+class BaseCSSType {
+  +value: ValueWithDefault;
+  +syntax: CSSSyntaxType;
+  constructor(value: ValueWithDefault) {
+    this.value = value;
+  }
+}
 export interface CSSType<+_T: string | number = string | number> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType;
 }
 
+export const isCSSType = (value: mixed): value is CSSType<string | number> => {
+  return (
+    value instanceof BaseCSSType &&
+    value.value != null &&
+    typeof value.syntax === 'string'
+  );
+};
+
 type AnguleValue = string;
-export class Angle<+T: AnguleValue> implements CSSType<T> {
+export class Angle<+T: AnguleValue> extends BaseCSSType implements CSSType<T> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<angle>';
   static +syntax: CSSSyntaxType = '<angle>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: AnguleValue = AnguleValue>(
     value: ValueWithDefault,
@@ -95,13 +88,9 @@ export class Angle<+T: AnguleValue> implements CSSType<T> {
 export const angle = Angle.create;
 
 type ColorValue = string;
-export class Color<+T: ColorValue> implements CSSType<T> {
+export class Color<+T: ColorValue> extends BaseCSSType implements CSSType<T> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<color>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: ColorValue = ColorValue>(value: ValueWithDefault): Color<T> {
     return new Color(value);
@@ -111,13 +100,9 @@ export const color = Color.create;
 
 type URLValue = string;
 
-export class Url<+T: URLValue> implements CSSType<T> {
+export class Url<+T: URLValue> extends BaseCSSType implements CSSType<T> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<url>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: URLValue = URLValue>(value: ValueWithDefault): Url<T> {
     return new Url(value);
@@ -144,13 +129,12 @@ export const image = Image.create;
 
 type IntegerValue = number;
 
-export class Integer<+T: IntegerValue> implements CSSType<T> {
+export class Integer<+T: IntegerValue>
+  extends BaseCSSType
+  implements CSSType<T>
+{
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<integer>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: IntegerValue = IntegerValue>(value: T): Integer<T> {
     return new Integer(convertNumberToStringUsing(String, '0')(value));
@@ -161,14 +145,11 @@ export const integer = Integer.create;
 type LengthPercentageValue = string;
 
 export class LengthPercentage<+_T: LengthPercentageValue>
+  extends BaseCSSType
   implements CSSType<string>
 {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<length-percentage>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static createLength<_T: LengthPercentageValue | number>(
     value: ValueWithDefault,
@@ -220,13 +201,9 @@ export const percentage = Percentage.create;
 
 type NumberValue = number;
 
-export class Num<+T: NumberValue> implements CSSType<T> {
+export class Num<+T: NumberValue> extends BaseCSSType implements CSSType<T> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<number>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: NumberValue = NumberValue>(
     value: NestedWithNumbers,
@@ -238,13 +215,12 @@ export const number = Num.create;
 
 type ResolutionValue = string | 0;
 
-export class Resolution<+T: ResolutionValue> implements CSSType<T> {
+export class Resolution<+T: ResolutionValue>
+  extends BaseCSSType
+  implements CSSType<T>
+{
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<resolution>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: ResolutionValue = ResolutionValue>(
     value: ValueWithDefault,
@@ -256,13 +232,9 @@ export const resolution = Resolution.create;
 
 type TimeValue = string | 0;
 
-export class Time<+T: TimeValue> implements CSSType<T> {
+export class Time<+T: TimeValue> extends BaseCSSType implements CSSType<T> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<time>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: TimeValue = TimeValue>(value: ValueWithDefault): Time<T> {
     return new Time(value);
@@ -273,14 +245,11 @@ export const time = Time.create;
 type TransformFunctionValue = string;
 
 export class TransformFunction<+T: TransformFunctionValue>
+  extends BaseCSSType
   implements CSSType<T>
 {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<transform-function>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: TransformFunctionValue = TransformFunctionValue>(
     value: ValueWithDefault,
@@ -292,13 +261,12 @@ export const transformFunction = TransformFunction.create;
 
 type TransformListValue = string;
 
-export class TransformList<T: TransformListValue> implements CSSType<T> {
+export class TransformList<T: TransformListValue>
+  extends BaseCSSType
+  implements CSSType<T>
+{
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<transform-list>';
-
-  constructor(value: ValueWithDefault) {
-    this.value = value;
-  }
 
   static create<T: TransformListValue = TransformListValue>(
     value: ValueWithDefault,
