@@ -14,6 +14,7 @@ import { createTheme as stylexCreateTheme, messages } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import * as pathUtils from '../babel-path-utils';
+import path from 'path';
 
 /// This function looks for `stylex.createTheme` calls and transforms them.
 //. 1. It finds the first two arguments to `stylex.createTheme` and validates those.
@@ -48,14 +49,11 @@ export default function transformStyleXCreateTheme(
     if (!pathUtils.isVariableDeclarator(variableDeclaratorPath)) {
       return;
     }
-    const varNamePath = variableDeclaratorPath.get('id');
-    let varName = 'UnknownVar';
-    if (varNamePath.isIdentifier()) {
-      varName = varNamePath.node.name;
+    const id = variableDeclaratorPath.get('id');
+    if (!pathUtils.isIdentifier(id)) {
+      return;
     }
-    const fileName = state.fileNameForHashing ?? 'UnknownFile';
-
-    const debugName = `${fileName}__${varName}`;
+    const variableName = id.node.name;
 
     const args: $ReadOnlyArray<NodePath<>> =
       callExpressionPath.get('arguments');
@@ -98,8 +96,22 @@ export default function transformStyleXCreateTheme(
       state.options,
     );
 
-    if (state.isDev) {
-      overridesObj = { ...overridesObj, [debugName]: debugName };
+    if (state.isTest) {
+      const fileName = state.filename ?? 'UnknownFile';
+      const basename = path.basename(fileName).split('.')[0];
+      const devClassName = `${basename}__${variableName}`;
+      overridesObj = {
+        [devClassName]: devClassName,
+        $$css: true,
+      };
+    } else if (state.isDev) {
+      const fileName = state.filename ?? 'UnknownFile';
+      const basename = path.basename(fileName).split('.')[0];
+      const devClassName = `${basename}__${variableName}`;
+      overridesObj = {
+        [devClassName]: devClassName,
+        ...overridesObj,
+      };
     }
 
     // This should be a transformed variables object
