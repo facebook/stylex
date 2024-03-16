@@ -127,9 +127,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xfmksyk"
         };"
       `);
       expect(output1).toEqual(output2);
@@ -181,9 +181,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -244,9 +244,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -316,15 +316,15 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xfmksyk"
         };
         _inject2(".xpsjjyf{--xgck17p:white;--xpegid5:black;--xrqfjmn:0px;}", 0.8);
         const buttonThemeMonochromatic = {
+          TestTheme__buttonThemeMonochromatic: "TestTheme__buttonThemeMonochromatic",
           $$css: true,
-          x568ih9: "xpsjjyf",
-          "TestTheme.stylex.js__buttonThemeMonochromatic": "TestTheme.stylex.js__buttonThemeMonochromatic"
+          x568ih9: "xpsjjyf"
         };"
       `);
     });
@@ -367,9 +367,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xrpt93l{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xrpt93l{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xrpt93l",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xrpt93l"
         };"
       `);
     });
@@ -412,9 +412,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
@@ -457,9 +457,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.x1u43pop{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.x1u43pop{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "x1u43pop",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "x1u43pop"
         };"
       `);
     });
@@ -502,9 +502,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.x1ubmxd4{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.x1ubmxd4{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "x1ubmxd4",
-          "TestTheme.stylex.js__buttonThemePositive": "TestTheme.stylex.js__buttonThemePositive"
+          x568ih9: "x1ubmxd4"
         };"
       `);
     });
@@ -540,9 +540,9 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}", 0.9);
         _inject2("@media print{.xfmksyk{--xgck17p:transparent;}}", 0.9);
         const buttonThemePositive = {
+          NestedTheme__buttonThemePositive: "NestedTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk",
-          "utils/NestedTheme.stylex.js__buttonThemePositive": "utils/NestedTheme.stylex.js__buttonThemePositive"
+          x568ih9: "xfmksyk"
         };"
       `);
     });
