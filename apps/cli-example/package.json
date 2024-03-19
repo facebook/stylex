@@ -3,7 +3,7 @@
   "version": "0.5.1",
   "private": true,
   "scripts": {
-    "build": "stylex -c .stylex.json5"
+    "transform": "stylex -c .stylex.json5"
   },
   "dependencies": {
     "react": "^18",
