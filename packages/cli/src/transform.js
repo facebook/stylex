@@ -102,10 +102,10 @@ export async function compileDirectory(
     writeCompiledCSS(cssBundlePath, '');
     for (const filePath of dirFiles) {
       const parsed = path.parse(filePath);
-      // TODO: add support for also transforming a list of node_modules as well
-      // compile node_modules then update imports of those modules to compiled version
       if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
-        console.log(`${chalk.green('[stylex]')} transforming ${filePath}`);
+        console.log(
+          `${chalk.green('[stylex]')} transforming ${path.join(config.input, filePath)}`,
+        );
         await compileFile(filePath, config);
       } else {
         copyFile(filePath, config);
@@ -123,7 +123,10 @@ export async function compileDirectory(
 
 export async function compileFile(filePath: string, config: Config) {
   const inputFilePath = path.join(config.input, filePath);
-  const outputFilePath = path.join(config.output, filePath);
+  const outputFilePath = path.join(
+    config.moduleOutput ?? config.output,
+    filePath,
+  );
   const [code, rules] = await transformFile(inputFilePath, config);
   if (code != null) {
     compiledJS.set(filePath, code);

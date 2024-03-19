@@ -1,7 +1,7 @@
 {
   input: './source',
   output: './src',
-  // modules: [],
+  modules: ['@stylexjs/open-props'],
   cssBundleName: 'stylex_bundle.css',
   // mode: 'watch',
 }

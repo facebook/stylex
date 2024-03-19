@@ -19,14 +19,8 @@ import options from './options';
 import errors from './errors';
 import watch from './watch';
 import fs from 'fs';
-
-export type Config = {
-  input: string,
-  output: string,
-  cssBundleName: string,
-  modules?: $ReadOnlyArray<string>,
-  mode?: 'watch',
-};
+import { findModuleDir } from './modules';
+import type { Config } from './config';
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -71,6 +65,7 @@ if (configFile) {
     input: path.normalize(path.join(absolutePath, parsed.input)),
     output: path.normalize(path.join(absolutePath, parsed.output)),
     cssBundleName: parsed.cssBundleName,
+    modules: parsed.modules,
     mode: parsed.mode,
   };
   start(config);
@@ -86,21 +81,25 @@ if (configFile) {
   start(config);
 }
 
-// loading config automatically https://github.com/unjs/c12
-// don't start with this
-
-// use this to load the json
-// https://json5.org/
-
-// 1. json config
-
-function start(config: Config) {
+async function start(config: Config) {
   if (!isDir(config.input)) {
     throw errors.dirNotFound;
+  }
+  const modules = config.modules;
+  if (modules !== undefined) {
+    for (const moduleName of modules) {
+      const moduleDir = findModuleDir(moduleName, config);
+      console.log(moduleDir);
+      await compileDirectory({
+        ...config,
+        input: moduleDir,
+        moduleOutput: path.join(config.output, 'node_modules', moduleName),
+      });
+    }
   }
   if (config.mode === 'watch') {
     watch(config);
   } else {
-    compileDirectory(config);
+    await compileDirectory(config);
   }
 }

@@ -28,6 +28,9 @@ export function getInputDirectoryFiles(inputDir: string): Array<string> {
 }
 
 export function writeCompiledCSS(filePath: string, compiledCSS: string): void {
+  if (fs.existsSync(filePath)) {
+    fs.rmSync(filePath);
+  }
   mkdirp.sync(path.parse(filePath).dir);
   fs.writeFileSync(filePath, compiledCSS);
 }
@@ -47,7 +50,7 @@ export function writeCompiledJS(filePath: string, code: string): void {
 
 export function copyFile(filePath: string, config: Config) {
   const src = path.join(config.input, filePath);
-  const dst = path.join(config.output, filePath);
+  const dst = path.join(config.moduleOutput ?? config.output, filePath);
   mkdirp.sync(path.parse(dst).dir);
   fs.copyFileSync(src, dst);
 }

@@ -86,6 +86,7 @@ describe('cli works with -i and -o args', () => {
           expect(outputContent).toEqual(snapshotContent);
         }
       }
+      fs.rmSync(config.output, { recursive: true, force: true });
       done();
     });
 
