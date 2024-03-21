@@ -15,14 +15,27 @@ import type {
   StyleX$DefineVars,
   StyleX$CreateTheme,
   StyleXArray,
-  FlattenTokens,
   CompiledStyles,
   InlineStyles,
   StyleXClassNameFor,
   MapNamespaces,
-  VarGroup,
-  StyleXVar,
 } from './StyleXTypes';
+import type {
+  ValueWithDefault,
+  Angle,
+  Color,
+  Url,
+  Image,
+  Integer,
+  LengthPercentage,
+  Length,
+  Percentage,
+  Num,
+  Resolution,
+  Time,
+  TransformFunction,
+  TransformList,
+} from './VarTypes';
 
 export type {
   VarGroup,
@@ -112,16 +125,7 @@ function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 }
 
-function stylexDefineVars<
-  DefaultTokens: {
-    +[string]:
-      | number
-      | string
-      | { +default: number | string, +[string]: number | string }
-      | StyleXVar<number | string>,
-  },
-  ID: string = string,
->(styles: DefaultTokens): VarGroup<FlattenTokens<DefaultTokens>, ID> {
+function stylexDefineVars(styles: any) {
   if (__implementations.defineVars) {
     return __implementations.defineVars(styles);
   }
@@ -164,79 +168,58 @@ export const createTheme: StyleX$CreateTheme = stylexCreateTheme;
 
 export const include: Stylex$Include = stylexInclude;
 
-type ValueWithDefault<+T> =
-  | T
-  | $ReadOnly<{
-      +default: T,
-      +[string]: ValueWithDefault<T>,
-    }>;
-
-type CSSSyntax =
-  | '*'
-  | '<length>'
-  | '<number>'
-  | '<percentage>'
-  | '<length-percentage>'
-  | '<color>'
-  | '<image>'
-  | '<url>'
-  | '<integer>'
-  | '<angle>'
-  | '<time>'
-  | '<resolution>'
-  | '<transform-function>'
-  | '<custom-ident>'
-  | '<transform-list>';
-
-type CSSSyntaxType = CSSSyntax | $ReadOnlyArray<CSSSyntax>;
-
-interface ICSSType<+T: string | number> {
-  +value: ValueWithDefault<T>;
-  +syntax: CSSSyntaxType;
-}
-
 export const types = {
-  angle: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  angle: <T: string | 0 = string | 0>(_v: ValueWithDefault<T>): Angle<T> => {
     throw errorForType('angle');
   },
-  color: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  color: <T: string = string>(_v: ValueWithDefault<T>): Color<T> => {
     throw errorForType('color');
   },
-  url: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  url: <T: string = string>(_v: ValueWithDefault<T>): Url<T> => {
     throw errorForType('url');
   },
-  image: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  image: <T: string = string>(_v: ValueWithDefault<T>): Image<T> => {
     throw errorForType('image');
   },
-  integer: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  integer: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Integer<T> => {
     throw errorForType('integer');
   },
-  lengthPercentage: <T: number | string>(
+  lengthPercentage: <T: number | string = number | string>(
     _v: ValueWithDefault<T>,
-  ): ICSSType<T> => {
+  ): LengthPercentage<T> => {
     throw errorForType('lengthPercentage');
   },
-  length: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  length: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Length<T> => {
     throw errorForType('length');
   },
-  percentage: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  percentage: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Percentage<T> => {
     throw errorForType('percentage');
   },
-  number: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  number: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Num<T> => {
     throw errorForType('number');
   },
-  resolution: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  resolution: <T: string = string>(_v: ValueWithDefault<T>): Resolution<T> => {
     throw errorForType('resolution');
   },
-  time: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  time: <T: string | 0 = string | 0>(_v: ValueWithDefault<T>): Time<T> => {
     throw errorForType('time');
   },
-  transformFunction: <T: number | string>(
+  transformFunction: <T: string = string>(
     _v: ValueWithDefault<T>,
-  ): ICSSType<T> => {
+  ): TransformFunction<T> => {
     throw errorForType('transformFunction');
   },
-  transformList: <T: number | string>(_v: ValueWithDefault<T>): ICSSType<T> => {
+  transformList: <T: string = string>(
+    _v: ValueWithDefault<T>,
+  ): TransformList<T> => {
     throw errorForType('transformList');
   },
 };

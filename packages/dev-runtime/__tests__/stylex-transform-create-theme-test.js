@@ -55,34 +55,34 @@ describe('Development Plugin Transformation', () => {
       ).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "TestTheme.stylex.js//buttonTheme": "xfmksyk",
+          "TestTheme.stylex.js//buttonTheme": "xtrlmmh",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
         [
           [
-            "xfmksyk",
+            "xtrlmmh",
             {
-              "ltr": ".xfmksyk{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+              "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
               "rtl": undefined,
             },
-            0.8,
+            0.5,
           ],
           [
-            "xfmksyk-1lveb7",
+            "xtrlmmh-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){.xfmksyk{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
+              "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
               "rtl": undefined,
             },
-            0.9,
+            0.6,
           ],
           [
-            "xfmksyk-bdddrq",
+            "xtrlmmh-bdddrq",
             {
-              "ltr": "@media print{.xfmksyk{--xgck17p:transparent;}}",
+              "ltr": "@media print{.xtrlmmh{--xgck17p:transparent;}}",
               "rtl": undefined,
             },
-            0.9,
+            0.6,
           ],
         ]
       `);

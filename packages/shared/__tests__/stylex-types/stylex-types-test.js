@@ -35,7 +35,7 @@ describe('stylex-types-test', () => {
     test('integer', () => {
       const value = 1;
       const obj = t.Integer.create(value);
-      expect(obj.value).toEqual(value);
+      expect(obj.value).toEqual('1');
       expect(obj.syntax).toEqual('<integer>');
     });
 
@@ -64,14 +64,14 @@ describe('stylex-types-test', () => {
     test('num', () => {
       const value = 1;
       const obj = t.Num.create(value);
-      expect(obj.value).toEqual(value);
+      expect(obj.value).toEqual('1');
       expect(obj.syntax).toEqual('<number>');
     });
 
     test('integer', () => {
       const value = 1;
       const obj = t.Integer.create(value);
-      expect(obj.value).toEqual(value);
+      expect(obj.value).toEqual('1');
       expect(obj.syntax).toEqual('<integer>');
     });
 
@@ -134,7 +134,7 @@ describe('stylex-types-test', () => {
     test('integer', () => {
       const value = 1;
       const obj = t.integer(value);
-      expect(obj.value).toEqual(value);
+      expect(obj.value).toEqual('1');
       expect(obj.syntax).toEqual('<integer>');
     });
 
@@ -163,14 +163,14 @@ describe('stylex-types-test', () => {
     test('num', () => {
       const value = 1;
       const obj = t.number(value);
-      expect(obj.value).toEqual(value);
+      expect(obj.value).toEqual('1');
       expect(obj.syntax).toEqual('<number>');
     });
 
     test('integer', () => {
       const value = 1;
       const obj = t.integer(value);
-      expect(obj.value).toEqual(value);
+      expect(obj.value).toEqual('1');
       expect(obj.syntax).toEqual('<integer>');
     });
 

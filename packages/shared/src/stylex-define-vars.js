@@ -8,14 +8,18 @@
  */
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
+import type { VarsConfig, VarsConfigValue } from './stylex-vars-utils';
 
 import createHash from './hash';
-import { objEntries, objMap } from './utils/object-utils';
+import { objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
-
-type VarsConfig = $ReadOnly<{
-  [string]: string | $ReadOnly<{ default: string, [string]: string }>,
-}>;
+import {
+  collectVarsByAtRule,
+  getDefaultValue,
+  priorityForAtRule,
+  wrapWithAtRules,
+} from './stylex-vars-utils';
+import { type CSSType, isCSSType } from './types';
 
 type VarsObject<Vars: VarsConfig> = $ReadOnly<{
   ...$ObjMapConst<Vars, string>,
@@ -35,64 +39,75 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 
   const themeNameHash = classNamePrefix + createHash(themeName);
 
+  const typedVariables: {
+    [string]: $ReadOnly<{
+      initialValue: ?string,
+      syntax: string,
+    }>,
+  } = {};
+
   const variablesMap = objMap(variables, (value, key) => {
     // Created hashed variable names with fileName//themeName//key
     const nameHash = classNamePrefix + createHash(`${themeName}.${key}`);
+    if (isCSSType(value)) {
+      const v: CSSType<> = value;
+      typedVariables[nameHash] = {
+        initialValue: getDefaultValue(v.value),
+        syntax: v.syntax,
+      };
+      return { nameHash, value: v.value };
+    }
     return { nameHash, value };
   });
 
-  const themeVariablesObject = objMap(variablesMap, ({ nameHash }) => {
-    return `var(--${nameHash})`;
-  });
+  const themeVariablesObject = objMap(
+    variablesMap,
+    ({ nameHash }) => `var(--${nameHash})`,
+  );
 
   const injectableStyles = constructCssVariablesString(
     variablesMap,
     themeNameHash,
   );
 
+  const injectableTypes: { +[string]: InjectableStyle } = objMap(
+    typedVariables,
+    ({ initialValue: iv, syntax }, nameHash) => ({
+      ltr: `@property --${nameHash} { syntax: "${syntax}"; inherits: true;${iv != null ? ` initial-value: ${iv}` : ''} }`,
+      rtl: null,
+      priority: 0,
+    }),
+  );
+
   return [
     { ...themeVariablesObject, __themeName__: themeNameHash },
-    injectableStyles,
+    { ...injectableTypes, ...injectableStyles },
   ];
 }
 
 function constructCssVariablesString(
-  variables: { +[string]: { +nameHash: string, +value: VarsConfig[string] } },
+  variables: { +[string]: { +nameHash: string, +value: VarsConfigValue } },
   themeNameHash: string,
 ): { [string]: InjectableStyle } {
-  const ruleByAtRule: { [string]: Array<string> } = {};
+  const rulesByAtRule: { [string]: Array<string> } = {};
 
-  for (const [key, { nameHash, value }] of objEntries(variables)) {
-    if (value !== null && typeof value === 'object') {
-      if (value.default === undefined) {
-        throw new Error(
-          'Default value is not defined for ' + key + ' variable.',
-        );
-      }
-      const v = value;
-      for (const [key, value] of objEntries(v)) {
-        ruleByAtRule[key] ??= [];
-        ruleByAtRule[key].push(`--${nameHash}:${value};`);
-      }
-    } else {
-      ruleByAtRule.default ??= [];
-      ruleByAtRule.default.push(`--${nameHash}:${value};`);
-    }
+  for (const [key, { nameHash, value }] of Object.entries(variables)) {
+    collectVarsByAtRule(key, { nameHash, value }, rulesByAtRule);
   }
 
   const result: { [string]: InjectableStyle } = {};
-  for (const [key, value] of objEntries(ruleByAtRule)) {
-    const suffix = key === 'default' ? '' : `-${createHash(key)}`;
+  for (const [atRule, value] of Object.entries(rulesByAtRule)) {
+    const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
     let ltr = `:root{${value.join('')}}`;
-    if (key !== 'default') {
-      ltr = `${key}{${ltr}}`;
+    if (atRule !== 'default') {
+      ltr = wrapWithAtRules(ltr, atRule);
     }
 
     result[themeNameHash + suffix] = {
       ltr,
       rtl: null,
-      priority: key === 'default' ? 0 : 0.1,
+      priority: priorityForAtRule(atRule) * 0.1,
     };
   }
 

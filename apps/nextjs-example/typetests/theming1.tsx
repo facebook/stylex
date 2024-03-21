@@ -18,7 +18,7 @@ import type {
   CompiledStyles,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 
-const DARK = '@media (prefers-color-scheme: dark)';
+const DARK = '@media (prefers-color-scheme: dark)' as const;
 
 const buttonTokens = stylex.defineVars({
   bgColor: 'cyan',
@@ -158,4 +158,88 @@ const varsC = stylex.defineVars({
 // But the override should still be a string.
 const themeC = stylex.createTheme(varsC, {
   varC1: 'green',
+});
+
+const typedTokens = stylex.defineVars({
+  bgColor: stylex.types.color<string>({
+    default: 'cyan',
+    [DARK]: 'navy',
+  }),
+  cornerRadius: stylex.types.length<0 | string>({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number<number>(0.5),
+  shortAnimation: stylex.types.time<string>('0.5s'),
+});
+
+const correctlyTypedTheme = stylex.createTheme(typedTokens, {
+  bgColor: stylex.types.color('red'),
+  cornerRadius: stylex.types.length('4px'),
+  translucent: stylex.types.number(0.5),
+  shortAnimation: stylex.types.time('0.5s'),
+});
+
+const correctlyTypedThemeNested = stylex.createTheme(typedTokens, {
+  bgColor: stylex.types.color({
+    default: 'red',
+    [DARK]: 'hotpink',
+  }),
+  cornerRadius: stylex.types.length({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
+});
+
+const wronglyTypedTheme1 = stylex.createTheme(typedTokens, {
+  bgColor: {
+    // @ts-expect-error - You can apply themes, not varGroups
+    default: 'red',
+    // @ts-expect-error - You can apply themes, not varGroups
+    [DARK]: 'hotpink',
+  },
+  cornerRadius: stylex.types.length({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
+});
+
+const wronglyTypedTheme2 = stylex.createTheme(typedTokens, {
+  bgColor: {
+    // @ts-expect-error - You can apply themes, not varGroups
+    default: 'red',
+    // @ts-expect-error - You can apply themes, not varGroups
+    [DARK]: 'hotpink',
+  },
+  cornerRadius: stylex.types.length({
+    default: '4px',
+    '@media (max-width: 600px)': 0,
+  }),
+  translucent: stylex.types.number({
+    default: 0.5,
+    [DARK]: 0.8,
+  }),
+  shortAnimation: stylex.types.time({
+    default: '0.5s',
+    [DARK]: '1s',
+    '@media (prefer-reduced-motion: reduce)': 0,
+  }),
 });
