@@ -107,6 +107,25 @@ export default function stylexPlugin({
         return { code: inputCode };
       }
 
+      // $FlowExpectedError[object-this-reference]
+      if (this.meta.watchMode) {
+        // $FlowExpectedError[object-this-reference]
+        const ast = this.parse(code);
+        for (const stmt of ast.body) {
+          if (stmt.type === 'ImportDeclaration') {
+            // $FlowExpectedError[object-this-reference]
+            const resolved = await this.resolve(stmt.source.value, id);
+            if (resolved && !resolved.external) {
+              // $FlowExpectedError[object-this-reference]
+              const result = await this.load(resolved);
+              if (result && result.meta && 'stylex' in result.meta) {
+                stylexRules[resolved.id] = result.meta.stylex;
+              }
+            }
+          }
+        }
+      }
+
       if (
         !dev &&
         (metadata as $FlowFixMe).stylex != null &&
