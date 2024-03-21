@@ -9,6 +9,8 @@
 
 'use strict';
 
+import type { Token } from 'eslint/eslint-ast';
+import type { RuleFixer, SourceCode } from 'eslint/eslint-rule';
 import type {
   CallExpression,
   ImportDeclaration,
@@ -16,6 +18,7 @@ import type {
   Property,
   SpreadElement,
   ObjectExpression,
+  Comment,
 } from 'estree';
 import getPropertyName from './utils/getPropertyName';
 import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
@@ -54,6 +57,7 @@ const stylexSortKeys = {
       recommended: false,
       url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
     },
+    fixable: 'code',
     schema: [
       {
         type: 'object',
@@ -214,14 +218,16 @@ const stylexSortKeys = {
           return;
         }
 
+        const sourceCode = context.sourceCode;
         const prevName = stack.prevName;
+        const prevNode = stack?.prevNode;
         const numKeys = stack.numKeys;
         const currName = getPropertyName(node);
         let isBlankLineBetweenNodes = stack?.prevBlankLine;
 
         const tokens =
           stack?.prevNode &&
-          context.sourceCode.getTokensBetween(stack.prevNode, node, {
+          sourceCode.getTokensBetween(stack.prevNode, node, {
             includeComments: true,
           });
 
@@ -280,6 +286,8 @@ const stylexSortKeys = {
             node,
             loc: node.key.loc,
             message: `StyleX property key "${currName}" should be above "${prevName}"`,
+            // $FlowFixMe
+            fix: createFix({ prevNode, currNode: node, sourceCode }),
           });
         }
       },
@@ -296,5 +304,194 @@ const stylexSortKeys = {
     };
   },
 };
+
+function createFix({
+  currNode,
+  prevNode,
+  sourceCode,
+}: {
+  currNode: Property,
+  prevNode: Property,
+  sourceCode: SourceCode,
+}) {
+  return function (fixer: RuleFixer) {
+    // Need to handle the case if there is white space between node and comment above
+    // This can be especially tricky if the "sort between space groups" option is turned on
+    const fixes = [];
+
+    // Retrieve comments before the previous node
+    const prevNodeCommentsBefore = getPropertyCommentsBefore(prevNode);
+
+    // Start node for the entire context with comments of prevNode
+    const prevNodeContextStartNode =
+      prevNodeCommentsBefore.length > 0 ? prevNodeCommentsBefore[0] : prevNode;
+
+    const { indentation: startNodeIndentation, isTokenBeforeSameLineAsNode } =
+      getNodeIndentation(prevNodeContextStartNode);
+
+    const prevNodeSameLineComment = getPropertySameLineComment(prevNode);
+
+    const tokenAfterPrevNode = sourceCode.getTokenAfter(prevNode, {
+      includeComments: false,
+    });
+
+    const prevNodeContextEndNode =
+      prevNodeSameLineComment ?? tokenAfterPrevNode;
+
+    if (!prevNodeContextEndNode?.range || !prevNodeContextStartNode.range) {
+      // Early return if range or prevNode doesn't exist
+      return [];
+    }
+
+    const rangeStart =
+      prevNodeContextStartNode.range[0] - startNodeIndentation.length;
+
+    const rangeEnd = prevNodeContextEndNode.range[1];
+
+    const textToMove = sourceCode.getText().slice(rangeStart, rangeEnd);
+
+    fixes.push(
+      fixer.removeRange([
+        // If previous token is not on the same line, we remove an extra char to account for newline
+        rangeStart - Number(!isTokenBeforeSameLineAsNode),
+        rangeEnd,
+      ]),
+    );
+
+    const currNodeSameLineComment = getPropertySameLineComment(currNode);
+
+    const tokenAfterCurrNode = sourceCode.getTokenAfter(currNode, {
+      includeComments: false,
+    });
+
+    const hasCommaAfterCurrNode =
+      tokenAfterCurrNode && isCommaToken(tokenAfterCurrNode);
+
+    if (!hasCommaAfterCurrNode) {
+      fixes.push(fixer.insertTextAfter(currNode, ','));
+    }
+
+    const newLine = isSameLine(prevNode, currNode) ? '' : '\n';
+    // If token after the current node is a comma then we insert after the comma
+    // Otherwise we insert after the current node because there is a guaranteed fix to add comma (above)
+    const fallbackNode =
+      hasCommaAfterCurrNode && tokenAfterCurrNode
+        ? tokenAfterCurrNode
+        : currNode;
+
+    fixes.push(
+      fixer.insertTextAfter(
+        currNodeSameLineComment ?? fallbackNode,
+        `${newLine}${textToMove}`,
+      ),
+    );
+
+    return fixes;
+  };
+
+  function getEmptyLineCountBetweenNodes(
+    aNode: Property | Comment,
+    bNode: Property | Comment,
+  ): number {
+    const [upperNode, lowerNode] = [aNode, bNode].sort(
+      (a, b) => (a.loc?.start.line ?? 0) - (b.loc?.start.line ?? 0),
+    );
+
+    const upperNodeLine = upperNode.loc?.start.line;
+    const lowerNodeLine = lowerNode.loc?.start.line;
+
+    if (upperNodeLine === undefined || lowerNodeLine === undefined) {
+      throw new Error('Invalid node location');
+    }
+
+    return sourceCode.lines
+      .slice(upperNodeLine, lowerNodeLine - 1)
+      .filter((line) => /^[ \t]*$/.test(line)).length;
+  }
+
+  function getPropertyCommentsBefore(node: Property): Comment[] {
+    return sourceCode.getCommentsBefore(node).filter((comment) => {
+      const tokenBefore = sourceCode.getTokenBefore(comment, {
+        includeComments: false,
+      });
+
+      if (tokenBefore === null) {
+        return true;
+      }
+
+      // Only comments that have no other tokens on the same line are considered
+      // Also, comments that have at least one empty line between node and comment will be ignored
+      // For example:
+      //
+      //  create({
+      //    foo: { // comment above a <- this comment does not belong to property below
+      //      // comment above b <- this comment does not belong to property below
+      //
+      //      // comment above c <- this comment belongs to property below
+      //      display: 'red'
+      //    }
+      //  })
+      //
+      return (
+        !isSameLine(tokenBefore, comment) &&
+        getEmptyLineCountBetweenNodes(node, comment) === 0
+      );
+    });
+  }
+
+  function getPropertySameLineComment(node: Property): Comment | void {
+    const tokenAfter = sourceCode.getTokenAfter(node, {
+      includeComments: false,
+    });
+
+    const comments = sourceCode
+      .getCommentsAfter(
+        tokenAfter && isCommaToken(tokenAfter) ? tokenAfter : node,
+      )
+      .filter((comment) => isSameLine(node, comment));
+
+    return comments[0];
+  }
+
+  function getNodeIndentation(node: Property | Comment): {
+    indentation: string,
+    isTokenBeforeSameLineAsNode: boolean,
+  } {
+    const tokenBefore = sourceCode.getTokenBefore(node, {
+      includeComments: false,
+    });
+
+    const isTokenBeforeSameLineAsNode =
+      !!tokenBefore && isSameLine(tokenBefore, node);
+
+    const sliceStart =
+      isTokenBeforeSameLineAsNode && tokenBefore?.loc
+        ? tokenBefore.loc.end.column
+        : 0;
+
+    return {
+      isTokenBeforeSameLineAsNode,
+      indentation: node?.loc
+        ? sourceCode.lines[node.loc.start.line - 1].slice(
+            sliceStart,
+            node.loc.start.column,
+          )
+        : '',
+    };
+  }
+}
+
+function isSameLine(
+  aNode: Property | Comment | Token,
+  bNode: Property | Comment | Token,
+): boolean {
+  return Boolean(
+    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line,
+  );
+}
+
+function isCommaToken(token: Token): boolean {
+  return token.type === 'Punctuator' && token.value === ',';
+}
 
 export default stylexSortKeys as typeof stylexSortKeys;
