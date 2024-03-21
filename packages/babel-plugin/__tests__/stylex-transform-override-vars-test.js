@@ -129,7 +129,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xtrlmmh"
         };"
       `);
       expect(output1).toEqual(output2);
@@ -183,7 +183,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xtrlmmh"
         };"
       `);
     });
@@ -246,7 +246,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xtrlmmh"
         };"
       `);
     });
@@ -318,13 +318,13 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xtrlmmh"
         };
         _inject2(".x1awrdae{--xgck17p:white;--xpegid5:black;--xrqfjmn:0px;}", 0.5);
         const buttonThemeMonochromatic = {
           TestTheme__buttonThemeMonochromatic: "TestTheme__buttonThemeMonochromatic",
           $$css: true,
-          x568ih9: "xpsjjyf"
+          x568ih9: "x1awrdae"
         };"
       `);
     });
@@ -369,7 +369,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xrpt93l"
+          x568ih9: "xi7kglk"
         };"
       `);
     });
@@ -414,7 +414,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xtrlmmh"
         };"
       `);
     });
@@ -459,7 +459,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "x1u43pop"
+          x568ih9: "x143z4bu"
         };"
       `);
     });
@@ -504,7 +504,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "x1ubmxd4"
+          x568ih9: "x64jqcx"
         };"
       `);
     });
@@ -542,7 +542,7 @@ describe('@stylexjs/babel-plugin', () => {
         const buttonThemePositive = {
           NestedTheme__buttonThemePositive: "NestedTheme__buttonThemePositive",
           $$css: true,
-          x568ih9: "xfmksyk"
+          x568ih9: "xtrlmmh"
         };"
       `);
     });
