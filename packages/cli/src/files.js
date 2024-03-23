@@ -50,7 +50,7 @@ export function writeCompiledJS(filePath: string, code: string): void {
 
 export function copyFile(filePath: string, config: Config) {
   const src = path.join(config.input, filePath);
-  const dst = path.join(config.moduleOutput ?? config.output, filePath);
+  const dst = path.join(config.output, filePath);
   mkdirp.sync(path.parse(dst).dir);
   fs.copyFileSync(src, dst);
 }
@@ -78,6 +78,12 @@ export function getCssPathFromFilePath(
 ): string {
   const relativePath = path.relative(path.dirname(filePath), config.input);
   return formatRelativePath(path.join(relativePath, config.cssBundleName));
+}
+
+export function getRelativePath(from: string, to: string): string {
+  console.log(from, to);
+  const relativePath = path.relative(from, to);
+  return formatRelativePath(relativePath);
 }
 
 export function removeCompiledDir(config: Config): void {

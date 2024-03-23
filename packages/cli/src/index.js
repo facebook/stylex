@@ -14,13 +14,13 @@ import chalk from 'chalk';
 import JSON5 from 'json5';
 
 import { isDir } from './files';
-import { compileDirectory } from './transform';
+import { compileDirectory, compileModuleDirectory } from './transform';
 import options from './options';
 import errors from './errors';
 import watch from './watch';
 import fs from 'fs';
 import { findModuleDir } from './modules';
-import type { Config } from './config';
+import type { Config, JsonConfig } from './config';
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -59,9 +59,9 @@ const absolutePath = process.cwd();
 
 if (configFile) {
   const jsonConfig = fs.readFileSync(configFile);
-  const parsed: Config = JSON5.parse(jsonConfig);
+  const parsed: JsonConfig = JSON5.parse(jsonConfig);
   // validate parsed input?
-  const config = {
+  const config: Config = {
     input: path.normalize(path.join(absolutePath, parsed.input)),
     output: path.normalize(path.join(absolutePath, parsed.output)),
     cssBundleName: parsed.cssBundleName,
@@ -70,7 +70,7 @@ if (configFile) {
   };
   start(config);
 } else {
-  const config = {
+  const config: Config = {
     input: path.normalize(path.join(absolutePath, inputDir)),
     output: path.normalize(
       path.join(absolutePath, outputDir != null ? outputDir : 'src'),
@@ -89,12 +89,12 @@ async function start(config: Config) {
   if (modules !== undefined) {
     for (const moduleName of modules) {
       const moduleDir = findModuleDir(moduleName, config);
-      console.log(moduleDir);
-      await compileDirectory({
-        ...config,
+      const moduleConfig = {
         input: moduleDir,
-        moduleOutput: path.join(config.output, 'node_modules', moduleName),
-      });
+        output: path.join(config.output, 'compiled_modules', moduleName),
+        cssBundleName: config.cssBundleName,
+      };
+      await compileModuleDirectory(moduleConfig, moduleName);
     }
   }
   if (config.mode === 'watch') {
