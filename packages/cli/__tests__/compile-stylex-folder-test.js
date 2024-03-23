@@ -21,7 +21,7 @@ process.chdir('__tests__/__mocks__');
 const snapshot = './snapshot';
 
 describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
-  // need to resolve to aboslute paths because the compileDirectory function is expecting them.
+  // need to resolve to absolute paths because the compileDirectory function is expecting them.
   const config = {
     input: path.resolve('./source'),
     output: path.resolve('./src'),
