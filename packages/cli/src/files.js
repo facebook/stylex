@@ -81,7 +81,6 @@ export function getCssPathFromFilePath(
 }
 
 export function getRelativePath(from: string, to: string): string {
-  console.log(from, to);
   const relativePath = path.relative(from, to);
   return formatRelativePath(relativePath);
 }

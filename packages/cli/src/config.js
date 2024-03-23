@@ -21,5 +21,6 @@ export type Config = {
   output: string,
   cssBundleName: string,
   modules?: $ReadOnlyArray<string>,
+  compiledModuleOutput?: string,
   mode?: 'watch',
 };

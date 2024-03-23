@@ -131,6 +131,10 @@ export async function compileModuleDirectory(
   moduleName: string,
 ) {
   try {
+    if (config.compiledModuleOutput === undefined) {
+      return;
+    }
+    const moduleOutputDir = config.compiledModuleOutput;
     const cssBundlePath = path.join(config.output, config.cssBundleName);
     const dirFiles = getInputDirectoryFiles(config.input);
     writeCompiledCSS(cssBundlePath, '');
@@ -144,8 +148,7 @@ export async function compileModuleDirectory(
       } else {
         copyFile(filePath, config);
       }
-      compiledModules.set(moduleName, config.output);
-      console.log(compiledModules);
+      compiledModules.set(moduleName, moduleOutputDir);
     }
     const compiledCSS = await compileRules(
       Array.from(allStyleXRules.values()).flat(),
@@ -159,7 +162,10 @@ export async function compileModuleDirectory(
 
 export async function compileModuleFile(filePath: string, config: Config) {
   const inputFilePath = path.join(config.input, filePath);
-  const outputFilePath = path.join(config.output, filePath);
+  const outputFilePath = path.join(
+    config.compiledModuleOutput ?? config.output,
+    filePath,
+  );
   const [code, rules] = await transformFile(
     inputFilePath,
     outputFilePath,

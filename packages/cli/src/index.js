@@ -91,8 +91,13 @@ async function start(config: Config) {
       const moduleDir = findModuleDir(moduleName, config);
       const moduleConfig = {
         input: moduleDir,
-        output: path.join(config.output, 'compiled_modules', moduleName),
+        output: config.output,
         cssBundleName: config.cssBundleName,
+        compiledModuleOutput: path.join(
+          config.output,
+          'compiled_modules',
+          moduleName,
+        ),
       };
       await compileModuleDirectory(moduleConfig, moduleName);
     }
