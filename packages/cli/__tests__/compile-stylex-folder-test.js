@@ -20,13 +20,14 @@ process.chdir('__tests__/__mocks__');
 
 const snapshot = './snapshot';
 
-const config = {
-  input: './source',
-  output: './src',
-  cssBundleName: 'stylex_bundle.css',
-};
-
 describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
+  // need to resolve to aboslute paths because the compileDirectory function is expecting them.
+  const config = {
+    input: path.resolve('./source'),
+    output: path.resolve('./src'),
+    cssBundleName: 'stylex_bundle.css',
+  };
+
   test(config.input, () => {
     expect(files.isDir(config.input)).toBe(true);
   });
@@ -55,6 +56,11 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
 });
 
 describe('individual testing of util functions', () => {
+  const config = {
+    input: './source',
+    output: './src',
+    cssBundleName: 'stylex_bundle.css',
+  };
   test('file to relative css path', () => {
     const mockFileName = './source/pages/home/page.js';
     const relativePath = files.getCssPathFromFilePath(mockFileName, config);
@@ -63,6 +69,11 @@ describe('individual testing of util functions', () => {
 });
 
 describe('cli works with -i and -o args', () => {
+  const config = {
+    input: './source',
+    output: './src',
+    cssBundleName: 'stylex_bundle.css',
+  };
   test('script start', (done) => {
     const cmd =
       'node ' +
