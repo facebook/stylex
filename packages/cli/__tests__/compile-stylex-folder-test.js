@@ -62,9 +62,12 @@ describe('individual testing of util functions', () => {
     cssBundleName: 'stylex_bundle.css',
   };
   test('file to relative css path', () => {
-    const mockFileName = './source/pages/home/page.js';
-    const relativePath = files.getCssPathFromFilePath(mockFileName, config);
-    expect(relativePath).toEqual(`../../${config.cssBundleName}`);
+    const mockFileName = './src/pages/home/page.js';
+    const relativePath = files.getRelativePath(
+      mockFileName,
+      path.join(config.output, config.cssBundleName),
+    );
+    expect(relativePath).toEqual(`../../../${config.cssBundleName}`);
   });
 });
 

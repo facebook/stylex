@@ -16,7 +16,7 @@ import path from 'path';
 
 // "@stylexjs/open-props" -> "[absolute_path]/node_modules/@stylexjs/open-props"
 // can't just require.resolve because that will error on modules that don't have "main" defined in package.json (like open-props)
-export const findModuleDir = (moduleName: string, config: Config): string => {
+export function findModuleDir(moduleName: string, config: Config): string {
   const packageName = moduleName.includes('/')
     ? moduleName.startsWith('@')
       ? moduleName.split('/').slice(0, 2).join('/')
@@ -31,4 +31,4 @@ export const findModuleDir = (moduleName: string, config: Config): string => {
     .paths(moduleName)
     .map((p) => path.join(p, packageName));
   return possiblePaths.find((p) => fs.existsSync(p));
-};
+}

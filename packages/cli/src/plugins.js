@@ -15,19 +15,15 @@ import * as t from '@babel/types';
 
 import * as nodePath from 'path';
 
-type ImportPlugin = $ReadOnly<{
+type ImportModifierPlugin = $ReadOnly<{
   visitor: {
     Program: { enter(path: NodePath<t.Program>): void },
   },
 }>;
 
-type ModuleImportModifierPlugin = $ReadOnly<{
-  visitor: {
-    ImportDeclaration: { enter(path: NodePath<t.ImportDeclaration>): void },
-  },
-}>;
-
-export const createImportPlugin = (relativeImport: string): ImportPlugin => {
+export const createImportPlugin = (
+  relativeImport: string,
+): ImportModifierPlugin => {
   const importDeclaration = t.importDeclaration(
     [],
     t.stringLiteral(relativeImport),
@@ -51,35 +47,45 @@ export const createImportPlugin = (relativeImport: string): ImportPlugin => {
  * import {item} from './compiled_modules/module'
  */
 export const createModuleImportModifierPlugin = (
-  compiledModules: Map<string, string>,
-  outputFilePath: string,
+  filePath: string,
   config: Config,
-): ModuleImportModifierPlugin => {
+): ImportModifierPlugin => {
   return {
     visitor: {
-      ImportDeclaration: {
-        enter(path: NodePath<t.ImportDeclaration>) {
-          const source = path.node.source.value;
-          const sourcePath = findModuleDir(source, config);
-          const module = sourcePath.split('node_modules/').pop();
-          const compiledModulePath = compiledModules.get(module);
-          if (compiledModulePath == null) {
-            return;
-          }
-          const compiledDirSplit =
-            compiledModulePath.split(/(compiled_modules)/);
-          compiledDirSplit.pop();
-          const compiledDirPath = compiledDirSplit.join('') + `/${source}`;
+      Program: {
+        enter(path: NodePath<t.Program>) {
+          path.traverse({
+            ImportDeclaration: {
+              enter(path: NodePath<t.ImportDeclaration>) {
+                const source = path.node.source.value;
+                const sourcePath = findModuleDir(source, config);
+                if (sourcePath == null) {
+                  return;
+                }
+                const module = sourcePath.split('node_modules/').pop();
+                if (config.modules != null && config.modules.includes(module)) {
+                  const moduleDir = nodePath.join(
+                    config.output,
+                    'stylex_compiled_modules',
+                    module,
+                    source.split(module).pop(),
+                  );
 
-          const relativePath = getRelativePath(
-            nodePath.parse(outputFilePath).dir,
-            compiledDirPath,
-          );
-          const newImport = t.importDeclaration(
-            [...path.node.specifiers],
-            t.stringLiteral(relativePath),
-          );
-          path.replaceWith<t.ImportDeclaration>(newImport);
+                  const relativePath = getRelativePath(
+                    nodePath.parse(filePath).dir,
+                    moduleDir,
+                  );
+                  console.log(relativePath);
+                  const newImport = t.importDeclaration(
+                    [...path.node.specifiers],
+                    t.stringLiteral(relativePath),
+                  );
+
+                  path.replaceWith<t.ImportDeclaration>(newImport);
+                }
+              },
+            },
+          });
         },
       },
     },

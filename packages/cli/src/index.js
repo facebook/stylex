@@ -14,7 +14,7 @@ import chalk from 'chalk';
 import JSON5 from 'json5';
 
 import { isDir } from './files';
-import { compileDirectory, compileModuleDirectory } from './transform';
+import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
 import watch from './watch';
@@ -86,25 +86,27 @@ async function start(config: Config) {
     throw errors.dirNotFound;
   }
   const modules = config.modules;
+  const compiledModuleDir = path.join(config.input, 'stylex_compiled_modules');
   if (modules !== undefined) {
+    // copy any node modules to also compile to the input folder first, and then compile them directly
     for (const moduleName of modules) {
       const moduleDir = findModuleDir(moduleName, config);
-      const moduleConfig = {
-        input: moduleDir,
-        output: config.output,
-        cssBundleName: config.cssBundleName,
-        compiledModuleOutput: path.join(
-          config.output,
-          'compiled_modules',
-          moduleName,
-        ),
-      };
-      await compileModuleDirectory(moduleConfig, moduleName);
+      fs.rmSync(compiledModuleDir, {
+        recursive: true,
+        force: true,
+      });
+      // $FlowFixMe[prop-missing]
+      fs.cpSync(moduleDir, path.join(compiledModuleDir, moduleName), {
+        force: true,
+        recursive: true,
+        dereference: true,
+      });
     }
   }
   if (config.mode === 'watch') {
     watch(config);
   } else {
     await compileDirectory(config);
+    fs.rmSync(compiledModuleDir, { recursive: true, force: true });
   }
 }
