@@ -40,6 +40,18 @@ type: `string`
 
 required: `true`
 
+#### `--styleXBundleName`
+
+The name of the core compiled css file StyleX creates
+
+alias: `-b`
+
+type: `string`
+
+required: `false`
+
+default: `stylex_bundle.css`
+
 #### `--watch`
 
 Flag to enable automatic recompiling of files in the input directory on change
@@ -52,11 +64,23 @@ required: `false`
 
 default: `false`
 
+#### `--modules`
+
+A list of node modules to also compile with StyleX
+
+alias: `-w`
+
+type: `array`
+
+required: `false`
+
+default: `[]`
+
 #### `--config`
 
 path of a .json (or .json5) config file
 
-default: `null`
+default: `undefined`
 
 ### Config Structure
 
@@ -66,7 +90,8 @@ You can create a `.json` or `.json5` config file and pass it to the CLI.
 {
   "input": "./source",
   "output": "./src",
-  "cssBundleName": "stylex_bundle.css"
-  // watch: true
+  "modules": ["@stylexjs/open-props"],
+  "styleXBundleName": "stylex_bundle.css",
+  "watch": true
 }
 ```
