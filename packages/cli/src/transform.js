@@ -29,6 +29,7 @@ import {
   createImportPlugin,
   createModuleImportModifierPlugin,
 } from './plugins';
+import { clearModuleDir } from './modules';
 
 const allStyleXRules = new Map<string, Array<Rule>>();
 const compiledJS = new Map<string, string>();
@@ -56,10 +57,7 @@ export async function compileDirectory(
         await compileFile(filePath, config);
       } else {
         const src = path.join(config.input, filePath);
-        const dst = path.join(
-          config.compiledModuleOutput ?? config.output,
-          filePath,
-        );
+        const dst = path.join(config.output, filePath);
         copyFile(src, dst);
       }
     }
@@ -67,10 +65,11 @@ export async function compileDirectory(
       Array.from(allStyleXRules.values()).flat(),
     );
 
-    const cssBundlePath = path.join(config.output, config.cssBundleName);
+    const cssBundlePath = path.join(config.output, config.styleXBundleName);
     writeCompiledCSS(cssBundlePath, compiledCSS);
   } catch (err) {
     fs.rmSync(config.output, { recursive: true, force: true });
+    clearModuleDir(config);
     throw err;
   }
 }
@@ -80,10 +79,7 @@ export async function compileFile(
   config: Config,
 ): Promise<?string> {
   const inputFilePath = path.join(config.input, filePath);
-  const outputFilePath = path.join(
-    config.compiledModuleOutput ?? config.output,
-    filePath,
-  );
+  const outputFilePath = path.join(config.output, filePath);
 
   const [code, rules] = await transformFile(
     inputFilePath,
@@ -103,8 +99,8 @@ export async function transformFile(
   config: Config,
 ): Promise<[?string, Array<Rule>]> {
   const relativeImport = getRelativePath(
-    inputFilePath,
-    path.join(config.output, config.cssBundleName),
+    outputFilePath,
+    path.join(config.output, config.styleXBundleName),
   );
   const result = await babel.transformFileAsync(inputFilePath, {
     babelrc: false,
@@ -122,7 +118,6 @@ export async function transformFile(
           },
         },
       ],
-      // typescriptPlugin to resolve aliases
       createImportPlugin(relativeImport),
     ],
   });

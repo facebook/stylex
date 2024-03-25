@@ -25,8 +25,12 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
   const config = {
     input: path.resolve('./source'),
     output: path.resolve('./src'),
-    cssBundleName: 'stylex_bundle.css',
+    styleXBundleName: 'stylex_bundle.css',
+    modules: [] as Array<string>,
+    watch: false,
   };
+
+  afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));
 
   test(config.input, () => {
     expect(files.isDir(config.input)).toBe(true);
@@ -36,38 +40,18 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
     fs.mkdirSync(config.output);
     expect(files.isDir(config.output)).toBe(true);
 
-    try {
-      await transform.compileDirectory(config);
-      const outputDir = fs.readdirSync(config.output, { recursive: true });
-      for (const file of outputDir) {
-        const outputPath = path.join(config.output, file);
-        const snapshotPath = path.join(snapshot, file);
-        expect(fs.existsSync(snapshotPath)).toBe(true);
-        if (path.extname(outputPath) === '.js') {
-          const outputContent = fs.readFileSync(outputPath).toString();
-          const snapshotContent = fs.readFileSync(snapshotPath).toString();
-          expect(outputContent).toEqual(snapshotContent);
-        }
+    await transform.compileDirectory(config);
+    const outputDir = fs.readdirSync(config.output, { recursive: true });
+    for (const file of outputDir) {
+      const outputPath = path.join(config.output, file);
+      const snapshotPath = path.join(snapshot, file);
+      expect(fs.existsSync(snapshotPath)).toBe(true);
+      if (path.extname(outputPath) === '.js') {
+        const outputContent = fs.readFileSync(outputPath).toString();
+        const snapshotContent = fs.readFileSync(snapshotPath).toString();
+        expect(outputContent).toEqual(snapshotContent);
       }
-    } finally {
-      fs.rmSync(config.output, { recursive: true, force: true });
     }
-  });
-});
-
-describe('individual testing of util functions', () => {
-  const config = {
-    input: './source',
-    output: './src',
-    cssBundleName: 'stylex_bundle.css',
-  };
-  test('file to relative css path', () => {
-    const mockFileName = './src/pages/home/page.js';
-    const relativePath = files.getRelativePath(
-      mockFileName,
-      path.join(config.output, config.cssBundleName),
-    );
-    expect(relativePath).toEqual(`../../../${config.cssBundleName}`);
   });
 });
 
@@ -77,6 +61,9 @@ describe('cli works with -i and -o args', () => {
     output: './src',
     cssBundleName: 'stylex_bundle.css',
   };
+
+  afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));
+
   test('script start', (done) => {
     const cmd =
       'node ' +
@@ -109,5 +96,21 @@ describe('cli works with -i and -o args', () => {
       fs.rmSync(config.output, { recursive: true, force: true });
       throw new Error('failed to start StyleX CLI watch mode:', data);
     });
+  });
+});
+
+describe('individual testing of util functions', () => {
+  const config = {
+    input: './source',
+    output: './src',
+    cssBundleName: 'stylex_bundle.css',
+  };
+  test('file to relative css path', () => {
+    const mockFileName = './src/pages/home/page.js';
+    const relativePath = files.getRelativePath(
+      mockFileName,
+      path.join(config.output, config.cssBundleName),
+    );
+    expect(relativePath).toEqual(`../../${config.cssBundleName}`);
   });
 });

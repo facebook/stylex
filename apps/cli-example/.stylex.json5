@@ -3,5 +3,5 @@
   output: './src',
   modules: ['@stylexjs/open-props'],
   cssBundleName: 'stylex_bundle.css',
-  // mode: 'watch',
+  // watch: true
 }

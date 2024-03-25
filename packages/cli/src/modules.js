@@ -14,6 +14,8 @@ import fs from 'fs';
 import { createRequire } from 'module';
 import path from 'path';
 
+const COMPILED_MODULES_DIR_NAME = 'stylex_compiled_modules';
+
 // "@stylexjs/open-props" -> "[absolute_path]/node_modules/@stylexjs/open-props"
 // can't just require.resolve because that will error on modules that don't have "main" defined in package.json (like open-props)
 export function findModuleDir(moduleName: string, config: Config): string {
@@ -31,4 +33,30 @@ export function findModuleDir(moduleName: string, config: Config): string {
     .paths(moduleName)
     .map((p) => path.join(p, packageName));
   return possiblePaths.find((p) => fs.existsSync(p));
+}
+
+export function clearModuleDir(config: Config) {
+  const compiledModuleDir = path.join(config.input, COMPILED_MODULES_DIR_NAME);
+  if (fs.existsSync(compiledModuleDir)) {
+    fs.rmSync(compiledModuleDir, {
+      recursive: true,
+      force: true,
+    });
+  }
+}
+
+export function fetchModule(moduleName: string, config: Config): void {
+  const compiledModuleDir = path.join(config.input, COMPILED_MODULES_DIR_NAME);
+  const moduleDir = findModuleDir(moduleName, config);
+  fs.rmSync(compiledModuleDir, {
+    recursive: true,
+    force: true,
+  });
+  // $FlowFixMe[prop-missing]
+  fs.cpSync(moduleDir, path.join(compiledModuleDir, moduleName), {
+    force: true,
+    recursive: true,
+    // needed because sometimes node modules are symlinks
+    dereference: true,
+  });
 }

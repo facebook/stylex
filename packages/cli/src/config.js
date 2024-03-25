@@ -8,19 +8,10 @@
  * @flow strict
  */
 
-export type JsonConfig = {
-  input: string,
-  output: string,
-  cssBundleName: string,
-  modules?: $ReadOnlyArray<string>,
-  mode?: 'watch',
-};
-
 export type Config = {
   input: string,
   output: string,
-  cssBundleName: string,
-  modules?: $ReadOnlyArray<string>,
-  compiledModuleOutput?: string,
-  mode?: 'watch',
+  styleXBundleName: string,
+  watch: boolean,
+  modules: Array<string>,
 };

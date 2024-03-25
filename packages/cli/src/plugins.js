@@ -71,10 +71,7 @@ export const createModuleImportModifierPlugin = (
                     source.split(module).pop(),
                   );
 
-                  const relativePath = getRelativePath(
-                    nodePath.parse(filePath).dir,
-                    moduleDir,
-                  );
+                  const relativePath = getRelativePath(filePath, moduleDir);
                   console.log(relativePath);
                   const newImport = t.importDeclaration(
                     [...path.node.specifiers],

@@ -8,6 +8,7 @@
  * @flow strict
  */
 
+import type { Argv } from 'yargs';
 import yargs from 'yargs';
 import path from 'path';
 import chalk from 'chalk';
@@ -17,10 +18,10 @@ import { isDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
-import watch from './watch';
+import watcher from './watcher';
 import fs from 'fs';
-import { findModuleDir } from './modules';
-import type { Config, JsonConfig } from './config';
+import { clearModuleDir, fetchModule } from './modules';
+import type { Config } from './config';
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -43,70 +44,57 @@ console.log(
 
 const usage =
   '\n Usage: provide a directory to stylex in order to have it compiled.';
-const args = yargs(process.argv)
+const args: Argv = yargs(process.argv)
   .scriptName('stylex')
   .usage(usage)
+  // $FlowFixMe[incompatible-call] Flow typings for Yargs doesn't infer options type, it requires {[key: string]: Options}, but Typescript can infer options<MyOptions>. I'd rather FlowFixMe than cast
   .options(options)
   .help(true)
+  .config(
+    'config',
+    'path of a .json (or .json5) config file',
+    (configPath: string) => {
+      return JSON5.parse(fs.readFileSync(configPath));
+    },
+  )
   .parseSync();
-
-const inputDir: string = args.input;
-const outputDir: string = args.output;
-const watchFiles: boolean = args.watch;
-const configFile: string = args.config;
 
 const absolutePath = process.cwd();
 
-if (configFile) {
-  const jsonConfig = fs.readFileSync(configFile);
-  const parsed: JsonConfig = JSON5.parse(jsonConfig);
-  // validate parsed input?
-  const config: Config = {
-    input: path.normalize(path.join(absolutePath, parsed.input)),
-    output: path.normalize(path.join(absolutePath, parsed.output)),
-    cssBundleName: parsed.cssBundleName,
-    modules: parsed.modules,
-    mode: parsed.mode,
-  };
-  start(config);
-} else {
-  const config: Config = {
-    input: path.normalize(path.join(absolutePath, inputDir)),
-    output: path.normalize(
-      path.join(absolutePath, outputDir != null ? outputDir : 'src'),
-    ),
-    cssBundleName: 'stylex_bundle.css',
-    mode: watchFiles ? 'watch' : undefined,
-  };
-  start(config);
-}
+const input: string = path.normalize(path.join(absolutePath, args.input));
+const output: string = path.normalize(path.join(absolutePath, args.output));
+const watch: boolean = args.watch;
+const modules: Array<string> = args.modules;
+const styleXBundleName: string = args.styleXBundleName;
 
-async function start(config: Config) {
+const config: Config = {
+  input,
+  output,
+  modules,
+  watch,
+  styleXBundleName,
+};
+styleXCompile(config);
+
+async function styleXCompile(config: Config) {
   if (!isDir(config.input)) {
     throw errors.dirNotFound;
   }
-  const modules = config.modules;
-  const compiledModuleDir = path.join(config.input, 'stylex_compiled_modules');
-  if (modules !== undefined) {
+  let addedModules = false;
+  if (config.modules.length > 0) {
     // copy any node modules to also compile to the input folder first, and then compile them directly
-    for (const moduleName of modules) {
-      const moduleDir = findModuleDir(moduleName, config);
-      fs.rmSync(compiledModuleDir, {
-        recursive: true,
-        force: true,
-      });
-      // $FlowFixMe[prop-missing]
-      fs.cpSync(moduleDir, path.join(compiledModuleDir, moduleName), {
-        force: true,
-        recursive: true,
-        dereference: true,
-      });
+    clearModuleDir(config);
+    for (const moduleName of config.modules) {
+      fetchModule(moduleName, config);
+      addedModules = true;
     }
   }
-  if (config.mode === 'watch') {
-    watch(config);
+  if (config.watch) {
+    watcher(config);
   } else {
     await compileDirectory(config);
-    fs.rmSync(compiledModuleDir, { recursive: true, force: true });
+    if (addedModules) {
+      clearModuleDir(config);
+    }
   }
 }

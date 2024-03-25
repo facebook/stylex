@@ -72,7 +72,7 @@ export function isJSFile(filePath: string): boolean {
 
 // e.g. ./pages/home/index.js -> ../../stylex_bundle.css
 export function getRelativePath(from: string, to: string): string {
-  const relativePath = path.relative(from, to);
+  const relativePath = path.relative(path.parse(from).dir, to);
   return formatRelativePath(relativePath);
 }
 
