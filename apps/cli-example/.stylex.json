@@ -1,0 +1,7 @@
+{
+    "input": "./source",
+    "output": "./src",
+    "modules": ["@stylexjs/open-props"],
+    "cssBundleName": "stylex_bundle.css"
+  }
+  

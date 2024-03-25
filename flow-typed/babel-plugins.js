@@ -14,6 +14,10 @@ declare module '@babel/plugin-syntax-typescript' {
   declare module.exports: any;
 }
 
+declare module '@babel/plugin-transform-typescript' {
+  declare module.exports: any;
+}
+
 declare module '@babel/plugin-syntax-flow' {
   declare module.exports: any;
 }
