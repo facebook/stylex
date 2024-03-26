@@ -126,14 +126,14 @@ export default function stylexPlugin({
 
           if (transformResult === null) {
             console.warn('StyleX: transformAsync returned null');
-            return { code: inputCode, loader };
+            return { contents: inputCode, loader };
           }
 
           const { code, metadata } = transformResult;
 
           if (code === null) {
             console.warn('StyleX: transformAsync returned null code');
-            return { code: inputCode, loader };
+            return { contents: inputCode, loader };
           }
 
           if (
