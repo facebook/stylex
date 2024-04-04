@@ -14,10 +14,11 @@ import parser from 'postcss-value-parser';
 const angles = ['deg', 'grad', 'turn', 'rad'];
 const timings = ['ms', 's'];
 const fraction = 'fr';
+const percentage = '%';
 
 /**
- * Remove units in zero values, except when required: in angles, timings, and fractions,
- * in which case make them consistent 0deg, 0s, and 0fr.
+ * Remove units in zero values, except when required: in angles, timings, fractions, and percentages,
+ * in which case make them consistent 0deg, 0s, 0fr, and 0%.
  */
 
 export default function normalizeZeroDimensions(
@@ -46,6 +47,8 @@ export default function normalizeZeroDimensions(
       node.value = '0s';
     } else if (dimension.unit === fraction) {
         node.value = '0fr';
+    } else if (dimension.unit === percentage) {
+        node.value = '0%';
     } else if (!endFunction) {
       node.value = '0';
     }
