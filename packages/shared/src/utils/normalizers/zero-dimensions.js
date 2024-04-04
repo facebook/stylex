@@ -13,6 +13,7 @@ import parser from 'postcss-value-parser';
 
 const angles = ['deg', 'grad', 'turn', 'rad'];
 const timings = ['ms', 's'];
+const fractions = ['fr'];
 
 /**
  * Remove units in zero values, except when required: in angles and timings,
@@ -43,6 +44,8 @@ export default function normalizeZeroDimensions(
       node.value = '0deg';
     } else if (timings.indexOf(dimension.unit) !== -1) {
       node.value = '0s';
+    } else if (fractions.indexOf(dimension.unit) !== -1) {
+        node.value = '0fr';
     } else if (!endFunction) {
       node.value = '0';
     }
