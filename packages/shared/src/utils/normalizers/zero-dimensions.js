@@ -46,9 +46,9 @@ export default function normalizeZeroDimensions(
     } else if (timings.indexOf(dimension.unit) !== -1) {
       node.value = '0s';
     } else if (dimension.unit === fraction) {
-        node.value = '0fr';
+      node.value = '0fr';
     } else if (dimension.unit === percentage) {
-        node.value = '0%';
+      node.value = '0%';
     } else if (!endFunction) {
       node.value = '0';
     }
