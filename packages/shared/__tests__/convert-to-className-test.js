@@ -24,6 +24,14 @@ describe('convert-to-className test', () => {
   test('keeps number for zIndex', () => {
     expect(convert(['zIndex', 10])).toEqual('z-index:10');
   });
+  test('keeps fr for 0 fraction values', () => {
+    expect(convert(['gridTemplateRows', '0fr'])).toEqual(
+      'grid-template-rows:0fr',
+    );
+  });
+  test('keeps fr for 0 percentage values', () => {
+    expect(convert(['flexBasis', '0%'])).toEqual('flex-basis:0%');
+  });
   test('keeps number for opacity', () => {
     expect(convert(['opacity', 0.25])).toEqual('opacity:.25');
   });
