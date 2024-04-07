@@ -3,33 +3,115 @@
   "version": "0.5.1",
   "description": "A library common values as variables to be used with Stylex.",
   "exports": {
-    "./lib/animationNames.stylex": "./lib/animationNames.stylex.js",
-    "./lib/animations.stylex": "./lib/animations.stylex.js",
-    "./lib/aspects.stylex": "./lib/aspects.stylex.js",
-    "./lib/borders.stylex": "./lib/borders.stylex.js",
-    "./lib/colors.stylex": "./lib/colors.stylex.js",
-    "./lib/colorsHSL.stylex": "./lib/colorsHSL.stylex.js",
-    "./lib/colorsOKLCH.stylex": "./lib/colorsOKLCH.stylex.js",
-    "./lib/colorsOKLCHHues.stylex": "./lib/colorsOKLCHHues.stylex.js",
-    "./lib/easings.stylex": "./lib/easings.stylex.js",
-    "./lib/fonts.stylex": "./lib/fonts.stylex.js",
-    "./lib/gradients.stylex": "./lib/gradients.stylex.js",
-    "./lib/grayOKLCH.stylex": "./lib/grayOKLCH.stylex.js",
-    "./lib/highlights.stylex": "./lib/highlights.stylex.js",
-    "./lib/layouts.stylex": "./lib/layouts.stylex.js",
-    "./lib/masksCornerCuts.stylex": "./lib/masksCornerCuts.stylex.js",
-    "./lib/masksEdges.stylex": "./lib/masksEdges.stylex.js",
-    "./lib/shadows.stylex": "./lib/shadows.stylex.js",
-    "./lib/sizes.stylex": "./lib/sizes.stylex.js",
-    "./lib/svg.stylex": "./lib/svg.stylex.js",
-    "./lib/zIndex.stylex": "./lib/zIndex.stylex.js"
+    "./lib/animationNames.stylex": {
+      "import": "./lib/animationNames.stylex.mjs",
+      "require": "./lib/animationNames.stylex.js",
+      "types": "./lib/animationNames.stylex.d.ts"
+    },
+    "./lib/animations.stylex": {
+      "import": "./lib/animations.stylex.mjs",
+      "require": "./lib/animations.stylex.js",
+      "types": "./lib/animations.stylex.d.ts"
+    },
+    "./lib/aspects.stylex": {
+      "import": "./lib/aspects.stylex.mjs",
+      "require": "./lib/aspects.stylex.js",
+      "types": "./lib/aspects.stylex.d.ts"
+    },
+    "./lib/borders.stylex": {
+      "import": "./lib/borders.stylex.mjs",
+      "require": "./lib/borders.stylex.js",
+      "types": "./lib/borders.stylex.d.ts"
+    },
+    "./lib/colors.stylex": {
+      "import": "./lib/colors.stylex.mjs",
+      "require": "./lib/colors.stylex.js",
+      "types": "./lib/colors.stylex.d.ts"
+    },
+    "./lib/colorsHSL.stylex": {
+      "import": "./lib/colorsHSL.stylex.mjs",
+      "require": "./lib/colorsHSL.stylex.js",
+      "types": "./lib/colorsHSL.stylex.d.ts"
+    },
+    "./lib/colorsOKLCH.stylex": {
+      "import": "./lib/colorsOKLCH.stylex.mjs",
+      "require": "./lib/colorsOKLCH.stylex.js",
+      "types": "./lib/colorsOKLCH.stylex.d.ts"
+    },
+    "./lib/colorsOKLCHHues.stylex": {
+      "import": "./lib/colorsOKLCHHues.stylex.mjs",
+      "require": "./lib/colorsOKLCHHues.stylex.js",
+      "types": "./lib/colorsOKLCHHues.stylex.d.ts"
+    },
+    "./lib/easings.stylex": {
+      "import": "./lib/easings.stylex.mjs",
+      "require": "./lib/easings.stylex.js",
+      "types": "./lib/easings.stylex.d.ts"
+    },
+    "./lib/fonts.stylex": {
+      "import": "./lib/fonts.stylex.mjs",
+      "require": "./lib/fonts.stylex.js",
+      "types": "./lib/fonts.stylex.d.ts"
+    },
+    "./lib/gradients.stylex": {
+      "import": "./lib/gradients.stylex.mjs",
+      "require": "./lib/gradients.stylex.js",
+      "types": "./lib/gradients.stylex.d.ts"
+    },
+    "./lib/grayOKLCH.stylex": {
+      "import": "./lib/grayOKLCH.stylex.mjs",
+      "require": "./lib/grayOKLCH.stylex.js",
+      "types": "./lib/grayOKLCH.stylex.d.ts"
+    },
+    "./lib/highlights.stylex": {
+      "import": "./lib/highlights.stylex.mjs",
+      "require": "./lib/highlights.stylex.js",
+      "types": "./lib/highlights.stylex.d.ts"
+    },
+    "./lib/layouts.stylex": {
+      "import": "./lib/layouts.stylex.mjs",
+      "require": "./lib/layouts.stylex.js",
+      "types": "./lib/layouts.stylex.d.ts"
+    },
+    "./lib/masksCornerCuts.stylex": {
+      "import": "./lib/masksCornerCuts.stylex.mjs",
+      "require": "./lib/masksCornerCuts.stylex.js",
+      "types": "./lib/masksCornerCuts.stylex.d.ts"
+    },
+    "./lib/masksEdges.stylex": {
+      "import": "./lib/masksEdges.stylex.mjs",
+      "require": "./lib/masksEdges.stylex.js",
+      "types": "./lib/masksEdges.stylex.d.ts"
+    },
+    "./lib/shadows.stylex": {
+      "import": "./lib/shadows.stylex.mjs",
+      "require": "./lib/shadows.stylex.js",
+      "types": "./lib/shadows.stylex.d.ts"
+    },
+    "./lib/sizes.stylex": {
+      "import": "./lib/sizes.stylex.mjs",
+      "require": "./lib/sizes.stylex.js",
+      "types": "./lib/sizes.stylex.d.ts"
+    },
+    "./lib/svg.stylex": {
+      "import": "./lib/svg.stylex.mjs",
+      "require": "./lib/svg.stylex.js",
+      "types": "./lib/svg.stylex.d.ts"
+    },
+    "./lib/zIndex.stylex": {
+      "import": "./lib/zIndex.stylex.mjs",
+      "require": "./lib/zIndex.stylex.js",
+      "types": "./lib/zIndex.stylex.d.ts"
+    }
   },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "test": "jest",
     "prebuild": "gen-types -i src/ -o lib/",
-    "build": "babel src/ --out-dir lib/ --copy-files"
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/ --out-file-extension .mjs"
   },
   "dependencies": {
     "@stylexjs/stylex": "0.5.1"
