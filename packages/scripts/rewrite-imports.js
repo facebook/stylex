@@ -62,7 +62,7 @@ async function rewriteImportsInFolder(
     );
     if (fileName === 'stylex.js') {
       outputFile = outputFile.replace(
-        'export default (_stylex: IStyleX);\n',
+        'export default _stylex as IStyleX;\n',
         '',
       );
     }
