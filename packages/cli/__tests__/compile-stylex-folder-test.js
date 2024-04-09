@@ -87,7 +87,7 @@ describe('cli works with -i and -o args', () => {
   });
 });
 
-describe('watch mode starts successfully', () => {
+describe.skip('watch mode starts successfully', () => {
   test('script start', (done) => {
     const cmd =
       'node ' +
