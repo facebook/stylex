@@ -1910,5 +1910,28 @@ describe('@stylexjs/babel-plugin', () => {
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
     });
+
+    test('Using styles from a for loop', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          function test(colors, obj) {
+            for (const color of colors) {
+              obj[color.key] = stylex(color.style);
+            }
+          }
+        `,
+          { dev: true, genConditionalClasses: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import stylex from '@stylexjs/stylex';
+        function test(colors, obj) {
+          for (const color of colors) {
+            obj[color.key] = stylex(color.style);
+          }
+        }"
+      `);
+    });
   });
 });
