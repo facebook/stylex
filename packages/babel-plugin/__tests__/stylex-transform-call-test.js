@@ -1564,7 +1564,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
   });
-  describe('Specific edge-case bugs', () => {
+  describe('Extreme use-cases', () => {
     test('Basic stylex call', () => {
       expect(
         transform(
@@ -1908,6 +1908,98 @@ describe('@stylexjs/babel-plugin', () => {
           3: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.sidebar x9f619 UnknownFile__styles.content x1fdo2jl",
           7: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.sidebar x9f619 UnknownFile__styles.content x1fdo2jl"
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
+      `);
+    });
+  });
+  describe('Accounts for edge-cases', () => {
+    test('Using stylex() in a for loop', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          function test(colors, obj) {
+            for (const color of colors) {
+              obj[color.key] = stylex(color.style);
+            }
+          }
+        `,
+          { dev: true, genConditionalClasses: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import stylex from '@stylexjs/stylex';
+        function test(colors, obj) {
+          for (const color of colors) {
+            obj[color.key] = stylex(color.style);
+          }
+        }"
+      `);
+    });
+    test('Using stylex.props() in a for loop', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          function test(colors, obj) {
+            for (const color of colors) {
+              obj[color.key] = stylex.props(color.style);
+            }
+          }
+        `,
+          { dev: true, genConditionalClasses: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import stylex from '@stylexjs/stylex';
+        function test(colors, obj) {
+          for (const color of colors) {
+            obj[color.key] = stylex.props(color.style);
+          }
+        }"
+      `);
+    });
+    test('trying to use an unknown style in stylex()', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            tileHeading: {
+              marginRight: 12,
+            },
+          });
+          stylex(styles.unknown);
+        `,
+          { dev: true, genConditionalClasses: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from '@stylexjs/stylex';
+        _inject2(".x1wsuqlk{margin-right:12px}", 4000);
+        const styles = {};
+        stylex(styles.unknown);"
+      `);
+    });
+    test('trying to use an unknown style in stylex.props()', () => {
+      expect(
+        transform(
+          `
+          import stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            tileHeading: {
+              marginRight: 12,
+            },
+          });
+          stylex.props(styles.unknown);
+        `,
+          { dev: true, genConditionalClasses: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from '@stylexjs/stylex';
+        _inject2(".x1wsuqlk{margin-right:12px}", 4000);
+        const styles = {};
+        stylex.props(styles.unknown);"
       `);
     });
   });

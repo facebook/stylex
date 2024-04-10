@@ -210,6 +210,11 @@ function evaluateCached(path: NodePath<>, state: State): any {
     const item: Result = { resolved: false };
     seen.set(node, item);
 
+    if (node == null) {
+      deopt(path, state);
+      return;
+    }
+
     const val = _evaluate(path, state);
     if (state.confident) {
       item.resolved = true;

@@ -166,7 +166,7 @@ export default function transformStylexAttrs(
           styleNonNullProps = true;
         } else {
           const { confident, value: styleValue } = evaluate(path, state);
-          if (!confident) {
+          if (!confident || styleValue == null) {
             nonNullProps = true;
             styleNonNullProps = true;
           } else {

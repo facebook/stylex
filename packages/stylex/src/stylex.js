@@ -125,7 +125,7 @@ function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 }
 
-function stylexDefineVars(styles: any) {
+function stylexDefineVars(styles: $FlowFixMe) {
   if (__implementations.defineVars) {
     return __implementations.defineVars(styles);
   }
