@@ -46,9 +46,9 @@ describe('stylex-keyframes test', () => {
       }),
     ).toMatchInlineSnapshot(`
       [
-        "x1jkcf39-B",
+        "x1id2van-B",
         {
-          "ltr": "@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}",
+          "ltr": "@keyframes x1id2van-B{from{inset-inline-start:0px;}to{inset-inline-start:500px;}}",
           "priority": 1,
           "rtl": null,
         },

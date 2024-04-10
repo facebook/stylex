@@ -81,7 +81,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1ghz6dp{margin:0}", 1000);
+        _inject2(".x1q9hu08{margin:0px}", 1000);
         _inject2(".xgsvwom{margin-left:1px}", 4000);"
       `);
     });
@@ -114,7 +114,9 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1jpfit1{transform:0deg}", 3000);"
+        _inject2(".x1hbt0ae{transform:0rad}", 3000);
+        _inject2(".xr5m4w3{transform:0turn}", 3000);
+        _inject2(".x17dlbb3{transform:0grad}", 3000);"
       `);
     });
 
