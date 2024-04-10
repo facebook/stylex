@@ -165,8 +165,8 @@ type TTokens = $ReadOnly<{
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
 export type FlattenTokens<T: TTokens> = {
-  +[Key in keyof T]: T[Key] extends CSSType<>
-    ? UnwrapVars<T[Key]['value']>
+  +[Key in keyof T]: T[Key] extends CSSType<string | number>
+    ? UnwrapVars<T[Key]>
     : T[Key] extends { +default: infer X, +[string]: infer Y }
       ? UnwrapVars<X | Y>
       : UnwrapVars<T[Key]>,
