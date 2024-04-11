@@ -2,6 +2,7 @@
   "name": "@stylexjs/open-props",
   "version": "0.5.1",
   "description": "A library common values as variables to be used with Stylex.",
+  "type": "module",
   "exports": {
     "./lib/animationNames.stylex": "./lib/animationNames.stylex.js",
     "./lib/animations.stylex": "./lib/animations.stylex.js",
