@@ -2,13 +2,21 @@
   "name": "@stylexjs/rollup-plugin",
   "version": "0.5.1",
   "description": "Rollup plugin for StyleX",
-  "main": "lib/index.js",
-  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/es/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    "import": "./lib/es/index.mjs",
+    "require": "./lib/index.js",
+    "types": "./lib/index.d.ts"
+  },
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
-    "build": "babel src/ --out-dir lib/ --copy-files",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
+    "build": "npm run build:cjs && npm run build:esm",
     "test": "jest"
   },
   "jest": {
