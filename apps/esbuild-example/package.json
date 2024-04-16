@@ -9,14 +9,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/open-props": "^0.5.1",
-    "@stylexjs/stylex": "^0.5.1",
+    "@stylexjs/open-props": "^0.6.0",
+    "@stylexjs/stylex": "^0.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@stylexjs/esbuild-plugin": "^0.5.1",
-    "@stylexjs/eslint-plugin": "^0.5.1",
+    "@stylexjs/esbuild-plugin": "^0.6.0",
+    "@stylexjs/eslint-plugin": "^0.6.0",
     "esbuild": "^0.19.12",
     "eslint": "^8.55.0"
   }
