@@ -2323,7 +2323,11 @@ const stylexValidStyles = {
                     {
                       type: 'array',
                       items: {
-                        oneOf: [{ type: 'string' }, { type: 'number' }],
+                        oneOf: [
+                          { type: 'null' },
+                          { type: 'string' },
+                          { type: 'number' },
+                        ],
                       },
                     },
                   ],
@@ -2411,7 +2415,21 @@ const stylexValidStyles = {
                 : typeof limit === 'string' || typeof limit === 'number'
                   ? makeUnionRule(limit, all)
                   : Array.isArray(limit)
-                    ? makeUnionRule(...limit, all)
+                    ? makeUnionRule(
+                        ...limit.map((l) => {
+                          if (l === '*') {
+                            return makeUnionRule(isString, isNumber);
+                          }
+                          if (l === 'string') {
+                            return isString;
+                          }
+                          if (l === 'number') {
+                            return isNumber;
+                          }
+                          return l;
+                        }),
+                        all,
+                      )
                     : undefined;
       if (overrideValue === undefined) {
         // skip
