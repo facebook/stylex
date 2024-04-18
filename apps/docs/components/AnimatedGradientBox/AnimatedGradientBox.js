@@ -18,17 +18,19 @@ export default function AnimatedGradientBox() {
       <div {...stylex.props(styles.card)}>
         <div {...stylex.props(styles.gradient)} />
         <div {...stylex.props(styles.gradient, styles.blur)} />
-        <div {...stylex.props(styles.bgColor)} />
       </div>
     </div>
   );
 }
 
-const COLOR_1 = '#052b2f';
-const COLOR_2 = '#073438';
-const COLOR_3 = '#0e4b50';
-const COLOR_4 = '#2d8f85';
-const COLOR_5 = '#637c54';
+const COLOR_1 = '#ffadad';
+const COLOR_2 = '#ffd6a5';
+const COLOR_3 = '#fdffb6';
+const COLOR_4 = '#caffbf';
+const COLOR_5 = '#9bf6ff';
+const COLOR_6 = '#a0c4ff';
+const COLOR_7 = '#bdb2ff';
+const COLOR_8 = '#ffc6ff';
 
 const rotate = stylex.keyframes({
   '0%': { [tokens.angle]: '0deg' },
@@ -41,7 +43,6 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     aspectRatio: '16 / 9',
-    backgroundColor: COLOR_2,
     borderRadius: 8,
     boxSizing: 'border-box',
     width: '100%',
@@ -61,17 +62,11 @@ const styles = stylex.create({
   gradient: {
     position: 'absolute',
     inset: 0,
-    backgroundImage: `conic-gradient(from ${tokens.angle}, ${COLOR_3}, ${COLOR_4}, ${COLOR_5}, ${COLOR_4}, ${COLOR_3})`,
+    backgroundImage: `conic-gradient(from ${tokens.angle}, ${COLOR_1}, ${COLOR_2}, ${COLOR_3}, ${COLOR_4}, ${COLOR_5}, ${COLOR_6}, ${COLOR_7}, ${COLOR_8}, ${COLOR_1})`,
     borderRadius: 16,
     animationName: rotate,
     animationDuration: '10s',
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite',
-  },
-  bgColor: {
-    position: 'absolute',
-    inset: '8px',
-    backgroundColor: COLOR_1,
-    borderRadius: 8,
   },
 });
