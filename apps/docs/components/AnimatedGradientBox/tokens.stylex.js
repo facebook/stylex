@@ -10,5 +10,5 @@
 import * as stylex from '@stylexjs/stylex';
 
 export const tokens = stylex.defineVars({
-  angle: '0deg',
+  angle: stylex.types.angle('0deg'),
 });

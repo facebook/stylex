@@ -15,7 +15,11 @@ import { tokens } from './tokens.stylex';
 export default function AnimatedGradientBox() {
   return (
     <div {...stylex.props(styles.container)}>
-      <div {...stylex.props(styles.card)} />
+      <div {...stylex.props(styles.card)}>
+        <div {...stylex.props(styles.gradient)} />
+        <div {...stylex.props(styles.gradient, styles.blur)} />
+        <div {...stylex.props(styles.bgColor)} />
+      </div>
     </div>
   );
 }
@@ -33,30 +37,41 @@ const rotate = stylex.keyframes({
 
 const styles = stylex.create({
   container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     aspectRatio: '16 / 9',
     backgroundColor: COLOR_2,
     borderRadius: 8,
     boxSizing: 'border-box',
-    padding: 64,
     width: '100%',
     marginBlock: 16,
+    zIndex: 0,
   },
   card: {
-    backgroundColor: COLOR_1,
-    borderRadius: 8,
-    height: '100%',
+    borderRadius: 16,
+    height: '65%',
     position: 'relative',
-    width: '100%',
+    width: '65%',
+    boxSizing: 'border-box',
+  },
+  blur: {
+    filter: 'blur(25px)',
   },
   gradient: {
     position: 'absolute',
-    inset: -8,
-    zIndex: -1,
+    inset: 0,
     backgroundImage: `conic-gradient(from ${tokens.angle}, ${COLOR_3}, ${COLOR_4}, ${COLOR_5}, ${COLOR_4}, ${COLOR_3})`,
     borderRadius: 16,
     animationName: rotate,
     animationDuration: '10s',
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite',
+  },
+  bgColor: {
+    position: 'absolute',
+    inset: '8px',
+    backgroundColor: COLOR_1,
+    borderRadius: 8,
   },
 });

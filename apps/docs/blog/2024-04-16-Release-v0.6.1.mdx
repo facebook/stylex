@@ -73,12 +73,8 @@ import * as stylex from '@stylexjs/stylex';
 import {typedTokens} from './tokens.stylex';
 
 const rotatingGradient = stylex.keyframes({
-  from: {
-    [typedTokens.angle]: '0deg',
-  },
-  to: {
-    [typedTokens.angle]: '360deg',
-  },
+  from: { [typedTokens.angle]: '0deg' },
+  to: { [typedTokens.angle]: '360deg' },
 });
 ```
 
@@ -89,8 +85,6 @@ This can be used achieve some interesting effects, such as animating the
 import AnimatedGradientBox from '../components/AnimatedGradientBox/AnimatedGradientBox';
 
 <AnimatedGradientBox />
-
-NOTE: TODO
 
 These new capability is primarily about CSS types, but the new API
 also makes the TypeScript (or Flow) types for the variables more powerful.
