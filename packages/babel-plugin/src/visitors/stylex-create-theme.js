@@ -10,11 +10,19 @@
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
-import { createTheme as stylexCreateTheme, messages } from '@stylexjs/shared';
+import {
+  createTheme as stylexCreateTheme,
+  messages,
+  // utils,
+  keyframes as stylexKeyframes,
+  types,
+  type InjectableStyle,
+} from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import * as pathUtils from '../babel-path-utils';
 import path from 'path';
+import type { FunctionConfig } from '../utils/evaluate-path';
 
 /// This function looks for `stylex.createTheme` calls and transforms them.
 //. 1. It finds the first two arguments to `stylex.createTheme` and validates those.
@@ -68,9 +76,46 @@ export default function transformStyleXCreateTheme(
       throw new Error(messages.NON_STATIC_VALUE);
     }
 
+    const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+
+    // eslint-disable-next-line no-inner-declarations
+    function keyframes<
+      Obj: {
+        +[key: string]: { +[k: string]: string | number },
+      },
+    >(animation: Obj): string {
+      const [animationName, injectedStyle] = stylexKeyframes(
+        animation,
+        state.options,
+      );
+      injectedKeyframes[animationName] = injectedStyle;
+      return animationName;
+    }
+
+    const identifiers: FunctionConfig['identifiers'] = {};
+    const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    state.stylexKeyframesImport.forEach((name) => {
+      identifiers[name] = { fn: keyframes };
+    });
+    state.stylexTypesImport.forEach((name) => {
+      identifiers[name] = types;
+    });
+    state.stylexImport.forEach((name) => {
+      if (memberExpressions[name] === undefined) {
+        memberExpressions[name] = {};
+      }
+
+      memberExpressions[name].keyframes = { fn: keyframes };
+      identifiers[name] = { ...(identifiers[name] ?? {}), types };
+    });
+
     const { confident: confident2, value: overrides } = evaluate(
       secondArg,
       state,
+      {
+        identifiers,
+        memberExpressions,
+      },
     );
     if (!confident2) {
       throw new Error(messages.NON_STATIC_VALUE);
@@ -117,9 +162,10 @@ export default function transformStyleXCreateTheme(
     // This should be a transformed variables object
     callExpressionPath.replaceWith(convertObjectToAST(overridesObj));
 
-    const listOfStyles = Object.entries(injectedStyles).map(
-      ([key, { priority, ...rest }]) => [key, rest, priority],
-    );
+    const listOfStyles = Object.entries({
+      ...injectedKeyframes,
+      ...injectedStyles,
+    }).map(([key, { priority, ...rest }]) => [key, rest, priority]);
 
     state.registerStyles(listOfStyles, variableDeclaratorPath);
   }

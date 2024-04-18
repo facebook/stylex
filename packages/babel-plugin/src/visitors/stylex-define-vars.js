@@ -15,6 +15,7 @@ import {
   messages,
   utils,
   keyframes as stylexKeyframes,
+  types as stylexTypes,
   type InjectableStyle,
 } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
@@ -93,12 +94,16 @@ export default function transformStyleXDefineVars(
     state.stylexKeyframesImport.forEach((name) => {
       identifiers[name] = { fn: keyframes };
     });
+    state.stylexTypesImport.forEach((name) => {
+      identifiers[name] = stylexTypes;
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] === undefined) {
         memberExpressions[name] = {};
       }
 
       memberExpressions[name].keyframes = { fn: keyframes };
+      identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
     });
 
     const { confident, value } = evaluate(firstArg, state, {

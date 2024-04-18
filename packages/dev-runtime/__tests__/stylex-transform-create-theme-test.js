@@ -87,5 +87,65 @@ describe('Development Plugin Transformation', () => {
         ]
       `);
     });
+
+    test('transforms typed style object', () => {
+      expect(
+        stylex.createTheme(
+          {
+            __themeName__: 'TestTheme.stylex.js//buttonTheme',
+            bgColor: 'var(--xgck17p)',
+            bgColorDisabled: 'var(--xpegid5)',
+            cornerRadius: 'var(--xrqfjmn)',
+            fgColor: 'var(--x4y59db)',
+          },
+          {
+            bgColor: stylex.types.color({
+              default: 'green',
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            }),
+            bgColorDisabled: stylex.types.color({
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            }),
+            cornerRadius: stylex.types.length({ default: '6px' }),
+            fgColor: stylex.types.color('coral'),
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "$$css": true,
+          "TestTheme.stylex.js//buttonTheme": "xtrlmmh",
+        }
+      `);
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xtrlmmh",
+            {
+              "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+              "rtl": undefined,
+            },
+            0.5,
+          ],
+          [
+            "xtrlmmh-1lveb7",
+            {
+              "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
+              "rtl": undefined,
+            },
+            0.6,
+          ],
+          [
+            "xtrlmmh-bdddrq",
+            {
+              "ltr": "@media print{.xtrlmmh{--xgck17p:transparent;}}",
+              "rtl": undefined,
+            },
+            0.6,
+          ],
+        ]
+      `);
+    });
   });
 });

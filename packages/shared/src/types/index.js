@@ -73,19 +73,20 @@ export const isCSSType = (value: mixed): value is CSSType<string | number> => {
   );
 };
 
-type AnguleValue = string;
-export class Angle<+T: AnguleValue> extends BaseCSSType implements CSSType<T> {
+type AngleValue = string;
+export class Angle<+T: AngleValue> extends BaseCSSType implements CSSType<T> {
   +value: ValueWithDefault;
   +syntax: CSSSyntaxType = '<angle>';
   static +syntax: CSSSyntaxType = '<angle>';
 
-  static create<T: AnguleValue = AnguleValue>(
-    value: ValueWithDefault,
-  ): Angle<T> {
+  static create<T: AngleValue = AngleValue>(value: ValueWithDefault): Angle<T> {
     return new Angle(value);
   }
 }
-export const angle = Angle.create;
+export const angle: <T: AngleValue = AngleValue>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => Angle<T> = Angle.create;
 
 type ColorValue = string;
 export class Color<+T: ColorValue> extends BaseCSSType implements CSSType<T> {
@@ -96,7 +97,10 @@ export class Color<+T: ColorValue> extends BaseCSSType implements CSSType<T> {
     return new Color(value);
   }
 }
-export const color = Color.create;
+export const color: <T: ColorValue = ColorValue>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => Color<T> = Color.create;
 
 type URLValue = string;
 
@@ -108,7 +112,9 @@ export class Url<+T: URLValue> extends BaseCSSType implements CSSType<T> {
     return new Url(value);
   }
 }
-export const url = Url.create;
+export const url: <T: URLValue = URLValue>(value: ValueWithDefault) => Url<T> =
+  // $FlowIgnore[method-unbinding]
+  Url.create;
 
 type ImageValue = string;
 
@@ -125,7 +131,10 @@ export class Image<+T: ImageValue> extends Url<T> implements CSSType<T> {
     return new Image(value);
   }
 }
-export const image = Image.create;
+export const image: <T: ImageValue = ImageValue>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => Image<T> = Image.create;
 
 type IntegerValue = number;
 
@@ -140,7 +149,9 @@ export class Integer<+T: IntegerValue>
     return new Integer(convertNumberToStringUsing(String, '0')(value));
   }
 }
-export const integer = Integer.create;
+export const integer: <T: IntegerValue = IntegerValue>(value: T) => Integer<T> =
+  // $FlowIgnore[method-unbinding]
+  Integer.create;
 
 type LengthPercentageValue = string;
 
@@ -163,7 +174,10 @@ export class LengthPercentage<+_T: LengthPercentageValue>
     return new LengthPercentage(convertNumberToPercentage(value));
   }
 }
-export const lengthPercentage = LengthPercentage.createLength;
+export const lengthPercentage: <_T: LengthPercentageValue | number>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => LengthPercentage<string> = LengthPercentage.createLength;
 
 type LengthValue = number | string;
 
@@ -180,7 +194,10 @@ export class Length<+_T: LengthValue>
     return new Length(convertNumberToLength(value));
   }
 }
-export const length = Length.create;
+export const length: <T: LengthValue = LengthValue>(
+  value: NestedWithNumbers,
+  // $FlowIgnore[method-unbinding]
+) => Length<T> = Length.create;
 
 type PercentageValue = string | number;
 
@@ -197,7 +214,10 @@ export class Percentage<+_T: PercentageValue>
     return new Percentage(convertNumberToPercentage(value));
   }
 }
-export const percentage = Percentage.create;
+export const percentage: <T: PercentageValue = PercentageValue>(
+  value: NestedWithNumbers,
+  // $FlowIgnore[method-unbinding]
+) => Percentage<T> = Percentage.create;
 
 type NumberValue = number;
 
@@ -211,7 +231,10 @@ export class Num<+T: NumberValue> extends BaseCSSType implements CSSType<T> {
     return new Num(convertNumberToBareString(value));
   }
 }
-export const number = Num.create;
+export const number: <T: NumberValue = NumberValue>(
+  value: NestedWithNumbers,
+  // $FlowIgnore[method-unbinding]
+) => Num<T> = Num.create;
 
 type ResolutionValue = string | 0;
 
@@ -228,7 +251,10 @@ export class Resolution<+T: ResolutionValue>
     return new Resolution(value);
   }
 }
-export const resolution = Resolution.create;
+export const resolution: <T: ResolutionValue = ResolutionValue>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => Resolution<T> = Resolution.create;
 
 type TimeValue = string | 0;
 
@@ -240,7 +266,10 @@ export class Time<+T: TimeValue> extends BaseCSSType implements CSSType<T> {
     return new Time(value);
   }
 }
-export const time = Time.create;
+export const time: <T: TimeValue = TimeValue>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => Time<T> = Time.create;
 
 type TransformFunctionValue = string;
 
@@ -257,7 +286,12 @@ export class TransformFunction<+T: TransformFunctionValue>
     return new TransformFunction(value);
   }
 }
-export const transformFunction = TransformFunction.create;
+export const transformFunction: <
+  T: TransformFunctionValue = TransformFunctionValue,
+>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => TransformFunction<T> = TransformFunction.create;
 
 type TransformListValue = string;
 
@@ -274,7 +308,10 @@ export class TransformList<T: TransformListValue>
     return new TransformList(value);
   }
 }
-export const transformList = TransformList.create;
+export const transformList: <T: TransformListValue = TransformListValue>(
+  value: ValueWithDefault,
+  // $FlowIgnore[method-unbinding]
+) => TransformList<T> = TransformList.create;
 
 const convertNumberToStringUsing =
   (
