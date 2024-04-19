@@ -14,7 +14,6 @@ import normalizeLeadingZero from './normalizers/leading-zero';
 import normalizeQuotes from './normalizers/quotes';
 import normalizeTimings from './normalizers/timings';
 import normalizeWhitespace from './normalizers/whitespace';
-import normalizeZeroDimensions from './normalizers/zero-dimensions';
 
 import detectUnclosedFns from './normalizers/detect-unclosed-fns';
 import parser from 'postcss-value-parser';
@@ -27,7 +26,6 @@ const normalizers = [
   detectUnclosedFns,
   normalizeWhitespace,
   normalizeTimings,
-  normalizeZeroDimensions,
   normalizeLeadingZero,
   normalizeQuotes,
   convertCamelCaseValues,

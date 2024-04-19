@@ -445,7 +445,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}", 3000);"
+        _inject2(".x8crwfo{box-shadow:0px 2px 4px var(--shadow-1)}", 3000, ".x8crwfo{box-shadow:-0px 2px 4px var(--shadow-1)}");"
       `);
     });
 
@@ -817,7 +817,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xud65wk{border-bottom-color:red}", 4000);
         _inject2(".x12oqio5{border-radius:4px}", 2000);
         _inject2(".x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}", 1000);
-        _inject2(".xexx8yu{padding-top:0}", 4000);
+        _inject2(".x1uu4ab4{padding-top:0px}", 4000);
         _inject2(".x1bg2uv5{border-color:green}", 2000);"
       `);
     });
@@ -850,8 +850,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
         _inject2(".x1fqp7bg{margin-bottom:15px}", 4000);
         _inject2(".xqsn43r{margin-inline-start:20px}", 3000);
-        _inject2(".x1ghz6dp{margin:0}", 1000);
-        "x1ghz6dp";"
+        _inject2(".x1q9hu08{margin:0px}", 1000);
+        "x1q9hu08";"
       `);
     });
 
@@ -989,7 +989,7 @@ describe('@stylexjs/babel-plugin', () => {
             paddingEnd: null,
             paddingRight: null,
             paddingBlock: null,
-            paddingTop: "xexx8yu",
+            paddingTop: "x1uu4ab4",
             paddingBottom: null,
             $$css: true
           },
@@ -1092,7 +1092,7 @@ describe('@stylexjs/babel-plugin', () => {
           default: {
             marginTop: "xxsse2n",
             marginRight: "x1wh8b8d",
-            marginBottom: "xat24cr",
+            marginBottom: "x1du4iog",
             $$css: true
           },
           error: {
@@ -1115,11 +1115,11 @@ describe('@stylexjs/babel-plugin', () => {
           short: {
             paddingBlock: "x190pm2f",
             paddingInline: "x1n86tx6",
-            paddingTop: "xexx8yu",
+            paddingTop: "x1uu4ab4",
             $$css: true
           },
           shortReversed: {
-            paddingTop: "xexx8yu",
+            paddingTop: "x1uu4ab4",
             paddingBlock: "x190pm2f",
             paddingInline: "x1n86tx6",
             $$css: true

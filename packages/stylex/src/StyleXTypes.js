@@ -135,17 +135,17 @@ declare class Var<+T> {
 // This is the type for the variables object
 export opaque type StyleXVar<+Val: mixed> = Var<Val>;
 
-export opaque type VarGroup<
+export type VarGroup<
   +Tokens: { +[string]: mixed },
   +_ID: string = string,
->: $ReadOnly<{ [Key in keyof Tokens]: StyleXVar<Tokens[Key]> }> = $ReadOnly<{
+> = $ReadOnly<{
   [Key in keyof Tokens]: StyleXVar<Tokens[Key]>,
 }>;
 
-export type TokensFromVarGroup<T: VarGroup<{ +[string]: mixed }>> =
-  T extends VarGroup<infer Tokens extends { +[string]: mixed }>
-    ? Tokens
-    : empty;
+export type TokensFromVarGroup<T: VarGroup<{ +[string]: mixed }>> = $ReadOnly<{
+  [Key in keyof T]: T[Key] extends StyleXVar<infer U> ? U : empty,
+}>;
+
 type IDFromVarGroup<+T: VarGroup<{ +[string]: mixed }>> =
   T extends VarGroup<{ +[string]: mixed }, infer ID> ? ID : empty;
 
@@ -165,8 +165,8 @@ type TTokens = $ReadOnly<{
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
 export type FlattenTokens<T: TTokens> = {
-  +[Key in keyof T]: T[Key] extends CSSType<>
-    ? UnwrapVars<T[Key]['value']>
+  +[Key in keyof T]: T[Key] extends CSSType<string | number>
+    ? UnwrapVars<T[Key]>
     : T[Key] extends { +default: infer X, +[string]: infer Y }
       ? UnwrapVars<X | Y>
       : UnwrapVars<T[Key]>,
