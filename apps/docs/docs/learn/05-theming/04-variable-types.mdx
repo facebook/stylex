@@ -41,21 +41,7 @@ with CSS. Some examples include:
 To assign types to variables in StyleX, you can use the various functions, such
 as `stylex.types.color` or `stylex.types.length`.
 
-The complete list of type functions is:
-
-- `stylex.types.angle`
-- `stylex.types.color`
-- `stylex.types.url`
-- `stylex.types.image`
-- `stylex.types.integer`
-- `stylex.types.lengthPercentage`
-- `stylex.types.length`
-- `stylex.types.percentage`
-- `stylex.types.number`
-- `stylex.types.resolution`
-- `stylex.types.time`
-- `stylex.types.transformFunction`
-- `stylex.types.transformList`
+Reference the [API documentation](../../api/javascript/types.mdx) for a full list of available functions.
 
 ## Usage
 
@@ -134,11 +120,11 @@ is required by the static types for type-safety.
 
 ## Example use-cases
 
-### Simulating `round()`
+### Simulating [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round)
 
-Modern browsers are [starting to support](https://caniuse.com/?search=round())
-the `round()` function in CSS. However, the feature can be simulated with
-a variable with an `integer` type:
+Modern browsers are starting to support
+the [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round) function in CSS. 
+However, the feature can be simulated with a variable with an `integer` type:
 
 ```tsx
 const styles = stylex.create({

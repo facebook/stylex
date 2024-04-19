@@ -11,7 +11,7 @@ tags:
   - release
 ---
 
-We're excited to release Stylex v0.5.0 with some big improvements for working
+We're excited to release Stylex v0.6.1 with some big improvements for working
 with CSS custom properties (aka "variables") as well as numerous bug-fixes.
 
 ## Improvements for Variables
@@ -89,13 +89,13 @@ const styles = stylex.create({
 ```
 
 This can be used achieve some interesting effects, such as animating the
-`angle` angle of a conic-gradient:
+`angle` of a conic-gradient:
 
 import AnimatedGradientBox from '../components/AnimatedGradientBox/AnimatedGradientBox';
 
 <AnimatedGradientBox />
 
-These new capability is primarily about CSS types, but the new API
+This new capability is primarily about CSS types, but the new API
 also makes the TypeScript (or Flow) types for the variables more powerful.
 
 As can be seen in the example, generic type arguments can be used to constrain
