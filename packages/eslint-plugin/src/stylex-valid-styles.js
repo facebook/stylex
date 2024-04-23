@@ -1298,6 +1298,10 @@ const textUnderlinePosition = makeUnionRule(
   makeLiteralRule('right'),
   isString,
 );
+const textUnderlineOffset = makeUnionRule(
+  makeLiteralRule('auto'),
+  isLength,
+);
 const touchAction = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
@@ -2176,6 +2180,7 @@ const CSSProperties = {
   textSizeAdjust: textSizeAdjust,
   textTransform: textTransform,
   textUnderlinePosition: textUnderlinePosition,
+  textUnderlineOffset: textUnderlineOffset,
   textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty'),
 
   touchAction: touchAction,
