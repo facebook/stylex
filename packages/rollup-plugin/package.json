@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/rollup-plugin",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Rollup plugin for StyleX",
   "main": "lib/index.js",
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.9",
-    "@stylexjs/babel-plugin": "0.6.0",
+    "@stylexjs/babel-plugin": "0.6.1",
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3"
