@@ -622,5 +622,56 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
     });
+
+    test('transforms variables object with stylex.types wrapper', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const buttonTheme = stylex.defineVars({
+            bgColor: stylex.types.color({
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            }),
+            bgColorDisabled: stylex.types.color({
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            }),
+            cornerRadius: stylex.types.length('10px'),
+            fgColor: stylex.types.color({
+              default: 'pink',
+            }),
+          });
+        `,
+          {
+            dev: true,
+            unstable_moduleResolution: {
+              type: 'commonJS',
+              rootDir,
+            },
+            filename: '/stylex/packages/utils/NestedTheme.stylex.js',
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2("@property --x1sm8rlu { syntax: \\"<color>\\"; inherits: true; initial-value: blue }", 0);
+        _inject2("@property --xxncinc { syntax: \\"<color>\\"; inherits: true; initial-value: grey }", 0);
+        _inject2("@property --x4e1236 { syntax: \\"<length>\\"; inherits: true; initial-value: 10px }", 0);
+        _inject2("@property --xv9uic { syntax: \\"<color>\\"; inherits: true; initial-value: pink }", 0);
+        _inject2(":root{--x1sm8rlu:blue;--xxncinc:grey;--x4e1236:10px;--xv9uic:pink;}", 0);
+        _inject2("@media (prefers-color-scheme: dark){:root{--x1sm8rlu:lightblue;--xxncinc:rgba(0, 0, 0, 0.8);}}", 0.1);
+        _inject2("@media print{:root{--x1sm8rlu:white;}}", 0.1);
+        export const buttonTheme = {
+          bgColor: "var(--x1sm8rlu)",
+          bgColorDisabled: "var(--xxncinc)",
+          cornerRadius: "var(--x4e1236)",
+          fgColor: "var(--xv9uic)",
+          __themeName__: "xmpye33"
+        };"
+      `);
+    });
   });
 });

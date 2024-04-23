@@ -88,5 +88,97 @@ describe('Development Plugin Transformation', () => {
         ]
       `);
     });
+    test('transforms typed vars', () => {
+      expect(
+        stylex.defineVars(
+          {
+            bgColor: stylex.types.color({
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            }),
+            bgColorDisabled: stylex.types.color({
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            }),
+            cornerRadius: stylex.types.length('10px'),
+            fgColor: stylex.types.color({
+              default: 'pink',
+            }),
+          },
+          {
+            themeName: 'buttonTheme',
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "__themeName__": "x1t4wu1b",
+          "bgColor": "var(--xay5bfx)",
+          "bgColorDisabled": "var(--xptvf7g)",
+          "cornerRadius": "var(--x1byau2i)",
+          "fgColor": "var(--x1ww5d7a)",
+        }
+      `);
+      expect(metadata).toMatchInlineSnapshot(`
+        [
+          [
+            "xay5bfx",
+            {
+              "ltr": "@property --xay5bfx { syntax: "<color>"; inherits: true; initial-value: blue }",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "xptvf7g",
+            {
+              "ltr": "@property --xptvf7g { syntax: "<color>"; inherits: true; initial-value: grey }",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "x1byau2i",
+            {
+              "ltr": "@property --x1byau2i { syntax: "<length>"; inherits: true; initial-value: 10px }",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "x1ww5d7a",
+            {
+              "ltr": "@property --x1ww5d7a { syntax: "<color>"; inherits: true; initial-value: pink }",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "x1t4wu1b",
+            {
+              "ltr": ":root{--xay5bfx:blue;--xptvf7g:grey;--x1byau2i:10px;--x1ww5d7a:pink;}",
+              "rtl": undefined,
+            },
+            0,
+          ],
+          [
+            "x1t4wu1b-1lveb7",
+            {
+              "ltr": "@media (prefers-color-scheme: dark){:root{--xay5bfx:lightblue;--xptvf7g:rgba(0, 0, 0, 0.8);}}",
+              "rtl": undefined,
+            },
+            0.1,
+          ],
+          [
+            "x1t4wu1b-bdddrq",
+            {
+              "ltr": "@media print{:root{--xay5bfx:white;}}",
+              "rtl": undefined,
+            },
+            0.1,
+          ],
+        ]
+      `);
+    });
   });
 });

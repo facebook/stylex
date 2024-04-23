@@ -52,15 +52,12 @@ function isInvalidMethod(val: string): boolean {
 
 export type FunctionConfig = {
   identifiers: {
-    [fnName: string]: {
-      fn: (...args: any[]) => any,
-      takesPath?: boolean,
-    },
+    [fnName: string]: $FlowFixMe,
   },
   memberExpressions: {
     [key: string]: {
       [memberName: string]: {
-        fn: (...args: any[]) => any,
+        fn: (...args: $FlowFixMe[]) => $FlowFixMe,
         takesPath?: boolean,
       },
     },
@@ -693,14 +690,20 @@ function _evaluate(path: NodePath<>, state: State): any {
         func = (val as $FlowFixMe)[property.node.name];
       }
 
-      const parsedObj = evaluate(object, state.traversalState, state.functions);
-      if (parsedObj.confident && pathUtils.isIdentifier(property)) {
-        func = parsedObj.value[property.node.name];
-        context = parsedObj.value;
-      }
-      if (parsedObj.confident && pathUtils.isStringLiteral(property)) {
-        func = parsedObj.value[property.node.value];
-        context = parsedObj.value;
+      if (func == null) {
+        const parsedObj = evaluate(
+          object,
+          state.traversalState,
+          state.functions,
+        );
+        if (parsedObj.confident && pathUtils.isIdentifier(property)) {
+          func = parsedObj.value[property.node.name];
+          context = parsedObj.value;
+        }
+        if (parsedObj.confident && pathUtils.isStringLiteral(property)) {
+          func = parsedObj.value[property.node.value];
+          context = parsedObj.value;
+        }
       }
     }
 
