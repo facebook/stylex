@@ -332,7 +332,8 @@ type fontStretch =
   | 'semi-expanded'
   | 'expanded'
   | 'extra-expanded'
-  | 'ultra-expanded';
+  | 'ultra-expanded'
+  | string;
 type fontStyle = 'normal' | 'italic' | 'oblique';
 type fontSynthesis = 'none' | string;
 type fontVariant = 'normal' | 'none' | string;
