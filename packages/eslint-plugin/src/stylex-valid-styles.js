@@ -1301,6 +1301,7 @@ const textUnderlinePosition = makeUnionRule(
 const textUnderlineOffset = makeUnionRule(
   makeLiteralRule('auto'),
   isLength,
+  isPercentage,
 );
 const touchAction = makeUnionRule(
   makeLiteralRule('auto'),
