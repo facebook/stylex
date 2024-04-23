@@ -61,30 +61,32 @@ const outputDir: string = args.output;
 const watchFiles: boolean = args.watch;
 const configFile: string = args.config;
 
-const absolutePath = process.cwd();
+const cwd = process.cwd();
+
+let config = {
+  input: path.normalize(path.join(cwd, inputDir)),
+  output: path.normalize(path.join(cwd, outputDir != null ? outputDir : 'src')),
+  cssBundleName: 'stylex_bundle.css',
+  mode: watchFiles ? 'watch' : undefined,
+};
 
 if (configFile) {
   const jsonConfig = fs.readFileSync(configFile);
   const parsed: Config = JSON5.parse(jsonConfig);
   // validate parsed input?
-  const config = {
-    input: path.normalize(path.join(absolutePath, parsed.input)),
-    output: path.normalize(path.join(absolutePath, parsed.output)),
-    cssBundleName: parsed.cssBundleName,
-    mode: parsed.mode,
+  config = {
+    ...config,
+    input:
+      config.input ??
+      path.normalize(path.join(path.dirname(configFile), parsed.input)),
+    output:
+      config.output ??
+      path.normalize(path.join(path.dirname(configFile), parsed.output)),
+    cssBundleName: config.cssBundleName ?? parsed.cssBundleName,
+    mode: config.mode ?? parsed.mode,
   };
-  start(config);
-} else {
-  const config = {
-    input: path.normalize(path.join(absolutePath, inputDir)),
-    output: path.normalize(
-      path.join(absolutePath, outputDir != null ? outputDir : 'src'),
-    ),
-    cssBundleName: 'stylex_bundle.css',
-    mode: watchFiles ? 'watch' : undefined,
-  };
-  start(config);
 }
+start(config);
 
 // loading config automatically https://github.com/unjs/c12
 // don't start with this
