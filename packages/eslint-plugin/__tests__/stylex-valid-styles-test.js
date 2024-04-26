@@ -1230,9 +1230,36 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
         },
       ],
     },
-    {code: `import{create}from'stylex';let s=create({b:{textUnderlineOffset:'auto'}})`},
-    {code: `import{create}from'stylex';let s=create({b:{textUnderlineOffset:'1px'}})`},
-    {code: `import{create}from'stylex';let s=create({b:{textUnderlineOffset:'100%'}})`},
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: 'auto',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: '1px',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: '100%',
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -1359,7 +1386,14 @@ This property is not supported in legacy StyleX resolution.`,
       ],
     },
     {
-      code: `import{create}from'stylex';let s=create({b:{textUnderlineOffset:''}})`,
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          b:{
+            textUnderlineOffset: '',
+          },
+        })
+      `,
       errors: [
         {
           message: `textUnderlineOffset value must be one of:
@@ -1371,8 +1405,8 @@ null
 initial
 inherit
 unset
-revert`
-        }
+revert`,
+        },
       ],
     },
   ],

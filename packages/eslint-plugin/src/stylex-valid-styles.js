@@ -2180,8 +2180,8 @@ const CSSProperties = {
   textShadow: textShadow,
   textSizeAdjust: textSizeAdjust,
   textTransform: textTransform,
-  textUnderlinePosition: textUnderlinePosition,
   textUnderlineOffset: textUnderlineOffset,
+  textUnderlinePosition: textUnderlinePosition,
   textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty'),
 
   touchAction: touchAction,
