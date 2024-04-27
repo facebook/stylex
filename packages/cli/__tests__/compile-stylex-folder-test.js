@@ -26,7 +26,7 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
     input: path.resolve('./source'),
     output: path.resolve('./src'),
     styleXBundleName: 'stylex_bundle.css',
-    modules: [] as Array<string>,
+    modules_EXPERIMENTAL: [] as Array<string>,
     watch: false,
   };
 
@@ -39,7 +39,6 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
   test(config.output, async () => {
     fs.mkdirSync(config.output);
     expect(files.isDir(config.output)).toBe(true);
-
     await transform.compileDirectory(config);
     const outputDir = fs.readdirSync(config.output, { recursive: true });
     for (const file of outputDir) {
@@ -61,9 +60,7 @@ describe('cli works with -i and -o args', () => {
     output: './src',
     cssBundleName: 'stylex_bundle.css',
   };
-
   afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));
-
   test('script start', (done) => {
     const cmd =
       'node ' +

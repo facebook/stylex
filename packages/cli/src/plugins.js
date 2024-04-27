@@ -63,7 +63,10 @@ export const createModuleImportModifierPlugin = (
                   return;
                 }
                 const module = sourcePath.split('node_modules/').pop();
-                if (config.modules != null && config.modules.includes(module)) {
+                if (
+                  config.modules_EXPERIMENTAL != null &&
+                  config.modules_EXPERIMENTAL.includes(module)
+                ) {
                   const moduleDir = nodePath.join(
                     config.output,
                     'stylex_compiled_modules',

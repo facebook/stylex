@@ -22,7 +22,7 @@ stylex -i [input_directory] -o [output_directory]
 
 #### `--input`
 
-The input directory to compile with Stylex `[string] [Required]`
+The input directory to compile with StyleX
 
 alias: `-i`
 
@@ -42,7 +42,7 @@ required: `true`
 
 #### `--styleXBundleName`
 
-The name of the core compiled css file StyleX creates
+The name of the compiled css file StyleX generates
 
 alias: `-b`
 
@@ -64,11 +64,11 @@ required: `false`
 
 default: `false`
 
-#### `--modules`
+#### `--modules_EXPERIMENTAL`
 
-A list of node modules to also compile with StyleX
+A list of node modules to also compile with StyleX.
 
-alias: `-w`
+alias: `-m`
 
 type: `array`
 
@@ -80,8 +80,6 @@ default: `[]`
 
 path of a .json (or .json5) config file
 
-default: `undefined`
-
 ### Config Structure
 
 You can create a `.json` or `.json5` config file and pass it to the CLI.
@@ -90,7 +88,7 @@ You can create a `.json` or `.json5` config file and pass it to the CLI.
 {
   "input": "./source",
   "output": "./src",
-  "modules": ["@stylexjs/open-props"],
+  "modules_EXPERIMENTAL": ["@stylexjs/open-props"],
   "styleXBundleName": "stylex_bundle.css",
   "watch": true
 }
