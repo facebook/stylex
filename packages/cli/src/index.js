@@ -20,7 +20,7 @@ import options from './options';
 import errors from './errors';
 import watcher from './watcher';
 import fs from 'fs';
-import { clearModuleDir, fetchModule } from './modules';
+import { clearModuleDir, compileNodeModules } from './modules';
 import type { Config } from './config';
 
 const primary = '#5B45DE';
@@ -64,13 +64,13 @@ const absolutePath = process.cwd();
 const input: string = path.normalize(path.join(absolutePath, args.input));
 const output: string = path.normalize(path.join(absolutePath, args.output));
 const watch: boolean = args.watch;
-const modules: Array<string> = args.modules;
+const modules_EXPERIMENTAL: Array<string> = args.modules;
 const styleXBundleName: string = args.styleXBundleName;
 
 const config: Config = {
   input,
   output,
-  modules,
+  modules_EXPERIMENTAL,
   watch,
   styleXBundleName,
 };
@@ -80,21 +80,12 @@ async function styleXCompile(config: Config) {
   if (!isDir(config.input)) {
     throw errors.dirNotFound;
   }
-  let addedModules = false;
-  if (config.modules.length > 0)
-    // copy any node modules to also compile to the input folder first, and then compile them directly
-    // need to do this in the output directory. We should be able to do output now because we figured out the issue with babel.
-    clearModuleDir(config);
-  for (const moduleName of config.modules) {
-    fetchModule(moduleName, config);
-    addedModules = true;
-  }
-
+  const shouldCleanModuleDir = compileNodeModules(config);
   if (config.watch) {
     watcher(config);
   } else {
     await compileDirectory(config);
-    if (addedModules) {
+    if (shouldCleanModuleDir) {
       clearModuleDir(config);
     }
   }

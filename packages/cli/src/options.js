@@ -35,9 +35,10 @@ const options: { [$Keys<Config>]: Options } = {
     type: 'boolean',
     default: false,
   },
-  modules: {
+  modules_EXPERIMENTAL: {
     alias: 'm',
-    describe: 'a list of node modules to also compile with StyleX',
+    describe:
+      'a list of node modules to also compile with StyleX. This is experimental and may not work for all modules',
     type: 'array',
     default: [],
   },

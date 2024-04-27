@@ -13,5 +13,5 @@ export type Config = {
   output: string,
   styleXBundleName: string,
   watch: boolean,
-  modules: Array<string>,
+  modules_EXPERIMENTAL: Array<string>,
 };

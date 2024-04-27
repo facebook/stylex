@@ -16,6 +16,22 @@ import path from 'path';
 
 const COMPILED_MODULES_DIR_NAME = 'stylex_compiled_modules';
 
+export function compileNodeModules(config: Config): boolean {
+  if (config.modules_EXPERIMENTAL === undefined) {
+    return false;
+  }
+  if (config.modules_EXPERIMENTAL.length === 0) {
+    return false;
+  }
+  let copiedNodeModule = false;
+  clearModuleDir(config);
+  for (const moduleName of config.modules_EXPERIMENTAL) {
+    fetchModule(moduleName, config);
+    copiedNodeModule = true;
+  }
+  return copiedNodeModule;
+}
+
 // "@stylexjs/open-props" -> "[absolute_path]/node_modules/@stylexjs/open-props"
 // can't just require.resolve because that will error on modules that don't have "main" defined in package.json (like open-props)
 export function findModuleDir(moduleName: string, config: Config): string {
