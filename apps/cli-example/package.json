@@ -1,6 +1,6 @@
 {
   "name": "next-swc-cli-example",
-  "version": "0.5.1",
+  "version": "0.6.1",
   "private": true,
   "scripts": {
     "transform": "stylex -c .stylex.json5"
@@ -8,10 +8,10 @@
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
-    "@stylexjs/open-props": "0.5.1"
+    "@stylexjs/open-props": "0.6.1"
   },
   "devDependencies": {
-    "@stylexjs/cli": "0.5.1",
+    "@stylexjs/cli": "0.6.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "typescript": "^5"
