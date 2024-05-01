@@ -28,6 +28,7 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
     styleXBundleName: 'stylex_bundle.css',
     modules_EXPERIMENTAL: [] as Array<string>,
     watch: false,
+    babelPresets: [],
   };
 
   afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));

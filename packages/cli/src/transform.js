@@ -11,8 +11,6 @@ import type { Rule } from '@stylexjs/babel-plugin';
 
 import path from 'path';
 import * as babel from '@babel/core';
-import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
-import typescriptPlugin from '@babel/plugin-transform-typescript';
 import styleXPlugin from '@stylexjs/babel-plugin';
 import {
   copyFile,
@@ -104,16 +102,15 @@ export async function transformFile(
   );
   const result = await babel.transformFileAsync(inputFilePath, {
     babelrc: false,
+    presets: config.babelPresets,
     plugins: [
       createModuleImportModifierPlugin(outputFilePath, config),
-      jsxSyntaxPlugin,
-      [typescriptPlugin, { isTSX: true }],
       [
         styleXPlugin,
         {
           unstable_moduleResolution: {
             type: 'commonJS',
-            // This assumes that your input and output are at the same level
+            // This assumes that your input and output are in the same directory
             rootDir: path.parse(config.output).dir,
           },
         },

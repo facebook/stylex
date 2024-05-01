@@ -64,8 +64,9 @@ const absolutePath = process.cwd();
 const input: string = path.normalize(path.join(absolutePath, args.input));
 const output: string = path.normalize(path.join(absolutePath, args.output));
 const watch: boolean = args.watch;
-const modules_EXPERIMENTAL: Array<string> = args.modules;
 const styleXBundleName: string = args.styleXBundleName;
+const modules_EXPERIMENTAL: Array<string> = args.modules_EXPERIMENTAL;
+const babelPresets: Array<any> = args.babelPresets;
 
 const config: Config = {
   input,
@@ -73,6 +74,7 @@ const config: Config = {
   modules_EXPERIMENTAL,
   watch,
   styleXBundleName,
+  babelPresets,
 };
 styleXCompile(config);
 

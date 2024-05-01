@@ -35,6 +35,12 @@ const options: { [$Keys<Config>]: Options } = {
     type: 'boolean',
     default: false,
   },
+  babelPresets: {
+    describe:
+      'A list of babel presets to pass to the babel transform when compiling StyleX',
+    type: 'array',
+    default: [],
+  },
   modules_EXPERIMENTAL: {
     alias: 'm',
     describe:
