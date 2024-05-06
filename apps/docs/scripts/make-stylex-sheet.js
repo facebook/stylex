@@ -66,7 +66,7 @@ async function getAllFilesOfType(folder, type) {
 
 async function genSheet() {
   const componentsPromise = getAllFilesOfType(
-    path.join(__dirname, '../components'),
+    path.join(__dirname, '../compiled_components'),
     '.js',
   );
   const pagesPromise = getAllFilesOfType(path.join(__dirname, '../src'), '.js');

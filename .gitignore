@@ -7,3 +7,5 @@ coverage
 dist
 lib
 node_modules
+apps/docs/compiled_components/
+apps/docs/src/
