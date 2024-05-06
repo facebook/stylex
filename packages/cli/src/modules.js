@@ -8,7 +8,7 @@
  * @flow strict
  */
 
-import type { Config } from './config';
+import type { TransformConfig } from './config';
 
 import fs from 'fs';
 import { createRequire } from 'module';
@@ -16,7 +16,7 @@ import path from 'path';
 
 const COMPILED_MODULES_DIR_NAME = 'stylex_compiled_modules';
 
-export function compileNodeModules(config: Config): boolean {
+export function copyNodeModules(config: TransformConfig): boolean {
   if (config.modules_EXPERIMENTAL === undefined) {
     return false;
   }
@@ -24,7 +24,7 @@ export function compileNodeModules(config: Config): boolean {
     return false;
   }
   let copiedNodeModule = false;
-  clearModuleDir(config);
+  clearInputModuleDir(config);
   for (const moduleName of config.modules_EXPERIMENTAL) {
     fetchModule(moduleName, config);
     copiedNodeModule = true;
@@ -34,7 +34,10 @@ export function compileNodeModules(config: Config): boolean {
 
 // "@stylexjs/open-props" -> "[absolute_path]/node_modules/@stylexjs/open-props"
 // can't just require.resolve because that will error on modules that don't have "main" defined in package.json (like open-props)
-export function findModuleDir(moduleName: string, config: Config): string {
+export function findModuleDir(
+  moduleName: string,
+  config: TransformConfig,
+): string {
   const packageName = moduleName.includes('/')
     ? moduleName.startsWith('@')
       ? moduleName.split('/').slice(0, 2).join('/')
@@ -51,7 +54,7 @@ export function findModuleDir(moduleName: string, config: Config): string {
   return possiblePaths.find((p) => fs.existsSync(p));
 }
 
-export function clearModuleDir(config: Config) {
+export function clearInputModuleDir(config: TransformConfig) {
   const compiledModuleDir = path.join(config.input, COMPILED_MODULES_DIR_NAME);
   if (fs.existsSync(compiledModuleDir)) {
     fs.rmSync(compiledModuleDir, {
@@ -61,7 +64,7 @@ export function clearModuleDir(config: Config) {
   }
 }
 
-export function fetchModule(moduleName: string, config: Config): void {
+export function fetchModule(moduleName: string, config: TransformConfig): void {
   const compiledModuleDir = path.join(config.input, COMPILED_MODULES_DIR_NAME);
   const moduleDir = findModuleDir(moduleName, config);
   fs.rmSync(compiledModuleDir, {
@@ -75,4 +78,8 @@ export function fetchModule(moduleName: string, config: Config): void {
     // needed because sometimes node modules are symlinks
     dereference: true,
   });
+  config.state.compiledNodeModuleDir = path.join(
+    config.output,
+    COMPILED_MODULES_DIR_NAME,
+  );
 }

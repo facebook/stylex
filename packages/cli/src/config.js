@@ -8,11 +8,26 @@
  * @flow strict
  */
 
-export type Config = {
-  input: string,
-  output: string,
+import type { Rule } from '@stylexjs/babel-plugin';
+
+export type CliConfig = {
+  input: $ReadOnlyArray<string>,
+  output: $ReadOnlyArray<string>,
   styleXBundleName: string,
   watch: boolean,
-  babelPresets: Array<any>,
-  modules_EXPERIMENTAL: Array<string>,
+  babelPresets: $ReadOnlyArray<any>,
+  modules_EXPERIMENTAL: $ReadOnlyArray<string>,
+};
+
+export type TransformConfig = {
+  ...CliConfig,
+  input: string,
+  output: string,
+  state: {
+    compiledCSSDir: ?string,
+    compiledNodeModuleDir: ?string,
+    styleXRules: Map<string, Array<Rule>>,
+    compiledJS: Map<string, string>,
+    copiedNodeModules: boolean,
+  },
 };

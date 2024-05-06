@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Config } from './config';
+import type { TransformConfig } from './config';
 import type { NodePath } from '@babel/traverse';
 import { getRelativePath } from './files';
 import { findModuleDir } from './modules';
@@ -48,7 +48,7 @@ export const createImportPlugin = (
  */
 export const createModuleImportModifierPlugin = (
   filePath: string,
-  config: Config,
+  config: TransformConfig,
 ): ImportModifierPlugin => {
   return {
     visitor: {
@@ -67,13 +67,19 @@ export const createModuleImportModifierPlugin = (
                   config.modules_EXPERIMENTAL != null &&
                   config.modules_EXPERIMENTAL.includes(module)
                 ) {
-                  const moduleDir = nodePath.join(
-                    config.output,
-                    'stylex_compiled_modules',
-                    module,
-                    source.split(module).pop(),
-                  );
-
+                  const moduleDir = config.state.compiledNodeModuleDir
+                    ? nodePath.join(
+                        config.state.compiledNodeModuleDir,
+                        module,
+                        source.split(module).pop(),
+                      )
+                    : nodePath.join(
+                        config.output,
+                        'stylex_compiled_modules',
+                        module,
+                        source.split(module).pop(),
+                      );
+                  console.log(moduleDir);
                   const relativePath = getRelativePath(filePath, moduleDir);
                   console.log(relativePath);
                   const newImport = t.importDeclaration(

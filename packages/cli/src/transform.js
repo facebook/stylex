@@ -20,27 +20,24 @@ import {
   writeCompiledJS,
   getRelativePath,
 } from './files';
-import type { Config } from './config';
+import type { TransformConfig } from './config';
 import chalk from 'chalk';
 import fs from 'fs';
 import {
   createImportPlugin,
   createModuleImportModifierPlugin,
 } from './plugins';
-import { clearModuleDir } from './modules';
-
-const allStyleXRules = new Map<string, Array<Rule>>();
-const compiledJS = new Map<string, string>();
+import { clearInputModuleDir } from './modules';
 
 export async function compileDirectory(
-  config: Config,
+  config: TransformConfig,
   filesToCompile?: Array<string>,
   filesToDelete?: Array<string>,
 ) {
-  console.log(allStyleXRules.keys());
+  console.log(config.state.styleXRules.keys());
   if (filesToDelete) {
     filesToDelete.forEach((file) => {
-      allStyleXRules.delete(file);
+      config.state.styleXRules.delete(file);
       fs.rmSync(path.join(config.output, file));
     });
   }
@@ -60,21 +57,29 @@ export async function compileDirectory(
       }
     }
     const compiledCSS = await styleXPlugin.processStylexRules(
-      Array.from(allStyleXRules.values()).flat(),
+      Array.from(config.state.styleXRules.values()).flat(),
     );
 
     const cssBundlePath = path.join(config.output, config.styleXBundleName);
-    writeCompiledCSS(cssBundlePath, compiledCSS);
+    if (config.state.compiledCSSDir == null) {
+      config.state.compiledCSSDir = cssBundlePath;
+    }
+    writeCompiledCSS(
+      config.state.compiledCSSDir != null
+        ? config.state.compiledCSSDir
+        : cssBundlePath,
+      compiledCSS,
+    );
   } catch (err) {
     fs.rmSync(config.output, { recursive: true, force: true });
-    clearModuleDir(config);
+    clearInputModuleDir(config);
     throw err;
   }
 }
 
 export async function compileFile(
   filePath: string,
-  config: Config,
+  config: TransformConfig,
 ): Promise<?string> {
   const inputFilePath = path.join(config.input, filePath);
   const outputFilePath = path.join(config.output, filePath);
@@ -85,8 +90,8 @@ export async function compileFile(
     config,
   );
   if (code != null) {
-    compiledJS.set(filePath, code);
-    allStyleXRules.set(filePath, rules);
+    config.state.compiledJS.set(filePath, code);
+    config.state.styleXRules.set(filePath, rules);
     writeCompiledJS(outputFilePath, code);
   }
 }
@@ -94,11 +99,13 @@ export async function compileFile(
 export async function transformFile(
   inputFilePath: string,
   outputFilePath: string,
-  config: Config,
+  config: TransformConfig,
 ): Promise<[?string, Array<Rule>]> {
   const relativeImport = getRelativePath(
     outputFilePath,
-    path.join(config.output, config.styleXBundleName),
+    config.state.compiledCSSDir != null
+      ? config.state.compiledCSSDir
+      : path.join(config.output, config.styleXBundleName),
   );
   const result = await babel.transformFileAsync(inputFilePath, {
     babelrc: false,

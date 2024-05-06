@@ -1,6 +1,6 @@
 {
-    "input": "./source",
-    "output": "./src",
+    "input": ["./source"],
+    "output": ["./src"],
     "cssBundleName": "stylex_bundle.css",
     "babelPresets": [
       ["@babel/preset-typescript", { "allExtensions": "true", "isTSX": "true" }],

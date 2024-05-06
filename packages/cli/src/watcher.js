@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { Config } from './config';
+import type { TransformConfig } from './config';
 
 import { compileDirectory } from './transform';
 
@@ -46,7 +46,7 @@ declare class WatchmanClient {
   end(): void;
 }
 
-export default function watch(config: Config) {
+export default function watch(config: TransformConfig) {
   const watchmanClient: WatchmanClient = new watchman.Client();
 
   watchmanClient.capabilityCheck(
@@ -84,7 +84,7 @@ function subscribe(
   client: WatchmanClient,
   watcher: Watcher,
   relative_path: string,
-  config: Config,
+  config: TransformConfig,
 ) {
   const subscription: Subscription = {
     expression: [

@@ -7,20 +7,20 @@
  * @flow strict
  */
 
-import type { Config } from './config';
+import type { CliConfig } from './config';
 import type { Options } from 'yargs';
 
-const options: { [$Keys<Config>]: Options } = {
+const options: { [$Keys<CliConfig>]: Options } = {
   input: {
     alias: 'i',
     describe: 'The input directory to compile with Stylex',
-    type: 'string',
+    type: 'array',
     demandOption: true,
   },
   output: {
     alias: 'o',
     describe: 'Name of the output directory',
-    type: 'string',
+    type: 'array',
     demandOption: true,
   },
   styleXBundleName: {

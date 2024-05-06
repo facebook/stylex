@@ -9,10 +9,14 @@
 
 type Errors = $ReadOnly<{
   dirNotFound: Error,
+  inputOutputMismatch: Error,
 }>;
 
 const errors: Errors = {
   dirNotFound: new Error('Invalid Directory: Not Found'),
+  inputOutputMismatch: new Error(
+    'Every input directory must have a corresponding output.',
+  ),
 };
 
 export default errors;

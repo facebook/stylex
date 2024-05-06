@@ -9,6 +9,7 @@
  */
 
 import type { Argv } from 'yargs';
+import type { Rule } from '@stylexjs/babel-plugin';
 import yargs from 'yargs';
 import path from 'path';
 import chalk from 'chalk';
@@ -20,8 +21,8 @@ import options from './options';
 import errors from './errors';
 import watcher from './watcher';
 import fs from 'fs';
-import { clearModuleDir, compileNodeModules } from './modules';
-import type { Config } from './config';
+import { clearInputModuleDir, copyNodeModules } from './modules';
+import type { CliConfig, TransformConfig } from './config';
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -61,14 +62,14 @@ const args: Argv = yargs(process.argv)
 
 const absolutePath = process.cwd();
 
-const input: string = path.normalize(path.join(absolutePath, args.input));
-const output: string = path.normalize(path.join(absolutePath, args.output));
+const input: Array<string> = args.input;
+const output: Array<string> = args.output;
 const watch: boolean = args.watch;
 const styleXBundleName: string = args.styleXBundleName;
 const modules_EXPERIMENTAL: Array<string> = args.modules_EXPERIMENTAL;
 const babelPresets: Array<any> = args.babelPresets;
 
-const config: Config = {
+const cliArgsConfig: CliConfig = {
   input,
   output,
   modules_EXPERIMENTAL,
@@ -76,19 +77,47 @@ const config: Config = {
   styleXBundleName,
   babelPresets,
 };
-styleXCompile(config);
 
-async function styleXCompile(config: Config) {
-  if (!isDir(config.input)) {
-    throw errors.dirNotFound;
+styleXCompile(cliArgsConfig);
+
+// TODO:
+// handle watching multiple directories
+// write tests for multi-directory in/out
+
+async function styleXCompile(cliArgsConfig: CliConfig) {
+  if (cliArgsConfig.input.length !== cliArgsConfig.output.length) {
+    throw errors.inputOutputMismatch;
   }
-  const shouldCleanModuleDir = compileNodeModules(config);
-  if (config.watch) {
-    watcher(config);
-  } else {
-    await compileDirectory(config);
-    if (shouldCleanModuleDir) {
-      clearModuleDir(config);
+  const configState = {
+    compiledCSSDir: null,
+    compiledNodeModuleDir: null,
+    compiledJS: new Map<string, string>(),
+    styleXRules: new Map<string, Array<Rule>>(),
+    copiedNodeModules: false,
+  };
+  for (let i = 0; i < cliArgsConfig.input.length; i++) {
+    const config: TransformConfig = {
+      input: path.normalize(path.join(absolutePath, cliArgsConfig.input[i])),
+      output: path.normalize(path.join(absolutePath, cliArgsConfig.output[i])),
+      modules_EXPERIMENTAL,
+      watch,
+      styleXBundleName,
+      babelPresets,
+      state: configState,
+    };
+    if (!isDir(config.input)) {
+      throw errors.dirNotFound;
+    }
+    if (!config.state.copiedNodeModules) {
+      config.state.copiedNodeModules = copyNodeModules(config);
+    }
+    if (config.watch) {
+      watcher(config);
+    } else {
+      await compileDirectory(config);
+      if (config.state.copiedNodeModules) {
+        clearInputModuleDir(config);
+      }
     }
   }
 }

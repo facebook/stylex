@@ -9,6 +9,8 @@
 
 'use strict';
 
+import type { CliConfig, TransformConfig } from '../src/config';
+
 const fs = require('fs');
 const transform = require('../src/transform');
 const files = require('../src/files');
@@ -22,13 +24,20 @@ const snapshot = './snapshot';
 
 describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
   // need to resolve to absolute paths because the compileDirectory function is expecting them.
-  const config = {
+  const config: TransformConfig = {
     input: path.resolve('./source'),
     output: path.resolve('./src'),
     styleXBundleName: 'stylex_bundle.css',
     modules_EXPERIMENTAL: [] as Array<string>,
     watch: false,
     babelPresets: [],
+    state: {
+      compiledCSSDir: null,
+      compiledNodeModuleDir: null,
+      compiledJS: new Map(),
+      styleXRules: new Map(),
+      copiedNodeModules: false,
+    },
   };
 
   afterAll(() => fs.rmSync(config.output, { recursive: true, force: true }));
@@ -96,6 +105,19 @@ describe('cli works with -i and -o args', () => {
     });
   });
 });
+
+describe('cli works with multiple inputs and outputs', () => {
+  const _config: CliConfig = {
+    input: [path.resolve('./source')],
+    output: [path.resolve('./src')],
+    styleXBundleName: 'stylex_bundle.css',
+    modules_EXPERIMENTAL: [] as Array<string>,
+    watch: false,
+    babelPresets: [],
+  };
+});
+
+describe('cli compiles node_modules that have .stylex.js files in them', () => {});
 
 describe('individual testing of util functions', () => {
   const config = {
