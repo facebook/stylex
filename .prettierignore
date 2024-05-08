@@ -7,4 +7,4 @@ coverage
 lib
 node_modules
 *.mdx
-**/__mocks__/snapshot
+**/__mocks__/snapshot*

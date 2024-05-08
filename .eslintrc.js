@@ -36,7 +36,7 @@ module.exports = {
     'node_modules',
     'next-env.d.ts',
     'next.config.js',
-    '**/__mocks__/snapshot',
+    '**/__mocks__/snapshot*',
   ],
   globals: {
     $Call: 'readonly',
