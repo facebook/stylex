@@ -2299,7 +2299,18 @@ const stylexValidStyles = {
         properties: {
           validImports: {
             type: 'array',
-            items: { type: 'string' },
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
             default: ['stylex', '@stylexjs/stylex'],
           },
           allowOuterPseudoAndMedia: {
@@ -2355,7 +2366,13 @@ const stylexValidStyles = {
     };
 
     type Schema = {
-      validImports: Array<string>,
+      validImports: Array<
+        | string
+        | {
+            from: string,
+            as: string,
+          },
+      >,
       allowOuterPseudoAndMedia: boolean,
       banPropsForLegacy: boolean,
       propLimits?: PropLimits,
@@ -2820,7 +2837,15 @@ const stylexValidStyles = {
           return;
         }
         const sourceValue = node.source.value;
-        const isStylexImport = importsToLookFor.includes(sourceValue);
+
+        const foundImportSource = importsToLookFor.find((importSource) => {
+          if (typeof importSource === 'string') {
+            return importSource === sourceValue;
+          }
+          return importSource.from === sourceValue;
+        });
+
+        const isStylexImport = foundImportSource !== undefined;
         const isStylexDefineVarsImport = sourceValue.endsWith(
           stylexDefineVarsFileExtension,
         );
@@ -2828,26 +2853,38 @@ const stylexValidStyles = {
           return;
         }
         if (isStylexImport) {
-          node.specifiers.forEach((specifier) => {
-            if (
-              specifier.type === 'ImportDefaultSpecifier' ||
-              specifier.type === 'ImportNamespaceSpecifier'
-            ) {
-              styleXDefaultImports.add(specifier.local.name);
-            }
-            if (
-              specifier.type === 'ImportSpecifier' &&
-              specifier.imported.name === 'create'
-            ) {
-              styleXCreateImports.add(specifier.local.name);
-            }
-            if (
-              specifier.type === 'ImportSpecifier' &&
-              specifier.imported.name === 'keyframes'
-            ) {
-              styleXKeyframesImports.add(specifier.local.name);
-            }
-          });
+          if (typeof foundImportSource === 'string') {
+            node.specifiers.forEach((specifier) => {
+              if (
+                specifier.type === 'ImportDefaultSpecifier' ||
+                specifier.type === 'ImportNamespaceSpecifier'
+              ) {
+                styleXDefaultImports.add(specifier.local.name);
+              }
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === 'create'
+              ) {
+                styleXCreateImports.add(specifier.local.name);
+              }
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === 'keyframes'
+              ) {
+                styleXKeyframesImports.add(specifier.local.name);
+              }
+            });
+          }
+
+          if (typeof foundImportSource === 'object') {
+            node.specifiers.forEach((specifier) => {
+              if (specifier.type === 'ImportSpecifier') {
+                if (specifier.imported.name === foundImportSource.as) {
+                  styleXDefaultImports.add(specifier.local.name);
+                }
+              }
+            });
+          }
         }
 
         if (isStylexDefineVarsImport) {
