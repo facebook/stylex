@@ -26,7 +26,13 @@ import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
-  validImports: Array<string>,
+  validImports: Array<
+    | string
+    | {
+        from: string,
+        as: string,
+      },
+  >,
   minKeys: number,
   allowLineSeparatedGroups: boolean,
 };
@@ -65,7 +71,18 @@ const stylexSortKeys = {
         properties: {
           validImports: {
             type: 'array',
-            items: { type: 'string' },
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
             default: ['stylex', '@stylexjs/stylex'],
           },
           minKeys: {
@@ -129,32 +146,47 @@ const stylexSortKeys = {
           return;
         }
 
-        if (!importsToLookFor.includes(node.source.value)) {
-          return;
+        const foundImportSource = importsToLookFor.find((importSource) => {
+          if (typeof importSource === 'string') {
+            return importSource === node.source.value;
+          }
+          return importSource.from === node.source.value;
+        });
+
+        if (typeof foundImportSource === 'string') {
+          node.specifiers.forEach((specifier) => {
+            if (
+              specifier.type === 'ImportDefaultSpecifier' ||
+              specifier.type === 'ImportNamespaceSpecifier'
+            ) {
+              styleXDefaultImports.add(specifier.local.name);
+            }
+
+            if (
+              specifier.type === 'ImportSpecifier' &&
+              specifier.imported.name === 'create'
+            ) {
+              styleXCreateImports.add(specifier.local.name);
+            }
+
+            if (
+              specifier.type === 'ImportSpecifier' &&
+              specifier.imported.name === 'keyframes'
+            ) {
+              styleXKeyframesImports.add(specifier.local.name);
+            }
+          });
         }
 
-        node.specifiers.forEach((specifier) => {
-          if (
-            specifier.type === 'ImportDefaultSpecifier' ||
-            specifier.type === 'ImportNamespaceSpecifier'
-          ) {
-            styleXDefaultImports.add(specifier.local.name);
-          }
-
-          if (
-            specifier.type === 'ImportSpecifier' &&
-            specifier.imported.name === 'create'
-          ) {
-            styleXCreateImports.add(specifier.local.name);
-          }
-
-          if (
-            specifier.type === 'ImportSpecifier' &&
-            specifier.imported.name === 'keyframes'
-          ) {
-            styleXKeyframesImports.add(specifier.local.name);
-          }
-        });
+        if (typeof foundImportSource === 'object') {
+          node.specifiers.forEach((specifier) => {
+            if (specifier.type === 'ImportSpecifier') {
+              if (specifier.imported.name === foundImportSource.as) {
+                styleXDefaultImports.add(specifier.local.name);
+              }
+            }
+          });
+        }
       },
       CallExpression(
         node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
