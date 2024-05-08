@@ -123,16 +123,21 @@ describe('cli works with multiple inputs and outputs', () => {
     watch: false,
     babelPresets: [],
   };
+  afterAll(() => clearTestDir(config));
   test('script compiles multiple directories', (done) => {
     const onClose = () => {
-      let snapshotDir = './snapshot';
+      let isSecondOutput = false;
       for (const dir of config.output) {
         if (dir.endsWith('src2')) {
-          snapshotDir = './snapshot2';
+          isSecondOutput = true;
         }
         const outputDir = fs.readdirSync(dir, { recursive: true });
         for (const file of outputDir) {
+          if (isSecondOutput) {
+            expect(file).not.toContain(config.styleXBundleName);
+          }
           const outputPath = path.join(dir, file);
+          const snapshotDir = isSecondOutput ? snapshot + '2' : snapshot;
           const snapshotPath = path.join(snapshotDir, file);
           expect(fs.existsSync(snapshotPath)).toBe(true);
           if (path.extname(outputPath) === '.js') {
