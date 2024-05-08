@@ -116,6 +116,18 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+      import { css } from 'a';
+      const styles = css.create({
+        button: {
+          borderColor: 'black',
+          display: 'flex',
+        }
+      });
+      `,
+    },
+    {
       code: `
         import { keyframes } from 'stylex';
         const someAnimation = keyframes({
@@ -551,7 +563,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       code: `
       import stylex from 'stylex';
       const styles = stylex.create({
-        foo: {      
+        foo: {
           backgroundColor: 'red',             //       foo
           alignItems: 'center'       // baz
         }
@@ -560,7 +572,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       output: `
       import stylex from 'stylex';
       const styles = stylex.create({
-        foo: {      
+        foo: {
           alignItems: 'center',       // baz
           backgroundColor: 'red',             //       foo
         }
@@ -667,6 +679,35 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key "alignSelf" should be above "borderColor"',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          }
+        });
+      `,
+      output: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            animationDuration: '100ms',
+            padding: 10,
+            fontSize: 12,
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "animationDuration" should be above "padding"',
         },
       ],
     },

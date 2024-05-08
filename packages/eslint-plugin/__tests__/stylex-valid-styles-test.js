@@ -1687,5 +1687,21 @@ revert`,
         },
       ],
     },
+    {
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          base:{
+            background: ''
+          },
+        });
+      `,
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      errors: [
+        {
+          message: 'The empty string is not allowed by Stylex.',
+        },
+      ],
+    },
   ],
 });
