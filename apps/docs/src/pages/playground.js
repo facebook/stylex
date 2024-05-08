@@ -10,7 +10,7 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Layout from '@theme/Layout';
-import CtaButton from '../../compiled_components/CtaButton';
+import CtaButton from '../../components/CtaButton';
 
 export default function Playground() {
   return (
