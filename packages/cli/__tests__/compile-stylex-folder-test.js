@@ -21,6 +21,12 @@ const cp = require('child_process');
 
 process.chdir('__tests__/__mocks__');
 
+function clearTestDir(config: CliConfig) {
+  for (const output of config.output) {
+    fs.rmSync(output, { recursive: true, force: true });
+  }
+}
+
 function runCli(args: string, config: CliConfig, onClose: () => void) {
   const cmd = 'node ' + path.resolve('../../lib/index.js ') + args;
   console.log(cmd);
@@ -112,6 +118,24 @@ describe('cli works with -i and -o args', () => {
 
     runCli(`-i ${config.input[0]} -o ${config.output[0]}`, config, onClose);
   });
+
+  test('script runs with absolute input and output paths', (done) => {
+    const absConfig: CliConfig = {
+      ...config,
+      input: [path.resolve(config.input[0])],
+      output: [path.resolve(config.output[0])],
+    };
+    const onClose = () => {
+      expect(fs.existsSync(config.output[0])).toBe(true);
+      done();
+    };
+    clearTestDir(absConfig);
+    runCli(
+      `-i ${absConfig.input[0]} -o ${absConfig.output[0]}`,
+      absConfig,
+      onClose,
+    );
+  });
 });
 
 describe('cli works with multiple inputs and outputs', () => {
@@ -154,7 +178,6 @@ describe('cli works with multiple inputs and outputs', () => {
     const output = config.output.join(' ');
     const args = `-i ${input} -o ${output}`;
     runCli(args, config, onClose);
-    clearTestDir(config);
   });
 });
 
@@ -175,9 +198,3 @@ describe('individual testing of util functions', () => {
     expect(relativePath).toEqual(`../../${config.cssBundleName}`);
   });
 });
-
-function clearTestDir(config: CliConfig) {
-  for (const output of config.output) {
-    fs.rmSync(output, { recursive: true, force: true });
-  }
-}

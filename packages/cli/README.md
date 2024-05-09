@@ -22,21 +22,21 @@ stylex -i [input_directory] -o [output_directory]
 
 #### `--input`
 
-The input directory to compile with StyleX
+The input directories to compile with StyleX
 
 alias: `-i`
 
-type: `string`
+type: `array`
 
 required: `true`
 
 #### `--output`
 
-Name of the StyleX output directory
+Name of the StyleX output directories.
 
 alias: `-o`
 
-type: `string`
+type: `array`
 
 required: `true`
 
@@ -54,7 +54,8 @@ default: `stylex_bundle.css`
 
 #### `--watch`
 
-Flag to enable automatic recompiling of files in the input directory on change
+Flag to enable automatic recompiling of files in the input directory on change.
+Currently only supports usage with a single input/output directory
 
 alias: `-w`
 
@@ -66,7 +67,8 @@ default: `false`
 
 #### `--modules_EXPERIMENTAL`
 
-A list of node modules to also compile with StyleX.
+A list of node modules to also compile with StyleX. Used to include compiling
+dependencies that contain `.stylex.js` files.
 
 alias: `-m`
 

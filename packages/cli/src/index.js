@@ -96,9 +96,15 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
     copiedNodeModules: false,
   };
   for (let i = 0; i < cliArgsConfig.input.length; i++) {
+    const inputPath = path.isAbsolute(cliArgsConfig.input[i])
+      ? cliArgsConfig.input[i]
+      : path.normalize(path.join(absolutePath, cliArgsConfig.input[i]));
+    const outputPath = path.isAbsolute(cliArgsConfig.output[i])
+      ? cliArgsConfig.output[i]
+      : path.normalize(path.join(absolutePath, cliArgsConfig.output[i]));
     const config: TransformConfig = {
-      input: path.normalize(path.join(absolutePath, cliArgsConfig.input[i])),
-      output: path.normalize(path.join(absolutePath, cliArgsConfig.output[i])),
+      input: inputPath,
+      output: outputPath,
       modules_EXPERIMENTAL,
       watch,
       styleXBundleName,
