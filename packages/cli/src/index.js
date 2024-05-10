@@ -80,10 +80,6 @@ const cliArgsConfig: CliConfig = {
 
 styleXCompile(cliArgsConfig);
 
-// TODO:
-// handle watching multiple directories
-// write tests for multi-directory in/out
-
 async function styleXCompile(cliArgsConfig: CliConfig) {
   if (cliArgsConfig.input.length !== cliArgsConfig.output.length) {
     throw errors.inputOutputMismatch;

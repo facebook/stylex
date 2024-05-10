@@ -181,8 +181,6 @@ describe('cli works with multiple inputs and outputs', () => {
   });
 });
 
-describe('cli compiles node_modules that have .stylex.js files in them', () => {});
-
 describe('individual testing of util functions', () => {
   const config = {
     input: './source',
