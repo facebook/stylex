@@ -1230,6 +1230,36 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
         },
       ],
     },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: 'auto',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: '1px',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: '100%',
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -1352,6 +1382,30 @@ This property is not supported in legacy StyleX resolution.`,
       errors: [
         {
           message: 'The empty string is not allowed by Stylex.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          b:{
+            textUnderlineOffset: '',
+          },
+        })
+      `,
+      errors: [
+        {
+          message: `textUnderlineOffset value must be one of:
+auto
+a number ending in px, mm, in, pc, pt
+a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+A string literal representing a percentage (e.g. 100%)
+null
+initial
+inherit
+unset
+revert`,
         },
       ],
     },
