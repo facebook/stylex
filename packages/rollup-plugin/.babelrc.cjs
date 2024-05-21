@@ -8,7 +8,10 @@ module.exports = {
       {
         exclude: ['@babel/plugin-transform-typeof-symbol'],
         targets: 'defaults',
-        modules: process.env.NODE_ENV === 'test' ? 'commonjs' : false,
+        modules:
+          process.env.NODE_ENV === 'test' || process.env.BABEL_ENV === 'cjs'
+            ? 'commonjs'
+            : false,
       },
     ],
     '@babel/preset-flow',
