@@ -1,0 +1,12 @@
+{
+    "input": ["./source"],
+    "output": ["./src"],
+    "cssBundleName": "stylex_bundle.css",
+    "babelPresets": [
+      ["@babel/preset-typescript", { "allExtensions": "true", "isTSX": "true" }],
+      "@babel/preset-react"
+    ],
+    "modules_EXPERIMENTAL": ["@stylexjs/open-props"],
+    "watch": "true"
+  }
+  
