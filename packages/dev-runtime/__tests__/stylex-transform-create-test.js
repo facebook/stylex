@@ -348,7 +348,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "boxShadow": "x8crwfo",
+            "boxShadow": "xxnfx33",
           },
         }
       `);
@@ -356,10 +356,10 @@ describe('Development Plugin Transformation', () => {
       expect(metadata).toMatchInlineSnapshot(`
         [
           [
-            "x8crwfo",
+            "xxnfx33",
             {
-              "ltr": ".x8crwfo{box-shadow:0px 2px 4px var(--shadow-1)}",
-              "rtl": ".x8crwfo{box-shadow:-0px 2px 4px var(--shadow-1)}",
+              "ltr": ".xxnfx33{box-shadow:0 2px 4px var(--shadow-1)}",
+              "rtl": null,
             },
             3000,
           ],
