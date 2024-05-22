@@ -68,7 +68,9 @@ default: `false`
 #### `--modules_EXPERIMENTAL`
 
 A list of node modules to also compile with StyleX. Used to include compiling
-dependencies that contain `.stylex.js` files.
+dependencies that contain `.stylex.js` files. Has optional "ignore"
+functionality that allows ignoring specific directories in the compiled output
+module.
 
 alias: `-m`
 
@@ -77,6 +79,8 @@ type: `array`
 required: `false`
 
 default: `[]`
+
+example: `[['@stylexjs/open-props', { ignore: ['src'] }]]`
 
 #### `--config`
 

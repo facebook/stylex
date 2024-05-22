@@ -34,7 +34,6 @@ export async function compileDirectory(
   filesToCompile?: Array<string>,
   filesToDelete?: Array<string>,
 ) {
-  console.log(config.state.styleXRules.keys());
   if (filesToDelete) {
     filesToDelete.forEach((file) => {
       config.state.styleXRules.delete(file);

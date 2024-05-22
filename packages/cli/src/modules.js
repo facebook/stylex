@@ -25,8 +25,8 @@ export function copyNodeModules(config: TransformConfig): boolean {
   }
   let copiedNodeModule = false;
   clearInputModuleDir(config);
-  for (const moduleName of config.modules_EXPERIMENTAL) {
-    fetchModule(moduleName, config);
+  for (const module of config.modules_EXPERIMENTAL) {
+    fetchModule(module, config);
     copiedNodeModule = true;
   }
   return copiedNodeModule;
@@ -64,8 +64,14 @@ export function clearInputModuleDir(config: TransformConfig) {
   }
 }
 
-export function fetchModule(moduleName: string, config: TransformConfig): void {
+export function fetchModule(
+  module:
+    | string
+    | $ReadOnly<[string, ?$ReadOnly<{ ignore?: $ReadOnlyArray<string> }>]>,
+  config: TransformConfig,
+): void {
   const compiledModuleDir = path.join(config.input, COMPILED_MODULES_DIR_NAME);
+  const moduleName = Array.isArray(module) ? module[0] : module;
   const moduleDir = findModuleDir(moduleName, config);
   fs.rmSync(compiledModuleDir, {
     recursive: true,
@@ -77,6 +83,20 @@ export function fetchModule(moduleName: string, config: TransformConfig): void {
     recursive: true,
     // needed because sometimes node modules are symlinks
     dereference: true,
+    filter: (src: string) => {
+      if (Array.isArray(module)) {
+        const [, options] = module;
+        if (options != null && 'ignore' in options) {
+          if (options.ignore == null) {
+            return true;
+          }
+          const ignorePaths = options.ignore.map((p: string) =>
+            path.join(moduleDir, p),
+          );
+          return !ignorePaths.some((p: string) => src.startsWith(p));
+        }
+      }
+    },
   });
   config.state.compiledNodeModuleDir = path.join(
     config.output,

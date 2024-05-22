@@ -10,13 +10,17 @@
 
 import type { Rule } from '@stylexjs/babel-plugin';
 
+export type ModuleType =
+  | string
+  | $ReadOnly<[string, ?$ReadOnly<{ ignore?: $ReadOnlyArray<string> }>]>;
+
 export type CliConfig = {
   input: $ReadOnlyArray<string>,
   output: $ReadOnlyArray<string>,
   styleXBundleName: string,
   watch: boolean,
   babelPresets: $ReadOnlyArray<any>,
-  modules_EXPERIMENTAL: $ReadOnlyArray<string>,
+  modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType>,
 };
 
 export type TransformConfig = {

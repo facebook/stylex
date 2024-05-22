@@ -22,7 +22,7 @@ import errors from './errors';
 import watcher from './watcher';
 import fs from 'fs';
 import { clearInputModuleDir, copyNodeModules } from './modules';
-import type { CliConfig, TransformConfig } from './config';
+import type { CliConfig, ModuleType, TransformConfig } from './config';
 
 const primary = '#5B45DE';
 const secondary = '#D573DD';
@@ -66,7 +66,8 @@ const input: Array<string> = args.input;
 const output: Array<string> = args.output;
 const watch: boolean = args.watch;
 const styleXBundleName: string = args.styleXBundleName;
-const modules_EXPERIMENTAL: Array<string> = args.modules_EXPERIMENTAL;
+const modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType> =
+  args.modules_EXPERIMENTAL;
 const babelPresets: Array<any> = args.babelPresets;
 
 const cliArgsConfig: CliConfig = {
