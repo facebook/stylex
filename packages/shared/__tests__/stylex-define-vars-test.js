@@ -65,6 +65,55 @@ describe('stylex-define-vars test', () => {
     `);
   });
 
+  test('maintains literal var names in CSS', () => {
+    const themeName = 'TestTheme.stylex.js//buttonTheme';
+    const classNamePrefix = 'x';
+    const defaultVars = {
+      '--bgColor': {
+        default: 'blue',
+        '@media (prefers-color-scheme: dark)': 'lightblue',
+        '@media print': 'white',
+      },
+      '--bgColorDisabled': {
+        default: 'grey',
+        '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+      },
+      '--cornerRadius': '10px',
+      '--fgColor': {
+        default: 'pink',
+      },
+    };
+    const [jsOutput, cssOutput] = styleXDefineVars(defaultVars, { themeName });
+
+    expect(jsOutput).toEqual({
+      __themeName__: classNamePrefix + createHash(themeName),
+      '--bgColor': 'var(--bgColor)',
+      '--bgColorDisabled': 'var(--bgColorDisabled)',
+      '--cornerRadius': 'var(--cornerRadius)',
+      '--fgColor': 'var(--fgColor)',
+    });
+
+    expect(cssOutput).toMatchInlineSnapshot(`
+      {
+        "x568ih9": {
+          "ltr": ":root{--bgColor:blue;--bgColorDisabled:grey;--cornerRadius:10px;--fgColor:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root{--bgColor:lightblue;--bgColorDisabled:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "x568ih9-bdddrq": {
+          "ltr": "@media print{:root{--bgColor:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+      }
+    `);
+  });
+
   test('converts set of vars with nested at rules to CSS', () => {
     const themeName = 'TestTheme.stylex.js//buttonTheme';
     const classNamePrefix = 'x';
