@@ -21,7 +21,7 @@ import {
   getRelativePath,
 } from './files';
 import type { TransformConfig } from './config';
-import chalk from 'chalk';
+import ansis from 'ansis';
 import fs from 'fs';
 import {
   createImportPlugin,
@@ -46,7 +46,7 @@ export async function compileDirectory(
       const parsed = path.parse(filePath);
       if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
         console.log(
-          `${chalk.green('[stylex]')} transforming ${path.join(config.input, filePath)}`,
+          `${ansis.green('[stylex]')} transforming ${path.join(config.input, filePath)}`,
         );
         await compileFile(filePath, config);
       } else {

@@ -12,9 +12,8 @@ import type { Argv } from 'yargs';
 import type { Rule } from '@stylexjs/babel-plugin';
 import yargs from 'yargs';
 import path from 'path';
-import chalk from 'chalk';
+import ansis from 'ansis';
 import JSON5 from 'json5';
-
 import { isDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
@@ -28,15 +27,15 @@ const primary = '#5B45DE';
 const secondary = '#D573DD';
 
 console.log(
-  chalk.hex(primary).bold(`\n
-   .d8888b.  888             888         ${chalk.hex(secondary).bold('Y88b   d88P')} 
-  d88P  Y88b 888             888          ${chalk.hex(secondary).bold('Y88b d88P')}  
-  Y88b.      888             888           ${chalk.hex(secondary).bold('Y88o88P')}   
-   "Y888b.   888888 888  888 888  .d88b.    ${chalk.hex(secondary).bold('Y888P')}    
-      "Y88b. 888    888  888 888 d8P  Y8b   ${chalk.hex(secondary).bold('d888b')}    
-        "888 888    888  888 888 88888888  ${chalk.hex(secondary).bold('d88888b')}   
-  Y88b  d88P Y88b.  Y88b 888 888 Y8b.     ${chalk.hex(secondary).bold('d88P Y88b')}  
-   "Y8888P"   "Y888  "Y88888 888  "Y8888 ${chalk.hex(secondary).bold('cd88P   Y88b')} 
+  ansis.hex(primary).bold(`\n
+   .d8888b.  888             888         ${ansis.hex(secondary).bold('Y88b   d88P')} 
+  d88P  Y88b 888             888          ${ansis.hex(secondary).bold('Y88b d88P')}  
+  Y88b.      888             888           ${ansis.hex(secondary).bold('Y88o88P')}   
+   "Y888b.   888888 888  888 888  .d88b.    ${ansis.hex(secondary).bold('Y888P')}    
+      "Y88b. 888    888  888 888 d8P  Y8b   ${ansis.hex(secondary).bold('d888b')}    
+        "888 888    888  888 888 88888888  ${ansis.hex(secondary).bold('d88888b')}   
+  Y88b  d88P Y88b.  Y88b 888 888 Y8b.     ${ansis.hex(secondary).bold('d88P Y88b')}  
+   "Y8888P"   "Y888  "Y88888 888  "Y8888 ${ansis.hex(secondary).bold('cd88P   Y88b')} 
                          888                         
                     Y8b d88P                         
                      "Y88P"          

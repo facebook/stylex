@@ -11,7 +11,7 @@ import type { TransformConfig } from './config';
 
 import { compileDirectory } from './transform';
 
-import chalk from 'chalk';
+import ansis from 'ansis';
 import watchman from 'fb-watchman';
 
 type Subscription = {
@@ -72,7 +72,7 @@ export default function watch(config: TransformConfig) {
           subscribe(watchmanClient, resp.watch, resp.relative_path, config);
           console.log(
             'Watching for style changes in',
-            chalk.green(resp.relative_path),
+            ansis.green(resp.relative_path),
           );
         },
       );

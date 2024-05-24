@@ -22,7 +22,8 @@
     "@stylexjs/scripts": "0.6.1",
     "fb-watchman": "^2.0.2",
     "json5": "^2.2.3",
-    "mkdirp": "^3.0.1"
+    "mkdirp": "^3.0.1",
+    "ansis": "^3.2.0"
   },
   "bin": {
     "stylex": "./lib/index.js"
