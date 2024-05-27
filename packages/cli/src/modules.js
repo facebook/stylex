@@ -96,6 +96,7 @@ export function fetchModule(
           return !ignorePaths.some((p: string) => src.startsWith(p));
         }
       }
+      return true;
     },
   });
   config.state.compiledNodeModuleDir = path.join(
