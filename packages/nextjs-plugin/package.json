@@ -13,7 +13,7 @@
     "@stylexjs/babel-plugin": "^0.6.1"
   },
   "peerDependencies": {
-    "next": ">=14.0.1"
+    "next": ">=14.0.1 || >=15.0.0 || 15.0.0-rc.0"
   },
   "devDependencies": {
     "next": "^14.0.1",
