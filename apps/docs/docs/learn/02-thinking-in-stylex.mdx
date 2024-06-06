@@ -80,7 +80,7 @@ compiles away `stylex.props` calls when possible.
 So,
 
 ```tsx
-import * as stylex from 'stylex';
+import * as stylex from '@stylexjs/stylex';
 const styles = stylex.create({
   red: {color: 'red'},
 });
@@ -93,7 +93,7 @@ Compiles down to:
 <TabItem label="JS Output" value="js-output">
 
 ```tsx
-import * as stylex from 'stylex';
+import * as stylex from '@stylexjs/stylex';
 
 let a = {className: 'x1e2nbdu'};
 ```
