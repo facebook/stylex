@@ -16,8 +16,8 @@ import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
 import { firstThatWorks as stylexFirstThatWorks } from '@stylexjs/shared';
 
 /// This function looks for `stylex.keyframes` calls and transforms them.
-//. 1. It finds the first argument to `stylex.keyframes` and validates it.
-/// 2. It envalues the style object to get a JS object. This also handles local constants automatically.
+/// 1. It finds the first argument to `stylex.keyframes` and validates it.
+/// 2. It evaluates the style object to get a JS object. This also handles local constants automatically.
 /// 4. It uses the `stylexKeyframes` from `@stylexjs/shared` to transform the JS
 ///    object and to get a list of injected styles.
 /// 5. It converts the resulting Object back into an AST and replaces the call with it.

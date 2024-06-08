@@ -129,7 +129,7 @@ export default class StateManager {
   +styleMap: Map<string, CompiledNamespaces> = new Map();
   +styleVars: Map<string, NodePath<>> = new Map();
 
-  // resuls of `stylex.create` calls that should be kept
+  // results of `stylex.create` calls that should be kept
   +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =
     new Set();
 

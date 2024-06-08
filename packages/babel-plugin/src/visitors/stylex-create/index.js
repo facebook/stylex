@@ -31,9 +31,9 @@ import * as pathUtils from '../../babel-path-utils';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 
 /// This function looks for `stylex.create` calls and transforms them.
-//. 1. It finds the first argument to `stylex.create` and validates it.
+/// 1. It finds the first argument to `stylex.create` and validates it.
 /// 2. It pre-processes valid-dynamic parts of style object such as custom presets (spreads)
-/// 3. It envalues the style object to get a JS object. This also handles local constants automatically.
+/// 3. It evaluates the style object to get a JS object. This also handles local constants automatically.
 /// 4. It uses the `stylexCreate` from `@stylexjs/shared` to transform the JS
 ///    object and to get a list of injected styles.
 /// 5. It converts the resulting Object back into an AST and replaces the call with it.
