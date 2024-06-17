@@ -704,7 +704,11 @@ const content = isString;
 const counterIncrement = makeUnionRule(isString, makeLiteralRule('none'));
 const counterReset = makeUnionRule(isString, makeLiteralRule('none'));
 const cursor = CSSCursor;
-const direction = makeUnionRule(makeLiteralRule('ltr'), makeLiteralRule('rtl'));
+const direction = makeUnionRule(
+  makeLiteralRule('ltr'),
+  makeLiteralRule('rtl'),
+  makeLiteralRule('auto'),
+);
 const display = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('inline'),
