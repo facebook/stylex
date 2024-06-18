@@ -75,11 +75,11 @@ longHandLogical.add('border-block-width'); // Logical Properties
 shorthandsOfLonghands.add('border-block-start'); // Logical Properties
 shorthandsOfLonghands.add('border-top');
 longHandLogical.add('border-block-start-color'); // Logical Properties
-longHandLogical.add('border-top-color');
+longHandPhysical.add('border-top-color');
 longHandLogical.add('border-block-start-style'); // Logical Properties
-longHandLogical.add('border-top-style');
+longHandPhysical.add('border-top-style');
 longHandLogical.add('border-block-start-width'); // Logical Properties
-longHandLogical.add('border-top-width');
+longHandPhysical.add('border-top-width');
 shorthandsOfLonghands.add('border-block-end'); // Logical Properties
 shorthandsOfLonghands.add('border-bottom');
 longHandLogical.add('border-block-end-color'); // Logical Properties
