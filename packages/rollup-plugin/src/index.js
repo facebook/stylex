@@ -96,6 +96,13 @@ export default function stylexPlugin({
             unstable_moduleResolution,
           }),
         ],
+        caller: {
+          name: '@stylexjs/rollup-plugin',
+          supportsStaticESM: true,
+          supportsDynamicImport: true,
+          supportsTopLevelAwait: !inputCode.includes('require('),
+          supportsExportNamespaceFrom: true,
+        },
       });
       if (result == null) {
         console.warn('stylex: transformAsync returned null');
