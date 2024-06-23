@@ -88,9 +88,9 @@ describe('@stylexjs/babel-plugin', () => {
               3200,
             ],
             [
-              "x1g85oeb-B",
+              "xqv9ub1-B",
               {
-                "ltr": "@keyframes x1g85oeb-B{from{inset-inline-start:0px;}to{inset-inline-start:100px;}}",
+                "ltr": "@keyframes xqv9ub1-B{from{inset-inline-start:0;}to{inset-inline-start:100px;}}",
                 "rtl": null,
               },
               1,

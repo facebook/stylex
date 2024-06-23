@@ -80,7 +80,7 @@ describe('Development Runtime Transformation', () => {
           start: 500,
         },
       });
-      expect(name).toMatchInlineSnapshot(`"x1id2van-B"`);
+      expect(name).toMatchInlineSnapshot(`"x1jkcf39-B"`);
 
       expect(
         stylex.create({
@@ -92,7 +92,7 @@ describe('Development Runtime Transformation', () => {
         {
           "root": {
             "$$css": true,
-            "animationName": "x1phmjlw",
+            "animationName": "x1vfi257",
           },
         }
       `);
@@ -100,17 +100,17 @@ describe('Development Runtime Transformation', () => {
       expect(metadata).toMatchInlineSnapshot(`
         [
           [
-            "x1id2van-B",
+            "x1jkcf39-B",
             {
-              "ltr": "@keyframes x1id2van-B{from{inset-inline-start:0px;}to{inset-inline-start:500px;}}",
+              "ltr": "@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}",
               "rtl": null,
             },
             1,
           ],
           [
-            "x1phmjlw",
+            "x1vfi257",
             {
-              "ltr": ".x1phmjlw{animation-name:x1id2van-B}",
+              "ltr": ".x1vfi257{animation-name:x1jkcf39-B}",
               "rtl": null,
             },
             3000,

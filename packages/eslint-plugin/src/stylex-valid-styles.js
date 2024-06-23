@@ -592,20 +592,9 @@ const borderImage = makeUnionRule(
   isString,
   borderImageRepeat,
 );
-// const borderInlineEnd = makeUnionRule(borderWidth, borderStyle, color);
-// const borderInlineEndColor = color;
-// const borderInlineEndStyle = borderStyle;
-// const borderInlineEndWidth = borderWidth;
-// const borderInlineStart = makeUnionRule(borderWidth, borderStyle, color);
-// const borderInlineStartColor = color;
-// const borderInlineStartStyle = borderStyle;
-// const borderInlineStartWidth = borderWidth;
 const borderLeftColor = color;
 const borderLeftStyle = brStyle;
 const borderLeftWidth = borderWidth;
-const borderRightColor = color;
-const borderRightStyle = brStyle;
-const borderRightWidth = borderWidth;
 const borderRadius = lengthPercentage;
 const borderSpacing = isStringOrNumber;
 const borderTopLeftRadius = lengthPercentage;
@@ -1298,6 +1287,11 @@ const textUnderlinePosition = makeUnionRule(
   makeLiteralRule('right'),
   isString,
 );
+const textUnderlineOffset = makeUnionRule(
+  makeLiteralRule('auto'),
+  isLength,
+  isPercentage,
+);
 const touchAction = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
@@ -1680,9 +1674,6 @@ const CSSProperties = {
   borderBottomStartRadius: borderBottomLeftRadius,
 
   borderCollapse: borderCollapse,
-  borderEndColor: borderRightColor,
-  borderEndStyle: borderRightStyle,
-  borderEndWidth: borderRightWidth,
 
   borderImage: borderImage,
   borderImageWidth: borderImageWidth,
@@ -1758,9 +1749,6 @@ const CSSProperties = {
   borderBlockStartWidth: borderLeftWidth,
 
   borderSpacing: borderSpacing,
-  borderStartColor: borderLeftColor,
-  borderStartStyle: borderLeftStyle,
-  borderStartWidth: borderLeftWidth,
 
   borderRadius: borderRadius,
   borderTopEndRadius: borderTopRightRadius,
@@ -1959,16 +1947,12 @@ const CSSProperties = {
   marginBlockEnd: marginLeft,
   marginBlockStart: marginLeft,
   marginBottom: marginLeft,
-  marginEnd: marginLeft,
-  marginHorizontal: marginLeft,
   marginInline: marginLeft,
   marginInlineEnd: marginLeft,
   marginInlineStart: marginLeft,
   marginLeft: marginLeft,
   marginRight: marginLeft,
-  marginStart: marginLeft,
   marginTop: marginTop,
-  marginVertical: marginTop,
 
   marker: marker,
   markerEnd: markerEnd,
@@ -2051,16 +2035,12 @@ const CSSProperties = {
   paddingBlockEnd: paddingTop,
   paddingBlockStart: paddingTop,
   paddingBottom: paddingBottom,
-  paddingEnd: paddingRight,
-  paddingHorizontal: paddingLeft,
   paddingInline: paddingLeft,
   paddingInlineEnd: paddingLeft,
   paddingInlineStart: paddingLeft,
   paddingLeft: paddingLeft,
   paddingRight: paddingRight,
-  paddingStart: paddingLeft,
   paddingTop: paddingTop,
-  paddingVertical: paddingTop,
 
   pageBreakAfter: pageBreakAfter,
   pageBreakBefore: pageBreakBefore,
@@ -2175,6 +2155,7 @@ const CSSProperties = {
   textShadow: textShadow,
   textSizeAdjust: textSizeAdjust,
   textTransform: textTransform,
+  textUnderlineOffset: textUnderlineOffset,
   textUnderlinePosition: textUnderlinePosition,
   textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty'),
 

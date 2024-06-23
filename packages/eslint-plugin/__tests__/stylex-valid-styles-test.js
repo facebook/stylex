@@ -197,16 +197,16 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     // test for positive numbers
-    'import stylex from "stylex"; stylex.create({default: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({default: {marginInlineStart: 5}});',
     // test for literals as namespaces
-    'import stylex from "stylex"; stylex.create({"default-1": {marginStart: 5}});',
-    'import stylex from "stylex"; stylex.create({["default-1"]: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({"default-1": {marginInlineStart: 5}});',
+    'import stylex from "stylex"; stylex.create({["default-1"]: {marginInlineStart: 5}});',
     // test for numbers as namespaces
-    'import stylex from "stylex"; stylex.create({0: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({0: {marginInlineStart: 5}});',
     // test for computed numbers as namespaces
-    'import stylex from "stylex"; stylex.create({[0]: {marginStart: 5}});',
+    'import stylex from "stylex"; stylex.create({[0]: {marginInlineStart: 5}});',
     // test for negative values.
-    'import stylex from "stylex"; stylex.create({default: {marginStart: -5}});',
+    'import stylex from "stylex"; stylex.create({default: {marginInlineStart: -5}});',
     "import stylex from 'stylex'; stylex.create({default: {textAlign: 'start'}});",
     // test for presets
     `import stylex from "stylex";
@@ -219,20 +219,20 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `import stylex from "stylex";
      stylex.create({
        default: {
-         marginStart: Math.abs(-1),
-         marginEnd: \`\${Math.floor(5 / 2)}px\`,
-         paddingStart: Math.ceil(5 / 2),
-         paddingEnd: Math.round(5 / 2),
+         marginInlineStart: Math.abs(-1),
+         marginInlineEnd: \`\${Math.floor(5 / 2)}px\`,
+         paddingInlineStart: Math.ceil(5 / 2),
+         paddingInlineEnd: Math.round(5 / 2),
        },
      })`,
     `import stylex from "stylex";
      const x = 5;
      stylex.create({
        default: {
-         marginStart: Math.abs(x),
-         marginEnd: \`\${Math.floor(x)}px\`,
-         paddingStart: Math.ceil(-x),
-         paddingEnd: Math.round(x / 2),
+         marginInlineStart: Math.abs(x),
+         marginInlineEnd: \`\${Math.floor(x)}px\`,
+         paddingInlineStart: Math.ceil(-x),
+         paddingInlineEnd: Math.round(x / 2),
        },
      })`,
     // test for Search
@@ -1230,6 +1230,36 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
         },
       ],
     },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: 'auto',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: '1px',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          default: {
+            textUnderlineOffset: '100%',
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -1370,6 +1400,28 @@ This property is not supported in legacy StyleX resolution.`,
           message: 'The empty string is not allowed by Stylex.',
         },
       ],
+    },
+    {
+      code: `
+      import stylex from'stylex';
+        const styles = stylex.create({
+          b:{
+            textUnderlineOffset: '',
+          },
+        })
+      `,
+      errors: [
+        {
+          message: `textUnderlineOffset value must be one of:
+auto
+a number ending in px, mm, in, pc, pt
+a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+A string literal representing a percentage (e.g. 100%)
+null
+initial
+inherit
+unset
+revert`,
     },
   ],
 });

@@ -67,6 +67,38 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('transforms literal variables object', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const buttonTheme = stylex.defineVars({
+            '--bgColor': {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            '--bgColorDisabled': {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
+            '--cornerRadius': 10,
+            '--fgColor': {
+              default: 'pink',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        export const buttonTheme = {
+          "--bgColor": "var(--bgColor)",
+          "--bgColorDisabled": "var(--bgColorDisabled)",
+          "--cornerRadius": "var(--cornerRadius)",
+          "--fgColor": "var(--fgColor)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
+
     test('transforms variables object with import *', () => {
       expect(
         transform(`

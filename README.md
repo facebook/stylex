@@ -44,6 +44,7 @@ This is the development monorepo for StyleX.
 - `packages`
   - Contains the individual packages managed in the monorepo.
   - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
+  - [cli](https://github.com/facebook/stylex/blob/main/packages/cli)
   - [dev-runtime](https://github.com/facebook/stylex/blob/main/packages/dev-runtime)
   - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/eslint-plugin)
   - [nextjs-plugin](https://github.com/facebook/stylex/blob/main/packages/nextjs-plugin)

@@ -49,6 +49,44 @@ describe('stylex-create-theme test', () => {
     `);
   });
 
+  test('overrides set of literal vars with CSS class', () => {
+    const defaultVars = {
+      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      '--bgColor': 'var(--bgColor)',
+      '--bgColorDisabled': 'var(--bgColorDisabled)',
+      '--cornerRadius': 'var(--cornerRadius)',
+      '--fgColor': 'var(--fgColor)',
+    };
+
+    const createTheme = {
+      '--bgColor': {
+        default: 'green',
+        '@media (prefers-color-scheme: dark)': 'lightgreen',
+        '@media print': 'transparent',
+      },
+      '--bgColorDisabled': {
+        default: 'antiquewhite',
+        '@media (prefers-color-scheme: dark)': 'floralwhite',
+      },
+      '--cornerRadius': { default: '6px' },
+      '--fgColor': 'coral',
+    };
+
+    const [classNameOutput, cssOutput] = stylexCreateTheme(
+      defaultVars,
+      createTheme,
+    );
+
+    expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
+      .toMatchInlineSnapshot(`
+      {
+        "ltr": ".x4znj40{--bgColor:green;--bgColorDisabled:antiquewhite;--cornerRadius:6px;--fgColor:coral;}",
+        "priority": 0.5,
+        "rtl": null,
+      }
+    `);
+  });
+
   test('variables order does not change the hash', () => {
     const defaultVars = {
       __themeName__: 'TestTheme.stylex.js//buttonTheme',

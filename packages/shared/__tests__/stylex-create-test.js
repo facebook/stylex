@@ -212,7 +212,7 @@ describe('stylex-create-test', () => {
             "paddingLeft": null,
             "paddingRight": null,
             "paddingStart": null,
-            "paddingTop": "x1uu4ab4",
+            "paddingTop": "xexx8yu",
           },
         },
         {
@@ -221,8 +221,8 @@ describe('stylex-create-test', () => {
             "priority": 1000,
             "rtl": null,
           },
-          "x1uu4ab4": {
-            "ltr": ".x1uu4ab4{padding-top:0px}",
+          "xexx8yu": {
+            "ltr": ".xexx8yu{padding-top:0}",
             "priority": 4000,
             "rtl": null,
           },

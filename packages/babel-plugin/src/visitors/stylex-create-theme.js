@@ -25,7 +25,7 @@ import path from 'path';
 import type { FunctionConfig } from '../utils/evaluate-path';
 
 /// This function looks for `stylex.createTheme` calls and transforms them.
-//. 1. It finds the first two arguments to `stylex.createTheme` and validates those.
+/// 1. It finds the first two arguments to `stylex.createTheme` and validates those.
 /// 2. This handles local constants automatically.
 /// 4. It uses the `stylexCreateTheme` from `@stylexjs/shared` to transform the JS
 ///    object and to get a list of injected styles.
