@@ -63,7 +63,7 @@ const createThemeWithDifferentOrder = `{
   cornerRadius: '6px',
 }`;
 
-describe('@stylexjs/babel-plugin', () => {
+describe('@stylexjs/babel-plugin stylex.createTheme', () => {
   beforeEach(() => {
     defineVarsOutput = transform(`
       import stylex from 'stylex';
@@ -588,6 +588,76 @@ describe('@stylexjs/babel-plugin', () => {
           TestTheme__buttonThemePositive: "TestTheme__buttonThemePositive",
           $$css: true,
           x568ih9: "x41sqjo"
+        };"
+      `);
+    });
+  });
+});
+
+describe('@stylexjs/babel-plugin stylex.createTheme with literals', () => {
+  beforeEach(() => {
+    defineVarsOutput = transform(`
+      import stylex from 'stylex';
+      export const buttonTheme = stylex.defineVars({
+        '--bgColor': {
+          default: 'blue',
+          '@media (prefers-color-scheme: dark)': 'lightblue',
+          '@media print': 'white',
+        },
+        '--bgColorDisabled': {
+          default: 'grey',
+          '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+        },
+        '--cornerRadius': 10,
+        '--fgColor': {
+          default: 'pink',
+        },
+      });
+    `);
+  });
+  test('output of stylex.defineVars()', () => {
+    expect(defineVarsOutput).toMatchInlineSnapshot(`
+      "import stylex from 'stylex';
+      export const buttonTheme = {
+        "--bgColor": "var(--bgColor)",
+        "--bgColorDisabled": "var(--bgColorDisabled)",
+        "--cornerRadius": "var(--cornerRadius)",
+        "--fgColor": "var(--fgColor)",
+        __themeName__: "x568ih9"
+      };"
+    `);
+  });
+  describe('[transform] stylex.createTheme()', () => {
+    test('transforms variables object', () => {
+      expect(
+        transform(`
+          ${defineVarsOutput}
+          const buttonThemePositive = stylex.createTheme(buttonTheme, {
+            '--bgColor': {
+              default: 'green',
+              '@media (prefers-color-scheme: dark)': 'lightgreen',
+              '@media print': 'transparent',
+            },
+            '--bgColorDisabled': {
+              default: 'antiquewhite',
+              '@media (prefers-color-scheme: dark)': 'floralwhite',
+            },
+            '--cornerRadius': { default: '6px' },
+            '--fgColor': 'coral',
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        export const buttonTheme = {
+          "--bgColor": "var(--bgColor)",
+          "--bgColorDisabled": "var(--bgColorDisabled)",
+          "--cornerRadius": "var(--cornerRadius)",
+          "--fgColor": "var(--fgColor)",
+          __themeName__: "x568ih9"
+        };
+        const buttonThemePositive = {
+          $$css: true,
+          x568ih9: "x4znj40"
         };"
       `);
     });

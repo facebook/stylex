@@ -48,7 +48,9 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 
   const variablesMap = objMap(variables, (value, key) => {
     // Created hashed variable names with fileName//themeName//key
-    const nameHash = classNamePrefix + createHash(`${themeName}.${key}`);
+    const nameHash = key.startsWith('--')
+      ? key.slice(2)
+      : classNamePrefix + createHash(`${themeName}.${key}`);
     if (isCSSType(value)) {
       const v: CSSType<> = value;
       typedVariables[nameHash] = {
