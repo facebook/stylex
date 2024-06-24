@@ -690,6 +690,9 @@ function _evaluate(path: NodePath<>, state: State): any {
       ) {
         const val: number | string = object.node.value;
         func = (val as $FlowFixMe)[property.node.name];
+        if (typeof val === 'string') {
+          context = object.node.value;
+        }
       }
 
       if (func == null) {
