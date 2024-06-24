@@ -30,6 +30,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       const styles = stylex.create({
         main: {
           marginInlineEnd: '14px',
+          marginInlineStart: '14px',
         },
       })
     `,
@@ -59,7 +60,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
+            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
         },
       ],
     },
@@ -86,7 +87,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
+            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
         },
       ],
     },
@@ -113,7 +114,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
+            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
         },
       ],
     },
@@ -140,7 +141,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
+            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
         },
       ],
     },
@@ -165,7 +166,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like marginInline: 0 0 0 0 are not supported in styleX. Separate into marginInlineInlineStart, marginInlineInlineEnd [...].',
+            'Property shorthands like marginInline: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
         }
       ],
     },
@@ -192,7 +193,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
+            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
         }
       ],
     },

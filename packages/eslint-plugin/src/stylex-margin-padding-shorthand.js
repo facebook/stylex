@@ -41,11 +41,11 @@ const legacyNameMapping = {
 };
 
 const shorthandAliases = {
-  marginInline: (rawValue: any) => [
+  marginInline: (rawValue: number | string) => [
     ['marginInlineStart', rawValue],
     ['marginInlineEnd', rawValue],
   ],
-  margin: (rawValue: any) => {
+  margin: (rawValue: number | string) => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -55,7 +55,7 @@ const shorthandAliases = {
       ['marginInlineStart', left],
     ];
   },
-  padding: (rawValue: any) => {
+  padding: (rawValue: number | string) => {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
@@ -65,7 +65,7 @@ const shorthandAliases = {
       ['paddingInlineStart', left],
     ];
   },
-  paddingInline: (rawValue: any) => [
+  paddingInline: (rawValue: number | string) => [
     ['paddingInlineStart', rawValue],
     ['paddingInlineEnd', rawValue],
   ],
