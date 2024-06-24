@@ -166,25 +166,32 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
 <details>
   <summary>Next.js</summary>
 
-  <DevInstallExample dev={[`@stylexjs/nextjs-plugin`]} />
+  <DevInstallExample dev={[`@stylexjs/nextjs-plugin`, `@stylexjs/babel-plugin`, `rimraf`]} />
+
+  ```tsx title="package.json"
+  {
+    "scripts": {
+      ...,
+      "predev": "rimraf .next",
+      "prebuild": "rimraf .next"
+    }
+  }
+  ```
 
   ```tsx title=".babelrc.js"
-  const path = require('path');
   module.exports = {
-    presets: ['next/babel'],
+    presets: ["next/babel"],
     plugins: [
       [
-        '@stylexjs/babel-plugin',
+        "@stylexjs/babel-plugin",
         {
-          dev: process.env.NODE_ENV === 'development',
+          dev: process.env.NODE_ENV === "development",
+          test: process.env.NODE_ENV === "test",
           runtimeInjection: false,
           genConditionalClasses: true,
           treeshakeCompensation: true,
-          aliases: {
-            '@/*': [path.join(__dirname, '*')],
-          },
           unstable_moduleResolution: {
-            type: 'commonJS',
+            type: "commonJS",
             rootDir: __dirname,
           },
         },
@@ -193,18 +200,17 @@ provides (experimental) plugins for Webpack, Rollup, Next.js and esbuild.
   };
   ```
 
-  ```tsx title="next.config.js"
-  const path = require('path');
-  const stylexPlugin = require('@stylexjs/nextjs-plugin');
+  ```tsx title="next.config.mjs"
+  /** @type {import('next').NextConfig} */
+  import stylexPlugin from "@stylexjs/nextjs-plugin";
 
-  module.exports = stylexPlugin({
-    aliases: {
-      '@/*': [path.join(__dirname, '*')],
-    },
+  const nextConfig = {};
+
+  const __dirname = new URL(".", import.meta.url).pathname;
+  export default stylexPlugin({
     rootDir: __dirname,
-  })({});
+  })(nextConfig);
   ```
-
 </details>
 
 <details>
