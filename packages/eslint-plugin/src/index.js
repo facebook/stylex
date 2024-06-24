@@ -9,13 +9,16 @@
 
 import validStyles from './stylex-valid-styles';
 import sortKeys from './stylex-sort-keys';
+import marginPadding from './stylex-margin-padding-shorthand';
 
 const rules: {
   'valid-styles': typeof validStyles,
   'sort-keys': typeof sortKeys,
+  'margin-padding': typeof marginPadding,  
 } = {
   'valid-styles': validStyles,
   'sort-keys': sortKeys,
+  'margin-padding': marginPadding,
 };
 
 export { rules };
