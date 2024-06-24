@@ -231,10 +231,15 @@ describe('custom path evaluation works as expected', () => {
     });
 
     test('Methods called by string should be bind', () => {
-      expect(evaluateFirstStatement('const x = "".concat("10px"," ").concat("10px");', {})).toBe(
-        '10px 10px',
+      expect(
+        evaluateFirstStatement(
+          'const x = "".concat("10px"," ").concat("10px");',
+          {},
+        ),
+      ).toBe('10px 10px');
+      expect(evaluateFirstStatement('const x = "abc".charCodeAt(0);', {})).toBe(
+        97,
       );
-      expect(evaluateFirstStatement('const x = "abc".charCodeAt(0);', {})).toBe(97);
     });
   });
 });
