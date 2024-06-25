@@ -35,6 +35,12 @@ const options: { [$Keys<CliConfig>]: Options } = {
     type: 'boolean',
     default: false,
   },
+  useCSSLayers: {
+    alias: 'l',
+    describe: 'Use CSS layers to optimize CSS rendering',
+    type: 'boolean',
+    default: false,
+  },
   babelPresets: {
     describe:
       'A list of babel presets to pass to the babel transform when compiling StyleX',
