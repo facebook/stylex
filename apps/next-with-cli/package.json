@@ -1,0 +1,29 @@
+{
+  "name": "next-with-cli",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "stylex --config ./.stylex.json5",
+    "dev": "stylex --config ./.stylex.json5 -w & next dev",
+    "prestart": "stylex --config ./.stylex.json5 && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "next": "14.2.4",
+    "@stylexjs/stylex": "^0.6.1"
+  },
+  "devDependencies": {
+    "@stylexjs/babel-plugin": "^0.6.1",
+    "@stylexjs/eslint-plugin": "^0.6.1",
+    "@stylexjs/cli": "^0.6.1",
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.4"
+  }
+}

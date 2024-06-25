@@ -16,9 +16,10 @@ type Props = Readonly<{
   title: string;
   body: string;
   href: string;
+  other?: string;
 }>;
 
-export default function Card({ title, body, href }: Props) {
+export default function Card({ title, body, href, other: _foo }: Props) {
   return (
     <a
       {...stylex.props(styles.link)}
