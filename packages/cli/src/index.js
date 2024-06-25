@@ -68,6 +68,7 @@ const styleXBundleName: string = args.styleXBundleName;
 const modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType> =
   args.modules_EXPERIMENTAL;
 const babelPresets: Array<any> = args.babelPresets;
+const useCSSLayers: boolean = args.useCSSLayers;
 
 const cliArgsConfig: CliConfig = {
   input,
@@ -76,6 +77,7 @@ const cliArgsConfig: CliConfig = {
   watch,
   styleXBundleName,
   babelPresets,
+  useCSSLayers,
 };
 
 styleXCompile(cliArgsConfig);

@@ -21,6 +21,7 @@ export type CliConfig = {
   watch: boolean,
   babelPresets: $ReadOnlyArray<any>,
   modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType>,
+  useCSSLayers?: boolean,
 };
 
 export type TransformConfig = {
