@@ -14,7 +14,7 @@ import marginPadding from './stylex-margin-padding-shorthand';
 const rules: {
   'valid-styles': typeof validStyles,
   'sort-keys': typeof sortKeys,
-  'margin-padding': typeof marginPadding,  
+  'margin-padding': typeof marginPadding,
 } = {
   'valid-styles': validStyles,
   'sort-keys': sortKeys,

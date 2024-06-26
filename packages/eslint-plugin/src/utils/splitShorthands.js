@@ -7,7 +7,6 @@
  * @flow strict
  */
 
-
 import parser from 'postcss-value-parser';
 
 function printNode(node: PostCSSValueASTNode): string {
@@ -27,7 +26,7 @@ export default function splitValue(
 ): $ReadOnlyArray<number | string> {
   let processedStr = str;
 
-  if (str == null || (typeof str !== 'string' && typeof str !== 'number' )) {
+  if (str == null || (typeof str !== 'string' && typeof str !== 'number')) {
     return [str];
   }
 
@@ -50,6 +49,7 @@ export default function splitValue(
     .map(printNode);
 
   if (typeof str === 'number') {
+    // if originally a number, let's preserve that here
     const processedNodes = nodes.map(parseFloat);
     return processedNodes;
   }

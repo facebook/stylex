@@ -35,6 +35,26 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
     `,
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          margin: 10,
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          padding: 'calc(0.5 * 100px) !important',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -50,9 +70,9 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            marginInlineTop: '10px',
+            marginTop: '10px',
             marginInlineEnd: '12px',
-            marginInlineBottom: '13px',
+            marginBottom: '13px',
             marginInlineStart: '14px',
           },
         });
@@ -60,34 +80,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
-        },
-      ],
-    },
-    {
-      code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: 10,
-          },
-        });
-      `,
-      output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginInlineTop: 10,
-            marginInlineEnd: 10,
-            marginInlineBottom: 10,
-            marginInlineStart: 10,
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
+            'Property shorthands like margin: 10px 12px 13px 14px are not supported in styleX. Separate into individual properties.',
         },
       ],
     },
@@ -104,9 +97,9 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            marginInlineTop: '10em',
+            marginTop: '10em',
             marginInlineEnd: '1em',
-            marginInlineBottom: '10em',
+            marginBottom: '10em',
             marginInlineStart: '1em',
           },
         });
@@ -114,7 +107,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
+            'Property shorthands like margin: 10em 1em are not supported in styleX. Separate into individual properties.',
         },
       ],
     },
@@ -131,9 +124,9 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            marginInlineTop: '10em !important',
+            marginTop: '10em !important',
             marginInlineEnd: '1em !important',
-            marginInlineBottom: '10em !important',
+            marginBottom: '10em !important',
             marginInlineStart: '1em !important',
           },
         });
@@ -141,7 +134,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
+            'Property shorthands like margin: 10em 1em !important are not supported in styleX. Separate into individual properties.',
         },
       ],
     },
@@ -166,35 +159,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands like marginInline: 0 0 0 0 are not supported in styleX. Separate into marginInlineStart, marginInlineEnd [...].',
-        }
-      ],
-    },
-    {
-      code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: 'calc(0.5 * 100px) !important',
-          },
-        });
-      `,
-      output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginInlineTop: 'calc(0.5 * 100px) !important',
-            marginInlineEnd: 'calc(0.5 * 100px) !important',
-            marginInlineBottom: 'calc(0.5 * 100px) !important',
-            marginInlineStart: 'calc(0.5 * 100px) !important',
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands like margin: 0 0 0 0 are not supported in styleX. Separate into marginStart, marginEnd [...].',
-        }
+            'Property shorthands like marginInline: 10em 1em !important are not supported in styleX. Separate into individual properties.',
+        },
       ],
     },
     {
@@ -223,11 +189,11 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-           'Use paddingInlineStart instead of legacy formats like paddingStart to adhere to logical property naming.',
+            'Use paddingInlineStart instead of legacy formats like paddingStart to adhere to logical property naming.',
         },
         {
           message:
-           'Use paddingInlineEnd instead of legacy formats like paddingEnd to adhere to logical property naming.',
+            'Use paddingInlineEnd instead of legacy formats like paddingEnd to adhere to logical property naming.',
         },
       ],
     },
@@ -244,9 +210,9 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            paddingInlineTop: '10em !important',
+            paddingTop: '10em !important',
             paddingInlineEnd: '1em !important',
-            paddingInlineBottom: '10em !important',
+            paddingBottom: '10em !important',
             paddingInlineStart: '1em !important',
           },
         });
@@ -254,7 +220,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-           'Property shorthands like padding: 0 0 0 0 are not supported in styleX. Separate into paddingStart, paddingEnd [...].',
+            'Property shorthands like padding: 10em 1em !important are not supported in styleX. Separate into individual properties.',
         },
       ],
     },
