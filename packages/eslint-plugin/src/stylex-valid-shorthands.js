@@ -24,14 +24,6 @@ import splitValue from './utils/splitShorthands.js';
 
 /*:: import { Rule } from 'eslint'; */
 
-type Stack = null | {
-  upper: Stack,
-  prevNode: $ReadOnly<{ ...Property, ... }> | null,
-  prevName: string | null,
-  prevBlankLine: boolean,
-  numKeys: number,
-};
-
 const legacyNameMapping = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
@@ -40,15 +32,34 @@ const legacyNameMapping = {
 };
 
 const shorthandAliases = {
-  marginInline: (rawValue: number | string) => [
-    ['marginInlineStart', rawValue],
-    ['marginInlineEnd', rawValue],
-  ],
+  marginInline: (rawValue: number | string) => {
+    const splitValues = splitValue(rawValue);
+    if (splitValues.length === 1) {
+      return [['marginInline', rawValue]];
+    }
+    const [top, right = top, _ = top, __ = right] = splitValues;
+    return [
+      ['marginInlineStart', top],
+      ['marginInlineEnd', right],
+    ];
+  },
+  marginBlock: (rawValue: number | string) => {
+    const splitValues = splitValue(rawValue);
+    if (splitValues.length === 1) {
+      return [['marginBlock', rawValue]];
+    }
+    const [top, right = top, _ = top, __ = right] = splitValues;
+    return [
+      ['marginBlockStart', top],
+      ['marginBlockEnd', right],
+    ];
+  },
   margin: (rawValue: number | string) => {
     const splitValues = splitValue(rawValue);
     if (splitValues.length === 1) {
-      return [['margin', splitValues[0]]];
+      return [['margin', rawValue]];
     }
+
     const [top, right = top, bottom = top, left = right] = splitValues;
 
     return [
@@ -61,7 +72,7 @@ const shorthandAliases = {
   padding: (rawValue: number | string) => {
     const splitValues = splitValue(rawValue);
     if (splitValues.length === 1) {
-      return [['padding', splitValues[0]]];
+      return [['padding', rawValue]];
     }
 
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
@@ -73,20 +84,32 @@ const shorthandAliases = {
       ['paddingInlineStart', left],
     ];
   },
-  paddingInline: (rawValue: number | string) => [
-    ['paddingInlineStart', rawValue],
-    ['paddingInlineEnd', rawValue],
-  ],
+  paddingInline: (rawValue: number | string) => {
+    const splitValues = splitValue(rawValue);
+    if (splitValues.length === 1) {
+      return [['paddingInline', rawValue]];
+    }
+    const [top, right = top, _ = top, __ = right] = splitValues;
+    return [
+      ['paddingInlineStart', top],
+      ['paddingInlineEnd', right],
+    ];
+  },
+  paddingBlock: (rawValue: number | string) => {
+    const splitValues = splitValue(rawValue);
+    if (splitValues.length === 1) {
+      return [['paddingBlock', rawValue]];
+    }
+    const [top, right = top, _ = top, __ = right] = splitValues;
+    return [
+      ['paddingBlockStart', top],
+      ['paddingBlockEnd', right],
+    ];
+  },
 };
 
-const stylexMarginPaddingShorthand = {
+const stylexValidShorthands = {
   meta: {
-    messages: {
-      noMarginShorthands:
-        'Property shorthands like `{{property}}: 0 0 0 0` are not supported in styleX. Separate into individual properties.',
-      noLegacyFormats:
-        'Use {{correctProperty}} instead of legacy formats like {{incorrectProperty}} to adhere to logical property naming.',
-    },
     fixable: 'code',
   },
   create(context: Rule.RuleContext): { ... } {
@@ -149,7 +172,7 @@ const stylexMarginPaddingShorthand = {
 
       context.report({
         node: property,
-        message: `Property shorthands like ${key}: ${String(property.value.value)} are not supported in styleX. Separate into individual properties.`,
+        message: `Property shorthands using multiple values like ${key}: ${String(property.value.value)} are not supported in StyleX. Separate into individual properties.`,
         data: {
           property: key,
         },
@@ -237,4 +260,4 @@ function getNodeIndentation(
     : '';
 }
 
-export default stylexMarginPaddingShorthand as typeof stylexMarginPaddingShorthand;
+export default stylexValidShorthands as typeof stylexValidShorthands;
