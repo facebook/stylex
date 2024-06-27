@@ -23,6 +23,7 @@ function printNode(node: PostCSSValueASTNode): string {
 
 export default function splitValue(
   str: number | string,
+  allowImportant: boolean = false,
 ): $ReadOnlyArray<number | string> {
   let processedStr = str;
 
@@ -56,9 +57,11 @@ export default function splitValue(
 
   if (
     nodes.length > 1 &&
-    nodes[nodes.length - 1].toLowerCase() === '!important'
+    nodes[nodes.length - 1].toLowerCase() === '!important' &&
+    allowImportant
   ) {
     return nodes.slice(0, nodes.length - 1).map((node) => node + ' !important');
   }
+
   return nodes;
 }

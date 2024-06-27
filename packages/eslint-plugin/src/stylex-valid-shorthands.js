@@ -32,8 +32,11 @@ const legacyNameMapping = {
 };
 
 const shorthandAliases = {
-  marginInline: (rawValue: number | string) => {
-    const splitValues = splitValue(rawValue);
+  marginInline: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+  ) => {
+    const splitValues = splitValue(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['marginInline', rawValue]];
     }
@@ -43,8 +46,8 @@ const shorthandAliases = {
       ['marginInlineEnd', right],
     ];
   },
-  marginBlock: (rawValue: number | string) => {
-    const splitValues = splitValue(rawValue);
+  marginBlock: (rawValue: number | string, allowImportant: boolean = false) => {
+    const splitValues = splitValue(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['marginBlock', rawValue]];
     }
@@ -54,8 +57,8 @@ const shorthandAliases = {
       ['marginBlockEnd', right],
     ];
   },
-  margin: (rawValue: number | string) => {
-    const splitValues = splitValue(rawValue);
+  margin: (rawValue: number | string, allowImportant: boolean = false) => {
+    const splitValues = splitValue(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['margin', rawValue]];
     }
@@ -69,13 +72,16 @@ const shorthandAliases = {
       ['marginInlineStart', left],
     ];
   },
-  padding: (rawValue: number | string) => {
-    const splitValues = splitValue(rawValue);
+  padding: (rawValue: number | string, allowImportant: boolean = false) => {
+    const splitValues = splitValue(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['padding', rawValue]];
     }
 
-    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
+    const [top, right = top, bottom = top, left = right] = splitValue(
+      rawValue,
+      allowImportant,
+    );
 
     return [
       ['paddingTop', top],
@@ -84,8 +90,11 @@ const shorthandAliases = {
       ['paddingInlineStart', left],
     ];
   },
-  paddingInline: (rawValue: number | string) => {
-    const splitValues = splitValue(rawValue);
+  paddingInline: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+  ) => {
+    const splitValues = splitValue(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['paddingInline', rawValue]];
     }
@@ -95,8 +104,11 @@ const shorthandAliases = {
       ['paddingInlineEnd', right],
     ];
   },
-  paddingBlock: (rawValue: number | string) => {
-    const splitValues = splitValue(rawValue);
+  paddingBlock: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+  ) => {
+    const splitValues = splitValue(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['paddingBlock', rawValue]];
     }
@@ -110,9 +122,36 @@ const shorthandAliases = {
 
 const stylexValidShorthands = {
   meta: {
+    type: 'error',
+    docs: {
+      description:
+        'Require shorthand properties to be split into individual properties',
+      recommended: false,
+      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
+    },
     fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          validImports: {
+            type: 'array',
+            items: { type: 'string' },
+            default: ['stylex', '@stylexjs/stylex'],
+          },
+          allowImportant: {
+            type: 'boolean',
+            default: false,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
   },
   create(context: Rule.RuleContext): { ... } {
+    const options = context.options[0] || {};
+    const allowImportant = options.allowImportant || false;
+
     function validateObject(obj: ObjectExpression) {
       for (const prop of obj.properties) {
         if (prop.type === 'SpreadElement') {
@@ -142,12 +181,7 @@ const stylexValidShorthands = {
       if (typeof key === 'string' && key in legacyNameMapping) {
         context.report({
           node: property,
-          message:
-            'Use {{correctProperty}} instead of legacy formats like {{incorrectProperty}} to adhere to logical property naming.',
-          data: {
-            correctProperty: legacyNameMapping[key],
-            incorrectProperty: key,
-          },
+          message: `Use ${legacyNameMapping[key]} instead of legacy formats like ${key} to adhere to logical property naming.`,
           fix: (fixer) => {
             // $FlowFixMe - We've already checked that key is a string and in legacyNameMapping
             return fixer.replaceText(property.key, legacyNameMapping[key]);
@@ -163,7 +197,10 @@ const stylexValidShorthands = {
         return;
       }
 
-      const newValues = shorthandAliases[key](property.value.value);
+      const newValues = shorthandAliases[key](
+        property.value.value,
+        allowImportant,
+      );
 
       if (newValues.length === 1) {
         // Single values do not need to be split
