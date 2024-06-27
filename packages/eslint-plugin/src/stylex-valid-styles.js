@@ -2255,6 +2255,7 @@ const pseudoClassesAndAtRules = makeUnionRule(
   makeLiteralRule(':hover'),
   makeLiteralRule(':focus'),
   makeLiteralRule(':focus-visible'),
+  makeLiteralRule(':focus-within'),
   makeLiteralRule(':active'),
   makeLiteralRule(':visited'),
   makeLiteralRule(':disabled'),
