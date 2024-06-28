@@ -124,20 +124,76 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             marginTop: '10px',
-            marginInlineEnd: '12px',
+            marginRight: '12px',
             marginBottom: '13px',
-            marginInlineStart: '14px',
+            marginLeft: '14px',
           },
         });
       `,
       errors: [
         {
           message:
-            'Property shorthands using multiple values like margin: 10px 12px 13px 14px are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
     {
+      options: [{ allowImportant: true }],
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '10px 12px 13px 14px !important',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            marginTop: '10px !important',
+            marginRight: '12px !important',
+            marginBottom: '13px !important',
+            marginLeft: '14px !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '10px 12px 13px 14px !important',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            marginTop: '10px',
+            marginRight: '12px',
+            marginBottom: '13px',
+            marginLeft: '14px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "margin: 10px 12px 13px 14px !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      options: [{ preferInline: true }],
       code: `
         import stylex from 'stylex';
         const styles = stylex.create({
@@ -160,7 +216,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like margin: 10em 1em are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -178,16 +234,16 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             marginTop: '10em',
-            marginInlineEnd: '1em',
+            marginRight: '1em',
             marginBottom: '10em',
-            marginInlineStart: '1em',
+            marginLeft: '1em',
           },
         });
       `,
       errors: [
         {
           message:
-            'Property shorthands using multiple values like margin: 10em 1em are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -212,7 +268,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like marginInline: 10em 1em are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "marginInline: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -237,7 +293,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like marginBlock: 10em 1em are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "marginBlock: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -262,7 +318,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       errors: [
         {
           message:
-            'Property shorthands using multiple values like paddingBlock: 10em 1em are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "paddingBlock: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -273,6 +329,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             paddingTop: '10em',
             paddingBottom: '1em',
+            marginStart: '20em',
+            marginEnd: '20em',
             paddingStart: '10em',
             paddingEnd: '1em',
           },
@@ -284,6 +342,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             paddingTop: '10em',
             paddingBottom: '1em',
+            marginInlineStart: '20em',
+            marginInlineEnd: '20em',
             paddingInlineStart: '10em',
             paddingInlineEnd: '1em',
           },
@@ -292,11 +352,19 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       errors: [
         {
           message:
-            'Use paddingInlineStart instead of legacy formats like paddingStart to adhere to logical property naming.',
+            'Use "marginInlineStart" instead of legacy formats like "marginStart" to adhere to logical property naming.',
         },
         {
           message:
-            'Use paddingInlineEnd instead of legacy formats like paddingEnd to adhere to logical property naming.',
+            'Use "marginInlineEnd" instead of legacy formats like "marginEnd" to adhere to logical property naming.',
+        },
+        {
+          message:
+            'Use "paddingInlineStart" instead of legacy formats like "paddingStart" to adhere to logical property naming.',
+        },
+        {
+          message:
+            'Use "paddingInlineEnd" instead of legacy formats like "paddingEnd" to adhere to logical property naming.',
         },
       ],
     },
@@ -314,16 +382,16 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             paddingTop: '10em',
-            paddingInlineEnd: '1em',
+            paddingRight: '1em',
             paddingBottom: '10em',
-            paddingInlineStart: '1em',
+            paddingLeft: '1em',
           },
         });
       `,
       errors: [
         {
           message:
-            'Property shorthands using multiple values like padding: 10em 1em are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "padding: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
