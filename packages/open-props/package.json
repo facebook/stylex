@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/open-props",
-  "version": "0.7.0",
+  "version": "0.7.3",
   "description": "A library common values as variables to be used with Stylex.",
   "type": "module",
   "exports": {
@@ -33,10 +33,10 @@
     "build": "babel src/ --out-dir lib/ --copy-files"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.7.0"
+    "@stylexjs/stylex": "0.7.3"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.7.0"
+    "@stylexjs/scripts": "0.7.3"
   },
   "jest": {},
   "files": [

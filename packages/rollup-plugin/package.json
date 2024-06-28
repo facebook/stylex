@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/rollup-plugin",
-  "version": "0.7.0",
+  "version": "0.7.3",
   "description": "Rollup plugin for StyleX",
   "main": "./lib/index.js",
   "module": "./lib/es/index.mjs",
@@ -10,7 +10,10 @@
     "require": "./lib/index.js",
     "types": "./lib/index.d.ts"
   },
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
@@ -29,9 +32,13 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.9",
-    "@stylexjs/babel-plugin": "0.7.0",
+    "@stylexjs/babel-plugin": "0.7.3",
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
     "@babel/plugin-syntax-typescript": "^7.23.3"
-  }
+  },
+  "files": [
+    "flow_modules/*",
+    "lib/*"
+  ]
 }
