@@ -1048,6 +1048,7 @@ const outline = isString;
 const overflow = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
+  makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
 );
