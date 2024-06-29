@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/nextjs-plugin",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Next.js plugin for StyleX",
   "main": "src/index.js",
   "repository": "https://www.github.com/facebook/stylex",
@@ -10,7 +10,7 @@
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-syntax-jsx": "^7.22.5",
     "@babel/plugin-syntax-typescript": "^7.22.5",
-    "@stylexjs/babel-plugin": "^0.7.3"
+    "@stylexjs/babel-plugin": "^0.7.4"
   },
   "peerDependencies": {
     "next": ">=14.0.1 || >=15.0.0 || 15.0.0-rc.0"
