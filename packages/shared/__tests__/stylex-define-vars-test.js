@@ -277,4 +277,91 @@ describe('stylex-define-vars test', () => {
       }
     `);
   });
+
+  test('preserves names of literals with -- prefix', () => {
+    const themeName = 'TestTheme.stylex.js//buttonTheme';
+    const classNamePrefix = 'x';
+    const defaultVars = {
+      '--bgColor': t.color({
+        default: 'blue',
+        '@media (prefers-color-scheme: dark)': {
+          default: 'lightblue',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+        '@media print': 'white',
+      }),
+      '--bgColorDisabled': t.color({
+        default: {
+          default: 'grey',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+        '@media (prefers-color-scheme: dark)': {
+          default: 'rgba(0, 0, 0, 0.8)',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+      }),
+      '--cornerRadius': t.length('10px'),
+      '--fgColor': t.color({
+        default: 'pink',
+      }),
+    };
+    const [jsOutput, cssOutput] = styleXDefineVars(defaultVars, { themeName });
+
+    expect(jsOutput).toEqual({
+      __themeName__: classNamePrefix + createHash(themeName),
+      '--bgColor': 'var(--bgColor)',
+      '--bgColorDisabled': 'var(--bgColorDisabled)',
+      '--cornerRadius': 'var(--cornerRadius)',
+      '--fgColor': 'var(--fgColor)',
+    });
+    expect(cssOutput).toMatchInlineSnapshot(`
+      {
+        "bgColor": {
+          "ltr": "@property --bgColor { syntax: "<color>"; inherits: true; initial-value: blue }",
+          "priority": 0,
+          "rtl": null,
+        },
+        "bgColorDisabled": {
+          "ltr": "@property --bgColorDisabled { syntax: "<color>"; inherits: true; initial-value: grey }",
+          "priority": 0,
+          "rtl": null,
+        },
+        "cornerRadius": {
+          "ltr": "@property --cornerRadius { syntax: "<length>"; inherits: true; initial-value: 10px }",
+          "priority": 0,
+          "rtl": null,
+        },
+        "fgColor": {
+          "ltr": "@property --fgColor { syntax: "<color>"; inherits: true; initial-value: pink }",
+          "priority": 0,
+          "rtl": null,
+        },
+        "x568ih9": {
+          "ltr": ":root{--bgColor:blue;--bgColorDisabled:grey;--cornerRadius:10px;--fgColor:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "x568ih9-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root{--bgColor:oklab(0.7 -0.3 -0.4);--bgColorDisabled:oklab(0.7 -0.3 -0.4);}}}",
+          "priority": 0.2,
+          "rtl": null,
+        },
+        "x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root{--bgColor:lightblue;--bgColorDisabled:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "x568ih9-bdddrq": {
+          "ltr": "@media print{:root{--bgColor:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "x568ih9-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){:root{--bgColorDisabled:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+      }
+    `);
+  });
 });

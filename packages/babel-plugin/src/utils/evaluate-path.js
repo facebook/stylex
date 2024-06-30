@@ -155,12 +155,14 @@ function evaluateThemeRef(
   state: State,
 ): { [key: string]: string } {
   const resolveKey = (key: string) => {
+    if (key.startsWith('--')) {
+      return `var(${key})`;
+    }
+
     const strToHash =
       key === '__themeName__'
         ? utils.genFileBasedIdentifier({ fileName, exportName })
-        : key.startsWith('--')
-          ? `var(${key})`
-          : utils.genFileBasedIdentifier({ fileName, exportName, key });
+        : utils.genFileBasedIdentifier({ fileName, exportName, key });
 
     const varName =
       state.traversalState.options.classNamePrefix + utils.hash(strToHash);
