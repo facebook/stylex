@@ -87,6 +87,43 @@ describe('Evaluation of imported values works based on configuration', () => {
       `);
     });
 
+    test('Maintains variable names that start with -- from "*.stylex" files', () => {
+      const transformation = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          red: {
+            color: MyTheme['--foreground'],
+          }
+        });
+        stylex(styles.red);
+      `);
+      const expectedVarName = 'var(--foreground)';
+      expect(expectedVarName).toMatchInlineSnapshot(`"var(--foreground)"`);
+      expect(transformation.code).toContain(expectedVarName);
+      expect(transformation.code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import 'otherFile.stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        _inject2(".__hashed_var__11jfisy{color:var(--foreground)}", 3000);
+        "__hashed_var__11jfisy";"
+      `);
+      expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "__hashed_var__11jfisy",
+            {
+              "ltr": ".__hashed_var__11jfisy{color:var(--foreground)}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
+    });
+
     test('Importing file with ".stylex" suffix works with keyframes', () => {
       const transformation = transform(`
         import stylex from 'stylex';

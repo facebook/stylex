@@ -15,7 +15,7 @@ const styles = stylex.create({
     width: '100%',
     paddingTop: '56.25%',
     position: 'relative',
-    marginVertical: 16,
+    marginBlock: 16,
   },
   iframe: {
     position: 'absolute',

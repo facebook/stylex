@@ -155,6 +155,10 @@ function evaluateThemeRef(
   state: State,
 ): { [key: string]: string } {
   const resolveKey = (key: string) => {
+    if (key.startsWith('--')) {
+      return `var(${key})`;
+    }
+
     const strToHash =
       key === '__themeName__'
         ? utils.genFileBasedIdentifier({ fileName, exportName })

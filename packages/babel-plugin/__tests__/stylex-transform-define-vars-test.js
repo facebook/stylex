@@ -30,7 +30,7 @@ function transform(source, opts = defaultOpts) {
     },
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
-  }).code;
+  });
 }
 
 describe('@stylexjs/babel-plugin', () => {
@@ -54,7 +54,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           });
-        `),
+        `).code,
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -64,6 +64,66 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--x4y59db)",
           __themeName__: "x568ih9"
         };"
+      `);
+    });
+
+    test('transforms literal variables object', () => {
+      const { code, metadata } = transform(`
+        import stylex from 'stylex';
+        export const buttonTheme = stylex.defineVars({
+          '--bgColor': {
+            default: 'blue',
+            '@media (prefers-color-scheme: dark)': 'lightblue',
+            '@media print': 'white',
+          },
+          '--bgColorDisabled': {
+            default: 'grey',
+            '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+          },
+          '--cornerRadius': 10,
+          '--fgColor': {
+            default: 'pink',
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        export const buttonTheme = {
+          "--bgColor": "var(--bgColor)",
+          "--bgColorDisabled": "var(--bgColorDisabled)",
+          "--cornerRadius": "var(--cornerRadius)",
+          "--fgColor": "var(--fgColor)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x568ih9",
+            {
+              "ltr": ":root{--bgColor:blue;--bgColorDisabled:grey;--cornerRadius:10;--fgColor:pink;}",
+              "rtl": null,
+            },
+            0,
+          ],
+          [
+            "x568ih9-1lveb7",
+            {
+              "ltr": "@media (prefers-color-scheme: dark){:root{--bgColor:lightblue;--bgColorDisabled:rgba(0, 0, 0, 0.8);}}",
+              "rtl": null,
+            },
+            0.1,
+          ],
+          [
+            "x568ih9-bdddrq",
+            {
+              "ltr": "@media print{:root{--bgColor:white;}}",
+              "rtl": null,
+            },
+            0.1,
+          ],
+        ]
       `);
     });
 
@@ -86,7 +146,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           });
-        `),
+        `).code,
       ).toMatchInlineSnapshot(`
         "import * as foo from 'stylex';
         export const buttonTheme = {
@@ -118,7 +178,7 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'pink',
             },
           });
-        `),
+        `).code,
       ).toMatchInlineSnapshot(`
         "import { defineVars } from 'stylex';
         export const buttonTheme = {
@@ -151,7 +211,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           };
           export const buttonTheme = stylex.defineVars(defaultButtonTokens);
-        `),
+        `).code,
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         const defaultButtonTokens = {
@@ -201,7 +261,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `,
           { dev: true, ...defaultOpts },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -244,7 +304,7 @@ describe('@stylexjs/babel-plugin', () => {
             moduleSystem: 'commonjs',
             rootDir,
           },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -283,7 +343,7 @@ describe('@stylexjs/babel-plugin', () => {
             moduleSystem: 'commonjs',
             rootDir,
           },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -330,7 +390,7 @@ describe('@stylexjs/babel-plugin', () => {
             cornerRadius: 8,
           });
         `,
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const buttonTheme = {
@@ -382,7 +442,7 @@ describe('@stylexjs/babel-plugin', () => {
             dev: true,
             ...defaultOpts,
           },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -431,7 +491,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `,
           { dev: true, ...defaultOpts },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -473,7 +533,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `,
           { dev: true, ...defaultOpts },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -515,7 +575,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `,
           { dev: true, ...defaultOpts },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -557,7 +617,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `,
           { dev: true, ...defaultOpts },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -605,7 +665,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
             filename: '/stylex/packages/utils/NestedTheme.stylex.js',
           },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -652,7 +712,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
             filename: '/stylex/packages/utils/NestedTheme.stylex.js',
           },
-        ),
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;

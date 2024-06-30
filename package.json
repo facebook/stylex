@@ -1,6 +1,6 @@
 {
   "name": "stylex-monorepo",
-  "version": "0.6.1",
+  "version": "0.7.4",
   "license": "MIT",
   "private": true,
   "scripts": {
