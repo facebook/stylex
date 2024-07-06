@@ -75,10 +75,6 @@ const propertyToLTR = {
     val,
   ],
   // 'border-end-end-radius': ([key, val]: [string, string]) => ['border-bottom-right-radius', val],
-  'text-align': ([key, val]: [string, string]) => [
-    key,
-    logicalToPhysical[val] ?? val,
-  ],
   float: ([key, val]: [string, string]) => [key, logicalToPhysical[val] ?? val],
   clear: ([key, val]: [string, string]) => [key, logicalToPhysical[val] ?? val],
   start: ([_key, val]: [string, string]) => ['left', val],
