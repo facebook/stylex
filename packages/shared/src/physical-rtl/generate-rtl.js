@@ -156,8 +156,6 @@ const propertyToRTL = {
     val,
   ],
   // 'border-end-end-radius': ([key, val]: [string, string]) => ['border-bottom-left-radius', val],
-  'text-align': ([key, val]: [string, string]) =>
-    logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
   float: ([key, val]: [string, string]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
   clear: ([key, val]: [string, string]) =>
