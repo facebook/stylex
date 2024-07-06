@@ -7,8 +7,11 @@
  * @flow strict
  */
 
-import stylexCreateTheme from '../src/stylex-create-theme';
-import * as t from '../src/types';
+import _stylexCreateTheme from '../../src/stylex-create-theme';
+import * as t from '../../src/types';
+
+const stylexCreateTheme = (a, b) =>
+  _stylexCreateTheme(a, b, { themeOverride: 'global' });
 
 describe('stylex-create-theme test', () => {
   test('overrides set of vars with CSS class', () => {
@@ -39,10 +42,21 @@ describe('stylex-create-theme test', () => {
       createTheme,
     );
 
-    expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
+    expect(defaultVars.__themeName__).toMatchInlineSnapshot(
+      '"TestTheme.stylex.js//buttonTheme"',
+    );
+
+    expect(classNameOutput).toMatchInlineSnapshot(`
+      {
+        "$$css": true,
+        "TestTheme.stylex.js//buttonTheme": "xtrlmmh __stylex-base-theme__",
+      }
+    `);
+
+    expect(cssOutput[classNameOutput[defaultVars.__themeName__].split(' ')[0]])
       .toMatchInlineSnapshot(`
       {
-        "ltr": ".xtrlmmh, .xtrlmmh:root{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+        "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
         "priority": 0.5,
         "rtl": null,
       }
@@ -77,10 +91,21 @@ describe('stylex-create-theme test', () => {
       createTheme,
     );
 
-    expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
+    expect(defaultVars.__themeName__).toMatchInlineSnapshot(
+      '"TestTheme.stylex.js//buttonTheme"',
+    );
+
+    expect(classNameOutput).toMatchInlineSnapshot(`
+      {
+        "$$css": true,
+        "TestTheme.stylex.js//buttonTheme": "x4znj40 __stylex-base-theme__",
+      }
+    `);
+
+    expect(cssOutput[classNameOutput[defaultVars.__themeName__].split(' ')[0]])
       .toMatchInlineSnapshot(`
       {
-        "ltr": ".x4znj40, .x4znj40:root{--bgColor:green;--bgColorDisabled:antiquewhite;--cornerRadius:6px;--fgColor:coral;}",
+        "ltr": ".x4znj40{--bgColor:green;--bgColorDisabled:antiquewhite;--cornerRadius:6px;--fgColor:coral;}",
         "priority": 0.5,
         "rtl": null,
       }
@@ -128,8 +153,12 @@ describe('stylex-create-theme test', () => {
 
     const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
 
-    expect(classNameOutput1[defaultVars.__themeName__]).toEqual(
-      classNameOutput2[defaultVars.__themeName__],
+    expect(defaultVars.__themeName__).toMatchInlineSnapshot(
+      '"TestTheme.stylex.js//buttonTheme"',
+    );
+
+    expect(classNameOutput1[defaultVars.__themeName__].split(' ')[0]).toEqual(
+      classNameOutput2[defaultVars.__themeName__].split(' ')[0],
     );
   });
 
@@ -154,9 +183,9 @@ describe('stylex-create-theme test', () => {
 
     const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
 
-    expect(classNameOutput1[defaultVars.__themeName__]).not.toEqual(
-      classNameOutput2[defaultVars.__themeName__],
-    );
+    expect(
+      classNameOutput1[defaultVars.__themeName__].split(' ')[0],
+    ).not.toEqual(classNameOutput2[defaultVars.__themeName__].split(' ')[0]);
   });
 
   test('Generates styles for nested at-rules', () => {
@@ -186,22 +215,22 @@ describe('stylex-create-theme test', () => {
     expect(cssOutput).toMatchInlineSnapshot(`
       {
         "x2y918k": {
-          "ltr": ".x2y918k, .x2y918k:root{--xgck17p:green;}",
+          "ltr": ".x2y918k{--xgck17p:green;}",
           "priority": 0.5,
           "rtl": null,
         },
         "x2y918k-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
           "priority": 0.7,
           "rtl": null,
         },
         "x2y918k-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:lightgreen;}}",
+          "ltr": "@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:lightgreen;}}",
           "priority": 0.6,
           "rtl": null,
         },
         "x2y918k-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
+          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
           "priority": 0.6,
           "rtl": null,
         },
@@ -236,22 +265,22 @@ describe('stylex-create-theme test', () => {
     expect(cssOutput).toMatchInlineSnapshot(`
       {
         "x2y918k": {
-          "ltr": ".x2y918k, .x2y918k:root{--xgck17p:green;}",
+          "ltr": ".x2y918k{--xgck17p:green;}",
           "priority": 0.5,
           "rtl": null,
         },
         "x2y918k-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
           "priority": 0.7,
           "rtl": null,
         },
         "x2y918k-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:lightgreen;}}",
+          "ltr": "@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:lightgreen;}}",
           "priority": 0.6,
           "rtl": null,
         },
         "x2y918k-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
+          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
           "priority": 0.6,
           "rtl": null,
         },
