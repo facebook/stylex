@@ -18,7 +18,8 @@
     "@stylexjs/stylex": "0.8.0",
     "@babel/core": "^7.23.6",
     "@babel/traverse": "^7.23.6",
-    "@babel/types": "^7.23.6"
+    "@babel/types": "^7.23.6",
+    "esm-resolve": "^1.0.11"
   },
   "jest": {
     "verbose": true,
