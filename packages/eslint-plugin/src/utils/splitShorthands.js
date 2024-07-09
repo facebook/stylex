@@ -8,6 +8,7 @@
  */
 
 import parser from 'postcss-value-parser';
+import cssExpand from 'css-shorthand-expand';
 
 function printNode(node: PostCSSValueASTNode): string {
   switch (node.type) {
@@ -21,7 +22,34 @@ function printNode(node: PostCSSValueASTNode): string {
   }
 }
 
-export default function splitValue(
+const toCamelCase = (str: string) => {
+  return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
+};
+
+const stripImportant = (cssProperty: string | number) =>
+  cssProperty
+    .toString()
+    .replace(/\s*!important\s*$/, '')
+    .trim();
+
+export function splitSpecificShorthands(
+  property: string,
+  value: string,
+  allowImportant: boolean = false,
+): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
+  const longform = cssExpand(property, value);
+  const longformJsx: {
+    [key: string]: number | string,
+  } = {};
+
+  Object.entries(longform).forEach(([key, val]) => {
+    longformJsx[toCamelCase(key)] = allowImportant ? val : stripImportant(val);
+  });
+
+  return Object.entries(longformJsx);
+}
+
+export function splitDirectionalShorthands(
   str: number | string,
   allowImportant: boolean = false,
 ): $ReadOnlyArray<number | string> {
