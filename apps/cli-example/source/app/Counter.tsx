@@ -10,7 +10,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { spacing, text, globalTokens as $ } from './globalTokens.stylex';
+import { spacing, text, globalTokens as $ } from '@/app/globalTokens.stylex';
 import { colors } from '@stylexjs/open-props/lib/colors.stylex';
 import { useState } from 'react';
 

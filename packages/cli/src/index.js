@@ -43,6 +43,7 @@ console.log(
 
 const usage =
   '\n Usage: provide a directory to stylex in order to have it compiled.';
+let config: { +[string]: mixed } = {};
 const args = yargs(process.argv)
   .scriptName('stylex')
   .usage(usage)
@@ -52,7 +53,8 @@ const args = yargs(process.argv)
     'config',
     'path of a .json (or .json5) config file',
     (configPath: string) => {
-      return JSON5.parse(fs.readFileSync(configPath));
+      config = JSON5.parse(fs.readFileSync(configPath));
+      return config;
     },
   )
   .parseSync();
@@ -67,6 +69,8 @@ const modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType> =
   args.modules_EXPERIMENTAL;
 const babelPresets: $ReadOnlyArray<any> = args.babelPresets;
 const useCSSLayers: boolean = args.useCSSLayers;
+const styleXConfig: { +[string]: mixed } =
+  (config.styleXConfig as $FlowFixMe) ?? {};
 
 const cliArgsConfig: CliConfig = {
   input,
@@ -76,6 +80,7 @@ const cliArgsConfig: CliConfig = {
   styleXBundleName,
   babelPresets,
   useCSSLayers,
+  styleXConfig,
 };
 
 styleXCompile(cliArgsConfig);
@@ -98,6 +103,21 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
     const outputPath = path.isAbsolute(cliArgsConfig.output[i])
       ? cliArgsConfig.output[i]
       : path.normalize(path.join(absolutePath, cliArgsConfig.output[i]));
+    const styleXConfig = cliArgsConfig.styleXConfig;
+    if (
+      styleXConfig?.aliases != null &&
+      typeof styleXConfig.aliases === 'object'
+    ) {
+      const aliases: $FlowFixMe = styleXConfig.aliases;
+      Object.keys(aliases).forEach((key) => {
+        aliases[key] = aliases[key].map((alias) => {
+          return path.isAbsolute(alias)
+            ? alias
+            : path.normalize(path.join(absolutePath, alias));
+        });
+      });
+    }
+
     const config: TransformConfig = {
       input: inputPath,
       output: outputPath,
@@ -106,6 +126,7 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
       styleXBundleName,
       babelPresets,
       useCSSLayers,
+      styleXConfig,
       state: configState,
     };
     if (!isDir(config.input)) {

@@ -120,6 +120,7 @@ export async function transformFile(
             // This assumes that your input and output are in the same directory
             rootDir: path.parse(config.output).dir,
           },
+          ...(config.styleXConfig as $FlowFixMe),
         },
       ],
       createImportPlugin(relativeImport),

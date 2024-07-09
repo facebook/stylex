@@ -22,6 +22,7 @@ export type CliConfig = {
   babelPresets: $ReadOnlyArray<any>,
   modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType>,
   useCSSLayers?: boolean,
+  styleXConfig?: { +[string]: mixed },
 };
 
 export type TransformConfig = {
