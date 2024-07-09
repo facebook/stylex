@@ -7,10 +7,7 @@
  * @flow strict
  */
 
-import type { CliConfig } from './config';
-import type { Options } from 'yargs';
-
-const options: { [$Keys<CliConfig>]: Options } = {
+const options = {
   input: {
     alias: 'i',
     describe: 'The input directory to compile with Stylex',
@@ -45,14 +42,16 @@ const options: { [$Keys<CliConfig>]: Options } = {
     describe:
       'A list of babel presets to pass to the babel transform when compiling StyleX',
     type: 'array',
-    default: [],
+    default: [] as $ReadOnlyArray<string | $ReadOnly<[string, { ... }]>>,
   },
   modules_EXPERIMENTAL: {
     alias: 'm',
     describe:
       'a list of node modules to also compile with StyleX. This is experimental and may not work for all modules',
     type: 'array',
-    default: [],
+    default: [] as $ReadOnlyArray<
+      string | $ReadOnly<[string, { ignore: $ReadOnlyArray<string> }]>,
+    >,
   },
 };
 
