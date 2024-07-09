@@ -138,6 +138,124 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       ],
     },
     {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            outline: '2px dashed red',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            outlineWidth: '2px',
+            outlineStyle: 'dashed',
+            outlineColor: 'red',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "outline: 2px dashed red" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            backgroundColor: '#ff0',
+            backgroundImage: 'url("image.jpg")',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "background: #ff0 url("image.jpg") no-repeat fixed center / cover !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            backgroundColor: '#ff0 !important',
+            backgroundImage: 'url("image.jpg") !important',
+            backgroundRepeat: 'no-repeat !important',
+            backgroundAttachment: 'fixed !important',
+            backgroundPosition: 'center !important',
+            backgroundSize: 'cover !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "background: #ff0 url("image.jpg") no-repeat fixed center / cover !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '0px',
+            font: 'italic small-caps bold 16px/1.5 "Helvetica Neue"',
+            color: 'white',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '0px',
+            fontFamily: '"Helvetica Neue"',
+            fontStyle: 'italic',
+            fontVariant: 'small-caps',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            lineHeight: '1.5',
+            color: 'white',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "font: italic small-caps bold 16px/1.5 "Helvetica Neue"" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
       options: [{ allowImportant: true }],
       code: `
         import stylex from 'stylex';
