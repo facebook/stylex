@@ -18,7 +18,7 @@ import { isDir } from './files';
 import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
-import watcher from './watcher';
+import { startWatcher } from './watcher';
 import fs from 'fs';
 import { clearInputModuleDir, copyNodeModules } from './modules';
 import type { CliConfig, ModuleType, TransformConfig } from './config';
@@ -116,11 +116,17 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
       config.state.copiedNodeModules = copyNodeModules(config);
     }
     if (config.watch) {
-      watcher(config);
+      startWatcher(config);
     } else {
-      await compileDirectory(config);
-      if (config.state.copiedNodeModules) {
+      try {
+        await compileDirectory(config);
+        if (config.state.copiedNodeModules) {
+          clearInputModuleDir(config);
+        }
+      } catch (err) {
+        fs.rmSync(config.output, { recursive: true, force: true });
         clearInputModuleDir(config);
+        throw err;
       }
     }
   }

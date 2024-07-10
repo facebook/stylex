@@ -9,13 +9,13 @@
 
 import type { TransformConfig } from './config';
 
+import { clearInputModuleDir } from './modules';
 import { compileDirectory } from './transform';
 
 import ansis from 'ansis';
 import watchman from 'fb-watchman';
 
 type Subscription = {
-  expression: Array<string | Array<string>>,
   fields: Array<string>,
   relative_root?: string,
 };
@@ -46,7 +46,7 @@ declare class WatchmanClient {
   end(): void;
 }
 
-export default function watch(config: TransformConfig) {
+export function startWatcher(config: TransformConfig) {
   const watchmanClient: WatchmanClient = new watchman.Client();
 
   watchmanClient.capabilityCheck(
@@ -87,15 +87,6 @@ function subscribe(
   config: TransformConfig,
 ) {
   const subscription: Subscription = {
-    expression: [
-      'anyof',
-      ['match', '*.js'],
-      ['match', '*.ts'],
-      ['match', '*.jsx'],
-      ['match', '*.tsx'],
-      ['match', '*.cjs'],
-      ['match', '*.mjs'],
-    ],
     fields: ['name', 'size', 'mtime_ms', 'exists', 'type'],
   };
   if (relative_path) {
@@ -118,7 +109,20 @@ function subscribe(
     compileDirectory(
       config,
       resp.files.filter((file) => file.exists).map((file) => file.name),
-      resp.files.filter((file) => !file.exists).map((file) => file.name),
-    );
+      resp.files
+        .filter(
+          (file) =>
+            // don't trigger recompile when the cli deletes the compiled modules folder
+            !file.exists && !file.name.startsWith('stylex_compiled_modules'),
+        )
+        .map((file) => file.name),
+    )
+      .then(() => {
+        clearInputModuleDir(config);
+      })
+      .catch((transformError) => {
+        clearInputModuleDir(config);
+        console.error(transformError);
+      });
   });
 }
