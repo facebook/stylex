@@ -76,8 +76,5 @@
         }
       }
     ]
-  },
-  "dependencies": {
-    "css-shorthand-expand": "^1.2.0"
   }
 }

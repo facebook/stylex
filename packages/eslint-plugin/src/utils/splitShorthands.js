@@ -38,15 +38,17 @@ export function splitSpecificShorthands(
   allowImportant: boolean = false,
 ): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
   const longform = cssExpand(property, value);
-  const longformJsx: {
+  const longformStyle: {
     [key: string]: number | string,
   } = {};
 
   Object.entries(longform).forEach(([key, val]) => {
-    longformJsx[toCamelCase(key)] = allowImportant ? val : stripImportant(val);
+    longformStyle[toCamelCase(key)] = allowImportant
+      ? val
+      : stripImportant(val);
   });
 
-  return Object.entries(longformJsx);
+  return Object.entries(longformStyle);
 }
 
 export function splitDirectionalShorthands(

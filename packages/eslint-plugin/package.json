@@ -13,6 +13,7 @@
     "test": "jest --detectOpenHandles"
   },
   "dependencies": {
+    "css-shorthand-expand": "^1.2.0",
     "micromatch": "^4.0.5"
   },
   "files": [
