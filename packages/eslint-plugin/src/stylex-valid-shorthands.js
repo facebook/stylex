@@ -20,7 +20,10 @@ import type { SourceCode } from 'eslint/eslint-rule';
 
 import type { Token } from 'eslint/eslint-ast';
 
-import splitValue from './utils/splitShorthands.js';
+import {
+  splitSpecificShorthands,
+  splitDirectionalShorthands,
+} from './utils/splitShorthands.js';
 
 /*:: import { Rule } from 'eslint'; */
 
@@ -32,12 +35,41 @@ const legacyNameMapping = {
 };
 
 const shorthandAliases = {
+  background: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'background',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  font: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands('font', rawValue.toString(), allowImportant);
+  },
+  outline: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'outline',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
   marginInline: (
     rawValue: number | string,
     allowImportant: boolean = false,
     _preferInline: boolean = false,
   ) => {
-    const splitValues = splitValue(rawValue, allowImportant);
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['marginInline', rawValue]];
     }
@@ -52,7 +84,7 @@ const shorthandAliases = {
     allowImportant: boolean = false,
     _preferInline: boolean = false,
   ) => {
-    const splitValues = splitValue(rawValue, allowImportant);
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['marginBlock', rawValue]];
     }
@@ -67,7 +99,7 @@ const shorthandAliases = {
     allowImportant: boolean = false,
     preferInline: boolean = false,
   ) => {
-    const splitValues = splitValue(rawValue, allowImportant);
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['margin', rawValue]];
     }
@@ -93,15 +125,13 @@ const shorthandAliases = {
     allowImportant: boolean = false,
     preferInline: boolean = false,
   ) => {
-    const splitValues = splitValue(rawValue, allowImportant);
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['padding', rawValue]];
     }
 
-    const [top, right = top, bottom = top, left = right] = splitValue(
-      rawValue,
-      allowImportant,
-    );
+    const [top, right = top, bottom = top, left = right] =
+      splitDirectionalShorthands(rawValue, allowImportant);
 
     return preferInline
       ? [
@@ -122,7 +152,7 @@ const shorthandAliases = {
     allowImportant: boolean = false,
     _preferInline: boolean = false,
   ) => {
-    const splitValues = splitValue(rawValue, allowImportant);
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['paddingInline', rawValue]];
     }
@@ -137,7 +167,7 @@ const shorthandAliases = {
     allowImportant: boolean = false,
     _preferInline: boolean = false,
   ) => {
-    const splitValues = splitValue(rawValue, allowImportant);
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
       return [['paddingBlock', rawValue]];
     }
