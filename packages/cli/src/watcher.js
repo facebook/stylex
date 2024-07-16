@@ -63,7 +63,7 @@ export function startWatcher(config: TransformConfig) {
         ['watch-project', config.input],
         function (error, resp) {
           if (error) {
-            console.error('Error initiating watch:', error);
+            console.error('[stylex] error initiating watch:', error);
             return;
           }
           if ('warning' in resp) {
@@ -97,7 +97,7 @@ function subscribe(
     ['subscribe', watcher, 'jsFileChanged', subscription],
     function (error: string, _resp: Response) {
       if (error) {
-        console.error('failed to subscribe: ', error);
+        console.error('[stylex] failed to subscribe with watch mode: ', error);
         return;
       }
     },

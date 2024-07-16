@@ -133,7 +133,7 @@ export async function transformFile(
     ],
   });
   if (result == null) {
-    throw new Error(`Failed to transform file ${inputFilePath}`);
+    throw new Error(`[stylex] failed to transform file ${inputFilePath}`);
   }
   const { code, metadata } = result;
 
