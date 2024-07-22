@@ -100,7 +100,7 @@ type alignSelf =
   | 'safe center'
   | 'unsafe center'
   | all;
-type all = null | 'initial' | 'inherit' | 'unset';
+type all = null | 'initial' | 'inherit' | 'unset' | StringPrefix<'var(--'>;
 type animationDelay = time;
 type animationDirection = singleAnimationDirection;
 type animationDuration = time;

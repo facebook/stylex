@@ -63,8 +63,7 @@ function validateConditionalStyles(
   val: ConditionalStyles,
   conditions: $ReadOnlyArray<string> = [],
 ): void {
-  for (const key in val) {
-    const v = val[key];
+  for (const [key, v] of Object.entries(val)) {
     if (!(key.startsWith('@') || key.startsWith(':') || key === 'default')) {
       throw new Error(messages.INVALID_PSEUDO_OR_AT_RULE);
     }

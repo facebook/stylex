@@ -9,7 +9,7 @@
 
 import parser from 'postcss-value-parser';
 
-const cursorFlip: $ReadOnly<{ [string]: string }> = {
+const cursorFlip: $ReadOnly<{ [string]: ?string }> = {
   'e-resize': 'w-resize',
   'w-resize': 'e-resize',
   'ne-resize': 'nw-resize',
@@ -98,7 +98,7 @@ const logicalToPhysical: $ReadOnly<{ [string]: ?string }> = {
 };
 
 const propertyToRTL: $ReadOnly<{
-  [key: string]: (
+  [key: string]: ?(
     $ReadOnly<[string, string]>,
   ) => $ReadOnly<[string, string]> | null,
 }> = {
