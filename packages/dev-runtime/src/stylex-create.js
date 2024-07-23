@@ -124,6 +124,7 @@ function createWithFns<S: { ... }>(
     if (origKey.startsWith('var(') && origKey.endsWith(')')) {
       key = origKey.slice(4, -1);
     }
+    // $FlowFixMe[invalid-computed-prop]
     const value = styles[origKey];
     if (typeof value === 'function') {
       const [staticObj, inlineStylesFn] = splitStaticObj(value, config);

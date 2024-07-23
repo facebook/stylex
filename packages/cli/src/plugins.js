@@ -70,13 +70,17 @@ export const createModuleImportModifierPlugin = (
                   const moduleDir = config.state.compiledNodeModuleDir
                     ? nodePath.join(
                         config.state.compiledNodeModuleDir,
+                        // $FlowFixMe
                         module,
+                        // $FlowFixMe
                         source.split(module).pop(),
                       )
                     : nodePath.join(
                         config.output,
                         'stylex_compiled_modules',
+                        // $FlowFixMe
                         module,
+                        // $FlowFixMe
                         source.split(module).pop(),
                       );
                   console.log(moduleDir);

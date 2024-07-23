@@ -269,7 +269,7 @@ export class StyleXSheet {
     }
 
     // Place us next to the next highest priority
-    const lastPriority = priorities.pop();
+    const lastPriority = priorities.pop() ?? 0;
     return this.rules.indexOf(this.ruleForPriority.get(lastPriority));
   }
 

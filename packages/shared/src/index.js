@@ -60,12 +60,15 @@ export const utils: {
 export const messages: typeof m = m;
 export const IncludedStyles: typeof _IncludedStyles = _IncludedStyles;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
-export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES =
-  _PSEUDO_CLASS_PRIORITIES;
-export const AT_RULE_PRIORITIES: typeof _AT_RULE_PRIORITIES =
-  _AT_RULE_PRIORITIES;
-export const PSEUDO_ELEMENT_PRIORITY: typeof _PSEUDO_ELEMENT_PRIORITY =
-  _PSEUDO_ELEMENT_PRIORITY;
+export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{
+  +[string]: ?number,
+  ...typeof _PSEUDO_CLASS_PRIORITIES,
+}> = _PSEUDO_CLASS_PRIORITIES;
+export const AT_RULE_PRIORITIES: $ReadOnly<{
+  +[string]: ?number,
+  ...typeof _AT_RULE_PRIORITIES,
+}> = _AT_RULE_PRIORITIES;
+export const PSEUDO_ELEMENT_PRIORITY: number = _PSEUDO_ELEMENT_PRIORITY;
 
 export type InjectableStyle = _InjectableStyle;
 export type CompiledNamespaces = _CompiledNamespaces;

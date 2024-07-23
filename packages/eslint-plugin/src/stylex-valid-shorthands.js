@@ -245,6 +245,7 @@ const stylexValidShorthands = {
       if (typeof key === 'string' && key in legacyNameMapping) {
         context.report({
           node: property,
+          // $FlowFixMe[invalid-computed-prop]
           message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
           fix: (fixer) => {
             // $FlowFixMe - We've already checked that key is a string and in legacyNameMapping
@@ -261,6 +262,7 @@ const stylexValidShorthands = {
         return;
       }
 
+      // $FlowFixMe[invalid-computed-prop]
       const newValues = shorthandAliases[key](
         property.value.value,
         allowImportant,

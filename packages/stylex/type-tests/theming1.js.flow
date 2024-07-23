@@ -94,13 +94,16 @@ function MyComponent({ theme }: { theme: Theme<typeof varsA> }) {
 const a1: Theme<typeof varsA> = themeA;
 const b1: Theme<typeof varsB> = themeB;
 
+// $FlowExpectedError
 const bIsNotA: Theme<typeof varsA> = themeB;
 
+// $FlowExpectedError
 const aIsNotB: Theme<typeof varsB> = themeA;
 
 // Instantiate component with themeA
 const Correct = () => <MyComponent theme={themeA} />;
 
+// $FlowExpectedError
 const Incorrect = () => <MyComponent theme={themeB} />;
 
 // Usage of themes with stylex.props

@@ -7,12 +7,16 @@
  * @flow strict
  */
 
-const logicalToPhysical = {
+const logicalToPhysical: {
+  +[string]: ?string,
+} = {
   start: 'left',
   end: 'right',
 };
 
-const propertyToLTR = {
+const propertyToLTR: {
+  +[string]: ?(pair: [string, string]) => [string, string],
+} = {
   'margin-start': ([_key, val]: [string, string]) => ['margin-left', val],
   // 'margin-inline-start': ([_key, val]) => ['margin-left', val],
   'margin-end': ([_key, val]: [string, string]) => ['margin-right', val],
@@ -94,8 +98,10 @@ const propertyToLTR = {
 
 export default function generateLTR(pair: [string, string]): [string, string] {
   const [key] = pair;
-  if (propertyToLTR[key]) {
-    return propertyToLTR[key](pair);
+
+  const property = propertyToLTR[key];
+  if (property) {
+    return property(pair);
   }
   return pair;
 }

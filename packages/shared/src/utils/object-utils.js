@@ -16,7 +16,7 @@ import { IncludedStyles } from '../stylex-include';
 // eslint-disable-next-line no-unused-vars
 type AnyObject = { +[string]: mixed };
 
-export function isPlainObject(obj: mixed) /*: obj is AnyObject */ {
+export function isPlainObject(obj: mixed): implies obj is AnyObject {
   return (
     typeof obj === 'object' &&
     obj != null &&
