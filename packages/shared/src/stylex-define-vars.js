@@ -74,6 +74,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   );
 
   const injectableStyles = constructCssVariablesString(
+    // $FlowFixMe[incompatible-call] - Can't use a class when a plain object is expected
     variablesMap,
     themeNameHash,
   );
