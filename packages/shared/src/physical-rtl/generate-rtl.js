@@ -181,8 +181,9 @@ const propertyToRTL: $ReadOnly<{
 export default function generateRTL([key, value]: $ReadOnly<
   [string, string],
 >): ?$ReadOnly<[string, string]> {
-  if (propertyToRTL[key]) {
-    return propertyToRTL[key]([key, value]);
+  const toRTLForKey = propertyToRTL[key];
+  if (toRTLForKey) {
+    return toRTLForKey([key, value]);
   }
   return null;
 }
