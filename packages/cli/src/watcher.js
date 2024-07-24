@@ -9,13 +9,13 @@
 
 import type { TransformConfig } from './config';
 
+import { clearInputModuleDir } from './modules';
 import { compileDirectory } from './transform';
 
 import ansis from 'ansis';
 import watchman from 'fb-watchman';
 
 type Subscription = {
-  expression: Array<string | Array<string>>,
   fields: Array<string>,
   relative_root?: string,
 };
@@ -46,7 +46,7 @@ declare class WatchmanClient {
   end(): void;
 }
 
-export default function watch(config: TransformConfig) {
+export function startWatcher(config: TransformConfig) {
   const watchmanClient: WatchmanClient = new watchman.Client();
 
   watchmanClient.capabilityCheck(
@@ -63,7 +63,7 @@ export default function watch(config: TransformConfig) {
         ['watch-project', config.input],
         function (error, resp) {
           if (error) {
-            console.error('Error initiating watch:', error);
+            console.error('[stylex] error initiating watch:', error);
             return;
           }
           if ('warning' in resp) {
@@ -87,15 +87,6 @@ function subscribe(
   config: TransformConfig,
 ) {
   const subscription: Subscription = {
-    expression: [
-      'anyof',
-      ['match', '*.js'],
-      ['match', '*.ts'],
-      ['match', '*.jsx'],
-      ['match', '*.tsx'],
-      ['match', '*.cjs'],
-      ['match', '*.mjs'],
-    ],
     fields: ['name', 'size', 'mtime_ms', 'exists', 'type'],
   };
   if (relative_path) {
@@ -106,7 +97,7 @@ function subscribe(
     ['subscribe', watcher, 'jsFileChanged', subscription],
     function (error: string, _resp: Response) {
       if (error) {
-        console.error('failed to subscribe: ', error);
+        console.error('[stylex] failed to subscribe with watch mode: ', error);
         return;
       }
     },
@@ -118,7 +109,20 @@ function subscribe(
     compileDirectory(
       config,
       resp.files.filter((file) => file.exists).map((file) => file.name),
-      resp.files.filter((file) => !file.exists).map((file) => file.name),
-    );
+      resp.files
+        .filter(
+          (file) =>
+            // don't trigger recompile when the cli deletes the compiled modules folder
+            !file.exists && !file.name.startsWith('stylex_compiled_modules'),
+        )
+        .map((file) => file.name),
+    )
+      .then(() => {
+        clearInputModuleDir(config);
+      })
+      .catch((transformError) => {
+        clearInputModuleDir(config);
+        console.error(transformError);
+      });
   });
 }

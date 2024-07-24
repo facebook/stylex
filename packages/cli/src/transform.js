@@ -19,6 +19,7 @@ import {
   writeCompiledCSS,
   writeCompiledJS,
   getRelativePath,
+  isDir,
 } from './files';
 import type { TransformConfig } from './config';
 import ansis from 'ansis';
@@ -27,7 +28,6 @@ import {
   createImportPlugin,
   createModuleImportModifierPlugin,
 } from './plugins';
-import { clearInputModuleDir } from './modules';
 
 export async function compileDirectory(
   config: TransformConfig,
@@ -37,44 +37,51 @@ export async function compileDirectory(
   if (filesToDelete) {
     filesToDelete.forEach((file) => {
       config.state.styleXRules.delete(file);
-      fs.rmSync(path.join(config.output, file));
+      const outputPath = path.join(config.output, file);
+      if (fs.existsSync(outputPath)) {
+        fs.rmSync(outputPath);
+      }
     });
   }
-  try {
-    const dirFiles = filesToCompile ?? getInputDirectoryFiles(config.input);
-    for (const filePath of dirFiles) {
-      const parsed = path.parse(filePath);
-      if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
-        console.log(
-          `${ansis.green('[stylex]')} transforming ${path.join(config.input, filePath)}`,
-        );
+  const dirFiles = filesToCompile ?? getInputDirectoryFiles(config.input);
+  for (const filePath of dirFiles) {
+    const parsed = path.parse(filePath);
+    if (isJSFile(filePath) && !parsed.dir.startsWith('node_modules')) {
+      console.log(
+        `${ansis.green('[stylex]')} transforming ${path.join(config.input, filePath)}`,
+      );
+      try {
         await compileFile(filePath, config);
-      } else {
-        const src = path.join(config.input, filePath);
-        const dst = path.join(config.output, filePath);
+      } catch (transformError) {
+        throw transformError;
+      }
+    } else {
+      const src = path.join(config.input, filePath);
+      const dst = path.join(config.output, filePath);
+      if (!isDir(src)) {
+        console.log(
+          `${ansis.green('[stylex]')} copying ${path.join(config.input, filePath)}`,
+        );
         copyFile(src, dst);
       }
     }
-    const compiledCSS = await styleXPlugin.processStylexRules(
-      Array.from(config.state.styleXRules.values()).flat(),
-      config.useCSSLayers,
-    );
-
-    const cssBundlePath = path.join(config.output, config.styleXBundleName);
-    if (config.state.compiledCSSDir == null) {
-      config.state.compiledCSSDir = cssBundlePath;
-    }
-    writeCompiledCSS(
-      config.state.compiledCSSDir != null
-        ? config.state.compiledCSSDir
-        : cssBundlePath,
-      compiledCSS,
-    );
-  } catch (err) {
-    fs.rmSync(config.output, { recursive: true, force: true });
-    clearInputModuleDir(config);
-    throw err;
   }
+
+  const compiledCSS = await styleXPlugin.processStylexRules(
+    Array.from(config.state.styleXRules.values()).flat(),
+    config.useCSSLayers,
+  );
+
+  const cssBundlePath = path.join(config.output, config.styleXBundleName);
+  if (config.state.compiledCSSDir == null) {
+    config.state.compiledCSSDir = cssBundlePath;
+  }
+  writeCompiledCSS(
+    config.state.compiledCSSDir != null
+      ? config.state.compiledCSSDir
+      : cssBundlePath,
+    compiledCSS,
+  );
 }
 
 export async function compileFile(
@@ -126,7 +133,7 @@ export async function transformFile(
     ],
   });
   if (result == null) {
-    throw new Error(`Failed to transform file ${inputFilePath}`);
+    throw new Error(`[stylex] failed to transform file ${inputFilePath}`);
   }
   const { code, metadata } = result;
 
