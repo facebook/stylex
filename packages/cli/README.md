@@ -6,19 +6,38 @@ with exotic setups.
 
 ## Installation
 
-Simply install the CLI to start using it
-
 ```sh
 npm install --save-dev @stylexjs/cli
 ```
 
-### Basic Usage
+## Basic Usage
 
 ```sh
-stylex -i [input_directory] -o [output_directory]
+ stylex -i [input directory] -o [output directory]
 ```
 
-### CLI Options
+## Configuration Options
+
+You can create a `.json` or `.json5` config file and pass it to the CLI via the
+`--config` flag.
+
+```json
+{
+  "input": ["./source"],
+  "output": ["./src"],
+  "cssBundleName": "stylex_bundle.css",
+  "babelPresets": [
+    ["@babel/preset-typescript", { "allExtensions": true, "isTSX": true }],
+    "@babel/preset-react"
+  ],
+  "modules_EXPERIMENTAL": [["@stylexjs/open-props", { "ignore": ["src"] }]],
+  "watch": "true"
+}
+```
+
+## CLI Flags
+
+---
 
 #### `--input`
 
@@ -30,15 +49,20 @@ type: `array`
 
 required: `true`
 
+---
+
 #### `--output`
 
-Name of the StyleX output directories.
+Name of the StyleX output directories. The order of the output directories
+should match the order of the input directories.
 
 alias: `-o`
 
 type: `array`
 
 required: `true`
+
+---
 
 #### `--styleXBundleName`
 
@@ -52,6 +76,8 @@ required: `false`
 
 default: `stylex_bundle.css`
 
+---
+
 #### `--watch`
 
 Flag to enable automatic recompiling of files in the input directory on change.
@@ -64,6 +90,8 @@ type: `boolean`
 required: `false`
 
 default: `false`
+
+---
 
 #### `--modules_EXPERIMENTAL`
 
@@ -82,20 +110,8 @@ default: `[]`
 
 example: `[['@stylexjs/open-props', { ignore: ['src'] }]]`
 
+---
+
 #### `--config`
 
 path of a .json (or .json5) config file
-
-### Config Structure
-
-You can create a `.json` or `.json5` config file and pass it to the CLI.
-
-```json
-{
-  "input": "./source",
-  "output": "./src",
-  "modules_EXPERIMENTAL": ["@stylexjs/open-props"],
-  "styleXBundleName": "stylex_bundle.css",
-  "watch": true
-}
-```
