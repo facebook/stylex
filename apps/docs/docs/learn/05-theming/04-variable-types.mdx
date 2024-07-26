@@ -105,7 +105,7 @@ is themed within a `stylex.createTheme` call.
 import * as stylex from '@stylexjs/stylex';
 import {tokens} from './tokens.stylex.js';
 
-export const highContrast = stylex.defineVars({
+export const highContrast = stylex.crateTheme(tokens, {
   primaryText: stylex.types.color('black'),
   secondaryText: stylex.types.color('#222'),
   borderRadius: stylex.types.length('8px'),
