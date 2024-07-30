@@ -32,7 +32,7 @@ export default function styleXCreateTheme(
     );
   }
 
-  const { classNamePrefix } = { ...defaultOptions, ...options };
+  const { classNamePrefix, themeOverride } = { ...defaultOptions, ...options };
 
   // Create a map of @-rule names and values
   const rulesByAtRule: { [string]: Array<string> } = {};
@@ -82,8 +82,16 @@ export default function styleXCreateTheme(
     }
   }
 
+  let themeClass = overrideClassName;
+  if (themeOverride === 'group') {
+    themeClass = `${overrideClassName} ${themeVars.__themeName__}`;
+  }
+  if (themeOverride === 'global') {
+    themeClass = `${overrideClassName} __stylex-base-theme__`;
+  }
+
   return [
-    { $$css: true, [themeVars.__themeName__]: overrideClassName },
+    { $$css: true, [themeVars.__themeName__]: themeClass },
     stylesToInject,
   ];
 }
