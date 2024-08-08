@@ -108,6 +108,19 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'black',
+          borderRadius: '4px'
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -134,6 +147,92 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderWidth: '1px 2px 3px 4px',
+            borderStyle: 'solid dashed dotted double',
+            borderColor: 'red green blue yellow',
+            borderTop: '2px solid red',
+            borderRight: '3px dashed green',
+            borderBottom: '4px dotted blue',
+            borderLeft: '5px double yellow',
+            borderRadius: '10px 20px 30px 40px'
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderTopWidth: '1px',
+            borderRightWidth: '2px',
+            borderBottomWidth: '3px',
+            borderLeftWidth: '4px',
+            borderTopStyle: 'solid',
+            borderRightStyle: 'dashed',
+            borderBottomStyle: 'dotted',
+            borderLeftStyle: 'double',
+            borderTopColor: 'red',
+            borderRightColor: 'green',
+            borderBottomColor: 'blue',
+            borderLeftColor: 'yellow',
+            borderTopWidth: '2px',
+            borderTopStyle: 'solid',
+            borderTopColor: 'red',
+            borderRightWidth: '3px',
+            borderRightStyle: 'dashed',
+            borderRightColor: 'green',
+            borderBottomWidth: '4px',
+            borderBottomStyle: 'dotted',
+            borderBottomColor: 'blue',
+            borderLeftWidth: '5px',
+            borderLeftStyle: 'double',
+            borderLeftColor: 'yellow',
+            borderTopLeftRadius: '10px',
+            borderTopRightRadius: '20px',
+            borderBottomRightRadius: '30px',
+            borderBottomLeftRadius: '40px'
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderWidth: 1px 2px 3px 4px" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderColor: red green blue yellow" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderTop: 2px solid red" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderRight: 3px dashed green" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderBottom: 4px dotted blue" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderLeft: 5px double yellow" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderRadius: 10px 20px 30px 40px" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

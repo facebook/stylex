@@ -38,6 +38,16 @@ export function splitSpecificShorthands(
   allowImportant: boolean = false,
 ): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
   const longform = cssExpand(property, value);
+
+  // If the longform is empty or all values are the same, no need to expand
+  // Relevant for properties like `borderColor` or `borderStyle`
+  if (
+    Object.values(longform).length === 0 ||
+    Object.values(longform).every((val) => val === Object.values(longform)[0])
+  ) {
+    return [[property, value]];
+  }
+
   const longformStyle: {
     [key: string]: number | string,
   } = {};
