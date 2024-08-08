@@ -218,12 +218,24 @@ const stylexSortKeys = {
           return;
         }
 
-        const sourceCode = context.sourceCode;
         const prevName = stack.prevName;
         const prevNode = stack?.prevNode;
         const numKeys = stack.numKeys;
         const currName = getPropertyName(node);
         let isBlankLineBetweenNodes = stack?.prevBlankLine;
+
+        // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
+        const sourceCode =
+          context.sourceCode ||
+          (typeof context.getSourceCode === 'function'
+            ? context.getSourceCode()
+            : null);
+
+        if (!sourceCode) {
+          throw new Error(
+            'ESLint context does not provide source code access. Please update ESLint to v>=8.40.0. See: https://eslint.org/blog/2023/09/preparing-custom-rules-eslint-v9/',
+          );
+        }
 
         const tokens =
           stack?.prevNode &&
