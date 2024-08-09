@@ -38,7 +38,7 @@ esbuild.build({
       stylexImports: ['@stylexjs/stylex'],
       // Required for CSS variable support
       unstable_moduleResolution: {
-        // type: 'commonJS' | 'ESModules' | 'haste'
+        // type: 'commonJS' | 'haste'
         // default: 'commonJS'
         type: 'commonJS',
         // The absolute path to the root of your project

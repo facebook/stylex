@@ -21,6 +21,7 @@ import * as z from './validate';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import type { ImportOptions } from '@babel/helper-module-imports';
 import * as pathUtils from '../babel-path-utils';
+import { buildResolver } from 'esm-resolve';
 
 type ImportAdditionOptions = Omit<
   Partial<ImportOptions>,
@@ -617,6 +618,8 @@ const filePathResolver = (
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
 ): ?string => {
+  const esmResolve = buildResolver(sourceFilePath);
+
   // Try importing without adding any extension
   // and then every supported extension
   for (const ext of ['', ...EXTENSIONS]) {
@@ -628,7 +631,15 @@ const filePathResolver = (
         return require.resolve(importPathStr, {
           paths: [path.dirname(sourceFilePath)],
         });
-      } catch {}
+      } catch {
+        const resolved = esmResolve(importPathStr, {
+          allowImportingExtraExtensions: true,
+        });
+
+        if (resolved) {
+          return resolved;
+        }
+      }
     }
 
     // Otherwise, try to resolve the path with aliases
@@ -638,7 +649,15 @@ const filePathResolver = (
         return require.resolve(possiblePath, {
           paths: [path.dirname(sourceFilePath)],
         });
-      } catch {}
+      } catch {
+        const resolved = esmResolve(importPathStr, {
+          allowImportingExtraExtensions: true,
+        });
+
+        if (resolved) {
+          return resolved;
+        }
+      }
     }
   }
   // Failed to resolve the file path
