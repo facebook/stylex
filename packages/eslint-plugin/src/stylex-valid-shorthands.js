@@ -53,6 +53,105 @@ const shorthandAliases = {
   ) => {
     return splitSpecificShorthands('font', rawValue.toString(), allowImportant);
   },
+  border: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderColor: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-color',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderWidth: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-width',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderStyle: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-style',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderTop: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-top',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderRight: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-right',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderBottom: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-bottom',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderLeft: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-left',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
+  borderRadius: (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      'border-radius',
+      rawValue.toString(),
+      allowImportant,
+    );
+  },
   outline: (
     rawValue: number | string,
     allowImportant: boolean = false,
@@ -267,7 +366,7 @@ const stylexValidShorthands = {
         preferInline,
       );
 
-      if (newValues.length === 1) {
+      if (!newValues || newValues.length === 1) {
         // Single values do not need to be split
         return;
       }
