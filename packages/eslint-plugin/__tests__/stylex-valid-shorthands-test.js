@@ -288,32 +288,6 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            borderColor: 'rgba(0, 0, 0, 0.15)',
-          },
-        });
-      `,
-      output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            outlineWidth: '2px',
-            outlineStyle: 'dashed',
-            outlineColor: 'red',
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "outline: 2px dashed red" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    {
-      code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
             outline: '2px dashed red',
           },
         });

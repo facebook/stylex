@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { TransformConfig } from './config';
+import type { ModuleType, TransformConfig } from './config';
 import type { NodePath } from '@babel/traverse';
 import { getRelativePath } from './files';
 import { findModuleDir } from './modules';
@@ -57,38 +57,50 @@ export const createModuleImportModifierPlugin = (
           path.traverse({
             ImportDeclaration: {
               enter(path: NodePath<t.ImportDeclaration>) {
-                const source = path.node.source.value;
-                const sourcePath = findModuleDir(source, config);
-                if (sourcePath == null) {
+                if (
+                  config.modules_EXPERIMENTAL == null ||
+                  config.modules_EXPERIMENTAL.length === 0
+                ) {
                   return;
                 }
-                const module = sourcePath.split('node_modules/').pop();
-                if (
-                  config.modules_EXPERIMENTAL != null &&
-                  config.modules_EXPERIMENTAL.includes(module)
-                ) {
-                  const moduleDir = config.state.compiledNodeModuleDir
-                    ? nodePath.join(
-                        config.state.compiledNodeModuleDir,
-                        module,
-                        source.split(module).pop(),
-                      )
-                    : nodePath.join(
-                        config.output,
-                        'stylex_compiled_modules',
-                        module,
-                        source.split(module).pop(),
-                      );
-                  console.log(moduleDir);
-                  const relativePath = getRelativePath(filePath, moduleDir);
-                  console.log(relativePath);
-                  const newImport = t.importDeclaration(
-                    [...path.node.specifiers],
-                    t.stringLiteral(relativePath),
-                  );
-
-                  path.replaceWith<t.ImportDeclaration>(newImport);
+                const source = path.node.source.value;
+                const includesModule = config.modules_EXPERIMENTAL.some(
+                  (configModule: ModuleType) => {
+                    if (Array.isArray(configModule)) {
+                      return configModule[0] === source;
+                    }
+                    return configModule === source;
+                  },
+                );
+                if (!includesModule) {
+                  return;
                 }
+                const sourcePath = findModuleDir(source, config);
+                if (sourcePath == null) {
+                  throw new Error(
+                    `[stylex] error: could not find source for module {${source}`,
+                  );
+                }
+                const module = sourcePath.split('node_modules/').pop();
+                const moduleDir = config.state.compiledNodeModuleDir
+                  ? nodePath.join(
+                      config.state.compiledNodeModuleDir,
+                      module,
+                      source.split(module).pop(),
+                    )
+                  : nodePath.join(
+                      config.output,
+                      'stylex_compiled_modules',
+                      module,
+                      source.split(module).pop(),
+                    );
+                const relativePath = getRelativePath(filePath, moduleDir);
+                const newImport = t.importDeclaration(
+                  [...path.node.specifiers],
+                  t.stringLiteral(relativePath),
+                );
+
+                path.replaceWith<t.ImportDeclaration>(newImport);
               },
             },
           });
