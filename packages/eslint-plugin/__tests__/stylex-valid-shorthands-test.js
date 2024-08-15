@@ -121,6 +121,17 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'rgb(0, 0, 0)',
+          borderWidth: 'var(--border-width, 10)',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -147,6 +158,42 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderColor: 'rgb(0, 0, 0), rgb(5, 5, 5)',
+            borderWidth: 'var(--vertical-border-width, 10) var(--horizontal-border-width, 15)',
+          },
+        })
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderTopColor: 'rgb(0, 0, 0),',
+            borderRightColor: 'rgb(5, 5, 5)',
+            borderBottomColor: 'rgb(0, 0, 0),',
+            borderLeftColor: 'rgb(5, 5, 5)',
+            borderTopWidth: 'var(--vertical-border-width, 10)',
+            borderRightWidth: 'var(--horizontal-border-width, 15)',
+            borderBottomWidth: 'var(--vertical-border-width, 10)',
+            borderLeftWidth: 'var(--horizontal-border-width, 15)',
+          },
+        })
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderColor: rgb(0, 0, 0), rgb(5, 5, 5)" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderWidth: var(--vertical-border-width, 10) var(--horizontal-border-width, 15)" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -233,6 +280,32 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "borderRadius: 10px 20px 30px 40px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderColor: 'rgba(0, 0, 0, 0.15)',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            outlineWidth: '2px',
+            outlineStyle: 'dashed',
+            outlineColor: 'red',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "outline: 2px dashed red" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

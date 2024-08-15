@@ -26,6 +26,24 @@ const toCamelCase = (str: string) => {
   return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
 };
 
+/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
+Let's pre-process the values to strip the whitespaces between parentheses */
+function stripSpacesInParentheses(str: string) {
+  return str.replace(/\(\s*([^)]+?)\s*\)/g, (match, p1) => {
+    const strippedContent = p1.replace(/\s+/g, '');
+    return `(${strippedContent})`;
+  });
+}
+
+/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
+After stripping the spaces, let's post-process the values to add back the missing whitespaces between parentheses after a comma */
+function addSpacesAfterCommasInParentheses(str: string) {
+  return str.replace(/\(([^)]+)\)/g, (match, p1) => {
+    const correctedContent = p1.replace(/,\s*/g, ', ');
+    return `(${correctedContent})`;
+  });
+}
+
 const stripImportant = (cssProperty: string | number) =>
   cssProperty
     .toString()
@@ -37,7 +55,10 @@ export function splitSpecificShorthands(
   value: string,
   allowImportant: boolean = false,
 ): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
-  const longform = cssExpand(property, value);
+  const strippedValue = stripSpacesInParentheses(value);
+  console.log('strippedValue');
+  console.log(strippedValue);
+  const longform = cssExpand(property, strippedValue);
 
   // If the longform is empty or all values are the same, no need to expand
   // Relevant for properties like `borderColor` or `borderStyle`
@@ -53,9 +74,10 @@ export function splitSpecificShorthands(
   } = {};
 
   Object.entries(longform).forEach(([key, val]) => {
+    const correctedVal = addSpacesAfterCommasInParentheses(val);
     longformStyle[toCamelCase(key)] = allowImportant
-      ? val
-      : stripImportant(val);
+      ? correctedVal
+      : stripImportant(correctedVal);
   });
 
   return Object.entries(longformStyle);
