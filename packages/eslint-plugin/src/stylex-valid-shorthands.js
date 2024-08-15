@@ -207,6 +207,13 @@ const shorthandAliases = {
 
     const [top, right = top, bottom = top, left = right] = splitValues;
 
+    if (splitValues.length === 2) {
+      return [
+        ['marginBlock', top],
+        ['marginInline', right],
+      ];
+    }
+
     return preferInline
       ? [
           ['marginTop', top],
@@ -233,6 +240,13 @@ const shorthandAliases = {
 
     const [top, right = top, bottom = top, left = right] =
       splitDirectionalShorthands(rawValue, allowImportant);
+
+    if (splitValues.length === 2) {
+      return [
+        ['paddingBlock', top],
+        ['paddingInline', right],
+      ];
+    }
 
     return preferInline
       ? [
