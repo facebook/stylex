@@ -412,28 +412,28 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ preferInline: true }],
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '10em 1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              margin: '10em 1em 5em 2em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginTop: '10em',
-            marginInlineEnd: '1em',
-            marginBottom: '10em',
-            marginInlineStart: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginTop: '10em',
+              marginInlineEnd: '1em',
+              marginBottom: '5em',
+              marginInlineStart: '2em',
+            },
+          });
+        `,
       errors: [
         {
           message:
-            'Property shorthands using multiple values like "margin: 10em 1em" are not supported in StyleX. Separate into individual properties.',
+            'Property shorthands using multiple values like "margin: 10em 1em 5em 2em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -450,10 +450,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            marginTop: '10em',
-            marginRight: '1em',
-            marginBottom: '10em',
-            marginLeft: '1em',
+            marginBlock: '10em',
+            marginInline: '1em',
           },
         });
       `,
@@ -598,10 +596,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
-            paddingTop: '10em',
-            paddingRight: '1em',
-            paddingBottom: '10em',
-            paddingLeft: '1em',
+            paddingBlock: '10em',
+            paddingInline: '1em',
           },
         });
       `,
