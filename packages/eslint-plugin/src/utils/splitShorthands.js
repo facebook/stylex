@@ -10,6 +10,8 @@
 import parser from 'postcss-value-parser';
 import cssExpand from 'css-shorthand-expand';
 
+export const CANNOT_FIX = 'CANNOT_FIX';
+
 function printNode(node: PostCSSValueASTNode): string {
   switch (node.type) {
     case 'word':
@@ -27,12 +29,34 @@ const toCamelCase = (str: string) => {
 };
 
 /* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
-Let's pre-process the values to strip the whitespaces between parentheses */
-function stripSpacesInParentheses(str: string) {
-  return str.replace(/\(\s*([^)]+?)\s*\)/g, (match, p1) => {
-    const strippedContent = p1.replace(/\s+/g, '');
+In cases with simple spaces between comma-separated parameters, we can preprocess the values by stripping the spaces.
+If there are still spaces remaining, such as in edge cases involving `calc()` or gradient values, we won't provide an auto-fix. */
+function processWhitespacesinFunctions(str: string) {
+  // Strip spaces after commas within parentheses
+  const strippedValue = str.replace(/\(\s*([^)]+?)\s*\)/g, (match, p1) => {
+    const strippedContent = p1.replace(/,\s+/g, ',');
     return `(${strippedContent})`;
   });
+
+  // If there are remaining spaces within the parentheses, we won't auto-fix
+  const canFix = !/\([^()]*\s+[^()]*\)/.test(strippedValue);
+
+  // Strip all spaces within the parentheses to determine if multivalue shorthand
+  const fullyStripped = strippedValue.replace(
+    /\(\s*([^)]+?)\s*\)/g,
+    (match, p1) => {
+      const strippedContent = p1.replace(/\s+/g, '');
+      return `(${strippedContent})`;
+    },
+  );
+
+  const isInvalidShorthand = /\s/.test(fullyStripped);
+
+  return {
+    strippedValue,
+    canFix,
+    isInvalidShorthand,
+  };
 }
 
 /* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
@@ -55,9 +79,13 @@ export function splitSpecificShorthands(
   value: string,
   allowImportant: boolean = false,
 ): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
-  const strippedValue = stripSpacesInParentheses(value);
-  console.log('strippedValue');
-  console.log(strippedValue);
+  const { strippedValue, canFix, isInvalidShorthand } =
+    processWhitespacesinFunctions(value);
+
+  if (!canFix && isInvalidShorthand) {
+    return [[property, CANNOT_FIX]];
+  }
+
   const longform = cssExpand(property, strippedValue);
 
   // If the longform is empty or all values are the same, no need to expand
