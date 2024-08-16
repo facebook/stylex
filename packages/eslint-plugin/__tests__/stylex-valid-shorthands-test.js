@@ -121,6 +121,17 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'rgb(0, 0, 0)',
+          borderWidth: 'var(--border-width, 10)',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -152,55 +163,117 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            borderWidth: '1px 2px 3px 4px',
-            borderStyle: 'solid dashed dotted double',
-            borderColor: 'red green blue yellow',
-            borderTop: '2px solid red',
-            borderRight: '3px dashed green',
-            borderBottom: '4px dotted blue',
-            borderLeft: '5px double yellow',
-            borderRadius: '10px 20px 30px 40px'
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              borderColor: 'rgb(0, 0, 0), rgb(5, 5, 5)',
+              borderWidth: 'var(--vertical-border-width, 10) var(--horizontal-border-width, 15)',
+            },
+          })
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            borderTopWidth: '1px',
-            borderRightWidth: '2px',
-            borderBottomWidth: '3px',
-            borderLeftWidth: '4px',
-            borderTopStyle: 'solid',
-            borderRightStyle: 'dashed',
-            borderBottomStyle: 'dotted',
-            borderLeftStyle: 'double',
-            borderTopColor: 'red',
-            borderRightColor: 'green',
-            borderBottomColor: 'blue',
-            borderLeftColor: 'yellow',
-            borderTopWidth: '2px',
-            borderTopStyle: 'solid',
-            borderTopColor: 'red',
-            borderRightWidth: '3px',
-            borderRightStyle: 'dashed',
-            borderRightColor: 'green',
-            borderBottomWidth: '4px',
-            borderBottomStyle: 'dotted',
-            borderBottomColor: 'blue',
-            borderLeftWidth: '5px',
-            borderLeftStyle: 'double',
-            borderLeftColor: 'yellow',
-            borderTopLeftRadius: '10px',
-            borderTopRightRadius: '20px',
-            borderBottomRightRadius: '30px',
-            borderBottomLeftRadius: '40px'
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              borderTopColor: 'rgb(0, 0, 0),',
+              borderRightColor: 'rgb(5, 5, 5)',
+              borderBottomColor: 'rgb(0, 0, 0),',
+              borderLeftColor: 'rgb(5, 5, 5)',
+              borderTopWidth: 'var(--vertical-border-width, 10)',
+              borderRightWidth: 'var(--horizontal-border-width, 15)',
+              borderBottomWidth: 'var(--vertical-border-width, 10)',
+              borderLeftWidth: 'var(--horizontal-border-width, 15)',
+            },
+          })
+        `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderColor: rgb(0, 0, 0), rgb(5, 5, 5)" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderWidth: var(--vertical-border-width, 10) var(--horizontal-border-width, 15)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
+              borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
+              background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
+            },
+          })
+        `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderWidth: calc(100% - 20px) calc(90% - 20px)" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderColor: var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "background: no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              borderWidth: '1px 2px 3px 4px',
+              borderStyle: 'solid dashed dotted double',
+              borderColor: 'red green blue yellow',
+              borderTop: '2px solid red',
+              borderRight: '3px dashed green',
+              borderBottom: '4px dotted blue',
+              borderLeft: '5px double yellow',
+              borderRadius: '10px 20px 30px 40px'
+            },
+          });
+        `,
+      output: `
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              borderTopWidth: '1px',
+              borderRightWidth: '2px',
+              borderBottomWidth: '3px',
+              borderLeftWidth: '4px',
+              borderTopStyle: 'solid',
+              borderRightStyle: 'dashed',
+              borderBottomStyle: 'dotted',
+              borderLeftStyle: 'double',
+              borderTopColor: 'red',
+              borderRightColor: 'green',
+              borderBottomColor: 'blue',
+              borderLeftColor: 'yellow',
+              borderTopWidth: '2px',
+              borderTopStyle: 'solid',
+              borderTopColor: 'red',
+              borderRightWidth: '3px',
+              borderRightStyle: 'dashed',
+              borderRightColor: 'green',
+              borderBottomWidth: '4px',
+              borderBottomStyle: 'dotted',
+              borderBottomColor: 'blue',
+              borderLeftWidth: '5px',
+              borderLeftStyle: 'double',
+              borderLeftColor: 'yellow',
+              borderTopLeftRadius: '10px',
+              borderTopRightRadius: '20px',
+              borderBottomRightRadius: '30px',
+              borderBottomLeftRadius: '40px'
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -264,26 +337,26 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            backgroundColor: '#ff0',
-            backgroundImage: 'url("image.jpg")',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              backgroundColor: '#ff0',
+              backgroundImage: 'url("image.jpg")',
+              backgroundRepeat: 'no-repeat',
+              backgroundAttachment: 'fixed',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -294,26 +367,26 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ allowImportant: true }],
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            backgroundColor: '#ff0 !important',
-            backgroundImage: 'url("image.jpg") !important',
-            backgroundRepeat: 'no-repeat !important',
-            backgroundAttachment: 'fixed !important',
-            backgroundPosition: 'center !important',
-            backgroundSize: 'cover !important',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              backgroundColor: '#ff0 !important',
+              backgroundImage: 'url("image.jpg") !important',
+              backgroundRepeat: 'no-repeat !important',
+              backgroundAttachment: 'fixed !important',
+              backgroundPosition: 'center !important',
+              backgroundSize: 'cover !important',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -323,30 +396,30 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '0px',
-            font: 'italic small-caps bold 16px/1.5 "Helvetica Neue"',
-            color: 'white',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              margin: '0px',
+              font: 'italic small-caps bold 16px/1.5 "Helvetica Neue"',
+              color: 'white',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '0px',
-            fontFamily: '"Helvetica Neue"',
-            fontStyle: 'italic',
-            fontVariant: 'small-caps',
-            fontWeight: 'bold',
-            fontSize: '16px',
-            lineHeight: '1.5',
-            color: 'white',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              margin: '0px',
+              fontFamily: '"Helvetica Neue"',
+              fontStyle: 'italic',
+              fontVariant: 'small-caps',
+              fontWeight: 'bold',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              color: 'white',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -357,24 +430,24 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ allowImportant: true }],
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '10px 12px 13px 14px !important',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              margin: '10px 12px 13px 14px !important',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginTop: '10px !important',
-            marginRight: '12px !important',
-            marginBottom: '13px !important',
-            marginLeft: '14px !important',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginTop: '10px !important',
+              marginRight: '12px !important',
+              marginBottom: '13px !important',
+              marginLeft: '14px !important',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -384,24 +457,24 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '10px 12px 13px 14px !important',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              margin: '10px 12px 13px 14px !important',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginTop: '10px',
-            marginRight: '12px',
-            marginBottom: '13px',
-            marginLeft: '14px',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginTop: '10px',
+              marginRight: '12px',
+              marginBottom: '13px',
+              marginLeft: '14px',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -439,22 +512,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            margin: '10em 1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              margin: '10em 1em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginBlock: '10em',
-            marginInline: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginBlock: '10em',
+              marginInline: '1em',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -464,22 +537,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginInline: '10em 1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginInline: '10em 1em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginInlineStart: '10em',
-            marginInlineEnd: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginInlineStart: '10em',
+              marginInlineEnd: '1em',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -489,22 +562,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginBlock: '10em 1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginBlock: '10em 1em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            marginBlockStart: '10em',
-            marginBlockEnd: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              marginBlockStart: '10em',
+              marginBlockEnd: '1em',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -514,22 +587,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            paddingBlock: '10em 1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              paddingBlock: '10em 1em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            paddingBlockStart: '10em',
-            paddingBlockEnd: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              paddingBlockStart: '10em',
+              paddingBlockEnd: '1em',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -539,31 +612,31 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            paddingTop: '10em',
-            paddingBottom: '1em',
-            marginStart: '20em',
-            marginEnd: '20em',
-            paddingStart: '10em',
-            paddingEnd: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              paddingTop: '10em',
+              paddingBottom: '1em',
+              marginStart: '20em',
+              marginEnd: '20em',
+              paddingStart: '10em',
+              paddingEnd: '1em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            paddingTop: '10em',
-            paddingBottom: '1em',
-            marginInlineStart: '20em',
-            marginInlineEnd: '20em',
-            paddingInlineStart: '10em',
-            paddingInlineEnd: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              paddingTop: '10em',
+              paddingBottom: '1em',
+              marginInlineStart: '20em',
+              marginInlineEnd: '20em',
+              paddingInlineStart: '10em',
+              paddingInlineEnd: '1em',
+            },
+          });
+        `,
       errors: [
         {
           message:
@@ -585,22 +658,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            padding: '10em 1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              padding: '10em 1em',
+            },
+          });
+        `,
       output: `
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          main: {
-            paddingBlock: '10em',
-            paddingInline: '1em',
-          },
-        });
-      `,
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            main: {
+              paddingBlock: '10em',
+              paddingInline: '1em',
+            },
+          });
+        `,
       errors: [
         {
           message:
