@@ -5,9 +5,9 @@
   "scripts": {
     "clean": "rimraf .next",
     "predev": "npm run clean",
-    "prebuild": "npm run clean",
+    "prebuild-disabled": "npm run clean",
     "dev": "next dev",
-    "build": "next build",
+    "build-disabled": "next build",
     "start": "next start",
     "next:lint": "next lint"
   },
