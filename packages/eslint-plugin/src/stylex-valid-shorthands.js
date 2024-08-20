@@ -21,8 +21,11 @@ import type { SourceCode } from 'eslint/eslint-rule';
 import type { Token } from 'eslint/eslint-ast';
 
 import {
+  createBlockInlineTransformer,
+  createSpecificShorthandTransformer,
+  createDirectionalTransformer,
   splitSpecificShorthands,
-  splitDirectionalShorthands,
+  splitDirectionalShorthands
 } from './utils/splitShorthands.js';
 
 import { CANNOT_FIX } from './utils/splitShorthands.js';
@@ -37,261 +40,24 @@ const legacyNameMapping = {
 };
 
 const shorthandAliases = {
-  background: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'background',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  font: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands('font', rawValue.toString(), allowImportant);
-  },
-  border: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderColor: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-color',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderWidth: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-width',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderStyle: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-style',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderTop: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-top',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderRight: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-right',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderBottom: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-bottom',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderLeft: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-left',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderRadius: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-radius',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  outline: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'outline',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  marginInline: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['marginInline', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['marginInlineStart', top],
-      ['marginInlineEnd', right],
-    ];
-  },
-  marginBlock: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['marginBlock', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['marginBlockStart', top],
-      ['marginBlockEnd', right],
-    ];
-  },
-  margin: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['margin', rawValue]];
-    }
-
-    const [top, right = top, bottom = top, left = right] = splitValues;
-
-    if (splitValues.length === 2) {
-      return [
-        ['marginBlock', top],
-        ['marginInline', right],
-      ];
-    }
-
-    return preferInline
-      ? [
-          ['marginTop', top],
-          ['marginInlineEnd', right],
-          ['marginBottom', bottom],
-          ['marginInlineStart', left],
-        ]
-      : [
-          ['marginTop', top],
-          ['marginRight', right],
-          ['marginBottom', bottom],
-          ['marginLeft', left],
-        ];
-  },
-  padding: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['padding', rawValue]];
-    }
-
-    const [top, right = top, bottom = top, left = right] =
-      splitDirectionalShorthands(rawValue, allowImportant);
-
-    if (splitValues.length === 2) {
-      return [
-        ['paddingBlock', top],
-        ['paddingInline', right],
-      ];
-    }
-
-    return preferInline
-      ? [
-          ['paddingTop', top],
-          ['paddingInlineEnd', right],
-          ['paddingBottom', bottom],
-          ['paddingInlineStart', left],
-        ]
-      : [
-          ['paddingTop', top],
-          ['paddingRight', right],
-          ['paddingBottom', bottom],
-          ['paddingLeft', left],
-        ];
-  },
-  paddingInline: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['paddingInline', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['paddingInlineStart', top],
-      ['paddingInlineEnd', right],
-    ];
-  },
-  paddingBlock: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['paddingBlock', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['paddingBlockStart', top],
-      ['paddingBlockEnd', right],
-    ];
-  },
+  background: createSpecificShorthandTransformer('background'),
+  font: createSpecificShorthandTransformer('font'),
+  border: createSpecificShorthandTransformer('border'),
+  borderColor: createSpecificShorthandTransformer('border-color'),
+  borderWidth: createSpecificShorthandTransformer('border-width'),
+  borderStyle: createSpecificShorthandTransformer('border-style'),
+  borderTop: createSpecificShorthandTransformer('border-top'),
+  borderRight: createSpecificShorthandTransformer('border-right'),
+  borderBottom: createSpecificShorthandTransformer('border-bottom'),
+  borderLeft: createSpecificShorthandTransformer('border-left'),
+  borderRadius: createSpecificShorthandTransformer('border-radius'),
+  outline: createSpecificShorthandTransformer('outline'),
+  margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
+  padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
+  marginBlock: createBlockInlineTransformer('margin', 'Block', ''),
+  marginInline: createBlockInlineTransformer('margin', 'Inline', ''),
+  paddingBlock: createBlockInlineTransformer('padding', 'Block', ''),
+  paddingInline: createBlockInlineTransformer('padding', 'Inline', ''),
 };
 
 const stylexValidShorthands = {
