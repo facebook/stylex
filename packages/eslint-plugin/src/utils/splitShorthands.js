@@ -12,7 +12,7 @@ import cssExpand from 'css-shorthand-expand';
 
 export const CANNOT_FIX = 'CANNOT_FIX';
 
-export const createSpecificShorthandTransformer = (
+export const createSpecificTransformer = (
   property: string,
 ): ((
   rawValue: number | string,
@@ -78,8 +78,7 @@ export const createDirectionalTransformer = (
 
 export const createBlockInlineTransformer = (
   baseProperty: string,
-  blockSuffix: string,
-  inlineSuffix: string,
+  suffix: string,
 ): ((
   rawValue: number | string,
   allowImportant?: boolean,
@@ -87,12 +86,12 @@ export const createBlockInlineTransformer = (
   return (rawValue: number | string, allowImportant: boolean = false) => {
     const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
-      return [[`${baseProperty}${blockSuffix}${inlineSuffix}`, splitValues[0]]];
+      return [[`${baseProperty}${suffix}`, splitValues[0]]];
     }
     const [start, end = start] = splitValues;
     return [
-      [`${baseProperty}${blockSuffix}Start`, start],
-      [`${baseProperty}${blockSuffix}End`, end],
+      [`${baseProperty}${suffix}Start`, start],
+      [`${baseProperty}${suffix}End`, end],
     ];
   };
 };

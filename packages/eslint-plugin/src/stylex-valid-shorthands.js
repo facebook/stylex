@@ -22,7 +22,7 @@ import type { Token } from 'eslint/eslint-ast';
 
 import {
   createBlockInlineTransformer,
-  createSpecificShorthandTransformer,
+  createSpecificTransformer,
   createDirectionalTransformer,
 } from './utils/splitShorthands.js';
 
@@ -38,24 +38,24 @@ const legacyNameMapping = {
 };
 
 const shorthandAliases = {
-  background: createSpecificShorthandTransformer('background'),
-  font: createSpecificShorthandTransformer('font'),
-  border: createSpecificShorthandTransformer('border'),
-  borderColor: createSpecificShorthandTransformer('border-color'),
-  borderWidth: createSpecificShorthandTransformer('border-width'),
-  borderStyle: createSpecificShorthandTransformer('border-style'),
-  borderTop: createSpecificShorthandTransformer('border-top'),
-  borderRight: createSpecificShorthandTransformer('border-right'),
-  borderBottom: createSpecificShorthandTransformer('border-bottom'),
-  borderLeft: createSpecificShorthandTransformer('border-left'),
-  borderRadius: createSpecificShorthandTransformer('border-radius'),
-  outline: createSpecificShorthandTransformer('outline'),
+  background: createSpecificTransformer('background'),
+  font: createSpecificTransformer('font'),
+  border: createSpecificTransformer('border'),
+  borderColor: createSpecificTransformer('border-color'),
+  borderWidth: createSpecificTransformer('border-width'),
+  borderStyle: createSpecificTransformer('border-style'),
+  borderTop: createSpecificTransformer('border-top'),
+  borderRight: createSpecificTransformer('border-right'),
+  borderBottom: createSpecificTransformer('border-bottom'),
+  borderLeft: createSpecificTransformer('border-left'),
+  borderRadius: createSpecificTransformer('border-radius'),
+  outline: createSpecificTransformer('outline'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
-  marginBlock: createBlockInlineTransformer('margin', 'Block', ''),
-  marginInline: createBlockInlineTransformer('margin', 'Inline', ''),
-  paddingBlock: createBlockInlineTransformer('padding', 'Block', ''),
-  paddingInline: createBlockInlineTransformer('padding', 'Inline', ''),
+  marginBlock: createBlockInlineTransformer('margin', 'Block'),
+  marginInline: createBlockInlineTransformer('margin', 'Inline'),
+  paddingBlock: createBlockInlineTransformer('padding', 'Block'),
+  paddingInline: createBlockInlineTransformer('padding', 'Inline'),
 };
 
 const stylexValidShorthands = {
