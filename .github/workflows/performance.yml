@@ -3,26 +3,51 @@ name: performance
 on: [pull_request]
 
 jobs:
-  runtime-size:
-    name: runtime-size
+  size:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: necolas/compressed-size-action@master
-        with:
-          name: 'runtime library'
-          build-script: 'build -w @stylexjs/stylex'
-          pattern: './packages/stylex/lib/{stylex.js,StyleXSheet.js}'
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
-
-  bundle-size:
-    name: bundle-size
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: necolas/compressed-size-action@master
-        with:
-          name: 'e2e bundles'
-          build-script: 'build'
-          pattern: './apps/rollup-example/.build/{stylex.css,bundle.js}'
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 50
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+    - name: 'Setup temporary files'
+      run: |
+        echo "BASE_JSON=$(mktemp)" >> $GITHUB_ENV
+        echo "PATCH_JSON=$(mktemp)" >> $GITHUB_ENV
+    - name: 'Benchmark base'
+      run: |
+        git checkout -f ${{ github.event.pull_request.base.sha }}
+        npm install --loglevel error
+        if npm run size -w @stylexjs/scripts -- -o ${{ env.BASE_JSON }}; then
+          echo "Ran successfully on base branch"
+        else
+          echo "{}" > ${{ env.BASE_JSON }}  # Empty JSON as default
+          echo "Benchmark script not found on base branch, using default values"
+        fi
+    - name: 'Benchmark patch'
+      run: |
+        git checkout -f ${{ github.event.pull_request.head.sha }}
+        npm install --loglevel error
+        npm run size -w @stylexjs/scripts -- -o ${{ env.PATCH_JSON }}
+        echo "Ran successfully on patch branch"
+    - name: 'Collect results'
+      id: collect
+      run: |
+        echo "table<<EOF" >> $GITHUB_OUTPUT
+        npm run size:compare -w @stylexjs/scripts -- ${{ env.BASE_JSON }} ${{ env.PATCH_JSON }} >> markdown
+        cat markdown >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+    - name: 'Post comment'
+      uses: edumserrano/find-create-or-update-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body-includes: '<!-- workflow-benchmarks-size-data -->'
+        comment-author: 'github-actions[bot]'
+        body: |
+          <!-- workflow-benchmarks-size-data -->
+          ### workflow: benchmarks/size
+          Comparison of minified (terser) and compressed (brotli) size results, measured in bytes. Smaller is better.
+          ${{ steps.collect.outputs.table }}
+        edit-mode: replace
