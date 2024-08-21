@@ -12,6 +12,90 @@ import cssExpand from 'css-shorthand-expand';
 
 export const CANNOT_FIX = 'CANNOT_FIX';
 
+export const createSpecificTransformer = (
+  property: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+  _preferInline?: boolean,
+) => $ReadOnlyArray<$ReadOnlyArray<mixed>>) => {
+  return (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      property,
+      rawValue.toString(),
+      allowImportant,
+    ) as $ReadOnlyArray<$ReadOnlyArray<mixed>>;
+  };
+};
+
+export const createDirectionalTransformer = (
+  baseProperty: string,
+  blockSuffix: string,
+  inlineSuffix: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+  preferInline?: boolean,
+) => [string, string | number][]) => {
+  return (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    preferInline: boolean = false,
+  ) => {
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
+    const [top, right = top, bottom = top, left = right] = splitValues;
+
+    if (splitValues.length === 1) {
+      return [[`${baseProperty}`, top]];
+    }
+
+    if (splitValues.length === 2) {
+      return [
+        [`${baseProperty}${blockSuffix}`, top],
+        [`${baseProperty}${inlineSuffix}`, right],
+      ];
+    }
+
+    return preferInline
+      ? [
+          [`${baseProperty}Top`, top],
+          [`${baseProperty}${inlineSuffix}End`, right],
+          [`${baseProperty}Bottom`, bottom],
+          [`${baseProperty}${inlineSuffix}Start`, left],
+        ]
+      : [
+          [`${baseProperty}Top`, top],
+          [`${baseProperty}Right`, right],
+          [`${baseProperty}Bottom`, bottom],
+          [`${baseProperty}Left`, left],
+        ];
+  };
+};
+
+export const createBlockInlineTransformer = (
+  baseProperty: string,
+  suffix: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+) => [string, string | number][]) => {
+  return (rawValue: number | string, allowImportant: boolean = false) => {
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
+    if (splitValues.length === 1) {
+      return [[`${baseProperty}${suffix}`, splitValues[0]]];
+    }
+    const [start, end = start] = splitValues;
+    return [
+      [`${baseProperty}${suffix}Start`, start],
+      [`${baseProperty}${suffix}End`, end],
+    ];
+  };
+};
+
 function printNode(node: PostCSSValueASTNode): string {
   switch (node.type) {
     case 'word':
@@ -28,7 +112,7 @@ const toCamelCase = (str: string) => {
   return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
 };
 
-/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
+/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
 In cases with simple spaces between comma-separated parameters, we can preprocess the values by stripping the spaces.
 If there are still spaces remaining, such as in edge cases involving `calc()` or gradient values, we won't provide an auto-fix. */
 function processWhitespacesinFunctions(str: string) {
@@ -59,7 +143,7 @@ function processWhitespacesinFunctions(str: string) {
   };
 }
 
-/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
+/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
 After stripping the spaces, let's post-process the values to add back the missing whitespaces between parentheses after a comma */
 function addSpacesAfterCommasInParentheses(str: string) {
   return str.replace(/\(([^)]+)\)/g, (match, p1) => {
