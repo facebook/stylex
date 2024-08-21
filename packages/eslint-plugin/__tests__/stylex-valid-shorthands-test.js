@@ -194,7 +194,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "padding: 20px 20px 20px 20px" are not supported in StyleX. Separate into individual properties.',
-        }
+        },
       ],
     },
     {

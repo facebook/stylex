@@ -12,14 +12,40 @@ import cssExpand from 'css-shorthand-expand';
 
 export const CANNOT_FIX = 'CANNOT_FIX';
 
-export const createSpecificShorthandTransformer = (property) => {
-  return (rawValue: number | string, allowImportant: boolean = false, _preferInline: boolean = false) => {
-    return splitSpecificShorthands(property, rawValue.toString(), allowImportant);
+export const createSpecificShorthandTransformer = (
+  property: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+  _preferInline?: boolean,
+) => $ReadOnlyArray<$ReadOnlyArray<mixed>>) => {
+  return (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      property,
+      rawValue.toString(),
+      allowImportant,
+    ) as $ReadOnlyArray<$ReadOnlyArray<mixed>>;
   };
 };
 
-export const createDirectionalTransformer = (baseProperty, blockSuffix, inlineSuffix) => {
-  return (rawValue: number | string, allowImportant: boolean = false, preferInline: boolean = false) => {
+export const createDirectionalTransformer = (
+  baseProperty: string,
+  blockSuffix: string,
+  inlineSuffix: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+  preferInline?: boolean,
+) => [string, string | number][]) => {
+  return (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    preferInline: boolean = false,
+  ) => {
     const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     const [top, right = top, bottom = top, left = right] = splitValues;
 
@@ -50,7 +76,14 @@ export const createDirectionalTransformer = (baseProperty, blockSuffix, inlineSu
   };
 };
 
-export const createBlockInlineTransformer = (baseProperty, blockSuffix, inlineSuffix) => {
+export const createBlockInlineTransformer = (
+  baseProperty: string,
+  blockSuffix: string,
+  inlineSuffix: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+) => [string, string | number][]) => {
   return (rawValue: number | string, allowImportant: boolean = false) => {
     const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
     if (splitValues.length === 1) {
