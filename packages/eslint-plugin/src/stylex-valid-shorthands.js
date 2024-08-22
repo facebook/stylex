@@ -149,7 +149,13 @@ const stylexValidShorthands = {
       const isUnfixableError =
         newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX;
 
-      if ((!newValues || newValues.length === 1) && !isUnfixableError) {
+      if (
+        (!newValues ||
+          (newValues.length === 1 &&
+            newValues[0][1] ===
+              (property.value.value || property.value?.value?.toString()))) &&
+        !isUnfixableError
+      ) {
         // Single values do not need to be split
         return;
       }

@@ -237,5 +237,10 @@ export function splitDirectionalShorthands(
     return nodes.slice(0, nodes.length - 1).map((node) => node + ' !important');
   }
 
+  if (nodes.length > 1 && new Set(nodes).size === 1) {
+    // If all values are the same, no need to expand
+    return [nodes[0]];
+  }
+
   return nodes;
 }
