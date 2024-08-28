@@ -28,6 +28,7 @@ export const createSpecificTransformer = (
       property,
       rawValue.toString(),
       allowImportant,
+      typeof rawValue === 'number'
     ) as $ReadOnlyArray<$ReadOnlyArray<mixed>>;
   };
 };
@@ -85,10 +86,11 @@ export const createBlockInlineTransformer = (
 ) => [string, string | number][]) => {
   return (rawValue: number | string, allowImportant: boolean = false) => {
     const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [[`${baseProperty}${suffix}`, splitValues[0]]];
-    }
     const [start, end = start] = splitValues;
+
+    if (splitValues.length === 1) {
+      return [[`${baseProperty}${suffix}`, start]];
+    }
     return [
       [`${baseProperty}${suffix}Start`, start],
       [`${baseProperty}${suffix}End`, end],
@@ -162,12 +164,13 @@ export function splitSpecificShorthands(
   property: string,
   value: string,
   allowImportant: boolean = false,
+  isNumber: boolean = false,
 ): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
   const { strippedValue, canFix, isInvalidShorthand } =
     processWhitespacesinFunctions(value);
 
   if (!canFix && isInvalidShorthand) {
-    return [[property, CANNOT_FIX]];
+    return [[toCamelCase(property), CANNOT_FIX]];
   }
 
   const longform = cssExpand(property, strippedValue);
@@ -178,7 +181,7 @@ export function splitSpecificShorthands(
     Object.values(longform).length === 0 ||
     Object.values(longform).every((val) => val === Object.values(longform)[0])
   ) {
-    return [[property, value]];
+    return [[toCamelCase(property), isNumber ? Number(value) : value]];
   }
 
   const longformStyle: {

@@ -149,10 +149,11 @@ const stylexValidShorthands = {
       const isUnfixableError =
         newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX;
 
-      if ((!newValues || newValues.length === 1) && !isUnfixableError) {
-        // Single values do not need to be split
-        return;
-      }
+        if (!newValues ||
+          (newValues.length === 1 && newValues[0][1] === property.value.value || newValues[0][1] === property.value?.value?.toString() || newValues[0][1] === parseInt(property.value?.value, 10))
+          && !isUnfixableError) {
+          return;
+        }
 
       context.report({
         node: property,
