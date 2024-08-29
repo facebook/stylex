@@ -40,7 +40,6 @@ const legacyNameMapping = {
 const shorthandAliases = {
   background: createSpecificTransformer('background'),
   font: createSpecificTransformer('font'),
-  border: createSpecificTransformer('border'),
   borderColor: createSpecificTransformer('border-color'),
   borderWidth: createSpecificTransformer('border-width'),
   borderStyle: createSpecificTransformer('border-style'),
@@ -150,13 +149,13 @@ const stylexValidShorthands = {
         newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX;
 
       if (
-        (!newValues ||
-          (newValues.length === 1 &&
-            newValues[0][1] ===
-              (property.value.value || property.value?.value?.toString()))) &&
-        !isUnfixableError
+        !newValues ||
+        (((newValues.length === 1 &&
+          newValues[0][1] === property.value.value) ||
+          newValues[0][1] === property.value?.value?.toString() ||
+          newValues[0][1] === parseInt(property.value?.value, 10)) &&
+          !isUnfixableError)
       ) {
-        // Single values do not need to be split
         return;
       }
 

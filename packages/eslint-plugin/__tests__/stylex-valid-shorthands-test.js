@@ -40,6 +40,16 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import stylex from 'stylex';
       const styles = stylex.create({
         main: {
+          borderRadius: 5,
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
           margin: 10,
         },
       })
@@ -50,7 +60,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import stylex from 'stylex';
       const styles = stylex.create({
         main: {
-          marginInline: 10,
+          marginInline: 0,
         },
       })
     `,
@@ -60,7 +70,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import stylex from 'stylex';
       const styles = stylex.create({
         main: {
-          paddingInline: 10,
+          paddingInline: 0,
         },
       })
     `,
