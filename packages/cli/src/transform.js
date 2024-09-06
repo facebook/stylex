@@ -39,7 +39,11 @@ export async function compileDirectory(
       config.state.styleXRules.delete(file);
       const outputPath = path.join(config.output, file);
       if (fs.existsSync(outputPath)) {
-        fs.rmSync(outputPath);
+        try {
+          fs.rmSync(outputPath);
+        } catch (err) {
+          console.error('[stylex] failed to delete file: ', error);
+        }
       }
     });
   }
