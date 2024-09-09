@@ -7,8 +7,11 @@
  * @flow strict
  */
 
-import stylexCreateTheme from '../src/stylex-create-theme';
-import * as t from '../src/types';
+import _stylexCreateTheme from '../../src/stylex-create-theme';
+import * as t from '../../src/types';
+
+const stylexCreateTheme = (a, b) =>
+  _stylexCreateTheme(a, b, { themeOverride: 'global' });
 
 describe('stylex-create-theme test', () => {
   test('overrides set of vars with CSS class', () => {
@@ -39,7 +42,18 @@ describe('stylex-create-theme test', () => {
       createTheme,
     );
 
-    expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
+    expect(defaultVars.__themeName__).toMatchInlineSnapshot(
+      '"TestTheme.stylex.js//buttonTheme"',
+    );
+
+    expect(classNameOutput).toMatchInlineSnapshot(`
+      {
+        "$$css": true,
+        "TestTheme.stylex.js//buttonTheme": "xtrlmmh __stylex-base-theme__",
+      }
+    `);
+
+    expect(cssOutput[classNameOutput[defaultVars.__themeName__].split(' ')[0]])
       .toMatchInlineSnapshot(`
       {
         "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
@@ -77,7 +91,18 @@ describe('stylex-create-theme test', () => {
       createTheme,
     );
 
-    expect(cssOutput[classNameOutput[defaultVars.__themeName__]])
+    expect(defaultVars.__themeName__).toMatchInlineSnapshot(
+      '"TestTheme.stylex.js//buttonTheme"',
+    );
+
+    expect(classNameOutput).toMatchInlineSnapshot(`
+      {
+        "$$css": true,
+        "TestTheme.stylex.js//buttonTheme": "x4znj40 __stylex-base-theme__",
+      }
+    `);
+
+    expect(cssOutput[classNameOutput[defaultVars.__themeName__].split(' ')[0]])
       .toMatchInlineSnapshot(`
       {
         "ltr": ".x4znj40{--bgColor:green;--bgColorDisabled:antiquewhite;--cornerRadius:6px;--fgColor:coral;}",
@@ -128,8 +153,12 @@ describe('stylex-create-theme test', () => {
 
     const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
 
-    expect(classNameOutput1[defaultVars.__themeName__]).toEqual(
-      classNameOutput2[defaultVars.__themeName__],
+    expect(defaultVars.__themeName__).toMatchInlineSnapshot(
+      '"TestTheme.stylex.js//buttonTheme"',
+    );
+
+    expect(classNameOutput1[defaultVars.__themeName__].split(' ')[0]).toEqual(
+      classNameOutput2[defaultVars.__themeName__].split(' ')[0],
     );
   });
 
@@ -154,9 +183,9 @@ describe('stylex-create-theme test', () => {
 
     const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
 
-    expect(classNameOutput1[defaultVars.__themeName__]).not.toEqual(
-      classNameOutput2[defaultVars.__themeName__],
-    );
+    expect(
+      classNameOutput1[defaultVars.__themeName__].split(' ')[0],
+    ).not.toEqual(classNameOutput2[defaultVars.__themeName__].split(' ')[0]);
   });
 
   test('Generates styles for nested at-rules', () => {

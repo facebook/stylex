@@ -36,7 +36,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   variables: Vars,
   options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
 ): [VarsObject<Vars>, { [string]: InjectableStyle }] {
-  const { classNamePrefix, themeName } = {
+  const { classNamePrefix, themeName, themeOverride } = {
     ...defaultOptions,
     ...options,
   };
@@ -76,6 +76,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   const injectableStyles = constructCssVariablesString(
     variablesMap,
     themeNameHash,
+    themeOverride,
   );
 
   const injectableTypes: { +[string]: InjectableStyle } = objMap(
@@ -96,6 +97,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 function constructCssVariablesString(
   variables: { +[string]: { +nameHash: string, +value: VarsConfigValue } },
   themeNameHash: string,
+  themeOverride: StyleXOptions['themeOverride'],
 ): { [string]: InjectableStyle } {
   const rulesByAtRule: { [string]: Array<string> } = {};
 
@@ -107,7 +109,15 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    let ltr = `:root{${value.join('')}}`;
+    let selector = ':root';
+    if (themeOverride === 'group') {
+      selector = `:root, .${themeNameHash}`;
+    }
+    if (themeOverride === 'global') {
+      selector = ':root, .__stylex-base-theme__';
+    }
+
+    let ltr = `${selector}{${value.join('')}}`;
     if (atRule !== 'default') {
       ltr = wrapWithAtRules(ltr, atRule);
     }

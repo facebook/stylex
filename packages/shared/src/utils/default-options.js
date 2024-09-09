@@ -9,23 +9,11 @@
 
 import type { StyleXOptions } from '../common-types';
 
-// {
-//   ...options,
-//   dev: !!(options as any).dev,
-//   test: !!(options as any).test,
-//   stylexSheetName: (options as any).stylexSheetName ?? undefined,
-//   classNamePrefix: (options as any).classNamePrefix ?? 'x',
-//   importSources: (options as any).importSources ?? [name, 'stylex'],
-//   definedStylexCSSVariables:
-//     (options as any).definedStylexCSSVariables ?? {},
-//   genConditionalClasses: !!(options as any).genConditionalClasses,
-//   skipShorthandExpansion: !!(options as any).skipShorthandExpansion,
-// } as StyleXOptions;
-
 export const defaultOptions: StyleXOptions = {
   dev: false,
   useRemForFontSize: true,
   test: false,
   classNamePrefix: 'x',
   styleResolution: 'application-order',
+  themeOverride: 'var',
 };
