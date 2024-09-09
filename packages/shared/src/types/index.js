@@ -65,7 +65,9 @@ export interface CSSType<+_T: string | number = string | number> {
   +syntax: CSSSyntaxType;
 }
 
-export const isCSSType = (value: mixed): implies value is CSSType<string | number> => {
+export const isCSSType = (
+  value: mixed,
+): implies value is CSSType<string | number> => {
   return (
     value instanceof BaseCSSType &&
     value.value != null &&

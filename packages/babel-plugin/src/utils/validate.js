@@ -119,7 +119,9 @@ export const array: <T>(Check<T>, msg?: Msg) => Check<$ReadOnlyArray<T>> =
       return new Error(`Failed to validate ${name}:\n${errMessageList}`);
     }
 
-    return validated.filter((item): implies item is T => !(item instanceof Error));
+    return validated.filter(
+      (item): implies item is T => !(item instanceof Error),
+    );
   };
 
 type ObjOfChecks<T: { +[string]: Check<mixed> }> = $ReadOnly<{
