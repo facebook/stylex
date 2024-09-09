@@ -202,7 +202,7 @@ const stylexSortKeys = {
         if (
           isInsideStyleXCreateCall &&
           objectExpressionNestingLevel > 0 &&
-          node.parent.type === 'ObjectExpression' &&
+          (node.parent.type as $FlowFixMe) === 'ObjectExpression' &&
           stack
         ) {
           stack.prevName = null;
@@ -212,7 +212,7 @@ const stylexSortKeys = {
         if (
           !isInsideStyleXCreateCall ||
           objectExpressionNestingLevel < 1 ||
-          node.parent.type === 'ObjectPattern' ||
+          (node.parent.type as $FlowFixMe) === 'ObjectPattern' ||
           stack === null
         ) {
           return;

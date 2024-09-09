@@ -62,7 +62,7 @@ import type { TStyleValue } from '../common-types';
 
 type TReturn = $ReadOnlyArray<[string, TStyleValue]>;
 
-const shorthands = {
+const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   all: (_: TStyleValue): TReturn => {
     throw new Error('all is not supported');
   },

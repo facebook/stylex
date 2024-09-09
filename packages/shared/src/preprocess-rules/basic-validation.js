@@ -46,7 +46,7 @@ export function validateNamespace(
         }
         validateNamespace(val, [...conditions, key]);
       } else {
-        validateConditionalStyles(val);
+        validateConditionalStyles(val as $FlowFixMe);
       }
       continue;
     }
@@ -55,8 +55,12 @@ export function validateNamespace(
   }
 }
 
+type ConditionalStyles = $ReadOnly<{
+  [key: string]: string | number | ConditionalStyles,
+}>;
+
 function validateConditionalStyles(
-  val: { ... },
+  val: ConditionalStyles,
   conditions: $ReadOnlyArray<string> = [],
 ): void {
   for (const key in val) {

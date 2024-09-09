@@ -18,7 +18,7 @@ export const createSpecificTransformer = (
   rawValue: number | string,
   allowImportant?: boolean,
   _preferInline?: boolean,
-) => $ReadOnlyArray<$ReadOnlyArray<mixed>>) => {
+) => $ReadOnlyArray<$ReadOnly<[string, number | string]>>) => {
   return (
     rawValue: number | string,
     allowImportant: boolean = false,
@@ -29,7 +29,7 @@ export const createSpecificTransformer = (
       rawValue.toString(),
       allowImportant,
       typeof rawValue === 'number',
-    ) as $ReadOnlyArray<$ReadOnlyArray<mixed>>;
+    );
   };
 };
 
@@ -165,7 +165,7 @@ export function splitSpecificShorthands(
   value: string,
   allowImportant: boolean = false,
   isNumber: boolean = false,
-): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
+): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
   const { strippedValue, canFix, isInvalidShorthand } =
     processWhitespacesinFunctions(value);
 
