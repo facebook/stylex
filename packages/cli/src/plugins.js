@@ -81,18 +81,18 @@ export const createModuleImportModifierPlugin = (
                     `[stylex] error: could not find source for module {${source}`,
                   );
                 }
-                const module = sourcePath.split('node_modules/').pop();
+                const module = sourcePath.split('node_modules/').pop() ?? '';
                 const moduleDir = config.state.compiledNodeModuleDir
                   ? nodePath.join(
                       config.state.compiledNodeModuleDir,
                       module,
-                      source.split(module).pop(),
+                      source.split(module).pop() ?? '',
                     )
                   : nodePath.join(
                       config.output,
                       'stylex_compiled_modules',
                       module,
-                      source.split(module).pop(),
+                      source.split(module).pop() ?? '',
                     );
                 const relativePath = getRelativePath(filePath, moduleDir);
                 const newImport = t.importDeclaration(

@@ -555,7 +555,7 @@ export type OutputPlugin = {
   // eslint-disable-next-line no-redeclare
   ...Partial<{ [K in OutputPluginHooks]: PluginHooks[K] }>,
   // eslint-disable-next-line no-redeclare
-  ...Partial<{ [K in AddonHooks]: ObjectHook<AddonHook> }>,
+  ...Partial<{ [_K in AddonHooks]: ObjectHook<AddonHook> }>,
   cacheKey?: string,
   name: string,
   version?: string,

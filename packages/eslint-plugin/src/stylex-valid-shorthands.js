@@ -30,14 +30,16 @@ import { CANNOT_FIX } from './utils/splitShorthands.js';
 
 /*:: import { Rule } from 'eslint'; */
 
-const legacyNameMapping = {
+const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
   paddingStart: 'paddingInlineStart',
   paddingEnd: 'paddingInlineEnd',
 };
 
-const shorthandAliases = {
+const shorthandAliases: $ReadOnly<{
+  [string]: ?ReturnType<typeof createSpecificTransformer>,
+}> = {
   background: createSpecificTransformer('background'),
   font: createSpecificTransformer('font'),
   borderColor: createSpecificTransformer('border-color'),
@@ -120,7 +122,7 @@ const stylexValidShorthands = {
         key = property.key.value;
       }
 
-      if (typeof key === 'string' && key in legacyNameMapping) {
+      if (typeof key === 'string' && legacyNameMapping[key] != null) {
         context.report({
           node: property,
           message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
@@ -130,20 +132,26 @@ const stylexValidShorthands = {
           },
         });
       }
+      if (typeof key !== 'string') {
+        return;
+      }
+
+      const shorthandAliasesForKey = shorthandAliases[key];
 
       if (
         typeof key !== 'string' ||
-        !shorthandAliases.hasOwnProperty(key) ||
-        property.value.value === null
+        property.value.value === null ||
+        shorthandAliasesForKey == null
       ) {
         return;
       }
 
-      const newValues = shorthandAliases[key](
-        property.value.value,
-        allowImportant,
-        preferInline,
-      );
+      const v = property.value.value;
+      if (typeof v !== 'string' && typeof v !== 'number') {
+        return;
+      }
+
+      const newValues = shorthandAliasesForKey(v, allowImportant, preferInline);
 
       const isUnfixableError =
         newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX;
@@ -189,7 +197,7 @@ const stylexValidShorthands = {
               const newPropertiesText = newValues
                 .map(
                   ([key, value], index) =>
-                    `${index > 0 ? newLineAndIndent : ''}${key}: ${typeof value === 'string' ? `'${value}'` : value}`,
+                    `${index > 0 ? newLineAndIndent : ''}${key as $FlowFixMe}: ${typeof value === 'string' ? `'${value}'` : value}`,
                 )
                 .join(',');
 

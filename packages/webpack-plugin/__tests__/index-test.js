@@ -153,7 +153,7 @@ describe('webpack-plugin-stylex', () => {
         var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
         var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
         var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
-        function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+        function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
         var fadeAnimation = "xgnty7z-B";
         var styles = {
           foo: {
@@ -205,7 +205,7 @@ describe('webpack-plugin-stylex', () => {
         }));
         exports["default"] = void 0;
         var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-        function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+        function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
         var styles = {
           bar: {
             display: "x1lliihq",
@@ -238,7 +238,7 @@ describe('webpack-plugin-stylex', () => {
         }));
         exports["default"] = void 0;
         var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-        function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+        function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
         const styles = {
           baz: {
             display: "xt0psk2",
@@ -321,9 +321,9 @@ describe('webpack-plugin-stylex', () => {
           }));
           exports.styleSheet = exports.StyleXSheet = void 0;
           var _invariant = _interopRequireDefault(__webpack_require__("../../../../node_modules/invariant/invariant.js"));
-          function _interopRequireDefault(obj) {
-            return obj && obj.__esModule ? obj : {
-              default: obj
+          function _interopRequireDefault(e) {
+            return e && e.__esModule ? e : {
+              default: e
             };
           }
           const LIGHT_MODE_CLASS_NAME = '__fb-light-mode';
@@ -352,8 +352,8 @@ describe('webpack-plugin-stylex', () => {
           }
           const VARIABLE_MATCH = /var\\(--(.*?)\\)/g;
           class StyleXSheet {
-            static LIGHT_MODE_CLASS_NAME = LIGHT_MODE_CLASS_NAME;
-            static DARK_MODE_CLASS_NAME = DARK_MODE_CLASS_NAME;
+            static LIGHT_MODE_CLASS_NAME = (() => LIGHT_MODE_CLASS_NAME)();
+            static DARK_MODE_CLASS_NAME = (() => DARK_MODE_CLASS_NAME)();
             constructor(opts) {
               this.tag = null;
               this.injected = false;
@@ -443,6 +443,9 @@ describe('webpack-plugin-stylex', () => {
                 return this.getRuleCount();
               }
               const lastPriority = priorities.pop();
+              if (lastPriority == null) {
+                return this.getRuleCount();
+              }
               return this.rules.indexOf(this.ruleForPriority.get(lastPriority));
             }
             insert(rawLTRRule, priority, rawRTLRule) {
@@ -546,7 +549,7 @@ describe('webpack-plugin-stylex', () => {
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
           var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
           var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
-          function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+          function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
           var _inject2 = _stylexInject.default;
           _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
@@ -608,7 +611,7 @@ describe('webpack-plugin-stylex', () => {
           exports["default"] = void 0;
           var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-          function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+          function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
           var _inject2 = _stylexInject.default;
           _inject2(".x1lliihq{display:block}", 3000);
           _inject2(".xh8yej3{width:100%}", 4000);
@@ -704,7 +707,7 @@ describe('webpack-plugin-stylex', () => {
           exports["default"] = void 0;
           var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-          function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+          function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
           var _inject2 = _stylexInject.default;
           _inject2(".xt0psk2{display:inline}", 3000);
           _inject2(".x1egiwwb{height:500px}", 4000);

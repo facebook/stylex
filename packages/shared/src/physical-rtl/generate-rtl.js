@@ -9,7 +9,7 @@
 
 import parser from 'postcss-value-parser';
 
-const cursorFlip = {
+const cursorFlip: $ReadOnly<{ [string]: string }> = {
   'e-resize': 'w-resize',
   'w-resize': 'e-resize',
   'ne-resize': 'nw-resize',
@@ -74,97 +74,81 @@ function flipShadow(value: string) {
   }
 }
 
-// Should we be flipping shadows at all?
-// I think the better approach would be to let engineers use
-// CSS-vars directly.
-const shadowsFlip = {
-  'box-shadow': ([key, val]: [string, string]) => {
-    const rtlVal = flipShadow(val);
-    return rtlVal ? [key, rtlVal] : null;
-  },
-  'text-shadow': ([key, val]: [string, string]) => {
-    const rtlVal = flipShadow(val);
-    return rtlVal ? [key, rtlVal] : null;
-  },
-};
+// // Should we be flipping shadows at all?
+// // I think the better approach would be to let engineers use
+// // CSS-vars directly.
+// const shadowsFlip: $ReadOnly<{
+//   [key: string]: (
+//     $ReadOnly<[string, string]>,
+//   ) => $ReadOnly<[string, string]> | null,
+// }> = {
+//   'box-shadow': ([key, val]) => {
+//     const rtlVal = flipShadow(val);
+//     return rtlVal ? [key, rtlVal] : null;
+//   },
+//   'text-shadow': ([key, val]) => {
+//     const rtlVal = flipShadow(val);
+//     return rtlVal ? [key, rtlVal] : null;
+//   },
+// };
 
-const logicalToPhysical = {
+const logicalToPhysical: $ReadOnly<{ [string]: ?string }> = {
   start: 'right',
   end: 'left',
 };
 
-const propertyToRTL = {
-  'margin-start': ([_key, val]: [string, string]) => ['margin-right', val],
-  // 'margin-inline-start': ([key, val]: [string, string]) => ['margin-right', val],
-  'margin-end': ([_key, val]: [string, string]) => ['margin-left', val],
-  // 'margin-inline-end': ([key, val]: [string, string]) => ['margin-left', val],
-  'padding-start': ([_key, val]: [string, string]) => ['padding-right', val],
-  // 'padding-inline-start': ([key, val]: [string, string]) => ['padding-right', val],
-  'padding-end': ([_key, val]: [string, string]) => ['padding-left', val],
-  // 'padding-inline-end': ([_key, val]: [string, string]) => ['padding-left', val],
-  'border-start': ([_key, val]: [string, string]) => ['border-right', val],
-  // 'border-inline-start': ([_key, val]: [string, string]) => ['border-right', val],
-  'border-end': ([_key, val]: [string, string]) => ['border-left', val],
-  // 'border-inline-end': ([_key, val]: [string, string]) => ['border-left', val],
-  'border-start-width': ([_key, val]: [string, string]) => [
-    'border-right-width',
-    val,
-  ],
-  // 'border-inline-start-width': ([_key, val]: [string, string]) => ['border-right-width', val],
-  'border-end-width': ([_key, val]: [string, string]) => [
-    'border-left-width',
-    val,
-  ],
-  // 'border-inline-end-width': ([_key, val]: [string, string]) => ['border-left-width', val],
-  'border-start-color': ([_key, val]: [string, string]) => [
-    'border-right-color',
-    val,
-  ],
-  // 'border-inline-start-color': ([_key, val]: [string, string]) => ['border-right-color', val],
-  'border-end-color': ([_key, val]: [string, string]) => [
-    'border-left-color',
-    val,
-  ],
-  // 'border-inline-end-color': ([_key, val]: [string, string]) => ['border-left-color', val],
-  'border-start-style': ([_key, val]: [string, string]) => [
-    'border-right-style',
-    val,
-  ],
-  // 'border-inline-start-style': ([_key, val]: [string, string]) => ['border-right-style', val],
-  'border-end-style': ([_key, val]: [string, string]) => [
-    'border-left-style',
-    val,
-  ],
-  // 'border-inline-end-style': ([_key, val]: [string, string]) => ['border-left-style', val],
-  'border-top-start-radius': ([_key, val]: [string, string]) => [
-    'border-top-right-radius',
-    val,
-  ],
-  // 'border-start-start-radius': ([_key, val]: [string, string]) => ['border-top-right-radius', val],
-  'border-bottom-start-radius': ([_key, val]: [string, string]) => [
+const propertyToRTL: $ReadOnly<{
+  [key: string]: (
+    $ReadOnly<[string, string]>,
+  ) => $ReadOnly<[string, string]> | null,
+}> = {
+  'margin-start': ([_key, val]) => ['margin-right', val],
+  // 'margin-inline-start': ([key, val]) => ['margin-right', val],
+  'margin-end': ([_key, val]) => ['margin-left', val],
+  // 'margin-inline-end': ([key, val]) => ['margin-left', val],
+  'padding-start': ([_key, val]) => ['padding-right', val],
+  // 'padding-inline-start': ([key, val]) => ['padding-right', val],
+  'padding-end': ([_key, val]) => ['padding-left', val],
+  // 'padding-inline-end': ([_key, val]) => ['padding-left', val],
+  'border-start': ([_key, val]) => ['border-right', val],
+  // 'border-inline-start': ([_key, val]) => ['border-right', val],
+  'border-end': ([_key, val]) => ['border-left', val],
+  // 'border-inline-end': ([_key, val]) => ['border-left', val],
+  'border-start-width': ([_key, val]) => ['border-right-width', val],
+  // 'border-inline-start-width': ([_key, val]) => ['border-right-width', val],
+  'border-end-width': ([_key, val]) => ['border-left-width', val],
+  // 'border-inline-end-width': ([_key, val]) => ['border-left-width', val],
+  'border-start-color': ([_key, val]) => ['border-right-color', val],
+  // 'border-inline-start-color': ([_key, val]) => ['border-right-color', val],
+  'border-end-color': ([_key, val]) => ['border-left-color', val],
+  // 'border-inline-end-color': ([_key, val]) => ['border-left-color', val],
+  'border-start-style': ([_key, val]) => ['border-right-style', val],
+  // 'border-inline-start-style': ([_key, val]) => ['border-right-style', val],
+  'border-end-style': ([_key, val]) => ['border-left-style', val],
+  // 'border-inline-end-style': ([_key, val]) => ['border-left-style', val],
+  'border-top-start-radius': ([_key, val]) => ['border-top-right-radius', val],
+  // 'border-start-start-radius': ([_key, val]) => ['border-top-right-radius', val],
+  'border-bottom-start-radius': ([_key, val]) => [
     'border-bottom-right-radius',
     val,
   ],
-  // 'border-end-start-radius': ([_key, val]: [string, string]) => ['border-bottom-right-radius', val],
-  'border-top-end-radius': ([_key, val]: [string, string]) => [
-    'border-top-left-radius',
-    val,
-  ],
-  // 'border-start-end-radius': ([_key, val]: [string, string]) => ['border-top-left-radius', val],
-  'border-bottom-end-radius': ([_key, val]: [string, string]) => [
+  // 'border-end-start-radius': ([_key, val]) => ['border-bottom-right-radius', val],
+  'border-top-end-radius': ([_key, val]) => ['border-top-left-radius', val],
+  // 'border-start-end-radius': ([_key, val]) => ['border-top-left-radius', val],
+  'border-bottom-end-radius': ([_key, val]) => [
     'border-bottom-left-radius',
     val,
   ],
-  // 'border-end-end-radius': ([key, val]: [string, string]) => ['border-bottom-left-radius', val],
-  float: ([key, val]: [string, string]) =>
+  // 'border-end-end-radius': ([key, val]) => ['border-bottom-left-radius', val],
+  float: ([key, val]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
-  clear: ([key, val]: [string, string]) =>
+  clear: ([key, val]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
-  start: ([_key, val]: [string, string]) => ['right', val],
-  // 'inset-inline-start': ([key, val]: [string, string]) => ['right', val],
-  end: ([_key, val]: [string, string]) => ['left', val],
-  // 'inset-inline-end': ([key, val]: [string, string]) => ['left', val],
-  'background-position': ([key, val]: [string, string]) => {
+  start: ([_key, val]) => ['right', val],
+  // 'inset-inline-start': ([key, val]) => ['right', val],
+  end: ([_key, val]) => ['left', val],
+  // 'inset-inline-end': ([key, val]) => ['left', val],
+  'background-position': ([key, val]) => {
     const words = val.split(' ');
     if (!words.includes('start') && !words.includes('end')) {
       return null;
@@ -178,15 +162,25 @@ const propertyToRTL = {
         .join(' '),
     ];
   },
-  cursor: ([key, val]: [string, string]) =>
+  cursor: ([key, val]) =>
     cursorFlip[val] != null ? [key, cursorFlip[val]] : null,
-  ...shadowsFlip,
+
+  // Should we be flipping shadows at all?
+  // I think the better approach would be to let engineers use
+  // CSS-vars directly.
+  'box-shadow': ([key, val]) => {
+    const rtlVal = flipShadow(val);
+    return rtlVal ? [key, rtlVal] : null;
+  },
+  'text-shadow': ([key, val]) => {
+    const rtlVal = flipShadow(val);
+    return rtlVal ? [key, rtlVal] : null;
+  },
 };
 
-export default function generateRTL([key, value]: [string, string]): ?[
-  string,
-  string,
-] {
+export default function generateRTL([key, value]: $ReadOnly<
+  [string, string],
+>): ?$ReadOnly<[string, string]> {
   if (propertyToRTL[key]) {
     return propertyToRTL[key]([key, value]);
   }
