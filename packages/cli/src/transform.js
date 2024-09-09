@@ -42,7 +42,7 @@ export async function compileDirectory(
         try {
           fs.rmSync(outputPath);
         } catch (err) {
-          console.error('[stylex] failed to delete file: ', error);
+          console.error('[stylex] failed to delete file: ', err);
         }
       }
     });
