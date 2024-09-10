@@ -65,7 +65,7 @@ export default function styleXCreateTheme(
 
   for (const atRule of sortedAtRules) {
     const decls = rulesByAtRule[atRule].join('');
-    const rule = `.${overrideClassName}{${decls}}`;
+    const rule = `.${overrideClassName}, .${overrideClassName}:root{${decls}}`;
 
     if (atRule === 'default') {
       stylesToInject[overrideClassName] = {
