@@ -749,7 +749,6 @@ export default function getPriority(key: string): number {
         ? key.slice(0, key.indexOf('('))
         : key;
 
-    // $FlowFixMe[invalid-computed-prop]
     return PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
   }
 

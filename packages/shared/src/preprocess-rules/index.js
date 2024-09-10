@@ -39,7 +39,6 @@ export default function flatMapExpandedShorthands(
   const expansion: (
     string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
-    // $FlowFixMe[invalid-computed-prop]
     expansions[options.styleResolution ?? 'application-order'][key];
   if (expansion) {
     if (Array.isArray(value)) {

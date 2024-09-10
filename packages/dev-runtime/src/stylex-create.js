@@ -124,6 +124,7 @@ function createWithFns<S: { ... }>(
     if (origKey.startsWith('var(') && origKey.endsWith(')')) {
       key = origKey.slice(4, -1);
     }
+
     if (typeof value === 'function') {
       const [staticObj, inlineStylesFn] = splitStaticObj(
         value as $FlowFixMe,
