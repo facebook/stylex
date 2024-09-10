@@ -8,7 +8,6 @@
  * @flow strict
  */
 
-import type { Argv } from 'yargs';
 import type { Rule } from '@stylexjs/babel-plugin';
 import yargs from 'yargs';
 import path from 'path';
@@ -28,47 +27,50 @@ const secondary = '#D573DD';
 
 console.log(
   ansis.hex(primary).bold(`\n
-   .d8888b.  888             888         ${ansis.hex(secondary).bold('Y88b   d88P')} 
-  d88P  Y88b 888             888          ${ansis.hex(secondary).bold('Y88b d88P')}  
-  Y88b.      888             888           ${ansis.hex(secondary).bold('Y88o88P')}   
-   "Y888b.   888888 888  888 888  .d88b.    ${ansis.hex(secondary).bold('Y888P')}    
-      "Y88b. 888    888  888 888 d8P  Y8b   ${ansis.hex(secondary).bold('d888b')}    
-        "888 888    888  888 888 88888888  ${ansis.hex(secondary).bold('d88888b')}   
-  Y88b  d88P Y88b.  Y88b 888 888 Y8b.     ${ansis.hex(secondary).bold('d88P Y88b')}  
-   "Y8888P"   "Y888  "Y88888 888  "Y8888 ${ansis.hex(secondary).bold('cd88P   Y88b')} 
-                         888                         
-                    Y8b d88P                         
-                     "Y88P"          
+   .d8888b.  888             888         ${ansis.hex(secondary).bold('Y88b   d88P')}
+  d88P  Y88b 888             888          ${ansis.hex(secondary).bold('Y88b d88P')}
+  Y88b.      888             888           ${ansis.hex(secondary).bold('Y88o88P')}
+   "Y888b.   888888 888  888 888  .d88b.    ${ansis.hex(secondary).bold('Y888P')}
+      "Y88b. 888    888  888 888 d8P  Y8b   ${ansis.hex(secondary).bold('d888b')}
+        "888 888    888  888 888 88888888  ${ansis.hex(secondary).bold('d88888b')}
+  Y88b  d88P Y88b.  Y88b 888 888 Y8b.     ${ansis.hex(secondary).bold('d88P Y88b')}
+   "Y8888P"   "Y888  "Y88888 888  "Y8888 ${ansis.hex(secondary).bold('cd88P   Y88b')}
+                         888
+                    Y8b d88P
+                     "Y88P"
 `),
 );
 
 const usage =
   '\n Usage: provide a directory to stylex in order to have it compiled.';
-const args: Argv = yargs(process.argv)
+let config: { +[string]: mixed } = {};
+const args = yargs(process.argv)
   .scriptName('stylex')
   .usage(usage)
-  // $FlowFixMe[incompatible-call] Flow typings for Yargs doesn't infer options type, it requires {[key: string]: Options}, but Typescript can infer options<MyOptions>. I'd rather FlowFixMe than cast
   .options(options)
   .help(true)
   .config(
     'config',
     'path of a .json (or .json5) config file',
     (configPath: string) => {
-      return JSON5.parse(fs.readFileSync(configPath));
+      config = JSON5.parse(fs.readFileSync(configPath));
+      return config;
     },
   )
   .parseSync();
 
 const absolutePath = process.cwd();
 
-const input: Array<string> = args.input;
-const output: Array<string> = args.output;
+const input: $ReadOnlyArray<string> = args.input;
+const output: $ReadOnlyArray<string> = args.output;
 const watch: boolean = args.watch;
 const styleXBundleName: string = args.styleXBundleName;
 const modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType> =
   args.modules_EXPERIMENTAL;
-const babelPresets: Array<any> = args.babelPresets;
+const babelPresets: $ReadOnlyArray<any> = args.babelPresets;
 const useCSSLayers: boolean = args.useCSSLayers;
+const styleXConfig: { +[string]: mixed } =
+  (config.styleXConfig as $FlowFixMe) ?? {};
 
 const cliArgsConfig: CliConfig = {
   input,
@@ -78,6 +80,7 @@ const cliArgsConfig: CliConfig = {
   styleXBundleName,
   babelPresets,
   useCSSLayers,
+  styleXConfig,
 };
 
 styleXCompile(cliArgsConfig);
@@ -100,6 +103,21 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
     const outputPath = path.isAbsolute(cliArgsConfig.output[i])
       ? cliArgsConfig.output[i]
       : path.normalize(path.join(absolutePath, cliArgsConfig.output[i]));
+    const styleXConfig = cliArgsConfig.styleXConfig;
+    if (
+      styleXConfig?.aliases != null &&
+      typeof styleXConfig.aliases === 'object'
+    ) {
+      const aliases: $FlowFixMe = styleXConfig.aliases;
+      Object.keys(aliases).forEach((key) => {
+        aliases[key] = aliases[key].map((alias) => {
+          return path.isAbsolute(alias)
+            ? alias
+            : path.normalize(path.join(absolutePath, alias));
+        });
+      });
+    }
+
     const config: TransformConfig = {
       input: inputPath,
       output: outputPath,
@@ -107,6 +125,8 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
       watch,
       styleXBundleName,
       babelPresets,
+      useCSSLayers,
+      styleXConfig,
       state: configState,
     };
     if (!isDir(config.input)) {

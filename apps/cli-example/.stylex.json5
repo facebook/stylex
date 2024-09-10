@@ -9,5 +9,10 @@
   modules_EXPERIMENTAL: [
     ['@stylexjs/open-props', { ignore: ['src', '__tests__'] }],
   ],
+  styleXConfig: {
+    aliases: {
+      '@/*': ['./source/*'],
+    },
+  },
   // watch: true,
 }

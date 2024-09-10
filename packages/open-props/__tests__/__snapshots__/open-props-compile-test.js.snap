@@ -797,7 +797,7 @@ exports[`commonJS results of exported styles and variables borders.stylex.js 2`]
   [
     "x39jpd4",
     {
-      "ltr": ":root{--x1c4d28j:1px;--x1tnavza:2px;--xw9w0ji:5px;--x1w2xhh:10px;--xbk24gy:25px;--x19tsvu4:2px;--x17eca7m:5px;--x161m72u:1rem;--xagv9nx:2rem;--x1ourpcj:4rem;--x5uhb2z:8rem;--x15i6psm:1e5px;--xzs4xe0:clamp(0px, calc(100vw - 100%) * 1e5, 2px);--xv7z80y:clamp(0px, calc(100vw - 100%) * 1e5, 5px));--x5sox4w:clamp(0px, calc(100vw - 100%) * 1e5, 1rem));--x19pda2u:clamp(0px, calc(100vw - 100%) * 1e5, 2rem));--x103yzcm:clamp(0px, calc(100vw - 100%) * 1e5, 4rem));--x1hbo1ek:clamp(0px, calc(100vw - 100%) * 1e5, 8rem));}",
+      "ltr": ":root{--x1c4d28j:1px;--x1tnavza:2px;--xw9w0ji:5px;--x1w2xhh:10px;--xbk24gy:25px;--x19tsvu4:2px;--x17eca7m:5px;--x161m72u:1rem;--xagv9nx:2rem;--x1ourpcj:4rem;--x5uhb2z:8rem;--x15i6psm:1e5px;--xzs4xe0:clamp(0px, calc(100vw - 100%) * 1e5, 2px);--xv7z80y:clamp(0px, calc(100vw - 100%) * 1e5, 5px);--x5sox4w:clamp(0px, calc(100vw - 100%) * 1e5, 1rem);--x19pda2u:clamp(0px, calc(100vw - 100%) * 1e5, 2rem);--x103yzcm:clamp(0px, calc(100vw - 100%) * 1e5, 4rem);--x1hbo1ek:clamp(0px, calc(100vw - 100%) * 1e5, 8rem);}",
       "rtl": null,
     },
     0,
