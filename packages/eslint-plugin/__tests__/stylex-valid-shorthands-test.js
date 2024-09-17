@@ -176,6 +176,48 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
+            marginHorizontal: '10px',
+            marginVertical: '5px',
+            paddingHorizontal: '10px',
+            paddingVertical: '5px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            marginInline: '10px',
+            marginBlock: '5px',
+            paddingInline: '10px',
+            paddingBlock: '5px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Use "marginInline" instead of legacy formats like "marginHorizontal" to adhere to logical property naming.',
+        },
+        {
+          message:
+            'Use "marginBlock" instead of legacy formats like "marginVertical" to adhere to logical property naming.',
+        },
+        {
+          message:
+            'Use "paddingInline" instead of legacy formats like "paddingHorizontal" to adhere to logical property naming.',
+        },
+        {
+          message:
+            'Use "paddingBlock" instead of legacy formats like "paddingVertical" to adhere to logical property naming.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
             margin: '10px 10px 10px',
             marginInline: '15px 15px',
             padding: '20px 20px 20px 20px',
