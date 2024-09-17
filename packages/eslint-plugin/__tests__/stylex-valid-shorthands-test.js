@@ -40,6 +40,16 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import stylex from 'stylex';
       const styles = stylex.create({
         main: {
+          borderRadius: 5,
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
           margin: 10,
         },
       })
@@ -50,7 +60,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import stylex from 'stylex';
       const styles = stylex.create({
         main: {
-          marginInline: 10,
+          marginInline: 0,
         },
       })
     `,
@@ -60,7 +70,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import stylex from 'stylex';
       const styles = stylex.create({
         main: {
-          paddingInline: 10,
+          paddingInline: 0,
         },
       })
     `,
@@ -158,6 +168,42 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "margin: 10px 12px 13px 14px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '10px 10px 10px',
+            marginInline: '15px 15px',
+            padding: '20px 20px 20px 20px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '10px',
+            marginInline: '15px',
+            padding: '20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "margin: 10px 10px 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "marginInline: 15px 15px" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "padding: 20px 20px 20px 20px" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

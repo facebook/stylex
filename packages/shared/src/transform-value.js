@@ -53,6 +53,9 @@ export function getNumberSuffix(key: string): string {
   if (unitlessNumberProperties.has(key)) {
     return '';
   }
+  if (!(key in numberPropertySuffixes)) {
+    return 'px';
+  }
 
   const suffix = numberPropertySuffixes[key];
   if (suffix == null) {
@@ -107,7 +110,7 @@ const unitlessNumberProperties = new Set([
 ]);
 
 // List of properties that have custom suffixes for numbers
-const numberPropertySuffixes = {
+const numberPropertySuffixes: { +[key: string]: string } = {
   animationDelay: 'ms',
   animationDuration: 'ms',
   transitionDelay: 'ms',

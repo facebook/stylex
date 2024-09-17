@@ -21,8 +21,12 @@ import {
 } from './stylex-vars-utils';
 import { type CSSType, isCSSType } from './types';
 
+type VarsKeysWithStringValues<Vars: VarsConfig> = $ReadOnly<{
+  [$Keys<Vars>]: string,
+}>;
+
 type VarsObject<Vars: VarsConfig> = $ReadOnly<{
-  ...$ObjMapConst<Vars, string>,
+  ...VarsKeysWithStringValues<Vars>,
   __themeName__: string,
 }>;
 
@@ -46,7 +50,9 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     }>,
   } = {};
 
-  const variablesMap = objMap(variables, (value, key) => {
+  const variablesMap: {
+    +[string]: { +nameHash: string, +value: VarsConfigValue },
+  } = objMap(variables, (value, key) => {
     // Created hashed variable names with fileName//themeName//key
     const nameHash = key.startsWith('--')
       ? key.slice(2)
@@ -59,7 +65,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
       };
       return { nameHash, value: v.value };
     }
-    return { nameHash, value };
+    return { nameHash, value: value as $FlowFixMe };
   });
 
   const themeVariablesObject = objMap(

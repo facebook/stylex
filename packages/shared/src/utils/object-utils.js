@@ -16,7 +16,7 @@ import { IncludedStyles } from '../stylex-include';
 // eslint-disable-next-line no-unused-vars
 type AnyObject = { +[string]: mixed };
 
-export function isPlainObject(obj: mixed) /*: obj is AnyObject */ {
+export function isPlainObject(obj: mixed): implies obj is AnyObject {
   return (
     typeof obj === 'object' &&
     obj != null &&
@@ -89,7 +89,7 @@ export function objMapKeys<V, K1: string = string, K2: string = string>(
 
 export function objMapEntry<V, V2, K1: string = string, K2: string = string>(
   obj: { +[K1]: V },
-  mapper: ([K1, V]) => [K2, V2],
+  mapper: ($ReadOnly<[K1, V]>) => $ReadOnly<[K2, V2]>,
 ): { +[K2]: V2 } {
   return objFromEntries(
     objEntries(obj).map(([key, value]) => mapper([key, value])),

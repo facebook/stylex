@@ -119,14 +119,17 @@ function createWithFns<S: { ... }>(
   const stylesWithFns: {
     [string]: (...args: any) => { +[string]: string | number },
   } = {};
-  for (const origKey in styles) {
+  for (const [origKey, value] of Object.entries(styles)) {
     let key = origKey;
     if (origKey.startsWith('var(') && origKey.endsWith(')')) {
       key = origKey.slice(4, -1);
     }
-    const value = styles[origKey];
+
     if (typeof value === 'function') {
-      const [staticObj, inlineStylesFn] = splitStaticObj(value, config);
+      const [staticObj, inlineStylesFn] = splitStaticObj(
+        value as $FlowFixMe,
+        config,
+      );
       stylesWithoutFns[key] = staticObj;
       stylesWithFns[key] = inlineStylesFn;
     } else {

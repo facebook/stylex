@@ -21,277 +21,42 @@ import type { SourceCode } from 'eslint/eslint-rule';
 import type { Token } from 'eslint/eslint-ast';
 
 import {
-  splitSpecificShorthands,
-  splitDirectionalShorthands,
+  createBlockInlineTransformer,
+  createSpecificTransformer,
+  createDirectionalTransformer,
 } from './utils/splitShorthands.js';
 
 import { CANNOT_FIX } from './utils/splitShorthands.js';
 
 /*:: import { Rule } from 'eslint'; */
 
-const legacyNameMapping = {
+const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
   paddingStart: 'paddingInlineStart',
   paddingEnd: 'paddingInlineEnd',
 };
 
-const shorthandAliases = {
-  background: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'background',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  font: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands('font', rawValue.toString(), allowImportant);
-  },
-  border: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderColor: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-color',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderWidth: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-width',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderStyle: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-style',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderTop: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-top',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderRight: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-right',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderBottom: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-bottom',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderLeft: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-left',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  borderRadius: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'border-radius',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  outline: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    return splitSpecificShorthands(
-      'outline',
-      rawValue.toString(),
-      allowImportant,
-    );
-  },
-  marginInline: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['marginInline', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['marginInlineStart', top],
-      ['marginInlineEnd', right],
-    ];
-  },
-  marginBlock: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['marginBlock', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['marginBlockStart', top],
-      ['marginBlockEnd', right],
-    ];
-  },
-  margin: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['margin', rawValue]];
-    }
-
-    const [top, right = top, bottom = top, left = right] = splitValues;
-
-    if (splitValues.length === 2) {
-      return [
-        ['marginBlock', top],
-        ['marginInline', right],
-      ];
-    }
-
-    return preferInline
-      ? [
-          ['marginTop', top],
-          ['marginInlineEnd', right],
-          ['marginBottom', bottom],
-          ['marginInlineStart', left],
-        ]
-      : [
-          ['marginTop', top],
-          ['marginRight', right],
-          ['marginBottom', bottom],
-          ['marginLeft', left],
-        ];
-  },
-  padding: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['padding', rawValue]];
-    }
-
-    const [top, right = top, bottom = top, left = right] =
-      splitDirectionalShorthands(rawValue, allowImportant);
-
-    if (splitValues.length === 2) {
-      return [
-        ['paddingBlock', top],
-        ['paddingInline', right],
-      ];
-    }
-
-    return preferInline
-      ? [
-          ['paddingTop', top],
-          ['paddingInlineEnd', right],
-          ['paddingBottom', bottom],
-          ['paddingInlineStart', left],
-        ]
-      : [
-          ['paddingTop', top],
-          ['paddingRight', right],
-          ['paddingBottom', bottom],
-          ['paddingLeft', left],
-        ];
-  },
-  paddingInline: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['paddingInline', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['paddingInlineStart', top],
-      ['paddingInlineEnd', right],
-    ];
-  },
-  paddingBlock: (
-    rawValue: number | string,
-    allowImportant: boolean = false,
-    _preferInline: boolean = false,
-  ) => {
-    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
-    if (splitValues.length === 1) {
-      return [['paddingBlock', rawValue]];
-    }
-    const [top, right = top, _ = top, __ = right] = splitValues;
-    return [
-      ['paddingBlockStart', top],
-      ['paddingBlockEnd', right],
-    ];
-  },
+const shorthandAliases: $ReadOnly<{
+  [string]: ?ReturnType<typeof createSpecificTransformer>,
+}> = {
+  background: createSpecificTransformer('background'),
+  font: createSpecificTransformer('font'),
+  borderColor: createSpecificTransformer('border-color'),
+  borderWidth: createSpecificTransformer('border-width'),
+  borderStyle: createSpecificTransformer('border-style'),
+  borderTop: createSpecificTransformer('border-top'),
+  borderRight: createSpecificTransformer('border-right'),
+  borderBottom: createSpecificTransformer('border-bottom'),
+  borderLeft: createSpecificTransformer('border-left'),
+  borderRadius: createSpecificTransformer('border-radius'),
+  outline: createSpecificTransformer('outline'),
+  margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
+  padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
+  marginBlock: createBlockInlineTransformer('margin', 'Block'),
+  marginInline: createBlockInlineTransformer('margin', 'Inline'),
+  paddingBlock: createBlockInlineTransformer('padding', 'Block'),
+  paddingInline: createBlockInlineTransformer('padding', 'Inline'),
 };
 
 const stylexValidShorthands = {
@@ -357,7 +122,7 @@ const stylexValidShorthands = {
         key = property.key.value;
       }
 
-      if (typeof key === 'string' && key in legacyNameMapping) {
+      if (typeof key === 'string' && legacyNameMapping[key] != null) {
         context.report({
           node: property,
           message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
@@ -367,26 +132,38 @@ const stylexValidShorthands = {
           },
         });
       }
+      if (typeof key !== 'string') {
+        return;
+      }
+
+      const shorthandAliasesForKey = shorthandAliases[key];
 
       if (
         typeof key !== 'string' ||
-        !shorthandAliases.hasOwnProperty(key) ||
-        property.value.value === null
+        property.value.value === null ||
+        shorthandAliasesForKey == null
       ) {
         return;
       }
 
-      const newValues = shorthandAliases[key](
-        property.value.value,
-        allowImportant,
-        preferInline,
-      );
+      const v = property.value.value;
+      if (typeof v !== 'string' && typeof v !== 'number') {
+        return;
+      }
+
+      const newValues = shorthandAliasesForKey(v, allowImportant, preferInline);
 
       const isUnfixableError =
         newValues.length === 1 && newValues[0]?.[1] === CANNOT_FIX;
 
-      if ((!newValues || newValues.length === 1) && !isUnfixableError) {
-        // Single values do not need to be split
+      if (
+        !newValues ||
+        (((newValues.length === 1 &&
+          newValues[0][1] === property.value.value) ||
+          newValues[0][1] === property.value?.value?.toString() ||
+          newValues[0][1] === parseInt(property.value?.value, 10)) &&
+          !isUnfixableError)
+      ) {
         return;
       }
 
@@ -420,7 +197,7 @@ const stylexValidShorthands = {
               const newPropertiesText = newValues
                 .map(
                   ([key, value], index) =>
-                    `${index > 0 ? newLineAndIndent : ''}${key}: ${typeof value === 'string' ? `'${value}'` : value}`,
+                    `${index > 0 ? newLineAndIndent : ''}${key as $FlowFixMe}: ${typeof value === 'string' ? `'${value}'` : value}`,
                 )
                 .join(',');
 

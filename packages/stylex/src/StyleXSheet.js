@@ -270,6 +270,10 @@ export class StyleXSheet {
 
     // Place us next to the next highest priority
     const lastPriority = priorities.pop();
+    // If there's no priorities then place us at the start
+    if (lastPriority == null) {
+      return this.getRuleCount();
+    }
     return this.rules.indexOf(this.ruleForPriority.get(lastPriority));
   }
 

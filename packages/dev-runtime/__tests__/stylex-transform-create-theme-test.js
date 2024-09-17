@@ -63,7 +63,7 @@ describe('Development Plugin Transformation', () => {
           [
             "xtrlmmh",
             {
-              "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+              "ltr": ".xtrlmmh, .xtrlmmh:root{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
               "rtl": undefined,
             },
             0.5,
@@ -71,7 +71,7 @@ describe('Development Plugin Transformation', () => {
           [
             "xtrlmmh-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
+              "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh, .xtrlmmh:root{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
               "rtl": undefined,
             },
             0.6,
@@ -79,7 +79,7 @@ describe('Development Plugin Transformation', () => {
           [
             "xtrlmmh-bdddrq",
             {
-              "ltr": "@media print{.xtrlmmh{--xgck17p:transparent;}}",
+              "ltr": "@media print{.xtrlmmh, .xtrlmmh:root{--xgck17p:transparent;}}",
               "rtl": undefined,
             },
             0.6,
@@ -123,7 +123,7 @@ describe('Development Plugin Transformation', () => {
           [
             "xtrlmmh",
             {
-              "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+              "ltr": ".xtrlmmh, .xtrlmmh:root{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
               "rtl": undefined,
             },
             0.5,
@@ -131,7 +131,7 @@ describe('Development Plugin Transformation', () => {
           [
             "xtrlmmh-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
+              "ltr": "@media (prefers-color-scheme: dark){.xtrlmmh, .xtrlmmh:root{--xgck17p:lightgreen;--xpegid5:floralwhite;}}",
               "rtl": undefined,
             },
             0.6,
@@ -139,7 +139,7 @@ describe('Development Plugin Transformation', () => {
           [
             "xtrlmmh-bdddrq",
             {
-              "ltr": "@media print{.xtrlmmh{--xgck17p:transparent;}}",
+              "ltr": "@media print{.xtrlmmh, .xtrlmmh:root{--xgck17p:transparent;}}",
               "rtl": undefined,
             },
             0.6,

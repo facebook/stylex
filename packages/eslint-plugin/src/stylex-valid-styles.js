@@ -2870,6 +2870,7 @@ const stylexValidStyles = {
             if (
               styles.type === 'ArrowFunctionExpression' &&
               (styles.body.type === 'ObjectExpression' ||
+                // $FlowFixMe
                 (styles.body.type === 'TSAsExpression' &&
                   styles.body.expression.type === 'ObjectExpression'))
             ) {

@@ -83,7 +83,7 @@ import type { TStyleValue } from '../common-types';
 
 type TReturn = $ReadOnlyArray<[string, TStyleValue]>;
 
-const shorthands = {
+const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   border: (rawValue: TStyleValue): TReturn => {
     return [
       ['borderTop', rawValue],

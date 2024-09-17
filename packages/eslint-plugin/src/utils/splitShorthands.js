@@ -12,6 +12,92 @@ import cssExpand from 'css-shorthand-expand';
 
 export const CANNOT_FIX = 'CANNOT_FIX';
 
+export const createSpecificTransformer = (
+  property: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+  _preferInline?: boolean,
+) => $ReadOnlyArray<$ReadOnly<[string, number | string]>>) => {
+  return (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    _preferInline: boolean = false,
+  ) => {
+    return splitSpecificShorthands(
+      property,
+      rawValue.toString(),
+      allowImportant,
+      typeof rawValue === 'number',
+    );
+  };
+};
+
+export const createDirectionalTransformer = (
+  baseProperty: string,
+  blockSuffix: string,
+  inlineSuffix: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+  preferInline?: boolean,
+) => [string, string | number][]) => {
+  return (
+    rawValue: number | string,
+    allowImportant: boolean = false,
+    preferInline: boolean = false,
+  ) => {
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
+    const [top, right = top, bottom = top, left = right] = splitValues;
+
+    if (splitValues.length === 1) {
+      return [[`${baseProperty}`, top]];
+    }
+
+    if (splitValues.length === 2) {
+      return [
+        [`${baseProperty}${blockSuffix}`, top],
+        [`${baseProperty}${inlineSuffix}`, right],
+      ];
+    }
+
+    return preferInline
+      ? [
+          [`${baseProperty}Top`, top],
+          [`${baseProperty}${inlineSuffix}End`, right],
+          [`${baseProperty}Bottom`, bottom],
+          [`${baseProperty}${inlineSuffix}Start`, left],
+        ]
+      : [
+          [`${baseProperty}Top`, top],
+          [`${baseProperty}Right`, right],
+          [`${baseProperty}Bottom`, bottom],
+          [`${baseProperty}Left`, left],
+        ];
+  };
+};
+
+export const createBlockInlineTransformer = (
+  baseProperty: string,
+  suffix: string,
+): ((
+  rawValue: number | string,
+  allowImportant?: boolean,
+) => [string, string | number][]) => {
+  return (rawValue: number | string, allowImportant: boolean = false) => {
+    const splitValues = splitDirectionalShorthands(rawValue, allowImportant);
+    const [start, end = start] = splitValues;
+
+    if (splitValues.length === 1) {
+      return [[`${baseProperty}${suffix}`, start]];
+    }
+    return [
+      [`${baseProperty}${suffix}Start`, start],
+      [`${baseProperty}${suffix}End`, end],
+    ];
+  };
+};
+
 function printNode(node: PostCSSValueASTNode): string {
   switch (node.type) {
     case 'word':
@@ -28,7 +114,7 @@ const toCamelCase = (str: string) => {
   return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
 };
 
-/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
+/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
 In cases with simple spaces between comma-separated parameters, we can preprocess the values by stripping the spaces.
 If there are still spaces remaining, such as in edge cases involving `calc()` or gradient values, we won't provide an auto-fix. */
 function processWhitespacesinFunctions(str: string) {
@@ -59,7 +145,7 @@ function processWhitespacesinFunctions(str: string) {
   };
 }
 
-/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly. 
+/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
 After stripping the spaces, let's post-process the values to add back the missing whitespaces between parentheses after a comma */
 function addSpacesAfterCommasInParentheses(str: string) {
   return str.replace(/\(([^)]+)\)/g, (match, p1) => {
@@ -78,12 +164,13 @@ export function splitSpecificShorthands(
   property: string,
   value: string,
   allowImportant: boolean = false,
-): $ReadOnlyArray<$ReadOnlyArray<mixed>> {
+  isNumber: boolean = false,
+): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
   const { strippedValue, canFix, isInvalidShorthand } =
     processWhitespacesinFunctions(value);
 
   if (!canFix && isInvalidShorthand) {
-    return [[property, CANNOT_FIX]];
+    return [[toCamelCase(property), CANNOT_FIX]];
   }
 
   const longform = cssExpand(property, strippedValue);
@@ -94,7 +181,7 @@ export function splitSpecificShorthands(
     Object.values(longform).length === 0 ||
     Object.values(longform).every((val) => val === Object.values(longform)[0])
   ) {
-    return [[property, value]];
+    return [[toCamelCase(property), isNumber ? Number(value) : value]];
   }
 
   const longformStyle: {
@@ -151,6 +238,11 @@ export function splitDirectionalShorthands(
     allowImportant
   ) {
     return nodes.slice(0, nodes.length - 1).map((node) => node + ' !important');
+  }
+
+  if (nodes.length > 1 && new Set(nodes).size === 1) {
+    // If all values are the same, no need to expand
+    return [nodes[0]];
   }
 
   return nodes;
