@@ -14,6 +14,7 @@ import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
+import { transform } from 'lightningcss';
 import type {
   Plugin,
   PluginContext,
@@ -59,11 +60,20 @@ export default function stylexPlugin({
           useCSSLayers,
         );
 
+        // Process the CSS using lightningcss
+        const { code } = transform({
+          filename: 'stylex.css',
+          code: Buffer.from(collectedCSS),
+        });
+
+        // Convert the Buffer back to a string
+        const processedCSS = code.toString();
+
         // This is the intended API, but Flow doesn't support this pattern.
         // $FlowExpectedError[object-this-reference]
         this.emitFile({
           fileName,
-          source: collectedCSS,
+          source: processedCSS,
           type: 'asset',
         });
       }
