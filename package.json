@@ -51,6 +51,7 @@
     "flow-bin": "^0.245.2",
     "hermes-eslint": "^0.23.1",
     "jest": "^30.0.0-alpha.6",
+    "lightningcss": "^1.27.0",
     "prettier": "^3.3.3",
     "prettier-plugin-hermes-parser": "^0.23.1",
     "rimraf": "^5.0.5",
