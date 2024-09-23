@@ -594,8 +594,10 @@ type scrollSnapType =
   | 'inline mandatory'
   | 'inline proximity'
   | 'inline'
+  | 'x'
   | 'x mandatory'
   | 'x proximity'
+  | 'y'
   | 'y mandatory'
   | 'y proximity';
 type shapeImageThreshold = number | string;
@@ -1133,8 +1135,8 @@ export type CSSProperties = $ReadOnly<{
   containIntrinsicSize?: all | number | string,
   containIntrinsicBlockSize?: all | number | string,
   containIntrinsicInlineSize?: all | number | string,
-  containIntrinsicHeightSize?: all | number | string,
-  containIntrinsicWidthSize?: all | number | string,
+  containIntrinsicHeight?: all | number | string,
+  containIntrinsicWidth?: all | number | string,
 
   container?: all | string,
   containerName?: all | string,

@@ -1796,8 +1796,8 @@ const CSSProperties = {
   containIntrinsicSize: makeUnionRule(isNumber, isString),
   containIntrinsicBlockSize: makeUnionRule(isNumber, isString),
   containIntrinsicInlineSize: makeUnionRule(isNumber, isString),
-  containIntrinsicHeightSize: makeUnionRule(isNumber, isString),
-  containIntrinsicWidthSize: makeUnionRule(isNumber, isString),
+  containIntrinsicHeight: makeUnionRule(isNumber, isString),
+  containIntrinsicWidth: makeUnionRule(isNumber, isString),
   containerType: makeUnionRule('normal', 'size', 'inline-size'),
   containerName: isString,
   content: content,
@@ -2361,7 +2361,6 @@ const stylexValidStyles = {
 
     const legacyProps: PropLimits = {
       'grid*': { limit: null, reason: legacyReason },
-      gap: { limit: null, reason: 'Use `rowGap` and `columnGap` instead' },
       'mask+([a-zA-Z])': { limit: null, reason: legacyReason },
       blockOverflow: { limit: null, reason: legacyReason },
       inlineOverflow: { limit: null, reason: legacyReason },

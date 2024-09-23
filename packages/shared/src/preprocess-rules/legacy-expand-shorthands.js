@@ -172,6 +172,31 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ];
   },
 
+  containIntrinsicSize: (rawValue: TStyleValue): TReturn => {
+    const parts = splitValue(rawValue);
+
+    // combine any part which is "auto" with the subsequent part
+    // ['auto', 'x', 'auto', 'y'] => ['auto x', 'auto y']
+    // ['auto', 'x', 'y'] => ['auto x', 'y']
+    // ['x', 'auto', 'y'] => ['x', 'auto y']
+    // ['x', 'y'] => ['x', 'y']
+    const [width, height = width] = parts.reduce(
+      (coll: Array<number | string | null>, part: number | string | null) => {
+        const lastElement = coll[coll.length - 1];
+        if (lastElement === 'auto' && part != null) {
+          return [...coll.slice(0, -1), `auto ${part}`];
+        }
+        return [...coll, part];
+      },
+      [],
+    );
+
+    return [
+      ['containIntrinsicWidth', width],
+      ['containIntrinsicHeight', height],
+    ];
+  },
+
   inset: (rawValue: TStyleValue): TReturn => [
     ['top', rawValue],
     ['end', rawValue],
