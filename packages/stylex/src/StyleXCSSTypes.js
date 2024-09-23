@@ -583,7 +583,21 @@ type rubyMerge = 'separate' | 'collapse' | 'auto';
 type rubyPosition = 'over' | 'under' | 'inter-character';
 type scrollBehavior = 'auto' | 'smooth';
 type scrollSnapAlign = 'none' | 'start' | 'end' | 'center';
-type scrollSnapType = 'none' | 'x mandatory' | 'y mandatory';
+type scrollSnapType =
+  | 'none'
+  | 'block mandatory'
+  | 'block proximity'
+  | 'block'
+  | 'both mandatory'
+  | 'both proximity'
+  | 'both'
+  | 'inline mandatory'
+  | 'inline proximity'
+  | 'inline'
+  | 'x mandatory'
+  | 'x proximity'
+  | 'y mandatory'
+  | 'y proximity';
 type shapeImageThreshold = number | string;
 type shapeMargin = lengthPercentage;
 type shapeOutside = 'none' | shapeBox | string;
