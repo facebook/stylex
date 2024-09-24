@@ -64,6 +64,7 @@ export default function stylexPlugin({
         const { code } = transform({
           filename: 'stylex.css',
           code: Buffer.from(collectedCSS),
+          minify: true,
         });
 
         // Convert the Buffer back to a string
