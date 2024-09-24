@@ -67,6 +67,13 @@ type CSSPropertiesWithExtras = Partial<
       '::-webkit-search-cancel-button'?: CSSProperties;
       '::-webkit-search-results-button'?: CSSProperties;
       '::-webkit-search-results-decoration'?: CSSProperties;
+      // For input ranges in Chromium
+      '::-webkit-slider-thumb'?: CSSProperties;
+      '::-webkit-slider-runnable-track'?: CSSProperties;
+      // For input ranges in Firefox
+      '::-moz-range-thumb'?: CSSProperties;
+      '::-moz-range-track'?: CSSProperties;
+      '::-moz-range-progress'?: CSSProperties;
     }
   >
 >;

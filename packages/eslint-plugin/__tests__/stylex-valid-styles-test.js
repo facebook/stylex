@@ -156,7 +156,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           '100%': {
             opacity: 1,
           },
-        }); 
+        });
         const styles = create({
           main: {
             animationName: fadeIn,
@@ -174,7 +174,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           '100%': {
             opacity: 1,
           },
-        }); 
+        });
         const styles = create({
           main: {
             animationName: fadeIn,
@@ -250,6 +250,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
            appearance: 'none',
          },
          '::-webkit-search-results-decoration': {
+           appearance: 'none',
+         },
+       },
+     })`,
+    // test for input ranges
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'WebkitAppearance': 'textfield',
+         '::-webkit-slider-thumb': {
+           appearance: 'none',
+         },
+         '::-webkit-slider-runnable-track': {
+           appearance: 'none',
+         },
+         '::-moz-range-thumb': {
+           appearance: 'none',
+         },
+         '::-moz-range-track': {
+           appearance: 'none',
+         },
+         '::-moz-range-progress': {
            appearance: 'none',
          },
        },

@@ -2245,6 +2245,13 @@ const pseudoElements = makeUnionRule(
   makeLiteralRule('::-webkit-scrollbar-track-piece'),
   makeLiteralRule('::-webkit-scrollbar-corner'),
   makeLiteralRule('::-webkit-resizer'),
+  // For input ranges in Chromium
+  makeLiteralRule('::-webkit-slider-thumb'),
+  makeLiteralRule('::-webkit-slider-runnable-track'),
+  // For input ranges in Firefox
+  makeLiteralRule('::-moz-range-thumb'),
+  makeLiteralRule('::-moz-range-track'),
+  makeLiteralRule('::-moz-range-progress'),
 );
 
 const pseudoClassesAndAtRules = makeUnionRule(
