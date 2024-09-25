@@ -15,6 +15,7 @@ import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import { transform } from 'lightningcss';
+import type { Targets } from 'lightningcss';
 import type {
   Plugin,
   PluginContext,
@@ -26,6 +27,11 @@ const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
   process.env.BABEL_ENV === 'development';
 
+type LightningcssTransformOptions = $ReadOnly<{
+  minify?: boolean,
+  targets?: Targets,
+}>;
+
 export type PluginOptions = $ReadOnly<{
   ...Partial<Options>,
   fileName?: string,
@@ -34,6 +40,7 @@ export type PluginOptions = $ReadOnly<{
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
   useCSSLayers?: boolean,
+  lightningcssOptions?: LightningcssTransformOptions,
   ...
 }>;
 
@@ -44,6 +51,7 @@ export default function stylexPlugin({
   babelConfig: { plugins = [], presets = [] } = {},
   importSources = ['stylex', '@stylexjs/stylex'],
   useCSSLayers = false,
+  lightningcssOptions,
   ...options
 }: PluginOptions = {}): Plugin<> {
   let stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
@@ -62,8 +70,9 @@ export default function stylexPlugin({
 
         // Process the CSS using lightningcss
         const { code } = transform({
-          filename: 'stylex.css',
+          filename: fileName,
           code: Buffer.from(collectedCSS),
+          ...lightningcssOptions,
         });
 
         // Convert the Buffer back to a string

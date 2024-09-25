@@ -15,9 +15,13 @@ import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import stylexPlugin from '../src/index';
+import browserslist from 'browserslist';
+import { browserslistToTargets } from 'lightningcss';
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {
+    let targets = browserslistToTargets(browserslist('>= 0.25%'));
+
     // Configure a rollup bundle
     const bundle = await rollup.rollup({
       // Remove stylex runtime from bundle
@@ -35,7 +39,11 @@ describe('rollup-plugin-stylex', () => {
           configFile: path.resolve(__dirname, '__fixtures__/.babelrc.json'),
           exclude: [/npmStyles\.js/],
         }),
-        stylexPlugin({ useCSSLayers: true, ...options }),
+        stylexPlugin({
+          useCSSLayers: true,
+          ...options,
+          lightningcssOptions: { minify: false, targets },
+        }),
       ],
     });
 
@@ -97,8 +105,12 @@ describe('rollup-plugin-stylex', () => {
           display: inline;
         }
 
-        .x1hm9lzh {
-          margin-inline-start: 10px;
+        .x1hm9lzh:not(:is(:lang(ae), :lang(ar), :lang(arc), :lang(bcc), :lang(bqi), :lang(ckb), :lang(dv), :lang(fa), :lang(glk), :lang(he), :lang(ku), :lang(mzn), :lang(nqo), :lang(pnb), :lang(ps), :lang(sd), :lang(ug), :lang(ur), :lang(yi))) {
+          margin-left: 10px;
+        }
+
+        .x1hm9lzh:is(:lang(ae), :lang(ar), :lang(arc), :lang(bcc), :lang(bqi), :lang(ckb), :lang(dv), :lang(fa), :lang(glk), :lang(he), :lang(ku), :lang(mzn), :lang(nqo), :lang(pnb), :lang(ps), :lang(sd), :lang(ug), :lang(ur), :lang(yi)) {
+          margin-right: 10px;
         }
       }
 
