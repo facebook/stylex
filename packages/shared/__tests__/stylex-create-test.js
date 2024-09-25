@@ -348,6 +348,32 @@ describe('stylex-create-test', () => {
     `);
   });
 
+  test('does not add units to variable value', () => {
+    expect(
+      styleXCreate({
+        default: {
+          '--foo': 500,
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "--foo": "xwzgxvi",
+          },
+        },
+        {
+          "xwzgxvi": {
+            "ltr": ".xwzgxvi{--foo:500}",
+            "priority": 1,
+            "rtl": null,
+          },
+        },
+      ]
+    `);
+  });
+
   test('transforms nested pseudo-class to CSS', () => {
     expect(
       styleXCreate({

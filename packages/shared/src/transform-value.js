@@ -50,7 +50,7 @@ export default function transformValue(
 }
 
 export function getNumberSuffix(key: string): string {
-  if (unitlessNumberProperties.has(key)) {
+  if (unitlessNumberProperties.has(key) || key.startsWith('--')) {
     return '';
   }
   if (!(key in numberPropertySuffixes)) {
