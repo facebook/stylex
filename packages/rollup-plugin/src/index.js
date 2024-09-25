@@ -15,6 +15,7 @@ import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import { transform } from 'lightningcss';
+import type { TransformOptions } from 'lightningcss';
 import type { Targets } from 'lightningcss';
 import type {
   Plugin,
@@ -22,15 +23,12 @@ import type {
   TransformResult,
   TransformPluginContext,
 } from 'rollup';
+import browserslist from 'browserslist';
+import { browserslistToTargets } from 'lightningcss';
 
 const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
   process.env.BABEL_ENV === 'development';
-
-type LightningcssTransformOptions = $ReadOnly<{
-  minify?: boolean,
-  targets?: Targets,
-}>;
 
 export type PluginOptions = $ReadOnly<{
   ...Partial<Options>,
@@ -40,7 +38,7 @@ export type PluginOptions = $ReadOnly<{
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
   useCSSLayers?: boolean,
-  lightningcssOptions?: LightningcssTransformOptions,
+  lightningcssOptions?: Omit<TransformOptions<{}>, 'code' | 'filename' | 'visitor'>,
   ...
 }>;
 
@@ -70,9 +68,10 @@ export default function stylexPlugin({
 
         // Process the CSS using lightningcss
         const { code } = transform({
+          targets: browserslistToTargets(browserslist('>= 1%')),
+          ...lightningcssOptions,
           filename: fileName,
           code: Buffer.from(collectedCSS),
-          ...lightningcssOptions,
         });
 
         // Convert the Buffer back to a string

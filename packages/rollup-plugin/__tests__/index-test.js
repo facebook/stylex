@@ -20,8 +20,6 @@ import { browserslistToTargets } from 'lightningcss';
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {
-    const targets = browserslistToTargets(browserslist('>= 0.25%'));
-
     // Configure a rollup bundle
     const bundle = await rollup.rollup({
       // Remove stylex runtime from bundle
@@ -42,7 +40,7 @@ describe('rollup-plugin-stylex', () => {
         stylexPlugin({
           useCSSLayers: true,
           ...options,
-          lightningcssOptions: { minify: false, targets },
+          lightningcssOptions: { minify: false },
         }),
       ],
     });
@@ -93,6 +91,10 @@ describe('rollup-plugin-stylex', () => {
           animation-name: xgnty7z-B;
         }
 
+        .xu4yf9m {
+          border-start-start-radius: 7.5px;
+        }
+
         .x1lliihq {
           display: block;
         }
@@ -105,12 +107,8 @@ describe('rollup-plugin-stylex', () => {
           display: inline;
         }
 
-        .x1hm9lzh:not(:is(:lang(ae), :lang(ar), :lang(arc), :lang(bcc), :lang(bqi), :lang(ckb), :lang(dv), :lang(fa), :lang(glk), :lang(he), :lang(ku), :lang(mzn), :lang(nqo), :lang(pnb), :lang(ps), :lang(sd), :lang(ug), :lang(ur), :lang(yi))) {
-          margin-left: 10px;
-        }
-
-        .x1hm9lzh:is(:lang(ae), :lang(ar), :lang(arc), :lang(bcc), :lang(bqi), :lang(ckb), :lang(dv), :lang(fa), :lang(glk), :lang(he), :lang(ku), :lang(mzn), :lang(nqo), :lang(pnb), :lang(ps), :lang(sd), :lang(ug), :lang(ur), :lang(yi)) {
-          margin-right: 10px;
+        .x1hm9lzh {
+          margin-inline-start: 10px;
         }
       }
 
@@ -201,6 +199,9 @@ describe('rollup-plugin-stylex', () => {
           ":hover_backgroundPositionY": null,
           ":hover_backgroundRepeat": null,
           ":hover_backgroundSize": null,
+          borderStartStartRadius: "xu4yf9m",
+          borderTopLeftRadius: null,
+          borderTopRightRadius: null,
           $$css: true
         }
       };
@@ -286,6 +287,7 @@ describe('rollup-plugin-stylex', () => {
         _inject2(".xlrshdv{margin-top:99px}", 4000);
         _inject2(".x1egiwwb{height:500px}", 4000);
         _inject2(".x1oz5o6v:hover{background:red}", 1130);
+        _inject2(".xu4yf9m{border-start-start-radius:7.5px}", 3000);
         var styles = {
           foo: {
             "index__styles.foo": "index__styles.foo",
@@ -307,6 +309,9 @@ describe('rollup-plugin-stylex', () => {
             ":hover_backgroundPositionY": null,
             ":hover_backgroundRepeat": null,
             ":hover_backgroundSize": null,
+            borderStartStartRadius: "xu4yf9m",
+            borderTopLeftRadius: null,
+            borderTopRightRadius: null,
             $$css: true
           }
         };
