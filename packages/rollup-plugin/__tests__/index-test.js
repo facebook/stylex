@@ -20,7 +20,7 @@ import { browserslistToTargets } from 'lightningcss';
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {
-    let targets = browserslistToTargets(browserslist('>= 0.25%'));
+    const targets = browserslistToTargets(browserslist('>= 0.25%'));
 
     // Configure a rollup bundle
     const bundle = await rollup.rollup({
