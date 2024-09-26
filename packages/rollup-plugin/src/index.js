@@ -37,7 +37,10 @@ export type PluginOptions = $ReadOnly<{
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
   useCSSLayers?: boolean,
-  lightningcssOptions?: Omit<TransformOptions<{}>, 'code' | 'filename' | 'visitor'>,
+  lightningcssOptions?: Omit<
+    TransformOptions<{}>,
+    'code' | 'filename' | 'visitor',
+  >,
   ...
 }>;
 
