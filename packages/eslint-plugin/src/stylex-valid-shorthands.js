@@ -33,8 +33,12 @@ import { CANNOT_FIX } from './utils/splitShorthands.js';
 const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
+  marginHorizontal: 'marginInline',
+  marginVertical: 'marginBlock',
   paddingStart: 'paddingInlineStart',
   paddingEnd: 'paddingInlineEnd',
+  paddingHorizontal: 'paddingInline',
+  paddingVertical: 'paddingBlock',
 };
 
 const shorthandAliases: $ReadOnly<{
