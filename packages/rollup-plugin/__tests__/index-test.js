@@ -15,8 +15,6 @@ import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import stylexPlugin from '../src/index';
-import browserslist from 'browserslist';
-import { browserslistToTargets } from 'lightningcss';
 
 describe('rollup-plugin-stylex', () => {
   async function runStylex(options) {

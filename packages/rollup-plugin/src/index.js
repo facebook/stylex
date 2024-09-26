@@ -16,7 +16,6 @@ import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import { transform } from 'lightningcss';
 import type { TransformOptions } from 'lightningcss';
-import type { Targets } from 'lightningcss';
 import type {
   Plugin,
   PluginContext,
