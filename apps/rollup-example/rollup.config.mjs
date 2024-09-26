@@ -17,7 +17,10 @@ const config = {
   },
   // See all options in the babel plugin configuration docs:
   // https://stylexjs.com/docs/api/configuration/babel-plugin/
-  plugins: [stylexPlugin({ fileName: 'stylex.css' })],
+  plugins: [stylexPlugin({
+    fileName: 'stylex.css',
+    styleResolution: 'property-specificity'
+  })],
 };
 
 export default config;
