@@ -73,14 +73,19 @@ const unitlessNumberProperties = new Set([
   'borderImageSlice',
   'borderImageWidth',
   'counterSet',
+  'counterReset',
   'columnCount',
-  'flex', // Unsupported
+  'flex',
   'flexGrow',
-  'flexPositive',
   'flexShrink',
   'flexOrder',
   'gridRow',
+  'gridRowStart',
+  'gridRowEnd',
   'gridColumn',
+  'gridColumnStart',
+  'gridColumnEnd',
+  'gridArea',
   'fontWeight',
   'hyphenateLimitChars',
   'lineClamp',
@@ -98,6 +103,7 @@ const unitlessNumberProperties = new Set([
   'floodOpacity',
   'rotate',
   'scale',
+  'shapeImageThreshold',
   'stopOpacity',
   'strokeDasharray',
   'strokeDashoffset',
@@ -105,7 +111,6 @@ const unitlessNumberProperties = new Set([
   'strokeOpacity',
   'strokeWidth',
   'scale',
-
   'mathDepth',
 ]);
 
@@ -136,7 +141,7 @@ export const lengthUnits: Set<string> = new Set([
   'borderBottomWidth',
   'borderEndEndRadius',
   'borderEndStartRadius',
-  'borderImageWidth',
+  // 'borderImageWidth', // can be a unitless number
   'borderInlineEndWidth',
   'borderEndWidth',
   'borderInlineStartWidth',
