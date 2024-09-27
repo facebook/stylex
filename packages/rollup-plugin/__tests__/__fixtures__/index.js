@@ -34,6 +34,7 @@ const styles = stylex.create({
     ':hover': {
       background: 'red',
     },
+    borderStartStartRadius: 7.5,
   },
 });
 

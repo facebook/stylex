@@ -32,10 +32,11 @@
   },
   "dependencies": {
     "@babel/core": "^7.23.9",
-    "@stylexjs/babel-plugin": "0.7.5",
     "@babel/plugin-syntax-flow": "^7.23.3",
     "@babel/plugin-syntax-jsx": "^7.23.3",
-    "@babel/plugin-syntax-typescript": "^7.23.3"
+    "@babel/plugin-syntax-typescript": "^7.23.3",
+    "@stylexjs/babel-plugin": "0.7.5",
+    "lightningcss": "^1.27.0"
   },
   "files": [
     "flow_modules/*",

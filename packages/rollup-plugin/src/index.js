@@ -14,12 +14,16 @@ import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
+import { transform } from 'lightningcss';
+import type { TransformOptions } from 'lightningcss';
 import type {
   Plugin,
   PluginContext,
   TransformResult,
   TransformPluginContext,
 } from 'rollup';
+import browserslist from 'browserslist';
+import { browserslistToTargets } from 'lightningcss';
 
 const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
@@ -33,6 +37,10 @@ export type PluginOptions = $ReadOnly<{
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
   useCSSLayers?: boolean,
+  lightningcssOptions?: Omit<
+    TransformOptions<{}>,
+    'code' | 'filename' | 'visitor',
+  >,
   ...
 }>;
 
@@ -43,6 +51,7 @@ export default function stylexPlugin({
   babelConfig: { plugins = [], presets = [] } = {},
   importSources = ['stylex', '@stylexjs/stylex'],
   useCSSLayers = false,
+  lightningcssOptions,
   ...options
 }: PluginOptions = {}): Plugin<> {
   let stylexRules: { [string]: $ReadOnlyArray<Rule> } = {};
@@ -59,11 +68,22 @@ export default function stylexPlugin({
           useCSSLayers,
         );
 
+        // Process the CSS using lightningcss
+        const { code } = transform({
+          targets: browserslistToTargets(browserslist('>= 1%')),
+          ...lightningcssOptions,
+          filename: fileName,
+          code: Buffer.from(collectedCSS),
+        });
+
+        // Convert the Buffer back to a string
+        const processedCSS = code.toString();
+
         // This is the intended API, but Flow doesn't support this pattern.
         // $FlowExpectedError[object-this-reference]
         this.emitFile({
           fileName,
-          source: collectedCSS,
+          source: processedCSS,
           type: 'asset',
         });
       }

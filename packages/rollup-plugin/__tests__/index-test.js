@@ -35,7 +35,11 @@ describe('rollup-plugin-stylex', () => {
           configFile: path.resolve(__dirname, '__fixtures__/.babelrc.json'),
           exclude: [/npmStyles\.js/],
         }),
-        stylexPlugin({ useCSSLayers: true, ...options }),
+        stylexPlugin({
+          useCSSLayers: true,
+          ...options,
+          lightningcssOptions: { minify: false },
+        }),
       ],
     });
 
@@ -62,27 +66,68 @@ describe('rollup-plugin-stylex', () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 
     expect(css).toMatchInlineSnapshot(`
+      "@layer priority1 {
+        @keyframes xgnty7z-B {
+          0% {
+            opacity: .25;
+          }
+
+          100% {
+            opacity: 1;
+          }
+        }
+      }
+
+      @layer priority2 {
+        .x1oz5o6v:hover {
+          background: red;
+        }
+      }
+
+      @layer priority3 {
+        .xeuoslp {
+          animation-name: xgnty7z-B;
+        }
+
+        .xu4yf9m {
+          border-start-start-radius: 7.5px;
+        }
+
+        .x1lliihq {
+          display: block;
+        }
+
+        .x78zum5 {
+          display: flex;
+        }
+
+        .xt0psk2 {
+          display: inline;
+        }
+
+        .x1hm9lzh {
+          margin-inline-start: 10px;
+        }
+      }
+
+      @layer priority4 {
+        .x1egiwwb {
+          height: 500px;
+        }
+
+        .xlrshdv {
+          margin-top: 99px;
+        }
+
+        .xh8yej3 {
+          width: 100%;
+        }
+
+        .x3hqpx7 {
+          width: 50%;
+        }
+      }
       "
-      @layer priority1, priority2, priority3, priority4;
-      @layer priority1{
-      @keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}
-      }
-      @layer priority2{
-      .x1oz5o6v:hover{background:red}
-      }
-      @layer priority3{
-      .xeuoslp{animation-name:xgnty7z-B}
-      .x1lliihq{display:block}
-      .x78zum5{display:flex}
-      .xt0psk2{display:inline}
-      .x1hm9lzh{margin-inline-start:10px}
-      }
-      @layer priority4{
-      .x1egiwwb{height:500px}
-      .xlrshdv{margin-top:99px}
-      .xh8yej3{width:100%}
-      .x3hqpx7{width:50%}
-      }"
     `);
 
     expect(js).toMatchInlineSnapshot(`
@@ -152,6 +197,9 @@ describe('rollup-plugin-stylex', () => {
           ":hover_backgroundPositionY": null,
           ":hover_backgroundRepeat": null,
           ":hover_backgroundSize": null,
+          borderStartStartRadius: "xu4yf9m",
+          borderTopLeftRadius: null,
+          borderTopRightRadius: null,
           $$css: true
         }
       };
@@ -237,6 +285,7 @@ describe('rollup-plugin-stylex', () => {
         _inject2(".xlrshdv{margin-top:99px}", 4000);
         _inject2(".x1egiwwb{height:500px}", 4000);
         _inject2(".x1oz5o6v:hover{background:red}", 1130);
+        _inject2(".xu4yf9m{border-start-start-radius:7.5px}", 3000);
         var styles = {
           foo: {
             "index__styles.foo": "index__styles.foo",
@@ -258,6 +307,9 @@ describe('rollup-plugin-stylex', () => {
             ":hover_backgroundPositionY": null,
             ":hover_backgroundRepeat": null,
             ":hover_backgroundSize": null,
+            borderStartStartRadius: "xu4yf9m",
+            borderTopLeftRadius: null,
+            borderTopRightRadius: null,
             $$css: true
           }
         };
