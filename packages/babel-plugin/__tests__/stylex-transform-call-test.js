@@ -1164,6 +1164,36 @@ describe('@stylexjs/babel-plugin', () => {
           stylex(styles.default, isActive && styles.active);"
         `);
       });
+
+      test('stylex call produces dev class name with namespaceToDevClassName option', () => {
+        const options = {
+          filename: '/html/js/FooBar.react.js',
+          dev: true,
+          namespaceToDevClassName(namespace, varName, fileName) {
+            return `${varName}__${fileName}--${namespace}`
+          }
+        };
+        expect(
+          transform(
+            `
+              import stylex from 'stylex';
+              const styles = stylex.create({
+                default: {
+                  color: 'red',
+                },
+              });
+              stylex(styles.default);
+            `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1e2nbdu{color:red}", 3000);
+          "styles__/html/js/FooBar.react.js--default x1e2nbdu";"
+        `);
+      });
     });
   });
   describe('Keep stylex.create when needed', () => {
