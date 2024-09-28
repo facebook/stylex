@@ -124,6 +124,16 @@ export const array: <T>(Check<T>, msg?: Msg) => Check<$ReadOnlyArray<T>> =
     );
   };
 
+// HAVE TO ENSURE THIS FUNCTION TYPE
+export const func: PrimitiveChecker<Function> =
+  (message = defaultMessage('a function')) =>
+  (value, name) => {
+    if (typeof value !== 'function') {
+      return new Error(message(value, name));
+    }
+    return value;
+  }
+
 type ObjOfChecks<T: { +[string]: Check<mixed> }> = $ReadOnly<{
   [K in keyof T]: InferCheckType<T[K]>,
 }>;
