@@ -48,6 +48,33 @@ esbuild.build({
   ],
 });
 ```
+## Plugin Options
+It inherits all options from `@stylexjs/babel-plugin` and can be found [here 🔗](https://stylexjs.com/docs/api/configuration/babel-plugin/). Along with other options like <br/>
 
+### generatedCSSFileName
+```js
+generatedCSSFileName: string // Default: 'stylex.css'
+```
+The name of the output css file.
+
+---
+### useCSSLayers
+```js
+useCSSLayers: boolean // Default: false
+```
+Enabling this option switches Stylex from using `:not(#\#)` to using `@layers` for handling CSS specificity.
+
+---
+### babelConfig
+```js
+babelConfig: {
+  plugins: PluginItem[],
+  presets: PluginItem[]
+} // Default: { plugins: [], presets: [] }
+```
+List of custom babel plugins and presets which can be used during code transformation.
+
+
+---
 You can see the example usage
 [here](https://github.com/facebook/stylex/apps/esbuild-example).

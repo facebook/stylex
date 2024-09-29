@@ -65,3 +65,29 @@ const config = (env, argv) => ({
 
 module.exports = config;
 ```
+## Plugin Options
+It inherits all options from `@stylexjs/babel-plugin` and can be found [here 🔗](https://stylexjs.com/docs/api/configuration/babel-plugin/). Along with other options like <br/>
+
+### fileName
+```js
+fileName: string // Default: 'stylex.css'
+```
+The name of the output css file.
+
+---
+### useCSSLayers
+```js
+useCSSLayers: boolean // Default: false
+```
+Enabling this option switches Stylex from using `:not(#\#)` to using `@layers` for handling CSS specificity.
+
+---
+### babelConfig
+```js
+babelConfig: {
+  babelrc: boolean,
+  plugins: PluginItem[],
+  presets: PluginItem[]
+} // Default: { babelrc: false, plugins: [], presets: [] }
+```
+List of custom babel plugins and presets which can be used during code transformation and whether to use the `.babelrc` file.
