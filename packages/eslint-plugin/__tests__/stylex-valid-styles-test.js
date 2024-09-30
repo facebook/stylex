@@ -156,7 +156,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           '100%': {
             opacity: 1,
           },
-        }); 
+        });
         const styles = create({
           main: {
             animationName: fadeIn,
@@ -174,7 +174,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           '100%': {
             opacity: 1,
           },
-        }); 
+        });
         const styles = create({
           main: {
             animationName: fadeIn,
@@ -193,6 +193,22 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             }
           }
         });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          base: {
+            width: {
+              "@starting-style": {
+                default: 10,
+                ":hover": 20,
+              }
+            },
+          },
+        })
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
