@@ -18,15 +18,9 @@ const stylexEnforceExtension = {
     type: 'problem',
     docs: {
       description:
-        "Ensure that files exporting `stylex.defineVars` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and those that don't must not.",
+        'Ensure that files exporting StyleX Vars using `stylex.defineVars` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
       category: 'Possible Errors',
       recommended: false,
-    },
-    messages: {
-      invalidFilenameWithDefineVars:
-        'Files that export `stylex.defineVars` must have a `{{ extension }}` or `{{ tsxExtension }}` extension.',
-      invalidFilenameWithoutDefineVars:
-        'Files that do not export `stylex.defineVars` must not have a `{{ extension }}` or `{{ tsxExtension }}` extension.',
     },
     schema: [
       {
@@ -42,50 +36,83 @@ const stylexEnforceExtension = {
     ],
   },
   create(context: Rule.RuleContext): { ... } {
-    let hasDefineVarsExport = false;
+    let hasStyleXVarsExports = false;
+    let hasOtherExports = false;
     const fileName = context.getFilename();
     const options = context.options[0] || {};
     const themeFileExtension = options.themeFileExtension || '.stylex.jsx';
     const themeTsxExtension = themeFileExtension.replace('.jsx', '.tsx');
 
+    function isStyleXVarsExport(node: Node): boolean {
+      const callee =
+        node.type === 'VariableDeclarator'
+          ? (node.init as any)?.callee
+          : node.type === 'CallExpression'
+            ? node.callee
+            : null;
+
+      return (
+        callee?.type === 'MemberExpression' &&
+        callee.object?.type === 'Identifier' &&
+        callee.object.name === 'stylex' &&
+        callee.property?.type === 'Identifier' &&
+        callee.property.name === 'defineVars'
+      );
+    }
+
+    function checkExports(node: Node): void {
+      const declaration = (node as any).declaration;
+
+      if (!declaration) return;
+
+      const declarations = Array.isArray(declaration.declarations)
+        ? declaration.declarations
+        : [declaration];
+
+      declarations.forEach((decl: Node) => {
+        if (isStyleXVarsExport(decl)) {
+          hasStyleXVarsExports = true;
+        } else {
+          hasOtherExports = true;
+        }
+      });
+    }
+
+    function reportErrors(node: Node): void {
+      const isStylexFile =
+        fileName.endsWith(themeFileExtension) ||
+        fileName.endsWith(themeTsxExtension);
+
+      if (hasStyleXVarsExports && hasOtherExports) {
+        context.report({
+          node,
+          message:
+            'Files that export `stylex.defineVars()` must not export anything else.',
+        });
+      }
+
+      if (hasStyleXVarsExports && !isStylexFile) {
+        context.report({
+          node,
+          message: `Files that export StyleX variables defined with \`stylex.defineVars()\` must end with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+        });
+      }
+
+      if (!hasStyleXVarsExports && isStylexFile) {
+        context.report({
+          node,
+          message: `Only StyleX variables defined with \`stylex.defineVars()\` can be exported from a file with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+        });
+      }
+    }
+
     return {
-      ExportNamedDeclaration(node: Node) {
-        if (node.declaration && node.declaration.declarations) {
-          node.declaration.declarations.forEach((declaration) => {
-            const init = declaration.init;
-
-            if (
-              init &&
-              init.callee &&
-              init.callee.object &&
-              init.callee.object.name === 'stylex' &&
-              init.callee.property &&
-              init.callee.property.name === 'defineVars'
-            ) {
-              hasDefineVarsExport = true;
-            }
-          });
-        }
-      },
-      'Program:exit'(node: Node) {
-        const isStylexFile =
-          fileName.endsWith(themeFileExtension) ||
-          fileName.endsWith(themeTsxExtension);
-
-        if (hasDefineVarsExport && !isStylexFile) {
-          context.report({
-            node,
-            message: `Files that export \`stylex.defineVars\` must have a \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
-          });
-        } else if (!hasDefineVarsExport && isStylexFile) {
-          context.report({
-            node,
-            message: `Files that do not export \`stylex.defineVars\` must not have a \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
-          });
-        }
+      'ExportNamedDeclaration, ExportDefaultDeclaration'(node: Node): void {
+        checkExports(node);
+        reportErrors(node);
       },
     };
   },
 };
 
-export default stylexEnforceExtension as typeof stylexEnforceExtension;
+export default stylexEnforceExtension;

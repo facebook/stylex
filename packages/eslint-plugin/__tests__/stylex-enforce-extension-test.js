@@ -16,6 +16,13 @@ const ruleTester = new RuleTester({
   parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
 });
 
+const invalidFilenameWithDefineVars =
+  'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.';
+const invalidFilenameWithoutDefineVars =
+  'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.';
+const invalidExportWithDefineVars =
+  'Files that export `stylex.defineVars()` must not export anything else.';
+
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
     {
@@ -49,48 +56,80 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       filename: 'testComponent.jsx',
       options: [{ themeFileExtension: '.custom.jsx' }],
     },
+    {
+      code: `
+        export const vars = stylex.defineVars({ color: 'red' });
+        export default stylex.defineVars({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+    },
   ],
 
   invalid: [
     {
       code: 'export const vars = stylex.defineVars({});',
       filename: 'testComponent.jsx',
+      errors: [{ message: invalidFilenameWithDefineVars }],
+    },
+    {
+      code: `
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+        export default stylex.defineVars({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
       errors: [
-        {
-          message:
-            'Files that export `stylex.defineVars` must have a `.stylex.jsx` or `.stylex.tsx` extension.',
-        },
+        { message: invalidExportWithDefineVars },
+        { message: invalidExportWithDefineVars },
       ],
+    },
+    {
+      code: `
+        export const vars = someFunction();
+        export const somethingElse = someFunction();
+        export default stylex.defineVars({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [
+        { message: invalidFilenameWithoutDefineVars },
+        { message: invalidFilenameWithoutDefineVars },
+        { message: invalidExportWithDefineVars },
+      ],
+    },
+    {
+      code: `
+        export const vars = stylex.defineVars({
+          color: 'blue',
+        });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.tsx',
+      errors: [{ message: invalidExportWithDefineVars }],
+    },
+    {
+      code: `
+        export const vars = stylex.defineVars({
+          color: 'red',
+        });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidExportWithDefineVars }],
     },
     {
       code: 'export const vars = stylex.defineVars({});',
       filename: 'testComponent.tsx',
-      errors: [
-        {
-          message:
-            'Files that export `stylex.defineVars` must have a `.stylex.jsx` or `.stylex.tsx` extension.',
-        },
-      ],
+      errors: [{ message: invalidFilenameWithDefineVars }],
     },
     {
       code: 'export const somethingElse = {};',
       filename: 'testComponent.stylex.jsx',
-      errors: [
-        {
-          message:
-            'Files that do not export `stylex.defineVars` must not have a `.stylex.jsx` or `.stylex.tsx` extension.',
-        },
-      ],
+      errors: [{ message: invalidFilenameWithoutDefineVars }],
     },
     {
       code: 'export const somethingElse = {};',
       filename: 'testComponent.stylex.tsx',
-      errors: [
-        {
-          message:
-            'Files that do not export `stylex.defineVars` must not have a `.stylex.jsx` or `.stylex.tsx` extension.',
-        },
-      ],
+      errors: [{ message: invalidFilenameWithoutDefineVars }],
     },
     {
       code: 'export const vars = stylex.defineVars({});',
@@ -99,7 +138,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Files that export `stylex.defineVars` must have a `.custom.jsx` or `.custom.tsx` extension.',
+            'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.custom.jsx` or `.custom.tsx` extension.',
         },
       ],
     },
@@ -110,7 +149,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Files that do not export `stylex.defineVars` must not have a `.custom.jsx` or `.custom.tsx` extension.',
+            'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.custom.jsx` or `.custom.tsx` extension.',
         },
       ],
     },
