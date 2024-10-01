@@ -116,7 +116,7 @@ export function _flattenRawStyleObject(
       continue;
     }
 
-    // Object Values for propetiies. e.g. { color: { hover: 'red', default: 'blue' } }
+    // Object Values for properties. e.g. { color: { hover: 'red', default: 'blue' } }
     if (
       typeof value === 'object' &&
       !key.startsWith(':') &&
