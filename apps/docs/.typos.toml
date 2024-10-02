@@ -1,0 +1,4 @@
+[default.extend-words]
+# Don't correct the text in IDs
+LAF = "LAF"
+
