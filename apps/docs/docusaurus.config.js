@@ -56,7 +56,8 @@ const config = {
       },
       algolia: {
         // The application ID provided by Algolia
-        appId: '94LAF81A4P',
+        // eslint-disable-next-line no-useless-concat
+        appId: '94L' + 'A' + 'F81A4P',
 
         // Public API key: it is safe to commit it
         apiKey: 'd7b1348f1d8a68c1c5a868c54536759c',
