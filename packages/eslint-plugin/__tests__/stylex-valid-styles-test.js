@@ -396,6 +396,23 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         fontWeight: red,
       },
     })`,
+    // test for field-sizing
+    `
+    import stylex from "stylex";
+    const red = 'var(--🔴)';
+    stylex.create({
+      default: {
+        fieldSizing: 'fixed',
+      },
+    })`,
+    `
+    import stylex from "stylex";
+    const red = 'var(--🔴)';
+    stylex.create({
+      default: {
+        fieldSizing: 'content',
+      },
+    })`,
     // test for stylex create vars tokens
     `
     import stylex from'stylex';

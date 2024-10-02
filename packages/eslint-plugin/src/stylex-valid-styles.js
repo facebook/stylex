@@ -1847,6 +1847,9 @@ const CSSProperties = {
   fontVariationSettings: isString,
   fontWeight: fontWeight,
   forcedColorAdjust: makeUnionRule('auto', 'none'),
+
+  fieldSizing: makeUnionRule('content', 'fixed'),
+
   gap: gap,
   glyphOrientationHorizontal: glyphOrientationHorizontal,
   glyphOrientationVertical: glyphOrientationVertical,
