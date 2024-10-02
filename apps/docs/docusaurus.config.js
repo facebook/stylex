@@ -56,12 +56,12 @@ const config = {
       },
       algolia: {
         // The application ID provided by Algolia
-        appId: '63XRZ0SHHM',
+        appId: '94LAF81A4P',
 
         // Public API key: it is safe to commit it
-        apiKey: '1e20035f8c22349860eb8d8440eb7435',
+        apiKey: 'd7b1348f1d8a68c1c5a868c54536759c',
 
-        indexName: 'stylex_docs',
+        indexName: 'stylexjs',
 
         // Optional: see doc section below
         // contextualSearch: true,

@@ -19,7 +19,6 @@
     "@docusaurus/core": "2.4.1",
     "@docusaurus/preset-classic": "2.4.1",
     "@mdx-js/react": "^1.6.22",
-    "@orama/plugin-docusaurus": "^1.2.4",
     "@stylexjs/stylex": "0.7.5",
     "@vercel/analytics": "^1.1.1",
     "clsx": "^1.2.1",

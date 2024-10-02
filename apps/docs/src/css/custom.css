@@ -93,13 +93,13 @@ html[data-theme='dark']:root {
   --aa-muted-color-rgb: 146, 138, 255;
   --aa-primary-color-rgb: 146, 138, 255;
 
-  --aa-background-color-rgb: 21,24,42;
-  --aa-selected-color-rgb: 146,138,255;
+  --aa-background-color-rgb: 21, 24, 42;
+  --aa-selected-color-rgb: 146, 138, 255;
   --aa-selected-color-alpha: 0.25;
   --aa-description-highlight-background-color-rgb: 0 255 255;
   --aa-description-highlight-background-color-alpha: 0.25;
-  --aa-panel-shadow: inset 1px 1px 0 0 #2c2e40,0 3px 8px 0 #000309;
-  --aa-scrollbar-track-background-color-rgb: 44,46,64;
+  --aa-panel-shadow: inset 1px 1px 0 0 #2c2e40, 0 3px 8px 0 #000309;
+  --aa-scrollbar-track-background-color-rgb: 44, 46, 64;
 
   --ifm-color-scheme: dark;
   --ifm-color-emphasis-0: var(--ifm-color-gray-1000);
@@ -177,8 +177,18 @@ body {
   padding: 0;
   margin: 0;
   background-color: var(--bg1);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
     sans-serif;
   color: var(--fg1);
 }
@@ -262,4 +272,14 @@ html[data-theme='dark'] .navbar-github-link:after {
 
 .navbar--fixed-top {
   view-transition-name: navbar;
+}
+
+html .DocSearch-Logo svg path,
+html .DocSearch-Logo svg rect {
+  fill: rgb(150, 140, 150);
+}
+
+html[data-theme='dark'] .DocSearch-Logo svg path,
+html[data-theme='dark'] .DocSearch-Logo svg rect {
+  fill: rgb(170, 175, 186);
 }
