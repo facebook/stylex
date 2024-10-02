@@ -2262,6 +2262,7 @@ const pseudoClassesAndAtRules = makeUnionRule(
   makeRegExRule(/^@media/, 'a media query'),
   makeRegExRule(/^@container/, 'a media query'),
   makeRegExRule(/^@supports/, 'a supports query'),
+  makeLiteralRule('@starting-style'),
 );
 
 const allModifiers = makeUnionRule(pseudoElements, pseudoClassesAndAtRules);
