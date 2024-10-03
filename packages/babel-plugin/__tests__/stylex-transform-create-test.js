@@ -1315,7 +1315,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": "x11bf1mc",
+            ":hover_color": color == null ? null : "x11bf1mc",
             $$css: true
           }, {
             "--1ijzsae": color != null ? color : undefined

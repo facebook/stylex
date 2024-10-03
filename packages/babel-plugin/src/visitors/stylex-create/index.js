@@ -173,8 +173,16 @@ export default function transformStyleXCreate(
               +[string]: t.Expression,
             } = Object.fromEntries(
               Object.entries(inlineStyles)
-                .filter(([_key, v]) => v.path.length === 1)
-                .map(([_key, v]) => [v.path[0], v.originalExpression]),
+                .filter(
+                  ([_key, v]) =>
+                    v.path.length === 1 ||
+                    (v.path.length === 2 &&
+                      (v.path[0].startsWith(':') || v.path[0].startsWith('@'))),
+                )
+                .map(([_key, v]) => [
+                  v.path.length === 1 ? v.path[0] : v.path.join('_'),
+                  v.originalExpression,
+                ]),
             );
 
             if (t.isObjectExpression(prop.value)) {
