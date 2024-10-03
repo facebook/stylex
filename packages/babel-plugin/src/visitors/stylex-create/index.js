@@ -169,7 +169,6 @@ export default function transformStyleXCreate(
           if (key != null && Object.keys(fns).includes(key)) {
             const [params, inlineStyles] = fns[key];
 
-            console.log('inlineStyles', inlineStyles);
             const singleValueDynamicStyles: {
               +[string]: t.Expression,
             } = Object.fromEntries(

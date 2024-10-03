@@ -332,10 +332,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         _inject2(".__hashed_var__15x39w1{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb,revert)}", 1);
         const styles = {
           color: color => [{
-            "--__hashed_var__1jqb1tb": "__hashed_var__15x39w1",
+            "--__hashed_var__1jqb1tb": color == null ? null : "__hashed_var__15x39w1",
             $$css: true
           }, {
-            "----__hashed_var__1jqb1tb": color != null ? color : "initial"
+            "----__hashed_var__1jqb1tb": color != null ? color : undefined
           }]
         };
         stylex.props(styles.color('red'));"

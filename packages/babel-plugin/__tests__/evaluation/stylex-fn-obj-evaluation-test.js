@@ -125,78 +125,99 @@ describe('custom path evaluation works as expected', () => {
           ],
           {
             "--borderWidth": {
-              "arguments": [
-                {
-                  "name": "width",
-                  "type": "Identifier",
-                },
-              ],
-              "callee": {
-                "async": false,
-                "body": {
-                  "alternate": {
+              "expression": {
+                "arguments": [
+                  {
+                    "name": "width",
+                    "type": "Identifier",
+                  },
+                ],
+                "callee": {
+                  "async": false,
+                  "body": {
                     "alternate": {
-                      "type": "StringLiteral",
-                      "value": "initial",
+                      "alternate": {
+                        "name": "undefined",
+                        "type": "Identifier",
+                      },
+                      "consequent": {
+                        "name": "val",
+                        "type": "Identifier",
+                      },
+                      "test": {
+                        "left": {
+                          "name": "val",
+                          "type": "Identifier",
+                        },
+                        "operator": "!=",
+                        "right": {
+                          "type": "NullLiteral",
+                        },
+                        "type": "BinaryExpression",
+                      },
+                      "type": "ConditionalExpression",
                     },
                     "consequent": {
-                      "name": "val",
-                      "type": "Identifier",
-                    },
-                    "test": {
                       "left": {
                         "name": "val",
                         "type": "Identifier",
                       },
-                      "operator": "!=",
+                      "operator": "+",
                       "right": {
-                        "type": "NullLiteral",
+                        "type": "StringLiteral",
+                        "value": "px",
+                      },
+                      "type": "BinaryExpression",
+                    },
+                    "test": {
+                      "left": {
+                        "argument": {
+                          "name": "val",
+                          "type": "Identifier",
+                        },
+                        "operator": "typeof",
+                        "prefix": true,
+                        "type": "UnaryExpression",
+                      },
+                      "operator": "===",
+                      "right": {
+                        "type": "StringLiteral",
+                        "value": "number",
                       },
                       "type": "BinaryExpression",
                     },
                     "type": "ConditionalExpression",
                   },
-                  "consequent": {
-                    "left": {
+                  "expression": null,
+                  "params": [
+                    {
                       "name": "val",
                       "type": "Identifier",
                     },
-                    "operator": "+",
-                    "right": {
-                      "type": "StringLiteral",
-                      "value": "px",
-                    },
-                    "type": "BinaryExpression",
-                  },
-                  "test": {
-                    "left": {
-                      "argument": {
-                        "name": "val",
-                        "type": "Identifier",
-                      },
-                      "operator": "typeof",
-                      "prefix": true,
-                      "type": "UnaryExpression",
-                    },
-                    "operator": "===",
-                    "right": {
-                      "type": "StringLiteral",
-                      "value": "number",
-                    },
-                    "type": "BinaryExpression",
-                  },
-                  "type": "ConditionalExpression",
+                  ],
+                  "type": "ArrowFunctionExpression",
                 },
-                "expression": null,
-                "params": [
-                  {
-                    "name": "val",
-                    "type": "Identifier",
-                  },
-                ],
-                "type": "ArrowFunctionExpression",
+                "type": "CallExpression",
               },
-              "type": "CallExpression",
+              "originalExpression": {
+                "name": "width",
+                "type": "Identifier",
+              },
+              "path": [
+                {
+                  "0": "b",
+                  "1": "o",
+                  "10": "h",
+                  "2": "r",
+                  "3": "d",
+                  "4": "e",
+                  "5": "r",
+                  "6": "W",
+                  "7": "i",
+                  "8": "d",
+                  "9": "t",
+                },
+              ],
             },
           },
         ],
@@ -233,102 +254,147 @@ describe('custom path evaluation works as expected', () => {
           ],
           {
             "--borderWidth": {
-              "arguments": [
-                {
-                  "left": {
+              "expression": {
+                "arguments": [
+                  {
                     "left": {
-                      "name": "width",
-                      "type": "Identifier",
-                    },
-                    "operator": "*",
-                    "right": {
-                      "extra": {
-                        "raw": "2",
-                        "rawValue": 2,
-                      },
-                      "type": "NumericLiteral",
-                      "value": 2,
-                    },
-                    "type": "BinaryExpression",
-                  },
-                  "operator": "+",
-                  "right": {
-                    "extra": {
-                      "raw": "'px'",
-                      "rawValue": "px",
-                    },
-                    "type": "StringLiteral",
-                    "value": "px",
-                  },
-                  "type": "BinaryExpression",
-                },
-              ],
-              "callee": {
-                "async": false,
-                "body": {
-                  "alternate": {
-                    "alternate": {
-                      "type": "StringLiteral",
-                      "value": "initial",
-                    },
-                    "consequent": {
-                      "name": "val",
-                      "type": "Identifier",
-                    },
-                    "test": {
                       "left": {
-                        "name": "val",
+                        "name": "width",
                         "type": "Identifier",
                       },
-                      "operator": "!=",
+                      "operator": "*",
                       "right": {
-                        "type": "NullLiteral",
+                        "extra": {
+                          "raw": "2",
+                          "rawValue": 2,
+                        },
+                        "type": "NumericLiteral",
+                        "value": 2,
                       },
                       "type": "BinaryExpression",
                     },
-                    "type": "ConditionalExpression",
-                  },
-                  "consequent": {
-                    "left": {
-                      "name": "val",
-                      "type": "Identifier",
-                    },
                     "operator": "+",
                     "right": {
+                      "extra": {
+                        "raw": "'px'",
+                        "rawValue": "px",
+                      },
                       "type": "StringLiteral",
                       "value": "px",
                     },
                     "type": "BinaryExpression",
                   },
-                  "test": {
-                    "left": {
-                      "argument": {
+                ],
+                "callee": {
+                  "async": false,
+                  "body": {
+                    "alternate": {
+                      "alternate": {
+                        "name": "undefined",
+                        "type": "Identifier",
+                      },
+                      "consequent": {
                         "name": "val",
                         "type": "Identifier",
                       },
-                      "operator": "typeof",
-                      "prefix": true,
-                      "type": "UnaryExpression",
+                      "test": {
+                        "left": {
+                          "name": "val",
+                          "type": "Identifier",
+                        },
+                        "operator": "!=",
+                        "right": {
+                          "type": "NullLiteral",
+                        },
+                        "type": "BinaryExpression",
+                      },
+                      "type": "ConditionalExpression",
                     },
-                    "operator": "===",
-                    "right": {
-                      "type": "StringLiteral",
-                      "value": "number",
+                    "consequent": {
+                      "left": {
+                        "name": "val",
+                        "type": "Identifier",
+                      },
+                      "operator": "+",
+                      "right": {
+                        "type": "StringLiteral",
+                        "value": "px",
+                      },
+                      "type": "BinaryExpression",
                     },
-                    "type": "BinaryExpression",
+                    "test": {
+                      "left": {
+                        "argument": {
+                          "name": "val",
+                          "type": "Identifier",
+                        },
+                        "operator": "typeof",
+                        "prefix": true,
+                        "type": "UnaryExpression",
+                      },
+                      "operator": "===",
+                      "right": {
+                        "type": "StringLiteral",
+                        "value": "number",
+                      },
+                      "type": "BinaryExpression",
+                    },
+                    "type": "ConditionalExpression",
                   },
-                  "type": "ConditionalExpression",
+                  "expression": null,
+                  "params": [
+                    {
+                      "name": "val",
+                      "type": "Identifier",
+                    },
+                  ],
+                  "type": "ArrowFunctionExpression",
                 },
-                "expression": null,
-                "params": [
-                  {
-                    "name": "val",
+                "type": "CallExpression",
+              },
+              "originalExpression": {
+                "left": {
+                  "left": {
+                    "name": "width",
                     "type": "Identifier",
                   },
-                ],
-                "type": "ArrowFunctionExpression",
+                  "operator": "*",
+                  "right": {
+                    "extra": {
+                      "raw": "2",
+                      "rawValue": 2,
+                    },
+                    "type": "NumericLiteral",
+                    "value": 2,
+                  },
+                  "type": "BinaryExpression",
+                },
+                "operator": "+",
+                "right": {
+                  "extra": {
+                    "raw": "'px'",
+                    "rawValue": "px",
+                  },
+                  "type": "StringLiteral",
+                  "value": "px",
+                },
+                "type": "BinaryExpression",
               },
-              "type": "CallExpression",
+              "path": [
+                {
+                  "0": "b",
+                  "1": "o",
+                  "10": "h",
+                  "2": "r",
+                  "3": "d",
+                  "4": "e",
+                  "5": "r",
+                  "6": "W",
+                  "7": "i",
+                  "8": "d",
+                  "9": "t",
+                },
+              ],
             },
           },
         ],
