@@ -1193,10 +1193,10 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: "x19dipnz",
+            color: color == null ? null : "x19dipnz",
             $$css: true
           }, {
-            "--color": color != null ? color : "initial"
+            "--color": color != null ? color : undefined
           }]
         };"
       `);
@@ -1222,10 +1222,10 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: width => [{
             backgroundColor: "xrkmrrc",
-            width: "x17fnjtu",
+            width: width == null ? null : "x17fnjtu",
             $$css: true
           }, {
-            "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : "initial")(width)
+            "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width)
           }]
         };"
       `);
@@ -1255,10 +1255,10 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: "x19dipnz",
+            color: color == null ? null : "x19dipnz",
             $$css: true
           }, {
-            "--color": color != null ? color : "initial"
+            "--color": color != null ? color : undefined
           }],
           mono: {
             color: "x1mqxbix",
@@ -1285,10 +1285,10 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
         export const styles = {
           default: bgColor => [{
-            "--background-color": "xyv4n8w",
+            "--background-color": bgColor == null ? null : "xyv4n8w",
             $$css: true
           }, {
-            "----background-color": bgColor != null ? bgColor : "initial"
+            "----background-color": bgColor != null ? bgColor : undefined
           }]
         };"
       `);
@@ -1318,7 +1318,7 @@ describe('@stylexjs/babel-plugin', () => {
             ":hover_color": "x11bf1mc",
             $$css: true
           }, {
-            "--1ijzsae": color != null ? color : "initial"
+            "--1ijzsae": color != null ? color : undefined
           }]
         };"
       `);
@@ -1347,10 +1347,10 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: "x19dipnz",
+            color: color == null ? null : "x19dipnz",
             $$css: true
           }, {
-            "--color": color != null ? color : "initial"
+            "--color": color != null ? color : undefined
           }],
           mono: {
             color: "x1mqxbix",
@@ -1377,23 +1377,27 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
         export const styles = {
           default: bgColor => [{
-            "--background-color": "xyv4n8w",
+            "--background-color": bgColor == null ? null : "xyv4n8w",
             $$css: true
           }, {
-            "----background-color": bgColor != null ? bgColor : "initial"
+            "----background-color": bgColor != null ? bgColor : undefined
           }]
         };"
       `);
     });
-    test('transforms functions with nested dynamic values', () => {
+    test('transforms functions with dynamic values within conditional values', () => {
       expect(
         transform(`
           import stylex from 'stylex';
           export const styles = stylex.create({
             default: (color) => ({
-              ':hover': {
-                backgroundColor: 'red',
-                color,
+              backgroundColor: 'red',
+              color: {
+                default: color,
+                ':hover': {
+                  '@media (min-width: 1000px)': 'green',
+                  default: 'blue',
+                }
               },
             }),
           });
@@ -1402,15 +1406,17 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1gykpug:hover{background-color:red}", 3130);
-        _inject2(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 3130);
+        _inject2(".xrkmrrc{background-color:red}", 3000);
+        _inject2(".x9lz66z{color:var(--4xs81a,revert)}", 3000);
+        _inject2("@media (min-width: 1000px){.xtljkjt.xtljkjt:hover{color:green}}", 3330);
+        _inject2(".x17z2mba:hover{color:blue}", 3130);
         export const styles = {
           default: color => [{
-            ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": "x11bf1mc",
+            backgroundColor: "xrkmrrc",
+            color: "x9lz66z xtljkjt x17z2mba",
             $$css: true
           }, {
-            "--1ijzsae": color != null ? color : "initial"
+            "--4xs81a": color != null ? color : undefined
           }]
         };"
       `);

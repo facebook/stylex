@@ -21,6 +21,21 @@ import {
   getNumberSuffix,
 } from '@stylexjs/shared/lib/transform-value';
 
+type TInlineStyles = {
+  [string]: {
+    +path: $ReadOnlyArray<string>,
+    +originalExpression: t.Expression,
+    +expression: t.Expression | t.PatternLike,
+  },
+};
+
+type DynamicFns = {
+  [string]: [
+    +params: Array<t.Identifier>,
+    +inlineStyles: $ReadOnly<TInlineStyles>,
+  ],
+};
+
 // This
 export function evaluateStyleXCreateArg(
   path: NodePath<>,
@@ -30,24 +45,14 @@ export function evaluateStyleXCreateArg(
   confident: boolean,
   value: any,
   deopt?: null | NodePath<>,
-  fns?: {
-    [string]: [
-      Array<t.Identifier>,
-      { +[string]: t.Expression | t.PatternLike },
-    ],
-  },
+  fns?: DynamicFns,
 }> {
   if (!pathUtils.isObjectExpression(path)) {
     return evaluate(path, traversalState, functions);
   }
 
   const value: { [string]: mixed } = {};
-  const fns: {
-    [string]: [
-      Array<t.Identifier>,
-      $ReadOnly<{ [string]: t.Expression | t.PatternLike }>,
-    ],
-  } = {};
+  const fns: DynamicFns = {};
 
   for (const prop of path.get('properties')) {
     if (!pathUtils.isObjectProperty(prop)) {
@@ -117,10 +122,10 @@ function evaluatePartialObjectRecursively(
   confident: boolean,
   value: any,
   deopt?: null | NodePath<>,
-  inlineStyles?: $ReadOnly<{ [string]: t.Expression | t.PatternLike }>,
+  inlineStyles?: $ReadOnly<TInlineStyles>,
 }> {
   const obj: { [string]: mixed } = {};
-  const inlineStyles: { [string]: t.Expression | t.PatternLike } = {};
+  const inlineStyles: TInlineStyles = {};
   const props: $ReadOnlyArray<
     NodePath<t.ObjectMethod | t.ObjectProperty | t.SpreadElement>,
   > = path.get('properties');
@@ -181,7 +186,7 @@ function evaluatePartialObjectRecursively(
               ? getNumberSuffix(key)
               : '';
 
-          inlineStyles[varName] =
+          const inlineStyleExpression =
             unit !== ''
               ? t.callExpression(
                   t.arrowFunctionExpression(
@@ -204,7 +209,7 @@ function evaluatePartialObjectRecursively(
                           t.nullLiteral(),
                         ),
                         t.identifier('val'),
-                        t.stringLiteral('initial'),
+                        t.identifier('undefined'),
                       ),
                     ),
                   ),
@@ -213,8 +218,13 @@ function evaluatePartialObjectRecursively(
               : t.conditionalExpression(
                   t.binaryExpression('!=', expression, t.nullLiteral()),
                   expression,
-                  t.stringLiteral('initial'),
+                  t.identifier('undefined'),
                 );
+          inlineStyles[varName] = {
+            path: [...keyPath, key],
+            originalExpression: expression,
+            expression: inlineStyleExpression,
+          };
         } else {
           obj[key] = result.value;
         }

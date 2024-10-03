@@ -169,15 +169,52 @@ export default function transformStyleXCreate(
           if (key != null && Object.keys(fns).includes(key)) {
             const [params, inlineStyles] = fns[key];
 
-            if (t.isExpression(prop.value)) {
-              const value: t.Expression = prop.value as $FlowFixMe;
+            console.log('inlineStyles', inlineStyles);
+            const singleValueDynamicStyles: {
+              +[string]: t.Expression,
+            } = Object.fromEntries(
+              Object.entries(inlineStyles)
+                .filter(([_key, v]) => v.path.length === 1)
+                .map(([_key, v]) => [v.path[0], v.originalExpression]),
+            );
+
+            if (t.isObjectExpression(prop.value)) {
+              const value: t.ObjectExpression = prop.value;
+
+              value.properties = value.properties.map((prop) => {
+                if (!t.isObjectProperty(prop)) {
+                  return prop;
+                }
+                const objProp: t.ObjectProperty = prop;
+                const propKey =
+                  objProp.key.type === 'Identifier' && !objProp.computed
+                    ? objProp.key.name
+                    : objProp.key.type === 'StringLiteral'
+                      ? objProp.key.value
+                      : null;
+
+                if (
+                  propKey != null &&
+                  singleValueDynamicStyles[propKey] != null
+                ) {
+                  const expr: t.Expression = singleValueDynamicStyles[propKey];
+                  objProp.value = t.conditionalExpression(
+                    t.binaryExpression('==', expr, t.nullLiteral()),
+                    t.nullLiteral(),
+                    objProp.value as $FlowFixMe,
+                  );
+                }
+
+                return objProp;
+              });
+
               prop.value = t.arrowFunctionExpression(
                 params,
                 t.arrayExpression([
                   value,
                   t.objectExpression(
                     Object.entries(inlineStyles).map(([key, value]) =>
-                      t.objectProperty(t.stringLiteral(key), value),
+                      t.objectProperty(t.stringLiteral(key), value.expression),
                     ),
                   ),
                 ]),
