@@ -121,10 +121,8 @@ export default function transformStyleXCreate(
     }
     const plainObject = value;
     // eslint-disable-next-line prefer-const
-    let [compiledStyles, injectedStylesSansKeyframes] = stylexCreate(
-      plainObject,
-      state.options,
-    );
+    let [compiledStyles, injectedStylesSansKeyframes, classPathsPerNamespace] =
+      stylexCreate(plainObject, state.options);
 
     const injectedStyles = {
       ...injectedKeyframes,
@@ -169,21 +167,33 @@ export default function transformStyleXCreate(
           if (key != null && Object.keys(fns).includes(key)) {
             const [params, inlineStyles] = fns[key];
 
-            const singleValueDynamicStyles: {
-              +[string]: t.Expression,
-            } = Object.fromEntries(
-              Object.entries(inlineStyles)
-                .filter(
-                  ([_key, v]) =>
-                    v.path.length === 1 ||
-                    (v.path.length === 2 &&
-                      (v.path[0].startsWith(':') || v.path[0].startsWith('@'))),
+            const origClassPaths: { [string]: string } = {};
+
+            for (const [className, classPaths] of Object.entries(
+              classPathsPerNamespace[key],
+            )) {
+              origClassPaths[className] = classPaths.join('_');
+            }
+
+            const dynamicStyles: $ReadOnlyArray<{
+              +expression: t.Expression,
+              +key: string,
+              path: string,
+            }> = Object.entries(inlineStyles).map(([_key, v]) => ({
+              expression: v.originalExpression,
+              key: v.path
+                .slice(
+                  0,
+                  v.path.findIndex(
+                    (p) => !p.startsWith(':') && !p.startsWith('@'),
+                  ) + 1,
                 )
-                .map(([_key, v]) => [
-                  v.path.length === 1 ? v.path[0] : v.path.join('_'),
-                  v.originalExpression,
-                ]),
-            );
+                .join('_'),
+              path: v.path.join('_'),
+            }));
+
+            // console.log('dynamicStyles', dynamicStyles);
+            // console.log('origClassPaths', origClassPaths);
 
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
@@ -200,16 +210,63 @@ export default function transformStyleXCreate(
                       ? objProp.key.value
                       : null;
 
-                if (
-                  propKey != null &&
-                  singleValueDynamicStyles[propKey] != null
-                ) {
-                  const expr: t.Expression = singleValueDynamicStyles[propKey];
-                  objProp.value = t.conditionalExpression(
-                    t.binaryExpression('==', expr, t.nullLiteral()),
-                    t.nullLiteral(),
-                    objProp.value as $FlowFixMe,
+                if (propKey != null) {
+                  const dynamicMatch = dynamicStyles.filter(
+                    ({ key }) => key === propKey,
                   );
+                  if (dynamicMatch.length !== 0) {
+                    const value = objProp.value;
+                    if (t.isStringLiteral(value)) {
+                      const classList = value.value.split(' ');
+                      if (classList.length === 1) {
+                        const cls = classList[0];
+                        const expr = dynamicMatch.find(
+                          ({ path }) => origClassPaths[cls] === path,
+                        )?.expression;
+                        if (expr != null) {
+                          objProp.value = t.conditionalExpression(
+                            t.binaryExpression('==', expr, t.nullLiteral()),
+                            t.nullLiteral(),
+                            value,
+                          );
+                        }
+                      } else if (
+                        classList.some((cls) =>
+                          dynamicMatch.find(
+                            ({ path }) => origClassPaths[cls] === path,
+                          ),
+                        )
+                      ) {
+                        const arrExpr = t.arrayExpression(
+                          classList.map((cls) => {
+                            const expr = dynamicMatch.find(
+                              ({ path }) => origClassPaths[cls] === path,
+                            )?.expression;
+                            if (expr != null) {
+                              return t.conditionalExpression(
+                                t.binaryExpression('==', expr, t.nullLiteral()),
+                                t.nullLiteral(),
+                                t.stringLiteral(cls),
+                              );
+                            }
+                            return t.stringLiteral(cls);
+                          }),
+                        );
+                        const filteredArrExpr = t.callExpression(
+                          t.memberExpression(arrExpr, t.identifier('filter')),
+                          [t.identifier('Boolean')],
+                        );
+
+                        objProp.value = t.callExpression(
+                          t.memberExpression(
+                            filteredArrExpr,
+                            t.identifier('join'),
+                          ),
+                          [t.stringLiteral(' ')],
+                        );
+                      }
+                    }
+                  }
                 }
 
                 return objProp;

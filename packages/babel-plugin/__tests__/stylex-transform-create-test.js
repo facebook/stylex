@@ -847,12 +847,12 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xbsl7fq{border-style:dashed}", 2000);
         _inject2(".xn43iik{border-width:0 0 2px 0}", 2000);
         _inject2(".xmkeg23{border-width:1px}", 2000);
-        _inject2(".xa309fb{border-bottom-width:5px}", 4000);
         _inject2(".x1y0btm7{border-style:solid}", 2000);
-        _inject2(".x1q0q8m5{border-bottom-style:solid}", 4000);
         _inject2(".x1lh7sze{border-color:var(--divider)}", 2000);
-        _inject2(".xud65wk{border-bottom-color:red}", 4000);
         _inject2(".x12oqio5{border-radius:4px}", 2000);
+        _inject2(".xa309fb{border-bottom-width:5px}", 4000);
+        _inject2(".x1q0q8m5{border-bottom-style:solid}", 4000);
+        _inject2(".xud65wk{border-bottom-color:red}", 4000);
         _inject2(".x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}", 1000);
         _inject2(".xexx8yu{padding-top:0}", 4000);
         _inject2(".x1bg2uv5{border-color:green}", 2000);"
@@ -988,7 +988,6 @@ describe('@stylexjs/babel-plugin', () => {
             borderRightWidth: null,
             borderBlockWidth: null,
             borderTopWidth: null,
-            borderBottomWidth: "xa309fb",
             borderStyle: "x1y0btm7",
             borderInlineStyle: null,
             borderInlineStartStyle: null,
@@ -997,7 +996,6 @@ describe('@stylexjs/babel-plugin', () => {
             borderRightStyle: null,
             borderBlockStyle: null,
             borderTopStyle: null,
-            borderBottomStyle: "x1q0q8m5",
             borderColor: "x1lh7sze",
             borderInlineColor: null,
             borderInlineStartColor: null,
@@ -1006,7 +1004,6 @@ describe('@stylexjs/babel-plugin', () => {
             borderRightColor: null,
             borderBlockColor: null,
             borderTopColor: null,
-            borderBottomColor: "xud65wk",
             borderRadius: "x12oqio5",
             borderStartStartRadius: null,
             borderStartEndRadius: null,
@@ -1016,6 +1013,9 @@ describe('@stylexjs/babel-plugin', () => {
             borderTopRightRadius: null,
             borderBottomLeftRadius: null,
             borderBottomRightRadius: null,
+            borderBottomWidth: "xa309fb",
+            borderBottomStyle: "x1q0q8m5",
+            borderBottomColor: "xud65wk",
             $$css: true
           },
           short: {
@@ -1026,12 +1026,11 @@ describe('@stylexjs/babel-plugin', () => {
             paddingEnd: null,
             paddingRight: null,
             paddingBlock: null,
-            paddingTop: "xexx8yu",
             paddingBottom: null,
+            paddingTop: "xexx8yu",
             $$css: true
           },
           shortReversed: {
-            paddingTop: null,
             padding: "x1lmef92",
             paddingInline: null,
             paddingStart: null,
@@ -1039,6 +1038,7 @@ describe('@stylexjs/babel-plugin', () => {
             paddingEnd: null,
             paddingRight: null,
             paddingBlock: null,
+            paddingTop: null,
             paddingBottom: null,
             $$css: true
           },
@@ -1413,10 +1413,47 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: "x9lz66z xtljkjt x17z2mba",
+            color: [color == null ? null : "x9lz66z", "xtljkjt", "x17z2mba"].filter(Boolean).join(" "),
             $$css: true
           }, {
             "--4xs81a": color != null ? color : undefined
+          }]
+        };"
+      `);
+    });
+    test('transforms functions with multiple dynamic values within conditional values', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (color) => ({
+              backgroundColor: 'red',
+              color: {
+                default: color,
+                ':hover': {
+                  '@media (min-width: 1000px)': 'green',
+                  default: 'color-mix(' + color + ', blue)',
+                }
+              },
+            }),
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xrkmrrc{background-color:red}", 3000);
+        _inject2(".x9lz66z{color:var(--4xs81a,revert)}", 3000);
+        _inject2("@media (min-width: 1000px){.xtljkjt.xtljkjt:hover{color:green}}", 3330);
+        _inject2(".x1pgt9tt:hover{color:var(--w5m4kq,revert)}", 3130);
+        export const styles = {
+          default: color => [{
+            backgroundColor: "xrkmrrc",
+            color: [color == null ? null : "x9lz66z", "xtljkjt", 'color-mix(' + color + ', blue)' == null ? null : "x1pgt9tt"].filter(Boolean).join(" "),
+            $$css: true
+          }, {
+            "--4xs81a": color != null ? color : undefined,
+            "--w5m4kq": 'color-mix(' + color + ', blue)' != null ? 'color-mix(' + color + ', blue)' : undefined
           }]
         };"
       `);
