@@ -74,7 +74,7 @@ export function _flattenRawStyleObject(
 
     // Fallback Styles
     if (Array.isArray(value)) {
-      // Step 1: Expand properties to its consituent parts
+      // Step 1: Expand properties to its constituent parts
       // Collect the various values for each value in the array
       // that belongs to the same property.
       const equivalentPairs: {
