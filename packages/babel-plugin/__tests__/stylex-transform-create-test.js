@@ -1413,7 +1413,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: [color == null ? null : "x9lz66z", "xtljkjt", "x17z2mba"].filter(Boolean).join(" "),
+            color: (color == null ? "" : "x9lz66z ") + "xtljkjt " + "x17z2mba",
             $$css: true
           }, {
             "--4xs81a": color != null ? color : undefined
@@ -1449,7 +1449,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: [color == null ? null : "x9lz66z", "xtljkjt", 'color-mix(' + color + ', blue)' == null ? null : "x1pgt9tt"].filter(Boolean).join(" "),
+            color: (color == null ? "" : "x9lz66z ") + "xtljkjt " + ('color-mix(' + color + ', blue)' == null ? "" : "x1pgt9tt"),
             $$css: true
           }, {
             "--4xs81a": color != null ? color : undefined,

@@ -237,32 +237,33 @@ export default function transformStyleXCreate(
                           ),
                         )
                       ) {
-                        const arrExpr = t.arrayExpression(
-                          classList.map((cls) => {
+                        const exprArray: $ReadOnlyArray<t.Expression> =
+                          classList.map((cls, index) => {
                             const expr = dynamicMatch.find(
                               ({ path }) => origClassPaths[cls] === path,
                             )?.expression;
+                            const suffix =
+                              index === classList.length - 1 ? '' : ' ';
                             if (expr != null) {
                               return t.conditionalExpression(
                                 t.binaryExpression('==', expr, t.nullLiteral()),
-                                t.nullLiteral(),
-                                t.stringLiteral(cls),
+                                t.stringLiteral(''),
+                                t.stringLiteral(cls + suffix),
                               );
                             }
-                            return t.stringLiteral(cls);
-                          }),
-                        );
-                        const filteredArrExpr = t.callExpression(
-                          t.memberExpression(arrExpr, t.identifier('filter')),
-                          [t.identifier('Boolean')],
-                        );
+                            return t.stringLiteral(cls + suffix);
+                          });
 
-                        objProp.value = t.callExpression(
-                          t.memberExpression(
-                            filteredArrExpr,
-                            t.identifier('join'),
-                          ),
-                          [t.stringLiteral(' ')],
+                        const [first, ...rest] = exprArray;
+
+                        objProp.value = rest.reduce(
+                          (
+                            acc: t.Expression,
+                            curr: t.Expression,
+                          ): t.Expression => {
+                            return t.binaryExpression('+', acc, curr);
+                          },
+                          first as t.Expression,
                         );
                       }
                     }
