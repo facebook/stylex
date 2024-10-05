@@ -69,10 +69,6 @@ export default function transformStyleXCreate(
     > = path.get('arguments');
     const firstArg = args[0];
 
-    // TODO: This should be removed soon since we should disallow spreads without
-    // `stylex.include` in the future.
-    // preProcessStyleArg(firstArg, state);
-
     state.inStyleXCreate = true;
 
     const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
@@ -214,7 +210,7 @@ export default function transformStyleXCreate(
                   const dynamicMatch = dynamicStyles.filter(
                     ({ key }) => key === propKey,
                   );
-                  if (dynamicMatch.length !== 0) {
+                  if (dynamicMatch.length > 0) {
                     const value = objProp.value;
                     if (t.isStringLiteral(value)) {
                       const classList = value.value.split(' ');
