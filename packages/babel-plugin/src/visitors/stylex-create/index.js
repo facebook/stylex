@@ -188,9 +188,6 @@ export default function transformStyleXCreate(
               path: v.path.join('_'),
             }));
 
-            // console.log('dynamicStyles', dynamicStyles);
-            // console.log('origClassPaths', origClassPaths);
-
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
 

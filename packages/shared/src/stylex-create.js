@@ -94,10 +94,6 @@ export default function styleXCreateSet(
           .map((v) => (Array.isArray(v) ? v : null))
           .filter(Boolean);
 
-        // if (classNameTuples.length > 1) {
-        //   namespaceObj[key] = null;
-        //   continue;
-        // }
         classNameTuples.forEach(([_className, _, classesToOriginalPath]) => {
           Object.assign(classPathsInNamespace, classesToOriginalPath);
         });
