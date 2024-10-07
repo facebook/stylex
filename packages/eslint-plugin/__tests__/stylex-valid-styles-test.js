@@ -354,6 +354,53 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          'width': '30vw',
        },
      })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'contain': '300px',
+       },
+     })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'containIntrinsicSize': '300px',
+       },
+     })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'containIntrinsicSize': 'auto 300px',
+       },
+     })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'containIntrinsicInlineSize': '300px',
+         'containIntrinsicBlockSize': '200px',
+       },
+     })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'containIntrinsicInlineSize': 'auto 300px',
+         'containIntrinsicBlockSize': 'auto 200px',
+       },
+     })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'containIntrinsicWidth': '300px',
+         'containIntrinsicHeight': '200px',
+       },
+     })`,
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'containIntrinsicWidth': 'auto 300px',
+         'containIntrinsicHeight': 'auto 200px',
+       },
+     })`,
+
     // test for absolute width
     `import stylex from "stylex";
      stylex.create({

@@ -712,6 +712,7 @@ const display = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('inline'),
   makeLiteralRule('block'),
+  makeLiteralRule('flow-root'),
   makeLiteralRule('list-item'),
   makeLiteralRule('inline-list-item'),
   makeLiteralRule('inline-block'),
@@ -1793,6 +1794,11 @@ const CSSProperties = {
   columnWidth: columnWidth,
   columns: columns,
   contain: contain,
+  containIntrinsicSize: makeUnionRule(isNumber, isString),
+  containIntrinsicBlockSize: makeUnionRule(isNumber, isString),
+  containIntrinsicInlineSize: makeUnionRule(isNumber, isString),
+  containIntrinsicHeight: makeUnionRule(isNumber, isString),
+  containIntrinsicWidth: makeUnionRule(isNumber, isString),
   containerType: makeUnionRule('normal', 'size', 'inline-size'),
   containerName: isString,
   content: content,
@@ -2356,8 +2362,6 @@ const stylexValidStyles = {
 
     const legacyProps: PropLimits = {
       'grid*': { limit: null, reason: legacyReason },
-      rowGap: { limit: null, reason: legacyReason },
-      columnGap: { limit: null, reason: legacyReason },
       'mask+([a-zA-Z])': { limit: null, reason: legacyReason },
       blockOverflow: { limit: null, reason: legacyReason },
       inlineOverflow: { limit: null, reason: legacyReason },
