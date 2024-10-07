@@ -357,7 +357,10 @@ function legacyExpandShorthands(
       });
     })
     .map(([key, value]) => {
-      const index = parseInt((value as $FlowFixMe as string).slice(1), 10);
+      if (typeof value !== 'string') {
+        return null;
+      }
+      const index = parseInt(value.slice(1), 10);
       const thatDynStyle = dynamicStyles[index];
       return {
         ...thatDynStyle,
@@ -369,7 +372,8 @@ function legacyExpandShorthands(
               ? thatDynStyle.path.replace(thatDynStyle.key + '_', key + '_')
               : thatDynStyle.path.replace('_' + thatDynStyle.key, '_' + key),
       };
-    });
+    })
+    .filter(Boolean);
 
   return expandedKeysToKeyPaths;
 }

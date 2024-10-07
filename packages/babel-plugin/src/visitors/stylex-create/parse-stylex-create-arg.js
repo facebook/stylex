@@ -193,8 +193,6 @@ function evaluatePartialObjectRecursively(
               ? getNumberSuffix(propName)
               : '';
 
-          console.log('propName', propName, 'unit', unit);
-
           const inlineStyleExpression =
             unit !== ''
               ? t.callExpression(
