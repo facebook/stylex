@@ -51,8 +51,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
           options,
         ),
       ).toEqual([
-        ['rowGap', new PreRule('rowGap', 10, ['gap'])],
-        ['columnGap', new PreRule('columnGap', 10, ['gap'])],
+        ['rowGap', new PreRule('rowGap', 10, ['rowGap'])],
+        ['columnGap', new PreRule('columnGap', 10, ['columnGap'])],
       ]);
     });
 
@@ -67,11 +67,11 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
       ).toEqual([
         [
           'containIntrinsicWidth',
-          new PreRule('containIntrinsicWidth', 10, ['containIntrinsicSize']),
+          new PreRule('containIntrinsicWidth', 10, ['containIntrinsicWidth']),
         ],
         [
           'containIntrinsicHeight',
-          new PreRule('containIntrinsicHeight', 10, ['containIntrinsicSize']),
+          new PreRule('containIntrinsicHeight', 10, ['containIntrinsicHeight']),
         ],
       ]);
     });
@@ -134,8 +134,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
           options,
         ),
       ).toEqual([
-        ['rowGap', new PreRule('rowGap', '10px', ['gap'])],
-        ['columnGap', new PreRule('columnGap', '20px', ['gap'])],
+        ['rowGap', new PreRule('rowGap', '10px', ['rowGap'])],
+        ['columnGap', new PreRule('columnGap', '20px', ['columnGap'])],
       ]);
     });
 
@@ -150,8 +150,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
           options,
         ),
       ).toEqual([
-        [w, new PreRule(w, '10px', ['containIntrinsicSize'])],
-        [h, new PreRule(h, '20px', ['containIntrinsicSize'])],
+        [w, new PreRule(w, '10px', [w])],
+        [h, new PreRule(h, '20px', [h])],
       ]);
       expect(
         flattenRawStyleObject(
@@ -161,8 +161,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
           options,
         ),
       ).toEqual([
-        [w, new PreRule(w, 'auto 10px', ['containIntrinsicSize'])],
-        [h, new PreRule(h, '20px', ['containIntrinsicSize'])],
+        [w, new PreRule(w, 'auto 10px', [w])],
+        [h, new PreRule(h, '20px', [h])],
       ]);
       expect(
         flattenRawStyleObject(
@@ -172,8 +172,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
           options,
         ),
       ).toEqual([
-        [w, new PreRule(w, '10px', ['containIntrinsicSize'])],
-        [h, new PreRule(h, 'auto 20px', ['containIntrinsicSize'])],
+        [w, new PreRule(w, '10px', [w])],
+        [h, new PreRule(h, 'auto 20px', [h])],
       ]);
       expect(
         flattenRawStyleObject(
@@ -183,8 +183,8 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
           options,
         ),
       ).toEqual([
-        [w, new PreRule(w, 'auto 10px', ['containIntrinsicSize'])],
-        [h, new PreRule(h, 'auto 20px', ['containIntrinsicSize'])],
+        [w, new PreRule(w, 'auto 10px', [w])],
+        [h, new PreRule(h, 'auto 20px', [h])],
       ]);
     });
 
