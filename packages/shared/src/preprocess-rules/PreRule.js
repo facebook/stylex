@@ -85,10 +85,10 @@ export class PreRule implements IPreRule {
   constructor(
     property: string,
     value: string | number | $ReadOnlyArray<string | number>,
-    keyPath: $ReadOnlyArray<string>,
+    keyPath?: $ReadOnlyArray<string>,
   ) {
     this.property = property;
-    this.keyPath = keyPath;
+    this.keyPath = keyPath ?? [];
     this.value = value;
   }
 
