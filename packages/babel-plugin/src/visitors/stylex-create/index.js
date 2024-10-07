@@ -29,6 +29,7 @@ import {
 import { messages } from '@stylexjs/shared';
 import * as pathUtils from '../../babel-path-utils';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
+import flatMapExpandedShorthands from '@stylexjs/shared/lib/preprocess-rules';
 
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
@@ -171,7 +172,7 @@ export default function transformStyleXCreate(
               origClassPaths[className] = classPaths.join('_');
             }
 
-            const dynamicStyles: $ReadOnlyArray<{
+            let dynamicStyles: $ReadOnlyArray<{
               +expression: t.Expression,
               +key: string,
               path: string,
@@ -187,6 +188,10 @@ export default function transformStyleXCreate(
                 .join('_'),
               path: v.path.join('_'),
             }));
+
+            if (state.options.styleResolution === 'legacy-expand-shorthands') {
+              dynamicStyles = legacyExpandShorthands(dynamicStyles);
+            }
 
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
@@ -332,4 +337,39 @@ function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
     throw new Error('Unexpected Path found that is not part of the AST.');
   }
   return findNearestStatementAncestor(path.parentPath);
+}
+
+function legacyExpandShorthands(
+  dynamicStyles: $ReadOnlyArray<{
+    +expression: t.Expression,
+    +key: string,
+    path: string,
+  }>,
+): $ReadOnlyArray<{
+  +expression: t.Expression,
+  +key: string,
+  path: string,
+}> {
+  const expandedKeysToKeyPaths = dynamicStyles
+    .flatMap(({ key }, i) => {
+      return flatMapExpandedShorthands([key, 'p' + i], {
+        styleResolution: 'legacy-expand-shorthands',
+      });
+    })
+    .map(([key, value]) => {
+      const index = parseInt((value as $FlowFixMe as string).slice(1), 10);
+      const thatDynStyle = dynamicStyles[index];
+      return {
+        ...thatDynStyle,
+        key,
+        path:
+          thatDynStyle.path === thatDynStyle.key
+            ? key
+            : thatDynStyle.path.includes(thatDynStyle.key + '_')
+              ? thatDynStyle.path.replace(thatDynStyle.key + '_', key + '_')
+              : thatDynStyle.path.replace('_' + thatDynStyle.key, '_' + key),
+      };
+    });
+
+  return expandedKeysToKeyPaths;
 }

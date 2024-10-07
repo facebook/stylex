@@ -29,7 +29,10 @@ export function getExpandedKeys(
 
 export default function flatMapExpandedShorthands(
   objEntry: $ReadOnly<[string, TStyleValue]>,
-  options: StyleXOptions,
+  options: $ReadOnly<{
+    styleResolution: StyleXOptions['styleResolution'],
+    ...
+  }>,
 ): $ReadOnlyArray<[string, TStyleValue]> {
   // eslint-disable-next-line prefer-const
   let [key, value] = objEntry;

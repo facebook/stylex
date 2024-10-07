@@ -1458,5 +1458,52 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
     });
+
+    test('transforms shorthands in legacy-expand-shorthands mode', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (margin) => ({
+              backgroundColor: 'red',
+              margin: {
+                default: margin,
+                ':hover': margin + 4,
+              },
+              marginTop: margin - 4,
+            })
+          });
+        `,
+          { styleResolution: 'legacy-expand-shorthands' },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xrkmrrc{background-color:red}", 3000);
+        _inject2(".xtquba1{margin-right:var(--14mfytm,revert)}", 3000, ".xtquba1{margin-left:var(--14mfytm,revert)}");
+        _inject2(".x1wvyv5g:hover{margin-right:var(--yepcm9,revert)}", 3130, ".x1wvyv5g:hover{margin-left:var(--yepcm9,revert)}");
+        _inject2(".x1lpz8mm{margin-bottom:var(--14mfytm,revert)}", 4000);
+        _inject2(".x5j2iel:hover{margin-bottom:var(--yepcm9,revert)}", 4130);
+        _inject2(".xop2vte{margin-left:var(--14mfytm,revert)}", 3000, ".xop2vte{margin-right:var(--14mfytm,revert)}");
+        _inject2(".x14hq2z5:hover{margin-left:var(--yepcm9,revert)}", 3130, ".x14hq2z5:hover{margin-right:var(--yepcm9,revert)}");
+        _inject2(".x1v67u4u{margin-top:var(--marginTop,revert)}", 4000);
+        export const styles = {
+          default: margin => [{
+            backgroundColor: "xrkmrrc",
+            marginEnd: (margin == null ? "" : "xtquba1 ") + (margin + 4 == null ? "" : "x1wvyv5g"),
+            marginBottom: (margin == null ? "" : "x1lpz8mm ") + (margin + 4 == null ? "" : "x5j2iel"),
+            marginStart: (margin == null ? "" : "xop2vte ") + (margin + 4 == null ? "" : "x14hq2z5"),
+            marginTop: margin - 4 == null ? null : "x1v67u4u",
+            $$css: true
+          }, {
+            "--14mfytm": margin != null ? margin : undefined,
+            "--yepcm9": margin + 4 != null ? margin + 4 : undefined,
+            "--marginTop": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin - 4)
+          }]
+        };"
+      `);
+    });
   });
 });
