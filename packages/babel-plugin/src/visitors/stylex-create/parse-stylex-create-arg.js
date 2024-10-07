@@ -175,7 +175,7 @@ function evaluatePartialObjectRecursively(
             (keyPath.length > 0
               ? utils.hash([...keyPath, key].join('_'))
               : key);
-          obj[key] = `var(${varName}, revert)`;
+          obj[key] = `var(${varName})`;
           const node = valuePath.node;
           if (!t.isExpression(node)) {
             throw new Error('Expected expression as style value');
