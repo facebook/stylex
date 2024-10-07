@@ -270,6 +270,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          },
        },
      })`,
+    // test for input ranges
+    `import stylex from "stylex";
+     stylex.create({
+       default: {
+         'WebkitAppearance': 'textfield',
+         '::-webkit-slider-thumb': {
+           appearance: 'none',
+         },
+         '::-webkit-slider-runnable-track': {
+           appearance: 'none',
+         },
+         '::-moz-range-thumb': {
+           appearance: 'none',
+         },
+         '::-moz-range-track': {
+           appearance: 'none',
+         },
+         '::-moz-range-progress': {
+           appearance: 'none',
+         },
+       },
+     })`,
     // test for color
     `import stylex from "stylex";
      stylex.create({
