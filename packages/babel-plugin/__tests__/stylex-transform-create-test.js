@@ -1172,7 +1172,7 @@ describe('@stylexjs/babel-plugin', () => {
     });
   });
 
-  describe.only('[transform] stylex.create() with functions', () => {
+  describe('[transform] stylex.create() with functions', () => {
     test('transforms style object with function', () => {
       expect(
         transform(`
