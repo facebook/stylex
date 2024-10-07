@@ -712,6 +712,7 @@ const display = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('inline'),
   makeLiteralRule('block'),
+  makeLiteralRule('flow-root'),
   makeLiteralRule('list-item'),
   makeLiteralRule('inline-list-item'),
   makeLiteralRule('inline-block'),

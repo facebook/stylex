@@ -115,7 +115,7 @@ type backfaceVisibility = 'visible' | 'hidden';
 // type background = string | finalBgLayer;
 type backgroundAttachment = attachment;
 type backgroundBlendMode = blendMode;
-type backgroundClip = box;
+type backgroundClip = box | 'text';
 type backgroundColor = color;
 type backgroundImage = bgImage;
 type backgroundOrigin = box;
@@ -250,6 +250,7 @@ type display =
   | 'inherit'
   | 'inline'
   | 'block'
+  | 'flow-root'
   | 'list-item'
   | 'inline-list-item'
   | 'inline-block'
@@ -544,7 +545,7 @@ type outlineStyle = 'auto' | brStyle;
 type outlineWidth = borderWidth;
 type overflow = 'visible' | 'hidden' | 'clip' | 'scroll' | 'auto';
 type overflowAnchor = 'auto' | 'none';
-type overflowWrap = 'normal' | 'break-word';
+type overflowWrap = 'normal' | 'break-word' | 'anywhere';
 type overflowX = overflow;
 type overflowY = overflow;
 type overscrollBehavior = 'none' | 'contain' | 'auto';
