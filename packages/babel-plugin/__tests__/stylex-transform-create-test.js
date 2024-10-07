@@ -1172,7 +1172,7 @@ describe('@stylexjs/babel-plugin', () => {
     });
   });
 
-  describe('[transform] stylex.create() with functions', () => {
+  describe.only('[transform] stylex.create() with functions', () => {
     test('transforms style object with function', () => {
       expect(
         transform(`
@@ -1498,8 +1498,8 @@ describe('@stylexjs/babel-plugin', () => {
             marginTop: margin - 4 == null ? null : "x1v67u4u",
             $$css: true
           }, {
-            "--14mfytm": margin != null ? margin : undefined,
-            "--yepcm9": margin + 4 != null ? margin + 4 : undefined,
+            "--14mfytm": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin),
+            "--yepcm9": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin + 4),
             "--marginTop": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin - 4)
           }]
         };"

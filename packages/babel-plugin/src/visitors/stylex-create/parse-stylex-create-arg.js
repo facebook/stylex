@@ -169,6 +169,7 @@ function evaluatePartialObjectRecursively(
       } else {
         const result = evaluate(valuePath, traversalState, functions);
         if (!result.confident) {
+          const fullKeyPath = [...keyPath, key];
           const varName =
             '--' +
             (keyPath.length > 0
@@ -181,10 +182,18 @@ function evaluatePartialObjectRecursively(
           }
           const expression: t.Expression = node as $FlowFixMe;
 
+          const propName =
+            fullKeyPath.find(
+              (k) =>
+                !k.startsWith(':') && !k.startsWith('@') && k !== 'default',
+            ) ?? key;
+
           const unit =
-            timeUnits.has(key) || lengthUnits.has(key)
-              ? getNumberSuffix(key)
+            timeUnits.has(propName) || lengthUnits.has(propName)
+              ? getNumberSuffix(propName)
               : '';
+
+          console.log('propName', propName, 'unit', unit);
 
           const inlineStyleExpression =
             unit !== ''

@@ -141,7 +141,6 @@ export const lengthUnits: Set<string> = new Set([
   'borderBottomWidth',
   'borderEndEndRadius',
   'borderEndStartRadius',
-  // 'borderImageWidth', // can be a unitless number
   'borderInlineEndWidth',
   'borderEndWidth',
   'borderInlineStartWidth',
@@ -185,8 +184,6 @@ export const lengthUnits: Set<string> = new Set([
   'marginLeft',
   'marginRight',
   'marginTop',
-  'maskBorderOutset',
-  'maskBorderWidth',
   'maxBlockSize',
   'maxHeight',
   'maxInlineSize',
