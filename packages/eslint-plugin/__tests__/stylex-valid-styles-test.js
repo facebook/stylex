@@ -1372,7 +1372,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
               ':focus-within': 'red',
             },
           },
-        });`
+        });`,
     },
   ],
   invalid: [
