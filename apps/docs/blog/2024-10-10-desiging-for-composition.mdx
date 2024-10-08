@@ -14,9 +14,9 @@ tags:
 
 ## Style Composition has never been easy
 
-Style composition has never been easy with CSS. Applying multile CSS rules
-on the same HTML element usually leads to a constant battle with CSS order,
-selector specificity and growing CSS files.
+Style composition has never been easy with CSS. Applying multiple CSS rules
+to the same HTML element usually leads to a constant battle with CSS order,
+selector specificity, and growing CSS files.
 
 CSS has evolved to provide additional tools such as `@layer` which makes
 the problem slightly better. However, the problem persists and the responsibility
@@ -33,7 +33,7 @@ that come with it.
 In any design system, it is common to modify or override certain styles
 of components within certain contexts. It is also useful to be able to use
 component libraries and customize them to fit the design of the application.
-The alternative leads to unneccessary duplication of styles and code.
+The alternative leads to unnecessary duplication of styles and code.
 
 The rise of runtime CSS-in-JS libraries was fuelled, in part, by the need
 to solve the style composition problem. By being able to generate and inject
@@ -42,7 +42,7 @@ styles in a way that was not possible with traditional CSS. However, this
 also came with performance trade-offs.
 
 In recent years, just as we've seen a rise in the popularity of atomic CSS,
-we've also seen utilities that merge such styles gain prevelance. Many tools
+we've also seen utilities that merge such styles gain prevalence. Many tools
 now offer a way to merge styles.
 
 Despite all the tools, style composition remains a challenge. From headless 
@@ -63,7 +63,7 @@ classes, media queries, or other selectors. It is also difficult to enforce
 consistency when using inline styles directly in HTML.
 
 However, component-based frameworks, such as React, largely sidestep any
-architectureal issues with inline styles. Components are a layer of abstraction
+architectural issues with inline styles. Components are a layer of abstraction
 that enables code reuse without needing to write the same styles over and over
 again. This change was noticed early and was described in the original 
 [`CSS-in-JS` talk by _Christopher Cheadeu_](https://vimeo.com/116209150).
@@ -78,16 +78,16 @@ the ability to compose styles in the same way that inline styles do.
 
 ## Do "inline styles" need to be defined inline?
 
-By the time we made the concious decision to model StyleX after inline styles,
+By the time we made the conscious decision to model StyleX after inline styles,
 StyleX had already been in development for a while and had evolved organically
-inspired by React Native's `StyleSheet` API, which itself was inspired by inline
+inspired by React Native's `StyleSheet` API, which was itself inspired by inline
 styles.
 
 And so one of the first design decisions we reconsidered was the requirement to
-declare `stylex.create` before using it, and not allowing the definition of styles
-inline. There are tradeoffs to both approaches, we  realized, that we *had* to
-allow the ability to statically define styles as Javascript constants and be 
-to able to re-use them across multiple elements, multiple components, and 
+declare `stylex.create` before using it, without allowing the definition of styles
+inline. There are trade-offs to both approaches, we  realised, that we *had* to
+allow the ability to statically define styles as JavaScript constants and be 
+able to reuse them across multiple elements, multiple components, and 
 even multiple files. Once we had this realization, we felt more comfortable
 not offering the ability to define styles inline. Even if occasionally inconvenient,
 it is better to have *one* consistent way to define styles.
@@ -100,7 +100,7 @@ the requirements of the compiler without feeling *too* unnatural.
 
 Our next design question was to decide how to handle pseudo classes, media queries
 and other at-rules in a way that *felt* like inline styles and enabled composability.
-Inline Styles doesn't have support for pseudo classes or media queries, but it's possible
+Inline styles don't support pseudo classes or media queries, but it's possible
 to use JavaScript to read such 'conditions' and apply styles accordingly.
 
 ```tsx
@@ -126,7 +126,7 @@ design system. Instead of thinking about mobile styles or desktop styles, this
 approach forces you to think responsively about the value of each property.
 
 This realization led to one of our most unique design decisions. Instead of separating "base"
-styles and styles under a media query, which is common with almost every other CSS
+styles and styles under a media query, which is common in almost every other CSS
 library, we decided to treat pseudo-classes and media queries as 'conditions' *within*
 the value of a property.
 
@@ -145,21 +145,21 @@ const styles = stylex.create({
 });
 ```
 
-We found a way to take the concept Javascript conditions from inline styles and
-express them declaratively and statically in a way that can be compiled to
+We found a way to take the concept of JavaScript conditions from inline styles
+and express them declaratively and statically in a way that can be compiled to
 static CSS while keeping the architectural benefits.
 
 ## CSS Shorthands
 
 CSS shorthand properties introduce another factor of confusion when composing
-styles. This decision has remained controvertial even within the team itself,
+styles. This decision has remained controversial even within the team itself,
 and so we still support two different strategies for merging shorthands.
 
 ### React Native's Strategy
 
-React Native pioneered the approach of merging purely by key, and assiging
+React Native pioneered the approach of merging purely by key, and assigning
 different priorities to different properties. Longhand properties have a higher
-priority than shorthand properties.So while you *can* end up
+priority than shorthand properties. So, while you *can* end up
 with a style object that has both `padding` and `paddingTop`, `paddingTop` will
 take precedence regardless of the order in which they are applied.
 
@@ -169,14 +169,14 @@ Inline styles, on the other hand, always merge by order of application, and
 the last style applied always wins. Modelling this behaviour in library that
 compiles to static CSS wasn't obvious at first. We started by expanding
 shorthands into longhand properties at compile time. This approach had many
-edge-cases and couldn't be done reliably in all cases.
+edge cases and couldn't be done reliably in all cases.
 
 We eventually discovered a strategy where a shorthand property would also set
 its constituent longhand properties to `null`. This would, in practice, "unset"
-any long hand that may have been applied before. This achieves the exact the
+any longhand that may have been applied before. This achieves the exact the
 same behaviour as inline styles, where the last style applied always wins.
 
-This approach has some performance trade-offs. It can result in larger Javascript objects 
+This approach has some performance trade-offs. It can result in larger JavaScript objects 
 after compilation. However, as our overall design philosophy was to
 model StyleX after inline styles, we decided to make this the default behaviour.
 
@@ -197,18 +197,18 @@ apply *any* style property as an inline style. *Only* CSS variables are ever app
 as inline styles and are used as the vehicle to let static styles have dynamic values.
 By not having any style properties as inline styles, we avoid any conflicts that may
 arise from inline styles having higher specificity than static styles. (It also makes
-certain compile-time optimizations possible, but that's it's own story.)
+certain compile-time optimizations possible, but that's its own story.)
 
 ## Conclusion
 
 CSS has been around for a long time now. It has evolved in many ways and is now both
 flexible and one of the most powerful layout models that exist. Yet, it remains a
-tool with sharp edges and it can be challenging to weild effectively.
+tool with sharp edges and it can be challenging to wield effectively.
 
 We've seen many tools and libraries that have tried to make CSS easier
 to work with. Over the years, many problems have been solved, but the problem of
 style composition has persisted to some extent. Even when it's possible to compose
-styles, there have always been incosistencies and unpredictable behaviour.
+styles, there have always been inconsistencies and unpredictable behaviour.
 
 Yes, we are building a styling solution that is fast, scalable and easy to use.
 But we are also building a solution that actually provides predictable style
