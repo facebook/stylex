@@ -1362,6 +1362,18 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
         });
       `,
     },
+    {
+      code: `
+        import stylex from'stylex';
+        const styles = stylex.create({
+          base: {
+            backgroundColor: {
+              default: 'blue',
+              ':focus-within': 'red',
+            },
+          },
+        });`,
+    },
   ],
   invalid: [
     {
