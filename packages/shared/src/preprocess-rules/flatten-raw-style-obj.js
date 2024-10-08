@@ -64,7 +64,9 @@ export function _flattenRawStyleObject(
             new PreRule(
               property,
               value,
-              keyPath.includes(key) ? keyPath : [...keyPath, key],
+              keyPath.includes(key)
+                ? keyPath.map((k) => (k === key ? property : k))
+                : [...keyPath, property],
             ),
           ]);
         }
@@ -118,7 +120,9 @@ export function _flattenRawStyleObject(
               new PreRule(
                 property,
                 value,
-                keyPath.includes(_key) ? keyPath : [...keyPath, _key],
+                keyPath.includes(_key)
+                  ? keyPath.map((k) => (k === _key ? property : k))
+                  : [...keyPath, property],
               ),
             ]);
           }
