@@ -169,21 +169,28 @@ function evaluatePartialObjectRecursively(
       } else {
         const result = evaluate(valuePath, traversalState, functions);
         if (!result.confident) {
+          const fullKeyPath = [...keyPath, key];
           const varName =
             '--' +
             (keyPath.length > 0
               ? utils.hash([...keyPath, key].join('_'))
               : key);
-          obj[key] = `var(${varName}, revert)`;
+          obj[key] = `var(${varName})`;
           const node = valuePath.node;
           if (!t.isExpression(node)) {
             throw new Error('Expected expression as style value');
           }
           const expression: t.Expression = node as $FlowFixMe;
 
+          const propName =
+            fullKeyPath.find(
+              (k) =>
+                !k.startsWith(':') && !k.startsWith('@') && k !== 'default',
+            ) ?? key;
+
           const unit =
-            timeUnits.has(key) || lengthUnits.has(key)
-              ? getNumberSuffix(key)
+            timeUnits.has(propName) || lengthUnits.has(propName)
+              ? getNumberSuffix(propName)
               : '';
 
           const inlineStyleExpression =

@@ -847,12 +847,12 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xbsl7fq{border-style:dashed}", 2000);
         _inject2(".xn43iik{border-width:0 0 2px 0}", 2000);
         _inject2(".xmkeg23{border-width:1px}", 2000);
-        _inject2(".xa309fb{border-bottom-width:5px}", 4000);
         _inject2(".x1y0btm7{border-style:solid}", 2000);
-        _inject2(".x1q0q8m5{border-bottom-style:solid}", 4000);
         _inject2(".x1lh7sze{border-color:var(--divider)}", 2000);
-        _inject2(".xud65wk{border-bottom-color:red}", 4000);
         _inject2(".x12oqio5{border-radius:4px}", 2000);
+        _inject2(".xa309fb{border-bottom-width:5px}", 4000);
+        _inject2(".x1q0q8m5{border-bottom-style:solid}", 4000);
+        _inject2(".xud65wk{border-bottom-color:red}", 4000);
         _inject2(".x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}", 1000);
         _inject2(".xexx8yu{padding-top:0}", 4000);
         _inject2(".x1bg2uv5{border-color:green}", 2000);"
@@ -988,7 +988,6 @@ describe('@stylexjs/babel-plugin', () => {
             borderRightWidth: null,
             borderBlockWidth: null,
             borderTopWidth: null,
-            borderBottomWidth: "xa309fb",
             borderStyle: "x1y0btm7",
             borderInlineStyle: null,
             borderInlineStartStyle: null,
@@ -997,7 +996,6 @@ describe('@stylexjs/babel-plugin', () => {
             borderRightStyle: null,
             borderBlockStyle: null,
             borderTopStyle: null,
-            borderBottomStyle: "x1q0q8m5",
             borderColor: "x1lh7sze",
             borderInlineColor: null,
             borderInlineStartColor: null,
@@ -1006,7 +1004,6 @@ describe('@stylexjs/babel-plugin', () => {
             borderRightColor: null,
             borderBlockColor: null,
             borderTopColor: null,
-            borderBottomColor: "xud65wk",
             borderRadius: "x12oqio5",
             borderStartStartRadius: null,
             borderStartEndRadius: null,
@@ -1016,6 +1013,9 @@ describe('@stylexjs/babel-plugin', () => {
             borderTopRightRadius: null,
             borderBottomLeftRadius: null,
             borderBottomRightRadius: null,
+            borderBottomWidth: "xa309fb",
+            borderBottomStyle: "x1q0q8m5",
+            borderBottomColor: "xud65wk",
             $$css: true
           },
           short: {
@@ -1026,12 +1026,11 @@ describe('@stylexjs/babel-plugin', () => {
             paddingEnd: null,
             paddingRight: null,
             paddingBlock: null,
-            paddingTop: "xexx8yu",
             paddingBottom: null,
+            paddingTop: "xexx8yu",
             $$css: true
           },
           shortReversed: {
-            paddingTop: null,
             padding: "x1lmef92",
             paddingInline: null,
             paddingStart: null,
@@ -1039,6 +1038,7 @@ describe('@stylexjs/babel-plugin', () => {
             paddingEnd: null,
             paddingRight: null,
             paddingBlock: null,
+            paddingTop: null,
             paddingBottom: null,
             $$css: true
           },
@@ -1189,11 +1189,11 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
-        _inject2(".x19dipnz{color:var(--color,revert)}", 3000);
+        _inject2(".xfx01vb{color:var(--color)}", 3000);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: color == null ? null : "x19dipnz",
+            color: color == null ? null : "xfx01vb",
             $$css: true
           }, {
             "--color": color != null ? color : undefined
@@ -1218,11 +1218,11 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
-        _inject2(".x17fnjtu{width:var(--width,revert)}", 4000);
+        _inject2(".x1bl4301{width:var(--width)}", 4000);
         export const styles = {
           default: width => [{
             backgroundColor: "xrkmrrc",
-            width: width == null ? null : "x17fnjtu",
+            width: width == null ? null : "x1bl4301",
             $$css: true
           }, {
             "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width)
@@ -1250,12 +1250,12 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
-        _inject2(".x19dipnz{color:var(--color,revert)}", 3000);
+        _inject2(".xfx01vb{color:var(--color)}", 3000);
         _inject2(".x1mqxbix{color:black}", 3000);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: color == null ? null : "x19dipnz",
+            color: color == null ? null : "xfx01vb",
             $$css: true
           }, {
             "--color": color != null ? color : undefined
@@ -1282,10 +1282,10 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
+        _inject2(".x15mgraa{--background-color:var(----background-color)}", 1);
         export const styles = {
           default: bgColor => [{
-            "--background-color": bgColor == null ? null : "xyv4n8w",
+            "--background-color": bgColor == null ? null : "x15mgraa",
             $$css: true
           }, {
             "----background-color": bgColor != null ? bgColor : undefined
@@ -1311,11 +1311,11 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".x1gykpug:hover{background-color:red}", 3130);
-        _inject2(".x11bf1mc:hover{color:var(--1ijzsae,revert)}", 3130);
+        _inject2(".xtyu0qe:hover{color:var(--1ijzsae)}", 3130);
         export const styles = {
           default: color => [{
             ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": color == null ? null : "x11bf1mc",
+            ":hover_color": color == null ? null : "xtyu0qe",
             $$css: true
           }, {
             "--1ijzsae": color != null ? color : undefined
@@ -1342,12 +1342,12 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
-        _inject2(".x19dipnz{color:var(--color,revert)}", 3000);
+        _inject2(".xfx01vb{color:var(--color)}", 3000);
         _inject2(".x1mqxbix{color:black}", 3000);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: color == null ? null : "x19dipnz",
+            color: color == null ? null : "xfx01vb",
             $$css: true
           }, {
             "--color": color != null ? color : undefined
@@ -1374,10 +1374,10 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".xyv4n8w{--background-color:var(----background-color,revert)}", 1);
+        _inject2(".x15mgraa{--background-color:var(----background-color)}", 1);
         export const styles = {
           default: bgColor => [{
-            "--background-color": bgColor == null ? null : "xyv4n8w",
+            "--background-color": bgColor == null ? null : "x15mgraa",
             $$css: true
           }, {
             "----background-color": bgColor != null ? bgColor : undefined
@@ -1407,16 +1407,100 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".xrkmrrc{background-color:red}", 3000);
-        _inject2(".x9lz66z{color:var(--4xs81a,revert)}", 3000);
+        _inject2(".x1n25116{color:var(--4xs81a)}", 3000);
         _inject2("@media (min-width: 1000px){.xtljkjt.xtljkjt:hover{color:green}}", 3330);
         _inject2(".x17z2mba:hover{color:blue}", 3130);
         export const styles = {
           default: color => [{
             backgroundColor: "xrkmrrc",
-            color: "x9lz66z xtljkjt x17z2mba",
+            color: (color == null ? "" : "x1n25116 ") + "xtljkjt " + "x17z2mba",
             $$css: true
           }, {
             "--4xs81a": color != null ? color : undefined
+          }]
+        };"
+      `);
+    });
+    test('transforms functions with multiple dynamic values within conditional values', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (color) => ({
+              backgroundColor: 'red',
+              color: {
+                default: color,
+                ':hover': {
+                  '@media (min-width: 1000px)': 'green',
+                  default: 'color-mix(' + color + ', blue)',
+                }
+              },
+            }),
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xrkmrrc{background-color:red}", 3000);
+        _inject2(".x1n25116{color:var(--4xs81a)}", 3000);
+        _inject2("@media (min-width: 1000px){.xtljkjt.xtljkjt:hover{color:green}}", 3330);
+        _inject2(".x1d4gdy3:hover{color:var(--w5m4kq)}", 3130);
+        export const styles = {
+          default: color => [{
+            backgroundColor: "xrkmrrc",
+            color: (color == null ? "" : "x1n25116 ") + "xtljkjt " + ('color-mix(' + color + ', blue)' == null ? "" : "x1d4gdy3"),
+            $$css: true
+          }, {
+            "--4xs81a": color != null ? color : undefined,
+            "--w5m4kq": 'color-mix(' + color + ', blue)' != null ? 'color-mix(' + color + ', blue)' : undefined
+          }]
+        };"
+      `);
+    });
+
+    test('transforms shorthands in legacy-expand-shorthands mode', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: (margin) => ({
+              backgroundColor: 'red',
+              margin: {
+                default: margin,
+                ':hover': margin + 4,
+              },
+              marginTop: margin - 4,
+            })
+          });
+        `,
+          { styleResolution: 'legacy-expand-shorthands' },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xrkmrrc{background-color:red}", 3000);
+        _inject2(".x1ie72y1{margin-right:var(--14mfytm)}", 3000, ".x1ie72y1{margin-left:var(--14mfytm)}");
+        _inject2(".x128459:hover{margin-right:var(--yepcm9)}", 3130, ".x128459:hover{margin-left:var(--yepcm9)}");
+        _inject2(".x1hvr6ea{margin-bottom:var(--14mfytm)}", 4000);
+        _inject2(".x3skgmg:hover{margin-bottom:var(--yepcm9)}", 4130);
+        _inject2(".x1k44ad6{margin-left:var(--14mfytm)}", 3000, ".x1k44ad6{margin-right:var(--14mfytm)}");
+        _inject2(".x10ktymb:hover{margin-left:var(--yepcm9)}", 3130, ".x10ktymb:hover{margin-right:var(--yepcm9)}");
+        _inject2(".x17zef60{margin-top:var(--marginTop)}", 4000);
+        export const styles = {
+          default: margin => [{
+            backgroundColor: "xrkmrrc",
+            marginEnd: (margin == null ? "" : "x1ie72y1 ") + (margin + 4 == null ? "" : "x128459"),
+            marginBottom: (margin == null ? "" : "x1hvr6ea ") + (margin + 4 == null ? "" : "x3skgmg"),
+            marginStart: (margin == null ? "" : "x1k44ad6 ") + (margin + 4 == null ? "" : "x10ktymb"),
+            marginTop: margin - 4 == null ? null : "x17zef60",
+            $$css: true
+          }, {
+            "--14mfytm": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin),
+            "--yepcm9": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin + 4),
+            "--marginTop": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin - 4)
           }]
         };"
       `);

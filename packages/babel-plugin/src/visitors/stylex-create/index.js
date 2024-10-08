@@ -29,6 +29,7 @@ import {
 import { messages } from '@stylexjs/shared';
 import * as pathUtils from '../../babel-path-utils';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
+import flatMapExpandedShorthands from '@stylexjs/shared/lib/preprocess-rules';
 
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
@@ -68,10 +69,6 @@ export default function transformStyleXCreate(
       >,
     > = path.get('arguments');
     const firstArg = args[0];
-
-    // TODO: This should be removed soon since we should disallow spreads without
-    // `stylex.include` in the future.
-    // preProcessStyleArg(firstArg, state);
 
     state.inStyleXCreate = true;
 
@@ -121,10 +118,8 @@ export default function transformStyleXCreate(
     }
     const plainObject = value;
     // eslint-disable-next-line prefer-const
-    let [compiledStyles, injectedStylesSansKeyframes] = stylexCreate(
-      plainObject,
-      state.options,
-    );
+    let [compiledStyles, injectedStylesSansKeyframes, classPathsPerNamespace] =
+      stylexCreate(plainObject, state.options);
 
     const injectedStyles = {
       ...injectedKeyframes,
@@ -169,21 +164,34 @@ export default function transformStyleXCreate(
           if (key != null && Object.keys(fns).includes(key)) {
             const [params, inlineStyles] = fns[key];
 
-            const singleValueDynamicStyles: {
-              +[string]: t.Expression,
-            } = Object.fromEntries(
-              Object.entries(inlineStyles)
-                .filter(
-                  ([_key, v]) =>
-                    v.path.length === 1 ||
-                    (v.path.length === 2 &&
-                      (v.path[0].startsWith(':') || v.path[0].startsWith('@'))),
+            const origClassPaths: { [string]: string } = {};
+
+            for (const [className, classPaths] of Object.entries(
+              classPathsPerNamespace[key],
+            )) {
+              origClassPaths[className] = classPaths.join('_');
+            }
+
+            let dynamicStyles: $ReadOnlyArray<{
+              +expression: t.Expression,
+              +key: string,
+              path: string,
+            }> = Object.entries(inlineStyles).map(([_key, v]) => ({
+              expression: v.originalExpression,
+              key: v.path
+                .slice(
+                  0,
+                  v.path.findIndex(
+                    (p) => !p.startsWith(':') && !p.startsWith('@'),
+                  ) + 1,
                 )
-                .map(([_key, v]) => [
-                  v.path.length === 1 ? v.path[0] : v.path.join('_'),
-                  v.originalExpression,
-                ]),
-            );
+                .join('_'),
+              path: v.path.join('_'),
+            }));
+
+            if (state.options.styleResolution === 'legacy-expand-shorthands') {
+              dynamicStyles = legacyExpandShorthands(dynamicStyles);
+            }
 
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
@@ -200,16 +208,64 @@ export default function transformStyleXCreate(
                       ? objProp.key.value
                       : null;
 
-                if (
-                  propKey != null &&
-                  singleValueDynamicStyles[propKey] != null
-                ) {
-                  const expr: t.Expression = singleValueDynamicStyles[propKey];
-                  objProp.value = t.conditionalExpression(
-                    t.binaryExpression('==', expr, t.nullLiteral()),
-                    t.nullLiteral(),
-                    objProp.value as $FlowFixMe,
+                if (propKey != null) {
+                  const dynamicMatch = dynamicStyles.filter(
+                    ({ key }) => key === propKey,
                   );
+                  if (dynamicMatch.length > 0) {
+                    const value = objProp.value;
+                    if (t.isStringLiteral(value)) {
+                      const classList = value.value.split(' ');
+                      if (classList.length === 1) {
+                        const cls = classList[0];
+                        const expr = dynamicMatch.find(
+                          ({ path }) => origClassPaths[cls] === path,
+                        )?.expression;
+                        if (expr != null) {
+                          objProp.value = t.conditionalExpression(
+                            t.binaryExpression('==', expr, t.nullLiteral()),
+                            t.nullLiteral(),
+                            value,
+                          );
+                        }
+                      } else if (
+                        classList.some((cls) =>
+                          dynamicMatch.find(
+                            ({ path }) => origClassPaths[cls] === path,
+                          ),
+                        )
+                      ) {
+                        const exprArray: $ReadOnlyArray<t.Expression> =
+                          classList.map((cls, index) => {
+                            const expr = dynamicMatch.find(
+                              ({ path }) => origClassPaths[cls] === path,
+                            )?.expression;
+                            const suffix =
+                              index === classList.length - 1 ? '' : ' ';
+                            if (expr != null) {
+                              return t.conditionalExpression(
+                                t.binaryExpression('==', expr, t.nullLiteral()),
+                                t.stringLiteral(''),
+                                t.stringLiteral(cls + suffix),
+                              );
+                            }
+                            return t.stringLiteral(cls + suffix);
+                          });
+
+                        const [first, ...rest] = exprArray;
+
+                        objProp.value = rest.reduce(
+                          (
+                            acc: t.Expression,
+                            curr: t.Expression,
+                          ): t.Expression => {
+                            return t.binaryExpression('+', acc, curr);
+                          },
+                          first as t.Expression,
+                        );
+                      }
+                    }
+                  }
                 }
 
                 return objProp;
@@ -281,4 +337,43 @@ function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
     throw new Error('Unexpected Path found that is not part of the AST.');
   }
   return findNearestStatementAncestor(path.parentPath);
+}
+
+function legacyExpandShorthands(
+  dynamicStyles: $ReadOnlyArray<{
+    +expression: t.Expression,
+    +key: string,
+    path: string,
+  }>,
+): $ReadOnlyArray<{
+  +expression: t.Expression,
+  +key: string,
+  path: string,
+}> {
+  const expandedKeysToKeyPaths = dynamicStyles
+    .flatMap(({ key }, i) => {
+      return flatMapExpandedShorthands([key, 'p' + i], {
+        styleResolution: 'legacy-expand-shorthands',
+      });
+    })
+    .map(([key, value]) => {
+      if (typeof value !== 'string') {
+        return null;
+      }
+      const index = parseInt(value.slice(1), 10);
+      const thatDynStyle = dynamicStyles[index];
+      return {
+        ...thatDynStyle,
+        key,
+        path:
+          thatDynStyle.path === thatDynStyle.key
+            ? key
+            : thatDynStyle.path.includes(thatDynStyle.key + '_')
+              ? thatDynStyle.path.replace(thatDynStyle.key + '_', key + '_')
+              : thatDynStyle.path.replace('_' + thatDynStyle.key, '_' + key),
+      };
+    })
+    .filter(Boolean);
+
+  return expandedKeysToKeyPaths;
 }

@@ -13,7 +13,13 @@ import type { IncludedStyles } from '../stylex-include';
 import { convertStyleToClassName } from '../convert-to-className';
 import { arrayEquals, arraySort } from '../utils/object-utils';
 
-export type ComputedStyle = null | $ReadOnly<[string, InjectableStyle]>;
+export type ClassesToOriginalPaths = {
+  +[className: string]: $ReadOnlyArray<string>,
+};
+
+export type ComputedStyle = null | $ReadOnly<
+  [string, InjectableStyle, ClassesToOriginalPaths],
+>;
 
 // The classes in this file are used to represent objects that
 // can be compiled into one or CSS rules.
@@ -74,29 +80,38 @@ const stringComparator = (a: string, b: string): number => {
 export class PreRule implements IPreRule {
   +property: string;
   +value: string | number | $ReadOnlyArray<string | number>;
-  +pseudos: $ReadOnlyArray<string>;
-  +atRules: $ReadOnlyArray<string>;
+  +keyPath: $ReadOnlyArray<string>;
 
   constructor(
     property: string,
     value: string | number | $ReadOnlyArray<string | number>,
-    pseudos?: ?$ReadOnlyArray<string>,
-    atRules?: ?$ReadOnlyArray<string>,
+    keyPath?: $ReadOnlyArray<string>,
   ) {
     this.property = property;
+    this.keyPath = keyPath ?? [];
     this.value = value;
-    this.pseudos = pseudos ? arraySort(pseudos, stringComparator) : [];
-    this.atRules = atRules ? arraySort(atRules) : [];
   }
 
-  compiled(options: StyleXOptions): $ReadOnlyArray<[string, InjectableStyle]> {
+  get pseudos(): $ReadOnlyArray<string> {
+    const unsortedPseudos = this.keyPath.filter((key) => key.startsWith(':'));
+    return arraySort(unsortedPseudos, stringComparator);
+  }
+
+  get atRules(): $ReadOnlyArray<string> {
+    const unsortedAtRules = this.keyPath.filter((key) => key.startsWith('@'));
+    return arraySort(unsortedAtRules);
+  }
+
+  compiled(
+    options: StyleXOptions,
+  ): $ReadOnlyArray<[string, InjectableStyle, ClassesToOriginalPaths]> {
     const [_key, className, rule] = convertStyleToClassName(
       [this.property, this.value],
       this.pseudos ?? [],
       this.atRules ?? [],
       options,
     );
-    return [[className, rule]];
+    return [[className, rule, { [className]: this.keyPath }]];
   }
 
   equals(other: IPreRule): boolean {
