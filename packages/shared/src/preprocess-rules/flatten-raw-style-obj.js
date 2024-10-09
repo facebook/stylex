@@ -24,13 +24,12 @@ export function flattenRawStyleObject(
   style: RawStyles,
   options: StyleXOptions,
 ): $ReadOnlyArray<$ReadOnly<[string, IPreRule]>> {
-  return _flattenRawStyleObject(style, [], [], options);
+  return _flattenRawStyleObject(style, [], options);
 }
 
 export function _flattenRawStyleObject(
   style: RawStyles,
-  pseudos: $ReadOnlyArray<string>,
-  atRules: $ReadOnlyArray<string>,
+  keyPath: $ReadOnlyArray<string>,
   options: StyleXOptions,
 ): Array<$ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>> {
   const flattened: Array<
@@ -62,7 +61,13 @@ export function _flattenRawStyleObject(
         } else {
           flattened.push([
             property,
-            new PreRule(property, value, pseudos, atRules),
+            new PreRule(
+              property,
+              value,
+              keyPath.includes(key)
+                ? keyPath.map((k) => (k === key ? property : k))
+                : [...keyPath, property],
+            ),
           ]);
         }
       }
@@ -71,6 +76,9 @@ export function _flattenRawStyleObject(
 
     // Fallback Styles
     if (Array.isArray(value)) {
+      // Step 1: Expand properties to its constituent parts
+      // Collect the various values for each value in the array
+      // that belongs to the same property.
       const equivalentPairs: {
         [string]: Array<null | string | number>,
       } = {};
@@ -109,7 +117,13 @@ export function _flattenRawStyleObject(
           } else {
             flattened.push([
               property,
-              new PreRule(property, value, pseudos, atRules),
+              new PreRule(
+                property,
+                value,
+                keyPath.includes(_key)
+                  ? keyPath.map((k) => (k === _key ? property : k))
+                  : [...keyPath, property],
+              ),
             ]);
           }
         });
@@ -126,18 +140,9 @@ export function _flattenRawStyleObject(
       for (const condition in value) {
         const innerValue = value[condition];
 
-        const pseudosToPassDown = [...pseudos];
-        const atRulesToPassDown = [...atRules];
-        if (condition.startsWith(':')) {
-          pseudosToPassDown.push(condition);
-        } else if (condition.startsWith('@')) {
-          atRulesToPassDown.push(condition);
-        }
-
         const pairs = _flattenRawStyleObject(
           { [key]: innerValue },
-          pseudosToPassDown,
-          atRulesToPassDown,
+          keyPath.length > 0 ? [...keyPath, condition] : [key, condition],
           options,
         );
         for (const [property, preRule] of pairs) {
@@ -169,19 +174,7 @@ export function _flattenRawStyleObject(
       typeof value === 'object' &&
       (key.startsWith(':') || key.startsWith('@'))
     ) {
-      const pseudosToPassDown = [...pseudos];
-      const atRulesToPassDown = [...atRules];
-      if (key.startsWith(':')) {
-        pseudosToPassDown.push(key);
-      } else if (key.startsWith('@')) {
-        atRulesToPassDown.push(key);
-      }
-      const pairs = _flattenRawStyleObject(
-        value,
-        pseudosToPassDown,
-        atRulesToPassDown,
-        options,
-      );
+      const pairs = _flattenRawStyleObject(value, [...keyPath, _key], options);
       for (const [property, preRule] of pairs) {
         flattened.push([key + '_' + property, preRule]);
       }
