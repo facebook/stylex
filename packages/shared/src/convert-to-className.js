@@ -29,7 +29,7 @@ export function convertStyleToClassName(
   atRules: $ReadOnlyArray<string>,
   options: StyleXOptions = defaultOptions,
 ): StyleRule {
-  const { classNamePrefix = 'x' } = options;
+  const { classNamePrefix = 'x', dev = false } = options;
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
 
@@ -58,7 +58,9 @@ export function convertStyleToClassName(
 
   // NOTE: '<>' is used to keep existing hashes stable.
   // This should be removed in a future version.
-  const className = classNamePrefix + createHash('<>' + stringToHash);
+  const className = dev
+    ? `${classNamePrefix}${dashedKey}_${createHash('<>' + stringToHash)}`
+    : classNamePrefix + createHash('<>' + stringToHash);
 
   const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
 
