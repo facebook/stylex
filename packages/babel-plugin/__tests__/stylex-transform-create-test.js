@@ -697,6 +697,139 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1en94km::-webkit-slider-thumb, .x1en94km::-moz-range-thumb, .x1en94km::-ms-thumb{width:16px}", 9000);"
         `);
       });
+
+      test('transforms pseudo class within a pseudo element', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            export const styles = stylex.create({
+              foo: {
+                '::before': {
+                  color: {
+                    default: 'red',
+                    ':hover': 'blue',
+                  }
+                },
+              },
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x16oeupf::before{color:red}", 8000);
+          _inject2(".xeb2lg0::before:hover{color:blue}", 8130);
+          export const styles = {
+            foo: {
+              "::before_color": "x16oeupf xeb2lg0",
+              $$css: true
+            }
+          };"
+        `);
+      });
+
+      test('transforms legacy pseudo class within a pseudo element', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            export const styles = stylex.create({
+              foo: {
+                '::before': {
+                  color: 'red',
+                  ':hover': {
+                    color: 'blue',
+                  },
+                },
+              },
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x16oeupf::before{color:red}", 8000);
+          _inject2(".xeb2lg0::before:hover{color:blue}", 8130);
+          export const styles = {
+            foo: {
+              "::before_color": "x16oeupf",
+              "::before_:hover_color": "xeb2lg0",
+              $$css: true
+            }
+          };"
+        `);
+      });
+
+      test('transforms pseudo elements within legeacy pseudo class', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            export const styles = stylex.create({
+              foo: {
+                '::before': {
+                  color: 'red',
+                },
+                ':hover': {
+                  '::before': {
+                    color: 'blue',
+                  },
+                },
+              },
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x16oeupf::before{color:red}", 8000);
+          _inject2(".xeb2lg0:hover::before{color:blue}", 8130);
+          export const styles = {
+            foo: {
+              "::before_color": "x16oeupf",
+              ":hover_::before_color": "xeb2lg0",
+              $$css: true
+            }
+          };"
+        `);
+      });
+
+      test('transforms pseudo elements sandwiched within pseudo classes', () => {
+        expect(
+          transform(`
+            import stylex from 'stylex';
+            export const styles = stylex.create({
+              foo: {
+                '::before': {
+                  color: 'red',
+                },
+                ':hover': {
+                  '::before': {
+                    color: {
+                      default: 'blue',
+                      ':hover': 'green',
+                      ':active': 'purple',
+                    },
+                  },
+                },
+              },
+            });
+          `),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x16oeupf::before{color:red}", 8000);
+          _inject2(".xeb2lg0:hover::before{color:blue}", 8130);
+          _inject2(".x18ezmze:hover::before:hover{color:green}", 8260);
+          _inject2(".xnj3kot:hover::before:active{color:purple}", 8300);
+          export const styles = {
+            foo: {
+              "::before_color": "x16oeupf",
+              ":hover_::before_color": "xeb2lg0 x18ezmze xnj3kot",
+              $$css: true
+            }
+          };"
+        `);
+      });
     });
 
     describe('queries', () => {
