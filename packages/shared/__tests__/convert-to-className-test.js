@@ -18,6 +18,31 @@ describe('convert-to-className test', () => {
   test('converts style to className', () => {
     expect(convert(['margin', 10])).toEqual('margin:10px');
   });
+  test('prefixes classname with property name when options.dev is true', () => {
+    const options = {
+      classNamePrefix: 'x',
+      dev: true,
+      styleResolution: 'application-order',
+      test: false,
+      useRemForFontSize: false,
+    };
+    const result = convertStyleToClassName(['margin', 10], [], [], options);
+    const className = result[1];
+    expect(className.startsWith('xmargin_')).toBe(true);
+  });
+  test('prefixes classname with prefer only when options.dev is false', () => {
+    const options = {
+      classNamePrefix: 'x',
+      dev: false,
+      styleResolution: 'application-order',
+      test: false,
+      useRemForFontSize: false,
+    };
+    const result = convertStyleToClassName(['margin', 10], [], [], options);
+    const className = result[1];
+    expect(className.startsWith('x')).toBe(true);
+    expect(className.startsWith('xmargin_')).toBe(false);
+  });
   test('converts margin number to px', () => {
     expect(convert(['margin', 10])).toEqual('margin:10px');
   });
