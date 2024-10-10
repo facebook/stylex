@@ -77,6 +77,38 @@ const stringComparator = (a: string, b: string): number => {
   return a.localeCompare(b);
 };
 
+const sortPseudos = (
+  pseudos: $ReadOnlyArray<string>,
+): $ReadOnlyArray<string> => {
+  if (pseudos.length < 2) {
+    return pseudos;
+  }
+
+  return pseudos
+    .reduce(
+      (acc, pseudo) => {
+        if (pseudo.startsWith('::')) {
+          return [...acc, pseudo];
+        }
+
+        const lastElement = acc[acc.length - 1];
+        const allButLast = acc.slice(0, acc.length - 1);
+        if (Array.isArray(lastElement)) {
+          return [...allButLast, [...lastElement, pseudo]];
+        } else {
+          return [...allButLast, lastElement, [pseudo]].filter(Boolean);
+        }
+      },
+      [] as $ReadOnlyArray<string | $ReadOnlyArray<string>>,
+    )
+    .flatMap((pseudo) => {
+      if (Array.isArray(pseudo)) {
+        return arraySort(pseudo, stringComparator);
+      }
+      return [pseudo];
+    });
+};
+
 export class PreRule implements IPreRule {
   +property: string;
   +value: string | number | $ReadOnlyArray<string | number>;
@@ -94,7 +126,9 @@ export class PreRule implements IPreRule {
 
   get pseudos(): $ReadOnlyArray<string> {
     const unsortedPseudos = this.keyPath.filter((key) => key.startsWith(':'));
-    return arraySort(unsortedPseudos, stringComparator);
+
+    return sortPseudos(unsortedPseudos);
+    // return arraySort(unsortedPseudos, stringComparator);
   }
 
   get atRules(): $ReadOnlyArray<string> {

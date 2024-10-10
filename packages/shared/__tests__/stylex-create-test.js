@@ -516,6 +516,185 @@ describe('stylex-create-test', () => {
     `);
   });
 
+  test('transforms nested pseudo-classes within pseudo elements', () => {
+    expect(
+      styleXCreate({
+        default: {
+          '::before': {
+            color: {
+              default: 'red',
+              ':hover': 'blue',
+            },
+          },
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "::before_color": "x16oeupf xeb2lg0",
+          },
+        },
+        {
+          "x16oeupf": {
+            "ltr": ".x16oeupf::before{color:red}",
+            "priority": 8000,
+            "rtl": null,
+          },
+          "xeb2lg0": {
+            "ltr": ".xeb2lg0::before:hover{color:blue}",
+            "priority": 8130,
+            "rtl": null,
+          },
+        },
+        {
+          "default": {
+            "x16oeupf": [
+              "::before",
+              "default",
+              "color",
+            ],
+            "xeb2lg0": [
+              "::before",
+              ":hover",
+              "color",
+            ],
+          },
+        },
+      ]
+    `);
+  });
+
+  test('transforms nested legacy pseudo-classes within pseudo elements', () => {
+    expect(
+      styleXCreate({
+        default: {
+          '::before': {
+            color: 'red',
+            ':hover': {
+              color: 'blue',
+            },
+          },
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "::before_:hover_color": "xeb2lg0",
+            "::before_color": "x16oeupf",
+          },
+        },
+        {
+          "x16oeupf": {
+            "ltr": ".x16oeupf::before{color:red}",
+            "priority": 8000,
+            "rtl": null,
+          },
+          "xeb2lg0": {
+            "ltr": ".xeb2lg0::before:hover{color:blue}",
+            "priority": 8130,
+            "rtl": null,
+          },
+        },
+        {
+          "default": {
+            "x16oeupf": [
+              "::before",
+              "color",
+            ],
+            "xeb2lg0": [
+              "::before",
+              ":hover",
+              "color",
+            ],
+          },
+        },
+      ]
+    `);
+  });
+
+  test('transforms nested pseudo-element within legacy pseudo class', () => {
+    expect(
+      styleXCreate({
+        default: {
+          '::before': {
+            color: 'blue',
+          },
+          ':hover': {
+            '::before': {
+              color: {
+                default: 'red',
+                ':hover': 'green',
+                ':active': 'yellow',
+              },
+            },
+          },
+        },
+      }),
+    ).toMatchInlineSnapshot(`
+      [
+        {
+          "default": {
+            "$$css": true,
+            "::before_color": "xvg9oe5",
+            ":hover_::before_color": "x1qdmp1q x18ezmze x14o3fp0",
+          },
+        },
+        {
+          "x14o3fp0": {
+            "ltr": ".x14o3fp0:hover::before:active{color:yellow}",
+            "priority": 8300,
+            "rtl": null,
+          },
+          "x18ezmze": {
+            "ltr": ".x18ezmze:hover::before:hover{color:green}",
+            "priority": 8260,
+            "rtl": null,
+          },
+          "x1qdmp1q": {
+            "ltr": ".x1qdmp1q:hover::before{color:red}",
+            "priority": 8130,
+            "rtl": null,
+          },
+          "xvg9oe5": {
+            "ltr": ".xvg9oe5::before{color:blue}",
+            "priority": 8000,
+            "rtl": null,
+          },
+        },
+        {
+          "default": {
+            "x14o3fp0": [
+              ":hover",
+              "::before",
+              ":active",
+              "color",
+            ],
+            "x18ezmze": [
+              ":hover",
+              "::before",
+              ":hover",
+              "color",
+            ],
+            "x1qdmp1q": [
+              ":hover",
+              "::before",
+              "default",
+              "color",
+            ],
+            "xvg9oe5": [
+              "::before",
+              "color",
+            ],
+          },
+        },
+      ]
+    `);
+  });
+
   // This API will not launch as an array, but internally we can continue to use arrays
   test('transforms array values as fallbacks', () => {
     expect(
