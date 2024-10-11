@@ -1,0 +1,24 @@
+{
+  "name": "@stylexjs/style-value-parser",
+  "version": "0.8.0",
+  "main": "lib/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "babel src/ --out-dir lib/ --ignore '**/__tests__/**'",
+    "test": "jest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@stylexjs/scripts": "0.8.0"
+  },
+  "jest": {
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    }
+  },
+  "files": [
+    "lib/*"
+  ]
+}
