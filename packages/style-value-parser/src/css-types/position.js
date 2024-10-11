@@ -10,13 +10,13 @@
 import { Parser } from '../core';
 import { type LengthPercentage, lengthPercentage } from './length-percentage';
 
-type HorizonalKeyword = 'left' | 'center' | 'right';
+type HorizontalKeyword = 'left' | 'center' | 'right';
 type VerticalKeyword = 'top' | 'center' | 'bottom';
 
 type Horizontal =
   | LengthPercentage
-  | HorizonalKeyword
-  | [HorizonalKeyword, LengthPercentage];
+  | HorizontalKeyword
+  | [HorizontalKeyword, LengthPercentage];
 type Vertical =
   | LengthPercentage
   | VerticalKeyword
