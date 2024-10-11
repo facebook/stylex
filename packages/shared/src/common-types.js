@@ -43,6 +43,7 @@ export type FlatCompiledStyles = $ReadOnly<{
 
 export type StyleXOptions = $ReadOnly<{
   dev: boolean,
+  debug: ?boolean,
   test: boolean,
   useRemForFontSize: boolean,
   classNamePrefix: string,
