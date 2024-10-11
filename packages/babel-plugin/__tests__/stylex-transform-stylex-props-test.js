@@ -833,9 +833,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1e2nbdu{color:red}", 3000);
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
           ({
-            className: "FooBar__styles.default x1e2nbdu"
+            className: "FooBar__styles.default color-x1e2nbdu"
           });"
         `);
       });
@@ -868,14 +868,14 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1e2nbdu{color:red}", 3000);
-          _inject2(".x1t391ir{background-color:blue}", 3000);
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          _inject2(".backgroundColor-x1t391ir{background-color:blue}", 3000);
           ({
             0: {
-              className: "FooBar__styles.default x1e2nbdu"
+              className: "FooBar__styles.default color-x1e2nbdu"
             },
             1: {
-              className: "FooBar__styles.default x1e2nbdu FooBar__otherStyles.default x1t391ir"
+              className: "FooBar__styles.default color-x1e2nbdu FooBar__otherStyles.default backgroundColor-x1t391ir"
             }
           })[!!isActive << 0];"
         `);
@@ -908,19 +908,19 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1e2nbdu{color:red}", 3000);
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
           const styles = {
             default: {
               "FooBar__styles.default": "FooBar__styles.default",
-              color: "x1e2nbdu",
+              color: "color-x1e2nbdu",
               $$css: true
             }
           };
-          _inject2(".x1t391ir{background-color:blue}", 3000);
+          _inject2(".backgroundColor-x1t391ir{background-color:blue}", 3000);
           const otherStyles = {
             default: {
               "FooBar__otherStyles.default": "FooBar__otherStyles.default",
-              backgroundColor: "x1t391ir",
+              backgroundColor: "backgroundColor-x1t391ir",
               $$css: true
             }
           };
@@ -955,14 +955,14 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1e2nbdu{color:red}", 3000);
-          _inject2(".xju2f9n{color:blue}", 3000);
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          _inject2(".color-xju2f9n{color:blue}", 3000);
           ({
             0: {
-              className: "FooBar__styles.default x1e2nbdu"
+              className: "FooBar__styles.default color-x1e2nbdu"
             },
             1: {
-              className: "FooBar__styles.default FooBar__styles.active xju2f9n"
+              className: "FooBar__styles.default FooBar__styles.active color-xju2f9n"
             }
           })[!!isActive << 0];"
         `);
@@ -1284,23 +1284,23 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from '@stylexjs/stylex';
-        _inject2(".x9f619{box-sizing:border-box}", 3000);
-        _inject2(".x1yc5d2u{grid-area:sidebar}", 1000);
-        _inject2(".x1fdo2jl{grid-area:content}", 1000);
-        _inject2(".xrvj5dj{display:grid}", 3000);
-        _inject2(".x7k18q3{grid-template-rows:100%}", 3000);
-        _inject2(".x5gp9wm{grid-template-areas:\\"content\\"}", 2000);
-        _inject2(".x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 3000);
-        _inject2(".x17lh93j{grid-template-areas:\\"sidebar content\\"}", 2000);
-        _inject2("@media (max-width: 640px){.xmr4b4k.xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 3200);
-        _inject2("@media (max-width: 640px){.xesbpuc.xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2200);
-        _inject2("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 3200);
-        _inject2(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
+        _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
+        _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
+        _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
+        _inject2(".display-xrvj5dj{display:grid}", 3000);
+        _inject2(".gridTemplateRows-x7k18q3{grid-template-rows:100%}", 3000);
+        _inject2(".gridTemplateAreas-x5gp9wm{grid-template-areas:\\"content\\"}", 2000);
+        _inject2(".gridTemplateColumns-x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 3000);
+        _inject2(".gridTemplateAreas-x17lh93j{grid-template-areas:\\"sidebar content\\"}", 2000);
+        _inject2("@media (max-width: 640px){.gridTemplateRows-xmr4b4k.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 3200);
+        _inject2("@media (max-width: 640px){.gridTemplateAreas-xesbpuc.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2200);
+        _inject2("@media (max-width: 640px){.gridTemplateColumns-x15nfgh4.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}", 3200);
+        _inject2(".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         export const styles = {
           sidebar: {
             "UnknownFile__styles.sidebar": "UnknownFile__styles.sidebar",
-            boxSizing: "x9f619",
-            gridArea: "x1yc5d2u",
+            boxSizing: "boxSizing-x9f619",
+            gridArea: "gridArea-x1yc5d2u",
             gridRow: null,
             gridRowStart: null,
             gridRowEnd: null,
@@ -1311,7 +1311,7 @@ describe('@stylexjs/babel-plugin', () => {
           },
           content: {
             "UnknownFile__styles.content": "UnknownFile__styles.content",
-            gridArea: "x1fdo2jl",
+            gridArea: "gridArea-x1fdo2jl",
             gridRow: null,
             gridRowStart: null,
             gridRowEnd: null,
@@ -1322,33 +1322,33 @@ describe('@stylexjs/babel-plugin', () => {
           },
           root: {
             "UnknownFile__styles.root": "UnknownFile__styles.root",
-            display: "xrvj5dj",
-            gridTemplateRows: "x7k18q3",
-            gridTemplateAreas: "x5gp9wm",
+            display: "display-xrvj5dj",
+            gridTemplateRows: "gridTemplateRows-x7k18q3",
+            gridTemplateAreas: "gridTemplateAreas-x5gp9wm",
             $$css: true
           },
           withSidebar: {
             "UnknownFile__styles.withSidebar": "UnknownFile__styles.withSidebar",
-            gridTemplateColumns: "x1rkzygb",
-            gridTemplateRows: "x7k18q3",
-            gridTemplateAreas: "x17lh93j",
-            "@media (max-width: 640px)_gridTemplateRows": "xmr4b4k",
-            "@media (max-width: 640px)_gridTemplateAreas": "xesbpuc",
-            "@media (max-width: 640px)_gridTemplateColumns": "x15nfgh4",
+            gridTemplateColumns: "gridTemplateColumns-x1rkzygb",
+            gridTemplateRows: "gridTemplateRows-x7k18q3",
+            gridTemplateAreas: "gridTemplateAreas-x17lh93j",
+            "@media (max-width: 640px)_gridTemplateRows": "gridTemplateRows-xmr4b4k",
+            "@media (max-width: 640px)_gridTemplateAreas": "gridTemplateAreas-xesbpuc",
+            "@media (max-width: 640px)_gridTemplateColumns": "gridTemplateColumns-x15nfgh4",
             $$css: true
           },
           noSidebar: {
             "UnknownFile__styles.noSidebar": "UnknownFile__styles.noSidebar",
-            gridTemplateColumns: "x1mkdm3x",
+            gridTemplateColumns: "gridTemplateColumns-x1mkdm3x",
             $$css: true
           }
         };
         ({
           0: {
-            className: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4"
+            className: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
           },
           1: {
-            className: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x"
+            className: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x"
           }
         })[!!(sidebar == null) << 0];"
       `);
@@ -1399,42 +1399,42 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from '@stylexjs/stylex';
-        _inject2(".x9f619{box-sizing:border-box}", 3000);
-        _inject2(".x1yc5d2u{grid-area:sidebar}", 1000);
-        _inject2(".x1fdo2jl{grid-area:content}", 1000);
-        _inject2(".xrvj5dj{display:grid}", 3000);
-        _inject2(".x7k18q3{grid-template-rows:100%}", 3000);
-        _inject2(".x5gp9wm{grid-template-areas:\\"content\\"}", 2000);
-        _inject2(".x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 3000);
-        _inject2(".x17lh93j{grid-template-areas:\\"sidebar content\\"}", 2000);
-        _inject2("@media (max-width: 640px){.xmr4b4k.xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 3200);
-        _inject2("@media (max-width: 640px){.xesbpuc.xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2200);
-        _inject2("@media (max-width: 640px){.x15nfgh4.x15nfgh4{grid-template-columns:100%}}", 3200);
-        _inject2(".x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
+        _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
+        _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
+        _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
+        _inject2(".display-xrvj5dj{display:grid}", 3000);
+        _inject2(".gridTemplateRows-x7k18q3{grid-template-rows:100%}", 3000);
+        _inject2(".gridTemplateAreas-x5gp9wm{grid-template-areas:\\"content\\"}", 2000);
+        _inject2(".gridTemplateColumns-x1rkzygb{grid-template-columns:auto minmax(0,1fr)}", 3000);
+        _inject2(".gridTemplateAreas-x17lh93j{grid-template-areas:\\"sidebar content\\"}", 2000);
+        _inject2("@media (max-width: 640px){.gridTemplateRows-xmr4b4k.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}", 3200);
+        _inject2("@media (max-width: 640px){.gridTemplateAreas-xesbpuc.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}", 2200);
+        _inject2("@media (max-width: 640px){.gridTemplateColumns-x15nfgh4.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}", 3200);
+        _inject2(".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         const complex = {
           0: {
-            className: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4"
+            className: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
           },
           4: {
-            className: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x"
+            className: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x"
           },
           2: {
-            className: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.sidebar x9f619 x1yc5d2u"
+            className: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 UnknownFile__styles.sidebar boxSizing-x9f619 gridArea-x1yc5d2u"
           },
           6: {
-            className: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.sidebar x9f619 x1yc5d2u"
+            className: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x UnknownFile__styles.sidebar boxSizing-x9f619 gridArea-x1yc5d2u"
           },
           1: {
-            className: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.content x1fdo2jl"
+            className: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 UnknownFile__styles.content gridArea-x1fdo2jl"
           },
           5: {
-            className: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.content x1fdo2jl"
+            className: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x UnknownFile__styles.content gridArea-x1fdo2jl"
           },
           3: {
-            className: "UnknownFile__styles.root xrvj5dj UnknownFile__styles.withSidebar x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 UnknownFile__styles.sidebar x9f619 UnknownFile__styles.content x1fdo2jl"
+            className: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 UnknownFile__styles.sidebar boxSizing-x9f619 UnknownFile__styles.content gridArea-x1fdo2jl"
           },
           7: {
-            className: "UnknownFile__styles.root xrvj5dj x7k18q3 x5gp9wm UnknownFile__styles.noSidebar x1mkdm3x UnknownFile__styles.sidebar x9f619 UnknownFile__styles.content x1fdo2jl"
+            className: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x UnknownFile__styles.sidebar boxSizing-x9f619 UnknownFile__styles.content gridArea-x1fdo2jl"
           }
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);

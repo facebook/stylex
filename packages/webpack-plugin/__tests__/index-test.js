@@ -553,23 +553,23 @@ describe('webpack-plugin-stylex', () => {
           var _inject2 = _stylexInject.default;
           _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          _inject2(".xeuoslp{animation-name:xgnty7z-B}", 3000);
-          _inject2(".x78zum5{display:flex}", 3000);
-          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
-          _inject2(".xlrshdv{margin-top:99px}", 4000);
-          _inject2(".x1egiwwb{height:500px}", 4000);
-          _inject2(".x1oz5o6v:hover{background:red}", 1130);
+          _inject2(".animationName-xeuoslp{animation-name:xgnty7z-B}", 3000);
+          _inject2(".display-x78zum5{display:flex}", 3000);
+          _inject2(".marginInlineStart-x1hm9lzh{margin-inline-start:10px}", 3000);
+          _inject2(".marginTop-xlrshdv{margin-top:99px}", 4000);
+          _inject2(".height-x1egiwwb{height:500px}", 4000);
+          _inject2(".background-x1oz5o6v:hover{background:red}", 1130);
           var styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
-              animationName: "xeuoslp",
-              display: "x78zum5",
-              marginInlineStart: "x1hm9lzh",
+              animationName: "animationName-xeuoslp",
+              display: "display-x78zum5",
+              marginInlineStart: "marginInlineStart-x1hm9lzh",
               marginLeft: null,
               marginRight: null,
-              marginTop: "xlrshdv",
-              height: "x1egiwwb",
-              ":hover_background": "x1oz5o6v",
+              marginTop: "marginTop-xlrshdv",
+              height: "height-x1egiwwb",
+              ":hover_background": "background-x1oz5o6v",
               ":hover_backgroundAttachment": null,
               ":hover_backgroundClip": null,
               ":hover_backgroundColor": null,
@@ -613,13 +613,13 @@ describe('webpack-plugin-stylex', () => {
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
           function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
           var _inject2 = _stylexInject.default;
-          _inject2(".x1lliihq{display:block}", 3000);
-          _inject2(".xh8yej3{width:100%}", 4000);
+          _inject2(".display-x1lliihq{display:block}", 3000);
+          _inject2(".width-xh8yej3{width:100%}", 4000);
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
-              display: "x1lliihq",
-              width: "xh8yej3",
+              display: "display-x1lliihq",
+              width: "width-xh8yej3",
               $$css: true
             }
           };
@@ -709,15 +709,15 @@ describe('webpack-plugin-stylex', () => {
           var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
           function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
           var _inject2 = _stylexInject.default;
-          _inject2(".xt0psk2{display:inline}", 3000);
-          _inject2(".x1egiwwb{height:500px}", 4000);
-          _inject2(".x3hqpx7{width:50%}", 4000);
+          _inject2(".display-xt0psk2{display:inline}", 3000);
+          _inject2(".height-x1egiwwb{height:500px}", 4000);
+          _inject2(".width-x3hqpx7{width:50%}", 4000);
           const styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
-              display: "xt0psk2",
-              height: "x1egiwwb",
-              width: "x3hqpx7",
+              display: "display-xt0psk2",
+              height: "height-x1egiwwb",
+              width: "width-x3hqpx7",
               $$css: true
             }
           };

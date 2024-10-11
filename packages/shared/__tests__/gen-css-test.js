@@ -13,6 +13,7 @@ const options = {
   classNamePrefix: 'x',
   styleResolution: 'legacy-expand-shorthands',
   dev: false,
+  debug: false,
   useRemForFontSize: true,
   runtimeInjection: false,
   test: false,

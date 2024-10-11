@@ -153,6 +153,13 @@ export default class StateManager {
       'options.dev',
     );
 
+    const debug: StyleXStateOptions['debug'] = z.logAndDefault(
+      z.boolean(),
+      options.debug ?? dev,
+      false,
+      'options.debug',
+    );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
       options.test ?? false,
@@ -269,6 +276,7 @@ export default class StateManager {
     const opts: StyleXStateOptions = {
       aliases,
       dev,
+      debug,
       test,
       runtimeInjection,
       classNamePrefix,

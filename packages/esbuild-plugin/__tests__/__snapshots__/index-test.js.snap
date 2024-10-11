@@ -167,13 +167,13 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   var import_stylex_inject = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
   var import_stylex = __toESM(__require("@stylexjs/stylex"), 1);
   var _inject2 = import_stylex_inject.default;
-  _inject2(".xt0psk2{display:inline}", 3e3);
-  _inject2(".xh8yej3{width:100%}", 4e3);
+  _inject2(".display-xt0psk2{display:inline}", 3e3);
+  _inject2(".width-xh8yej3{width:100%}", 4e3);
   var fooStyles_default = {
     foo: {
       fooStyles__foo: "fooStyles__foo",
-      display: "xt0psk2",
-      width: "xh8yej3",
+      display: "display-xt0psk2",
+      width: "width-xh8yej3",
       $$css: true
     }
   };
@@ -182,15 +182,15 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   var import_stylex_inject2 = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
   var import_stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
   var _inject22 = import_stylex_inject2.default;
-  _inject22(".x1lliihq{display:block}", 3e3);
-  _inject22(".xnsd7bc{height:900px}", 4e3);
-  _inject22(".x3hqpx7{width:50%}", 4e3);
+  _inject22(".display-x1lliihq{display:block}", 3e3);
+  _inject22(".height-xnsd7bc{height:900px}", 4e3);
+  _inject22(".width-x3hqpx7{width:50%}", 4e3);
   var bazStyles_default = {
     baz: {
       bazStyles__baz: "bazStyles__baz",
-      display: "x1lliihq",
-      height: "xnsd7bc",
-      width: "x3hqpx7",
+      display: "display-x1lliihq",
+      height: "height-xnsd7bc",
+      width: "width-x3hqpx7",
       $$css: true
     }
   };
@@ -198,22 +198,22 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   // __tests__/__fixtures__/index.js
   var _inject23 = import_stylex_inject3.default;
   _inject23("@keyframes xekv6nw-B{0%{opacity:0;}100%{opacity:1;}}", 1);
-  _inject23(".x127lhb5{animation-name:xekv6nw-B}", 3e3);
-  _inject23(".x78zum5{display:flex}", 3e3);
-  _inject23(".x16ydxro{margin-left:10px}", 4e3);
-  _inject23(".x1xa6b72{height:700px}", 4e3);
-  _inject23(".xrkmrrc{background-color:red}", 3e3);
-  _inject23(".x1r3o6fz:hover{background-color:pink}", 3130);
+  _inject23(".animationName-x127lhb5{animation-name:xekv6nw-B}", 3e3);
+  _inject23(".display-x78zum5{display:flex}", 3e3);
+  _inject23(".marginLeft-x16ydxro{margin-left:10px}", 4e3);
+  _inject23(".height-x1xa6b72{height:700px}", 4e3);
+  _inject23(".backgroundColor-xrkmrrc{background-color:red}", 3e3);
+  _inject23(".backgroundColor-x1r3o6fz:hover{background-color:pink}", 3130);
   var styles = {
     bar: {
       "index__styles.bar": "index__styles.bar",
-      animationName: "x127lhb5",
-      display: "x78zum5",
-      marginLeft: "x16ydxro",
+      animationName: "animationName-x127lhb5",
+      display: "display-x78zum5",
+      marginLeft: "marginLeft-x16ydxro",
       marginInlineStart: null,
       marginInlineEnd: null,
-      height: "x1xa6b72",
-      backgroundColor: "xrkmrrc x1r3o6fz",
+      height: "height-x1xa6b72",
+      backgroundColor: "backgroundColor-xrkmrrc backgroundColor-x1r3o6fz",
       $$css: true
     }
   };
