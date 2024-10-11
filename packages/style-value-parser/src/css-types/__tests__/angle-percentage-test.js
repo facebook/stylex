@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { Angle, Deg, Rad, Grad, Turn } from '../Angle';
+import { Angle, Deg, Rad, Grad, Turn } from '../angle';
 import { Percentage } from '../common-types';
 import { SubString } from '../../base-types';
 
