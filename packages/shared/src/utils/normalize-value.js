@@ -20,6 +20,7 @@ import detectUnclosedFns from './normalizers/detect-unclosed-fns';
 import parser from 'postcss-value-parser';
 import convertCamelCaseValues from './normalizers/convert-camel-case-values';
 import type { StyleXOptions } from '../common-types';
+import * as styleParsers from '@stylexjs/style-value-parser';
 
 // `Timings` should be before `LeadingZero`, because it
 // changes 500ms to 0.5s, then `LeadingZero` makes it .5s
@@ -39,6 +40,24 @@ export default function normalizeValue(
   key: string,
   { useRemForFontSize }: StyleXOptions,
 ): string {
+  if (key in styleParsers.properties) {
+    const propName: $Keys<typeof styleParsers.properties> = key as $FlowFixMe;
+    try {
+      // Can throw an error
+      const parsedVal =
+        styleParsers.properties[propName].parse.parseToEnd(value);
+      return parsedVal.toString();
+    } catch (err) {
+      // UPDATE THIS TO DO BETTER LOGGING by improving error message.
+      /**
+       * The value for given property might be invalid
+       * Log both key and value
+       * Log the error
+       */
+      console.error(err);
+    }
+  }
+
   if (value == null) {
     return value;
   }

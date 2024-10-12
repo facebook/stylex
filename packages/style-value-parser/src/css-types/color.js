@@ -287,6 +287,9 @@ export class Rgba extends Color {
     this.a = a;
   }
   toString(): string {
+    if(this.a === 1) {
+      return `rgb(${this.r},${this.g},${this.b})`;
+    }
     return `rgba(${this.r},${this.g},${this.b},${this.a})`;
   }
   static get parse(): Parser<Rgba> {
@@ -296,7 +299,7 @@ export class Rgba extends Color {
     )
       .separatedBy(Parser.string(',').surroundedBy(Parser.whitespace.optional))
       .surroundedBy(Parser.whitespace.optional)
-      .surroundedBy(Parser.string('rgb('), Parser.string(')'))
+      .surroundedBy(Parser.string('rgba('), Parser.string(')'))
       .map(([[r, g, b], a]) => new Rgba(r, g, b, a));
 
     const spaceFn = Parser.sequence(
@@ -305,7 +308,7 @@ export class Rgba extends Color {
     )
       .separatedBy(Parser.string('/').surroundedBy(Parser.whitespace))
       .surroundedBy(Parser.whitespace.optional)
-      .surroundedBy(Parser.string('rgba('), Parser.string(')'))
+      .surroundedBy(Parser.string('rgb('), Parser.string(')'))
       .map(([[r, g, b], a]) => new Rgba(r, g, b, a));
 
     return Parser.oneOf(commaFn, spaceFn);

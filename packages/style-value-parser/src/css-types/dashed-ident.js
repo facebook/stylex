@@ -17,6 +17,10 @@ export class DashedIdentifier {
     this.value = value;
   }
 
+  toString(): string {
+    return this.value;
+  }
+
   static get parse(): Parser<DashedIdentifier> {
     return Parser.sequence(Parser.string('--'), CustomIdentifier.parse).map(
       ([dash, ident]) => new DashedIdentifier(dash + ident.value),
