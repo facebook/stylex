@@ -68,6 +68,11 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
 
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
+  namespaceToDevClassName: (
+    namespace: string,
+    varName: null | string,
+    filename: string,
+  ) => string,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
@@ -166,6 +171,14 @@ export default class StateManager {
       false,
       'options.test',
     );
+
+    const namespaceToDevClassName: StyleXOptions['namespaceToDevClassName'] =
+      z.logAndDefault(
+        z.func(),
+        options.namespaceToDevClassName ?? namespaceToDevClassNameDefault,
+        namespaceToDevClassNameDefault,
+        'options.namespaceToDevClassName',
+      );
 
     const configRuntimeInjection: StyleXOptions['runtimeInjection'] =
       z.logAndDefault(
@@ -278,6 +291,7 @@ export default class StateManager {
       dev,
       debug,
       test,
+      namespaceToDevClassName,
       runtimeInjection,
       classNamePrefix,
       importSources,
@@ -717,3 +731,18 @@ const getProgramStatement = (path: NodePath<>): NodePath<> => {
   }
   return programPath;
 };
+
+// TODO: We will need to maintain the full path to the file eventually
+// Perhaps this can be an option that is passed in.
+function namespaceToDevClassNameDefault(
+  namespace: string,
+  varName: null | string,
+  filename: string,
+): string {
+  // Get the basename of the file without the extension
+  const basename = path.basename(filename).split('.')[0];
+
+  // Build up the class name, and sanitize it of disallowed characters
+  const className = `${basename}__${varName ? `${varName}.` : ''}${namespace}`;
+  return className.replace(/[^.a-zA-Z0-9_-]/g, '');
+}
