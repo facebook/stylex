@@ -11,7 +11,10 @@ import { Parser } from '../core';
 import { Length, Px } from '../css-types/length';
 import { Color } from '../css-types/color';
 
-export class BoxShadow {
+/**
+ * MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/box-shadow
+ */
+export class BoxShadowSingle {
   +offsetX: Length;
   +offsetY: Length;
   +blurRadius: Length;
@@ -35,7 +38,20 @@ export class BoxShadow {
     this.inset = inset;
   }
 
-  static get parse(): Parser<BoxShadow> {
+  toString(): string {
+    return [
+      this.offsetX.toString(),
+      this.offsetY.toString(),
+      this.blurRadius.value === 0 ? null : this.blurRadius.toString(),
+      this.spreadRadius.value === 0 ? null : this.spreadRadius.toString(),
+      this.color.toString(),
+      this.inset ? 'inset' : null,
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+
+  static get parse(): Parser<BoxShadowSingle> {
     const outerShadow = Parser.sequence(
       Length.parse,
       Length.parse,
@@ -46,7 +62,7 @@ export class BoxShadow {
       .separatedBy(Parser.whitespace)
       .map(
         ([offsetX, offsetY, blurRadius, spreadRadius, color]) =>
-          new BoxShadow(
+          new BoxShadowSingle(
             offsetX,
             offsetY,
             blurRadius ?? new Px(0),
@@ -59,7 +75,7 @@ export class BoxShadow {
       .separatedBy(Parser.whitespace)
       .map(
         ([shadow, _inset]) =>
-          new BoxShadow(
+          new BoxShadowSingle(
             shadow.offsetX,
             shadow.offsetY,
             shadow.blurRadius,
@@ -73,16 +89,22 @@ export class BoxShadow {
   }
 }
 
-export class BoxShadowList {
-  +shadows: $ReadOnlyArray<BoxShadow>;
+export class BoxShadow {
+  +shadows: $ReadOnlyArray<BoxShadowSingle>;
 
-  constructor(shadows: $ReadOnlyArray<BoxShadow>) {
+  constructor(shadows: $ReadOnlyArray<BoxShadowSingle>) {
     this.shadows = shadows;
   }
 
-  static get parse(): Parser<BoxShadowList> {
-    return Parser.oneOrMore(BoxShadow.parse)
+  toString(): string {
+    return this.shadows.map((shadow) => shadow.toString()).join(', ');
+  }
+
+  static get parse(): Parser<BoxShadow> {
+    return Parser.oneOrMore(BoxShadowSingle.parse)
       .separatedBy(Parser.string(',').surroundedBy(Parser.whitespace.optional))
-      .map((shadows) => new BoxShadowList(shadows));
+      .map((shadows) => new BoxShadow(shadows));
   }
 }
+
+export const boxShadow = BoxShadow;
