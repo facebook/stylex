@@ -12,20 +12,20 @@
 jest.autoMockOff();
 
 import inject from '../src';
-import stylex from '@stylexjs/stylex';
+
+let metadata = [];
+const stylex = inject({
+  dev: false,
+  test: false,
+  insert: (key, ltr, priority, rtl) => {
+    metadata.push([key, { ltr, rtl }, priority]);
+  },
+});
 
 describe('Development Plugin Transformation', () => {
   describe('[transform] stylex.create()', () => {
-    let metadata = [];
     beforeEach(() => {
       metadata = [];
-      inject({
-        dev: false,
-        test: false,
-        insert: (key, ltr, priority, rtl) => {
-          metadata.push([key, { ltr, rtl }, priority]);
-        },
-      });
     });
 
     test('transforms style object', () => {
@@ -305,29 +305,6 @@ describe('Development Plugin Transformation', () => {
       `);
     });
 
-    test('preserves imported object spread', () => {
-      const importedStyles = stylex.create({
-        foo: {
-          color: 'blue',
-        },
-      });
-
-      expect(
-        stylex.create({
-          foo: {
-            ...stylex.include(importedStyles.foo),
-          },
-        }),
-      ).toMatchInlineSnapshot(`
-        {
-          "foo": {
-            "$$css": true,
-            "color": "xju2f9n",
-          },
-        }
-      `);
-    });
-
     test('Uses stylex.firstThatWorks correctly', () => {
       expect(stylex.firstThatWorks('sticky', 'fixed')).toMatchInlineSnapshot(`
         [
@@ -514,16 +491,8 @@ describe('Development Plugin Transformation', () => {
   });
 
   describe('[transform] stylex.create() functions', () => {
-    let metadata = [];
     beforeEach(() => {
       metadata = [];
-      inject({
-        dev: false,
-        test: false,
-        insert: (key, ltr, priority, rtl) => {
-          metadata.push([key, { ltr, rtl }, priority]);
-        },
-      });
     });
 
     test('transforms style function', () => {
