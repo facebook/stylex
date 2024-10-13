@@ -71,21 +71,28 @@ export class BoxShadowSingle {
           ),
       );
 
-    const insetShadow = Parser.setOf(outerShadow, Parser.string('inset'))
+    const insetShadow = Parser.sequence(
+      Length.parse,
+      Length.parse,
+      Length.parse.optional,
+      Length.parse.optional,
+      Color.parse,
+      Parser.string('inset'),
+    )
       .separatedBy(Parser.whitespace)
       .map(
-        ([shadow, _inset]) =>
+        ([offsetX, offsetY, blurRadius, spreadRadius, color, inset]) =>
           new BoxShadowSingle(
-            shadow.offsetX,
-            shadow.offsetY,
-            shadow.blurRadius,
-            shadow.spreadRadius,
-            shadow.color,
-            true,
+            offsetX,
+            offsetY,
+            blurRadius ?? new Px(0),
+            spreadRadius ?? new Px(0),
+            color,
+            inset === 'inset',
           ),
       );
 
-    return Parser.oneOf(outerShadow, insetShadow);
+    return Parser.oneOf(insetShadow, outerShadow);
   }
 }
 

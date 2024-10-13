@@ -217,9 +217,9 @@ export class HashColor extends Color {
   static parse: Parser<HashColor> = Parser.sequence(
     Parser.string('#'),
     Parser.oneOf(
-      Parser.regex(/[0-9a-fA-F]{3}/),
-      Parser.regex(/[0-9a-fA-F]{6}/),
       Parser.regex(/[0-9a-fA-F]{8}/),
+      Parser.regex(/[0-9a-fA-F]{6}/),
+      Parser.regex(/[0-9a-fA-F]{3}/),
     ).map((value) => String(value)),
   ).map(([_, value]: [string, string]) => {
     if (value.length === 3) {
@@ -287,7 +287,7 @@ export class Rgba extends Color {
     this.a = a;
   }
   toString(): string {
-    if(this.a === 1) {
+    if (this.a === 1) {
       return `rgb(${this.r},${this.g},${this.b})`;
     }
     return `rgba(${this.r},${this.g},${this.b},${this.a})`;
