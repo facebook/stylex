@@ -639,51 +639,42 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "::before_color": "x16oeupf",
-            ":hover_::before_color": "xeb2lg0 x18ezmze x14o3fp0",
+            "::before_color": "xvg9oe5",
+            ":hover_::before_color": "xewn9if x1gobd9t x1lvqgcc",
           },
         },
         {
-          "x14o3fp0": {
-            "ltr": ".x14o3fp0:hover::before:active{color:yellow}",
-            "priority": 8300,
-            "rtl": null,
-          },
-          "x16oeupf": {
-            "ltr": ".x16oeupf::before{color:red}",
-            "priority": 8000,
-            "rtl": null,
-          },
-          "x18ezmze": {
-            "ltr": ".x18ezmze:hover::before:hover{color:green}",
+          "x1gobd9t": {
+            "ltr": ".x1gobd9t:hover::before:hover{color:green}",
             "priority": 8260,
             "rtl": null,
           },
-          "xeb2lg0": {
-            "ltr": ".xeb2lg0:hover::before{color:blue}",
+          "x1lvqgcc": {
+            "ltr": ".x1lvqgcc:hover::before:active{color:yellow}",
+            "priority": 8300,
+            "rtl": null,
+          },
+          "xewn9if": {
+            "ltr": ".xewn9if:hover::before{color:red}",
             "priority": 8130,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x14o3fp0": [
+            "x1gobd9t": [
+              ":hover",
+              "::before",
+              ":hover",
+              "color",
+            ],
+            "x1lvqgcc": [
               ":hover",
               "::before",
               ":active",
               "color",
             ],
-            "x16oeupf": [
-              "::before",
-              "color",
-            ],
-            "x18ezmze": [
-              ":hover",
-              "::before",
-              ":hover",
-              "color",
-            ],
-            "xeb2lg0": [
+            "xewn9if": [
               ":hover",
               "::before",
               "default",
