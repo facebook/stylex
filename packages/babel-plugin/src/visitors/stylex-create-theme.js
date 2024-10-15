@@ -73,7 +73,10 @@ export default function transformStyleXCreateTheme(
       state,
     );
     if (!confident1) {
-      throw callExpressionPath.buildCodeFrameError((messages.NON_STATIC_VALUE: any));
+      throw callExpressionPath.buildCodeFrameError(
+        messages.NON_STATIC_VALUE,
+        SyntaxError,
+      );
     }
 
     const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
@@ -118,10 +121,16 @@ export default function transformStyleXCreateTheme(
       },
     );
     if (!confident2) {
-      throw callExpressionPath.buildCodeFrameError(messages.NON_STATIC_VALUE);
+      throw callExpressionPath.buildCodeFrameError(
+        messages.NON_STATIC_VALUE,
+        SyntaxError,
+      );
     }
     if (typeof overrides !== 'object' || overrides == null) {
-      throw callExpressionPath.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      throw callExpressionPath.buildCodeFrameError(
+        messages.NON_OBJECT_FOR_STYLEX_CALL,
+        SyntaxError,
+      );
     }
 
     // Check that first arg has __themeName__ set
@@ -131,6 +140,7 @@ export default function transformStyleXCreateTheme(
     ) {
       throw callExpressionPath.buildCodeFrameError(
         'Can only override variables theme created with stylex.defineVars().',
+        SyntaxError,
       );
     }
 
@@ -183,10 +193,16 @@ function validateStyleXCreateTheme(
     !variableDeclaratorPath.isVariableDeclarator() ||
     variableDeclaratorPath.node.id.type !== 'Identifier'
   ) {
-    throw callExpressionPath.buildCodeFrameError(messages.UNBOUND_STYLEX_CALL_VALUE);
+    throw callExpressionPath.buildCodeFrameError(
+      messages.UNBOUND_STYLEX_CALL_VALUE,
+      SyntaxError,
+    );
   }
 
   if (callExpressionPath.node.arguments.length !== 2) {
-    throw callExpressionPath.buildCodeFrameError(messages.ILLEGAL_ARGUMENT_LENGTH);
+    throw callExpressionPath.buildCodeFrameError(
+      messages.ILLEGAL_ARGUMENT_LENGTH,
+      SyntaxError,
+    );
   }
 }

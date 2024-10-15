@@ -46,15 +46,24 @@ export default function transformStyleXKeyframes(
       state.stylexImport.has(nodeInit.callee.object.name))
   ) {
     if (nodeInit.arguments.length !== 1) {
-      throw path.buildCodeFrameError(messages.ILLEGAL_ARGUMENT_LENGTH);
+      throw path.buildCodeFrameError(
+        messages.ILLEGAL_ARGUMENT_LENGTH,
+        SyntaxError,
+      );
     }
     if (nodeInit.arguments[0].type !== 'ObjectExpression') {
-      throw path.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
+      throw path.buildCodeFrameError(
+        messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL,
+        SyntaxError,
+      );
     }
 
     const init: ?NodePath<t.Expression> = path.get('init');
     if (init == null || !pathUtils.isCallExpression(init)) {
-      throw path.buildCodeFrameError(messages.NON_STATIC_KEYFRAME_VALUE);
+      throw path.buildCodeFrameError(
+        messages.NON_STATIC_KEYFRAME_VALUE,
+        SyntaxError,
+      );
     }
     const args: $ReadOnlyArray<NodePath<>> = init.get('arguments');
     const firstArg = args[0];
@@ -76,7 +85,7 @@ export default function transformStyleXKeyframes(
       memberExpressions,
     });
     if (!confident) {
-      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE);
+      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE, SyntaxError);
     }
     const plainObject = value;
     assertValidKeyframes(path, plainObject);
@@ -93,13 +102,19 @@ export default function transformStyleXKeyframes(
 }
 
 // Validation of `stylex.keyframes` function call.
-function assertValidKeyframes(path: NodePath<t.VariableDeclarator>, obj: mixed) {
+function assertValidKeyframes(
+  path: NodePath<t.VariableDeclarator>,
+  obj: mixed,
+) {
   if (typeof obj !== 'object' || Array.isArray(obj) || obj == null) {
-    throw path.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
+    throw path.buildCodeFrameError(
+      messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL,
+      SyntaxError,
+    );
   }
   for (const [_key, value] of Object.entries(obj)) {
     if (typeof value !== 'object' || Array.isArray(value)) {
-      throw path.buildCodeFrameError(messages.NON_OBJECT_KEYFRAME);
+      throw path.buildCodeFrameError(messages.NON_OBJECT_KEYFRAME, SyntaxError);
     }
   }
 }

@@ -178,7 +178,10 @@ function evaluatePartialObjectRecursively(
           obj[key] = `var(${varName})`;
           const node = valuePath.node;
           if (!t.isExpression(node)) {
-            throw valuePath.buildCodeFrameError('Expected expression as style value');
+            throw valuePath.buildCodeFrameError(
+              'Expected expression as style value',
+              SyntaxError,
+            );
           }
           const expression: t.Expression = node as $FlowFixMe;
 
@@ -275,6 +278,9 @@ function validateDynamicStyleParams(
   params: Array<NodePath<t.Identifier | t.SpreadElement | t.Pattern>>,
 ) {
   if (params.some((param) => !pathUtils.isIdentifier(param))) {
-    throw path.buildCodeFrameError(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+    throw path.buildCodeFrameError(
+      messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS,
+      SyntaxError,
+    );
   }
 }
