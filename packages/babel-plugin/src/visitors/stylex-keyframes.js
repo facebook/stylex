@@ -46,15 +46,15 @@ export default function transformStyleXKeyframes(
       state.stylexImport.has(nodeInit.callee.object.name))
   ) {
     if (nodeInit.arguments.length !== 1) {
-      throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
+      throw path.buildCodeFrameError(messages.ILLEGAL_ARGUMENT_LENGTH);
     }
     if (nodeInit.arguments[0].type !== 'ObjectExpression') {
-      throw new Error(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
+      throw path.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
     }
 
     const init: ?NodePath<t.Expression> = path.get('init');
     if (init == null || !pathUtils.isCallExpression(init)) {
-      throw new Error(messages.NON_STATIC_KEYFRAME_VALUE);
+      throw path.buildCodeFrameError(messages.NON_STATIC_KEYFRAME_VALUE);
     }
     const args: $ReadOnlyArray<NodePath<>> = init.get('arguments');
     const firstArg = args[0];
@@ -76,10 +76,10 @@ export default function transformStyleXKeyframes(
       memberExpressions,
     });
     if (!confident) {
-      throw new Error(messages.NON_STATIC_VALUE);
+      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE);
     }
     const plainObject = value;
-    assertValidKeyframes(plainObject);
+    assertValidKeyframes(path, plainObject);
     const [animationName, { ltr, priority, rtl }] = stylexKeyframes(
       plainObject,
       state.options,
@@ -93,13 +93,13 @@ export default function transformStyleXKeyframes(
 }
 
 // Validation of `stylex.keyframes` function call.
-function assertValidKeyframes(obj: mixed) {
+function assertValidKeyframes(path: NodePath<t.VariableDeclarator>, obj: mixed) {
   if (typeof obj !== 'object' || Array.isArray(obj) || obj == null) {
-    throw new Error(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
+    throw path.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
   }
   for (const [_key, value] of Object.entries(obj)) {
     if (typeof value !== 'object' || Array.isArray(value)) {
-      throw new Error(messages.NON_OBJECT_KEYFRAME);
+      throw path.buildCodeFrameError(messages.NON_OBJECT_KEYFRAME);
     }
   }
 }

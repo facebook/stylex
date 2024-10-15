@@ -111,10 +111,10 @@ export default function transformStyleXDefineVars(
       memberExpressions,
     });
     if (!confident) {
-      throw new Error(messages.NON_STATIC_VALUE);
+      throw callExpressionPath.buildCodeFrameError(messages.NON_STATIC_VALUE);
     }
     if (typeof value !== 'object' || value == null) {
-      throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      throw callExpressionPath.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_CALL);
     }
 
     const fileName = state.fileNameForHashing;
@@ -162,17 +162,17 @@ function validateStyleXDefineVars(
     !variableDeclaratorPath.isVariableDeclarator() ||
     variableDeclaratorPath.node.id.type !== 'Identifier'
   ) {
-    throw new Error(messages.UNBOUND_STYLEX_CALL_VALUE);
+    throw callExpressionPath.buildCodeFrameError(messages.UNBOUND_STYLEX_CALL_VALUE);
   }
 
   if (
     exportNamedDeclarationPath == null ||
     !exportNamedDeclarationPath.isExportNamedDeclaration()
   ) {
-    throw new Error(messages.NON_EXPORT_NAMED_DECLARATION);
+    throw callExpressionPath.buildCodeFrameError(messages.NON_EXPORT_NAMED_DECLARATION);
   }
 
   if (callExpressionPath.node.arguments.length !== 1) {
-    throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
+    throw callExpressionPath.buildCodeFrameError(messages.ILLEGAL_ARGUMENT_LENGTH);
   }
 }

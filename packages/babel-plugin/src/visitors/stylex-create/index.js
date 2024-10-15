@@ -114,7 +114,7 @@ export default function transformStyleXCreate(
     });
 
     if (!confident) {
-      throw new Error(messages.NON_STATIC_VALUE);
+      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE);
     }
     const plainObject = value;
     // eslint-disable-next-line prefer-const
@@ -311,20 +311,20 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
     path.parentPath == null ||
     pathUtils.isExpressionStatement(path.parentPath)
   ) {
-    throw new Error(messages.UNBOUND_STYLEX_CALL_VALUE);
+    throw path.buildCodeFrameError(messages.UNBOUND_STYLEX_CALL_VALUE);
   }
   const nearestStatement = findNearestStatementAncestor(path);
   if (
     !pathUtils.isProgram(nearestStatement.parentPath) &&
     !pathUtils.isExportNamedDeclaration(nearestStatement.parentPath)
   ) {
-    throw new Error(messages.ONLY_TOP_LEVEL);
+    throw path.buildCodeFrameError(messages.ONLY_TOP_LEVEL);
   }
   if (path.node.arguments.length !== 1) {
-    throw new Error(messages.ILLEGAL_ARGUMENT_LENGTH);
+    throw path.buildCodeFrameError(messages.ILLEGAL_ARGUMENT_LENGTH);
   }
   if (path.node.arguments[0].type !== 'ObjectExpression') {
-    throw new Error(messages.NON_OBJECT_FOR_STYLEX_CALL);
+    throw path.buildCodeFrameError(messages.NON_OBJECT_FOR_STYLEX_CALL);
   }
 }
 
