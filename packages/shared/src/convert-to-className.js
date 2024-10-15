@@ -47,12 +47,12 @@ export function convertStyleToClassName(
   const sortedPseudos = sortPseudos(pseudos ?? []);
   const sortedAtRules = sortAtRules(atRules ?? []);
 
-  const atRuleHashString = sortedPseudos.join('');
-  const pseudoHashString = sortedAtRules.join('');
+  const pseudoHashString = sortedPseudos.join('');
+  const atRuleHashString = sortedAtRules.join('');
 
   // NOTE: 'null' is used to keep existing hashes stable.
   // This should be removed in a future version.
-  const modifierHashString = atRuleHashString + pseudoHashString || 'null';
+  const modifierHashString = pseudoHashString + atRuleHashString || 'null';
   const valueAsString = Array.isArray(value) ? value.join(', ') : value;
   const stringToHash = dashedKey + valueAsString + modifierHashString;
 
