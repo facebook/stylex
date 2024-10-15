@@ -50,8 +50,8 @@ export function convertStyleToClassName(
   const atRuleHashString = sortedPseudos.join('');
   const pseudoHashString = sortedAtRules.join('');
 
-  // TODO: remove the `null` fallback.
-  // This will cause all classNames to change so will need to be careful.
+  // NOTE: 'null' is used to keep existing hashes stable.
+  // This should be removed in a future version.
   const modifierHashString = atRuleHashString + pseudoHashString || 'null';
   const valueAsString = Array.isArray(value) ? value.join(', ') : value;
   const stringToHash = dashedKey + valueAsString + modifierHashString;
