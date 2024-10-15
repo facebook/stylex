@@ -695,6 +695,37 @@ describe('stylex-create-test', () => {
     `);
   });
 
+  test.skip('transforms nested pseudo-classes within pseudo elements', () => {
+    const [beforeHover] = styleXCreate({
+      default: {
+        '::before': {
+          color: {
+            default: null,
+            ':hover': 'blue',
+          },
+        },
+      },
+    });
+
+    const [hoverBefore] = styleXCreate({
+      default: {
+        ':hover': {
+          '::before': {
+            color: 'blue',
+          },
+        },
+      },
+    });
+
+    const beforeHoverClass = beforeHover.default['::before_color'];
+    const hoverBeforeClass = hoverBefore.default[':hover_::before_color'];
+
+    expect(beforeHoverClass).toMatchInlineSnapshot('"xeb2lg0"');
+    expect(hoverBeforeClass).toMatchInlineSnapshot('"xeb2lg0"');
+
+    expect(beforeHoverClass).not.toEqual(hoverBeforeClass);
+  });
+
   // This API will not launch as an array, but internally we can continue to use arrays
   test('transforms array values as fallbacks', () => {
     expect(
