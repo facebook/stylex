@@ -639,11 +639,16 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "::before_color": "xvg9oe5",
-            ":hover_::before_color": "xewn9if x1gobd9t x1lvqgcc",
+            "::before_color": "x16oeupf",
+            ":hover_::before_color": "xzzpreb x1gobd9t x1lvqgcc",
           },
         },
         {
+          "x16oeupf": {
+            "ltr": ".x16oeupf::before{color:red}",
+            "priority": 8000,
+            "rtl": null,
+          },
           "x1gobd9t": {
             "ltr": ".x1gobd9t:hover::before:hover{color:green}",
             "priority": 8260,
@@ -654,14 +659,18 @@ describe('stylex-create-test', () => {
             "priority": 8300,
             "rtl": null,
           },
-          "xewn9if": {
-            "ltr": ".xewn9if:hover::before{color:red}",
+          "xzzpreb": {
+            "ltr": ".xzzpreb:hover::before{color:blue}",
             "priority": 8130,
             "rtl": null,
           },
         },
         {
           "default": {
+            "x16oeupf": [
+              "::before",
+              "color",
+            ],
             "x1gobd9t": [
               ":hover",
               "::before",
@@ -674,7 +683,7 @@ describe('stylex-create-test', () => {
               ":active",
               "color",
             ],
-            "xewn9if": [
+            "xzzpreb": [
               ":hover",
               "::before",
               "default",
@@ -686,7 +695,7 @@ describe('stylex-create-test', () => {
     `);
   });
 
-  test.skip('transforms nested pseudo-classes within pseudo elements', () => {
+  test('transforms nested pseudo-classes within pseudo elements', () => {
     const [beforeHover] = styleXCreate({
       default: {
         '::before': {
@@ -712,7 +721,7 @@ describe('stylex-create-test', () => {
     const hoverBeforeClass = hoverBefore.default[':hover_::before_color'];
 
     expect(beforeHoverClass).toMatchInlineSnapshot('"xeb2lg0"');
-    expect(hoverBeforeClass).toMatchInlineSnapshot('"xeb2lg0"');
+    expect(hoverBeforeClass).toMatchInlineSnapshot('"xzzpreb"');
 
     expect(beforeHoverClass).not.toEqual(hoverBeforeClass);
   });
