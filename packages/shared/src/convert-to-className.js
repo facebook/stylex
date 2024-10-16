@@ -13,8 +13,8 @@ import dashify from './utils/dashify';
 import transformValue from './transform-value';
 import { generateRule } from './generate-css-rule';
 import { defaultOptions } from './utils/default-options';
-import { arraySort } from './utils/object-utils';
 import * as messages from './messages';
+import { sortAtRules, sortPseudos } from './utils/rule-utils';
 
 // This function takes a single style rule and transforms it into a CSS rule.
 // [color: 'red'] => ['color', 'classname-for-color-red', CSSRULE{ltr, rtl, priority}]
@@ -33,7 +33,7 @@ export function convertStyleToClassName(
   const [key, rawValue] = objEntry;
   const dashedKey = dashify(key);
 
-  let value = Array.isArray(rawValue)
+  let value: string | $ReadOnlyArray<string> = Array.isArray(rawValue)
     ? rawValue.map((eachValue) => transformValue(key, eachValue, options))
     : transformValue(key, rawValue, options);
 
@@ -44,17 +44,17 @@ export function convertStyleToClassName(
     value = variableFallbacks(value);
   }
 
-  const sortedPseudos = arraySort(pseudos ?? []);
-  const sortedAtRules = arraySort(atRules ?? []);
+  const sortedPseudos = sortPseudos(pseudos ?? []);
+  const sortedAtRules = sortAtRules(atRules ?? []);
 
-  const atRuleHashString = sortedPseudos.join('');
-  const pseudoHashString = sortedAtRules.join('');
+  const pseudoHashString = sortedPseudos.join('');
+  const atRuleHashString = sortedAtRules.join('');
 
-  const modifierHashString = atRuleHashString + pseudoHashString || 'null';
-
-  const stringToHash = Array.isArray(value)
-    ? dashedKey + value.join(', ') + modifierHashString
-    : dashedKey + value + modifierHashString;
+  // NOTE: 'null' is used to keep existing hashes stable.
+  // This should be removed in a future version.
+  const modifierHashString = pseudoHashString + atRuleHashString || 'null';
+  const valueAsString = Array.isArray(value) ? value.join(', ') : value;
+  const stringToHash = dashedKey + valueAsString + modifierHashString;
 
   // NOTE: '<>' is used to keep existing hashes stable.
   // This should be removed in a future version.
@@ -69,7 +69,7 @@ export function convertStyleToClassName(
 
 export default function variableFallbacks(
   values: $ReadOnlyArray<string>,
-): Array<string> {
+): $ReadOnlyArray<string> {
   const firstVar = values.findIndex(
     (val) => val.startsWith('var(') && val.endsWith(')'),
   );

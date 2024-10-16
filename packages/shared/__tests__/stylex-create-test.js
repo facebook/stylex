@@ -640,50 +640,50 @@ describe('stylex-create-test', () => {
           "default": {
             "$$css": true,
             "::before_color": "x16oeupf",
-            ":hover_::before_color": "xeb2lg0 x18ezmze x14o3fp0",
+            ":hover_::before_color": "xzzpreb x1gobd9t x1lvqgcc",
           },
         },
         {
-          "x14o3fp0": {
-            "ltr": ".x14o3fp0:hover::before:active{color:yellow}",
-            "priority": 8300,
-            "rtl": null,
-          },
           "x16oeupf": {
             "ltr": ".x16oeupf::before{color:red}",
             "priority": 8000,
             "rtl": null,
           },
-          "x18ezmze": {
-            "ltr": ".x18ezmze:hover::before:hover{color:green}",
+          "x1gobd9t": {
+            "ltr": ".x1gobd9t:hover::before:hover{color:green}",
             "priority": 8260,
             "rtl": null,
           },
-          "xeb2lg0": {
-            "ltr": ".xeb2lg0:hover::before{color:blue}",
+          "x1lvqgcc": {
+            "ltr": ".x1lvqgcc:hover::before:active{color:yellow}",
+            "priority": 8300,
+            "rtl": null,
+          },
+          "xzzpreb": {
+            "ltr": ".xzzpreb:hover::before{color:blue}",
             "priority": 8130,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x14o3fp0": [
+            "x16oeupf": [
+              "::before",
+              "color",
+            ],
+            "x1gobd9t": [
+              ":hover",
+              "::before",
+              ":hover",
+              "color",
+            ],
+            "x1lvqgcc": [
               ":hover",
               "::before",
               ":active",
               "color",
             ],
-            "x16oeupf": [
-              "::before",
-              "color",
-            ],
-            "x18ezmze": [
-              ":hover",
-              "::before",
-              ":hover",
-              "color",
-            ],
-            "xeb2lg0": [
+            "xzzpreb": [
               ":hover",
               "::before",
               "default",
@@ -695,7 +695,7 @@ describe('stylex-create-test', () => {
     `);
   });
 
-  test.skip('transforms nested pseudo-classes within pseudo elements', () => {
+  test('transforms nested pseudo-classes within pseudo elements', () => {
     const [beforeHover] = styleXCreate({
       default: {
         '::before': {
@@ -721,7 +721,7 @@ describe('stylex-create-test', () => {
     const hoverBeforeClass = hoverBefore.default[':hover_::before_color'];
 
     expect(beforeHoverClass).toMatchInlineSnapshot('"xeb2lg0"');
-    expect(hoverBeforeClass).toMatchInlineSnapshot('"xeb2lg0"');
+    expect(hoverBeforeClass).toMatchInlineSnapshot('"xzzpreb"');
 
     expect(beforeHoverClass).not.toEqual(hoverBeforeClass);
   });
