@@ -12,20 +12,20 @@
 jest.autoMockOff();
 
 import inject from '../src';
-import stylex from '@stylexjs/stylex';
+
+let metadata = [];
+const stylex = inject({
+  dev: false,
+  test: false,
+  insert: (key, ltr, priority, rtl) => {
+    metadata.push([key, { ltr, rtl }, priority]);
+  },
+});
 
 describe('Development Plugin Transformation', () => {
   describe('[transform] stylex.createTheme()', () => {
-    let metadata = [];
     beforeEach(() => {
       metadata = [];
-      inject({
-        dev: false,
-        test: false,
-        insert: (key, ltr, priority, rtl) => {
-          metadata.push([key, { ltr, rtl }, priority]);
-        },
-      });
     });
 
     test('transforms style object', () => {

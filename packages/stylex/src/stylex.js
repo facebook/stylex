@@ -74,10 +74,6 @@ export function props(
   className?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
 }> {
-  const options = this;
-  if (__implementations.props) {
-    return __implementations.props.call(options, styles);
-  }
   const [className, style] = styleq(styles);
   const result: {
     className?: string,
@@ -117,26 +113,15 @@ export function attrs(
   return result;
 }
 
-function stylexCreate<S: { +[string]: mixed }>(styles: S): MapNamespaces<S> {
-  if (__implementations.create != null) {
-    const create: Stylex$Create = __implementations.create;
-    return create<S>(styles);
-  }
+function stylexCreate<S: { +[string]: mixed }>(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 }
 
-function stylexDefineVars(styles: $FlowFixMe) {
-  if (__implementations.defineVars) {
-    return __implementations.defineVars(styles);
-  }
+function stylexDefineVars(_styles: $FlowFixMe) {
   throw errorForFn('defineVars');
 }
 
-const stylexCreateTheme: StyleX$CreateTheme = (baseTokens, overrides) => {
-  if (__implementations.createTheme) {
-    // $FlowFixMe
-    return __implementations.createTheme(baseTokens, overrides);
-  }
+const stylexCreateTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
   throw errorForFn('createTheme');
 };
 
@@ -153,10 +138,7 @@ type Stylex$Include = <
     : string,
 };
 
-const stylexInclude: Stylex$Include = (styles) => {
-  if (__implementations.include) {
-    return __implementations.include(styles);
-  }
+const stylexInclude: Stylex$Include = (_styles) => {
   throw errorForFn('include');
 };
 
@@ -224,19 +206,13 @@ export const types = {
   },
 };
 
-export const keyframes = (keyframes: Keyframes): string => {
-  if (__implementations.keyframes) {
-    return __implementations.keyframes(keyframes);
-  }
+export const keyframes = (_keyframes: Keyframes): string => {
   throw errorForFn('keyframes');
 };
 
 export const firstThatWorks = <T: string | number>(
-  ...styles: $ReadOnlyArray<T>
+  ..._styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
-  if (__implementations.firstThatWorks) {
-    return __implementations.firstThatWorks(...styles);
-  }
   throw errorForFn('firstThatWorks');
 };
 
@@ -291,19 +267,6 @@ type IStyleX = {
   __customProperties?: { [string]: mixed },
   ...
 };
-
-const __implementations: { [string]: $FlowFixMe } = {};
-
-export function __monkey_patch__(
-  key: string,
-  implementation: $FlowFixMe,
-): void {
-  if (key === 'types') {
-    Object.assign(types, implementation);
-  } else {
-    __implementations[key] = implementation;
-  }
-}
 
 export const legacyMerge: IStyleX = _stylex;
 export default _stylex as IStyleX;
