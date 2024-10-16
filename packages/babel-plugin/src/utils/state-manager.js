@@ -473,9 +473,6 @@ export default class StateManager {
     filepath: string,
   ): null | [+packageName: string, +packageDir: string] {
     const folder = path.dirname(filepath);
-    if (folder === '/' || folder === '') {
-      return null;
-    }
 
     const hasPackageJSON = fs.existsSync(path.join(folder, 'package.json'));
     if (hasPackageJSON) {
@@ -490,6 +487,9 @@ export default class StateManager {
         return null;
       }
     } else {
+      if (folder === path.parse(folder).root || folder === '') {
+        return null;
+      }
       return this.getPackageNameAndPath(folder);
     }
   }
