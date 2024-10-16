@@ -11,7 +11,7 @@ import type { FromParser } from '../core';
 
 import { Parser } from '../core';
 import { cssWideKeywords } from '../css-types/common-types';
-import { CSSVariable } from '../css-types/css-variable';
+// import { CSSVariable } from '../css-types/css-variable';
 
 /**
  * MDN: https://developer.mozilla.org/en-US/docs/Web/CSS/appearance
@@ -22,8 +22,8 @@ export class Appearance {
     | 'none'
     | 'auto'
     | 'menulist-button'
-    | 'textfield'
-    | CSSVariable<Appearance>;
+    | 'textfield';
+  // | CSSVariable<Appearance>;
 
   constructor(value: this['value']) {
     this.value = value;
@@ -44,7 +44,7 @@ export class Appearance {
       Parser.string('auto'),
       Parser.string('menulist-button'),
       Parser.string('textfield'),
-      CSSVariable.parse(Appearance.parse),
+      // CSSVariable.parse(Appearance.parse),
     ).map((v) => new Appearance(v));
   }
 }
