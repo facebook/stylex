@@ -12,13 +12,13 @@ import type { LengthPercentage } from '../css-types/length-percentage';
 
 import { Parser } from '../core';
 import { cssWideKeywords } from '../css-types/common-types';
-import { CSSVariable } from '../css-types/css-variable';
+// import { CSSVariable } from '../css-types/css-variable';
 import { lengthPercentage } from '../css-types/length-percentage';
 
 export class MarginDir {
   +value:
     | LengthPercentage
-    | CSSVariable<MarginDir>
+    // | CSSVariable<MarginDir>
     | FromParser<typeof cssWideKeywords>;
 
   constructor(value: this['value']) {
@@ -37,7 +37,7 @@ export class MarginDir {
     return Parser.oneOf(
       cssWideKeywords,
       lengthPercentage,
-      CSSVariable.parse(MarginDir.parse),
+      // CSSVariable.parse(MarginDir.parse),
     ).map((v) => new MarginDir(v));
   }
 }
