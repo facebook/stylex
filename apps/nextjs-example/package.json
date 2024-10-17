@@ -27,7 +27,7 @@
     "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "@typescript-eslint/parser": "^6.14.0",
-    "eslint": "^8.56.0",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.0.1",
     "rimraf": "^5.0.5",
     "typescript": "^5.3.3"

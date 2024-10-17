@@ -18,6 +18,6 @@
     "@stylexjs/esbuild-plugin": "^0.7.5",
     "@stylexjs/eslint-plugin": "^0.7.5",
     "esbuild": "^0.24.0",
-    "eslint": "^8.55.0"
+    "eslint": "^8.57.1"
   }
 }

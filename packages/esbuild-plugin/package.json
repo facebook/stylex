@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@stylexjs/stylex": "^0.7.5",
-    "eslint": "^8.55.0"
+    "eslint": "^8.57.1"
   },
   "files": [
     "flow_modules/*",
