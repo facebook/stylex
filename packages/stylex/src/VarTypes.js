@@ -93,7 +93,7 @@ declare export class TransformList<+T: string> implements ICSSType<T> {
   +syntax: CSSSyntaxType;
 }
 
-export type CSSType<+T: string | number> =
+export type CSSType<+T: null | string | number> =
   | Angle<T>
   | Color<T>
   | Url<T>
