@@ -14,7 +14,7 @@
   "dependencies": {
     "@stylexjs/stylex": "^0.7.5",
     "@stylexjs/open-props": "^0.7.5",
-    "bright": "^0.8.4",
+    "bright": "^0.8.5",
     "react": "^18",
     "react-dom": "^18",
     "next": "14.0.1"
@@ -23,13 +23,13 @@
     "@stylexjs/babel-plugin": "^0.7.5",
     "@stylexjs/eslint-plugin": "^0.7.5",
     "@stylexjs/nextjs-plugin": "^0.7.5",
-    "@types/node": "^20.10.4",
+    "@types/node": "^22.7.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.0.1",
-    "rimraf": "^5.0.5",
+    "rimraf": "^5.0.10",
     "typescript": "^5.3.3"
   }
 }

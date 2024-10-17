@@ -53,7 +53,7 @@
     "jest": "^30.0.0-alpha.6",
     "prettier": "^3.3.3",
     "prettier-plugin-hermes-parser": "^0.25.0",
-    "rimraf": "^5.0.5",
+    "rimraf": "^5.0.10",
     "rollup": "^4.24.0",
     "typescript": "^5.3.3"
   },
