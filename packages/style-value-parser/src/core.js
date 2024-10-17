@@ -129,14 +129,16 @@ export class Parser<+T> {
   }
 
   // Variadic Generics: ...T,
-  static sequence<T: $ReadOnlyArray<Parser<mixed>>>(
+  static sequence<T: ConstrainedTuple<Parser<mixed>>>(
     ...parsers: T
   ): ParserSequence<T> {
-    return new ParserSequence(...parsers);
+    return new ParserSequence<T>(parsers);
   }
 
-  static setOf<T: $ReadOnlyArray<Parser<mixed>>>(...parsers: T): ParserSet<T> {
-    return new ParserSet(...parsers);
+  static setOf<T: ConstrainedTuple<Parser<mixed>>>(
+    ...parsers: T
+  ): ParserSet<T> {
+    return new ParserSet<T>(parsers);
   }
 
   static zeroOrMore<T>(parser: Parser<T>): ZeroOrMoreParsers<T> {
@@ -165,7 +167,11 @@ export class Parser<+T> {
 
   static get quotedString(): Parser<string> {
     // TODO: Add support for escaped code-points
-    const doubleQuotes: Parser<string> = Parser.sequence(
+    const doubleQuotes: Parser<string> = Parser.sequence<
+      $ReadOnly<
+        [Parser<string>, Parser<$ReadOnlyArray<string>>, Parser<string>],
+      >,
+    >(
       Parser.string('"'),
       Parser.zeroOrMore(
         Parser.oneOf(
@@ -175,7 +181,11 @@ export class Parser<+T> {
         ),
       ),
       Parser.string('"'),
-    ).map(([, chars]) => chars.join(''));
+    ).map(
+      ([_openQuote, chars, _closeQuote]: $ReadOnly<
+        [string, $ReadOnlyArray<string>, string],
+      >) => chars.join(''),
+    );
     const singleQuotes = Parser.sequence(
       Parser.string("'"),
       Parser.zeroOrMore(
@@ -378,17 +388,18 @@ class OneOrMoreParsers<+T> extends Parser<$ReadOnlyArray<T>> {
   }
 }
 
-export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
-  $TupleMap<T, <O>(Parser<O>) => O>,
+export class ParserSequence<+T: ConstrainedTuple<Parser<mixed>>> extends Parser<
+  ValuesFromParserTuple<T>,
 > {
   +parsers: T;
 
-  constructor(...parsers: T) {
-    super((input): $TupleMap<T, <O>(Parser<O>) => O> | Error => {
+  constructor(parsers: T) {
+    super((input: SubString): ValuesFromParserTuple<T> | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
 
-      const output: $TupleMap<T, <O>(Parser<O>) => O | Error> = parsers.map(
+      // $FlowFixMe[incompatible-type]
+      const output: ValuesFromParserTuple<T> | Error = parsers.map(
         <X>(parser: Parser<X>): X | Error => {
           if (failed) {
             return Error('already failed');
@@ -414,34 +425,28 @@ export class ParserSequence<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
   }
 
   separatedBy(separator: Parser<mixed>): ParserSequence<T> {
-    // This is UNSAFE. No way to safely map a tuple with Flow.
-    // $FlowFixMe
-    const parsers: [...T] = [...this.parsers];
+    // $FlowFixMe[incompatible-type]
+    const parsers: T = this.parsers.map(
+      <X>(originalParser: Parser<X>): Parser<X> =>
+        originalParser.prefix(separator.map(() => undefined)),
+    );
 
-    for (let i = 1; i < parsers.length; i++) {
-      const originalParser = parsers[i];
-      const modifiedParser = originalParser.prefix(
-        separator.map(() => undefined),
-      );
-      parsers[i] = modifiedParser;
-    }
-
-    return new ParserSequence(...parsers);
+    return new ParserSequence<T>(parsers);
   }
 }
 
 // Similar to ParserSequence, but the parsers can occur in any order.
-class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
-  $TupleMap<T, <O>(Parser<O>) => O>,
+class ParserSet<+T: ConstrainedTuple<Parser<mixed>>> extends Parser<
+  ValuesFromParserTuple<T>,
 > {
   +parsers: T;
 
-  constructor(...parsers: T) {
-    super((input): $TupleMap<T, <O>(Parser<O>) => O> | Error => {
+  constructor(parsers: T) {
+    super((input: SubString): ValuesFromParserTuple<T> | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
 
-      const output = [];
+      const output: [...ValuesFromParserTuple<T>] = [] as $FlowFixMe;
       const indices: Set<number> = new Set();
 
       for (let i = 0; i < parsers.length; i++) {
@@ -479,26 +484,43 @@ class ParserSet<+T: $ReadOnlyArray<Parser<mixed>>> extends Parser<
         return failed;
       }
 
-      return output as $TupleMap<T, <O>(Parser<O>) => O> | Error;
+      return output as ValuesFromParserTuple<T>;
     });
     this.parsers = parsers;
   }
 
   separatedBy(separator: Parser<mixed>): ParserSet<T> {
-    // This is UNSAFE. No way to safely map a tuple with Flow.
-    // $FlowFixMe
-    const parsers: [...T] = [...this.parsers];
-    for (let i = 1; i < parsers.length; i++) {
-      const originalParser = parsers[i];
-      const modifiedParser = originalParser.prefix(
-        separator.map(() => undefined),
-      );
-      parsers[i] = modifiedParser;
-    }
+    // This is correct, but Flow can't map tuples right.
+    // $FlowFixMe[incompatible-type]
+    const parsers: T = this.parsers.map(
+      <X>(originalParser: Parser<X>): Parser<X> =>
+        originalParser.prefix(separator.map(() => undefined)),
+    );
 
-    return new ParserSet(...(parsers as T));
+    return new ParserSet(parsers);
   }
 }
 
-export type FromParser<P: Parser<mixed>> =
-  P extends Parser<infer T> ? T : empty;
+type ConstrainedTuple<+T> =
+  | $ReadOnly<[T]>
+  | $ReadOnly<[T, T]>
+  | $ReadOnly<[T, T, T]>
+  | $ReadOnly<[T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T, T]>;
+
+// prettier-ignore
+export type FromParser<+T: Parser<mixed>, Fallback = empty> =
+  | Fallback
+  | T extends Parser<infer V> ? V : empty;
+
+type ValuesFromParserTuple<
+  +T: ConstrainedTuple<Parser<mixed>>,
+  Fallback = empty,
+> = {
+  [Key in keyof T]: FromParser<T[Key], Fallback>,
+};

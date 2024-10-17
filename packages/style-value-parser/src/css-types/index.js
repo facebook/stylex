@@ -13,7 +13,7 @@ export * from './angle';
 export * from './basic-shape';
 export * from './blend-mode';
 export * from './calc-constant';
-export * from './calc-sum';
+export * from './calc';
 export * from './color';
 export * from './common-types';
 export * from './custom-ident';

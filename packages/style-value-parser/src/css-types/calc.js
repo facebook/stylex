@@ -35,12 +35,15 @@ class CalcSum {
   }
   static get parse(): Parser<CalcSum> {
     return Parser.sequence(
-      calcValue,
+      Calc.parse,
       Parser.oneOf(Parser.string('+'), Parser.string('-')),
-      calcValue,
+      Calc.parse,
     )
       .separatedBy(Parser.whitespace)
-      .map(([left, operator, right]) => new CalcSum(left, right, operator));
+      .map(
+        ([left, operator, right]) =>
+          new CalcSum(left.value, right.value, operator),
+      );
   }
 }
 
@@ -66,28 +69,41 @@ class CalcProduct {
   }
   static get parse(): Parser<CalcProduct> {
     return Parser.sequence(
-      calcValue,
+      Calc.parse,
       Parser.oneOf(Parser.string('*'), Parser.string('/')),
-      calcValue,
+      Calc.parse,
     )
       .separatedBy(Parser.whitespace)
-      .map(([left, operator, right]) => new CalcProduct(left, right, operator));
+      .map(
+        ([left, operator, right]) =>
+          new CalcProduct(left.value, right.value, operator),
+      );
   }
 }
 
-const calcValueWithoutParens = Parser.oneOf(
-  Parser.float,
-  dimension,
-  Percentage.parse,
-  calcConstant,
-  CalcSum.parse,
-  CalcProduct.parse,
-);
-
-export const calcValue: Parser<CalcValue> = Parser.oneOf(
-  calcValueWithoutParens,
-  calcValueWithoutParens
-    .surroundedBy(Parser.whitespace.optional)
-    .prefix(Parser.string('('))
-    .skip(Parser.string(')')),
-);
+class Calc {
+  +value: CalcValue;
+  constructor(value: this['value']) {
+    this.value = value;
+  }
+  toString(): string {
+    return this.value.toString();
+  }
+  static get parse(): Parser<Calc> {
+    const calcValueWithoutParens = Parser.oneOf(
+      Parser.float,
+      dimension,
+      Percentage.parse,
+      calcConstant,
+      CalcSum.parse,
+      CalcProduct.parse,
+    );
+    return Parser.oneOf(
+      calcValueWithoutParens
+        .surroundedBy(Parser.whitespace.optional)
+        .prefix(Parser.string('('))
+        .skip(Parser.string(')')),
+      calcValueWithoutParens,
+    ).map((value) => new Calc(value));
+  }
+}

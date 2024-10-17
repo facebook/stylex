@@ -24,10 +24,10 @@ export declare class Parser<T> {
   static always<T>(output: T): Parser<T>;
   where(predicate: ($$PARAM_0$$: T) => boolean): Parser<T>;
   static oneOf<T>(...parsers: ReadonlyArray<Parser<T>>): Parser<T>;
-  static sequence<T extends ReadonlyArray<Parser<unknown>>>(
+  static sequence<T extends ConstrainedTuple<Parser<unknown>>>(
     ...parsers: T
   ): ParserSequence<T>;
-  static setOf<T extends ReadonlyArray<Parser<unknown>>>(
+  static setOf<T extends ConstrainedTuple<Parser<unknown>>>(
     ...parsers: T
   ): ParserSet<T>;
   static zeroOrMore<T>(parser: Parser<T>): ZeroOrMoreParsers<T>;
@@ -57,28 +57,41 @@ declare class OneOrMoreParsers<T> extends Parser<ReadonlyArray<T>> {
   constructor(parser: Parser<T>);
   separatedBy(separator: Parser<unknown>): OneOrMoreParsers<T>;
 }
-
-type MapParserTuple<Ps extends ReadonlyArray<Parser<unknown>>> = Ps extends [
-  Parser<infer X>,
-  ...infer Rest extends Parser<unknown>[],
-]
-  ? [X, ...MapParserTuple<Rest>]
-  : [];
-
 export declare class ParserSequence<
-  T extends ReadonlyArray<Parser<unknown>>,
-> extends Parser<MapParserTuple<T>> {
+  T extends ConstrainedTuple<Parser<unknown>>,
+> extends Parser<ValuesFromParserTuple<T>> {
   readonly parsers: T;
-  constructor(...parsers: T);
+  constructor(parsers: T);
   separatedBy(separator: Parser<unknown>): ParserSequence<T>;
 }
 declare class ParserSet<
-  T extends ReadonlyArray<Parser<unknown>>,
-> extends Parser<MapParserTuple<T>> {
+  T extends ConstrainedTuple<Parser<unknown>>,
+> extends Parser<ValuesFromParserTuple<T>> {
   readonly parsers: T;
-  constructor(...parsers: T);
+  constructor(parsers: T);
   separatedBy(separator: Parser<unknown>): ParserSet<T>;
 }
 
-export type FromParser<P extends Parser<unknown>> =
-  P extends Parser<infer T> ? T : never;
+type ConstrainedTuple<T> =
+  | $ReadOnly<[T]>
+  | $ReadOnly<[T, T]>
+  | $ReadOnly<[T, T, T]>
+  | $ReadOnly<[T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T, T]>;
+
+// prettier-ignore
+export type FromParser<T extends Parser<any>, Fallback = never> =
+  | Fallback
+  | T extends Parser<infer V> ? V : never;
+
+type ValuesFromParserTuple<
+  T extends ConstrainedTuple<Parser<any>>,
+  Fallback = never,
+> = {
+  [Key in keyof T]: FromParser<T[Key], Fallback>;
+};
