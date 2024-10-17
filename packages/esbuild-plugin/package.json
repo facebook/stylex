@@ -25,7 +25,7 @@
     "@babel/plugin-syntax-typescript": "^7.23.3",
     "@stylexjs/babel-plugin": "0.8.0",
     "@stylexjs/shared": "0.8.0",
-    "babel-plugin-syntax-hermes-parser": "^0.23.1",
+    "babel-plugin-syntax-hermes-parser": "^0.25.0",
     "esbuild": "^0.19.12"
   },
   "devDependencies": {

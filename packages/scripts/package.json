@@ -14,7 +14,7 @@
   "dependencies": {
     "brotli-size": "^4.0.0",
     "clean-css": "^5.3.3",
-    "flow-api-translator": "0.23.1",
+    "flow-api-translator": "0.25.0",
     "terser": "^5.31.0",
     "yargs": "17.7.2"
   }
