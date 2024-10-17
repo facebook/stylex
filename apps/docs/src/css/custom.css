@@ -13,6 +13,9 @@
  * work well for content-centric websites.
  */
 
+@import 'codemirror/lib/codemirror.css';
+@import 'codemirror/theme/material-darker.css';
+
 /* You can override the default Infima variables here. */
 :root {
   --aa-text-color-rgb: 38, 38, 39;
@@ -282,4 +285,7 @@ html .DocSearch-Logo svg rect {
 html[data-theme='dark'] .DocSearch-Logo svg path,
 html[data-theme='dark'] .DocSearch-Logo svg rect {
   fill: rgb(170, 175, 186);
+}
+.CodeMirror {
+  height: 100%;
 }
