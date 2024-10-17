@@ -31,10 +31,10 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/plugin-syntax-flow": "^7.23.3",
-    "@babel/plugin-syntax-jsx": "^7.23.3",
-    "@babel/plugin-syntax-typescript": "^7.23.3",
+    "@babel/core": "^7.25.8",
+    "@babel/plugin-syntax-flow": "^7.25.7",
+    "@babel/plugin-syntax-jsx": "^7.25.7",
+    "@babel/plugin-syntax-typescript": "^7.25.7",
     "@stylexjs/babel-plugin": "0.8.0",
     "lightningcss": "^1.27.0"
   },

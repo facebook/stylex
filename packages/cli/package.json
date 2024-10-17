@@ -15,10 +15,10 @@
     "test": "jest"
   },
   "dependencies": {
-    "@babel/core": "7.25.2",
-    "@babel/plugin-syntax-jsx": "^7.23.3",
-    "@babel/plugin-syntax-typescript": "^7.23.3",
-    "@babel/types": "^7.24.7",
+    "@babel/core": "7.25.8",
+    "@babel/plugin-syntax-jsx": "^7.25.7",
+    "@babel/plugin-syntax-typescript": "^7.25.7",
+    "@babel/types": "^7.25.8",
     "@stylexjs/babel-plugin": "0.8.0",
     "ansis": "^3.2.0",
     "fb-watchman": "^2.0.2",
