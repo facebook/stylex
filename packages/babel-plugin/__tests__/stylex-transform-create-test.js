@@ -1262,7 +1262,7 @@ describe('@stylexjs/babel-plugin', () => {
           default: {
             marginTop: "xxsse2n",
             marginRight: "x1wh8b8d",
-            marginBottom: "xat24cr",
+            marginBottom: "x1du4iog",
             $$css: true
           },
           error: {

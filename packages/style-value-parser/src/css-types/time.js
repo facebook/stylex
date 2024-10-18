@@ -20,8 +20,8 @@ export class Time {
   toString(): string {
     // Always use the shortest representation
     if (this.unit === 'ms') {
-      if(this.value <= 99) {
-        return `${this.value}ms`
+      if (this.value <= 99) {
+        return `${this.value}ms`;
       }
       return `${this.value / 1000}s`;
     }

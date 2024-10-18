@@ -67,7 +67,7 @@ describe('Test CSS property: `box-shadow`', () => {
     );
   });
 
-  test('Multiple shadows seperated by comma', () => {
+  test('Multiple shadows separated by comma', () => {
     expect(
       BoxShadow.parse.parseToEnd(
         '10px 10px 5px 10px #000000 inset, 3px 3px 2px 0px #0ba266',
@@ -87,7 +87,7 @@ describe('Test CSS property: `box-shadow`', () => {
           new Px(3),
           new Px(2),
           new Px(0),
-          new HashColor('0ba266'),
+          new HashColor((0x0ba266).toString(16)),
         ),
       ]),
     );
