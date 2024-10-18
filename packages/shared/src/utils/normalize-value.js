@@ -54,7 +54,7 @@ export default function normalizeValue(
        * Log both key and value
        * Log the error
        */
-      console.error(err);
+      // console.error(err);
     }
   }
 

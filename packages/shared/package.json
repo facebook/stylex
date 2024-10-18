@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@stylexjs/style-value-parser": "0.8.0",
     "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {
