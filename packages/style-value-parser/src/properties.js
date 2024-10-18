@@ -7,26 +7,16 @@
  * @flow strict
  */
 
-import { Parser, type FromParser } from './core';
-import { cssWideKeywords } from './css-types/common-types';
-
-export const appearance: Parser<
-  | FromParser<typeof cssWideKeywords>
-  | 'none'
-  | 'auto'
-  | 'menulist-button'
-  | 'textfield',
-> = Parser.oneOf(
-  cssWideKeywords,
-  Parser.string('none'),
-  Parser.string('auto'),
-  Parser.string('menulist-button'),
-  Parser.string('textfield'),
-);
-
-export { Transform } from './properties/transform';
-export { BoxShadow, BoxShadowList } from './properties/box-shadow';
-export {
+import { Transform } from './properties/transform';
+import {
   BorderRadiusIndividual,
   BorderRadiusShorthand,
 } from './properties/border-radius';
+
+export const transform = Transform;
+export const borderRadiusIndividual = BorderRadiusIndividual;
+export const borderRadiusShorthand = BorderRadiusShorthand;
+
+export * from './properties/margins';
+export * from './properties/appearance';
+export * from './properties/box-shadow';
