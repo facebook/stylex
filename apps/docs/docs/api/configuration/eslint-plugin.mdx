@@ -17,7 +17,7 @@ type Options = {
   // Possible strings where you can import stylex from
   //
   // Default: ['@stylexjs/stylex']
-  validImports: Array<string>,
+  validImports: Array<string | { from: string, as: string }>,
 
   // Custom limits for values of various properties
   propLimits?: PropLimits,
@@ -99,7 +99,7 @@ type Options = {
   // Possible string where you can import stylex from
   //
   // Default: ['@stylexjs/stylex']
-  validImports: Array<string>,
+  validImports: Array<string | { from: string, as: string }>,
 
   // Minimum number of keys required after which the rule is enforced
   //

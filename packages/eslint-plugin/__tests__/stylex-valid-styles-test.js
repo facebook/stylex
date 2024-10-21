@@ -1501,7 +1501,23 @@ This property is not supported in legacy StyleX resolution.`,
     },
     {
       code: `
-        import stylex from'stylex';
+        import { css } from 'a';
+        const styles = css.create({
+          base:{
+            background: ''
+          },
+        });
+      `,
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      errors: [
+        {
+          message: 'The empty string is not allowed by Stylex.',
+        },
+      ],
+    },
+    {
+      code: `
+      import stylex from'stylex';
         const styles = stylex.create({
           b:{
             textUnderlineOffset: '',
@@ -1520,8 +1536,6 @@ initial
 inherit
 unset
 revert`,
-        },
-      ],
     },
   ],
 });
