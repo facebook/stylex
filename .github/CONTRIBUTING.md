@@ -37,24 +37,24 @@ To run flow:
 npm run flow
 ```
 
-To run all the unit tests:
-
-```
-npm run test
-```
-
-…in watch mode:
-
-```
-npm run test -- --watch
-```
-
 ## Compile and build
 
 To compile the source code:
 
 ```
 npm run build
+```
+
+To run all the unit tests (will build automatically):
+
+```
+npm run test
+```
+
+…in watch mode (will build only once):
+
+```
+npm run test -- --watch
 ```
 
 ## Documentation
@@ -92,3 +92,30 @@ After you have submitted your pull request, we'll try to get back to you as soon
 as possible. We may suggest some changes or improvements.
 
 Thank you for contributing!
+
+## Typical Editor setup
+
+### VS Code
+
+If you're using Visual Studio Code, we recommend the following setup for the
+best experience.
+
+#### Extensions
+
+We recommend you have the following extensions installed:
+
+- [Flow Language Support](https://marketplace.visualstudio.com/items?itemName=flowtype.flow-for-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+#### Turn off Typescript within JS files
+
+Additionally, since StyleX is authored with the
+[Flow typesystem](https://flow.org), it is helpful to turn off Typescript
+type-checking within Javascript files:
+
+```json
+{
+  "javascript.validate.enable": false
+}
+```
