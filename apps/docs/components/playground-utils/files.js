@@ -112,9 +112,9 @@ export default {
     "@rollup/plugin-commonjs": "25.0.7",
     "@rollup/plugin-node-resolve": "15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
-    "@stylexjs/babel-plugin": "0.8.0",
-    "@stylexjs/rollup-plugin": "0.8.0",
-    "@stylexjs/stylex": "0.8.0",
+    "@stylexjs/babel-plugin": "0.7.5",
+    "@stylexjs/rollup-plugin": "0.7.5",
+    "@stylexjs/stylex": "0.7.5",
     "babel-plugin-transform-node-env-inline": "^0.4.3",
     "react": "*",
     "react-dom": "*",
@@ -129,13 +129,12 @@ export default {
     file: {
       contents: `
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { createRoot } from 'react-dom/client';
 import Card from "./src/app";
 
-ReactDOM.render(
-  React.createElement(Card, { em: true }, "Hello World!"),
-  document.getElementById("root")
-);
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(React.createElement(Card, { em: true }, "Hello World!"));
       `,
     },
   },
@@ -148,25 +147,31 @@ import * as React from 'react';
 import * as stylex from "@stylexjs/stylex";
 
 export default function Card({ children, em = false, ...props }) {
-  return (
-    <div {...props} {...stylex.props(styles.base, em && styles.emphasise)}>
-      {children}
-    </div>
+  return React.createElement(
+    "div", 
+    {
+      ...props,
+      ...stylex.props(styles.base, em && styles.emphasise)
+    },
+    children,
   );
 }
 
 const styles = stylex.create({
   base: {
     appearance: "none",
-    borderStyle: "none",
     backgroundColor: "blue",
-    color: "white",
     borderRadius: 4,
+    borderStyle: "none",
+    boxSize: "border-box",
+    color: "white",
+    marginInline: 'auto',
     paddingBlock: 4,
     paddingInline: 8,
+    width: '95%',
   },
   emphasise: {
-    transform: "scale(1.1)",
+    transform: "rotate(-2deg)",
   }
 });
           `,
