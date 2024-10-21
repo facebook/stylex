@@ -110,6 +110,7 @@ export default function inject({
 
   const defineVars: StyleX$DefineVars = (
     variables,
+    // $FlowFixMe - This type is intentionally wrong.
     { themeName = themeNameUUID(), ...overrideConfig } = {},
   ) => {
     const [cssVarsObject, injectedStyles] = shared.defineVars(

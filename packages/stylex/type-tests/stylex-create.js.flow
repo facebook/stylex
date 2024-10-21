@@ -12,6 +12,7 @@ import type {
   StaticStyles,
   StyleXStyles,
   XStyle,
+  MapNamespaces,
   // StaticStylesWithout,
   // StyleXStylesWithout,
   StyleXClassNameFor,
@@ -289,3 +290,32 @@ styles8.foo as StyleXStyles<{ color?: mixed }>;
 
 stylex(styles8.foo);
 stylex.props(styles8.foo);
+
+export type TPseudoElStyle = $ReadOnly<{
+  '::before': $ReadOnly<{
+    display: 'none',
+  }>,
+  display: 'none',
+}>;
+
+const pseudoElStyles: MapNamespaces<$ReadOnly<{ default: TPseudoElStyle }>> =
+  stylex.create({
+    default: {
+      display: 'none',
+      '::before': {
+        display: 'none',
+      },
+    },
+  });
+
+pseudoElStyles.default as $ReadOnly<{
+  $$css: true,
+  display?: StyleXClassNameFor<'display', 'none'>,
+  '::before'?: StyleXClassNameFor<'::before', $ReadOnly<{ display?: 'none' }>>,
+}>;
+
+pseudoElStyles.default.display as StyleXClassNameFor<'display', 'none'>;
+
+// pseudoElStyles.default['::before'] as ?number;
+
+pseudoElStyles.default as StaticStyles<>;
