@@ -8,13 +8,18 @@
  */
 
 import * as React from 'react';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 import Layout from '@theme/Layout';
-import Playground from '../../components/Playground';
 
 export default function PlaygroundPage() {
   return (
     <Layout>
-      <Playground />
+      <BrowserOnly>
+        {() => {
+          const Playground = require('../../components/Playground').default;
+          return <Playground />;
+        }}
+      </BrowserOnly>
     </Layout>
   );
 }
