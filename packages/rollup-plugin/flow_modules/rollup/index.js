@@ -525,7 +525,7 @@ export type SequentialPluginHooks =
   | 'transform';
 
 export type ParallelPluginHooks = Exclude<
-  $Keys<FunctionPluginHooks> | $Keys<AddonHooks>,
+  $Keys<FunctionPluginHooks> | AddonHooks,
   FirstPluginHooks | SequentialPluginHooks,
 >;
 
