@@ -88,7 +88,10 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   );
 
   return [
-    { ...themeVariablesObject, __themeName__: themeNameHash },
+    {
+      ...themeVariablesObject,
+      __themeName__: themeNameHash,
+    },
     { ...injectableTypes, ...injectableStyles },
   ];
 }
