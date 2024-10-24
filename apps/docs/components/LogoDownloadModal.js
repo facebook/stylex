@@ -35,7 +35,6 @@ const styles = stylex.create({
         fontSize: '14px',
         fontWeight: 'bold',
         marginBottom: '8px',
-        color: 'var(--ifm-color-primary-light)',
     },
     buttonGroup: {
         display: 'flex',
@@ -131,7 +130,9 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
                 }}
             >
                 <div {...stylex.props(styles.section)}>
-                    <h3 {...stylex.props(styles.sectionTitle)}>Dark Mode</h3>
+                    <h3 {...stylex.props(styles.sectionTitle)} style={{
+                        color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
+                    }}>Dark Mode</h3>
                     <div {...stylex.props(styles.buttonGroup)}>
                         <button
                             {...stylex.props(styles.button)}
@@ -150,7 +151,9 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
                     </div>
                 </div>
                 <div {...stylex.props(styles.section)}>
-                    <h3 {...stylex.props(styles.sectionTitle)}>Light Mode</h3>
+                    <h3 {...stylex.props(styles.sectionTitle)} style={{
+                        color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
+                    }}>Light Mode</h3>
                     <div {...stylex.props(styles.buttonGroup)}>
                         <button
                             {...stylex.props(styles.button)}
@@ -169,7 +172,9 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
                     </div>
                 </div>
                 <div {...stylex.props(styles.section)}>
-                    <h3 {...stylex.props(styles.sectionTitle)}>Assets</h3>
+                    <h3 {...stylex.props(styles.sectionTitle)} style={{
+                        color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
+                    }}>Assets</h3>
                     <div {...stylex.props(styles.buttonGroup)}>
                         <button
                             {...stylex.props(styles.button)}
