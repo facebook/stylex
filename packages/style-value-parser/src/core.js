@@ -427,8 +427,10 @@ export class ParserSequence<+T: ConstrainedTuple<Parser<mixed>>> extends Parser<
   separatedBy(separator: Parser<mixed>): ParserSequence<T> {
     // $FlowFixMe[incompatible-type]
     const parsers: T = this.parsers.map(
-      <X>(originalParser: Parser<X>): Parser<X> =>
-        originalParser.prefix(separator.map(() => undefined)),
+      <X>(originalParser: Parser<X>, index: number): Parser<X> =>
+        index === 0
+          ? originalParser
+          : originalParser.prefix(separator.map(() => undefined)),
     );
 
     return new ParserSequence<T>(parsers);
@@ -440,8 +442,9 @@ class ParserSet<+T: ConstrainedTuple<Parser<mixed>>> extends Parser<
   ValuesFromParserTuple<T>,
 > {
   +parsers: T;
+  +separator: ?Parser<void>;
 
-  constructor(parsers: T) {
+  constructor(parsers: T, separator?: ?Parser<void>) {
     super((input: SubString): ValuesFromParserTuple<T> | Error => {
       const { startIndex, endIndex } = input;
       let failed: null | Error = null;
@@ -452,6 +455,15 @@ class ParserSet<+T: ConstrainedTuple<Parser<mixed>>> extends Parser<
       for (let i = 0; i < parsers.length; i++) {
         let found = false;
         const errors = [];
+        if (separator != null && i > 0) {
+          const result = separator.run(input);
+          if (result instanceof Error) {
+            failed = new Error(
+              `Expected ${separator.toString()} but got ${result.message}`,
+            );
+            break;
+          }
+        }
         for (let j = 0; j < parsers.length && !indices.has(j); j++) {
           const parser = parsers[j];
           const result = parser.run(input);
@@ -487,17 +499,24 @@ class ParserSet<+T: ConstrainedTuple<Parser<mixed>>> extends Parser<
       return output as ValuesFromParserTuple<T>;
     });
     this.parsers = parsers;
+    this.separator = separator;
   }
 
+  // TODO: This is wrong!
   separatedBy(separator: Parser<mixed>): ParserSet<T> {
     // This is correct, but Flow can't map tuples right.
     // $FlowFixMe[incompatible-type]
-    const parsers: T = this.parsers.map(
-      <X>(originalParser: Parser<X>): Parser<X> =>
-        originalParser.prefix(separator.map(() => undefined)),
-    );
+    // const parsers: T = this.parsers.map(
+    //   <X>(originalParser: Parser<X>): Parser<X> =>
+    //     originalParser.prefix(separator.map(() => undefined)),
+    // );
 
-    return new ParserSet(parsers);
+    const sep =
+      this.separator != null
+        ? this.separator.prefix(separator.map(() => undefined))
+        : separator.map(() => undefined);
+
+    return new ParserSet(this.parsers, sep);
   }
 }
 
