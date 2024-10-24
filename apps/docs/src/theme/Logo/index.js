@@ -14,13 +14,21 @@ export default function LogoWrapper(props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleClick = (e) => {
+        //If needed, we can add some functionality here
+    };
+
+    const handleContextMenu = (e) => {
         e.preventDefault();
         setIsModalOpen(true);
     };
 
     return (
         <>
-            <div {...stylex.props(styles.logoWrapper)} onClick={handleClick}>
+            <div
+                {...stylex.props(styles.logoWrapper)}
+                onClick={handleClick}
+                onContextMenu={handleContextMenu}
+            >
                 <Logo {...props} />
             </div>
             <LogoDownloadModal
