@@ -18,7 +18,7 @@ const fadeOut = "x1mi9bte-B";
 const fadeOutBloom = "xd93vs1-B";
 const fadeOutBloomDark = "x18q36hy-B";
 const scaleUp = "x1gdf4cp-B";
-const scaleDown = "x1uvjygu-B";
+const scaleDown = "xjnts4g-B";
 const slideOutUp = "xyz4r9t-B";
 const slideOutDown = "xyz4r9t-B";
 const slideOutRight = "x1qkfcoh-B";
@@ -121,9 +121,9 @@ exports[`commonJS results of exported styles and variables animationNames.stylex
     1,
   ],
   [
-    "x1uvjygu-B",
+    "xjnts4g-B",
     {
-      "ltr": "@keyframes x1uvjygu-B{to{transform:scale(.75);}}",
+      "ltr": "@keyframes xjnts4g-B{to{transform:scale(0.75);}}",
       "rtl": null,
     },
     1,
@@ -259,7 +259,7 @@ exports[`commonJS results of exported styles and variables animationNames.stylex
   [
     "x1p4jv38",
     {
-      "ltr": ":root{--xwgfw4z:x1wv65fh-B;--xwpxwog:x3cospo-B;--x1mrv0ld:x1mi9bte-B;--x1f9mpsk:xd93vs1-B;--x1dlahej:x1gdf4cp-B;--xchc88h:x1uvjygu-B;--x1wwe1u9:xyz4r9t-B;--xojb453:xyz4r9t-B;--x1erxhtw:x1qkfcoh-B;--x2p2omt:x1c1el34-B;--x1lyv700:x5q0om7-B;--x1dhg8ry:xiaildr-B;--x14d2ijb:x1pzz5b5-B;--x1r6uxce:x2i3tye-B;--x1o3zfci:xui5qpo-B;--xhf4ud:x1oudpiw-B;--x7jv0fk:x1uh2x5g-B;--x1x4v7e3:xk6fz2t-B;--xg5no4m:x13kz0yu-B;--x7mxyyy:xtacmzc-B;--xs1cbdk:xmu8adp-B;--x1gf7j19:x1wtl5zh-B;}",
+      "ltr": ":root{--xwgfw4z:x1wv65fh-B;--xwpxwog:x3cospo-B;--x1mrv0ld:x1mi9bte-B;--x1f9mpsk:xd93vs1-B;--x1dlahej:x1gdf4cp-B;--xchc88h:xjnts4g-B;--x1wwe1u9:xyz4r9t-B;--xojb453:xyz4r9t-B;--x1erxhtw:x1qkfcoh-B;--x2p2omt:x1c1el34-B;--x1lyv700:x5q0om7-B;--x1dhg8ry:xiaildr-B;--x14d2ijb:x1pzz5b5-B;--x1r6uxce:x2i3tye-B;--x1o3zfci:xui5qpo-B;--xhf4ud:x1oudpiw-B;--x7jv0fk:x1uh2x5g-B;--x1x4v7e3:xk6fz2t-B;--xg5no4m:x13kz0yu-B;--x7mxyyy:xtacmzc-B;--xs1cbdk:xmu8adp-B;--x1gf7j19:x1wtl5zh-B;}",
       "rtl": null,
     },
     0,
