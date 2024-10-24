@@ -9,7 +9,7 @@ const styles = stylex.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
         zIndex: 999,
     },
     modal: {
@@ -21,9 +21,12 @@ const styles = stylex.create({
         padding: '16px',
         borderRadius: '8px',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-        maxWidth: '250px',
-        width: '100%',
+        maxWidth: '260px',
+        height: 'auto',
+        minHeight: '360px',
+        width: '90%',
         zIndex: 1000,
+        boxSizing: 'border-box',
     },
     section: {
         marginBottom: '16px',
@@ -32,26 +35,29 @@ const styles = stylex.create({
         fontSize: '14px',
         fontWeight: 'bold',
         marginBottom: '8px',
-        color: 'var(--ifm-color-emphasis-700)',
+        color: 'var(--ifm-color-primary-light)',
     },
     buttonGroup: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
     },
     button: {
         display: 'flex',
         alignItems: 'center',
-        padding: '8px 12px',
+        justifyContent: 'flex-start',
+        padding: '12px 16px',
         cursor: 'pointer',
-        backgroundColor: 'var(--ifm-color-emphasis-200)',
+        backgroundColor: 'var(--ifm-background-color)',
         color: 'var(--ifm-font-color-base)',
-        border: 'none',
         borderRadius: '4px',
         fontSize: '14px',
-        transition: 'background-color 0.2s',
+        transition: 'background-color 0.2s, color 0.2s',
+        border: 'none',
+        width: '100%',
+        marginBottom: '8px',
         ':hover': {
-            backgroundColor: 'var(--ifm-color-emphasis-300)',
+            backgroundColor: 'var(--ifm-color-primary-light)',
+            color: '#FFFFFF',
         },
     },
     icon: {
@@ -110,15 +116,20 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
     };
 
     const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-            alert(`Copied ${text} to clipboard!`);
-        });
+        navigator.clipboard.writeText(text);
     };
 
     return (
         <>
             <div {...stylex.props(styles.overlay)} />
-            <div {...stylex.props(styles.modal)} ref={modalRef}>
+            <div
+                {...stylex.props(styles.modal)}
+                ref={modalRef}
+                style={{
+                    backgroundColor: colorMode === 'dark' ? 'var(--bg2)' : 'var(--ifm-background-surface-color)',
+                    color: colorMode === 'dark' ? '#FFFFFF' : 'var(--ifm-font-color-base)',
+                }}
+            >
                 <div {...stylex.props(styles.section)}>
                     <h3 {...stylex.props(styles.sectionTitle)}>Dark Mode</h3>
                     <div {...stylex.props(styles.buttonGroup)}>
@@ -131,7 +142,7 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
                         </button>
                         <button
                             {...stylex.props(styles.button)}
-                            onClick={() => copyToClipboard('#d6249f')}
+                            onClick={() => copyToClipboard('#000000')}
                         >
                             <CopyIcon />
                             Copy Dark Mode Color
@@ -150,10 +161,22 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
                         </button>
                         <button
                             {...stylex.props(styles.button)}
-                            onClick={() => copyToClipboard('#0866FF')}
+                            onClick={() => copyToClipboard('#FFFFFF')}
                         >
                             <CopyIcon />
                             Copy Light Mode Color
+                        </button>
+                    </div>
+                </div>
+                <div {...stylex.props(styles.section)}>
+                    <h3 {...stylex.props(styles.sectionTitle)}>Assets</h3>
+                    <div {...stylex.props(styles.buttonGroup)}>
+                        <button
+                            {...stylex.props(styles.button)}
+                            onClick={() => downloadFile('img/stylex-cover-photo.png')}
+                        >
+                            <DownloadIcon />
+                            Cover Photo
                         </button>
                     </div>
                 </div>
