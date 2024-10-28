@@ -7,16 +7,13 @@
  * @flow strict
  */
 
-import _stylexCreateTheme from '../../src/stylex-create-theme';
+import stylexCreateTheme from '../../src/stylex-create-theme';
 import * as t from '../../src/types';
-
-const stylexCreateTheme = (a, b) =>
-  _stylexCreateTheme(a, b, { themeOverride: 'group' });
 
 describe('stylex-create-theme test', () => {
   test('overrides set of vars with CSS class', () => {
     const defaultVars = {
-      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      __themeName__: 'TestTheme_stylex_js__buttonTheme_hash',
       bgColor: 'var(--xgck17p)',
       bgColorDisabled: 'var(--xpegid5)',
       cornerRadius: 'var(--xrqfjmn)',
@@ -43,20 +40,20 @@ describe('stylex-create-theme test', () => {
     );
 
     expect(defaultVars.__themeName__).toMatchInlineSnapshot(
-      '"TestTheme.stylex.js//buttonTheme"',
+      '"TestTheme_stylex_js__buttonTheme_hash"',
     );
 
     expect(classNameOutput).toMatchInlineSnapshot(`
       {
         "$$css": true,
-        "TestTheme.stylex.js//buttonTheme": "xtrlmmh TestTheme.stylex.js//buttonTheme",
+        "TestTheme_stylex_js__buttonTheme_hash": "xtrlmmh TestTheme_stylex_js__buttonTheme_hash",
       }
     `);
 
     expect(cssOutput[classNameOutput[defaultVars.__themeName__].split(' ')[0]])
       .toMatchInlineSnapshot(`
       {
-        "ltr": ".xtrlmmh{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
+        "ltr": ".xtrlmmh, .xtrlmmh:root{--xgck17p:green;--xpegid5:antiquewhite;--xrqfjmn:6px;--x4y59db:coral;}",
         "priority": 0.5,
         "rtl": null,
       }
@@ -65,7 +62,7 @@ describe('stylex-create-theme test', () => {
 
   test('overrides set of literal vars with CSS class', () => {
     const defaultVars = {
-      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      __themeName__: 'TestTheme_stylex_js__buttonTheme_hash',
       '--bgColor': 'var(--bgColor)',
       '--bgColorDisabled': 'var(--bgColorDisabled)',
       '--cornerRadius': 'var(--cornerRadius)',
@@ -92,20 +89,20 @@ describe('stylex-create-theme test', () => {
     );
 
     expect(defaultVars.__themeName__).toMatchInlineSnapshot(
-      '"TestTheme.stylex.js//buttonTheme"',
+      '"TestTheme_stylex_js__buttonTheme_hash"',
     );
 
     expect(classNameOutput).toMatchInlineSnapshot(`
       {
         "$$css": true,
-        "TestTheme.stylex.js//buttonTheme": "x4znj40 TestTheme.stylex.js//buttonTheme",
+        "TestTheme_stylex_js__buttonTheme_hash": "x4znj40 TestTheme_stylex_js__buttonTheme_hash",
       }
     `);
 
     expect(cssOutput[classNameOutput[defaultVars.__themeName__].split(' ')[0]])
       .toMatchInlineSnapshot(`
       {
-        "ltr": ".x4znj40{--bgColor:green;--bgColorDisabled:antiquewhite;--cornerRadius:6px;--fgColor:coral;}",
+        "ltr": ".x4znj40, .x4znj40:root{--bgColor:green;--bgColorDisabled:antiquewhite;--cornerRadius:6px;--fgColor:coral;}",
         "priority": 0.5,
         "rtl": null,
       }
@@ -114,7 +111,7 @@ describe('stylex-create-theme test', () => {
 
   test('variables order does not change the hash', () => {
     const defaultVars = {
-      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      __themeName__: 'TestTheme_stylex_js__buttonTheme_hash',
       bgColor: 'var(--xgck17p)',
       bgColorDisabled: 'var(--xpegid5)',
       cornerRadius: 'var(--xrqfjmn)',
@@ -154,7 +151,7 @@ describe('stylex-create-theme test', () => {
     const [classNameOutput2] = stylexCreateTheme(defaultVars, createTheme2);
 
     expect(defaultVars.__themeName__).toMatchInlineSnapshot(
-      '"TestTheme.stylex.js//buttonTheme"',
+      '"TestTheme_stylex_js__buttonTheme_hash"',
     );
 
     expect(classNameOutput1[defaultVars.__themeName__].split(' ')[0]).toEqual(
@@ -164,7 +161,7 @@ describe('stylex-create-theme test', () => {
 
   test('Adding an at-rule changes the hash', () => {
     const defaultVars = {
-      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      __themeName__: 'TestTheme_stylex_js__buttonTheme_hash',
       bgColor: 'var(--xgck17p)',
     };
 
@@ -190,7 +187,7 @@ describe('stylex-create-theme test', () => {
 
   test('Generates styles for nested at-rules', () => {
     const defaultVars = {
-      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      __themeName__: 'TestTheme_stylex_js__buttonTheme_hash',
       bgColor: 'var(--xgck17p)',
     };
 
@@ -215,22 +212,22 @@ describe('stylex-create-theme test', () => {
     expect(cssOutput).toMatchInlineSnapshot(`
       {
         "x2y918k": {
-          "ltr": ".x2y918k{--xgck17p:green;}",
+          "ltr": ".x2y918k, .x2y918k:root{--xgck17p:green;}",
           "priority": 0.5,
           "rtl": null,
         },
         "x2y918k-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
           "priority": 0.7,
           "rtl": null,
         },
         "x2y918k-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:lightgreen;}}",
+          "ltr": "@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:lightgreen;}}",
           "priority": 0.6,
           "rtl": null,
         },
         "x2y918k-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
+          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
           "priority": 0.6,
           "rtl": null,
         },
@@ -240,7 +237,7 @@ describe('stylex-create-theme test', () => {
 
   test('Generates styles for typed nested at-rules', () => {
     const defaultVars = {
-      __themeName__: 'TestTheme.stylex.js//buttonTheme',
+      __themeName__: 'TestTheme_stylex_js__buttonTheme_hash',
       bgColor: 'var(--xgck17p)',
     };
 
@@ -265,22 +262,22 @@ describe('stylex-create-theme test', () => {
     expect(cssOutput).toMatchInlineSnapshot(`
       {
         "x2y918k": {
-          "ltr": ".x2y918k{--xgck17p:green;}",
+          "ltr": ".x2y918k, .x2y918k:root{--xgck17p:green;}",
           "priority": 0.5,
           "rtl": null,
         },
         "x2y918k-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.2 -0.4);}}}",
           "priority": 0.7,
           "rtl": null,
         },
         "x2y918k-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){.x2y918k{--xgck17p:lightgreen;}}",
+          "ltr": "@media (prefers-color-scheme: dark){.x2y918k, .x2y918k:root{--xgck17p:lightgreen;}}",
           "priority": 0.6,
           "rtl": null,
         },
         "x2y918k-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
+          "ltr": "@supports (color: oklab(0 0 0)){.x2y918k, .x2y918k:root{--xgck17p:oklab(0.7 -0.3 -0.4);}}",
           "priority": 0.6,
           "rtl": null,
         },

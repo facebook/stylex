@@ -64,7 +64,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl",
             {
-              "ltr": ":root{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}",
+              "ltr": ":root, .x7fqapl{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}",
               "rtl": undefined,
             },
             0,
@@ -72,7 +72,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){:root{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}",
+              "ltr": "@media (prefers-color-scheme: dark){:root, .x7fqapl{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}",
               "rtl": undefined,
             },
             0.1,
@@ -80,7 +80,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl-bdddrq",
             {
-              "ltr": "@media print{:root{--xiwovr5:white;}}",
+              "ltr": "@media print{:root, .x7fqapl{--xiwovr5:white;}}",
               "rtl": undefined,
             },
             0.1,
@@ -156,7 +156,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl",
             {
-              "ltr": ":root{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}",
+              "ltr": ":root, .x7fqapl{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}",
               "rtl": undefined,
             },
             0,
@@ -164,7 +164,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){:root{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}",
+              "ltr": "@media (prefers-color-scheme: dark){:root, .x7fqapl{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}",
               "rtl": undefined,
             },
             0.1,
@@ -172,7 +172,7 @@ describe('Development Plugin Transformation', () => {
           [
             "x7fqapl-bdddrq",
             {
-              "ltr": "@media print{:root{--xiwovr5:white;}}",
+              "ltr": "@media print{:root, .x7fqapl{--xiwovr5:white;}}",
               "rtl": undefined,
             },
             0.1,

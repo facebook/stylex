@@ -48,15 +48,6 @@ export type StyleXOptions = $ReadOnly<{
   useRemForFontSize: boolean,
   classNamePrefix: string,
   definedStylexCSSVariables?: { [key: string]: mixed },
-  // Behaviour of themes created with `.createTheme`
-  themeOverride:
-    | 'var' // Only overrides the variables defined in the theme
-    // Overrides the entire VarGroup. Any variables omitted in the theme
-    // will be reset to their default value
-    | 'group'
-    // Overrides *all* variables not in the theme, including variables defined
-    // in other groups back to their defaults
-    | 'global',
   styleResolution:
     | 'application-order' // The last style applied wins.
     // More specific styles will win over less specific styles. (margin-top wins over margin)

@@ -116,7 +116,7 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
 "
 @layer priority1, priority2;
 @layer priority1{
-:root{--xx1oc6k:white;--x14p2zvc:pink;--xdr2u03:green;}
+:root, .xokpgiz{--xx1oc6k:white;--x14p2zvc:pink;--xdr2u03:green;}
 }
 @layer priority2{
 .xktrvhi{background-color:var(--xx1oc6k)}

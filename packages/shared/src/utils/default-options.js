@@ -16,5 +16,4 @@ export const defaultOptions: StyleXOptions = {
   test: false,
   classNamePrefix: 'x',
   styleResolution: 'application-order',
-  themeOverride: 'var',
 };

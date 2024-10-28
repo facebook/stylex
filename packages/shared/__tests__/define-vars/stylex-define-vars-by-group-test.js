@@ -7,12 +7,9 @@
  * @flow strict
  */
 
-import _styleXDefineVars from '../../src/stylex-define-vars';
+import styleXDefineVars from '../../src/stylex-define-vars';
 import * as t from '../../src/types';
 import createHash from '../../src/hash';
-
-const styleXDefineVars = (a, b) =>
-  _styleXDefineVars(a, { ...b, themeOverride: 'group' });
 
 describe('stylex-define-vars test', () => {
   test('converts set of vars to CSS', () => {
