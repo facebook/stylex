@@ -23,9 +23,9 @@ describe('stylex-keyframes test', () => {
       }),
     ).toMatchInlineSnapshot(`
       [
-        "xbopttm-B",
+        "x1higzey-B",
         {
-          "ltr": "@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}",
+          "ltr": "@keyframes x1higzey-B{from{background-color:red;}to{background-color:#00f;}}",
           "priority": 1,
           "rtl": null,
         },

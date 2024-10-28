@@ -20,7 +20,13 @@ import detectUnclosedFns from './normalizers/detect-unclosed-fns';
 import parser from 'postcss-value-parser';
 import convertCamelCaseValues from './normalizers/convert-camel-case-values';
 import type { StyleXOptions } from '../common-types';
-import * as styleParsers from '@stylexjs/style-value-parser';
+import { transform } from 'lightningcss';
+import dashify from './dashify';
+import type {
+  Declaration,
+  PropertyId,
+  TokenOrValue,
+} from 'lightningcss/node/ast';
 
 // `Timings` should be before `LeadingZero`, because it
 // changes 500ms to 0.5s, then `LeadingZero` makes it .5s
@@ -35,27 +41,87 @@ const normalizers = [
   // convertFontSizeToRem,
 ];
 
+const parseCache: { [string]: ?Map<string, string> } = {};
+
 export default function normalizeValue(
   value: string,
   key: string,
   { useRemForFontSize }: StyleXOptions,
 ): string {
-  if (key in styleParsers.properties) {
-    const propName: $Keys<typeof styleParsers.properties> = key as $FlowFixMe;
-    try {
-      // Can throw an error
-      const parsedVal =
-        styleParsers.properties[propName].parse.parseToEnd(value);
-      return parsedVal.toString();
-    } catch (err) {
-      // UPDATE THIS TO DO BETTER LOGGING by improving error message.
-      /**
-       * The value for given property might be invalid
-       * Log both key and value
-       * Log the error
-       */
-      // console.error(err);
+  const cachedValue = parseCache[key]?.get(value);
+  if (cachedValue != null) {
+    return cachedValue;
+  }
+  const cssKey = dashify(key);
+  try {
+    const cssString = `.foo { ${cssKey}: ${value}; }`;
+    const { code } = transform({
+      filename: 'style.css',
+      code: Buffer.from(cssString),
+      minify: true,
+      sourceMap: false,
+      visitor: {
+        Declaration(decl: Declaration) {
+          if (decl.property === 'transition-property') {
+            const value: Array<PropertyId> = decl.value;
+
+            const newValue = value.map((propId: PropertyId): PropertyId => {
+              // $FlowFixMe[incompatible-type]
+              propId.property = dashify(propId.property);
+              return propId;
+            });
+            return {
+              ...decl,
+              value: newValue,
+            };
+          }
+          if (decl.property === 'custom' && decl.value.name === 'will-change') {
+            const values: Array<TokenOrValue> = decl.value.value;
+            const newValues = values.map(
+              (maybeIdent: TokenOrValue): TokenOrValue => {
+                if (
+                  maybeIdent.type === 'token' &&
+                  maybeIdent.value.type === 'ident'
+                ) {
+                  return {
+                    ...maybeIdent,
+                    value: {
+                      ...maybeIdent.value,
+                      value: dashify(maybeIdent.value.value),
+                    },
+                  };
+                }
+                return maybeIdent;
+              },
+            );
+            decl.value.value = newValues;
+            return decl;
+          }
+        },
+      },
+    });
+
+    const codeStr = code.toString();
+
+    const propStr = `${cssKey}:`;
+
+    let normalized = codeStr
+      .slice(codeStr.lastIndexOf(propStr) + propStr.length)
+      .trim();
+    if (normalized.endsWith('}')) {
+      normalized = normalized.slice(0, -1);
     }
+    if (normalized.endsWith(';')) {
+      normalized = normalized.slice(0, -1);
+    }
+
+    const map = parseCache[cssKey] ?? new Map();
+    map.set(value, normalized);
+    parseCache[cssKey] = map;
+
+    return normalized;
+  } catch (e) {
+    console.error('Error while parsing', cssKey, value, e);
   }
 
   if (value == null) {
