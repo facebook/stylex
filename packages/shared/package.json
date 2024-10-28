@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "lightningcss": "^1.27.0",
     "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {
