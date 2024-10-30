@@ -1,21 +1,18 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import React, { useState } from 'react';
 import Logo from '@theme-original/Logo';
 import * as stylex from '@stylexjs/stylex';
 import LogoDownloadModal from '../../../components/LogoDownloadModal';
 
-const styles = stylex.create({
-    logoWrapper: {
-        cursor: 'pointer',
-        display: 'inline-block',
-    },
-});
-
 export default function LogoWrapper(props) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const handleClick = (e) => {
-        //If needed, we can add some functionality here
-    };
 
     const handleContextMenu = (e) => {
         e.preventDefault();
@@ -24,13 +21,7 @@ export default function LogoWrapper(props) {
 
     return (
         <>
-            <div
-                {...stylex.props(styles.logoWrapper)}
-                onClick={handleClick}
-                onContextMenu={handleContextMenu}
-            >
-                <Logo {...props} />
-            </div>
+            <Logo {...props} onContextMenu={handleContextMenu} />
             <LogoDownloadModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

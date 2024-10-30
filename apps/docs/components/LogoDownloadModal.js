@@ -1,3 +1,12 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ *
+ */
+
 import React, { useRef, useEffect } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { useColorMode } from '@docusaurus/theme-common';
@@ -13,7 +22,7 @@ const styles = stylex.create({
         maxWidth: '16.25rem',
         maxHeight: '80vh',
         width: '90%',
-        border: 'none',
+        borderStyle: 'none',
         boxSizing: 'border-box',
         margin: 0,
         overflowY: 'auto',
@@ -135,8 +144,8 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
                 styles.dialog,
                 colorMode === 'dark' ? styles.dialogDark : styles.dialogLight
             )}
-            ref={dialogRef}
             onClose={onClose}
+            ref={dialogRef}
         >
             <div {...stylex.props(styles.section)}>
                 <h3 {...stylex.props(styles.sectionTitle)}>Dark Mode</h3>
