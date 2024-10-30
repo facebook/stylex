@@ -395,6 +395,19 @@ export default function Playground() {
     };
   }, []);
 
+  const addNewFile = () => {
+    const filename = prompt('Enter new file name:');
+    if (filename && !files[filename]) {
+      setFiles((prev) => ({
+        ...prev,
+        [filename]: { name: filename, content: '' },
+      }));
+      setActiveFile(filename);
+    } else {
+      alert('Invalid or duplicate file name.');
+    }
+  };
+
   return (
     <div {...stylex.props(styles.root)}>
       <header {...stylex.props(styles.header)}>
@@ -770,13 +783,7 @@ const styles = stylex.create({
     padding: '2px 4px',
     borderRadius: '2px',
     outline: 'none',
-    maxWidth: 'calc(100% - 32px)',
-  },
-  editingInput: {
-    border: '1px solid var(--ifm-color-primary)',
-    cursor: 'text',
-    backgroundColor: '#FFFFFF',
-    color: 'black',
+    maxWidth: '80%',
   },
   deleteButton: {
     display: 'flex',
@@ -825,11 +832,7 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    color: 'var(--sidebar-fg)',
-    backgroundColor: 'var(--playground-sidebar-bg)',
-    padding: '0 10px',
-    boxSizing: 'border-box',
-    minWidth: '225px',
-    gap: '8px',
+    borderWidth: 0,
+    borderStyle: 'none',
   },
 });
