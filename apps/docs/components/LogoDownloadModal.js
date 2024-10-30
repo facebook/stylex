@@ -3,16 +3,7 @@ import * as stylex from '@stylexjs/stylex';
 import { useColorMode } from '@docusaurus/theme-common';
 
 const styles = stylex.create({
-    overlay: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        zIndex: 999,
-    },
-    modal: {
+    dialog: {
         position: 'fixed',
         top: '60px',
         left: '20px',
@@ -22,11 +13,15 @@ const styles = stylex.create({
         borderRadius: '8px',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
         maxWidth: '260px',
-        height: 'auto',
-        minHeight: '360px',
+        maxHeight: '80vh',
         width: '90%',
-        zIndex: 1000,
+        border: 'none',
         boxSizing: 'border-box',
+        margin: 0,
+        overflowY: 'auto',
+        '::backdrop': {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        },
     },
     section: {
         marginBottom: '16px',
@@ -81,25 +76,27 @@ const CopyIcon = () => (
 
 export default function LogoDownloadModal({ isOpen, onClose }) {
     const { colorMode } = useColorMode();
-    const modalRef = useRef(null);
+    const dialogRef = useRef(null);
 
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
+        if (isOpen) {
+            dialogRef.current?.showModal();
+        } else {
+            dialogRef.current?.close();
+        }
+    }, [isOpen]);
+
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        const handleClick = (event) => {
+            if (event.target === dialog) {
                 onClose();
             }
         };
 
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen, onClose]);
-
-    if (!isOpen) return null;
+        dialog?.addEventListener('click', handleClick);
+        return () => dialog?.removeEventListener('click', handleClick);
+    }, [onClose]);
 
     const downloadFile = (url) => {
         fetch(url)
@@ -119,73 +116,71 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
     };
 
     return (
-        <>
-            <div {...stylex.props(styles.overlay)} />
-            <div
-                {...stylex.props(styles.modal)}
-                ref={modalRef}
-                style={{
-                    backgroundColor: colorMode === 'dark' ? 'var(--bg2)' : 'var(--ifm-background-surface-color)',
-                    color: colorMode === 'dark' ? '#FFFFFF' : 'var(--ifm-font-color-base)',
-                }}
-            >
-                <div {...stylex.props(styles.section)}>
-                    <h3 {...stylex.props(styles.sectionTitle)} style={{
-                        color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
-                    }}>Dark Mode</h3>
-                    <div {...stylex.props(styles.buttonGroup)}>
-                        <button
-                            {...stylex.props(styles.button)}
-                            onClick={() => downloadFile('img/stylex-logo-large-dark.svg')}
-                        >
-                            <DownloadIcon />
-                            Logo SVG
-                        </button>
-                        <button
-                            {...stylex.props(styles.button)}
-                            onClick={() => copyToClipboard('#000000')}
-                        >
-                            <CopyIcon />
-                            Copy Dark Mode Color
-                        </button>
-                    </div>
-                </div>
-                <div {...stylex.props(styles.section)}>
-                    <h3 {...stylex.props(styles.sectionTitle)} style={{
-                        color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
-                    }}>Light Mode</h3>
-                    <div {...stylex.props(styles.buttonGroup)}>
-                        <button
-                            {...stylex.props(styles.button)}
-                            onClick={() => downloadFile('img/stylex-logo-large.svg')}
-                        >
-                            <DownloadIcon />
-                            Logo SVG
-                        </button>
-                        <button
-                            {...stylex.props(styles.button)}
-                            onClick={() => copyToClipboard('#FFFFFF')}
-                        >
-                            <CopyIcon />
-                            Copy Light Mode Color
-                        </button>
-                    </div>
-                </div>
-                <div {...stylex.props(styles.section)}>
-                    <h3 {...stylex.props(styles.sectionTitle)} style={{
-                        color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
-                    }}>Assets</h3>
-                    <div {...stylex.props(styles.buttonGroup)}>
-                        <button
-                            {...stylex.props(styles.button)}
-                            onClick={() => downloadFile('img/stylex-cover-photo.png')}
-                        >
-                            <DownloadIcon />
-                            Cover Photo
-                        </button>
-                    </div>
+        <dialog
+            {...stylex.props(styles.dialog)}
+            ref={dialogRef}
+            style={{
+                backgroundColor: colorMode === 'dark' ? 'var(--bg2)' : 'var(--ifm-background-surface-color)',
+                color: colorMode === 'dark' ? '#FFFFFF' : 'var(--ifm-font-color-base)',
+            }}
+            onClose={onClose}
+        >
+            <div {...stylex.props(styles.section)}>
+                <h3 {...stylex.props(styles.sectionTitle)} style={{
+                    color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
+                }}>Dark Mode</h3>
+                <div {...stylex.props(styles.buttonGroup)}>
+                    <button
+                        {...stylex.props(styles.button)}
+                        onClick={() => downloadFile('img/stylex-logo-large-dark.svg')}
+                    >
+                        <DownloadIcon />
+                        Logo SVG
+                    </button>
+                    <button
+                        {...stylex.props(styles.button)}
+                        onClick={() => copyToClipboard('#000000')}
+                    >
+                        <CopyIcon />
+                        Copy Dark Mode Color
+                    </button>
                 </div>
             </div>
-        </>
+            <div {...stylex.props(styles.section)}>
+                <h3 {...stylex.props(styles.sectionTitle)} style={{
+                    color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
+                }}>Light Mode</h3>
+                <div {...stylex.props(styles.buttonGroup)}>
+                    <button
+                        {...stylex.props(styles.button)}
+                        onClick={() => downloadFile('img/stylex-logo-large.svg')}
+                    >
+                        <DownloadIcon />
+                        Logo SVG
+                    </button>
+                    <button
+                        {...stylex.props(styles.button)}
+                        onClick={() => copyToClipboard('#FFFFFF')}
+                    >
+                        <CopyIcon />
+                        Copy Light Mode Color
+                    </button>
+                </div>
+            </div>
+            <div {...stylex.props(styles.section)}>
+                <h3 {...stylex.props(styles.sectionTitle)} style={{
+                    color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
+                }}>Assets</h3>
+                <div {...stylex.props(styles.buttonGroup)}>
+                    <button
+                        {...stylex.props(styles.button)}
+                        onClick={() => downloadFile('img/stylex-cover-photo.png')}
+                    >
+                        <DownloadIcon />
+                        Cover Photo
+                    </button>
+                </div>
+            </div>
+        </dialog>
     );
 }
