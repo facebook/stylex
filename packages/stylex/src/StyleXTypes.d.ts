@@ -15,19 +15,18 @@ export type StyleXClassNameFor<K, V> = string & {
   _key: K;
   _value: V;
 };
-
-export type StyleXClassNameForValue<V> = StyleXClassNameFor<any, V>;
-export type StyleXClassNameForKey<K> = StyleXClassNameFor<K, any>;
-export type StyleXClassName = StyleXClassNameFor<any, any>;
-// Type for arbitrarily nested Array.
-export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
-
 declare const StyleXVarTag: unique symbol;
 declare class _StyleXVar<out Val> {
   private _opaque: typeof StyleXVarTag;
   private _value: Val;
 }
 export type StyleXVar<Val> = _StyleXVar<Val> & string;
+
+export type StyleXClassNameForValue<V> = StyleXClassNameFor<any, V>;
+export type StyleXClassNameForKey<K> = StyleXClassNameFor<K, any>;
+export type StyleXClassName = StyleXClassNameFor<any, any>;
+// Type for arbitrarily nested Array.
+export type StyleXArray<T> = T | ReadonlyArray<StyleXArray<T>>;
 
 type PseudoClassStr = `:${string}`;
 type AtRuleStr = `@${string}`;
@@ -100,7 +99,7 @@ type ComplexStyleValueType<T> =
     : T extends string | number | null
       ? T
       : T extends ReadonlyArray<infer U>
-        ? U
+        ? ComplexStyleValueType<U>
         : T extends Readonly<{ default: infer A; [cond: CondStr]: infer B }>
           ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
           : T;
@@ -184,8 +183,7 @@ export type VarGroup<
   }> &
   typeof StyleXVarGroupTag;
 
-export type TokensFromVarGroup<T extends VarGroup<unknown, unknown>> =
-  T['__tokens'];
+export type TokensFromVarGroup<T extends VarGroup<{}>> = T['__tokens'];
 
 export type IDFromVarGroup<T extends VarGroup<unknown, unknown>> =
   T['__opaqueId'];
@@ -200,6 +198,13 @@ export type FlattenTokens<T extends TTokens> = Readonly<{
     ? UnwrapVars<X>
     : UnwrapVars<T[Key]>;
 }>;
+
+type NestedVarObject<T> =
+  | T
+  | Readonly<{
+      default: NestedVarObject<T>;
+      [key: `@${string}`]: NestedVarObject<T>;
+    }>;
 
 export type StyleX$DefineVars = <
   DefaultTokens extends TTokens,
@@ -220,9 +225,7 @@ export type Theme<
   }>;
 
 type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
-  [Key in keyof Config]?:
-    | Config[Key]
-    | { default: Config[Key]; [atRule: AtRuleStr]: Config[Key] };
+  [Key in keyof Config]?: NestedVarObject<Config[Key]>;
 };
 
 export type StyleX$CreateTheme = <
