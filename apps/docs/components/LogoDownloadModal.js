@@ -5,14 +5,12 @@ import { useColorMode } from '@docusaurus/theme-common';
 const styles = stylex.create({
     dialog: {
         position: 'fixed',
-        top: '60px',
-        left: '20px',
-        backgroundColor: 'var(--ifm-background-surface-color)',
-        color: 'var(--ifm-font-color-base)',
+        top: 60,
+        left: 20,
         padding: '16px',
         borderRadius: '8px',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-        maxWidth: '260px',
+        maxWidth: '16.25rem',
         maxHeight: '80vh',
         width: '90%',
         border: 'none',
@@ -22,6 +20,14 @@ const styles = stylex.create({
         '::backdrop': {
             backgroundColor: 'rgba(0, 0, 0, 0.7)',
         },
+    },
+    dialogLight: {
+        backgroundColor: 'var(--ifm-background-surface-color)',
+        color: 'var(--ifm-font-color-base)',
+    },
+    dialogDark: {
+        backgroundColor: 'var(--bg2)',
+        color: '#FFFFFF',
     },
     section: {
         marginBottom: '16px',
@@ -41,18 +47,20 @@ const styles = stylex.create({
         justifyContent: 'flex-start',
         padding: '12px 16px',
         cursor: 'pointer',
-        backgroundColor: 'var(--ifm-background-color)',
-        color: 'var(--ifm-font-color-base)',
+        backgroundColor: {
+            default: 'var(--ifm-background-color)',
+            ':hover': 'var(--ifm-color-primary-light)',
+        },
+        color: {
+            default: 'var(--ifm-font-color-base)',
+            ':hover': '#FFFFFF',
+        },
         borderRadius: '4px',
         fontSize: '14px',
         transition: 'background-color 0.2s, color 0.2s',
         border: 'none',
         width: '100%',
         marginBottom: '8px',
-        ':hover': {
-            backgroundColor: 'var(--ifm-color-primary-light)',
-            color: '#FFFFFF',
-        },
     },
     icon: {
         marginRight: '8px',
@@ -117,12 +125,11 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
 
     return (
         <dialog
-            {...stylex.props(styles.dialog)}
+            {...stylex.props(
+                styles.dialog,
+                colorMode === 'dark' ? styles.dialogDark : styles.dialogLight
+            )}
             ref={dialogRef}
-            style={{
-                backgroundColor: colorMode === 'dark' ? 'var(--bg2)' : 'var(--ifm-background-surface-color)',
-                color: colorMode === 'dark' ? '#FFFFFF' : 'var(--ifm-font-color-base)',
-            }}
             onClose={onClose}
         >
             <div {...stylex.props(styles.section)}>
