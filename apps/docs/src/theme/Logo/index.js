@@ -4,28 +4,28 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
+ *
  */
 
 import React, { useState } from 'react';
 import Logo from '@theme-original/Logo';
-import * as stylex from '@stylexjs/stylex';
 import LogoDownloadModal from '../../../components/LogoDownloadModal';
 
 export default function LogoWrapper(props) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleContextMenu = (e) => {
-        e.preventDefault();
-        setIsModalOpen(true);
-    };
+  const handleContextMenu = (e) => {
+    e.preventDefault();
+    setIsModalOpen(true);
+  };
 
-    return (
-        <>
-            <Logo {...props} onContextMenu={handleContextMenu} />
-            <LogoDownloadModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-            />
-        </>
-    );
+  return (
+    <>
+      <Logo {...props} onContextMenu={handleContextMenu} />
+      <LogoDownloadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
+  );
 }
