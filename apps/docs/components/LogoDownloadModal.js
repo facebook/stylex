@@ -119,8 +119,14 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
             });
     };
 
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
+    const copySvgCode = async (url) => {
+        try {
+            const response = await fetch(url);
+            const svgText = await response.text();
+            navigator.clipboard.writeText(svgText);
+        } catch (error) {
+            console.error('Failed to copy SVG:', error);
+        }
     };
 
     return (
@@ -133,51 +139,45 @@ export default function LogoDownloadModal({ isOpen, onClose }) {
             onClose={onClose}
         >
             <div {...stylex.props(styles.section)}>
-                <h3 {...stylex.props(styles.sectionTitle)} style={{
-                    color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
-                }}>Dark Mode</h3>
+                <h3 {...stylex.props(styles.sectionTitle)}>Dark Mode</h3>
                 <div {...stylex.props(styles.buttonGroup)}>
                     <button
                         {...stylex.props(styles.button)}
-                        onClick={() => downloadFile('img/stylex-logo-large-dark.svg')}
+                        onClick={() => downloadFile('/img/stylex-logo-large-dark.svg')}
                     >
                         <DownloadIcon />
                         Logo SVG
                     </button>
                     <button
                         {...stylex.props(styles.button)}
-                        onClick={() => copyToClipboard('#000000')}
+                        onClick={() => copySvgCode('/img/stylex-logo-large-dark.svg')}
                     >
                         <CopyIcon />
-                        Copy Dark Mode Color
+                        Copy SVG Code
                     </button>
                 </div>
             </div>
             <div {...stylex.props(styles.section)}>
-                <h3 {...stylex.props(styles.sectionTitle)} style={{
-                    color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
-                }}>Light Mode</h3>
+                <h3 {...stylex.props(styles.sectionTitle)}>Light Mode</h3>
                 <div {...stylex.props(styles.buttonGroup)}>
                     <button
                         {...stylex.props(styles.button)}
-                        onClick={() => downloadFile('img/stylex-logo-large.svg')}
+                        onClick={() => downloadFile('/img/stylex-logo-large-light.svg')}
                     >
                         <DownloadIcon />
                         Logo SVG
                     </button>
                     <button
                         {...stylex.props(styles.button)}
-                        onClick={() => copyToClipboard('#FFFFFF')}
+                        onClick={() => copySvgCode('/img/stylex-logo-large-light.svg')}
                     >
                         <CopyIcon />
-                        Copy Light Mode Color
+                        Copy SVG Code
                     </button>
                 </div>
             </div>
             <div {...stylex.props(styles.section)}>
-                <h3 {...stylex.props(styles.sectionTitle)} style={{
-                    color: colorMode === 'dark' ? '#FFFFFF' : '#000000',
-                }}>Assets</h3>
+                <h3 {...stylex.props(styles.sectionTitle)}>Assets</h3>
                 <div {...stylex.props(styles.buttonGroup)}>
                     <button
                         {...stylex.props(styles.button)}
