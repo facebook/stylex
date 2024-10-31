@@ -84,6 +84,34 @@ describe('@stylexjs/babel-plugin stylex.createTheme', () => {
       });
     `);
   });
+
+  test('test one output of stylex.defineVars()', () => {
+    expect(
+      transform(
+        `
+          import * as stylex from 'stylex';
+
+          export const buttonTheme = stylex.defineVars({
+            bgColor: 'green',
+            bgColorDisabled: 'antiquewhite',
+            cornerRadius: '6px',
+            fgColor: 'coral',
+          });
+        `,
+        { filename: 'TestTheme.stylex.js' },
+      ),
+    ).toMatchInlineSnapshot(`
+      "import * as stylex from 'stylex';
+      export const buttonTheme = {
+        bgColor: "var(--xgck17p)",
+        bgColorDisabled: "var(--xpegid5)",
+        cornerRadius: "var(--xrqfjmn)",
+        fgColor: "var(--x4y59db)",
+        __themeName__: "x568ih9"
+      };"
+    `);
+  });
+
   test('output of stylex.defineVars()', () => {
     expect(defineVarsOutput).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
