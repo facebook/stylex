@@ -12,7 +12,8 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
     get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
   }) : x)(function(x) {
-    if (typeof require !== "undefined") return require.apply(this, arguments);
+    if (typeof require !== "undefined")
+      return require.apply(this, arguments);
     throw Error('Dynamic require of "' + x + '" is not supported');
   });
   var __copyProps = (to, from, except, desc) => {
@@ -105,7 +106,7 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   // __tests__/__fixtures__/index.ts
   function App() {
     return {
-      className: "xktrvhi xthc9sq"
+      className: "xlu94hl xgbg9yd"
     };
   }
 })();
@@ -116,12 +117,12 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
 "
 @layer priority1, priority2;
 @layer priority1{
-:root, .xokpgiz{--xx1oc6k:white;--x14p2zvc:pink;--xdr2u03:green;}
+:root, .xokpgiz{--x1b96qz0:white;--x1cpylmt:pink;--xr6c0rs:green;}
 }
 @layer priority2{
-.xktrvhi{background-color:var(--xx1oc6k)}
-.xiz802d{color:var(--x14p2zvc)}
-.xthc9sq{color:var(--xdr2u03)}
+.xlu94hl{background-color:var(--x1b96qz0)}
+.xfpfjxz{color:var(--x1cpylmt)}
+.xgbg9yd{color:var(--xr6c0rs)}
 }"
 `;
 
@@ -137,7 +138,8 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
     get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
   }) : x)(function(x) {
-    if (typeof require !== "undefined") return require.apply(this, arguments);
+    if (typeof require !== "undefined")
+      return require.apply(this, arguments);
     throw Error('Dynamic require of "' + x + '" is not supported');
   });
   var __copyProps = (to, from, except, desc) => {
