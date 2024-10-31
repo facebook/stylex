@@ -19,7 +19,11 @@ import {
   type InjectableStyle,
 } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
-import { evaluate } from '../utils/evaluate-path';
+import {
+  evaluate,
+  resetProxyTracker,
+  setProxyTracker,
+} from '../utils/evaluate-path';
 import * as pathUtils from '../babel-path-utils';
 import path from 'path';
 import type { FunctionConfig } from '../utils/evaluate-path';
@@ -112,6 +116,9 @@ export default function transformStyleXCreateTheme(
       identifiers[name] = { ...(identifiers[name] ?? {}), types };
     });
 
+    const dependencies = new Set<string>();
+    setProxyTracker(dependencies);
+
     const { confident: confident2, value: overrides } = evaluate(
       secondArg,
       state,
@@ -120,6 +127,8 @@ export default function transformStyleXCreateTheme(
         memberExpressions,
       },
     );
+    resetProxyTracker();
+
     if (!confident2) {
       throw callExpressionPath.buildCodeFrameError(
         messages.NON_STATIC_VALUE,
@@ -149,6 +158,7 @@ export default function transformStyleXCreateTheme(
       variables,
       overrides,
       state.options,
+      dependencies,
     );
 
     if (state.isTest) {

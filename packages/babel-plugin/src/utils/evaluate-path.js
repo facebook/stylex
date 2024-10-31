@@ -178,6 +178,7 @@ function evaluateThemeRef(
     {},
     {
       get(_, key: string) {
+        proxyTracker?.add(resolveKey('__themeName__'));
         return resolveKey(key);
       },
       set(_, key: string, value: string) {
@@ -799,6 +800,16 @@ function evaluateQuasis(
 // Instead of polluting StateManager with this, we use a WeakMap
 // so the logic can be localized this file.
 const importsForState = new WeakMap<StateManager, Set<string>>();
+
+let proxyTracker: ?Set<string> = null;
+
+export const setProxyTracker = (valueToSet: Set<string>): void => {
+  proxyTracker = valueToSet;
+};
+
+export const resetProxyTracker = (): void => {
+  proxyTracker = null;
+};
 
 export function evaluate(
   path: NodePath<>,

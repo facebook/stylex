@@ -92,16 +92,20 @@ describe('Evaluation of imported values works based on configuration', () => {
       const transformation = transform(`
         import stylex from 'stylex';
         import { MyTheme } from 'otherFile.stylex';
-        const styles = stylex.create({
-          red: {
-            color: MyTheme.__themeName__,
-          }
+        import { DepToken } from 'dependency.stylex';
+
+        export const dark = stylex.createTheme(MyTheme, {
+          primary: DepToken.black,
         });
-        stylex(styles.red);
       `);
+
       const expectedVarName =
         options.classNamePrefix + hash('otherFile.stylex.js//MyTheme');
       expect(expectedVarName).toMatchInlineSnapshot(`"__hashed_var__jvfbhb"`);
+      const expectedDepName =
+        options.classNamePrefix + hash('dependency.stylex.js//DepToken');
+      expect(expectedDepName).toMatchInlineSnapshot(`"__hashed_var__1hqhwsz"`);
+
       expect(transformation.code).toContain(expectedVarName);
       expect(transformation.code).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -109,18 +113,23 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__1yh36a2{color:__hashed_var__jvfbhb}", 3000);
-        "__hashed_var__1yh36a2";"
+        import 'dependency.stylex';
+        import { DepToken } from 'dependency.stylex';
+        _inject2(".__hashed_var__1jub2fi, .__hashed_var__1jub2fi:root, __hashed_var__1jub2fi .__hashed_var__1hqhwsz, __hashed_var__jvfbhb __hashed_var__1jub2fi .__hashed_var__1hqhwsz, __hashed_var__jvfbhb __hashed_var__jvfbhb __hashed_var__1jub2fi .__hashed_var__1hqhwsz, __hashed_var__jvfbhb __hashed_var__jvfbhb __hashed_var__jvfbhb __hashed_var__1jub2fi .__hashed_var__1hqhwsz{--__hashed_var__pr5b8h:var(--__hashed_var__672cz0);}", 0.5);
+        export const dark = {
+          $$css: true,
+          __hashed_var__jvfbhb: "__hashed_var__1jub2fi __hashed_var__jvfbhb"
+        };"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
         [
           [
-            "__hashed_var__1yh36a2",
+            "__hashed_var__1jub2fi",
             {
-              "ltr": ".__hashed_var__1yh36a2{color:__hashed_var__jvfbhb}",
+              "ltr": ".__hashed_var__1jub2fi, .__hashed_var__1jub2fi:root, __hashed_var__1jub2fi .__hashed_var__1hqhwsz, __hashed_var__jvfbhb __hashed_var__1jub2fi .__hashed_var__1hqhwsz, __hashed_var__jvfbhb __hashed_var__jvfbhb __hashed_var__1jub2fi .__hashed_var__1hqhwsz, __hashed_var__jvfbhb __hashed_var__jvfbhb __hashed_var__jvfbhb __hashed_var__1jub2fi .__hashed_var__1hqhwsz{--__hashed_var__pr5b8h:var(--__hashed_var__672cz0);}",
               "rtl": null,
             },
-            3000,
+            0.5,
           ],
         ]
       `);

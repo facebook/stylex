@@ -25,6 +25,7 @@ export default function styleXCreateTheme(
   themeVars: { +__themeName__: string, +[string]: string },
   variables: { +[string]: string | { default: string, +[string]: string } },
   options?: StyleXOptions,
+  dependencies?: Set<string>,
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__themeName__ !== 'string') {
     throw new Error(
@@ -63,9 +64,27 @@ export default function styleXCreateTheme(
 
   const stylesToInject: { [string]: InjectableStyle } = {};
 
+  const baseClassName = themeVars.__themeName__;
+  let baseSelectors = `.${overrideClassName}, .${overrideClassName}:root`;
+
+  if (dependencies != null && dependencies.size > 0) {
+    const depList = Array.from(dependencies);
+    const reactiveSelectorList = depList
+      .map((dep) =>
+        [
+          `${overrideClassName} .${dep}`,
+          `${baseClassName} ${overrideClassName} .${dep}`,
+          `${baseClassName} ${baseClassName} ${overrideClassName} .${dep}`,
+          `${baseClassName} ${baseClassName} ${baseClassName} ${overrideClassName} .${dep}`,
+        ].join(', '),
+      )
+      .join(', ');
+    baseSelectors = [baseSelectors, reactiveSelectorList].join(', ');
+  }
+
   for (const atRule of sortedAtRules) {
     const decls = rulesByAtRule[atRule].join('');
-    const rule = `.${overrideClassName}, .${overrideClassName}:root{${decls}}`;
+    const rule = `${baseSelectors}{${decls}}`;
 
     if (atRule === 'default') {
       stylesToInject[overrideClassName] = {
@@ -82,10 +101,7 @@ export default function styleXCreateTheme(
     }
   }
 
-  const themeClass = `${overrideClassName} ${themeVars.__themeName__}`;
+  const themeClass = `${overrideClassName} ${baseClassName}`;
 
-  return [
-    { $$css: true, [themeVars.__themeName__]: themeClass },
-    stylesToInject,
-  ];
+  return [{ $$css: true, [baseClassName]: themeClass }, stylesToInject];
 }
