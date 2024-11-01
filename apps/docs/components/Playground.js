@@ -55,6 +55,7 @@ export default function Playground() {
   const instance = useRef(null);
   const [url, setUrl] = useState(null);
   const debounceTimeout = useRef(null);
+  const [isUpdating, setIsUpdating] = useState(null);
   const [code, setCode] = useState(
     files.src.directory['app.jsx'].file.contents,
   );
