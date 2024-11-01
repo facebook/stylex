@@ -85,8 +85,10 @@ export default function Playground() {
     const containerInstance = instance.current;
     const filePath = './src/app.jsx';
     const updatedCode = code;
+    setIsUpdating(true);
     await containerInstance.fs.writeFile(filePath, updatedCode);
     await wcSpawn(containerInstance, 'node', ['generateCSS.js']);
+    setIsUpdating(false);
   };
 
   const handleCodeChange = (newCode) => {
