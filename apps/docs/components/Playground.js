@@ -139,7 +139,7 @@ export default function Playground() {
               value={code}
               onChange={(editor, data, newCode) => handleCodeChange(newCode)}
             />
-            {url ? (
+            {url && !isUpdating ? (
               <iframe {...stylex.props(styles.textarea)} src={url} />
             ) : (
               <div {...stylex.props(styles.textarea)}>Loading...</div>
