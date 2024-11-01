@@ -275,21 +275,19 @@ you can install the local development runtime.
 
 <DevInstallExample dev={[`@stylexjs/dev-runtime`]} />
 
-The development runtime must be imported in your app's JavaScript entry-point
-and configured.
+You must configure the runtime and use the returned StyleX API
+in the rest of your code.
 
 ```ts
-import inject from '@stylexjs/dev-runtime';
+import makeStyleX from '@stylexjs/dev-runtime';
 
-inject({
+export const stylex = makeStyleX({
   classNamePrefix: 'x',
   dev: true,
   test: false,
 });
-```
 
-Once this is done, you can import and use `@stylexjs/stylex` without any further
-setup until you're ready to deploy to production.
+```
 
 ## Catch mistakes with ESLint
 
