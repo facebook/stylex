@@ -7,13 +7,13 @@
  * @format
  */
 
-import * as React from 'react';
-import {useEffect, useState, useRef} from 'react';
-import * as stylex from '@stylexjs/stylex';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import {WebContainer} from '@webcontainer/api';
-import {files} from './playground-utils/files';
-import {UnControlled as CodeMirror} from 'react-codemirror2';
+import * as stylex from '@stylexjs/stylex';
+import { WebContainer } from '@webcontainer/api';
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
+import { files } from './playground-utils/files';
 
 async function wcSpawn(instance, ...args) {
   console.log('Running:', args.join(' '));
@@ -54,6 +54,10 @@ async function makeWebcontainer() {
 export default function Playground() {
   const instance = useRef(null);
   const [url, setUrl] = useState(null);
+  const debounceTimeout = useRef(null);
+  const [code, setCode] = useState(
+    files.src.directory['app.jsx'].file.contents,
+  );
 
   const build = async () => {
     const containerInstance = instance.current;
@@ -73,12 +77,34 @@ export default function Playground() {
     console.log('Waiting for server-ready event...');
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
-      // TODO: Figure out hot reloading
-      // TODO: Figure out how to start server *after* build
-      setTimeout(() => {
-        setUrl(url);
-      }, 5000);
+      setUrl(url);
     });
+  };
+
+  const updateFiles = async () => {
+    const containerInstance = instance.current;
+    const filePath = './src/app.jsx';
+    const updatedCode = code;
+    await containerInstance.fs.writeFile(filePath, updatedCode);
+    await wcSpawn(containerInstance, 'node', ['generateCSS.js']);
+  };
+
+  const handleCodeChange = (newCode) => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(async () => {
+      setCode((prevCode) => newCode);
+      if (url) {
+        try {
+          await updateFiles();
+          console.log('Successfully applied changes.');
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }, 3000);
   };
 
   useEffect(() => {
@@ -89,6 +115,9 @@ export default function Playground() {
     });
     () => {
       instance.current.unmount();
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
     };
   }, []);
 
@@ -104,7 +133,8 @@ export default function Playground() {
                 theme: 'material-darker',
                 lineNumbers: true,
               }}
-              value={files.src.directory['app.jsx'].file.contents}
+              value={code}
+              onChange={(editor, data, newCode) => handleCodeChange(newCode)}
             />
             {url ? (
               <iframe {...stylex.props(styles.textarea)} src={url} />
