@@ -95,7 +95,7 @@ export default function Playground() {
     }
 
     debounceTimeout.current = setTimeout(async () => {
-      setCode((prevCode) => newCode);
+      setCode(newCode);
       if (url) {
         try {
           await updateFiles();
