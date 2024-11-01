@@ -703,6 +703,9 @@ const filePathResolver = (
         });
 
         if (resolved) {
+          if (resolved.startsWith('.')) {
+            return path.resolve(path.dirname(sourceFilePath), resolved);
+          }
           return resolved;
         }
       }
