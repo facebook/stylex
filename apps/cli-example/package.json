@@ -1,19 +1,19 @@
 {
   "name": "stylex-cli-example",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "private": true,
   "scripts": {
     "transform": "stylex --config .stylex.json5"
   },
   "dependencies": {
-    "@stylexjs/open-props": "0.9.2",
+    "@stylexjs/open-props": "0.9.3",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.25.7",
     "@babel/preset-typescript": "^7.25.7",
-    "@stylexjs/cli": "0.9.2",
+    "@stylexjs/cli": "0.9.3",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "typescript": "^5"
