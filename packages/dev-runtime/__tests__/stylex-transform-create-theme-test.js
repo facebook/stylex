@@ -55,7 +55,7 @@ describe('Development Plugin Transformation', () => {
       ).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "TestTheme.stylex.js//buttonTheme": "xtrlmmh",
+          "TestTheme.stylex.js//buttonTheme": "xtrlmmh TestTheme.stylex.js//buttonTheme",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
@@ -115,7 +115,7 @@ describe('Development Plugin Transformation', () => {
       ).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "TestTheme.stylex.js//buttonTheme": "xtrlmmh",
+          "TestTheme.stylex.js//buttonTheme": "xtrlmmh TestTheme.stylex.js//buttonTheme",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`

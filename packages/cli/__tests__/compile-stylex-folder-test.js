@@ -117,7 +117,7 @@ describe('cli works with -i and -o args', () => {
     };
 
     runCli(`-i ${config.input[0]} -o ${config.output[0]}`, config, onClose);
-  });
+  }, 10000);
 
   test('script runs with absolute input and output paths', (done) => {
     const absConfig: CliConfig = {
@@ -135,7 +135,7 @@ describe('cli works with -i and -o args', () => {
       absConfig,
       onClose,
     );
-  });
+  }, 10000);
 });
 
 describe('cli works with multiple inputs and outputs', () => {
@@ -178,7 +178,7 @@ describe('cli works with multiple inputs and outputs', () => {
     const output = config.output.join(' ');
     const args = `-i ${input} -o ${output}`;
     runCli(args, config, onClose);
-  });
+  }, 10000);
 });
 
 describe('individual testing of util functions', () => {

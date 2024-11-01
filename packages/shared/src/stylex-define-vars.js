@@ -110,7 +110,9 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    let ltr = `:root{${value.join('')}}`;
+    const selector = `:root, .${themeNameHash}`;
+
+    let ltr = `${selector}{${value.join('')}}`;
     if (atRule !== 'default') {
       ltr = wrapWithAtRules(ltr, atRule);
     }
