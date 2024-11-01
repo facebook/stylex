@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/rollup-plugin",
-  "version": "0.9.0-beta.1",
+  "version": "0.9.0",
   "description": "Rollup plugin for StyleX",
   "main": "./lib/index.js",
   "module": "./lib/es/index.mjs",
@@ -35,7 +35,7 @@
     "@babel/plugin-syntax-flow": "^7.25.7",
     "@babel/plugin-syntax-jsx": "^7.25.7",
     "@babel/plugin-syntax-typescript": "^7.25.7",
-    "@stylexjs/babel-plugin": "0.9.0-beta.1",
+    "@stylexjs/babel-plugin": "0.9.0",
     "lightningcss": "^1.27.0"
   },
   "files": [
