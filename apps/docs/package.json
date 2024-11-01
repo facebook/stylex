@@ -32,11 +32,9 @@
     "react-codemirror2": "^7.3.0",
     "react-dom": "^17.0.2",
     "react-syntax-highlighter": "^15.5.0",
-    "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
+
     "react-dropzone": "^14.3.5"
   },
   "devDependencies": {
