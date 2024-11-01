@@ -166,6 +166,10 @@ function evaluateThemeRef(
 
     const varName =
       state.traversalState.options.classNamePrefix + utils.hash(strToHash);
+
+    if (key === '__themeName__') {
+      return varName;
+    }
     return `var(--${varName})`;
   };
 
