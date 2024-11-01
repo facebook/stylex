@@ -92,6 +92,7 @@ export default function Playground() {
   const handleCodeChange = (newCode) => {
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
+      debounceTimeout.current = null;
     }
 
     debounceTimeout.current = setTimeout(async () => {
