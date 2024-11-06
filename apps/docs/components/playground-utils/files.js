@@ -311,6 +311,69 @@ export default defineConfig({
       `,
     },
   },
+  'index.html': {
+    file: {
+      contents: `
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StyleX Playground</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+      `,
+    },
+  },
+  'postcss.config.cjs': {
+    file: {
+      contents: `
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ *
+ */
+
+const babelConfig = require('./babel.config.cjs');
+
+module.exports = {
+  plugins: {
+    '@stylexjs/postcss-plugin': {
+      include: ['src/**/*.{js,jsx}'],
+      useCSSLayers: true,
+      babelConfig,
+    },
+  },
+};
+      `,
+    },
+  },
+  'vite.config.js': {
+    file: {
+      contents: `
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import babelConfig from './babel.config.cjs';
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [
+    react({
+      babel: babelConfig,
+    }),
+  ],
+});
+      `,
+    },
+  },
   'package.json': {
     file: {
       contents: `

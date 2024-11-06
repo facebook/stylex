@@ -20,7 +20,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as stylex from '@stylexjs/stylex';
-import { WebContainer, reloadPreview } from '@webcontainer/api';
+import { WebContainer } from '@webcontainer/api';
 import 'codemirror/mode/javascript/javascript';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -28,6 +28,17 @@ import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { useDropzone } from 'react-dropzone';
 import { OrbitProgress } from 'react-loading-indicators';
 import { files } from './playground-utils/files';
+
+library.add(
+  faChevronDown,
+  faChevronRight,
+  faFileCirclePlus,
+  faTrashCan,
+  faFolder,
+  faFolderOpen,
+  faBars,
+  faRotateRight,
+);
 
 library.add(
   faChevronDown,
@@ -79,6 +90,23 @@ async function makeWebcontainer() {
  */
 export default function Playground() {
   const instance = useRef(null);
+  const codeChangeTimeout = useRef(null);
+  const loadingTimeout = useRef(null);
+  const urlRef = useRef(null);
+  const previewJSFiles = useRef(null);
+  const previewCSSFiles = useRef(null);
+  const filesRef = useRef([
+    {
+      name: 'main.jsx',
+      content: files.src.directory['main.jsx'].file.contents,
+      isEditing: false,
+    },
+    {
+      name: 'App.jsx',
+      content: files.src.directory['App.jsx'].file.contents,
+      isEditing: false,
+    },
+  ]);
   const codeChangeTimeout = useRef(null);
   const loadingTimeout = useRef(null);
   const urlRef = useRef(null);
@@ -365,6 +393,10 @@ export default function Playground() {
         await handlePreviewFiles();
         setUrl(urlRef.current);
       }, 5000);
+      setTimeout(async () => {
+        await handlePreviewFiles();
+        setUrl(urlRef.current);
+      }, 5000);
     });
   };
 
@@ -469,6 +501,11 @@ export default function Playground() {
       }
       if (loadingTimeout.current) {
         clearTimeout(loadingTimeout.current);
+      if (codeChangeTimeout.current) {
+        clearTimeout(codeChangeTimeout.current);
+      }
+      if (loadingTimeout.current) {
+        clearTimeout(loadingTimeout.current);
       }
     };
   }, []);
@@ -506,7 +543,12 @@ export default function Playground() {
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           {...stylex.props(styles.headerBtn)}
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          {...stylex.props(styles.headerBtn)}
         >
+          <FontAwesomeIcon icon="fa-solid fa-bars" />
+        </button>
+        <button {...stylex.props(styles.headerBtn)}>
           <FontAwesomeIcon icon="fa-solid fa-bars" />
         </button>
         <button {...stylex.props(styles.headerBtn)}>
@@ -722,6 +764,44 @@ export default function Playground() {
                   </div>
                 )}
               </div>
+              <div {...stylex.props(styles.editorSection)}>
+                {selectedPreviewFile && (
+                  <CodeMirror
+                    {...stylex.props(styles.editor)}
+                    options={{
+                      mode: 'javascript',
+                      theme: 'material-darker',
+                      lineNumbers: true,
+                      readOnly: true,
+                    }}
+                    value={selectedPreviewFile.content}
+                  />
+                )}
+                {!selectedPreviewFile && (
+                  <CodeMirror
+                    {...stylex.props(styles.editor)}
+                    onChange={(editor, data, value) => handleCodeChange(value)}
+                    options={{
+                      mode: 'javascript',
+                      theme: 'material-darker',
+                      lineNumbers: true,
+                    }}
+                    value={filesRef.current[activeFileIndex].content || ''}
+                  />
+                )}
+              </div>
+
+              <div {...stylex.props(styles.previewSection)}>
+                {error ? (
+                  <div {...stylex.props(styles.loading)}>{error}</div>
+                ) : url ? (
+                  <iframe {...stylex.props(styles.preview)} src={url} />
+                ) : (
+                  <div {...stylex.props(styles.loading)}>
+                    Starting WebContainer...
+                  </div>
+                )}
+              </div>
             </>
           )}
         </BrowserOnly>
@@ -738,12 +818,17 @@ const styles = stylex.create({
   },
   header: {
     height: '40px',
+    height: '40px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingRight: '20px',
     paddingLeft: '20px',
+    justifyContent: 'space-between',
+    paddingRight: '20px',
+    paddingLeft: '20px',
     backgroundColor: 'var(--playground-container-bg)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
     borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
     boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
     zIndex: 20,
@@ -752,17 +837,31 @@ const styles = stylex.create({
     fill: 'currentColor',
   },
   headerBtn: {
+  icon: {
+    fill: 'currentColor',
+  },
+  headerBtn: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
     backgroundColor: 'transparent',
     color: 'var(--fg1)',
     width: '32px',
     height: '32px',
     borderRadius: '4px',
     border: 'none',
+    width: '32px',
+    height: '32px',
+    borderRadius: '4px',
+    border: 'none',
     cursor: 'pointer',
     zIndex: 20,
+    padding: '4px',
+    transition: 'background-color 200ms, transform 150ms',
+    ':hover': {
+      backgroundColor: 'var(--ifm-color-primary-light)',
+      transform: 'scale(1.05)',
     padding: '4px',
     transition: 'background-color 200ms, transform 150ms',
     ':hover': {
@@ -880,6 +979,241 @@ const styles = stylex.create({
   },
   deleteButton: {
     display: 'flex',
+    width: '100%',
+    height: 'calc(100vh - 40px)',
+    position: 'relative',
+    backgroundColor: 'var(--playground-container-bg)',
+  },
+  sidebar: {
+    position: 'relative',
+    width: '225px',
+    flexShrink: 0,
+    height: '100%',
+    backgroundColor: 'var(--playground-sidebar-bg)',
+    color: 'var(--sidebar-fg)',
+    marginRight: '3px',
+    overflowY: 'auto',
+    zIndex: 10,
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+  },
+  addFileButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: '10px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    ':hover': {
+      opacity: '1',
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    },
+  },
+  editorSection: {
+    width: '45%',
+    height: '100%',
+    overflow: 'auto',
+    borderRight: '1px solid var(--ifm-toc-border-color)',
+    backgroundColor: 'var(--playground-sidebar-bg)',
+  },
+  editor: {
+    height: '100%',
+    backgroundColor: 'var(--playground-sidebar-bg)',
+  },
+  previewSection: {
+    width: '55%',
+    height: '100%',
+    flexShrink: 0,
+    backgroundColor: 'var(--bg2)',
+  },
+  preview: {
+    width: '100%',
+    height: '100%',
+    border: 'none',
+    backgroundColor: '#ffffff',
+  },
+  dragActive: {
+    border: '2px dashed var(--ifm-color-primary)',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    marginLeft: '10px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    ':hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    },
+  },
+  folderIcon: {
+    width: '24px',
+    display: 'flex',
+    justifyContent: 'center',
+    marginLeft: '1px',
+  },
+  directory: {
+    marginBottom: '4px',
+    width: '100%',
+  },
+  directoryName: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '4px 10px',
+    fontSize: '14px',
+    fontWeight: 'bold',
+    width: '100%',
+    cursor: 'pointer',
+    borderRadius: '4px',
+    backgroundColor: 'var(--ifm-background-color)',
+    color: 'var(--ifm-font-color-base)',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+  },
+  arrow: {
+    width: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  directoryText: {
+    marginLeft: '8px',
+    textAlign: 'left',
+    flex: 1,
+  },
+  loading: {
+  tabList: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '4px',
+    paddingLeft: '16px',
+    marginTop: '4px',
+  },
+  tab: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '4px 10px',
+    height: '32px',
+    backgroundColor: 'var(--ifm-background-color)',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    position: 'relative',
+    transition: 'background-color 200ms, color 200ms, transform 150ms',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    ':hover': {
+      backgroundColor: 'var(--ifm-color-primary)',
+      color: '#FFFFFF',
+      transform: 'scale(1.03)',
+      opacity: '1',
+    },
+  },
+  activeTab: {
+    backgroundColor: 'var(--ifm-color-primary)',
+    color: '#FFFFFF',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+  },
+  tabInput: {
+    flex: '1',
+    backgroundColor: 'transparent',
+    color: 'inherit',
+    border: 'none',
+    fontSize: '14px',
+    padding: '2px 4px',
+    borderRadius: '2px',
+    outline: 'none',
+    maxWidth: 'calc(100% - 32px)',
+  },
+  editingInput: {
+    border: '1px solid var(--ifm-color-primary)',
+    cursor: 'text',
+    backgroundColor: '#FFFFFF',
+    color: 'black',
+  },
+  deleteButton: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: '10px',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '4px',
+    ':hover': {
+      opacity: '1',
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    },
+  },
+  editorSection: {
+    width: '45%',
+    height: '100%',
+    overflow: 'auto',
+    borderRight: '1px solid var(--ifm-toc-border-color)',
+    backgroundColor: 'var(--playground-sidebar-bg)',
+  },
+  editor: {
+    height: '100%',
+    backgroundColor: 'var(--playground-sidebar-bg)',
+  },
+  previewSection: {
+    width: '55%',
+    height: '100%',
+    flexShrink: 0,
+    backgroundColor: 'var(--bg2)',
+  },
+  preview: {
+    width: '100%',
+    height: '100%',
+    border: 'none',
+    backgroundColor: '#ffffff',
+  },
+  dragActive: {
+    border: '2px dashed var(--ifm-color-primary)',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  tab: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '4px 10px',
+    height: '32px',
+    backgroundColor: 'var(--ifm-background-color)',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    position: 'relative',
+    transition: 'background-color 200ms, color 200ms, transform 150ms',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    ':hover': {
+      backgroundColor: 'var(--ifm-color-primary)',
+      color: '#FFFFFF',
+      transform: 'scale(1.03)',
+      opacity: '1',
+    },
+  },
+  activeTab: {
+    backgroundColor: 'var(--ifm-color-primary)',
+    color: '#FFFFFF',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+  },
+  tabInput: {
+    flex: '1',
+    backgroundColor: 'transparent',
+    color: 'inherit',
+    border: 'none',
+    fontSize: '14px',
+    padding: '2px 4px',
+    borderRadius: '2px',
+    outline: 'none',
+    maxWidth: 'calc(100% - 32px)',
+  },
+  editingInput: {
+    border: '1px solid var(--ifm-color-primary)',
+    cursor: 'text',
+    backgroundColor: '#FFFFFF',
+    color: 'black',
+  },
+  deleteButton: {
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: '10px',
@@ -925,11 +1259,11 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    borderWidth: 0,
-    borderStyle: 'none',
-  },
-  centered: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    color: 'var(--sidebar-fg)',
+    backgroundColor: 'var(--playground-sidebar-bg)',
+    padding: '0 10px',
+    boxSizing: 'border-box',
+    minWidth: '225px',
+    gap: '8px',
   },
 });
