@@ -86,6 +86,9 @@
 
   /* cache-breaker */
   --hash: 1;
+
+  --playground-sidebar-bg: hsl(0, 0%, 80%); 
+  --playground-container-bg: hsl(0, 0%, 85%); 
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -173,6 +176,9 @@ html[data-theme='dark']:root {
   --purple-navy: hsla(251, 19%, 39%, 1);
   --black-coffee: hsla(330, 6%, 20%, 1);
   --ifm-toc-border-color: hsla(330, 6%, 75%, 0.1);
+
+  --playground-sidebar-bg: hsl(0, 0%, 12%); 
+  --playground-container-bg: hsl(0, 0%, 10%);
 }
 
 html,
@@ -289,3 +295,4 @@ html[data-theme='dark'] .DocSearch-Logo svg rect {
 .CodeMirror {
   height: 100%;
 }
+
