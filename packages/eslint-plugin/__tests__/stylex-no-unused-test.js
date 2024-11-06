@@ -24,8 +24,9 @@ const eslintTester = new ESLintTester({
 
 eslintTester.run('stylex-no-unused', rule.default, {
   valid: [
-    { // all style used; identifier and literal 
-        code: `
+    {
+      // all style used; identifier and literal
+      code: `
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
@@ -62,8 +63,9 @@ eslintTester.run('stylex-no-unused', rule.default, {
           )
         }
       `,
-      },
-    { // styles default export
+    },
+    {
+      // styles default export
       code: `
       import stylex from 'stylex';
       const styles = stylex.create({
@@ -83,7 +85,8 @@ eslintTester.run('stylex-no-unused', rule.default, {
       export default styles;
     `,
     },
-    { // styles anonymous default export
+    {
+      // styles anonymous default export
       code: `
       import stylex from 'stylex';
       export default stylex.create({
@@ -96,7 +99,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
         },
       })
     `,
-    }
+    },
   ],
   invalid: [
     {
@@ -139,8 +142,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
       `,
       errors: [
         {
-          message:
-            'Unused style detected: styles.main',
+          message: 'Unused style detected: styles.main',
         },
       ],
     },

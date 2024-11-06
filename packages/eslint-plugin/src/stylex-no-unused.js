@@ -20,10 +20,14 @@ import type {
   RestElement,
   MemberExpression,
   AssignmentProperty,
-  ExportDefaultDeclaration
+  ExportDefaultDeclaration,
 } from 'estree';
 
-type PropertyValue = Property | SpreadElement | AssignmentProperty | RestElement;
+type PropertyValue =
+  | Property
+  | SpreadElement
+  | AssignmentProperty
+  | RestElement;
 function isStylexCallee(node: Node) {
   return (
     node.type === 'MemberExpression' &&
@@ -46,13 +50,13 @@ function isStylexDeclaration(node: Node) {
 
 function getPropertiesByName(node: Node | null) {
   const properties = new Map<any, PropertyValue>();
-  if(node == null) {
+  if (node == null) {
     return properties;
   }
   node.properties
-    ?.filter(property => !property.computed && !property.method)
-    .forEach(property => {
-      const {key} = property;
+    ?.filter((property) => !property.computed && !property.method)
+    .forEach((property) => {
+      const { key } = property;
       if (key?.type === 'Identifier') {
         properties.set(key.name, property);
       } else if (key?.type === 'Literal') {
@@ -75,27 +79,33 @@ const stylexNoUnused = {
       if (id && id.type === 'Identifier' && init && isStylexDeclaration(init)) {
         stylexProperties.set(
           id.name,
-          getPropertiesByName((init.arguments && init.arguments?.length > 0) ? init.arguments[0] : null),
+          getPropertiesByName(
+            init.arguments && init.arguments?.length > 0
+              ? init.arguments[0]
+              : null,
+          ),
         );
       }
     }
-    function checkArguments(namespaces: Map<any, PropertyValue>): (argument: Expression | SpreadElement | null) => void {
+    function checkArguments(
+      namespaces: Map<any, PropertyValue>,
+    ): (argument: Expression | SpreadElement | null) => void {
       return function (argument: Expression | SpreadElement | null): void {
         if (argument) {
           if (argument.type === 'Literal') {
             namespaces.delete(argument.value);
           } else if (argument.type === 'ObjectExpression') {
-            argument.properties.forEach(property => {
+            argument.properties.forEach((property) => {
               if (property.key) {
                 namespaces.delete(property.key.name);
               }
             });
           } else if (argument.type === 'ArrayExpression') {
-            argument.elements.forEach(element => {
+            argument.elements.forEach((element) => {
               namespaces.delete(element?.value);
             });
           } else if (argument.type === 'ConditionalExpression') {
-            const {consequent, alternate} = argument;
+            const { consequent, alternate } = argument;
             // check for nested expressions
             checkArguments(namespaces)(consequent);
             checkArguments(namespaces)(alternate);
@@ -110,16 +120,17 @@ const stylexNoUnused = {
       };
     }
 
-
     return {
       Program(node: Program) {
         // stylex.create can only be singular variable declarations at the root
         // of the file so we can look directly on Program and populate our set.
         node.body
-          .filter(({type}) => type === 'VariableDeclaration')
-          .map(({declarations}) => (declarations && declarations.length === 1) ? declarations[0]: null)
+          .filter(({ type }) => type === 'VariableDeclaration')
+          .map(({ declarations }) =>
+            declarations && declarations.length === 1 ? declarations[0] : null,
+          )
           .filter(Boolean)
-          .filter(({init}) => init && isStylexDeclaration(init))
+          .filter(({ init }) => init && isStylexDeclaration(init))
           .forEach(saveStylexCalls);
       },
 
@@ -145,7 +156,7 @@ const stylexNoUnused = {
           return;
         }
         const namespaces = stylexProperties.get(functionName);
-        if(namespaces == null) {
+        if (namespaces == null) {
           return;
         }
         node.arguments?.forEach(checkArguments(namespaces));
@@ -161,10 +172,11 @@ const stylexNoUnused = {
 
       'Program:exit'() {
         // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
-        const sourceCode = context.sourceCode ||
-        (typeof context.getSourceCode === 'function'
-          ? context.getSourceCode()
-          : null);
+        const sourceCode =
+          context.sourceCode ||
+          (typeof context.getSourceCode === 'function'
+            ? context.getSourceCode()
+            : null);
 
         stylexProperties.forEach((namespaces, varName) => {
           namespaces.forEach((node, namespaceName) => {
@@ -175,11 +187,13 @@ const stylexNoUnused = {
                 const commaOffset =
                   sourceCode.getTokenAfter(node, {
                     includeComments: false,
-                  })?.value === ',' ? 1 : 0;
+                  })?.value === ','
+                    ? 1
+                    : 0;
                 const left = sourceCode.getTokenBefore(node, {
                   includeComments: false,
                 });
-                if(node.range == null || left?.range == null) {
+                if (node.range == null || left?.range == null) {
                   return null;
                 }
                 return fixer.removeRange([
