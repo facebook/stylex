@@ -21,6 +21,8 @@ import type {
   MemberExpression,
   AssignmentProperty,
   ExportDefaultDeclaration,
+  ExportNamedDeclaration,
+  ReturnStatement,
 } from 'estree';
 
 type PropertyValue =
@@ -28,25 +30,6 @@ type PropertyValue =
   | SpreadElement
   | AssignmentProperty
   | RestElement;
-function isStylexCallee(node: Node) {
-  return (
-    node.type === 'MemberExpression' &&
-    node.object.type === 'Identifier' &&
-    node.object.name === 'stylex' &&
-    node.property.type === 'Identifier' &&
-    node.property.name === 'create'
-  );
-}
-
-function isStylexDeclaration(node: Node) {
-  return (
-    node &&
-    node.type === 'CallExpression' &&
-    isStylexCallee(node.callee) &&
-    node.arguments.length === 1 &&
-    node.arguments[0].type === 'ObjectExpression'
-  );
-}
 
 function getPropertiesByName(node: Node | null) {
   const properties = new Map<any, PropertyValue>();
@@ -72,6 +55,34 @@ const stylexNoUnused = {
   },
   create(context: Rule.RuleContext): { ... } {
     const stylexProperties = new Map<string, Map<any, PropertyValue>>();
+    let stylexImportObject = 'stylex';
+    let stylexImportProperty = 'create';
+
+    function isStylexCreate(node: Node) {
+      return (
+        // const styles = s.create({...})   OR    const styles = stylex.create({...})
+        (stylexImportObject !== '' &&
+          node.type === 'MemberExpression' &&
+          node.object.type === 'Identifier' &&
+          node.object.name === stylexImportObject &&
+          node.property.type === 'Identifier' &&
+          node.property.name === stylexImportProperty) ||
+        // const styles = c({...})   OR   const styles = create({...})
+        (stylexImportObject === '' &&
+          node.type === 'Identifier' &&
+          node.name === stylexImportProperty)
+      );
+    }
+
+    function isStylexDeclaration(node: Node) {
+      return (
+        node &&
+        node.type === 'CallExpression' &&
+        isStylexCreate(node.callee) &&
+        node.arguments.length === 1 &&
+        node.arguments[0].type === 'ObjectExpression'
+      );
+    }
 
     function saveStylexCalls(node: Node) {
       const id = node.id;
@@ -120,8 +131,46 @@ const stylexNoUnused = {
       };
     }
 
+    function parseStylexImportStyle(node: Node) {
+      // identify stylex import
+      if (
+        node.source?.value === '@stylexjs/stylex' &&
+        // $FlowFixMe[prop-missing]
+        node.importKind === 'value' &&
+        node.specifiers &&
+        node.specifiers.length > 0
+      ) {
+        // extract stylex import pattern
+        node.specifiers.forEach((specifier) => {
+          const specifierType = specifier.type;
+          if (specifierType === 'ImportNamespaceSpecifier') {
+            // import * as stylex from '@stylexjs/stylex';
+            stylexImportObject = specifier.local.name;
+            stylexImportProperty = 'create';
+          } else if (specifierType === 'ImportDefaultSpecifier') {
+            if (specifier.local.name === 'stylex') {
+              // import stylex from '@stylexjs/stylex';
+              stylexImportObject = 'stylex';
+              stylexImportProperty = 'create';
+            }
+          } else if (specifierType === 'ImportSpecifier') {
+            if (specifier.imported?.name === 'create') {
+              // import {create} from '@stylexjs/stylex'  OR   import {create as c} from '@stylexjs/stylex'
+              stylexImportObject = '';
+              stylexImportProperty = specifier.local.name;
+            }
+          }
+        });
+      }
+    }
+
     return {
       Program(node: Program) {
+        // detect stylex import style, which then decides which variables are stylex styles
+        node.body
+          .map((node) => (node.type === 'ImportDeclaration' ? node : null))
+          .filter(Boolean)
+          .forEach(parseStylexImportStyle);
         // stylex.create can only be singular variable declarations at the root
         // of the file so we can look directly on Program and populate our set.
         node.body
@@ -134,7 +183,7 @@ const stylexNoUnused = {
           .forEach(saveStylexCalls);
       },
 
-      // detect stylex usage "stylex.__" or "styles[__]"
+      // Exempt used styles: "stylex.__" or "styles[__]"
       MemberExpression(node: MemberExpression) {
         if (
           node.object.type === 'Identifier' &&
@@ -162,12 +211,36 @@ const stylexNoUnused = {
         node.arguments?.forEach(checkArguments(namespaces));
       },
 
+      // Exempt used styles: export const exportStyles = stylex.create({});
+      ExportNamedDeclaration(node: ExportNamedDeclaration) {
+        const declarations = node.declaration?.declarations;
+        if (declarations?.length !== 1) {
+          return;
+        }
+        const exportName = declarations[0].id.name;
+        if (exportName == null || !stylexProperties.has(exportName)) {
+          return;
+        }
+        stylexProperties.delete(exportName);
+      },
+
+      // Exempt used styles: export default exportStyles;
       ExportDefaultDeclaration(node: ExportDefaultDeclaration) {
         const exportName = node.declaration.name;
         if (exportName == null || !stylexProperties.has(exportName)) {
           return;
         }
         stylexProperties.delete(exportName);
+      },
+
+      // Exempt used styles: used as return
+      ReturnStatement(node: ReturnStatement) {
+        if (node.argument?.type === 'Identifier') {
+          const returnName = node.argument.name;
+          if (stylexProperties.has(node.argument.name)) {
+            stylexProperties.delete(returnName);
+          }
+        }
       },
 
       'Program:exit'() {
