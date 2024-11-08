@@ -57,16 +57,16 @@ export default function Playground() {
   const debounceTimeout = useRef(null);
   const [isUpdating, setIsUpdating] = useState(null);
   const [code, setCode] = useState(
-    files.src.directory['app.jsx'].file.contents,
+    files.src.directory['App.jsx'].file.contents,
   );
 
   const build = async () => {
     const containerInstance = instance.current;
     if (!containerInstance) return;
 
-    console.log('Trying to run `npm start`...');
-    const process = await containerInstance.spawn('npm', ['start']);
-    console.log('Spawned `npm start`...');
+    console.log('Trying to run `npm run dev`...');
+    const process = await containerInstance.spawn('npm', ['run', 'dev']);
+    console.log('Spawned `npm run dev`...');
     process.output.pipeTo(
       new WritableStream({
         write(data) {
@@ -79,16 +79,28 @@ export default function Playground() {
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
       setUrl(url);
+
+      setTimeout(async () => {
+        console.log('Trying to run `ls`...');
+        const process = await containerInstance.spawn('ls');
+        console.log('Spawned `ls`...');
+        process.output.pipeTo(
+          new WritableStream({
+            write(data) {
+              console.log(data);
+            },
+          }),
+        );
+      }, 1000);
     });
   };
 
   const updateFiles = async () => {
     const containerInstance = instance.current;
-    const filePath = './src/app.jsx';
+    const filePath = './src/App.jsx';
     const updatedCode = code;
     setIsUpdating(true);
     await containerInstance.fs.writeFile(filePath, updatedCode);
-    await wcSpawn(containerInstance, 'node', ['generateCSS.js']);
     setIsUpdating(false);
   };
 
