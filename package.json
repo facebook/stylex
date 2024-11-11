@@ -39,7 +39,6 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-replace": "^6.0.1",
-    "@stylexjs/eslint-plugin": "^0.8.0",
     "@types/estree": "^1.0.6",
     "@types/jest": "^29.5.13",
     "babel-plugin-syntax-hermes-parser": "^0.25.0",
