@@ -10,18 +10,18 @@
 'use strict';
 
 import type {
+  AssignmentProperty,
   CallExpression,
+  ExportDefaultDeclaration,
+  ExportNamedDeclaration,
   Expression,
+  MemberExpression,
   Node,
   Program,
   Property,
-  SpreadElement,
   RestElement,
-  MemberExpression,
-  AssignmentProperty,
-  ExportDefaultDeclaration,
-  ExportNamedDeclaration,
   ReturnStatement,
+  SpreadElement,
 } from 'estree';
 import getSourceCode from './utils/getSourceCode';
 /*:: import { Rule } from 'eslint'; */
