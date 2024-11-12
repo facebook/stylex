@@ -20,7 +20,6 @@ import type {
   ObjectExpression,
   Comment,
 } from 'estree';
-import getSourceCode from './utils/getSourceCode';
 import getPropertyName from './utils/getPropertyName';
 import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
 /*:: import { Rule } from 'eslint'; */
@@ -225,7 +224,18 @@ const stylexSortKeys = {
         const currName = getPropertyName(node);
         let isBlankLineBetweenNodes = stack?.prevBlankLine;
 
-        const sourceCode = getSourceCode(context);
+        // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
+        const sourceCode =
+          context.sourceCode ||
+          (typeof context.getSourceCode === 'function'
+            ? context.getSourceCode()
+            : null);
+
+        if (!sourceCode) {
+          throw new Error(
+            'ESLint context does not provide source code access. Please update ESLint to v>=8.40.0. See: https://eslint.org/blog/2023/09/preparing-custom-rules-eslint-v9/',
+          );
+        }
 
         const tokens =
           stack?.prevNode &&

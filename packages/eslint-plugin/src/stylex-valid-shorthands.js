@@ -15,15 +15,19 @@ import type {
   ObjectExpression,
   Comment,
 } from 'estree';
+
 import type { SourceCode } from 'eslint/eslint-rule';
+
 import type { Token } from 'eslint/eslint-ast';
+
 import {
   createBlockInlineTransformer,
   createSpecificTransformer,
   createDirectionalTransformer,
 } from './utils/splitShorthands.js';
+
 import { CANNOT_FIX } from './utils/splitShorthands.js';
-import getSourceCode from './utils/getSourceCode';
+
 /*:: import { Rule } from 'eslint'; */
 
 const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
@@ -175,7 +179,18 @@ const stylexValidShorthands = {
         },
         fix: !isUnfixableError
           ? (fixer) => {
-              const sourceCode = getSourceCode(context);
+              // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
+              const sourceCode =
+                context.sourceCode ||
+                (typeof context.getSourceCode === 'function'
+                  ? context.getSourceCode()
+                  : null);
+
+              if (!sourceCode) {
+                throw new Error(
+                  'ESLint context does not provide source code access. Please update ESLint to v>=8.40.0. See: https://eslint.org/blog/2023/09/preparing-custom-rules-eslint-v9/',
+                );
+              }
 
               const startNodeIndentation = getNodeIndentation(
                 sourceCode,
