@@ -30,6 +30,8 @@ import { CANNOT_FIX } from './utils/splitShorthands.js';
 
 /*:: import { Rule } from 'eslint'; */
 
+import getSourceCode from './utils/getSourceCode';
+
 const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
@@ -179,12 +181,7 @@ const stylexValidShorthands = {
         },
         fix: !isUnfixableError
           ? (fixer) => {
-              // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
-              const sourceCode =
-                context.sourceCode ||
-                (typeof context.getSourceCode === 'function'
-                  ? context.getSourceCode()
-                  : null);
+              const sourceCode = getSourceCode(context);
 
               if (!sourceCode) {
                 throw new Error(

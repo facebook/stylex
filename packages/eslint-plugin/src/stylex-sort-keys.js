@@ -9,6 +9,7 @@
 
 'use strict';
 
+import getSourceCode from './utils/getSourceCode';
 import type { Token } from 'eslint/eslint-ast';
 import type { RuleFixer, SourceCode } from 'eslint/eslint-rule';
 import type {
@@ -224,12 +225,7 @@ const stylexSortKeys = {
         const currName = getPropertyName(node);
         let isBlankLineBetweenNodes = stack?.prevBlankLine;
 
-        // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
-        const sourceCode =
-          context.sourceCode ||
-          (typeof context.getSourceCode === 'function'
-            ? context.getSourceCode()
-            : null);
+        const sourceCode = getSourceCode(context);
 
         if (!sourceCode) {
           throw new Error(

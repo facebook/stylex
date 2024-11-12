@@ -9,6 +9,7 @@
 
 'use strict';
 
+import getSourceCode from './utils/getSourceCode';
 /*:: import { Rule } from 'eslint'; */
 import type {
   CallExpression,
@@ -244,12 +245,7 @@ const stylexNoUnused = {
       },
 
       'Program:exit'() {
-        // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
-        const sourceCode =
-          context.sourceCode ||
-          (typeof context.getSourceCode === 'function'
-            ? context.getSourceCode()
-            : null);
+        const sourceCode = getSourceCode(context);
 
         stylexProperties.forEach((namespaces, varName) => {
           namespaces.forEach((node, namespaceName) => {
