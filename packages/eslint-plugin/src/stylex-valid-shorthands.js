@@ -15,22 +15,16 @@ import type {
   ObjectExpression,
   Comment,
 } from 'estree';
-
 import type { SourceCode } from 'eslint/eslint-rule';
-
 import type { Token } from 'eslint/eslint-ast';
-
 import {
   createBlockInlineTransformer,
   createSpecificTransformer,
   createDirectionalTransformer,
 } from './utils/splitShorthands.js';
-
 import { CANNOT_FIX } from './utils/splitShorthands.js';
-
-/*:: import { Rule } from 'eslint'; */
-
 import getSourceCode from './utils/getSourceCode';
+/*:: import { Rule } from 'eslint'; */
 
 const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',

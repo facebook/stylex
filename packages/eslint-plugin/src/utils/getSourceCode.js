@@ -9,8 +9,8 @@
 
 'use strict';
 
-/*:: import { Rule } from 'eslint'; */
 import type { SourceCode } from 'eslint/eslint-rule';
+/*:: import { Rule } from 'eslint'; */
 
 // Fallback to legacy `getSourceCode()` for compatibility with older ESLint versions
 export default function getSourceCode(context: Rule.RuleContext): SourceCode {

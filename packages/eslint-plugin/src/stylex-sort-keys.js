@@ -9,7 +9,6 @@
 
 'use strict';
 
-import getSourceCode from './utils/getSourceCode';
 import type { Token } from 'eslint/eslint-ast';
 import type { RuleFixer, SourceCode } from 'eslint/eslint-rule';
 import type {
@@ -21,6 +20,7 @@ import type {
   ObjectExpression,
   Comment,
 } from 'estree';
+import getSourceCode from './utils/getSourceCode';
 import getPropertyName from './utils/getPropertyName';
 import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
 /*:: import { Rule } from 'eslint'; */

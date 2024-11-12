@@ -9,8 +9,6 @@
 
 'use strict';
 
-import getSourceCode from './utils/getSourceCode';
-/*:: import { Rule } from 'eslint'; */
 import type {
   CallExpression,
   Expression,
@@ -25,6 +23,8 @@ import type {
   ExportNamedDeclaration,
   ReturnStatement,
 } from 'estree';
+import getSourceCode from './utils/getSourceCode';
+/*:: import { Rule } from 'eslint'; */
 
 type PropertyValue =
   | Property
