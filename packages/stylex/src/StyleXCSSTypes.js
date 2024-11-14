@@ -401,6 +401,7 @@ type imeMode = 'auto' | 'normal' | 'active' | 'inactive' | 'disabled';
 type initialLetter = 'normal' | string;
 type initialLetterAlign = string;
 type inlineSize = width;
+type interpolateSize = 'allow-keywords' | 'numeric-only';
 type isolation = 'auto' | 'isolate';
 type justifyContent =
   | 'center'
@@ -1242,6 +1243,8 @@ export type CSSProperties = $ReadOnly<{
   initialLetter?: all | initialLetter,
   initialLetterAlign?: all | initialLetterAlign,
   inlineSize?: all | inlineSize,
+
+  interpolateSize: all | interpolateSize,
 
   inset?: all | number | string,
   insetBlock?: all | number | string,
