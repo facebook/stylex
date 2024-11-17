@@ -358,8 +358,7 @@ createRoot(root).render(
       },
       'App.jsx': {
         file: {
-          contents: `
-import * as React from "react";
+          contents: `import * as React from "react";
 import * as stylex from "@stylexjs/stylex";
 import { colorsHSL } from "@stylexjs/open-props/lib/colorsHSL.stylex";
 
@@ -386,7 +385,7 @@ const styles = stylex.create({
     color: \`hsl(\${colorsHSL.green4})\`,
   },
 });
-          `,
+`,
         },
       },
     },
