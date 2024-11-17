@@ -78,20 +78,9 @@ export default function Playground() {
     console.log('Waiting for server-ready event...');
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
-      setUrl(url);
-
-      setTimeout(async () => {
-        console.log('Trying to run `ls`...');
-        const process = await containerInstance.spawn('ls');
-        console.log('Spawned `ls`...');
-        process.output.pipeTo(
-          new WritableStream({
-            write(data) {
-              console.log(data);
-            },
-          }),
-        );
-      }, 1000);
+      setTimeout(() => {
+        setUrl(url);
+      }, 5000);
     });
   };
 
@@ -99,9 +88,7 @@ export default function Playground() {
     const containerInstance = instance.current;
     const filePath = './src/App.jsx';
     const updatedCode = code;
-    setIsUpdating(true);
     await containerInstance.fs.writeFile(filePath, updatedCode);
-    setIsUpdating(false);
   };
 
   const handleCodeChange = (newCode) => {
@@ -113,14 +100,19 @@ export default function Playground() {
     debounceTimeout.current = setTimeout(async () => {
       setCode(newCode);
       if (url) {
+        setIsUpdating(true);
         try {
           await updateFiles();
           console.log('Successfully applied changes.');
         } catch (err) {
           console.error(err);
+        } finally {
+          setTimeout(() => {
+            setIsUpdating(false);
+          }, 5000);
         }
       }
-    }, 3000);
+    }, 2000);
   };
 
   useEffect(() => {

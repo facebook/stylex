@@ -51,6 +51,7 @@ export const files = {
     -moz-osx-font-smoothing: grayscale;
     background-color: light-dark(white, black);
     line-height: 1.5;
+    color: black;
   }
 }
           `,
@@ -326,10 +327,8 @@ export default {
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
     "@stylexjs/rollup-plugin": "^0.9.3",
-    "globals": "^15.12.0",
     "rollup": "^4.12.0",
     "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-serve": "^2.0.2"
   }
 }
