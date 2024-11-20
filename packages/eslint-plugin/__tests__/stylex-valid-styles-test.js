@@ -372,13 +372,13 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          'containIntrinsicSize': 'auto 300px',
        },
      })`,
-     `import stylex from "stylex";
+    `import stylex from "stylex";
      stylex.create({
        a: {
-         'interpolateSize': 'numeric-only',
+         interpolateSize: 'numeric-only',
        },
        b: {
-         'interpolateSize': 'allow-keywords',
+         interpolateSize: 'allow-keywords',
        },
      })`,
     `import stylex from "stylex";
