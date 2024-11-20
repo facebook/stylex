@@ -1244,7 +1244,7 @@ export type CSSProperties = $ReadOnly<{
   initialLetterAlign?: all | initialLetterAlign,
   inlineSize?: all | inlineSize,
 
-  interpolateSize: all | interpolateSize,
+  interpolateSize?: all | interpolateSize,
 
   inset?: all | number | string,
   insetBlock?: all | number | string,
