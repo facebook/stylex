@@ -33,7 +33,14 @@ export const createImportPlugin = (
     visitor: {
       Program: {
         enter(path: NodePath<t.Program>) {
-          path.node.body.unshift(importDeclaration);
+          const lastImportIndex = path.node.body.findLastIndex((node) =>
+            t.isImportDeclaration(node),
+          );
+          if (lastImportIndex === -1) {
+            path.node.body.unshift(importDeclaration);
+          } else {
+            path.node.body.splice(lastImportIndex + 1, 0, importDeclaration);
+          }
         },
       },
     },
