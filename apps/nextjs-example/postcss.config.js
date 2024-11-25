@@ -14,7 +14,7 @@ module.exports = {
         'app/**/*.{js,jsx,ts,tsx}',
         'components/**/*.{js,jsx,ts,tsx}',
         // TODO: Figure out a better way to write this
-        './node_modules/@stylexjs/open-props/lib/**/*.{js,jsx,ts,tsx}',
+        './node_modules/@stylexjs/open-props/lib/**/*.{js,mjs}',
       ],
       useCSSLayers: true,
     },
