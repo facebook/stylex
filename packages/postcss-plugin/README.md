@@ -110,10 +110,7 @@ take precedence over include.
 cwd: string; // Default: process.cwd()
 ```
 
-Array of paths or glob patterns to exclude from compilation. Paths in exclude
-take precedence over include.
-
----
+Working directory for the plugin; defaults to process.cwd().
 
 ---
 
@@ -123,7 +120,12 @@ take precedence over include.
 babelConfig: object; // Default: {}
 ```
 
-## Options for Babel configuration. By default, the plugin reads from babel.config.js in your project. For custom configurations, set babelrc: false and specify desired options. Refer to [Babel Config Options](https://babeljs.io/docs/options) for available options.
+Options for Babel configuration. By default, the plugin reads from
+babel.config.js in your project. For custom configurations, set babelrc: false
+and specify desired options. Refer to
+[Babel Config Options](https://babeljs.io/docs/options) for available options.
+
+---
 
 ### useCSSLayers
 
