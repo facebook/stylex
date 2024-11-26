@@ -8,6 +8,7 @@
  */
 
 import './globals.css';
+import './stylex.css';
 import { globalTokens as $ } from '@/app/globalTokens.stylex';
 import * as stylex from '@stylexjs/stylex';
 

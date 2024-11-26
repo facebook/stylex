@@ -4,8 +4,6 @@
   "private": true,
   "scripts": {
     "clean": "rimraf .next",
-    "predev": "npm run clean",
-    "prebuild": "npm run clean",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -20,9 +18,8 @@
     "next": "14.0.1"
   },
   "devDependencies": {
-    "@stylexjs/babel-plugin": "^0.7.5",
     "@stylexjs/eslint-plugin": "^0.7.5",
-    "@stylexjs/nextjs-plugin": "^0.7.5",
+    "@stylexjs/postcss-plugin": "^0.9.3",
     "@types/node": "^22.7.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
