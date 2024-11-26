@@ -44,6 +44,18 @@ const options = {
     type: 'array',
     default: [] as $ReadOnlyArray<string | $ReadOnly<[string, { ... }]>>,
   },
+  babelPluginsPre: {
+    describe:
+      'A list of babel plugins to pass to the babel transform before StyleX is compiled',
+    type: 'array',
+    default: [] as $ReadOnlyArray<string | $ReadOnly<[string, { ... }]>>,
+  },
+  babelPluginsPost: {
+    describe:
+      'A list of babel plugins to pass to the babel transform after StyleX is compiled',
+    type: 'array',
+    default: [] as $ReadOnlyArray<string | $ReadOnly<[string, { ... }]>>,
+  },
   modules_EXPERIMENTAL: {
     alias: 'm',
     describe:

@@ -20,6 +20,8 @@ export type CliConfig = {
   styleXBundleName: string,
   watch: boolean,
   babelPresets: $ReadOnlyArray<any>,
+  babelPluginsPre?: $ReadOnlyArray<any>,
+  babelPluginsPost?: $ReadOnlyArray<any>,
   modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType>,
   useCSSLayers?: boolean,
   styleXConfig?: { +[string]: mixed },
