@@ -3,6 +3,7 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
  * @flow strict
  */
 
@@ -3809,8 +3810,8 @@ declare export var getBindingIdentifiers: {
   ): Dups extends true
     ? Record<string, Array<Identifier>>
     : Dups extends false
-    ? Record<string, Identifier>
-    : Record<string, Array<Identifier>> | Record<string, Identifier>,
+      ? Record<string, Identifier>
+      : Record<string, Array<Identifier>> | Record<string, Identifier>,
 
   +keys: $ReadOnly<{
     DeclareClass: $ReadOnlyArray<string>,
