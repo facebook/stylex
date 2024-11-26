@@ -12,6 +12,4 @@
  * It is automatically replaced with generated CSS during builds.
  */
 
-@layer stylex {
-  @stylex;
-}
+@stylex;
