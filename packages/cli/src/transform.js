@@ -25,6 +25,12 @@ import type { TransformConfig } from './config';
 import ansis from 'ansis';
 import fs from 'fs';
 import {
+  writeCache,
+  readCache,
+  computeHash,
+  getDefaultCachePath,
+} from './cache';
+import {
   createImportPlugin,
   createModuleImportModifierPlugin,
 } from './plugins';
@@ -94,16 +100,56 @@ export async function compileFile(
 ): Promise<?string> {
   const inputFilePath = path.join(config.input, filePath);
   const outputFilePath = path.join(config.output, filePath);
+  const cachePath = getDefaultCachePath();
+
+  const inputHash = computeHash(inputFilePath);
+  let oldOutputHash = null;
+  if (fs.existsSync(outputFilePath)) {
+    try {
+      oldOutputHash = computeHash(outputFilePath);
+    } catch (err) {
+      console.error(
+        `[stylex] Failed to compute hash for: ${outputFilePath}`,
+        err,
+      );
+      oldOutputHash = null;
+    }
+  } else {
+    console.log(`[stylex] Output file does not exist: ${outputFilePath}`);
+  }
+
+  const cacheData = readCache(filePath);
+
+  if (
+    cacheData &&
+    cacheData.inputHash === inputHash &&
+    fs.existsSync(outputFilePath) &&
+    cacheData.outputHash === oldOutputHash
+  ) {
+    console.log(`[stylex] Using cached CSS for: ${filePath}`);
+    config.state.styleXRules.set(filePath, cacheData.collectedCSS);
+    return;
+  }
 
   const [code, rules] = await transformFile(
     inputFilePath,
     outputFilePath,
     config,
   );
+
   if (code != null) {
     config.state.compiledJS.set(filePath, code);
     config.state.styleXRules.set(filePath, rules);
+
     writeCompiledJS(outputFilePath, code);
+
+    const newOutputHash = computeHash(outputFilePath);
+
+    writeCache(cachePath, filePath, {
+      inputHash,
+      outputHash: newOutputHash,
+      collectedCSS: rules,
+    });
   }
 }
 
@@ -118,6 +164,7 @@ export async function transformFile(
       ? config.state.compiledCSSDir
       : path.join(config.output, config.styleXBundleName),
   );
+
   const result = await babel.transformFileAsync(inputFilePath, {
     babelrc: false,
     presets: config.babelPresets,
@@ -145,5 +192,6 @@ export async function transformFile(
   const { code, metadata } = result;
 
   const styleXRules: Array<Rule> = (metadata as $FlowFixMe).stylex;
+
   return [code, styleXRules];
 }
