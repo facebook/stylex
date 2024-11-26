@@ -12,20 +12,20 @@
 jest.autoMockOff();
 
 import inject from '../src';
-import stylex from '@stylexjs/stylex';
+
+let metadata = [];
+const stylex = inject({
+  dev: false,
+  test: false,
+  insert: (key, ltr, priority, rtl) => {
+    metadata.push([key, { ltr, rtl }, priority]);
+  },
+});
 
 describe('Development Plugin Transformation', () => {
   describe('[transform] stylex.defineVars()', () => {
-    let metadata = [];
     beforeEach(() => {
       metadata = [];
-      inject({
-        dev: false,
-        test: false,
-        insert: (key, ltr, priority, rtl) => {
-          metadata.push([key, { ltr, rtl }, priority]);
-        },
-      });
     });
 
     test('transforms style object', () => {
@@ -52,35 +52,35 @@ describe('Development Plugin Transformation', () => {
         ),
       ).toMatchInlineSnapshot(`
         {
-          "__themeName__": "x1y709cs",
-          "bgColor": "var(--x4ocsy0)",
-          "bgColorDisabled": "var(--x1hi3uh4)",
-          "cornerRadius": "var(--x1r1ahgb)",
-          "fgColor": "var(--xrbea40)",
+          "__themeName__": "x7fqapl",
+          "bgColor": "var(--xiwovr5)",
+          "bgColorDisabled": "var(--xdg0pry)",
+          "cornerRadius": "var(--x1j3mert)",
+          "fgColor": "var(--x1wgda7f)",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
         [
           [
-            "x1y709cs",
+            "x7fqapl",
             {
-              "ltr": ":root{--x4ocsy0:blue;--x1hi3uh4:grey;--x1r1ahgb:10px;--xrbea40:pink;}",
+              "ltr": ":root, .x7fqapl{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}",
               "rtl": undefined,
             },
             0,
           ],
           [
-            "x1y709cs-1lveb7",
+            "x7fqapl-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){:root{--x4ocsy0:lightblue;--x1hi3uh4:rgba(0, 0, 0, 0.8);}}",
+              "ltr": "@media (prefers-color-scheme: dark){:root, .x7fqapl{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}",
               "rtl": undefined,
             },
             0.1,
           ],
           [
-            "x1y709cs-bdddrq",
+            "x7fqapl-bdddrq",
             {
-              "ltr": "@media print{:root{--x4ocsy0:white;}}",
+              "ltr": "@media print{:root, .x7fqapl{--xiwovr5:white;}}",
               "rtl": undefined,
             },
             0.1,
@@ -112,67 +112,67 @@ describe('Development Plugin Transformation', () => {
         ),
       ).toMatchInlineSnapshot(`
         {
-          "__themeName__": "x1t4wu1b",
-          "bgColor": "var(--xay5bfx)",
-          "bgColorDisabled": "var(--xptvf7g)",
-          "cornerRadius": "var(--x1byau2i)",
-          "fgColor": "var(--x1ww5d7a)",
+          "__themeName__": "x7fqapl",
+          "bgColor": "var(--xiwovr5)",
+          "bgColorDisabled": "var(--xdg0pry)",
+          "cornerRadius": "var(--x1j3mert)",
+          "fgColor": "var(--x1wgda7f)",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
         [
           [
-            "xay5bfx",
+            "xiwovr5",
             {
-              "ltr": "@property --xay5bfx { syntax: "<color>"; inherits: true; initial-value: blue }",
+              "ltr": "@property --xiwovr5 { syntax: "<color>"; inherits: true; initial-value: blue }",
               "rtl": undefined,
             },
             0,
           ],
           [
-            "xptvf7g",
+            "xdg0pry",
             {
-              "ltr": "@property --xptvf7g { syntax: "<color>"; inherits: true; initial-value: grey }",
+              "ltr": "@property --xdg0pry { syntax: "<color>"; inherits: true; initial-value: grey }",
               "rtl": undefined,
             },
             0,
           ],
           [
-            "x1byau2i",
+            "x1j3mert",
             {
-              "ltr": "@property --x1byau2i { syntax: "<length>"; inherits: true; initial-value: 10px }",
+              "ltr": "@property --x1j3mert { syntax: "<length>"; inherits: true; initial-value: 10px }",
               "rtl": undefined,
             },
             0,
           ],
           [
-            "x1ww5d7a",
+            "x1wgda7f",
             {
-              "ltr": "@property --x1ww5d7a { syntax: "<color>"; inherits: true; initial-value: pink }",
+              "ltr": "@property --x1wgda7f { syntax: "<color>"; inherits: true; initial-value: pink }",
               "rtl": undefined,
             },
             0,
           ],
           [
-            "x1t4wu1b",
+            "x7fqapl",
             {
-              "ltr": ":root{--xay5bfx:blue;--xptvf7g:grey;--x1byau2i:10px;--x1ww5d7a:pink;}",
+              "ltr": ":root, .x7fqapl{--xiwovr5:blue;--xdg0pry:grey;--x1j3mert:10px;--x1wgda7f:pink;}",
               "rtl": undefined,
             },
             0,
           ],
           [
-            "x1t4wu1b-1lveb7",
+            "x7fqapl-1lveb7",
             {
-              "ltr": "@media (prefers-color-scheme: dark){:root{--xay5bfx:lightblue;--xptvf7g:rgba(0, 0, 0, 0.8);}}",
+              "ltr": "@media (prefers-color-scheme: dark){:root, .x7fqapl{--xiwovr5:lightblue;--xdg0pry:rgba(0, 0, 0, 0.8);}}",
               "rtl": undefined,
             },
             0.1,
           ],
           [
-            "x1t4wu1b-bdddrq",
+            "x7fqapl-bdddrq",
             {
-              "ltr": "@media print{:root{--xay5bfx:white;}}",
+              "ltr": "@media print{:root, .x7fqapl{--xiwovr5:white;}}",
               "rtl": undefined,
             },
             0.1,

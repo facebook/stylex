@@ -34,7 +34,12 @@ function transform(source, opts = options) {
       jsx,
       [
         stylexPlugin,
-        { treeshakeCompensation: true, runtimeInjection: true, ...opts },
+        {
+          treeshakeCompensation: true,
+          runtimeInjection: true,
+          unstable_moduleResolution: { type: 'haste' },
+          ...opts,
+        },
       ],
     ],
   });
@@ -42,10 +47,6 @@ function transform(source, opts = options) {
 
 describe('Evaluation of imported values works based on configuration', () => {
   describe('Theme name hashing based on fileName alone works', () => {
-    beforeEach(() => {
-      options.unstable_moduleResolution = { type: 'haste' };
-    });
-
     test('Importing file with ".stylex" suffix works', () => {
       const transformation = transform(`
         import stylex from 'stylex';
@@ -79,6 +80,44 @@ describe('Evaluation of imported values works based on configuration', () => {
             "__hashed_var__1r7rkhg",
             {
               "ltr": ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
+    });
+
+    test('Importing file with ".stylex" and reading __themeName__ returns a className', () => {
+      const transformation = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          red: {
+            color: MyTheme.__themeName__,
+          }
+        });
+        stylex(styles.red);
+      `);
+      const expectedVarName =
+        options.classNamePrefix + hash('otherFile.stylex.js//MyTheme');
+      expect(expectedVarName).toMatchInlineSnapshot(`"__hashed_var__jvfbhb"`);
+      expect(transformation.code).toContain(expectedVarName);
+      expect(transformation.code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import 'otherFile.stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        _inject2(".__hashed_var__1yh36a2{color:__hashed_var__jvfbhb}", 3000);
+        "__hashed_var__1yh36a2";"
+      `);
+      expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "__hashed_var__1yh36a2",
+            {
+              "ltr": ".__hashed_var__1yh36a2{color:__hashed_var__jvfbhb}",
               "rtl": null,
             },
             3000,

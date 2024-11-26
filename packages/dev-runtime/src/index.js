@@ -7,19 +7,61 @@
  * @flow strict
  */
 
-import { __monkey_patch__ } from '@stylexjs/stylex';
+import typeof { types as TStyleXTypes } from '@stylexjs/stylex';
+
+import { props, attrs } from '@stylexjs/stylex';
+
 import { styleSheet } from '@stylexjs/stylex/lib/StyleXSheet';
 import type {
   OverridesForTokenType,
   VarGroup,
   TokensFromVarGroup,
   Theme,
+  CompiledStyles,
+  StyleXArray,
+  InlineStyles,
+  Stylex$Create,
+  StyleX$DefineVars,
+  StyleX$CreateTheme,
+  Keyframes,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 import * as shared from '@stylexjs/shared';
 import type { RuntimeOptions } from './types';
 import getStyleXCreate from './stylex-create';
 
 const injectedVariableObjs = new Set<string>();
+
+type ReturnType = {
+  props: (
+    this: ?mixed,
+    ...styles: $ReadOnlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => $ReadOnly<{
+    className?: string,
+    style?: $ReadOnly<{ [string]: string | number }>,
+  }>,
+  attrs: (
+    ...styles: $ReadOnlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => $ReadOnly<{
+    class?: string,
+    style?: string,
+  }>,
+  create: Stylex$Create,
+  defineVars: StyleX$DefineVars,
+  createTheme: StyleX$CreateTheme,
+  types: TStyleXTypes,
+  firstThatWorks: <T: string | number>(
+    ...v: $ReadOnlyArray<T>
+  ) => $ReadOnlyArray<T>,
+  keyframes: (keyframes: Keyframes) => string,
+};
 
 const defaultInsert = (
   key: string,
@@ -42,11 +84,13 @@ function themeNameUUID(): string {
   return `theme-${themeNameCount++}`;
 }
 
+// TODO: memoize the function to:
+// return the same result if the some confirguration is passed in again
 export default function inject({
   insert = defaultInsert,
   ...config
-}: RuntimeOptions): void {
-  __monkey_patch__('create', getStyleXCreate({ ...config, insert }));
+}: RuntimeOptions): ReturnType {
+  const stylexCreate = getStyleXCreate({ ...config, insert });
 
   const types = {
     angle: shared.types.angle,
@@ -62,23 +106,21 @@ export default function inject({
     time: shared.types.time,
     transformFunction: shared.types.transformFunction,
     transformList: shared.types.transformList,
-  };
-  __monkey_patch__('types', types as $FlowFixMe);
+  } as $FlowFixMe;
 
-  const defineVars = <
-    DefaultTokens: {
-      +[string]: string | { +default: string, +[string]: string },
-    },
-    ID: string = string,
-  >(
-    variables: DefaultTokens,
-    { themeName }: { themeName: string } = {
-      themeName: themeNameUUID(),
-    },
-  ): VarGroup<DefaultTokens, ID> => {
-    const [cssVarsObject, injectedStyles] = shared.defineVars(variables, {
-      themeName,
-    });
+  const defineVars: StyleX$DefineVars = (
+    variables,
+    // $FlowFixMe - This type is intentionally wrong.
+    { themeName = themeNameUUID(), ...overrideConfig } = {},
+  ) => {
+    const [cssVarsObject, injectedStyles] = shared.defineVars(
+      variables as $FlowFixMe,
+      {
+        ...config,
+        ...overrideConfig,
+        themeName,
+      },
+    );
 
     for (const [key, { ltr, priority }] of Object.entries(injectedStyles)) {
       insert(key, ltr, priority);
@@ -87,7 +129,6 @@ export default function inject({
     // $FlowFixMe
     return cssVarsObject;
   };
-  __monkey_patch__('defineVars', defineVars);
 
   const createTheme: $FlowFixMe = <
     BaseTokens: VarGroup<{ +[string]: mixed }>,
@@ -108,8 +149,6 @@ export default function inject({
     return js;
   };
 
-  __monkey_patch__('createTheme', createTheme);
-
   const keyframes = (frames: $ReadOnly<{ [name: string]: mixed, ... }>) => {
     const [animationName, { ltr, priority, rtl }] = shared.keyframes(
       frames as $FlowFixMe,
@@ -118,14 +157,17 @@ export default function inject({
     insert(animationName, ltr, priority, rtl);
     return animationName;
   };
-  __monkey_patch__('keyframes', keyframes);
 
   const firstThatWorks = shared.firstThatWorks;
-  __monkey_patch__('firstThatWorks', firstThatWorks);
 
-  const stylexInclude = (includedStyles: $FlowFixMe) => {
-    return shared.include({ node: includedStyles });
+  return {
+    props,
+    attrs,
+    create: stylexCreate,
+    defineVars: defineVars,
+    createTheme: createTheme,
+    types: types as $FlowFixMe,
+    firstThatWorks: firstThatWorks as $FlowFixMe,
+    keyframes: keyframes,
   };
-
-  __monkey_patch__('include', stylexInclude as $FlowFixMe);
 }

@@ -12,20 +12,22 @@
 jest.autoMockOff();
 
 import inject from '../src';
-import stylex from '@stylexjs/stylex';
+
+let metadata = [];
+const stylex = inject({
+  dev: false,
+  test: false,
+  insert: (key, ltr, priority, rtl) => {
+    metadata.push([key, { ltr, rtl }, priority]);
+  },
+});
 
 describe('Development Plugin Metadata', () => {
+  beforeEach(() => {
+    metadata = [];
+  });
   describe('[metadata] plugin metadata', () => {
     test('stylex metadata is correctly set', () => {
-      const metadata = [];
-      inject({
-        dev: false,
-        test: false,
-        insert: (key, ltr, priority, rtl) => {
-          metadata.push([key, { ltr, rtl }, priority]);
-        },
-      });
-
       // eslint-disable-next-line no-unused-vars
       const _styles = stylex.create({
         foo: {

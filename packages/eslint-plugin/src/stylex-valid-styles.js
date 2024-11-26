@@ -880,6 +880,7 @@ const imeMode = makeUnionRule(
 const initialLetter = makeUnionRule(makeLiteralRule('normal'), isString);
 const initialLetterAlign = isString;
 const inlineSize = width;
+const interpolateSize = makeUnionRule('allow-keywords', 'numeric-only');
 const isolation = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('isolate'),
@@ -1916,6 +1917,8 @@ const CSSProperties = {
   width: width,
   blockSize: blockSize,
   inlineSize: inlineSize,
+
+  interpolateSize: interpolateSize,
 
   maxHeight: maxHeight,
   maxWidth: maxWidth,

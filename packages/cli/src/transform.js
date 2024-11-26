@@ -122,6 +122,7 @@ export async function transformFile(
     babelrc: false,
     presets: config.babelPresets,
     plugins: [
+      ...(config.babelPluginsPre ?? []),
       createModuleImportModifierPlugin(outputFilePath, config),
       [
         styleXPlugin,
@@ -135,6 +136,7 @@ export async function transformFile(
         },
       ],
       createImportPlugin(relativeImport),
+      ...(config.babelPluginsPost ?? []),
     ],
   });
   if (result == null) {

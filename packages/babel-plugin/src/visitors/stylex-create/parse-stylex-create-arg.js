@@ -79,7 +79,7 @@ export function evaluateStyleXCreateArg(
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
     > = fnPath.get('params');
 
-    validateDynamicStyleParams(allParams);
+    validateDynamicStyleParams(fnPath, allParams);
 
     const params: Array<t.Identifier> = allParams
       .filter(
@@ -178,7 +178,10 @@ function evaluatePartialObjectRecursively(
           obj[key] = `var(${varName})`;
           const node = valuePath.node;
           if (!t.isExpression(node)) {
-            throw new Error('Expected expression as style value');
+            throw valuePath.buildCodeFrameError(
+              'Expected expression as style value',
+              SyntaxError,
+            );
           }
           const expression: t.Expression = node as $FlowFixMe;
 
@@ -271,9 +274,13 @@ function evaluateObjKey(
 }
 
 function validateDynamicStyleParams(
+  path: NodePath<t.ArrowFunctionExpression>,
   params: Array<NodePath<t.Identifier | t.SpreadElement | t.Pattern>>,
 ) {
   if (params.some((param) => !pathUtils.isIdentifier(param))) {
-    throw new Error(messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS);
+    throw path.buildCodeFrameError(
+      messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS,
+      SyntaxError,
+    );
   }
 }

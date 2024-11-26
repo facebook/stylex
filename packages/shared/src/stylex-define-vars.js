@@ -88,7 +88,10 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   );
 
   return [
-    { ...themeVariablesObject, __themeName__: themeNameHash },
+    {
+      ...themeVariablesObject,
+      __themeName__: themeNameHash,
+    },
     { ...injectableTypes, ...injectableStyles },
   ];
 }
@@ -107,7 +110,9 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    let ltr = `:root{${value.join('')}}`;
+    const selector = `:root, .${themeNameHash}`;
+
+    let ltr = `${selector}{${value.join('')}}`;
     if (atRule !== 'default') {
       ltr = wrapWithAtRules(ltr, atRule);
     }

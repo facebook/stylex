@@ -16,6 +16,7 @@ import type {
 } from '@stylexjs/shared';
 import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
+import fs from 'fs';
 import type { Check } from './validate';
 import * as z from './validate';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
@@ -35,7 +36,7 @@ export type ImportPathResolution =
 type ModuleResolution =
   | $ReadOnly<{
       type: 'commonJS',
-      rootDir: string,
+      rootDir?: string,
       themeFileExtension?: ?string,
     }>
   | $ReadOnly<{
@@ -44,7 +45,7 @@ type ModuleResolution =
     }>
   | $ReadOnly<{
       type: 'experimental_crossFileParsing',
-      rootDir: string,
+      rootDir?: string,
       themeFileExtension?: ?string,
     }>;
 
@@ -463,11 +464,48 @@ export default class StateManager {
     switch (this.options.unstable_moduleResolution.type) {
       case 'haste':
         return path.basename(filename);
-      default: {
-        const rootDir = this.options.unstable_moduleResolution.rootDir;
-        return path.relative(rootDir, filename);
-      }
+      default:
+        return this.getCanonicalFilePath(filename);
     }
+  }
+
+  getPackageNameAndPath(
+    filepath: string,
+  ): null | [+packageName: string, +packageDir: string] {
+    const folder = path.dirname(filepath);
+
+    const hasPackageJSON = fs.existsSync(path.join(folder, 'package.json'));
+    if (hasPackageJSON) {
+      try {
+        const packageJson = JSON.parse(
+          fs.readFileSync(path.join(folder, 'package.json'), 'utf8'),
+        );
+        const name = packageJson.name;
+        return [name, folder];
+      } catch (err) {
+        console.error(err);
+        return null;
+      }
+    } else {
+      if (folder === path.parse(folder).root || folder === '') {
+        return null;
+      }
+      return this.getPackageNameAndPath(folder);
+    }
+  }
+
+  getCanonicalFilePath(filePath: string): string {
+    const pkgNameAndPath = this.getPackageNameAndPath(filePath);
+    if (pkgNameAndPath == null) {
+      const rootDir = this.options.unstable_moduleResolution?.rootDir;
+      if (rootDir != null) {
+        return path.relative(rootDir, filePath);
+      }
+      const fileName = path.relative(path.dirname(filePath), filePath);
+      return `_unknown_path_:${fileName}`;
+    }
+    const [packageName, packageDir] = pkgNameAndPath;
+    return `${packageName}:${path.relative(packageDir, filePath)}`;
   }
 
   importPathResolver(importPath: string): ImportPathResolution {
@@ -478,7 +516,6 @@ export default class StateManager {
 
     switch (this.options.unstable_moduleResolution?.type) {
       case 'commonJS': {
-        const rootDir = this.options.unstable_moduleResolution.rootDir;
         const aliases = this.options.aliases;
         const themeFileExtension =
           this.options.unstable_moduleResolution?.themeFileExtension ??
@@ -492,7 +529,7 @@ export default class StateManager {
           aliases,
         );
         return resolvedFilePath
-          ? ['themeNameRef', path.relative(rootDir, resolvedFilePath)]
+          ? ['themeNameRef', this.getCanonicalFilePath(resolvedFilePath)]
           : false;
       }
       case 'haste': {
@@ -645,6 +682,9 @@ const filePathResolver = (
         });
 
         if (resolved) {
+          if (resolved.startsWith('.')) {
+            return path.resolve(path.dirname(sourceFilePath), resolved);
+          }
           return resolved;
         }
       }
@@ -663,6 +703,9 @@ const filePathResolver = (
         });
 
         if (resolved) {
+          if (resolved.startsWith('.')) {
+            return path.resolve(path.dirname(sourceFilePath), resolved);
+          }
           return resolved;
         }
       }
@@ -682,6 +725,10 @@ const addFileExtension = (
     return importedFilePath;
   }
   const fileExtension = path.extname(sourceFile);
+  // NOTE: This is unsafe. We are assuming the all files in your project
+  // use the same file extension.
+  // However, in a haste module system we have no way to resolve the
+  // *actual* file to get the actual file extension used.
   return importedFilePath + fileExtension;
 };
 

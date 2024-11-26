@@ -12,20 +12,20 @@
 jest.autoMockOff();
 
 import inject from '../src';
-import stylex from '@stylexjs/stylex';
+
+let metadata = [];
+const stylex = inject({
+  dev: false,
+  test: false,
+  insert: (key, ltr, priority, rtl) => {
+    metadata.push([key, { ltr, rtl }, priority]);
+  },
+});
 
 describe('Development Plugin Transformation', () => {
   describe('[transform] stylex.createTheme()', () => {
-    let metadata = [];
     beforeEach(() => {
       metadata = [];
-      inject({
-        dev: false,
-        test: false,
-        insert: (key, ltr, priority, rtl) => {
-          metadata.push([key, { ltr, rtl }, priority]);
-        },
-      });
     });
 
     test('transforms style object', () => {
@@ -55,7 +55,7 @@ describe('Development Plugin Transformation', () => {
       ).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "TestTheme.stylex.js//buttonTheme": "xtrlmmh",
+          "TestTheme.stylex.js//buttonTheme": "xtrlmmh TestTheme.stylex.js//buttonTheme",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
@@ -115,7 +115,7 @@ describe('Development Plugin Transformation', () => {
       ).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "TestTheme.stylex.js//buttonTheme": "xtrlmmh",
+          "TestTheme.stylex.js//buttonTheme": "xtrlmmh TestTheme.stylex.js//buttonTheme",
         }
       `);
       expect(metadata).toMatchInlineSnapshot(`
