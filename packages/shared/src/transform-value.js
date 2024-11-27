@@ -55,10 +55,12 @@ export default function transformValue(
       'unset',
     ]);
 
-    const isCssFunction = cssContentFunctions.some(func => val.includes(func));
+    const isCssFunction = cssContentFunctions.some((func) =>
+      val.includes(func),
+    );
     const isKeyword = cssContentKeywords.has(val);
     const hasMatchingQuotes =
-      (val.match(/"/g)?.length >= 2) || (val.match(/'/g)?.length >= 2);
+      val.match(/"/g)?.length >= 2 || val.match(/'/g)?.length >= 2;
 
     if (isCssFunction || isKeyword || hasMatchingQuotes) {
       return val;
@@ -137,10 +139,10 @@ const unitlessNumberProperties = new Set([
 // List of properties that have custom suffixes for numbers
 const numberPropertySuffixes: { +[key: string]: string } = {
   animationDelay: 'ms',
-    animationDuration: 'ms',
-      transitionDelay: 'ms',
-        transitionDuration: 'ms',
-          voiceDuration: 'ms',
+  animationDuration: 'ms',
+  transitionDelay: 'ms',
+  transitionDuration: 'ms',
+  voiceDuration: 'ms',
 };
 
 export const timeUnits: Set<string> = new Set(

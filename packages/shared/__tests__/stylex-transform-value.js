@@ -22,7 +22,7 @@ describe('transformValue content property tests', () => {
       'url(foo.jpg)attr(alt)',
     ];
 
-    functions.forEach(input => {
+    functions.forEach((input) => {
       expect(transformValue('content', input, {})).toBe(input);
     });
   });
@@ -42,7 +42,7 @@ describe('transformValue content property tests', () => {
       'unset',
     ];
 
-    keywords.forEach(keyword => {
+    keywords.forEach((keyword) => {
       expect(transformValue('content', keyword, {})).toBe(keyword);
     });
   });
@@ -58,7 +58,7 @@ describe('transformValue content property tests', () => {
       'counter(x)"text"counter(y)',
     ];
 
-    mixedValues.forEach(input => {
+    mixedValues.forEach((input) => {
       expect(transformValue('content', input, {})).toBe(input);
     });
   });
