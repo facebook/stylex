@@ -33,12 +33,12 @@ export default function transformValue(
     const val = value.trim();
 
     const cssContentFunctions = [
-      'attr',
-      'counter',
-      'counters',
-      'url',
-      'linear-gradient',
-      'image-set',
+      'attr(',
+      'counter(',
+      'counters(',
+      'url(',
+      'linear-gradient(',
+      'image-set(',
     ];
 
     const cssContentKeywords = new Set([
@@ -55,33 +55,12 @@ export default function transformValue(
       'unset',
     ]);
 
-    const hasCssFunction = cssContentFunctions.some(
-      (func) => val.startsWith(`${func}(`) && val.endsWith(')'),
-    );
-
+    const isCssFunction = cssContentFunctions.some(func => val.includes(func));
     const isKeyword = cssContentKeywords.has(val);
+    const hasMatchingQuotes =
+      (val.match(/"/g)?.length >= 2) || (val.match(/'/g)?.length >= 2);
 
-    const containsMixedContent = val.split(' ').some((part) => {
-      const trimmedPart = part.trim();
-      return (
-        cssContentFunctions.some((func) =>
-          trimmedPart.startsWith(`${func}(`),
-        ) || cssContentKeywords.has(trimmedPart)
-      );
-    });
-
-    // Leave value unchanged if it:
-    // 1. Is a CSS function
-    // 2. Is a CSS keyword
-    // 3. Contains mixed content (functions/keywords with strings)
-    // 4. Already has matching quotes
-    if (
-      hasCssFunction ||
-      isKeyword ||
-      containsMixedContent ||
-      (val.startsWith('"') && val.endsWith('"')) ||
-      (val.startsWith("'") && val.endsWith("'"))
-    ) {
+    if (isCssFunction || isKeyword || hasMatchingQuotes) {
       return val;
     }
     return `"${val}"`;
@@ -158,10 +137,10 @@ const unitlessNumberProperties = new Set([
 // List of properties that have custom suffixes for numbers
 const numberPropertySuffixes: { +[key: string]: string } = {
   animationDelay: 'ms',
-  animationDuration: 'ms',
-  transitionDelay: 'ms',
-  transitionDuration: 'ms',
-  voiceDuration: 'ms',
+    animationDuration: 'ms',
+      transitionDelay: 'ms',
+        transitionDuration: 'ms',
+          voiceDuration: 'ms',
 };
 
 export const timeUnits: Set<string> = new Set(

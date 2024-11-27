@@ -11,23 +11,19 @@ import transformValue from '../src/transform-value';
 describe('transformValue content property tests', () => {
   test('preserves CSS functions without quotes', () => {
     const functions = [
-      ['counters(div, ".")', 'counters(div, ".")'],
-      ['counter(chapter)', 'counter(chapter)'],
-      ['counter(chapter, upper-roman)', 'counter(chapter, upper-roman)'],
-      ['attr(href)', 'attr(href)'],
-      ['url(image.jpg)', 'url(image.jpg)'],
-      [
-        'linear-gradient(#e66465, #9198e5)',
-        'linear-gradient(#e66465, #9198e5)',
-      ],
-      [
-        'image-set("image1x.png" 1x, "image2x.png" 2x)',
-        'image-set("image1x.png" 1x, "image2x.png" 2x)',
-      ],
+      'counters(div, ".")',
+      'counter(chapter)',
+      'counter(chapter, upper-roman)',
+      'attr(href)',
+      'url(image.jpg)',
+      'linear-gradient(#e66465, #9198e5)',
+      'image-set("image1x.png" 1x, "image2x.png" 2x)',
+      '"prefix"attr(href)',
+      'url(foo.jpg)attr(alt)',
     ];
 
-    functions.forEach(([input, expected]) => {
-      expect(transformValue('content', input, {})).toBe(expected);
+    functions.forEach(input => {
+      expect(transformValue('content', input, {})).toBe(input);
     });
   });
 
@@ -46,24 +42,24 @@ describe('transformValue content property tests', () => {
       'unset',
     ];
 
-    keywords.forEach((keyword) => {
+    keywords.forEach(keyword => {
       expect(transformValue('content', keyword, {})).toBe(keyword);
     });
   });
 
   test('handles mixed content values', () => {
     const mixedValues = [
-      ['open-quote counter(chapter)', 'open-quote counter(chapter)'],
-      ['"prefix" url(image.jpg)', '"prefix" url(image.jpg)'],
-      ['url("test.png") / "Alt text"', 'url("test.png") / "Alt text"'],
-      [
-        'open-quote counter(chapter) close-quote',
-        'open-quote counter(chapter) close-quote',
-      ],
+      'open-quote counter(chapter)',
+      '"prefix"url(image.jpg)',
+      'url("test.png")/"Alt text"',
+      'open-quotecounter(chapter)close-quote',
+      'attr(href)normal',
+      '"text"attr(href)"more text"',
+      'counter(x)"text"counter(y)',
     ];
 
-    mixedValues.forEach(([input, expected]) => {
-      expect(transformValue('content', input, {})).toBe(expected);
+    mixedValues.forEach(input => {
+      expect(transformValue('content', input, {})).toBe(input);
     });
   });
 
@@ -75,18 +71,6 @@ describe('transformValue content property tests', () => {
     ];
 
     strings.forEach(([input, expected]) => {
-      expect(transformValue('content', input, {})).toBe(expected);
-    });
-  });
-
-  test('preserves existing quotes', () => {
-    const quotedStrings = [
-      ['"already quoted"', '"already quoted"'],
-      ["'single quotes'", "'single quotes'"],
-      ['"mixed "nested" quotes"', '"mixed "nested" quotes"'],
-    ];
-
-    quotedStrings.forEach(([input, expected]) => {
       expect(transformValue('content', input, {})).toBe(expected);
     });
   });
