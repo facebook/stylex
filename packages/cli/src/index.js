@@ -68,6 +68,8 @@ const styleXBundleName: string = args.styleXBundleName;
 const modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType> =
   args.modules_EXPERIMENTAL;
 const babelPresets: $ReadOnlyArray<any> = args.babelPresets;
+const babelPluginsPre: $ReadOnlyArray<any> = args.babelPluginsPre;
+const babelPluginsPost: $ReadOnlyArray<any> = args.babelPluginsPost;
 const useCSSLayers: boolean = args.useCSSLayers;
 const styleXConfig: { +[string]: mixed } =
   (config.styleXConfig as $FlowFixMe) ?? {};
@@ -79,6 +81,8 @@ const cliArgsConfig: CliConfig = {
   watch,
   styleXBundleName,
   babelPresets,
+  babelPluginsPre,
+  babelPluginsPost,
   useCSSLayers,
   styleXConfig,
 };
@@ -125,6 +129,8 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
       watch,
       styleXBundleName,
       babelPresets,
+      babelPluginsPre,
+      babelPluginsPost,
       useCSSLayers,
       styleXConfig,
       state: configState,

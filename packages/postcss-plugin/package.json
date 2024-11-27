@@ -1,0 +1,16 @@
+{
+  "name": "@stylexjs/postcss-plugin",
+  "version": "0.9.3",
+  "description": "PostCSS plugin for StyleX",
+  "main": "src/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.25.8",
+    "@stylexjs/babel-plugin": "0.9.3",
+    "postcss": "^8.4.49",
+    "fast-glob": "^3.3.2",
+    "glob-parent": "^6.0.2",
+    "is-glob": "^4.0.3"
+  }
+}

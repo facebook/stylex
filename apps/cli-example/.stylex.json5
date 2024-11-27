@@ -4,7 +4,7 @@
   cssBundleName: 'stylex_bundle.css',
   babelPresets: [
     ['@babel/preset-typescript', { allExtensions: true, isTSX: true }],
-    '@babel/preset-react',
+    // '@babel/preset-react',
   ],
   modules_EXPERIMENTAL: [
     ['@stylexjs/open-props', { ignore: ['src', '__tests__'] }],

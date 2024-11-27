@@ -9,10 +9,10 @@
 
 'use strict';
 
-import "./stylex_bundle.css";
 import * as stylex from '@stylexjs/stylex';
 import otherStyles from './otherStyles';
 import npmStyles from './npmStyles';
+import "./stylex_bundle.css";
 const fadeAnimation = "xgnty7z-B";
 const styles = {
   foo: {
