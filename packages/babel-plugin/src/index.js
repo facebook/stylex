@@ -69,28 +69,48 @@ function styleXTransform(): PluginObj<> {
               }
             }
           }
-
-          path.traverse({
-            // Look for stylex-related function calls and transform them.
-            // e.g.
-            //   stylex.create(...)
-            //   stylex.keyframes(...)
-            CallExpression(path: NodePath<t.CallExpression>) {
-              if (pathUtils.isVariableDeclarator(path.parentPath)) {
-                // # Look for `stylex.keyframes` calls
-                //   Needs to be handled *before* `stylex.create` as the `create` call
-                //   may use the generated animation name.
-                transformStyleXKeyframes(path.parentPath, state);
-              }
-              transformStyleXDefineVars(path, state);
-              transformStyleXCreateTheme(path, state);
-              transformStyleXCreate(path, state);
-            },
-          });
         },
         // After all other visitors are done, we can remove `styles=stylex.create(...)`
         // variables entirely if they're not needed.
         exit: (path: NodePath<t.Program>) => {
+          path.traverse({
+            Identifier(path: NodePath<t.Identifier>) {
+              // Look for variables bound to `stylex.create` calls that are used
+              // outside of `stylex(...)` calls
+              if (pathUtils.isReferencedIdentifier(path)) {
+                const { name } = path.node;
+                if (state.styleMap.has(name)) {
+                  const parentPath = path.parentPath;
+                  if (pathUtils.isMemberExpression(parentPath)) {
+                    const { property, computed } = parentPath.node;
+                    if (property.type === 'Identifier' && !computed) {
+                      state.markComposedNamespace([name, property.name, true]);
+                    } else if (property.type === 'StringLiteral' && computed) {
+                      state.markComposedNamespace([name, property.value, true]);
+                    } else if (property.type === 'NumericLiteral' && computed) {
+                      state.markComposedNamespace([
+                        name,
+                        String(property.value),
+                        true,
+                      ]);
+                    } else {
+                      state.markComposedNamespace([name, true, true]);
+                    }
+                  } else {
+                    state.markComposedNamespace([name, true, true]);
+                  }
+                }
+              }
+            },
+            CallExpression(path: NodePath<t.CallExpression>) {
+              // Don't traverse the children of `stylex(...)` calls.
+              // This is important for detecting which `stylex.create()` calls
+              // should be kept.
+              skipStylexMergeChildren(path, state);
+              skipStylexPropsChildren(path, state);
+              skipStylexAttrsChildren(path, state);
+            },
+          });
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
@@ -217,41 +237,15 @@ function styleXTransform(): PluginObj<> {
       },
 
       CallExpression(path: NodePath<t.CallExpression>) {
-        // Don't traverse the children of `stylex(...)` calls.
-        // This is important for detecting which `stylex.create()` calls
-        // should be kept.
-        skipStylexMergeChildren(path, state);
-        skipStylexPropsChildren(path, state);
-        skipStylexAttrsChildren(path, state);
-      },
-
-      Identifier(path: NodePath<t.Identifier>) {
-        // Look for variables bound to `stylex.create` calls that are used
-        // outside of `stylex(...)` calls
-        if (pathUtils.isReferencedIdentifier(path)) {
-          const { name } = path.node;
-          if (state.styleMap.has(name)) {
-            const parentPath = path.parentPath;
-            if (pathUtils.isMemberExpression(parentPath)) {
-              const { property, computed } = parentPath.node;
-              if (property.type === 'Identifier' && !computed) {
-                state.markComposedNamespace([name, property.name, true]);
-              } else if (property.type === 'StringLiteral' && computed) {
-                state.markComposedNamespace([name, property.value, true]);
-              } else if (property.type === 'NumericLiteral' && computed) {
-                state.markComposedNamespace([
-                  name,
-                  String(property.value),
-                  true,
-                ]);
-              } else {
-                state.markComposedNamespace([name, true, true]);
-              }
-            } else {
-              state.markComposedNamespace([name, true, true]);
-            }
-          }
+        if (pathUtils.isVariableDeclarator(path.parentPath)) {
+          // # Look for `stylex.keyframes` calls
+          //   Needs to be handled *before* `stylex.create` as the `create` call
+          //   may use the generated animation name.
+          transformStyleXKeyframes(path.parentPath, state);
         }
+        transformStyleXDefineVars(path, state);
+        transformStyleXCreateTheme(path, state);
+        transformStyleXCreate(path, state);
       },
     },
   };
