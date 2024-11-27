@@ -12,7 +12,6 @@
   "dependencies": {
     "@stylexjs/stylex": "^0.7.5",
     "@stylexjs/open-props": "^0.7.5",
-    "bright": "^0.8.5",
     "react": "^18",
     "react-dom": "^18",
     "next": "14.0.1"
@@ -23,6 +22,7 @@
     "@types/node": "^22.7.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
+    "@types/json-schema": "^7.0.15",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.0.1",
