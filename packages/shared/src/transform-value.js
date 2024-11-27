@@ -60,7 +60,8 @@ export default function transformValue(
     );
     const isKeyword = cssContentKeywords.has(val);
     const hasMatchingQuotes =
-      val.match(/"/g)?.length >= 2 || val.match(/'/g)?.length >= 2;
+      (val.match(/"/g)?.length ?? 0) >= 2 ||
+      (val.match(/'/g)?.length ?? 0) >= 2;
 
     if (isCssFunction || isKeyword || hasMatchingQuotes) {
       return val;
