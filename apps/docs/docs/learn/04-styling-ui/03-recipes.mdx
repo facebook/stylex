@@ -83,6 +83,37 @@ function Button({ variant = 'primary', ...props }) {
 <Button variant="secondary">Secondary</Button>
 ```
 
+## Hover-Dependent Descendant Styles
+
+Using CSS variables, you can style descendants based on a parent's state, such as `:hover`.
+
+### Example: Nested Hover Styles
+
+In this example, we'll apply a hover effect to a child element when the parent is hovered:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  parent: {
+    '--child-color': 'black',
+    ':hover': {
+      '--child-color': 'blue',
+    },
+  },
+  child: {
+    color: 'var(--child-color)',
+  },
+});
+
+function ParentWithHover() {
+  return (
+    <div {...stylex.props(styles.parent)}>
+      <span {...stylex.props(styles.child)}>Hover over me!</span>
+    </div>
+  );
+}
+```
 ## Fluid, Responsive Design
 
 The best approach to building responsive layouts is often to use fluid designs that adapt naturally to available space. This minimizes the total CSS and avoids brittle breakpoints.
