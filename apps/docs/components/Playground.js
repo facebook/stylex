@@ -78,9 +78,7 @@ export default function Playground() {
     console.log('Waiting for server-ready event...');
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
-      setTimeout(() => {
-        setUrl(url);
-      }, 5000);
+      setUrl(url);
     });
   };
 
@@ -100,16 +98,11 @@ export default function Playground() {
     debounceTimeout.current = setTimeout(async () => {
       setCode(newCode);
       if (url) {
-        setIsUpdating(true);
         try {
           await updateFiles();
           console.log('Successfully applied changes.');
         } catch (err) {
           console.error(err);
-        } finally {
-          setTimeout(() => {
-            setIsUpdating(false);
-          }, 5000);
         }
       }
     }, 2000);
