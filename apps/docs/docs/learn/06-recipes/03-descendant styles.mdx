@@ -3,13 +3,19 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-sidebar_position: 7
+sidebar_position: 3
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Descendant styles dependent on ancestor state
+# Variables for descendant styles
+
+It is not uncommon to define styles on an element that are dependent on a parent element's state, 
+such as applying some styles conditionally when the parent element is hovered.
+
+StyleX doesn't allow arbitrary selectors or "styling at a distance". However, variables can be
+used to achieve the same results in a safe and composable way.
 
 ## Example: Sidebar
 
@@ -19,6 +25,7 @@ when the sidebar as whole is hovered.
 Using CSS variables, you can style descendants based on a parent's state, such as `:hover`.
 
 ### Step 1
+
 Define one or more variables using `stylex.defineVars`:
 
 ```tsx variables.stylex.ts
@@ -31,6 +38,7 @@ export const vars = stylex.defineVars({
 ```
 
 ### Step 2
+
 Define conditional styles setting the value for the variable in the ancestor component.
 
 ```tsx
@@ -56,6 +64,7 @@ function ParentWithHover({children}) {
 ```
 
 ### Step 3
+
 Use the variable to style the child component
 
 ```tsx
@@ -74,3 +83,6 @@ function ParentWithHover() {
   );
 }
 ```
+
+This pattern makes it explicit what styles are being defined on an ancestor element, while leaving
+the child element in control to use those styles explicitly and to override it as needed.

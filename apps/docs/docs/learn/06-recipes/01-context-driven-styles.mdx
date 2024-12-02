@@ -3,13 +3,13 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-sidebar_position: 6
+sidebar_position: 2
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Conditional styles based on context
+# Context-driven styles
 
 StyleX lets you apply styles conditionally. Any condition can be used to do so, `Props`, `State` or `Context`. 
 
@@ -35,7 +35,9 @@ import * as stylex from '@stylexjs/stylex';
 
 export default createContext(false);
 ```
+
 ## Building the sidebar component
+
 The `Sidebar` component uses the `SidebarContext` to determine its open or closed state
 and conditionally applies the appropriate styles.
 
@@ -80,7 +82,7 @@ export default function App() {
 
   return (
     <SidebarContext.Provider value={isSidebarOpen}>
-      <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+      <button onClick={() => setIsSidebarOpen(open => !open)}>
         Toggle Sidebar
       </button>
       <Sidebar>
