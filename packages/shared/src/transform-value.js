@@ -24,8 +24,6 @@ export default function transformValue(
       ? String(Math.round(rawValue * 10000) / 10000) + getNumberSuffix(key)
       : rawValue;
 
-  // content is one of the values that needs to wrapped in quotes.
-  // Users may write `''` without thinking about it, so we fix that.
   if (
     (key === 'content' ||
       key === 'hyphenateCharacter' ||
@@ -33,17 +31,42 @@ export default function transformValue(
     typeof value === 'string'
   ) {
     const val = value.trim();
-    if (val.match(/^attr\([a-zA-Z0-9-]+\)$/)) {
+
+    const cssContentFunctions = [
+      'attr(',
+      'counter(',
+      'counters(',
+      'url(',
+      'linear-gradient(',
+      'image-set(',
+    ];
+
+    const cssContentKeywords = new Set([
+      'normal',
+      'none',
+      'open-quote',
+      'close-quote',
+      'no-open-quote',
+      'no-close-quote',
+      'inherit',
+      'initial',
+      'revert',
+      'revert-layer',
+      'unset',
+    ]);
+
+    const isCssFunction = cssContentFunctions.some((func) =>
+      val.includes(func),
+    );
+    const isKeyword = cssContentKeywords.has(val);
+    const hasMatchingQuotes =
+      (val.match(/"/g)?.length ?? 0) >= 2 ||
+      (val.match(/'/g)?.length ?? 0) >= 2;
+
+    if (isCssFunction || isKeyword || hasMatchingQuotes) {
       return val;
     }
-    if (
-      !(
-        (val.startsWith('"') && val.endsWith('"')) ||
-        (val.startsWith("'") && val.endsWith("'"))
-      )
-    ) {
-      return `"${val}"`;
-    }
+    return `"${val}"`;
   }
 
   return normalizeValue(value, key, options);

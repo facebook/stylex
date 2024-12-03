@@ -305,23 +305,19 @@ describe('CLI works with a custom cache path', () => {
   config.cachePath = customCachePath;
 
   beforeEach(() => {
-    // Clear custom cache directory before each test
     if (fs.existsSync(customCachePath)) {
       fs.rmSync(customCachePath, { recursive: true, force: true });
     }
   });
 
   afterAll(() => {
-    // Cleanup: Remove the custom cache directory after all tests
+    fs.rmSync(config.output, { recursive: true, force: true });
     if (fs.existsSync(customCachePath)) {
       fs.rmSync(customCachePath, { recursive: true, force: true });
     }
   });
 
   test('uses the custom cache path for caching', async () => {
-    fs.mkdirSync(config.input, { recursive: true });
-    fs.mkdirSync(config.output, { recursive: true });
-
     await compileDirectory(config);
 
     const customFilePath = path.join(config.input, 'index.js');
@@ -338,5 +334,7 @@ describe('CLI works with a custom cache path', () => {
     expect(cacheData).toHaveProperty('inputHash');
     expect(cacheData).toHaveProperty('outputHash');
     expect(cacheData).toHaveProperty('collectedCSS');
+
+    fs.rmSync(cacheFilePath, { recursive: true, force: true });
   });
 });
