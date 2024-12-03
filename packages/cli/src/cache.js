@@ -6,70 +6,93 @@
  *
  *
  */
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
-// $FlowFixMe
-import { mkdirp } from 'mkdirp';
 
 // Default cache directory in `node_modules/.stylex-cache`
 export function getDefaultCachePath() {
-  return process.env.NODE_ENV === 'test'
-    ? path.join('node_modules', '.stylex-cache-test')
-    : path.join('node_modules', '.stylex-cache');
+  return path.join('node_modules', '.stylex-cache');
 }
 
-function getCacheFilePath(cachePath, filePath) {
+async function getCacheFilePath(cachePath, filePath) {
   const fileName = filePath.replace(/[\\/]/g, '__');
   return path.join(cachePath, `${fileName}.json`);
 }
 
-export function readCache(filePath) {
-  const cacheFile = getCacheFilePath(getDefaultCachePath(), filePath);
-  if (fs.existsSync(cacheFile)) {
-    return JSON.parse(fs.readFileSync(cacheFile, 'utf-8'));
+export async function readCache(filePath) {
+  const cacheFile = await getCacheFilePath(getDefaultCachePath(), filePath);
+  try {
+    const cacheData = await fs.readFile(cacheFile, 'utf-8');
+    return JSON.parse(cacheData);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      // File does not exist
+      return null;
+    }
+    throw error;
   }
-  return null;
 }
 
-export function writeCache(cachePath, filePath, data) {
-  const cacheFile = getCacheFilePath(cachePath, filePath);
-  fs.mkdirSync(path.dirname(cacheFile), { recursive: true });
+export async function writeCache(cachePath, filePath, data) {
+  const cacheFile = await getCacheFilePath(cachePath, filePath);
+  const dirPath = path.dirname(cacheFile);
+
+  await fs.mkdir(dirPath, { recursive: true });
   console.log('Writing cache to:', cacheFile);
-  fs.writeFileSync(cacheFile, JSON.stringify(data), 'utf-8');
+  await fs.writeFile(cacheFile, JSON.stringify(data), 'utf-8');
 }
 
-export function deleteCache(cachePath, filePath) {
-  const cacheFile = getCacheFilePath(cachePath, filePath);
-  if (fs.existsSync(cacheFile)) {
-    fs.unlinkSync(cacheFile);
+export async function deleteCache(cachePath, filePath) {
+  const cacheFile = await getCacheFilePath(cachePath, filePath);
+  try {
+    await fs.unlink(cacheFile);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      // Rethrow errors other than file not existing
+      throw error;
+    }
   }
 }
 
-export function computeHash(filePath) {
+export async function computeHash(filePath) {
   const absoluteFilePath = path.resolve(filePath);
   const parsedFile = path.parse(absoluteFilePath);
 
-  mkdirp.sync(parsedFile.dir);
+  await fs.mkdir(parsedFile.dir, { recursive: true });
 
   const possibleExtensions = ['.ts', '.js'];
   let newPath = absoluteFilePath;
 
-  if (!fs.existsSync(newPath)) {
+  let fileExists = false;
+
+  try {
+    fileExists = await fs
+      .access(newPath)
+      .then(() => true)
+      .catch(() => false);
+  } catch {
+    fileExists = false;
+  }
+
+  if (!fileExists) {
     for (const ext of possibleExtensions) {
       const tempPath = path.join(parsedFile.dir, `${parsedFile.name}${ext}`);
-      if (fs.existsSync(tempPath)) {
+      fileExists = await fs
+        .access(tempPath)
+        .then(() => true)
+        .catch(() => false);
+      if (fileExists) {
         newPath = tempPath;
         break;
       }
     }
   }
 
-  if (!fs.existsSync(newPath)) {
+  if (!fileExists) {
     throw new Error(`Error generating hash: file not found: ${newPath}`);
   }
 
-  const content = fs.readFileSync(newPath, 'utf-8');
-
+  const content = await fs.readFile(newPath, 'utf-8');
   return crypto.createHash('md5').update(content).digest('hex');
 }

@@ -12,7 +12,7 @@
     "postbuild:esm": "rollup -c ./rollup.config.mjs",
     "build": "npm run build:cjs && npm run build:esm",
     "build-haste": "rewrite-imports -i src/ -o lib/",
-    "test": "NODE_ENV=test jest"
+    "test": "jest"
   },
   "dependencies": {
     "@babel/core": "7.25.8",

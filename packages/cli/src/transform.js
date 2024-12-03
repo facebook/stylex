@@ -102,28 +102,18 @@ export async function compileFile(
   const outputFilePath = path.join(config.output, filePath);
   const cachePath = getDefaultCachePath();
 
-  const inputHash = computeHash(inputFilePath);
+  const inputHash = await computeHash(inputFilePath);
   let oldOutputHash = null;
   if (fs.existsSync(outputFilePath)) {
-    try {
-      oldOutputHash = computeHash(outputFilePath);
-    } catch (err) {
-      console.error(
-        `[stylex] Failed to compute hash for: ${outputFilePath}`,
-        err,
-      );
-      oldOutputHash = null;
-    }
-  } else {
-    console.log(`[stylex] Output file does not exist: ${outputFilePath}`);
+    oldOutputHash = await computeHash(outputFilePath);
   }
 
-  const cacheData = readCache(filePath);
+  const cacheData = await readCache(filePath);
 
   if (
     cacheData &&
     cacheData.inputHash === inputHash &&
-    fs.existsSync(outputFilePath) &&
+    oldOutputHash &&
     cacheData.outputHash === oldOutputHash
   ) {
     console.log(`[stylex] Using cached CSS for: ${filePath}`);
@@ -143,9 +133,9 @@ export async function compileFile(
 
     writeCompiledJS(outputFilePath, code);
 
-    const newOutputHash = computeHash(outputFilePath);
+    const newOutputHash = await computeHash(outputFilePath);
 
-    writeCache(cachePath, filePath, {
+    await writeCache(cachePath, filePath, {
       inputHash,
       outputHash: newOutputHash,
       collectedCSS: rules,
