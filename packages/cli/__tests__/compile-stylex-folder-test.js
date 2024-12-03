@@ -77,7 +77,7 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
   });
 
   test(config.output, async () => {
-    fs.mkdirSync(config.output);
+    fs.mkdirSync(config.output, { recursive: true });
     expect(isDir(config.output)).toBe(true);
     await compileDirectory(config);
     const outputDir = fs.readdirSync(config.output, { recursive: true });
@@ -281,5 +281,62 @@ describe('cache mechanism works as expected', () => {
     fs.writeFileSync(mockFileOutputPath, originalOutputContent, 'utf-8');
 
     writeSpy.mockRestore();
+  });
+});
+
+describe('CLI works with a custom cache path', () => {
+  const customCachePath = path.join(__dirname, '__custom_cache__');
+  const config: TransformConfig = {
+    input: path.resolve('./source'),
+    output: path.resolve('./src'),
+    styleXBundleName: 'stylex_bundle.css',
+    modules_EXPERIMENTAL: [] as Array<string>,
+    watch: false,
+    babelPresets: [],
+    cachePath: customCachePath,
+    state: {
+      compiledCSSDir: null,
+      compiledNodeModuleDir: null,
+      compiledJS: new Map(),
+      styleXRules: new Map(),
+      copiedNodeModules: false,
+    },
+  };
+  config.cachePath = customCachePath;
+
+  beforeEach(() => {
+    // Clear custom cache directory before each test
+    if (fs.existsSync(customCachePath)) {
+      fs.rmSync(customCachePath, { recursive: true, force: true });
+    }
+  });
+
+  afterAll(() => {
+    // Cleanup: Remove the custom cache directory after all tests
+    if (fs.existsSync(customCachePath)) {
+      fs.rmSync(customCachePath, { recursive: true, force: true });
+    }
+  });
+
+  test('uses the custom cache path for caching', async () => {
+    fs.mkdirSync(config.input, { recursive: true });
+    fs.mkdirSync(config.output, { recursive: true });
+
+    await compileDirectory(config);
+
+    const customFilePath = path.join(config.input, 'index.js');
+
+    const cacheFilePath = path.join(
+      customCachePath,
+      path.relative(config.input, customFilePath) + '.json',
+    );
+
+    expect(fs.existsSync(customCachePath)).toBe(true);
+    expect(fs.existsSync(cacheFilePath)).toBe(true);
+
+    const cacheData = JSON.parse(fs.readFileSync(cacheFilePath, 'utf-8'));
+    expect(cacheData).toHaveProperty('inputHash');
+    expect(cacheData).toHaveProperty('outputHash');
+    expect(cacheData).toHaveProperty('collectedCSS');
   });
 });
