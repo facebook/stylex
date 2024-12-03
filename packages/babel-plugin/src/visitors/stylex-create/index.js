@@ -115,15 +115,17 @@ export default function transformStyleXCreate(
 
     // add injection that mark variables used for dynamic styles as `inherits: false`
     const injectedInheritStyles: { [string]: InjectableStyle } = {};
-    if(fns != null){
-      const dynamicFnsNames = Object.values(fns)?.map(entry => Object.keys(entry[1])).flat();
-      dynamicFnsNames.forEach(fnsName => {      
+    if (fns != null) {
+      const dynamicFnsNames = Object.values(fns)
+        ?.map((entry) => Object.keys(entry[1]))
+        .flat();
+      dynamicFnsNames.forEach((fnsName) => {
         injectedInheritStyles[fnsName] = {
           priority: 0,
           ltr: `@property ${fnsName} { inherits: false }`,
           rtl: null,
         };
-      })
+      });
     }
 
     if (!confident) {
