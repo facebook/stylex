@@ -12,8 +12,10 @@
 import type { CliConfig, TransformConfig } from '../src/config';
 
 import { compileDirectory } from '../src/transform';
+import * as cacheModule from '../src/cache';
+import { getDefaultCachePath } from '../src/cache';
 
-import * as fs from 'fs';
+import fs from 'fs';
 import { isDir, getRelativePath } from '../src/files';
 import * as path from 'path';
 
@@ -45,7 +47,12 @@ function runCli(args: string, config: CliConfig, onClose: () => void) {
 
 const snapshot = './snapshot';
 
+const cachePath = getDefaultCachePath();
 describe('compiling __mocks__/source to __mocks__/src correctly such that it matches __mocks__/snapshot', () => {
+  afterAll(() => {
+    fs.rmSync(config.output, { recursive: true, force: true });
+    fs.rmSync(cachePath, { recursive: true, force: true });
+  });
   // need to resolve to absolute paths because the compileDirectory function is expecting them.
   const config: TransformConfig = {
     input: path.resolve('./source'),
@@ -194,5 +201,85 @@ describe('individual testing of util functions', () => {
       path.join(config.output, config.cssBundleName),
     );
     expect(relativePath).toEqual(`../../${config.cssBundleName}`);
+  });
+});
+
+describe('cache mechanism works as expected', () => {
+  let writeSpy;
+  const config: TransformConfig = {
+    input: path.resolve('./source'),
+    output: path.resolve('./src'),
+    styleXBundleName: 'stylex_bundle.css',
+    modules_EXPERIMENTAL: [] as Array<string>,
+    watch: false,
+    babelPresets: [],
+    state: {
+      compiledCSSDir: null,
+      compiledNodeModuleDir: null,
+      compiledJS: new Map(),
+      styleXRules: new Map(),
+      copiedNodeModules: false,
+    },
+  };
+
+  beforeEach(() => {
+    writeSpy = jest.spyOn(cacheModule, 'writeCache');
+  });
+
+  afterEach(() => {
+    writeSpy.mockRestore();
+  });
+
+  afterAll(() => {
+    fs.rmSync(config.output, { recursive: true, force: true });
+    fs.rmSync(cachePath, { recursive: true, force: true });
+  });
+
+  test('first compilation populates the cache', async () => {
+    fs.mkdirSync(config.output, { recursive: true });
+    fs.mkdirSync(cachePath, { recursive: true });
+    writeSpy = jest.spyOn(cacheModule, 'writeCache');
+
+    await compileDirectory(config);
+    expect(writeSpy).toHaveBeenCalledTimes(3);
+
+    const cacheFiles = fs.readdirSync(cachePath);
+    expect(cacheFiles.length).toEqual(3);
+
+    for (const cacheFile of cacheFiles) {
+      const cacheFilePath = path.join(cachePath, cacheFile);
+      const cacheContent = JSON.parse(fs.readFileSync(cacheFilePath, 'utf-8'));
+      expect(cacheContent).toHaveProperty('inputHash');
+      expect(cacheContent).toHaveProperty('outputHash');
+      expect(cacheContent).toHaveProperty('collectedCSS');
+    }
+  });
+
+  test('skips transformation when cache is valid', async () => {
+    await compileDirectory(config);
+
+    // Ensure no additional writes were made due to no file changes
+    expect(writeSpy).toHaveBeenCalledTimes(0);
+    writeSpy.mockRestore();
+  });
+
+  test('recompiles when input changes', async () => {
+    const mockFilePath = path.join(config.input, 'index.js');
+    const mockFileOutputPath = path.join(config.output, 'index.js');
+    const newContent = 'console.log("Updated content");';
+    const originalContent = fs.readFileSync(mockFilePath, 'utf-8');
+    const originalOutputContent = fs.readFileSync(mockFileOutputPath, 'utf-8');
+
+    fs.appendFileSync(mockFilePath, newContent, 'utf-8');
+
+    await compileDirectory(config);
+
+    // Ensure index.js is rewritten due to cache invalidation
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+
+    fs.writeFileSync(mockFilePath, originalContent, 'utf-8');
+    fs.writeFileSync(mockFileOutputPath, originalOutputContent, 'utf-8');
+
+    writeSpy.mockRestore();
   });
 });
