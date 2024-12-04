@@ -113,6 +113,11 @@ export default function transformStyleXCreate(
       memberExpressions,
     });
 
+    if (!confident) {
+      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE, SyntaxError);
+    }
+    const plainObject = value;
+
     // add injection that mark variables used for dynamic styles as `inherits: false`
     const injectedInheritStyles: { [string]: InjectableStyle } = {};
     if (fns != null) {
@@ -127,11 +132,7 @@ export default function transformStyleXCreate(
         };
       });
     }
-
-    if (!confident) {
-      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE, SyntaxError);
-    }
-    const plainObject = value;
+    
     // eslint-disable-next-line prefer-const
     let [compiledStyles, injectedStylesSansKeyframes, classPathsPerNamespace] =
       stylexCreate(plainObject, state.options);
