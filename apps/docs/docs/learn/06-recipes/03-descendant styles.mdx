@@ -1,0 +1,46 @@
+# Descendant styles
+
+## Hover-Dependent Descendant Styles
+
+Using CSS variables, you can style descendants based on a parent's state, such as `:hover`.
+
+### Example: Nested Hover Styles
+
+In this example, we'll apply a hover effect to a child element when the parent is hovered:
+
+`variables.stylex.ts` defines a variable using `stylex.defineVars`:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+export const vars = stylex.defineVars({
+  childColor: 'black',
+});
+```
+In the `styles.parent` object, the variable `vars.childColor` is referenced and updated on hover.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { vars } from './variables.stylex';
+
+const styles = stylex.create({
+  parent: {
+    [vars.childColor]: vars.childColor,
+    ':hover': {
+      [vars.childColor]: 'blue',
+    },
+  },
+  child: {
+    color: `var(${vars.childColor})`,
+  },
+});
+
+function ParentWithHover() {
+  return (
+    <div {...stylex.props(styles.parent)}>
+      <span {...stylex.props(styles.child)}>Hover over me!</span>
+    </div>
+  );
+}
+
+```

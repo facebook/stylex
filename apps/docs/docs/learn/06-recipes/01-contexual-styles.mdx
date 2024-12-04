@@ -1,0 +1,45 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+# Contextual styles
+
+Contextual styles are an effective way to dynamically adapt styles based on a component's state or its environment. Here are some approaches to achieve this:
+
+### Using Context
+
+Context can help reduce prop-drilling by sharing state across components. For example, you can manage the open or closed state of a sidebar using React Context and conditionally apply styles:
+
+```tsx
+import { createContext, useContext } from 'react';
+import * as stylex from '@stylexjs/stylex';
+
+const SidebarContext = createContext(false);
+
+const styles = stylex.create({
+  sidebarOpen: {
+    width: '250px',
+  },
+  sidebarClosed: {
+    width: '50px',
+  },
+});
+
+function Sidebar({ children }) {
+  const isOpen = useContext(SidebarContext);
+  return (
+    <div {...stylex.props(isOpen ? styles.sidebarOpen : styles.sidebarClosed)}>
+      {children}
+    </div>
+  );
+}
+```
+
