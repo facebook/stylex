@@ -2185,6 +2185,7 @@ const CSSProperties = {
   unicodeBidi: unicodeBidi,
   unicodeRange: unicodeRange,
   userSelect: userSelect,
+  viewTransitionName: makeUnionRule(all, isString),
   verticalAlign: verticalAlign,
   visibility: visibility,
   voiceBalance: voiceBalance,
