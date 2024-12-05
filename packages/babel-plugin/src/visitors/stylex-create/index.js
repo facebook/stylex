@@ -132,7 +132,7 @@ export default function transformStyleXCreate(
         };
       });
     }
-    
+
     // eslint-disable-next-line prefer-const
     let [compiledStyles, injectedStylesSansKeyframes, classPathsPerNamespace] =
       stylexCreate(plainObject, state.options);
