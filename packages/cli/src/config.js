@@ -31,6 +31,7 @@ export type TransformConfig = {
   ...CliConfig,
   input: string,
   output: string,
+  cachePath?: string,
   state: {
     compiledCSSDir: ?string,
     compiledNodeModuleDir: ?string,

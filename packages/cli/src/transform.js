@@ -100,7 +100,7 @@ export async function compileFile(
 ): Promise<?string> {
   const inputFilePath = path.join(config.input, filePath);
   const outputFilePath = path.join(config.output, filePath);
-  const cachePath = getDefaultCachePath();
+  const cachePath = config.cachePath || getDefaultCachePath();
 
   const inputHash = await computeHash(inputFilePath);
   let oldOutputHash = null;
