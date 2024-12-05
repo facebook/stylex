@@ -9,26 +9,29 @@ sidebar_position: 7
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Descendant styles
+# Descendant styles dependent on ancestor state
 
-## Hover-Dependent Descendant Styles
+## Example: Sidebar
+
+Consider the case where the content within a sidebar needs to have conditional styles applied
+when the sidebar as whole is hovered.
 
 Using CSS variables, you can style descendants based on a parent's state, such as `:hover`.
 
-### Example: Nested Hover Styles
+### Step 1
+Define one or more variables using `stylex.defineVars`:
 
-In this example, we'll apply a hover effect to a child element when the parent is hovered:
-
-`variables.stylex.ts` defines a variable using `stylex.defineVars`:
-
-```tsx
+```tsx variables.stylex.ts
+// variables.stylex.ts
 import * as stylex from '@stylexjs/stylex';
 
 export const vars = stylex.defineVars({
   childColor: 'black',
 });
 ```
-In the `styles.parent` object, the variable `vars.childColor` is referenced and updated on hover.
+
+### Step 2
+Define conditional styles setting the value for the variable in the anscestor component.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -36,22 +39,38 @@ import { vars } from './variables.stylex';
 
 const styles = stylex.create({
   parent: {
-    [vars.childColor]: vars.childColor,
-    ':hover': {
-      [vars.childColor]: 'blue',
+    [vars.childColor]: {
+      default: 'black',
+      ':hover': 'blue',
     },
   },
-  child: {
-    color: `vars.childColor`,
-  },
+});
+
+function ParentWithHover({children}) {
+  return (
+    <div {...stylex.props(styles.parent)}>
+      {children}
+    </div>
+  );
+}
+```
+
+### Step 3
+Use the variable to style the child component
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { vars } from './variables.stylex';
+
+const styles = stylex.create({
+  row: {
+    color: vars.childColor,
+  }
 });
 
 function ParentWithHover() {
   return (
-    <div {...stylex.props(styles.parent)}>
-      <span {...stylex.props(styles.child)}>Hover over me!</span>
-    </div>
+      <span {...stylex.props(styles.child)}><Icon />A Row</span>
   );
 }
-
 ```
