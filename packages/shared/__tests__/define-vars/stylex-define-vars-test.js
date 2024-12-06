@@ -186,6 +186,156 @@ describe('stylex-define-vars test', () => {
     `);
   });
 
+  test('converts set of vars with nested at rules to CSS and includes variable name as prefix in ltr only', () => {
+    const themeName = 'TestTheme.stylex.js//buttonTheme';
+    const classNamePrefix = 'x';
+    const defaultVars = {
+      bgColor: {
+        default: 'blue',
+        '@media (prefers-color-scheme: dark)': {
+          default: 'lightblue',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+        '@media print': 'white',
+      },
+      bgColorDisabled: {
+        default: {
+          default: 'grey',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+        '@media (prefers-color-scheme: dark)': {
+          default: 'rgba(0, 0, 0, 0.8)',
+          '@supports (color: oklab(0 0 0))': 'oklab(0.7 -0.3 -0.4)',
+        },
+      },
+      cornerRadius: '10px',
+      fgColor: {
+        default: 'pink',
+      },
+    };
+    const [jsOutput, cssOutput] = styleXDefineVars(defaultVars, {
+      themeName,
+      debug: true,
+    });
+
+    expect(jsOutput).toEqual({
+      __themeName__: classNamePrefix + createHash(themeName),
+      bgColor: `var(--${classNamePrefix + createHash(`${themeName}.bgColor`)})`,
+      bgColorDisabled: `var(--${
+        classNamePrefix + createHash(`${themeName}.bgColorDisabled`)
+      })`,
+      cornerRadius: `var(--${
+        classNamePrefix + createHash(`${themeName}.cornerRadius`)
+      })`,
+      fgColor: `var(--${classNamePrefix + createHash(`${themeName}.fgColor`)})`,
+    });
+
+    expect(cssOutput).toMatchInlineSnapshot(`
+      {
+        "bgColor-x568ih9": {
+          "ltr": ":root, .bgColor-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "bgColor-x568ih9-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .bgColor-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
+          "priority": 0.2,
+          "rtl": null,
+        },
+        "bgColor-x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root, .bgColor-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "bgColor-x568ih9-bdddrq": {
+          "ltr": "@media print{:root, .bgColor-x568ih9{--xgck17p:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "bgColor-x568ih9-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){:root, .bgColor-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "bgColorDisabled-x568ih9": {
+          "ltr": ":root, .bgColorDisabled-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "bgColorDisabled-x568ih9-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .bgColorDisabled-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
+          "priority": 0.2,
+          "rtl": null,
+        },
+        "bgColorDisabled-x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root, .bgColorDisabled-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "bgColorDisabled-x568ih9-bdddrq": {
+          "ltr": "@media print{:root, .bgColorDisabled-x568ih9{--xgck17p:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "bgColorDisabled-x568ih9-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){:root, .bgColorDisabled-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "cornerRadius-x568ih9": {
+          "ltr": ":root, .cornerRadius-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "cornerRadius-x568ih9-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .cornerRadius-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
+          "priority": 0.2,
+          "rtl": null,
+        },
+        "cornerRadius-x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root, .cornerRadius-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "cornerRadius-x568ih9-bdddrq": {
+          "ltr": "@media print{:root, .cornerRadius-x568ih9{--xgck17p:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "cornerRadius-x568ih9-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){:root, .cornerRadius-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "fgColor-x568ih9": {
+          "ltr": ":root, .fgColor-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
+          "priority": 0,
+          "rtl": null,
+        },
+        "fgColor-x568ih9-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .fgColor-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
+          "priority": 0.2,
+          "rtl": null,
+        },
+        "fgColor-x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root, .fgColor-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "fgColor-x568ih9-bdddrq": {
+          "ltr": "@media print{:root, .fgColor-x568ih9{--xgck17p:white;}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+        "fgColor-x568ih9-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){:root, .fgColor-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
+          "priority": 0.1,
+          "rtl": null,
+        },
+      }
+    `);
+  });
+
   test('converts set of typed vars with nested at rules to CSS', () => {
     const themeName = 'TestTheme.stylex.js//buttonTheme';
     const classNamePrefix = 'x';

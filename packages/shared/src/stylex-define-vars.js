@@ -36,10 +36,15 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   variables: Vars,
   options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
 ): [VarsObject<Vars>, { [string]: InjectableStyle }] {
-  const { classNamePrefix, themeName } = {
+  const { classNamePrefix, themeName, debug } = {
     ...defaultOptions,
     ...options,
   };
+
+  console.log(defaultOptions);
+  console.log(options);
+
+  console.log('debug', debug);
 
   const themeNameHash = classNamePrefix + createHash(themeName);
 
@@ -51,9 +56,21 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   } = {};
 
   const variablesMap: {
-    +[string]: { +nameHash: string, +value: VarsConfigValue },
+    +[string]: {
+      +nameHash: string,
+      +value: VarsConfigValue,
+      +themeNamePrefix: string,
+    },
   } = objMap(variables, (value, key) => {
     // Created hashed variable names with fileName//themeName//key
+
+    const processedKey = key.startsWith('--') ? key.slice(2) : key;
+    console.log('debug', debug);
+
+    const themeNamePrefix = debug ? `${processedKey}` : '';
+
+    console.log('themeNamePrefix', themeNamePrefix);
+
     const nameHash = key.startsWith('--')
       ? key.slice(2)
       : classNamePrefix + createHash(`${themeName}.${key}`);
@@ -63,9 +80,9 @@ export default function styleXDefineVars<Vars: VarsConfig>(
         initialValue: getDefaultValue(v.value),
         syntax: v.syntax,
       };
-      return { nameHash, value: v.value };
+      return { nameHash, value: v.value, themeNamePrefix };
     }
-    return { nameHash, value: value as $FlowFixMe };
+    return { nameHash, value: value as $FlowFixMe, themeNamePrefix };
   });
 
   const themeVariablesObject = objMap(
@@ -95,9 +112,14 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     { ...injectableTypes, ...injectableStyles },
   ];
 }
-
 function constructCssVariablesString(
-  variables: { +[string]: { +nameHash: string, +value: VarsConfigValue } },
+  variables: {
+    +[string]: {
+      +nameHash: string,
+      +value: VarsConfigValue,
+      +themeNamePrefix: string,
+    },
+  },
   themeNameHash: string,
 ): { [string]: InjectableStyle } {
   const rulesByAtRule: { [string]: Array<string> } = {};
@@ -110,18 +132,24 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    const selector = `:root, .${themeNameHash}`;
+    for (const [_, { themeNamePrefix }] of Object.entries(variables)) {
+      console.log('themeNamePrefix', themeNamePrefix);
+      const themeNameHashWithPrefix = themeNamePrefix
+        ? `${themeNamePrefix}-${themeNameHash}`
+        : themeNameHash;
+      const selector = `:root, .${themeNameHashWithPrefix}`;
 
-    let ltr = `${selector}{${value.join('')}}`;
-    if (atRule !== 'default') {
-      ltr = wrapWithAtRules(ltr, atRule);
+      let ltr = `${selector}{${value.join('')}}`;
+      if (atRule !== 'default') {
+        ltr = wrapWithAtRules(ltr, atRule);
+      }
+
+      result[themeNameHashWithPrefix + suffix] = {
+        ltr,
+        rtl: null,
+        priority: priorityForAtRule(atRule) * 0.1,
+      };
     }
-
-    result[themeNameHash + suffix] = {
-      ltr,
-      rtl: null,
-      priority: priorityForAtRule(atRule) * 0.1,
-    };
   }
 
   return result;
