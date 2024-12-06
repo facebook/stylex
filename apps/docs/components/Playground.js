@@ -8,12 +8,17 @@
  */
 
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBars, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as stylex from '@stylexjs/stylex';
-import { WebContainer } from '@webcontainer/api';
+import { WebContainer, reloadPreview } from '@webcontainer/api';
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { UnControlled as CodeMirror } from 'react-codemirror2';
 import { files } from './playground-utils/files';
+
+library.add(faBars, faRotateRight);
 
 async function wcSpawn(instance, ...args) {
   console.log('Running:', args.join(' '));
@@ -55,10 +60,10 @@ export default function Playground() {
   const instance = useRef(null);
   const [url, setUrl] = useState(null);
   const debounceTimeout = useRef(null);
-  const [isUpdating, setIsUpdating] = useState(null);
   const [code, setCode] = useState(
     files.src.directory['App.jsx'].file.contents,
   );
+  const [error, setError] = useState(null);
 
   const build = async () => {
     const containerInstance = instance.current;
@@ -108,12 +113,55 @@ export default function Playground() {
     }, 2000);
   };
 
+  const reloadWebContainer = async () => {
+    if (url) {
+      console.log('Reloading container preview...');
+      const iframe = document.querySelector('iframe');
+      await reloadPreview(iframe);
+      return;
+    }
+
+    if (!url && error) {
+      setUrl(null);
+      setError(null);
+      try {
+        console.log('Trying to restart container...');
+        const newInstance = await makeWebcontainer();
+        instance.current = newInstance;
+        if (!newInstance) {
+          setError(
+            'WebContainer failed to load. Please try reloading or use a different browser.',
+          );
+          console.log('restarting no instance...');
+          console.log(instance.current);
+          return;
+        }
+        build();
+        console.log('WebContainer reloaded successfully.');
+      } catch (err) {
+        setError(
+          'WebContainer failed to load. Please try reloading or use a different browser.',
+        );
+        console.error(err);
+      }
+    }
+  };
+
   useEffect(() => {
     require('codemirror/mode/javascript/javascript');
     makeWebcontainer().then((i) => {
       instance.current = i;
+      if (!instance.current) {
+        setError(
+          'WebContainer failed to load. Please try reloading or use a different browser.',
+        );
+        console.log('no instance...');
+        console.log(instance.current);
+        return;
+      }
       build();
     });
+
     () => {
       instance.current.unmount();
       if (debounceTimeout.current) {
@@ -123,33 +171,108 @@ export default function Playground() {
   }, []);
 
   return (
-    <div {...stylex.props(styles.container)}>
-      <BrowserOnly>
-        {() => (
-          <>
-            <CodeMirror
-              {...stylex.props(styles.textarea)}
-              options={{
-                mode: 'javascript',
-                theme: 'material-darker',
-                lineNumbers: true,
-              }}
-              value={code}
-              onChange={(editor, data, newCode) => handleCodeChange(newCode)}
-            />
-            {url && !isUpdating ? (
-              <iframe {...stylex.props(styles.textarea)} src={url} />
-            ) : (
-              <div {...stylex.props(styles.textarea)}>Loading...</div>
-            )}
-          </>
-        )}
-      </BrowserOnly>
+    <div {...stylex.props(styles.root)}>
+      <header {...stylex.props(styles.header)}>
+        <button {...stylex.props(styles.buttonToggle)}>
+          <FontAwesomeIcon icon="fa-solid fa-bars" />
+        </button>
+        <button {...stylex.props(styles.buttonToggle)}>
+          <FontAwesomeIcon
+            onClick={reloadWebContainer}
+            icon="fa-solid fa-rotate-right"
+          />
+        </button>
+      </header>
+      <div {...stylex.props(styles.container)}>
+        <BrowserOnly>
+          {() => (
+            <>
+              <CodeMirror
+                {...stylex.props(styles.textarea)}
+                options={{
+                  mode: 'javascript',
+                  theme: 'material-darker',
+                  lineNumbers: true,
+                }}
+                value={code}
+                onChange={(editor, data, newCode) => handleCodeChange(newCode)}
+              />
+              {url ? (
+                <iframe {...stylex.props(styles.textarea)} src={url} />
+              ) : (
+                <div {...stylex.props(styles.textarea)}>Loading...</div>
+              )}
+              {!url && error && (
+                <div>
+                  <div>{error}</div>
+                  <button onClick={reloadWebContainer}>
+                    Reload WebContainer
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </BrowserOnly>
+      </div>
     </div>
   );
 }
 
 const styles = stylex.create({
+  root: {
+    minHeight: '100vh',
+    backgroundColor: 'var(--bg1)',
+  },
+  header: {
+    height: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: '20px',
+    paddingRight: '20px',
+    backgroundColor: 'var(--playground-container-bg)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
+    zIndex: 20,
+  },
+  sidebarToggle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    color: 'var(--fg1)',
+    width: '32px',
+    height: '32px',
+    borderRadius: '4px',
+    border: 'none',
+    cursor: 'pointer',
+    zIndex: 20,
+    padding: '4px',
+    transition: 'background-color 200ms, transform 150ms',
+    ':hover': {
+      backgroundColor: 'var(--ifm-color-primary-light)',
+      transform: 'scale(1.05)',
+    },
+  },
+  reloadToggle: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    color: 'var(--fg1)',
+    width: '32px',
+    height: '32px',
+    borderRadius: '4px',
+    border: 'none',
+    cursor: 'pointer',
+    zIndex: 20,
+    padding: '4px',
+    transition: 'background-color 200ms, transform 150ms',
+    ':hover': {
+      backgroundColor: 'var(--ifm-color-primary-light)',
+      transform: 'scale(1.05)',
+    },
+  },
   container: {
     display: 'flex',
     alignItems: 'center',
