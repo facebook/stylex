@@ -67,7 +67,13 @@ export default function Playground() {
 
   const build = async () => {
     const containerInstance = instance.current;
-    if (!containerInstance) return;
+    console.log('instance: ', containerInstance);
+    if (!containerInstance) {
+      setError(
+        'WebContainer failed to load. Please try reloading or use a different browser.',
+      );
+      return;
+    }
 
     console.log('Trying to run `npm run dev`...');
     const process = await containerInstance.spawn('npm', ['run', 'dev']);
@@ -126,18 +132,12 @@ export default function Playground() {
       setError(null);
       try {
         console.log('Trying to restart container...');
+        if (instance.current) {
+          await instance.current.teardown();
+        }
         const newInstance = await makeWebcontainer();
         instance.current = newInstance;
-        if (!newInstance) {
-          setError(
-            'WebContainer failed to load. Please try reloading or use a different browser.',
-          );
-          console.log('restarting no instance...');
-          console.log(instance.current);
-          return;
-        }
         build();
-        console.log('WebContainer reloaded successfully.');
       } catch (err) {
         setError(
           'WebContainer failed to load. Please try reloading or use a different browser.',
@@ -151,14 +151,6 @@ export default function Playground() {
     require('codemirror/mode/javascript/javascript');
     makeWebcontainer().then((i) => {
       instance.current = i;
-      if (!instance.current) {
-        setError(
-          'WebContainer failed to load. Please try reloading or use a different browser.',
-        );
-        console.log('no instance...');
-        console.log(instance.current);
-        return;
-      }
       build();
     });
 
