@@ -92,6 +92,10 @@ export default function Playground() {
       console.log('server-ready', port, url);
       setUrl(url);
     });
+
+    containerInstance.on('error', (err) => {
+      console.error('WebContainer error:', err);
+    });
   };
 
   const updateFiles = async () => {
@@ -129,8 +133,6 @@ export default function Playground() {
     }
 
     if (!url && error) {
-      setUrl(null);
-      setError(null);
       try {
         console.log('Trying to restart container...');
         if (instance.current) {
@@ -139,6 +141,7 @@ export default function Playground() {
         const newInstance = await makeWebcontainer();
         instance.current = newInstance;
         await build();
+        setError(null);
       } catch (err) {
         setError(
           'WebContainer failed to load. Please try reloading or use a different browser.',
@@ -156,7 +159,7 @@ export default function Playground() {
     });
 
     loadingTimeout.current = setTimeout(() => {
-      if (!url) {
+      if (!url && !instance.current) {
         setError(
           'WebContainer failed to load. Please try reloading or use a different browser.',
         );
@@ -178,10 +181,10 @@ export default function Playground() {
   return (
     <div {...stylex.props(styles.root)}>
       <header {...stylex.props(styles.header)}>
-        <button {...stylex.props(styles.buttonToggle)}>
+        <button>
           <FontAwesomeIcon icon="fa-solid fa-bars" />
         </button>
-        <button {...stylex.props(styles.buttonToggle)}>
+        <button {...stylex.props(styles.reloadButton)}>
           <FontAwesomeIcon
             onClick={reloadWebContainer}
             icon="fa-solid fa-rotate-right"
@@ -202,18 +205,12 @@ export default function Playground() {
                 value={code}
                 onChange={(editor, data, newCode) => handleCodeChange(newCode)}
               />
-              {url ? (
+              {error ? (
+                <div {...stylex.props(styles.textarea)}>{error}</div>
+              ) : url ? (
                 <iframe {...stylex.props(styles.textarea)} src={url} />
               ) : (
                 <div {...stylex.props(styles.textarea)}>Loading...</div>
-              )}
-              {!url && error && (
-                <div>
-                  <div>{error}</div>
-                  <button onClick={reloadWebContainer}>
-                    Reload WebContainer
-                  </button>
-                </div>
               )}
             </>
           )}
@@ -240,26 +237,7 @@ const styles = stylex.create({
     boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
     zIndex: 20,
   },
-  sidebarToggle: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    color: 'var(--fg1)',
-    width: '32px',
-    height: '32px',
-    borderRadius: '4px',
-    border: 'none',
-    cursor: 'pointer',
-    zIndex: 20,
-    padding: '4px',
-    transition: 'background-color 200ms, transform 150ms',
-    ':hover': {
-      backgroundColor: 'var(--ifm-color-primary-light)',
-      transform: 'scale(1.05)',
-    },
-  },
-  reloadToggle: {
+  reloadButton: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
