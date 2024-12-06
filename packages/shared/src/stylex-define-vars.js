@@ -41,11 +41,6 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     ...options,
   };
 
-  console.log(defaultOptions);
-  console.log(options);
-
-  console.log('debug', debug);
-
   const themeNameHash = classNamePrefix + createHash(themeName);
 
   const typedVariables: {
@@ -65,11 +60,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     // Created hashed variable names with fileName//themeName//key
 
     const processedKey = key.startsWith('--') ? key.slice(2) : key;
-    console.log('debug', debug);
-
     const themeNamePrefix = debug ? `${processedKey}` : '';
-
-    console.log('themeNamePrefix', themeNamePrefix);
 
     const nameHash = key.startsWith('--')
       ? key.slice(2)
@@ -133,7 +124,6 @@ function constructCssVariablesString(
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
     for (const [_, { themeNamePrefix }] of Object.entries(variables)) {
-      console.log('themeNamePrefix', themeNamePrefix);
       const themeNameHashWithPrefix = themeNamePrefix
         ? `${themeNamePrefix}-${themeNameHash}`
         : themeNameHash;

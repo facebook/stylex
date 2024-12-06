@@ -117,6 +117,22 @@ export default function transformStyleXCreate(
       throw path.buildCodeFrameError(messages.NON_STATIC_VALUE, SyntaxError);
     }
     const plainObject = value;
+
+    // add injection that mark variables used for dynamic styles as `inherits: false`
+    const injectedInheritStyles: { [string]: InjectableStyle } = {};
+    if (fns != null) {
+      const dynamicFnsNames = Object.values(fns)
+        ?.map((entry) => Object.keys(entry[1]))
+        .flat();
+      dynamicFnsNames.forEach((fnsName) => {
+        injectedInheritStyles[fnsName] = {
+          priority: 0,
+          ltr: `@property ${fnsName} { inherits: false }`,
+          rtl: null,
+        };
+      });
+    }
+
     // eslint-disable-next-line prefer-const
     let [compiledStyles, injectedStylesSansKeyframes, classPathsPerNamespace] =
       stylexCreate(plainObject, state.options);
@@ -124,6 +140,7 @@ export default function transformStyleXCreate(
     const injectedStyles = {
       ...injectedKeyframes,
       ...injectedStylesSansKeyframes,
+      ...injectedInheritStyles,
     };
 
     let varName = null;
