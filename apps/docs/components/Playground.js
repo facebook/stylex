@@ -64,6 +64,7 @@ export default function Playground() {
     files.src.directory['App.jsx'].file.contents,
   );
   const [error, setError] = useState(null);
+  const loadingTimeout = useRef(null);
 
   const build = async () => {
     const containerInstance = instance.current;
@@ -137,7 +138,7 @@ export default function Playground() {
         }
         const newInstance = await makeWebcontainer();
         instance.current = newInstance;
-        build();
+        await build();
       } catch (err) {
         setError(
           'WebContainer failed to load. Please try reloading or use a different browser.',
@@ -154,10 +155,22 @@ export default function Playground() {
       build();
     });
 
+    loadingTimeout.current = setTimeout(() => {
+      if (!url) {
+        setError(
+          'WebContainer failed to load. Please try reloading or use a different browser.',
+        );
+        console.log('timed out instance: ', instance.current);
+      }
+    }, 10000);
+
     () => {
       instance.current.unmount();
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
+      }
+      if (loadingTimeout.current) {
+        clearTimeout(loadingTimeout.current);
       }
     };
   }, []);
