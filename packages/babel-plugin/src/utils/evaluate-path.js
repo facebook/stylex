@@ -459,7 +459,7 @@ function _evaluate(path: NodePath<>, state: State): any {
 
       const resolved = (path as $FlowFixMe).resolve();
       if (resolved === path) {
-        return deopt(path, state, errMsgs.SELF_REFERENCE);
+        return deopt(path, state, errMsgs.UNDEFINED_CONST);
       } else {
         return evaluateCached(resolved, state);
       }

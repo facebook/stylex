@@ -33,7 +33,7 @@ export const USED_BEFORE_DECLARATION =
 
 export const UNINITIALIZED_CONST = 'Referenced constant is not initialized.';
 
-export const SELF_REFERENCE = 'Referenced constant is self-referential.';
+export const UNDEFINED_CONST = 'Referenced constant is not defined.';
 
 export const UNSUPPORTED_OPERATOR = (op: string): string =>
   `Unsupported operator: ${op}`;
