@@ -92,10 +92,6 @@ export default function Playground() {
       console.log('server-ready', port, url);
       setUrl(url);
     });
-
-    containerInstance.on('error', (err) => {
-      console.error('WebContainer error:', err);
-    });
   };
 
   const updateFiles = async () => {
@@ -125,30 +121,10 @@ export default function Playground() {
   };
 
   const reloadWebContainer = async () => {
-    if (url) {
-      console.log('Reloading container preview...');
-      const iframe = document.querySelector('iframe');
-      await reloadPreview(iframe);
-      return;
-    }
-
-    if (!url && error) {
-      try {
-        console.log('Trying to restart container...');
-        if (instance.current) {
-          await instance.current.teardown();
-        }
-        const newInstance = await makeWebcontainer();
-        instance.current = newInstance;
-        await build();
-        setError(null);
-      } catch (err) {
-        setError(
-          'WebContainer failed to load. Please try reloading or use a different browser.',
-        );
-        console.error(err);
-      }
-    }
+    if (!url) return;
+    console.log('Reloading container preview...');
+    const iframe = document.querySelector('iframe');
+    await reloadPreview(iframe);
   };
 
   useEffect(() => {
@@ -158,22 +134,10 @@ export default function Playground() {
       build();
     });
 
-    loadingTimeout.current = setTimeout(() => {
-      if (!url && !instance.current) {
-        setError(
-          'WebContainer failed to load. Please try reloading or use a different browser.',
-        );
-        console.log('timed out instance: ', instance.current);
-      }
-    }, 10000);
-
     () => {
       instance.current.unmount();
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
-      }
-      if (loadingTimeout.current) {
-        clearTimeout(loadingTimeout.current);
       }
     };
   }, []);
