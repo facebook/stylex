@@ -45,6 +45,7 @@ export function evaluateStyleXCreateArg(
   confident: boolean,
   value: any,
   deopt?: null | NodePath<>,
+  reason?: string,
   fns?: DynamicFns,
 }> {
   if (!pathUtils.isObjectExpression(path)) {
@@ -122,6 +123,7 @@ function evaluatePartialObjectRecursively(
   confident: boolean,
   value: any,
   deopt?: null | NodePath<>,
+  reason?: string,
   inlineStyles?: $ReadOnly<TInlineStyles>,
 }> {
   const obj: { [string]: mixed } = {};

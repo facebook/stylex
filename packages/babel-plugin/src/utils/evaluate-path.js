@@ -28,6 +28,7 @@ import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '@stylexjs/shared';
 import * as pathUtils from '../babel-path-utils';
+import * as errMsgs from './evaluation-errors';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -67,29 +68,37 @@ export type FunctionConfig = {
 type State = {
   confident: boolean,
   deoptPath: NodePath<> | null,
+  deoptReason?: string,
   seen: Map<t.Node, Result>,
   addedImports: Set<string>,
   functions: FunctionConfig,
   traversalState: StateManager,
 };
 
-type Result = {
-  resolved: boolean,
-  value?: any,
-};
+type Result =
+  | {
+      resolved: true,
+      value: any,
+    }
+  | {
+      resolved: false,
+      reason: string,
+    };
 /**
  * Deopts the evaluation
  */
-function deopt(path: NodePath<>, state: State) {
+function deopt(path: NodePath<>, state: State, reason: string): void {
   if (!state.confident) return;
   state.deoptPath = path;
   state.confident = false;
+  state.deoptReason = reason;
 }
 
 function evaluateImportedFile(
   filePath: string,
   namedExport: string,
   state: State,
+  bindingPath: NodePath<>,
 ): any {
   const fs = require('fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
@@ -101,7 +110,7 @@ function evaluateImportedFile(
     babelrc: true,
   });
   if (!ast || ast.errors || !t.isNode(ast)) {
-    state.confident = false;
+    deopt(bindingPath, state, errMsgs.IMPORT_FILE_PARSING_ERROR);
     return;
   }
 
@@ -144,7 +153,7 @@ function evaluateImportedFile(
   if (state.confident) {
     return result;
   } else {
-    state.confident = false;
+    deopt(bindingPath, state, errMsgs.IMPORT_FILE_EVAL_ERROR);
     return;
   }
 }
@@ -208,23 +217,26 @@ function evaluateCached(path: NodePath<>, state: State): any {
     if (existing.resolved) {
       return existing.value;
     } else {
-      deopt(path, state);
+      deopt(path, state, existing.reason);
       return;
     }
   } else {
-    const item: Result = { resolved: false };
+    const item: Result = { resolved: false, reason: 'Currently evaluating' };
     seen.set(node, item);
 
     if (node == null) {
-      deopt(path, state);
+      deopt(path, state, errMsgs.PATH_WITHOUT_NODE);
       return;
     }
 
     const val = _evaluate(path, state);
     if (state.confident) {
-      item.resolved = true;
-      item.value = val;
+      seen.set(node, {
+        resolved: true,
+        value: val,
+      });
     }
+
     return val;
   }
 }
@@ -361,7 +373,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     } else if (pathUtils.isStringLiteral(propPath)) {
       property = propPath.node.value;
     } else {
-      return deopt(propPath, state);
+      return deopt(propPath, state, errMsgs.UNEXPECTED_MEMBER_LOOKUP);
     }
 
     return object[property];
@@ -391,14 +403,18 @@ function _evaluate(path: NodePath<>, state: State): any {
           importPath.node.source.value,
         );
         if (!absPath) {
-          return deopt(binding.path, state);
+          return deopt(
+            binding.path,
+            state,
+            errMsgs.IMPORT_PATH_RESOLUTION_ERROR,
+          );
         }
         const [type, value] = absPath;
 
         const returnValue =
           type === 'themeNameRef'
             ? evaluateThemeRef(value, importedName, state)
-            : evaluateImportedFile(value, importedName, state);
+            : evaluateImportedFile(value, importedName, state, bindingPath);
         if (state.confident) {
           if (
             !state.addedImports.has(importPath.node.source.value) &&
@@ -411,33 +427,39 @@ function _evaluate(path: NodePath<>, state: State): any {
           }
           return returnValue;
         } else {
-          deopt(binding.path, state);
+          deopt(binding.path, state, errMsgs.IMPORT_FILE_EVAL_ERROR);
         }
       }
     }
 
     if (binding && binding.constantViolations.length > 0) {
-      return deopt(binding.path, state);
+      return deopt(binding.path, state, errMsgs.NON_CONSTANT);
     }
 
     if (binding && path.node.start < binding.path.node.end) {
-      return deopt(binding.path, state);
+      return deopt(binding.path, state, errMsgs.USED_BEFORE_DECLARATION);
     }
 
     if (binding && binding.hasValue) {
       return binding.value;
     } else {
       if (path.node.name === 'undefined') {
-        return binding ? deopt(binding.path, state) : undefined;
+        return binding
+          ? deopt(binding.path, state, errMsgs.UNINITIALIZED_CONST)
+          : undefined;
       } else if (path.node.name === 'Infinity') {
-        return binding ? deopt(binding.path, state) : Infinity;
+        return binding
+          ? deopt(binding.path, state, errMsgs.UNINITIALIZED_CONST)
+          : Infinity;
       } else if (path.node.name === 'NaN') {
-        return binding ? deopt(binding.path, state) : NaN;
+        return binding
+          ? deopt(binding.path, state, errMsgs.UNINITIALIZED_CONST)
+          : NaN;
       }
 
       const resolved = (path as $FlowFixMe).resolve();
       if (resolved === path) {
-        return deopt(path, state);
+        return deopt(path, state, errMsgs.SELF_REFERENCE);
       } else {
         return evaluateCached(resolved, state);
       }
@@ -474,7 +496,11 @@ function _evaluate(path: NodePath<>, state: State): any {
       case 'void':
         return undefined;
       default:
-        return deopt(path, state);
+        return deopt(
+          path,
+          state,
+          errMsgs.UNSUPPORTED_OPERATOR(path.node.operator),
+        );
     }
   }
 
@@ -488,7 +514,8 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (elemValue.confident) {
         arr.push(elemValue.value);
       } else {
-        elemValue.deopt && deopt(elemValue.deopt, state);
+        elemValue.deopt &&
+          deopt(elemValue.deopt, state, elemValue.reason ?? 'unknown error');
         return;
       }
     }
@@ -502,12 +529,12 @@ function _evaluate(path: NodePath<>, state: State): any {
     > = path.get('properties');
     for (const prop of props) {
       if (pathUtils.isObjectMethod(prop)) {
-        return deopt(prop, state);
+        return deopt(prop, state, errMsgs.OBJECT_METHOD);
       }
       if (pathUtils.isSpreadElement(prop)) {
         const spreadExpression = evaluateCached(prop.get('argument'), state);
         if (!state.confident) {
-          return deopt(prop, state);
+          return deopt(prop, state, state.deoptReason ?? 'unknown error');
         }
         Object.assign(obj, spreadExpression);
         continue;
@@ -519,10 +546,12 @@ function _evaluate(path: NodePath<>, state: State): any {
           const {
             confident,
             deopt: resultDeopt,
+            reason: deoptReason,
             value,
           } = evaluate(keyPath, state.traversalState, state.functions);
           if (!confident) {
-            resultDeopt && deopt(resultDeopt, state);
+            resultDeopt &&
+              deopt(resultDeopt, state, deoptReason ?? 'unknown error');
             return;
           }
           key = value;
@@ -536,7 +565,8 @@ function _evaluate(path: NodePath<>, state: State): any {
         const valuePath: NodePath<> = prop.get('value');
         let value = evaluate(valuePath, state.traversalState, state.functions);
         if (!value.confident) {
-          value.deopt && deopt(value.deopt, state);
+          value.deopt &&
+            deopt(value.deopt, state, value.reason ?? 'unknown error');
           return;
         }
         value = value.value;
@@ -549,31 +579,67 @@ function _evaluate(path: NodePath<>, state: State): any {
   if (pathUtils.isLogicalExpression(path)) {
     // If we are confident that the left side of an && is false, or the left
     // side of an || is true, we can be confident about the entire expression
-    const wasConfident = state.confident;
-    const left = evaluateCached(path.get('left'), state);
-    const leftConfident = state.confident;
-    state.confident = wasConfident;
-    const right = evaluateCached(path.get('right'), state);
-    const rightConfident = state.confident;
+    const stateForLeft = { ...state, deoptPath: null, confident: true };
+    const leftPath = path.get('left');
+    const left = evaluateCached(leftPath, stateForLeft);
+    const leftConfident = stateForLeft.confident;
+
+    const stateForRight = { ...state, deoptPath: null, confident: true };
+    const rightPath = path.get('right');
+    const right = evaluateCached(rightPath, stateForRight);
+    const rightConfident = stateForRight.confident;
 
     switch (path.node.operator) {
-      case '||':
+      case '||': {
         // TODO consider having a "truthy type" that doesn't bail on
         // left uncertainty but can still evaluate to truthy.
-        state.confident = leftConfident && (!!left || rightConfident);
-        if (!state.confident) return;
+        if (leftConfident && (!!left || rightConfident)) {
+          return left || right;
+        }
+        if (!leftConfident) {
+          deopt(leftPath, state, stateForLeft.deoptReason ?? 'unknown error');
+          return;
+        }
+        if (!rightConfident) {
+          deopt(rightPath, state, stateForRight.deoptReason ?? 'unknown error');
+          return;
+        }
 
-        return left || right;
-      case '&&':
-        state.confident = leftConfident && (!left || rightConfident);
-        if (!state.confident) return;
+        deopt(path, state, 'unknown error');
+        return;
+      }
+      case '&&': {
+        if (leftConfident && (!left || rightConfident)) {
+          return left && right;
+        }
+        if (!leftConfident) {
+          deopt(leftPath, state, stateForLeft.deoptReason ?? 'unknown error');
+          return;
+        }
+        if (!rightConfident) {
+          deopt(rightPath, state, stateForRight.deoptReason ?? 'unknown error');
+          return;
+        }
 
-        return left && right;
-      case '??':
-        state.confident = leftConfident && !!(left ?? rightConfident);
-        if (!state.confident) return;
+        deopt(path, state, 'unknown error');
+        return;
+      }
+      case '??': {
+        if (leftConfident && !!(left ?? rightConfident)) {
+          return left ?? right;
+        }
+        if (!leftConfident) {
+          deopt(leftPath, state, stateForLeft.deoptReason ?? 'unknown error');
+          return;
+        }
+        if (!rightConfident) {
+          deopt(rightPath, state, stateForRight.deoptReason ?? 'unknown error');
+          return;
+        }
 
-        return left ?? right;
+        deopt(path, state, 'unknown error');
+        return;
+      }
       default:
         path.node.operator as empty;
     }
@@ -739,7 +805,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  deopt(path, state);
+  deopt(path, state, errMsgs.UNSUPPORTED_EXPRESSION(path.node.type));
 }
 
 function evaluateQuasis(
@@ -808,6 +874,7 @@ export function evaluate(
   confident: boolean,
   value: any,
   deopt?: null | NodePath<>,
+  reason?: string,
 }> {
   const addedImports = importsForState.get(traversalState) ?? new Set();
   importsForState.set(traversalState, addedImports);
@@ -826,6 +893,7 @@ export function evaluate(
   return {
     confident: state.confident,
     deopt: state.deoptPath,
+    reason: state.deoptReason,
     value: value,
   };
 }
