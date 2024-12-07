@@ -65,10 +65,10 @@ export default function Playground() {
   );
   const [error, setError] = useState(null);
   const loadingTimeout = useRef(null);
+  const urlRef = useRef(null);
 
   const build = async () => {
     const containerInstance = instance.current;
-    console.log('instance: ', containerInstance);
     if (!containerInstance) {
       setError(
         'WebContainer failed to load. Please try reloading or use a different browser.',
@@ -86,11 +86,11 @@ export default function Playground() {
         },
       }),
     );
-
     console.log('Waiting for server-ready event...');
     containerInstance.on('server-ready', (port, url) => {
       console.log('server-ready', port, url);
       setUrl(url);
+      urlRef.current = url;
     });
   };
 
@@ -131,13 +131,24 @@ export default function Playground() {
     require('codemirror/mode/javascript/javascript');
     makeWebcontainer().then((i) => {
       instance.current = i;
-      build();
+      build().then(() => {
+        loadingTimeout.current = setTimeout(() => {
+          if (!urlRef.current) {
+            setError(
+              'WebContainer failed to load. Please try reloading or use a different browser.',
+            );
+          }
+        }, 10000);
+      });
     });
 
     () => {
       instance.current.unmount();
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
+      }
+      if (loadingTimeout.current) {
+        clearTimeout(loadingTimeout.current);
       }
     };
   }, []);
