@@ -123,8 +123,9 @@ export default function Playground() {
 
   const reloadWebContainer = async () => {
     if (!url) return;
-    console.log('Reloading container preview...');
     const iframe = document.querySelector('iframe');
+    if (!iframe) return;
+    console.log('Reloading container preview...');
     await reloadPreview(iframe);
   };
 
