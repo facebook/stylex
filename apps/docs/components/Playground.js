@@ -70,6 +70,7 @@ export default function Playground() {
   const build = async () => {
     const containerInstance = instance.current;
     if (!containerInstance) {
+      console.log('error due to failed instance');
       setError(
         'WebContainer failed to load. Please try reloading or use a different browser.',
       );
@@ -133,7 +134,11 @@ export default function Playground() {
       instance.current = i;
       build().then(() => {
         loadingTimeout.current = setTimeout(() => {
+          console.log('running loading timeout');
+          console.log('instance: ', instance.current);
+          console.log('url ref: ', urlRef.current);
           if (!urlRef.current) {
+            console.log('error due to timeout...');
             setError(
               'WebContainer failed to load. Please try reloading or use a different browser.',
             );
