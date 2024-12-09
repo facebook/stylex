@@ -125,8 +125,18 @@ export default function Playground() {
     if (!url) return;
     const iframe = document.querySelector('iframe');
     if (!iframe) return;
-    console.log('Reloading container preview...');
-    await reloadPreview(iframe);
+    try {
+      if (error) {
+        setError(null);
+      }
+      console.log('Reloading container preview...');
+      await reloadPreview(iframe);
+    } catch (err) {
+      console.error(`Error reloading preview: ${err.message}`);
+      setError(
+        'WebContainer failed to load. Please try reloading or use a different browser.',
+      );
+    }
   };
 
   useEffect(() => {
