@@ -617,35 +617,35 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       errors: [
         {
           message:
-            'The key "marginStart" is not allowed by stylex. Use "marginInlineStart" instead.',
+            'The key "marginStart" is not a standard CSS property. Did you mean "marginInlineStart"?',
         },
         {
           message:
-            'The key "marginEnd" is not allowed by stylex. Use "marginInlineEnd" instead.',
+            'The key "marginEnd" is not a standard CSS property. Did you mean "marginInlineEnd"?',
         },
         {
           message:
-            'The key "marginHorizontal" is not allowed by stylex. Use "marginInline" instead.',
+            'The key "marginHorizontal" is not a standard CSS property. Did you mean "marginInline"?',
         },
         {
           message:
-            'The key "marginVertical" is not allowed by stylex. Use "marginBlock" instead.',
+            'The key "marginVertical" is not a standard CSS property. Did you mean "marginBlock"?',
         },
         {
           message:
-            'The key "paddingStart" is not allowed by stylex. Use "paddingInlineStart" instead.',
+            'The key "paddingStart" is not a standard CSS property. Did you mean "paddingInlineStart"?',
         },
         {
           message:
-            'The key "paddingEnd" is not allowed by stylex. Use "paddingInlineEnd" instead.',
+            'The key "paddingEnd" is not a standard CSS property. Did you mean "paddingInlineEnd"?',
         },
         {
           message:
-            'The key "paddingHorizontal" is not allowed by stylex. Use "paddingInline" instead.',
+            'The key "paddingHorizontal" is not a standard CSS property. Did you mean "paddingInline"?',
         },
         {
           message:
-            'The key "paddingVertical" is not allowed by stylex. Use "paddingBlock" instead.',
+            'The key "paddingVertical" is not a standard CSS property. Did you mean "paddingBlock"?',
         },
       ],
       output: `

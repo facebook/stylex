@@ -2674,7 +2674,7 @@ const stylexValidStyles = {
             message:
               replacementKey &&
               (style.key.type === 'Identifier' || style.key.type === 'Literal')
-                ? `The key "${originalKey}" is not allowed by stylex. Use "${replacementKey}" instead.`
+                ? `The key "${originalKey}" is not a standard CSS property. Did you mean "${replacementKey}"?`
                 : 'This is not a key that is allowed by stylex',
             fix: (fixer) => {
               if (replacementKey) {
