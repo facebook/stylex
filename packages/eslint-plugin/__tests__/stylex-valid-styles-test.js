@@ -584,6 +584,72 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            marginStart: '10px',
+            marginEnd: '5px',
+            marginHorizontal: '15px',
+            marginVertical: '15px',
+            paddingStart: '10px',
+            paddingEnd: '5px',
+            paddingHorizontal: '5px',
+            paddingVertical: '15px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The key "marginStart" is not allowed by stylex. Use "marginInlineStart" instead.',
+        },
+        {
+          message:
+            'The key "marginEnd" is not allowed by stylex. Use "marginInlineEnd" instead.',
+        },
+        {
+          message:
+            'The key "marginHorizontal" is not allowed by stylex. Use "marginInline" instead.',
+        },
+        {
+          message:
+            'The key "marginVertical" is not allowed by stylex. Use "marginBlock" instead.',
+        },
+        {
+          message:
+            'The key "paddingStart" is not allowed by stylex. Use "paddingInlineStart" instead.',
+        },
+        {
+          message:
+            'The key "paddingEnd" is not allowed by stylex. Use "paddingInlineEnd" instead.',
+        },
+        {
+          message:
+            'The key "paddingHorizontal" is not allowed by stylex. Use "paddingInline" instead.',
+        },
+        {
+          message:
+            'The key "paddingVertical" is not allowed by stylex. Use "paddingBlock" instead.',
+        },
+      ],
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            marginInlineStart: '10px',
+            marginInlineEnd: '5px',
+            marginInline: '15px',
+            marginBlock: '15px',
+            paddingInlineStart: '10px',
+            paddingInlineEnd: '5px',
+            paddingInline: '5px',
+            paddingBlock: '15px',
+          },
+        });
+      `,
+    },
+    {
       code: "import stylex from 'stylex'; stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
