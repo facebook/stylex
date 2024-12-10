@@ -2667,7 +2667,7 @@ const stylexValidStyles = {
           ) {
             originalKey = style.key.value;
           }
-          // add autofix here
+
           return context.report({
             node: style.key,
             loc: style.key.loc,

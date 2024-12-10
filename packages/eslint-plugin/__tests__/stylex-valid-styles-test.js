@@ -40,6 +40,21 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      import stylex from "stylex";
+      const styles = stylex.create({
+        validStyle: {
+          marginInlineStart: "10px",
+          marginInlineEnd: "5px",
+          marginInline: "15px",
+          marginBlock: "20px",
+          paddingInlineStart: "8px",
+          paddingInlineEnd: "12px",
+          paddingInline: "10px",
+          paddingBlock: "16px",
+        },
+      });
+    `,
+    `
       import stylex from 'stylex';
       const start = 'start';
       const grayscale = 'grayscale';
