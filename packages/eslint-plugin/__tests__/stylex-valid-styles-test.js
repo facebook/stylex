@@ -40,6 +40,21 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      import stylex from "stylex";
+      const styles = stylex.create({
+        validStyle: {
+          marginInlineStart: "10px",
+          marginInlineEnd: "5px",
+          marginInline: "15px",
+          marginBlock: "20px",
+          paddingInlineStart: "8px",
+          paddingInlineEnd: "12px",
+          paddingInline: "10px",
+          paddingBlock: "16px",
+        },
+      });
+    `,
+    `
       import stylex from 'stylex';
       const start = 'start';
       const grayscale = 'grayscale';
@@ -582,6 +597,72 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           ],
         },
       ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            marginStart: '10px',
+            marginEnd: '5px',
+            marginHorizontal: '15px',
+            marginVertical: '15px',
+            paddingStart: '10px',
+            paddingEnd: '5px',
+            paddingHorizontal: '5px',
+            paddingVertical: '15px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The key "marginStart" is not a standard CSS property. Did you mean "marginInlineStart"?',
+        },
+        {
+          message:
+            'The key "marginEnd" is not a standard CSS property. Did you mean "marginInlineEnd"?',
+        },
+        {
+          message:
+            'The key "marginHorizontal" is not a standard CSS property. Did you mean "marginInline"?',
+        },
+        {
+          message:
+            'The key "marginVertical" is not a standard CSS property. Did you mean "marginBlock"?',
+        },
+        {
+          message:
+            'The key "paddingStart" is not a standard CSS property. Did you mean "paddingInlineStart"?',
+        },
+        {
+          message:
+            'The key "paddingEnd" is not a standard CSS property. Did you mean "paddingInlineEnd"?',
+        },
+        {
+          message:
+            'The key "paddingHorizontal" is not a standard CSS property. Did you mean "paddingInline"?',
+        },
+        {
+          message:
+            'The key "paddingVertical" is not a standard CSS property. Did you mean "paddingBlock"?',
+        },
+      ],
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            marginInlineStart: '10px',
+            marginInlineEnd: '5px',
+            marginInline: '15px',
+            marginBlock: '15px',
+            paddingInlineStart: '10px',
+            paddingInlineEnd: '5px',
+            paddingInline: '5px',
+            paddingBlock: '15px',
+          },
+        });
+      `,
     },
     {
       code: "import stylex from 'stylex'; stylex.create({default: {textAlign: 'lfet'}});",

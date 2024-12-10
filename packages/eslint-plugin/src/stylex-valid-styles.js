@@ -1595,6 +1595,17 @@ const SupportedVendorSpecificCSSProperties = {
   ),
 };
 
+const validStyleMapping: $ReadOnly<{ [key: string]: ?string }> = {
+  marginStart: 'marginInlineStart',
+  marginEnd: 'marginInlineEnd',
+  marginHorizontal: 'marginInline',
+  marginVertical: 'marginBlock',
+  paddingStart: 'paddingInlineStart',
+  paddingEnd: 'paddingInlineEnd',
+  paddingHorizontal: 'paddingInline',
+  paddingVertical: 'paddingBlock',
+};
+
 const SVGProperties = {
   colorInterpolation: makeUnionRule('auto', 'sRGB', 'linearRGB'),
   // colorRendering: color,
@@ -2292,6 +2303,7 @@ const stylexValidStyles = {
   meta: {
     type: 'problem',
     hasSuggestions: true,
+    fixable: 'code',
     docs: {
       descriptions: 'Enforce that you create valid stylex styles',
       category: 'Possible Errors',
@@ -2635,10 +2647,41 @@ const stylexValidStyles = {
             const distance = getDistance(key, cssProp, 2);
             return distance <= 2;
           });
+
+          const replacementKey =
+            style.key.type === 'Identifier' && validStyleMapping[style.key.name]
+              ? validStyleMapping[style.key.name]
+              : style.key.type === 'Literal' &&
+                  typeof style.key.value === 'string' &&
+                  validStyleMapping[style.key.value]
+                ? validStyleMapping[style.key.value]
+                : null;
+
+          let originalKey = '';
+
+          if (style.key.type === 'Identifier') {
+            originalKey = style.key.name;
+          } else if (
+            style.key.type === 'Literal' &&
+            typeof style.key.value === 'string'
+          ) {
+            originalKey = style.key.value;
+          }
+
           return context.report({
             node: style.key,
             loc: style.key.loc,
-            message: 'This is not a key that is allowed by stylex',
+            message:
+              replacementKey &&
+              (style.key.type === 'Identifier' || style.key.type === 'Literal')
+                ? `The key "${originalKey}" is not a standard CSS property. Did you mean "${replacementKey}"?`
+                : 'This is not a key that is allowed by stylex',
+            fix: (fixer) => {
+              if (replacementKey) {
+                return fixer.replaceText(style.key, replacementKey);
+              }
+              return null;
+            },
             suggest:
               closestKey != null
                 ? [
