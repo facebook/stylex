@@ -12,7 +12,7 @@
 import * as stylex from '@stylexjs/stylex';
 
 export const lotsOfStylesDynamic = [
-   stylex.create({
+  stylex.create({
     // Dynamic styles
     dynamicHeight: (height) => ({
       height,
