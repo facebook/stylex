@@ -125,7 +125,21 @@ export const lotsOfStylesDynamic = [
     dynamicDisplayInherit: (display) => ({
       display,
     }),
-    dynamicInherit: (alignContent, alignItems, flexDirection, flexGrow, flexShrink, height, justifyContent, maxHeight, maxWidth, minHeight, minWidth, position, width) => ({
+    dynamicInherit: (
+      alignContent,
+      alignItems,
+      flexDirection,
+      flexGrow,
+      flexShrink,
+      height,
+      justifyContent,
+      maxHeight,
+      maxWidth,
+      minHeight,
+      minWidth,
+      position,
+      width,
+    ) => ({
       alignContent,
       alignItems,
       flexDirection,
@@ -163,7 +177,15 @@ export const lotsOfStylesDynamic = [
     dynamicContainer: (marginEnd) => ({
       marginEnd,
     }),
-    dynamicKeyInfo: (backgroundColor, borderWidth, borderStyle, borderColor, borderRadius, marginEnd, padding) => ({
+    dynamicKeyInfo: (
+      backgroundColor,
+      borderWidth,
+      borderStyle,
+      borderColor,
+      borderRadius,
+      marginEnd,
+      padding,
+    ) => ({
       backgroundColor,
       borderWidth,
       borderStyle,
@@ -212,7 +234,20 @@ export const lotsOfStylesDynamic = [
     }),
   }),
   stylex.create({
-    dynamicKeyInfo: (borderWidth, borderStyle, borderColor, borderRadius, display, lineHeight, margin, minWidth, padding, paddingEnd, paddingStart, textAlign) => ({
+    dynamicKeyInfo: (
+      borderWidth,
+      borderStyle,
+      borderColor,
+      borderRadius,
+      display,
+      lineHeight,
+      margin,
+      minWidth,
+      padding,
+      paddingEnd,
+      paddingStart,
+      textAlign,
+    ) => ({
       borderWidth,
       borderStyle,
       borderColor,
@@ -270,7 +305,13 @@ export const lotsOfStylesDynamic = [
     }),
   }),
   stylex.create({
-    dynamicContainer: (backgroundColor, display, flexDirection, height, width) => ({
+    dynamicContainer: (
+      backgroundColor,
+      display,
+      flexDirection,
+      height,
+      width,
+    ) => ({
       backgroundColor,
       display,
       flexDirection,
@@ -289,7 +330,14 @@ export const lotsOfStylesDynamic = [
       display,
       justifyContent,
     }),
-    dynamicCardWrapper: (display, flexDirection, flexShrink, flexGrow, minWidth, margin) => ({
+    dynamicCardWrapper: (
+      display,
+      flexDirection,
+      flexShrink,
+      flexGrow,
+      minWidth,
+      margin,
+    ) => ({
       display,
       flexDirection,
       flexShrink,
@@ -297,7 +345,20 @@ export const lotsOfStylesDynamic = [
       minWidth,
       margin,
     }),
-    dynamicRoot: (backgroundColor, borderRadius, boxShadow, display, marginVertical, minHeight, maxWidth, width, flexGrow, alignSelf, flexDirection, overflow) => ({
+    dynamicRoot: (
+      backgroundColor,
+      borderRadius,
+      boxShadow,
+      display,
+      marginVertical,
+      minHeight,
+      maxWidth,
+      width,
+      flexGrow,
+      alignSelf,
+      flexDirection,
+      overflow,
+    ) => ({
       backgroundColor,
       borderRadius,
       boxShadow,
@@ -338,7 +399,15 @@ export const lotsOfStylesDynamic = [
       flexShrink,
       flexBasis,
     }),
-    dynamicHeaderContainer: (backgroundColor, borderBottomWidth, borderBottomStyle, borderBottomColor, textAlign, padding, width) => ({
+    dynamicHeaderContainer: (
+      backgroundColor,
+      borderBottomWidth,
+      borderBottomStyle,
+      borderBottomColor,
+      textAlign,
+      padding,
+      width,
+    ) => ({
       backgroundColor,
       borderBottomWidth,
       borderBottomStyle,
@@ -380,7 +449,22 @@ export const lotsOfStylesDynamic = [
       width,
       margin,
     }),
-    dynamicEditor: (boxSizing, backgroundColor, borderRadius, boxShadow, display, marginTop, marginBottom, maxWidth, width, minHeight, flexGrow, alignSelf, flexDirection, padding) => ({
+    dynamicEditor: (
+      boxSizing,
+      backgroundColor,
+      borderRadius,
+      boxShadow,
+      display,
+      marginTop,
+      marginBottom,
+      maxWidth,
+      width,
+      minHeight,
+      flexGrow,
+      alignSelf,
+      flexDirection,
+      padding,
+    ) => ({
       boxSizing,
       backgroundColor,
       borderRadius,
@@ -410,7 +494,14 @@ export const lotsOfStylesDynamic = [
       width,
       zIndex,
     }),
-    dynamicSidebarContainer: (width, flexShrink, paddingTop, backgroundColor, overflowY, height) => ({
+    dynamicSidebarContainer: (
+      width,
+      flexShrink,
+      paddingTop,
+      backgroundColor,
+      overflowY,
+      height,
+    ) => ({
       width,
       flexShrink,
       paddingTop,
@@ -463,7 +554,7 @@ export const lotsOfStylesDynamic = [
       flexDirection,
       justifyContent,
       alignItems,
-      height
+      height,
     ) => ({
       borderTopStyle,
       borderStartStyle,
@@ -508,7 +599,7 @@ export const lotsOfStylesDynamic = [
       borderStyle,
       borderWidth,
       marginStart,
-      position
+      position,
     ) => ({
       width,
       height,
@@ -530,7 +621,7 @@ export const lotsOfStylesDynamic = [
       display,
       justifyContent,
       padding,
-      position
+      position,
     ) => ({
       marginEnd,
       width,
@@ -564,13 +655,7 @@ export const lotsOfStylesDynamic = [
     }),
   }),
   stylex.create({
-    dynamicContainer: (
-      backgroundColor,
-      display,
-      height,
-      margin,
-      width
-    ) => ({
+    dynamicContainer: (backgroundColor, display, height, margin, width) => ({
       backgroundColor,
       display,
       height,
@@ -611,11 +696,7 @@ export const lotsOfStylesDynamic = [
       position,
       top,
     }),
-    dynamicOuterCard: (
-      backgroundColor,
-      height,
-      borderRadius
-    ) => ({
+    dynamicOuterCard: (backgroundColor, height, borderRadius) => ({
       backgroundColor,
       height,
       borderRadius,
@@ -630,7 +711,7 @@ export const lotsOfStylesDynamic = [
       padding,
       marginBottom,
       borderRadius,
-      boxShadow
+      boxShadow,
     ) => ({
       padding,
       marginBottom,
@@ -677,7 +758,7 @@ export const lotsOfStylesDynamic = [
       flexDirection,
       height,
       justifyContent,
-      padding
+      padding,
     ) => ({
       display,
       flexDirection,
@@ -709,7 +790,7 @@ export const lotsOfStylesDynamic = [
       height,
       justifyContent,
       padding,
-      width
+      width,
     ) => ({
       backgroundColor,
       borderRadius,
