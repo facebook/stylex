@@ -174,8 +174,8 @@ export const lotsOfStylesDynamic = [
     }),
   }),
   stylex.create({
-    dynamicContainer: (marginEnd) => ({
-      marginEnd,
+    dynamicContainer: (marginInlineEnd) => ({
+      marginInlineEnd,
     }),
     dynamicKeyInfo: (
       backgroundColor,
@@ -183,7 +183,7 @@ export const lotsOfStylesDynamic = [
       borderStyle,
       borderColor,
       borderRadius,
-      marginEnd,
+      marginInlineEnd,
       padding,
     ) => ({
       backgroundColor,
@@ -191,7 +191,7 @@ export const lotsOfStylesDynamic = [
       borderStyle,
       borderColor,
       borderRadius,
-      marginEnd,
+      marginInlineEnd,
       padding,
     }),
     dynamicKeyInfoItem: (marginTop) => ({
@@ -214,10 +214,10 @@ export const lotsOfStylesDynamic = [
       color,
       padding,
     }),
-    dynamicContainer: (borderWidth, borderStyle, marginEnd) => ({
+    dynamicContainer: (borderWidth, borderStyle, marginInlineEnd) => ({
       borderWidth,
       borderStyle,
-      marginEnd,
+      marginInlineEnd,
     }),
     dynamicInputWrapper: (marginTop) => ({
       marginTop,
@@ -244,8 +244,8 @@ export const lotsOfStylesDynamic = [
       margin,
       minWidth,
       padding,
-      paddingEnd,
-      paddingStart,
+      paddingInlineEnd,
+      paddingInlineStart,
       textAlign,
     ) => ({
       borderWidth,
@@ -257,8 +257,8 @@ export const lotsOfStylesDynamic = [
       margin,
       minWidth,
       padding,
-      paddingEnd,
-      paddingStart,
+      paddingInlineEnd,
+      paddingInlineStart,
       textAlign,
     }),
   }),
@@ -270,8 +270,8 @@ export const lotsOfStylesDynamic = [
     dynamicListItem: (paddingTop) => ({
       paddingTop,
     }),
-    dynamicPlus: (marginHorizontal) => ({
-      marginHorizontal,
+    dynamicPlus: (marginInline) => ({
+      marginInline,
     }),
   }),
   stylex.create({
@@ -350,7 +350,7 @@ export const lotsOfStylesDynamic = [
       borderRadius,
       boxShadow,
       display,
-      marginVertical,
+      marginBlock,
       minHeight,
       maxWidth,
       width,
@@ -363,7 +363,7 @@ export const lotsOfStylesDynamic = [
       borderRadius,
       boxShadow,
       display,
-      marginVertical,
+      marginBlock,
       minHeight,
       maxWidth,
       width,
@@ -374,17 +374,17 @@ export const lotsOfStylesDynamic = [
     }),
   }),
   stylex.create({
-    dynamicButton: (width, height, marginEnd, borderRadius) => ({
+    dynamicButton: (width, height, marginInlineEnd, borderRadius) => ({
       width,
       height,
-      marginEnd,
+      marginInlineEnd,
       borderRadius,
     }),
-    dynamicBody: (width, height, borderRadius, marginVertical) => ({
+    dynamicBody: (width, height, borderRadius, marginBlock) => ({
       width,
       height,
       borderRadius,
-      marginVertical,
+      marginBlock,
     }),
     dynamicMeta: (width, height, borderRadius) => ({
       width,
@@ -416,12 +416,12 @@ export const lotsOfStylesDynamic = [
       padding,
       width,
     }),
-    dynamicPlaceholder: (marginStart, marginTop) => ({
-      marginStart,
+    dynamicPlaceholder: (marginInlineStart, marginTop) => ({
+      marginInlineStart,
       marginTop,
     }),
-    dynamicPlaceholderWithBugNub: (marginStart, marginTop) => ({
-      marginStart,
+    dynamicPlaceholderWithBugNub: (marginInlineStart, marginTop) => ({
+      marginInlineStart,
       marginTop,
     }),
     dynamicTitle: (maxWidth) => ({
@@ -528,27 +528,27 @@ export const lotsOfStylesDynamic = [
   stylex.create({
     dynamicMetricCardContent: (
       borderTopStyle,
-      borderStartStyle,
-      borderEndStyle,
+      borderInlineStartStyle,
+      borderInlineEndStyle,
       borderBottomStyle,
       borderTopWidth,
-      borderStartWidth,
-      borderEndWidth,
+      borderInlineStartWidth,
+      borderInlineEndWidth,
       borderBottomWidth,
       boxSizing,
       display,
       flexGrow,
       flexShrink,
       marginTop,
-      marginEnd,
+      marginInlineEnd,
       marginBottom,
-      marginStart,
+      marginInlineStart,
       minHeight,
       minWidth,
       paddingTop,
-      paddingEnd,
+      paddingInlineEnd,
       paddingBottom,
-      paddingStart,
+      paddingInlineStart,
       position,
       zIndex,
       flexDirection,
@@ -557,27 +557,27 @@ export const lotsOfStylesDynamic = [
       height,
     ) => ({
       borderTopStyle,
-      borderStartStyle,
-      borderEndStyle,
+      borderInlineStartStyle,
+      borderInlineEndStyle,
       borderBottomStyle,
       borderTopWidth,
-      borderStartWidth,
-      borderEndWidth,
+      borderInlineStartWidth,
+      borderInlineEndWidth,
       borderBottomWidth,
       boxSizing,
       display,
       flexGrow,
       flexShrink,
       marginTop,
-      marginEnd,
+      marginInlineEnd,
       marginBottom,
-      marginStart,
+      marginInlineStart,
       minHeight,
       minWidth,
       paddingTop,
-      paddingEnd,
+      paddingInlineEnd,
       paddingBottom,
-      paddingStart,
+      paddingInlineStart,
       position,
       zIndex,
       flexDirection,
@@ -585,11 +585,11 @@ export const lotsOfStylesDynamic = [
       alignItems,
       height,
     }),
-    dynamicReactionRoot: (display, alignItems, paddingStart, marginEnd) => ({
+    dynamicReactionRoot: (display, alignItems, paddingInlineStart, marginInlineEnd) => ({
       display,
       alignItems,
-      paddingStart,
-      marginEnd,
+      paddingInlineStart,
+      marginInlineEnd,
     }),
     dynamicReactionContainer: (
       width,
@@ -598,7 +598,7 @@ export const lotsOfStylesDynamic = [
       borderRadius,
       borderStyle,
       borderWidth,
-      marginStart,
+      marginInlineStart,
       position,
     ) => ({
       width,
@@ -607,11 +607,11 @@ export const lotsOfStylesDynamic = [
       borderRadius,
       borderStyle,
       borderWidth,
-      marginStart,
+      marginInlineStart,
       position,
     }),
     dynamicIconContainer: (
-      marginEnd,
+      marginInlineEnd,
       width,
       height,
       alignItems,
@@ -623,7 +623,7 @@ export const lotsOfStylesDynamic = [
       padding,
       position,
     ) => ({
-      marginEnd,
+      marginInlineEnd,
       width,
       height,
       alignItems,
@@ -682,17 +682,17 @@ export const lotsOfStylesDynamic = [
       minWidth,
       maxWidth,
     }),
-    dynamicContentScroll: (overflowY, paddingHorizontal, height) => ({
+    dynamicContentScroll: (overflowY, paddingInline, height) => ({
       overflowY,
-      paddingHorizontal,
+      paddingInline,
       height,
     }),
-    dynamicMsteams: (marginStart) => ({ marginStart }),
+    dynamicMsteams: (marginInlineStart) => ({ marginInlineStart }),
   }),
   stylex.create({
     dynamicGlimmer: (height) => ({ height }),
-    dynamicIcon: (marginEnd, position, top) => ({
-      marginEnd,
+    dynamicIcon: (marginInlineEnd, position, top) => ({
+      marginInlineEnd,
       position,
       top,
     }),
@@ -722,7 +722,7 @@ export const lotsOfStylesDynamic = [
   stylex.create({
     padding: {
       paddingBottom: 'var(--p-space-4)',
-      paddingHorizontal: 'var(--p-space-4)',
+      paddingInline: 'var(--p-space-4)',
       paddingTop: 'var(--p-space-2)',
     },
     dynamicPadding: (padding) => ({
@@ -731,10 +731,10 @@ export const lotsOfStylesDynamic = [
   }),
   stylex.create({
     vert16: {
-      paddingVertical: 16,
+      paddingBlock: 16,
     },
-    dynamicVert: (paddingVertical) => ({
-      paddingVertical,
+    dynamicVert: (paddingBlock) => ({
+      paddingBlock,
     }),
   }),
   stylex.create({
