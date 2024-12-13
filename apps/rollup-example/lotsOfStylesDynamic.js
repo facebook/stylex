@@ -585,7 +585,12 @@ export const lotsOfStylesDynamic = [
       alignItems,
       height,
     }),
-    dynamicReactionRoot: (display, alignItems, paddingInlineStart, marginInlineEnd) => ({
+    dynamicReactionRoot: (
+      display,
+      alignItems,
+      paddingInlineStart,
+      marginInlineEnd,
+    ) => ({
       display,
       alignItems,
       paddingInlineStart,
