@@ -220,115 +220,44 @@ describe('stylex-define-vars test', () => {
 
     expect(jsOutput).toEqual({
       __themeName__: classNamePrefix + createHash(themeName),
-      bgColor: `var(--${classNamePrefix + createHash(`${themeName}.bgColor`)})`,
+      bgColor: `var(--${'bgColor-' + classNamePrefix + createHash(`${themeName}.bgColor`)})`,
       bgColorDisabled: `var(--${
-        classNamePrefix + createHash(`${themeName}.bgColorDisabled`)
+        'bgColorDisabled-' +
+        classNamePrefix +
+        createHash(`${themeName}.bgColorDisabled`)
       })`,
       cornerRadius: `var(--${
-        classNamePrefix + createHash(`${themeName}.cornerRadius`)
+        'cornerRadius-' +
+        classNamePrefix +
+        createHash(`${themeName}.cornerRadius`)
       })`,
-      fgColor: `var(--${classNamePrefix + createHash(`${themeName}.fgColor`)})`,
+      fgColor: `var(--${'fgColor-' + classNamePrefix + createHash(`${themeName}.fgColor`)})`,
     });
 
     expect(cssOutput).toMatchInlineSnapshot(`
       {
-        "bgColor-x568ih9": {
-          "ltr": ":root, .bgColor-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
+        "x568ih9": {
+          "ltr": ":root, .x568ih9{--bgColor-xgck17p:blue;--bgColorDisabled-xpegid5:grey;--cornerRadius-xrqfjmn:10px;--fgColor-x4y59db:pink;}",
           "priority": 0,
           "rtl": null,
         },
-        "bgColor-x568ih9-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .bgColor-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
+        "x568ih9-1e6ryz3": {
+          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .x568ih9{--bgColor-xgck17p:oklab(0.7 -0.3 -0.4);--bgColorDisabled-xpegid5:oklab(0.7 -0.3 -0.4);}}}",
           "priority": 0.2,
           "rtl": null,
         },
-        "bgColor-x568ih9-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){:root, .bgColor-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
+        "x568ih9-1lveb7": {
+          "ltr": "@media (prefers-color-scheme: dark){:root, .x568ih9{--bgColor-xgck17p:lightblue;--bgColorDisabled-xpegid5:rgba(0, 0, 0, 0.8);}}",
           "priority": 0.1,
           "rtl": null,
         },
-        "bgColor-x568ih9-bdddrq": {
-          "ltr": "@media print{:root, .bgColor-x568ih9{--xgck17p:white;}}",
+        "x568ih9-bdddrq": {
+          "ltr": "@media print{:root, .x568ih9{--bgColor-xgck17p:white;}}",
           "priority": 0.1,
           "rtl": null,
         },
-        "bgColor-x568ih9-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){:root, .bgColor-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "bgColorDisabled-x568ih9": {
-          "ltr": ":root, .bgColorDisabled-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
-          "priority": 0,
-          "rtl": null,
-        },
-        "bgColorDisabled-x568ih9-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .bgColorDisabled-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
-          "priority": 0.2,
-          "rtl": null,
-        },
-        "bgColorDisabled-x568ih9-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){:root, .bgColorDisabled-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "bgColorDisabled-x568ih9-bdddrq": {
-          "ltr": "@media print{:root, .bgColorDisabled-x568ih9{--xgck17p:white;}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "bgColorDisabled-x568ih9-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){:root, .bgColorDisabled-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "cornerRadius-x568ih9": {
-          "ltr": ":root, .cornerRadius-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
-          "priority": 0,
-          "rtl": null,
-        },
-        "cornerRadius-x568ih9-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .cornerRadius-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
-          "priority": 0.2,
-          "rtl": null,
-        },
-        "cornerRadius-x568ih9-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){:root, .cornerRadius-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "cornerRadius-x568ih9-bdddrq": {
-          "ltr": "@media print{:root, .cornerRadius-x568ih9{--xgck17p:white;}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "cornerRadius-x568ih9-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){:root, .cornerRadius-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "fgColor-x568ih9": {
-          "ltr": ":root, .fgColor-x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10px;--x4y59db:pink;}",
-          "priority": 0,
-          "rtl": null,
-        },
-        "fgColor-x568ih9-1e6ryz3": {
-          "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .fgColor-x568ih9{--xgck17p:oklab(0.7 -0.3 -0.4);--xpegid5:oklab(0.7 -0.3 -0.4);}}}",
-          "priority": 0.2,
-          "rtl": null,
-        },
-        "fgColor-x568ih9-1lveb7": {
-          "ltr": "@media (prefers-color-scheme: dark){:root, .fgColor-x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "fgColor-x568ih9-bdddrq": {
-          "ltr": "@media print{:root, .fgColor-x568ih9{--xgck17p:white;}}",
-          "priority": 0.1,
-          "rtl": null,
-        },
-        "fgColor-x568ih9-kpd015": {
-          "ltr": "@supports (color: oklab(0 0 0)){:root, .fgColor-x568ih9{--xpegid5:oklab(0.7 -0.3 -0.4);}}",
+        "x568ih9-kpd015": {
+          "ltr": "@supports (color: oklab(0 0 0)){:root, .x568ih9{--bgColorDisabled-xpegid5:oklab(0.7 -0.3 -0.4);}}",
           "priority": 0.1,
           "rtl": null,
         },

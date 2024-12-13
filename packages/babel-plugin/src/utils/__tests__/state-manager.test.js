@@ -12,6 +12,7 @@ import StateManager from '../state-manager';
 const defaultConfig = {
   file: { metadata: {} } as any,
   key: 'key',
+  debug: false,
   opts: {},
   cwd: '/home/test/',
   filename: '/home/test/main.js',
@@ -118,6 +119,17 @@ describe('StateManager config parsing', () => {
 
     expect(warnings).toEqual([]);
   });
+
+  it('parses valid debug option', () => {
+    const stateManager = makeState({ debug: true });
+    expect(stateManager.options.debug).toBe(true);
+
+    const stateManager2 = makeState({ debug: false });
+    expect(stateManager2.options.debug).toBe(false);
+
+    expect(warnings).toEqual([]);
+  });
+
   it('logs errors on invalid classNamePrefix option', () => {
     const stateManager = makeState({ classNamePrefix: 1 });
     expect(stateManager.options.classNamePrefix).toBe('x');

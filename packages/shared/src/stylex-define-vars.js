@@ -51,29 +51,24 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   } = {};
 
   const variablesMap: {
-    +[string]: {
-      +nameHash: string,
-      +value: VarsConfigValue,
-      +themeNamePrefix: string,
-    },
+    +[string]: { +nameHash: string, +value: VarsConfigValue },
   } = objMap(variables, (value, key) => {
     // Created hashed variable names with fileName//themeName//key
-
-    const processedKey = key.startsWith('--') ? key.slice(2) : key;
-    const themeNamePrefix = debug ? `${processedKey}` : '';
-
     const nameHash = key.startsWith('--')
       ? key.slice(2)
-      : classNamePrefix + createHash(`${themeName}.${key}`);
+      : debug
+        ? key + '-' + classNamePrefix + createHash(`${themeName}.${key}`)
+        : classNamePrefix + createHash(`${themeName}.${key}`);
+
     if (isCSSType(value)) {
       const v: CSSType<> = value;
       typedVariables[nameHash] = {
         initialValue: getDefaultValue(v.value),
         syntax: v.syntax,
       };
-      return { nameHash, value: v.value, themeNamePrefix };
+      return { nameHash, value: v.value };
     }
-    return { nameHash, value: value as $FlowFixMe, themeNamePrefix };
+    return { nameHash, value: value as $FlowFixMe };
   });
 
   const themeVariablesObject = objMap(
@@ -103,14 +98,9 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     { ...injectableTypes, ...injectableStyles },
   ];
 }
+
 function constructCssVariablesString(
-  variables: {
-    +[string]: {
-      +nameHash: string,
-      +value: VarsConfigValue,
-      +themeNamePrefix: string,
-    },
-  },
+  variables: { +[string]: { +nameHash: string, +value: VarsConfigValue } },
   themeNameHash: string,
 ): { [string]: InjectableStyle } {
   const rulesByAtRule: { [string]: Array<string> } = {};
@@ -123,23 +113,18 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    for (const [_, { themeNamePrefix }] of Object.entries(variables)) {
-      const themeNameHashWithPrefix = themeNamePrefix
-        ? `${themeNamePrefix}-${themeNameHash}`
-        : themeNameHash;
-      const selector = `:root, .${themeNameHashWithPrefix}`;
+    const selector = `:root, .${themeNameHash}`;
 
-      let ltr = `${selector}{${value.join('')}}`;
-      if (atRule !== 'default') {
-        ltr = wrapWithAtRules(ltr, atRule);
-      }
-
-      result[themeNameHashWithPrefix + suffix] = {
-        ltr,
-        rtl: null,
-        priority: priorityForAtRule(atRule) * 0.1,
-      };
+    let ltr = `${selector}{${value.join('')}}`;
+    if (atRule !== 'default') {
+      ltr = wrapWithAtRules(ltr, atRule);
     }
+
+    result[themeNameHash + suffix] = {
+      ltr,
+      rtl: null,
+      priority: priorityForAtRule(atRule) * 0.1,
+    };
   }
 
   return result;
