@@ -2,6 +2,7 @@
 extend-exclude = [
   "*.snap",
   "apps/rollup-example/lotsOfStyles.js", 
+  "apps/rollup-example/lotsOfStylesDynamic.js", 
   "flow-typed/*",
 ]
 

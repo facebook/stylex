@@ -86,7 +86,6 @@ function deopt(path: NodePath<>, state: State) {
   state.confident = false;
 }
 
-// incomplete, ignore
 function evaluateImportedFile(
   filePath: string,
   namedExport: string,
@@ -150,7 +149,6 @@ function evaluateImportedFile(
   }
 }
 
-// here
 function evaluateThemeRef(
   fileName: string,
   exportName: string,

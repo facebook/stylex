@@ -186,7 +186,7 @@ describe('stylex-define-vars test', () => {
     `);
   });
 
-  test('converts set of vars with nested at rules to CSS and includes variable name as prefix in ltr only', () => {
+  test('converts set of vars with nested at rules to CSS and includes key in variable name as prefix in debug mode', () => {
     const themeName = 'TestTheme.stylex.js//buttonTheme';
     const classNamePrefix = 'x';
     const defaultVars = {
