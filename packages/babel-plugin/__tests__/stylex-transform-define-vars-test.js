@@ -18,6 +18,7 @@ const classNamePrefix = 'x';
 const defaultOpts = {
   unstable_moduleResolution: { type: 'haste' },
   classNamePrefix,
+  debug: false,
 };
 
 const rootDir = '/stylex/packages/';
@@ -269,6 +270,41 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(":root, .x568ih9{--xgck17p:blue;--xpegid5:grey;--xrqfjmn:10;--x4y59db:pink;}", 0);
         _inject2("@media (prefers-color-scheme: dark){:root, .x568ih9{--xgck17p:lightblue;--xpegid5:rgba(0, 0, 0, 0.8);}}", 0.1);
         _inject2("@media print{:root, .x568ih9{--xgck17p:white;}}", 0.1);
+        export const buttonTheme = {
+          bgColor: "var(--xgck17p)",
+          bgColorDisabled: "var(--xpegid5)",
+          cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
+
+    test('transforms variables object and add stylex.inject in debug mode', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const buttonTheme = stylex.defineVars({
+            bgColor: {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            bgColorDisabled: {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
+            cornerRadius: 10,
+            fgColor: {
+              default: 'pink',
+            },
+          });
+        `,
+          { debug: true, ...defaultOpts },
+        ).code,
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
         export const buttonTheme = {
           bgColor: "var(--xgck17p)",
           bgColorDisabled: "var(--xpegid5)",

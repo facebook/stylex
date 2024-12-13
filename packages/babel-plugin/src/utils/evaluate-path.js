@@ -166,11 +166,13 @@ function evaluateThemeRef(
 
     const debug = state.traversalState.options.debug;
 
-    const varName = debug
-      ? key +
-        state.traversalState.options.classNamePrefix +
-        utils.hash(strToHash)
-      : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
+    const varName =
+      debug === true
+        ? key +
+          '-' +
+          state.traversalState.options.classNamePrefix +
+          utils.hash(strToHash)
+        : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
 
     if (key === '__themeName__') {
       return varName;
