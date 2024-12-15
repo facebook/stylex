@@ -390,6 +390,52 @@ describe('@stylexjs/babel-plugin', () => {
       ).not.toThrow();
     });
 
+    test('[validation] can evaluate single-expr function calls in objects', () => {
+      let result;
+      expect(() => {
+        result = transform(`
+          import stylex from 'stylex';
+          const fns = {
+            generateBg: () => 'red',
+          };
+          export const styles = stylex.create({
+            root: {
+              backgroundColor: fns.generateBg(),
+            }
+          });
+        `);
+      }).not.toThrow();
+
+      expect(result).not.toBeFalsy();
+
+      expect(result?.code).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        const fns = {
+          generateBg: () => 'red'
+        };
+        export const styles = {
+          root: {
+            backgroundColor: "xrkmrrc",
+            $$css: true
+          }
+        };"
+      `);
+
+      // $FlowFixMe
+      expect(result?.metadata?.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "xrkmrrc",
+            {
+              "ltr": ".xrkmrrc{background-color:red}",
+              "rtl": null,
+            },
+            3000,
+          ],
+        ]
+      `);
+    });
+
     test('values can reference local bindings in stylex.create()', () => {
       expect(() => {
         transform(`
