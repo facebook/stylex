@@ -22,7 +22,7 @@ const pattern = [
 
 const regex = new RegExp(pattern, 'g');
 
-function stripAnsi(string) {
+function stripAnsi(string: string): string {
   if (typeof string !== 'string') {
     throw new TypeError(`Expected a \`string\`, got \`${typeof string}\``);
   }
@@ -317,15 +317,77 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `);
       }).toThrowErrorMatchingInlineSnapshot(`
-        "unknown file: Unsupported expression: CallExpression
+        "unknown file: Referenced constant is not defined.
           3 |           const styles = stylex.create({
           4 |             root: {
         > 5 |               backgroundColor: generateBg(),
-            |                                ^^^^^^^^^^^^
+            |                                ^^^^^^^^^^
           6 |             }
           7 |           });
           8 |         "
       `);
+      cleanExpect(() => {
+        transform(`
+          import stylex from 'stylex';
+          import {generateBg} from './other-file';
+          const styles = stylex.create({
+            root: {
+              backgroundColor: generateBg(),
+            }
+          });
+        `);
+      }).toThrowErrorMatchingInlineSnapshot(`
+        "unknown file: Could not resolve the path to the imported file.
+        Please ensure that the theme file has a .stylex.js or .stylex.ts file extension and follows the
+        rules for defining variariables: 
+
+        https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-variables
+
+          1 |
+          2 |           import stylex from 'stylex';
+        > 3 |           import {generateBg} from './other-file';
+            |                   ^^^^^^^^^^
+          4 |           const styles = stylex.create({
+          5 |             root: {
+          6 |               backgroundColor: generateBg(),"
+      `);
+
+      cleanExpect(() => {
+        transform(`
+          import stylex from 'stylex';
+          import generateBg from './other-file';
+          const styles = stylex.create({
+            root: {
+              backgroundColor: generateBg(),
+            }
+          });
+        `);
+      }).toThrowErrorMatchingInlineSnapshot(`
+        "unknown file: There was an error when attempting to evaluate the imported file.
+        Please ensure that the imported file is self-contained and does not rely on dynamic behavior.
+
+          1 |
+          2 |           import stylex from 'stylex';
+        > 3 |           import generateBg from './other-file';
+            |                  ^^^^^^^^^^
+          4 |           const styles = stylex.create({
+          5 |             root: {
+          6 |               backgroundColor: generateBg(),"
+      `);
+    });
+
+    test('[validation] can evaluate single-expr function calls', () => {
+      expect(() =>
+        transform(`
+          import stylex from 'stylex';
+          const generateBg = () => 'red';
+          export const styles = stylex.create({
+            root: {
+              backgroundColor: generateBg(),
+            }
+          });
+        `),
+      ).not.toThrow();
     });
 
     test('values can reference local bindings in stylex.create()', () => {
@@ -396,7 +458,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-      }).not.toThrow(messages.INVALID_PSEUDO);
+      }).not.toThrow();
 
       expect(() => {
         transform(`

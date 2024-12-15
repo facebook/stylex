@@ -432,6 +432,14 @@ function _evaluate(path: NodePath<>, state: State): any {
       }
     }
 
+    if (
+      binding &&
+      bindingPath &&
+      pathUtils.isImportDefaultSpecifier(bindingPath)
+    ) {
+      deopt(binding.path, state, errMsgs.IMPORT_FILE_EVAL_ERROR);
+    }
+
     if (binding && binding.constantViolations.length > 0) {
       return deopt(binding.path, state, errMsgs.NON_CONSTANT);
     }
@@ -718,6 +726,13 @@ function _evaluate(path: NodePath<>, state: State): any {
       state.functions.identifiers[callee.node.name]
     ) {
       func = state.functions.identifiers[callee.node.name];
+    } else if (pathUtils.isIdentifier(callee)) {
+      const maybeFunction = evaluateCached(callee, state);
+      if (state.confident) {
+        func = maybeFunction;
+      } else {
+        deopt(callee, state, errMsgs.NON_CONSTANT);
+      }
     }
 
     if (pathUtils.isMemberExpression(callee)) {
