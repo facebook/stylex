@@ -164,8 +164,15 @@ function evaluateThemeRef(
         ? utils.genFileBasedIdentifier({ fileName, exportName })
         : utils.genFileBasedIdentifier({ fileName, exportName, key });
 
+    const debug = state.traversalState.options.debug;
+
     const varName =
-      state.traversalState.options.classNamePrefix + utils.hash(strToHash);
+      debug === true
+        ? key +
+          '-' +
+          state.traversalState.options.classNamePrefix +
+          utils.hash(strToHash)
+        : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
 
     if (key === '__themeName__') {
       return varName;

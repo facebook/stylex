@@ -36,7 +36,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   variables: Vars,
   options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
 ): [VarsObject<Vars>, { [string]: InjectableStyle }] {
-  const { classNamePrefix, themeName } = {
+  const { classNamePrefix, themeName, debug } = {
     ...defaultOptions,
     ...options,
   };
@@ -56,7 +56,10 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     // Created hashed variable names with fileName//themeName//key
     const nameHash = key.startsWith('--')
       ? key.slice(2)
-      : classNamePrefix + createHash(`${themeName}.${key}`);
+      : debug
+        ? key + '-' + classNamePrefix + createHash(`${themeName}.${key}`)
+        : classNamePrefix + createHash(`${themeName}.${key}`);
+
     if (isCSSType(value)) {
       const v: CSSType<> = value;
       typedVariables[nameHash] = {
