@@ -672,7 +672,7 @@ export default class StateManager {
       console.warn('Failed to load aliases from tsconfig.json:', err.message);
     }
 
-    // Merge aliases with priority: manual > package.json > tsconfig.json
+    // Merge aliases in priority: manual > package.json > tsconfig.json
     const mergedAliases = {
       ...tsconfigAliases,
       ...packageAliases,
