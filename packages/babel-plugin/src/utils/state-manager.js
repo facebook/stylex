@@ -23,6 +23,7 @@ import { addDefault, addNamed } from '@babel/helper-module-imports';
 import type { ImportOptions } from '@babel/helper-module-imports';
 import * as pathUtils from '../babel-path-utils';
 import { buildResolver } from 'esm-resolve';
+import JSON5 from 'json5';
 
 type ImportAdditionOptions = Omit<
   Partial<ImportOptions>,
@@ -262,17 +263,7 @@ export default class StateManager {
       'options.aliases',
     );
 
-    const aliases: StyleXStateOptions['aliases'] =
-      aliasesOption == null
-        ? aliasesOption
-        : Object.fromEntries(
-            Object.entries(aliasesOption).map(([key, value]) => {
-              if (typeof value === 'string') {
-                return [key, [value]];
-              }
-              return [key, value];
-            }),
-          );
+    const aliases = this.loadAliases(aliasesOption);
 
     const opts: StyleXStateOptions = {
       aliases,
@@ -622,6 +613,103 @@ export default class StateManager {
     memberExpression: [string, true | string, true | Array<string>],
   ): void {
     this.styleVarsToKeep.add(memberExpression);
+  }
+
+  loadAliases(
+    manualAliases: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  ): ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }> {
+    if (!this.filename) {
+      return manualAliases ? this.normalizeAliases(manualAliases) : null;
+    }
+
+    let packageAliases = {};
+    let tsconfigAliases = {};
+    const projectDir = this.findProjectRoot(this.filename);
+
+    // Load aliases from package.json
+    try {
+      const packageJsonPath = path.join(projectDir, 'package.json');
+      if (fs.existsSync(packageJsonPath)) {
+        const packageJson = JSON.parse(
+          fs.readFileSync(packageJsonPath, 'utf8'),
+        );
+        if (packageJson.stylex?.aliases) {
+          packageAliases = packageJson.stylex.aliases;
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load aliases from package.json:', err.message);
+    }
+
+    // Load aliases from tsconfig.json
+    try {
+      const tsconfigPath = path.join(projectDir, 'tsconfig.json');
+      if (fs.existsSync(tsconfigPath)) {
+        const tsconfig = JSON5.parse(fs.readFileSync(tsconfigPath, 'utf8'));
+        const baseUrl = tsconfig.compilerOptions?.baseUrl || '.';
+        if (tsconfig.compilerOptions?.paths) {
+          tsconfigAliases = Object.fromEntries(
+            Object.entries(tsconfig.compilerOptions.paths).map(
+              ([key, value]) => [
+                key.replace(/\/\*$/, ''),
+                Array.isArray(value)
+                  ? value.map((p) =>
+                      this.normalizePath(
+                        path.join(baseUrl, p.replace(/\/\*$/, '')),
+                      ),
+                    )
+                  : [
+                      this.normalizePath(
+                        path.join(baseUrl, value.replace(/\/\*$/, '')),
+                      ),
+                    ],
+              ],
+            ),
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load aliases from tsconfig.json:', err.message);
+    }
+
+    // Merge aliases with priority: manual > package.json > tsconfig.json
+    const mergedAliases = {
+      ...tsconfigAliases,
+      ...packageAliases,
+      ...(manualAliases || {}),
+    };
+
+    return Object.keys(mergedAliases).length > 0
+      ? this.normalizeAliases(mergedAliases)
+      : null;
+  }
+
+  normalizeAliases(
+    aliases: $ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  ): $ReadOnly<{ [string]: $ReadOnlyArray<string> }> {
+    return Object.fromEntries(
+      Object.entries(aliases).map(([key, value]) => [
+        key,
+        Array.isArray(value)
+          ? value.map((p) => this.normalizePath(p))
+          : [this.normalizePath(value)],
+      ]),
+    );
+  }
+
+  findProjectRoot(filePath: string): string {
+    const dir = path.dirname(filePath);
+    if (fs.existsSync(path.join(dir, 'package.json'))) {
+      return dir;
+    }
+    if (dir === path.parse(dir).root) {
+      return dir;
+    }
+    return this.findProjectRoot(dir);
+  }
+
+  normalizePath(filePath: string): string {
+    return filePath.split(path.sep).join('/');
   }
 }
 
