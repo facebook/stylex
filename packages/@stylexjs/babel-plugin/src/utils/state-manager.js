@@ -24,6 +24,7 @@ import url from 'url';
 import * as z from './validate';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
+import JSON5 from 'json5';
 
 type ImportAdditionOptions = Omit<
   Partial<ImportOptions>,
@@ -322,17 +323,7 @@ export default class StateManager {
       'options.aliases',
     );
 
-    const aliases: StyleXStateOptions['aliases'] =
-      aliasesOption == null
-        ? aliasesOption
-        : Object.fromEntries(
-            Object.entries(aliasesOption).map(([key, value]) => {
-              if (typeof value === 'string') {
-                return [key, [value]];
-              }
-              return [key, value];
-            }),
-          );
+    const aliases = this.loadAliases(aliasesOption);
 
     const opts: StyleXStateOptions = {
       aliases,
@@ -725,6 +716,141 @@ export default class StateManager {
   ): void {
     this.styleVarsToKeep.add(memberExpression);
   }
+
+  loadAliases(
+    manualAliases: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  ): ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }> {
+    if (!this.filename) {
+      return manualAliases ? this.normalizeAliases(manualAliases) : null;
+    }
+
+    let packageAliases = {};
+    let tsconfigAliases = {};
+    let denoAliases = {};
+
+    const pkgInfo = this.getPackageNameAndPath(this.filename);
+    if (!pkgInfo) {
+      return manualAliases ? this.normalizeAliases(manualAliases) : null;
+    }
+
+    const [_packageName, projectDir] = pkgInfo;
+
+    const resolveAliasPaths = (value: string | $ReadOnlyArray<string>) =>
+      (Array.isArray(value) ? value : [value]).map((p) => {
+        const endsWithStar = p.endsWith('/*');
+        let basePath = p.replace(/\/\*$/, '');
+        if (basePath.startsWith('.')) {
+          basePath = path.resolve(projectDir, basePath);
+        }
+        if (endsWithStar) {
+          basePath = basePath.endsWith('/') ? basePath + '*' : basePath + '/*';
+        }
+        return basePath;
+      });
+
+    // Load aliases from package.json imports field
+    try {
+      const packageJsonPath = path.join(projectDir, 'package.json');
+      if (fs.existsSync(packageJsonPath)) {
+        const rawConfig: mixed = JSON5.parse(
+          fs.readFileSync(packageJsonPath, 'utf8'),
+        );
+        if (!isPackageJSON(rawConfig)) {
+          throw new Error('Invalid package.json format');
+        }
+        const packageJson: PackageJSON = rawConfig as $FlowFixMe;
+
+        // Handle Node.js native imports
+        const imports = packageJson.imports;
+        if (imports && typeof imports === 'object') {
+          packageAliases = Object.fromEntries(
+            Object.entries(imports)
+              .filter(([key]) => key.startsWith('#'))
+              .map(([key, value]) => [key.slice(1), resolveAliasPaths(value)]),
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load aliases from package.json:', err.message);
+    }
+
+    // Load aliases from tsconfig.json
+    try {
+      const tsconfigPath = path.join(projectDir, 'tsconfig.json');
+      if (fs.existsSync(tsconfigPath)) {
+        const rawConfig: mixed = JSON5.parse(
+          fs.readFileSync(tsconfigPath, 'utf8'),
+        );
+        if (!isTSConfig(rawConfig)) {
+          throw new Error('Invalid tsconfig.json format');
+        }
+        const tsconfig: TSConfig = rawConfig as $FlowFixMe;
+        const tsConfigAliasPaths = tsconfig.compilerOptions?.paths;
+        if (tsConfigAliasPaths != null && isImportsObject(tsConfigAliasPaths)) {
+          tsconfigAliases = Object.fromEntries(
+            Object.entries(tsConfigAliasPaths).map(([key, value]) => [
+              key,
+              resolveAliasPaths(value),
+            ]),
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load aliases from tsconfig.json:', err.message);
+    }
+
+    // Load aliases from deno.json
+    try {
+      const denoConfigPath = path.join(projectDir, 'deno.json');
+      if (fs.existsSync(denoConfigPath)) {
+        const rawConfig: mixed = JSON5.parse(
+          fs.readFileSync(denoConfigPath, 'utf8'),
+        );
+        if (!isDenoConfig(rawConfig)) {
+          throw new Error('Invalid deno.json format');
+        }
+        const denoConfig: DenoConfig = rawConfig as $FlowFixMe;
+        if (denoConfig.imports) {
+          denoAliases = Object.fromEntries(
+            Object.entries(denoConfig.imports).map(([key, value]) => {
+              return [key, resolveAliasPaths(value)];
+            }),
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load aliases from deno.json:', err.message);
+    }
+
+    // Merge aliases in priority: manual > package.json > tsconfig.json > deno.json
+    const mergedAliases = {
+      ...denoAliases,
+      ...tsconfigAliases,
+      ...packageAliases,
+      ...(manualAliases || {}),
+    };
+
+    return Object.keys(mergedAliases).length > 0
+      ? this.normalizeAliases(mergedAliases)
+      : null;
+  }
+
+  normalizeAliases(
+    aliases: $ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  ): $ReadOnly<{ [string]: $ReadOnlyArray<string> }> {
+    return Object.fromEntries(
+      Object.entries(aliases).map(([key, value]) => [
+        key,
+        Array.isArray(value)
+          ? value.map((p) => this.normalizePath(p))
+          : [this.normalizePath(value)],
+      ]),
+    );
+  }
+
+  normalizePath(filePath: string): string {
+    return filePath.split(path.sep).join('/');
+  }
 }
 
 function possibleAliasedPaths(
@@ -863,4 +989,36 @@ function toPosixPath(filePath: string): string {
 
 function formatRelativePath(filePath: string) {
   return filePath.startsWith('.') ? filePath : './' + filePath;
+}
+
+function isImportsObject(obj: mixed): implies obj is { ... } {
+  return obj != null && typeof obj === 'object';
+}
+
+function isPackageJSON(obj: mixed): implies obj is { +imports: mixed, ... } {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    (!('imports' in obj) || typeof obj.imports === 'object')
+  );
+}
+
+function isTSConfig(
+  obj: mixed,
+): implies obj is { +compilerOptions: mixed, ... } {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    'compilerOptions' in obj &&
+    obj.compilerOptions != null &&
+    typeof obj.compilerOptions === 'object'
+  );
+}
+
+function isDenoConfig(obj: mixed): implies obj is { +imports: mixed, ... } {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    (!('imports' in obj) || typeof obj.imports === 'object')
+  );
 }
