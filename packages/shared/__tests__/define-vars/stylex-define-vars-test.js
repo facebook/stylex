@@ -220,18 +220,14 @@ describe('stylex-define-vars test', () => {
 
     expect(jsOutput).toEqual({
       __themeName__: classNamePrefix + createHash(themeName),
-      bgColor: `var(--${'bgColor-' + classNamePrefix + createHash(`${themeName}.bgColor`)})`,
-      bgColorDisabled: `var(--${
-        'bgColorDisabled-' +
-        classNamePrefix +
-        createHash(`${themeName}.bgColorDisabled`)
+      bgColor: `var(--bgColor-${classNamePrefix + createHash(`${themeName}.bgColor`)})`,
+      bgColorDisabled: `var(--bgColorDisabled-${
+        classNamePrefix + createHash(`${themeName}.bgColorDisabled`)
       })`,
-      cornerRadius: `var(--${
-        'cornerRadius-' +
-        classNamePrefix +
-        createHash(`${themeName}.cornerRadius`)
+      cornerRadius: `var(--cornerRadius-${
+        classNamePrefix + createHash(`${themeName}.cornerRadius`)
       })`,
-      fgColor: `var(--${'fgColor-' + classNamePrefix + createHash(`${themeName}.fgColor`)})`,
+      fgColor: `var(--fgColor-${classNamePrefix + createHash(`${themeName}.fgColor`)})`,
     });
 
     expect(cssOutput).toMatchInlineSnapshot(`
