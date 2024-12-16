@@ -18,6 +18,7 @@ const classNamePrefix = 'x';
 const defaultOpts = {
   unstable_moduleResolution: { type: 'haste' },
   classNamePrefix,
+  debug: false,
 };
 
 const rootDir = '/stylex/packages/';
@@ -274,6 +275,41 @@ describe('@stylexjs/babel-plugin', () => {
           bgColorDisabled: "var(--xpegid5)",
           cornerRadius: "var(--xrqfjmn)",
           fgColor: "var(--x4y59db)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
+
+    test('transforms variables object and add stylex.inject in debug mode', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const buttonTheme = stylex.defineVars({
+            bgColor: {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            bgColorDisabled: {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
+            cornerRadius: 10,
+            fgColor: {
+              default: 'pink',
+            },
+          });
+        `,
+          { ...defaultOpts, debug: true },
+        ).code,
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        export const buttonTheme = {
+          bgColor: "var(--bgColor-xgck17p)",
+          bgColorDisabled: "var(--bgColorDisabled-xpegid5)",
+          cornerRadius: "var(--cornerRadius-xrqfjmn)",
+          fgColor: "var(--fgColor-x4y59db)",
           __themeName__: "x568ih9"
         };"
       `);
