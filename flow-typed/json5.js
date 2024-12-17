@@ -20,6 +20,10 @@ type ConfigType = TSConfig | DenoConfig | PackageJSON;
 declare module 'json5' {
   declare module.exports: {
     parse: (input: string) => mixed,
-    stringify: (value: mixed, replacer?: ?Function | ?Array<mixed>, space?: string | number) => string,
+    stringify: (
+      value: mixed,
+      replacer?: ?Function | ?Array<mixed>,
+      space?: string | number,
+    ) => string,
   };
-} 
+}
