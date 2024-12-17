@@ -37,6 +37,7 @@ export const createDirectionalTransformer = (
   baseProperty: string,
   blockSuffix: string,
   inlineSuffix: string,
+  basePropertySuffix: string = '',
 ): ((
   rawValue: number | string,
   allowImportant?: boolean,
@@ -54,7 +55,7 @@ export const createDirectionalTransformer = (
       return [[`${baseProperty}`, top]];
     }
 
-    if (splitValues.length === 2) {
+    if (splitValues.length === 2 && baseProperty === "margin" || baseProperty === "padding" ) {
       return [
         [`${baseProperty}${blockSuffix}`, top],
         [`${baseProperty}${inlineSuffix}`, right],
@@ -63,16 +64,16 @@ export const createDirectionalTransformer = (
 
     return preferInline
       ? [
-          [`${baseProperty}Top`, top],
-          [`${baseProperty}${inlineSuffix}End`, right],
-          [`${baseProperty}Bottom`, bottom],
-          [`${baseProperty}${inlineSuffix}Start`, left],
+          [`${baseProperty}Top${basePropertySuffix}`, top],
+          [`${baseProperty}${inlineSuffix}End${basePropertySuffix}`, right],
+          [`${baseProperty}Bottom${basePropertySuffix}`, bottom],
+          [`${baseProperty}${inlineSuffix}Start${basePropertySuffix}`, left],
         ]
       : [
-          [`${baseProperty}Top`, top],
-          [`${baseProperty}Right`, right],
-          [`${baseProperty}Bottom`, bottom],
-          [`${baseProperty}Left`, left],
+          [`${baseProperty}Top${basePropertySuffix}`, top],
+          [`${baseProperty}Right${basePropertySuffix}`, right],
+          [`${baseProperty}Bottom${basePropertySuffix}`, bottom],
+          [`${baseProperty}Left${basePropertySuffix}`, left],
         ];
   };
 };
@@ -174,6 +175,11 @@ export function splitSpecificShorthands(
   }
 
   const longform = cssExpand(property, strippedValue);
+
+  if (!longform) {
+    // If css shorthand expand fails, we won't auto-fix
+    return [[toCamelCase(property), CANNOT_FIX]];
+  }
 
   // If the longform is empty or all values are the same, no need to expand
   // Relevant for properties like `borderColor` or `borderStyle`

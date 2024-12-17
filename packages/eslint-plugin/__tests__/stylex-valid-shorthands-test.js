@@ -173,6 +173,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderRight: '4px solid var(--fds-gray-10)'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderRight: 4px solid var(--fds-gray-10)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
@@ -287,15 +303,15 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
-          const styles = stylex.create({
-            main: {
-              borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
-              borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
-              background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
-            },
-          })
-        `,
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
+          borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
+          background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
+        },
+      })
+      `,
       errors: [
         {
           message:
@@ -310,7 +326,26 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
             'Property shorthands using multiple values like "background: no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)" are not supported in StyleX. Separate into individual properties.',
         },
       ],
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderTopWidth: 'calc(100% - 20px)',
+          borderRightWidth: 'calc(90% - 20px)',
+          borderBottomWidth: 'calc(100% - 20px)',
+          borderLeftWidth: 'calc(90% - 20px)',
+          borderTopColor: 'var(--test-color, #ccc)',
+          borderRightColor: 'linear-gradient(to right, #ff7e5f, #feb47b)',
+          borderBottomColor: 'var(--test-color, #ccc)',
+          borderLeftColor: 'linear-gradient(to right, #ff7e5f, #feb47b)',
+          backgroundImage: 'no-repeat, linear-gradient(to right, #ff7e5f, #feb47b)',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+        },
+      })
+      `,
     },
+
     {
       code: `
           import stylex from 'stylex';

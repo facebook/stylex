@@ -42,9 +42,24 @@ const shorthandAliases: $ReadOnly<{
 }> = {
   background: createSpecificTransformer('background'),
   font: createSpecificTransformer('font'),
-  borderColor: createSpecificTransformer('border-color'),
-  borderWidth: createSpecificTransformer('border-width'),
-  borderStyle: createSpecificTransformer('border-style'),
+  borderColor: createDirectionalTransformer(
+    'border',
+    'Block',
+    'Inline',
+    'Color',
+  ),
+  borderWidth: createDirectionalTransformer(
+    'border',
+    'Block',
+    'Inline',
+    'Width',
+  ),
+  borderStyle: createDirectionalTransformer(
+    'border',
+    'Block',
+    'Inline',
+    'Style',
+  ),
   borderTop: createSpecificTransformer('border-top'),
   borderRight: createSpecificTransformer('border-right'),
   borderBottom: createSpecificTransformer('border-bottom'),
