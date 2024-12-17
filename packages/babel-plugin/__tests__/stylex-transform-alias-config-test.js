@@ -45,15 +45,13 @@ describe('StyleX Alias Configuration', () => {
     }
   };
 
-  test('discovers aliases from package.json', () => {
+  test('discovers aliases from package.json imports', () => {
     setupFiles({
       'package.json': {
         name: 'test-package',
-        stylex: {
-          aliases: {
-            '@components': './src/components',
-            '@utils/*': ['./src/utils/*'],
-          },
+        imports: {
+          '#components': './src/components',
+          '#utils/*': './src/utils/*',
         },
       },
     });
@@ -61,8 +59,8 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      '@components': ['./src/components'],
-      '@utils/*': ['./src/utils/*'],
+      'components': ['./src/components'],
+      'utils/*': ['./src/utils/*'],
     });
   });
 
@@ -88,14 +86,31 @@ describe('StyleX Alias Configuration', () => {
     });
   });
 
-  test('merges aliases from both package.json and tsconfig.json', () => {
+  test('discovers aliases from deno.json', () => {
+    setupFiles({
+      'package.json': { name: 'test-package' },
+      'deno.json': {
+        imports: {
+          '@components/': './src/components/',
+          '@utils/': './src/utils/',
+        },
+      },
+    });
+
+    const manager = new StateManager(state);
+
+    expect(manager.options.aliases).toEqual({
+      '@components/': ['./src/components/'],
+      '@utils/': ['./src/utils/'],
+    });
+  });
+
+  test('merges aliases from all config files', () => {
     setupFiles({
       'package.json': {
         name: 'test-package',
-        stylex: {
-          aliases: {
-            '@components': './src/components',
-          },
+        imports: {
+          '#components': './src/components',
         },
       },
       'tsconfig.json': {
@@ -106,13 +121,19 @@ describe('StyleX Alias Configuration', () => {
           },
         },
       },
+      'deno.json': {
+        imports: {
+          '@styles/': './src/styles/',
+        },
+      },
     });
 
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      '@components': ['./src/components'],
+      'components': ['./src/components'],
       '@utils': ['src/utils'],
+      '@styles/': ['./src/styles/'],
     });
   });
 
@@ -120,24 +141,22 @@ describe('StyleX Alias Configuration', () => {
     setupFiles({
       'package.json': {
         name: 'test-package',
-        stylex: {
-          aliases: {
-            '@components': './src/components',
-          },
+        imports: {
+          '#components': './src/components',
         },
       },
     });
 
     state.opts = {
       aliases: {
-        '@components': './custom/path',
+        'components': './custom/path',
       },
     };
 
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      '@components': ['./custom/path'],
+      'components': ['./custom/path'],
     });
   });
 
@@ -150,6 +169,7 @@ describe('StyleX Alias Configuration', () => {
     setupFiles({
       'package.json': '{invalid json',
       'tsconfig.json': '{also invalid',
+      'deno.json': '{more invalid',
     });
 
     const manager = new StateManager(state);

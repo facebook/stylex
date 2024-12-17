@@ -624,17 +624,34 @@ export default class StateManager {
 
     let packageAliases = {};
     let tsconfigAliases = {};
-    const projectDir = this.findProjectRoot(this.filename);
+    let denoAliases = {};
 
-    // Load aliases from package.json
+    const pkgInfo = this.getPackageNameAndPath(this.filename);
+    if (!pkgInfo) {
+      return manualAliases ? this.normalizeAliases(manualAliases) : null;
+    }
+
+    const [_packageName, projectDir] = pkgInfo;
+
+    // Load aliases from package.json imports field
     try {
       const packageJsonPath = path.join(projectDir, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
         const packageJson = JSON.parse(
           fs.readFileSync(packageJsonPath, 'utf8'),
         );
-        if (packageJson.stylex?.aliases) {
-          packageAliases = packageJson.stylex.aliases;
+        
+        // Handle Node.js native imports
+        const imports = packageJson.imports;
+        if (imports && typeof imports === 'object') {
+          packageAliases = Object.fromEntries(
+            Object.entries(imports)
+              .filter(([key]) => key.startsWith('#')) 
+              .map(([key, value]) => [
+                key.slice(1), 
+                Array.isArray(value) ? value : [value],
+              ])
+          );
         }
       }
     } catch (err) {
@@ -672,8 +689,27 @@ export default class StateManager {
       console.warn('Failed to load aliases from tsconfig.json:', err.message);
     }
 
-    // Merge aliases in priority: manual > package.json > tsconfig.json
+    // Load aliases from deno.json
+    try {
+      const denoConfigPath = path.join(projectDir, 'deno.json');
+      if (fs.existsSync(denoConfigPath)) {
+        const denoConfig = JSON5.parse(fs.readFileSync(denoConfigPath, 'utf8'));
+        if (denoConfig.imports) {
+          denoAliases = Object.fromEntries(
+            Object.entries(denoConfig.imports).map(([key, value]) => [
+              key,
+              Array.isArray(value) ? value : [value],
+            ])
+          );
+        }
+      }
+    } catch (err) {
+      console.warn('Failed to load aliases from deno.json:', err.message);
+    }
+
+    // Merge aliases in priority: manual > package.json > tsconfig.json > deno.json
     const mergedAliases = {
+      ...denoAliases,
       ...tsconfigAliases,
       ...packageAliases,
       ...(manualAliases || {}),
@@ -695,17 +731,6 @@ export default class StateManager {
           : [this.normalizePath(value)],
       ]),
     );
-  }
-
-  findProjectRoot(filePath: string): string {
-    const dir = path.dirname(filePath);
-    if (fs.existsSync(path.join(dir, 'package.json'))) {
-      return dir;
-    }
-    if (dir === path.parse(dir).root) {
-      return dir;
-    }
-    return this.findProjectRoot(dir);
   }
 
   normalizePath(filePath: string): string {
