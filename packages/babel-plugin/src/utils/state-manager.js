@@ -638,7 +638,7 @@ export default class StateManager {
       const packageJsonPath = path.join(projectDir, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
         const rawConfig = JSON5.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-        const packageJson = (rawConfig: any) as PackageJSON;
+        const packageJson: PackageJSON = (rawConfig: any);
 
         // Handle Node.js native imports
         const imports = packageJson.imports;
@@ -662,7 +662,7 @@ export default class StateManager {
       const tsconfigPath = path.join(projectDir, 'tsconfig.json');
       if (fs.existsSync(tsconfigPath)) {
         const rawConfig = JSON5.parse(fs.readFileSync(tsconfigPath, 'utf8'));
-        const tsconfig = (rawConfig: any) as TSConfig;
+        const tsconfig: TSConfig = (rawConfig: any);
         const baseUrl = tsconfig.compilerOptions?.baseUrl || '.';
         if (tsconfig.compilerOptions?.paths) {
           tsconfigAliases = Object.fromEntries(
@@ -694,7 +694,7 @@ export default class StateManager {
       const denoConfigPath = path.join(projectDir, 'deno.json');
       if (fs.existsSync(denoConfigPath)) {
         const rawConfig = JSON5.parse(fs.readFileSync(denoConfigPath, 'utf8'));
-        const denoConfig = (rawConfig: any) as DenoConfig;
+        const denoConfig: DenoConfig = (rawConfig: any);
         if (denoConfig.imports) {
           denoAliases = Object.fromEntries(
             Object.entries(denoConfig.imports).map(([key, value]) => [
