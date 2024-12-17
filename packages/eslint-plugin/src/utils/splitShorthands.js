@@ -175,6 +175,11 @@ export function splitSpecificShorthands(
 
   const longform = cssExpand(property, strippedValue);
 
+  if (!longform) {
+    // If css shorthand expand fails, we won't auto-fix
+    return [[toCamelCase(property), CANNOT_FIX]];
+  }
+
   // If the longform is empty or all values are the same, no need to expand
   // Relevant for properties like `borderColor` or `borderStyle`
   if (
