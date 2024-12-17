@@ -7,7 +7,6 @@
  *
  */
 
-
 'use strict';
 
 import path from 'path';
@@ -59,7 +58,7 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      'components': ['./src/components'],
+      components: ['./src/components'],
       'utils/*': ['./src/utils/*'],
     });
   });
@@ -131,7 +130,7 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      'components': ['./src/components'],
+      components: ['./src/components'],
       '@utils': ['src/utils'],
       '@styles/': ['./src/styles/'],
     });
@@ -149,14 +148,14 @@ describe('StyleX Alias Configuration', () => {
 
     state.opts = {
       aliases: {
-        'components': './custom/path',
+        components: './custom/path',
       },
     };
 
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      'components': ['./custom/path'],
+      components: ['./custom/path'],
     });
   });
 

@@ -640,17 +640,17 @@ export default class StateManager {
         const packageJson = JSON.parse(
           fs.readFileSync(packageJsonPath, 'utf8'),
         );
-        
+
         // Handle Node.js native imports
         const imports = packageJson.imports;
         if (imports && typeof imports === 'object') {
           packageAliases = Object.fromEntries(
             Object.entries(imports)
-              .filter(([key]) => key.startsWith('#')) 
+              .filter(([key]) => key.startsWith('#'))
               .map(([key, value]) => [
-                key.slice(1), 
+                key.slice(1),
                 Array.isArray(value) ? value : [value],
-              ])
+              ]),
           );
         }
       }
@@ -699,7 +699,7 @@ export default class StateManager {
             Object.entries(denoConfig.imports).map(([key, value]) => [
               key,
               Array.isArray(value) ? value : [value],
-            ])
+            ]),
           );
         }
       }
