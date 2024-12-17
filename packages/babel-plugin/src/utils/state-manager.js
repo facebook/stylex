@@ -638,7 +638,10 @@ export default class StateManager {
       const packageJsonPath = path.join(projectDir, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
         const rawConfig = JSON5.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-        const packageJson = rawConfig as PackageJSON;
+        if (!isPackageJSON(rawConfig)) {
+          throw new Error('Invalid package.json format');
+        }
+        const packageJson = rawConfig;
 
         // Handle Node.js native imports
         const imports = packageJson.imports;
@@ -662,7 +665,10 @@ export default class StateManager {
       const tsconfigPath = path.join(projectDir, 'tsconfig.json');
       if (fs.existsSync(tsconfigPath)) {
         const rawConfig = JSON5.parse(fs.readFileSync(tsconfigPath, 'utf8'));
-        const tsconfig = rawConfig as TSConfig;
+        if (!isTSConfig(rawConfig)) {
+          throw new Error('Invalid tsconfig.json format');
+        }
+        const tsconfig = rawConfig;
         const baseUrl = tsconfig.compilerOptions?.baseUrl || '.';
         if (tsconfig.compilerOptions?.paths) {
           tsconfigAliases = Object.fromEntries(
@@ -694,7 +700,10 @@ export default class StateManager {
       const denoConfigPath = path.join(projectDir, 'deno.json');
       if (fs.existsSync(denoConfigPath)) {
         const rawConfig = JSON5.parse(fs.readFileSync(denoConfigPath, 'utf8'));
-        const denoConfig = rawConfig as DenoConfig;
+        if (!isDenoConfig(rawConfig)) {
+          throw new Error('Invalid deno.json format');
+        }
+        const denoConfig = rawConfig;
         if (denoConfig.imports) {
           denoAliases = Object.fromEntries(
             Object.entries(denoConfig.imports).map(([key, value]) => [
@@ -878,3 +887,29 @@ const getProgramStatement = (path: NodePath<>): NodePath<> => {
   }
   return programPath;
 };
+
+function isPackageJSON(obj: mixed): boolean %checks {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    (!('imports' in obj) || typeof obj.imports === 'object')
+  );
+}
+
+function isTSConfig(obj: mixed): boolean %checks {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    'compilerOptions' in obj &&
+    obj.compilerOptions != null &&
+    typeof obj.compilerOptions === 'object'
+  );
+}
+
+function isDenoConfig(obj: mixed): boolean %checks {
+  return (
+    obj != null &&
+    typeof obj === 'object' &&
+    (!('imports' in obj) || typeof obj.imports === 'object')
+  );
+}
