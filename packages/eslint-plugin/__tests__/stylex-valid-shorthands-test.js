@@ -173,6 +173,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderRight: '4px solid var(--fds-gray-10)'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderRight: 4px solid var(--fds-gray-10)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
         import stylex from 'stylex';
         const styles = stylex.create({
           main: {
