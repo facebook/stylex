@@ -637,11 +637,13 @@ export default class StateManager {
     try {
       const packageJsonPath = path.join(projectDir, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
-        const rawConfig = JSON5.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        const rawConfig: mixed = JSON5.parse(
+          fs.readFileSync(packageJsonPath, 'utf8'),
+        );
         if (!isPackageJSON(rawConfig)) {
           throw new Error('Invalid package.json format');
         }
-        const packageJson = rawConfig;
+        const packageJson: PackageJSON = rawConfig as $FlowFixMe;
 
         // Handle Node.js native imports
         const imports = packageJson.imports;
@@ -664,11 +666,13 @@ export default class StateManager {
     try {
       const tsconfigPath = path.join(projectDir, 'tsconfig.json');
       if (fs.existsSync(tsconfigPath)) {
-        const rawConfig = JSON5.parse(fs.readFileSync(tsconfigPath, 'utf8'));
+        const rawConfig: mixed = JSON5.parse(
+          fs.readFileSync(tsconfigPath, 'utf8'),
+        );
         if (!isTSConfig(rawConfig)) {
           throw new Error('Invalid tsconfig.json format');
         }
-        const tsconfig = rawConfig;
+        const tsconfig: TSConfig = rawConfig as $FlowFixMe;
         const baseUrl = tsconfig.compilerOptions?.baseUrl || '.';
         if (tsconfig.compilerOptions?.paths) {
           tsconfigAliases = Object.fromEntries(
@@ -699,11 +703,13 @@ export default class StateManager {
     try {
       const denoConfigPath = path.join(projectDir, 'deno.json');
       if (fs.existsSync(denoConfigPath)) {
-        const rawConfig = JSON5.parse(fs.readFileSync(denoConfigPath, 'utf8'));
+        const rawConfig: mixed = JSON5.parse(
+          fs.readFileSync(denoConfigPath, 'utf8'),
+        );
         if (!isDenoConfig(rawConfig)) {
           throw new Error('Invalid deno.json format');
         }
-        const denoConfig = rawConfig;
+        const denoConfig: DenoConfig = rawConfig as $FlowFixMe;
         if (denoConfig.imports) {
           denoAliases = Object.fromEntries(
             Object.entries(denoConfig.imports).map(([key, value]) => [
@@ -888,7 +894,7 @@ const getProgramStatement = (path: NodePath<>): NodePath<> => {
   return programPath;
 };
 
-function isPackageJSON(obj: mixed): boolean %checks {
+function isPackageJSON(obj: mixed): boolean {
   return (
     obj != null &&
     typeof obj === 'object' &&
@@ -896,7 +902,7 @@ function isPackageJSON(obj: mixed): boolean %checks {
   );
 }
 
-function isTSConfig(obj: mixed): boolean %checks {
+function isTSConfig(obj: mixed): boolean {
   return (
     obj != null &&
     typeof obj === 'object' &&
@@ -906,7 +912,7 @@ function isTSConfig(obj: mixed): boolean %checks {
   );
 }
 
-function isDenoConfig(obj: mixed): boolean %checks {
+function isDenoConfig(obj: mixed): boolean {
   return (
     obj != null &&
     typeof obj === 'object' &&
