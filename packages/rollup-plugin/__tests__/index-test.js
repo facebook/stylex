@@ -59,7 +59,7 @@ describe('rollup-plugin-stylex', () => {
       }
     }
 
-    return { css, js };
+    return { css, js, output };
   }
 
   it('extracts CSS and removes stylex.inject calls', async () => {
@@ -321,5 +321,77 @@ describe('rollup-plugin-stylex', () => {
         "
       `);
     });
+  });
+  it('output filename match pattern', async () => {
+    const { output } = await runStylex({ fileName: 'stylex.[hash].css' });
+    const css = output.find(
+      (chunkOrAsset) =>
+        chunkOrAsset.type === 'asset' &&
+        /^stylex.[0-9a-f]{8}\.css$/.test(chunkOrAsset.fileName),
+    );
+    expect(css.source).toMatchInlineSnapshot(`
+      "@layer priority1 {
+        @keyframes xgnty7z-B {
+          0% {
+            opacity: .25;
+          }
+
+          100% {
+            opacity: 1;
+          }
+        }
+      }
+
+      @layer priority2 {
+        .x1oz5o6v:hover {
+          background: red;
+        }
+      }
+
+      @layer priority3 {
+        .xeuoslp {
+          animation-name: xgnty7z-B;
+        }
+
+        .xu4yf9m {
+          border-start-start-radius: 7.5px;
+        }
+
+        .x1lliihq {
+          display: block;
+        }
+
+        .x78zum5 {
+          display: flex;
+        }
+
+        .xt0psk2 {
+          display: inline;
+        }
+
+        .x1hm9lzh {
+          margin-inline-start: 10px;
+        }
+      }
+
+      @layer priority4 {
+        .x1egiwwb {
+          height: 500px;
+        }
+
+        .xlrshdv {
+          margin-top: 99px;
+        }
+
+        .xh8yej3 {
+          width: 100%;
+        }
+
+        .x3hqpx7 {
+          width: 50%;
+        }
+      }
+      "
+    `);
   });
 });

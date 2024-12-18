@@ -24,6 +24,7 @@ import type {
 } from 'rollup';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
+import crypto from 'crypto';
 
 const IS_DEV_ENV =
   process.env.NODE_ENV === 'development' ||
@@ -43,6 +44,15 @@ export type PluginOptions = $ReadOnly<{
   >,
   ...
 }>;
+
+function replaceFileName(original: string) {
+  const hash = crypto
+    .createHash('sha256')
+    .update(crypto.randomBytes(16))
+    .digest('hex')
+    .slice(0, 8);
+  return original.replace(/\[hash\]/g, hash);
+}
 
 export default function stylexPlugin({
   dev = IS_DEV_ENV,
@@ -72,7 +82,7 @@ export default function stylexPlugin({
         const { code } = transform({
           targets: browserslistToTargets(browserslist('>= 1%')),
           ...lightningcssOptions,
-          filename: fileName,
+          filename: 'stylex.css',
           code: Buffer.from(collectedCSS),
         });
 
@@ -82,7 +92,7 @@ export default function stylexPlugin({
         // This is the intended API, but Flow doesn't support this pattern.
         // $FlowExpectedError[object-this-reference]
         this.emitFile({
-          fileName,
+          fileName: replaceFileName(fileName),
           source: processedCSS,
           type: 'asset',
         });
