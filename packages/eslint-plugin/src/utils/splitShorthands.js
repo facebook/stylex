@@ -29,6 +29,7 @@ export const createSpecificTransformer = (
       rawValue.toString(),
       allowImportant,
       typeof rawValue === 'number',
+      _preferInline,
     );
   };
 };
@@ -37,7 +38,6 @@ export const createDirectionalTransformer = (
   baseProperty: string,
   blockSuffix: string,
   inlineSuffix: string,
-  basePropertySuffix: string = '',
 ): ((
   rawValue: number | string,
   allowImportant?: boolean,
@@ -55,7 +55,7 @@ export const createDirectionalTransformer = (
       return [[`${baseProperty}`, top]];
     }
 
-    if (splitValues.length === 2 && baseProperty === "margin" || baseProperty === "padding" ) {
+    if (splitValues.length === 2) {
       return [
         [`${baseProperty}${blockSuffix}`, top],
         [`${baseProperty}${inlineSuffix}`, right],
@@ -64,16 +64,16 @@ export const createDirectionalTransformer = (
 
     return preferInline
       ? [
-          [`${baseProperty}Top${basePropertySuffix}`, top],
-          [`${baseProperty}${inlineSuffix}End${basePropertySuffix}`, right],
-          [`${baseProperty}Bottom${basePropertySuffix}`, bottom],
-          [`${baseProperty}${inlineSuffix}Start${basePropertySuffix}`, left],
+          [`${baseProperty}Top`, top],
+          [`${baseProperty}${inlineSuffix}End`, right],
+          [`${baseProperty}Bottom`, bottom],
+          [`${baseProperty}${inlineSuffix}Start`, left],
         ]
       : [
-          [`${baseProperty}Top${basePropertySuffix}`, top],
-          [`${baseProperty}Right${basePropertySuffix}`, right],
-          [`${baseProperty}Bottom${basePropertySuffix}`, bottom],
-          [`${baseProperty}Left${basePropertySuffix}`, left],
+          [`${baseProperty}Top`, top],
+          [`${baseProperty}Right`, right],
+          [`${baseProperty}Bottom`, bottom],
+          [`${baseProperty}Left`, left],
         ];
   };
 };
@@ -166,6 +166,7 @@ export function splitSpecificShorthands(
   value: string,
   allowImportant: boolean = false,
   isNumber: boolean = false,
+  _preferInline: boolean = false,
 ): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
   const { strippedValue, canFix, isInvalidShorthand } =
     processWhitespacesinFunctions(value);
@@ -190,13 +191,30 @@ export function splitSpecificShorthands(
     return [[toCamelCase(property), isNumber ? Number(value) : value]];
   }
 
-  const longformStyle: {
-    [key: string]: number | string,
-  } = {};
+  const directionMap = {
+    left: 'inline-start',
+    right: 'inline-end',
+  };
+
+  // Apply inline transformation to directional properties
+  const inlineProperties = ['border-width', 'border-color', 'border-style'];
+
+  const longformStyle: { [key: string]: number | string } = {};
 
   Object.entries(longform).forEach(([key, val]) => {
+    const newKey =
+      inlineProperties.includes(property) &&
+      _preferInline &&
+      /-(left|right)/.test(key)
+        ? key.replace(
+            /-(left|right)/,
+            (_, direction) => `-${directionMap[direction]}`,
+          )
+        : key;
+
+    // Apply the corrected value, adding spaces or stripping important if necessary
     const correctedVal = addSpacesAfterCommasInParentheses(val);
-    longformStyle[toCamelCase(key)] = allowImportant
+    longformStyle[toCamelCase(newKey)] = allowImportant
       ? correctedVal
       : stripImportant(correctedVal);
   });
