@@ -188,6 +188,61 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       ],
     },
     {
+      options: [{ preferInline: true }],
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderRadius: '10px 15px 20px 25px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderStartStartRadius: '10px',
+            borderStartEndRadius: '15px',
+            borderEndEndRadius: '20px',
+            borderEndStartRadius: '25px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderRadius: '10px 15px 20px 25px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderTopLeftRadius: '10px',
+            borderTopRightRadius: '15px',
+            borderBottomRightRadius: '20px',
+            borderBottomLeftRadius: '25px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
       code: `
         import stylex from 'stylex';
         const styles = stylex.create({
@@ -303,15 +358,15 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
-          const styles = stylex.create({
-            main: {
-              borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
-              borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
-              background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
-            },
-          })
-        `,
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
+          borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
+          background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
+        },
+      })
+      `,
       errors: [
         {
           message:
@@ -327,6 +382,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
+
     {
       code: `
           import stylex from 'stylex';
@@ -713,6 +769,97 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
             'Property shorthands using multiple values like "paddingBlock: 10em 1em" are not supported in StyleX. Separate into individual properties.',
         },
       ],
+    },
+    {
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '4px 5px 6px 7px',
+          borderStyle: 'solid dashed dotted double',
+          borderColor: 'var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)',
+        },
+      })
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderWidth: 4px 5px 6px 7px" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderColor: var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderTopWidth: '4px',
+          borderRightWidth: '5px',
+          borderBottomWidth: '6px',
+          borderLeftWidth: '7px',
+          borderTopStyle: 'solid',
+          borderRightStyle: 'dashed',
+          borderBottomStyle: 'dotted',
+          borderLeftStyle: 'double',
+          borderTopColor: 'var(--fds-gray-10)',
+          borderRightColor: 'var(--fds-gray-20)',
+          borderBottomColor: 'var(--fds-gray-30)',
+          borderLeftColor: 'var(--fds-gray-40)',
+        },
+      })
+      `,
+    },
+    {
+      options: [{ preferInline: true }],
+      code: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '4px 5px 6px 7px',
+          borderStyle: 'solid dashed dotted double',
+          borderColor: 'var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)',
+        },
+      })
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderWidth: 4px 5px 6px 7px" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderStyle: solid dashed dotted double" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderColor: var(--fds-gray-10) var(--fds-gray-20) var(--fds-gray-30) var(--fds-gray-40)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+      output: `
+      import stylex from 'stylex';
+      const styles = stylex.create({
+        main: {
+          borderTopWidth: '4px',
+          borderInlineEndWidth: '5px',
+          borderBottomWidth: '6px',
+          borderInlineStartWidth: '7px',
+          borderTopStyle: 'solid',
+          borderInlineEndStyle: 'dashed',
+          borderBottomStyle: 'dotted',
+          borderInlineStartStyle: 'double',
+          borderTopColor: 'var(--fds-gray-10)',
+          borderInlineEndColor: 'var(--fds-gray-20)',
+          borderBottomColor: 'var(--fds-gray-30)',
+          borderInlineStartColor: 'var(--fds-gray-40)',
+        },
+      })
+      `,
     },
     {
       code: `
