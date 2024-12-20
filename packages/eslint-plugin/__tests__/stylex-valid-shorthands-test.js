@@ -758,7 +758,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           borderLeftColor: 'var(--fds-gray-40)',
         },
       })
-      `
+      `,
     },
     {
       options: [{ preferInline: true }],
@@ -804,7 +804,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           borderInlineStartColor: 'var(--fds-gray-40)',
         },
       })
-      `
+      `,
     },
     {
       code: `

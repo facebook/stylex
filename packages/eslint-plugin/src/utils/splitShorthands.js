@@ -196,14 +196,18 @@ export function splitSpecificShorthands(
     right: 'inline-end',
   };
 
-  // Apply inline transformation to directional properties
-  const inlineProperties = ['border-width', 'border-color', 'border-style'];
+  // List directional properties for later inline transform if needed
+  const directionalProperties = [
+    'border-width',
+    'border-color',
+    'border-style',
+  ];
 
   const longformStyle: { [key: string]: number | string } = {};
 
   Object.entries(longform).forEach(([key, val]) => {
     const newKey =
-      inlineProperties.includes(property) &&
+      directionalProperties.includes(property) &&
       _preferInline &&
       /-(left|right)/.test(key)
         ? key.replace(
@@ -212,7 +216,6 @@ export function splitSpecificShorthands(
           )
         : key;
 
-    // Apply the corrected value, adding spaces or stripping important if necessary
     const correctedVal = addSpacesAfterCommasInParentheses(val);
     longformStyle[toCamelCase(newKey)] = allowImportant
       ? correctedVal
