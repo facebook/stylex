@@ -29,6 +29,7 @@ export const createSpecificTransformer = (
       rawValue.toString(),
       allowImportant,
       typeof rawValue === 'number',
+      _preferInline,
     );
   };
 };
@@ -165,6 +166,7 @@ export function splitSpecificShorthands(
   value: string,
   allowImportant: boolean = false,
   isNumber: boolean = false,
+  _preferInline: boolean = false,
 ): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
   const { strippedValue, canFix, isInvalidShorthand } =
     processWhitespacesinFunctions(value);
@@ -189,13 +191,47 @@ export function splitSpecificShorthands(
     return [[toCamelCase(property), isNumber ? Number(value) : value]];
   }
 
-  const longformStyle: {
-    [key: string]: number | string,
-  } = {};
+  const directionMap = {
+    left: 'inline-start',
+    right: 'inline-end',
+  };
+
+  // List directional properties for later inline transform if needed
+  const directionalProperties = [
+    'border-width',
+    'border-color',
+    'border-style',
+  ];
+
+  const borderRadiusMap: { [string]: string } = {
+    'border-top-left-radius': 'borderStartStartRadius',
+    'border-top-right-radius': 'borderStartEndRadius',
+    'border-bottom-left-radius': 'borderEndStartRadius',
+    'border-bottom-right-radius': 'borderEndEndRadius',
+  };
+
+  const longformStyle: { [key: string]: number | string } = {};
 
   Object.entries(longform).forEach(([key, val]) => {
+    const newKey =
+      property === 'border-radius' && _preferInline
+        ? borderRadiusMap[key] || null
+        : directionalProperties.includes(property) &&
+            _preferInline &&
+            /-(left|right)/.test(key)
+          ? key.replace(
+              /-(left|right)/,
+              (_, direction) => `-${directionMap[direction]}`,
+            )
+          : key;
+
+    if (!newKey) {
+      // If css shorthand expand fails, we won't auto-fix
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+
     const correctedVal = addSpacesAfterCommasInParentheses(val);
-    longformStyle[toCamelCase(key)] = allowImportant
+    longformStyle[toCamelCase(newKey)] = allowImportant
       ? correctedVal
       : stripImportant(correctedVal);
   });
