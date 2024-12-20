@@ -188,6 +188,61 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       ],
     },
     {
+      options: [{ preferInline: true }],
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderRadius: '10px 15px 20px 25px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderStartStartRadius: '10px',
+            borderStartEndRadius: '15px',
+            borderEndEndRadius: '20px',
+            borderEndStartRadius: '25px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderRadius: '10px 15px 20px 25px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          main: {
+            borderTopLeftRadius: '10px',
+            borderTopRightRadius: '15px',
+            borderBottomRightRadius: '20px',
+            borderBottomLeftRadius: '25px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
       code: `
         import stylex from 'stylex';
         const styles = stylex.create({
