@@ -250,44 +250,13 @@ describe('StateManager config parsing', () => {
 
     expect(warnings).toEqual([]);
   });
-  it('logs errors on commonJS unstable_moduleResolution without rootDir', () => {
+  it('commonJS unstable_moduleResolution works without rootDir', () => {
     const stateManager = makeState({
       unstable_moduleResolution: { type: 'commonJS' },
     });
-    expect(stateManager.options.unstable_moduleResolution).toBeNull();
-    expect(warnings).toMatchInlineSnapshot(`
-      [
-        [
-          "[@stylexjs/babel-plugin]",
-          "Expected (options.unstable_moduleResolution) to be one of
-      	- \`null\` or \`undefined\`
-      	- one of
-      		- an object where:
-      			- Expected "type": to be the literal "commonJS"
-      			- Expected "rootDir": to be a string
-      			- Expected "themeFileExtension": to be 	- 
-      				- one of
-      					- \`null\` or \`undefined\`
-      					- a string
-      			- {"type":"commonJS"}
-      		- an object where:
-      			- Expected "type": to be the literal "haste"
-      			- Expected "themeFileExtension": to be 	- 
-      				- one of
-      					- \`null\` or \`undefined\`
-      					- a string
-      			- {"type":"commonJS"}
-      		- an object where:
-      			- Expected "type": to be the literal "experimental_crossFileParsing"
-      			- Expected "rootDir": to be a string
-      			- Expected "themeFileExtension": to be 	- 
-      				- one of
-      					- \`null\` or \`undefined\`
-      					- a string
-      			- {"type":"commonJS"}
-      But got: {"type":"commonJS"}",
-        ],
-      ]
-    `);
+    expect(stateManager.options.unstable_moduleResolution).not.toBeNull();
+    expect(stateManager.options.unstable_moduleResolution?.type).toBe(
+      'commonJS',
+    );
   });
 });

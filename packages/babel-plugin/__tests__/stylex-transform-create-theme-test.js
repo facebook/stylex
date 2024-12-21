@@ -21,6 +21,8 @@ const defaultOpts = {
   classNamePrefix,
 };
 
+// NOTE: While `rootDir` is optional now, It is needed in the
+// test environment still.
 const rootDir = '/stylex/packages/';
 
 function transform(source, opts = defaultOpts) {
