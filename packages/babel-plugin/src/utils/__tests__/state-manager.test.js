@@ -255,7 +255,7 @@ describe('StateManager config parsing', () => {
       unstable_moduleResolution: { type: 'commonJS' },
     });
     expect(stateManager.options.unstable_moduleResolution).not.toBeNull();
-    expect(stateManager.options.unstable_moduleResolution.type).toBe(
+    expect(stateManager.options.unstable_moduleResolution?.type).toBe(
       'commonJS',
     );
   });
