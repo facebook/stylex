@@ -36,7 +36,7 @@ export type ImportPathResolution =
 type ModuleResolution =
   | $ReadOnly<{
       type: 'commonJS',
-      rootDir?: string,
+      rootDir?: ?string,
       themeFileExtension?: ?string,
     }>
   | $ReadOnly<{
@@ -53,7 +53,7 @@ type ModuleResolution =
 const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
   z.object({
     type: z.literal('commonJS'),
-    rootDir: z.string(),
+    rootDir: z.unionOf(z.nullish(), z.string()),
     themeFileExtension: z.unionOf<null | void, string>(z.nullish(), z.string()),
   }),
   z.object({
@@ -75,7 +75,7 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   genConditionalClasses: boolean,
-  unstable_moduleResolution: ?ModuleResolution,
+  unstable_moduleResolution?: ?ModuleResolution,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
   ...
 }>;

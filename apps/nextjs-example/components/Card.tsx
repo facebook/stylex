@@ -68,7 +68,7 @@ const styles = stylex.create({
     transitionDuration: '400ms',
     textAlign: 'center',
     textDecoration: 'none',
-    [tokens.arrowTransform]: {
+    [tokens.arrow_transform]: {
       default: 'translateX(0)',
       ':hover': 'translateX(4px)',
     },
@@ -85,7 +85,7 @@ const styles = stylex.create({
   span: {
     display: 'inline-block',
     transitionProperty: 'transform',
-    transform: tokens.arrowTransform,
+    transform: tokens.arrow_transform,
     transitionDuration: {
       default: '200ms',
       [REDUCE_MOTION]: '0s',
