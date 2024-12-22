@@ -1,0 +1,52 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 5
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Variants
+
+The "variants" pattern allows you to conditionally apply one of several predefined styles based on a value. This is especially useful for theming or dynamic component behavior.
+
+### Example: Button Variants
+
+Here’s how you can create a button component with different visual styles based on a `variant` prop:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  base: {
+    appearance: 'none',
+    borderWidth: 0,
+  },
+});
+const variants = stylex.create({
+  primary: {
+    backgroundColor: {
+      default: 'blue',
+      ':hover': 'darkblue',
+    },
+    color: 'white',
+  },
+  secondary: {
+    backgroundColor: {
+      default: 'gray',
+      ':hover': 'darkgray',
+    },
+    color: 'white',
+  },
+});
+function Button({ variant = 'primary', ...props }) {
+  return <button {...props} {...stylex.props(styles.base, variants[variant], props.style)} />;
+}
+
+// Usage
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+```

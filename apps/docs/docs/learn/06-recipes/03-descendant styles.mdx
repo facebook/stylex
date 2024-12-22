@@ -1,0 +1,76 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 7
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Descendant styles dependent on ancestor state
+
+## Example: Sidebar
+
+Consider the case where the content within a sidebar needs to have conditional styles applied
+when the sidebar as whole is hovered.
+
+Using CSS variables, you can style descendants based on a parent's state, such as `:hover`.
+
+### Step 1
+Define one or more variables using `stylex.defineVars`:
+
+```tsx variables.stylex.ts
+// variables.stylex.ts
+import * as stylex from '@stylexjs/stylex';
+
+export const vars = stylex.defineVars({
+  childColor: 'black',
+});
+```
+
+### Step 2
+Define conditional styles setting the value for the variable in the ancestor component.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { vars } from './variables.stylex';
+
+const styles = stylex.create({
+  parent: {
+    [vars.childColor]: {
+      default: 'black',
+      ':hover': 'blue',
+    },
+  },
+});
+
+function ParentWithHover({children}) {
+  return (
+    <div {...stylex.props(styles.parent)}>
+      {children}
+    </div>
+  );
+}
+```
+
+### Step 3
+Use the variable to style the child component
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { vars } from './variables.stylex';
+
+const styles = stylex.create({
+  row: {
+    color: vars.childColor,
+  }
+});
+
+function ParentWithHover() {
+  return (
+      <span {...stylex.props(styles.child)}><Icon />A Row</span>
+  );
+}
+```
