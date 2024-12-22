@@ -108,13 +108,20 @@ export default function transformStyleXCreate(
       memberExpressions[name].keyframes = { fn: keyframes };
     });
 
-    const { confident, value, fns } = evaluateStyleXCreateArg(firstArg, state, {
-      identifiers,
-      memberExpressions,
-    });
+    const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
+      firstArg,
+      state,
+      {
+        identifiers,
+        memberExpressions,
+      },
+    );
 
     if (!confident) {
-      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE, SyntaxError);
+      throw (deopt ?? path).buildCodeFrameError(
+        reason ?? messages.NON_STATIC_VALUE,
+        SyntaxError,
+      );
     }
     const plainObject = value;
 
