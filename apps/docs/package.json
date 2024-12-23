@@ -20,6 +20,7 @@
     "@docusaurus/preset-classic": "2.4.1",
     "@fortawesome/fontawesome-free": "^6.7.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mdx-js/react": "^1.6.22",
@@ -31,12 +32,14 @@
     "react": "^17.0.2",
     "react-codemirror2": "^7.3.0",
     "react-dom": "^17.0.2",
+    "react-dropzone": "^14.3.5",
+    "react-spinners": "^0.15.0",
     "react-syntax-highlighter": "^15.6.1"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.8",
-    "@stylexjs/eslint-plugin": "0.8.0",
     "@stylexjs/babel-plugin": "0.9.3",
+    "@stylexjs/eslint-plugin": "0.8.0",
     "clean-css": "^5.3.2",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
