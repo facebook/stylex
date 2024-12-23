@@ -19,7 +19,7 @@
     "@babel/core": "^7.25.8",
     "@babel/traverse": "^7.25.7",
     "@babel/types": "^7.25.8",
-    "esm-resolve": "^1.0.11"
+    "@dual-bundle/import-meta-resolve": "^4.1.0"
   },
   "jest": {
     "verbose": true,

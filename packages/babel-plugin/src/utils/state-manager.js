@@ -17,12 +17,13 @@ import type {
 import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
 import fs from 'fs';
+import url from 'url';
 import type { Check } from './validate';
 import * as z from './validate';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import type { ImportOptions } from '@babel/helper-module-imports';
 import * as pathUtils from '../babel-path-utils';
-import { buildResolver } from 'esm-resolve';
+import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 
 type ImportAdditionOptions = Omit<
   Partial<ImportOptions>,
@@ -663,8 +664,6 @@ const filePathResolver = (
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
 ): ?string => {
-  const esmResolve = buildResolver(sourceFilePath);
-
   // Try importing without adding any extension
   // and then every supported extension
   for (const ext of ['', ...EXTENSIONS]) {
@@ -673,20 +672,10 @@ const filePathResolver = (
     // Try to resolve relative paths as is
     if (importPathStr.startsWith('.')) {
       try {
-        return require.resolve(importPathStr, {
-          paths: [path.dirname(sourceFilePath)],
-        });
+        return moduleResolve(importPathStr, url.pathToFileURL(sourceFilePath))
+          .pathname;
       } catch {
-        const resolved = esmResolve(importPathStr, {
-          allowImportingExtraExtensions: true,
-        });
-
-        if (resolved) {
-          if (resolved.startsWith('.')) {
-            return path.resolve(path.dirname(sourceFilePath), resolved);
-          }
-          return resolved;
-        }
+        continue;
       }
     }
 
@@ -694,20 +683,10 @@ const filePathResolver = (
     const allAliases = possibleAliasedPaths(importPathStr, aliases);
     for (const possiblePath of allAliases) {
       try {
-        return require.resolve(possiblePath, {
-          paths: [path.dirname(sourceFilePath)],
-        });
+        return moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath))
+          .pathname;
       } catch {
-        const resolved = esmResolve(importPathStr, {
-          allowImportingExtraExtensions: true,
-        });
-
-        if (resolved) {
-          if (resolved.startsWith('.')) {
-            return path.resolve(path.dirname(sourceFilePath), resolved);
-          }
-          return resolved;
-        }
+        continue;
       }
     }
   }
