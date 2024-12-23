@@ -45,10 +45,13 @@ export type PluginOptions = $ReadOnly<{
   ...
 }>;
 
-function replaceFileName(original: string) {
+function replaceFileName(original: string, css: string) {
+  if (!original.includes('[hash]')) {
+    return original;
+  }
   const hash = crypto
     .createHash('sha256')
-    .update(crypto.randomBytes(16))
+    .update(css)
     .digest('hex')
     .slice(0, 8);
   return original.replace(/\[hash\]/g, hash);
@@ -92,7 +95,7 @@ export default function stylexPlugin({
         // This is the intended API, but Flow doesn't support this pattern.
         // $FlowExpectedError[object-this-reference]
         this.emitFile({
-          fileName: replaceFileName(fileName),
+          fileName: replaceFileName(fileName, processedCSS),
           source: processedCSS,
           type: 'asset',
         });
