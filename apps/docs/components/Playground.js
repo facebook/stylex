@@ -82,10 +82,9 @@ export default function Playground() {
     },
   ]);
   const [url, setUrl] = useState(null);
-  let [loading, setLoading] = useState(true);
-  let [color, setColor] = useState('var(--ifm-color-primary)');
+  const [color] = useState('var(--ifm-color-primary)');
   const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
-  const [resetPreviewFiles, setResetPreviewFiles] = useState(false);
+  // const [resetPreviewFiles, setResetPreviewFiles] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeFileIndex, setActiveFileIndex] = useState(1);
   const [editingValue, setEditingValue] = useState(null);
@@ -408,8 +407,8 @@ export default function Playground() {
         </button>
         <button {...stylex.props(styles.headerBtn)}>
           <FontAwesomeIcon
-            onClick={reloadContainerPreview}
             icon="fa-solid fa-rotate-right"
+            onClick={reloadContainerPreview}
           />
         </button>
       </header>
@@ -420,13 +419,7 @@ export default function Playground() {
       >
         {isSidebarOpen && (!url || error) && (
           <div {...stylex.props(styles.loading)}>
-            <ClipLoader
-              loading={loading}
-              color={color}
-              size={50}
-              aria-label="Loading Spinner"
-              data-testid="loader"
-            />
+            <ClipLoader color={color} size={50} />
           </div>
         )}
         {isSidebarOpen && url && !error && (
@@ -502,13 +495,13 @@ export default function Playground() {
                       >
                         {file.isEditing ? (
                           <input
-                            type="text"
-                            value={editingValue}
-                            onChange={(e) => renameFile(e.target.value)}
                             onBlur={() => disableEditMode(index)}
+                            onChange={(e) => renameFile(e.target.value)}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') disableEditMode(index);
                             }}
+                            type="text"
+                            value={editingValue}
                             {...stylex.props([
                               styles.tabInput,
                               activeFileIndex === index && styles.editingInput,
@@ -516,9 +509,9 @@ export default function Playground() {
                           />
                         ) : (
                           <input
-                            value={file.name}
-                            readOnly={true}
                             onDoubleClick={() => enableEditMode(index)}
+                            readOnly={true}
+                            value={file.name}
                             {...stylex.props(styles.tabInput)}
                           />
                         )}
@@ -641,7 +634,9 @@ const styles = stylex.create({
     paddingRight: '20px',
     paddingLeft: '20px',
     backgroundColor: 'var(--ifm-background-color)',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    borderBottomWidth: '1px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
     boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
     zIndex: 20,
   },
@@ -652,20 +647,23 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--ifm-color-primary-light)',
+    },
+    borderStyle: 'none',
     color: 'var(--fg1)',
     width: '32px',
     height: '32px',
     borderRadius: '4px',
-    border: 'none',
     cursor: 'pointer',
     zIndex: 20,
     padding: '4px',
-    transition: 'background-color 200ms, transform 150ms',
-    ':hover': {
-      backgroundColor: 'var(--ifm-color-primary-light)',
-      transform: 'scale(1.05)',
+    transform: {
+      default: 'none',
+      ':hover': 'scale(1.05)',
     },
+    transition: 'background-color 200ms, transform 150ms',
   },
   container: {
     display: 'flex',
@@ -689,14 +687,14 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    borderStyle: 'none',
     marginLeft: '10px',
-    backgroundColor: 'transparent',
-    border: 'none',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'rgba(0, 0, 0, 0.05)',
+    },
     cursor: 'pointer',
     padding: '4px',
-    ':hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.05)',
-    },
   },
   folderIcon: {
     width: '24px',
@@ -730,7 +728,7 @@ const styles = stylex.create({
   directoryText: {
     marginLeft: '8px',
     textAlign: 'left',
-    flex: 1,
+    flex: '1',
   },
   tabList: {
     display: 'flex',
@@ -745,18 +743,19 @@ const styles = stylex.create({
     justifyContent: 'space-between',
     padding: '4px 10px',
     height: '32px',
-    backgroundColor: 'var(--ifm-background-color)',
+    backgroundColor: {
+      default: 'var(--ifm-background-color)',
+      ':hover': 'var(--ifm-color-primary)',
+    },
     borderRadius: '4px',
     cursor: 'pointer',
     position: 'relative',
+    transform: {
+      default: 'none',
+      ':hover': 'scale(1.03)',
+    },
     transition: 'background-color 200ms, color 200ms, transform 150ms',
     boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-    ':hover': {
-      backgroundColor: 'var(--ifm-color-primary)',
-      color: '#FFFFFF',
-      transform: 'scale(1.03)',
-      opacity: '1',
-    },
   },
   activeTab: {
     backgroundColor: 'var(--ifm-color-primary)',
@@ -766,8 +765,8 @@ const styles = stylex.create({
   tabInput: {
     flex: '1',
     backgroundColor: 'transparent',
+    borderStyle: 'none',
     color: 'inherit',
-    border: 'none',
     fontSize: '14px',
     padding: '2px 4px',
     borderRadius: '2px',
@@ -775,7 +774,9 @@ const styles = stylex.create({
     maxWidth: 'calc(100% - 32px)',
   },
   editingInput: {
-    border: '1px solid var(--ifm-color-primary)',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'var(--ifm-color-primary)',
     cursor: 'text',
     backgroundColor: '#FFFFFF',
     color: 'black',
@@ -785,20 +786,20 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: '10px',
-    backgroundColor: 'transparent',
-    border: 'none',
+    borderStyle: 'none',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'rgba(255, 255, 255, 0.15)',
+    },
     cursor: 'pointer',
     padding: '4px',
-    ':hover': {
-      opacity: '1',
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    },
   },
   editorSection: {
     width: '45%',
     height: '100%',
     overflow: 'auto',
-    borderRight: '1px solid var(--ifm-toc-border-color)',
+    borderRightWidth: '1px',
+    borderRightColor: 'var(--ifm-toc-border-color)',
     backgroundColor: 'var(--playground-sidebar-bg)',
   },
   editor: {
@@ -813,8 +814,8 @@ const styles = stylex.create({
   preview: {
     width: '100%',
     height: '100%',
-    border: 'none',
     backgroundColor: '#ffffff',
+    borderStyle: 'none',
   },
   loading: {
     display: 'flex',
@@ -837,7 +838,9 @@ const styles = stylex.create({
     backgroundColor: 'var(--ifm-background-color)',
   },
   dragActive: {
-    border: '2px dashed var(--ifm-color-primary)',
+    borderWidth: '2px',
+    borderStyle: 'dashed',
+    borderColor: 'var(--ifm-color-primary)',
     backgroundColor: 'rgba(0, 0, 0, 0.05)',
   },
 });
