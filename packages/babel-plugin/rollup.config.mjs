@@ -7,7 +7,6 @@
  *
  */
 
-import alias from '@rollup/plugin-alias';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
@@ -42,19 +41,13 @@ const config = {
   },
   external: process.env['HASTE']
     ? external
-    : [...external, 'esm-resolve', '@stylexjs/shared', '@stylexjs/stylex'],
-  plugins: [
-    alias({
-      entries: [
-        {
-          find: 'esm-resolve',
-          replacement: path.resolve(
-            rootDir,
-            'node_modules/esm-resolve/bundle.js',
-          ),
-        },
+    : [
+        ...external,
+        '@dual-bundle/import-meta-resolve',
+        '@stylexjs/shared',
+        '@stylexjs/stylex',
       ],
-    }),
+  plugins: [
     babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
     nodeResolve({
       preferBuiltins: false,
