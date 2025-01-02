@@ -11,7 +11,7 @@ import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
 
-// Read imports of react and remember the name of the local varsiables for later
+// Read imports of react and remember the name of the local variables for later
 export function readImportDeclarations(
   path: NodePath<t.ImportDeclaration>,
   state: StateManager,
