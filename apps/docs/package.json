@@ -19,7 +19,7 @@
     "@docusaurus/core": "2.4.1",
     "@docusaurus/preset-classic": "2.4.1",
     "@mdx-js/react": "^1.6.22",
-    "@stylexjs/stylex": "0.9.3",
+    "@stylexjs/stylex": "0.10.0",
     "@vercel/analytics": "^1.1.1",
     "clsx": "^1.2.1",
     "react": "^17.0.2",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.8",
     "@stylexjs/eslint-plugin": "0.8.0",
-    "@stylexjs/babel-plugin": "0.9.3",
+    "@stylexjs/babel-plugin": "0.10.0",
     "clean-css": "^5.3.2",
     "eslint": "^8.57.1",
     "eslint-config-airbnb": "^19.0.4",
