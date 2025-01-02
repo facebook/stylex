@@ -85,7 +85,7 @@ function themeNameUUID(): string {
 }
 
 // TODO: memoize the function to:
-// return the same result if the some confirguration is passed in again
+// return the same result if the some configuration is passed in again
 export default function inject({
   insert = defaultInsert,
   ...config
