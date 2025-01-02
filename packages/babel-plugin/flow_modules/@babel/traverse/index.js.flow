@@ -236,7 +236,7 @@ declare export class Binding {
 type _VisitorNodeKeys<S: object> = {
   +[K in keyof t._NodeMap]: ?VisitNode<S, t._NodeMap[K]>,
 };
-type _VistorAliases<S: object> = {
+type _VisitorAliases<S: object> = {
   +[K in keyof t.Aliases]: ?VisitNode<S, t.Aliases[K]>,
 };
 
@@ -244,7 +244,7 @@ export type Visitor<S: object = object> = $ReadOnly<
   Partial<{
     ...VisitNodeObject<S, Node>,
     ..._VisitorNodeKeys<S>,
-    ..._VistorAliases<S>,
+    ..._VisitorAliases<S>,
   }>,
 >;
 
