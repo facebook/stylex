@@ -81,6 +81,15 @@ and esbuild.
     ],
   };
   ```
+
+  Finally, ensure that your app imports a global CSS file that includes the following declaration:
+
+  ```css
+  @stylex;
+  ```
+
+  The PostCSS plugin will replace the delaration with the generated StyleX styles.
+  Make sure that you only include this declaration once in your app.
 </details>
 
 <details>
