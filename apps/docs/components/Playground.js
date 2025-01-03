@@ -20,6 +20,7 @@ import { UnControlled as CodeMirror } from 'react-codemirror2';
 import 'codemirror/mode/javascript/javascript';
 import { files } from './playground-utils/files';
 import useDebounced from './hooks/useDebounced';
+import LoadingSpinner from './LoadingSpinner';
 
 // Add FontAwesome icons to the library
 library.add(faBars, faRotateRight);
@@ -55,17 +56,17 @@ async function wcSpawn(instance, ...args) {
  * @returns {Promise} - Promise that resolves with the configured WebContainer instance.
  */
 async function makeWebcontainer() {
-  console.log('Booting WebContainer...');
+  // console.log('Booting WebContainer...');
   const instance = await WebContainer.boot();
-  console.log('Boot successful!');
+  // console.log('Boot successful!');
 
-  console.log('Mounting files...');
+  // console.log('Mounting files...');
   await instance.mount(files);
-  console.log('Mounted files!');
+  // console.log('Mounted files!');
 
-  console.log('Installing dependencies...');
+  // console.log('Installing dependencies...');
   await wcSpawn(instance, 'npm', ['install']);
-  console.log('Installed dependencies!');
+  // console.log('Installed dependencies!');
 
   return instance;
 }
@@ -83,36 +84,7 @@ export default function Playground() {
   const [error, setError] = useState(null);
   const urlRef = useRef(null);
 
-  /**
-   * Function to build the WebContainer and start the development server.
-   */
-  const build = async () => {
-    const containerInstance = instance.current;
-    if (!containerInstance) {
-      console.log('error due to failed instance');
-      setError(
-        'WebContainer failed to load. Please try reloading or use a different browser.',
-      );
-      return;
-    }
-
-    console.log('Trying to run `npm run dev`...');
-    const process = await containerInstance.spawn('npm', ['run', 'dev']);
-    console.log('Spawned `npm run dev`...');
-    process.output.pipeTo(
-      new WritableStream({
-        write(data) {
-          console.log(data);
-        },
-      }),
-    );
-    console.log('Waiting for server-ready event...');
-    containerInstance.on('server-ready', (port, url) => {
-      console.log('server-ready', port, url);
-      setUrl(url);
-      urlRef.current = url;
-    });
-  };
+  const [activePanel, setActivePanel] = useState('code');
 
   /**
    * Function to update files in the WebContainer.
@@ -159,20 +131,41 @@ export default function Playground() {
   // useEffect to initialize the WebContainer and build it
   useEffect(() => {
     let loadingTimeout;
-    makeWebcontainer().then((i) => {
-      instance.current = i;
-      build().then(() => {
-        loadingTimeout = setTimeout(() => {
-          if (!urlRef.current) {
-            console.log('error due to timeout...');
-            setError(
-              'WebContainer failed to load. Please try reloading or use a different browser.',
-            );
-          }
-          loadingTimeout = null;
-        }, 10000);
+
+    /**
+     * Function to build the WebContainer and start the development server.
+     */
+    async function build() {
+      const containerInstance = await makeWebcontainer();
+
+      if (!containerInstance) {
+        console.log('error due to failed instance');
+        setError(
+          'WebContainer failed to load. Please try reloading or use a different browser.',
+        );
+        return;
+      }
+      instance.current = containerInstance;
+
+      // console.log('Trying to run `npm run dev`...');
+      const process = await containerInstance.spawn('npm', ['run', 'dev']);
+      // console.log('Spawned `npm run dev`...');
+      process.output.pipeTo(
+        new WritableStream({
+          write(data) {
+            console.log(data);
+          },
+        }),
+      );
+      // console.log('Waiting for server-ready event...');
+      containerInstance.on('server-ready', (port, url) => {
+        console.log('server-ready', port, url);
+        setUrl(url);
+        urlRef.current = url;
       });
-    });
+    }
+
+    build();
 
     // Cleanup function to unmount the WebContainer and clear timeouts
     return () => {
@@ -186,26 +179,76 @@ export default function Playground() {
   // Render the Playground component
   return (
     <div {...stylex.props(styles.root)}>
-      <header {...stylex.props(styles.header)}>
-        {/* <button>
-          <FontAwesomeIcon icon="fa-solid fa-bars" />
-        </button> */}
-        <button
-          {...stylex.props(styles.reloadButton)}
-          onClick={reloadWebContainer}
-        >
-          <FontAwesomeIcon
-            aria-label="reload"
-            icon="fa-solid fa-rotate-right"
-          />
-        </button>
-      </header>
+      <div {...stylex.props(styles.headerContainer)}>
+        <div {...stylex.props(styles.headerContent)}>
+          <div {...stylex.props(styles.desktopHeader)}>
+            <span {...stylex.props(styles.headerNote)}>
+              Experimental playground - Try a{' '}
+              <a
+                {...stylex.props(styles.link)}
+                href="https://stackblitz.com/edit/vitejs-vite-3vkyxg?file=package.json"
+              >
+                full example app
+              </a>
+            </span>
+          </div>
+          <div {...stylex.props(styles.mobileNav)}>
+            <button
+              {...stylex.props(
+                styles.tabButton,
+                activePanel === 'code' && styles.tabButtonActive,
+              )}
+              onClick={() => setActivePanel('code')}
+            >
+              Code
+            </button>
+            <button
+              {...stylex.props(
+                styles.tabButton,
+                activePanel === 'preview' && styles.tabButtonActive,
+              )}
+              onClick={() => setActivePanel('preview')}
+            >
+              Preview
+              {url && activePanel === 'preview' && (
+                <span {...stylex.props(styles.mobileReloadContainer)}>
+                  <button
+                    {...stylex.props(
+                      styles.reloadButton,
+                      styles.mobileReloadButton,
+                    )}
+                    aria-label="Reload preview"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      reloadWebContainer();
+                    }}
+                  >
+                    <FontAwesomeIcon icon="fa-solid fa-rotate-right" />
+                  </button>
+                </span>
+              )}
+            </button>
+          </div>
+          <div {...stylex.props(styles.desktopReloadContainer)}>
+            <button
+              {...stylex.props(styles.reloadButton)}
+              aria-label="Reload preview"
+              onClick={reloadWebContainer}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-rotate-right" />
+            </button>
+          </div>
+        </div>
+      </div>
       <div {...stylex.props(styles.container)}>
         <BrowserOnly>
           {() => (
             <>
               <CodeMirror
-                {...stylex.props(styles.textarea)}
+                {...stylex.props(
+                  styles.panel,
+                  activePanel === 'code' && styles.panelActive,
+                )}
                 onChange={(editor, data, newCode) => handleCodeChange(newCode)}
                 options={{
                   mode: 'javascript',
@@ -215,14 +258,32 @@ export default function Playground() {
                 value={code}
               />
               {error ? (
-                <div {...stylex.props(styles.textarea, styles.centered)}>
+                <div
+                  {...stylex.props(
+                    styles.panel,
+                    activePanel === 'preview' && styles.panelActive,
+                    styles.centered,
+                  )}
+                >
                   {error}
                 </div>
               ) : url ? (
-                <iframe {...stylex.props(styles.textarea)} src={url} />
+                <iframe
+                  {...stylex.props(
+                    styles.panel,
+                    activePanel === 'preview' && styles.panelActive,
+                  )}
+                  src={url}
+                />
               ) : (
-                <div {...stylex.props(styles.textarea, styles.centered)}>
-                  Loading...
+                <div
+                  {...stylex.props(
+                    styles.panel,
+                    activePanel === 'preview' && styles.panelActive,
+                    styles.centered,
+                  )}
+                >
+                  <LoadingSpinner />
                 </div>
               )}
             </>
@@ -233,72 +294,173 @@ export default function Playground() {
   );
 }
 
+const MOBILE = '@media (max-width: 768px)';
+
 // Style definitions for the Playground component
 const styles = stylex.create({
   root: {
     minHeight: '100vh',
     backgroundColor: 'var(--bg1)',
   },
-  header: {
-    height: 40,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingInline: 4,
+  headerContainer: {
     backgroundColor: 'var(--playground-container-bg)',
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
     borderBottomColor: 'rgba(255, 255, 255, 0.1)',
     boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)',
-    zIndex: 20,
   },
-  reloadButton: {
-    display: 'flex',
+  headerContent: {
     alignItems: 'center',
-    justifyContent: 'center',
+    display: 'flex',
+    height: 40,
+    justifyContent: 'space-between',
+    paddingInline: 16,
+    position: 'relative',
+  },
+  desktopHeader: {
+    display: {
+      default: 'block',
+      [MOBILE]: 'none',
+    },
+  },
+  headerNote: {
+    color: 'var(--fg2)',
+    fontSize: '0.9rem',
+    fontStyle: 'italic',
+  },
+  mobileNav: {
+    alignItems: 'center',
+    display: {
+      default: 'none',
+      [MOBILE]: 'flex',
+    },
+    flexGrow: 1,
+    gap: 8,
+    height: '100%',
+    width: '100%',
+  },
+  tabButton: {
+    alignItems: 'center',
     backgroundColor: {
       default: 'transparent',
       ':hover': 'var(--ifm-color-primary-light)',
     },
-    color: 'var(--fg1)',
-    width: 32,
-    height: 32,
+    borderColor: 'transparent',
     borderRadius: 4,
     borderStyle: 'none',
+    borderWidth: 0,
+    color: 'var(--fg1)',
     cursor: 'pointer',
-    zIndex: 20,
+    display: 'flex',
+    flexBasis: 0,
+    flexGrow: 1,
+    fontSize: '0.9rem',
+    height: 'calc(100% - 12px)',
+    justifyContent: 'center',
+    paddingBottom: 0,
+    paddingLeft: 16,
+    paddingRight: 16,
+    paddingTop: 0,
+    transitionDuration: '200ms',
+    transitionProperty: 'background-color',
+  },
+  tabButtonActive: {
+    color: 'white',
+    backgroundColor: {
+      default: 'var(--ifm-color-primary)',
+      ':hover': 'var(--ifm-color-primary)',
+    },
+  },
+  reloadButton: {
+    alignItems: 'center',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--ifm-color-primary-light)',
+    },
+    borderRadius: 4,
+    borderStyle: 'none',
+    color: 'var(--fg1)',
+    cursor: 'pointer',
+    display: 'flex',
+    height: 32,
+    justifyContent: 'center',
     padding: 4,
-    transitionProperty: 'background-color, transform',
-    transitionDuration: '200ms, 150ms',
     transform: {
       default: null,
       ':hover': 'scale(1.05)',
     },
+    transitionDuration: '200ms, 150ms',
+    transitionProperty: 'background-color, transform',
+    width: 32,
+    zIndex: 20,
   },
   container: {
-    display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    borderBottomColor: 'var(--cyan)',
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 2,
+    display: 'flex',
     height: stylex.firstThatWorks(
       'calc(100dvh - 100px)',
       'calc(100vh - 100px)',
     ),
-    borderBottomWidth: 2,
-    borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--cyan)',
+    justifyContent: 'center',
+    position: 'relative',
   },
-  textarea: {
+  panel: {
+    alignItems: 'stretch',
+    borderStyle: 'none',
+    borderWidth: 0,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'stretch',
-    justifyContent: 'stretch',
-    width: '50%',
     height: '100%',
-    borderWidth: 0,
-    borderStyle: 'none',
+    justifyContent: 'stretch',
+    left: 0,
+    opacity: {
+      default: 1,
+      [MOBILE]: 0,
+    },
+    pointerEvents: {
+      default: 'auto',
+      [MOBILE]: 'none',
+    },
+    position: {
+      default: 'relative',
+      [MOBILE]: 'absolute',
+    },
+    top: 0,
+    transitionDuration: '200ms',
+    transitionProperty: 'opacity',
+    width: {
+      default: '50%',
+      [MOBILE]: '100%',
+    },
+  },
+  panelActive: {
+    opacity: 1,
+    pointerEvents: 'auto',
+    zIndex: 1,
   },
   centered: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  desktopReloadContainer: {
+    display: {
+      default: 'block',
+      [MOBILE]: 'none',
+    },
+  },
+  mobileReloadContainer: {
+    display: {
+      default: 'none',
+      [MOBILE]: 'inline-flex',
+    },
+    marginLeft: 8,
+  },
+  mobileReloadButton: {
+    color: 'white',
+    height: 24,
+    width: 24,
   },
 });
