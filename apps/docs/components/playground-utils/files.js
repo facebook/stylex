@@ -142,13 +142,13 @@ export default defineConfig({
     "preview": "vite preview"
   },
   "dependencies": {
-    "@stylexjs/stylex": "^0.10.0-beta.2",
+    "@stylexjs/stylex": "^0.10.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.25.9",
-    "@stylexjs/postcss-plugin": "^0.10.0-beta.2",
+    "@stylexjs/postcss-plugin": "^0.10.0",
     "@vitejs/plugin-react": "^4.3.4",
     "postcss": "^8.4.49",
     "vite": "^6.0.1"
@@ -179,8 +179,7 @@ createRoot(root).render(
       },
       'App.jsx': {
         file: {
-          contents: `
-import { useState } from 'react';
+          contents: `import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import * as stylex from '@stylexjs/stylex';
