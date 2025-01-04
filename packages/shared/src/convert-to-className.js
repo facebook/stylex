@@ -31,8 +31,7 @@ export function convertStyleToClassName(
 ): StyleRule {
   const { classNamePrefix = 'x', debug = false } = options;
   const [key, rawValue] = objEntry;
-  const isCSSVariable = key.startsWith('--');
-  const dashedKey = isCSSVariable ? key : dashify(key);
+  const dashedKey = key.startsWith('--') ? key : dashify(key);
 
   let value: string | $ReadOnlyArray<string> = Array.isArray(rawValue)
     ? rawValue.map((eachValue) => transformValue(key, eachValue, options))

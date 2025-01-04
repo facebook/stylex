@@ -1652,4 +1652,51 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
   });
+
+  describe('[transform] setting vars with stylex.create()', () => {
+    test('preserves kebab-case in CSS variable names', () => {
+      // NOTE: the generated variable name is a little weird, but valid.
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            default: {
+              '--background-color': 'red',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xgau0yw{--background-color:red}", 1);
+        export const styles = {
+          default: {
+            "--background-color": "xgau0yw",
+            $$css: true
+          }
+        };"
+      `);
+    });
+
+    test('preserves camelCase in CSS variable names', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            default: {
+              '--myCustomVar': 'red',
+              '--anotherCamelVar': '10px',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1ujxqga{--myCustomVar:red}", 1);
+        _inject2(".x1g24lt9{--anotherCamelVar:10px}", 1);"
+      `);
+    });
+  });
 });
