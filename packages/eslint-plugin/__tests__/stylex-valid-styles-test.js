@@ -550,7 +550,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     import { varsMjs } from './vars.stylex.mjs';
     import { varsCjs } from './vars.stylex.cjs';
     stylex.create({
-      root: (position) => ({
+      root: {
         [vars.color]: 'blue',
         [varsJs.color]: 'blue',
         [varsTs.color]: 'blue',
@@ -558,7 +558,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         [varsJsx.color]: 'blue',
         [varsMjs.color]: 'blue',
         [varsCjs.color]: 'blue',
-      })
+      },
     })
     `,
   ],
