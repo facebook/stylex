@@ -10,12 +10,14 @@
 'use strict';
 
 jest.autoMockOff();
+jest.mock('@dual-bundle/import-meta-resolve');
 
 /* eslint-disable quotes */
 const { transformSync } = require('@babel/core');
 const stylexPlugin = require('../../src/index');
 const jsx = require('@babel/plugin-syntax-jsx');
 const { utils } = require('@stylexjs/shared');
+const { moduleResolve } = require('@dual-bundle/import-meta-resolve');
 
 const hash = utils.hash;
 
@@ -399,6 +401,40 @@ describe('Evaluation of imported values works based on configuration', () => {
             0,
           ],
         ]
+      `);
+    });
+  });
+
+  describe('Module resolution commonJS', () => {
+    test('Recognizes .ts stylex imports when resolving .js relative imports', () => {
+      moduleResolve.mockReturnValue({
+        pathname: '/project/otherFile.stylex.ts',
+      });
+
+      const transformation = transform(
+        `
+        import stylex from 'stylex';
+        import { MyTheme } from './otherFile.stylex.js';
+        const styles = stylex.create({
+          red: {
+            color: MyTheme.__themeName__,
+          }
+        });
+        stylex(styles.red);
+        `,
+        {
+          unstable_moduleResolution: { type: 'commonJS' },
+        },
+      );
+
+      expect(transformation.code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import './otherFile.stylex.js';
+        import { MyTheme } from './otherFile.stylex.js';
+        _inject2(".xoh8dld{color:xb897f7}", 3000);
+        "xoh8dld";"
       `);
     });
   });
