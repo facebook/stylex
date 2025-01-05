@@ -657,6 +657,20 @@ function possibleAliasedPaths(
   return result;
 }
 
+const getPossibleFilePaths = (filePath: string) => {
+  const extension = path.extname(filePath);
+  const filePathWithoutSourceExtension =
+    extension === '' || !EXTENSIONS.includes(extension)
+      ? filePath
+      : filePath.slice(0, -extension.length);
+  // Try importing without adding any extension
+  // and then every supported extension
+  return [
+    filePath,
+    ...EXTENSIONS.map((ext) => filePathWithoutSourceExtension + ext),
+  ];
+};
+
 // a function that resolves the absolute path of a file when given the
 // relative path of the file from the source file
 const filePathResolver = (
@@ -664,11 +678,7 @@ const filePathResolver = (
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
 ): ?string => {
-  // Try importing without adding any extension
-  // and then every supported extension
-  for (const ext of ['', ...EXTENSIONS]) {
-    const importPathStr = relativeFilePath + ext;
-
+  for (const importPathStr of getPossibleFilePaths(relativeFilePath)) {
     // Try to resolve relative paths as is
     if (importPathStr.startsWith('.')) {
       try {
@@ -685,7 +695,7 @@ const filePathResolver = (
       try {
         return moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath))
           .pathname;
-      } catch {
+      } catch (error) {
         continue;
       }
     }
@@ -712,13 +722,9 @@ const addFileExtension = (
 };
 
 const matchesFileSuffix = (allowedSuffix: string) => (filename: string) =>
-  filename.endsWith(`${allowedSuffix}.js`) ||
-  filename.endsWith(`${allowedSuffix}.ts`) ||
-  filename.endsWith(`${allowedSuffix}.tsx`) ||
-  filename.endsWith(`${allowedSuffix}.jsx`) ||
-  filename.endsWith(`${allowedSuffix}.mjs`) ||
-  filename.endsWith(`${allowedSuffix}.cjs`) ||
-  filename.endsWith(allowedSuffix);
+  ['', ...EXTENSIONS].some((extension) =>
+    filename.endsWith(`${allowedSuffix}${extension}`),
+  );
 
 const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
   let programPath = path;
