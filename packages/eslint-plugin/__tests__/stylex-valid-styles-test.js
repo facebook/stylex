@@ -508,7 +508,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     })`,
     // test for stylex create vars tokens
     `
-    import stylex from'stylex';
+    import stylex from 'stylex';
     import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens.stylex';
     stylex.create({
       root: {
@@ -521,7 +521,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `,
     // test using vars as keys
     `
-    import stylex from'stylex';
+    import stylex from 'stylex';
     import { componentVars } from './bug.stylex';
     stylex.create({
       host: {
@@ -536,6 +536,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     stylex.create({
       root: (position) => ({
         [tokens.position]: \`\${position}px\`,
+      })
+    })
+    `,
+    // test importing vars from paths including code file extension
+    `
+    import stylex from 'stylex';
+    import { vars } from './vars.stylex';
+    import { varsJs } from './vars.stylex.js';
+    import { varsTs } from './vars.stylex.ts';
+    import { varsTsx } from './vars.stylex.tsx';
+    import { varsJsx } from './vars.stylex.jsx';
+    import { varsMjs } from './vars.stylex.mjs';
+    import { varsCjs } from './vars.stylex.cjs';
+    stylex.create({
+      root: (position) => ({
+        [vars.color]: 'blue',
+        [varsJs.color]: 'blue',
+        [varsTs.color]: 'blue',
+        [varsTsx.color]: 'blue',
+        [varsJsx.color]: 'blue',
+        [varsMjs.color]: 'blue',
+        [varsCjs.color]: 'blue',
       })
     })
     `,
