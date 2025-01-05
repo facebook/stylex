@@ -657,18 +657,16 @@ function possibleAliasedPaths(
   return result;
 }
 
+// Try importing without adding any extension
+// and then every supported extension
 const getPossibleFilePaths = (filePath: string) => {
   const extension = path.extname(filePath);
-  const filePathWithoutSourceExtension =
-    extension === '' || !EXTENSIONS.includes(extension)
-      ? filePath
-      : filePath.slice(0, -extension.length);
-  // Try importing without adding any extension
-  // and then every supported extension
-  return [
-    filePath,
-    ...EXTENSIONS.map((ext) => filePathWithoutSourceExtension + ext),
-  ];
+  const filePathHasCodeExtension = EXTENSIONS.includes(extension);
+  const filePathNoCodeExtension = filePathHasCodeExtension
+    ? filePath.slice(0, -extension.length)
+    : filePath;
+
+  return [filePath, ...EXTENSIONS.map((ext) => filePathNoCodeExtension + ext)];
 };
 
 // a function that resolves the absolute path of a file when given the
@@ -695,7 +693,7 @@ const filePathResolver = (
       try {
         return moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath))
           .pathname;
-      } catch (error) {
+      } catch {
         continue;
       }
     }

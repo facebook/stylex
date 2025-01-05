@@ -406,9 +406,16 @@ describe('Evaluation of imported values works based on configuration', () => {
   });
 
   describe('Module resolution commonJS', () => {
+    afterEach(() => {
+      moduleResolve.mockReset();
+    });
+
     test('Recognizes .ts stylex imports when resolving .js relative imports', () => {
-      moduleResolve.mockReturnValue({
-        pathname: '/project/otherFile.stylex.ts',
+      moduleResolve.mockImplementation((value) => {
+        if (!value.endsWith('/otherFile.stylex.ts')) {
+          throw new Error('File not found');
+        }
+        return new URL('file:///project/otherFile.stylex.ts');
       });
 
       const transformation = transform(
