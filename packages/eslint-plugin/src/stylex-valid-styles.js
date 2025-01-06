@@ -2395,7 +2395,13 @@ const stylexValidStyles = {
       propLimits = {},
     }: Schema = context.options[0] || {};
 
-    const stylexDefineVarsFileExtension = '.stylex';
+    function isValidStylexDefineVarsFileExtension(filename: string) {
+      const stylexExtension = '.stylex';
+      const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
+      return ['', ...extensions].some((ext) =>
+        filename.endsWith(`${stylexExtension}${ext}`),
+      );
+    }
     const stylexDefineVarsTokenImports = new Set<string>();
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
@@ -2866,9 +2872,8 @@ const stylexValidStyles = {
         }
         const sourceValue = node.source.value;
         const isStylexImport = importsToLookFor.includes(sourceValue);
-        const isStylexDefineVarsImport = sourceValue.endsWith(
-          stylexDefineVarsFileExtension,
-        );
+        const isStylexDefineVarsImport =
+          isValidStylexDefineVarsFileExtension(sourceValue);
         if (!(isStylexImport || isStylexDefineVarsImport)) {
           return;
         }
