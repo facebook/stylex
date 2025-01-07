@@ -35,6 +35,18 @@ function transform(source, opts = defaultOpts) {
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
   }).code;
 }
+
+function transformTypescript(source, opts = {}) {
+  return transformSync(source, {
+    filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
+    parserOpts: {
+      plugins: ['typescript'],
+    },
+    babelrc: false,
+    plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
+  }).code;
+}
+
 let defineVarsOutput = '';
 
 const createTheme = `{
@@ -691,5 +703,32 @@ describe('@stylexjs/babel-plugin stylex.createTheme with literals', () => {
         };"
       `);
     });
+  });
+
+  describe('[transform] typescript namespace', () => {
+    expect(
+      transformTypescript(`
+        import stylex from 'stylex';
+        namespace A  {
+          export const buttonTheme = stylex.defineVars(${createTheme});
+          export const buttonThemePositive = stylex.createTheme(buttonTheme, ${createThemeWithDifferentOrder});
+        }  
+    `),
+    ).toMatchInlineSnapshot(`
+      "import stylex from 'stylex';
+      namespace A {
+        export const buttonTheme = {
+          bgColor: "var(--xgck17p)",
+          bgColorDisabled: "var(--xpegid5)",
+          cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
+          __themeName__: "x568ih9"
+        };
+        export const buttonThemePositive = {
+          $$css: true,
+          x568ih9: "xtrlmmh x568ih9"
+        };
+      }"
+    `);
   });
 });

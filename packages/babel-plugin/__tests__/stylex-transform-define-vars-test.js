@@ -36,6 +36,17 @@ function transform(source, opts = defaultOpts) {
   });
 }
 
+function transformTypescript(source, opts = {}) {
+  return transformSync(source, {
+    filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
+    parserOpts: {
+      plugins: ['typescript'],
+    },
+    babelrc: false,
+    plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
+  }).code;
+}
+
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.defineVars()', () => {
     test('transforms variables object', () => {
@@ -769,6 +780,35 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--xv9uic)",
           __themeName__: "xmpye33"
         };"
+      `);
+    });
+
+    test('transform typescript namespace', () => {
+      expect(
+        transformTypescript(
+          `
+         import stylex from 'stylex';
+         namespace A {
+           export const buttonTheme = stylex.defineVars({
+             bgColor: {
+               default: 'grey'
+             }
+           })
+         }
+      `,
+          { dev: true, ...defaultOpts },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(":root, .x568ih9{--xgck17p:grey;}", 0);
+        namespace A {
+          export const buttonTheme = {
+            bgColor: "var(--xgck17p)",
+            __themeName__: "x568ih9"
+          };
+        }"
       `);
     });
   });

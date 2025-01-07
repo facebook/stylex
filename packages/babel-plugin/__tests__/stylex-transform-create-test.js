@@ -36,6 +36,26 @@ function transform(source, opts = {}) {
   }).code;
 }
 
+function transformTypescript(source, opts = {}) {
+  return transformSync(source, {
+    filename: opts.filename,
+    parserOpts: {
+      plugins: ['typescript'],
+    },
+    babelrc: false,
+    plugins: [
+      [
+        stylexPlugin,
+        {
+          runtimeInjection: true,
+          unstable_moduleResolution: { type: 'haste' },
+          ...opts,
+        },
+      ],
+    ],
+  }).code;
+}
+
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.create()', () => {
     test('transforms style object', () => {
@@ -1301,6 +1321,36 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           }
         };"
+      `);
+    });
+
+    test('typescript namespace transform', () => {
+      expect(
+        transformTypescript(`
+          import stylex from 'stylex';
+          namespace A {
+            export const styles = stylex.create({
+              default: {
+                color: 'red',
+              }
+            })
+          }
+          stylex.props(A.styles);
+      `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1e2nbdu{color:red}", 3000);
+        namespace A {
+          export const styles = {
+            default: {
+              color: "x1e2nbdu",
+              $$css: true
+            }
+          };
+        }
+        stylex.props(A.styles);"
       `);
     });
   });
