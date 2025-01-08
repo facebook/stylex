@@ -25,23 +25,14 @@ const defaultOpts = {
 // test environment still.
 const rootDir = '/stylex/packages/';
 
-function transform(source, opts = defaultOpts) {
-  return transformSync(source, {
-    filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
-    parserOpts: {
-      flow: 'all',
-    },
-    babelrc: false,
-    plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
-  }).code;
-}
+const defaultParserOpts = {
+  flow: 'all',
+};
 
-function transformTypescript(source, opts = {}) {
+function transform(source, opts = defaultOpts, parserOpts = defaultParserOpts) {
   return transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
-    parserOpts: {
-      plugins: ['typescript'],
-    },
+    parserOpts,
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
   }).code;
@@ -707,13 +698,17 @@ describe('@stylexjs/babel-plugin stylex.createTheme with literals', () => {
 
   describe('[transform] typescript namespace', () => {
     expect(
-      transformTypescript(`
+      transform(
+        `
         import stylex from 'stylex';
         namespace A  {
           export const buttonTheme = stylex.defineVars(${createTheme});
           export const buttonThemePositive = stylex.createTheme(buttonTheme, ${createThemeWithDifferentOrder});
         }  
-    `),
+    `,
+        {},
+        { plugins: ['typescript'] },
+      ),
     ).toMatchInlineSnapshot(`
       "import stylex from 'stylex';
       namespace A {

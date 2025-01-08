@@ -21,30 +21,21 @@ const defaultOpts = {
   debug: false,
 };
 
+const defaultParserOpts = {
+  flow: 'all',
+};
+
 // NOTE: While `rootDir` is optional now, It is needed in the
 // test environment still.
 const rootDir = '/stylex/packages/';
 
-function transform(source, opts = defaultOpts) {
+function transform(source, opts = defaultOpts, parserOpts = defaultParserOpts) {
   return transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
-    parserOpts: {
-      flow: 'all',
-    },
+    parserOpts,
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
   });
-}
-
-function transformTypescript(source, opts = {}) {
-  return transformSync(source, {
-    filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
-    parserOpts: {
-      plugins: ['typescript'],
-    },
-    babelrc: false,
-    plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
-  }).code;
 }
 
 describe('@stylexjs/babel-plugin', () => {
@@ -785,7 +776,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('transform typescript namespace', () => {
       expect(
-        transformTypescript(
+        transform(
           `
          import stylex from 'stylex';
          namespace A {
@@ -797,7 +788,8 @@ describe('@stylexjs/babel-plugin', () => {
          }
       `,
           { dev: true, ...defaultOpts },
-        ),
+          { plugins: ['typescript'] },
+        ).code,
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;

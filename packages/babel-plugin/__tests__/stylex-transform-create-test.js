@@ -15,35 +15,17 @@ const { transformSync } = require('@babel/core');
 const flowPlugin = require('@babel/plugin-syntax-flow');
 const stylexPlugin = require('../src/index');
 
-function transform(source, opts = {}) {
+const defaultParserOpts = {
+  flow: 'all',
+};
+
+function transform(source, opts = {}, parserOpts = defaultParserOpts) {
   return transformSync(source, {
     filename: opts.filename,
-    parserOpts: {
-      flow: 'all',
-    },
+    parserOpts,
     babelrc: false,
     plugins: [
       flowPlugin,
-      [
-        stylexPlugin,
-        {
-          runtimeInjection: true,
-          unstable_moduleResolution: { type: 'haste' },
-          ...opts,
-        },
-      ],
-    ],
-  }).code;
-}
-
-function transformTypescript(source, opts = {}) {
-  return transformSync(source, {
-    filename: opts.filename,
-    parserOpts: {
-      plugins: ['typescript'],
-    },
-    babelrc: false,
-    plugins: [
       [
         stylexPlugin,
         {
@@ -1326,7 +1308,8 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('typescript namespace transform', () => {
       expect(
-        transformTypescript(`
+        transform(
+          `
           import stylex from 'stylex';
           namespace A {
             export const styles = stylex.create({
@@ -1336,7 +1319,10 @@ describe('@stylexjs/babel-plugin', () => {
             })
           }
           stylex.props(A.styles);
-      `),
+      `,
+          {},
+          { plugins: ['typescript'] },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
