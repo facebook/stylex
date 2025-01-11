@@ -32,6 +32,7 @@ import {
   getDefaultCachePath,
 } from './cache';
 import {
+  createAliasRewritePlugin,
   createImportPlugin,
   createModuleImportModifierPlugin,
 } from './plugins';
@@ -160,6 +161,8 @@ export async function transformFile(
       : path.join(config.output, config.styleXBundleName),
   );
 
+  const aliases = config.styleXConfig?.aliases;
+
   const result = await babel.transformFileAsync(inputFilePath, {
     babelrc: false,
     presets: config.babelPresets,
@@ -178,7 +181,12 @@ export async function transformFile(
         },
       ],
       createImportPlugin(relativeImport),
-      ...(config.babelPluginsPost ?? []),
+      ...[
+        aliases != null
+          ? createAliasRewritePlugin(inputFilePath, aliases)
+          : null,
+        ...(config.babelPluginsPost ?? []),
+      ].filter(Boolean),
     ],
   });
   if (result == null) {

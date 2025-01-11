@@ -671,7 +671,7 @@ const getPossibleFilePaths = (filePath: string) => {
 
 // a function that resolves the absolute path of a file when given the
 // relative path of the file from the source file
-const filePathResolver = (
+export const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
@@ -721,10 +721,11 @@ const addFileExtension = (
   return importedFilePath + fileExtension;
 };
 
-const matchesFileSuffix = (allowedSuffix: string) => (filename: string) =>
-  ['', ...EXTENSIONS].some((extension) =>
-    filename.endsWith(`${allowedSuffix}${extension}`),
-  );
+export const matchesFileSuffix =
+  (allowedSuffix: string) => (filename: string) =>
+    ['', ...EXTENSIONS].some((extension) =>
+      filename.endsWith(`${allowedSuffix}${extension}`),
+    );
 
 const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
   let programPath = path;
