@@ -1,0 +1,213 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+slug: designing-for-composition
+title: Designing for Style Composition
+authors: 
+  - nmn
+tags: 
+  - concept
+  - design
+---
+
+A previous article discussed how StyleX was initially created to address the 
+needs that arose during the facebook.com rewrite. However, early on, StyleX
+looked quite different from what it is today.
+
+StyleX was developed to replace our previous styling solution, which was
+similar to CSS modules. The biggest challenge we faced was the massive amount
+of CSS and the style recalculation costs of lazy loading styles. So, the very
+first version of StyleX generated atomic classes.
+
+In fact, that was *all* StyleX did for some time. We used utilities like
+`classnames` to compose styles just like we did with our previous styling
+system. The API looked quite different back then:
+
+```tsx
+const styles = stylex({
+  root: {
+    color: 'white',
+    backgroundColor: 'blue',
+  }
+});
+
+<div className={styles('root')} />
+```
+
+It was impossible to use `styles` outside of the file they were defined in.
+
+## The Need for Style Composition
+
+Initially, it seemed like style composition was unnecessary. After all, we'd been
+able to get by with `classnames` to compose styles from CSS modules for years.
+But as we built a component library on top of StyleX, we realized that we *needed*
+style composition. We needed the ability to pass styles around as props
+to components. It became clear that style composition was already
+pervasive in our codebase. However, style composition with `classnames` was
+inconsistent and unpredictable, and we had learned to accept it.
+
+Style composition has never been easy with CSS. Applying multiple CSS rules
+to the same HTML element usually leads to a constant battle with CSS order,
+selector specificity, and growing CSS files. CSS has evolved to provide
+additional tools such as `@layer`, which makes the problem slightly better.
+However, the problem persists.
+
+In any design system, it is common to modify or override certain styles
+of components within certain contexts. Component libraries need to be customizable
+to fit different application designs. Without proper style composition, we end up
+with unnecessary duplication of styles and code.
+
+The rise of runtime CSS-in-JS libraries was fueled, in part, by this need
+to solve the style composition problem. By being able to generate and inject
+styles at runtime, these libraries provided a way to compose
+styles in a way that was not possible with traditional CSS. However, this
+also came with performance trade-offs.
+
+## Learning from Inline Styles
+
+While exploring solutions, we made an interesting observation: inline styles have
+always been naturally composable. In HTML, `style` accepts a string with a list
+of styles. In this string, *the last style applied always wins*.
+
+Inline styles have their own limitations, too. They don't support pseudo-classes,
+media queries, or other selectors. It is also difficult to enforce
+consistency when using inline styles directly in HTML. However, component-based
+frameworks, such as React, largely sidestep any architectural issues with inline
+styles. Components are a layer of abstraction that enables code reuse without
+needing to write the same styles over and over again. This change was noticed
+early and was described in the original [`CSS-in-JS` talk by _Christopher Cheadeu_](https://vimeo.com/116209150).
+
+So, when it came to designing StyleX, we decided to model our styles after
+inline styles. To form a mental model, it can be helpful to think of StyleX
+as "inline styles without the limitations".
+
+## Key Design Decisions
+
+### Static Style Definitions
+
+By the time we made this conscious decision, StyleX had already been in development
+for a while and had evolved organically, inspired by React Native's `StyleSheet` API,
+which was itself inspired by inline styles.
+
+One of the first design decisions we reconsidered was the requirement to
+declare `stylex.create` before using it, without allowing the definition of styles
+inline. We realized that we *had* to allow the ability to statically define
+styles as JavaScript constants and be able to reuse them across multiple elements,
+multiple components, and even multiple files. Once we had this realization, we
+felt more comfortable not offering the ability to define styles inline. Even if
+occasionally inconvenient, it is better to have *one* consistent way to define styles.
+
+### Pseudo-Classes and Media Queries
+
+Our next design question was to decide how to handle pseudo-classes, media queries,
+and other at-rules in a way that *felt* like inline styles and enabled composability.
+Inline styles don't support pseudo-classes or media queries, but it's possible
+to use JavaScript to read such 'conditions' and apply styles accordingly:
+
+```tsx
+<div style={{
+  color: isActive ? 'white'
+    : isHovered ? 'blue'
+    : 'black',
+  width: window.matchMedia('(min-width: 1200px)').matches ? '25%'
+    : window.matchMedia('(min-width: 600px)').matches ? '50%'
+    : '100%'
+}} />
+```
+
+This approach has obvious performance implications, but it also has some strong
+architectural benefits. The style object remains flat, making the composition of
+styles more predictable. We avoid having to deal with complex rules for merging
+styles and dealing with specificity issues. We don't have to think about the
+'default color' or the 'hover color'. We just think about a single 'color'
+value that changes based on the conditions.
+
+All values for a property being co-located can also lead to a more consistent
+design system. Instead of thinking about mobile styles or desktop styles, this
+approach forces you to think responsively about the value of each property.
+
+This realization led to one of our most unique design decisions. Instead of separating "base"
+styles and styles under a media query, which is common in almost every other CSS
+library, we decided to treat pseudo-classes and media queries as 'conditions' *within*
+the value of a property:
+
+```tsx
+const styles = stylex.create({
+  color: {
+    default: 'black',
+    ':hover': 'blue',
+    ':active': 'white',
+  },
+  width: {
+    default: '100%',
+    '@media(min-width: 600px)': '50%',
+    '@media(min-width: 1200px)': '25%',
+  }
+});
+```
+
+We found a way to take the concept of JavaScript conditions from inline styles
+and express them declaratively and statically in a way that can be compiled to
+static CSS while keeping the architectural benefits.
+
+### CSS Shorthands
+
+CSS shorthand properties introduce another factor of confusion when composing
+styles. This decision has remained controversial even within the team itself,
+and so we still support two different strategies for merging shorthands.
+
+React Native pioneered the approach of merging purely by key and assigning
+different priorities to different properties. Longhand properties have a higher
+priority than shorthand properties. So, while you *can* end up
+with a style object that has both `padding` and `paddingTop`, `paddingTop` will
+take precedence regardless of the order in which they are applied.
+
+Inline styles, on the other hand, always merge by order of application, and
+the last style applied always wins. Modeling this behavior in a library that
+compiles to static CSS wasn't obvious at first. We started by expanding
+shorthands into longhand properties at compile time. This approach had many
+edge cases and couldn't be done reliably in all cases.
+
+We eventually discovered a strategy where a shorthand property would also set
+its constituent longhand properties to `null`. This would, in practice, "unset"
+any longhand that may have been applied before. This achieves the exact
+same behavior as inline styles, where the last style applied always wins.
+While this approach can result in larger JavaScript objects after compilation,
+we decided to make it the default behavior as it aligns with our inline styles
+mental model.
+
+### Dynamic Styles
+
+Finally, we needed to handle dynamic styles. Any API modeled after inline styles
+must support them, but we knew we needed to do it with care and intention. We
+wanted to make it possible to use dynamic styles when needed, but we also wanted
+to make it explicit when styles were dynamic. We don't want an API that makes it
+easy to accidentally create dynamic styles.
+
+StyleX allows dynamic styles by using functions. Instead of mixing inline objects
+with static styles created with `stylex.create`, functions let us define all kinds
+of styles in a single consistent way.
+
+Behind the scenes, all styles, even dynamic ones, are compiled to static CSS. We don't
+apply *any* style property as an inline style. *Only* CSS variables are ever applied
+as inline styles and are used as the vehicle to let static styles have dynamic values.
+By not having any style properties as inline styles, we avoid any conflicts that may
+arise from inline styles having higher specificity than static styles. (It also makes
+certain compile-time optimizations possible, but that's its own story.)
+
+## Conclusion
+
+CSS has been around for a long time now. It has evolved in many ways and is now both
+flexible and one of the most powerful layout models that exist. Yet, it remains a
+tool with sharp edges and can be challenging to wield effectively.
+
+We've seen many tools and libraries that have tried to make CSS easier
+to work with. Over the years, many problems have been solved, but the problem of
+style composition has persisted to some extent. Even when it's possible to compose
+styles, there have always been inconsistencies and unpredictable behavior.
+
+Yes, we are building a styling solution that is fast, scalable, and easy to use.
+But we are also building a solution that actually provides predictable style
+composition without any nasty surprises.
