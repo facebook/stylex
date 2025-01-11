@@ -154,29 +154,19 @@ static CSS while keeping the architectural benefits.
 
 ### CSS Shorthands
 
-CSS shorthand properties introduce another factor of confusion when composing
-styles. This decision has remained controversial even within the team itself,
-and so we still support two different strategies for merging shorthands.
+CSS shorthand properties can complicate style composition because they allow the
+same styles to be applied in different ways. This often leaves developers to
+manage these complexities on their own, as many libraries do not address this issue.
 
-React Native pioneered the approach of merging purely by key and assigning
-different priorities to different properties. Longhand properties have a higher
-priority than shorthand properties. So, while you *can* end up
-with a style object that has both `padding` and `paddingTop`, `paddingTop` will
-take precedence regardless of the order in which they are applied.
+StyleX addresses this by providing developers with options for handling shorthand
+properties. By default, StyleX follows the inline style convention where the most
+recently applied style takes precedence.
 
-Inline styles, on the other hand, always merge by order of application, and
-the last style applied always wins. Modeling this behavior in a library that
-compiles to static CSS wasn't obvious at first. We started by expanding
-shorthands into longhand properties at compile time. This approach had many
-edge cases and couldn't be done reliably in all cases.
+Alternatively, StyleX can be configured to prioritize longhand properties over
+shorthand ones, mirroring the behavior in React Native.
 
-We eventually discovered a strategy where a shorthand property would also set
-its constituent longhand properties to `null`. This would, in practice, "unset"
-any longhand that may have been applied before. This achieves the exact
-same behavior as inline styles, where the last style applied always wins.
-While this approach can result in larger JavaScript objects after compilation,
-we decided to make it the default behavior as it aligns with our inline styles
-mental model.
+Regardless of the strategy chosen, StyleX ensures that style merging is consistent
+and predictable.
 
 ### Dynamic Styles
 
