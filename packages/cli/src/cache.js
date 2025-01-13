@@ -8,7 +8,9 @@
  */
 import fs from 'fs/promises';
 import path from 'path';
-import crypto from 'crypto';
+const { utils } = require('@stylexjs/shared');
+
+const hash = utils.hash;
 
 // Default cache directory in `node_modules/.stylex-cache`
 export function getDefaultCachePath() {
@@ -94,5 +96,5 @@ export async function computeHash(filePath) {
   }
 
   const content = await fs.readFile(newPath, 'utf-8');
-  return crypto.createHash('md5').update(content).digest('hex');
+  return hash(content);
 }
