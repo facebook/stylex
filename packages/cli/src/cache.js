@@ -8,7 +8,7 @@
  */
 import fs from 'fs/promises';
 import path from 'path';
-const { utils } = require('@stylexjs/shared');
+import { utils } from '@stylexjs/shared';
 
 const hash = utils.hash;
 
@@ -18,7 +18,7 @@ export function getDefaultCachePath() {
 }
 
 export async function getCacheFilePath(cachePath, filePath) {
-  const projectRoot = path.resolve();
+  const projectRoot = path.join(__dirname, '../../../');
   const relativePath = path.relative(projectRoot, filePath);
   const fileName = relativePath.replace(/[\\/]/g, '__');
   return path.join(cachePath, `${fileName}.json`);
