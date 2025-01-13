@@ -8,7 +8,7 @@
  */
 import fs from 'fs/promises';
 import path from 'path';
-const { utils } = require('@stylexjs/shared');
+import { utils } from '@stylexjs/shared';
 
 const hash = utils.hash;
 
