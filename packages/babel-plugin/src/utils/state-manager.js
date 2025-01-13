@@ -727,8 +727,8 @@ const addFileExtension = (
   return importedFilePath + fileExtension;
 };
 
-export const matchesFileSuffix =
-  (allowedSuffix: string) => (filename: string) =>
+export const matchesFileSuffix: (string) => (string) => boolean =
+  (allowedSuffix) => (filename) =>
     ['', ...EXTENSIONS].some((extension) =>
       filename.endsWith(`${allowedSuffix}${extension}`),
     );
