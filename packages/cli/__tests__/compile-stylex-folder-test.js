@@ -326,6 +326,7 @@ describe('cache mechanism works as expected', () => {
 });
 
 describe('CLI works with a custom cache path', () => {
+  let writeSpy;
   const customCachePath = path.join(__dirname, '__custom_cache__');
   const config: TransformConfig = {
     input: path.resolve('./source'),
@@ -346,14 +347,11 @@ describe('CLI works with a custom cache path', () => {
   config.cachePath = customCachePath;
 
   beforeEach(async () => {
-    if (
-      await fs
-        .access(customCachePath)
-        .then(() => true)
-        .catch(() => false)
-    ) {
-      await fs.rm(customCachePath, { recursive: true, force: true });
-    }
+    writeSpy = jest.spyOn(cacheModule, 'writeCache');
+  });
+
+  afterEach(() => {
+    writeSpy.mockRestore();
   });
 
   afterAll(async () => {
@@ -395,6 +393,20 @@ describe('CLI works with a custom cache path', () => {
     expect(cacheData).toHaveProperty('inputHash');
     expect(cacheData).toHaveProperty('outputHash');
     expect(cacheData).toHaveProperty('collectedCSS');
+  });
+  test('skips transformation when cache is valid', async () => {
+    await compileDirectory(config);
+
+    // Ensure no additional writes were made due to no file changes
+    expect(writeSpy).toHaveBeenCalledTimes(0);
+    writeSpy.mockRestore();
+
+    const customFilePath = path.join(config.input, 'index.js');
+
+    const cacheFilePath = path.join(
+      customCachePath,
+      path.relative(config.input, customFilePath) + '.json',
+    );
 
     await fs.rm(cacheFilePath, { recursive: true, force: true });
   });
