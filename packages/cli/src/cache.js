@@ -18,7 +18,9 @@ export function getDefaultCachePath() {
 }
 
 export async function getCacheFilePath(cachePath, filePath) {
-  const fileName = filePath.replace(/[\\/]/g, '__');
+  const projectRoot = path.resolve();
+  const relativePath = path.relative(projectRoot, filePath);
+  const fileName = relativePath.replace(/[\\/]/g, '__');
   return path.join(cachePath, `${fileName}.json`);
 }
 
