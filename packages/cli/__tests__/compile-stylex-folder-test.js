@@ -347,11 +347,11 @@ describe('CLI works with a custom cache path', () => {
   config.cachePath = customCachePath;
 
   beforeEach(async () => {
-    writeSpy2 = jest.spyOn(cacheModule, 'writeCache');
+    writeSpy = jest.spyOn(cacheModule, 'writeCache');
   });
 
   afterEach(() => {
-    writeSpy2.mockRestore();
+    writeSpy.mockRestore();
   });
 
   afterAll(async () => {
@@ -393,14 +393,13 @@ describe('CLI works with a custom cache path', () => {
     expect(cacheData).toHaveProperty('inputHash');
     expect(cacheData).toHaveProperty('outputHash');
     expect(cacheData).toHaveProperty('collectedCSS');
-
   });
   test('skips transformation when cache is valid', async () => {
     await compileDirectory(config);
 
     // Ensure no additional writes were made due to no file changes
-    expect(writeSpy2).toHaveBeenCalledTimes(0);
-    writeSpy2.mockRestore();
+    expect(writeSpy).toHaveBeenCalledTimes(0);
+    writeSpy.mockRestore();
 
     const customFilePath = path.join(config.input, 'index.js');
 
