@@ -680,8 +680,9 @@ const filePathResolver = (
     // Try to resolve relative paths as is
     if (importPathStr.startsWith('.')) {
       try {
-        return moduleResolve(importPathStr, url.pathToFileURL(sourceFilePath))
-          .pathname;
+        return url.fileURLToPath(
+          moduleResolve(importPathStr, url.pathToFileURL(sourceFilePath)),
+        );
       } catch {
         continue;
       }
@@ -691,8 +692,9 @@ const filePathResolver = (
     const allAliases = possibleAliasedPaths(importPathStr, aliases);
     for (const possiblePath of allAliases) {
       try {
-        return moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath))
-          .pathname;
+        return url.fileURLToPath(
+          moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath)),
+        );
       } catch {
         continue;
       }
