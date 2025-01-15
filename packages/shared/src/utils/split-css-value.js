@@ -50,12 +50,12 @@ function combineNodesWithSlash(nodes: PostCSSValueASTNode[]) {
 
     result.pop();
     const combinedNode = {
-        ...prev,
-        value: prev.value + node.value + next.value,
-        sourceEndIndex: next.sourceEndIndex,
-      };
-      result.push(combinedNode);
-      i++;
+      ...prev,
+      value: prev.value + node.value + next.value,
+      sourceEndIndex: next.sourceEndIndex,
+    };
+    result.push(combinedNode);
+    i++;
   }
 
   return result;
@@ -76,7 +76,9 @@ export default function splitValue(
 
   const parsed = parser(str.trim());
 
-  const nodes = combineNodesWithSlash(parsed.nodes.filter((node) => node.type !== 'space'))
+  const nodes = combineNodesWithSlash(
+    parsed.nodes.filter((node) => node.type !== 'space'),
+  )
     .filter((node) => node.type !== 'div')
     .map(printNode);
 

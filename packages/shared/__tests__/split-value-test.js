@@ -46,6 +46,11 @@ describe('Ensure CSS values are split correctly', () => {
   });
 
   test('Splits a string of values with slash notation appropriately.', () => {
-    expect(splitValue('1px/2px 3px 4px 5px')).toEqual(['1px/2px', '3px', '4px', '5px']);
+    expect(splitValue('1px/2px 3px 4px 5px')).toEqual([
+      '1px/2px',
+      '3px',
+      '4px',
+      '5px',
+    ]);
   });
 });
