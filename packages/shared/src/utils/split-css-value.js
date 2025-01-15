@@ -23,6 +23,44 @@ function printNode(node: PostCSSValueASTNode): string {
   }
 }
 
+// Merges slash-separated values within nodes into single nodes.
+function combineNodesWithSlash(nodes: PostCSSValueASTNode[]) {
+  const result = [];
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+
+    if (node.type !== 'div' || node.value !== '/') {
+      result.push(node);
+      continue;
+    }
+
+    if (i === 0 || i === nodes.length - 1) {
+      result.push(node);
+      continue;
+    }
+
+    const prev = result.at(-1);
+    const next = nodes[i + 1];
+
+    if (!prev || !next || prev.type !== 'word' || next.type !== 'word') {
+      result.push(node);
+      continue;
+    }
+
+    result.pop();
+    const combinedNode = {
+        ...prev,
+        value: prev.value + node.value + next.value,
+        sourceEndIndex: next.sourceEndIndex,
+      };
+      result.push(combinedNode);
+      i++; // 次の要素をスキップ
+  }
+
+  return result;
+}
+
 // Using split(' ') Isn't enough because of values like calc.
 export default function splitValue(
   str: TStyleValue,
@@ -38,8 +76,8 @@ export default function splitValue(
 
   const parsed = parser(str.trim());
 
-  const nodes = parsed.nodes
-    .filter((node) => node.type !== 'space' && node.type !== 'div')
+  const nodes = combineNodesWithSlash(parsed.nodes.filter((node) => node.type !== 'space'))
+    .filter((node) => node.type !== 'div')
     .map(printNode);
 
   if (
