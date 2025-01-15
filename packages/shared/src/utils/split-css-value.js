@@ -55,7 +55,7 @@ function combineNodesWithSlash(nodes: PostCSSValueASTNode[]) {
         sourceEndIndex: next.sourceEndIndex,
       };
       result.push(combinedNode);
-      i++; // 次の要素をスキップ
+      i++;
   }
 
   return result;
