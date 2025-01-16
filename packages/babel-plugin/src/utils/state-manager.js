@@ -24,6 +24,7 @@ import { addDefault, addNamed } from '@babel/helper-module-imports';
 import type { ImportOptions } from '@babel/helper-module-imports';
 import * as pathUtils from '../babel-path-utils';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
+import JSON5 from 'json5';
 
 type ImportAdditionOptions = Omit<
   Partial<ImportOptions>,
