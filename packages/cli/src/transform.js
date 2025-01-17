@@ -108,7 +108,7 @@ export async function compileFile(
     oldOutputHash = await computeHash(outputFilePath);
   }
 
-  const cacheData = await readCache(filePath);
+  const cacheData = await readCache(cachePath, filePath);
 
   if (
     cacheData &&

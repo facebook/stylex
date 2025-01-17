@@ -17,13 +17,13 @@ export function getDefaultCachePath() {
   return path.join('node_modules', '.stylex-cache');
 }
 
-async function getCacheFilePath(cachePath, filePath) {
+export async function getCacheFilePath(cachePath, filePath) {
   const fileName = filePath.replace(/[\\/]/g, '__');
   return path.join(cachePath, `${fileName}.json`);
 }
 
-export async function readCache(filePath) {
-  const cacheFile = await getCacheFilePath(getDefaultCachePath(), filePath);
+export async function readCache(cachePath, filePath) {
+  const cacheFile = await getCacheFilePath(cachePath, filePath);
   try {
     const cacheData = await fs.readFile(cacheFile, 'utf-8');
     return JSON.parse(cacheData);
