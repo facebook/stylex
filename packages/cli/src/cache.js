@@ -17,6 +17,23 @@ export function getDefaultCachePath() {
   return path.join('node_modules', '.stylex-cache');
 }
 
+async function findNearestBabelRC(dir) {
+  let currentDir = dir;
+
+  while (currentDir !== path.parse(currentDir).root) {
+    const babelrcPath = path.join(currentDir, '.babelrc');
+    try {
+      await fs.access(babelrcPath);
+      console.log('Found babelrc:', babelrcPath);
+      return babelrcPath;
+    } catch {
+      currentDir = path.dirname(currentDir);
+    }
+  }
+  console.log('Found no babelrc:');
+  return null;
+}
+
 export async function getCacheFilePath(cachePath, filePath) {
   const projectRoot = path.resolve(__dirname, '../../../');
   const absoluteFilePath = path.resolve(filePath);
@@ -57,6 +74,22 @@ export async function deleteCache(cachePath, filePath) {
       // Rethrow errors other than file not existing
       throw error;
     }
+  }
+}
+
+export async function computeBabelRCHash(path) {
+  const babelPath = await findNearestBabelRC(path);
+  if (!babelPath) {
+    return null; // No .babelrc found
+  }
+
+  try {
+    const fileBuffer = await fs.readFile(babelPath);
+    const fileContent = fileBuffer.toString('utf8');
+    return hash(fileContent);
+  } catch (error) {
+    console.error(`Error reading or hashing file: ${error.message}`);
+    throw error;
   }
 }
 

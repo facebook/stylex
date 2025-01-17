@@ -29,6 +29,7 @@ import {
   readCache,
   computeFilePathHash,
   computeStyleXConfigHash,
+  computeBabelRCHash,
   getDefaultCachePath,
 } from './cache';
 import {
@@ -110,6 +111,8 @@ export async function compileFile(
   }
 
   const configHash = computeStyleXConfigHash(config);
+  const babelHash = await computeBabelRCHash(inputFilePath);
+  console.log(`[stylex] babelHash: ${babelHash}`);
 
   const cacheData = await readCache(cachePath, filePath);
 
@@ -118,7 +121,8 @@ export async function compileFile(
     cacheData.inputHash === inputHash &&
     oldOutputHash &&
     cacheData.outputHash === oldOutputHash &&
-    cacheData.configHash === configHash
+    cacheData.configHash === configHash &&
+    cacheData.babelHash === babelHash
   ) {
     console.log(`[stylex] Using cached CSS for: ${filePath}`);
     config.state.styleXRules.set(filePath, cacheData.collectedCSS);
@@ -144,6 +148,7 @@ export async function compileFile(
       outputHash: newOutputHash,
       collectedCSS: rules,
       configHash,
+      babelHash,
     });
   }
 }
