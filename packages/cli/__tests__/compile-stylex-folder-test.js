@@ -295,6 +295,7 @@ describe('cache mechanism works as expected', () => {
       expect(cacheContent).toHaveProperty('inputHash');
       expect(cacheContent).toHaveProperty('outputHash');
       expect(cacheContent).toHaveProperty('collectedCSS');
+      expect(cacheContent).toHaveProperty('configHash');
     }
   });
 
@@ -304,6 +305,28 @@ describe('cache mechanism works as expected', () => {
     // Ensure no additional writes were made due to no file changes
     expect(writeSpy).toHaveBeenCalledTimes(0);
     writeSpy.mockRestore();
+  });
+
+  test('recompiles when config changes', async () => {
+    config.styleXBundleName = 'stylex_bundle_new.css';
+    await compileDirectory(config);
+
+    // Ensure cache is rewritten due to cache invalidation
+    expect(writeSpy).toHaveBeenCalledTimes(3);
+
+    const cacheFiles = await fs.readdir(cachePath);
+    expect(cacheFiles.length).toEqual(3);
+
+    for (const cacheFile of cacheFiles) {
+      const cacheFilePath = path.join(cachePath, cacheFile);
+      const cacheContent = JSON.parse(
+        await fs.readFile(cacheFilePath, 'utf-8'),
+      );
+      expect(cacheContent).toHaveProperty('inputHash');
+      expect(cacheContent).toHaveProperty('outputHash');
+      expect(cacheContent).toHaveProperty('collectedCSS');
+      expect(cacheContent).toHaveProperty('configHash');
+    }
   });
 
   test('recompiles when input changes', async () => {
@@ -386,6 +409,7 @@ describe('CLI works with a custom cache path', () => {
       expect(cacheContent).toHaveProperty('inputHash');
       expect(cacheContent).toHaveProperty('outputHash');
       expect(cacheContent).toHaveProperty('collectedCSS');
+      expect(cacheContent).toHaveProperty('configHash');
     }
   });
 
