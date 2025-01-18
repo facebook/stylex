@@ -36,6 +36,22 @@ import type {
   TransformFunction,
   TransformList,
 } from './VarTypes';
+export type {
+  ValueWithDefault,
+  Angle,
+  Color,
+  Url,
+  Image,
+  Integer,
+  LengthPercentage,
+  Length,
+  Percentage,
+  Num,
+  Resolution,
+  Time,
+  TransformFunction,
+  TransformList,
+} from './VarTypes';
 
 export type {
   VarGroup,
