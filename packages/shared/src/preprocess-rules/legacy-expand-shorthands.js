@@ -162,7 +162,7 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   ],
 
   borderRadius: (rawValue: TStyleValue): TReturn => {
-    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
+    const [top, right = top, bottom = top, left = right] = splitValue(rawValue, 'borderRadius');
 
     return [
       ['borderTopStartRadius', top],
