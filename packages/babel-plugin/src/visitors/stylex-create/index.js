@@ -134,7 +134,7 @@ export default function transformStyleXCreate(
       dynamicFnsNames.forEach((fnsName) => {
         injectedInheritStyles[fnsName] = {
           priority: 0,
-          ltr: `@property ${fnsName} { syntax: "*"; inherits: false; initial-value: "*";}`,
+          ltr: `@property ${fnsName} { syntax: "*"; inherits: false;}`,
           rtl: null,
         };
       });
