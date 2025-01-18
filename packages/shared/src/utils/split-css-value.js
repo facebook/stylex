@@ -24,7 +24,9 @@ function printNode(node: PostCSSValueASTNode): string {
 }
 
 // Splits PostCSS value nodes for border-radius into horizontal and vertical groups by slash.
-function splitNodesBySlash(nodes: PostCSSValueASTNode[]): PostCSSValueASTNode[][] {
+function splitNodesBySlash(
+  nodes: PostCSSValueASTNode[],
+): PostCSSValueASTNode[][] {
   const result = [];
   let current = [];
 
