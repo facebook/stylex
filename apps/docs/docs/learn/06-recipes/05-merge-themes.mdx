@@ -8,10 +8,12 @@ sidebar_position: 5
 
 # Merge Themes
 
-`Theme`s in StyleX are mutually exclusive and do not merge. If multiple `Theme`s are applied
-on the same element, the last theme applied wins.
+`Theme`s for the *same* `VarGroup` are mutually exclusive and do not merge.
+Any variable in a `VarGroup` that is not explicitly overridden in a `Theme` for that `VarGroup`
+is set to its default value.
 
-However, you can explicitly define a `Theme` that merges the values of two or more `Theme`s.
+However, you can reuse common constants when defining multiple themes for a particular
+`VarGroup` and avoid excessive repetition.
 
 ## Example
 
