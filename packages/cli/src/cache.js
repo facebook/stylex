@@ -17,8 +17,22 @@ export function getDefaultCachePath() {
   return path.join('node_modules', '.stylex-cache');
 }
 
+async function findProjectRoot(startDir = __dirname) {
+  let currentDir = path.resolve(startDir);
+  while (currentDir !== path.parse(currentDir).root) {
+    const packageJsonPath = path.join(currentDir, 'package.json');
+    try {
+      await fs.access(packageJsonPath);
+      return currentDir;
+    } catch (error) {
+      currentDir = path.dirname(currentDir);
+    }
+  }
+  throw new Error('Project root not found');
+}
+
 export async function getCacheFilePath(cachePath, filePath) {
-  const projectRoot = path.resolve(__dirname, '../../../');
+  const projectRoot = await findProjectRoot(filePath);
   const absoluteFilePath = path.resolve(filePath);
   const relativePath = path.relative(projectRoot, absoluteFilePath);
   const fileName = relativePath.replace(/[\\/]/g, '__');
