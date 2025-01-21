@@ -27,7 +27,8 @@ import fs from 'fs';
 import {
   writeCache,
   readCache,
-  computeHash,
+  computeFilePathHash,
+  computeStyleXConfigHash,
   getDefaultCachePath,
 } from './cache';
 import {
@@ -102,11 +103,13 @@ export async function compileFile(
   const outputFilePath = path.join(config.output, filePath);
   const cachePath = config.cachePath || getDefaultCachePath();
 
-  const inputHash = await computeHash(inputFilePath);
+  const inputHash = await computeFilePathHash(inputFilePath);
   let oldOutputHash = null;
   if (fs.existsSync(outputFilePath)) {
-    oldOutputHash = await computeHash(outputFilePath);
+    oldOutputHash = await computeFilePathHash(outputFilePath);
   }
+
+  const configHash = computeStyleXConfigHash(config);
 
   const cacheData = await readCache(cachePath, filePath);
 
@@ -114,7 +117,8 @@ export async function compileFile(
     cacheData &&
     cacheData.inputHash === inputHash &&
     oldOutputHash &&
-    cacheData.outputHash === oldOutputHash
+    cacheData.outputHash === oldOutputHash &&
+    cacheData.configHash === configHash
   ) {
     console.log(`[stylex] Using cached CSS for: ${filePath}`);
     config.state.styleXRules.set(filePath, cacheData.collectedCSS);
@@ -133,12 +137,13 @@ export async function compileFile(
 
     writeCompiledJS(outputFilePath, code);
 
-    const newOutputHash = await computeHash(outputFilePath);
+    const newOutputHash = await computeFilePathHash(outputFilePath);
 
     await writeCache(cachePath, filePath, {
       inputHash,
       outputHash: newOutputHash,
       collectedCSS: rules,
+      configHash,
     });
   }
 }
