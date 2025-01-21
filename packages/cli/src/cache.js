@@ -60,23 +60,7 @@ export async function deleteCache(cachePath, filePath) {
   }
 }
 
-export function computeStyleXConfigHash(config) {
-  // Excluding `input` and `output` paths to hash config settings
-  const configOptions = Object.fromEntries(
-    Object.entries(config).filter(
-      ([key]) => key !== 'input' && key !== 'output',
-    ),
-  );
-
-  const jsonRepresentation = JSON.stringify(
-    configOptions,
-    Object.keys(configOptions).sort(),
-  );
-
-  return hash(jsonRepresentation);
-}
-
-export async function computeFilePathHash(filePath) {
+export async function computeHash(filePath) {
   const absoluteFilePath = path.resolve(filePath);
   const parsedFile = path.parse(absoluteFilePath);
 
