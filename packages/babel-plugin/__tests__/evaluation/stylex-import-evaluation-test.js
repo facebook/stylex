@@ -371,7 +371,7 @@ describe('Evaluation of imported values works based on configuration', () => {
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
         _inject2(".__hashed_var__b69i2g{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb)}", 1);
-        _inject2("@property ----__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false; initial-value: \\"*\\";}", 0);
+        _inject2("@property ----__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}", 0);
         const styles = {
           color: color => [{
             "--__hashed_var__1jqb1tb": color == null ? null : "__hashed_var__b69i2g",
@@ -395,7 +395,7 @@ describe('Evaluation of imported values works based on configuration', () => {
           [
             "----__hashed_var__1jqb1tb",
             {
-              "ltr": "@property ----__hashed_var__1jqb1tb { syntax: "*"; inherits: false; initial-value: "*";}",
+              "ltr": "@property ----__hashed_var__1jqb1tb { syntax: "*"; inherits: false;}",
               "rtl": null,
             },
             0,
