@@ -258,6 +258,11 @@ describe('cache mechanism works as expected', () => {
       copiedNodeModules: false,
     },
   };
+
+  beforeAll(async () => {
+    await fs.rm(cachePath, { recursive: true, force: true });
+  });
+
   beforeEach(() => {
     writeSpy = jest.spyOn(cacheModule, 'writeCache');
   });
@@ -350,7 +355,8 @@ describe('cache mechanism works as expected', () => {
 
 describe('CLI works with a custom cache path', () => {
   let writeSpy;
-  const customCachePath = path.join(__dirname, '__custom_cache__');
+  const projectRoot = path.resolve(__dirname, '../../../');
+  const customCachePath = path.join(projectRoot, '__custom_cache__');
   const config: TransformConfig = {
     input: path.resolve('./source'),
     output: path.resolve('./src'),
@@ -392,31 +398,21 @@ describe('CLI works with a custom cache path', () => {
   test('uses the custom cache path for caching', async () => {
     await compileDirectory(config);
 
-    const customFilePath = path.join(config.input, 'index.js');
+    const cacheFiles = await fs.readdir(customCachePath);
+    expect(cacheFiles.length).toEqual(3);
 
-    const cacheFilePath = path.join(
-      customCachePath,
-      path.relative(config.input, customFilePath) + '.json',
-    );
-
-    expect(
-      await fs
-        .access(customCachePath)
-        .then(() => true)
-        .catch(() => false),
-    ).toBe(true);
-    expect(
-      await fs
-        .access(cacheFilePath)
-        .then(() => true)
-        .catch(() => false),
-    ).toBe(true);
-
-    const cacheData = JSON.parse(await fs.readFile(cacheFilePath, 'utf-8'));
-    expect(cacheData).toHaveProperty('inputHash');
-    expect(cacheData).toHaveProperty('outputHash');
-    expect(cacheData).toHaveProperty('collectedCSS');
+    for (const cacheFile of cacheFiles) {
+      const cacheFilePath = path.join(customCachePath, cacheFile);
+      const cacheContent = JSON.parse(
+        await fs.readFile(cacheFilePath, 'utf-8'),
+      );
+      expect(cacheContent).toHaveProperty('inputHash');
+      expect(cacheContent).toHaveProperty('outputHash');
+      expect(cacheContent).toHaveProperty('collectedCSS');
+      expect(cacheContent).toHaveProperty('configHash');
+    }
   });
+
   test('skips transformation when cache is valid', async () => {
     await compileDirectory(config);
 
