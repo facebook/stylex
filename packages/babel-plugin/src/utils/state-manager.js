@@ -78,6 +78,7 @@ export type StyleXOptions = $ReadOnly<{
   genConditionalClasses: boolean,
   unstable_moduleResolution?: ?ModuleResolution,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  rewriteAliases?: boolean,
   ...
 }>;
 
@@ -85,6 +86,7 @@ type StyleXStateOptions = $ReadOnly<{
   ...StyleXOptions,
   runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
   aliases?: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
+  rewriteAliases: boolean,
   ...
 }>;
 
@@ -289,6 +291,10 @@ export default class StateManager {
       styleResolution,
       unstable_moduleResolution,
       treeshakeCompensation,
+      rewriteAliases:
+        typeof options.rewriteAliases === 'boolean'
+          ? options.rewriteAliases
+          : false,
     };
     return opts;
   }
@@ -671,7 +677,7 @@ const getPossibleFilePaths = (filePath: string) => {
 
 // a function that resolves the absolute path of a file when given the
 // relative path of the file from the source file
-const filePathResolver = (
+export const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
@@ -704,7 +710,7 @@ const filePathResolver = (
   return null;
 };
 
-const EXTENSIONS = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
+export const EXTENSIONS = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
 
 const addFileExtension = (
   importedFilePath: string,
@@ -721,10 +727,11 @@ const addFileExtension = (
   return importedFilePath + fileExtension;
 };
 
-const matchesFileSuffix = (allowedSuffix: string) => (filename: string) =>
-  ['', ...EXTENSIONS].some((extension) =>
-    filename.endsWith(`${allowedSuffix}${extension}`),
-  );
+export const matchesFileSuffix: (string) => (string) => boolean =
+  (allowedSuffix) => (filename) =>
+    ['', ...EXTENSIONS].some((extension) =>
+      filename.endsWith(`${allowedSuffix}${extension}`),
+    );
 
 const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
   let programPath = path;
@@ -749,3 +756,16 @@ const getProgramStatement = (path: NodePath<>): NodePath<> => {
   }
   return programPath;
 };
+
+export function getRelativePath(from: string, to: string): string {
+  const relativePath = path.relative(path.parse(from).dir, to);
+  return formatRelativePath(toPosixPath(relativePath));
+}
+
+function toPosixPath(filePath: string): string {
+  return filePath.split(path.sep).join(path.posix.sep);
+}
+
+function formatRelativePath(filePath: string) {
+  return filePath.startsWith('.') ? filePath : './' + filePath;
+}
