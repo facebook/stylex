@@ -13,7 +13,7 @@ import type { CliConfig, TransformConfig } from '../src/config';
 
 import { compileDirectory } from '../src/transform';
 import * as cacheModule from '../src/cache';
-import { getDefaultCachePath } from '../src/cache';
+import { getDefaultCachePath, findProjectRoot } from '../src/cache';
 
 const fs = require('fs').promises;
 import { isDir, getRelativePath } from '../src/files';
@@ -428,5 +428,55 @@ describe('CLI works with a custom cache path', () => {
     );
 
     await fs.rm(cacheFilePath, { recursive: true, force: true });
+  });
+});
+
+describe('findProjectRoot', () => {
+  const tempDir = path.resolve('./temp_test_project');
+
+  beforeAll(async () => {
+    // Set up a temporary test project structure
+    await fs.mkdir(tempDir, { recursive: true });
+  });
+
+  afterAll(async () => {
+    // Clean up the temporary test project
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  test('finds root based on package.json', async () => {
+    const rootDir = path.join(tempDir, 'project_root');
+    await fs.mkdir(rootDir, { recursive: true });
+    await fs.writeFile(path.join(rootDir, 'package.json'), '{}', 'utf-8');
+
+    const nestedDir = path.join(rootDir, 'nested/dir');
+    await fs.mkdir(nestedDir, { recursive: true });
+
+    const detectedRoot = await findProjectRoot(nestedDir);
+    expect(detectedRoot).toBe(rootDir);
+  });
+
+  test('finds root based on deno.json', async () => {
+    const rootDir = path.join(tempDir, 'deno_project');
+    await fs.mkdir(rootDir, { recursive: true });
+    await fs.writeFile(path.join(rootDir, 'deno.json'), '{}', 'utf-8');
+
+    const nestedDir = path.join(rootDir, 'nested/dir');
+    await fs.mkdir(nestedDir, { recursive: true });
+
+    const detectedRoot = await findProjectRoot(nestedDir);
+    expect(detectedRoot).toBe(rootDir);
+  });
+
+  test('finds root based on .git', async () => {
+    const rootDir = path.join(tempDir, 'git_project');
+    await fs.mkdir(rootDir, { recursive: true });
+    await fs.mkdir(path.join(rootDir, '.git'));
+
+    const nestedDir = path.join(rootDir, 'nested/dir');
+    await fs.mkdir(nestedDir, { recursive: true });
+
+    const detectedRoot = await findProjectRoot(nestedDir);
+    expect(detectedRoot).toBe(rootDir);
   });
 });
