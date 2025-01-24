@@ -17,18 +17,29 @@ export function getDefaultCachePath() {
   return path.join('node_modules', '.stylex-cache');
 }
 
-async function findProjectRoot(startDir = __dirname) {
-  let currentDir = path.resolve(startDir);
-  while (currentDir !== path.parse(currentDir).root) {
-    const packageJsonPath = path.join(currentDir, 'package.json');
-    try {
-      await fs.access(packageJsonPath);
-      return currentDir;
-    } catch (error) {
-      currentDir = path.dirname(currentDir);
+const PROJECT_INDICATORS = ['package.json', 'deno.json', 'deno.jsonc', '.git'];
+
+export async function findProjectRoot(startPath = process.cwd()) {
+  let currentDir = path.resolve(startPath);
+  const rootDir = path.parse(currentDir).root;
+
+  while (currentDir !== rootDir) {
+    for (const indicator of PROJECT_INDICATORS) {
+      try {
+        const filePath = path.join(currentDir, indicator);
+        await fs.access(filePath);
+        return currentDir;
+      } catch {}
     }
+
+    currentDir = path.dirname(currentDir);
   }
-  throw new Error('Project root not found');
+
+  throw new Error(
+    `Project root not found. None of the following indicators were found: ${PROJECT_INDICATORS.join(
+      ', ',
+    )}`,
+  );
 }
 
 export async function getCacheFilePath(cachePath, filePath) {
