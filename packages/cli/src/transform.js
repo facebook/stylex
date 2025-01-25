@@ -112,7 +112,6 @@ export async function compileFile(
 
   const configHash = computeStyleXConfigHash(config);
   const babelHash = await computeBabelRCHash(inputFilePath);
-  console.log(`[stylex] babelHash: ${babelHash}`);
 
   const cacheData = await readCache(cachePath, filePath);
 
