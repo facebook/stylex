@@ -261,6 +261,10 @@ describe('cache mechanism works as expected', () => {
 
   beforeAll(async () => {
     await fs.rm(cachePath, { recursive: true, force: true });
+    await fs.writeFile(
+      path.join(process.cwd(), '.babelrc'),
+      JSON.stringify({ presets: ['@babel/preset-env'] }, null, 2),
+    );
   });
 
   beforeEach(() => {
@@ -274,6 +278,7 @@ describe('cache mechanism works as expected', () => {
   afterAll(async () => {
     await fs.rm(config.output, { recursive: true, force: true });
     await fs.rm(cachePath, { recursive: true, force: true });
+    await fs.rm(path.join(process.cwd(), '.babelrc'));
   });
 
   test('first compilation populates the cache', async () => {
@@ -309,6 +314,31 @@ describe('cache mechanism works as expected', () => {
 
   test('recompiles when config changes', async () => {
     config.styleXBundleName = 'stylex_bundle_new.css';
+    await compileDirectory(config);
+
+    // Ensure cache is rewritten due to cache invalidation
+    expect(writeSpy).toHaveBeenCalledTimes(3);
+
+    const cacheFiles = await fs.readdir(cachePath);
+    expect(cacheFiles.length).toEqual(3);
+
+    for (const cacheFile of cacheFiles) {
+      const cacheFilePath = path.join(cachePath, cacheFile);
+      const cacheContent = JSON.parse(
+        await fs.readFile(cacheFilePath, 'utf-8'),
+      );
+      expect(cacheContent).toHaveProperty('inputHash');
+      expect(cacheContent).toHaveProperty('outputHash');
+      expect(cacheContent).toHaveProperty('collectedCSS');
+      expect(cacheContent).toHaveProperty('configHash');
+    }
+  });
+
+  test('recompiles when babelrc changes', async () => {
+    await fs.writeFile(
+      path.join(process.cwd(), '.babelrc'),
+      JSON.stringify({ presets: ['@babel/preset-react'] }, null, 2),
+    );
     await compileDirectory(config);
 
     // Ensure cache is rewritten due to cache invalidation
