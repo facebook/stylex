@@ -10,7 +10,8 @@
 /* eslint-disable no-unused-vars */
 
 import * as React from 'react';
-import stylex from '../src/stylex';
+import * as stylex from '../src/stylex';
+import stylexLegacy from '../src/stylex';
 import type { StyleXVar, VarGroup, Theme } from '../src/StyleXTypes';
 
 const DARK = '@media (prefers-color-scheme: dark)';
@@ -52,7 +53,7 @@ const correctTheme = stylex.createTheme(buttonTokens, {
 
 correctTheme as Theme<typeof buttonTokens, string>;
 
-const result: string = stylex(correctTheme);
+const result: string = stylexLegacy(correctTheme);
 const result2: $ReadOnly<{
   className?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
@@ -140,6 +141,14 @@ const typedTokens = stylex.defineVars({
   translucent: stylex.types.number<number>(0.5),
   shortAnimation: stylex.types.time<string | 0>('0.5s'),
 });
+
+const _bgColor: StyleXVar<stylex.Types.Color<string>> = typedTokens.bgColor;
+const _cornerRadius: StyleXVar<stylex.Types.Length<string | number>> =
+  typedTokens.cornerRadius;
+const _translucent: StyleXVar<stylex.Types.Num<number>> =
+  typedTokens.translucent;
+const _shortAnimation: StyleXVar<stylex.Types.Time<string | 0>> =
+  typedTokens.shortAnimation;
 
 const correctlyTypedTheme = stylex.createTheme(typedTokens, {
   bgColor: stylex.types.color('red'),
