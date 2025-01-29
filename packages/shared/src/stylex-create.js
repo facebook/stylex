@@ -15,7 +15,8 @@ import type {
 } from './common-types';
 import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 
-import createHash, { createShortHash } from './hash';
+// import createHash from './hash';
+import { createShortHash } from './hash';
 import { IncludedStyles } from './stylex-include';
 import { defaultOptions } from './utils/default-options';
 import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
