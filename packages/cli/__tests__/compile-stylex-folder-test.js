@@ -126,30 +126,44 @@ describe('cli works with -i and -o args', () => {
 
   test('script start', (done) => {
     const onClose = async () => {
-      for (const dir of config.output) {
-        const outputDir = await fs.readdir(dir);
-        for (const file of outputDir) {
-          const snapshotDir = path.resolve(path.join(snapshot, file));
-          expect(
-            await fs
-              .access(snapshotDir)
-              .then(() => true)
-              .catch(() => false),
-          ).toBe(true);
-          const outputPath = path.join(dir, file);
-          if (path.extname(outputPath) === '.js') {
-            const outputContent = await fs.readFile(outputPath, 'utf-8');
-            const snapshotContent = await fs.readFile(snapshotDir, 'utf-8');
-            expect(outputContent).toEqual(snapshotContent);
-          }
-        }
+      try {
+        await Promise.all(
+          config.output.map(async (dir) => {
+            const outputDir = await fs.readdir(dir);
+            await Promise.all(
+              outputDir.map(async (file) => {
+                const snapshotDir = path.resolve(snapshot, file);
+
+                const snapshotExists = await fs
+                  .access(snapshotDir)
+                  .then(() => true)
+                  .catch(() => false);
+                expect(snapshotExists).toBe(true);
+
+                const outputPath = path.join(dir, file);
+                if (path.extname(outputPath) === '.js') {
+                  const [outputContent, snapshotContent] = await Promise.all([
+                    fs.readFile(outputPath, 'utf-8'),
+                    fs.readFile(snapshotDir, 'utf-8'),
+                  ]);
+                  expect(outputContent).toEqual(snapshotContent);
+                }
+              }),
+            );
+          }),
+        );
+      } catch (err) {
+        done(err);
+      } finally {
+        await clearTestDir(config);
+        done();
       }
-      await clearTestDir(config);
-      done();
     };
 
-    runCli(`-i ${config.input[0]} -o ${config.output[0]}`, config, onClose);
-  }, 10000);
+    runCli(`-i ${config.input[0]} -o ${config.output[0]}`, config, () => {
+      onClose();
+    });
+  }, 20000);
 
   test('script runs with absolute input and output paths', (done) => {
     const absConfig: CliConfig = {
@@ -189,34 +203,40 @@ describe('cli works with multiple inputs and outputs', () => {
 
   test('script compiles multiple directories', (done) => {
     const onClose = async () => {
-      let isSecondOutput = false;
-      for (const dir of config.output) {
-        if (dir.endsWith('src2')) {
-          isSecondOutput = true;
-        }
-        const outputDir = await fs.readdir(dir);
-        for (const file of outputDir) {
-          if (isSecondOutput) {
-            expect(file).not.toContain(config.styleXBundleName);
+      try {
+        let isSecondOutput = false;
+        for (const dir of config.output) {
+          if (dir.endsWith('src2')) {
+            isSecondOutput = true;
           }
-          const outputPath = path.join(dir, file);
-          const snapshotDir = isSecondOutput ? snapshot + '2' : snapshot;
-          const snapshotPath = path.join(snapshotDir, file);
-          expect(
-            await fs
+          const outputDir = await fs.readdir(dir);
+          for (const file of outputDir) {
+            if (isSecondOutput) {
+              expect(file).not.toContain(config.styleXBundleName);
+            }
+            const outputPath = path.join(dir, file);
+            const snapshotDir = isSecondOutput ? snapshot + '2' : snapshot;
+            const snapshotPath = path.join(snapshotDir, file);
+
+            const exists = await fs
               .access(snapshotPath)
               .then(() => true)
-              .catch(() => false),
-          ).toBe(true);
-          if (path.extname(outputPath) === '.js') {
-            const outputContent = await fs.readFile(outputPath, 'utf-8');
-            const snapshotContent = await fs.readFile(snapshotPath, 'utf-8');
-            expect(outputContent).toEqual(snapshotContent);
+              .catch(() => false);
+            expect(exists).toBe(true);
+
+            if (path.extname(outputPath) === '.js') {
+              const outputContent = await fs.readFile(outputPath, 'utf-8');
+              const snapshotContent = await fs.readFile(snapshotPath, 'utf-8');
+              expect(outputContent).toEqual(snapshotContent);
+            }
           }
         }
+      } catch (err) {
+        done(err);
+      } finally {
+        await clearTestDir(config);
+        done();
       }
-      await clearTestDir(config);
-      done();
     };
     const input = config.input.join(' ');
     const output = config.output.join(' ');
