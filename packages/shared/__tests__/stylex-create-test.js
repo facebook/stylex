@@ -29,8 +29,8 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "backgroundColor-1hggvfk": "backgroundColor-xrkmrrc",
-            "color-kr9m1x": "color-xju2f9n",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "color-kMwMTN": "color-xju2f9n",
           },
         },
         {
@@ -83,7 +83,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "transitionProperty-1p0cgr6": "transitionProperty-x1cfch2b",
+            "transitionProperty-k1ekBW": "transitionProperty-x1cfch2b",
           },
         },
         {
@@ -128,7 +128,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "willChange-gtxqzg": "willChange-x1a6dnx1",
+            "willChange-k6sLGO": "willChange-x1a6dnx1",
           },
         },
         {
@@ -164,7 +164,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "transitionProperty-1p0cgr6": "transitionProperty-x17389it",
+            "transitionProperty-k1ekBW": "transitionProperty-x17389it",
           },
         },
         {
@@ -200,7 +200,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "willChange-gtxqzg": "willChange-x1lxaxzv",
+            "willChange-k6sLGO": "willChange-x1lxaxzv",
           },
         },
         {
@@ -245,7 +245,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "transitionProperty-1p0cgr6": "transitionProperty-x95ccmk",
+            "transitionProperty-k1ekBW": "transitionProperty-x95ccmk",
           },
         },
         {
@@ -282,15 +282,15 @@ describe('stylex-create-test', () => {
         {
           "short": {
             "$$css": true,
-            "padding-r06cst": "padding-x1lmef92",
-            "paddingBlock-h8dwu2": null,
-            "paddingBottom-yb1qpc": null,
-            "paddingEnd-1upsc0x": null,
-            "paddingInline-1yvqmwb": null,
-            "paddingLeft-1cw06ze": null,
-            "paddingRight-rrt0lm": null,
-            "paddingStart-dqj6nn": null,
-            "paddingTop-zihq2j": "paddingTop-xexx8yu",
+            "padding-kmVPX3": "padding-x1lmef92",
+            "paddingBlock-k8WAf4": null,
+            "paddingBottom-kGO01o": null,
+            "paddingEnd-kP0aTx": null,
+            "paddingInline-kg3NbH": null,
+            "paddingLeft-kE3dHu": null,
+            "paddingRight-kpe85a": null,
+            "paddingStart-kuDDbn": null,
+            "paddingTop-kLKAdn": "paddingTop-xexx8yu",
           },
         },
         {
@@ -334,7 +334,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "--background-color-hjdacz": "--background-color-xgau0yw",
+            "--background-color-k9lZTf": "--background-color-xgau0yw",
           },
         },
         {
@@ -370,7 +370,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "--final-color-1b99fi4": "--final-color-x13tgbkp",
+            "--final-color-k7NdeO": "--final-color-x13tgbkp",
           },
         },
         {
@@ -410,11 +410,11 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "backgroundColor-1hggvfk": "backgroundColor-xrkmrrc",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
           },
           "default2": {
             "$$css": true,
-            "color-kr9m1x": "color-xju2f9n",
+            "color-kMwMTN": "color-xju2f9n",
           },
         },
         {
@@ -460,7 +460,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "content-1xklaq7": "content-xd71okc",
+            "content-kah6P1": "content-xd71okc",
           },
         },
         {
@@ -496,7 +496,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "--foo-rocvl5": "--foo-xwzgxvi",
+            "--foo-kpFpMn": "--foo-xwzgxvi",
           },
         },
         {
@@ -535,8 +535,8 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            ":hover_backgroundColor-ygddfn": "backgroundColor-x1gykpug",
-            ":hover_color-iff3er": "color-x17z2mba",
+            ":hover_backgroundColor-kGzVvX": "backgroundColor-x1gykpug",
+            ":hover_color-kDPRdz": "color-x17z2mba",
           },
         },
         {
@@ -587,7 +587,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "::before_color-tm4xph": "color-x16oeupf color-xeb2lg0",
+            "::before_color-kxBb7d": "color-x16oeupf color-xeb2lg0",
           },
         },
         {
@@ -640,8 +640,8 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "::before_:hover_color-15l9z69": "color-xeb2lg0",
-            "::before_color-tm4xph": "color-x16oeupf",
+            "::before_:hover_color-kkC3X7": "color-xeb2lg0",
+            "::before_color-kxBb7d": "color-x16oeupf",
           },
         },
         {
@@ -699,8 +699,8 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "::before_color-tm4xph": "color-x16oeupf",
-            ":hover_::before_color-1db3d5u": "color-xzzpreb color-x1gobd9t color-x1lvqgcc",
+            "::before_color-kxBb7d": "color-x16oeupf",
+            ":hover_::before_color-kFlxxK": "color-xzzpreb color-x1gobd9t color-x1lvqgcc",
           },
         },
         {
@@ -780,13 +780,13 @@ describe('stylex-create-test', () => {
     expect(beforeHover.default).toMatchInlineSnapshot(`
       {
         "$$css": true,
-        "tm4xph": "xeb2lg0",
+        "kxBb7d": "xeb2lg0",
       }
     `);
     expect(hoverBefore.default).toMatchInlineSnapshot(`
       {
         "$$css": true,
-        "1db3d5u": "xzzpreb",
+        "kFlxxK": "xzzpreb",
       }
     `);
 
@@ -809,7 +809,7 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "position-mrm3x0": "position-x1ruww2u",
+            "position-kVAEAm": "position-x1ruww2u",
           },
         },
         {
@@ -847,27 +847,27 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "borderBlockStyle-3aqbqz": null,
-            "borderBlockWidth-1txomsx": null,
-            "borderBottomStyle-1jmnxzf": null,
-            "borderBottomWidth-smmx8f": null,
-            "borderInlineEndStyle-1bmd2gn": null,
-            "borderInlineEndWidth-oyom6q": null,
-            "borderInlineStartStyle-7qxo40": null,
-            "borderInlineStartWidth-nddj5": null,
-            "borderInlineStyle-1e7ci1p": null,
-            "borderInlineWidth-b29iuf": null,
-            "borderLeftStyle-g976c6": null,
-            "borderLeftWidth-1i0fak1": null,
-            "borderRightStyle-1gf88j9": null,
-            "borderRightWidth-n6dxia": null,
-            "borderStyle-1mvcqb2": "borderStyle-xbsl7fq",
-            "borderTopStyle-1fq152d": null,
-            "borderTopWidth-xv923o": null,
-            "borderWidth-krr8pj": "borderWidth-xmkeg23",
-            "overflow-mtxotw": "overflow-xb3r6kr",
-            "overflowX-1wqlrux": null,
-            "overflowY-l4gih6": null,
+            "borderBlockStyle-kDUl1X": null,
+            "borderBlockWidth-kLoX6v": null,
+            "borderBottomStyle-kfdmCh": null,
+            "borderBottomWidth-kt9PQ7": null,
+            "borderInlineEndStyle-k8ry5P": null,
+            "borderInlineEndWidth-ke9TFa": null,
+            "borderInlineStartStyle-kVhnKS": null,
+            "borderInlineStartWidth-k2ei4v": null,
+            "borderInlineStyle-kJRH4f": null,
+            "borderInlineWidth-kjGldf": null,
+            "borderLeftStyle-k4WBpm": null,
+            "borderLeftWidth-kZ1KPB": null,
+            "borderRightStyle-kSWEuD": null,
+            "borderRightWidth-kWqL5O": null,
+            "borderStyle-ksu8eU": "borderStyle-xbsl7fq",
+            "borderTopStyle-kPef9Z": null,
+            "borderTopWidth-kEafiO": null,
+            "borderWidth-kMzoRj": "borderWidth-xmkeg23",
+            "overflow-kVQacm": "overflow-xb3r6kr",
+            "overflowX-kXHlph": null,
+            "overflowY-kORKVm": null,
           },
         },
         {
@@ -926,9 +926,9 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "@media (min-width: 1000px)_backgroundColor-darpqj": "backgroundColor-xc445zv",
-            "@media (min-width: 2000px)_backgroundColor-1kwdkm5": "backgroundColor-x1ssfqz5",
-            "backgroundColor-1hggvfk": "backgroundColor-xrkmrrc",
+            "@media (min-width: 1000px)_backgroundColor-ksQ81T": "backgroundColor-xc445zv",
+            "@media (min-width: 2000px)_backgroundColor-kkpvmn": "backgroundColor-x1ssfqz5",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
           },
         },
         {

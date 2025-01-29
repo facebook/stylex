@@ -60,10 +60,10 @@ describe('Legacy-shorthand-expansion resolution', () => {
         _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
         export const styles = {
           foo: {
-            zihq2j: "x123j3cw",
-            "1upsc0x": "x1mpkggp",
-            yb1qpc: "xs9asl8",
-            dqj6nn: "x1t2a60a",
+            kLKAdn: "x123j3cw",
+            kP0aTx: "x1mpkggp",
+            kGO01o: "xs9asl8",
+            kuDDbn: "x1t2a60a",
             $$css: true
           }
         };
@@ -154,10 +154,10 @@ describe('Legacy-shorthand-expansion resolution', () => {
         _inject2(".x1mpkggp{padding-right:5px}", 3000, ".x1mpkggp{padding-left:5px}");
         export const styles = {
           foo: {
-            dqj6nn: "x1t2a60a",
-            "1upsc0x": "x1mpkggp",
-            "1cw06ze": null,
-            rrt0lm: null,
+            kuDDbn: "x1t2a60a",
+            kP0aTx: "x1mpkggp",
+            kE3dHu: null,
+            kpe85a: null,
             $$css: true
           }
         };

@@ -374,7 +374,7 @@ describe('Evaluation of imported values works based on configuration', () => {
         _inject2("@property ----__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}", 0);
         const styles = {
           color: color => [{
-            mj01yx: "__hashed_var__b69i2g",
+            kUBWw5: "__hashed_var__b69i2g",
             $$css: true
           }, {
             "----__hashed_var__1jqb1tb": color != null ? color : undefined

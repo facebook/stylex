@@ -92,7 +92,7 @@ describe('Development Runtime Transformation', () => {
         {
           "root": {
             "$$css": true,
-            "zba70f": "x1vfi257",
+            "kKVMdj": "x1vfi257",
           },
         }
       `);

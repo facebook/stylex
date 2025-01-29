@@ -292,141 +292,141 @@ import './easings.stylex';
 import { easings } from './easings.stylex';
 export const animations = {
   fadeIn: {
-    zba70f: "xh1ldnn",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "xh1ldnn",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   fadeInBloom: {
-    zba70f: "x4roml5",
-    varo5n: "x1c74tu6",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x4roml5",
+    k44tkh: "x1c74tu6",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   fadeOut: {
-    zba70f: "x5v1hgg",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x5v1hgg",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   fadeOutBloom: {
-    zba70f: "x171obl0",
-    varo5n: "x1c74tu6",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x171obl0",
+    k44tkh: "x1c74tu6",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   scaleUp: {
-    zba70f: "x1ixqlkn",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x1ixqlkn",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   scaleDown: {
-    zba70f: "xoj00vt",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "xoj00vt",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutUp: {
-    zba70f: "xqd33nb",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "xqd33nb",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutDown: {
-    zba70f: "xkgcxt4",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "xkgcxt4",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutRight: {
-    zba70f: "x1eqxhb2",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x1eqxhb2",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutLeft: {
-    zba70f: "x1dqchgh",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x1dqchgh",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInUp: {
-    zba70f: "x1je50gr",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x1je50gr",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInDown: {
-    zba70f: "x3kizir",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x3kizir",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInRight: {
-    zba70f: "xpcdybh",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "xpcdybh",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInLeft: {
-    zba70f: "x1ccho7t",
-    varo5n: "xxkxylk",
-    "1908qs1": "xnuir8f",
+    kKVMdj: "x1ccho7t",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   shakeX: {
-    zba70f: "xvzz9k2",
-    varo5n: "x7v9bd0",
-    "1908qs1": "x1i0jbje",
+    kKVMdj: "xvzz9k2",
+    k44tkh: "x7v9bd0",
+    kyAemX: "x1i0jbje",
     $$css: true
   },
   shakeY: {
-    zba70f: "x17f3kfx",
-    varo5n: "x7v9bd0",
-    "1908qs1": "x1i0jbje",
+    kKVMdj: "x17f3kfx",
+    k44tkh: "x7v9bd0",
+    kyAemX: "x1i0jbje",
     $$css: true
   },
   spin: {
-    zba70f: "x1o9ub63",
-    varo5n: "x1c74tu6",
-    "1908qs1": "x1esw782",
-    "1loc2xq": "xa4qsjk",
+    kKVMdj: "x1o9ub63",
+    k44tkh: "x1c74tu6",
+    kyAemX: "x1esw782",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   ping: {
-    zba70f: "x1k7hdbq",
-    varo5n: "xz5h9r3",
-    "1908qs1": "x1de9pr8",
-    "1loc2xq": "xa4qsjk",
+    kKVMdj: "x1k7hdbq",
+    k44tkh: "xz5h9r3",
+    kyAemX: "x1de9pr8",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   blink: {
-    zba70f: "xr02afx",
-    varo5n: "x1q3qbx4",
-    "1908qs1": "x1de9pr8",
-    "1loc2xq": "xa4qsjk",
+    kKVMdj: "xr02afx",
+    k44tkh: "x1q3qbx4",
+    kyAemX: "x1de9pr8",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   float: {
-    zba70f: "x1mfaoq1",
-    varo5n: "x7t6ubo",
-    "1908qs1": "x1pcntoe",
-    "1loc2xq": "xa4qsjk",
+    kKVMdj: "x1mfaoq1",
+    k44tkh: "x7t6ubo",
+    kyAemX: "x1pcntoe",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   bounce: {
-    zba70f: "x3gult4",
-    varo5n: "x1c74tu6",
-    "1908qs1": "x84ng4n",
-    "1loc2xq": "xa4qsjk",
+    kKVMdj: "x3gult4",
+    k44tkh: "x1c74tu6",
+    kyAemX: "x84ng4n",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   pulse: {
-    zba70f: "x179usdr",
-    varo5n: "x1c74tu6",
-    "1908qs1": "x1de9pr8",
-    "1loc2xq": "xa4qsjk",
+    kKVMdj: "x179usdr",
+    k44tkh: "x1c74tu6",
+    kyAemX: "x1de9pr8",
+    ko0y90: "xa4qsjk",
     $$css: true
   }
 };"

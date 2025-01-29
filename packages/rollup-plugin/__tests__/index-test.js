@@ -144,8 +144,8 @@ describe('rollup-plugin-stylex', () => {
 
       var styles$2 = {
         bar: {
-          "1p303ag": "x1lliihq",
-          u9kq91: "xh8yej3",
+          k1xSpc: "x1lliihq",
+          kzqmXN: "xh8yej3",
           $$css: true
         }
       };
@@ -161,9 +161,9 @@ describe('rollup-plugin-stylex', () => {
 
       const styles$1 = {
         baz: {
-          "1p303ag": "xt0psk2",
-          "1i36v6j": "x1egiwwb",
-          u9kq91: "x3hqpx7",
+          k1xSpc: "xt0psk2",
+          kZKoxP: "x1egiwwb",
+          kzqmXN: "x3hqpx7",
           $$css: true
         }
       };
@@ -179,27 +179,27 @@ describe('rollup-plugin-stylex', () => {
 
       var styles = {
         foo: {
-          zba70f: "xeuoslp",
-          "1p303ag": "x78zum5",
-          "1jcfj6v": "x1hm9lzh",
-          cbn5dw: null,
-          br2gl8: null,
-          p4ik3q: "xlrshdv",
-          "1i36v6j": "x1egiwwb",
-          "1d41aeb": "x1oz5o6v",
-          "1nqjm4h": null,
-          bygufj: null,
-          ygddfn: null,
-          "2scyum": null,
-          jr2mr9: null,
-          edxvk7: null,
-          "1eeay1m": null,
-          "1yc9v4u": null,
-          "4ksdn9": null,
-          "2g5vb7": null,
-          s99x15: "xu4yf9m",
-          yxoixu: null,
-          "1mpivdy": null,
+          kKVMdj: "xeuoslp",
+          k1xSpc: "x78zum5",
+          keTefX: "x1hm9lzh",
+          koQZXg: null,
+          km5ZXQ: null,
+          keoZOQ: "xlrshdv",
+          kZKoxP: "x1egiwwb",
+          kEyE8R: "x1oz5o6v",
+          kwRxUf: null,
+          kmvik3: null,
+          kGzVvX: null,
+          kBPHsk: null,
+          kIpHjZ: null,
+          kwsBex: null,
+          kKEIo6: null,
+          kdqC5e: null,
+          kIjLOv: null,
+          kA1KOB: null,
+          krdFHd: "xu4yf9m",
+          kIxVMA: null,
+          ksF3WI: null,
           $$css: true
         }
       };
@@ -239,8 +239,8 @@ describe('rollup-plugin-stylex', () => {
         var styles$2 = {
           bar: {
             "otherStyles__styles.bar": "otherStyles__styles.bar",
-            "display-1p303ag": "display-x1lliihq",
-            "width-u9kq91": "width-xh8yej3",
+            "display-k1xSpc": "display-x1lliihq",
+            "width-kzqmXN": "width-xh8yej3",
             $$css: true
           }
         };
@@ -261,9 +261,9 @@ describe('rollup-plugin-stylex', () => {
         const styles$1 = {
           baz: {
             "npmStyles__styles.baz": "npmStyles__styles.baz",
-            "display-1p303ag": "display-xt0psk2",
-            "height-1i36v6j": "height-x1egiwwb",
-            "width-u9kq91": "width-x3hqpx7",
+            "display-k1xSpc": "display-xt0psk2",
+            "height-kZKoxP": "height-x1egiwwb",
+            "width-kzqmXN": "width-x3hqpx7",
             $$css: true
           }
         };
@@ -289,27 +289,27 @@ describe('rollup-plugin-stylex', () => {
         var styles = {
           foo: {
             "index__styles.foo": "index__styles.foo",
-            "animationName-zba70f": "animationName-xeuoslp",
-            "display-1p303ag": "display-x78zum5",
-            "marginInlineStart-1jcfj6v": "marginInlineStart-x1hm9lzh",
-            "marginLeft-cbn5dw": null,
-            "marginRight-br2gl8": null,
-            "marginTop-p4ik3q": "marginTop-xlrshdv",
-            "height-1i36v6j": "height-x1egiwwb",
-            ":hover_background-1d41aeb": "background-x1oz5o6v",
-            ":hover_backgroundAttachment-1nqjm4h": null,
-            ":hover_backgroundClip-bygufj": null,
-            ":hover_backgroundColor-ygddfn": null,
-            ":hover_backgroundImage-2scyum": null,
-            ":hover_backgroundOrigin-jr2mr9": null,
-            ":hover_backgroundPosition-edxvk7": null,
-            ":hover_backgroundPositionX-1eeay1m": null,
-            ":hover_backgroundPositionY-1yc9v4u": null,
-            ":hover_backgroundRepeat-4ksdn9": null,
-            ":hover_backgroundSize-2g5vb7": null,
-            "borderStartStartRadius-s99x15": "borderStartStartRadius-xu4yf9m",
-            "borderTopLeftRadius-yxoixu": null,
-            "borderTopRightRadius-1mpivdy": null,
+            "animationName-kKVMdj": "animationName-xeuoslp",
+            "display-k1xSpc": "display-x78zum5",
+            "marginInlineStart-keTefX": "marginInlineStart-x1hm9lzh",
+            "marginLeft-koQZXg": null,
+            "marginRight-km5ZXQ": null,
+            "marginTop-keoZOQ": "marginTop-xlrshdv",
+            "height-kZKoxP": "height-x1egiwwb",
+            ":hover_background-kEyE8R": "background-x1oz5o6v",
+            ":hover_backgroundAttachment-kwRxUf": null,
+            ":hover_backgroundClip-kmvik3": null,
+            ":hover_backgroundColor-kGzVvX": null,
+            ":hover_backgroundImage-kBPHsk": null,
+            ":hover_backgroundOrigin-kIpHjZ": null,
+            ":hover_backgroundPosition-kwsBex": null,
+            ":hover_backgroundPositionX-kKEIo6": null,
+            ":hover_backgroundPositionY-kdqC5e": null,
+            ":hover_backgroundRepeat-kIjLOv": null,
+            ":hover_backgroundSize-kA1KOB": null,
+            "borderStartStartRadius-krdFHd": "borderStartStartRadius-xu4yf9m",
+            "borderTopLeftRadius-kIxVMA": null,
+            "borderTopRightRadius-ksF3WI": null,
             $$css: true
           }
         };

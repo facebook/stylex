@@ -40,8 +40,8 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "1hggvfk": "xrkmrrc",
-            "kr9m1x": "xju2f9n",
+            "kMwMTN": "xju2f9n",
+            "kWkggS": "xrkmrrc",
           },
         }
       `);
@@ -58,7 +58,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "hjdacz": "xgau0yw",
+            "k9lZTf": "xgau0yw",
           },
         }
       `);
@@ -75,7 +75,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "1b99fi4": "x13tgbkp",
+            "k7NdeO": "x13tgbkp",
           },
         }
       `);
@@ -95,11 +95,11 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "1hggvfk": "xrkmrrc",
+            "kWkggS": "xrkmrrc",
           },
           "default2": {
             "$$css": true,
-            "kr9m1x": "xju2f9n",
+            "kMwMTN": "xju2f9n",
           },
         }
       `);
@@ -116,7 +116,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "1xklaq7": "xd71okc",
+            "kah6P1": "xd71okc",
           },
         }
       `);
@@ -149,8 +149,8 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "iff3er": "x17z2mba",
-            "ygddfn": "x1gykpug",
+            "kDPRdz": "x17z2mba",
+            "kGzVvX": "x1gykpug",
           },
         }
       `);
@@ -188,7 +188,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "mrm3x0": "x1ruww2u",
+            "kVAEAm": "x1ruww2u",
           },
         }
       `);
@@ -219,7 +219,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "14foo7p": "x87ps6o",
+            "kfSwDN": "x87ps6o",
           },
         }
       `);
@@ -252,27 +252,27 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "1bmd2gn": null,
-            "1e7ci1p": null,
-            "1fq152d": null,
-            "1gf88j9": null,
-            "1i0fak1": null,
-            "1jmnxzf": null,
-            "1mvcqb2": "xbsl7fq",
-            "1txomsx": null,
-            "1wqlrux": null,
-            "3aqbqz": null,
-            "7qxo40": null,
-            "b29iuf": null,
-            "g976c6": null,
-            "krr8pj": "xmkeg23",
-            "l4gih6": null,
-            "mtxotw": "xb3r6kr",
-            "n6dxia": null,
-            "nddj5": null,
-            "oyom6q": null,
-            "smmx8f": null,
-            "xv923o": null,
+            "k2ei4v": null,
+            "k4WBpm": null,
+            "k8ry5P": null,
+            "kDUl1X": null,
+            "kEafiO": null,
+            "kJRH4f": null,
+            "kLoX6v": null,
+            "kMzoRj": "xmkeg23",
+            "kORKVm": null,
+            "kPef9Z": null,
+            "kSWEuD": null,
+            "kVQacm": "xb3r6kr",
+            "kVhnKS": null,
+            "kWqL5O": null,
+            "kXHlph": null,
+            "kZ1KPB": null,
+            "ke9TFa": null,
+            "kfdmCh": null,
+            "kjGldf": null,
+            "ksu8eU": "xbsl7fq",
+            "kt9PQ7": null,
           },
         }
       `);
@@ -327,7 +327,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "41alwk": "xxnfx33",
+            "kGVxlE": "xxnfx33",
           },
         }
       `);
@@ -362,8 +362,8 @@ describe('Development Plugin Transformation', () => {
           {
             "default": {
               "$$css": true,
-              "1cqb4ks": "x19iys6w",
-              "1t3itjo": "x5z3o4w",
+              "kDPUJo": "x19iys6w",
+              "kINyDM": "x5z3o4w",
             },
           }
         `);
@@ -412,10 +412,10 @@ describe('Development Plugin Transformation', () => {
           {
             "default": {
               "$$css": true,
-              "1ief8y9": "x1wvtd7d",
-              "iff3er": "x17z2mba",
-              "ogtj0j": "x96fq8s",
-              "paf76r": "x126ychx",
+              "kDPRdz": "x17z2mba",
+              "kabz5l": "x1wvtd7d",
+              "kc7ZrP": "x96fq8s",
+              "kfUCIN": "x126ychx",
             },
           }
         `);
@@ -471,7 +471,7 @@ describe('Development Plugin Transformation', () => {
           {
             "default": {
               "$$css": true,
-              "1ev6mkq": "x1nxcus0",
+              "kM9GSA": "x1nxcus0",
             },
           }
         `);
@@ -509,8 +509,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "1hggvfk": "xrkmrrc",
-            "kr9m1x": "x19dipnz",
+            "kMwMTN": "x19dipnz",
+            "kWkggS": "xrkmrrc",
           },
           {
             "--color": "blue",
@@ -552,8 +552,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "1hggvfk": "xrkmrrc",
-            "u9kq91": "x17fnjtu",
+            "kWkggS": "xrkmrrc",
+            "kzqmXN": "x17fnjtu",
           },
           {
             "--width": "10px",
@@ -602,7 +602,7 @@ describe('Development Plugin Transformation', () => {
       expect(styles.mono).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "kr9m1x": "x1mqxbix",
+          "kMwMTN": "x1mqxbix",
         }
       `);
 
@@ -610,8 +610,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "1hggvfk": "xrkmrrc",
-            "kr9m1x": "x19dipnz",
+            "kMwMTN": "x19dipnz",
+            "kWkggS": "xrkmrrc",
           },
           {
             "--color": "blue",
@@ -660,7 +660,7 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "hjdacz": "xyv4n8w",
+            "k9lZTf": "xyv4n8w",
           },
           {
             "----background-color": "red",
@@ -693,7 +693,7 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "hjdacz": "xyv4n8w",
+            "k9lZTf": "xyv4n8w",
           },
           {
             "----background-color": "initial",
@@ -731,8 +731,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "iff3er": "x11bf1mc",
-            "ygddfn": "x1gykpug",
+            "kDPRdz": "x11bf1mc",
+            "kGzVvX": "x1gykpug",
           },
           {
             "--1ijzsae": "blue",

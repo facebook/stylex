@@ -70,7 +70,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         export const styles = {
           foo: {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           }
         };"
@@ -113,7 +113,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         const styles = {
           foo: {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           }
         };
@@ -138,7 +138,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         export default {
           foo: {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           }
         };"
@@ -163,7 +163,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         const styles = {
           foo: {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           }
         };
@@ -196,17 +196,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            "1hggvfk": "xrkmrrc",
-            kr9m1x: "xju2f9n",
-            r06cst: "x14odnwx",
-            "1yvqmwb": null,
-            dqj6nn: null,
-            "1cw06ze": null,
-            "1upsc0x": null,
-            rrt0lm: null,
-            h8dwu2: null,
-            zihq2j: null,
-            yb1qpc: null,
+            kWkggS: "xrkmrrc",
+            kMwMTN: "xju2f9n",
+            kmVPX3: "x14odnwx",
+            kg3NbH: null,
+            kuDDbn: null,
+            kE3dHu: null,
+            kP0aTx: null,
+            kpe85a: null,
+            k8WAf4: null,
+            kLKAdn: null,
+            kGO01o: null,
             $$css: true
           }
         };
@@ -237,17 +237,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            "1hggvfk": "xrkmrrc",
-            kr9m1x: "xju2f9n",
-            r06cst: "x14odnwx",
-            "1yvqmwb": null,
-            dqj6nn: null,
-            "1cw06ze": null,
-            "1upsc0x": null,
-            rrt0lm: null,
-            h8dwu2: null,
-            zihq2j: null,
-            yb1qpc: null,
+            kWkggS: "xrkmrrc",
+            kMwMTN: "xju2f9n",
+            kmVPX3: "x14odnwx",
+            kg3NbH: null,
+            kuDDbn: null,
+            kE3dHu: null,
+            kP0aTx: null,
+            kpe85a: null,
+            k8WAf4: null,
+            kLKAdn: null,
+            kGO01o: null,
             $$css: true
           }
         };
@@ -278,17 +278,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            "1hggvfk": "xrkmrrc",
-            kr9m1x: "xju2f9n",
-            r06cst: "x14odnwx",
-            "1yvqmwb": null,
-            dqj6nn: null,
-            "1cw06ze": null,
-            "1upsc0x": null,
-            rrt0lm: null,
-            h8dwu2: null,
-            zihq2j: null,
-            yb1qpc: null,
+            kWkggS: "xrkmrrc",
+            kMwMTN: "xju2f9n",
+            kmVPX3: "x14odnwx",
+            kg3NbH: null,
+            kuDDbn: null,
+            kE3dHu: null,
+            kP0aTx: null,
+            kpe85a: null,
+            k8WAf4: null,
+            kLKAdn: null,
+            kGO01o: null,
             $$css: true
           }
         };
@@ -319,17 +319,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            "1hggvfk": "xrkmrrc",
-            kr9m1x: "xju2f9n",
-            r06cst: "x14odnwx",
-            "1yvqmwb": null,
-            dqj6nn: null,
-            "1cw06ze": null,
-            "1upsc0x": null,
-            rrt0lm: null,
-            h8dwu2: null,
-            zihq2j: null,
-            yb1qpc: null,
+            kWkggS: "xrkmrrc",
+            kMwMTN: "xju2f9n",
+            kmVPX3: "x14odnwx",
+            kg3NbH: null,
+            kuDDbn: null,
+            kE3dHu: null,
+            kP0aTx: null,
+            kpe85a: null,
+            k8WAf4: null,
+            kLKAdn: null,
+            kGO01o: null,
             $$css: true
           }
         };

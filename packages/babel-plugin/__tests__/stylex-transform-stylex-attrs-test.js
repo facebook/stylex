@@ -210,11 +210,11 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1t391ir{background-color:blue}", 3000);
         const styles = {
           foo: {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           },
           bar: {
-            "1hggvfk": "x1t391ir",
+            kWkggS: "x1t391ir",
             $$css: true
           }
         };
@@ -297,15 +297,15 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         export const styles = {
           foo: {
-            r06cst: "x14odnwx",
-            "1yvqmwb": null,
-            dqj6nn: null,
-            "1cw06ze": null,
-            "1upsc0x": null,
-            rrt0lm: null,
-            h8dwu2: null,
-            zihq2j: null,
-            yb1qpc: null,
+            kmVPX3: "x14odnwx",
+            kg3NbH: null,
+            kuDDbn: null,
+            kE3dHu: null,
+            kP0aTx: null,
+            kpe85a: null,
+            k8WAf4: null,
+            kLKAdn: null,
+            kGO01o: null,
             $$css: true
           }
         };
@@ -542,11 +542,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xju2f9n{color:blue}", 3000);
           const styles = {
             default: {
-              "1hggvfk": "xrkmrrc",
+              kWkggS: "xrkmrrc",
               $$css: true
             },
             active: {
-              kr9m1x: "xju2f9n",
+              kMwMTN: "xju2f9n",
               $$css: true
             }
           };
@@ -730,11 +730,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xju2f9n{color:blue}", 3000);
           const styles = {
             red: {
-              kr9m1x: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              kr9m1x: "xju2f9n",
+              kMwMTN: "xju2f9n",
               $$css: true
             }
           };
@@ -796,11 +796,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1e2nbdu{color:red}", 3000);
           const styles = {
             red: {
-              kr9m1x: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              kr9m1x: null,
+              kMwMTN: null,
               $$css: true
             }
           };
@@ -912,7 +912,7 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             default: {
               "FooBar__styles.default": "FooBar__styles.default",
-              "color-kr9m1x": "color-x1e2nbdu",
+              "color-kMwMTN": "color-x1e2nbdu",
               $$css: true
             }
           };
@@ -920,7 +920,7 @@ describe('@stylexjs/babel-plugin', () => {
           const otherStyles = {
             default: {
               "FooBar__otherStyles.default": "FooBar__otherStyles.default",
-              "backgroundColor-1hggvfk": "backgroundColor-x1t391ir",
+              "backgroundColor-kWkggS": "backgroundColor-x1t391ir",
               $$css: true
             }
           };
@@ -992,11 +992,11 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1t391ir{background-color:blue}", 3000);
         const styles = {
           "0": {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           },
           "1": {
-            "1hggvfk": "x1t391ir",
+            kWkggS: "x1t391ir",
             $$css: true
           }
         };
@@ -1021,7 +1021,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         const styles = {
           default: {
-            kr9m1x: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           }
         };
@@ -1053,8 +1053,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
         export const styles = {
           default: {
-            iff3er: "x17z2mba",
-            darpqj: "xc445zv",
+            kDPRdz: "x17z2mba",
+            ksQ81T: "xc445zv",
             $$css: true
           }
         };
@@ -1088,11 +1088,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1t391ir{background-color:blue}", 3000);
           const styles = {
             "0": {
-              kr9m1x: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             },
             "1": {
-              "1hggvfk": "x1t391ir",
+              kWkggS: "x1t391ir",
               $$css: true
             }
           };"
@@ -1146,7 +1146,7 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1t391ir{background-color:blue}", 3000);
           const styles = {
             foo: {
-              kr9m1x: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -1171,7 +1171,7 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1e2nbdu{color:red}", 3000);
           const styles = {
             default: {
-              kr9m1x: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -1205,8 +1205,8 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
           export const styles = {
             default: {
-              iff3er: "x17z2mba",
-              darpqj: "xc445zv",
+              kDPRdz: "x17z2mba",
+              ksQ81T: "xc445zv",
               $$css: true
             }
           };"
@@ -1299,47 +1299,47 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           sidebar: {
             "UnknownFile__styles.sidebar": "UnknownFile__styles.sidebar",
-            "boxSizing-x0pdca": "boxSizing-x9f619",
-            "gridArea-k0k8zr": "gridArea-x1yc5d2u",
-            "gridRow-94w0rn": null,
-            "gridRowStart-19vvc4y": null,
-            "gridRowEnd-1lzqaua": null,
-            "gridColumn-1rca13c": null,
-            "gridColumnStart-1d089qs": null,
-            "gridColumnEnd-n41kno": null,
+            "boxSizing-kB7OPa": "boxSizing-x9f619",
+            "gridArea-kJuA4N": "gridArea-x1yc5d2u",
+            "gridRow-kbNqZ1": null,
+            "gridRowStart-k1lYIM": null,
+            "gridRowEnd-kpJH7q": null,
+            "gridColumn-kBCFzs": null,
+            "gridColumnStart-kEXP64": null,
+            "gridColumnEnd-kWZpDQ": null,
             $$css: true
           },
           content: {
             "UnknownFile__styles.content": "UnknownFile__styles.content",
-            "gridArea-k0k8zr": "gridArea-x1fdo2jl",
-            "gridRow-94w0rn": null,
-            "gridRowStart-19vvc4y": null,
-            "gridRowEnd-1lzqaua": null,
-            "gridColumn-1rca13c": null,
-            "gridColumnStart-1d089qs": null,
-            "gridColumnEnd-n41kno": null,
+            "gridArea-kJuA4N": "gridArea-x1fdo2jl",
+            "gridRow-kbNqZ1": null,
+            "gridRowStart-k1lYIM": null,
+            "gridRowEnd-kpJH7q": null,
+            "gridColumn-kBCFzs": null,
+            "gridColumnStart-kEXP64": null,
+            "gridColumnEnd-kWZpDQ": null,
             $$css: true
           },
           root: {
             "UnknownFile__styles.root": "UnknownFile__styles.root",
-            "display-1p303ag": "display-xrvj5dj",
-            "gridTemplateRows-wou686": "gridTemplateRows-x7k18q3",
-            "gridTemplateAreas-2xpvna": "gridTemplateAreas-x5gp9wm",
+            "display-k1xSpc": "display-xrvj5dj",
+            "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
+            "gridTemplateAreas-kC13JO": "gridTemplateAreas-x5gp9wm",
             $$css: true
           },
           withSidebar: {
             "UnknownFile__styles.withSidebar": "UnknownFile__styles.withSidebar",
-            "gridTemplateColumns-186fuys": "gridTemplateColumns-x1rkzygb",
-            "gridTemplateRows-wou686": "gridTemplateRows-x7k18q3",
-            "gridTemplateAreas-2xpvna": "gridTemplateAreas-x17lh93j",
-            "@media (max-width: 640px)_gridTemplateRows-wpfjky": "gridTemplateRows-xmr4b4k",
-            "@media (max-width: 640px)_gridTemplateAreas-1fig6wi": "gridTemplateAreas-xesbpuc",
-            "@media (max-width: 640px)_gridTemplateColumns-fgzh6q": "gridTemplateColumns-x15nfgh4",
+            "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1rkzygb",
+            "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
+            "gridTemplateAreas-kC13JO": "gridTemplateAreas-x17lh93j",
+            "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "gridTemplateRows-xmr4b4k",
+            "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "gridTemplateAreas-xesbpuc",
+            "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "gridTemplateColumns-x15nfgh4",
             $$css: true
           },
           noSidebar: {
             "UnknownFile__styles.noSidebar": "UnknownFile__styles.noSidebar",
-            "gridTemplateColumns-186fuys": "gridTemplateColumns-x1mkdm3x",
+            "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1mkdm3x",
             $$css: true
           }
         };
