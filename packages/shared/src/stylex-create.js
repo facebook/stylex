@@ -15,7 +15,7 @@ import type {
 } from './common-types';
 import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 
-import createHash from './hash';
+import createHash, { createShortHash } from './hash';
 import { IncludedStyles } from './stylex-include';
 import { defaultOptions } from './utils/default-options';
 import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
@@ -79,9 +79,9 @@ export default function styleXCreateSet(
 
     const compiledNamespaceTuples: $ReadOnlyArray<TPropTuple> =
       flattenedNamespace.map(([key, value]) => {
-        const hashedKey = createHash('<>' + key);
+        const hashedKey = createShortHash('<>' + key);
         const displayKey =
-          options.debug === true ? `${key}-${hashedKey}` : hashedKey;
+          options.debug === true ? `${key}-k${hashedKey}` : `k${hashedKey}`;
         return [displayKey, value.compiled(options)];
       });
 
