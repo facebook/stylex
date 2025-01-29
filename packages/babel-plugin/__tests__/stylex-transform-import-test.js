@@ -70,7 +70,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         export const styles = {
           foo: {
-            color: "x1e2nbdu",
+            kr9m1x: "x1e2nbdu",
             $$css: true
           }
         };"
@@ -113,7 +113,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         const styles = {
           foo: {
-            color: "x1e2nbdu",
+            kr9m1x: "x1e2nbdu",
             $$css: true
           }
         };
@@ -138,7 +138,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         export default {
           foo: {
-            color: "x1e2nbdu",
+            kr9m1x: "x1e2nbdu",
             $$css: true
           }
         };"
@@ -163,7 +163,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         const styles = {
           foo: {
-            color: "x1e2nbdu",
+            kr9m1x: "x1e2nbdu",
             $$css: true
           }
         };
@@ -196,17 +196,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            backgroundColor: "xrkmrrc",
-            color: "xju2f9n",
-            padding: "x14odnwx",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingTop: null,
-            paddingBottom: null,
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xju2f9n",
+            r06cst: "x14odnwx",
+            "1yvqmwb": null,
+            dqj6nn: null,
+            "1cw06ze": null,
+            "1upsc0x": null,
+            rrt0lm: null,
+            h8dwu2: null,
+            zihq2j: null,
+            yb1qpc: null,
             $$css: true
           }
         };
@@ -237,17 +237,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            backgroundColor: "xrkmrrc",
-            color: "xju2f9n",
-            padding: "x14odnwx",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingTop: null,
-            paddingBottom: null,
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xju2f9n",
+            r06cst: "x14odnwx",
+            "1yvqmwb": null,
+            dqj6nn: null,
+            "1cw06ze": null,
+            "1upsc0x": null,
+            rrt0lm: null,
+            h8dwu2: null,
+            zihq2j: null,
+            yb1qpc: null,
             $$css: true
           }
         };
@@ -278,17 +278,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            backgroundColor: "xrkmrrc",
-            color: "xju2f9n",
-            padding: "x14odnwx",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingTop: null,
-            paddingBottom: null,
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xju2f9n",
+            r06cst: "x14odnwx",
+            "1yvqmwb": null,
+            dqj6nn: null,
+            "1cw06ze": null,
+            "1upsc0x": null,
+            rrt0lm: null,
+            h8dwu2: null,
+            zihq2j: null,
+            yb1qpc: null,
             $$css: true
           }
         };
@@ -319,17 +319,17 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         const styles = {
           default: {
-            backgroundColor: "xrkmrrc",
-            color: "xju2f9n",
-            padding: "x14odnwx",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingTop: null,
-            paddingBottom: null,
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xju2f9n",
+            r06cst: "x14odnwx",
+            "1yvqmwb": null,
+            dqj6nn: null,
+            "1cw06ze": null,
+            "1upsc0x": null,
+            rrt0lm: null,
+            h8dwu2: null,
+            zihq2j: null,
+            yb1qpc: null,
             $$css: true
           }
         };

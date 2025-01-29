@@ -92,7 +92,7 @@ describe('Development Runtime Transformation', () => {
         {
           "root": {
             "$$css": true,
-            "animationName": "x1vfi257",
+            "zba70f": "x1vfi257",
           },
         }
       `);

@@ -436,7 +436,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           foo: {
             ...importedStyles.foo,
-            color: "x1e2nbdu",
+            kr9m1x: "x1e2nbdu",
             $$css: true
           }
         };
@@ -461,7 +461,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x15oojuh{position:fixed;position:sticky}", 3000);
         export const styles = {
           foo: {
-            position: "x15oojuh",
+            mrm3x0: "x15oojuh",
             $$css: true
           }
         };"
@@ -721,7 +721,7 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xeb2lg0::before:hover{color:blue}", 8130);
           export const styles = {
             foo: {
-              "::before_color": "x16oeupf xeb2lg0",
+              tm4xph: "x16oeupf xeb2lg0",
               $$css: true
             }
           };"
@@ -751,8 +751,8 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xeb2lg0::before:hover{color:blue}", 8130);
           export const styles = {
             foo: {
-              "::before_color": "x16oeupf",
-              "::before_:hover_color": "xeb2lg0",
+              tm4xph: "x16oeupf",
+              "15l9z69": "xeb2lg0",
               $$css: true
             }
           };"
@@ -784,8 +784,8 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xzzpreb:hover::before{color:blue}", 8130);
           export const styles = {
             foo: {
-              "::before_color": "x16oeupf",
-              ":hover_::before_color": "xzzpreb",
+              tm4xph: "x16oeupf",
+              "1db3d5u": "xzzpreb",
               $$css: true
             }
           };"
@@ -823,8 +823,8 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xs8jp5:hover::before:active{color:purple}", 8300);
           export const styles = {
             foo: {
-              "::before_color": "x16oeupf",
-              ":hover_::before_color": "xzzpreb x1gobd9t xs8jp5",
+              tm4xph: "x16oeupf",
+              "1db3d5u": "xzzpreb x1gobd9t xs8jp5",
               $$css: true
             }
           };"
@@ -1071,138 +1071,138 @@ describe('@stylexjs/babel-plugin', () => {
         const borderRadius = 2;
         export const styles = {
           default: {
-            margin: "xe4njm9",
-            marginInline: null,
-            marginInlineStart: null,
-            marginLeft: null,
-            marginInlineEnd: null,
-            marginRight: null,
-            marginBlock: null,
-            marginTop: null,
-            marginBottom: null,
+            cdxo6y: "xe4njm9",
+            "1gvq6xq": null,
+            "1jcfj6v": null,
+            cbn5dw: null,
+            "1pss0l": null,
+            br2gl8: null,
+            crvbt1: null,
+            p4ik3q: null,
+            "1oxewuf": null,
             $$css: true
           },
           error: {
-            borderColor: "xs4buau",
-            borderInlineColor: null,
-            borderInlineStartColor: null,
-            borderLeftColor: null,
-            borderInlineEndColor: null,
-            borderRightColor: null,
-            borderBlockColor: null,
-            borderTopColor: null,
-            borderBottomColor: null,
-            borderStyle: "xbsl7fq",
-            borderInlineStyle: null,
-            borderInlineStartStyle: null,
-            borderLeftStyle: null,
-            borderInlineEndStyle: null,
-            borderRightStyle: null,
-            borderBlockStyle: null,
-            borderTopStyle: null,
-            borderBottomStyle: null,
-            borderWidth: "xn43iik",
-            borderInlineWidth: null,
-            borderInlineStartWidth: null,
-            borderLeftWidth: null,
-            borderInlineEndWidth: null,
-            borderRightWidth: null,
-            borderBlockWidth: null,
-            borderTopWidth: null,
-            borderBottomWidth: null,
+            "11x2o12": "xs4buau",
+            u5j7qg: null,
+            "1dfwjf5": null,
+            "138mc2t": null,
+            "2qj7r6": null,
+            fnwwag: null,
+            gh8emd: null,
+            zkmgpo: null,
+            "1elzxl0": null,
+            "1mvcqb2": "xbsl7fq",
+            "1e7ci1p": null,
+            "7qxo40": null,
+            g976c6: null,
+            "1bmd2gn": null,
+            "1gf88j9": null,
+            "3aqbqz": null,
+            "1fq152d": null,
+            "1jmnxzf": null,
+            krr8pj: "xn43iik",
+            b29iuf: null,
+            nddj5: null,
+            "1i0fak1": null,
+            oyom6q: null,
+            n6dxia: null,
+            "1txomsx": null,
+            xv923o: null,
+            smmx8f: null,
             $$css: true
           },
           root: {
-            borderWidth: "xmkeg23",
-            borderInlineWidth: null,
-            borderInlineStartWidth: null,
-            borderLeftWidth: null,
-            borderInlineEndWidth: null,
-            borderRightWidth: null,
-            borderBlockWidth: null,
-            borderTopWidth: null,
-            borderStyle: "x1y0btm7",
-            borderInlineStyle: null,
-            borderInlineStartStyle: null,
-            borderLeftStyle: null,
-            borderInlineEndStyle: null,
-            borderRightStyle: null,
-            borderBlockStyle: null,
-            borderTopStyle: null,
-            borderColor: "x1lh7sze",
-            borderInlineColor: null,
-            borderInlineStartColor: null,
-            borderLeftColor: null,
-            borderInlineEndColor: null,
-            borderRightColor: null,
-            borderBlockColor: null,
-            borderTopColor: null,
-            borderRadius: "x12oqio5",
-            borderStartStartRadius: null,
-            borderStartEndRadius: null,
-            borderEndStartRadius: null,
-            borderEndEndRadius: null,
-            borderTopLeftRadius: null,
-            borderTopRightRadius: null,
-            borderBottomLeftRadius: null,
-            borderBottomRightRadius: null,
-            borderBottomWidth: "xa309fb",
-            borderBottomStyle: "x1q0q8m5",
-            borderBottomColor: "xud65wk",
+            krr8pj: "xmkeg23",
+            b29iuf: null,
+            nddj5: null,
+            "1i0fak1": null,
+            oyom6q: null,
+            n6dxia: null,
+            "1txomsx": null,
+            xv923o: null,
+            "1mvcqb2": "x1y0btm7",
+            "1e7ci1p": null,
+            "7qxo40": null,
+            g976c6: null,
+            "1bmd2gn": null,
+            "1gf88j9": null,
+            "3aqbqz": null,
+            "1fq152d": null,
+            "11x2o12": "x1lh7sze",
+            u5j7qg: null,
+            "1dfwjf5": null,
+            "138mc2t": null,
+            "2qj7r6": null,
+            fnwwag: null,
+            gh8emd: null,
+            zkmgpo: null,
+            "8vdoq2": "x12oqio5",
+            s99x15: null,
+            "1jnxl2m": null,
+            "1w9hg4v": null,
+            "1gjjmti": null,
+            yxoixu: null,
+            "1mpivdy": null,
+            "1m85lse": null,
+            "8hxgdf": null,
+            smmx8f: "xa309fb",
+            "1jmnxzf": "x1q0q8m5",
+            "1elzxl0": "xud65wk",
             $$css: true
           },
           short: {
-            padding: "x1lmef92",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingBottom: null,
-            paddingTop: "xexx8yu",
+            r06cst: "x1lmef92",
+            "1yvqmwb": null,
+            dqj6nn: null,
+            "1cw06ze": null,
+            "1upsc0x": null,
+            rrt0lm: null,
+            h8dwu2: null,
+            yb1qpc: null,
+            zihq2j: "xexx8yu",
             $$css: true
           },
           shortReversed: {
-            padding: "x1lmef92",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingTop: null,
-            paddingBottom: null,
+            r06cst: "x1lmef92",
+            "1yvqmwb": null,
+            dqj6nn: null,
+            "1cw06ze": null,
+            "1upsc0x": null,
+            rrt0lm: null,
+            h8dwu2: null,
+            zihq2j: null,
+            yb1qpc: null,
             $$css: true
           },
           valid: {
-            borderColor: "x1bg2uv5",
-            borderInlineColor: null,
-            borderInlineStartColor: null,
-            borderLeftColor: null,
-            borderInlineEndColor: null,
-            borderRightColor: null,
-            borderBlockColor: null,
-            borderTopColor: null,
-            borderBottomColor: null,
-            borderStyle: "x1y0btm7",
-            borderInlineStyle: null,
-            borderInlineStartStyle: null,
-            borderLeftStyle: null,
-            borderInlineEndStyle: null,
-            borderRightStyle: null,
-            borderBlockStyle: null,
-            borderTopStyle: null,
-            borderBottomStyle: null,
-            borderWidth: "xmkeg23",
-            borderInlineWidth: null,
-            borderInlineStartWidth: null,
-            borderLeftWidth: null,
-            borderInlineEndWidth: null,
-            borderRightWidth: null,
-            borderBlockWidth: null,
-            borderTopWidth: null,
-            borderBottomWidth: null,
+            "11x2o12": "x1bg2uv5",
+            u5j7qg: null,
+            "1dfwjf5": null,
+            "138mc2t": null,
+            "2qj7r6": null,
+            fnwwag: null,
+            gh8emd: null,
+            zkmgpo: null,
+            "1elzxl0": null,
+            "1mvcqb2": "x1y0btm7",
+            "1e7ci1p": null,
+            "7qxo40": null,
+            g976c6: null,
+            "1bmd2gn": null,
+            "1gf88j9": null,
+            "3aqbqz": null,
+            "1fq152d": null,
+            "1jmnxzf": null,
+            krr8pj: "xmkeg23",
+            b29iuf: null,
+            nddj5: null,
+            "1i0fak1": null,
+            oyom6q: null,
+            n6dxia: null,
+            "1txomsx": null,
+            xv923o: null,
+            smmx8f: null,
             $$css: true
           }
         };"
@@ -1260,44 +1260,44 @@ describe('@stylexjs/babel-plugin', () => {
         const borderRadius = 2;
         export const styles = {
           default: {
-            marginTop: "xxsse2n",
-            marginRight: "x1wh8b8d",
-            marginBottom: "xat24cr",
+            p4ik3q: "xxsse2n",
+            br2gl8: "x1wh8b8d",
+            "1oxewuf": "xat24cr",
             $$css: true
           },
           error: {
-            borderBlockColor: "xzu6wam",
-            borderInlineColor: "xgomli1",
-            borderStyle: "xbsl7fq",
-            borderBottomWidth: "xlxy82",
+            gh8emd: "xzu6wam",
+            u5j7qg: "xgomli1",
+            "1mvcqb2": "xbsl7fq",
+            smmx8f: "xlxy82",
             $$css: true
           },
           root: {
-            borderWidth: "xmkeg23",
-            borderStyle: "x1y0btm7",
-            borderColor: "x1lh7sze",
-            borderRadius: "x12oqio5",
-            borderBottomWidth: "xa309fb",
-            borderBottomStyle: "x1q0q8m5",
-            borderBottomColor: "xud65wk",
+            krr8pj: "xmkeg23",
+            "1mvcqb2": "x1y0btm7",
+            "11x2o12": "x1lh7sze",
+            "8vdoq2": "x12oqio5",
+            smmx8f: "xa309fb",
+            "1jmnxzf": "x1q0q8m5",
+            "1elzxl0": "xud65wk",
             $$css: true
           },
           short: {
-            paddingBlock: "x190pm2f",
-            paddingInline: "x1n86tx6",
-            paddingTop: "xexx8yu",
+            h8dwu2: "x190pm2f",
+            "1yvqmwb": "x1n86tx6",
+            zihq2j: "xexx8yu",
             $$css: true
           },
           shortReversed: {
-            paddingTop: "xexx8yu",
-            paddingBlock: "x190pm2f",
-            paddingInline: "x1n86tx6",
+            zihq2j: "xexx8yu",
+            h8dwu2: "x190pm2f",
+            "1yvqmwb": "x1n86tx6",
             $$css: true
           },
           valid: {
-            borderColor: "x1bg2uv5",
-            borderStyle: "x1y0btm7",
-            borderWidth: "xmkeg23",
+            "11x2o12": "x1bg2uv5",
+            "1mvcqb2": "x1y0btm7",
+            krr8pj: "xmkeg23",
             $$css: true
           }
         };"
@@ -1326,8 +1326,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --color { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: color => [{
-            backgroundColor: "xrkmrrc",
-            color: color == null ? null : "xfx01vb",
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xfx01vb",
             $$css: true
           }, {
             "--color": color != null ? color : undefined
@@ -1356,8 +1356,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --width { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: width => [{
-            backgroundColor: "xrkmrrc",
-            width: width == null ? null : "x1bl4301",
+            "1hggvfk": "xrkmrrc",
+            u9kq91: "x1bl4301",
             $$css: true
           }, {
             "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width)
@@ -1390,14 +1390,14 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --color { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: color => [{
-            backgroundColor: "xrkmrrc",
-            color: color == null ? null : "xfx01vb",
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xfx01vb",
             $$css: true
           }, {
             "--color": color != null ? color : undefined
           }],
           mono: {
-            color: "x1mqxbix",
+            kr9m1x: "x1mqxbix",
             $$css: true
           }
         };"
@@ -1422,7 +1422,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property ----background-color { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: bgColor => [{
-            "--background-color": bgColor == null ? null : "x15mgraa",
+            hjdacz: "x15mgraa",
             $$css: true
           }, {
             "----background-color": bgColor != null ? bgColor : undefined
@@ -1452,8 +1452,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --1ijzsae { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: color => [{
-            ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": color == null ? null : "xtyu0qe",
+            ygddfn: "x1gykpug",
+            iff3er: "xtyu0qe",
             $$css: true
           }, {
             "--1ijzsae": color != null ? color : undefined
@@ -1485,14 +1485,14 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --color { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: color => [{
-            backgroundColor: "xrkmrrc",
-            color: color == null ? null : "xfx01vb",
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "xfx01vb",
             $$css: true
           }, {
             "--color": color != null ? color : undefined
           }],
           mono: {
-            color: "x1mqxbix",
+            kr9m1x: "x1mqxbix",
             $$css: true
           }
         };"
@@ -1517,7 +1517,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property ----background-color { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: bgColor => [{
-            "--background-color": bgColor == null ? null : "x15mgraa",
+            hjdacz: "x15mgraa",
             $$css: true
           }, {
             "----background-color": bgColor != null ? bgColor : undefined
@@ -1553,8 +1553,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --4xs81a { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: color => [{
-            backgroundColor: "xrkmrrc",
-            color: (color == null ? "" : "x1n25116 ") + "xtljkjt " + "x17z2mba",
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "x1n25116 xtljkjt x17z2mba",
             $$css: true
           }, {
             "--4xs81a": color != null ? color : undefined
@@ -1591,8 +1591,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --w5m4kq { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: color => [{
-            backgroundColor: "xrkmrrc",
-            color: (color == null ? "" : "x1n25116 ") + "xtljkjt " + ('color-mix(' + color + ', blue)' == null ? "" : "x1d4gdy3"),
+            "1hggvfk": "xrkmrrc",
+            kr9m1x: "x1n25116 xtljkjt x1d4gdy3",
             $$css: true
           }, {
             "--4xs81a": color != null ? color : undefined,
@@ -1637,11 +1637,11 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@property --marginTop { syntax: \\"*\\"; inherits: false;}", 0);
         export const styles = {
           default: margin => [{
-            backgroundColor: "xrkmrrc",
-            marginEnd: (margin == null ? "" : "x1ie72y1 ") + (margin + 4 == null ? "" : "x128459"),
-            marginBottom: (margin == null ? "" : "x1hvr6ea ") + (margin + 4 == null ? "" : "x3skgmg"),
-            marginStart: (margin == null ? "" : "x1k44ad6 ") + (margin + 4 == null ? "" : "x10ktymb"),
-            marginTop: margin - 4 == null ? null : "x17zef60",
+            "1hggvfk": "xrkmrrc",
+            "1s53p9f": "x1ie72y1 x128459",
+            "1oxewuf": "x1hvr6ea x3skgmg",
+            "8a63ch": "x1k44ad6 x10ktymb",
+            p4ik3q: "x17zef60",
             $$css: true
           }, {
             "--14mfytm": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin),
@@ -1672,7 +1672,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xgau0yw{--background-color:red}", 1);
         export const styles = {
           default: {
-            "--background-color": "xgau0yw",
+            hjdacz: "xgau0yw",
             $$css: true
           }
         };"

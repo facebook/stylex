@@ -292,141 +292,141 @@ import './easings.stylex';
 import { easings } from './easings.stylex';
 export const animations = {
   fadeIn: {
-    animationName: "xh1ldnn",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "xh1ldnn",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   fadeInBloom: {
-    animationName: "x4roml5",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x4roml5",
+    varo5n: "x1c74tu6",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   fadeOut: {
-    animationName: "x5v1hgg",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x5v1hgg",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   fadeOutBloom: {
-    animationName: "x171obl0",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x171obl0",
+    varo5n: "x1c74tu6",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   scaleUp: {
-    animationName: "x1ixqlkn",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x1ixqlkn",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   scaleDown: {
-    animationName: "xoj00vt",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "xoj00vt",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideOutUp: {
-    animationName: "xqd33nb",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "xqd33nb",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideOutDown: {
-    animationName: "xkgcxt4",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "xkgcxt4",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideOutRight: {
-    animationName: "x1eqxhb2",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x1eqxhb2",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideOutLeft: {
-    animationName: "x1dqchgh",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x1dqchgh",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideInUp: {
-    animationName: "x1je50gr",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x1je50gr",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideInDown: {
-    animationName: "x3kizir",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x3kizir",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideInRight: {
-    animationName: "xpcdybh",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "xpcdybh",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   slideInLeft: {
-    animationName: "x1ccho7t",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    zba70f: "x1ccho7t",
+    varo5n: "xxkxylk",
+    "1908qs1": "xnuir8f",
     $$css: true
   },
   shakeX: {
-    animationName: "xvzz9k2",
-    animationDuration: "x7v9bd0",
-    animationTimingFunction: "x1i0jbje",
+    zba70f: "xvzz9k2",
+    varo5n: "x7v9bd0",
+    "1908qs1": "x1i0jbje",
     $$css: true
   },
   shakeY: {
-    animationName: "x17f3kfx",
-    animationDuration: "x7v9bd0",
-    animationTimingFunction: "x1i0jbje",
+    zba70f: "x17f3kfx",
+    varo5n: "x7v9bd0",
+    "1908qs1": "x1i0jbje",
     $$css: true
   },
   spin: {
-    animationName: "x1o9ub63",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "x1esw782",
-    animationIterationCount: "xa4qsjk",
+    zba70f: "x1o9ub63",
+    varo5n: "x1c74tu6",
+    "1908qs1": "x1esw782",
+    "1loc2xq": "xa4qsjk",
     $$css: true
   },
   ping: {
-    animationName: "x1k7hdbq",
-    animationDuration: "xz5h9r3",
-    animationTimingFunction: "x1de9pr8",
-    animationIterationCount: "xa4qsjk",
+    zba70f: "x1k7hdbq",
+    varo5n: "xz5h9r3",
+    "1908qs1": "x1de9pr8",
+    "1loc2xq": "xa4qsjk",
     $$css: true
   },
   blink: {
-    animationName: "xr02afx",
-    animationDuration: "x1q3qbx4",
-    animationTimingFunction: "x1de9pr8",
-    animationIterationCount: "xa4qsjk",
+    zba70f: "xr02afx",
+    varo5n: "x1q3qbx4",
+    "1908qs1": "x1de9pr8",
+    "1loc2xq": "xa4qsjk",
     $$css: true
   },
   float: {
-    animationName: "x1mfaoq1",
-    animationDuration: "x7t6ubo",
-    animationTimingFunction: "x1pcntoe",
-    animationIterationCount: "xa4qsjk",
+    zba70f: "x1mfaoq1",
+    varo5n: "x7t6ubo",
+    "1908qs1": "x1pcntoe",
+    "1loc2xq": "xa4qsjk",
     $$css: true
   },
   bounce: {
-    animationName: "x3gult4",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "x84ng4n",
-    animationIterationCount: "xa4qsjk",
+    zba70f: "x3gult4",
+    varo5n: "x1c74tu6",
+    "1908qs1": "x84ng4n",
+    "1loc2xq": "xa4qsjk",
     $$css: true
   },
   pulse: {
-    animationName: "x179usdr",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "x1de9pr8",
-    animationIterationCount: "xa4qsjk",
+    zba70f: "x179usdr",
+    varo5n: "x1c74tu6",
+    "1908qs1": "x1de9pr8",
+    "1loc2xq": "xa4qsjk",
     $$css: true
   }
 };"
