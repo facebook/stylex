@@ -23,49 +23,9 @@ function printNode(node: PostCSSValueASTNode): string {
   }
 }
 
-// Splits PostCSS value nodes for border-radius into horizontal and vertical groups by slash.
-function splitNodesBySlash(
-  nodes: PostCSSValueASTNode[],
-): PostCSSValueASTNode[][] {
-  const result = [];
-  let current = [];
-
-  for (const node of nodes) {
-    const isSeparator = node.type === 'div' && node.value === '/';
-    if (isSeparator) {
-      if (current.length > 0) {
-        result.push(current);
-        current = [];
-      }
-    } else {
-      current.push(node);
-    }
-  }
-
-  if (current.length > 0) {
-    result.push(current);
-  }
-
-  return result;
-}
-
-// Expands a border-radius shorthand value to an array of four values.
-function expandBorderRadiusShorthand(group: PostCSSValueASTNode[]) {
-  if (group.length === 2) return [group[0], group[1], group[0], group[1]];
-  if (group.length === 3) return [group[0], group[1], group[2], group[1]];
-  if (group.length === 4) return [group[0], group[1], group[2], group[3]];
-  return Array(4).fill(group[0]);
-}
-
-// Combines two arrays of border-radius values into a single formatted string.
-function combineBorderRadiusValues(verticals: string[], horizontals: string[]) {
-  return verticals.map((value, i) => `${value} ${horizontals[i]}`);
-}
-
 // Using split(' ') Isn't enough because of values like calc.
 export default function splitValue(
   str: TStyleValue,
-  propertyName: string = '',
 ): $ReadOnlyArray<number | string | null> {
   if (str == null || typeof str === 'number') {
     return [str];
@@ -78,28 +38,9 @@ export default function splitValue(
 
   const parsed = parser(str.trim());
 
-  let nodes: string[] = [];
-  if (propertyName === 'borderRadius') {
-    const groups = splitNodesBySlash(
-      parsed.nodes.filter((node) => node.type !== 'space'),
-    );
-    if (groups.length === 1) {
-      nodes = parsed.nodes.filter((node) => node.type !== 'div').map(printNode);
-    } else {
-      // edge case
-      const vertical = expandBorderRadiusShorthand(
-        groups[0].filter((node) => node.type !== 'div'),
-      ).map(printNode);
-      const horizontal = expandBorderRadiusShorthand(
-        groups[1].filter((node) => node.type !== 'div'),
-      ).map(printNode);
-      nodes = combineBorderRadiusValues(vertical, horizontal);
-    }
-  } else {
-    nodes = parsed.nodes
-      .filter((node) => node.type !== 'space' && node.type !== 'div')
-      .map(printNode);
-  }
+  const nodes = parsed.nodes
+    .filter((node) => node.type !== 'space' && node.type !== 'div')
+    .map(printNode);
 
   if (
     nodes.length > 1 &&
