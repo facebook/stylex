@@ -343,7 +343,8 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   const nearestStatement = findNearestStatementAncestor(path);
   if (
     !pathUtils.isProgram(nearestStatement.parentPath) &&
-    !pathUtils.isExportNamedDeclaration(nearestStatement.parentPath)
+    !pathUtils.isExportNamedDeclaration(nearestStatement.parentPath) &&
+    !pathUtils.isTSModuleBlock(nearestStatement.parentPath)
   ) {
     throw path.buildCodeFrameError(messages.ONLY_TOP_LEVEL, SyntaxError);
   }

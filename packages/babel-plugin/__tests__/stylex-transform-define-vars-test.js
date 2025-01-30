@@ -21,16 +21,18 @@ const defaultOpts = {
   debug: false,
 };
 
+const defaultParserOpts = {
+  flow: 'all',
+};
+
 // NOTE: While `rootDir` is optional now, It is needed in the
 // test environment still.
 const rootDir = '/stylex/packages/';
 
-function transform(source, opts = defaultOpts) {
+function transform(source, opts = defaultOpts, parserOpts = defaultParserOpts) {
   return transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
-    parserOpts: {
-      flow: 'all',
-    },
+    parserOpts,
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
   });
@@ -769,6 +771,36 @@ describe('@stylexjs/babel-plugin', () => {
           fgColor: "var(--xv9uic)",
           __themeName__: "xmpye33"
         };"
+      `);
+    });
+
+    test('transform typescript namespace', () => {
+      expect(
+        transform(
+          `
+         import stylex from 'stylex';
+         namespace A {
+           export const buttonTheme = stylex.defineVars({
+             bgColor: {
+               default: 'grey'
+             }
+           })
+         }
+      `,
+          { dev: true, ...defaultOpts },
+          { plugins: ['typescript'] },
+        ).code,
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(":root, .x568ih9{--xgck17p:grey;}", 0);
+        namespace A {
+          export const buttonTheme = {
+            bgColor: "var(--xgck17p)",
+            __themeName__: "x568ih9"
+          };
+        }"
       `);
     });
   });
