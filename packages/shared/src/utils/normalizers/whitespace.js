@@ -22,7 +22,7 @@ export default function normalizeWhitespace(
   if (ast.nodes[0].type === 'space') {
     ast.nodes.shift();
   }
-  if (ast.nodes[ast.nodes.length - 1].type === 'space') {
+  if (ast.nodes[ast.nodes.length - 1]?.type === 'space') {
     ast.nodes.pop();
   }
 

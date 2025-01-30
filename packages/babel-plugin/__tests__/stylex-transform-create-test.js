@@ -1698,5 +1698,163 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1g24lt9{--anotherCamelVar:10px}", 1);"
       `);
     });
+
+    test("Verify whitespace normalization doesn't break", () => {
+      expect(
+        transform(`
+        import stylex from 'stylex';
+
+        const styles = stylex.create({
+          root: {
+            width: '288px',
+            height: '80px',
+            position: 'absolute',
+            insetInlineStart: 16,
+            bottom: 28,
+            backgroundColor: 'rgba(50, 52, 54, 0.8)',
+            borderRadius: 8,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          },
+          sponsorImage: {
+            height: '80px',
+            width: '80px',
+            minWidth: '80px',
+            borderRadius: '8px 0 0 8px',
+            objectFit: 'cover',
+          },
+          sponsorName: {
+            minWidth: 0,
+          },
+          sponsorTextContainer: {
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'start',
+            justifyContent: 'center',
+            width: '100%',
+            flexGrow: 1,
+            minWidth: 0,
+          },
+          sponsoredFBT: {
+            flexShrink: 0,
+          },
+          sponsorDescriptionText: {
+            width: '100%',
+            color: '#FFFFFF',
+            marginBottom: '4px',
+          },
+          sponsorTextLayoutContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'end',
+            justifyContent: 'flex-start',
+            color: 'rgba(255, 255, 255, 0.8)',
+          },
+          dotSeparator: {
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            marginInline: 4,
+          },
+          thumbnailContainer: {
+            overflow: 'hidden',
+            position: 'relative',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginInlineEnd: 8,
+          },
+          buttonContainer: {
+            flexDirection: 'column',
+            marginInline: 10,
+            paddingBlock: 8,
+          },
+          threeDotIcon: {
+            height: '16px',
+            width: '16px',
+          },
+          crossIcon: {
+            height: '16px',
+            width: '16px',
+            marginBottom: 20,
+          },
+        });
+
+        export default function TEST() {
+          stylex(styles.root);
+          stylex(styles.thumbnailContainer);
+          stylex(styles.sponsorImage);
+          stylex(styles.sponsorTextContainer);
+          stylex(styles.sponsorDescriptionText);
+          stylex(styles.sponsorTextLayoutContainer);
+          stylex(styles.sponsorName);
+          stylex(styles.dotSeparator);
+          stylex(styles.sponsoredFBT);
+          stylex(styles.buttonContainer);
+          stylex(styles.crossIcon);
+          stylex(styles.threeDotIcon);
+        }
+      `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xbu5dzu{width:288px}", 4000);
+        _inject2(".xwzfr38{height:80px}", 4000);
+        _inject2(".x10l6tqk{position:absolute}", 3000);
+        _inject2(".xzwoauc{inset-inline-start:16px}", 3000);
+        _inject2(".x1u9mewc{bottom:28px}", 4000);
+        _inject2(".xix16p6{background-color:rgba(50,52,54,.8)}", 3000);
+        _inject2(".xur7f20{border-radius:8px}", 2000);
+        _inject2(".x78zum5{display:flex}", 3000);
+        _inject2(".x1q0g3np{flex-direction:row}", 3000);
+        _inject2(".x6s0dn4{align-items:center}", 3000);
+        _inject2(".x1qughib{justify-content:space-between}", 3000);
+        _inject2(".x1dmp6jm{width:80px}", 4000);
+        _inject2(".x6c5l4p{min-width:80px}", 4000);
+        _inject2(".x1t5vj7b{border-radius:8px 0 0 8px}", 2000);
+        _inject2(".xl1xv1r{object-fit:cover}", 3000);
+        _inject2(".xeuugli{min-width:0}", 4000);
+        _inject2(".x1n2onr6{position:relative}", 3000);
+        _inject2(".xdt5ytf{flex-direction:column}", 3000);
+        _inject2(".x7a106z{align-items:start}", 3000);
+        _inject2(".xl56j7k{justify-content:center}", 3000);
+        _inject2(".xh8yej3{width:100%}", 4000);
+        _inject2(".x1iyjqo2{flex-grow:1}", 3000);
+        _inject2(".x2lah0s{flex-shrink:0}", 3000);
+        _inject2(".x8yag65{color:#FFFFFF}", 3000);
+        _inject2(".x12nagc{margin-bottom:4px}", 4000);
+        _inject2(".xpqajaz{align-items:end}", 3000);
+        _inject2(".x1nhvcw1{justify-content:flex-start}", 3000);
+        _inject2(".xttq42n{color:rgba(255,255,255,.8)}", 3000);
+        _inject2(".xjgtzcg{margin-inline:4px}", 2000);
+        _inject2(".xb3r6kr{overflow:hidden}", 2000);
+        _inject2(".x1xegmmw{margin-inline-end:8px}", 3000);
+        _inject2(".xuqyx9n{margin-inline:10px}", 2000);
+        _inject2(".x1vvogim{padding-block:8px}", 2000);
+        _inject2(".xlup9mm{height:16px}", 4000);
+        _inject2(".x1kky2od{width:16px}", 4000);
+        _inject2(".xieb3on{margin-bottom:20px}", 4000);
+        export default function TEST() {
+          "xbu5dzu xwzfr38 x10l6tqk xzwoauc x1u9mewc xix16p6 xur7f20 x78zum5 x1q0g3np x6s0dn4 x1qughib";
+          "xb3r6kr x1n2onr6 x2lah0s x78zum5 x6s0dn4 xl56j7k x1xegmmw";
+          "xwzfr38 x1dmp6jm x6c5l4p x1t5vj7b xl1xv1r";
+          "x1n2onr6 x78zum5 xdt5ytf x7a106z xl56j7k xh8yej3 x1iyjqo2 xeuugli";
+          "xh8yej3 x8yag65 x12nagc";
+          "x78zum5 x1q0g3np xh8yej3 xpqajaz x1nhvcw1 xttq42n";
+          "xeuugli";
+          "x78zum5 xdt5ytf xl56j7k xjgtzcg";
+          "x2lah0s";
+          "xdt5ytf xuqyx9n x1vvogim";
+          "xlup9mm x1kky2od xieb3on";
+          "xlup9mm x1kky2od";
+        }"
+      `);
+    });
   });
 });
