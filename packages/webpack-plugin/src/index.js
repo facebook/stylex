@@ -234,7 +234,6 @@ class StylexPlugin {
                 : flowSyntaxPlugin,
             jsxSyntaxPlugin,
             this.babelPlugin,
-            '@babel/plugin-transform-modules-commonjs',
           ],
           presets: this.babelConfig.presets,
         },
