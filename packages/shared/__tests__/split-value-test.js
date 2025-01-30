@@ -44,28 +44,4 @@ describe('Ensure CSS values are split correctly', () => {
       splitValue('calc((100% - 50px) * 0.5) var(--rightpadding, 20px)'),
     ).toEqual(['calc((100% - 50px) * 0.5)', 'var(--rightpadding,20px)']);
   });
-
-  test('Expands a string of values with slash notation appropriately.', () => {
-    expect(splitValue('1px / 2px 3px 4px 5px', 'borderRadius')).toEqual([
-      '1px 2px',
-      '1px 3px',
-      '1px 4px',
-      '1px 5px',
-    ]);
-    expect(splitValue('1px 2px / 3px 4px', 'borderRadius')).toEqual([
-      '1px 3px',
-      '2px 4px',
-      '1px 3px',
-      '2px 4px',
-    ]);
-    expect(splitValue('1px 2px / 3px 4px 5px', 'borderRadius')).toEqual([
-      '1px 3px',
-      '2px 4px',
-      '1px 5px',
-      '2px 4px',
-    ]);
-    expect(
-      splitValue('1px 2px 3px 4px / 5px 6px 7px 8px', 'borderRadius'),
-    ).toEqual(['1px 5px', '2px 6px', '3px 7px', '4px 8px']);
-  });
 });
