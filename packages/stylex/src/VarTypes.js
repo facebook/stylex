@@ -7,7 +7,12 @@
  * @flow strict
  */
 
-import type { ValueWithDefault } from './util-types';
+export type ValueWithDefault<+T> =
+  | T
+  | $ReadOnly<{
+      default: ValueWithDefault<T>,
+      [string]: ValueWithDefault<T>,
+    }>;
 
 export type CSSSyntax =
   | '*'

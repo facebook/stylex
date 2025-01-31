@@ -21,6 +21,7 @@ import type {
   MapNamespaces,
 } from './StyleXTypes';
 import type {
+  ValueWithDefault,
   Angle,
   Color,
   Url,
@@ -35,8 +36,6 @@ import type {
   TransformFunction,
   TransformList,
 } from './VarTypes';
-import type { ValueWithDefault } from './util-types';
-export * as Types from './VarTypes';
 
 export type {
   VarGroup,
