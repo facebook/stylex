@@ -179,6 +179,7 @@ export async function transformFile(
             rootDir: path.parse(config.output).dir,
           },
           ...(config.styleXConfig as $FlowFixMe),
+          rewriteAliases: true,
         },
       ],
       createImportPlugin(relativeImport),
