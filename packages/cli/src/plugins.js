@@ -17,10 +17,7 @@ import * as nodePath from 'path';
 
 type ImportModifierPlugin = $ReadOnly<{
   visitor: {
-    Program: {
-      enter?: (path: NodePath<t.Program>) => void,
-      exit?: (path: NodePath<t.Program>) => void,
-    },
+    Program: { enter(path: NodePath<t.Program>): void },
   },
 }>;
 

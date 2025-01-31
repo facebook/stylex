@@ -8,7 +8,7 @@
  * @flow strict
  */
 
-import type { Rule, Options as StyleXOptions } from '@stylexjs/babel-plugin';
+import type { Rule } from '@stylexjs/babel-plugin';
 import yargs from 'yargs';
 import path from 'path';
 import ansis from 'ansis';
@@ -71,7 +71,8 @@ const babelPresets: $ReadOnlyArray<any> = args.babelPresets;
 const babelPluginsPre: $ReadOnlyArray<any> = args.babelPluginsPre;
 const babelPluginsPost: $ReadOnlyArray<any> = args.babelPluginsPost;
 const useCSSLayers: boolean = args.useCSSLayers;
-const styleXConfig: StyleXOptions = (config.styleXConfig as $FlowFixMe) ?? {};
+const styleXConfig: { +[string]: mixed } =
+  (config.styleXConfig as $FlowFixMe) ?? {};
 
 const cliArgsConfig: CliConfig = {
   input,

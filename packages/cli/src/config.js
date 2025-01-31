@@ -8,7 +8,7 @@
  * @flow strict
  */
 
-import type { Rule, Options as StyleXOptions } from '@stylexjs/babel-plugin';
+import type { Rule } from '@stylexjs/babel-plugin';
 
 export type ModuleType =
   | string
@@ -24,7 +24,7 @@ export type CliConfig = {
   babelPluginsPost?: $ReadOnlyArray<any>,
   modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType>,
   useCSSLayers?: boolean,
-  styleXConfig?: StyleXOptions,
+  styleXConfig?: { +[string]: mixed },
 };
 
 export type TransformConfig = {

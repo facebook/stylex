@@ -12,12 +12,6 @@ import type { NodePath } from '@babel/traverse';
 import type { PluginObj } from '@babel/core';
 import type { StyleXOptions } from './utils/state-manager';
 import StateManager from './utils/state-manager';
-import {
-  EXTENSIONS,
-  filePathResolver,
-  matchesFileSuffix,
-  getRelativePath,
-} from './utils/state-manager';
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
 import transformStyleXDefineVars from './visitors/stylex-define-vars';
@@ -80,44 +74,6 @@ function styleXTransform(): PluginObj<> {
         // variables entirely if they're not needed.
         exit: (path: NodePath<t.Program>) => {
           path.traverse({
-            ImportDeclaration(path: NodePath<t.ImportDeclaration>) {
-              const filename = state.filename;
-              if (filename == null || !state.options.rewriteAliases) {
-                return;
-              }
-
-              const source = path.node.source.value;
-
-              const aliases = state.options.aliases;
-
-              const themeFileExtension = '.stylex';
-              if (!matchesFileSuffix(themeFileExtension)(source)) {
-                return;
-              }
-              const resolvedFilePath = filePathResolver(
-                source,
-                filename,
-                aliases,
-              );
-
-              if (resolvedFilePath == null) {
-                return;
-              }
-
-              let relativeFilePath = getRelativePath(
-                filename,
-                resolvedFilePath,
-              );
-
-              const extension = EXTENSIONS.find((ext) =>
-                relativeFilePath.endsWith(ext),
-              );
-              if (extension != null) {
-                relativeFilePath = relativeFilePath.slice(0, -extension.length);
-              }
-
-              path.node.source.value = relativeFilePath;
-            },
             Identifier(path: NodePath<t.Identifier>) {
               // Look for variables bound to `stylex.create` calls that are used
               // outside of `stylex(...)` calls
