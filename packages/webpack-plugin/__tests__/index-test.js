@@ -132,9 +132,61 @@ describe('webpack-plugin-stylex', () => {
         exports.modules = {
 
         /***/ "./index.js":
-        /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+        /***/ (() => {
 
-        var __webpack_unused_export__;
+
+        // UNUSED EXPORTS: default
+
+        ;// CONCATENATED MODULE: external "stylex"
+        const external_stylex_namespaceObject = stylex;
+        ;// CONCATENATED MODULE: ./otherStyles.js
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
+
+        // otherStyles.js
+
+
+
+
+        var styles = {
+          bar: {
+            display: "x1lliihq",
+            width: "xh8yej3",
+            $$css: true
+          }
+        };
+        /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
+        ;// CONCATENATED MODULE: ./npmStyles.js
+        /**
+         * Copyright (c) Meta Platforms, Inc. and affiliates.
+         *
+         * This source code is licensed under the MIT license found in the
+         * LICENSE file in the root directory of this source tree.
+         *
+         *
+         */
+
+        // npmStyles.js
+
+
+
+
+        const npmStyles_styles = {
+          baz: {
+            display: "xt0psk2",
+            height: "x1egiwwb",
+            width: "x3hqpx7",
+            $$css: true
+          }
+        };
+        /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
+        ;// CONCATENATED MODULE: ./index.js
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
          *
@@ -146,16 +198,11 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-        __webpack_unused_export__ = ({
-          value: true
-        });
-        __webpack_unused_export__ = App;
-        var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-        var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
-        var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
-        function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+
+
+
         var fadeAnimation = "xgnty7z-B";
-        var styles = {
+        var index_styles = {
           foo: {
             animationName: "xeuoslp",
             display: "x78zum5",
@@ -179,82 +226,8 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         function App() {
-          return (0, _stylex.default)(_otherStyles.default.bar, styles.foo, _npmStyles.default.baz);
+          return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
         }
-
-        /***/ }),
-
-        /***/ "./otherStyles.js":
-        /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-        /**
-         * Copyright (c) Meta Platforms, Inc. and affiliates.
-         *
-         * This source code is licensed under the MIT license found in the
-         * LICENSE file in the root directory of this source tree.
-         *
-         *
-         */
-
-        // otherStyles.js
-
-
-
-        Object.defineProperty(exports, "__esModule", ({
-          value: true
-        }));
-        exports["default"] = void 0;
-        var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-        function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-        var styles = {
-          bar: {
-            display: "x1lliihq",
-            width: "xh8yej3",
-            $$css: true
-          }
-        };
-        var _default = exports["default"] = styles;
-
-        /***/ }),
-
-        /***/ "./npmStyles.js":
-        /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-        /**
-         * Copyright (c) Meta Platforms, Inc. and affiliates.
-         *
-         * This source code is licensed under the MIT license found in the
-         * LICENSE file in the root directory of this source tree.
-         *
-         *
-         */
-
-        // npmStyles.js
-
-
-
-        Object.defineProperty(exports, "__esModule", ({
-          value: true
-        }));
-        exports["default"] = void 0;
-        var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-        function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-        const styles = {
-          baz: {
-            display: "xt0psk2",
-            height: "x1egiwwb",
-            width: "x3hqpx7",
-            $$css: true
-          }
-        };
-        var _default = exports["default"] = styles;
-
-        /***/ }),
-
-        /***/ "stylex":
-        /***/ ((module) => {
-
-        module.exports = stylex;
 
         /***/ })
 
@@ -311,21 +284,69 @@ describe('webpack-plugin-stylex', () => {
           exports.ids = [179];
           exports.modules = {
 
-          /***/ "../../../stylex/lib/StyleXSheet.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+          /***/ "./index.js":
+          /***/ (() => {
 
 
+          // UNUSED EXPORTS: default
 
-          Object.defineProperty(exports, "__esModule", ({
-            value: true
-          }));
-          exports.styleSheet = exports.StyleXSheet = void 0;
-          var _invariant = _interopRequireDefault(__webpack_require__("../../../../node_modules/invariant/invariant.js"));
-          function _interopRequireDefault(e) {
-            return e && e.__esModule ? e : {
-              default: e
-            };
+          ;// CONCATENATED MODULE: ../../../stylex/lib/es/StyleXSheet.mjs
+          function getDefaultExportFromCjs(x) {
+            return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
           }
+
+          /**
+           * Copyright (c) 2013-present, Facebook, Inc.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           */
+
+          var invariant_1;
+          var hasRequiredInvariant;
+          function requireInvariant() {
+            if (hasRequiredInvariant) return invariant_1;
+            hasRequiredInvariant = 1;
+
+            /**
+             * Use invariant() to assert state which your program assumes to be true.
+             *
+             * Provide sprintf-style format (only %s is supported) and arguments
+             * to provide information about what broke and what you were
+             * expecting.
+             *
+             * The invariant message will be stripped in production, but the invariant
+             * will remain to ensure logic does not differ in production.
+             */
+
+            var NODE_ENV = "production";
+            var invariant = function (condition, format, a, b, c, d, e, f) {
+              if (NODE_ENV !== 'production') {
+                if (format === undefined) {
+                  throw new Error('invariant requires an error message argument');
+                }
+              }
+              if (!condition) {
+                var error;
+                if (format === undefined) {
+                  error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+                } else {
+                  var args = [a, b, c, d, e, f];
+                  var argIndex = 0;
+                  error = new Error(format.replace(/%s/g, function () {
+                    return args[argIndex++];
+                  }));
+                  error.name = 'Invariant Violation';
+                }
+                error.framesToPop = 1; // we don't care about invariant's own frame
+                throw error;
+              }
+            };
+            invariant_1 = invariant;
+            return invariant_1;
+          }
+          var invariantExports = requireInvariant();
+          var invariant = /*@__PURE__*/getDefaultExportFromCjs(invariantExports);
           const LIGHT_MODE_CLASS_NAME = '__fb-light-mode';
           const DARK_MODE_CLASS_NAME = '__fb-dark-mode';
           function buildTheme(selector, theme) {
@@ -343,7 +364,7 @@ describe('webpack-plugin-stylex', () => {
             tag.setAttribute('type', 'text/css');
             tag.setAttribute('data-stylex', 'true');
             const head = document.head || document.getElementsByTagName('head')[0];
-            (0, _invariant.default)(head, 'expected head');
+            invariant(head, 'expected head');
             head.appendChild(tag);
             return tag;
           }
@@ -373,7 +394,7 @@ describe('webpack-plugin-stylex', () => {
               const {
                 tag
               } = this;
-              (0, _invariant.default)(tag != null, 'expected tag');
+              invariant(tag != null, 'expected tag');
               return tag;
             }
             getCSS() {
@@ -412,14 +433,14 @@ describe('webpack-plugin-stylex', () => {
             }
             delete(rule) {
               const index = this.rules.indexOf(rule);
-              (0, _invariant.default)(index >= 0, "Couldn't find the index for rule %s", rule);
+              invariant(index >= 0, "Couldn't find the index for rule %s", rule);
               this.rules.splice(index, 1);
               if (this.isHeadless()) {
                 return;
               }
               const tag = this.getTag();
               const sheet = tag.sheet;
-              (0, _invariant.default)(sheet, 'expected sheet');
+              invariant(sheet, 'expected sheet');
               sheet.deleteRule(index);
             }
             normalizeRule(rule) {
@@ -479,7 +500,6 @@ describe('webpack-plugin-stylex', () => {
               }
             }
           }
-          exports.StyleXSheet = StyleXSheet;
           function addAncestorSelector(selector, ancestorSelector) {
             if (!selector.startsWith('@')) {
               return \`\${ancestorSelector} \${selector}\`;
@@ -501,35 +521,79 @@ describe('webpack-plugin-stylex', () => {
             const afterCurly = selector.slice(lastOpenCurly);
             return \`\${beforeCurly}\${pseudo}\${afterCurly}\`;
           }
-          const styleSheet = exports.styleSheet = new StyleXSheet({
+          const styleSheet = new StyleXSheet({
             supportsVariables: true,
             rootTheme: {},
             rootDarkTheme: {}
           });
 
-          /***/ }),
+          ;// CONCATENATED MODULE: ../../../stylex/lib/es/stylex-inject.mjs
 
-          /***/ "../../../stylex/lib/stylex-inject.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-
-          Object.defineProperty(exports, "__esModule", ({
-            value: true
-          }));
-          exports["default"] = inject;
-          var _StyleXSheet = __webpack_require__("../../../stylex/lib/StyleXSheet.js");
           function inject(ltrRule, priority) {
             let rtlRule = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-            _StyleXSheet.styleSheet.insert(ltrRule, priority, rtlRule);
+            styleSheet.insert(ltrRule, priority, rtlRule);
           }
+          ;// CONCATENATED MODULE: external "stylex"
+          const external_stylex_namespaceObject = stylex;
+          ;// CONCATENATED MODULE: ./otherStyles.js
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
 
-          /***/ }),
+          // otherStyles.js
 
-          /***/ "./index.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-          var __webpack_unused_export__;
+
+
+          var _inject2 = inject;
+
+          _inject2(".display-x1lliihq{display:block}", 3000);
+          _inject2(".width-xh8yej3{width:100%}", 4000);
+          var styles = {
+            bar: {
+              "otherStyles__styles.bar": "otherStyles__styles.bar",
+              display: "display-x1lliihq",
+              width: "width-xh8yej3",
+              $$css: true
+            }
+          };
+          /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
+          ;// CONCATENATED MODULE: ./npmStyles.js
+          /**
+           * Copyright (c) Meta Platforms, Inc. and affiliates.
+           *
+           * This source code is licensed under the MIT license found in the
+           * LICENSE file in the root directory of this source tree.
+           *
+           *
+           */
+
+          // npmStyles.js
+
+
+
+
+          var npmStyles_inject2 = inject;
+
+          npmStyles_inject2(".display-xt0psk2{display:inline}", 3000);
+          npmStyles_inject2(".height-x1egiwwb{height:500px}", 4000);
+          npmStyles_inject2(".width-x3hqpx7{width:50%}", 4000);
+          const npmStyles_styles = {
+            baz: {
+              "npmStyles__styles.baz": "npmStyles__styles.baz",
+              display: "display-xt0psk2",
+              height: "height-x1egiwwb",
+              width: "width-x3hqpx7",
+              $$css: true
+            }
+          };
+          /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
+          ;// CONCATENATED MODULE: ./index.js
           /**
            * Copyright (c) Meta Platforms, Inc. and affiliates.
            *
@@ -541,25 +605,20 @@ describe('webpack-plugin-stylex', () => {
 
 
 
-          __webpack_unused_export__ = ({
-            value: true
-          });
-          __webpack_unused_export__ = App;
-          var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
-          var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-          var _otherStyles = _interopRequireDefault(__webpack_require__("./otherStyles.js"));
-          var _npmStyles = _interopRequireDefault(__webpack_require__("./npmStyles.js"));
-          function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-          var _inject2 = _stylexInject.default;
-          _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+
+          var index_inject2 = inject;
+
+
+
+          index_inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
           var fadeAnimation = "xgnty7z-B";
-          _inject2(".animationName-xeuoslp{animation-name:xgnty7z-B}", 3000);
-          _inject2(".display-x78zum5{display:flex}", 3000);
-          _inject2(".marginInlineStart-x1hm9lzh{margin-inline-start:10px}", 3000);
-          _inject2(".marginTop-xlrshdv{margin-top:99px}", 4000);
-          _inject2(".height-x1egiwwb{height:500px}", 4000);
-          _inject2(".background-x1oz5o6v:hover{background:red}", 1130);
-          var styles = {
+          index_inject2(".animationName-xeuoslp{animation-name:xgnty7z-B}", 3000);
+          index_inject2(".display-x78zum5{display:flex}", 3000);
+          index_inject2(".marginInlineStart-x1hm9lzh{margin-inline-start:10px}", 3000);
+          index_inject2(".marginTop-xlrshdv{margin-top:99px}", 4000);
+          index_inject2(".height-x1egiwwb{height:500px}", 4000);
+          index_inject2(".background-x1oz5o6v:hover{background:red}", 1130);
+          var index_styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
               animationName: "animationName-xeuoslp",
@@ -584,151 +643,8 @@ describe('webpack-plugin-stylex', () => {
             }
           };
           function App() {
-            return (0, _stylex.default)(_otherStyles.default.bar, styles.foo, _npmStyles.default.baz);
+            return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
           }
-
-          /***/ }),
-
-          /***/ "./otherStyles.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-          /**
-           * Copyright (c) Meta Platforms, Inc. and affiliates.
-           *
-           * This source code is licensed under the MIT license found in the
-           * LICENSE file in the root directory of this source tree.
-           *
-           *
-           */
-
-          // otherStyles.js
-
-
-
-          Object.defineProperty(exports, "__esModule", ({
-            value: true
-          }));
-          exports["default"] = void 0;
-          var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
-          var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-          function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-          var _inject2 = _stylexInject.default;
-          _inject2(".display-x1lliihq{display:block}", 3000);
-          _inject2(".width-xh8yej3{width:100%}", 4000);
-          var styles = {
-            bar: {
-              "otherStyles__styles.bar": "otherStyles__styles.bar",
-              display: "display-x1lliihq",
-              width: "width-xh8yej3",
-              $$css: true
-            }
-          };
-          var _default = exports["default"] = styles;
-
-          /***/ }),
-
-          /***/ "../../../../node_modules/invariant/invariant.js":
-          /***/ ((module) => {
-
-          /**
-           * Copyright (c) 2013-present, Facebook, Inc.
-           *
-           * This source code is licensed under the MIT license found in the
-           * LICENSE file in the root directory of this source tree.
-           */
-
-
-
-          /**
-           * Use invariant() to assert state which your program assumes to be true.
-           *
-           * Provide sprintf-style format (only %s is supported) and arguments
-           * to provide information about what broke and what you were
-           * expecting.
-           *
-           * The invariant message will be stripped in production, but the invariant
-           * will remain to ensure logic does not differ in production.
-           */
-
-          var NODE_ENV = "production";
-
-          var invariant = function(condition, format, a, b, c, d, e, f) {
-            if (NODE_ENV !== 'production') {
-              if (format === undefined) {
-                throw new Error('invariant requires an error message argument');
-              }
-            }
-
-            if (!condition) {
-              var error;
-              if (format === undefined) {
-                error = new Error(
-                  'Minified exception occurred; use the non-minified dev environment ' +
-                  'for the full error message and additional helpful warnings.'
-                );
-              } else {
-                var args = [a, b, c, d, e, f];
-                var argIndex = 0;
-                error = new Error(
-                  format.replace(/%s/g, function() { return args[argIndex++]; })
-                );
-                error.name = 'Invariant Violation';
-              }
-
-              error.framesToPop = 1; // we don't care about invariant's own frame
-              throw error;
-            }
-          };
-
-          module.exports = invariant;
-
-
-          /***/ }),
-
-          /***/ "./npmStyles.js":
-          /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-          /**
-           * Copyright (c) Meta Platforms, Inc. and affiliates.
-           *
-           * This source code is licensed under the MIT license found in the
-           * LICENSE file in the root directory of this source tree.
-           *
-           *
-           */
-
-          // npmStyles.js
-
-
-
-          Object.defineProperty(exports, "__esModule", ({
-            value: true
-          }));
-          exports["default"] = void 0;
-          var _stylexInject = _interopRequireDefault(__webpack_require__("../../../stylex/lib/stylex-inject.js"));
-          var _stylex = _interopRequireDefault(__webpack_require__("stylex"));
-          function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-          var _inject2 = _stylexInject.default;
-          _inject2(".display-xt0psk2{display:inline}", 3000);
-          _inject2(".height-x1egiwwb{height:500px}", 4000);
-          _inject2(".width-x3hqpx7{width:50%}", 4000);
-          const styles = {
-            baz: {
-              "npmStyles__styles.baz": "npmStyles__styles.baz",
-              display: "display-xt0psk2",
-              height: "height-x1egiwwb",
-              width: "width-x3hqpx7",
-              $$css: true
-            }
-          };
-          var _default = exports["default"] = styles;
-
-          /***/ }),
-
-          /***/ "stylex":
-          /***/ ((module) => {
-
-          module.exports = stylex;
 
           /***/ })
 
