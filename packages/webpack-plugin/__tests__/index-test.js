@@ -157,24 +157,24 @@ describe('webpack-plugin-stylex', () => {
         var fadeAnimation = "xgnty7z-B";
         var styles = {
           foo: {
-            animationName: "xeuoslp",
-            display: "x78zum5",
-            marginInlineStart: "x1hm9lzh",
-            marginLeft: null,
-            marginRight: null,
-            marginTop: "xlrshdv",
-            height: "x1egiwwb",
-            ":hover_background": "x1oz5o6v",
-            ":hover_backgroundAttachment": null,
-            ":hover_backgroundClip": null,
-            ":hover_backgroundColor": null,
-            ":hover_backgroundImage": null,
-            ":hover_backgroundOrigin": null,
-            ":hover_backgroundPosition": null,
-            ":hover_backgroundPositionX": null,
-            ":hover_backgroundPositionY": null,
-            ":hover_backgroundRepeat": null,
-            ":hover_backgroundSize": null,
+            kKVMdj: "xeuoslp",
+            k1xSpc: "x78zum5",
+            keTefX: "x1hm9lzh",
+            koQZXg: null,
+            km5ZXQ: null,
+            keoZOQ: "xlrshdv",
+            kZKoxP: "x1egiwwb",
+            kEyE8R: "x1oz5o6v",
+            kwRxUf: null,
+            kmvik3: null,
+            kGzVvX: null,
+            kBPHsk: null,
+            kIpHjZ: null,
+            kwsBex: null,
+            kKEIo6: null,
+            kdqC5e: null,
+            kIjLOv: null,
+            kA1KOB: null,
             $$css: true
           }
         };
@@ -208,8 +208,8 @@ describe('webpack-plugin-stylex', () => {
         function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
         var styles = {
           bar: {
-            display: "x1lliihq",
-            width: "xh8yej3",
+            k1xSpc: "x1lliihq",
+            kzqmXN: "xh8yej3",
             $$css: true
           }
         };
@@ -241,9 +241,9 @@ describe('webpack-plugin-stylex', () => {
         function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
         const styles = {
           baz: {
-            display: "xt0psk2",
-            height: "x1egiwwb",
-            width: "x3hqpx7",
+            k1xSpc: "xt0psk2",
+            kZKoxP: "x1egiwwb",
+            kzqmXN: "x3hqpx7",
             $$css: true
           }
         };
@@ -562,24 +562,24 @@ describe('webpack-plugin-stylex', () => {
           var styles = {
             foo: {
               "index__styles.foo": "index__styles.foo",
-              animationName: "animationName-xeuoslp",
-              display: "display-x78zum5",
-              marginInlineStart: "marginInlineStart-x1hm9lzh",
-              marginLeft: null,
-              marginRight: null,
-              marginTop: "marginTop-xlrshdv",
-              height: "height-x1egiwwb",
-              ":hover_background": "background-x1oz5o6v",
-              ":hover_backgroundAttachment": null,
-              ":hover_backgroundClip": null,
-              ":hover_backgroundColor": null,
-              ":hover_backgroundImage": null,
-              ":hover_backgroundOrigin": null,
-              ":hover_backgroundPosition": null,
-              ":hover_backgroundPositionX": null,
-              ":hover_backgroundPositionY": null,
-              ":hover_backgroundRepeat": null,
-              ":hover_backgroundSize": null,
+              "animationName-kKVMdj": "animationName-xeuoslp",
+              "display-k1xSpc": "display-x78zum5",
+              "marginInlineStart-keTefX": "marginInlineStart-x1hm9lzh",
+              "marginLeft-koQZXg": null,
+              "marginRight-km5ZXQ": null,
+              "marginTop-keoZOQ": "marginTop-xlrshdv",
+              "height-kZKoxP": "height-x1egiwwb",
+              ":hover_background-kEyE8R": "background-x1oz5o6v",
+              ":hover_backgroundAttachment-kwRxUf": null,
+              ":hover_backgroundClip-kmvik3": null,
+              ":hover_backgroundColor-kGzVvX": null,
+              ":hover_backgroundImage-kBPHsk": null,
+              ":hover_backgroundOrigin-kIpHjZ": null,
+              ":hover_backgroundPosition-kwsBex": null,
+              ":hover_backgroundPositionX-kKEIo6": null,
+              ":hover_backgroundPositionY-kdqC5e": null,
+              ":hover_backgroundRepeat-kIjLOv": null,
+              ":hover_backgroundSize-kA1KOB": null,
               $$css: true
             }
           };
@@ -618,8 +618,8 @@ describe('webpack-plugin-stylex', () => {
           var styles = {
             bar: {
               "otherStyles__styles.bar": "otherStyles__styles.bar",
-              display: "display-x1lliihq",
-              width: "width-xh8yej3",
+              "display-k1xSpc": "display-x1lliihq",
+              "width-kzqmXN": "width-xh8yej3",
               $$css: true
             }
           };
@@ -715,9 +715,9 @@ describe('webpack-plugin-stylex', () => {
           const styles = {
             baz: {
               "npmStyles__styles.baz": "npmStyles__styles.baz",
-              display: "display-xt0psk2",
-              height: "height-x1egiwwb",
-              width: "width-x3hqpx7",
+              "display-k1xSpc": "display-xt0psk2",
+              "height-kZKoxP": "height-x1egiwwb",
+              "width-kzqmXN": "width-x3hqpx7",
               $$css: true
             }
           };
