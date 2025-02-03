@@ -72,3 +72,19 @@ function murmurhash2_32_gc(str: string, seed?: number = 0) {
 const hash = (str: string): string => murmurhash2_32_gc(str, 1).toString(36);
 
 export default hash as (str: string) => string;
+
+const base62Chars =
+  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+function toBase62(num: number) {
+  let result = '';
+  let _num = num;
+  while (_num > 0) {
+    const remainder = _num % 62;
+    result = base62Chars[remainder] + result;
+    _num = Math.floor(_num / 62);
+  }
+  return result;
+}
+
+export const createShortHash = (str: string): string =>
+  toBase62(murmurhash2_32_gc(str, 1) % 62 ** 5);
