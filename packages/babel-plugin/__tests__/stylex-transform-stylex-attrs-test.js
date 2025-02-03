@@ -210,11 +210,11 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1t391ir{background-color:blue}", 3000);
         const styles = {
           foo: {
-            color: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           },
           bar: {
-            backgroundColor: "x1t391ir",
+            kWkggS: "x1t391ir",
             $$css: true
           }
         };
@@ -297,15 +297,15 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x14odnwx{padding:5px}", 1000);
         export const styles = {
           foo: {
-            padding: "x14odnwx",
-            paddingInline: null,
-            paddingStart: null,
-            paddingLeft: null,
-            paddingEnd: null,
-            paddingRight: null,
-            paddingBlock: null,
-            paddingTop: null,
-            paddingBottom: null,
+            kmVPX3: "x14odnwx",
+            kg3NbH: null,
+            kuDDbn: null,
+            kE3dHu: null,
+            kP0aTx: null,
+            kpe85a: null,
+            k8WAf4: null,
+            kLKAdn: null,
+            kGO01o: null,
             $$css: true
           }
         };
@@ -542,11 +542,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xju2f9n{color:blue}", 3000);
           const styles = {
             default: {
-              backgroundColor: "xrkmrrc",
+              kWkggS: "xrkmrrc",
               $$css: true
             },
             active: {
-              color: "xju2f9n",
+              kMwMTN: "xju2f9n",
               $$css: true
             }
           };
@@ -730,11 +730,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".xju2f9n{color:blue}", 3000);
           const styles = {
             red: {
-              color: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              color: "xju2f9n",
+              kMwMTN: "xju2f9n",
               $$css: true
             }
           };
@@ -796,11 +796,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1e2nbdu{color:red}", 3000);
           const styles = {
             red: {
-              color: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              color: null,
+              kMwMTN: null,
               $$css: true
             }
           };
@@ -912,7 +912,7 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             default: {
               "FooBar__styles.default": "FooBar__styles.default",
-              color: "color-x1e2nbdu",
+              "color-kMwMTN": "color-x1e2nbdu",
               $$css: true
             }
           };
@@ -920,7 +920,7 @@ describe('@stylexjs/babel-plugin', () => {
           const otherStyles = {
             default: {
               "FooBar__otherStyles.default": "FooBar__otherStyles.default",
-              backgroundColor: "backgroundColor-x1t391ir",
+              "backgroundColor-kWkggS": "backgroundColor-x1t391ir",
               $$css: true
             }
           };
@@ -992,11 +992,11 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1t391ir{background-color:blue}", 3000);
         const styles = {
           "0": {
-            color: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           },
           "1": {
-            backgroundColor: "x1t391ir",
+            kWkggS: "x1t391ir",
             $$css: true
           }
         };
@@ -1021,7 +1021,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".x1e2nbdu{color:red}", 3000);
         const styles = {
           default: {
-            color: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu",
             $$css: true
           }
         };
@@ -1053,8 +1053,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
         export const styles = {
           default: {
-            ":hover_color": "x17z2mba",
-            "@media (min-width: 1000px)_backgroundColor": "xc445zv",
+            kDPRdz: "x17z2mba",
+            ksQ81T: "xc445zv",
             $$css: true
           }
         };
@@ -1088,11 +1088,11 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1t391ir{background-color:blue}", 3000);
           const styles = {
             "0": {
-              color: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             },
             "1": {
-              backgroundColor: "x1t391ir",
+              kWkggS: "x1t391ir",
               $$css: true
             }
           };"
@@ -1146,7 +1146,7 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1t391ir{background-color:blue}", 3000);
           const styles = {
             foo: {
-              color: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -1171,7 +1171,7 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".x1e2nbdu{color:red}", 3000);
           const styles = {
             default: {
-              color: "x1e2nbdu",
+              kMwMTN: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -1205,8 +1205,8 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
           export const styles = {
             default: {
-              ":hover_color": "x17z2mba",
-              "@media (min-width: 1000px)_backgroundColor": "xc445zv",
+              kDPRdz: "x17z2mba",
+              ksQ81T: "xc445zv",
               $$css: true
             }
           };"
@@ -1299,47 +1299,47 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           sidebar: {
             "UnknownFile__styles.sidebar": "UnknownFile__styles.sidebar",
-            boxSizing: "boxSizing-x9f619",
-            gridArea: "gridArea-x1yc5d2u",
-            gridRow: null,
-            gridRowStart: null,
-            gridRowEnd: null,
-            gridColumn: null,
-            gridColumnStart: null,
-            gridColumnEnd: null,
+            "boxSizing-kB7OPa": "boxSizing-x9f619",
+            "gridArea-kJuA4N": "gridArea-x1yc5d2u",
+            "gridRow-kbNqZ1": null,
+            "gridRowStart-k1lYIM": null,
+            "gridRowEnd-kpJH7q": null,
+            "gridColumn-kBCFzs": null,
+            "gridColumnStart-kEXP64": null,
+            "gridColumnEnd-kWZpDQ": null,
             $$css: true
           },
           content: {
             "UnknownFile__styles.content": "UnknownFile__styles.content",
-            gridArea: "gridArea-x1fdo2jl",
-            gridRow: null,
-            gridRowStart: null,
-            gridRowEnd: null,
-            gridColumn: null,
-            gridColumnStart: null,
-            gridColumnEnd: null,
+            "gridArea-kJuA4N": "gridArea-x1fdo2jl",
+            "gridRow-kbNqZ1": null,
+            "gridRowStart-k1lYIM": null,
+            "gridRowEnd-kpJH7q": null,
+            "gridColumn-kBCFzs": null,
+            "gridColumnStart-kEXP64": null,
+            "gridColumnEnd-kWZpDQ": null,
             $$css: true
           },
           root: {
             "UnknownFile__styles.root": "UnknownFile__styles.root",
-            display: "display-xrvj5dj",
-            gridTemplateRows: "gridTemplateRows-x7k18q3",
-            gridTemplateAreas: "gridTemplateAreas-x5gp9wm",
+            "display-k1xSpc": "display-xrvj5dj",
+            "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
+            "gridTemplateAreas-kC13JO": "gridTemplateAreas-x5gp9wm",
             $$css: true
           },
           withSidebar: {
             "UnknownFile__styles.withSidebar": "UnknownFile__styles.withSidebar",
-            gridTemplateColumns: "gridTemplateColumns-x1rkzygb",
-            gridTemplateRows: "gridTemplateRows-x7k18q3",
-            gridTemplateAreas: "gridTemplateAreas-x17lh93j",
-            "@media (max-width: 640px)_gridTemplateRows": "gridTemplateRows-xmr4b4k",
-            "@media (max-width: 640px)_gridTemplateAreas": "gridTemplateAreas-xesbpuc",
-            "@media (max-width: 640px)_gridTemplateColumns": "gridTemplateColumns-x15nfgh4",
+            "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1rkzygb",
+            "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
+            "gridTemplateAreas-kC13JO": "gridTemplateAreas-x17lh93j",
+            "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "gridTemplateRows-xmr4b4k",
+            "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "gridTemplateAreas-xesbpuc",
+            "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "gridTemplateColumns-x15nfgh4",
             $$css: true
           },
           noSidebar: {
             "UnknownFile__styles.noSidebar": "UnknownFile__styles.noSidebar",
-            gridTemplateColumns: "gridTemplateColumns-x1mkdm3x",
+            "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1mkdm3x",
             $$css: true
           }
         };
