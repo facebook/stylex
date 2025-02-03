@@ -144,8 +144,8 @@ describe('rollup-plugin-stylex', () => {
 
       var styles$2 = {
         bar: {
-          display: "x1lliihq",
-          width: "xh8yej3",
+          k1xSpc: "x1lliihq",
+          kzqmXN: "xh8yej3",
           $$css: true
         }
       };
@@ -161,9 +161,9 @@ describe('rollup-plugin-stylex', () => {
 
       const styles$1 = {
         baz: {
-          display: "xt0psk2",
-          height: "x1egiwwb",
-          width: "x3hqpx7",
+          k1xSpc: "xt0psk2",
+          kZKoxP: "x1egiwwb",
+          kzqmXN: "x3hqpx7",
           $$css: true
         }
       };
@@ -179,27 +179,27 @@ describe('rollup-plugin-stylex', () => {
 
       var styles = {
         foo: {
-          animationName: "xeuoslp",
-          display: "x78zum5",
-          marginInlineStart: "x1hm9lzh",
-          marginLeft: null,
-          marginRight: null,
-          marginTop: "xlrshdv",
-          height: "x1egiwwb",
-          ":hover_background": "x1oz5o6v",
-          ":hover_backgroundAttachment": null,
-          ":hover_backgroundClip": null,
-          ":hover_backgroundColor": null,
-          ":hover_backgroundImage": null,
-          ":hover_backgroundOrigin": null,
-          ":hover_backgroundPosition": null,
-          ":hover_backgroundPositionX": null,
-          ":hover_backgroundPositionY": null,
-          ":hover_backgroundRepeat": null,
-          ":hover_backgroundSize": null,
-          borderStartStartRadius: "xu4yf9m",
-          borderTopLeftRadius: null,
-          borderTopRightRadius: null,
+          kKVMdj: "xeuoslp",
+          k1xSpc: "x78zum5",
+          keTefX: "x1hm9lzh",
+          koQZXg: null,
+          km5ZXQ: null,
+          keoZOQ: "xlrshdv",
+          kZKoxP: "x1egiwwb",
+          kEyE8R: "x1oz5o6v",
+          kwRxUf: null,
+          kmvik3: null,
+          kGzVvX: null,
+          kBPHsk: null,
+          kIpHjZ: null,
+          kwsBex: null,
+          kKEIo6: null,
+          kdqC5e: null,
+          kIjLOv: null,
+          kA1KOB: null,
+          krdFHd: "xu4yf9m",
+          kIxVMA: null,
+          ksF3WI: null,
           $$css: true
         }
       };
@@ -238,8 +238,8 @@ describe('rollup-plugin-stylex', () => {
         _inject2$2(".width-xh8yej3{width:100%}", 4000);
         var styles$2 = {
           bar: {
-            display: "display-x1lliihq",
-            width: "width-xh8yej3",
+            "display-k1xSpc": "display-x1lliihq",
+            "width-kzqmXN": "width-xh8yej3",
             $$css: "__fixtures__/otherStyles.js:16"
           }
         };
@@ -259,9 +259,9 @@ describe('rollup-plugin-stylex', () => {
         _inject2$1(".width-x3hqpx7{width:50%}", 4000);
         const styles$1 = {
           baz: {
-            display: "display-xt0psk2",
-            height: "height-x1egiwwb",
-            width: "width-x3hqpx7",
+            "display-k1xSpc": "display-xt0psk2",
+            "height-kZKoxP": "height-x1egiwwb",
+            "width-kzqmXN": "width-x3hqpx7",
             $$css: "__fixtures__/npmStyles.js:17"
           }
         };
@@ -286,27 +286,27 @@ describe('rollup-plugin-stylex', () => {
         _inject2(".borderStartStartRadius-xu4yf9m{border-start-start-radius:7.5px}", 3000);
         var styles = {
           foo: {
-            animationName: "animationName-xeuoslp",
-            display: "display-x78zum5",
-            marginInlineStart: "marginInlineStart-x1hm9lzh",
-            marginLeft: null,
-            marginRight: null,
-            marginTop: "marginTop-xlrshdv",
-            height: "height-x1egiwwb",
-            ":hover_background": "background-x1oz5o6v",
-            ":hover_backgroundAttachment": null,
-            ":hover_backgroundClip": null,
-            ":hover_backgroundColor": null,
-            ":hover_backgroundImage": null,
-            ":hover_backgroundOrigin": null,
-            ":hover_backgroundPosition": null,
-            ":hover_backgroundPositionX": null,
-            ":hover_backgroundPositionY": null,
-            ":hover_backgroundRepeat": null,
-            ":hover_backgroundSize": null,
-            borderStartStartRadius: "borderStartStartRadius-xu4yf9m",
-            borderTopLeftRadius: null,
-            borderTopRightRadius: null,
+            "animationName-kKVMdj": "animationName-xeuoslp",
+            "display-k1xSpc": "display-x78zum5",
+            "marginInlineStart-keTefX": "marginInlineStart-x1hm9lzh",
+            "marginLeft-koQZXg": null,
+            "marginRight-km5ZXQ": null,
+            "marginTop-keoZOQ": "marginTop-xlrshdv",
+            "height-kZKoxP": "height-x1egiwwb",
+            ":hover_background-kEyE8R": "background-x1oz5o6v",
+            ":hover_backgroundAttachment-kwRxUf": null,
+            ":hover_backgroundClip-kmvik3": null,
+            ":hover_backgroundColor-kGzVvX": null,
+            ":hover_backgroundImage-kBPHsk": null,
+            ":hover_backgroundOrigin-kIpHjZ": null,
+            ":hover_backgroundPosition-kwsBex": null,
+            ":hover_backgroundPositionX-kKEIo6": null,
+            ":hover_backgroundPositionY-kdqC5e": null,
+            ":hover_backgroundRepeat-kIjLOv": null,
+            ":hover_backgroundSize-kA1KOB": null,
+            "borderStartStartRadius-krdFHd": "borderStartStartRadius-xu4yf9m",
+            "borderTopLeftRadius-kIxVMA": null,
+            "borderTopRightRadius-ksF3WI": null,
             $$css: "__fixtures__/index.js:26"
           }
         };

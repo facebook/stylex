@@ -13,10 +13,11 @@ import type {
   StyleXOptions,
   FlatCompiledStyles,
 } from './common-types';
+import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 
+import { createShortHash } from './hash';
 import { defaultOptions } from './utils/default-options';
 import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
-import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 import { validateNamespace } from './preprocess-rules/basic-validation';
 
 type TPropTuple = [+key: string, +styles: $ReadOnlyArray<ComputedStyle>];
@@ -74,7 +75,15 @@ export default function styleXCreateSet(
 
     const compiledNamespaceTuples: $ReadOnlyArray<TPropTuple> =
       flattenedNamespace.map(([key, value]) => {
-        return [key, value.compiled(options)];
+        // Skip variables-as-keys to avoid regression to dynamic styles output
+        if (options.enableMinifiedKeys === true && !key.startsWith('--')) {
+          const hashedKey = createShortHash('<>' + key);
+          const displayKey =
+            options.debug === true ? `${key}-k${hashedKey}` : `k${hashedKey}`;
+          return [displayKey, value.compiled(options)];
+        } else {
+          return [key, value.compiled(options)];
+        }
       });
 
     const namespaceObj: {

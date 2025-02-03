@@ -44,8 +44,8 @@ describe('[optimization] Removes `styles` variable when not needed', () => {
       _inject2(".xju2f9n{color:blue}", 3000);
       const styles = {
         default: {
-          backgroundColor: "xrkmrrc",
-          color: "xju2f9n",
+          kWkggS: "xrkmrrc",
+          kMwMTN: "xju2f9n",
           $$css: true
         }
       };

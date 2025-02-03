@@ -10,11 +10,13 @@
 import type { StyleXOptions } from '../common-types';
 
 export const defaultOptions: StyleXOptions = {
+  classNamePrefix: 'x',
   dev: false,
   debug: false,
   enableDebugClassNames: true,
+  enableDebugDataProp: true,
+  enableMinifiedKeys: true,
   useRemForFontSize: true,
-  test: false,
-  classNamePrefix: 'x',
   styleResolution: 'application-order',
+  test: false,
 };

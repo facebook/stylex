@@ -39,8 +39,8 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   var stylex = __toESM(__require("@stylexjs/stylex"), 1);
   var fooStyles_default = {
     foo: {
-      display: "xt0psk2",
-      width: "xh8yej3",
+      k1xSpc: "xt0psk2",
+      kzqmXN: "xh8yej3",
       $$css: true
     }
   };
@@ -49,9 +49,9 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   var stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
   var bazStyles_default = {
     baz: {
-      display: "x1lliihq",
-      height: "xnsd7bc",
-      width: "x3hqpx7",
+      k1xSpc: "x1lliihq",
+      kZKoxP: "xnsd7bc",
+      kzqmXN: "x3hqpx7",
       $$css: true
     }
   };
@@ -59,13 +59,13 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   // __tests__/__fixtures__/index.js
   var styles = {
     bar: {
-      animationName: "x127lhb5",
-      display: "x78zum5",
-      marginLeft: "x16ydxro",
-      marginInlineStart: null,
-      marginInlineEnd: null,
-      height: "x1xa6b72",
-      backgroundColor: "xrkmrrc x1r3o6fz",
+      kKVMdj: "x127lhb5",
+      k1xSpc: "x78zum5",
+      koQZXg: "x16ydxro",
+      keTefX: null,
+      k71WvV: null,
+      kZKoxP: "x1xa6b72",
+      kWkggS: "xrkmrrc x1r3o6fz",
       $$css: true
     }
   };
@@ -169,8 +169,8 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   _inject2(".width-xh8yej3{width:100%}", 4e3);
   var fooStyles_default = {
     foo: {
-      display: "display-xt0psk2",
-      width: "width-xh8yej3",
+      "display-k1xSpc": "display-xt0psk2",
+      "width-kzqmXN": "width-xh8yej3",
       $$css: "__fixtures__/fooStyles.js:15"
     }
   };
@@ -184,9 +184,9 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   _inject22(".width-x3hqpx7{width:50%}", 4e3);
   var bazStyles_default = {
     baz: {
-      display: "display-x1lliihq",
-      height: "height-xnsd7bc",
-      width: "width-x3hqpx7",
+      "display-k1xSpc": "display-x1lliihq",
+      "height-kZKoxP": "height-xnsd7bc",
+      "width-kzqmXN": "width-x3hqpx7",
       $$css: "__fixtures__/bazStyles.js:15"
     }
   };
@@ -202,13 +202,13 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   _inject23(".backgroundColor-x1r3o6fz:hover{background-color:pink}", 3130);
   var styles = {
     bar: {
-      animationName: "animationName-x127lhb5",
-      display: "display-x78zum5",
-      marginLeft: "marginLeft-x16ydxro",
-      marginInlineStart: null,
-      marginInlineEnd: null,
-      height: "height-x1xa6b72",
-      backgroundColor: "backgroundColor-xrkmrrc backgroundColor-x1r3o6fz",
+      "animationName-kKVMdj": "animationName-x127lhb5",
+      "display-k1xSpc": "display-x78zum5",
+      "marginLeft-koQZXg": "marginLeft-x16ydxro",
+      "marginInlineStart-keTefX": null,
+      "marginInlineEnd-k71WvV": null,
+      "height-kZKoxP": "height-x1xa6b72",
+      "backgroundColor-kWkggS": "backgroundColor-xrkmrrc backgroundColor-x1r3o6fz",
       $$css: "__fixtures__/index.js:26"
     }
   };

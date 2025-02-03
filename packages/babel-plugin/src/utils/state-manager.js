@@ -73,6 +73,7 @@ export type StyleXOptions = $ReadOnly<{
   enableDebugClassNames?: boolean,
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
+  enableMinifiedKeys?: boolean,
   genConditionalClasses: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
@@ -188,6 +189,14 @@ export default class StateManager {
         options.enableDevClassNames ?? false,
         false,
         'options.enableDevClassNames',
+      );
+
+    const enableMinifiedKeys: StyleXStateOptions['enableMinifiedKeys'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableMinifiedKeys ?? true,
+        true,
+        'options.enableMinifiedKeys',
       );
 
     const test: StyleXStateOptions['test'] = z.logAndDefault(
@@ -312,6 +321,7 @@ export default class StateManager {
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,
+      enableMinifiedKeys,
       genConditionalClasses,
       importSources,
       rewriteAliases:
