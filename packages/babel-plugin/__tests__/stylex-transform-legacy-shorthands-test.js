@@ -60,10 +60,10 @@ describe('Legacy-shorthand-expansion resolution', () => {
         _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
         export const styles = {
           foo: {
-            paddingTop: "x123j3cw",
-            paddingEnd: "x1mpkggp",
-            paddingBottom: "xs9asl8",
-            paddingStart: "x1t2a60a",
+            kLKAdn: "x123j3cw",
+            kP0aTx: "x1mpkggp",
+            kGO01o: "xs9asl8",
+            kuDDbn: "x1t2a60a",
             $$css: true
           }
         };
@@ -154,10 +154,10 @@ describe('Legacy-shorthand-expansion resolution', () => {
         _inject2(".x1mpkggp{padding-right:5px}", 3000, ".x1mpkggp{padding-left:5px}");
         export const styles = {
           foo: {
-            paddingStart: "x1t2a60a",
-            paddingEnd: "x1mpkggp",
-            paddingLeft: null,
-            paddingRight: null,
+            kuDDbn: "x1t2a60a",
+            kP0aTx: "x1mpkggp",
+            kE3dHu: null,
+            kpe85a: null,
             $$css: true
           }
         };
