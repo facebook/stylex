@@ -16,6 +16,7 @@ import inject from '../src';
 let metadata = [];
 const stylex = inject({
   dev: false,
+  enableMinifiedKeys: true,
   test: false,
   insert: (key, ltr, priority, rtl) => {
     metadata.push([key, { ltr, rtl }, priority]);
