@@ -11,7 +11,7 @@
 
 'use strict';
 
-import stylex from 'stylex';
+import * as stylex from 'stylex';
 
 const styles = stylex.create({
   baz: {

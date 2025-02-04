@@ -131,7 +131,7 @@ describe('rollup-plugin-stylex', () => {
     `);
 
     expect(js).toMatchInlineSnapshot(`
-      "import stylex from 'stylex';
+      "import * as stylex from 'stylex';
 
       /**
        * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -204,7 +204,7 @@ describe('rollup-plugin-stylex', () => {
         }
       };
       function App() {
-        return stylex(styles$2.bar, styles.foo, styles$1.baz);
+        return stylex.props(styles$2.bar, styles.foo, styles$1.baz);
       }
 
       export { App as default };
@@ -222,7 +222,7 @@ describe('rollup-plugin-stylex', () => {
 
       expect(js).toMatchInlineSnapshot(`
         "import _inject from '@stylexjs/stylex/lib/stylex-inject';
-        import stylex from 'stylex';
+        import * as stylex from 'stylex';
 
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
@@ -314,7 +314,7 @@ describe('rollup-plugin-stylex', () => {
           }
         };
         function App() {
-          return stylex(styles$2.bar, styles.foo, styles$1.baz);
+          return stylex.props(styles$2.bar, styles.foo, styles$1.baz);
         }
 
         export { App as default };

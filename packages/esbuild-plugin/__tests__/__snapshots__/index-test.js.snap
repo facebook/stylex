@@ -33,10 +33,10 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   ));
 
   // __tests__/__fixtures__/index.js
-  var import_stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
+  var stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
 
   // __tests__/__fixtures__/fooStyles.js
-  var import_stylex = __toESM(__require("@stylexjs/stylex"), 1);
+  var stylex = __toESM(__require("@stylexjs/stylex"), 1);
   var fooStyles_default = {
     foo: {
       display: "xt0psk2",
@@ -46,7 +46,7 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
   };
 
   // __tests__/__fixtures__/bazStyles.js
-  var import_stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
+  var stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
   var bazStyles_default = {
     baz: {
       display: "x1lliihq",
@@ -70,7 +70,7 @@ exports[`esbuild-plugin-stylex extracts and bundles CSS without inject calls, bu
     }
   };
   function App() {
-    return import_stylex3.default.props(fooStyles_default.foo, styles.bar, bazStyles_default.baz);
+    return stylex3.props(fooStyles_default.foo, styles.bar, bazStyles_default.baz);
   }
 })();
 "
@@ -159,11 +159,11 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
 
   // __tests__/__fixtures__/index.js
   var import_stylex_inject3 = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
-  var import_stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
+  var stylex3 = __toESM(__require("@stylexjs/stylex"), 1);
 
   // __tests__/__fixtures__/fooStyles.js
   var import_stylex_inject = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
-  var import_stylex = __toESM(__require("@stylexjs/stylex"), 1);
+  var stylex = __toESM(__require("@stylexjs/stylex"), 1);
   var _inject2 = import_stylex_inject.default;
   _inject2(".display-xt0psk2{display:inline}", 3e3);
   _inject2(".width-xh8yej3{width:100%}", 4e3);
@@ -178,7 +178,7 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
 
   // __tests__/__fixtures__/bazStyles.js
   var import_stylex_inject2 = __toESM(__require("@stylexjs/stylex/lib/stylex-inject"), 1);
-  var import_stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
+  var stylex2 = __toESM(__require("@stylexjs/stylex"), 1);
   var _inject22 = import_stylex_inject2.default;
   _inject22(".display-x1lliihq{display:block}", 3e3);
   _inject22(".height-xnsd7bc{height:900px}", 4e3);
@@ -216,7 +216,7 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
     }
   };
   function App() {
-    return import_stylex3.default.props(fooStyles_default.foo, styles.bar, bazStyles_default.baz);
+    return stylex3.props(fooStyles_default.foo, styles.bar, bazStyles_default.baz);
   }
 })();
 "

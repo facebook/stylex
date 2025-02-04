@@ -9,10 +9,11 @@
 
 /* eslint-disable no-unused-vars */
 
+import type { StyleXVar, VarGroup, Theme } from '../src/StyleXTypes';
+
 import * as React from 'react';
 import * as stylex from '../src/stylex';
-import stylexLegacy from '../src/stylex';
-import type { StyleXVar, VarGroup, Theme } from '../src/StyleXTypes';
+import {legacyMerge} from '../src/stylex';
 
 const DARK = '@media (prefers-color-scheme: dark)';
 
@@ -53,7 +54,7 @@ const correctTheme = stylex.createTheme(buttonTokens, {
 
 correctTheme as Theme<typeof buttonTokens, string>;
 
-const result: string = stylexLegacy(correctTheme);
+const result: string = legacyMerge(correctTheme);
 const result2: $ReadOnly<{
   className?: string,
   style?: $ReadOnly<{ [string]: string | number }>,

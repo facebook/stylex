@@ -10,7 +10,7 @@
 'use strict';
 
 import { styleSheet } from '../src/StyleXSheet';
-import stylex from '../src/stylex';
+import { legacyMerge } from '../src/stylex';
 
 // TODO: priorities need testing
 test('stylex.inject', () => {
@@ -21,12 +21,12 @@ test('stylex.inject', () => {
 
 describe('stylex', () => {
   test('basic resolve', () => {
-    expect(stylex({ a: 'aaa', b: 'bbb', $$css: true })).toBe('aaa bbb');
+    expect(legacyMerge({ a: 'aaa', b: 'bbb', $$css: true })).toBe('aaa bbb');
   });
 
   test('merge order', () => {
     expect(
-      stylex([
+      legacyMerge([
         { a: 'a', ':hover__aa': 'aa', $$css: true },
         { b: 'b', $$css: true },
         { c: 'c', ':hover__cc': 'cc', $$css: true },
@@ -36,7 +36,7 @@ describe('stylex', () => {
 
   test('with a top-level array of simple overridden classes', () => {
     expect(
-      stylex([
+      legacyMerge([
         {
           backgroundColor: 'nu7423ey',
           $$css: true,
@@ -51,7 +51,7 @@ describe('stylex', () => {
 
   test('with nested arrays and pseudoClasses overriding things', () => {
     expect(
-      stylex([
+      legacyMerge([
         {
           backgroundColor: 'nu7423ey',
           $$css: true,
@@ -74,7 +74,7 @@ describe('stylex', () => {
 
   test('with just pseudoclasses', () => {
     expect(
-      stylex(
+      legacyMerge(
         {
           ':hover__backgroundColor': 'rse6dlih',
           $$css: true,
@@ -185,8 +185,8 @@ describe('stylex', () => {
       ],
     ];
 
-    const value = stylex(styles);
-    const repeat = stylex(styles);
+    const value = legacyMerge(styles);
+    const repeat = legacyMerge(styles);
 
     // Check the cached-derived result is correct
     expect(value).toEqual(repeat);

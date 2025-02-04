@@ -620,7 +620,7 @@ describe('@stylexjs/babel-plugin', () => {
                 padding: 5,
                 paddingEnd: 10,
               },
-  
+
               bar: {
                 padding: 2,
                 paddingStart: 10,
@@ -651,7 +651,7 @@ describe('@stylexjs/babel-plugin', () => {
                 padding: 5,
                 paddingEnd: 10,
               },
-  
+
               bar: {
                 padding: 2,
                 paddingStart: null,
@@ -1103,7 +1103,7 @@ describe('@stylexjs/babel-plugin', () => {
         expect(
           transform(`
             import stylex from 'stylex';
-            
+
             function MyComponent() {
               return (
                 <>
@@ -1245,7 +1245,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           export const styles = stylex.create({
             sidebar: {
               boxSizing: 'border-box',
@@ -1283,7 +1283,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
         _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
@@ -1358,7 +1358,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             sidebar: {
               boxSizing: 'border-box',
@@ -1398,7 +1398,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
         _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);

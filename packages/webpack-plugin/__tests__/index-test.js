@@ -226,7 +226,7 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         function App() {
-          return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
+          return stylex.props(otherStyles.bar, index_styles.foo, npmStyles.baz);
         }
 
         /***/ })
@@ -643,7 +643,7 @@ describe('webpack-plugin-stylex', () => {
             }
           };
           function App() {
-            return stylex(otherStyles.bar, index_styles.foo, npmStyles.baz);
+            return stylex.props(otherStyles.bar, index_styles.foo, npmStyles.baz);
           }
 
           /***/ })

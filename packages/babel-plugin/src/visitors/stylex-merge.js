@@ -10,10 +10,10 @@
 import type { NodePath } from '@babel/traverse';
 
 import * as t from '@babel/types';
-import StateManager from '../utils/state-manager';
-import stylex from '@stylexjs/stylex';
-import { evaluate } from '../utils/evaluate-path';
 import * as babelPathUtils from '../babel-path-utils';
+import StateManager from '../utils/state-manager';
+import { evaluate } from '../utils/evaluate-path';
+import { legacyMerge } from '@stylexjs/stylex';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -261,7 +261,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     .map((v: ConditionalStyle) => v[0]);
 
   if (conditions.length === 0) {
-    return t.stringLiteral(stylex(...(values as any)));
+    return t.stringLiteral(legacyMerge(...(values as any)));
   }
 
   const conditionPermutations = genConditionPermutations(conditions.length);
@@ -281,7 +281,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     );
     return t.objectProperty(
       t.numericLiteral(key),
-      t.stringLiteral(stylex(...(args as any))),
+      t.stringLiteral(legacyMerge(...(args as any))),
     );
   });
   const objExpressions = t.objectExpression(objEntries);

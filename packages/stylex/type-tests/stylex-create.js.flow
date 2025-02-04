@@ -7,20 +7,20 @@
  * @flow strict
  */
 
-import stylex from '../src/stylex';
 import type {
   StaticStyles,
   StyleXStyles,
   XStyle,
   MapNamespaces,
-  // StaticStylesWithout,
-  // StyleXStylesWithout,
   StyleXClassNameFor,
   StyleXClassName,
   CompiledStyles,
   InlineStyles,
   StyleXVar,
 } from '../src/StyleXTypes';
+
+import * as stylex from '../src/stylex';
+import { legacyMerge } from '../src/stylex';
 
 /* eslint-disable no-unused-vars */
 
@@ -46,7 +46,7 @@ styles1.foo as XStyle<{ width?: StyleXClassNameFor<'width', number | string> }>;
 styles1.foo as XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>;
 styles1.foo as XStyle<{ width?: StyleXClassName }>;
 
-stylex(styles1.foo);
+legacyMerge(styles1.foo);
 stylex.props([styles1.foo]);
 
 /**
@@ -79,7 +79,7 @@ styles2.foo as XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>;
 styles2.foo as XStyle<{ width?: StyleXClassNameFor<string, mixed> }>;
 styles2.foo as XStyle<{ width?: StyleXClassName }>;
 
-stylex(styles2.foo);
+legacyMerge(styles2.foo);
 stylex.props([styles2.foo]);
 
 /**
@@ -110,7 +110,7 @@ styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', '100%' | '200%'> }>;
 styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', number | string> }>;
 styles3.foo as XStyle<{ width?: StyleXClassNameFor<'width', mixed> }>;
 
-stylex(styles3.foo);
+legacyMerge(styles3.foo);
 stylex.props([styles3.foo]);
 
 /**
@@ -137,7 +137,7 @@ styles4.foo as StyleXStyles<{ width: '100%' | '100dvw' }>;
 styles4.foo as StyleXStyles<{ width: number | string }>;
 styles4.foo as StyleXStyles<{ width?: mixed }>;
 
-stylex(styles4.foo);
+legacyMerge(styles4.foo);
 stylex.props([styles4.foo]);
 
 /**
@@ -167,7 +167,7 @@ styles5.foo as StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>;
 styles5.foo as StyleXStyles<{ width: number | string }>;
 styles5.foo as StyleXStyles<{ width?: mixed }>;
 
-stylex(styles5.foo);
+legacyMerge(styles5.foo);
 stylex.props([styles5.foo]);
 
 /**
@@ -210,9 +210,9 @@ styles6.foo(100)[0] as CompiledStyles;
 styles6.foo(100)[1] as InlineStyles;
 styles6.foo(100) as $ReadOnly<[CompiledStyles, InlineStyles]>;
 
-// $FlowExpectedError[incompatible-call] - `stylex()` can't handle dynamic styles.
-stylex(styles6.foo(100));
-stylex(styles6.foo(100)[0]);
+// $FlowExpectedError[incompatible-call] - `legacyMerge()` can't handle dynamic styles.
+legacyMerge(styles6.foo(100));
+legacyMerge(styles6.foo(100)[0]);
 stylex.props(styles6.foo(100));
 
 /**
@@ -244,7 +244,7 @@ styles7.foo as StyleXStyles<{
   '::before': { width: number | string, height?: mixed },
 }>;
 
-stylex(styles7.foo);
+legacyMerge(styles7.foo);
 stylex.props([styles7.foo]);
 
 const vars = stylex.defineVars({
@@ -288,7 +288,7 @@ styles8.foo as StyleXStyles<{ color?: mixed }>;
 // - @ts-expect-error - The style does have `color`
 // (styles8.foo as StyleXStylesWithout<{ color: unknown }>);
 
-stylex(styles8.foo);
+legacyMerge(styles8.foo);
 stylex.props(styles8.foo);
 
 export type TPseudoElStyle = $ReadOnly<{

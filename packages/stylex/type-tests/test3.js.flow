@@ -9,8 +9,6 @@
 
 /* eslint-disable no-unused-vars */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
 import type {
   StaticStyles,
   StyleXStyles,
@@ -21,13 +19,17 @@ import type {
   XStyle,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 
+import React from 'react';
+import * as stylex from '@stylexjs/stylex';
+import { legacyMerge } from '@stylexjs/stylex';
+
 type Props = {
   xstyle?: StyleXStyles<>,
 };
 
 function Component({ xstyle }: Props) {
   // $FlowExpectedError - `stylex()` can't handle dynamic styles
-  <div className={stylex(xstyle)} />;
+  <div className={legacyMerge(xstyle)} />;
 
   <div {...stylex.props([xstyle])} />;
 }

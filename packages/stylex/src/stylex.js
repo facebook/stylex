@@ -185,20 +185,9 @@ export const types = {
   },
 };
 
-function _stylex(
-  ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
-): string {
-  const [className] = styleq(styles);
-  return className;
-}
-_stylex.attrs = attrs;
-_stylex.create = create;
-_stylex.createTheme = createTheme;
-_stylex.defineVars = defineVars;
-_stylex.firstThatWorks = firstThatWorks;
-_stylex.keyframes = keyframes;
-_stylex.props = props;
-_stylex.types = types;
+/**
+ * DO NOT USE. Legacy export for Meta
+ */
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
@@ -235,5 +224,19 @@ type IStyleX = {
   ...
 };
 
-export const legacyMerge: IStyleX = _stylex;
-export default _stylex as IStyleX;
+function _legacyMerge(
+  ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
+): string {
+  const [className] = styleq(styles);
+  return className;
+}
+_legacyMerge.attrs = attrs;
+_legacyMerge.create = create;
+_legacyMerge.createTheme = createTheme;
+_legacyMerge.defineVars = defineVars;
+_legacyMerge.firstThatWorks = firstThatWorks;
+_legacyMerge.keyframes = keyframes;
+_legacyMerge.props = props;
+_legacyMerge.types = types;
+
+export const legacyMerge: IStyleX = _legacyMerge;

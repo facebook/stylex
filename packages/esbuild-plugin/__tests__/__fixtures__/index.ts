@@ -9,7 +9,7 @@
 
 'use strict';
 
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import { colors } from './vars.stylex';
 
 const styles = stylex.create({

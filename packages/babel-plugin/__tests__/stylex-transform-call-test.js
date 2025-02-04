@@ -1204,7 +1204,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('stylex keeps spaces around operators', () => {
       expect(
         transform(`
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             default: {
               margin: 'max(0px, (48px - var(--x16dnrjz)) / 2)',
@@ -1215,7 +1215,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".x1d6cl6p{margin:max(0px,(48px - var(--x16dnrjz)) / 2)}", 1000);
         const styles = {
           default: {
@@ -1569,7 +1569,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             sidebar: {
               boxSizing: 'border-box',
@@ -1607,7 +1607,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
         _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
@@ -1630,7 +1630,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           export const styles = stylex.create({
             sidebar: {
               boxSizing: 'border-box',
@@ -1668,7 +1668,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
         _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
@@ -1739,7 +1739,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           export const styles = stylex.create({
             sidebar: {
               boxSizing: 'border-box',
@@ -1777,7 +1777,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
         _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
@@ -1845,7 +1845,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             sidebar: {
               boxSizing: 'border-box',
@@ -1885,7 +1885,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".boxSizing-x9f619{box-sizing:border-box}", 3000);
         _inject2(".gridArea-x1yc5d2u{grid-area:sidebar}", 1000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
@@ -1916,7 +1916,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           function test(colors, obj) {
             for (const color of colors) {
               obj[color.key] = stylex(color.style);
@@ -1926,7 +1926,7 @@ describe('@stylexjs/babel-plugin', () => {
           { dev: true, genConditionalClasses: true },
         ),
       ).toMatchInlineSnapshot(`
-        "import stylex from '@stylexjs/stylex';
+        "import * as stylex from '@stylexjs/stylex';
         function test(colors, obj) {
           for (const color of colors) {
             obj[color.key] = stylex(color.style);
@@ -1938,7 +1938,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           function test(colors, obj) {
             for (const color of colors) {
               obj[color.key] = stylex.props(color.style);
@@ -1948,7 +1948,7 @@ describe('@stylexjs/babel-plugin', () => {
           { dev: true, genConditionalClasses: true },
         ),
       ).toMatchInlineSnapshot(`
-        "import stylex from '@stylexjs/stylex';
+        "import * as stylex from '@stylexjs/stylex';
         function test(colors, obj) {
           for (const color of colors) {
             obj[color.key] = stylex.props(color.style);
@@ -1960,7 +1960,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             tileHeading: {
               marginRight: 12,
@@ -1973,7 +1973,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".marginRight-x1wsuqlk{margin-right:12px}", 4000);
         const styles = {};
         stylex(styles.unknown);"
@@ -1983,7 +1983,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             tileHeading: {
               marginRight: 12,
@@ -1996,7 +1996,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".marginRight-x1wsuqlk{margin-right:12px}", 4000);
         const styles = {};
         stylex.props(styles.unknown);"
@@ -2006,7 +2006,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             tileHeading: {
               marginRight: 12,
@@ -2019,7 +2019,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".marginRight-x1wsuqlk{margin-right:12px}", 4000);
         const styles = {};
         stylex.props(styles.unknown);"
@@ -2029,7 +2029,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             tileHeading: {
               marginRight: 12,
@@ -2042,7 +2042,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".x1wsuqlk{margin-right:12px}", 4000);
         const styles = {};
         stylex.props(styles.unknown);"
@@ -2052,7 +2052,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             tileHeading: {
               marginRight: 12,
@@ -2073,7 +2073,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".marginRight-x1wsuqlk{margin-right:12px}", 4000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
         _inject2(".display-xrvj5dj{display:grid}", 3000);
@@ -2087,7 +2087,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(
         transform(
           `
-          import stylex from '@stylexjs/stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             tileHeading: {
               marginRight: 12,
@@ -2108,7 +2108,7 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
-        import stylex from '@stylexjs/stylex';
+        import * as stylex from '@stylexjs/stylex';
         _inject2(".marginRight-x1wsuqlk{margin-right:12px}", 4000);
         _inject2(".gridArea-x1fdo2jl{grid-area:content}", 1000);
         _inject2(".display-xrvj5dj{display:grid}", 3000);

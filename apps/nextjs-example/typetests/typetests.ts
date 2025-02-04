@@ -7,7 +7,7 @@
  *
  */
 
-import stylex from '@stylexjs/stylex';
+import * as stylex from '@stylexjs/stylex';
 import type {
   StaticStyles,
   StyleXStyles,
@@ -39,7 +39,6 @@ styles1.foo as StyleXStyles<{ width?: number | string }>;
 styles1.foo as StyleXStyles<{ width?: unknown }>;
 styles1.foo as StyleXStylesWithout<{ width: unknown }>;
 
-stylex(styles1.foo);
 stylex.props(styles1.foo);
 
 /**
@@ -76,7 +75,6 @@ styles2.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 // @ts-expect-error - The style does have `width`
 styles2.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 
-stylex(styles2.foo);
 stylex.props(styles2.foo);
 
 /**
@@ -109,7 +107,6 @@ styles3.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 // @ts-expect-error - The style does have `width`
 styles3.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 
-stylex(styles3.foo);
 stylex.props(styles3.foo);
 
 /**
@@ -139,7 +136,6 @@ styles4.foo satisfies StyleXStyles<{ width: '100%' | '100dvw' }>;
 styles4.foo satisfies StyleXStyles<{ width: number | string }>;
 styles4.foo satisfies StyleXStyles<{ width?: unknown }>;
 
-stylex(styles4.foo);
 stylex.props(styles4.foo);
 
 /**
@@ -172,7 +168,6 @@ styles5.foo satisfies StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>;
 styles5.foo satisfies StyleXStyles<{ width: number | string }>;
 styles5.foo satisfies StyleXStyles<{ width?: unknown }>;
 
-stylex(styles5.foo);
 stylex.props(styles5.foo);
 
 /**
@@ -215,10 +210,6 @@ styles6.foo(100) satisfies StyleXStyles<{ width: '100%' | '100dvw' | number }>;
 styles6.foo(100) satisfies StyleXStyles<{ width: number | string }>;
 styles6.foo(100) satisfies StyleXStyles<{ width?: unknown }>;
 
-// @ts-expect-error - `stylex()` can't accept dynamic styles.
-stylex(styles6.foo(100));
-
-stylex(styles6.foo(100)[0]);
 stylex.props(styles6.foo(100));
 
 /**
@@ -253,7 +244,6 @@ styles7.foo satisfies StyleXStyles<{
   '::before': { width: number | string; height?: unknown };
 }>;
 
-stylex(styles7.foo);
 stylex.props(styles7.foo);
 
 // CSS variables
@@ -303,5 +293,4 @@ styles8.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 // @ts-expect-error - The style does have `color`
 styles8.foo satisfies StyleXStylesWithout<{ color: unknown }>;
 
-stylex(styles8.foo);
 stylex.props(styles8.foo);

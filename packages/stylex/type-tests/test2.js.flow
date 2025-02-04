@@ -9,12 +9,14 @@
 
 /* eslint-disable no-unused-vars */
 
-import React from 'react';
-import stylex from '@stylexjs/stylex';
 import type {
   StyleXClassNameFor,
   XStyle,
 } from '@stylexjs/stylex/lib/StyleXTypes';
+
+import React from 'react';
+import * as stylex from '@stylexjs/stylex';
+import { legacyMerge } from '@stylexjs/stylex';
 
 type Props = {
   xstyle?: XStyle<{
@@ -23,7 +25,7 @@ type Props = {
 };
 
 function Component({ xstyle }: Props) {
-  return <div className={stylex(xstyle)} />;
+  return <div className={legacyMerge(xstyle)} />;
 }
 
 const styles = stylex.create({

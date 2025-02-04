@@ -7,7 +7,7 @@
  *
  */
 
-const stylex = require('./lib/stylex').default;
+const { legacyMerge } = require('./lib/stylex');
 const Benchmark = require('benchmark');
 const suite = new Benchmark.Suite();
 const test = (...args) => suite.add(...args);
@@ -73,19 +73,19 @@ const bigStyleWithPseudosFixture = {
 };
 
 test('stylex(): basic', () => {
-  stylex(basicStyleFixture1);
+  legacyMerge(basicStyleFixture1);
 });
 
 test('stylex(): complex', () => {
-  stylex(bigStyleFixture);
+  legacyMerge(bigStyleFixture);
 });
 
 test('stylex(): basic merge (args)', () => {
-  stylex(basicStyleFixture1, basicStyleFixture2);
+  legacyMerge(basicStyleFixture1, basicStyleFixture2);
 });
 
 test('stylex(): basic merge (array)', () => {
-  stylex([basicStyleFixture1, basicStyleFixture2]);
+  legacyMerge([basicStyleFixture1, basicStyleFixture2]);
 });
 
 const complexNestedStyleFixture = [
@@ -136,7 +136,7 @@ const complexNestedStyleFixture = [
 ];
 
 test('stylex(): complex merge (array)', () => {
-  stylex([complexNestedStyleFixture]);
+  legacyMerge([complexNestedStyleFixture]);
 });
 
 suite.on('cycle', (event) => {
