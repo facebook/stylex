@@ -118,7 +118,7 @@ export type MapNamespaces<
     : MapNamespace<S[Key]>;
 }>;
 
-export type Stylex$Create = <
+export type StyleX$Create = <
   const S extends {
     [key: string]: UserAuthoredStyles | ((...args: any) => UserAuthoredStyles);
   },

@@ -10,84 +10,43 @@
 'use strict';
 
 import type {
-  Keyframes,
-  Stylex$Create,
-  StyleX$DefineVars,
-  StyleX$CreateTheme,
-  StyleXArray,
   CompiledStyles,
   InlineStyles,
-  StyleXClassNameFor,
+  Keyframes,
   MapNamespaces,
-} from './StyleXTypes';
-import type {
-  Angle,
-  Color,
-  Url,
-  Image,
-  Integer,
-  LengthPercentage,
-  Length,
-  Percentage,
-  Num,
-  Resolution,
-  Time,
-  TransformFunction,
-  TransformList,
-} from './VarTypes';
-import type { ValueWithDefault } from './util-types';
-export * as Types from './VarTypes';
-
-export type {
-  VarGroup,
-  Theme,
-  StyleXStyles,
-  StyleXStylesWithout,
   StaticStyles,
   StaticStylesWithout,
+  StyleX$Create,
+  StyleX$CreateTheme,
+  StyleX$DefineVars,
+  StyleXArray,
+  StyleXClassNameFor,
+  StyleXStyles,
+  StyleXStylesWithout,
+  Theme,
+  VarGroup,
 } from './StyleXTypes';
+import type { ValueWithDefault } from './util-types';
+import * as Types from './VarTypes';
+
+export type {
+  StaticStyles,
+  StaticStylesWithout,
+  StyleXStyles,
+  StyleXStylesWithout,
+  Theme,
+  Types,
+  VarGroup,
+};
 
 import { styleq } from 'styleq';
 
-type Cache = WeakMap<
-  { +[string]: mixed },
-  {
-    classNameChunk: string,
-    definedPropertiesChunk: Array<string>,
-    next: Cache,
-  },
->;
-
 const errorForFn = (name: string) =>
   new Error(
-    `'stylex.${name}' should never be called at runtime. It should be compiled away by '@stylexjs/babel-plugin'`,
+    `Unexpected 'stylex.${name}' call at runtime. Styles must be compiled by '@stylexjs/babel-plugin'.`,
   );
 const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
 
-export function props(
-  this: ?mixed,
-  ...styles: $ReadOnlyArray<
-    StyleXArray<
-      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
-    >,
-  >
-): $ReadOnly<{
-  className?: string,
-  style?: $ReadOnly<{ [string]: string | number }>,
-}> {
-  const [className, style] = styleq(styles);
-  const result: {
-    className?: string,
-    style?: $ReadOnly<{ [string]: string | number }>,
-  } = {};
-  if (className != null && className !== '') {
-    result.className = className;
-  }
-  if (style != null && Object.keys(style).length > 0) {
-    result.style = style;
-  }
-  return result;
-}
 export function attrs(
   ...styles: $ReadOnlyArray<
     StyleXArray<
@@ -114,19 +73,29 @@ export function attrs(
   return result;
 }
 
-function stylexCreate<S: { +[string]: mixed }>(_styles: S): MapNamespaces<S> {
+export const create: StyleX$Create = function stylexCreate<
+  S: { +[string]: mixed },
+>(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
-}
+};
 
-function stylexDefineVars(_styles: $FlowFixMe) {
-  throw errorForFn('defineVars');
-}
-
-const stylexCreateTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
+export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
   throw errorForFn('createTheme');
 };
 
-type Stylex$Include = <
+export const defineVars: StyleX$DefineVars = function stylexDefineVars(
+  _styles: $FlowFixMe,
+) {
+  throw errorForFn('defineVars');
+};
+
+export const firstThatWorks = <T: string | number>(
+  ..._styles: $ReadOnlyArray<T>
+): $ReadOnlyArray<T> => {
+  throw errorForFn('firstThatWorks');
+};
+
+type StyleX$Include = <
   TStyles: { +[string]: StyleXClassNameFor<string, mixed> },
 >(
   styles: TStyles,
@@ -139,82 +108,99 @@ type Stylex$Include = <
     : string,
 };
 
-const stylexInclude: Stylex$Include = (_styles) => {
+export const include: StyleX$Include = (_styles) => {
   throw errorForFn('include');
-};
-
-export const create: Stylex$Create = stylexCreate;
-
-export const defineVars: StyleX$DefineVars = stylexDefineVars;
-
-export const createTheme: StyleX$CreateTheme = stylexCreateTheme;
-
-export const include: Stylex$Include = stylexInclude;
-
-export const types = {
-  angle: <T: string | 0 = string | 0>(_v: ValueWithDefault<T>): Angle<T> => {
-    throw errorForType('angle');
-  },
-  color: <T: string = string>(_v: ValueWithDefault<T>): Color<T> => {
-    throw errorForType('color');
-  },
-  url: <T: string = string>(_v: ValueWithDefault<T>): Url<T> => {
-    throw errorForType('url');
-  },
-  image: <T: string = string>(_v: ValueWithDefault<T>): Image<T> => {
-    throw errorForType('image');
-  },
-  integer: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): Integer<T> => {
-    throw errorForType('integer');
-  },
-  lengthPercentage: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): LengthPercentage<T> => {
-    throw errorForType('lengthPercentage');
-  },
-  length: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): Length<T> => {
-    throw errorForType('length');
-  },
-  percentage: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): Percentage<T> => {
-    throw errorForType('percentage');
-  },
-  number: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): Num<T> => {
-    throw errorForType('number');
-  },
-  resolution: <T: string = string>(_v: ValueWithDefault<T>): Resolution<T> => {
-    throw errorForType('resolution');
-  },
-  time: <T: string | 0 = string | 0>(_v: ValueWithDefault<T>): Time<T> => {
-    throw errorForType('time');
-  },
-  transformFunction: <T: string = string>(
-    _v: ValueWithDefault<T>,
-  ): TransformFunction<T> => {
-    throw errorForType('transformFunction');
-  },
-  transformList: <T: string = string>(
-    _v: ValueWithDefault<T>,
-  ): TransformList<T> => {
-    throw errorForType('transformList');
-  },
 };
 
 export const keyframes = (_keyframes: Keyframes): string => {
   throw errorForFn('keyframes');
 };
 
-export const firstThatWorks = <T: string | number>(
-  ..._styles: $ReadOnlyArray<T>
-): $ReadOnlyArray<T> => {
-  throw errorForFn('firstThatWorks');
+export function props(
+  this: ?mixed,
+  ...styles: $ReadOnlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+): $ReadOnly<{
+  className?: string,
+  style?: $ReadOnly<{ [string]: string | number }>,
+}> {
+  const [className, style] = styleq(styles);
+  const result: {
+    className?: string,
+    style?: $ReadOnly<{ [string]: string | number }>,
+  } = {};
+  if (className != null && className !== '') {
+    result.className = className;
+  }
+  if (style != null && Object.keys(style).length > 0) {
+    result.style = style;
+  }
+  return result;
+}
+
+export const types = {
+  angle: <T: string | 0 = string | 0>(
+    _v: ValueWithDefault<T>,
+  ): Types.Angle<T> => {
+    throw errorForType('angle');
+  },
+  color: <T: string = string>(_v: ValueWithDefault<T>): Types.Color<T> => {
+    throw errorForType('color');
+  },
+  url: <T: string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
+    throw errorForType('url');
+  },
+  image: <T: string = string>(_v: ValueWithDefault<T>): Types.Image<T> => {
+    throw errorForType('image');
+  },
+  integer: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Integer<T> => {
+    throw errorForType('integer');
+  },
+  lengthPercentage: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Types.LengthPercentage<T> => {
+    throw errorForType('lengthPercentage');
+  },
+  length: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Length<T> => {
+    throw errorForType('length');
+  },
+  percentage: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Percentage<T> => {
+    throw errorForType('percentage');
+  },
+  number: <T: number | string = number | string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Num<T> => {
+    throw errorForType('number');
+  },
+  resolution: <T: string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Resolution<T> => {
+    throw errorForType('resolution');
+  },
+  time: <T: string | 0 = string | 0>(
+    _v: ValueWithDefault<T>,
+  ): Types.Time<T> => {
+    throw errorForType('time');
+  },
+  transformFunction: <T: string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.TransformFunction<T> => {
+    throw errorForType('transformFunction');
+  },
+  transformList: <T: string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.TransformList<T> => {
+    throw errorForType('transformList');
+  },
 };
 
 function _stylex(
@@ -223,18 +209,36 @@ function _stylex(
   const [className] = styleq(styles);
   return className;
 }
-_stylex.props = props;
 _stylex.attrs = attrs;
 _stylex.create = create;
-_stylex.defineVars = defineVars;
 _stylex.createTheme = createTheme;
+_stylex.defineVars = defineVars;
+_stylex.firstThatWorks = firstThatWorks;
 _stylex.include = include;
 _stylex.keyframes = keyframes;
-_stylex.firstThatWorks = firstThatWorks;
+_stylex.props = props;
 _stylex.types = types;
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
+  attrs: (
+    ...styles: $ReadOnlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => $ReadOnly<{
+    class?: string,
+    style?: string,
+  }>,
+  create: StyleX$Create,
+  createTheme: StyleX$CreateTheme,
+  defineVars: StyleX$DefineVars,
+  firstThatWorks: <T: string | number>(
+    ...v: $ReadOnlyArray<T>
+  ) => $ReadOnlyArray<T>,
+  include: StyleX$Include,
+  keyframes: (keyframes: Keyframes) => string,
   props: (
     this: ?mixed,
     ...styles: $ReadOnlyArray<
@@ -246,25 +250,7 @@ type IStyleX = {
     className?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
   }>,
-  attrs: (
-    ...styles: $ReadOnlyArray<
-      StyleXArray<
-        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
-      >,
-    >
-  ) => $ReadOnly<{
-    class?: string,
-    style?: string,
-  }>,
-  create: Stylex$Create,
-  defineVars: StyleX$DefineVars,
-  createTheme: StyleX$CreateTheme,
-  include: Stylex$Include,
   types: typeof types,
-  firstThatWorks: <T: string | number>(
-    ...v: $ReadOnlyArray<T>
-  ) => $ReadOnlyArray<T>,
-  keyframes: (keyframes: Keyframes) => string,
   __customProperties?: { [string]: mixed },
   ...
 };

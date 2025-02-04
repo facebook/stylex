@@ -9,7 +9,7 @@
 
 import type {
   MapNamespaces,
-  Stylex$Create,
+  StyleX$Create,
 } from '@stylexjs/stylex/lib/StyleXTypes';
 import type { FlatCompiledStyles } from '@stylexjs/shared/lib/common-types';
 
@@ -192,8 +192,8 @@ function spreadStyles<S: { [string]: FlatCompiledStyles }>(
 
 export default function getStyleXCreate(
   config: RuntimeOptionsWithInsert,
-): Stylex$Create {
-  const stylexCreate: Stylex$Create = <S: { ... }>(
+): StyleX$Create {
+  const stylexCreate: StyleX$Create = <S: { ... }>(
     styles: S,
   ): MapNamespaces<S> => {
     return createWithFns(styles, config);

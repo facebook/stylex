@@ -89,7 +89,7 @@ export type MapNamespaces<+S: { +[string]: mixed }> = $ReadOnly<{
     ? (...args: Args) => $ReadOnly<[MapNamespace<Obj>, InlineStyles]>
     : MapNamespace<S[Key]>,
 }>;
-export type Stylex$Create = <S: { +[string]: mixed }>(
+export type StyleX$Create = <S: { +[string]: mixed }>(
   styles: S,
 ) => MapNamespaces<S>;
 
