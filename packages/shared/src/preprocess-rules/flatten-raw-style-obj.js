@@ -16,9 +16,7 @@ import {
   PreRuleSet,
   type AnyPreRule,
   type IPreRule,
-  PreIncludedStylesRule,
 } from './PreRule';
-import { IncludedStyles } from '../stylex-include';
 
 export function flattenRawStyleObject(
   style: RawStyles,
@@ -31,21 +29,13 @@ export function _flattenRawStyleObject(
   style: RawStyles,
   keyPath: $ReadOnlyArray<string>,
   options: StyleXOptions,
-): Array<$ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>> {
-  const flattened: Array<
-    $ReadOnly<[string, AnyPreRule | PreIncludedStylesRule]>,
-  > = [];
+): Array<$ReadOnly<[string, AnyPreRule]>> {
+  const flattened: Array<$ReadOnly<[string, AnyPreRule]>> = [];
   for (const _key in style) {
     const value = style[_key];
     const key: string = _key.match(/var\(--[a-z0-9]+\)/)
       ? _key.slice(4, -1)
       : _key;
-
-    // Included Styles
-    if (typeof value === 'object' && value instanceof IncludedStyles) {
-      flattened.push([key, new PreIncludedStylesRule(value)]);
-      continue;
-    }
 
     // Default styles
     if (
@@ -146,10 +136,6 @@ export function _flattenRawStyleObject(
           options,
         );
         for (const [property, preRule] of pairs) {
-          if (preRule instanceof PreIncludedStylesRule) {
-            // NOT POSSIBLE, but needed for Flow
-            throw new Error('stylex.include can only be used at the top-level');
-          }
           if (equivalentPairs[property] == null) {
             equivalentPairs[property] = { [condition]: preRule };
           } else {

@@ -7,14 +7,12 @@
  * @flow strict
  */
 
-import type { IncludedStyles } from './stylex-include';
-
 export type TRawValue = number | string | $ReadOnlyArray<number | string>;
 export type TStyleValue = null | TRawValue;
 export type TNestableStyleValue = TStyleValue | PrimitiveRawStyles;
 
 export type RawStyles = $ReadOnly<{
-  [string]: TNestableStyleValue | IncludedStyles,
+  [string]: TNestableStyleValue,
 }>;
 export type PrimitiveRawStyles = $ReadOnly<{
   [string]: TNestableStyleValue,
@@ -29,15 +27,11 @@ export type InjectableStyle = {
 export type StyleRule = [string, string, InjectableStyle];
 
 export type CompiledStyles = $ReadOnly<{
-  [string]:
-    | IncludedStyles
-    | null
-    | string
-    | $ReadOnly<{ [string]: null | string }>,
+  [string]: null | string | $ReadOnly<{ [string]: null | string }>,
 }>;
 
 export type FlatCompiledStyles = $ReadOnly<{
-  [string]: string | IncludedStyles | null,
+  [string]: string | null,
   $$css: true,
 }>;
 

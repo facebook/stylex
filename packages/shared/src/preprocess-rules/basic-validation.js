@@ -7,7 +7,6 @@
  * @flow strict
  */
 
-import { IncludedStyles } from '../stylex-include';
 import * as messages from '../messages';
 import { isPlainObject } from '../utils/object-utils';
 
@@ -32,12 +31,6 @@ export function validateNamespace(
         throw new Error(messages.ILLEGAL_PROP_ARRAY_VALUE);
       }
       continue;
-    }
-    if (val instanceof IncludedStyles) {
-      if (conditions.length === 0) {
-        continue;
-      }
-      throw new Error(messages.ONLY_TOP_LEVEL_INCLUDES);
     }
     if (isPlainObject(val)) {
       if (key.startsWith('@') || key.startsWith(':')) {
@@ -82,9 +75,6 @@ function validateConditionalStyles(
         throw new Error(messages.ILLEGAL_PROP_VALUE);
       }
       continue;
-    }
-    if (v instanceof IncludedStyles) {
-      throw new Error(messages.ONLY_TOP_LEVEL_INCLUDES);
     }
     if (isPlainObject(v)) {
       validateConditionalStyles(v, [...conditions, key]);

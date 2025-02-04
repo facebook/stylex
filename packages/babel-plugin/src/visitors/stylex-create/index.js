@@ -13,7 +13,6 @@ import type { FunctionConfig } from '../../utils/evaluate-path';
 import StateManager from '../../utils/state-manager';
 import {
   create as stylexCreate,
-  include as stylexInclude,
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   type InjectableStyle,
@@ -90,9 +89,6 @@ export default function transformStyleXCreate(
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
-    state.stylexIncludeImport.forEach((name) => {
-      identifiers[name] = { fn: stylexInclude, takesPath: true };
-    });
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
@@ -103,7 +99,6 @@ export default function transformStyleXCreate(
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
       }
-      memberExpressions[name].include = { fn: stylexInclude, takesPath: true };
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
     });

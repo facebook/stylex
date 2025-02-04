@@ -8,7 +8,6 @@
  */
 
 import type { InjectableStyle, StyleXOptions } from '../common-types';
-import type { IncludedStyles } from '../stylex-include';
 
 import { convertStyleToClassName } from '../convert-to-className';
 import { arrayEquals } from '../utils/object-utils';
@@ -28,9 +27,7 @@ export type ComputedStyle = null | $ReadOnly<
 // These are thin wrappers around the "values" in Raw Style Objects
 // with all the metadata needed to compile them into CSS.
 export interface IPreRule {
-  compiled(
-    options: StyleXOptions,
-  ): IncludedStyles | $ReadOnlyArray<ComputedStyle>;
+  compiled(options: StyleXOptions): $ReadOnlyArray<ComputedStyle>;
   equals(other: IPreRule): boolean;
 }
 
@@ -43,26 +40,6 @@ export class NullPreRule implements IPreRule {
 
   equals(other: IPreRule): boolean {
     return other instanceof NullPreRule;
-  }
-}
-
-export class PreIncludedStylesRule implements IPreRule {
-  +includedStyles: IncludedStyles;
-
-  constructor(IncludedStyles: IncludedStyles) {
-    this.includedStyles = IncludedStyles;
-  }
-
-  equals(other: IPreRule): boolean {
-    return (
-      other instanceof PreIncludedStylesRule &&
-      // We can use reference equality here.
-      this.includedStyles === other.includedStyles
-    );
-  }
-
-  compiled(_options: StyleXOptions): IncludedStyles {
-    return this.includedStyles;
   }
 }
 

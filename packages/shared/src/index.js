@@ -24,9 +24,6 @@ import styleXCreateSet from './stylex-create';
 import styleXDefineVars from './stylex-define-vars';
 import styleXCreateTheme from './stylex-create-theme';
 import stylexKeyframes from './stylex-keyframes';
-import stylexInclude, {
-  IncludedStyles as _IncludedStyles,
-} from './stylex-include';
 import stylexFirstThatWorks from './stylex-first-that-works';
 import hash from './hash';
 import genFileBasedIdentifier from './utils/file-based-identifier';
@@ -49,7 +46,6 @@ export const create: typeof styleXCreateSet = styleXCreateSet;
 export const defineVars: typeof styleXDefineVars = styleXDefineVars;
 export const createTheme: typeof styleXCreateTheme = styleXCreateTheme;
 export const keyframes: typeof stylexKeyframes = stylexKeyframes;
-export const include: typeof stylexInclude = stylexInclude;
 export const utils: {
   hash: typeof hash,
   genFileBasedIdentifier: typeof genFileBasedIdentifier,
@@ -58,7 +54,6 @@ export const utils: {
   genFileBasedIdentifier,
 };
 export const messages: typeof m = m;
-export const IncludedStyles: typeof _IncludedStyles = _IncludedStyles;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
 export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES =
   _PSEUDO_CLASS_PRIORITIES;

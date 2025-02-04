@@ -13,7 +13,7 @@ import * as t from '@babel/types';
 import StateManager from '../../utils/state-manager';
 import { evaluate, type FunctionConfig } from '../../utils/evaluate-path';
 import * as pathUtils from '../../babel-path-utils';
-import { create, IncludedStyles, utils } from '@stylexjs/shared';
+import { create, utils } from '@stylexjs/shared';
 import { messages } from '@stylexjs/shared';
 import {
   timeUnits,

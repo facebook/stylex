@@ -20,7 +20,6 @@ import type {
   StyleX$CreateTheme,
   StyleX$DefineVars,
   StyleXArray,
-  StyleXClassNameFor,
   StyleXStyles,
   StyleXStylesWithout,
   Theme,
@@ -93,23 +92,6 @@ export const firstThatWorks = <T: string | number>(
   ..._styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
   throw errorForFn('firstThatWorks');
-};
-
-type StyleX$Include = <
-  TStyles: { +[string]: StyleXClassNameFor<string, mixed> },
->(
-  styles: TStyles,
-) => {
-  +[Key in keyof TStyles]: TStyles[Key] extends StyleXClassNameFor<
-    mixed,
-    infer V,
-  >
-    ? V
-    : string,
-};
-
-export const include: StyleX$Include = (_styles) => {
-  throw errorForFn('include');
 };
 
 export const keyframes = (_keyframes: Keyframes): string => {
@@ -214,7 +196,6 @@ _stylex.create = create;
 _stylex.createTheme = createTheme;
 _stylex.defineVars = defineVars;
 _stylex.firstThatWorks = firstThatWorks;
-_stylex.include = include;
 _stylex.keyframes = keyframes;
 _stylex.props = props;
 _stylex.types = types;
@@ -237,7 +218,6 @@ type IStyleX = {
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
-  include: StyleX$Include,
   keyframes: (keyframes: Keyframes) => string,
   props: (
     this: ?mixed,

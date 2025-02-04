@@ -57,8 +57,6 @@ export const UNEXPECTED_ARGUMENT =
 export const EXPECTED_FUNCTION_CALL =
   'Expected a simple function call but found something else.';
 export const NO_PARENT_PATH = 'Unexpected AST node without a parent path.';
-export const ONLY_TOP_LEVEL_INCLUDES =
-  'stylex.include() is only at the top level of a style definition object.';
 export const DUPLICATE_CONDITIONAL =
   'The same pseudo selector or at-rule cannot be used more than once.';
 export const NO_PROJECT_ROOT_DIRECTORY =

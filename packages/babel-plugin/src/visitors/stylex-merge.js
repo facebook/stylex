@@ -12,8 +12,6 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import stylex from '@stylexjs/stylex';
-
-import { IncludedStyles } from '@stylexjs/shared';
 import { evaluate } from '../utils/evaluate-path';
 import * as babelPathUtils from '../babel-path-utils';
 
@@ -21,7 +19,7 @@ type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 
 type StyleObject = {
-  [key: string]: string | null | boolean | IncludedStyles,
+  [key: string]: string | null | boolean,
 };
 
 type ConditionalStyle = [t.Expression, ?StyleObject, ?StyleObject];

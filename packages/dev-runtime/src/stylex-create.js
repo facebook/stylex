@@ -13,7 +13,7 @@ import type {
 } from '@stylexjs/stylex/lib/StyleXTypes';
 import type { FlatCompiledStyles } from '@stylexjs/shared/lib/common-types';
 
-import { create, IncludedStyles, utils } from '@stylexjs/shared';
+import { create, utils } from '@stylexjs/shared';
 
 import type { RuntimeOptions } from './types';
 import type { RawStyles } from '@stylexjs/shared/lib/common-types';
@@ -142,7 +142,6 @@ function createWithFns<S: { ... }>(
     const { ltr, priority, rtl } = injectedStyles[key];
     insert(key, ltr, priority, rtl);
   }
-  spreadStyles(compiledStyles);
 
   const temp: {
     +[string]:
@@ -165,29 +164,6 @@ function createWithFns<S: { ... }>(
     finalStyles[key] = (...args) => [temp[key], stylesWithFns[key](...args)];
   }
   return finalStyles as $FlowFixMe;
-}
-
-function spreadStyles<S: { [string]: FlatCompiledStyles }>(
-  compiledStyles: S,
-): S {
-  for (const key in compiledStyles) {
-    const styleObj = compiledStyles[key];
-    const replacement: { ...FlatCompiledStyles } = { $$css: true };
-    let useReplacement = false;
-    for (const prop in styleObj) {
-      const value = styleObj[prop];
-      if (value instanceof IncludedStyles) {
-        useReplacement = true;
-        Object.assign(replacement, value.astNode);
-      } else {
-        replacement[prop] = value;
-      }
-    }
-    if (useReplacement) {
-      compiledStyles[key] = replacement;
-    }
-  }
-  return compiledStyles;
 }
 
 export default function getStyleXCreate(

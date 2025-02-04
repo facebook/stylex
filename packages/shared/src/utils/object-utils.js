@@ -11,8 +11,6 @@
 
 import type { CompiledStyles } from '../common-types';
 
-import { IncludedStyles } from '../stylex-include';
-
 // eslint-disable-next-line no-unused-vars
 type AnyObject = { +[string]: mixed };
 
@@ -26,13 +24,11 @@ export function isPlainObject(obj: mixed): implies obj is AnyObject {
 }
 
 export function flattenObject(obj: CompiledStyles): {
-  +[string]: null | string | IncludedStyles,
+  +[string]: null | string,
 } {
-  const result: { [string]: null | string | IncludedStyles } = {};
+  const result: { [string]: null | string } = {};
   for (const [key, value] of objEntries(obj)) {
     if (typeof value === 'string' || value == null) {
-      result[key] = value;
-    } else if (value instanceof IncludedStyles) {
       result[key] = value;
     } else {
       for (const [subKey, subValue] of objEntries(value)) {

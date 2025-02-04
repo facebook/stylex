@@ -14,16 +14,12 @@ import type {
   FlatCompiledStyles,
 } from './common-types';
 
-import { IncludedStyles } from './stylex-include';
 import { defaultOptions } from './utils/default-options';
 import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
 import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 import { validateNamespace } from './preprocess-rules/basic-validation';
 
-type TPropTuple = [
-  +key: string,
-  +styles: IncludedStyles | $ReadOnlyArray<ComputedStyle>,
-];
+type TPropTuple = [+key: string, +styles: $ReadOnlyArray<ComputedStyle>];
 
 type ClassPathsInNamespace = {
   +[className: string]: $ReadOnlyArray<string>,
@@ -82,30 +78,25 @@ export default function styleXCreateSet(
       });
 
     const namespaceObj: {
-      [string]: null | string | IncludedStyles,
+      [string]: null | string,
     } = {};
     for (const [key, value] of compiledNamespaceTuples) {
-      if (value instanceof IncludedStyles) {
-        // stylex.include calls are passed through as-is.
-        namespaceObj[key] = value;
-      } else {
-        // Remove nulls
-        const classNameTuples: $ReadOnlyArray<TClassNameTuples> = value
-          .map((v) => (Array.isArray(v) ? v : null))
-          .filter(Boolean);
+      // Remove nulls
+      const classNameTuples: $ReadOnlyArray<TClassNameTuples> = value
+        .map((v) => (Array.isArray(v) ? v : null))
+        .filter(Boolean);
 
-        classNameTuples.forEach(([_className, _, classesToOriginalPath]) => {
-          Object.assign(classPathsInNamespace, classesToOriginalPath);
-        });
+      classNameTuples.forEach(([_className, _, classesToOriginalPath]) => {
+        Object.assign(classPathsInNamespace, classesToOriginalPath);
+      });
 
-        const className =
-          classNameTuples.map(([className]) => className).join(' ') || null;
-        namespaceObj[key] = className;
+      const className =
+        classNameTuples.map(([className]) => className).join(' ') || null;
+      namespaceObj[key] = className;
 
-        for (const [className, injectable] of classNameTuples) {
-          if (injectedStyles[className] == null) {
-            injectedStyles[className] = injectable;
-          }
+      for (const [className, injectable] of classNameTuples) {
+        if (injectedStyles[className] == null) {
+          injectedStyles[className] = injectable;
         }
       }
     }
