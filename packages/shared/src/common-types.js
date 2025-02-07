@@ -32,16 +32,14 @@ export type CompiledStyles = $ReadOnly<{
 
 export type FlatCompiledStyles = $ReadOnly<{
   [string]: string | null,
-  $$css: true,
+  $$css: true | string,
 }>;
 
 export type StyleXOptions = $ReadOnly<{
-  dev: boolean,
-  debug: ?boolean,
-  test: boolean,
-  useRemForFontSize: boolean,
   classNamePrefix: string,
+  debug: ?boolean,
   definedStylexCSSVariables?: { [key: string]: mixed },
+  dev: boolean,
   styleResolution:
     | 'application-order' // The last style applied wins.
     // More specific styles will win over less specific styles. (margin-top wins over margin)
@@ -49,6 +47,8 @@ export type StyleXOptions = $ReadOnly<{
     // Legacy behavior, that expands shorthand properties into their longhand counterparts at compile-time.
     // This is not recommended, and will be removed in a future version.
     | 'legacy-expand-shorthands',
+  test: boolean,
+  useRemForFontSize: boolean,
   ...
 }>;
 
