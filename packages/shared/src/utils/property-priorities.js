@@ -645,7 +645,7 @@ longHandLogical.add('touch-action');
 //   ':active': 170,
 // };
 
-export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{ [string]: number }> = {
+export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{ [string]: ?number }> = {
   ':is': 40,
   ':where': 40,
   ':not': 40,
