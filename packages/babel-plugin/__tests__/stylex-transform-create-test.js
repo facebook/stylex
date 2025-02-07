@@ -38,6 +38,128 @@ function transform(source, opts = {}) {
 
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.create()', () => {
+    test('supports debug data (haste)', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              position: stylex.firstThatWorks('sticky', 'fixed'),
+            }
+          });
+        `,
+          {
+            debug: true,
+            filename: '/html/js/components/Foo.react.js',
+            unstable_moduleResolution: { type: 'haste' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".position-x15oojuh{position:fixed;position:sticky}", 3000);
+        export const styles = {
+          foo: {
+            position: "position-x15oojuh",
+            $$css: "Foo.react.js:4"
+          }
+        };"
+      `);
+
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              position: stylex.firstThatWorks('sticky', 'fixed'),
+            }
+          });
+        `,
+          {
+            debug: true,
+            filename:
+              '/js/node_modules/npm-package/dist/components/Foo.react.js',
+            unstable_moduleResolution: { type: 'haste' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".position-x15oojuh{position:fixed;position:sticky}", 3000);
+        export const styles = {
+          foo: {
+            position: "position-x15oojuh",
+            $$css: "npm-package:components/Foo.react.js:4"
+          }
+        };"
+      `);
+    });
+
+    test('supports debug data (haste)', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              position: stylex.firstThatWorks('sticky', 'fixed'),
+            }
+          });
+        `,
+          {
+            debug: true,
+            filename: '/html/js/components/Foo.react.js',
+            unstable_moduleResolution: { type: 'commonJS' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".position-x15oojuh{position:fixed;position:sticky}", 3000);
+        export const styles = {
+          foo: {
+            position: "position-x15oojuh",
+            $$css: "components/Foo.react.js:4"
+          }
+        };"
+      `);
+
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              position: stylex.firstThatWorks('sticky', 'fixed'),
+            }
+          });
+        `,
+          {
+            debug: true,
+            filename:
+              '/js/node_modules/npm-package/dist/components/Foo.react.js',
+            unstable_moduleResolution: { type: 'commonJS' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".position-x15oojuh{position:fixed;position:sticky}", 3000);
+        export const styles = {
+          foo: {
+            position: "position-x15oojuh",
+            $$css: "npm-package:components/Foo.react.js:4"
+          }
+        };"
+      `);
+    });
+
     test('transforms style object', () => {
       expect(
         transform(`

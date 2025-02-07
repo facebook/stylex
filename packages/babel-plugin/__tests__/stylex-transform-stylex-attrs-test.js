@@ -811,7 +811,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     // COMPOSITION
     describe('with plugin options', () => {
-      test('stylex call produces dev class names', () => {
+      test('dev:true', () => {
         const options = {
           filename: '/html/js/FooBar.react.js',
           dev: true,
@@ -835,57 +835,11 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           _inject2(".color-x1e2nbdu{color:red}", 3000);
           ({
-            class: "FooBar__styles.default color-x1e2nbdu"
+            class: "color-x1e2nbdu",
+            "data-style-src": "js/FooBar.react.js:4"
           });"
         `);
-      });
 
-      test('stylex call produces dev class name with conditions', () => {
-        const options = {
-          filename: '/html/js/FooBar.react.js',
-          dev: true,
-          genConditionalClasses: true,
-        };
-        expect(
-          transform(
-            `
-              import stylex from 'stylex';
-              const styles = stylex.create({
-                default: {
-                  color: 'red',
-                },
-              });
-              const otherStyles = stylex.create({
-                default: {
-                  backgroundColor: 'blue',
-                }
-              });
-              stylex.attrs([styles.default, isActive && otherStyles.default]);
-          `,
-            options,
-          ),
-        ).toMatchInlineSnapshot(`
-          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          var _inject2 = _inject;
-          import stylex from 'stylex';
-          _inject2(".color-x1e2nbdu{color:red}", 3000);
-          _inject2(".backgroundColor-x1t391ir{background-color:blue}", 3000);
-          ({
-            0: {
-              class: "FooBar__styles.default color-x1e2nbdu"
-            },
-            1: {
-              class: "FooBar__styles.default color-x1e2nbdu FooBar__otherStyles.default backgroundColor-x1t391ir"
-            }
-          })[!!isActive << 0];"
-        `);
-      });
-
-      test('stylex call produces dev class name with conditions - skip conditional', () => {
-        const options = {
-          filename: '/html/js/FooBar.react.js',
-          dev: true,
-        };
         expect(
           transform(
             `
@@ -911,29 +865,62 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".color-x1e2nbdu{color:red}", 3000);
           const styles = {
             default: {
-              "FooBar__styles.default": "FooBar__styles.default",
               color: "color-x1e2nbdu",
-              $$css: true
+              $$css: "js/FooBar.react.js:4"
             }
           };
           _inject2(".backgroundColor-x1t391ir{background-color:blue}", 3000);
           const otherStyles = {
             default: {
-              "FooBar__otherStyles.default": "FooBar__otherStyles.default",
               backgroundColor: "backgroundColor-x1t391ir",
-              $$css: true
+              $$css: "js/FooBar.react.js:9"
             }
           };
           stylex.attrs([styles.default, isActive && otherStyles.default]);"
         `);
       });
 
-      test('stylex call produces dev class name with collisions', () => {
+      test('dev:true and genConditionalClasses:true', () => {
         const options = {
-          filename: '/html/js/FooBar.react.js',
           dev: true,
+          filename: '/html/js/FooBar.react.js',
           genConditionalClasses: true,
         };
+        expect(
+          transform(
+            `
+              import stylex from 'stylex';
+              const styles = stylex.create({
+                default: {
+                  color: 'red',
+                },
+              });
+              const otherStyles = stylex.create({
+                default: {
+                  backgroundColor: 'blue',
+                }
+              });
+              stylex.attrs([styles.default, isActive && otherStyles.default]);
+          `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          _inject2(".backgroundColor-x1t391ir{background-color:blue}", 3000);
+          ({
+            0: {
+              class: "color-x1e2nbdu",
+              "data-style-src": "js/FooBar.react.js:4"
+            },
+            1: {
+              class: "color-x1e2nbdu backgroundColor-x1t391ir",
+              "data-style-src": "js/FooBar.react.js:4; js/FooBar.react.js:9"
+            }
+          })[!!isActive << 0];"
+        `);
 
         expect(
           transform(
@@ -959,10 +946,12 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".color-xju2f9n{color:blue}", 3000);
           ({
             0: {
-              class: "FooBar__styles.default color-x1e2nbdu"
+              class: "color-x1e2nbdu",
+              "data-style-src": "js/FooBar.react.js:4"
             },
             1: {
-              class: "FooBar__styles.default FooBar__styles.active color-xju2f9n"
+              class: "color-xju2f9n",
+              "data-style-src": "js/FooBar.react.js:4; js/FooBar.react.js:7"
             }
           })[!!isActive << 0];"
         `);
@@ -1298,7 +1287,6 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         export const styles = {
           sidebar: {
-            "UnknownFile__styles.sidebar": "UnknownFile__styles.sidebar",
             boxSizing: "boxSizing-x9f619",
             gridArea: "gridArea-x1yc5d2u",
             gridRow: null,
@@ -1310,7 +1298,6 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           content: {
-            "UnknownFile__styles.content": "UnknownFile__styles.content",
             gridArea: "gridArea-x1fdo2jl",
             gridRow: null,
             gridRowStart: null,
@@ -1321,14 +1308,12 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           root: {
-            "UnknownFile__styles.root": "UnknownFile__styles.root",
             display: "display-xrvj5dj",
             gridTemplateRows: "gridTemplateRows-x7k18q3",
             gridTemplateAreas: "gridTemplateAreas-x5gp9wm",
             $$css: true
           },
           withSidebar: {
-            "UnknownFile__styles.withSidebar": "UnknownFile__styles.withSidebar",
             gridTemplateColumns: "gridTemplateColumns-x1rkzygb",
             gridTemplateRows: "gridTemplateRows-x7k18q3",
             gridTemplateAreas: "gridTemplateAreas-x17lh93j",
@@ -1338,17 +1323,16 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           },
           noSidebar: {
-            "UnknownFile__styles.noSidebar": "UnknownFile__styles.noSidebar",
             gridTemplateColumns: "gridTemplateColumns-x1mkdm3x",
             $$css: true
           }
         };
         ({
           0: {
-            class: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
+            class: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
           },
           1: {
-            class: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x"
+            class: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x"
           }
         })[!!(sidebar == null) << 0];"
       `);
@@ -1413,28 +1397,28 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}", 3000);
         const complex = {
           0: {
-            class: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
+            class: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
           },
           4: {
-            class: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x"
+            class: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x"
           },
           2: {
-            class: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 UnknownFile__styles.sidebar boxSizing-x9f619 gridArea-x1yc5d2u"
+            class: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 boxSizing-x9f619 gridArea-x1yc5d2u"
           },
           6: {
-            class: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x UnknownFile__styles.sidebar boxSizing-x9f619 gridArea-x1yc5d2u"
+            class: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x boxSizing-x9f619 gridArea-x1yc5d2u"
           },
           1: {
-            class: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 UnknownFile__styles.content gridArea-x1fdo2jl"
+            class: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 gridArea-x1fdo2jl"
           },
           5: {
-            class: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x UnknownFile__styles.content gridArea-x1fdo2jl"
+            class: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x gridArea-x1fdo2jl"
           },
           3: {
-            class: "UnknownFile__styles.root display-xrvj5dj UnknownFile__styles.withSidebar gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 UnknownFile__styles.sidebar boxSizing-x9f619 UnknownFile__styles.content gridArea-x1fdo2jl"
+            class: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 boxSizing-x9f619 gridArea-x1fdo2jl"
           },
           7: {
-            class: "UnknownFile__styles.root display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm UnknownFile__styles.noSidebar gridTemplateColumns-x1mkdm3x UnknownFile__styles.sidebar boxSizing-x9f619 UnknownFile__styles.content gridArea-x1fdo2jl"
+            class: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x boxSizing-x9f619 gridArea-x1fdo2jl"
           }
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
