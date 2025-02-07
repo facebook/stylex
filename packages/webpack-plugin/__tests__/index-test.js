@@ -556,10 +556,9 @@ describe('webpack-plugin-stylex', () => {
           _inject2(".width-xh8yej3{width:100%}", 4000);
           var styles = {
             bar: {
-              "otherStyles__styles.bar": "otherStyles__styles.bar",
               display: "display-x1lliihq",
               width: "width-xh8yej3",
-              $$css: true
+              $$css: "__fixtures__/otherStyles.js:16"
             }
           };
           /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
@@ -585,11 +584,10 @@ describe('webpack-plugin-stylex', () => {
           npmStyles_inject2(".width-x3hqpx7{width:50%}", 4000);
           const npmStyles_styles = {
             baz: {
-              "npmStyles__styles.baz": "npmStyles__styles.baz",
               display: "display-xt0psk2",
               height: "height-x1egiwwb",
               width: "width-x3hqpx7",
-              $$css: true
+              $$css: "__fixtures__/npmStyles.js:17"
             }
           };
           /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
@@ -620,7 +618,6 @@ describe('webpack-plugin-stylex', () => {
           index_inject2(".background-x1oz5o6v:hover{background:red}", 1130);
           var index_styles = {
             foo: {
-              "index__styles.foo": "index__styles.foo",
               animationName: "animationName-xeuoslp",
               display: "display-x78zum5",
               marginInlineStart: "marginInlineStart-x1hm9lzh",
@@ -639,7 +636,7 @@ describe('webpack-plugin-stylex', () => {
               ":hover_backgroundPositionY": null,
               ":hover_backgroundRepeat": null,
               ":hover_backgroundSize": null,
-              $$css: true
+              $$css: "__fixtures__/index.js:24"
             }
           };
           function App() {

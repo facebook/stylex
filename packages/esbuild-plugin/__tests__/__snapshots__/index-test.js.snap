@@ -169,10 +169,9 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   _inject2(".width-xh8yej3{width:100%}", 4e3);
   var fooStyles_default = {
     foo: {
-      fooStyles__foo: "fooStyles__foo",
       display: "display-xt0psk2",
       width: "width-xh8yej3",
-      $$css: true
+      $$css: "__fixtures__/fooStyles.js:15"
     }
   };
 
@@ -185,11 +184,10 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   _inject22(".width-x3hqpx7{width:50%}", 4e3);
   var bazStyles_default = {
     baz: {
-      bazStyles__baz: "bazStyles__baz",
       display: "display-x1lliihq",
       height: "height-xnsd7bc",
       width: "width-x3hqpx7",
-      $$css: true
+      $$css: "__fixtures__/bazStyles.js:15"
     }
   };
 
@@ -204,7 +202,6 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
   _inject23(".backgroundColor-x1r3o6fz:hover{background-color:pink}", 3130);
   var styles = {
     bar: {
-      "index__styles.bar": "index__styles.bar",
       animationName: "animationName-x127lhb5",
       display: "display-x78zum5",
       marginLeft: "marginLeft-x16ydxro",
@@ -212,7 +209,7 @@ exports[`esbuild-plugin-stylex preserves stylex.inject calls and does not extrac
       marginInlineEnd: null,
       height: "height-x1xa6b72",
       backgroundColor: "backgroundColor-xrkmrrc backgroundColor-x1r3o6fz",
-      $$css: true
+      $$css: "__fixtures__/index.js:26"
     }
   };
   function App() {

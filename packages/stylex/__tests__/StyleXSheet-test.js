@@ -9,12 +9,19 @@
 
 'use strict';
 
-import { StyleXSheet } from '../src/StyleXSheet';
+import { StyleXSheet, styleSheet } from '../src/StyleXSheet';
 
 const testOpts = {
   rootTheme: undefined,
   supportsVariables: true,
 };
+
+// TODO: priorities need testing
+test('stylexinject', () => {
+  const prevCount = styleSheet.getRuleCount();
+  styleSheet.insert('hey {}', 0);
+  expect(styleSheet.getRuleCount()).toBeGreaterThan(prevCount);
+});
 
 test('StyleXSheet.prototype.insert', () => {
   const sheet = new StyleXSheet(testOpts);

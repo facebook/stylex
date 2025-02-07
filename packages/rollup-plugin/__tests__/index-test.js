@@ -238,10 +238,9 @@ describe('rollup-plugin-stylex', () => {
         _inject2$2(".width-xh8yej3{width:100%}", 4000);
         var styles$2 = {
           bar: {
-            "otherStyles__styles.bar": "otherStyles__styles.bar",
             display: "display-x1lliihq",
             width: "width-xh8yej3",
-            $$css: true
+            $$css: "__fixtures__/otherStyles.js:16"
           }
         };
 
@@ -260,11 +259,10 @@ describe('rollup-plugin-stylex', () => {
         _inject2$1(".width-x3hqpx7{width:50%}", 4000);
         const styles$1 = {
           baz: {
-            "npmStyles__styles.baz": "npmStyles__styles.baz",
             display: "display-xt0psk2",
             height: "height-x1egiwwb",
             width: "width-x3hqpx7",
-            $$css: true
+            $$css: "__fixtures__/npmStyles.js:17"
           }
         };
 
@@ -288,7 +286,6 @@ describe('rollup-plugin-stylex', () => {
         _inject2(".borderStartStartRadius-xu4yf9m{border-start-start-radius:7.5px}", 3000);
         var styles = {
           foo: {
-            "index__styles.foo": "index__styles.foo",
             animationName: "animationName-xeuoslp",
             display: "display-x78zum5",
             marginInlineStart: "marginInlineStart-x1hm9lzh",
@@ -310,7 +307,7 @@ describe('rollup-plugin-stylex', () => {
             borderStartStartRadius: "borderStartStartRadius-xu4yf9m",
             borderTopLeftRadius: null,
             borderTopRightRadius: null,
-            $$css: true
+            $$css: "__fixtures__/index.js:26"
           }
         };
         function App() {
