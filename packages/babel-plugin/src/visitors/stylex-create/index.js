@@ -17,10 +17,8 @@ import {
   keyframes as stylexKeyframes,
   type InjectableStyle,
 } from '@stylexjs/shared';
-import {
-  injectDevClassNames,
-  convertToTestStyles,
-} from '../../utils/dev-classname';
+import { addSourceMapData } from '../../utils/add-sourcemap-data';
+import { convertToTestStyles } from '../../utils/dev-classname';
 import {
   convertObjectToAST,
   removeObjectsWithSpreads,
@@ -157,9 +155,9 @@ export default function transformStyleXCreate(
       compiledStyles = {
         ...convertToTestStyles(compiledStyles, varName, state),
       };
-    } else if (state.isDev) {
+    } else if (state.isDebug) {
       compiledStyles = {
-        ...injectDevClassNames(compiledStyles, varName, state),
+        ...addSourceMapData(compiledStyles, path, state),
       };
     }
 

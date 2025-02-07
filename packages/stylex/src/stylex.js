@@ -54,11 +54,13 @@ export function attrs(
   >
 ): $ReadOnly<{
   class?: string,
+  'data-style-src'?: string,
   style?: string,
 }> {
-  const { className, style } = props(...styles);
+  const { className, 'data-style-src': dataStyleSrc, style } = props(...styles);
   const result: {
     class?: string,
+    'data-style-src'?: string,
     style?: string,
   } = {};
   if (className != null && className !== '') {
@@ -68,6 +70,9 @@ export function attrs(
     result.style = Object.keys(style)
       .map((key) => `${key}:${style[key]};`)
       .join('');
+  }
+  if (dataStyleSrc != null && dataStyleSrc !== '') {
+    result['data-style-src'] = dataStyleSrc;
   }
   return result;
 }
@@ -107,11 +112,13 @@ export function props(
   >
 ): $ReadOnly<{
   className?: string,
+  'data-style-src'?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
 }> {
-  const [className, style] = styleq(styles);
+  const [className, style, dataStyleSrc] = styleq(styles);
   const result: {
     className?: string,
+    'data-style-src'?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
   } = {};
   if (className != null && className !== '') {
@@ -119,6 +126,9 @@ export function props(
   }
   if (style != null && Object.keys(style).length > 0) {
     result.style = style;
+  }
+  if (dataStyleSrc != null && dataStyleSrc !== '') {
+    result['data-style-src'] = dataStyleSrc;
   }
   return result;
 }
@@ -199,6 +209,7 @@ type IStyleX = {
     >
   ) => $ReadOnly<{
     class?: string,
+    'data-style-src'?: string,
     style?: string,
   }>,
   create: StyleX$Create,
@@ -217,6 +228,7 @@ type IStyleX = {
     >
   ) => $ReadOnly<{
     className?: string,
+    'data-style-src'?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
   }>,
   types: typeof types,
