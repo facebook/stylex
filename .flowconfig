@@ -16,6 +16,7 @@ flow-typed
 [lints]
 
 [options]
+enums=true
 emoji=true
 this_type_guards=true
 casting_syntax=as
