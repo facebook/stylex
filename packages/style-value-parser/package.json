@@ -9,9 +9,11 @@
     "build": "babel src/ --out-dir lib/ --ignore '**/__tests__/**'",
     "test": "jest"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@csstools/css-tokenizer": "^3.0.3"
+  },
   "devDependencies": {
-    "@stylexjs/scripts": "0.8.0"
+    "@stylexjs/scripts": "0.10.1"
   },
   "jest": {
     "snapshotFormat": {
