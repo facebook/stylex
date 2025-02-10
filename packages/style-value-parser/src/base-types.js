@@ -11,6 +11,7 @@ export class SubString {
   +string: string;
   startIndex: number;
   endIndex: number;
+
   constructor(str: string) {
     this.string = str;
     this.startIndex = 0;
