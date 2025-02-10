@@ -739,7 +739,7 @@ export default class StateManager {
       (Array.isArray(value) ? value : [value]).map((p) => {
         const endsWithStar = p.endsWith('/*');
         let basePath = p.replace(/\/\*$/, '');
-        if (basePath.startsWith('.')) {
+        if (!path.isAbsolute(basePath)) {
           basePath = path.resolve(projectDir, basePath);
         }
         if (endsWithStar) {

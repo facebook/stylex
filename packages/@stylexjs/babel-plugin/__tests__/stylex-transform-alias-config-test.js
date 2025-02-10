@@ -58,8 +58,8 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      components: ['./src/components'],
-      'utils/*': ['./src/utils/*'],
+      components: [path.join(tmpDir, './src/components')],
+      'utils/*': [path.join(tmpDir, './src/utils/*')],
     });
   });
 
@@ -80,8 +80,8 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      '@components': ['src/components'],
-      '@utils': ['src/utils'],
+      '@components/*': [path.join(tmpDir, 'src/components/*')],
+      '@utils/*': [path.join(tmpDir, 'src/utils/*')],
     });
   });
 
@@ -99,8 +99,8 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      '@components/': ['./src/components/'],
-      '@utils/': ['./src/utils/'],
+      '@components/': [path.join(tmpDir, 'src/components')],
+      '@utils/': [path.join(tmpDir, 'src/utils')],
     });
   });
 
@@ -130,9 +130,9 @@ describe('StyleX Alias Configuration', () => {
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      components: ['./src/components'],
-      '@utils': ['src/utils'],
-      '@styles/': ['./src/styles/'],
+      components: [path.join(tmpDir, 'src/components')],
+      '@utils/*': [path.join(tmpDir, 'src/utils/*')],
+      '@styles/': [path.join(tmpDir, 'src/styles')],
     });
   });
 
@@ -148,14 +148,14 @@ describe('StyleX Alias Configuration', () => {
 
     state.opts = {
       aliases: {
-        components: './custom/path',
+        components: path.join(tmpDir, 'custom/path'),
       },
     };
 
     const manager = new StateManager(state);
 
     expect(manager.options.aliases).toEqual({
-      components: ['./custom/path'],
+      components: [path.join(tmpDir, 'custom/path')],
     });
   });
 
