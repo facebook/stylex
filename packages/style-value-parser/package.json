@@ -1,19 +1,22 @@
 {
   "name": "@stylexjs/style-value-parser",
-  "version": "0.8.0",
+  "version": "0.10.1",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
-    "build": "babel src/ --out-dir lib/ --ignore '**/__tests__/**'",
-    "test": "jest"
+    "build": "babel src --out-dir lib --ignore \"**/__tests__/**\",\"**/__benchmarks__/**\"",
+    "test": "jest",
+    "benchmark": "babel-node src/__benchmarks__/alpha-value.bench.js"
   },
   "dependencies": {
     "@csstools/css-tokenizer": "^3.0.3"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.10.1"
+    "@babel/node": "^7.23.9",
+    "@stylexjs/scripts": "0.10.1",
+    "benchmark": "^2.1.4"
   },
   "jest": {
     "snapshotFormat": {
