@@ -101,8 +101,10 @@ export class TokenParser<+T> {
 
   map<NewT>(f: (value: T) => NewT): TokenParser<NewT> {
     return new TokenParser((input): NewT | Error => {
+      const currentIndex = input.currentIndex;
       const result = this.run(input);
       if (result instanceof Error) {
+        input.setCurrentIndex(currentIndex);
         return result;
       }
       return f(result);
@@ -114,6 +116,7 @@ export class TokenParser<+T> {
       const currentIndex = input.currentIndex;
       const output1 = this.run(input);
       if (output1 instanceof Error) {
+        input.setCurrentIndex(currentIndex);
         return output1;
       }
       const secondParser = f(output1);
@@ -128,9 +131,15 @@ export class TokenParser<+T> {
 
   or<U>(parser2: TokenParser<U>): TokenParser<T | U> {
     return new TokenParser((input): T | U | Error => {
+      const currentIndex = input.currentIndex;
       const output1 = this.run(input);
       if (output1 instanceof Error) {
-        return parser2.run(input);
+        input.setCurrentIndex(currentIndex);
+        const output2 = parser2.run(input);
+        if (output2 instanceof Error) {
+          input.setCurrentIndex(currentIndex);
+        }
+        return output2;
       }
       return output1;
     });
@@ -181,11 +190,14 @@ export class TokenParser<+T> {
 
   static token<TT: CSSToken>(tokenType: TT[0]): TokenParser<TT> {
     return new TokenParser((input): TT | Error => {
+      const currentIndex = input.currentIndex;
       const token = input.consumeNextToken();
       if (token == null) {
+        input.setCurrentIndex(currentIndex);
         return new Error('Expected token');
       }
       if (token[0] !== tokenType) {
+        input.setCurrentIndex(currentIndex);
         return new Error(`Expected token type ${tokenType}, got ${token[0]}`);
       }
       // $FlowFixMe[incompatible-cast]
@@ -276,13 +288,17 @@ class TokenZeroOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
       for (let i = 0; true; i++) {
         const separator = getThis().separator;
         if (i > 0 && separator) {
+          const currentIndex = input.currentIndex;
           const result = separator.run(input);
           if (result instanceof Error) {
+            input.setCurrentIndex(currentIndex);
             return output;
           }
         }
+        const currentIndex = input.currentIndex;
         const result = getThis().parser.run(input);
         if (result instanceof Error) {
+          input.setCurrentIndex(currentIndex);
           return output;
         }
         output.push(result);
@@ -310,14 +326,18 @@ class TokenOneOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
       for (let i = 0; true; i++) {
         const separator = getThis().separator;
         if (i > 0 && separator) {
+          const currentIndex = input.currentIndex;
           const result = separator.run(input);
           if (result instanceof Error) {
+            input.setCurrentIndex(currentIndex);
             return output;
           }
         }
+        const currentIndex = input.currentIndex;
         const result = getThis().parser.run(input);
         if (result instanceof Error) {
           if (i === 0) {
+            input.setCurrentIndex(currentIndex);
             return result;
           }
           return output;
