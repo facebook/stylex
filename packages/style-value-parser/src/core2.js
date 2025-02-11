@@ -73,9 +73,14 @@ type TokenNameToTokenType = {
 
 export class TokenParser<+T> {
   +run: (input: TokenList) => T | Error;
+  +label: string;
 
-  constructor(parser: (input: TokenList) => T | Error) {
+  constructor(
+    parser: (input: TokenList) => T | Error,
+    label: string = 'UnknownParser',
+  ) {
     this.run = parser;
+    this.label = label;
   }
 
   parse(css: string): T | Error {
@@ -85,64 +90,85 @@ export class TokenParser<+T> {
 
   parseToEnd(css: string): T {
     const tokens = new TokenList(css);
+    const initialIndex = tokens.currentIndex;
+
     const output = this.run(tokens);
     if (output instanceof Error) {
-      throw output;
+      const consumedTokens = tokens.slice(initialIndex);
+      throw new Error(
+        `Expected ${this.toString()} but got ${output.message}\n` +
+          `Consumed tokens: ${consumedTokens.map((token) => token[0]).join(', ')}`,
+      );
     }
     if (!tokens.isAtEnd) {
       const token = tokens.peek();
       if (token == null) {
         return output;
       }
-      throw new Error(`Expected end of input, got ${token[0]} instead`);
+      const consumedTokens = tokens.slice(initialIndex);
+      throw new Error(
+        `Expected end of input, got ${token[0]} instead\n` +
+          `Consumed tokens: ${consumedTokens.map((token) => token[0]).join(', ')}`,
+      );
     }
     return output;
   }
 
-  map<NewT>(f: (value: T) => NewT): TokenParser<NewT> {
-    return new TokenParser((input): NewT | Error => {
-      const currentIndex = input.currentIndex;
-      const result = this.run(input);
-      if (result instanceof Error) {
-        input.setCurrentIndex(currentIndex);
-        return result;
-      }
-      return f(result);
-    });
+  map<NewT>(f: (value: T) => NewT, label?: string): TokenParser<NewT> {
+    return new TokenParser(
+      (input): NewT | Error => {
+        const currentIndex = input.currentIndex;
+        const result = this.run(input);
+        if (result instanceof Error) {
+          input.setCurrentIndex(currentIndex);
+          return result;
+        }
+        return f(result);
+      },
+      `${this.label}.map(${label ?? ''})`,
+    );
   }
 
-  flatMap<U>(f: (value: T) => TokenParser<U>): TokenParser<U> {
-    return new TokenParser((input): U | Error => {
-      const currentIndex = input.currentIndex;
-      const output1 = this.run(input);
-      if (output1 instanceof Error) {
-        input.setCurrentIndex(currentIndex);
-        return output1;
-      }
-      const secondParser = f(output1);
-      const output2: U | Error = secondParser.run(input);
-      if (output2 instanceof Error) {
-        input.setCurrentIndex(currentIndex);
+  flatMap<U>(f: (value: T) => TokenParser<U>, label?: string): TokenParser<U> {
+    return new TokenParser(
+      (input): U | Error => {
+        const currentIndex = input.currentIndex;
+        const output1 = this.run(input);
+        if (output1 instanceof Error) {
+          input.setCurrentIndex(currentIndex);
+          return output1;
+        }
+        const secondParser = f(output1);
+        const output2: U | Error = secondParser.run(input);
+        if (output2 instanceof Error) {
+          input.setCurrentIndex(currentIndex);
+          return output2;
+        }
         return output2;
-      }
-      return output2;
-    });
+      },
+      `${this.label}.flatMap(${label ?? ''})`,
+    );
   }
 
   or<U>(parser2: TokenParser<U>): TokenParser<T | U> {
-    return new TokenParser((input): T | U | Error => {
-      const currentIndex = input.currentIndex;
-      const output1 = this.run(input);
-      if (output1 instanceof Error) {
-        input.setCurrentIndex(currentIndex);
-        const output2 = parser2.run(input);
-        if (output2 instanceof Error) {
+    return new TokenParser(
+      (input): T | U | Error => {
+        const currentIndex = input.currentIndex;
+        const output1 = this.run(input);
+        if (output1 instanceof Error) {
           input.setCurrentIndex(currentIndex);
+          const output2 = parser2.run(input);
+          if (output2 instanceof Error) {
+            input.setCurrentIndex(currentIndex);
+          }
+          return output2;
         }
-        return output2;
-      }
-      return output1;
-    });
+        return output1;
+      },
+      parser2.label === 'optional'
+        ? `Optional<${this.label}>`
+        : `OneOf<${this.label}, ${parser2.label}>`,
+    );
   }
 
   surroundedBy(
@@ -180,15 +206,25 @@ export class TokenParser<+T> {
     });
   }
 
+  toString(): string {
+    return this.label;
+  }
+
   static never<T>(): TokenParser<T> {
-    return new TokenParser(() => new Error('Never'));
+    return new TokenParser(() => new Error('Never'), 'Never');
   }
 
   static always<T>(output: T): TokenParser<T> {
-    return new TokenParser(() => output);
+    return new TokenParser(
+      () => output,
+      output === undefined ? 'optional' : `Always<${String(output)}>`,
+    );
   }
 
-  static token<TT: CSSToken>(tokenType: TT[0]): TokenParser<TT> {
+  static token<TT: CSSToken>(
+    tokenType: TT[0],
+    label: string = tokenType,
+  ): TokenParser<TT> {
     return new TokenParser((input): TT | Error => {
       const currentIndex = input.currentIndex;
       const token = input.consumeNextToken();
@@ -202,39 +238,78 @@ export class TokenParser<+T> {
       }
       // $FlowFixMe[incompatible-cast]
       return token as TT;
-    });
+    }, label);
   }
 
   static tokens: {
     [Key in keyof typeof TokenType]: TokenParser<TokenNameToTokenType[Key]>,
   } = {
-    Comment: TokenParser.token<TokenComment>(TokenType.Comment),
-    AtKeyword: TokenParser.token<TokenAtKeyword>(TokenType.AtKeyword),
-    BadString: TokenParser.token<TokenBadString>(TokenType.BadString),
-    BadURL: TokenParser.token<TokenBadURL>(TokenType.BadURL),
-    CDC: TokenParser.token<TokenCDC>(TokenType.CDC),
-    CDO: TokenParser.token<TokenCDO>(TokenType.CDO),
-    Colon: TokenParser.token<TokenColon>(TokenType.Colon),
-    Comma: TokenParser.token<TokenComma>(TokenType.Comma),
-    Delim: TokenParser.token<TokenDelim>(TokenType.Delim),
-    Dimension: TokenParser.token<TokenDimension>(TokenType.Dimension),
-    EOF: TokenParser.token<TokenEOF>(TokenType.EOF),
-    Function: TokenParser.token<TokenFunction>(TokenType.Function),
-    Hash: TokenParser.token<TokenHash>(TokenType.Hash),
-    Ident: TokenParser.token<TokenIdent>(TokenType.Ident),
-    Number: TokenParser.token<TokenNumber>(TokenType.Number),
-    Percentage: TokenParser.token<TokenPercentage>(TokenType.Percentage),
-    Semicolon: TokenParser.token<TokenSemicolon>(TokenType.Semicolon),
-    String: TokenParser.token<TokenString>(TokenType.String),
-    URL: TokenParser.token<TokenURL>(TokenType.URL),
-    Whitespace: TokenParser.token<TokenWhitespace>(TokenType.Whitespace),
-    OpenParen: TokenParser.token<TokenOpenParen>(TokenType.OpenParen),
-    CloseParen: TokenParser.token<TokenCloseParen>(TokenType.CloseParen),
-    OpenSquare: TokenParser.token<TokenOpenSquare>(TokenType.OpenSquare),
-    CloseSquare: TokenParser.token<TokenCloseSquare>(TokenType.CloseSquare),
-    OpenCurly: TokenParser.token<TokenOpenCurly>(TokenType.OpenCurly),
-    CloseCurly: TokenParser.token<TokenCloseCurly>(TokenType.CloseCurly),
-    UnicodeRange: TokenParser.token<TokenUnicodeRange>(TokenType.UnicodeRange),
+    Comment: TokenParser.token<TokenComment>(TokenType.Comment, 'Comment'),
+    AtKeyword: TokenParser.token<TokenAtKeyword>(
+      TokenType.AtKeyword,
+      'AtKeyword',
+    ),
+    BadString: TokenParser.token<TokenBadString>(
+      TokenType.BadString,
+      'BadString',
+    ),
+    BadURL: TokenParser.token<TokenBadURL>(TokenType.BadURL, 'BadURL'),
+    CDC: TokenParser.token<TokenCDC>(TokenType.CDC, 'CDC'),
+    CDO: TokenParser.token<TokenCDO>(TokenType.CDO, 'CDO'),
+    Colon: TokenParser.token<TokenColon>(TokenType.Colon, 'Colon'),
+    Comma: TokenParser.token<TokenComma>(TokenType.Comma, 'Comma'),
+    Delim: TokenParser.token<TokenDelim>(TokenType.Delim, 'Delim'),
+    Dimension: TokenParser.token<TokenDimension>(
+      TokenType.Dimension,
+      'Dimension',
+    ),
+    EOF: TokenParser.token<TokenEOF>(TokenType.EOF, 'EOF'),
+    Function: TokenParser.token<TokenFunction>(TokenType.Function, 'Function'),
+    Hash: TokenParser.token<TokenHash>(TokenType.Hash, 'Hash'),
+    Ident: TokenParser.token<TokenIdent>(TokenType.Ident, 'Ident'),
+    Number: TokenParser.token<TokenNumber>(TokenType.Number, 'Number'),
+    Percentage: TokenParser.token<TokenPercentage>(
+      TokenType.Percentage,
+      'Percentage',
+    ),
+    Semicolon: TokenParser.token<TokenSemicolon>(
+      TokenType.Semicolon,
+      'Semicolon',
+    ),
+    String: TokenParser.token<TokenString>(TokenType.String, 'String'),
+    URL: TokenParser.token<TokenURL>(TokenType.URL, 'URL'),
+    Whitespace: TokenParser.token<TokenWhitespace>(
+      TokenType.Whitespace,
+      'Whitespace',
+    ),
+    OpenParen: TokenParser.token<TokenOpenParen>(
+      TokenType.OpenParen,
+      'OpenParen',
+    ),
+    CloseParen: TokenParser.token<TokenCloseParen>(
+      TokenType.CloseParen,
+      'CloseParen',
+    ),
+    OpenSquare: TokenParser.token<TokenOpenSquare>(
+      TokenType.OpenSquare,
+      'OpenSquare',
+    ),
+    CloseSquare: TokenParser.token<TokenCloseSquare>(
+      TokenType.CloseSquare,
+      'CloseSquare',
+    ),
+    OpenCurly: TokenParser.token<TokenOpenCurly>(
+      TokenType.OpenCurly,
+      'OpenCurly',
+    ),
+    CloseCurly: TokenParser.token<TokenCloseCurly>(
+      TokenType.CloseCurly,
+      'CloseCurly',
+    ),
+    UnicodeRange: TokenParser.token<TokenUnicodeRange>(
+      TokenType.UnicodeRange,
+      'UnicodeRange',
+    ),
   };
 
   // T will be a union of the output types of the parsers
@@ -363,32 +438,35 @@ class TokenParserSequence<
   +parsers: T;
 
   constructor(parsers: T) {
-    super((input: TokenList): ValuesFromParserTuple<T> | Error => {
-      const currentIndex = input.currentIndex;
-      let failed: Error | null = null;
+    super(
+      (input: TokenList): ValuesFromParserTuple<T> | Error => {
+        const currentIndex = input.currentIndex;
+        let failed: Error | null = null;
 
-      // $FlowFixMe[incompatible-type]
-      const output: ValuesFromParserTuple<T> | Error = parsers.map(
-        <X>(parser: TokenParser<X>): X | Error => {
-          if (failed) {
-            return new Error('already failed');
-          }
-          const result = parser.run(input);
-          if (result instanceof Error) {
-            failed = result;
-          }
-          return result;
-        },
-      );
+        // $FlowFixMe[incompatible-type]
+        const output: ValuesFromParserTuple<T> | Error = parsers.map(
+          <X>(parser: TokenParser<X>): X | Error => {
+            if (failed) {
+              return new Error('already failed');
+            }
+            const result = parser.run(input);
+            if (result instanceof Error) {
+              failed = result;
+            }
+            return result;
+          },
+        );
 
-      if (failed) {
-        const errorToReturn = failed;
-        input.setCurrentIndex(currentIndex);
-        return errorToReturn;
-      }
+        if (failed) {
+          const errorToReturn = failed;
+          input.setCurrentIndex(currentIndex);
+          return errorToReturn;
+        }
 
-      return output;
-    });
+        return output;
+      },
+      `Sequence<${parsers.map((parser) => parser.label).join(', ')}>`,
+    );
 
     this.parsers = parsers;
   }
@@ -424,8 +502,10 @@ class TokenParserSet<
         let found = false;
         const errors = [];
         if (separator != null && i > 0) {
+          const currentIndex = input.currentIndex;
           const result = separator.run(input);
           if (result instanceof Error) {
+            input.setCurrentIndex(currentIndex);
             failed = new Error(
               `Expected ${separator.toString()} but got ${result.message}`,
             );
@@ -434,8 +514,10 @@ class TokenParserSet<
         }
         for (let j = 0; j < parsers.length && !indices.has(j); j++) {
           const parser = parsers[j];
+          const currentIndex = input.currentIndex;
           const result = parser.run(input);
           if (result instanceof Error) {
+            input.setCurrentIndex(currentIndex);
             errors.push(result);
           } else {
             found = true;

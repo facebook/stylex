@@ -22,4 +22,11 @@ describe('Test CSS Type: <angle>', () => {
     expect(Angle.parse.parse('100grad')).toEqual(new Angle(100, 'grad'));
     expect(Angle.parse.parse('1.5deg')).toEqual(new Angle(1.5, 'deg'));
   });
+  describe('Rejects', () => {
+    test('rejects invalid angle values', () => {
+      expect(() => Angle.parse.parseToEnd('invalid')).toThrow();
+      expect(() => Angle.parse.parseToEnd('red')).toThrow();
+      expect(() => Angle.parse.parseToEnd('initial')).toThrow();
+    });
+  });
 });
