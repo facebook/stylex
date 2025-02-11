@@ -118,4 +118,27 @@ export class TokenList {
     }
     return this.consumedTokens;
   }
+
+  slice(start: number, end: number = this.currentIndex): Array<CSSToken> {
+    const initialIndex = this.currentIndex;
+    if (start < 0 || end < start) {
+      return [];
+    }
+
+    this.setCurrentIndex(start);
+    const result: Array<CSSToken> = [];
+
+    // Consume tokens until we have enough to satisfy the slice request
+    while (this.currentIndex < end) {
+      const token = this.consumeNextToken();
+      if (token == null) {
+        break;
+      }
+      result.push(token);
+    }
+
+    this.setCurrentIndex(initialIndex);
+
+    return result;
+  }
 }

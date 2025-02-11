@@ -23,6 +23,9 @@ export class Color {
       Rgba.parse,
       Hsl.parse,
       Hsla.parse,
+      Lch.parse,
+      Oklch.parse,
+      Oklab.parse,
     );
   }
 }
@@ -225,8 +228,9 @@ export class HashColor extends Color {
 
   static get parse(): TokenParser<HashColor> {
     return TokenParser.tokens.Hash.map((token: TokenHash) => token[4].value)
-      .where((value: string): implies value is string =>
-        [3, 6, 8].includes(value.length),
+      .where(
+        (value: string): implies value is string =>
+          [3, 6, 8].includes(value.length) && /^[0-9a-fA-F]+$/.test(value),
       )
       .map((value) => new HashColor(value));
   }
@@ -464,9 +468,9 @@ export class Hsla extends Color {
 export class Lch extends Color {
   +l: number;
   +c: number;
-  +h: Angle;
+  +h: Angle | number;
   +alpha: ?number;
-  constructor(l: number, c: number, h: Angle, alpha?: ?number) {
+  constructor(l: this['l'], c: this['c'], h: this['h'], alpha?: this['alpha']) {
     super();
     this.l = l;
     this.c = c;
@@ -477,40 +481,49 @@ export class Lch extends Color {
     return `lch(${this.l} ${this.c} ${this.h.toString()}${this.alpha ? ` / ${this.alpha}` : ''})`;
   }
   static get parse(): TokenParser<Lch> {
-    const lc: TokenParser<number> = TokenParser.oneOf(
-      alphaAsNumber,
+    const l: TokenParser<number> = TokenParser.oneOf(
+      Percentage.parse.map((p) => p.value),
+      TokenParser.tokens.Number.map((token) => token[4].value).where(
+        (value): implies value is number => value >= 0,
+      ),
       TokenParser.tokens.Ident.map((token) => token[4].value)
         .where((value): implies value is string => value === 'none')
         .map(() => 0),
-    ).prefix(TokenParser.tokens.Whitespace.optional);
+    );
 
-    const h: TokenParser<Angle> = TokenParser.oneOf(
+    const c: TokenParser<number> = TokenParser.oneOf(
+      // `c` 100% -> 150
+      Percentage.parse.map((p) => (150 * p.value) / 100),
+      TokenParser.tokens.Number.map((token) => token[4].value).where(
+        (value): implies value is number => value >= 0,
+      ),
+    );
+
+    const h: TokenParser<Angle | number> = TokenParser.oneOf(
       Angle.parse,
-      lc.map((num: number) => new Angle(num * 360, 'deg')),
+      TokenParser.tokens.Number.map((token) => token[4].value),
+      // lc.map((num: number) => new Angle(num * 360, 'deg')),
     );
 
     const a: TokenParser<number> = TokenParser.sequence(
       slashParser,
       alphaAsNumber,
-    ).map(([_, a]) => a);
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([_, a]) => a);
 
     return TokenParser.sequence(
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'lch',
       ),
-      lc, // l
-      TokenParser.tokens.Whitespace,
-      lc, // c
-      TokenParser.tokens.Whitespace,
-      h, // h
+      TokenParser.sequence(
+        l,
+        c,
+        h, // h
+      ).separatedBy(TokenParser.tokens.Whitespace),
       a.suffix(TokenParser.tokens.Whitespace.optional).optional,
       TokenParser.tokens.CloseParen,
-    )
-      .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(
-        ([_fn, l, _comma, c, _comma2, h, a, _closeParen]) =>
-          new Lch(l, c, h, a),
-      );
+    ).map(([_fn, [l, c, h], a, _closeParen]) => new Lch(l, c, h, a));
   }
 }
 

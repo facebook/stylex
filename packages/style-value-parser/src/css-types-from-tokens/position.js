@@ -26,9 +26,9 @@ export type Vertical =
   | [VerticalKeyword, LengthPercentage];
 
 export class Position {
-  +horizontal: Horizontal;
-  +vertical: Vertical;
-  constructor(horizontal: Horizontal, vertical: Vertical) {
+  +horizontal: ?Horizontal;
+  +vertical: ?Vertical;
+  constructor(horizontal: ?Horizontal, vertical: ?Vertical) {
     this.horizontal = horizontal;
     this.vertical = vertical;
   }
@@ -36,11 +36,11 @@ export class Position {
   toString(): string {
     const horizontal = Array.isArray(this.horizontal)
       ? this.horizontal.join(' ')
-      : this.horizontal.toString();
+      : this.horizontal?.toString();
     const vertical = Array.isArray(this.vertical)
       ? this.vertical.join(' ')
-      : this.vertical.toString();
-    return `${horizontal} ${vertical}`;
+      : this.vertical?.toString();
+    return [horizontal, vertical].filter(Boolean).join(' ');
   }
 
   static get parse(): TokenParser<Position> {
@@ -68,19 +68,16 @@ export class Position {
       lengthPercentage.prefix(TokenParser.tokens.Whitespace).optional,
     ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
 
-    return TokenParser.oneOf(
-      TokenParser.setOf(horizontal, vertical).separatedBy(
-        TokenParser.tokens.Whitespace,
-      ),
-      TokenParser.setOf(horizontal, lengthPercentage).separatedBy(
-        TokenParser.tokens.Whitespace,
-      ),
-      TokenParser.setOf(lengthPercentage, vertical).separatedBy(
-        TokenParser.tokens.Whitespace,
-      ),
-      TokenParser.sequence(lengthPercentage, lengthPercentage).separatedBy(
-        TokenParser.tokens.Whitespace,
-      ),
+    const startingWithHorizontal = TokenParser.sequence(
+      horizontal,
+      vertical.prefix(TokenParser.tokens.Whitespace).optional,
     ).map(([h, v]) => new Position(h, v));
+
+    const startingWithVertical = TokenParser.sequence(
+      vertical,
+      horizontal.prefix(TokenParser.tokens.Whitespace).optional,
+    ).map(([v, h]) => new Position(h, v));
+
+    return TokenParser.oneOf(startingWithHorizontal, startingWithVertical);
   }
 }

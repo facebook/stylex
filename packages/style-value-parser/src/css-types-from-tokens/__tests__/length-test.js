@@ -47,10 +47,10 @@ describe('Test CSS Type: <length>', () => {
     expect(Length.parse.parse('12pt')).toEqual(new Length(12, 'pt'));
   });
 
-  // test('rejects invalid units', () => {
-  //   expect(() => Length.parse.parseToEnd('10abc')).toThrow();
-  //   expect(() => Length.parse.parseToEnd('20pc')).toThrow();
-  //   expect(() => Length.parse.parseToEnd('30')).toThrow();
-  //   expect(() => Length.parse.parseToEnd('xyz')).toThrow();
-  // });
+  test('rejects invalid units', () => {
+    expect(() => Length.parse.parseToEnd('10abc')).toThrow();
+    expect(() => Length.parse.parseToEnd('20pc')).toThrow();
+    expect(() => Length.parse.parseToEnd('30')).toThrow();
+    expect(() => Length.parse.parseToEnd('xyz')).toThrow();
+  });
 });

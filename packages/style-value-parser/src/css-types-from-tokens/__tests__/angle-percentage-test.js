@@ -26,9 +26,9 @@ describe('Test CSS Type: <angle-percentage>', () => {
     expect(anglePercentage.parse('25%')).toEqual(new Percentage(25));
   });
 
-  // test('rejects invalid angle-percentage values', () => {
-  //   expect(() => anglePercentage.parseToEnd('abc')).toThrow();
-  //   expect(() => anglePercentage.parseToEnd('50')).toThrow();
-  //   expect(() => anglePercentage.parseToEnd('10abc')).toThrow();
-  // });
+  test('rejects invalid angle-percentage values', () => {
+    expect(() => anglePercentage.parseToEnd('abc')).toThrow();
+    expect(() => anglePercentage.parseToEnd('50')).toThrow();
+    expect(() => anglePercentage.parseToEnd('10abc')).toThrow();
+  });
 });

@@ -77,9 +77,9 @@ describe.skip('Test CSS Type: <filter-function>', () => {
     );
   });
 
-  // test('rejects invalid filter functions', () => {
-  //   expect(() => FilterFunction.parse.parseToEnd('invalid()')).toThrow();
-  //   expect(() => FilterFunction.parse.parseToEnd('blur()')).toThrow();
-  //   expect(() => FilterFunction.parse.parseToEnd('brightness(abc)')).toThrow();
-  // });
+  test('rejects invalid filter functions', () => {
+    expect(() => FilterFunction.parse.parseToEnd('invalid()')).toThrow();
+    expect(() => FilterFunction.parse.parseToEnd('blur()')).toThrow();
+    expect(() => FilterFunction.parse.parseToEnd('brightness(abc)')).toThrow();
+  });
 });

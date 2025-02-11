@@ -26,9 +26,9 @@ describe('Test CSS Type: <length-percentage>', () => {
     expect(lengthPercentage.parse('25%')).toEqual(new Percentage(25));
   });
 
-  // test('rejects invalid length-percentage values', () => {
-  //   expect(() => lengthPercentage.parseToEnd('abc')).toThrow();
-  //   expect(() => lengthPercentage.parseToEnd('50')).toThrow();
-  //   expect(() => lengthPercentage.parseToEnd('10abc')).toThrow();
-  // });
+  test('rejects invalid length-percentage values', () => {
+    expect(() => lengthPercentage.parseToEnd('abc')).toThrow();
+    expect(() => lengthPercentage.parseToEnd('50')).toThrow();
+    expect(() => lengthPercentage.parseToEnd('10abc')).toThrow();
+  });
 });

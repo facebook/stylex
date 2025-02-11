@@ -25,15 +25,14 @@ describe('Test CSS Type: <dashed-ident>', () => {
     );
   });
 
-  // test('rejects invalid dashed identifiers', () => {
-  //   expect(() =>
-  //     DashedIdentifier.parse.parseToEnd('custom-property'),
-  //   ).toThrow();
-  //   expect(() =>
-  //     DashedIdentifier.parse.parseToEnd('-custom-property'),
-  //   ).toThrow();
-  //   expect(() => DashedIdentifier.parse.parseToEnd('---property')).toThrow();
-  //   expect(() => DashedIdentifier.parse.parseToEnd('property')).toThrow();
-  //   expect(() => DashedIdentifier.parse.parseToEnd('--')).toThrow();
-  // });
+  test('rejects invalid dashed identifiers', () => {
+    expect(() =>
+      DashedIdentifier.parse.parseToEnd('custom-property'),
+    ).toThrow();
+    expect(() =>
+      DashedIdentifier.parse.parseToEnd('-custom-property'),
+    ).toThrow();
+    expect(() => DashedIdentifier.parse.parseToEnd('property')).toThrow();
+    expect(() => DashedIdentifier.parse.parseToEnd('--')).toThrow();
+  });
 });

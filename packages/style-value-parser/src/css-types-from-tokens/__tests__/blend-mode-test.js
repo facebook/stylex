@@ -29,9 +29,9 @@ describe('Test CSS Type: <blend-mode>', () => {
     expect(blendMode.parse('luminosity')).toBe('luminosity');
   });
 
-  // test('rejects invalid blend mode values', () => {
-  //   expect(() => blendMode.parseToEnd('invalid')).toThrow();
-  //   expect(() => blendMode.parseToEnd('blend')).toThrow();
-  //   expect(() => blendMode.parseToEnd('123')).toThrow();
-  // });
+  test('rejects invalid blend mode values', () => {
+    expect(() => blendMode.parseToEnd('invalid')).toThrow();
+    expect(() => blendMode.parseToEnd('blend')).toThrow();
+    expect(() => blendMode.parseToEnd('123')).toThrow();
+  });
 });
