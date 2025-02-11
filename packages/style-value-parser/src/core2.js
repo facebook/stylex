@@ -7,9 +7,69 @@
  * @flow strict
  */
 
-import type { CSSToken } from '@csstools/css-tokenizer';
+import type {
+  CSSToken,
+  TokenAtKeyword,
+  TokenBadString,
+  TokenBadURL,
+  TokenCDC,
+  TokenCDO,
+  TokenColon,
+  TokenComma,
+  TokenComment,
+  TokenDelim,
+  TokenDimension,
+  TokenEOF,
+  TokenFunction,
+  TokenHash,
+  TokenIdent,
+  TokenNumber,
+  TokenPercentage,
+  TokenSemicolon,
+  TokenString,
+  TokenURL,
+  TokenWhitespace,
+  TokenOpenParen,
+  TokenCloseParen,
+  TokenOpenSquare,
+  TokenCloseSquare,
+  TokenOpenCurly,
+  TokenCloseCurly,
+  TokenUnicodeRange,
+} from '@csstools/css-tokenizer';
 
 import { TokenList } from './token-types';
+import { TokenType } from '@csstools/css-tokenizer';
+
+type TokenNameToTokenType = {
+  Comment: TokenComment,
+  AtKeyword: TokenAtKeyword,
+  BadString: TokenBadString,
+  BadURL: TokenBadURL,
+  CDC: TokenCDC,
+  CDO: TokenCDO,
+  Colon: TokenColon,
+  Comma: TokenComma,
+  Delim: TokenDelim,
+  Dimension: TokenDimension,
+  EOF: TokenEOF,
+  Function: TokenFunction,
+  Hash: TokenHash,
+  Ident: TokenIdent,
+  Number: TokenNumber,
+  Percentage: TokenPercentage,
+  Semicolon: TokenSemicolon,
+  String: TokenString,
+  URL: TokenURL,
+  Whitespace: TokenWhitespace,
+  OpenParen: TokenOpenParen,
+  CloseParen: TokenCloseParen,
+  OpenSquare: TokenOpenSquare,
+  CloseSquare: TokenCloseSquare,
+  OpenCurly: TokenOpenCurly,
+  CloseCurly: TokenCloseCurly,
+  UnicodeRange: TokenUnicodeRange,
+};
 
 export class TokenParser<+T> {
   +run: (input: TokenList) => T | Error;
@@ -95,8 +155,12 @@ export class TokenParser<+T> {
     return prefixParser.flatMap(() => this);
   }
 
+  suffix(suffixParser: TokenParser<mixed>): TokenParser<T> {
+    return this.flatMap((output) => suffixParser.map(() => output));
+  }
+
   // $FlowFixMe[incompatible-variance]
-  where<Refined: T>(
+  where<Refined: T = T>(
     predicate: (value: T) => implies value is Refined,
   ): TokenParser<Refined> {
     return this.flatMap((output) => {
@@ -128,11 +192,46 @@ export class TokenParser<+T> {
       return token as TT;
     });
   }
+
+  static tokens: {
+    [Key in keyof typeof TokenType]: TokenParser<TokenNameToTokenType[Key]>,
+  } = {
+    Comment: TokenParser.token<TokenComment>(TokenType.Comment),
+    AtKeyword: TokenParser.token<TokenAtKeyword>(TokenType.AtKeyword),
+    BadString: TokenParser.token<TokenBadString>(TokenType.BadString),
+    BadURL: TokenParser.token<TokenBadURL>(TokenType.BadURL),
+    CDC: TokenParser.token<TokenCDC>(TokenType.CDC),
+    CDO: TokenParser.token<TokenCDO>(TokenType.CDO),
+    Colon: TokenParser.token<TokenColon>(TokenType.Colon),
+    Comma: TokenParser.token<TokenComma>(TokenType.Comma),
+    Delim: TokenParser.token<TokenDelim>(TokenType.Delim),
+    Dimension: TokenParser.token<TokenDimension>(TokenType.Dimension),
+    EOF: TokenParser.token<TokenEOF>(TokenType.EOF),
+    Function: TokenParser.token<TokenFunction>(TokenType.Function),
+    Hash: TokenParser.token<TokenHash>(TokenType.Hash),
+    Ident: TokenParser.token<TokenIdent>(TokenType.Ident),
+    Number: TokenParser.token<TokenNumber>(TokenType.Number),
+    Percentage: TokenParser.token<TokenPercentage>(TokenType.Percentage),
+    Semicolon: TokenParser.token<TokenSemicolon>(TokenType.Semicolon),
+    String: TokenParser.token<TokenString>(TokenType.String),
+    URL: TokenParser.token<TokenURL>(TokenType.URL),
+    Whitespace: TokenParser.token<TokenWhitespace>(TokenType.Whitespace),
+    OpenParen: TokenParser.token<TokenOpenParen>(TokenType.OpenParen),
+    CloseParen: TokenParser.token<TokenCloseParen>(TokenType.CloseParen),
+    OpenSquare: TokenParser.token<TokenOpenSquare>(TokenType.OpenSquare),
+    CloseSquare: TokenParser.token<TokenCloseSquare>(TokenType.CloseSquare),
+    OpenCurly: TokenParser.token<TokenOpenCurly>(TokenType.OpenCurly),
+    CloseCurly: TokenParser.token<TokenCloseCurly>(TokenType.CloseCurly),
+    UnicodeRange: TokenParser.token<TokenUnicodeRange>(TokenType.UnicodeRange),
+  };
+
   // T will be a union of the output types of the parsers
   static oneOf<T>(...parsers: $ReadOnlyArray<TokenParser<T>>): TokenParser<T> {
     return new TokenParser((input): T | Error => {
       const errors = [];
+      const index = input.currentIndex;
       for (const parser of parsers) {
+        input.setCurrentIndex(index);
         const output = parser.run(input);
         if (!(output instanceof Error)) {
           return output;
@@ -370,7 +469,9 @@ type ConstrainedTuple<+T> =
   | $ReadOnly<[T, T, T, T, T, T, T]>
   | $ReadOnly<[T, T, T, T, T, T, T, T]>
   | $ReadOnly<[T, T, T, T, T, T, T, T, T]>
-  | $ReadOnly<[T, T, T, T, T, T, T, T, T, T]>;
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T, T, T]>
+  | $ReadOnly<[T, T, T, T, T, T, T, T, T, T, T, T]>;
 
 // prettier-ignore
 export type FromParser<+T: TokenParser<mixed>, Fallback = empty> =

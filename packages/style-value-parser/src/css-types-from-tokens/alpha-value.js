@@ -7,10 +7,7 @@
  * @flow strict
  */
 
-import type { TokenPercentage, TokenNumber } from '@csstools/css-tokenizer';
-
 import { TokenParser } from '../core2';
-import { TokenType } from '@csstools/css-tokenizer';
 
 export class AlphaValue {
   +value: number;
@@ -21,13 +18,13 @@ export class AlphaValue {
     return this.value.toString();
   }
   static parse: TokenParser<AlphaValue> = TokenParser.oneOf(
-    TokenParser.token<TokenPercentage>(TokenType.Percentage).map(
+    TokenParser.tokens.Percentage.map(
       (v) =>
         new AlphaValue(
           ((v[4].signCharacter === '-' ? -1 : 1) * v[4].value) / 100,
         ),
     ),
-    TokenParser.token<TokenNumber>(TokenType.Number).map(
+    TokenParser.tokens.Number.map(
       (v) => new AlphaValue((v[4].signCharacter === '-' ? -1 : 1) * v[4].value),
     ),
   );
