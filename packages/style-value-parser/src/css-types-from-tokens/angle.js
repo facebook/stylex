@@ -7,10 +7,9 @@
  * @flow strict
  */
 
-import type { NumberType, TokenDimension } from '@csstools/css-tokenizer';
+import type { TokenDimension } from '@csstools/css-tokenizer';
 
 import { TokenParser } from '../core2';
-import { TokenType } from '@csstools/css-tokenizer';
 
 export class Angle {
   +value: number;
@@ -23,20 +22,9 @@ export class Angle {
     return `${this.value}${this.unit}`;
   }
   static get parse(): TokenParser<Angle> {
-    return TokenParser.token<TokenDimension>(TokenType.Dimension)
-      .map((v) => v[4])
+    return TokenParser.tokens.Dimension.map((v) => v[4])
       .where(
-        (v: {
-          value: number,
-          unit: string,
-          signCharacter?: '+' | '-',
-          type: NumberType,
-        }): implies v is {
-          value: number,
-          unit: string,
-          signCharacter?: '+' | '-',
-          type: NumberType,
-        } =>
+        (v: TokenDimension[4]): implies v is TokenDimension[4] =>
           v.unit === 'deg' ||
           v.unit === 'grad' ||
           v.unit === 'rad' ||

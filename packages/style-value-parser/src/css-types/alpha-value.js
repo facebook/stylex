@@ -7,14 +7,26 @@
  * @flow strict
  */
 
-import { Parser } from '../core';
 import { Percentage } from './common-types';
+import { Parser } from '../core';
 
 export const alphaNumber: Parser<number> = Parser.float.where(
   (v) => v >= 0 && v <= 1,
 );
 
-export const alphaValue: Parser<number> = Parser.oneOf(
-  Percentage.parse.map((v) => v.value / 100),
-  alphaNumber,
-);
+export class AlphaValue {
+  +value: number;
+  constructor(value: number) {
+    this.value = value;
+  }
+  toString(): string {
+    return this.value.toString();
+  }
+
+  static get parse(): Parser<AlphaValue> {
+    return Parser.oneOf(
+      Percentage.parse.map((v) => v.value / 100),
+      alphaNumber,
+    ).map((v) => new AlphaValue(v));
+  }
+}

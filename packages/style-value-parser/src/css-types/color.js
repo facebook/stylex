@@ -8,7 +8,7 @@
  */
 
 import { Parser } from '../core';
-import { alphaValue } from './alpha-value';
+import { AlphaValue } from './alpha-value';
 import { Angle, Deg } from './angle';
 import { Percentage } from './common-types';
 
@@ -292,7 +292,7 @@ export class Rgba extends Color {
   static get parse(): Parser<Rgba> {
     const commaFn = Parser.sequence(
       Parser.oneOf(commaNum, commaPercentage),
-      alphaValue,
+      AlphaValue.parse.map((a) => a.value),
     )
       .separatedBy(Parser.string(',').surroundedBy(Parser.whitespace.optional))
       .surroundedBy(Parser.whitespace.optional)
@@ -301,7 +301,7 @@ export class Rgba extends Color {
 
     const spaceFn = Parser.sequence(
       Parser.oneOf(spaceNum, spacePercentage),
-      alphaValue,
+      AlphaValue.parse.map((a) => a.value),
     )
       .separatedBy(Parser.string('/').surroundedBy(Parser.whitespace))
       .surroundedBy(Parser.whitespace.optional)
@@ -363,12 +363,14 @@ export class Hsla extends Color {
   static get parse(): Parser<Hsla> {
     const fnName = Parser.string('hsla').or(Parser.string('hsl'));
 
-    const commaFnArgs = Parser.sequence(hslCommaTuple, alphaValue).separatedBy(
-      Parser.string(',').surroundedBy(Parser.whitespace.optional),
-    );
-    const spaceFnArgs = Parser.sequence(hslCommaTuple, alphaValue).separatedBy(
-      Parser.string('/').surroundedBy(Parser.whitespace),
-    );
+    const commaFnArgs = Parser.sequence(
+      hslCommaTuple,
+      AlphaValue.parse.map((a) => a.value),
+    ).separatedBy(Parser.string(',').surroundedBy(Parser.whitespace.optional));
+    const spaceFnArgs = Parser.sequence(
+      hslCommaTuple,
+      AlphaValue.parse.map((a) => a.value),
+    ).separatedBy(Parser.string('/').surroundedBy(Parser.whitespace));
 
     return Parser.oneOf(commaFnArgs, spaceFnArgs)
       .surroundedBy(Parser.whitespace.optional)
