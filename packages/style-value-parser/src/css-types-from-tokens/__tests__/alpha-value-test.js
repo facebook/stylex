@@ -65,4 +65,11 @@ describe('Test CSS Type: <alpha-value>', () => {
       expect(AlphaValue.parse.parse('100%')).toEqual(new AlphaValue(1));
     });
   });
+  describe('Rejects', () => {
+    test('rejects invalid alpha values', () => {
+      expect(() => AlphaValue.parse.parseToEnd('invalid')).toThrow();
+      expect(() => AlphaValue.parse.parseToEnd('red')).toThrow();
+      expect(() => AlphaValue.parse.parseToEnd('initial')).toThrow();
+    });
+  });
 });

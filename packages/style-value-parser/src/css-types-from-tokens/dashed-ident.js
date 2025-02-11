@@ -22,7 +22,10 @@ export class DashedIdentifier {
 
   static get parse(): TokenParser<DashedIdentifier> {
     return TokenParser.tokens.Ident.map((token): string => token[4].value)
-      .where((str: string): implies str is string => str.startsWith('--'))
+      .where(
+        (str: string): implies str is string =>
+          str.startsWith('--') && str.length > 2,
+      )
       .map((value: string): DashedIdentifier => new DashedIdentifier(value));
   }
 }

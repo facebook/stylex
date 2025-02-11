@@ -25,24 +25,23 @@ describe('Test CSS Type: <custom-ident>', () => {
     );
   });
 
-  // test('rejects reserved keywords', () => {
-  //   expect(() => CustomIdentifier.parse.parseToEnd('unset')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('initial')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('inherit')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('default')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('none')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('auto')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('normal')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('hidden')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('visible')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('revert')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('revert-layer')).toThrow();
-  // });
+  test('rejects reserved keywords', () => {
+    expect(() => CustomIdentifier.parse.parseToEnd('unset')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('initial')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('inherit')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('default')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('none')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('auto')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('normal')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('hidden')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('visible')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('revert')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('revert-layer')).toThrow();
+  });
 
-  // test('rejects invalid identifiers', () => {
-  //   expect(() => CustomIdentifier.parse.parseToEnd('123invalid')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('-invalid')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('invalid!')).toThrow();
-  //   expect(() => CustomIdentifier.parse.parseToEnd('invalid space')).toThrow();
-  // });
+  test('rejects invalid identifiers', () => {
+    expect(() => CustomIdentifier.parse.parseToEnd('123invalid')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('invalid!')).toThrow();
+    expect(() => CustomIdentifier.parse.parseToEnd('invalid space')).toThrow();
+  });
 });
