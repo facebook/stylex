@@ -7,10 +7,7 @@
  * @flow strict
  */
 
-import type { TokenIdent } from '@csstools/css-tokenizer';
-
 import { TokenParser } from '../core2';
-import { TokenType } from '@csstools/css-tokenizer';
 
 export type BlendMode =
   | 'normal'
@@ -30,26 +27,24 @@ export type BlendMode =
   | 'color'
   | 'luminosity';
 
-export const blendMode: TokenParser<BlendMode> = TokenParser.token<TokenIdent>(
-  TokenType.Ident,
-)
-  .map((v): string => v[4].value)
-  .where<BlendMode>(
-    (str): str is BlendMode =>
-      str === 'normal' ||
-      str === 'multiply' ||
-      str === 'screen' ||
-      str === 'overlay' ||
-      str === 'darken' ||
-      str === 'lighten' ||
-      str === 'color-dodge' ||
-      str === 'color-burn' ||
-      str === 'hard-light' ||
-      str === 'soft-light' ||
-      str === 'difference' ||
-      str === 'exclusion' ||
-      str === 'hue' ||
-      str === 'saturation' ||
-      str === 'color' ||
-      str === 'luminosity',
-  );
+export const blendMode: TokenParser<BlendMode> = TokenParser.tokens.Ident.map(
+  (v): string => v[4].value,
+).where<BlendMode>(
+  (str): str is BlendMode =>
+    str === 'normal' ||
+    str === 'multiply' ||
+    str === 'screen' ||
+    str === 'overlay' ||
+    str === 'darken' ||
+    str === 'lighten' ||
+    str === 'color-dodge' ||
+    str === 'color-burn' ||
+    str === 'hard-light' ||
+    str === 'soft-light' ||
+    str === 'difference' ||
+    str === 'exclusion' ||
+    str === 'hue' ||
+    str === 'saturation' ||
+    str === 'color' ||
+    str === 'luminosity',
+);

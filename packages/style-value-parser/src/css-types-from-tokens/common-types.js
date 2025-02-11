@@ -9,8 +9,6 @@
 
 import { TokenParser } from '../core2';
 import type {
-  TokenCloseParen,
-  TokenFunction,
   TokenIdent,
   TokenNumber,
   TokenPercentage,
@@ -18,26 +16,6 @@ import type {
 
 import { TokenType } from '@csstools/css-tokenizer';
 
-export const inherit: TokenParser<'inherit'> = TokenParser.token<TokenIdent>(
-  TokenType.Ident,
-)
-  .map((v): string => v[4].value)
-  .where<'inherit'>((v): v is 'inherit' => v === 'inherit');
-export const initial: TokenParser<'initial'> = TokenParser.token<TokenIdent>(
-  TokenType.Ident,
-)
-  .map((v): string => v[4].value)
-  .where<'initial'>((v): v is 'initial' => v === 'initial');
-export const unset: TokenParser<'unset'> = TokenParser.token<TokenIdent>(
-  TokenType.Ident,
-)
-  .map((v): string => v[4].value)
-  .where<'unset'>((v): v is 'unset' => v === 'unset');
-export const revert: TokenParser<'revert'> = TokenParser.token<TokenIdent>(
-  TokenType.Ident,
-)
-  .map((v): string => v[4].value)
-  .where<'revert'>((v): v is 'revert' => v === 'revert');
 // Purposely not exported
 // StyleX will not support this value
 // export const revertLayer: TokenParser<string> = TokenParser.token<TokenIdent>(
@@ -46,14 +24,28 @@ export const revert: TokenParser<'revert'> = TokenParser.token<TokenIdent>(
 //   .where((v) => v[4].value === 'revert-layer')
 //   .map(() => 'revert-layer');
 
-export const cssWideKeywords: TokenParser<
-  'inherit' | 'initial' | 'unset' | 'revert',
-> = TokenParser.oneOf(
-  inherit,
-  initial,
-  unset,
-  revert,
-  // revertLayer
+export type CSSWideKeyword = 'inherit' | 'initial' | 'unset' | 'revert';
+
+export const cssWideKeywords: TokenParser<CSSWideKeyword> =
+  TokenParser.tokens.Ident.map((v): string => v[4].value).where<CSSWideKeyword>(
+    (v): v is CSSWideKeyword =>
+      v === 'inherit' || v === 'initial' || v === 'unset' || v === 'revert',
+  );
+
+export const inherit: TokenParser<'inherit'> = cssWideKeywords.where<'inherit'>(
+  (v): v is 'inherit' => v === 'inherit',
+);
+
+export const initial: TokenParser<'initial'> = cssWideKeywords.where<'initial'>(
+  (v): v is 'initial' => v === 'initial',
+);
+
+export const unset: TokenParser<'unset'> = cssWideKeywords.where<'unset'>(
+  (v): v is 'unset' => v === 'unset',
+);
+
+export const revert: TokenParser<'revert'> = cssWideKeywords.where<'revert'>(
+  (v): v is 'revert' => v === 'revert',
 );
 
 export const auto: TokenParser<string> = TokenParser.token<TokenIdent>(
@@ -68,16 +60,16 @@ export class CssVariable {
     this.name = name;
   }
   toString(): string {
-    return `var(--${this.name})`;
+    return `var(${this.name})`;
   }
   static parse: TokenParser<CssVariable> = TokenParser.sequence(
-    TokenParser.token<TokenFunction>(TokenType.Function)
-      .map((v): string => v[4].value)
-      .where<string>((v): v is 'var' => v === 'var'),
-    TokenParser.token<TokenIdent>(TokenType.Ident)
-      .map((v): string => v[4].value)
-      .where<string>((v): implies v is string => v.startsWith('--')),
-    TokenParser.token<TokenCloseParen>(TokenType.CloseParen),
+    TokenParser.tokens.Function.map((v): string => v[4].value).where<string>(
+      (v): v is 'var' => v === 'var',
+    ),
+    TokenParser.tokens.Ident.map((v): string => v[4].value).where<string>(
+      (v): implies v is string => v.startsWith('--'),
+    ),
+    TokenParser.tokens.CloseParen,
   ).map(
     ([_, name, __]: $ReadOnly<[mixed, string, mixed]>) => new CssVariable(name),
   );
