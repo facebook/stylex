@@ -231,11 +231,11 @@ export class TokenParser<+T> {
       const errors = [];
       const index = input.currentIndex;
       for (const parser of parsers) {
-        input.setCurrentIndex(index);
         const output = parser.run(input);
         if (!(output instanceof Error)) {
           return output;
         }
+        input.setCurrentIndex(index);
         errors.push(output);
       }
       return new Error(
