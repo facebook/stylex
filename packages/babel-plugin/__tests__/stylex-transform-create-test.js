@@ -15,12 +15,14 @@ const { transformSync } = require('@babel/core');
 const flowPlugin = require('@babel/plugin-syntax-flow');
 const stylexPlugin = require('../src/index');
 
-function transform(source, opts = {}) {
+const defaultParserOpts = {
+  flow: 'all',
+};
+
+function transform(source, opts = {}, parserOpts = defaultParserOpts) {
   return transformSync(source, {
     filename: opts.filename,
-    parserOpts: {
-      flow: 'all',
-    },
+    parserOpts,
     babelrc: false,
     plugins: [
       flowPlugin,
@@ -1231,6 +1233,40 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: true
           }
         };"
+      `);
+    });
+
+    test('typescript namespace transform', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          namespace A {
+            export const styles = stylex.create({
+              default: {
+                color: 'red',
+              }
+            })
+          }
+          stylex.props(A.styles);
+      `,
+          {},
+          { plugins: ['typescript'] },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1e2nbdu{color:red}", 3000);
+        namespace A {
+          export const styles = {
+            default: {
+              color: "x1e2nbdu",
+              $$css: true
+            }
+          };
+        }
+        stylex.props(A.styles);"
       `);
     });
   });

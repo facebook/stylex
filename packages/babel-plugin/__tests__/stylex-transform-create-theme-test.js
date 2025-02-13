@@ -25,16 +25,19 @@ const defaultOpts = {
 // test environment still.
 const rootDir = '/stylex/packages/';
 
-function transform(source, opts = defaultOpts) {
+const defaultParserOpts = {
+  flow: 'all',
+};
+
+function transform(source, opts = defaultOpts, parserOpts = defaultParserOpts) {
   return transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
-    parserOpts: {
-      flow: 'all',
-    },
+    parserOpts,
     babelrc: false,
     plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
   }).code;
 }
+
 let defineVarsOutput = '';
 
 const createTheme = `{
@@ -691,5 +694,36 @@ describe('@stylexjs/babel-plugin stylex.createTheme with literals', () => {
         };"
       `);
     });
+  });
+
+  describe('[transform] typescript namespace', () => {
+    expect(
+      transform(
+        `
+        import stylex from 'stylex';
+        namespace A  {
+          export const buttonTheme = stylex.defineVars(${createTheme});
+          export const buttonThemePositive = stylex.createTheme(buttonTheme, ${createThemeWithDifferentOrder});
+        }  
+    `,
+        {},
+        { plugins: ['typescript'] },
+      ),
+    ).toMatchInlineSnapshot(`
+      "import stylex from 'stylex';
+      namespace A {
+        export const buttonTheme = {
+          bgColor: "var(--xgck17p)",
+          bgColorDisabled: "var(--xpegid5)",
+          cornerRadius: "var(--xrqfjmn)",
+          fgColor: "var(--x4y59db)",
+          __themeName__: "x568ih9"
+        };
+        export const buttonThemePositive = {
+          $$css: true,
+          x568ih9: "xtrlmmh x568ih9"
+        };
+      }"
+    `);
   });
 });
