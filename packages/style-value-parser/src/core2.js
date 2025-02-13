@@ -100,7 +100,8 @@ export class TokenParser<+T> {
           `Consumed tokens: ${consumedTokens.map((token) => token[0]).join(', ')}`,
       );
     }
-    if (!tokens.isAtEnd) {
+    tokens.setCurrentIndex(initialIndex);
+    if (tokens.peek() != null) {
       const token = tokens.peek();
       if (token == null) {
         return output;
