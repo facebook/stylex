@@ -19,7 +19,8 @@
     "@babel/core": "^7.25.8",
     "@babel/traverse": "^7.25.7",
     "@babel/types": "^7.25.8",
-    "@dual-bundle/import-meta-resolve": "^4.1.0"
+    "@dual-bundle/import-meta-resolve": "^4.1.0",
+    "json5": "^2.2.3"
   },
   "jest": {
     "verbose": true,
