@@ -60,24 +60,47 @@ export class Position {
 
     const horizontal: TokenParser<Horizontal> = TokenParser.sequence(
       horizontalKeyword,
-      lengthPercentage.prefix(TokenParser.tokens.Whitespace).optional,
-    ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
+      lengthPercentage.optional,
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([keyword, length]) => (length ? [keyword, length] : keyword));
 
     const vertical: TokenParser<Vertical> = TokenParser.sequence(
       verticalKeyword,
-      lengthPercentage.prefix(TokenParser.tokens.Whitespace).optional,
-    ).map(([keyword, length]) => (length ? [keyword, length] : keyword));
+      lengthPercentage.optional,
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([keyword, length]) => (length ? [keyword, length] : keyword));
 
-    const startingWithHorizontal = TokenParser.sequence(
+    const bothKeywords = TokenParser.setOf(horizontal, vertical)
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([h, v]) => new Position(h, v));
+
+    const numberPlusVertical = TokenParser.sequence(lengthPercentage, vertical)
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([length, v]) => new Position(length, v));
+
+    const numberPlusHorizontal = TokenParser.sequence(
+      lengthPercentage,
       horizontal,
-      vertical.prefix(TokenParser.tokens.Whitespace).optional,
-    ).map(([h, v]) => new Position(h, v));
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([length, h]) => new Position(h, length));
 
-    const startingWithVertical = TokenParser.sequence(
-      vertical,
-      horizontal.prefix(TokenParser.tokens.Whitespace).optional,
-    ).map(([v, h]) => new Position(h, v));
+    const numbersOnly = TokenParser.sequence(
+      lengthPercentage,
+      lengthPercentage.optional,
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .map(([length1, length2]) => new Position(length1, length2 ?? length1));
 
-    return TokenParser.oneOf(startingWithHorizontal, startingWithVertical);
+    return TokenParser.oneOf(
+      bothKeywords,
+      numberPlusVertical,
+      numberPlusHorizontal,
+      horizontal.map((h) => new Position(h, undefined)),
+      vertical.map((v) => new Position(undefined, v)),
+      numbersOnly,
+    );
   }
 }
