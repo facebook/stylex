@@ -24,7 +24,6 @@ import {
   removeObjectsWithSpreads,
 } from '../../utils/js-to-ast';
 import { messages } from '@stylexjs/shared';
-import * as pathUtils from '../../babel-path-utils';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '@stylexjs/shared/lib/preprocess-rules';
 
@@ -144,7 +143,7 @@ export default function transformStyleXCreate(
     };
 
     let varName = null;
-    if (pathUtils.isVariableDeclarator(path.parentPath)) {
+    if (path.parentPath.isVariableDeclarator()) {
       const idNode = path.parentPath.node.id;
       if (idNode.type === 'Identifier') {
         varName = idNode.name;
@@ -324,10 +323,7 @@ export default function transformStyleXCreate(
 
 // Validates the first argument to `stylex.create`.
 function validateStyleXCreate(path: NodePath<t.CallExpression>) {
-  if (
-    path.parentPath == null ||
-    pathUtils.isExpressionStatement(path.parentPath)
-  ) {
+  if (path.parentPath == null || path.parentPath.isExpressionStatement()) {
     throw path.buildCodeFrameError(
       messages.UNBOUND_STYLEX_CALL_VALUE,
       SyntaxError,
@@ -335,8 +331,8 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   }
   const nearestStatement = findNearestStatementAncestor(path);
   if (
-    !pathUtils.isProgram(nearestStatement.parentPath) &&
-    !pathUtils.isExportNamedDeclaration(nearestStatement.parentPath)
+    !nearestStatement.parentPath.isProgram() &&
+    !nearestStatement.parentPath.isExportNamedDeclaration()
   ) {
     throw path.buildCodeFrameError(messages.ONLY_TOP_LEVEL, SyntaxError);
   }
@@ -356,7 +352,7 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
 
 // Find the nearest statement ancestor of a given path.
 function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
-  if (pathUtils.isStatement(path)) {
+  if (path.isStatement()) {
     return path;
   }
   if (path.parentPath == null) {

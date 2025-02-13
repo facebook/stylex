@@ -11,7 +11,6 @@ import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
 import { keyframes as stylexKeyframes, messages } from '@stylexjs/shared';
-import * as pathUtils from '../babel-path-utils';
 import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
 import { firstThatWorks as stylexFirstThatWorks } from '@stylexjs/shared';
 
@@ -59,7 +58,7 @@ export default function transformStyleXKeyframes(
     }
 
     const init: ?NodePath<t.Expression> = path.get('init');
-    if (init == null || !pathUtils.isCallExpression(init)) {
+    if (init == null || !init.isCallExpression()) {
       throw path.buildCodeFrameError(
         messages.NON_STATIC_KEYFRAME_VALUE,
         SyntaxError,

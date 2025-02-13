@@ -13,12 +13,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@babel/helper-module-imports": "^7.22.15",
+    "@babel/helper-module-imports": "^7.25.9",
     "@stylexjs/shared": "0.10.1",
     "@stylexjs/stylex": "0.10.1",
-    "@babel/core": "^7.25.8",
-    "@babel/traverse": "^7.25.7",
-    "@babel/types": "^7.25.8",
+    "@babel/core": "^7.26.8",
+    "@babel/traverse": "^7.26.8",
+    "@babel/types": "^7.26.8",
     "@dual-bundle/import-meta-resolve": "^4.1.0"
   },
   "jest": {

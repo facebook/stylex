@@ -41,6 +41,7 @@ export function injectDevClassNames(
       varName,
       state.filename ?? 'UnknownFile',
     );
+    // $FlowFixMe
     result[key] = {
       [devClassName]: devClassName,
       ...value,

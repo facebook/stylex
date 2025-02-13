@@ -15,7 +15,6 @@ import { props } from '@stylexjs/stylex';
 
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
-import * as babelPathUtils from '../babel-path-utils';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -191,7 +190,7 @@ export default function transformStylexProps(
         }
       }
 
-      if (babelPathUtils.isMemberExpression(argPath)) {
+      if (argPath.isMemberExpression()) {
         MemberExpression(argPath);
       } else {
         argPath.traverse({
