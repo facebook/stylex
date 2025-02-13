@@ -260,35 +260,39 @@ export class Rgb extends Color {
     return `rgb(${this.r},${this.g},${this.b})`;
   }
   static get parse(): TokenParser<Rgb> {
+    const rgbCommaSeparated = TokenParser.sequence(
+      rgbNumberParser,
+      rgbNumberParser,
+      rgbNumberParser,
+    )
+      .separatedBy(TokenParser.tokens.Comma)
+      .separatedBy(TokenParser.tokens.Whitespace.optional);
+
     const commaParser = TokenParser.sequence(
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'rgb',
       ),
-      rgbNumberParser,
-      TokenParser.tokens.Comma,
-      rgbNumberParser,
-      TokenParser.tokens.Comma,
-      rgbNumberParser,
+      rgbCommaSeparated,
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(([_fn, r, _comma, g, _comma2, b, _closeParen]) => new Rgb(r, g, b));
+      .map(([_fn, [r, g, b], _closeParen]) => new Rgb(r, g, b));
+
+    const spaceSeparatedRGB = TokenParser.sequence(
+      rgbNumberParser,
+      rgbNumberParser,
+      rgbNumberParser,
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
+      .surroundedBy(TokenParser.tokens.Whitespace.optional);
+
     const spaceParser = TokenParser.sequence(
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'rgb',
       ),
-      TokenParser.tokens.Whitespace.optional,
-      rgbNumberParser,
-      TokenParser.tokens.Whitespace,
-      rgbNumberParser,
-      TokenParser.tokens.Whitespace,
-      rgbNumberParser,
-      TokenParser.tokens.Whitespace.optional,
+      spaceSeparatedRGB,
       TokenParser.tokens.CloseParen,
-    ).map(
-      ([_fn, _preSpace, r, _space, g, _space2, b, _postSpace, _closeParen]) =>
-        new Rgb(r, g, b),
-    );
+    ).map(([_fn, [r, g, b], _closeParen]) => new Rgb(r, g, b));
 
     return TokenParser.oneOf(commaParser, spaceParser);
   }

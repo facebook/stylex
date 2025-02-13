@@ -22,7 +22,7 @@ export class Angle {
     return `${this.value}${this.unit}`;
   }
   static get parse(): TokenParser<Angle> {
-    return TokenParser.tokens.Dimension.map((v) => v[4])
+    const withUnit = TokenParser.tokens.Dimension.map((v) => v[4])
       .where(
         (v: TokenDimension[4]): implies v is TokenDimension[4] =>
           v.unit === 'deg' ||
@@ -31,5 +31,12 @@ export class Angle {
           v.unit === 'turn',
       )
       .map((v) => new Angle(v.value, v.unit));
+
+    return TokenParser.oneOf(
+      withUnit,
+      TokenParser.tokens.Number.map((v) =>
+        v[4].value === 0 ? new Angle(0, 'deg') : null,
+      ).where((v) => v != null),
+    );
   }
 }
