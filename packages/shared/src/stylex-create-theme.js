@@ -85,6 +85,7 @@ export default function styleXCreateTheme(
   const themeClass = `${overrideClassName} ${themeVars.__themeName__}`;
 
   return [
+    // $FlowFixMe[invalid-computed-prop]
     { $$css: true, [themeVars.__themeName__]: themeClass },
     stylesToInject,
   ];

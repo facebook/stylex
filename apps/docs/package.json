@@ -34,7 +34,7 @@
     "react-syntax-highlighter": "^15.6.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.25.8",
+    "@babel/eslint-parser": "^7.26.8",
     "@stylexjs/eslint-plugin": "0.8.0",
     "@stylexjs/babel-plugin": "0.10.1",
     "clean-css": "^5.3.2",

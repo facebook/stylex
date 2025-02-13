@@ -22,7 +22,6 @@ import type { Check } from './validate';
 import * as z from './validate';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
 import type { ImportOptions } from '@babel/helper-module-imports';
-import * as pathUtils from '../babel-path-utils';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 
 type ImportAdditionOptions = Omit<
@@ -357,7 +356,7 @@ export default class StateManager {
     let targetImportIndex = -1;
     for (let i = 0; i < bodyPath.length; i++) {
       const statement = bodyPath[i];
-      if (pathUtils.isImportDeclaration(statement)) {
+      if (statement.isImportDeclaration()) {
         targetImportIndex = i;
         if (
           statement.node.specifiers.find(
@@ -403,7 +402,7 @@ export default class StateManager {
     let targetImportIndex = -1;
     for (let i = 0; i < bodyPath.length; i++) {
       const statement = bodyPath[i];
-      if (pathUtils.isImportDeclaration(statement)) {
+      if (statement.isImportDeclaration()) {
         targetImportIndex = i;
         if (
           statement.node.specifiers.find(
@@ -592,7 +591,7 @@ export default class StateManager {
     const runtimeInjection = this.runtimeInjection;
 
     const statementPath =
-      path.parentPath != null && pathUtils.isProgram(path.parentPath)
+      path.parentPath != null && path.parentPath.isProgram()
         ? path
         : getProgramStatement(path);
 
@@ -735,7 +734,7 @@ export const matchesFileSuffix: (string) => (string) => boolean =
 
 const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
   let programPath = path;
-  while (programPath != null && !pathUtils.isProgram(programPath)) {
+  while (programPath != null && !programPath.isProgram()) {
     if (programPath.parentPath) {
       programPath = programPath.parentPath;
     } else {
@@ -749,7 +748,7 @@ const getProgramStatement = (path: NodePath<>): NodePath<> => {
   let programPath = path;
   while (
     programPath.parentPath != null &&
-    !pathUtils.isProgram(programPath.parentPath) &&
+    !programPath.parentPath.isProgram() &&
     programPath.parentPath != null
   ) {
     programPath = programPath.parentPath;

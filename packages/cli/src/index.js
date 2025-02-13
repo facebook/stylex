@@ -47,6 +47,7 @@ let config: { +[string]: mixed } = {};
 const args = yargs(process.argv)
   .scriptName('stylex')
   .usage(usage)
+  // $FlowFixMe[incompatible-call]
   .options(options)
   .help(true)
   .config(

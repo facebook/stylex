@@ -6,7 +6,7 @@
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "^7.25.8",
+    "@babel/core": "^7.26.8",
     "@stylexjs/babel-plugin": "0.10.1",
     "postcss": "^8.4.49",
     "fast-glob": "^3.3.2",

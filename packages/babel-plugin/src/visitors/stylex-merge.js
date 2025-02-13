@@ -10,7 +10,6 @@
 import type { NodePath } from '@babel/traverse';
 
 import * as t from '@babel/types';
-import * as babelPathUtils from '../babel-path-utils';
 import StateManager from '../utils/state-manager';
 import { evaluate } from '../utils/evaluate-path';
 import { legacyMerge } from '@stylexjs/stylex';
@@ -188,7 +187,7 @@ export default function transformStyleXMerge(
         }
       }
 
-      if (babelPathUtils.isMemberExpression(argPath)) {
+      if (argPath.isMemberExpression()) {
         MemberExpression(argPath);
       } else {
         argPath.traverse({
