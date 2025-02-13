@@ -27,7 +27,6 @@ import type { NodePath, Binding } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '@stylexjs/shared';
-import * as pathUtils from '../babel-path-utils';
 import * as errMsgs from './evaluation-errors';
 
 // This file contains Babels metainterpreter that can evaluate static code.
@@ -122,20 +121,20 @@ function evaluateImportedFile(
     ExportNamedDeclaration(path: NodePath<t.ExportNamedDeclaration>) {
       const declaration = path.get('declaration');
 
-      if (pathUtils.isVariableDeclaration(declaration)) {
+      if (declaration.isVariableDeclaration()) {
         const decls = declaration.get('declarations');
 
         const finder = (decl: NodePath<t.Node>) => {
-          if (pathUtils.isVariableDeclarator(decl)) {
+          if (decl.isVariableDeclarator()) {
             const id = decl.get('id');
             const init: ?NodePath<t.Expression> = (
               decl as NodePath<t.VariableDeclarator>
             ).get('init');
             if (
-              pathUtils.isIdentifier(id) &&
+              id.isIdentifier() &&
               id.node.name === namedExport &&
               init != null &&
-              pathUtils.isExpression(init)
+              init.isExpression()
             ) {
               result = evaluateCached(init, state);
             }
@@ -251,7 +250,7 @@ function evaluateCached(path: NodePath<>, state: State): any {
 function _evaluate(path: NodePath<>, state: State): any {
   if (!state.confident) return;
 
-  if (pathUtils.isArrowFunctionExpression(path)) {
+  if (path.isArrowFunctionExpression()) {
     const body = path.get('body');
     const params: $ReadOnlyArray<
       NodePath<t.Identifier | t.Pattern | t.RestElement>,
@@ -260,10 +259,10 @@ function _evaluate(path: NodePath<>, state: State): any {
       .filter(
         (
           param: NodePath<t.Identifier | t.Pattern | t.RestElement>,
-        ): param is NodePath<t.Identifier> => pathUtils.isIdentifier(param),
+        ): param is NodePath<t.Identifier> => param.isIdentifier(),
       )
       .map((paramPath) => paramPath.node.name);
-    if (pathUtils.isExpression(body) && identParams.length === params.length) {
+    if (body.isExpression() && identParams.length === params.length) {
       const expr: NodePath<t.Expression> = body;
       return (...args) => {
         const identifierEntries = identParams.map(
@@ -279,14 +278,14 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isIdentifier(path)) {
+  if (path.isIdentifier()) {
     const name: string = path.node.name;
     if (Object.keys(state.functions?.identifiers ?? {}).includes(name)) {
       return state.functions.identifiers[name];
     }
   }
 
-  if (pathUtils.isTSAsExpression(path)) {
+  if (path.isTSAsExpression()) {
     const expr: NodePath<t.Expression> = path.get('expression');
     return evaluateCached(expr, state);
   }
@@ -296,45 +295,44 @@ function _evaluate(path: NodePath<>, state: State): any {
     return evaluateCached(expr, state);
   }
 
-  if (pathUtils.isSequenceExpression(path)) {
+  if (path.isSequenceExpression()) {
     const exprs = path.get('expressions');
     return evaluateCached(exprs[exprs.length - 1], state);
   }
 
   if (
-    pathUtils.isStringLiteral(path) ||
-    pathUtils.isNumericLiteral(path) ||
-    pathUtils.isBooleanLiteral(path)
+    path.isStringLiteral() ||
+    path.isNumericLiteral() ||
+    path.isBooleanLiteral()
   ) {
     return path.node.value;
   }
 
-  if (pathUtils.isNullLiteral(path)) {
+  if (path.isNullLiteral()) {
     return null;
   }
 
-  if (pathUtils.isTemplateLiteral(path)) {
+  if (path.isTemplateLiteral()) {
     return evaluateQuasis(path, path.node.quasis, state);
   }
 
-  const maybeTag =
-    pathUtils.isTaggedTemplateExpression(path) && path.get('tag');
+  const maybeTag = path.isTaggedTemplateExpression() && path.get('tag');
   if (
-    pathUtils.isTaggedTemplateExpression(path) &&
+    path.isTaggedTemplateExpression() &&
     maybeTag &&
-    pathUtils.isMemberExpression(maybeTag)
+    maybeTag.isMemberExpression()
   ) {
     const tag: NodePath<t.MemberExpression> = maybeTag;
     const object: NodePath<t.Expression | t.Super> = tag.get('object');
 
-    if (pathUtils.isIdentifier(object)) {
+    if (object.isIdentifier()) {
       const name = object.node.name;
       const property: NodePath<> = tag.get('property');
 
       if (
         name === 'String' &&
         !path.scope.hasBinding(name) &&
-        pathUtils.isIdentifier(property) &&
+        property.isIdentifier() &&
         property.node.name === 'raw'
       ) {
         return evaluateQuasis(path, path.node.quasi.quasis, state, true);
@@ -342,7 +340,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isConditionalExpression(path)) {
+  if (path.isConditionalExpression()) {
     const testResult = evaluateCached(path.get('test'), state);
     if (!state.confident) return;
     if (testResult) {
@@ -352,15 +350,15 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isExpressionWrapper(path)) {
+  if (path.isExpressionWrapper()) {
     // TypeCastExpression, ExpressionStatement etc
     return evaluateCached(path.get('expression'), state);
   }
 
   // "foo".length
   if (
-    pathUtils.isMemberExpression(path) &&
-    !pathUtils.isCallExpression(path.parentPath, { callee: path.node })
+    path.isMemberExpression() &&
+    !path.parentPath.isCallExpression({ callee: path.node })
   ) {
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
@@ -375,9 +373,9 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (!state.confident) {
         return;
       }
-    } else if (pathUtils.isIdentifier(propPath)) {
+    } else if (propPath.isIdentifier()) {
       property = propPath.node.name;
-    } else if (pathUtils.isStringLiteral(propPath)) {
+    } else if (propPath.isStringLiteral()) {
       property = propPath.node.value;
     } else {
       return deopt(propPath, state, errMsgs.UNEXPECTED_MEMBER_LOOKUP);
@@ -386,16 +384,16 @@ function _evaluate(path: NodePath<>, state: State): any {
     return object[property];
   }
 
-  if (pathUtils.isReferencedIdentifier(path)) {
+  if (path.isReferencedIdentifier()) {
     const binding: ?Binding = path.scope?.getBinding(path.node.name);
 
     const bindingPath = binding?.path;
     if (
       binding &&
       bindingPath &&
-      !pathUtils.isImportDefaultSpecifier(bindingPath) &&
-      !pathUtils.isImportNamespaceSpecifier(bindingPath) &&
-      pathUtils.isImportSpecifier(bindingPath)
+      !bindingPath.isImportDefaultSpecifier() &&
+      !bindingPath.isImportNamespaceSpecifier() &&
+      bindingPath.isImportSpecifier()
     ) {
       const importSpecifierPath: NodePath<t.ImportSpecifier> = bindingPath;
       const importSpecifierNode: t.ImportSpecifier = importSpecifierPath.node;
@@ -405,7 +403,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       const importedName =
         imported.type === 'Identifier' ? imported.name : imported.value;
       const importPath = binding.path.parentPath;
-      if (importPath && pathUtils.isImportDeclaration(importPath)) {
+      if (importPath && importPath.isImportDeclaration()) {
         const absPath = state.traversalState.importPathResolver(
           importPath.node.source.value,
         );
@@ -439,11 +437,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       }
     }
 
-    if (
-      binding &&
-      bindingPath &&
-      pathUtils.isImportDefaultSpecifier(bindingPath)
-    ) {
+    if (binding && bindingPath && bindingPath.isImportDefaultSpecifier()) {
       deopt(binding.path, state, errMsgs.IMPORT_FILE_EVAL_ERROR);
     }
 
@@ -481,7 +475,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isUnaryExpression(path, { prefix: true })) {
+  if (path.isUnaryExpression({ prefix: true })) {
     if (path.node.operator === 'void') {
       // we don't need to evaluate the argument to know what this will return
       return undefined;
@@ -490,7 +484,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     const argument = path.get('argument');
     if (
       path.node.operator === 'typeof' &&
-      (pathUtils.isFunction(argument) || pathUtils.isClass(argument))
+      (argument.isFunction() || argument.isClass())
     ) {
       return 'function';
     }
@@ -519,7 +513,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isArrayExpression(path)) {
+  if (path.isArrayExpression()) {
     const arrPath: NodePath<t.ArrayExpression> = path;
     const arr = [];
     const elems: $ReadOnlyArray<NodePath<>> = arrPath.get('elements');
@@ -537,16 +531,16 @@ function _evaluate(path: NodePath<>, state: State): any {
     return arr;
   }
 
-  if (pathUtils.isObjectExpression(path)) {
+  if (path.isObjectExpression()) {
     const obj: { [string]: mixed } = {};
     const props: $ReadOnlyArray<
       NodePath<t.ObjectMethod | t.ObjectProperty | t.SpreadElement>,
     > = path.get('properties');
     for (const prop of props) {
-      if (pathUtils.isObjectMethod(prop)) {
+      if (prop.isObjectMethod()) {
         return deopt(prop, state, errMsgs.OBJECT_METHOD);
       }
-      if (pathUtils.isSpreadElement(prop)) {
+      if (prop.isSpreadElement()) {
         const spreadExpression = evaluateCached(prop.get('argument'), state);
         if (!state.confident) {
           return deopt(prop, state, state.deoptReason ?? 'unknown error');
@@ -554,7 +548,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         Object.assign(obj, spreadExpression);
         continue;
       }
-      if (pathUtils.isObjectProperty(prop)) {
+      if (prop.isObjectProperty()) {
         const keyPath: NodePath<t.ObjectProperty['key']> = prop.get('key');
         let key: string | number | boolean;
         if ((prop.node as t.ObjectProperty).computed) {
@@ -570,7 +564,7 @@ function _evaluate(path: NodePath<>, state: State): any {
             return;
           }
           key = value;
-        } else if (pathUtils.isIdentifier(keyPath)) {
+        } else if (keyPath.isIdentifier()) {
           key = keyPath.node.name;
         } else {
           // TODO: This is'nt handling all possible types that `keyPath` could be
@@ -591,7 +585,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     return obj;
   }
 
-  if (pathUtils.isLogicalExpression(path)) {
+  if (path.isLogicalExpression()) {
     // If we are confident that the left side of an && is false, or the left
     // side of an || is true, we can be confident about the entire expression
     const stateForLeft = { ...state, deoptPath: null, confident: true };
@@ -660,7 +654,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isBinaryExpression(path)) {
+  if (path.isBinaryExpression()) {
     const left = evaluateCached(path.get('left'), state);
     if (!state.confident) return;
     const right = evaluateCached(path.get('right'), state);
@@ -716,24 +710,24 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
   }
 
-  if (pathUtils.isCallExpression(path)) {
+  if (path.isCallExpression()) {
     const callee = path.get('callee');
     let context;
     let func;
 
     // Number(1);
     if (
-      pathUtils.isIdentifier(callee) &&
+      callee.isIdentifier() &&
       !path.scope.getBinding(callee.node.name) &&
       isValidCallee(callee.node.name)
     ) {
       func = global[callee.node.name];
     } else if (
-      pathUtils.isIdentifier(callee) &&
+      callee.isIdentifier() &&
       state.functions.identifiers[callee.node.name]
     ) {
       func = state.functions.identifiers[callee.node.name];
-    } else if (pathUtils.isIdentifier(callee)) {
+    } else if (callee.isIdentifier()) {
       const maybeFunction = evaluateCached(callee, state);
       if (state.confident) {
         func = maybeFunction;
@@ -742,12 +736,12 @@ function _evaluate(path: NodePath<>, state: State): any {
       }
     }
 
-    if (pathUtils.isMemberExpression(callee)) {
+    if (callee.isMemberExpression()) {
       const object = callee.get('object');
       const property = callee.get('property');
 
       // Math.min(1, 2)
-      if (pathUtils.isIdentifier(object) && pathUtils.isIdentifier(property)) {
+      if (object.isIdentifier() && property.isIdentifier()) {
         if (
           isValidCallee(object.node.name) &&
           !isInvalidMethod(property.node.name)
@@ -767,8 +761,8 @@ function _evaluate(path: NodePath<>, state: State): any {
       }
 
       if (
-        pathUtils.isIdentifier(object) &&
-        pathUtils.isStringLiteral(property) &&
+        object.isIdentifier() &&
+        property.isStringLiteral() &&
         state.functions.memberExpressions[object.node.name] &&
         state.functions.memberExpressions[object.node.name][property.node.value]
       ) {
@@ -778,9 +772,8 @@ function _evaluate(path: NodePath<>, state: State): any {
 
       // "abc".charCodeAt(4)
       if (
-        (pathUtils.isStringLiteral(object) ||
-          pathUtils.isNumericLiteral(object)) &&
-        pathUtils.isIdentifier(property)
+        (object.isStringLiteral() || object.isNumericLiteral()) &&
+        property.isIdentifier()
       ) {
         const val: number | string = object.node.value;
         func = (val as $FlowFixMe)[property.node.name];
@@ -795,11 +788,11 @@ function _evaluate(path: NodePath<>, state: State): any {
           state.traversalState,
           state.functions,
         );
-        if (parsedObj.confident && pathUtils.isIdentifier(property)) {
+        if (parsedObj.confident && property.isIdentifier()) {
           func = parsedObj.value[property.node.name];
           context = parsedObj.value;
         }
-        if (parsedObj.confident && pathUtils.isStringLiteral(property)) {
+        if (parsedObj.confident && property.isStringLiteral()) {
           func = parsedObj.value[property.node.value];
           context = parsedObj.value;
         }
@@ -839,9 +832,9 @@ function evaluateQuasis(
   let str = '';
 
   let i = 0;
-  const exprs: $ReadOnlyArray<NodePath<>> = pathUtils.isTemplateLiteral(path)
+  const exprs: $ReadOnlyArray<NodePath<>> = path.isTemplateLiteral()
     ? path.get('expressions')
-    : pathUtils.isTaggedTemplateExpression(path)
+    : path.isTaggedTemplateExpression()
       ? path.get('quasi').get('expressions')
       : [];
 

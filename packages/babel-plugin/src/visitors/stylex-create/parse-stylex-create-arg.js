@@ -12,7 +12,6 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../../utils/state-manager';
 import { evaluate, type FunctionConfig } from '../../utils/evaluate-path';
-import * as pathUtils from '../../babel-path-utils';
 import { create, utils } from '@stylexjs/shared';
 import { messages } from '@stylexjs/shared';
 import {
@@ -48,7 +47,7 @@ export function evaluateStyleXCreateArg(
   reason?: string,
   fns?: DynamicFns,
 }> {
-  if (!pathUtils.isObjectExpression(path)) {
+  if (!path.isObjectExpression()) {
     return evaluate(path, traversalState, functions);
   }
 
@@ -56,7 +55,7 @@ export function evaluateStyleXCreateArg(
   const fns: DynamicFns = {};
 
   for (const prop of path.get('properties')) {
-    if (!pathUtils.isObjectProperty(prop)) {
+    if (!prop.isObjectProperty()) {
       return evaluate(path, traversalState, functions);
     }
     const objPropPath: NodePath<t.ObjectProperty> = prop;
@@ -67,7 +66,7 @@ export function evaluateStyleXCreateArg(
     const key = keyResult.value;
 
     const valPath = prop.get('value');
-    if (!pathUtils.isArrowFunctionExpression(valPath)) {
+    if (!valPath.isArrowFunctionExpression()) {
       const val = evaluate(valPath, traversalState, functions);
       if (!val.confident) {
         return val;
@@ -86,12 +85,12 @@ export function evaluateStyleXCreateArg(
       .filter(
         (
           param: NodePath<t.Identifier | t.Pattern | t.SpreadElement>,
-        ): param is NodePath<t.Identifier> => pathUtils.isIdentifier(param),
+        ): param is NodePath<t.Identifier> => param.isIdentifier(),
       )
       .map((param) => param.node);
 
     const fnBody = fnPath.get('body');
-    if (!pathUtils.isObjectExpression(fnBody)) {
+    if (!fnBody.isObjectExpression()) {
       // We only allow arrow functions without block bodies.
       return evaluate(path, traversalState, functions);
     }
@@ -132,10 +131,10 @@ function evaluatePartialObjectRecursively(
     NodePath<t.ObjectMethod | t.ObjectProperty | t.SpreadElement>,
   > = path.get('properties');
   for (const prop of props) {
-    if (pathUtils.isObjectMethod(prop)) {
+    if (prop.isObjectMethod()) {
       return { value: null, confident: false };
     }
-    if (pathUtils.isSpreadElement(prop)) {
+    if (prop.isSpreadElement()) {
       const result = evaluate(prop.get('argument'), traversalState, functions);
       if (!result.confident) {
         return result;
@@ -143,7 +142,7 @@ function evaluatePartialObjectRecursively(
       Object.assign(obj, result.value);
       continue;
     }
-    if (pathUtils.isObjectProperty(prop)) {
+    if (prop.isObjectProperty()) {
       const keyResult = evaluateObjKey(prop, traversalState, functions);
       if (!keyResult.confident) {
         return { confident: false, deopt: keyResult.deopt, value: null };
@@ -156,7 +155,7 @@ function evaluatePartialObjectRecursively(
       const valuePath: NodePath<t.Expression | t.PatternLike> =
         prop.get('value');
 
-      if (pathUtils.isObjectExpression(valuePath)) {
+      if (valuePath.isObjectExpression()) {
         const result = evaluatePartialObjectRecursively(
           valuePath,
           traversalState,
@@ -263,7 +262,7 @@ function evaluateObjKey(
       return { confident: false, deopt: result.deopt };
     }
     key = result.value;
-  } else if (pathUtils.isIdentifier(keyPath)) {
+  } else if (keyPath.isIdentifier()) {
     key = keyPath.node.name;
   } else {
     // TODO: This is'nt handling all possible types that `keyPath` could be
@@ -279,7 +278,7 @@ function validateDynamicStyleParams(
   path: NodePath<t.ArrowFunctionExpression>,
   params: Array<NodePath<t.Identifier | t.SpreadElement | t.Pattern>>,
 ) {
-  if (params.some((param) => !pathUtils.isIdentifier(param))) {
+  if (params.some((param) => !param.isIdentifier())) {
     throw path.buildCodeFrameError(
       messages.ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS,
       SyntaxError,

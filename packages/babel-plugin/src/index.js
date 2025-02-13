@@ -26,7 +26,6 @@ import transformStyleXKeyframes from './visitors/stylex-keyframes';
 import transformStylexCall, {
   skipStylexMergeChildren,
 } from './visitors/stylex-merge';
-import * as pathUtils from './babel-path-utils';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import transformStylexAttrs, {
@@ -61,14 +60,14 @@ function styleXTransform(): PluginObj<> {
           state = new StateManager(s);
 
           for (const block of path.get('body')) {
-            if (pathUtils.isImportDeclaration(block)) {
+            if (block.isImportDeclaration()) {
               // Read and remember 'stylex' Imports
               // Consider user `path.referencesImport`
               // But what about `requires`?
               readImportDeclarations(block, state);
             }
 
-            if (pathUtils.isVariableDeclaration(block)) {
+            if (block.isVariableDeclaration()) {
               for (const decl of block.get('declarations')) {
                 // Read and remember 'stylex' requires
                 readRequires(decl, state);
@@ -121,11 +120,11 @@ function styleXTransform(): PluginObj<> {
             Identifier(path: NodePath<t.Identifier>) {
               // Look for variables bound to `stylex.create` calls that are used
               // outside of `stylex(...)` calls
-              if (pathUtils.isReferencedIdentifier(path)) {
+              if (path.isReferencedIdentifier()) {
                 const { name } = path.node;
                 if (state.styleMap.has(name)) {
                   const parentPath = path.parentPath;
-                  if (pathUtils.isMemberExpression(parentPath)) {
+                  if (parentPath.isMemberExpression()) {
                     const { property, computed } = parentPath.node;
                     if (property.type === 'Identifier' && !computed) {
                       state.markComposedNamespace([name, property.name, true]);
@@ -201,11 +200,11 @@ function styleXTransform(): PluginObj<> {
               return;
             }
 
-            if (pathUtils.isVariableDeclarator(path)) {
+            if (path.isVariableDeclarator()) {
               const init = path.get('init');
-              if (init != null && pathUtils.isObjectExpression(init)) {
+              if (init != null && init.isObjectExpression()) {
                 for (const prop of init.get('properties')) {
-                  if (pathUtils.isObjectProperty(prop)) {
+                  if (prop.isObjectProperty()) {
                     const key = prop.get('key').node;
                     const keyAsString =
                       key.type === 'Identifier'
@@ -238,13 +237,13 @@ function styleXTransform(): PluginObj<> {
                               .flat(),
                           );
                           const styleObject = prop.get('value');
-                          if (pathUtils.isObjectExpression(styleObject)) {
+                          if (styleObject.isObjectExpression()) {
                             for (const styleProp of styleObject.get(
                               'properties',
                             )) {
                               if (
-                                pathUtils.isObjectProperty(styleProp) &&
-                                pathUtils.isNullLiteral(styleProp.get('value'))
+                                styleProp.isObjectProperty() &&
+                                styleProp.get('value').isNullLiteral()
                               ) {
                                 const styleKey = styleProp.get('key').node;
                                 const styleKeyAsString =
@@ -281,7 +280,7 @@ function styleXTransform(): PluginObj<> {
       },
 
       CallExpression(path: NodePath<t.CallExpression>) {
-        if (pathUtils.isVariableDeclarator(path.parentPath)) {
+        if (path.parentPath.isVariableDeclarator()) {
           // # Look for `stylex.keyframes` calls
           //   Needs to be handled *before* `stylex.create` as the `create` call
           //   may use the generated animation name.
@@ -303,13 +302,10 @@ function stylexPluginWithOptions(
 styleXTransform.withOptions = stylexPluginWithOptions;
 
 function isExported(path: null | NodePath<t.Node>): boolean {
-  if (path == null || pathUtils.isProgram(path)) {
+  if (path == null || path.isProgram()) {
     return false;
   }
-  if (
-    pathUtils.isExportNamedDeclaration(path) ||
-    pathUtils.isExportDefaultDeclaration(path)
-  ) {
+  if (path.isExportNamedDeclaration() || path.isExportDefaultDeclaration()) {
     return true;
   }
   return isExported(path.parentPath);

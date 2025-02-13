@@ -20,7 +20,6 @@ import {
 } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
-import * as pathUtils from '../babel-path-utils';
 
 /// This function looks for `stylex.defineVars` calls and transforms them.
 /// 1. It finds the first argument to `stylex.defineVars` and validates it.
@@ -52,7 +51,7 @@ export default function transformStyleXDefineVars(
 
     // We know that parent is a variable declaration
     const variableDeclaratorPath = callExpressionPath.parentPath;
-    if (!pathUtils.isVariableDeclarator(variableDeclaratorPath)) {
+    if (!variableDeclaratorPath.isVariableDeclarator()) {
       return;
     }
 

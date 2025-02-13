@@ -18,6 +18,7 @@ flow-typed
 
 [options]
 emoji=true
+this_type_guards=true
 casting_syntax=as
 exact_by_default=true
 experimental.const_params=true

@@ -20,7 +20,6 @@ import {
 } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
-import * as pathUtils from '../babel-path-utils';
 import path from 'path';
 import type { FunctionConfig } from '../utils/evaluate-path';
 
@@ -54,11 +53,11 @@ export default function transformStyleXCreateTheme(
 
     // We know that parent is a variable declaration
     const variableDeclaratorPath = callExpressionPath.parentPath;
-    if (!pathUtils.isVariableDeclarator(variableDeclaratorPath)) {
+    if (!variableDeclaratorPath.isVariableDeclarator()) {
       return;
     }
     const id = variableDeclaratorPath.get('id');
-    if (!pathUtils.isIdentifier(id)) {
+    if (!id.isIdentifier()) {
       return;
     }
     const variableName = id.node.name;
