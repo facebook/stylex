@@ -175,7 +175,9 @@ export class TokenParser<+T> {
     prefix: TokenParser<mixed>,
     suffix: TokenParser<mixed> = prefix,
   ): TokenParser<T> {
-    return this.prefix(prefix).skip(suffix);
+    return TokenParser.sequence(prefix, this, suffix).map(
+      ([_prefix, value, _suffix]) => value,
+    );
   }
 
   skip(skipParser: TokenParser<mixed>): TokenParser<T> {
@@ -197,13 +199,14 @@ export class TokenParser<+T> {
   // $FlowFixMe[incompatible-variance]
   where<Refined: T = T>(
     predicate: (value: T) => implies value is Refined,
+    label?: string = '',
   ): TokenParser<Refined> {
     return this.flatMap((output) => {
       if (predicate(output)) {
         return TokenParser.always(output);
       }
       return TokenParser.never();
-    });
+    }, label);
   }
 
   toString(): string {
@@ -239,6 +242,17 @@ export class TokenParser<+T> {
       // $FlowFixMe[incompatible-cast]
       return token as TT;
     }, label);
+  }
+
+  static string<S: string>(str: S): TokenParser<S> {
+    return TokenParser.tokens.Ident.map(
+      (token) => token[4].value,
+      '.value',
+    ).where(
+      // $FlowFixMe[incompatible-type-guard]
+      (value: string): implies value is S => value === str,
+      `=== ${str}`,
+    );
   }
 
   static tokens: {
@@ -355,13 +369,12 @@ export class TokenParser<+T> {
 
 class TokenZeroOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
   +parser: TokenParser<T>;
-  separator: ?TokenParser<void>;
+  +separator: ?TokenParser<void>;
 
-  constructor(parser: TokenParser<T>) {
+  constructor(parser: TokenParser<T>, separator?: TokenParser<void>) {
     super((input): $ReadOnlyArray<T> => {
       const output: Array<T> = [];
       for (let i = 0; true; i++) {
-        const separator = getThis().separator;
         if (i > 0 && separator) {
           const currentIndex = input.currentIndex;
           const result = separator.run(input);
@@ -371,7 +384,7 @@ class TokenZeroOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
           }
         }
         const currentIndex = input.currentIndex;
-        const result = getThis().parser.run(input);
+        const result = parser.run(input);
         if (result instanceof Error) {
           input.setCurrentIndex(currentIndex);
           return output;
@@ -380,26 +393,29 @@ class TokenZeroOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
       }
       // eslint-disable-next-line no-unreachable
       return output;
-    });
-    const getThis = () => this;
+    }, `ZeroOrMore<${parser.label}>`);
+
     this.parser = parser;
+    this.separator = separator;
   }
 
-  separatedBy(separator: TokenParser<void>): TokenZeroOrMoreParsers<T> {
-    this.separator = separator;
-    return this;
+  separatedBy(separator: TokenParser<mixed>): TokenZeroOrMoreParsers<T> {
+    const voidedSeparator = separator.map(() => undefined);
+    const newSeparator =
+      this.separator?.surroundedBy(voidedSeparator) ?? voidedSeparator;
+
+    return new TokenZeroOrMoreParsers(this.parser, newSeparator);
   }
 }
 
 class TokenOneOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
   +parser: TokenParser<T>;
-  separator: ?TokenParser<mixed>;
+  +separator: ?TokenParser<void>;
 
-  constructor(parser: TokenParser<T>) {
+  constructor(parser: TokenParser<T>, separator?: TokenParser<void>) {
     super((input): $ReadOnlyArray<T> | Error => {
       const output: Array<T> = [];
       for (let i = 0; true; i++) {
-        const separator = getThis().separator;
         if (i > 0 && separator) {
           const currentIndex = input.currentIndex;
           const result = separator.run(input);
@@ -409,7 +425,7 @@ class TokenOneOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
           }
         }
         const currentIndex = input.currentIndex;
-        const result = getThis().parser.run(input);
+        const result = parser.run(input);
         if (result instanceof Error) {
           if (i === 0) {
             input.setCurrentIndex(currentIndex);
@@ -421,14 +437,18 @@ class TokenOneOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
       }
       // eslint-disable-next-line no-unreachable
       return output;
-    });
-    const getThis = () => this;
+    }, `OneOrMore<${parser.label}>`);
+
     this.parser = parser;
+    this.separator = separator;
   }
 
   separatedBy(separator: TokenParser<mixed>): TokenOneOrMoreParsers<T> {
-    this.separator = separator;
-    return this;
+    const voidedSeparator = separator.map(() => undefined);
+    const newSeparator =
+      this.separator?.surroundedBy(voidedSeparator) ?? voidedSeparator;
+
+    return new TokenOneOrMoreParsers(this.parser, newSeparator);
   }
 }
 
@@ -436,8 +456,10 @@ class TokenParserSequence<
   +T: ConstrainedTuple<TokenParser<mixed>>,
 > extends TokenParser<ValuesFromParserTuple<T>> {
   +parsers: T;
+  +separator: ?TokenParser<void>;
 
-  constructor(parsers: T) {
+  constructor(parsers: T, _separator?: TokenParser<mixed>) {
+    const separator = _separator?.map(() => undefined);
     super(
       (input: TokenList): ValuesFromParserTuple<T> | Error => {
         const currentIndex = input.currentIndex;
@@ -445,10 +467,26 @@ class TokenParserSequence<
 
         // $FlowFixMe[incompatible-type]
         const output: ValuesFromParserTuple<T> | Error = parsers.map(
-          <X>(parser: TokenParser<X>): X | Error => {
+          <X>(_parser: TokenParser<X>, index: number): X | Error => {
             if (failed) {
               return new Error('already failed');
             }
+            let parser = _parser;
+
+            if (separator != null && index > 0) {
+              if (parser instanceof TokenOptionalParser) {
+                // X === void | X
+                // $FlowFixMe[incompatible-type-arg]
+                parser = TokenParser.sequence(separator, parser.parser).map(
+                  ([_separator, value]) => value,
+                ).optional;
+              } else {
+                parser = TokenParser.sequence(separator, parser).map(
+                  ([_separator, value]) => value,
+                );
+              }
+            }
+
             const result = parser.run(input);
             if (result instanceof Error) {
               failed = result;
@@ -469,25 +507,15 @@ class TokenParserSequence<
     );
 
     this.parsers = parsers;
+    this.separator = separator;
   }
 
   separatedBy(separator: TokenParser<mixed>): TokenParserSequence<T> {
-    // $FlowFixMe[incompatible-type]
-    const parsers: T = this.parsers.map(
-      <X>(originalParser: TokenParser<X>, index: number): TokenParser<X> => {
-        if (index === 0) {
-          return originalParser;
-        }
-        if (originalParser instanceof TokenOptionalParser) {
-          // $FlowFixMe[incompatible-return]
-          return originalParser.parser.prefix(separator.map(() => undefined))
-            .optional;
-        }
-        return originalParser.prefix(separator.map(() => undefined));
-      },
-    );
+    const newSeparator =
+      this.separator?.surroundedBy(separator.map(() => undefined)) ??
+      separator.map(() => undefined);
 
-    return new TokenParserSequence<T>(parsers);
+    return new TokenParserSequence(this.parsers, newSeparator);
   }
 }
 
@@ -509,43 +537,47 @@ class TokenParserSet<
   +parsers: T;
   +separator: ?TokenParser<void>;
 
-  constructor(parsers: T, separator?: ?TokenParser<void>) {
+  constructor(_parsers: T, separator?: ?TokenParser<void>) {
     super((input: TokenList): ValuesFromParserTuple<T> | Error => {
+      const parsers = _parsers
+        .map((parser, i) => [parser, i])
+        .toSorted(([a], [b]) => {
+          if (a instanceof TokenOptionalParser) {
+            return 1;
+          }
+          if (b instanceof TokenOptionalParser) {
+            return -1;
+          }
+          return 0;
+        });
       const currentIndex = input.currentIndex;
       let failed: Error | null = null;
 
       const output: [...ValuesFromParserTuple<T>] = [] as $FlowFixMe;
       const indices: Set<number> = new Set();
 
-      console.log(
-        'SetParser: Parsers:',
-        parsers.map((parser) => parser.label),
-      );
-
       for (let i = 0; i < parsers.length; i++) {
-        console.log('SetParser: Matching value i:', i);
         let found = false;
         const errors = [];
-        for (let j = 0; j < parsers.length && !indices.has(j); j++) {
-          let parser = parsers[j];
-          let label = parser.label;
+        for (let j = 0; j < parsers.length; j++) {
+          if (indices.has(j)) {
+            continue;
+          }
+
+          // eslint-disable-next-line prefer-const
+          let [parser, index] = parsers[j];
 
           if (separator != null && i > 0) {
             if (parser instanceof TokenOptionalParser) {
-              parser = TokenParser.sequence(separator, parser).map(
+              // X === void | X
+              // $FlowFixMe[incompatible-type-arg]
+              parser = TokenParser.sequence(separator, parser.parser).map(
                 ([_separator, value]) => value,
               ).optional;
-              label = `Optional<${separator.label}, ${label}>`;
             } else {
-              const currentIndex = input.currentIndex;
-              const result = separator.run(input);
-              if (result instanceof Error) {
-                input.setCurrentIndex(currentIndex);
-                failed = new Error(
-                  `Expected ${separator.toString()} but got ${result.message}`,
-                );
-                break;
-              }
+              parser = TokenParser.sequence(separator, parser).map(
+                ([_separator, value]) => value,
+              );
             }
           }
 
@@ -555,9 +587,9 @@ class TokenParserSet<
             input.setCurrentIndex(currentIndex);
             errors.push(result);
           } else {
-            console.log('SetParser: matched parser:', label);
             found = true;
-            output[j] = result;
+            // $FlowFixMe[invalid-tuple-index]
+            output[index] = result;
             indices.add(j);
             break;
           }
@@ -583,17 +615,14 @@ class TokenParserSet<
 
       return output as ValuesFromParserTuple<T>;
     });
-    this.parsers = parsers;
+    this.parsers = _parsers;
     this.separator = separator;
   }
 
   separatedBy(separator: TokenParser<mixed>): TokenParserSet<T> {
-    const currentSeparator = this.separator;
-
+    const voidedSeparator = separator.map(() => undefined);
     const sep =
-      currentSeparator != null
-        ? TokenParser.sequence(separator, currentSeparator).map(() => undefined)
-        : separator.map(() => undefined);
+      this.separator?.surroundedBy(voidedSeparator) ?? voidedSeparator;
 
     return new TokenParserSet(this.parsers, sep);
   }
