@@ -23,7 +23,7 @@ export class Length {
   }
 
   static get parse(): TokenParser<Length> {
-    return TokenParser.tokens.Dimension.map(
+    const united = TokenParser.tokens.Dimension.map(
       (token): $ReadOnly<[number, string]> => [token[4].value, token[4].unit],
     )
       .where(
@@ -33,6 +33,13 @@ export class Length {
           ALL_UNITS.includes(tuple[1]),
       )
       .map(([value, unit]): Length => new Length(value, unit));
+
+    return TokenParser.oneOf(
+      united,
+      TokenParser.tokens.Number.map((token): ?Length =>
+        token[4].value === 0 ? new Length(0, '') : null,
+      ).where((value) => value != null),
+    );
   }
 }
 
