@@ -183,7 +183,7 @@ export class TokenParser<+T> {
   }
 
   get optional(): TokenParser<void | T> {
-    return this.or(TokenParser.always(undefined));
+    return new TokenOptionalParser(this);
   }
 
   prefix(prefixParser: TokenParser<mixed>): TokenParser<T> {
@@ -474,13 +474,32 @@ class TokenParserSequence<
   separatedBy(separator: TokenParser<mixed>): TokenParserSequence<T> {
     // $FlowFixMe[incompatible-type]
     const parsers: T = this.parsers.map(
-      <X>(originalParser: TokenParser<X>, index: number): TokenParser<X> =>
-        index === 0
-          ? originalParser
-          : originalParser.prefix(separator.map(() => undefined)),
+      <X>(originalParser: TokenParser<X>, index: number): TokenParser<X> => {
+        if (index === 0) {
+          return originalParser;
+        }
+        if (originalParser instanceof TokenOptionalParser) {
+          // $FlowFixMe[incompatible-return]
+          return originalParser.parser.prefix(separator.map(() => undefined))
+            .optional;
+        }
+        return originalParser.prefix(separator.map(() => undefined));
+      },
     );
 
     return new TokenParserSequence<T>(parsers);
+  }
+}
+
+class TokenOptionalParser<+T> extends TokenParser<T | void> {
+  +parser: TokenParser<T>;
+
+  constructor(parser: TokenParser<T>) {
+    super(
+      parser.or(TokenParser.always(undefined)).run,
+      `Optional<${parser.label}>`,
+    );
+    this.parser = parser;
   }
 }
 
@@ -498,28 +517,45 @@ class TokenParserSet<
       const output: [...ValuesFromParserTuple<T>] = [] as $FlowFixMe;
       const indices: Set<number> = new Set();
 
+      console.log(
+        'SetParser: Parsers:',
+        parsers.map((parser) => parser.label),
+      );
+
       for (let i = 0; i < parsers.length; i++) {
+        console.log('SetParser: Matching value i:', i);
         let found = false;
         const errors = [];
-        if (separator != null && i > 0) {
-          const currentIndex = input.currentIndex;
-          const result = separator.run(input);
-          if (result instanceof Error) {
-            input.setCurrentIndex(currentIndex);
-            failed = new Error(
-              `Expected ${separator.toString()} but got ${result.message}`,
-            );
-            break;
-          }
-        }
         for (let j = 0; j < parsers.length && !indices.has(j); j++) {
-          const parser = parsers[j];
+          let parser = parsers[j];
+          let label = parser.label;
+
+          if (separator != null && i > 0) {
+            if (parser instanceof TokenOptionalParser) {
+              parser = TokenParser.sequence(separator, parser).map(
+                ([_separator, value]) => value,
+              ).optional;
+              label = `Optional<${separator.label}, ${label}>`;
+            } else {
+              const currentIndex = input.currentIndex;
+              const result = separator.run(input);
+              if (result instanceof Error) {
+                input.setCurrentIndex(currentIndex);
+                failed = new Error(
+                  `Expected ${separator.toString()} but got ${result.message}`,
+                );
+                break;
+              }
+            }
+          }
+
           const currentIndex = input.currentIndex;
           const result = parser.run(input);
           if (result instanceof Error) {
             input.setCurrentIndex(currentIndex);
             errors.push(result);
           } else {
+            console.log('SetParser: matched parser:', label);
             found = true;
             output[j] = result;
             indices.add(j);
@@ -552,9 +588,11 @@ class TokenParserSet<
   }
 
   separatedBy(separator: TokenParser<mixed>): TokenParserSet<T> {
+    const currentSeparator = this.separator;
+
     const sep =
-      this.separator != null
-        ? this.separator.prefix(separator.map(() => undefined))
+      currentSeparator != null
+        ? TokenParser.sequence(separator, currentSeparator).map(() => undefined)
         : separator.map(() => undefined);
 
     return new TokenParserSet(this.parsers, sep);
