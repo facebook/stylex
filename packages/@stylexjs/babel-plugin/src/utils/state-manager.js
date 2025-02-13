@@ -724,10 +724,6 @@ export default class StateManager {
       return manualAliases ? this.normalizeAliases(manualAliases) : null;
     }
 
-    let packageAliases = {};
-    let tsconfigAliases = {};
-    let denoAliases = {};
-
     const pkgInfo = this.getPackageNameAndPath(this.filename);
     if (!pkgInfo) {
       return manualAliases ? this.normalizeAliases(manualAliases) : null;
@@ -748,86 +744,73 @@ export default class StateManager {
         return basePath;
       });
 
-    // Load aliases from package.json imports field
-    try {
-      const packageJsonPath = path.join(projectDir, 'package.json');
-      if (fs.existsSync(packageJsonPath)) {
-        const rawConfig: mixed = JSON5.parse(
-          fs.readFileSync(packageJsonPath, 'utf8'),
-        );
-        if (!isPackageJSON(rawConfig)) {
-          throw new Error('Invalid package.json format');
-        }
-        const packageJson: PackageJSON = rawConfig as $FlowFixMe;
+    const [packageAliases, tsconfigAliases, denoAliases] = [
+      [
+        'package.json',
+        (rawConfig: mixed) => {
+          if (!isPackageJSON(rawConfig)) {
+            throw new Error('Invalid package.json format');
+          }
+          return rawConfig.imports;
+        },
+      ],
+      [
+        'tsconfig.json',
+        (rawConfig: mixed) => {
+          if (!isTSConfig(rawConfig)) {
+            throw new Error('Invalid tsconfig.json format');
+          }
+          const config = rawConfig as $FlowFixMe;
+          return config.compilerOptions?.paths;
+        },
+      ],
+      [
+        'deno.json',
+        (rawConfig: mixed) => {
+          if (!isDenoConfig(rawConfig)) {
+            throw new Error('Invalid deno.json format');
+          }
+          return rawConfig.imports;
+        },
+      ],
+    ].map(
+      ([fileName, getConfig]): $ReadOnly<{
+        [string]: string | $ReadOnlyArray<string>,
+      }> => {
+        try {
+          const filePath = path.join(projectDir, fileName);
+          if (fs.existsSync(filePath)) {
+            const rawConfig: mixed = JSON5.parse(
+              fs.readFileSync(filePath, 'utf8'),
+            );
+            const config = getConfig(rawConfig);
 
-        // Handle Node.js native imports
-        const imports = packageJson.imports;
-        if (imports && typeof imports === 'object') {
-          packageAliases = Object.fromEntries(
-            Object.entries(imports)
-              .filter(([key]) => key.startsWith('#'))
-              .map(([key, value]) => [key.slice(1), resolveAliasPaths(value)]),
-          );
+            // Handle Node.js native imports
+            if (isImportsObject(config)) {
+              return Object.fromEntries(
+                Object.entries(config).map(([k, v]) => [
+                  k,
+                  resolveAliasPaths(v as $FlowFixMe),
+                ]),
+              ) as $ReadOnly<{ [string]: $ReadOnlyArray<string> }>;
+            }
+          }
+          return {};
+        } catch (err) {
+          console.warn(`Failed to load aliases from ${fileName}`, err.message);
         }
-      }
-    } catch (err) {
-      console.warn('Failed to load aliases from package.json:', err.message);
-    }
-
-    // Load aliases from tsconfig.json
-    try {
-      const tsconfigPath = path.join(projectDir, 'tsconfig.json');
-      if (fs.existsSync(tsconfigPath)) {
-        const rawConfig: mixed = JSON5.parse(
-          fs.readFileSync(tsconfigPath, 'utf8'),
-        );
-        if (!isTSConfig(rawConfig)) {
-          throw new Error('Invalid tsconfig.json format');
-        }
-        const tsconfig: TSConfig = rawConfig as $FlowFixMe;
-        const tsConfigAliasPaths = tsconfig.compilerOptions?.paths;
-        if (tsConfigAliasPaths != null && isImportsObject(tsConfigAliasPaths)) {
-          tsconfigAliases = Object.fromEntries(
-            Object.entries(tsConfigAliasPaths).map(([key, value]) => [
-              key,
-              resolveAliasPaths(value),
-            ]),
-          );
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to load aliases from tsconfig.json:', err.message);
-    }
-
-    // Load aliases from deno.json
-    try {
-      const denoConfigPath = path.join(projectDir, 'deno.json');
-      if (fs.existsSync(denoConfigPath)) {
-        const rawConfig: mixed = JSON5.parse(
-          fs.readFileSync(denoConfigPath, 'utf8'),
-        );
-        if (!isDenoConfig(rawConfig)) {
-          throw new Error('Invalid deno.json format');
-        }
-        const denoConfig: DenoConfig = rawConfig as $FlowFixMe;
-        if (denoConfig.imports) {
-          denoAliases = Object.fromEntries(
-            Object.entries(denoConfig.imports).map(([key, value]) => {
-              return [key, resolveAliasPaths(value)];
-            }),
-          );
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to load aliases from deno.json:', err.message);
-    }
+        return {};
+      },
+    );
 
     // Merge aliases in priority: manual > package.json > tsconfig.json > deno.json
-    const mergedAliases = {
+    const mergedAliases: {
+      [string]: string | $ReadOnlyArray<string>,
+    } = {
       ...denoAliases,
       ...tsconfigAliases,
       ...packageAliases,
-      ...(manualAliases || {}),
+      ...manualAliases,
     };
 
     return Object.keys(mergedAliases).length > 0
