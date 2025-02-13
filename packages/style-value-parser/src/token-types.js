@@ -48,9 +48,7 @@ export class TokenList {
     const token = this.tokenIterator.nextToken();
     this.consumedTokens.push(token);
     this.currentIndex++;
-    if (this.tokenIterator.endOfFile()) {
-      this.isAtEnd = true;
-    }
+
     return token;
   }
 
@@ -94,9 +92,9 @@ export class TokenList {
 
     // Clamp to the end if we couldn't reach the target
     this.currentIndex = Math.min(newIndex, this.consumedTokens.length);
-    if (this.currentIndex >= this.consumedTokens.length) {
-      this.isAtEnd = true;
-    }
+    // if (this.currentIndex >= this.consumedTokens.length) {
+    //   this.isAtEnd = true;
+    // }
   }
 
   rewind(positions: number = 1): void {
