@@ -163,6 +163,7 @@ export default function transformStyleXCreateTheme(
       const fileName = state.filename ?? 'UnknownFile';
       const basename = path.basename(fileName).split('.')[0];
       const devClassName = `${basename}__${variableName}`;
+      // $FlowFixMe[cannot-spread-indexer]
       overridesObj = {
         [devClassName]: devClassName,
         ...overridesObj,

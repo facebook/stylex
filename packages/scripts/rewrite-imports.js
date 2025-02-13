@@ -49,7 +49,7 @@ async function rewriteImportsInFolder(
     if (typeof dirent.name !== 'string' || !dirent.name.endsWith('.js')) {
       continue;
     }
-    const fileName = dirent.name;
+    const fileName = dirent.name.toString();
     const inputFullPath = path.join(inputDir, fileName);
     const outputFullPath = path.join(outputDir, fileName);
     const inputFile = await fs.readFile(inputFullPath, 'utf8');
