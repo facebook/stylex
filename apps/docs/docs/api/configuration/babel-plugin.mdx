@@ -10,6 +10,38 @@ sidebar_position: 1
 
 ## Configuration options
 
+### `aliases`
+
+```ts
+aliases: {[key: string]: string | Array<string>} // Default: undefined
+```
+
+`aliases` option allows you to alias project directories to absolute paths, making it easier to import modules.
+
+Example: `'@/components/*': [path.join(__dirname, './src/components/*')]`
+
+---
+
+### `classNamePrefix`
+
+```ts
+classNamePrefix: string // Default: 'x'
+```
+
+Prefix to applied to every generated className.
+
+---
+
+### `debug`
+
+```ts
+debug: boolean // Default: false
+```
+
+When `true`, StyleX will insert debug class names to identify the source of the styles.
+
+---
+
 ### `dev`
 
 ```ts
@@ -18,7 +50,58 @@ dev: boolean // Default: false
 
 When `true`, StyleX will insert debug class names to identify the source of the styles.
 
-<hr />
+---
+
+### `genConditionalClasses`
+
+```ts
+genConditionalClasses: boolean // Default: false
+```
+
+Enable experimental compile-time optimization to pre-compute
+`stylex.props` function calls with conditional styles when all
+possible styles used are defined in the same file and known
+at compile-time.
+
+---
+
+### `importSources`
+
+```ts
+importSources: Array<string> // Default: ['@stylexjs/stylex']
+```
+
+Override the package name where you can import stylex from.
+Used for setting up custom module aliases.
+
+---
+
+### `runtimeInjection`
+
+```ts
+runtimeInjection: boolean // Default: the value of `dev`
+```
+
+Should StyleX generate code to inject styles at runtime?
+This may be useful during development but should be disabled in production.
+
+---
+
+### `styleResolution`
+
+```ts
+styleResolution: // Default: 'application-order'
+  | 'application-order'
+  | 'property-specificity'
+```
+
+Strategy to use for merging styles.
+- **application-order**: The last style applied wins. Consistent with how
+  inline styles work on the web.
+- **property-specificity**: More specific styles will win over less specific
+  styles. Consistent with React Native. (`margin-top` wins over `margin`)
+
+---
 
 ### `test`
 
@@ -32,84 +115,7 @@ source of the styles.
 It will *not* generate any styles or functional classNames.
 This can be useful for snapshot testing.
 
-<hr />
-
-### `runtimeInjection`
-
-```ts
-runtimeInjection: boolean // Default: the value of `dev`
-```
-
-Should StyleX generate code to inject styles at runtime?
-This may be useful during development but should be disabled in production.
-
-<hr />
-
-### `classNamePrefix`
-
-```ts
-classNamePrefix: string // Default: 'x'
-```
-
-Prefix to applied to every generated className.
-
-<hr />
-
-### `useRemForFontSize`
-
-```ts
-useRemForFontSize: boolean // Default: false
-```
-
-Should `px` values for `fontSize` be converted to `rem`?
-It is considered a best practice to use `rem` for font sizes to allow
-users to scale the font size up or down.
-
-<hr />
-
-### `styleResolution`
-
-```ts
-styleResolution: // Default: 'application-order'
-  | 'application-order'
-  | 'property-specificity'
-  // @deprecated
-  | 'legacy-expand-shorthands'
-```
-
-Strategy to use for merging styles.
-- **application-order**: The last style applied wins. Consistent with how
-  inline styles work on the web.
-- **property-specificity**: More specific styles will win over less specific
-  styles. Consistent with React Native. (margin-top wins over margin)
-- *Deprecated* - **legacy-expand-shorthands**: Similar to 'application-order'
-  but incomplete and error-prone. Will be removed in a future release.
-
-<hr />
-
-### `importSources`
-
-```ts
-importSources: Array<string> // Default: ['@stylexjs/stylex']
-```
-
-Override the package name where you can import stylex from.
-Used for setting up custom module aliases.
-
-<hr />
-
-### `genConditionalClasses`
-
-```ts
-genConditionalClasses: boolean // Default: false
-```
-
-Enable experimental compile-time optimization to pre-compute
-`stylex.props` function calls with conditional styles when all
-possible styles used are defined in the same file and known
-at compile-time.
-
-<hr />
+---
 
 ### `treeshakeCompensation`
 
@@ -122,19 +128,7 @@ Some bundlers may remove them as dead code. Causing variables to be undefined.
 Enable this option to prevent that by adding an import with no specifier.
 (e.g. `import './my-vars.stylex.js'`)
 
-<hr />
-
-### `aliases`
-
-```ts
-aliases: {[key: string]: string | Array<string>} // Default: undefined
-```
-
-`aliases` option allows you to alias project directories to absolute paths, making it easier to import modules. 
-
-Example: `'@/components/*': [path.join(__dirname, './src/components/*')]`
-
-<hr />
+---
 
 ### `unstable_moduleResolution`
 
@@ -165,3 +159,15 @@ This is required if you plan to use StyleX's theming APIs.
 
 **NOTE**: While theming APIs are stable, the shape of this configuration option
 may change in the future.
+
+---
+
+### `useRemForFontSize`
+
+```ts
+useRemForFontSize: boolean // Default: false
+```
+
+Should `px` values for `fontSize` be converted to `rem`?
+It is considered a best practice to use `rem` for font sizes to allow
+users to scale the font size up or down.
