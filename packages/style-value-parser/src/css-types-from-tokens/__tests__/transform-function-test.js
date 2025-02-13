@@ -1,0 +1,632 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+import { Angle } from '../angle';
+import { Length } from '../length';
+import {
+  Matrix,
+  Matrix3d,
+  Perspective,
+  Rotate,
+  TransformFunction,
+  Translate3d,
+} from '../transform-function';
+
+describe('Test CSS Type: <transform-function>', () => {
+  describe('Test <matrix> function', () => {
+    test('valid uses', () => {
+      expect(
+        TransformFunction.parse.parseToEnd('matrix(1, 0, 0, 1, 0, 0)'),
+      ).toEqual(new Matrix(1, 0, 0, 1, 0, 0));
+      expect(
+        TransformFunction.parse.parseToEnd('matrix(1.2,0.2,  -1, 0.9, 0, 20 )'),
+      ).toEqual(new Matrix(1.2, 0.2, -1, 0.9, 0, 20));
+      expect(
+        TransformFunction.parse.parseToEnd('matrix(\n.4,0,0.5,1.200,60,10   )'),
+      ).toEqual(new Matrix(0.4, 0, 0.5, 1.2, 60, 10));
+      expect(
+        TransformFunction.parse.parseToEnd('matrix(0.1, 1, -0.3, 1, 0, 0)'),
+      ).toEqual(new Matrix(0.1, 1, -0.3, 1, 0, 0));
+    });
+    test('invalid uses', () => {
+      // Not enough values
+      expect(() =>
+        TransformFunction.parse.parseToEnd('matrix(1, 0, 0, 1, 0)'),
+      ).toThrow();
+      // Too many values
+      expect(() =>
+        TransformFunction.parse.parseToEnd('matrix(1, 0, 0, 1, 0, 0, 0)'),
+      ).toThrow();
+      // Non-numeric values
+      expect(() =>
+        TransformFunction.parse.parseToEnd('matrix(1, 0, 0, 1, 0, foo)'),
+      ).toThrow();
+      // wrong type of values
+      expect(() =>
+        TransformFunction.parse.parseToEnd('matrix(1px, 0, 0, 1, 0, 0)'),
+      ).toThrow();
+      // wrong separator
+      expect(() =>
+        TransformFunction.parse.parseToEnd('matrix(1 0 0 1 0 0)'),
+      ).toThrow();
+    });
+  });
+
+  describe('Test <matrix3d> function', () => {
+    test('valid uses', () => {
+      expect(
+        TransformFunction.parse.parseToEnd(
+          `matrix3d(
+            1,  0, 0, 0, 
+            0,  1, 0, 0,
+            0, .5, 1, 0,
+            0, 0, 0, 1
+          )`,
+        ),
+      ).toEqual(
+        // prettier-ignore
+        new Matrix3d([
+          1,   0, 0, 0,
+          0,   1, 0, 0,
+          0, 0.5, 1, 0,
+          0,   0, 0, 1
+        ]),
+      );
+      expect(
+        TransformFunction.parse.parseToEnd(
+          'matrix3d(-0.6,1.34788,0,0,-2.34788,-.6,0, 0,0,0,1,0,0,0,10,1)',
+        ),
+      ).toEqual(
+        // prettier-ignore
+        new Matrix3d([
+          -0.6,  1.34788,  0, 0, 
+          -2.34788, -0.6,  0, 0, 
+           0,          0,  1, 0, 
+           0,          0, 10, 1,
+        ]),
+      );
+    });
+    test('invalid uses', () => {
+      // Not enough values
+      expect(() =>
+        TransformFunction.parse.parseToEnd(
+          `matrix3d(
+            1,  0, 0, 0, 
+            0,  1, 0, 0,
+            0, .5, 1, 0,
+            0, 0, 0
+          )`,
+        ),
+      ).toThrow();
+      // Too many values
+      expect(() =>
+        TransformFunction.parse.parseToEnd(
+          `matrix3d(
+            1,  0, 0, 0, 
+            0,  1, 0, 0,
+            0, .5, 1, 0,
+            0, 0, 0, 1, 0
+          )`,
+        ),
+      ).toThrow();
+      // Non-numeric values
+      expect(() =>
+        TransformFunction.parse.parseToEnd(
+          `matrix3d(
+            1,  0, 0, 0, 
+            0,  1, 0, 0,
+            0, .5, 1, 0,
+            0, 0, 0, foo
+          )`,
+        ),
+      ).toThrow();
+      // wrong type of values
+      expect(() =>
+        TransformFunction.parse.parseToEnd(
+          `matrix3d(
+            1px,  0, 0, 0, 
+            0,  1, 0, 0,
+            0, .5, 1, 0,
+            0, 0, 0, 1
+          )`,
+        ),
+      ).toThrow();
+    });
+  });
+
+  describe('Test <perspective> function', () => {
+    test('valid uses', () => {
+      expect(TransformFunction.parse.parseToEnd('perspective(0)')).toEqual(
+        new Perspective(new Length(0, '')),
+      );
+      expect(TransformFunction.parse.parseToEnd('perspective(100px)')).toEqual(
+        new Perspective(new Length(100, 'px')),
+      );
+      expect(TransformFunction.parse.parseToEnd('perspective(1.5em)')).toEqual(
+        new Perspective(new Length(1.5, 'em')),
+      );
+    });
+    test('invalid uses', () => {
+      // Non-numeric values
+      expect(() =>
+        TransformFunction.parse.parseToEnd('perspective(foo)'),
+      ).toThrow();
+      // wrong type of values
+      expect(() =>
+        TransformFunction.parse.parseToEnd('perspective(1)'),
+      ).toThrow();
+      expect(() =>
+        TransformFunction.parse.parseToEnd('perspective(1%)'),
+      ).toThrow();
+      expect(() =>
+        TransformFunction.parse.parseToEnd('perspective(1deg)'),
+      ).toThrow();
+    });
+  });
+
+  describe('Test <rotate> function', () => {
+    test('valid uses', () => {
+      expect(TransformFunction.parse.parseToEnd('rotate(0)')).toEqual(
+        new Rotate(new Angle(0, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(45deg)')).toEqual(
+        new Rotate(new Angle(45, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(90deg)')).toEqual(
+        new Rotate(new Angle(90, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(180deg)')).toEqual(
+        new Rotate(new Angle(180, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(270deg)')).toEqual(
+        new Rotate(new Angle(270, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(-90deg)')).toEqual(
+        new Rotate(new Angle(-90, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(0.5turn)')).toEqual(
+        new Rotate(new Angle(0.5, 'turn')),
+      ); // Changed from (0, 'deg') to (180, 'deg')
+      expect(TransformFunction.parse.parseToEnd('rotate(2rad)')).toEqual(
+        new Rotate(new Angle(2, 'rad')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(100grad)')).toEqual(
+        new Rotate(new Angle(100, 'grad')),
+      ); // Changed from (0, 'deg') to (100, 'grad')
+      expect(TransformFunction.parse.parseToEnd('rotate(1.5deg)')).toEqual(
+        new Rotate(new Angle(1.5, 'deg')),
+      ); // Changed from (0, 'deg') to (1.5, 'deg')
+      expect(TransformFunction.parse.parseToEnd('rotate(360deg)')).toEqual(
+        new Rotate(new Angle(360, 'deg')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(1turn)')).toEqual(
+        new Rotate(new Angle(1, 'turn')),
+      );
+      expect(TransformFunction.parse.parseToEnd('rotate(-1turn)')).toEqual(
+        new Rotate(new Angle(-1, 'turn')),
+      );
+    });
+    test('invalid uses', () => {
+      // Non-numeric values
+      expect(() => TransformFunction.parse.parseToEnd('rotate(foo)')).toThrow();
+      // wrong type of values
+      expect(() => TransformFunction.parse.parseToEnd('rotate(1)')).toThrow();
+      expect(() => TransformFunction.parse.parseToEnd('rotate(1%)')).toThrow();
+      expect(() => TransformFunction.parse.parseToEnd('rotate(1px)')).toThrow();
+    });
+  });
+
+  // describe('Test <rotate3d> function', () => {
+  //   test('valid uses', () => {
+  //     // expect(() =>
+  //     //   TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, 0)'),
+  //     // ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, 45deg)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, .1, 90deg)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0.5, 1, 180rad)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Not enough values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1)'),
+  //     ).toThrow();
+  //     // Too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, 0, 0)'),
+  //     ).toThrow();
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, foo)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, 1)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, 1%)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotate3d(0, 0, 1, 1px)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <rotate-axis> function', () => {
+  //   test('valid uses', () => {
+  //     // expect(() =>
+  //     //   TransformFunction.parse.parseToEnd('rotateX(0)'),
+  //     // ).not.toThrow();
+  //     // expect(() =>
+  //     //   TransformFunction.parse.parseToEnd('rotateX(  0   )'),
+  //     // ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotateY( 45deg\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotateZ(   90deg     )'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotateZ( 90rad )'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotateX(foo)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() => TransformFunction.parse.parseToEnd('rotateX(1)')).toThrow();
+  //     expect(() => TransformFunction.parse.parseToEnd('rotateX(1%)')).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('rotateX(1px)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <scale> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(0)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1.5)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1.5, 2)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(150%, 2.5)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1.5, 2.5)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1.5, 2.5)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Not enough values
+  //     expect(() => TransformFunction.parse.parseToEnd('scale()')).toThrow();
+  //     // Too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1, 2, 3)'),
+  //     ).toThrow();
+  //     // Non-numeric values
+  //     expect(() => TransformFunction.parse.parseToEnd('scale(foo)')).toThrow();
+  //     // wrong type of values
+  //     expect(() => TransformFunction.parse.parseToEnd('scale(1px)')).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1, 1px)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale(1px, 1)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <scale3d> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(0, 0, 1)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(1.5, 2, 0.5)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(150%, 2.5, 1)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Not enough values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(0, 0)'),
+  //     ).toThrow();
+  //     // Too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(1, 2, 3, 4)'),
+  //     ).toThrow();
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(foo, 0, 1)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(1px, 0, 1)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scale3d(1, 0, 1px)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <scale-axis> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scaleX(0)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scaleX(  0   )'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scaleY( 45\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scaleY( 45%\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scaleZ(   90     )'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Non-numeric values
+  //     expect(() => TransformFunction.parse.parseToEnd('scaleX(foo)')).toThrow();
+  //     // wrong type of values
+  //     expect(() => TransformFunction.parse.parseToEnd('scaleX(1px)')).toThrow();
+  //     // too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('scaleX(1, 2)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <skew> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() => TransformFunction.parse.parseToEnd('skew(0)')).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew( 0   \n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew(15deg)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew(\n15deg\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew(15deg, 2turn)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew(15deg,2turn)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew(   150deg,\n2.5rad)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Not enough values
+  //     expect(() => TransformFunction.parse.parseToEnd('skew()')).toThrow();
+  //     // Too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skew(1deg, 2deg, 3rad)'),
+  //     ).toThrow();
+  //     // Non-numeric values
+  //     expect(() => TransformFunction.parse.parseToEnd('skew(foo)')).toThrow();
+  //     // wrong type of values
+  //     expect(() => TransformFunction.parse.parseToEnd('skew(1px)')).toThrow();
+  //     expect(() => TransformFunction.parse.parseToEnd('skew(1, 1)')).toThrow();
+  //     expect(() => TransformFunction.parse.parseToEnd('skew(1)')).toThrow();
+  //   });
+  // });
+
+  // describe('Test <skew-axis> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skewX(0)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skewX(  0   )'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skewY( 45deg\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('skewY( 45deg\n)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Non-numeric values
+  //     expect(() => TransformFunction.parse.parseToEnd('skewX(foo)')).toThrow();
+  //     // wrong unit
+  //     expect(() => TransformFunction.parse.parseToEnd('skewX(1px)')).toThrow();
+  //     expect(() => TransformFunction.parse.parseToEnd('skewX(1)')).toThrow();
+  //     expect(() => TransformFunction.parse.parseToEnd('skewX(1ms)')).toThrow();
+  //     expect(() => TransformFunction.parse.parseToEnd('skewX(.1)')).toThrow();
+  //     // too many values
+  //     expect(() => TransformFunction.parse.parseToEnd('skewX(1, 2)')).toThrow();
+  //   });
+  // });
+
+  // describe('Test <translate> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(0)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate( 0   \n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(15px)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(\n15px\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(15px, 2em)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(15px,2em)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(   150%,\n2.5px)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Not enough values
+  //     expect(() => TransformFunction.parse.parseToEnd('translate()')).toThrow();
+  //     // Too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(1px, 2px, 3px)'),
+  //     ).toThrow();
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(foo)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(1)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(1deg)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(1, 1px)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate(1px, 1)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <translate3d> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       Translate3d.parse.parseToEnd('translate3d(  0,0, 1px)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       Translate3d.parse.parseToEnd('translate3d(1.5px, 2em,\n.5px)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       Translate3d.parse.parseToEnd('translate3d(1.5px, 2em,\n0.5px)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       Translate3d.parse.parseToEnd(
+  //         'translate3d(\n\n\n150%,\n2.5em, 1px    )',
+  //       ),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Not enough values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate3d(0, 0)'),
+  //     ).toThrow();
+  //     // Too many values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate3d(1, 2, 3, 4)'),
+  //     ).toThrow();
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate3d(foo, 0, 1)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate3d(1px, 0, 1)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translate3d(1, 0, 1px)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <translateX> function', () => {
+  //   test('valid uses', () => {
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(  0   )'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(15px)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(\n15px\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(150%)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(foo)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(1)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(20)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(20s)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateX(1deg)'),
+  //     ).toThrow();
+  //   });
+  // });
+
+  // describe('Test <translateY> function', () => {
+  //   test('valid uses', () => {
+  //     // expect(() =>
+  //     //   TransformFunction.parse.parseToEnd('translateY(  0   )'),
+  //     // ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(15px)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(\n15px\n)'),
+  //     ).not.toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(150%)'),
+  //     ).not.toThrow();
+  //   });
+  //   test('invalid uses', () => {
+  //     // Non-numeric values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(foo)'),
+  //     ).toThrow();
+  //     // wrong type of values
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(1)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(20)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(20s)'),
+  //     ).toThrow();
+  //     expect(() =>
+  //       TransformFunction.parse.parseToEnd('translateY(1deg)'),
+  //     ).toThrow();
+  //   });
+  // });
+});

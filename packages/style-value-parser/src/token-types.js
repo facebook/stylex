@@ -48,7 +48,9 @@ export class TokenList {
     const token = this.tokenIterator.nextToken();
     this.consumedTokens.push(token);
     this.currentIndex++;
-
+    if (this.tokenIterator.endOfFile()) {
+      this.isAtEnd = true;
+    }
     return token;
   }
 

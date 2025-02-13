@@ -95,12 +95,12 @@ export class TokenParser<+T> {
     const output = this.run(tokens);
     if (output instanceof Error) {
       const consumedTokens = tokens.slice(initialIndex);
+      tokens.setCurrentIndex(initialIndex);
       throw new Error(
         `Expected ${this.toString()} but got ${output.message}\n` +
           `Consumed tokens: ${consumedTokens.map((token) => token[0]).join(', ')}`,
       );
     }
-    tokens.setCurrentIndex(initialIndex);
     if (tokens.peek() != null) {
       const token = tokens.peek();
       if (token == null) {
@@ -254,6 +254,13 @@ export class TokenParser<+T> {
       (value: string): implies value is S => value === str,
       `=== ${str}`,
     );
+  }
+
+  static fn(name: string): TokenParser<string> {
+    return TokenParser.tokens.Function.map(
+      (token) => token[4].value,
+      '.value',
+    ).where((value): implies value is string => value === name, `=== ${name}`);
   }
 
   static tokens: {
