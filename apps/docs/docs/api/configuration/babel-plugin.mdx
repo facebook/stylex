@@ -38,7 +38,7 @@ Prefix to applied to every generated className.
 debug: boolean // Default: false
 ```
 
-When `true`, StyleX will insert debug class names to identify the source of the styles.
+When `true`, StyleX will use debug class names and insert `data-style-src` props to help identify the source of the styles.
 
 ---
 
@@ -48,7 +48,7 @@ When `true`, StyleX will insert debug class names to identify the source of the 
 dev: boolean // Default: false
 ```
 
-When `true`, StyleX will insert debug class names to identify the source of the styles.
+When `true`, StyleX will insert function calls to inject the CSS rules at runtime, making it possible to use StyleX without setting up CSS file extraction.
 
 ---
 
