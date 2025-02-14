@@ -40,8 +40,8 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
-            "color": "xju2f9n",
+            "kMwMTN": "xju2f9n",
+            "kWkggS": "xrkmrrc",
           },
         }
       `);
@@ -58,7 +58,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "--background-color": "xgau0yw",
+            "k9lZTf": "xgau0yw",
           },
         }
       `);
@@ -75,7 +75,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "--final-color": "x13tgbkp",
+            "k7NdeO": "x13tgbkp",
           },
         }
       `);
@@ -95,11 +95,11 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
+            "kWkggS": "xrkmrrc",
           },
           "default2": {
             "$$css": true,
-            "color": "xju2f9n",
+            "kMwMTN": "xju2f9n",
           },
         }
       `);
@@ -112,12 +112,14 @@ describe('Development Plugin Transformation', () => {
             content: 'attr(some-attribute)',
           },
         }),
-      ).toEqual({
-        default: {
-          $$css: true,
-          content: 'xd71okc',
-        },
-      });
+      ).toMatchInlineSnapshot(`
+        {
+          "default": {
+            "$$css": true,
+            "kah6P1": "xd71okc",
+          },
+        }
+      `);
 
       expect(metadata).toMatchInlineSnapshot(`
         [
@@ -147,8 +149,8 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": "x17z2mba",
+            "kDPRdz": "x17z2mba",
+            "kGzVvX": "x1gykpug",
           },
         }
       `);
@@ -186,7 +188,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "position": "x1ruww2u",
+            "kVAEAm": "x1ruww2u",
           },
         }
       `);
@@ -217,7 +219,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "userSelect": "x87ps6o",
+            "kfSwDN": "x87ps6o",
           },
         }
       `);
@@ -250,27 +252,27 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "borderBlockStyle": null,
-            "borderBlockWidth": null,
-            "borderBottomStyle": null,
-            "borderBottomWidth": null,
-            "borderInlineEndStyle": null,
-            "borderInlineEndWidth": null,
-            "borderInlineStartStyle": null,
-            "borderInlineStartWidth": null,
-            "borderInlineStyle": null,
-            "borderInlineWidth": null,
-            "borderLeftStyle": null,
-            "borderLeftWidth": null,
-            "borderRightStyle": null,
-            "borderRightWidth": null,
-            "borderStyle": "xbsl7fq",
-            "borderTopStyle": null,
-            "borderTopWidth": null,
-            "borderWidth": "xmkeg23",
-            "overflow": "xb3r6kr",
-            "overflowX": null,
-            "overflowY": null,
+            "k2ei4v": null,
+            "k4WBpm": null,
+            "k8ry5P": null,
+            "kDUl1X": null,
+            "kEafiO": null,
+            "kJRH4f": null,
+            "kLoX6v": null,
+            "kMzoRj": "xmkeg23",
+            "kORKVm": null,
+            "kPef9Z": null,
+            "kSWEuD": null,
+            "kVQacm": "xb3r6kr",
+            "kVhnKS": null,
+            "kWqL5O": null,
+            "kXHlph": null,
+            "kZ1KPB": null,
+            "ke9TFa": null,
+            "kfdmCh": null,
+            "kjGldf": null,
+            "ksu8eU": "xbsl7fq",
+            "kt9PQ7": null,
           },
         }
       `);
@@ -325,7 +327,7 @@ describe('Development Plugin Transformation', () => {
         {
           "default": {
             "$$css": true,
-            "boxShadow": "xxnfx33",
+            "kGVxlE": "xxnfx33",
           },
         }
       `);
@@ -360,8 +362,8 @@ describe('Development Plugin Transformation', () => {
           {
             "default": {
               "$$css": true,
-              ":invalpwdijad_backgroundColor": "x19iys6w",
-              ":invalpwdijad_color": "x5z3o4w",
+              "kDPUJo": "x19iys6w",
+              "kINyDM": "x5z3o4w",
             },
           }
         `);
@@ -410,10 +412,10 @@ describe('Development Plugin Transformation', () => {
           {
             "default": {
               "$$css": true,
-              ":active_color": "x96fq8s",
-              ":focus_color": "x1wvtd7d",
-              ":hover_color": "x17z2mba",
-              ":nth-child(2n)_color": "x126ychx",
+              "kDPRdz": "x17z2mba",
+              "kabz5l": "x1wvtd7d",
+              "kc7ZrP": "x96fq8s",
+              "kfUCIN": "x126ychx",
             },
           }
         `);
@@ -469,7 +471,7 @@ describe('Development Plugin Transformation', () => {
           {
             "default": {
               "$$css": true,
-              ":hover_position": "x1nxcus0",
+              "kM9GSA": "x1nxcus0",
             },
           }
         `);
@@ -507,8 +509,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
-            "color": "x19dipnz",
+            "kMwMTN": "x19dipnz",
+            "kWkggS": "xrkmrrc",
           },
           {
             "--color": "blue",
@@ -550,8 +552,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
-            "width": "x17fnjtu",
+            "kWkggS": "xrkmrrc",
+            "kzqmXN": "x17fnjtu",
           },
           {
             "--width": "10px",
@@ -600,7 +602,7 @@ describe('Development Plugin Transformation', () => {
       expect(styles.mono).toMatchInlineSnapshot(`
         {
           "$$css": true,
-          "color": "x1mqxbix",
+          "kMwMTN": "x1mqxbix",
         }
       `);
 
@@ -608,8 +610,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
-            "color": "x19dipnz",
+            "kMwMTN": "x19dipnz",
+            "kWkggS": "xrkmrrc",
           },
           {
             "--color": "blue",
@@ -658,7 +660,7 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "--background-color": "xyv4n8w",
+            "k9lZTf": "xyv4n8w",
           },
           {
             "----background-color": "red",
@@ -691,7 +693,7 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            "--background-color": "xyv4n8w",
+            "k9lZTf": "xyv4n8w",
           },
           {
             "----background-color": "initial",
@@ -729,8 +731,8 @@ describe('Development Plugin Transformation', () => {
         [
           {
             "$$css": true,
-            ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": "x11bf1mc",
+            "kDPRdz": "x11bf1mc",
+            "kGzVvX": "x1gykpug",
           },
           {
             "--1ijzsae": "blue",
