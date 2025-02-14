@@ -11,7 +11,7 @@ import { Length } from './length';
 
 import { TokenParser } from '../core2';
 import { Angle } from './angle';
-import { type Percentage, numberOrPercentage } from './common-types';
+import { Percentage, numberOrPercentage } from './common-types';
 import { lengthPercentage } from './length-percentage';
 import type { LengthPercentage } from './length-percentage';
 
@@ -22,6 +22,7 @@ export class TransformFunction {
       Matrix3d.parse,
       Perspective.parse,
       Rotate.parse,
+      RotateXYZ.parse,
       Rotate3d.parse,
       RotateAxis.parse,
       Scale.parse,
@@ -31,9 +32,7 @@ export class TransformFunction {
       SkewAxis.parse,
       Translate3d.parse,
       Translate.parse,
-      TranslateX.parse,
-      TranslateY.parse,
-      TranslateZ.parse,
+      TranslateAxis.parse,
     );
   }
 }
@@ -180,6 +179,32 @@ export class Rotate extends TransformFunction {
   }
 }
 
+export class RotateXYZ extends TransformFunction {
+  +x: Angle;
+  +axis: 'X' | 'Y' | 'Z';
+  constructor(x: this['x'], axis: this['axis']) {
+    super();
+    this.x = x;
+    this.axis = axis;
+  }
+  toString(): string {
+    return `rotate${this.axis}(${this.x.toString()})`;
+  }
+  static get parse(): TokenParser<RotateXYZ> {
+    return TokenParser.sequence(
+      TokenParser.oneOf(
+        TokenParser.fn('rotateX').map(() => 'X'),
+        TokenParser.fn('rotateY').map(() => 'Y'),
+        TokenParser.fn('rotateZ').map(() => 'Z'),
+      ),
+      Angle.parse,
+      TokenParser.tokens.CloseParen,
+    )
+      .separatedBy(TokenParser.tokens.Whitespace.optional)
+      .map(([axis, x]) => new RotateXYZ(x, axis));
+  }
+}
+
 export class Rotate3d extends TransformFunction {
   +x: number;
   +y: number;
@@ -266,8 +291,8 @@ export class RotateAxis extends TransformFunction {
 }
 
 export class Scale extends TransformFunction {
-  +sx: number | Percentage;
-  +sy: void | number | Percentage;
+  +sx: number;
+  +sy: void | number;
   constructor(sx: this['sx'], sy?: ?this['sy']) {
     super();
     this.sx = sx;
@@ -281,25 +306,36 @@ export class Scale extends TransformFunction {
     return `scale(${sx.toString()}, ${sy.toString()})`;
   }
   static get parse(): TokenParser<Scale> {
-    const args = TokenParser.oneOf<
-      number | Percentage | [number | Percentage, number | Percentage],
-    >(
-      TokenParser.sequence(numberOrPercentage, numberOrPercentage).separatedBy(
-        TokenParser.tokens.Comma.skip(TokenParser.tokens.Whitespace.optional),
+    // TokenParser.oneOf<
+    //   number | [number, number],
+    // >(
+    //   TokenParser.sequence(numberOrPercentage, numberOrPercentage).separatedBy(
+    //     TokenParser.tokens.Comma.skip(TokenParser.tokens.Whitespace.optional),
+    //   ),
+    //   numberOrPercentage,
+    // ).map((arg) => {
+    //   if (Array.isArray(arg)) {
+    //     return arg;
+    //   }
+    //   return [arg, null];
+    // });
+
+    const scalesXY = TokenParser.sequence(
+      numberOrPercentage.map((v) =>
+        v instanceof Percentage ? v.value / 100 : v,
       ),
-      numberOrPercentage,
-    ).map((arg) => {
-      if (Array.isArray(arg)) {
-        return arg;
-      }
-      return [arg, null];
-    });
+      numberOrPercentage.map((v) =>
+        v instanceof Percentage ? v.value / 100 : v,
+      ).optional,
+    )
+      .separatedBy(TokenParser.tokens.Comma)
+      .separatedBy(TokenParser.tokens.Whitespace.optional);
 
     return TokenParser.sequence(
       TokenParser.tokens.Function.map((v) => v[4].value).where(
         (v) => v === 'scale',
       ),
-      args,
+      scalesXY,
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
@@ -308,9 +344,9 @@ export class Scale extends TransformFunction {
 }
 
 export class Scale3d extends TransformFunction {
-  +sx: number | Percentage;
-  +sy: number | Percentage;
-  +sz: number | Percentage;
+  +sx: number;
+  +sy: number;
+  +sz: number;
   constructor(sx: this['sx'], sy: this['sy'], sz: this['sz']) {
     super();
     this.sx = sx;
@@ -321,17 +357,21 @@ export class Scale3d extends TransformFunction {
     return `scale3d(${this.sx.toString()}, ${this.sy.toString()}, ${this.sz.toString()})`;
   }
   static get parse(): TokenParser<Scale3d> {
+    const numberOrPercentageAsNumber = numberOrPercentage.map((v) =>
+      v instanceof Percentage ? v.value / 100 : v,
+    );
+
+    const args = TokenParser.sequence(
+      numberOrPercentageAsNumber,
+      numberOrPercentageAsNumber,
+      numberOrPercentageAsNumber,
+    )
+      .separatedBy(TokenParser.tokens.Comma)
+      .separatedBy(TokenParser.tokens.Whitespace.optional);
+
     return TokenParser.sequence(
-      TokenParser.tokens.Function.map((v) => v[4].value).where(
-        (v) => v === 'scale3d',
-      ),
-      TokenParser.sequence(
-        numberOrPercentage,
-        numberOrPercentage,
-        numberOrPercentage,
-      ).separatedBy(
-        TokenParser.tokens.Comma.skip(TokenParser.tokens.Whitespace.optional),
-      ),
+      TokenParser.fn('scale3d'),
+      args,
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
@@ -340,7 +380,7 @@ export class Scale3d extends TransformFunction {
 }
 
 export class ScaleAxis extends TransformFunction {
-  +s: number | Percentage;
+  +s: number;
   +axis: 'X' | 'Y' | 'Z';
   constructor(s: this['s'], axis: this['axis']) {
     super();
@@ -352,24 +392,14 @@ export class ScaleAxis extends TransformFunction {
   }
   static get parse(): TokenParser<ScaleAxis> {
     return TokenParser.sequence(
-      TokenParser.sequence(
-        TokenParser.tokens.Function.map((v) => v[4].value).where(
-          (v) => v === 'scale',
-        ),
-        TokenParser.oneOf<'X' | 'Y' | 'Z'>(
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'X',
-          ),
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'Y',
-          ),
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'Z',
-          ),
-        ),
-        TokenParser.tokens.OpenParen,
-      ).map(([_, axis, _1]) => axis),
-      numberOrPercentage,
+      TokenParser.oneOf(
+        TokenParser.fn('scaleX').map(() => 'X'),
+        TokenParser.fn('scaleY').map(() => 'Y'),
+        TokenParser.fn('scaleZ').map(() => 'Z'),
+      ),
+      numberOrPercentage.map((v) =>
+        v instanceof Percentage ? v.value / 100 : v,
+      ),
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
@@ -430,20 +460,10 @@ export class SkewAxis extends TransformFunction {
   }
   static get parse(): TokenParser<SkewAxis> {
     return TokenParser.sequence(
-      TokenParser.sequence(
-        TokenParser.tokens.Function.map((v) => v[4].value).where(
-          (v) => v === 'skew',
-        ),
-        TokenParser.oneOf<'X' | 'Y'>(
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'X',
-          ),
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'Y',
-          ),
-        ),
-        TokenParser.tokens.OpenParen,
-      ).map(([_, axis, _1]) => axis),
+      TokenParser.oneOf(
+        TokenParser.fn('skewX').map(() => 'X'),
+        TokenParser.fn('skewY').map(() => 'Y'),
+      ),
       Angle.parse,
       TokenParser.tokens.CloseParen,
     )
@@ -528,68 +548,28 @@ export class Translate3d extends TransformFunction {
   }
 }
 
-export class TranslateX extends TransformFunction {
-  +tx: LengthPercentage;
-  constructor(tx: LengthPercentage) {
+export class TranslateAxis extends TransformFunction {
+  +t: LengthPercentage;
+  +axis: 'X' | 'Y' | 'Z';
+  constructor(t: LengthPercentage, axis: 'X' | 'Y' | 'Z') {
     super();
-    this.tx = tx;
+    this.t = t;
+    this.axis = axis;
   }
   toString(): string {
-    return `translateX(${this.tx.toString()})`;
+    return `translate${this.axis}(${this.t.toString()})`;
   }
-  static get parse(): TokenParser<TranslateX> {
+  static get parse(): TokenParser<TranslateAxis> {
     return TokenParser.sequence(
-      TokenParser.tokens.Function.map((v) => v[4].value).where(
-        (v) => v === 'translateX',
+      TokenParser.oneOf(
+        TokenParser.fn('translateX').map(() => 'X'),
+        TokenParser.fn('translateY').map(() => 'Y'),
+        TokenParser.fn('translateZ').map(() => 'Z'),
       ),
       lengthPercentage,
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(([_, tx]) => new TranslateX(tx));
-  }
-}
-
-export class TranslateY extends TransformFunction {
-  +ty: LengthPercentage;
-  constructor(ty: LengthPercentage) {
-    super();
-    this.ty = ty;
-  }
-  toString(): string {
-    return `translateY(${this.ty.toString()})`;
-  }
-  static get parse(): TokenParser<TranslateY> {
-    return TokenParser.sequence(
-      TokenParser.tokens.Function.map((v) => v[4].value).where(
-        (v) => v === 'translateY',
-      ),
-      lengthPercentage,
-      TokenParser.tokens.CloseParen,
-    )
-      .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(([_, ty]) => new TranslateY(ty));
-  }
-}
-
-export class TranslateZ extends TransformFunction {
-  +tz: Length;
-  constructor(tz: Length) {
-    super();
-    this.tz = tz;
-  }
-  toString(): string {
-    return `translateZ(${this.tz.toString()})`;
-  }
-  static get parse(): TokenParser<TranslateZ> {
-    return TokenParser.sequence(
-      TokenParser.tokens.Function.map((v) => v[4].value).where(
-        (v) => v === 'translateZ',
-      ),
-      Length.parse,
-      TokenParser.tokens.CloseParen,
-    )
-      .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(([_, tz]) => new TranslateZ(tz));
+      .map(([axis, t]) => new TranslateAxis(t, axis));
   }
 }
