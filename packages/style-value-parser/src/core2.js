@@ -549,7 +549,7 @@ class TokenParserSet<
     super((input: TokenList): ValuesFromParserTuple<T> | Error => {
       const parsers = _parsers
         .map((parser, i) => [parser, i])
-        .toSorted(([a], [b]) => {
+        .sort(([a], [b]) => {
           if (a instanceof TokenOptionalParser) {
             return 1;
           }
