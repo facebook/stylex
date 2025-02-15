@@ -9,42 +9,6 @@
 
 import { TokenParser } from '../core2';
 
-export class Length {
-  +value: number;
-  +unit: string;
-
-  constructor(value: number, unit: string) {
-    this.value = value;
-    this.unit = unit;
-  }
-
-  toString(): string {
-    return `${this.value}${this.unit}`;
-  }
-
-  static get parse(): TokenParser<Length> {
-    const united = TokenParser.tokens.Dimension.map(
-      (token): $ReadOnly<[number, string]> => [token[4].value, token[4].unit],
-    )
-      .where(
-        (
-          tuple: $ReadOnly<[number, string]>,
-        ): implies tuple is $ReadOnly<[number, string]> =>
-          ALL_UNITS.includes(tuple[1]),
-      )
-      .map(([value, unit]): Length => new Length(value, unit));
-
-    return TokenParser.oneOf(
-      united,
-      TokenParser.tokens.Number.map((token): ?Length =>
-        token[4].value === 0 ? new Length(0, '') : null,
-      ).where((value) => value != null),
-    );
-  }
-}
-
-// Additional classes for other units can be added similarly
-
 const UNITS_BASED_ON_FONT = ['ch', 'em', 'ex', 'ic', 'lh', 'rem', 'rlh'];
 
 const UNITS_BASED_ON_VIEWPORT = [
@@ -76,10 +40,45 @@ const UNITS_BASED_ON_ABSOLUTE_UNITS = [
   'pt',
   // 'pc',
 ];
+export class Length {
+  +value: number;
+  +unit: string;
 
-const ALL_UNITS = [
-  ...UNITS_BASED_ON_FONT,
-  ...UNITS_BASED_ON_VIEWPORT,
-  ...UNITS_BASED_ON_CONTAINER,
-  ...UNITS_BASED_ON_ABSOLUTE_UNITS,
-];
+  constructor(value: number, unit: string) {
+    this.value = value;
+    this.unit = unit;
+  }
+
+  toString(): string {
+    return `${this.value}${this.unit}`;
+  }
+
+  static UNITS: $ReadOnlyArray<string> = [
+    ...UNITS_BASED_ON_FONT,
+    ...UNITS_BASED_ON_VIEWPORT,
+    ...UNITS_BASED_ON_CONTAINER,
+    ...UNITS_BASED_ON_ABSOLUTE_UNITS,
+  ];
+
+  static get parse(): TokenParser<Length> {
+    const united = TokenParser.tokens.Dimension.map(
+      (token): $ReadOnly<[number, string]> => [token[4].value, token[4].unit],
+    )
+      .where(
+        (
+          tuple: $ReadOnly<[number, string]>,
+        ): implies tuple is $ReadOnly<[number, string]> =>
+          Length.UNITS.includes(tuple[1]),
+      )
+      .map(([value, unit]): Length => new Length(value, unit));
+
+    return TokenParser.oneOf(
+      united,
+      TokenParser.tokens.Number.map((token): ?Length =>
+        token[4].value === 0 ? new Length(0, '') : null,
+      ).where((value) => value != null),
+    );
+  }
+}
+
+// Additional classes for other units can be added similarly
