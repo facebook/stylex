@@ -10,13 +10,13 @@
 import { TokenParser } from '../core2';
 
 export class EasingFunction {
-  static get parse(): TokenParser<EasingFunction> {
+  static get parser(): TokenParser<EasingFunction> {
     return TokenParser.oneOf(
-      LinearEasingFunction.parse,
-      CubicBezierEasingFunction.parse,
-      CubicBezierKeyword.parse,
-      StepsEasingFunction.parse,
-      StepsKeyword.parse,
+      LinearEasingFunction.parser,
+      CubicBezierEasingFunction.parser,
+      CubicBezierKeyword.parser,
+      StepsEasingFunction.parser,
+      StepsKeyword.parser,
     );
   }
 }
@@ -30,7 +30,7 @@ export class LinearEasingFunction extends EasingFunction {
   toString(): string {
     return `linear(${this.points.join(', ')})`;
   }
-  static get parse(): TokenParser<LinearEasingFunction> {
+  static get parser(): TokenParser<LinearEasingFunction> {
     const pointsParser = TokenParser.oneOrMore(
       TokenParser.tokens.Number.map((v) => v[4].value),
     )
@@ -58,7 +58,7 @@ export class CubicBezierEasingFunction extends EasingFunction {
   toString(): string {
     return `cubic-bezier(${this.points.join(', ')})`;
   }
-  static get parse(): TokenParser<CubicBezierEasingFunction> {
+  static get parser(): TokenParser<CubicBezierEasingFunction> {
     const numbers = TokenParser.sequence(
       TokenParser.tokens.Number.map((v) => v[4].value),
       TokenParser.tokens.Number.map((v) => v[4].value),
@@ -90,7 +90,7 @@ export class CubicBezierKeyword extends EasingFunction {
   toString(): string {
     return this.keyword;
   }
-  static get parse(): TokenParser<CubicBezierKeyword> {
+  static get parser(): TokenParser<CubicBezierKeyword> {
     return TokenParser.oneOf<TCubicBezierKeyword>(
       TokenParser.tokens.Ident.map((v) => v[4].value).where(
         (v) => v === 'ease-in-out',
@@ -119,7 +119,7 @@ export class StepsEasingFunction extends EasingFunction {
   toString(): string {
     return `steps(${this.steps}, ${this.start})`;
   }
-  static get parse(): TokenParser<StepsEasingFunction> {
+  static get parser(): TokenParser<StepsEasingFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function.map((v) => v[4].value).where(
         (v) => v === 'steps',
@@ -157,7 +157,7 @@ export class StepsKeyword extends EasingFunction {
   toString(): string {
     return this.keyword;
   }
-  static get parse(): TokenParser<StepsKeyword> {
+  static get parser(): TokenParser<StepsKeyword> {
     return TokenParser.oneOf(
       TokenParser.tokens.Ident.map((v) => v[4].value).where(
         (v) => v === 'step-start',

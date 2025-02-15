@@ -60,7 +60,7 @@ export class Length {
     ...UNITS_BASED_ON_ABSOLUTE_UNITS,
   ];
 
-  static get parse(): TokenParser<Length> {
+  static get parser(): TokenParser<Length> {
     const united = TokenParser.tokens.Dimension.map(
       (token): $ReadOnly<[number, string]> => [token[4].value, token[4].unit],
     )

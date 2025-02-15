@@ -18,7 +18,7 @@ export class CustomIdentifier {
     return this.value;
   }
 
-  static get parse(): TokenParser<CustomIdentifier> {
+  static get parser(): TokenParser<CustomIdentifier> {
     return TokenParser.tokens.Ident.map((token): string => token[4].value)
       .where(
         (str: string): implies str is string =>

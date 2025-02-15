@@ -17,18 +17,18 @@ export class FilterFunction {
   toString(): string {
     return '';
   }
-  static get parse(): TokenParser<FilterFunction> {
+  static get parser(): TokenParser<FilterFunction> {
     return TokenParser.oneOf(
-      BlurFilterFunction.parse,
-      BrightnessFilterFunction.parse,
-      ContrastFilterFunction.parse,
-      // DropShadowFilterFunction.parse,
-      GrayscaleFilterFunction.parse,
-      HueRotateFilterFunction.parse,
-      InverFilterFunction.parse,
-      OpacityFilterFunction.parse,
-      SaturateFilterFunction.parse,
-      SepiaFilterFunction.parse,
+      BlurFilterFunction.parser,
+      BrightnessFilterFunction.parser,
+      ContrastFilterFunction.parser,
+      // DropShadowFilterFunction.parser,
+      GrayscaleFilterFunction.parser,
+      HueRotateFilterFunction.parser,
+      InverFilterFunction.parser,
+      OpacityFilterFunction.parser,
+      SaturateFilterFunction.parser,
+      SepiaFilterFunction.parser,
     );
   }
 }
@@ -42,10 +42,10 @@ export class BlurFilterFunction extends FilterFunction {
   toString(): string {
     return `blur(${this.radius.toString()})`;
   }
-  static get parse(): TokenParser<BlurFilterFunction> {
+  static get parser(): TokenParser<BlurFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
-      Length.parse.surroundedBy(TokenParser.tokens.Whitespace.optional),
+      Length.parser.surroundedBy(TokenParser.tokens.Whitespace.optional),
       TokenParser.tokens.CloseParen,
     ).map(([_, radius, _1]) => new BlurFilterFunction(radius));
   }
@@ -60,7 +60,7 @@ export class BrightnessFilterFunction extends FilterFunction {
   toString(): string {
     return `brightness(${this.percentage})`;
   }
-  static get parse(): TokenParser<BrightnessFilterFunction> {
+  static get parser(): TokenParser<BrightnessFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage
@@ -80,7 +80,7 @@ export class ContrastFilterFunction extends FilterFunction {
   toString(): string {
     return `contrast(${this.amount})`;
   }
-  static get parse(): TokenParser<ContrastFilterFunction> {
+  static get parser(): TokenParser<ContrastFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage
@@ -119,14 +119,14 @@ export class ContrastFilterFunction extends FilterFunction {
 //       .join(' ');
 //     return `drop-shadow(${args})`;
 //   }
-//   static get parse(): TokenParser<DropShadowFilterFunction> {
+//   static get parser(): TokenParser<DropShadowFilterFunction> {
 //     return TokenParser.sequence(
 //       TokenParser.tokens.Function,
 //       TokenParser.sequence(
-//         Length.parse,
-//         Length.parse,
-//         Length.parse.optional,
-//         Color.parse.optional,
+//         Length.parser,
+//         Length.parser,
+//         Length.parser.optional,
+//         Color.parser.optional,
 //       )
 //         .separatedBy(TokenParser.tokens.Whitespace)
 //         .surroundedBy(TokenParser.tokens.Whitespace.optional),
@@ -147,7 +147,7 @@ export class GrayscaleFilterFunction extends FilterFunction {
   toString(): string {
     return `grayscale(${this.amount})`;
   }
-  static get parse(): TokenParser<GrayscaleFilterFunction> {
+  static get parser(): TokenParser<GrayscaleFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage
@@ -167,10 +167,10 @@ export class HueRotateFilterFunction extends FilterFunction {
   toString(): string {
     return `hue-rotate(${this.angle.toString()})`;
   }
-  static get parse(): TokenParser<HueRotateFilterFunction> {
+  static get parser(): TokenParser<HueRotateFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
-      Angle.parse,
+      Angle.parser,
       TokenParser.tokens.CloseParen,
     ).map(([_, angle, _1]) => new HueRotateFilterFunction(angle));
   }
@@ -185,7 +185,7 @@ export class InverFilterFunction extends FilterFunction {
   toString(): string {
     return `invert(${this.amount})`;
   }
-  static get parse(): TokenParser<InverFilterFunction> {
+  static get parser(): TokenParser<InverFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage
@@ -205,7 +205,7 @@ export class OpacityFilterFunction extends FilterFunction {
   toString(): string {
     return `opacity(${this.amount})`;
   }
-  static get parse(): TokenParser<OpacityFilterFunction> {
+  static get parser(): TokenParser<OpacityFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage
@@ -225,7 +225,7 @@ export class SaturateFilterFunction extends FilterFunction {
   toString(): string {
     return `saturate(${this.amount})`;
   }
-  static get parse(): TokenParser<SaturateFilterFunction> {
+  static get parser(): TokenParser<SaturateFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage
@@ -245,7 +245,7 @@ export class SepiaFilterFunction extends FilterFunction {
   toString(): string {
     return `sepia(${this.amount})`;
   }
-  static get parse(): TokenParser<SepiaFilterFunction> {
+  static get parser(): TokenParser<SepiaFilterFunction> {
     return TokenParser.sequence(
       TokenParser.tokens.Function,
       numberOrPercentage

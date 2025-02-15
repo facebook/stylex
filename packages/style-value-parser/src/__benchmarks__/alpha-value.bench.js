@@ -22,7 +22,7 @@ alphaValueSuite
     AlphaValueLegacy.parse.parseToEnd(alphaValueString);
   })
   .add('Token Parser', () => {
-    AlphaValueNew.parse.parseToEnd(alphaValueString);
+    AlphaValueNew.parser.parseToEnd(alphaValueString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

@@ -61,7 +61,7 @@ export class Inset extends BasicShape {
     return `inset(${top.toString()} ${right.toString()} ${bottom.toString()} ${left.toString()} ${roundStr})`;
   }
 
-  static get parse(): TokenParser<Inset> {
+  static get parser(): TokenParser<Inset> {
     type Insets = [
       LengthPercentage,
       LengthPercentage,
@@ -114,7 +114,7 @@ export class Circle extends BasicShape {
     const positionStr = position != null ? ` at ${position.toString()}` : '';
     return `circle(${radius.toString()}${positionStr})`;
   }
-  static get parse(): TokenParser<Circle> {
+  static get parser(): TokenParser<Circle> {
     const radius: TokenParser<TCircleRadius> = TokenParser.oneOf(
       lengthPercentage,
       TokenParser.string('closest-side'),
@@ -123,7 +123,7 @@ export class Circle extends BasicShape {
 
     const position: TokenParser<Position> = TokenParser.sequence(
       TokenParser.string('at'),
-      Position.parse,
+      Position.parser,
     )
       .separatedBy(TokenParser.tokens.Whitespace)
       .map(([, v]) => v);
@@ -163,7 +163,7 @@ export class Ellipse extends BasicShape {
     return `ellipse(${radiusX.toString()} ${radiusY.toString()}${positionStr})`;
   }
 
-  static get parse(): TokenParser<Ellipse> {
+  static get parser(): TokenParser<Ellipse> {
     const radius: TokenParser<TCircleRadius> = TokenParser.oneOf(
       lengthPercentage,
       TokenParser.string('closest-side'),
@@ -172,7 +172,7 @@ export class Ellipse extends BasicShape {
 
     const position: TokenParser<Position> = TokenParser.sequence(
       TokenParser.string('at'),
-      Position.parse,
+      Position.parser,
     )
       .separatedBy(TokenParser.tokens.Whitespace)
       .map(([_at, v]) => v);
@@ -219,7 +219,7 @@ export class Polygon extends BasicShape {
       .map(([x, y]) => `${x.toString()} ${y.toString()}`)
       .join(', ')})`;
   }
-  static get parse(): TokenParser<Polygon> {
+  static get parser(): TokenParser<Polygon> {
     const point: TokenParser<Point> = TokenParser.sequence(
       lengthPercentage,
       lengthPercentage,
@@ -255,7 +255,7 @@ export class Path extends BasicShape {
     const fillRule = this.fillRule != null ? `${this.fillRule}, ` : '';
     return `path(${fillRule}"${this.path}")`;
   }
-  static get parse(): TokenParser<Path> {
+  static get parser(): TokenParser<Path> {
     const args = TokenParser.sequence(
       fillRule.optional,
       TokenParser.tokens.String.map((v) => v[4].value),

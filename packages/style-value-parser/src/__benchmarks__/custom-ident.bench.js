@@ -22,7 +22,7 @@ customIdentSuite
     CustomIdentifierLegacy.parse.parseToEnd(customIdentString);
   })
   .add('Token Parser', () => {
-    CustomIdentifierNew.parse.parseToEnd(customIdentString);
+    CustomIdentifierNew.parser.parseToEnd(customIdentString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));
