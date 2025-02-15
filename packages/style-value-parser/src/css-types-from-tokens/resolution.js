@@ -23,6 +23,7 @@ export class Resolution {
   toString(): string {
     return `${this.value}${this.unit}`;
   }
+  static UNITS: $ReadOnlyArray<Unit> = ['dpi', 'dpcm', 'dppx'];
   static get parse(): TokenParser<Resolution> {
     return TokenParser.token<TokenDimension>(TokenType.Dimension)
       .where(

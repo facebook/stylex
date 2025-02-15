@@ -475,13 +475,13 @@ class TokenParserSequence<
 
         // $FlowFixMe[incompatible-type]
         const output: ValuesFromParserTuple<T> | Error = parsers.map(
-          <X>(_parser: TokenParser<X>, index: number): X | Error => {
+          <X>(_parser: TokenParser<X>): X | Error => {
             if (failed) {
               return new Error('already failed');
             }
             let parser = _parser;
 
-            if (separator != null && index > 0) {
+            if (separator != null && input.currentIndex > currentIndex) {
               if (parser instanceof TokenOptionalParser) {
                 // X === void | X
                 // $FlowFixMe[incompatible-type-arg]

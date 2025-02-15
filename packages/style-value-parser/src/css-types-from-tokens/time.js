@@ -23,6 +23,7 @@ export class Time {
     }
     return `${this.value}${this.unit}`;
   }
+  static UNITS: $ReadOnlyArray<'s' | 'ms'> = ['s', 'ms'];
   static get parse(): TokenParser<Time> {
     return TokenParser.tokens.Dimension.map((v) =>
       v[4].unit === 's' || v[4].unit === 'ms' ? [v[4].value, v[4].unit] : null,
