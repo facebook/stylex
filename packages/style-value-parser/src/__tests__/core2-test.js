@@ -187,7 +187,7 @@ describe('TokenParser', () => {
       expect(parser.parse('foo foo')).toEqual(['foo', 'foo']);
       expect(parser.parse('foo foo foo')).toEqual(['foo', 'foo', 'foo']);
       expect(parser.parse('foo foo foo bar')).toEqual(['foo', 'foo', 'foo']);
-      expect(parser.parse('foo foo foo fo')).toEqual(['foo', 'foo', 'foo']);
+      expect(parser.parse('foo foo foo for')).toEqual(['foo', 'foo', 'foo']);
     });
   });
 });
