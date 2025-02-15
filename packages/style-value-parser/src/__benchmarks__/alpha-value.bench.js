@@ -8,46 +8,33 @@
  */
 
 import Benchmark from 'benchmark';
-import { AlphaValue as AlphaValueOriginal } from '../css-types/alpha-value';
-import { AlphaValue as AlphaValueTokens } from '../css-types-from-tokens/alpha-value';
+import { AlphaValue as AlphaValueLegacy } from '../css-types/alpha-value';
+import { AlphaValue as AlphaValueNew } from '../css-types-from-tokens/alpha-value';
 
-const suite = new Benchmark.Suite();
+const alphaValueSuite = new Benchmark.Suite('AlphaValue');
 
-// Test cases from the test files
-const TEST_CASES = [
-  '0.5',
-  '.5',
-  '0.25',
-  '.25',
-  '0.75',
-  '.75',
-  '1',
-  '50%',
-  '25%',
-  '75%',
-  '75.5%',
-  '0.25%',
-  '.25%',
-  '0%',
-  '100%',
-];
+const alphaValueString = '0.5';
 
-// Add tests
-suite
-  .add('Original Parser', () => {
-    TEST_CASES.forEach((input) => {
-      AlphaValueOriginal.parse.parse(input);
-    });
+console.log('\n\n<alpha-value>\n');
+
+alphaValueSuite
+  .add('Legacy Parser', () => {
+    AlphaValueLegacy.parse.parseToEnd(alphaValueString);
   })
   .add('Token Parser', () => {
-    TEST_CASES.forEach((input) => {
-      AlphaValueTokens.parse.parse(input);
-    });
+    AlphaValueNew.parse.parseToEnd(alphaValueString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));
   })
-  .on('complete', function (this: any) {
-    console.log('Fastest is ' + this.filter('fastest').map('name'));
+  .on('complete', () => {
+    const fastest = alphaValueSuite.filter('fastest').map('name')[0];
+    const slowest = alphaValueSuite.filter('slowest').map('name')[0];
+    const fastestResult = alphaValueSuite.filter('fastest')[0].stats.mean;
+    const slowestResult = alphaValueSuite.filter('slowest')[0].stats.mean;
+    const speedup = (slowestResult - fastestResult) / fastestResult;
+    const percentage = speedup.toFixed(2);
+
+    console.log(`Fastest is ${fastest}, ${percentage}x faster than ${slowest}`);
   })
   .run({ async: true });
