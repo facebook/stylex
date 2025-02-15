@@ -11,26 +11,26 @@ import { Resolution } from '../resolution';
 
 describe('Test CSS Type: <resolution>', () => {
   test('parses dpi values', () => {
-    expect(Resolution.parse.parse('300dpi')).toEqual(
+    expect(Resolution.parser.parse('300dpi')).toEqual(
       new Resolution(300, 'dpi'),
     );
   });
 
   test('parses dpcm values', () => {
-    expect(Resolution.parse.parse('118.11dpcm')).toEqual(
+    expect(Resolution.parser.parse('118.11dpcm')).toEqual(
       new Resolution(118.11, 'dpcm'),
     );
   });
 
   test('parses dppx values', () => {
-    expect(Resolution.parse.parse('96dppx')).toEqual(
+    expect(Resolution.parser.parse('96dppx')).toEqual(
       new Resolution(96, 'dppx'),
     );
   });
 
   test('rejects invalid resolution values', () => {
-    expect(() => Resolution.parse.parseToEnd('invalid')).toThrow();
-    expect(() => Resolution.parse.parseToEnd('10abc')).toThrow();
-    expect(() => Resolution.parse.parseToEnd('10')).toThrow();
+    expect(() => Resolution.parser.parseToEnd('invalid')).toThrow();
+    expect(() => Resolution.parser.parseToEnd('10abc')).toThrow();
+    expect(() => Resolution.parser.parseToEnd('10')).toThrow();
   });
 });

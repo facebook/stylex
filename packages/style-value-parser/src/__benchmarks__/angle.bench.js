@@ -22,7 +22,7 @@ angleSuite
     AngleLegacy.parse.parseToEnd(angleString);
   })
   .add('Token Parser', () => {
-    AngleNew.parse.parseToEnd(angleString);
+    AngleNew.parser.parseToEnd(angleString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

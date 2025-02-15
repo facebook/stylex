@@ -21,7 +21,7 @@ export class Angle {
   toString(): string {
     return `${this.value}${this.unit}`;
   }
-  static get parse(): TokenParser<Angle> {
+  static get parser(): TokenParser<Angle> {
     const withUnit = TokenParser.tokens.Dimension.map((v) => v[4])
       .where(
         (v: TokenDimension[4]): implies v is TokenDimension[4] =>

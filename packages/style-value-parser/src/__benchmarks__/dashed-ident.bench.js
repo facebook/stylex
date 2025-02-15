@@ -22,7 +22,7 @@ dashedIdentSuite
     DashedIdentifierLegacy.parse.parseToEnd(dashedIdentString);
   })
   .add('Token Parser', () => {
-    DashedIdentifierNew.parse.parseToEnd(dashedIdentString);
+    DashedIdentifierNew.parser.parseToEnd(dashedIdentString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

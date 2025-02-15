@@ -43,7 +43,7 @@ export class Position {
     return [horizontal, vertical].filter(Boolean).join(' ');
   }
 
-  static get parse(): TokenParser<Position> {
+  static get parser(): TokenParser<Position> {
     const horizontalKeyword = TokenParser.token<TokenIdent>(TokenType.Ident)
       .map((token): string => token[4].value)
       .where(

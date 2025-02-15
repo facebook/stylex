@@ -22,7 +22,7 @@ colorSuite
     ColorLegacy.parse.parseToEnd(colorString);
   })
   .add('Token Parser', () => {
-    ColorNew.parse.parseToEnd(colorString);
+    ColorNew.parser.parseToEnd(colorString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

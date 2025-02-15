@@ -17,7 +17,7 @@ export class AlphaValue {
   toString(): string {
     return this.value.toString();
   }
-  static parse: TokenParser<AlphaValue> = TokenParser.oneOf(
+  static parser: TokenParser<AlphaValue> = TokenParser.oneOf(
     TokenParser.tokens.Percentage.map(
       (v) =>
         new AlphaValue(

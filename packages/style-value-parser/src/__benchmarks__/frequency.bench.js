@@ -22,7 +22,7 @@ frequencySuite
     FrequencyLegacy.parse.parseToEnd(frequencyString);
   })
   .add('Token Parser', () => {
-    FrequencyNew.parse.parseToEnd(frequencyString);
+    FrequencyNew.parser.parseToEnd(frequencyString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));
