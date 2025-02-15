@@ -15,17 +15,17 @@ import { Angle } from './angle';
 import { Percentage } from './common-types';
 
 export class Color {
-  static get parse(): TokenParser<Color> {
+  static get parser(): TokenParser<Color> {
     return TokenParser.oneOf<Color>(
-      NamedColor.parse,
-      HashColor.parse,
-      Rgb.parse,
-      Rgba.parse,
-      Hsl.parse,
-      Hsla.parse,
-      Lch.parse,
-      Oklch.parse,
-      Oklab.parse,
+      NamedColor.parser,
+      HashColor.parser,
+      Rgb.parser,
+      Rgba.parser,
+      Hsl.parser,
+      Hsla.parser,
+      Lch.parser,
+      Oklch.parser,
+      Oklab.parser,
     );
   }
 }
@@ -39,7 +39,7 @@ export class NamedColor extends Color {
   toString(): string {
     return this.value;
   }
-  static parse: TokenParser<NamedColor> = TokenParser.tokens.Ident.map(
+  static parser: TokenParser<NamedColor> = TokenParser.tokens.Ident.map(
     (token) => token[4].value,
   )
     .where((str: string): implies str is string =>
@@ -226,7 +226,7 @@ export class HashColor extends Color {
       : 1;
   }
 
-  static get parse(): TokenParser<HashColor> {
+  static get parser(): TokenParser<HashColor> {
     return TokenParser.tokens.Hash.map((token: TokenHash) => token[4].value)
       .where(
         (value: string): implies value is string =>
@@ -240,7 +240,7 @@ const rgbNumberParser = TokenParser.tokens.Number.map(
   (token) => token[4].value,
 ).where((value): implies value is number => value >= 0 && value <= 255);
 
-const alphaAsNumber = AlphaValue.parse.map((alpha) => alpha.value);
+const alphaAsNumber = AlphaValue.parser.map((alpha) => alpha.value);
 
 const slashParser = TokenParser.tokens.Delim.map((token) => token[4].value)
   .where((value): implies value is string => value === '/')
@@ -259,7 +259,7 @@ export class Rgb extends Color {
   toString(): string {
     return `rgb(${this.r},${this.g},${this.b})`;
   }
-  static get parse(): TokenParser<Rgb> {
+  static get parser(): TokenParser<Rgb> {
     const rgbCommaSeparated = TokenParser.sequence(
       rgbNumberParser,
       rgbNumberParser,
@@ -313,7 +313,7 @@ export class Rgba extends Color {
   toString(): string {
     return `rgba(${this.r},${this.g},${this.b},${this.a})`;
   }
-  static get parse(): TokenParser<Rgba> {
+  static get parser(): TokenParser<Rgba> {
     const commaParser = TokenParser.sequence(
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'rgba',
@@ -380,16 +380,16 @@ export class Hsl extends Color {
   toString(): string {
     return `hsl(${this.h.toString()},${this.s.toString()},${this.l.toString()})`;
   }
-  static get parse(): TokenParser<Hsl> {
+  static get parser(): TokenParser<Hsl> {
     const commaParser = TokenParser.sequence(
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'hsl',
       ),
-      Angle.parse, // h
+      Angle.parser, // h
       TokenParser.tokens.Comma,
-      Percentage.parse, // s
+      Percentage.parser, // s
       TokenParser.tokens.Comma,
-      Percentage.parse, // l
+      Percentage.parser, // l
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
@@ -399,11 +399,11 @@ export class Hsl extends Color {
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'hsl',
       ),
-      Angle.parse, // h
+      Angle.parser, // h
       TokenParser.tokens.Whitespace,
-      Percentage.parse, // s
+      Percentage.parser, // s
       TokenParser.tokens.Whitespace,
-      Percentage.parse, // l
+      Percentage.parser, // l
       TokenParser.tokens.Whitespace,
       TokenParser.tokens.CloseParen,
     ).map((tokens) => new Hsl(tokens[1], tokens[3], tokens[5]));
@@ -427,16 +427,16 @@ export class Hsla extends Color {
   toString(): string {
     return `hsla(${this.h.toString()},${this.s.toString()},${this.l.toString()},${this.a})`;
   }
-  static get parse(): TokenParser<Hsla> {
+  static get parser(): TokenParser<Hsla> {
     const commaParser = TokenParser.sequence(
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'hsla',
       ),
-      Angle.parse,
+      Angle.parser,
       TokenParser.tokens.Comma,
-      Percentage.parse,
+      Percentage.parser,
       TokenParser.tokens.Comma,
-      Percentage.parse,
+      Percentage.parser,
       TokenParser.tokens.Comma,
       alphaAsNumber,
       TokenParser.tokens.CloseParen,
@@ -451,11 +451,11 @@ export class Hsla extends Color {
       TokenParser.tokens.Function.map((token) => token[4].value).where(
         (value): implies value is string => value === 'hsl',
       ),
-      Angle.parse, // h
+      Angle.parser, // h
       TokenParser.tokens.Whitespace,
-      Percentage.parse, // s
+      Percentage.parser, // s
       TokenParser.tokens.Whitespace,
-      Percentage.parse, // l
+      Percentage.parser, // l
       slashParser,
       alphaAsNumber, // a
       TokenParser.tokens.Whitespace.optional,
@@ -484,9 +484,9 @@ export class Lch extends Color {
   toString(): string {
     return `lch(${this.l} ${this.c} ${this.h.toString()}${this.alpha ? ` / ${this.alpha}` : ''})`;
   }
-  static get parse(): TokenParser<Lch> {
+  static get parser(): TokenParser<Lch> {
     const l: TokenParser<number> = TokenParser.oneOf(
-      Percentage.parse.map((p) => p.value),
+      Percentage.parser.map((p) => p.value),
       TokenParser.tokens.Number.map((token) => token[4].value).where(
         (value): implies value is number => value >= 0,
       ),
@@ -497,14 +497,14 @@ export class Lch extends Color {
 
     const c: TokenParser<number> = TokenParser.oneOf(
       // `c` 100% -> 150
-      Percentage.parse.map((p) => (150 * p.value) / 100),
+      Percentage.parser.map((p) => (150 * p.value) / 100),
       TokenParser.tokens.Number.map((token) => token[4].value).where(
         (value): implies value is number => value >= 0,
       ),
     );
 
     const h: TokenParser<Angle | number> = TokenParser.oneOf(
-      Angle.parse,
+      Angle.parser,
       TokenParser.tokens.Number.map((token) => token[4].value),
       // lc.map((num: number) => new Angle(num * 360, 'deg')),
     );
@@ -547,7 +547,7 @@ export class Oklch extends Color {
     return `oklch(${this.l} ${this.c} ${this.h.toString()}${this.alpha ? ` / ${this.alpha}` : ''})`;
   }
 
-  static get parse(): TokenParser<Lch> {
+  static get parser(): TokenParser<Lch> {
     const lc: TokenParser<number> = TokenParser.oneOf(
       alphaAsNumber,
       TokenParser.tokens.Ident.map((token) => token[4].value)
@@ -556,7 +556,7 @@ export class Oklch extends Color {
     ).prefix(TokenParser.tokens.Whitespace.optional);
 
     const h: TokenParser<Angle> = TokenParser.oneOf(
-      Angle.parse,
+      Angle.parser,
       lc.map((num: number) => new Angle(num * 360, 'deg')),
     );
 
@@ -600,7 +600,7 @@ export class Oklab extends Color {
   toString(): string {
     return `oklab(${this.l} ${this.a} ${this.b}${this.alpha ? ` / ${this.alpha}` : ''})`;
   }
-  static get parse(): TokenParser<Oklab> {
+  static get parser(): TokenParser<Oklab> {
     const lab: TokenParser<number> = TokenParser.oneOf(
       alphaAsNumber,
       TokenParser.tokens.Ident.map((token) => token[4].value)

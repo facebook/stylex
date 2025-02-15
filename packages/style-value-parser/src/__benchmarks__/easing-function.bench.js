@@ -22,7 +22,7 @@ easingFunctionSuite
     EasingFunctionLegacy.parse.parseToEnd(easingFunctionString);
   })
   .add('Token Parser', () => {
-    EasingFunctionNew.parse.parseToEnd(easingFunctionString);
+    EasingFunctionNew.parser.parseToEnd(easingFunctionString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

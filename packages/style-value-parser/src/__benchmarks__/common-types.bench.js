@@ -22,7 +22,7 @@ commonTypesSuite
     PercentageLegacy.parse.parseToEnd(commonTypesString);
   })
   .add('Token Parser', () => {
-    PercentageNew.parse.parseToEnd(commonTypesString);
+    PercentageNew.parser.parseToEnd(commonTypesString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

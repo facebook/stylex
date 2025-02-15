@@ -11,14 +11,14 @@ import { Flex } from '../flex';
 
 describe('Flex.parse', () => {
   it('parses valid `fr` values', () => {
-    expect(Flex.parse.parseToEnd('1fr')).toEqual(new Flex(1));
-    expect(Flex.parse.parseToEnd('2.5fr')).toEqual(new Flex(2.5));
-    expect(Flex.parse.parseToEnd('0fr')).toEqual(new Flex(0));
+    expect(Flex.parser.parseToEnd('1fr')).toEqual(new Flex(1));
+    expect(Flex.parser.parseToEnd('2.5fr')).toEqual(new Flex(2.5));
+    expect(Flex.parser.parseToEnd('0fr')).toEqual(new Flex(0));
   });
 
   it('rejects invalid `fr` values', () => {
-    expect(() => Flex.parse.parseToEnd('-1fr')).toThrow();
-    expect(() => Flex.parse.parseToEnd('1 fr')).toThrow();
-    expect(() => Flex.parse.parseToEnd('1px')).toThrow();
+    expect(() => Flex.parser.parseToEnd('-1fr')).toThrow();
+    expect(() => Flex.parser.parseToEnd('1 fr')).toThrow();
+    expect(() => Flex.parser.parseToEnd('1px')).toThrow();
   });
 });

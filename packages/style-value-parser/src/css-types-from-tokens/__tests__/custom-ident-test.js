@@ -11,37 +11,37 @@ import { CustomIdentifier } from '../custom-ident';
 
 describe('Test CSS Type: <custom-ident>', () => {
   test('parses valid custom identifiers', () => {
-    expect(CustomIdentifier.parse.parse('myIdentifier')).toEqual(
+    expect(CustomIdentifier.parser.parse('myIdentifier')).toEqual(
       new CustomIdentifier('myIdentifier'),
     );
-    expect(CustomIdentifier.parse.parse('custom-name')).toEqual(
+    expect(CustomIdentifier.parser.parse('custom-name')).toEqual(
       new CustomIdentifier('custom-name'),
     );
-    expect(CustomIdentifier.parse.parse('_private')).toEqual(
+    expect(CustomIdentifier.parser.parse('_private')).toEqual(
       new CustomIdentifier('_private'),
     );
-    expect(CustomIdentifier.parse.parse('identifier123')).toEqual(
+    expect(CustomIdentifier.parser.parse('identifier123')).toEqual(
       new CustomIdentifier('identifier123'),
     );
   });
 
   test('rejects reserved keywords', () => {
-    expect(() => CustomIdentifier.parse.parseToEnd('unset')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('initial')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('inherit')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('default')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('none')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('auto')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('normal')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('hidden')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('visible')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('revert')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('revert-layer')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('unset')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('initial')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('inherit')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('default')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('none')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('auto')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('normal')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('hidden')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('visible')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('revert')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('revert-layer')).toThrow();
   });
 
   test('rejects invalid identifiers', () => {
-    expect(() => CustomIdentifier.parse.parseToEnd('123invalid')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('invalid!')).toThrow();
-    expect(() => CustomIdentifier.parse.parseToEnd('invalid space')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('123invalid')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('invalid!')).toThrow();
+    expect(() => CustomIdentifier.parser.parseToEnd('invalid space')).toThrow();
   });
 });

@@ -11,25 +11,27 @@ import { Frequency } from '../frequency';
 
 describe('Frequency.parse', () => {
   it('parses valid CSS frequency types strings correctly', () => {
-    expect(Frequency.parse.parseToEnd('1Hz')).toEqual(new Frequency(1, 'Hz'));
-    expect(Frequency.parse.parseToEnd('1000KHz')).toEqual(
+    expect(Frequency.parser.parseToEnd('1Hz')).toEqual(new Frequency(1, 'Hz'));
+    expect(Frequency.parser.parseToEnd('1000KHz')).toEqual(
       new Frequency(1000, 'KHz'),
     );
-    expect(Frequency.parse.parseToEnd('0Hz')).toEqual(new Frequency(0, 'Hz'));
-    expect(Frequency.parse.parseToEnd('0KHz')).toEqual(new Frequency(0, 'KHz'));
-    expect(Frequency.parse.parseToEnd('1.5Hz')).toEqual(
+    expect(Frequency.parser.parseToEnd('0Hz')).toEqual(new Frequency(0, 'Hz'));
+    expect(Frequency.parser.parseToEnd('0KHz')).toEqual(
+      new Frequency(0, 'KHz'),
+    );
+    expect(Frequency.parser.parseToEnd('1.5Hz')).toEqual(
       new Frequency(1.5, 'Hz'),
     );
-    expect(Frequency.parse.parseToEnd('1.5KHz')).toEqual(
+    expect(Frequency.parser.parseToEnd('1.5KHz')).toEqual(
       new Frequency(1.5, 'KHz'),
     );
   });
 
   it('fails to parse invalid CSS frequency types strings', () => {
-    expect(() => Frequency.parse.parseToEnd('1 Hz')).toThrow();
-    expect(() => Frequency.parse.parseToEnd('1KHz ')).toThrow();
-    expect(() => Frequency.parse.parseToEnd('1')).toThrow();
-    expect(() => Frequency.parse.parseToEnd('Hz')).toThrow();
-    expect(() => Frequency.parse.parseToEnd('KHz')).toThrow();
+    expect(() => Frequency.parser.parseToEnd('1 Hz')).toThrow();
+    expect(() => Frequency.parser.parseToEnd('1KHz ')).toThrow();
+    expect(() => Frequency.parser.parseToEnd('1')).toThrow();
+    expect(() => Frequency.parser.parseToEnd('Hz')).toThrow();
+    expect(() => Frequency.parser.parseToEnd('KHz')).toThrow();
   });
 });

@@ -22,7 +22,7 @@ flexSuite
     FlexLegacy.parse.parseToEnd(flexString);
   })
   .add('Token Parser', () => {
-    FlexNew.parse.parseToEnd(flexString);
+    FlexNew.parser.parseToEnd(flexString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

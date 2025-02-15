@@ -83,17 +83,17 @@ export class Percentage {
   toString(): string {
     return `${this.value}%`;
   }
-  static parse: TokenParser<Percentage> = TokenParser.token<TokenPercentage>(
-    TokenType.Percentage,
-  ).map(
-    (v) =>
-      new Percentage(v[4].signCharacter === '-' ? -v[4].value : v[4].value),
-  );
+  static get parser(): TokenParser<Percentage> {
+    return TokenParser.token<TokenPercentage>(TokenType.Percentage).map(
+      (v) =>
+        new Percentage(v[4].signCharacter === '-' ? -v[4].value : v[4].value),
+    );
+  }
 }
 
 export const numberOrPercentage: TokenParser<number | Percentage> =
   TokenParser.oneOf(
-    Percentage.parse,
+    Percentage.parser,
     TokenParser.token<TokenNumber>(TokenType.Number).map((v) =>
       v[4].signCharacter === '-' ? -v[4].value : v[4].value,
     ),

@@ -22,7 +22,7 @@ filterFunctionSuite
     FilterFunctionLegacy.parse.parseToEnd(filterFunctionString);
   })
   .add('Token Parser', () => {
-    FilterFunctionNew.parse.parseToEnd(filterFunctionString);
+    FilterFunctionNew.parser.parseToEnd(filterFunctionString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

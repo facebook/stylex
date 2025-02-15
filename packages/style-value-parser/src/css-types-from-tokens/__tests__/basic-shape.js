@@ -15,7 +15,7 @@ import { Percentage } from '../common-types';
 describe('Basic Shapes', () => {
   describe('Inset', () => {
     it('should parse valid insets', () => {
-      expect(Inset.parse.parseToEnd('inset(10px)')).toEqual(
+      expect(Inset.parser.parseToEnd('inset(10px)')).toEqual(
         new Inset(
           new Length(10, 'px'),
           new Length(10, 'px'),
@@ -23,7 +23,7 @@ describe('Basic Shapes', () => {
           new Length(10, 'px'),
         ),
       );
-      expect(Inset.parse.parseToEnd('inset(10px 20px)')).toEqual(
+      expect(Inset.parser.parseToEnd('inset(10px 20px)')).toEqual(
         new Inset(
           new Length(10, 'px'),
           new Length(20, 'px'),
@@ -31,7 +31,7 @@ describe('Basic Shapes', () => {
           new Length(20, 'px'),
         ),
       );
-      expect(Inset.parse.parseToEnd('inset(10px 20px 30px)')).toEqual(
+      expect(Inset.parser.parseToEnd('inset(10px 20px 30px)')).toEqual(
         new Inset(
           new Length(10, 'px'),
           new Length(20, 'px'),
@@ -39,7 +39,7 @@ describe('Basic Shapes', () => {
           new Length(20, 'px'),
         ),
       );
-      expect(Inset.parse.parseToEnd('inset(10px 20px 30px 40px)')).toEqual(
+      expect(Inset.parser.parseToEnd('inset(10px 20px 30px 40px)')).toEqual(
         new Inset(
           new Length(10, 'px'),
           new Length(20, 'px'),
@@ -47,7 +47,7 @@ describe('Basic Shapes', () => {
           new Length(40, 'px'),
         ),
       );
-      expect(Inset.parse.parseToEnd('inset(10px round 5px)')).toEqual(
+      expect(Inset.parser.parseToEnd('inset(10px round 5px)')).toEqual(
         new Inset(
           new Length(10, 'px'),
           new Length(10, 'px'),
@@ -59,43 +59,43 @@ describe('Basic Shapes', () => {
     });
 
     it('should not parse invalid insets', () => {
-      expect(() => Inset.parse.parseToEnd('inset(invalid)')).toThrow();
-      expect(() => Inset.parse.parseToEnd('inset(10px, invalid)')).toThrow();
+      expect(() => Inset.parser.parseToEnd('inset(invalid)')).toThrow();
+      expect(() => Inset.parser.parseToEnd('inset(10px, invalid)')).toThrow();
     });
   });
 
   describe('Circle', () => {
     it('should parse valid circles', () => {
-      expect(Circle.parse.parseToEnd('circle(10px)')).toEqual(
+      expect(Circle.parser.parseToEnd('circle(10px)')).toEqual(
         new Circle(new Length(10, 'px')),
       );
-      expect(Circle.parse.parseToEnd('circle(closest-side)')).toEqual(
+      expect(Circle.parser.parseToEnd('circle(closest-side)')).toEqual(
         new Circle('closest-side'),
       );
-      expect(Circle.parse.parseToEnd('circle(farthest-side)')).toEqual(
+      expect(Circle.parser.parseToEnd('circle(farthest-side)')).toEqual(
         new Circle('farthest-side'),
       );
-      expect(Circle.parse.parseToEnd('circle(10px at top left)')).toEqual(
+      expect(Circle.parser.parseToEnd('circle(10px at top left)')).toEqual(
         new Circle(new Length(10, 'px'), new Position('left', 'top')),
       );
     });
 
     it('should not parse invalid circles', () => {
-      expect(() => Circle.parse.parseToEnd('circle(invalid)')).toThrow();
-      expect(() => Circle.parse.parseToEnd('circle(10px, invalid)')).toThrow();
+      expect(() => Circle.parser.parseToEnd('circle(invalid)')).toThrow();
+      expect(() => Circle.parser.parseToEnd('circle(10px, invalid)')).toThrow();
     });
   });
 
   describe('Ellipse', () => {
     it('should parse valid ellipses', () => {
-      expect(Ellipse.parse.parseToEnd('ellipse(10px 20px)')).toEqual(
+      expect(Ellipse.parser.parseToEnd('ellipse(10px 20px)')).toEqual(
         new Ellipse(new Length(10, 'px'), new Length(20, 'px')),
       );
       expect(
-        Ellipse.parse.parseToEnd('ellipse(closest-side farthest-side)'),
+        Ellipse.parser.parseToEnd('ellipse(closest-side farthest-side)'),
       ).toEqual(new Ellipse('closest-side', 'farthest-side'));
       expect(
-        Ellipse.parse.parseToEnd('ellipse(10px 20px at top left)'),
+        Ellipse.parser.parseToEnd('ellipse(10px 20px at top left)'),
       ).toEqual(
         new Ellipse(
           new Length(10, 'px'),
@@ -106,9 +106,9 @@ describe('Basic Shapes', () => {
     });
 
     it('should not parse invalid ellipses', () => {
-      expect(() => Ellipse.parse.parseToEnd('ellipse(invalid)')).toThrow();
+      expect(() => Ellipse.parser.parseToEnd('ellipse(invalid)')).toThrow();
       expect(() =>
-        Ellipse.parse.parseToEnd('ellipse(10px, invalid)'),
+        Ellipse.parser.parseToEnd('ellipse(10px, invalid)'),
       ).toThrow();
     });
   });
@@ -116,7 +116,9 @@ describe('Basic Shapes', () => {
   describe('Polygon', () => {
     it('should parse valid polygons', () => {
       expect(
-        Polygon.parse.parseToEnd('polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'),
+        Polygon.parser.parseToEnd(
+          'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+        ),
       ).toEqual(
         new Polygon([
           [new Percentage(0), new Percentage(0)],
@@ -126,7 +128,7 @@ describe('Basic Shapes', () => {
         ]),
       );
       expect(
-        Polygon.parse.parseToEnd(
+        Polygon.parser.parseToEnd(
           'polygon(evenodd, 0% 0%, 100% 0%, 100% 100%, 0% 100%)',
         ),
       ).toEqual(
@@ -143,26 +145,26 @@ describe('Basic Shapes', () => {
     });
 
     it('should not parse invalid polygons', () => {
-      expect(() => Polygon.parse.parseToEnd('polygon(invalid)')).toThrow();
+      expect(() => Polygon.parser.parseToEnd('polygon(invalid)')).toThrow();
       expect(() =>
-        Polygon.parse.parseToEnd('polygon(0% 0%, invalid)'),
+        Polygon.parser.parseToEnd('polygon(0% 0%, invalid)'),
       ).toThrow();
     });
   });
 
   describe('Path', () => {
     it('should parse valid paths', () => {
-      expect(Path.parse.parseToEnd('path("M0,0 L100,100")')).toEqual(
+      expect(Path.parser.parseToEnd('path("M0,0 L100,100")')).toEqual(
         new Path('M0,0 L100,100'),
       );
-      expect(Path.parse.parseToEnd('path(evenodd, "M0,0 L100,100")')).toEqual(
+      expect(Path.parser.parseToEnd('path(evenodd, "M0,0 L100,100")')).toEqual(
         new Path('M0,0 L100,100', 'evenodd'),
       );
     });
 
     it('should not parse invalid paths', () => {
-      expect(() => Path.parse.parseToEnd('path(invalid)')).toThrow();
-      expect(() => Path.parse.parseToEnd('path()')).toThrow();
+      expect(() => Path.parser.parseToEnd('path(invalid)')).toThrow();
+      expect(() => Path.parser.parseToEnd('path()')).toThrow();
     });
   });
 });

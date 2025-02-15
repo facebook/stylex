@@ -24,7 +24,7 @@ export class Frequency {
     return `${this.value}${this.unit}`;
   }
   static UNITS: $ReadOnlyArray<'Hz' | 'KHz'> = ['Hz', 'KHz'];
-  static get parse(): TokenParser<Frequency> {
+  static get parser(): TokenParser<Frequency> {
     return TokenParser.tokens.Dimension.map((val) =>
       val[4].unit === 'Hz' || val[4].unit === 'KHz'
         ? [val[4].value, val[4].unit]

@@ -14,4 +14,4 @@ import { Percentage } from './common-types';
 export type LengthPercentage = Length | Percentage;
 
 export const lengthPercentage: TokenParser<LengthPercentage> =
-  TokenParser.oneOf(Percentage.parse, Length.parse);
+  TokenParser.oneOf(Percentage.parser, Length.parser);

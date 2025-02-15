@@ -20,7 +20,7 @@ export class DashedIdentifier {
     return this.value;
   }
 
-  static get parse(): TokenParser<DashedIdentifier> {
+  static get parser(): TokenParser<DashedIdentifier> {
     return TokenParser.tokens.Ident.map((token): string => token[4].value)
       .where(
         (str: string): implies str is string =>

@@ -22,7 +22,7 @@ lengthSuite
     LengthLegacy.parse.parseToEnd(lengthString);
   })
   .add('Token Parser', () => {
-    LengthNew.parse.parseToEnd(lengthString);
+    LengthNew.parser.parseToEnd(lengthString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

@@ -22,7 +22,7 @@ basicShapeSuite
     InsetLegacy.parse.parseToEnd(basicShapeString);
   })
   .add('Token Parser', () => {
-    InsetNew.parse.parseToEnd(basicShapeString);
+    InsetNew.parser.parseToEnd(basicShapeString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));

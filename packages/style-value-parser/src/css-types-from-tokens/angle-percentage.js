@@ -13,4 +13,4 @@ import { Angle } from './angle';
 import { Percentage } from './common-types';
 
 export const anglePercentage: TokenParser<Angle | Percentage> =
-  TokenParser.oneOf(Angle.parse, Percentage.parse);
+  TokenParser.oneOf(Angle.parser, Percentage.parser);
