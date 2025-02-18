@@ -1604,6 +1604,12 @@ const validStyleMapping: $ReadOnly<{ [key: string]: ?string }> = {
   paddingEnd: 'paddingInlineEnd',
   paddingHorizontal: 'paddingInline',
   paddingVertical: 'paddingBlock',
+  borderStartWidth: 'borderInlineStartWidth',
+  borderEndWidth: 'borderInlineEndWidth',
+  borderStartStyle: 'borderInlineStartStyle',
+  borderEndStyle: 'borderInlineEndStyle',
+  borderStartColor: 'borderInlineStartColor',
+  borderEndColor: 'borderInlineEndColor',
 };
 
 const SVGProperties = {
