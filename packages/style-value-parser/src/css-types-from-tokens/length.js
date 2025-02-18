@@ -9,9 +9,9 @@
 
 import { TokenParser } from '../core2';
 
-const UNITS_BASED_ON_FONT = ['ch', 'em', 'ex', 'ic', 'lh', 'rem', 'rlh'];
+export const UNITS_BASED_ON_FONT = ['ch', 'em', 'ex', 'ic', 'lh', 'rem', 'rlh'];
 
-const UNITS_BASED_ON_VIEWPORT = [
+export const UNITS_BASED_ON_VIEWPORT = [
   'vh',
   'svh',
   'lvh',
@@ -30,9 +30,16 @@ const UNITS_BASED_ON_VIEWPORT = [
   'dvmax',
 ];
 
-const UNITS_BASED_ON_CONTAINER = ['cqw', 'cqi', 'cqh', 'cqb', 'cqmin', 'cqmax'];
+export const UNITS_BASED_ON_CONTAINER = [
+  'cqw',
+  'cqi',
+  'cqh',
+  'cqb',
+  'cqmin',
+  'cqmax',
+];
 
-const UNITS_BASED_ON_ABSOLUTE_UNITS = [
+export const UNITS_BASED_ON_ABSOLUTE_UNITS = [
   'px',
   'cm',
   'mm',
