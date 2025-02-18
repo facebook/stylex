@@ -335,12 +335,17 @@ export class TokenParser<+T> {
   };
 
   // T will be a union of the output types of the parsers
-  static oneOf<T>(...parsers: $ReadOnlyArray<TokenParser<T>>): TokenParser<T> {
+  static oneOf<T>(
+    ...parsers: $ReadOnlyArray<TokenParser<T> | (() => TokenParser<T>)>
+  ): TokenParser<T> {
     return new TokenParser((input): T | Error => {
       const errors = [];
       const index = input.currentIndex;
       for (const parser of parsers) {
-        const output = parser.run(input);
+        const output =
+          typeof parser === 'function'
+            ? parser().run(input)
+            : parser.run(input);
         if (!(output instanceof Error)) {
           return output;
         }
