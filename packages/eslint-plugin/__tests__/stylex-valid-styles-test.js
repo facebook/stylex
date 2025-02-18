@@ -687,6 +687,60 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
     },
     {
+      code: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            borderStartWidth: '2px',
+            borderEndWidth: '3px',
+            borderStartStyle: 'solid',
+            borderEndStyle: 'dashed',
+            borderStartColor: 'red',
+            borderEndColor: 'blue',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The key "borderStartWidth" is not a standard CSS property. Did you mean "borderInlineStartWidth"?',
+        },
+        {
+          message:
+            'The key "borderEndWidth" is not a standard CSS property. Did you mean "borderInlineEndWidth"?',
+        },
+        {
+          message:
+            'The key "borderStartStyle" is not a standard CSS property. Did you mean "borderInlineStartStyle"?',
+        },
+        {
+          message:
+            'The key "borderEndStyle" is not a standard CSS property. Did you mean "borderInlineEndStyle"?',
+        },
+        {
+          message:
+            'The key "borderStartColor" is not a standard CSS property. Did you mean "borderInlineStartColor"?',
+        },
+        {
+          message:
+            'The key "borderEndColor" is not a standard CSS property. Did you mean "borderInlineEndColor"?',
+        },
+      ],
+      output: `
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            borderInlineStartWidth: '2px',
+            borderInlineEndWidth: '3px',
+            borderInlineStartStyle: 'solid',
+            borderInlineEndStyle: 'dashed',
+            borderInlineStartColor: 'red',
+            borderInlineEndColor: 'blue',
+          },
+        });
+      `,
+    },
+    {
       code: "import stylex from 'stylex'; stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
