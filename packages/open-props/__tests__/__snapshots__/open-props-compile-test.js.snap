@@ -292,141 +292,141 @@ import './easings.stylex';
 import { easings } from './easings.stylex';
 export const animations = {
   fadeIn: {
-    animationName: "xh1ldnn",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "xh1ldnn",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   fadeInBloom: {
-    animationName: "x4roml5",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x4roml5",
+    k44tkh: "x1c74tu6",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   fadeOut: {
-    animationName: "x5v1hgg",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x5v1hgg",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   fadeOutBloom: {
-    animationName: "x171obl0",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x171obl0",
+    k44tkh: "x1c74tu6",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   scaleUp: {
-    animationName: "x1ixqlkn",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x1ixqlkn",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   scaleDown: {
-    animationName: "xoj00vt",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "xoj00vt",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutUp: {
-    animationName: "xqd33nb",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "xqd33nb",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutDown: {
-    animationName: "xkgcxt4",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "xkgcxt4",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutRight: {
-    animationName: "x1eqxhb2",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x1eqxhb2",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideOutLeft: {
-    animationName: "x1dqchgh",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x1dqchgh",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInUp: {
-    animationName: "x1je50gr",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x1je50gr",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInDown: {
-    animationName: "x3kizir",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x3kizir",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInRight: {
-    animationName: "xpcdybh",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "xpcdybh",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   slideInLeft: {
-    animationName: "x1ccho7t",
-    animationDuration: "xxkxylk",
-    animationTimingFunction: "xnuir8f",
+    kKVMdj: "x1ccho7t",
+    k44tkh: "xxkxylk",
+    kyAemX: "xnuir8f",
     $$css: true
   },
   shakeX: {
-    animationName: "xvzz9k2",
-    animationDuration: "x7v9bd0",
-    animationTimingFunction: "x1i0jbje",
+    kKVMdj: "xvzz9k2",
+    k44tkh: "x7v9bd0",
+    kyAemX: "x1i0jbje",
     $$css: true
   },
   shakeY: {
-    animationName: "x17f3kfx",
-    animationDuration: "x7v9bd0",
-    animationTimingFunction: "x1i0jbje",
+    kKVMdj: "x17f3kfx",
+    k44tkh: "x7v9bd0",
+    kyAemX: "x1i0jbje",
     $$css: true
   },
   spin: {
-    animationName: "x1o9ub63",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "x1esw782",
-    animationIterationCount: "xa4qsjk",
+    kKVMdj: "x1o9ub63",
+    k44tkh: "x1c74tu6",
+    kyAemX: "x1esw782",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   ping: {
-    animationName: "x1k7hdbq",
-    animationDuration: "xz5h9r3",
-    animationTimingFunction: "x1de9pr8",
-    animationIterationCount: "xa4qsjk",
+    kKVMdj: "x1k7hdbq",
+    k44tkh: "xz5h9r3",
+    kyAemX: "x1de9pr8",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   blink: {
-    animationName: "xr02afx",
-    animationDuration: "x1q3qbx4",
-    animationTimingFunction: "x1de9pr8",
-    animationIterationCount: "xa4qsjk",
+    kKVMdj: "xr02afx",
+    k44tkh: "x1q3qbx4",
+    kyAemX: "x1de9pr8",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   float: {
-    animationName: "x1mfaoq1",
-    animationDuration: "x7t6ubo",
-    animationTimingFunction: "x1pcntoe",
-    animationIterationCount: "xa4qsjk",
+    kKVMdj: "x1mfaoq1",
+    k44tkh: "x7t6ubo",
+    kyAemX: "x1pcntoe",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   bounce: {
-    animationName: "x3gult4",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "x84ng4n",
-    animationIterationCount: "xa4qsjk",
+    kKVMdj: "x3gult4",
+    k44tkh: "x1c74tu6",
+    kyAemX: "x84ng4n",
+    ko0y90: "xa4qsjk",
     $$css: true
   },
   pulse: {
-    animationName: "x179usdr",
-    animationDuration: "x1c74tu6",
-    animationTimingFunction: "x1de9pr8",
-    animationIterationCount: "xa4qsjk",
+    kKVMdj: "x179usdr",
+    k44tkh: "x1c74tu6",
+    kyAemX: "x1de9pr8",
+    ko0y90: "xa4qsjk",
     $$css: true
   }
 };"
