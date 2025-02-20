@@ -69,15 +69,15 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
 
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
-  aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
-  genConditionalClasses: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
-  rewriteAliases?: boolean,
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
+  genConditionalClasses: boolean,
   unstable_moduleResolution?: ?ModuleResolution,
+  aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  rewriteAliases?: boolean,
   ...
 }>;
 
@@ -179,12 +179,12 @@ export default class StateManager {
       );
 
     // prettier-ignore
-    const runtimeInjection: StyleXStateOptions['runtimeInjection']
-      = configRuntimeInjection === true ?
+    const runtimeInjection: StyleXStateOptions['runtimeInjection'] 
+      = configRuntimeInjection === true ? 
         DEFAULT_INJECT_PATH
-      : configRuntimeInjection === false ?
+      : configRuntimeInjection === false ? 
         undefined
-      :
+      : 
         configRuntimeInjection
       ;
 
@@ -278,22 +278,22 @@ export default class StateManager {
 
     const opts: StyleXStateOptions = {
       aliases,
-      classNamePrefix,
-      debug,
-      definedStylexCSSVariables: {},
       dev,
-      genConditionalClasses,
+      debug,
+      test,
+      runtimeInjection,
+      classNamePrefix,
       importSources,
+      definedStylexCSSVariables: {},
+      genConditionalClasses,
+      useRemForFontSize,
+      styleResolution,
+      unstable_moduleResolution,
+      treeshakeCompensation,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'
           ? options.rewriteAliases
           : false,
-      runtimeInjection,
-      styleResolution,
-      test,
-      treeshakeCompensation,
-      unstable_moduleResolution,
-      useRemForFontSize,
     };
     return opts;
   }
@@ -432,10 +432,6 @@ export default class StateManager {
     );
 
     return importName;
-  }
-
-  get isDebug(): boolean {
-    return !!this.options.debug;
   }
 
   get isDev(): boolean {

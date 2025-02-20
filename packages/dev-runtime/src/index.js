@@ -41,7 +41,6 @@ type ReturnType = {
     >
   ) => $ReadOnly<{
     className?: string,
-    'data-style-src'?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
   }>,
   attrs: (
@@ -52,7 +51,6 @@ type ReturnType = {
     >
   ) => $ReadOnly<{
     class?: string,
-    'data-style-src'?: string,
     style?: string,
   }>,
   create: StyleX$Create,

@@ -57,7 +57,6 @@ correctTheme as Theme<typeof buttonTokens, string>;
 const result: string = legacyMerge(correctTheme);
 const result2: $ReadOnly<{
   className?: string,
-  'data-style-src'?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
 }> = stylex.props(correctTheme);
 
