@@ -229,36 +229,89 @@ describe('Test CSS Type: @media queries', () => {
     `);
   });
 
-  test.skip('@media (color)', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (color)'),
-    ).toMatchInlineSnapshot();
+  test('@media (color)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media (color)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySingleWordCondition {
+                    "keyValue": "color",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
-  test.skip('@media (color-index)', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (color-index)'),
-    ).toMatchInlineSnapshot();
+  test('@media (color-index)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media (color-index)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySingleWordCondition {
+                    "keyValue": "color-index",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
-  test.skip('@media (monochrome)', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (monochrome)'),
-    ).toMatchInlineSnapshot();
-  });
-
-  // I don't think this is valid
-  test.skip('@media (resolution)', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (resolution)'),
-    ).toMatchInlineSnapshot();
+  test('@media (monochrome)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media (monochrome)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySingleWordCondition {
+                    "keyValue": "monochrome",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
   // According to MDN, it should be `(grid: 1)` or `(grid: 0)`
-  test.skip('@media (grid)', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (grid)'),
-    ).toMatchInlineSnapshot();
+  test('@media (grid)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media (grid)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySingleWordCondition {
+                    "keyValue": "grid",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
   test('@media (update: fast)', () => {
@@ -659,12 +712,47 @@ describe('Test CSS Type: @media queries', () => {
     ).toMatchInlineSnapshot();
   });
 
-  test.skip('@media (color) and (min-width: 400px), screen and (max-width: 700px)', () => {
+  test('@media (color) and (min-width: 400px), screen and (max-width: 700px)', () => {
     expect(
       MediaQuery.parser.parseToEnd(
         '@media (color) and (min-width: 400px), screen and (max-width: 700px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySingleWordCondition {
+                    "keyValue": "color",
+                  },
+                },
+                MediaRule {
+                  "rules": MediaQuerySinglePair {
+                    "key": "min-width",
+                    "value": "400px",
+                  },
+                },
+              ],
+            },
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaQueryKeywords {
+                  "key": "screen",
+                },
+                MediaRule {
+                  "rules": MediaQuerySinglePair {
+                    "key": "max-width",
+                    "value": "700px",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
   test.skip('@media not all and (monochrome)', () => {
