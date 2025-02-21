@@ -48,7 +48,7 @@ export class MediaQuery {
 }
 
 export class MediaRule {
-  rules: NotMediaRule | MediaQuerySinglePair;
+  rules: NotMediaRule | MediaQuerySinglePair | MediaQuerySingleWordCondition;
   constructor(rules: this['rules']) {
     this.rules = rules;
   }
@@ -59,6 +59,9 @@ export class MediaRule {
     return TokenParser.oneOf(
       NotMediaRule.parser.map((notRule) => new MediaRule(notRule)),
       MediaQuerySinglePair.parser.map(
+        (singleRule) => new MediaRule(singleRule),
+      ),
+      MediaQuerySingleWordCondition.parser.map(
         (singleRule) => new MediaRule(singleRule),
       ),
     );
@@ -86,6 +89,32 @@ export class MediaQueryKeywords {
   }
 }
 
+export class MediaQuerySingleWordCondition {
+  keyValue: 'color' | 'monochrome' | 'grid' | 'color-index';
+  constructor(keyValue: this['keyValue']) {
+    this.keyValue = keyValue;
+  }
+  toString(): string {
+    return `(${this.keyValue})`;
+  }
+  static get parser(): TokenParser<MediaQuerySingleWordCondition> {
+    return TokenParser.tokens.Ident.map(
+      (token) => token[4].value,
+      '.stringValue',
+    )
+      .surroundedBy(TokenParser.tokens.OpenParen, TokenParser.tokens.CloseParen)
+      .where(
+        (key) =>
+          key === 'color' ||
+          key === 'monochrome' ||
+          key === 'grid' ||
+          key === 'color-index',
+        '=== "color" | "monochrome" | "grid" | "color-index"',
+      )
+      .map((key) => new MediaQuerySingleWordCondition(key));
+  }
+}
+
 export class MediaQuerySinglePair {
   key: string;
   value: TokenDimension[4] | string | [number, '/', number];
@@ -94,7 +123,10 @@ export class MediaQuerySinglePair {
     this.value = value;
   }
   toString(): string {
-    return `(${this.key}: ${this.value.toString()})`;
+    const value = Array.isArray(this.value)
+      ? this.value.join(' ')
+      : this.value.toString();
+    return `(${this.key}: ${value})`;
   }
   static get parser(): TokenParser<MediaQuerySinglePair> {
     return TokenParser.sequence(
@@ -124,7 +156,7 @@ export class MediaQuerySinglePair {
 }
 
 export class NotMediaRule {
-  rule: MediaQuerySinglePair;
+  rule: MediaQuerySinglePair | MediaQuerySingleWordCondition;
   constructor(rule: this['rule']) {
     this.rule = rule;
   }
@@ -139,7 +171,10 @@ export class NotMediaRule {
         '.stringValue',
       ).where((key) => key === 'not'),
       TokenParser.tokens.Whitespace,
-      MediaQuerySinglePair.parser,
+      TokenParser.oneOf(
+        MediaQuerySinglePair.parser,
+        MediaQuerySingleWordCondition.parser,
+      ),
       TokenParser.tokens.CloseParen,
     ).map(([_open, _not, _space, rule, _close]) => new NotMediaRule(rule));
   }
