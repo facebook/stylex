@@ -12,6 +12,7 @@ import type { StyleXOptions } from '../common-types';
 export const defaultOptions: StyleXOptions = {
   dev: false,
   debug: false,
+  enableDebugClassNames: true,
   useRemForFontSize: true,
   test: false,
   classNamePrefix: 'x',
