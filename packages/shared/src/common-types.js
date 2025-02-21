@@ -38,6 +38,7 @@ export type FlatCompiledStyles = $ReadOnly<{
 export type StyleXOptions = $ReadOnly<{
   classNamePrefix: string,
   debug: ?boolean,
+  debugClassNamePrefix: ?boolean,
   definedStylexCSSVariables?: { [key: string]: mixed },
   dev: boolean,
   styleResolution:

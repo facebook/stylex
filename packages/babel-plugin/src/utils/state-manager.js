@@ -163,6 +163,13 @@ export default class StateManager {
       'options.debug',
     );
 
+    const enableDebugClassNames: StyleXStateOptions['enableDebugClassNames'] = z.logAndDefault(
+      z.boolean(),
+      options.enableDebugClassNames ?? true,
+      true,
+      'options.enableDebugClassNames',
+    );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
       options.test ?? false,
