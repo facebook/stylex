@@ -70,6 +70,7 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  enableDebugClassNames?: boolean,
   genConditionalClasses: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
@@ -162,6 +163,14 @@ export default class StateManager {
       false,
       'options.debug',
     );
+
+    const enableDebugClassNames: StyleXStateOptions['enableDebugClassNames'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableDebugClassNames ?? true,
+        true,
+        'options.enableDebugClassNames',
+      );
 
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
@@ -282,6 +291,7 @@ export default class StateManager {
       debug,
       definedStylexCSSVariables: {},
       dev,
+      enableDebugClassNames,
       genConditionalClasses,
       importSources,
       rewriteAliases:
