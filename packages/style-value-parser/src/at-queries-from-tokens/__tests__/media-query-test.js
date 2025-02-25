@@ -58,6 +58,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "width",
+                    "sep": ":",
                     "value": "100px",
                   },
                 },
@@ -80,6 +81,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "50em",
                   },
                 },
@@ -102,6 +104,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
@@ -133,6 +136,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "400px",
                   },
                 },
@@ -158,12 +162,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-height",
+                    "sep": ":",
                     "value": "600px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
@@ -192,6 +198,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "device-aspect-ratio",
+                    "sep": ":",
                     "value": [
                       16,
                       "/",
@@ -218,6 +225,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "device-height",
+                    "sep": ":",
                     "value": "500px",
                   },
                 },
@@ -325,6 +333,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "update",
+                    "sep": ":",
                     "value": "fast",
                   },
                 },
@@ -347,6 +356,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "overflow-block",
+                    "sep": ":",
                     "value": "scroll",
                   },
                 },
@@ -369,6 +379,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "display-mode",
+                    "sep": ":",
                     "value": "fullscreen",
                   },
                 },
@@ -391,6 +402,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "scripting",
+                    "sep": ":",
                     "value": "enabled",
                   },
                 },
@@ -413,6 +425,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "hover",
                   },
                 },
@@ -435,6 +448,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-hover",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -457,6 +471,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "pointer",
+                    "sep": ":",
                     "value": "coarse",
                   },
                 },
@@ -479,6 +494,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-pointer",
+                    "sep": ":",
                     "value": "fine",
                   },
                 },
@@ -501,6 +517,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "light-level",
+                    "sep": ":",
                     "value": "dim",
                   },
                 },
@@ -523,6 +540,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "inverted-colors",
+                    "sep": ":",
                     "value": "inverted",
                   },
                 },
@@ -546,6 +564,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-motion",
+                    "sep": ":",
                     "value": "reduce",
                   },
                 },
@@ -568,6 +587,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-contrast",
+                    "sep": ":",
                     "value": "more",
                   },
                 },
@@ -590,6 +610,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "forced-colors",
+                    "sep": ":",
                     "value": "active",
                   },
                 },
@@ -615,6 +636,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-transparency",
+                    "sep": ":",
                     "value": "reduce",
                   },
                 },
@@ -640,6 +662,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "portrait",
                   },
                 },
@@ -650,6 +673,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
@@ -675,6 +699,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "500px",
                   },
                 },
@@ -685,6 +710,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "600px",
                   },
                 },
@@ -696,20 +722,74 @@ describe('Test CSS Type: @media queries', () => {
     `);
   });
 
-  test.skip('@media (width >= 400px) and (width <= 700px)', () => {
+  test('@media (width >= 400px) and (width <= 700px)', () => {
     expect(
       MediaQuery.parser.parseToEnd(
         '@media (width >= 400px) and (width <= 700px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySinglePair {
+                    "key": "width",
+                    "sep": ">=",
+                    "value": "400px",
+                  },
+                },
+                MediaRule {
+                  "rules": MediaQuerySinglePair {
+                    "key": "width",
+                    "sep": "<=",
+                    "value": "700px",
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
-  test.skip('@media (height > 500px) and (aspect-ratio: 16/9)', () => {
+  test('@media (height > 500px) and (aspect-ratio: 16/9)', () => {
     expect(
       MediaQuery.parser.parseToEnd(
         '@media (height > 500px) and (aspect-ratio: 16/9)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": OrSeparatedMediaRules {
+          "queries": [
+            AndSeparatedMediaRules {
+              "queries": [
+                MediaRule {
+                  "rules": MediaQuerySinglePair {
+                    "key": "height",
+                    "sep": ">",
+                    "value": "500px",
+                  },
+                },
+                MediaRule {
+                  "rules": MediaQuerySinglePair {
+                    "key": "aspect-ratio",
+                    "sep": ":",
+                    "value": [
+                      16,
+                      "/",
+                      9,
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+    `);
   });
 
   test('@media (color) and (min-width: 400px), screen and (max-width: 700px)', () => {
@@ -731,6 +811,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "400px",
                   },
                 },
@@ -744,6 +825,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "700px",
                   },
                 },
@@ -775,6 +857,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-aspect-ratio",
+                    "sep": ":",
                     "value": [
                       3,
                       "/",
@@ -785,6 +868,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-aspect-ratio",
+                    "sep": ":",
                     "value": [
                       16,
                       "/",
@@ -814,12 +898,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-resolution",
+                    "sep": ":",
                     "value": "300dpi",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-resolution",
+                    "sep": ":",
                     "value": "600dpi",
                   },
                 },
@@ -842,6 +928,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "scripting",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -864,6 +951,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "update",
+                    "sep": ":",
                     "value": "slow",
                   },
                 },
@@ -886,6 +974,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "overflow-inline",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -908,6 +997,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "display-mode",
+                    "sep": ":",
                     "value": "minimal-ui",
                   },
                 },
@@ -930,6 +1020,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -952,6 +1043,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-hover",
+                    "sep": ":",
                     "value": "hover",
                   },
                 },
@@ -974,6 +1066,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "pointer",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -996,6 +1089,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-pointer",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -1018,6 +1112,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "light-level",
+                    "sep": ":",
                     "value": "washed",
                   },
                 },
@@ -1040,6 +1135,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "inverted-colors",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -1065,6 +1161,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-motion",
+                    "sep": ":",
                     "value": "no-preference",
                   },
                 },
@@ -1088,6 +1185,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-contrast",
+                    "sep": ":",
                     "value": "no-preference",
                   },
                 },
@@ -1110,6 +1208,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "forced-colors",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -1135,6 +1234,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-transparency",
+                    "sep": ":",
                     "value": "no-preference",
                   },
                 },
@@ -1175,6 +1275,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "aspect-ratio",
+                    "sep": ":",
                     "value": [
                       16,
                       "/",
@@ -1201,6 +1302,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "device-aspect-ratio",
+                    "sep": ":",
                     "value": [
                       16,
                       "/",
@@ -1227,6 +1329,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-resolution",
+                    "sep": ":",
                     "value": "150dpi",
                   },
                 },
@@ -1249,6 +1352,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-resolution",
+                    "sep": ":",
                     "value": "600dppx",
                   },
                 },
@@ -1271,6 +1375,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "color-gamut",
+                    "sep": ":",
                     "value": "srgb",
                   },
                 },
@@ -1293,6 +1398,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "display-mode",
+                    "sep": ":",
                     "value": "standalone",
                   },
                 },
@@ -1318,12 +1424,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "pointer",
+                    "sep": ":",
                     "value": "fine",
                   },
                 },
@@ -1346,6 +1454,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-color-scheme",
+                    "sep": ":",
                     "value": "dark",
                   },
                 },
@@ -1371,12 +1480,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-motion",
+                    "sep": ":",
                     "value": "reduce",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "update",
+                    "sep": ":",
                     "value": "slow",
                   },
                 },
@@ -1400,6 +1511,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "width",
+                    "sep": ":",
                     "value": "500px",
                   },
                 },
@@ -1410,6 +1522,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "height",
+                    "sep": ":",
                     "value": "400px",
                   },
                 },
@@ -1443,12 +1556,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "768px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "991px",
                   },
                 },
@@ -1474,12 +1589,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "1200px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
@@ -1505,18 +1622,21 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "992px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "1199px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "pointer",
+                    "sep": ":",
                     "value": "fine",
                   },
                 },
@@ -1542,18 +1662,21 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "576px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "767px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -1579,6 +1702,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "576px",
                   },
                 },
@@ -1589,12 +1713,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "portrait",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "767px",
                   },
                 },
@@ -1620,12 +1746,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "768px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "991px",
                   },
                 },
@@ -1636,6 +1764,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
@@ -1661,12 +1790,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "992px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "1199px",
                   },
                 },
@@ -1677,12 +1808,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "pointer",
+                    "sep": ":",
                     "value": "fine",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "hover",
                   },
                 },
@@ -1708,12 +1841,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "576px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "767px",
                   },
                 },
@@ -1724,12 +1859,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-pointer",
+                    "sep": ":",
                     "value": "coarse",
                   },
                 },
@@ -1755,6 +1892,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "576px",
                   },
                 },
@@ -1765,12 +1903,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "portrait",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "767px",
                   },
                 },
@@ -1781,6 +1921,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-color-scheme",
+                    "sep": ":",
                     "value": "dark",
                   },
                 },
@@ -1806,12 +1947,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "768px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "991px",
                   },
                 },
@@ -1822,12 +1965,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "orientation",
+                    "sep": ":",
                     "value": "landscape",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "update",
+                    "sep": ":",
                     "value": "fast",
                   },
                 },
@@ -1838,6 +1983,7 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-motion",
+                    "sep": ":",
                     "value": "reduce",
                   },
                 },
@@ -1863,12 +2009,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "992px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "1199px",
                   },
                 },
@@ -1879,12 +2027,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "pointer",
+                    "sep": ":",
                     "value": "fine",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "hover",
                   },
                 },
@@ -1895,12 +2045,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-pointer",
+                    "sep": ":",
                     "value": "coarse",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-hover",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
@@ -1926,12 +2078,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "min-width",
+                    "sep": ":",
                     "value": "576px",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "max-width",
+                    "sep": ":",
                     "value": "767px",
                   },
                 },
@@ -1942,12 +2096,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "hover",
+                    "sep": ":",
                     "value": "none",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "any-pointer",
+                    "sep": ":",
                     "value": "coarse",
                   },
                 },
@@ -1958,12 +2114,14 @@ describe('Test CSS Type: @media queries', () => {
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "prefers-reduced-transparency",
+                    "sep": ":",
                     "value": "reduce",
                   },
                 },
                 MediaRule {
                   "rules": MediaQuerySinglePair {
                     "key": "forced-colors",
+                    "sep": ":",
                     "value": "active",
                   },
                 },

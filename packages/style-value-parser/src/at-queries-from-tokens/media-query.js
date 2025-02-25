@@ -117,9 +117,11 @@ export class MediaQuerySingleWordCondition {
 
 export class MediaQuerySinglePair {
   key: string;
+  sep: string;
   value: TokenDimension[4] | string | [number, '/', number];
-  constructor(key: this['key'], value: this['value']) {
+  constructor(key: this['key'], sep: this['sep'], value: this['value']) {
     this.key = key;
+    this.sep = sep;
     this.value = value;
   }
   toString(): string {
@@ -131,8 +133,22 @@ export class MediaQuerySinglePair {
   static get parser(): TokenParser<MediaQuerySinglePair> {
     return TokenParser.sequence(
       TokenParser.tokens.OpenParen,
+
       TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue'),
-      TokenParser.tokens.Colon,
+
+      TokenParser.oneOf<string>(
+        TokenParser.tokens.Colon.map(() => ':'),
+        TokenParser.sequence(
+          TokenParser.tokens.Delim.where(
+            (token): implies token is TokenDelim =>
+              token[4].value === '>' || token[4].value === '<',
+          ).map((token) => token[4].value),
+          TokenParser.tokens.Delim.where(
+            (token): implies token is TokenDelim => token[4].value === '=',
+          ).optional.map((token) => token?.[4].value ?? ''),
+        ).map(([op, value]) => `${op}${value}`),
+      ),
+
       TokenParser.oneOf(
         TokenParser.tokens.Dimension.map(
           (token) => `${token[4].value}${token[4].unit}`,
@@ -146,11 +162,13 @@ export class MediaQuerySinglePair {
           TokenParser.tokens.Number.map((token) => token[4].value),
         ).separatedBy(TokenParser.tokens.Whitespace.optional),
       ),
+
       TokenParser.tokens.CloseParen,
     )
       .separatedBy(TokenParser.tokens.Whitespace.optional)
       .map(
-        ([_a, key, _c, value, _d, _e]) => new MediaQuerySinglePair(key, value),
+        ([_openParen, key, sep, value, _closeParen]) =>
+          new MediaQuerySinglePair(key, sep, value),
       );
   }
 }
