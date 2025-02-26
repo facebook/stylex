@@ -94,6 +94,7 @@ describe('StateManager config parsing', () => {
       expect(stateManager.options.debug).toBe(true);
       // automatically enabled in 'debug'
       expect(stateManager.options.enableDebugClassNames).toBe(true);
+      expect(stateManager.options.enableDebugDataProp).toBe(true);
       expect(warnings).toEqual([]);
     });
   });
@@ -125,9 +126,11 @@ describe('StateManager config parsing', () => {
     test('true value', () => {
       const stateManager = makeState({ dev: true });
       expect(stateManager.options.dev).toBe(true);
-      // debug is currently automatically enabled in 'dev'
+      // debug is enabled by default in 'dev'
       expect(stateManager.options.debug).toBe(true);
-      // runtimeInjection is currently automatically enabled in 'dev'
+      // enableDevClassNames is disabled by default in 'dev'
+      expect(stateManager.options.enableDevClassNames).toBe(false);
+      // runtimeInjection is enabled by default in 'dev'
       expect(stateManager.options.runtimeInjection).toBe(
         '@stylexjs/stylex/lib/stylex-inject',
       );
@@ -168,6 +171,80 @@ describe('StateManager config parsing', () => {
         enableDebugClassNames: true,
       });
       expect(stateManager.options.enableDebugClassNames).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+  });
+
+  describe('"enableDebugDataProp" option (boolean)', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({ enableDebugDataProp: 'false' });
+      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(warnings).toEqual([
+        [
+          '[@stylexjs/babel-plugin]',
+          'Expected (options.enableDebugDataProp) to be a boolean, but got `"false"`.',
+        ],
+      ]);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+
+    test('false value', () => {
+      const stateManager = makeState({
+        debug: true,
+        enableDebugDataProp: false,
+      });
+      expect(stateManager.options.enableDebugDataProp).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('true value', () => {
+      const stateManager = makeState({
+        debug: true,
+        enableDebugDataProp: true,
+      });
+      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+  });
+
+  describe('"enableDevClassNames" option (boolean)', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({ enableDevClassNames: 'true' });
+      expect(stateManager.options.enableDevClassNames).toBe(false);
+      expect(warnings).toEqual([
+        [
+          '[@stylexjs/babel-plugin]',
+          'Expected (options.enableDevClassNames) to be a boolean, but got `"true"`.',
+        ],
+      ]);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.enableDevClassNames).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('false value', () => {
+      const stateManager = makeState({
+        debug: true,
+        enableDevClassNames: false,
+      });
+      expect(stateManager.options.enableDevClassNames).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('true value', () => {
+      const stateManager = makeState({
+        debug: true,
+        enableDevClassNames: true,
+      });
+      expect(stateManager.options.enableDevClassNames).toBe(true);
       expect(warnings).toEqual([]);
     });
   });

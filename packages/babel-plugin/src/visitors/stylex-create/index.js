@@ -18,7 +18,10 @@ import {
   type InjectableStyle,
 } from '@stylexjs/shared';
 import { addSourceMapData } from '../../utils/add-sourcemap-data';
-import { convertToTestStyles } from '../../utils/dev-classname';
+import {
+  convertToTestStyles,
+  injectDevClassNames,
+} from '../../utils/dev-classname';
 import {
   convertObjectToAST,
   removeObjectsWithSpreads,
@@ -150,13 +153,19 @@ export default function transformStyleXCreate(
       }
     }
 
+    if (state.isDebug && state.opts.enableDebugDataProp) {
+      compiledStyles = {
+        ...addSourceMapData(compiledStyles, path, state),
+      };
+    }
+    if (state.isDev && state.opts.enableDevClassNames) {
+      compiledStyles = {
+        ...injectDevClassNames(compiledStyles, varName, state),
+      };
+    }
     if (state.isTest) {
       compiledStyles = {
         ...convertToTestStyles(compiledStyles, varName, state),
-      };
-    } else if (state.isDebug) {
-      compiledStyles = {
-        ...addSourceMapData(compiledStyles, path, state),
       };
     }
 

@@ -71,6 +71,8 @@ export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
   enableDebugClassNames?: boolean,
+  enableDebugDataProp?: boolean,
+  enableDevClassNames?: boolean,
   genConditionalClasses: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
@@ -170,6 +172,22 @@ export default class StateManager {
         options.enableDebugClassNames ?? true,
         true,
         'options.enableDebugClassNames',
+      );
+
+    const enableDebugDataProp: StyleXStateOptions['enableDebugDataProp'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableDebugDataProp ?? true,
+        true,
+        'options.enableDebugDataProp',
+      );
+
+    const enableDevClassNames: StyleXStateOptions['enableDevClassNames'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableDevClassNames ?? false,
+        false,
+        'options.enableDevClassNames',
       );
 
     const test: StyleXStateOptions['test'] = z.logAndDefault(
@@ -292,6 +310,8 @@ export default class StateManager {
       definedStylexCSSVariables: {},
       dev,
       enableDebugClassNames,
+      enableDebugDataProp,
+      enableDevClassNames,
       genConditionalClasses,
       importSources,
       rewriteAliases:
@@ -442,6 +462,10 @@ export default class StateManager {
     );
 
     return importName;
+  }
+
+  get opts(): StyleXStateOptions {
+    return { ...this.options };
   }
 
   get isDebug(): boolean {

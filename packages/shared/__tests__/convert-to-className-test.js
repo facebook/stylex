@@ -31,7 +31,22 @@ describe('convert-to-className test', () => {
     const className = result[1];
     expect(className.startsWith('margin-x')).toBe(true);
   });
-  test('prefixes classname with prefer only when options.debug is false', () => {
+  test('prefixes classname with prefix only when options.enableDebugClassNames is false', () => {
+    const options = {
+      classNamePrefix: 'x',
+      dev: false,
+      debug: true,
+      enableDebugClassNames: false,
+      styleResolution: 'application-order',
+      test: false,
+      useRemForFontSize: false,
+    };
+    const result = convertStyleToClassName(['margin', 10], [], [], options);
+    const className = result[1];
+    expect(className.startsWith('x')).toBe(true);
+    expect(className.startsWith('margin-x')).toBe(false);
+  });
+  test('prefixes classname with prefix only when options.debug is false', () => {
     const options = {
       classNamePrefix: 'x',
       dev: false,
