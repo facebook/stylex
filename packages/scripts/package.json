@@ -9,15 +9,10 @@
     "rewrite-imports": "./rewrite-imports.js"
   },
   "scripts": {
-    "release": "./create-release.js",
-    "size": "./size.js",
-    "size:compare": "./size-compare.js"
+    "release": "./create-release.js"
   },
   "dependencies": {
-    "brotli-size": "^4.0.0",
-    "clean-css": "^5.3.3",
     "flow-api-translator": "0.26.0",
-    "terser": "^5.36.0",
     "yargs": "17.7.2"
   }
 }

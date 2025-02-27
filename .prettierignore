@@ -8,3 +8,4 @@ lib
 node_modules
 *.mdx
 **/__mocks__/snapshot*
+packages/benchmarks/size/fixture/lotsOfStyles.js

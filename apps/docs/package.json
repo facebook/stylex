@@ -4,9 +4,8 @@
   "version": "0.0.0",
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "prebuild": "rimraf ./build ./docusaurus",
-    "build": "cross-env NODE_ENV=production docusaurus build",
+    "app:build": "rimraf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build",
+    "app:start": "docusaurus start",
     "postbuild": "node ./scripts/make-stylex-sheet.js",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",

@@ -5,8 +5,8 @@
   "description": "A simple rollup example to test stylexjs/rollup-plugin",
   "main": "index.js",
   "scripts": {
-    "build": "rollup --config ./rollup.config.mjs",
-    "start": "rollup --config ./rollup.config.mjs --watch"
+    "app:build": "rollup --config ./rollup.config.mjs",
+    "app:dev": "rollup --config ./rollup.config.mjs --watch"
   },
   "license": "MIT",
   "dependencies": {
