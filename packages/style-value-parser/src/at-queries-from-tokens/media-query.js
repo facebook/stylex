@@ -64,11 +64,13 @@ const _mediaKeywordParser: TokenParser<'screen' | 'print' | 'all'> =
 const mediaKeywordParser: TokenParser<MediaKeyword> = TokenParser.sequence(
   TokenParser.string('not').optional,
   _mediaKeywordParser,
-).map(([not, keyword]) => ({
-  type: 'media-keyword',
-  key: keyword,
-  not: not === 'not',
-}));
+)
+  .separatedBy(TokenParser.tokens.Whitespace)
+  .map(([not, keyword]) => ({
+    type: 'media-keyword',
+    key: keyword,
+    not: not === 'not',
+  }));
 
 const mediaWordRuleParser: TokenParser<MediaWordRule> =
   TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue')
@@ -125,7 +127,7 @@ const notParser: TokenParser<MediaNotRule> = TokenParser.sequence(
   rule,
 }));
 
-const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
+export const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
   TokenParser.sequence(
     TokenParser.tokens.OpenParen,
     TokenParser.tokens.Ident.map(
@@ -133,19 +135,22 @@ const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
       '.stringValue',
     ).where((val) => val === 'width' || val === 'height'),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<' || val === '>=' || val === '<=',
+      (val) => val === '>' || val === '<',
     ),
+    TokenParser.tokens.Delim.map((token) => token[4].value).where(
+      (val) => val === '=',
+    ).optional,
     TokenParser.tokens.Dimension.map((token) => token[4]),
     TokenParser.tokens.CloseParen,
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
-    .map(([_openParen, key, op, value, _closeParen]) => {
-      const finalKey = op.startsWith('>') ? `min-${key}` : `max-${key}`;
+    .map(([_openParen, key, op, eq, value, _closeParen]) => {
+      const finalKey = op === '>' ? `min-${key}` : `max-${key}`;
 
       const finalValue =
-        op === '>'
+        op === '>' && eq !== '='
           ? { ...value, value: value.value + 0.01 }
-          : op === '<'
+          : op === '<' && eq !== '='
             ? { ...value, value: value.value - 0.01 }
             : value;
 
@@ -161,34 +166,40 @@ const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
     TokenParser.tokens.OpenParen,
     TokenParser.tokens.Dimension.map((token) => token[4]),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<' || val === '>=' || val === '<=',
+      (val) => val === '>' || val === '<',
     ),
+    TokenParser.tokens.Delim.map((token) => token[4].value).where(
+      (val) => val === '=',
+    ).optional,
     TokenParser.tokens.Ident.map(
       (token) => token[4].value,
       '.stringValue',
     ).where((val) => val === 'width' || val === 'height'),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<' || val === '>=' || val === '<=',
+      (val) => val === '>' || val === '<',
     ),
+    TokenParser.tokens.Delim.map((token) => token[4].value).where(
+      (val) => val === '=',
+    ).optional,
     TokenParser.tokens.Dimension.map((token) => token[4]),
     TokenParser.tokens.CloseParen,
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
-    .map(([_openParen, lower, op, key, op2, upper, _closeParen]) => {
-      const lowerKey = op.startsWith('<') ? `min-${key}` : `max-${key}`;
-      const upperKey = op2.startsWith('<') ? `max-${key}` : `min-${key}`;
+    .map(([_openParen, lower, op, eq, key, op2, eq2, upper, _closeParen]) => {
+      const lowerKey = op === '<' ? `min-${key}` : `max-${key}`;
+      const upperKey = op2 === '<' ? `max-${key}` : `min-${key}`;
 
       const lowerValue =
-        op === '<'
+        op === '<' && eq !== '='
           ? { ...lower, value: lower.value + 0.01 }
-          : op === '>'
+          : op === '>' && eq !== '='
             ? { ...lower, value: lower.value - 0.01 }
             : lower;
 
       const upperValue =
-        op2 === '<'
+        op2 === '<' && eq2 !== '='
           ? { ...upper, value: upper.value - 0.01 }
-          : op2 === '>'
+          : op2 === '>' && eq2 !== '='
             ? { ...upper, value: upper.value + 0.01 }
             : upper;
 
