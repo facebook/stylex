@@ -41,32 +41,35 @@ const publish = args.publish;
 console.log(`Creating release version "${pkgVersion}"`);
 
 const repoRoot = path.join(__dirname, '../..');
+const packageJsonData = require('../../package.json');
 
 // Collect workspaces and package manifests
-const workspacePaths = require('../../package.json').workspaces.reduce(
-  (acc, w) => {
-    const resolvedPaths = glob.sync(path.join(repoRoot, w));
-    resolvedPaths.forEach((p) => {
-      // Remove duplicates and unrelated packages
-      if (acc.indexOf(p) === -1) {
-        acc.push(p);
-      }
-    });
-    return acc;
-  },
-  [],
-);
+const workspacePaths = packageJsonData.workspaces
+  .flatMap((w) => glob.sync(path.join(repoRoot, w)))
+  .filter((p) => fs.existsSync(p));
 
-const workspaces = workspacePaths.map((dir) => {
-  const directory = path.resolve(dir);
-  const packageJsonPath = path.join(directory, 'package.json');
-  const packageJson = JSON.parse(
-    fs.readFileSync(packageJsonPath, { encoding: 'utf-8' }),
-  );
-  return { directory, packageJson, packageJsonPath };
-});
+const workspaces = workspacePaths
+  .map((dir) => {
+    const directory = path.resolve(dir);
+    const packageJsonPath = path.join(directory, 'package.json');
 
-// Update each package version and its dependencies
+    if (!fs.existsSync(packageJsonPath)) {
+      console.warn(`Skipping missing package.json: ${packageJsonPath}`);
+      return null;
+    }
+
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+
+    return { directory, packageJson, packageJsonPath };
+  })
+  .filter(Boolean);
+
+if (workspaces.length === 0) {
+  console.error('No valid packages found. Aborting.');
+  process.exit(1);
+}
+
+// update each package version and its dependencies
 const workspaceNames = workspaces.map(({ packageJson }) => packageJson.name);
 workspaces.forEach(({ packageJson, packageJsonPath }) => {
   packageJson.version = pkgVersion;
@@ -78,6 +81,7 @@ workspaces.forEach(({ packageJson, packageJsonPath }) => {
       packageJson.devDependencies[name] = pkgVersion;
     }
   });
+
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(packageJson, null, 2) + '\n',
@@ -85,8 +89,6 @@ workspaces.forEach(({ packageJson, packageJsonPath }) => {
 });
 
 console.log('Package manifest update complete');
-
-execSync('cd ../..');
 
 execSync('npm install', {
   stdio: 'inherit',
