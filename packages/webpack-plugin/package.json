@@ -8,7 +8,7 @@
   "scripts": {
     "fixtures:webpack": "webpack build --config __tests__/__fixtures__/webpack.config.js",
     "fixtures:webpack:watch": "NODE_ENV=development webpack build --watch --config __tests__/__fixtures__/webpack.config.js",
-    "build": "webpack build --config __tests__/__fixtures__/webpack.config.js",
+    "pretest": "npm run fixtures:webpack",
     "test": "jest"
   },
   "jest": {

@@ -8,17 +8,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18.x'
-      - run: npm install
-      - run: npm run prettier:report
-
-  type-check:
+  flow:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +18,26 @@ jobs:
       - run: npm install
       - run: npm run flow
 
+  packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run test:packages
+
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: npm run prettier:report
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -36,15 +46,12 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm install
-      - run: npm run build
       - run: npm run lint:report
 
-  unit-test:
+  spelling:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: crate-ci/typos@master
         with:
-          node-version: '18.x'
-      - run: npm install
-      - run: npm run test
+          config: .github/workflows/typos.toml
