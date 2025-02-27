@@ -1,7 +1,7 @@
 {
+  "private": true,
   "name": "next-example",
   "version": "0.0.0",
-  "private": true,
   "scripts": {
     "clean": "rimraf .next",
     "dev": "next dev",

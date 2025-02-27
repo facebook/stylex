@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@stylexjs/scripts",
   "version": "0.10.1",
   "description": "Helper scripts for stylex monorepo.",
@@ -8,6 +9,7 @@
     "rewrite-imports": "./rewrite-imports.js"
   },
   "scripts": {
+    "release": "./create-release.js",
     "size": "./size.js",
     "size:compare": "./size-compare.js"
   },
