@@ -7,6 +7,7 @@
  * @flow strict
  */
 
+import { mediaInequalityRuleParser } from '../media-query';
 import { MediaQueryRecursive } from '../media-query.js';
 
 describe('Test CSS Type: @media queries', () => {
@@ -471,12 +472,107 @@ describe('Test CSS Type: @media queries', () => {
     ).toMatchInlineSnapshot();
   });
 
-  test.skip('@media (width >= 400px) and (width <= 700px)', () => {
+  test('(width > 400px)', () => {
+    expect(mediaInequalityRuleParser.parseToEnd('(width > 400px)'))
+      .toMatchInlineSnapshot(`
+      {
+        "key": "min-width",
+        "type": "pair",
+        "value": {
+          "signCharacter": undefined,
+          "type": "integer",
+          "unit": "px",
+          "value": 400.01,
+        },
+      }
+    `);
+  });
+  test('(width >= 400px)', () => {
+    expect(mediaInequalityRuleParser.parseToEnd('(width >= 400px)'))
+      .toMatchInlineSnapshot(`
+      {
+        "key": "min-width",
+        "type": "pair",
+        "value": {
+          "signCharacter": undefined,
+          "type": "integer",
+          "unit": "px",
+          "value": 400,
+        },
+      }
+    `);
+  });
+
+  test('@media (width >= 400px) and (width <= 700px)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (width >= 400px) and (width <= 700px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 700,
+              },
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
+  });
+
+  test('@media (768px <= width <= 1280px)', () => {
+    expect(
+      MediaQueryRecursive.parser.parseToEnd(
+        '@media (768px <= width <= 1280px)',
+      ),
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 768,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 1280,
+              },
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
   });
 
   test('@media (height > 500px) and (aspect-ratio: 16/9)', () => {
@@ -522,10 +618,27 @@ describe('Test CSS Type: @media queries', () => {
     ).toMatchInlineSnapshot();
   });
 
-  test.skip('@media not all and (monochrome)', () => {
+  test('@media not all and (monochrome)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd('@media not all and (monochrome)'),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "all",
+              "not": true,
+              "type": "media-keyword",
+            },
+            {
+              "keyValue": "monochrome",
+              "type": "word-rule",
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
   });
 
   test('@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/9)', () => {
