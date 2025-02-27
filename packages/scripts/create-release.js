@@ -60,11 +60,15 @@ const workspacePaths = require('../../package.json').workspaces.reduce(
 const workspaces = workspacePaths.map((dir) => {
   const directory = path.resolve(dir);
   const packageJsonPath = path.join(directory, 'package.json');
+  // Skip empty workspaces
+  if (!fs.existsSync(packageJsonPath)) {
+    return null;
+  }
   const packageJson = JSON.parse(
     fs.readFileSync(packageJsonPath, { encoding: 'utf-8' }),
   );
   return { directory, packageJson, packageJsonPath };
-});
+}).filter(Boolean); // filter out null values
 
 // Update each package version and its dependencies
 const workspaceNames = workspaces.map(({ packageJson }) => packageJson.name);
