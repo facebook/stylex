@@ -421,7 +421,7 @@ class TokenZeroOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
   }
 }
 
-class TokenOneOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
+export class TokenOneOrMoreParsers<+T> extends TokenParser<$ReadOnlyArray<T>> {
   +parser: TokenParser<T>;
   +separator: ?TokenParser<void>;
 
