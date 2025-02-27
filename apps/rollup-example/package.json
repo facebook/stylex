@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "rollup-example",
   "version": "0.10.1",
   "description": "A simple rollup example to test stylexjs/rollup-plugin",
