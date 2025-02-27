@@ -1,0 +1,12 @@
+[files]
+extend-exclude = [
+  "*.snap",
+  "packages/babel-plugin/__tests__/", # False positives on hashed object-key names
+  "packages/benchmarks/size/fixture/", # Fixture data has lots of typos
+  "packages/shared/__tests__/", # False positives on hashed object-key names
+  "flow-typed/*",
+]
+
+[default.extend-words]
+# Ignore false-positives
+stylex = "stylex"

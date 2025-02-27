@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "scripts": {
     "clean": "rimraf .next",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "next:lint": "next lint"
+    "app:build": "next build",
+    "app:dev": "next dev",
+    "app:start": "next start",
+    "app:lint": "next lint"
   },
   "dependencies": {
     "@stylexjs/stylex": "^0.7.5",

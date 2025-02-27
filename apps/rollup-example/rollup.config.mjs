@@ -10,7 +10,7 @@
 import stylexPlugin from '@stylexjs/rollup-plugin';
 
 const config = {
-  input: './index.js',
+  input: './src/index.js',
   output: {
     file: './.build/bundle.js',
     format: 'es',

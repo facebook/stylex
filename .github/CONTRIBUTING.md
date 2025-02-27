@@ -45,7 +45,7 @@ To compile the source code:
 npm run build
 ```
 
-To run all the unit tests (will build automatically):
+To run all the tests (will build automatically):
 
 ```
 npm run test
@@ -63,7 +63,7 @@ If necessary, first build the StyleX packages (`npm run build`), then start the
 docs locally:
 
 ```
-npm run start -w docs
+npm run app:start -w docs
 ```
 
 ### New Features
