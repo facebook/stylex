@@ -1,7 +1,7 @@
 {
+  "private": true,
   "name": "stylex-cli-example",
   "version": "0.10.1",
-  "private": true,
   "scripts": {
     "transform": "stylex --config .stylex.json5"
   },

@@ -1,8 +1,8 @@
 {
-  "name": "stylex-monorepo",
-  "version": "0.10.1",
-  "license": "MIT",
   "private": true,
+  "name": "stylex-monorepo",
+  "version": "0.0.0",
+  "license": "MIT",
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "flow": "flow",
