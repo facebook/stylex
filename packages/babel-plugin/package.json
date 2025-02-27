@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/babel-plugin",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "StyleX babel plugin.",
   "main": "lib/index.js",
   "repository": "https://github.com/facebook/stylex",
@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@babel/helper-module-imports": "^7.25.9",
-    "@stylexjs/shared": "0.10.1",
-    "@stylexjs/stylex": "0.10.1",
+    "@stylexjs/shared": "0.10.2",
+    "@stylexjs/stylex": "0.10.2",
     "@babel/core": "^7.26.8",
     "@babel/traverse": "^7.26.8",
     "@babel/types": "^7.26.8",

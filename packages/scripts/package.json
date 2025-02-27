@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@stylexjs/scripts",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Helper scripts for stylex monorepo.",
   "license": "MIT",
   "bin": {
