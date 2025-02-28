@@ -7,6 +7,7 @@
  * @flow strict
  */
 
+import { mediaInequalityRuleParser } from '../media-query.js';
 import { MediaQuery } from '../media-query.js';
 
 describe('Test CSS Type: @media queries', () => {
@@ -14,16 +15,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media screen'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaQueryKeywords {
-                  "key": "screen",
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "screen",
+          "not": false,
+          "type": "media-keyword",
         },
       }
     `);
@@ -32,16 +27,10 @@ describe('Test CSS Type: @media queries', () => {
   test('@media print', () => {
     expect(MediaQuery.parser.parseToEnd('@media print')).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaQueryKeywords {
-                  "key": "print",
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "print",
+          "not": false,
+          "type": "media-keyword",
         },
       }
     `);
@@ -51,20 +40,15 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (width: 100px)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "width",
-                    "sep": ":",
-                    "value": "100px",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "width",
+          "type": "pair",
+          "value": {
+            "signCharacter": undefined,
+            "type": "integer",
+            "unit": "px",
+            "value": 100,
+          },
         },
       }
     `);
@@ -74,20 +58,15 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (max-width: 50em)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "50em",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "max-width",
+          "type": "pair",
+          "value": {
+            "signCharacter": undefined,
+            "type": "integer",
+            "unit": "em",
+            "value": 50,
+          },
         },
       }
     `);
@@ -97,52 +76,50 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (orientation: landscape)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "orientation",
+          "type": "pair",
+          "value": "landscape",
         },
       }
     `);
   });
 
-  // test('@media not (monochrome)', () => {
-  //   expect(
-  //     MediaQuery.parser.parseToEnd('@media not (monochrome)'),
-  //   ).toMatchInlineSnapshot();
-  // });
+  test('@media not (monochrome)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media not (monochrome)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "keyValue": "monochrome",
+          "type": "word-rule",
+        },
+      }
+    `);
+  });
 
   test('@media screen and (min-width: 400px)', () => {
     expect(MediaQuery.parser.parseToEnd('@media screen and (min-width: 400px)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaQueryKeywords {
-                  "key": "screen",
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "400px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "screen",
+              "not": false,
+              "type": "media-keyword",
+            },
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -155,27 +132,25 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-height",
-                    "sep": ":",
-                    "value": "600px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-height",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 600,
+              },
+            },
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -188,27 +163,24 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaQueryKeywords {
-                  "key": "screen",
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "device-aspect-ratio",
-                    "sep": ":",
-                    "value": [
-                      16,
-                      "/",
-                      9,
-                    ],
-                  },
-                },
+        "queries": {
+          "rules": [
+            {
+              "key": "screen",
+              "not": false,
+              "type": "media-keyword",
+            },
+            {
+              "key": "device-aspect-ratio",
+              "type": "pair",
+              "value": [
+                16,
+                "/",
+                9,
               ],
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -218,20 +190,15 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (device-height: 500px)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "device-height",
-                    "sep": ":",
-                    "value": "500px",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "device-height",
+          "type": "pair",
+          "value": {
+            "signCharacter": undefined,
+            "type": "integer",
+            "unit": "px",
+            "value": 500,
+          },
         },
       }
     `);
@@ -241,18 +208,9 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (color)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySingleWordCondition {
-                    "keyValue": "color",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "keyValue": "color",
+          "type": "word-rule",
         },
       }
     `);
@@ -262,18 +220,9 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (color-index)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySingleWordCondition {
-                    "keyValue": "color-index",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "keyValue": "color-index",
+          "type": "word-rule",
         },
       }
     `);
@@ -283,18 +232,9 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (monochrome)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySingleWordCondition {
-                    "keyValue": "monochrome",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "keyValue": "monochrome",
+          "type": "word-rule",
         },
       }
     `);
@@ -305,18 +245,9 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (grid)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySingleWordCondition {
-                    "keyValue": "grid",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "keyValue": "grid",
+          "type": "word-rule",
         },
       }
     `);
@@ -326,20 +257,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (update: fast)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "update",
-                    "sep": ":",
-                    "value": "fast",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "update",
+          "type": "pair",
+          "value": "fast",
         },
       }
     `);
@@ -349,20 +270,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (overflow-block: scroll)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "overflow-block",
-                    "sep": ":",
-                    "value": "scroll",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "overflow-block",
+          "type": "pair",
+          "value": "scroll",
         },
       }
     `);
@@ -372,20 +283,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (display-mode: fullscreen)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "display-mode",
-                    "sep": ":",
-                    "value": "fullscreen",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "display-mode",
+          "type": "pair",
+          "value": "fullscreen",
         },
       }
     `);
@@ -395,20 +296,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (scripting: enabled)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "scripting",
-                    "sep": ":",
-                    "value": "enabled",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "scripting",
+          "type": "pair",
+          "value": "enabled",
         },
       }
     `);
@@ -418,20 +309,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (hover: hover)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "hover",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "hover",
+          "type": "pair",
+          "value": "hover",
         },
       }
     `);
@@ -441,20 +322,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (any-hover: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-hover",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "any-hover",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -464,20 +335,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (pointer: coarse)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "pointer",
-                    "sep": ":",
-                    "value": "coarse",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "pointer",
+          "type": "pair",
+          "value": "coarse",
         },
       }
     `);
@@ -487,20 +348,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (any-pointer: fine)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-pointer",
-                    "sep": ":",
-                    "value": "fine",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "any-pointer",
+          "type": "pair",
+          "value": "fine",
         },
       }
     `);
@@ -510,20 +361,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (light-level: dim)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "light-level",
-                    "sep": ":",
-                    "value": "dim",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "light-level",
+          "type": "pair",
+          "value": "dim",
         },
       }
     `);
@@ -533,20 +374,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (inverted-colors: inverted)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "inverted-colors",
-                    "sep": ":",
-                    "value": "inverted",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "inverted-colors",
+          "type": "pair",
+          "value": "inverted",
         },
       }
     `);
@@ -557,20 +388,10 @@ describe('Test CSS Type: @media queries', () => {
       MediaQuery.parser.parseToEnd('@media (prefers-reduced-motion: reduce)'),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-motion",
-                    "sep": ":",
-                    "value": "reduce",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-reduced-motion",
+          "type": "pair",
+          "value": "reduce",
         },
       }
     `);
@@ -580,20 +401,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (prefers-contrast: more)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-contrast",
-                    "sep": ":",
-                    "value": "more",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-contrast",
+          "type": "pair",
+          "value": "more",
         },
       }
     `);
@@ -603,20 +414,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (forced-colors: active)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "forced-colors",
-                    "sep": ":",
-                    "value": "active",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "forced-colors",
+          "type": "pair",
+          "value": "active",
         },
       }
     `);
@@ -629,20 +430,10 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-transparency",
-                    "sep": ":",
-                    "value": "reduce",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-reduced-transparency",
+          "type": "pair",
+          "value": "reduce",
         },
       }
     `);
@@ -655,31 +446,20 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "portrait",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "portrait",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
-                },
-              ],
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -692,31 +472,61 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "500px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 500,
+              },
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "600px",
-                  },
-                },
-              ],
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 600,
+              },
             },
           ],
+          "type": "or",
+        },
+      }
+    `);
+  });
+
+  test('(width > 400px)', () => {
+    expect(mediaInequalityRuleParser.parseToEnd('(width > 400px)'))
+      .toMatchInlineSnapshot(`
+      {
+        "key": "min-width",
+        "type": "pair",
+        "value": {
+          "signCharacter": undefined,
+          "type": "integer",
+          "unit": "px",
+          "value": 400.01,
+        },
+      }
+    `);
+  });
+  test('(width >= 400px)', () => {
+    expect(mediaInequalityRuleParser.parseToEnd('(width >= 400px)'))
+      .toMatchInlineSnapshot(`
+      {
+        "key": "min-width",
+        "type": "pair",
+        "value": {
+          "signCharacter": undefined,
+          "type": "integer",
+          "unit": "px",
+          "value": 400,
         },
       }
     `);
@@ -729,27 +539,63 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "width",
-                    "sep": ">=",
-                    "value": "400px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "width",
-                    "sep": "<=",
-                    "value": "700px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 700,
+              },
             },
           ],
+          "type": "and",
+        },
+      }
+    `);
+  });
+
+  test('@media (768px <= width <= 1280px)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media (768px <= width <= 1280px)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 768,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 1280,
+              },
+            },
+          ],
+          "type": "and",
         },
       }
     `);
@@ -762,31 +608,29 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "height",
-                    "sep": ">",
-                    "value": "500px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "aspect-ratio",
-                    "sep": ":",
-                    "value": [
-                      16,
-                      "/",
-                      9,
-                    ],
-                  },
-                },
+        "queries": {
+          "rules": [
+            {
+              "key": "min-height",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 500.01,
+              },
+            },
+            {
+              "key": "aspect-ratio",
+              "type": "pair",
+              "value": [
+                16,
+                "/",
+                9,
               ],
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -799,48 +643,74 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySingleWordCondition {
-                    "keyValue": "color",
-                  },
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "keyValue": "color",
+                  "type": "word-rule",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "400px",
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 400,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaQueryKeywords {
+            {
+              "rules": [
+                {
                   "key": "screen",
+                  "not": false,
+                  "type": "media-keyword",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "700px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 700,
                   },
                 },
               ],
+              "type": "and",
             },
           ],
+          "type": "or",
         },
       }
     `);
   });
 
-  test.skip('@media not all and (monochrome)', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media not all and (monochrome)'),
-    ).toMatchInlineSnapshot();
+  test('@media not all and (monochrome)', () => {
+    expect(MediaQuery.parser.parseToEnd('@media not all and (monochrome)'))
+      .toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rules": [
+            {
+              "key": "all",
+              "not": true,
+              "type": "media-keyword",
+            },
+            {
+              "keyValue": "monochrome",
+              "type": "word-rule",
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
   });
 
   test('@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/9)', () => {
@@ -850,35 +720,28 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-aspect-ratio",
-                    "sep": ":",
-                    "value": [
-                      3,
-                      "/",
-                      2,
-                    ],
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-aspect-ratio",
-                    "sep": ":",
-                    "value": [
-                      16,
-                      "/",
-                      9,
-                    ],
-                  },
-                },
+        "queries": {
+          "rules": [
+            {
+              "key": "min-aspect-ratio",
+              "type": "pair",
+              "value": [
+                3,
+                "/",
+                2,
+              ],
+            },
+            {
+              "key": "max-aspect-ratio",
+              "type": "pair",
+              "value": [
+                16,
+                "/",
+                9,
               ],
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -891,27 +754,30 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-resolution",
-                    "sep": ":",
-                    "value": "300dpi",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-resolution",
-                    "sep": ":",
-                    "value": "600dpi",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-resolution",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "dpi",
+                "value": 300,
+              },
+            },
+            {
+              "key": "max-resolution",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "dpi",
+                "value": 600,
+              },
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -921,20 +787,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (scripting: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "scripting",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "scripting",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -944,20 +800,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (update: slow)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "update",
-                    "sep": ":",
-                    "value": "slow",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "update",
+          "type": "pair",
+          "value": "slow",
         },
       }
     `);
@@ -967,20 +813,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (overflow-inline: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "overflow-inline",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "overflow-inline",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -990,20 +826,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (display-mode: minimal-ui)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "display-mode",
-                    "sep": ":",
-                    "value": "minimal-ui",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "display-mode",
+          "type": "pair",
+          "value": "minimal-ui",
         },
       }
     `);
@@ -1013,20 +839,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (hover: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "hover",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -1036,20 +852,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (any-hover: hover)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-hover",
-                    "sep": ":",
-                    "value": "hover",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "any-hover",
+          "type": "pair",
+          "value": "hover",
         },
       }
     `);
@@ -1059,20 +865,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (pointer: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "pointer",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "pointer",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -1082,20 +878,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (any-pointer: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-pointer",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "any-pointer",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -1105,20 +891,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (light-level: washed)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "light-level",
-                    "sep": ":",
-                    "value": "washed",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "light-level",
+          "type": "pair",
+          "value": "washed",
         },
       }
     `);
@@ -1128,20 +904,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (inverted-colors: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "inverted-colors",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "inverted-colors",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -1154,20 +920,10 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-motion",
-                    "sep": ":",
-                    "value": "no-preference",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-reduced-motion",
+          "type": "pair",
+          "value": "no-preference",
         },
       }
     `);
@@ -1178,20 +934,10 @@ describe('Test CSS Type: @media queries', () => {
       MediaQuery.parser.parseToEnd('@media (prefers-contrast: no-preference)'),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-contrast",
-                    "sep": ":",
-                    "value": "no-preference",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-contrast",
+          "type": "pair",
+          "value": "no-preference",
         },
       }
     `);
@@ -1201,20 +947,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (forced-colors: none)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "forced-colors",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "forced-colors",
+          "type": "pair",
+          "value": "none",
         },
       }
     `);
@@ -1227,20 +963,10 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-transparency",
-                    "sep": ":",
-                    "value": "no-preference",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-reduced-transparency",
+          "type": "pair",
+          "value": "no-preference",
         },
       }
     `);
@@ -1268,23 +994,13 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (aspect-ratio: 16 / 9)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "aspect-ratio",
-                    "sep": ":",
-                    "value": [
-                      16,
-                      "/",
-                      9,
-                    ],
-                  },
-                },
-              ],
-            },
+        "queries": {
+          "key": "aspect-ratio",
+          "type": "pair",
+          "value": [
+            16,
+            "/",
+            9,
           ],
         },
       }
@@ -1295,23 +1011,13 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (device-aspect-ratio: 16 / 9)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "device-aspect-ratio",
-                    "sep": ":",
-                    "value": [
-                      16,
-                      "/",
-                      9,
-                    ],
-                  },
-                },
-              ],
-            },
+        "queries": {
+          "key": "device-aspect-ratio",
+          "type": "pair",
+          "value": [
+            16,
+            "/",
+            9,
           ],
         },
       }
@@ -1322,20 +1028,15 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (min-resolution: 150dpi)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-resolution",
-                    "sep": ":",
-                    "value": "150dpi",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "min-resolution",
+          "type": "pair",
+          "value": {
+            "signCharacter": undefined,
+            "type": "integer",
+            "unit": "dpi",
+            "value": 150,
+          },
         },
       }
     `);
@@ -1345,20 +1046,15 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (max-resolution: 600dppx)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-resolution",
-                    "sep": ":",
-                    "value": "600dppx",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "max-resolution",
+          "type": "pair",
+          "value": {
+            "signCharacter": undefined,
+            "type": "integer",
+            "unit": "dppx",
+            "value": 600,
+          },
         },
       }
     `);
@@ -1368,20 +1064,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (color-gamut: srgb)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "color-gamut",
-                    "sep": ":",
-                    "value": "srgb",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "color-gamut",
+          "type": "pair",
+          "value": "srgb",
         },
       }
     `);
@@ -1391,20 +1077,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (display-mode: standalone)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "display-mode",
-                    "sep": ":",
-                    "value": "standalone",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "display-mode",
+          "type": "pair",
+          "value": "standalone",
         },
       }
     `);
@@ -1417,27 +1093,20 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "pointer",
-                    "sep": ":",
-                    "value": "fine",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
+            },
+            {
+              "key": "pointer",
+              "type": "pair",
+              "value": "fine",
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -1447,20 +1116,10 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd('@media (prefers-color-scheme: dark)'))
       .toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-color-scheme",
-                    "sep": ":",
-                    "value": "dark",
-                  },
-                },
-              ],
-            },
-          ],
+        "queries": {
+          "key": "prefers-color-scheme",
+          "type": "pair",
+          "value": "dark",
         },
       }
     `);
@@ -1473,27 +1132,20 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-motion",
-                    "sep": ":",
-                    "value": "reduce",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "update",
-                    "sep": ":",
-                    "value": "slow",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "prefers-reduced-motion",
+              "type": "pair",
+              "value": "reduce",
+            },
+            {
+              "key": "update",
+              "type": "pair",
+              "value": "slow",
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -1504,43 +1156,69 @@ describe('Test CSS Type: @media queries', () => {
       MediaQuery.parser.parseToEnd('@media (width: 500px), (height: 400px)'),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "width",
-                    "sep": ":",
-                    "value": "500px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 500,
+              },
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "height",
-                    "sep": ":",
-                    "value": "400px",
-                  },
-                },
-              ],
+            {
+              "key": "height",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
             },
           ],
+          "type": "or",
         },
       }
     `);
   });
 
-  // test('@media not all and (monochrome) and (min-width: 600px)', () => {
-  //   expect(
-  //     MediaQuery.parser.parseToEnd(
-  //       '@media not all and (monochrome) and (min-width: 600px)',
-  //     ),
-  //   ).toMatchInlineSnapshot();
-  // });
+  test('@media not all and (monochrome) and (min-width: 600px)', () => {
+    expect(
+      MediaQuery.parser.parseToEnd(
+        '@media not all and (monochrome) and (min-width: 600px)',
+      ),
+    ).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rules": [
+            {
+              "key": "all",
+              "not": true,
+              "type": "media-keyword",
+            },
+            {
+              "keyValue": "monochrome",
+              "type": "word-rule",
+            },
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 600,
+              },
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
+  });
 
   test('@media (min-width: 768px) and (max-width: 991px)', () => {
     expect(
@@ -1549,27 +1227,30 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "768px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "991px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 768,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 991,
+              },
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -1582,27 +1263,25 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "1200px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 1200,
+              },
+            },
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -1615,34 +1294,35 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "992px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "1199px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "pointer",
-                    "sep": ":",
-                    "value": "fine",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 992,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 1199,
+              },
+            },
+            {
+              "key": "pointer",
+              "type": "pair",
+              "value": "fine",
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -1655,34 +1335,35 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "576px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "767px",
-                  },
-                },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "none",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 576,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 767,
+              },
+            },
+            {
+              "key": "hover",
+              "type": "pair",
+              "value": "none",
             },
           ],
+          "type": "and",
         },
       }
     `);
@@ -1695,38 +1376,40 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "576px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 576,
+              },
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "portrait",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "orientation",
+                  "type": "pair",
+                  "value": "portrait",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "767px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
                   },
                 },
               ],
+              "type": "and",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -1739,38 +1422,40 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "768px",
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 768,
                   },
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "991px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 991,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
-                },
-              ],
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -1783,45 +1468,50 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "992px",
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 992,
                   },
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "1199px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1199,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "pointer",
-                    "sep": ":",
-                    "value": "fine",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "pointer",
+                  "type": "pair",
+                  "value": "fine",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "hover",
-                  },
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "hover",
                 },
               ],
+              "type": "and",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -1834,45 +1524,50 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "576px",
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 576,
                   },
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "767px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "none",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "none",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-pointer",
-                    "sep": ":",
-                    "value": "coarse",
-                  },
+                {
+                  "key": "any-pointer",
+                  "type": "pair",
+                  "value": "coarse",
                 },
               ],
+              "type": "and",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -1885,49 +1580,45 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "576px",
-                  },
-                },
-              ],
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 576,
+              },
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "portrait",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "orientation",
+                  "type": "pair",
+                  "value": "portrait",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "767px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-color-scheme",
-                    "sep": ":",
-                    "value": "dark",
-                  },
-                },
-              ],
+            {
+              "key": "prefers-color-scheme",
+              "type": "pair",
+              "value": "dark",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -1940,56 +1631,55 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "768px",
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 768,
                   },
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "991px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 991,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "orientation",
-                    "sep": ":",
-                    "value": "landscape",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "orientation",
+                  "type": "pair",
+                  "value": "landscape",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "update",
-                    "sep": ":",
-                    "value": "fast",
-                  },
+                {
+                  "key": "update",
+                  "type": "pair",
+                  "value": "fast",
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-motion",
-                    "sep": ":",
-                    "value": "reduce",
-                  },
-                },
-              ],
+            {
+              "key": "prefers-reduced-motion",
+              "type": "pair",
+              "value": "reduce",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -2002,63 +1692,65 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "992px",
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 992,
                   },
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "1199px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1199,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "pointer",
-                    "sep": ":",
-                    "value": "fine",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "pointer",
+                  "type": "pair",
+                  "value": "fine",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "hover",
-                  },
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "hover",
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-pointer",
-                    "sep": ":",
-                    "value": "coarse",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "any-pointer",
+                  "type": "pair",
+                  "value": "coarse",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-hover",
-                    "sep": ":",
-                    "value": "none",
-                  },
+                {
+                  "key": "any-hover",
+                  "type": "pair",
+                  "value": "none",
                 },
               ],
+              "type": "and",
             },
           ],
+          "type": "or",
         },
       }
     `);
@@ -2071,63 +1763,65 @@ describe('Test CSS Type: @media queries', () => {
       ),
     ).toMatchInlineSnapshot(`
       MediaQuery {
-        "queries": OrSeparatedMediaRules {
-          "queries": [
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "min-width",
-                    "sep": ":",
-                    "value": "576px",
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 576,
                   },
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "max-width",
-                    "sep": ":",
-                    "value": "767px",
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
                   },
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "hover",
-                    "sep": ":",
-                    "value": "none",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "none",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "any-pointer",
-                    "sep": ":",
-                    "value": "coarse",
-                  },
+                {
+                  "key": "any-pointer",
+                  "type": "pair",
+                  "value": "coarse",
                 },
               ],
+              "type": "and",
             },
-            AndSeparatedMediaRules {
-              "queries": [
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "prefers-reduced-transparency",
-                    "sep": ":",
-                    "value": "reduce",
-                  },
+            {
+              "rules": [
+                {
+                  "key": "prefers-reduced-transparency",
+                  "type": "pair",
+                  "value": "reduce",
                 },
-                MediaRule {
-                  "rules": MediaQuerySinglePair {
-                    "key": "forced-colors",
-                    "sep": ":",
-                    "value": "active",
-                  },
+                {
+                  "key": "forced-colors",
+                  "type": "pair",
+                  "value": "active",
                 },
               ],
+              "type": "and",
             },
           ],
+          "type": "or",
         },
       }
     `);
