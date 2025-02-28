@@ -29,7 +29,7 @@
     "esbuild": "^0.24.0"
   },
   "devDependencies": {
-    "@stylexjs/stylex": "^0.7.5",
+    "@stylexjs/stylex": "0.11.0",
     "eslint": "^8.57.1"
   },
   "files": [

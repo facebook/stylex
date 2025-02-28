@@ -36,6 +36,8 @@
     "@stylexjs/stylex": "0.11.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.26.4",
+    "@babel/preset-flow": "^7.25.9",
     "@stylexjs/scripts": "0.11.0"
   },
   "jest": {},

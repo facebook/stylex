@@ -127,8 +127,8 @@ describe('webpack-plugin-stylex', () => {
         ""use strict";
         (() => {
         var exports = {};
-        exports.id = 179;
-        exports.ids = [179];
+        exports.id = 792;
+        exports.ids = [792];
         exports.modules = {
 
         /***/ "./index.js":
@@ -137,9 +137,9 @@ describe('webpack-plugin-stylex', () => {
 
         // UNUSED EXPORTS: default
 
-        ;// CONCATENATED MODULE: external "stylex"
+        ;// external "stylex"
         const external_stylex_namespaceObject = stylex;
-        ;// CONCATENATED MODULE: ./otherStyles.js
+        ;// ./otherStyles.js
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
          *
@@ -162,7 +162,7 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
-        ;// CONCATENATED MODULE: ./npmStyles.js
+        ;// ./npmStyles.js
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
          *
@@ -186,7 +186,7 @@ describe('webpack-plugin-stylex', () => {
           }
         };
         /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-        ;// CONCATENATED MODULE: ./index.js
+        ;// ./index.js
         /**
          * Copyright (c) Meta Platforms, Inc. and affiliates.
          *
@@ -280,8 +280,8 @@ describe('webpack-plugin-stylex', () => {
           ""use strict";
           (() => {
           var exports = {};
-          exports.id = 179;
-          exports.ids = [179];
+          exports.id = 792;
+          exports.ids = [792];
           exports.modules = {
 
           /***/ "./index.js":
@@ -290,7 +290,7 @@ describe('webpack-plugin-stylex', () => {
 
           // UNUSED EXPORTS: default
 
-          ;// CONCATENATED MODULE: ../../../stylex/lib/es/StyleXSheet.mjs
+          ;// ../../../stylex/lib/es/StyleXSheet.mjs
           function getDefaultExportFromCjs(x) {
             return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
           }
@@ -527,15 +527,15 @@ describe('webpack-plugin-stylex', () => {
             rootDarkTheme: {}
           });
 
-          ;// CONCATENATED MODULE: ../../../stylex/lib/es/stylex-inject.mjs
+          ;// ../../../stylex/lib/es/stylex-inject.mjs
 
           function inject(ltrRule, priority) {
             let rtlRule = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
             styleSheet.insert(ltrRule, priority, rtlRule);
           }
-          ;// CONCATENATED MODULE: external "stylex"
+          ;// external "stylex"
           const external_stylex_namespaceObject = stylex;
-          ;// CONCATENATED MODULE: ./otherStyles.js
+          ;// ./otherStyles.js
           /**
            * Copyright (c) Meta Platforms, Inc. and affiliates.
            *
@@ -562,7 +562,7 @@ describe('webpack-plugin-stylex', () => {
             }
           };
           /* harmony default export */ const otherStyles_0 = ((/* unused pure expression or super */ null && (styles)));
-          ;// CONCATENATED MODULE: ./npmStyles.js
+          ;// ./npmStyles.js
           /**
            * Copyright (c) Meta Platforms, Inc. and affiliates.
            *
@@ -591,7 +591,7 @@ describe('webpack-plugin-stylex', () => {
             }
           };
           /* harmony default export */ const npmStyles_0 = ((/* unused pure expression or super */ null && (npmStyles_styles)));
-          ;// CONCATENATED MODULE: ./index.js
+          ;// ./index.js
           /**
            * Copyright (c) Meta Platforms, Inc. and affiliates.
            *

@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "webpack-example",
+  "name": "example-webpack",
   "version": "0.11.0",
   "description": "A simple webpack example to test stylexjs/webpack-plugin",
   "main": "index.js",

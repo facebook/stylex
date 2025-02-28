@@ -1,13 +1,12 @@
 [version]
-0.261.0
+0.261.2
 
 [ignore]
 .*/build/.*
 .*/dist/.*
+.*/example-*/.*
 .*/lib/.*
 .*/malformed_package_json/.*
-.*/next-example/.*
-.*/esbuild-example/.*
 
 [include]
 

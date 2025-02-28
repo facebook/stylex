@@ -11,7 +11,7 @@ jobs:
         fetch-depth: 50
     - uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: '22.x'
     - name: 'Setup temporary files'
       run: |
         echo "BASE_JSON=$(mktemp)" >> $GITHUB_ENV
