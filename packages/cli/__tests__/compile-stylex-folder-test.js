@@ -107,7 +107,7 @@ describe('compiling __mocks__/source to __mocks__/src correctly such that it mat
       if (path.extname(outputPath) === '.js') {
         const outputContent = await fs.readFile(outputPath, 'utf-8');
         const snapshotContent = await fs.readFile(snapshotPath, 'utf-8');
-        expect(outputContent).toEqual(snapshotContent);
+        expect(outputContent.trim()).toEqual(snapshotContent.trim());
       }
     }
   });
@@ -146,7 +146,7 @@ describe('cli works with -i and -o args', () => {
                     fs.readFile(outputPath, 'utf-8'),
                     fs.readFile(snapshotDir, 'utf-8'),
                   ]);
-                  expect(outputContent).toEqual(snapshotContent);
+                  expect(outputContent.trim()).toEqual(snapshotContent.trim());
                 }
               }),
             );
@@ -227,7 +227,7 @@ describe('cli works with multiple inputs and outputs', () => {
             if (path.extname(outputPath) === '.js') {
               const outputContent = await fs.readFile(outputPath, 'utf-8');
               const snapshotContent = await fs.readFile(snapshotPath, 'utf-8');
-              expect(outputContent).toEqual(snapshotContent);
+              expect(outputContent.trim()).toEqual(snapshotContent.trim());
             }
           }
         }

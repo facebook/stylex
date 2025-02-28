@@ -1,4 +1,4 @@
-name: Spell Check 
+name: Spell Check
 on:
   pull_request:
   push:
@@ -13,3 +13,5 @@ jobs:
         uses: actions/checkout@v4
       - name: Check spelling
         uses: crate-ci/typos@master
+        with:
+          config: .github/workflows/typos.toml
