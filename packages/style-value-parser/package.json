@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@babel/node": "^7.23.9",
-    "@stylexjs/scripts": "0.10.1",
+    "@stylexjs/scripts": "0.11.0",
     "benchmark": "^2.1.4"
   },
   "jest": {

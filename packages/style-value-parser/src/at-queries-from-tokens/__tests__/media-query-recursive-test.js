@@ -456,20 +456,66 @@ describe('Test CSS Type: @media queries', () => {
     `);
   });
 
-  test.skip('@media (orientation: portrait), (orientation: landscape)', () => {
+  test('@media (orientation: portrait), (orientation: landscape)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (orientation: portrait), (orientation: landscape)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "portrait",
+            },
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 500px) or (max-width: 600px)', () => {
+  test('@media (min-width: 500px) or (max-width: 600px)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 500px) or (max-width: 600px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 500,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 600,
+              },
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
   test('(width > 400px)', () => {
@@ -610,12 +656,59 @@ describe('Test CSS Type: @media queries', () => {
     `);
   });
 
-  test.skip('@media (color) and (min-width: 400px), screen and (max-width: 700px)', () => {
+  test('@media (color) and (min-width: 400px), screen and (max-width: 700px)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (color) and (min-width: 400px), screen and (max-width: 700px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "keyValue": "color",
+                  "type": "word-rule",
+                },
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 400,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "screen",
+                  "not": false,
+                  "type": "media-keyword",
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 700,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
   test('@media not all and (monochrome)', () => {
@@ -1106,21 +1199,76 @@ describe('Test CSS Type: @media queries', () => {
     `);
   });
 
-  test.skip('@media (width: 500px), (height: 400px)', () => {
+  test('@media (width: 500px), (height: 400px)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (width: 500px), (height: 400px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 500,
+              },
+            },
+            {
+              "key": "height",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  // test.skip('@media not all and (monochrome) and (min-width: 600px)', () => {
-  //   expect(
-  //     MediaQueryRecursive.parser.parseToEnd(
-  //       '@media not all and (monochrome) and (min-width: 600px)',
-  //     ),
-  //   ).toMatchInlineSnapshot();
-  // });
+  test('@media not all and (monochrome) and (min-width: 600px)', () => {
+    expect(
+      MediaQueryRecursive.parser.parseToEnd(
+        '@media not all and (monochrome) and (min-width: 600px)',
+      ),
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "all",
+              "not": true,
+              "type": "media-keyword",
+            },
+            {
+              "keyValue": "monochrome",
+              "type": "word-rule",
+            },
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 600,
+              },
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
+  });
 
   test('@media (min-width: 768px) and (max-width: 991px)', () => {
     expect(
@@ -1271,67 +1419,461 @@ describe('Test CSS Type: @media queries', () => {
     `);
   });
 
-  test.skip('@media (min-width: 576px), (orientation: portrait) and (max-width: 767px)', () => {
+  test('@media (min-width: 576px), (orientation: portrait) and (max-width: 767px)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 576px), (orientation: portrait) and (max-width: 767px)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 576,
+              },
+            },
+            {
+              "rules": [
+                {
+                  "key": "orientation",
+                  "type": "pair",
+                  "value": "portrait",
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 768px) and (max-width: 991px), (orientation: landscape)', () => {
+  test('@media (min-width: 768px) and (max-width: 991px), (orientation: landscape)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 768px) and (max-width: 991px), (orientation: landscape)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 768,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 991,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover)', () => {
+  test('@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 992,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1199,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "pointer",
+                  "type": "pair",
+                  "value": "fine",
+                },
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "hover",
+                },
+              ],
+              "type": "and",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse)', () => {
+  test('@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 576,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "none",
+                },
+                {
+                  "key": "any-pointer",
+                  "type": "pair",
+                  "value": "coarse",
+                },
+              ],
+              "type": "and",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 576px), (orientation: portrait) and (max-width: 767px), (prefers-color-scheme: dark)', () => {
+  test('@media (min-width: 576px), (orientation: portrait) and (max-width: 767px), (prefers-color-scheme: dark)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 576px), (orientation: portrait) and (max-width: 767px), (prefers-color-scheme: dark)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 576,
+              },
+            },
+            {
+              "rules": [
+                {
+                  "key": "orientation",
+                  "type": "pair",
+                  "value": "portrait",
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "key": "prefers-color-scheme",
+              "type": "pair",
+              "value": "dark",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 768px) and (max-width: 991px), (orientation: landscape) and (update: fast), (prefers-reduced-motion: reduce)', () => {
+  test('@media (min-width: 768px) and (max-width: 991px), (orientation: landscape) and (update: fast), (prefers-reduced-motion: reduce)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 768px) and (max-width: 991px), (orientation: landscape) and (update: fast), (prefers-reduced-motion: reduce)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 768,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 991,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "orientation",
+                  "type": "pair",
+                  "value": "landscape",
+                },
+                {
+                  "key": "update",
+                  "type": "pair",
+                  "value": "fast",
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "key": "prefers-reduced-motion",
+              "type": "pair",
+              "value": "reduce",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover), (any-pointer: coarse) and (any-hover: none)', () => {
+  test('@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover), (any-pointer: coarse) and (any-hover: none)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover), (any-pointer: coarse) and (any-hover: none)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 992,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1199,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "pointer",
+                  "type": "pair",
+                  "value": "fine",
+                },
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "hover",
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "any-pointer",
+                  "type": "pair",
+                  "value": "coarse",
+                },
+                {
+                  "key": "any-hover",
+                  "type": "pair",
+                  "value": "none",
+                },
+              ],
+              "type": "and",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 
-  test.skip('@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse), (prefers-reduced-transparency: reduce) and (forced-colors: active)', () => {
+  test('@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse), (prefers-reduced-transparency: reduce) and (forced-colors: active)', () => {
     expect(
       MediaQueryRecursive.parser.parseToEnd(
         '@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse), (prefers-reduced-transparency: reduce) and (forced-colors: active)',
       ),
-    ).toMatchInlineSnapshot();
+    ).toMatchInlineSnapshot(`
+      MediaQueryRecursive {
+        "queries": {
+          "rules": [
+            {
+              "rules": [
+                {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 576,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 767,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "hover",
+                  "type": "pair",
+                  "value": "none",
+                },
+                {
+                  "key": "any-pointer",
+                  "type": "pair",
+                  "value": "coarse",
+                },
+              ],
+              "type": "and",
+            },
+            {
+              "rules": [
+                {
+                  "key": "prefers-reduced-transparency",
+                  "type": "pair",
+                  "value": "reduce",
+                },
+                {
+                  "key": "forced-colors",
+                  "type": "pair",
+                  "value": "active",
+                },
+              ],
+              "type": "and",
+            },
+          ],
+          "type": "or",
+        },
+      }
+    `);
   });
 });
