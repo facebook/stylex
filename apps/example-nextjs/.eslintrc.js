@@ -8,7 +8,6 @@
  */
 
 module.exports = {
-  extends: 'next/core-web-vitals',
   plugins: ['@stylexjs'],
   rules: {
     // The Eslint rule still needs work, but you can

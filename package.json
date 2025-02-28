@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "stylex-monorepo",
-  "version": "0.11.0",
+  "version": "0.0.0",
   "license": "MIT",
   "scripts": {
     "postinstall": "npm run build",
@@ -11,7 +11,7 @@
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
-    "lint:report": "eslint packages apps/docs apps/esbuild-example apps/rollup-example apps/webpack-example",
+    "lint:report": "eslint packages apps/docs apps/example-esbuild apps/example-rollup apps/example-webpack",
     "test:packages": "npm run test --workspaces --if-present",
     "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
   },
@@ -22,28 +22,9 @@
     "apps/*"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.26.4",
-    "@babel/core": "^7.26.8",
-    "@babel/eslint-parser": "^7.26.8",
-    "@babel/plugin-syntax-flow": "^7.26.0",
-    "@babel/preset-env": "^7.26.8",
-    "@babel/preset-flow": "^7.25.9",
-    "@babel/preset-react": "^7.26.3",
-    "@babel/preset-typescript": "^7.26.0",
-    "@babel/template": "^7.26.8",
-    "@babel/types": "^7.26.8",
-    "@rollup/plugin-alias": "^5.1.1",
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^28.0.1",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-replace": "^6.0.1",
     "@types/estree": "^1.0.6",
     "@types/jest": "^29.5.13",
-    "babel-plugin-syntax-hermes-parser": "^0.26.0",
-    "benchmark": "^2.1.4",
     "cross-env": "^7.0.3",
-    "esbuild": "^0.24.0",
     "eslint": "8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-ft-flow": "^3.0.11",
@@ -56,8 +37,6 @@
     "prettier": "^3.5.0",
     "prettier-plugin-hermes-parser": "^0.26.0",
     "rimraf": "^5.0.10",
-    "rollup": "^4.24.0",
-    "serve": "^14.2.4",
     "typescript": "^5.3.3"
   },
   "prettier": {
@@ -84,7 +63,7 @@
     "**/*.js": [
       "prettier --write",
       "git update-index --again",
-      "eslint"
+      "npm run lint:report"
     ]
   }
 }
