@@ -1,14 +1,14 @@
 {
   "private": true,
   "name": "benchmarks",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "scripts": {
     "size": "NODE_ENV=production rollup --config ./rollup-size.config.mjs && node size/run.js",
     "size:compare": "node size/compare.js"
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/rollup-plugin": "0.10.1",
+    "@stylexjs/rollup-plugin": "0.11.0",
     "clean-css": "^5.3.3",
     "brotli-size": "^4.0.0",
     "rollup": "^4.22.4",
