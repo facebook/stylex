@@ -236,6 +236,11 @@ const mediaAndRulesParser: TokenParser<MediaAndRules | MediaQueryRule> =
     .separatedBy(
       TokenParser.string('and').surroundedBy(TokenParser.tokens.Whitespace),
     )
+    .where(
+      <T>(rules: $ReadOnlyArray<T>): implies rules is $ReadOnlyArray<T> =>
+        rules.length > 1,
+      'rules.length > 1',
+    )
     .map((rules) => (rules.length === 1 ? rules[0] : { type: 'and', rules }));
 
 const mediaOrRulesParser: TokenParser<MediaOrRules | MediaQueryRule> =
@@ -262,6 +267,11 @@ const mediaOrRulesParser: TokenParser<MediaOrRules | MediaQueryRule> =
   )
     .separatedBy(
       TokenParser.string('or').surroundedBy(TokenParser.tokens.Whitespace),
+    )
+    .where(
+      <T>(rules: $ReadOnlyArray<T>): implies rules is $ReadOnlyArray<T> =>
+        rules.length > 1,
+      'rules.length > 1',
     )
     .map((rules) => (rules.length === 1 ? rules[0] : { type: 'or', rules }));
 
@@ -300,10 +310,6 @@ export class MediaQueryRecursive {
   }
   static get parser(): TokenParser<MediaQueryRecursive> {
     const leadingNotParser = TokenParser.sequence(
-      TokenParser.tokens.AtKeyword.where(
-        (token: TokenAtKeyword): implies token is TokenAtKeyword =>
-          token[4].value === 'media',
-      ),
       TokenParser.tokens.Ident.map(
         (token) => token[4].value,
         '.stringValue',
@@ -326,19 +332,53 @@ export class MediaQueryRecursive {
       ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
-      .map(([_at, _not, queries]) => new MediaQueryRecursive(queries));
+      .map(([_not, queries]) => queries);
 
-    const recursiveParser = TokenParser.sequence(
+    const normalRuleParser = TokenParser.oneOf(
+      mediaAndRulesParser,
+      mediaOrRulesParser,
+      mediaKeywordParser,
+      notParser,
+      doubleInequalityRuleParser,
+      mediaInequalityRuleParser,
+      simplePairParser,
+      mediaWordRuleParser,
+      () =>
+        mediaOrRulesParser.surroundedBy(
+          TokenParser.tokens.OpenParen,
+          TokenParser.tokens.CloseParen,
+        ),
+      () =>
+        mediaAndRulesParser.surroundedBy(
+          TokenParser.tokens.OpenParen,
+          TokenParser.tokens.CloseParen,
+        ),
+    );
+
+    return TokenParser.sequence(
       TokenParser.tokens.AtKeyword.where(
         (token: TokenAtKeyword): implies token is TokenAtKeyword =>
           token[4].value === 'media',
       ),
-      TokenParser.oneOf(mediaAndRulesParser, mediaOrRulesParser),
+      TokenParser.oneOrMore(
+        TokenParser.oneOf(leadingNotParser, normalRuleParser),
+      ).separatedBy(
+        TokenParser.tokens.Comma.surroundedBy(
+          TokenParser.tokens.Whitespace.optional,
+        ),
+      ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
-      .map(([_at, queries]) => new MediaQueryRecursive(queries));
+      .map(
+        ([_at, querySets]) =>
+          new MediaQueryRecursive(
+            querySets.length > 1
+              ? { type: 'or', rules: querySets }
+              : querySets[0],
+          ),
+      );
 
-    return recursiveParser.or(leadingNotParser);
+    // return recursiveParser.or(leadingNotParser);
   }
 }
 
