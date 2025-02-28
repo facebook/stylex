@@ -30,7 +30,9 @@
   },
   "devDependencies": {
     "@stylexjs/stylex": "0.11.0",
-    "eslint": "^8.57.1"
+    "eslint": "^8.57.1",
+    "@babel/core": "^7.21.0",
+    "@babel/cli": "^7.21.0"
   },
   "files": [
     "flow_modules/*",

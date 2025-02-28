@@ -16,6 +16,10 @@
     "css-shorthand-expand": "^1.2.0",
     "micromatch": "^4.0.5"
   },
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/cli": "^7.21.0"
+  },
   "files": [
     "flow_modules/*",
     "lib/*"

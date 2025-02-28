@@ -36,7 +36,9 @@
     "@stylexjs/stylex": "0.11.0"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.11.0"
+    "@stylexjs/scripts": "0.11.0",
+    "@babel/core": "^7.21.0",
+    "@babel/cli": "^7.21.0"
   },
   "jest": {},
   "files": [
