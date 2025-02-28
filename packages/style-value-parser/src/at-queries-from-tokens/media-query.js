@@ -390,7 +390,7 @@ export class MediaQueryKeywords {
     this.key = key;
   }
   toString(): string {
-    return `@${this.key}`;
+    return `${this.key}`;
   }
   static get parser(): TokenParser<MediaQueryKeywords> {
     return TokenParser.tokens.Ident.map(
@@ -490,7 +490,12 @@ export class MediaQuerySinglePair {
 }
 
 export class NotMediaRule {
-  rule: MediaQuerySinglePair | MediaQuerySingleWordCondition;
+  rule:
+    | MediaQuerySinglePair
+    | MediaQuerySingleWordCondition
+    | MediaQueryKeywords
+    | MediaRule
+    | NotMediaRule;
   constructor(rule: this['rule']) {
     this.rule = rule;
   }
@@ -546,7 +551,7 @@ export class OrSeparatedMediaRules {
     this.queries = queries;
   }
   toString(): string {
-    return this.queries.map((query) => query.toString()).join(' or ');
+    return this.queries.map((query) => query.toString()).join(', ');
   }
   static get parser(): TokenParser<OrSeparatedMediaRules> {
     return TokenParser.oneOrMore(
