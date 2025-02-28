@@ -24,7 +24,6 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mdx-js/react": "^1.6.22",
     "@stylexjs/stylex": "0.10.1",
-    "@vercel/analytics": "^1.1.1",
     "@webcontainer/api": "^1.3.0",
     "clsx": "^1.2.1",
     "codemirror": "^5.65.16",

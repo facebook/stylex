@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "example-esbuild",
+  "version": "0.0.0",
+  "description": "Simple esbuild example for @stylexjs/esbuild-plugin",
+  "main": "src/App.jsx",
+  "scripts": {
+    "app:build": "node scripts/build.mjs",
+    "app:lint": "eslint \"**/*.{js,jsx}\""
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/open-props": "^0.7.5",
+    "@stylexjs/stylex": "^0.7.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@stylexjs/esbuild-plugin": "^0.7.5",
+    "@stylexjs/eslint-plugin": "^0.7.5",
+    "esbuild": "^0.24.0",
+    "eslint": "^8.57.1"
+  }
+}

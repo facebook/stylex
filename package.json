@@ -11,7 +11,7 @@
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
-    "lint:report": "eslint packages apps/docs apps/esbuild-example apps/rollup-example apps/webpack-example",
+    "lint:report": "eslint packages apps/docs apps/example-esbuild apps/example-rollup apps/example-webpack",
     "test:packages": "npm run test --workspaces --if-present",
     "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
   },
@@ -84,7 +84,7 @@
     "**/*.js": [
       "prettier --write",
       "git update-index --again",
-      "eslint"
+      "npm run lint:report"
     ]
   }
 }
