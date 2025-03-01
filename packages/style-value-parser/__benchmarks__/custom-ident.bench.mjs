@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { CustomIdentifier as CustomIdentifierLegacy } from '../css-types/custom-ident';
-import { CustomIdentifier as CustomIdentifierNew } from '../css-types-from-tokens/custom-ident';
+import { CustomIdentifier as CustomIdentifierLegacy } from '../lib/css-types/custom-ident.js';
+import { CustomIdentifier as CustomIdentifierNew } from '../lib/css-types-from-tokens/custom-ident.js';
 
 const customIdentSuite = new Benchmark.Suite('CustomIdentifier');
 

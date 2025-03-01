@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { EasingFunction as EasingFunctionLegacy } from '../css-types/easing-function';
-import { EasingFunction as EasingFunctionNew } from '../css-types-from-tokens/easing-function';
+import { EasingFunction as EasingFunctionLegacy } from '../lib/css-types/easing-function.js';
+import { EasingFunction as EasingFunctionNew } from '../lib/css-types-from-tokens/easing-function.js';
 
 const easingFunctionSuite = new Benchmark.Suite('EasingFunction');
 

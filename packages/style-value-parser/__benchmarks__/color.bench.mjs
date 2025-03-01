@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { Color as ColorLegacy } from '../css-types/color';
-import { Color as ColorNew } from '../css-types-from-tokens/color';
+import { Color as ColorLegacy } from '../lib/css-types/color.js';
+import { Color as ColorNew } from '../lib/css-types-from-tokens/color.js';
 
 const colorSuite = new Benchmark.Suite('Color');
 

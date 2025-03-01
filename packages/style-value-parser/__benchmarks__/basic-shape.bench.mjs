@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { Inset as InsetLegacy } from '../css-types/basic-shape';
-import { Inset as InsetNew } from '../css-types-from-tokens/basic-shape';
+import { Inset as InsetLegacy } from '../lib/css-types/basic-shape.js';
+import { Inset as InsetNew } from '../lib/css-types-from-tokens/basic-shape.js';
 
 const basicShapeSuite = new Benchmark.Suite('BasicShape');
 

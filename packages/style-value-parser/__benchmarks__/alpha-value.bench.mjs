@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { AlphaValue as AlphaValueLegacy } from '../css-types/alpha-value';
-import { AlphaValue as AlphaValueNew } from '../css-types-from-tokens/alpha-value';
+import { AlphaValue as AlphaValueLegacy } from '../lib/css-types/alpha-value.js';
+import { AlphaValue as AlphaValueNew } from '../lib/css-types-from-tokens/alpha-value.js';
 
 const alphaValueSuite = new Benchmark.Suite('AlphaValue');
 

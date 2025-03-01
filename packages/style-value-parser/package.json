@@ -8,7 +8,7 @@
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src --out-dir lib --ignore \"**/__tests__/**\",\"**/__benchmarks__/**\"",
     "test": "jest",
-    "benchmark": "find src/__benchmarks__ -name '*.bench.js' -exec babel-node {} \\;"
+    "benchmark": "find ./__benchmarks__ -name '*.bench.mjs' -exec node {} \\;"
   },
   "dependencies": {
     "@csstools/css-tokenizer": "^3.0.3"
