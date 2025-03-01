@@ -8,30 +8,30 @@
  */
 
 import Benchmark from 'benchmark';
-import { Flex as FlexLegacy } from '../css-types/flex';
-import { Flex as FlexNew } from '../css-types-from-tokens/flex';
+import { Length as LengthLegacy } from '../lib/css-types/length.js';
+import { Length as LengthNew } from '../lib/css-types-from-tokens/length.js';
 
-const flexSuite = new Benchmark.Suite('Flex');
+const lengthSuite = new Benchmark.Suite('Length');
 
-const flexString = '1fr';
+const lengthString = '10px';
 
-console.log('\n\n<flex>\n');
+console.log('\n\n<length>\n');
 
-flexSuite
+lengthSuite
   .add('Legacy Parser', () => {
-    FlexLegacy.parse.parseToEnd(flexString);
+    LengthLegacy.parse.parseToEnd(lengthString);
   })
   .add('Token Parser', () => {
-    FlexNew.parser.parseToEnd(flexString);
+    LengthNew.parser.parseToEnd(lengthString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));
   })
   .on('complete', () => {
-    const fastest = flexSuite.filter('fastest').map('name')[0];
-    const slowest = flexSuite.filter('slowest').map('name')[0];
-    const fastestResult = flexSuite.filter('fastest')[0].stats.mean;
-    const slowestResult = flexSuite.filter('slowest')[0].stats.mean;
+    const fastest = lengthSuite.filter('fastest').map('name')[0];
+    const slowest = lengthSuite.filter('slowest').map('name')[0];
+    const fastestResult = lengthSuite.filter('fastest')[0].stats.mean;
+    const slowestResult = lengthSuite.filter('slowest')[0].stats.mean;
     const speedup = (slowestResult - fastestResult) / fastestResult;
     const percentage = speedup.toFixed(2);
 

@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { blendMode as blendModeLegacy } from '../css-types/blend-mode';
-import { blendMode as blendModeNew } from '../css-types-from-tokens/blend-mode';
+import { blendMode as blendModeLegacy } from '../lib/css-types/blend-mode.js';
+import { blendMode as blendModeNew } from '../lib/css-types-from-tokens/blend-mode.js';
 
 const blendModeSuite = new Benchmark.Suite('BlendMode');
 

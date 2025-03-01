@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { FilterFunction as FilterFunctionLegacy } from '../css-types/filter-function';
-import { FilterFunction as FilterFunctionNew } from '../css-types-from-tokens/filter-function';
+import { FilterFunction as FilterFunctionLegacy } from '../lib/css-types/filter-function.js';
+import { FilterFunction as FilterFunctionNew } from '../lib/css-types-from-tokens/filter-function.js';
 
 const filterFunctionSuite = new Benchmark.Suite('FilterFunction');
 

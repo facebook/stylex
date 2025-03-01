@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { anglePercentage as anglePercentageLegacy } from '../css-types/angle-percentage';
-import { anglePercentage as anglePercentageNew } from '../css-types-from-tokens/angle-percentage';
+import { anglePercentage as anglePercentageLegacy } from '../lib/css-types/angle-percentage.js';
+import { anglePercentage as anglePercentageNew } from '../lib/css-types-from-tokens/angle-percentage.js';
 
 const anglePercentageSuite = new Benchmark.Suite('AnglePercentage');
 

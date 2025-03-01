@@ -8,30 +8,30 @@
  */
 
 import Benchmark from 'benchmark';
-import { Length as LengthLegacy } from '../css-types/length';
-import { Length as LengthNew } from '../css-types-from-tokens/length';
+import { Angle as AngleLegacy } from '../lib/css-types/angle.js';
+import { Angle as AngleNew } from '../lib/css-types-from-tokens/angle.js';
 
-const lengthSuite = new Benchmark.Suite('Length');
+const angleSuite = new Benchmark.Suite('Angle');
 
-const lengthString = '10px';
+const angleString = '10deg';
 
-console.log('\n\n<length>\n');
+console.log('\n\n<angle>\n');
 
-lengthSuite
+angleSuite
   .add('Legacy Parser', () => {
-    LengthLegacy.parse.parseToEnd(lengthString);
+    AngleLegacy.parse.parseToEnd(angleString);
   })
   .add('Token Parser', () => {
-    LengthNew.parser.parseToEnd(lengthString);
+    AngleNew.parser.parseToEnd(angleString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));
   })
   .on('complete', () => {
-    const fastest = lengthSuite.filter('fastest').map('name')[0];
-    const slowest = lengthSuite.filter('slowest').map('name')[0];
-    const fastestResult = lengthSuite.filter('fastest')[0].stats.mean;
-    const slowestResult = lengthSuite.filter('slowest')[0].stats.mean;
+    const fastest = angleSuite.filter('fastest').map('name')[0];
+    const slowest = angleSuite.filter('slowest').map('name')[0];
+    const fastestResult = angleSuite.filter('fastest')[0].stats.mean;
+    const slowestResult = angleSuite.filter('slowest')[0].stats.mean;
     const speedup = (slowestResult - fastestResult) / fastestResult;
     const percentage = speedup.toFixed(2);
 

@@ -8,8 +8,8 @@
  */
 
 import Benchmark from 'benchmark';
-import { Frequency as FrequencyLegacy } from '../css-types/frequency';
-import { Frequency as FrequencyNew } from '../css-types-from-tokens/frequency';
+import { Frequency as FrequencyLegacy } from '../lib/css-types/frequency.js';
+import { Frequency as FrequencyNew } from '../lib/css-types-from-tokens/frequency.js';
 
 const frequencySuite = new Benchmark.Suite('Frequency');
 

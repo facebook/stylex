@@ -8,30 +8,30 @@
  */
 
 import Benchmark from 'benchmark';
-import { Angle as AngleLegacy } from '../css-types/angle';
-import { Angle as AngleNew } from '../css-types-from-tokens/angle';
+import { Flex as FlexLegacy } from '../lib/css-types/flex.js';
+import { Flex as FlexNew } from '../lib/css-types-from-tokens/flex.js';
 
-const angleSuite = new Benchmark.Suite('Angle');
+const flexSuite = new Benchmark.Suite('Flex');
 
-const angleString = '10deg';
+const flexString = '1fr';
 
-console.log('\n\n<angle>\n');
+console.log('\n\n<flex>\n');
 
-angleSuite
+flexSuite
   .add('Legacy Parser', () => {
-    AngleLegacy.parse.parseToEnd(angleString);
+    FlexLegacy.parse.parseToEnd(flexString);
   })
   .add('Token Parser', () => {
-    AngleNew.parser.parseToEnd(angleString);
+    FlexNew.parser.parseToEnd(flexString);
   })
   .on('cycle', (event) => {
     console.log(String(event.target));
   })
   .on('complete', () => {
-    const fastest = angleSuite.filter('fastest').map('name')[0];
-    const slowest = angleSuite.filter('slowest').map('name')[0];
-    const fastestResult = angleSuite.filter('fastest')[0].stats.mean;
-    const slowestResult = angleSuite.filter('slowest')[0].stats.mean;
+    const fastest = flexSuite.filter('fastest').map('name')[0];
+    const slowest = flexSuite.filter('slowest').map('name')[0];
+    const fastestResult = flexSuite.filter('fastest')[0].stats.mean;
+    const slowestResult = flexSuite.filter('slowest')[0].stats.mean;
     const speedup = (slowestResult - fastestResult) / fastestResult;
     const percentage = speedup.toFixed(2);
 
