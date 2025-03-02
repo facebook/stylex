@@ -73,7 +73,15 @@ export function addSourceMapData(
       // $FlowIgnore
       .get('arguments.0.properties')
       // $FlowIgnore
-      .find((prop) => prop.node.key.name === key);
+      .find((prop) => {
+        if (prop.node.key.type === 'NumericLiteral') {
+          return String(prop.node.key.value) === key;
+        }
+        if (prop.node.key.type === 'StringLiteral') {
+          return prop.node.key.value === key;
+        }
+        return prop.node.key.name === key;
+      });
 
     if (!styleNodePath) {
       console.warn(`Style node path not found for key: ${key}`);
