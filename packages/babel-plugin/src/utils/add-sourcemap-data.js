@@ -73,42 +73,49 @@ export function addSourceMapData(
       // $FlowIgnore
       .get('arguments.0.properties')
       // $FlowIgnore
-      .find((prop) => prop.node.key.name === key);
-
-    if (!styleNodePath) {
-      console.warn(`Style node path not found for key: ${key}`);
-      continue;
-    }
-    const generatedLineNumber = styleNodePath.node.loc?.start.line;
-
-    // Find the original line number in the source
-    let originalLineNumber = generatedLineNumber;
-    if (sourceMap && originalLineNumber) {
-      const originalPosition = sourceMap.originalPositionFor({
-        line: generatedLineNumber,
-        column: styleNodePath.node.loc?.start.column,
-      });
-      if (originalPosition && originalPosition.line !== null) {
-        originalLineNumber = originalPosition.line;
-      } else {
-        console.warn(
-          `Could not determine original line number for key: ${key}`,
+      .find((prop) => {
+        return (
+          prop.node.key.name === key ||
+          // string and number properties (normalized to string)
+          String(prop.node.key.value) === key
         );
-      }
-    }
+      });
 
-    // Add the file name and line number information to the compiled style
-    const shortFilename = createShortFilename(
-      currentFile.opts.filename || '',
-      state,
-    );
-    result[key] = {
-      ...value,
-      $$css:
-        shortFilename !== '' && originalLineNumber
-          ? `${shortFilename}:${originalLineNumber}`
-          : true,
-    };
+    if (styleNodePath) {
+      const generatedLineNumber = styleNodePath.node.loc?.start.line;
+
+      // Find the original line number in the source
+      let originalLineNumber = generatedLineNumber;
+      if (sourceMap && originalLineNumber) {
+        const originalPosition = sourceMap.originalPositionFor({
+          line: generatedLineNumber,
+          column: styleNodePath.node.loc?.start.column,
+        });
+        if (originalPosition && originalPosition.line !== null) {
+          originalLineNumber = originalPosition.line;
+        } else {
+          console.warn(
+            `Could not determine original line number for key: ${key}`,
+          );
+        }
+      }
+
+      // Add the file name and line number information to the compiled style
+      const shortFilename = createShortFilename(
+        currentFile.opts.filename || '',
+        state,
+      );
+      result[key] = {
+        ...value,
+        $$css:
+          shortFilename !== '' && originalLineNumber
+            ? `${shortFilename}:${originalLineNumber}`
+            : true,
+      };
+    } else {
+      // fallback in case no sourcemap data is found
+      result[key] = value;
+    }
   }
   return result;
 }
