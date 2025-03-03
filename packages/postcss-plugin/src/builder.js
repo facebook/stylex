@@ -145,7 +145,7 @@ function createBuilder() {
         if (!bundler.shouldTransform(contents)) {
           return;
         }
-        return bundler.transform(file, contents, babelConfig, {
+        return bundler.transform(filePath, contents, babelConfig, {
           isDev,
           shouldSkipTransformError,
         });
