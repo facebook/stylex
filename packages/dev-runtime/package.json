@@ -3,7 +3,10 @@
   "version": "0.11.1",
   "description": "A development-only package that makes StyleX work entirely at runtime",
   "main": "lib/index.js",
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",

@@ -3,7 +3,10 @@
   "version": "0.11.1",
   "description": "StyleX eslint plugin.",
   "main": "lib/index.js",
-  "repository": "https://github.com/facebook/stylex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
