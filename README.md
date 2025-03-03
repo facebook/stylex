@@ -47,7 +47,6 @@ This is the development monorepo for StyleX.
   - [cli](https://github.com/facebook/stylex/blob/main/packages/cli)
   - [dev-runtime](https://github.com/facebook/stylex/blob/main/packages/dev-runtime)
   - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/eslint-plugin)
-  - [nextjs-plugin](https://github.com/facebook/stylex/blob/main/packages/nextjs-plugin)
   - [open-props](https://github.com/facebook/stylex/blob/main/packages/open-props)
   - [rollup-plugin](https://github.com/facebook/stylex/blob/main/packages/rollup-plugin)
   - [shared](https://github.com/facebook/stylex/blob/main/packages/shared)
