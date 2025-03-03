@@ -230,36 +230,6 @@ Please refer to the
 [StyleX examples apps](https://github.com/facebook/stylex/tree/main/apps)
 for demonstrations on how to use each of these plugins.
 
-## Local development only
-
-:::warning Do not use in Production
-
-You should not use `@stylexjs/dev-runtime` in production. It has a significant
-performance cost and should only be used for local development without a
-compiler. This runtime lacks features otherwise available when using the
-compiler.
-
-:::
-
-To start using StyleX without having to configure a compiler and build process,
-you can install the local development runtime.
-
-<DevInstallExample dev={[`@stylexjs/dev-runtime`]} />
-
-You must configure the runtime and use the returned StyleX API
-in the rest of your code.
-
-```ts
-import makeStyleX from '@stylexjs/dev-runtime';
-
-export const stylex = makeStyleX({
-  classNamePrefix: 'x',
-  dev: true,
-  test: false,
-});
-
-```
-
 ## Catch mistakes with ESLint
 
 The StyleX compiler does not validate your styles and will compile many invalid
