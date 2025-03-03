@@ -25,7 +25,10 @@
     "./lib/svg.stylex": "./lib/svg.stylex.js",
     "./lib/zIndex.stylex": "./lib/zIndex.stylex.js"
   },
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
   "license": "MIT",
   "scripts": {
     "test": "jest",

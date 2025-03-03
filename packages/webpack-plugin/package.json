@@ -3,7 +3,10 @@
   "version": "0.11.1",
   "description": "Webpack plugin for StyleX",
   "main": "src/index.js",
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
   "license": "MIT",
   "scripts": {
     "fixtures:webpack": "webpack build --config __tests__/__fixtures__/webpack.config.js",

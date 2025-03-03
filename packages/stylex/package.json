@@ -28,7 +28,10 @@
     },
     "./package.json": "./package.json"
   },
-  "repository": "https://www.github.com/facebook/stylex",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
