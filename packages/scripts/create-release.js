@@ -45,7 +45,16 @@ const packageJsonData = require('../../package.json');
 
 // Collect workspaces and package manifests
 const workspacePaths = packageJsonData.workspaces
-  .flatMap((w) => glob.sync(path.join(repoRoot, w)))
+  .reduce((acc, w) => {
+    const resolvedPaths = glob.sync(path.join(repoRoot, w));
+    resolvedPaths.forEach((p) => {
+      // Remove duplicates and unrelated packages
+      if (acc.indexOf(p) === -1) {
+        acc.push(p);
+      }
+    });
+    return acc;
+  }, [])
   .filter((p) => fs.existsSync(p));
 
 const workspaces = workspacePaths
@@ -90,18 +99,19 @@ workspaces.forEach(({ packageJson, packageJsonPath }) => {
 
 console.log('Package manifest update complete');
 
-execSync('npm install', {
-  stdio: 'inherit',
-});
+// Change working directory to the repo root
+process.chdir(path.join(__dirname, '../..'));
+
+execSync('npm install', { stdio: 'inherit' });
 
 // Commit changes
 if (commit) {
   // add changes
-  execSync('git add .');
+  execSync('git add .', { stdio: 'inherit' });
   // commit
-  execSync(`git commit -m "${pkgVersion}" --no-verify`);
+  execSync(`git commit -m "${pkgVersion}" --no-verify`, { stdio: 'inherit' });
   // tag
-  cexecSync(`git tag -m ${pkgVersion} "${pkgVersion}"`);
+  execSync(`git tag -fam ${pkgVersion} "${pkgVersion}"`, { stdio: 'inherit' });
 }
 
 if (publish) {
@@ -109,11 +119,22 @@ if (publish) {
   // publish public packages
   workspaces.forEach(({ directory, packageJson }) => {
     if (!packageJson.private) {
-      execSync(`cd ${directory} && ${publishCmd}`, {
-        stdio: 'inherit',
-      });
+      const version = packageJson.version;
+      const packageName = packageJson.name;
+      try {
+        // Check if the version has already been published
+        execSync(`npm view --silent ${packageName}@${version} version`);
+        console.log(
+          `Skipping ${packageName} as version ${version} has already been published`,
+        );
+      } catch (error) {
+        // If the version has not been published, proceed with publishing
+        execSync(`cd ${directory} && ${publishCmd}`, {
+          stdio: 'inherit',
+        });
+      }
     }
   });
   // push changes
-  execSync('git push --tags origin main');
+  execSync('git push --tags origin main', { stdio: 'inherit' });
 }

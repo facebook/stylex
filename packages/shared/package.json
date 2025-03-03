@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "main": "lib/index.js",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "@babel/preset-flow": "^7.25.9",
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
-    "@stylexjs/scripts": "0.11.0",
+    "@stylexjs/scripts": "0.11.1",
     "babel-plugin-syntax-hermes-parser": "^0.26.0"
   },
   "jest": {
