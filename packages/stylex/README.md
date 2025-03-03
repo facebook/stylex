@@ -26,33 +26,6 @@ For more information on working with the compiler, please see the documentation
 for
 [`@stylexjs/babel-plugin`](https://www.npmjs.com/package/@stylexjs/babel-plugin).
 
-### Runtime compiler
-
-The runtime compiler should only be used for development and testing purposes.
-
-```sh
-npm install --save-dev @stylexjs/dev-runtime
-```
-
-Import `@stylexjs/dev-runtime` in your JS entry-point to set everything up.
-
-```ts
-import inject from '@stylexjs/dev-runtime';
-
-if (process.env.NODE_ENV !== 'production') {
-  inject({
-    // configuration options
-    classNamePrefix: 'x-',
-    dev: true,
-    test: false,
-  });
-}
-```
-
-For more information on working with the compiler, please see the documentation
-for
-[`@stylexjs/dev-runtime`](https://www.npmjs.com/package/@stylexjs/dev-runtime).
-
 ## API
 
 ### stylex.create()
