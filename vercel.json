@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npm run app:build -w docs",
+  "outputDirectory": "apps/docs/build",
   "headers": [
     {
       "source": "/(.*)",
