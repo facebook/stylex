@@ -85,8 +85,7 @@ export class Percentage {
   }
   static get parser(): TokenParser<Percentage> {
     return TokenParser.token<TokenPercentage>(TokenType.Percentage).map(
-      (v) =>
-        new Percentage(v[4].signCharacter === '-' ? -v[4].value : v[4].value),
+      (v) => new Percentage(v[4].value),
     );
   }
 }

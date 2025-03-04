@@ -175,7 +175,7 @@ export class Calc {
       TokenParser.oneOf(operationsParser, valueParser),
       TokenParser.tokens.CloseParen,
     )
-      .surroundedBy(TokenParser.tokens.Whitespace.optional)
+      .separatedBy(TokenParser.tokens.Whitespace.optional)
       .map(([_, value, _closeParen]) => new Calc(value));
   }
 }
