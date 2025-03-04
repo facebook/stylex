@@ -21,7 +21,7 @@
     "packages/*",
     "apps/*"
   ],
-  "devDependencies": {
+  "dependencies": {
     "@types/estree": "^1.0.6",
     "@types/jest": "^29.5.13",
     "cross-env": "^7.0.3",
