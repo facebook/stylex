@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "mkdirp": "^1.0.4",
+    "rimraf": "^5.0.10",
     "serve": "^14.2.4",
     "stylelint": "^14.9.1"
   },
