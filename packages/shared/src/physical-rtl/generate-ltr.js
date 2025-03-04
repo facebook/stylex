@@ -7,13 +7,13 @@
  * @flow strict
  */
 
-const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
+const logicalToPhysical: $ReadOnly<{ [string]: ?string }> = {
   start: 'left',
   end: 'right',
 };
 
 const propertyToLTR: $ReadOnly<{
-  [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
+  [key: string]: ?($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
 }> = {
   'margin-start': ([_key, val]: $ReadOnly<[string, string]>) => [
     'margin-left',
@@ -122,8 +122,10 @@ export default function generateLTR(
   pair: $ReadOnly<[string, string]>,
 ): $ReadOnly<[string, string]> {
   const [key] = pair;
-  if (propertyToLTR[key]) {
-    return propertyToLTR[key](pair);
+
+  const property = propertyToLTR[key];
+  if (property) {
+    return property(pair);
   }
   return pair;
 }
