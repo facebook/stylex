@@ -14,7 +14,7 @@
     "@stylexjs/open-props": "0.11.1",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
-    "next": "14.0.1"
+    "next": "14.2.21"
   },
   "devDependencies": {
     "@stylexjs/eslint-plugin": "0.11.1",
