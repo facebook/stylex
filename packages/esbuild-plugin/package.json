@@ -29,7 +29,7 @@
     "@stylexjs/babel-plugin": "0.11.1",
     "@stylexjs/shared": "0.11.1",
     "babel-plugin-syntax-hermes-parser": "^0.26.0",
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.25.0"
   },
   "devDependencies": {
     "@stylexjs/stylex": "0.11.1",
