@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "npm run build",
+    "prepare": "command -v husky >/dev/null 2>&1 && husky install tools/husky || true",
     "build": "npm run build --workspaces --if-present",
     "flow": "flow",
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
