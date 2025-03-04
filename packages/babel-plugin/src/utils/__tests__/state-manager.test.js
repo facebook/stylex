@@ -249,6 +249,41 @@ describe('StateManager config parsing', () => {
     });
   });
 
+  describe('"enableMinifiedKeys" option (boolean)', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({ enableMinifiedKeys: 'false' });
+      expect(stateManager.options.enableMinifiedKeys).toBe(true);
+      expect(warnings).toEqual([
+        [
+          '[@stylexjs/babel-plugin]',
+          'Expected (options.enableMinifiedKeys) to be a boolean, but got `"false"`.',
+        ],
+      ]);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.enableMinifiedKeys).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+
+    test('false value', () => {
+      const stateManager = makeState({
+        enableMinifiedKeys: false,
+      });
+      expect(stateManager.options.enableMinifiedKeys).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('true value', () => {
+      const stateManager = makeState({
+        enableMinifiedKeys: true,
+      });
+      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+  });
+
   describe('"genConditionalClasses" option (boolean)', () => {
     test('logs errors if invalid', () => {
       const stateManager = makeState({ genConditionalClasses: 'true' });

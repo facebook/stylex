@@ -8,44 +8,50 @@
  */
 
 import styleXCreate from '../src/stylex-create';
+import { defaultOptions } from '../src/utils/default-options';
+
+const options = { ...defaultOptions, debug: true };
 
 describe('stylex-create-test', () => {
   test('color:red', () => {
     expect(
-      styleXCreate({
-        default: {
-          backgroundColor: 'red',
-          color: 'blue',
+      styleXCreate(
+        {
+          default: {
+            backgroundColor: 'red',
+            color: 'blue',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
-            "color": "xju2f9n",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "color-kMwMTN": "color-xju2f9n",
           },
         },
         {
-          "xju2f9n": {
-            "ltr": ".xju2f9n{color:blue}",
+          "backgroundColor-xrkmrrc": {
+            "ltr": ".backgroundColor-xrkmrrc{background-color:red}",
             "priority": 3000,
             "rtl": null,
           },
-          "xrkmrrc": {
-            "ltr": ".xrkmrrc{background-color:red}",
+          "color-xju2f9n": {
+            "ltr": ".color-xju2f9n{color:blue}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "xju2f9n": [
-              "color",
-            ],
-            "xrkmrrc": [
+            "backgroundColor-xrkmrrc": [
               "backgroundColor",
+            ],
+            "color-xju2f9n": [
+              "color",
             ],
           },
         },
@@ -54,16 +60,22 @@ describe('stylex-create-test', () => {
   });
 
   test('transitionProperty:marginTop', () => {
-    const camelCase = styleXCreate({
-      default: {
-        transitionProperty: 'marginTop',
+    const camelCase = styleXCreate(
+      {
+        default: {
+          transitionProperty: 'marginTop',
+        },
       },
-    });
-    const dashCase = styleXCreate({
-      default: {
-        transitionProperty: 'margin-top',
+      options,
+    );
+    const dashCase = styleXCreate(
+      {
+        default: {
+          transitionProperty: 'margin-top',
+        },
       },
-    });
+      options,
+    );
     expect(camelCase).toEqual(dashCase);
 
     expect(camelCase).toMatchInlineSnapshot(`
@@ -71,19 +83,19 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "transitionProperty": "x1cfch2b",
+            "transitionProperty-k1ekBW": "transitionProperty-x1cfch2b",
           },
         },
         {
-          "x1cfch2b": {
-            "ltr": ".x1cfch2b{transition-property:margin-top}",
+          "transitionProperty-x1cfch2b": {
+            "ltr": ".transitionProperty-x1cfch2b{transition-property:margin-top}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x1cfch2b": [
+            "transitionProperty-x1cfch2b": [
               "transitionProperty",
             ],
           },
@@ -93,16 +105,22 @@ describe('stylex-create-test', () => {
   });
 
   test('willChange:marginTop', () => {
-    const camelCase = styleXCreate({
-      default: {
-        willChange: 'marginTop',
+    const camelCase = styleXCreate(
+      {
+        default: {
+          willChange: 'marginTop',
+        },
       },
-    });
-    const dashCase = styleXCreate({
-      default: {
-        willChange: 'margin-top',
+      options,
+    );
+    const dashCase = styleXCreate(
+      {
+        default: {
+          willChange: 'margin-top',
+        },
       },
-    });
+      options,
+    );
     expect(camelCase).toEqual(dashCase);
 
     expect(camelCase).toMatchInlineSnapshot(`
@@ -110,19 +128,19 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "willChange": "x1a6dnx1",
+            "willChange-k6sLGO": "willChange-x1a6dnx1",
           },
         },
         {
-          "x1a6dnx1": {
-            "ltr": ".x1a6dnx1{will-change:margin-top}",
+          "willChange-x1a6dnx1": {
+            "ltr": ".willChange-x1a6dnx1{will-change:margin-top}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x1a6dnx1": [
+            "willChange-x1a6dnx1": [
               "willChange",
             ],
           },
@@ -133,29 +151,32 @@ describe('stylex-create-test', () => {
 
   test('transitionProperty:--foo', () => {
     expect(
-      styleXCreate({
-        default: {
-          transitionProperty: '--foo',
+      styleXCreate(
+        {
+          default: {
+            transitionProperty: '--foo',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "transitionProperty": "x17389it",
+            "transitionProperty-k1ekBW": "transitionProperty-x17389it",
           },
         },
         {
-          "x17389it": {
-            "ltr": ".x17389it{transition-property:--foo}",
+          "transitionProperty-x17389it": {
+            "ltr": ".transitionProperty-x17389it{transition-property:--foo}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x17389it": [
+            "transitionProperty-x17389it": [
               "transitionProperty",
             ],
           },
@@ -166,29 +187,32 @@ describe('stylex-create-test', () => {
 
   test('willChange:--foo', () => {
     expect(
-      styleXCreate({
-        default: {
-          willChange: '--foo',
+      styleXCreate(
+        {
+          default: {
+            willChange: '--foo',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "willChange": "x1lxaxzv",
+            "willChange-k6sLGO": "willChange-x1lxaxzv",
           },
         },
         {
-          "x1lxaxzv": {
-            "ltr": ".x1lxaxzv{will-change:--foo}",
+          "willChange-x1lxaxzv": {
+            "ltr": ".willChange-x1lxaxzv{will-change:--foo}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x1lxaxzv": [
+            "willChange-x1lxaxzv": [
               "willChange",
             ],
           },
@@ -198,16 +222,22 @@ describe('stylex-create-test', () => {
   });
 
   test('transitionProperty:opacity, marginTop', () => {
-    const camelCase = styleXCreate({
-      default: {
-        transitionProperty: 'opacity, marginTop',
+    const camelCase = styleXCreate(
+      {
+        default: {
+          transitionProperty: 'opacity, marginTop',
+        },
       },
-    });
-    const dashCase = styleXCreate({
-      default: {
-        transitionProperty: 'opacity, margin-top',
+      options,
+    );
+    const dashCase = styleXCreate(
+      {
+        default: {
+          transitionProperty: 'opacity, margin-top',
+        },
       },
-    });
+      options,
+    );
     expect(camelCase).toEqual(dashCase);
 
     expect(camelCase).toMatchInlineSnapshot(`
@@ -215,19 +245,19 @@ describe('stylex-create-test', () => {
         {
           "default": {
             "$$css": true,
-            "transitionProperty": "x95ccmk",
+            "transitionProperty-k1ekBW": "transitionProperty-x95ccmk",
           },
         },
         {
-          "x95ccmk": {
-            "ltr": ".x95ccmk{transition-property:opacity,margin-top}",
+          "transitionProperty-x95ccmk": {
+            "ltr": ".transitionProperty-x95ccmk{transition-property:opacity,margin-top}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x95ccmk": [
+            "transitionProperty-x95ccmk": [
               "transitionProperty",
             ],
           },
@@ -238,46 +268,49 @@ describe('stylex-create-test', () => {
 
   test('padding shorthand', () => {
     expect(
-      styleXCreate({
-        short: {
-          padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
-          paddingTop: 0,
+      styleXCreate(
+        {
+          short: {
+            padding: 'calc((100% - 50px) * 0.5) var(--rightpadding, 20px)',
+            paddingTop: 0,
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "short": {
             "$$css": true,
-            "padding": "x1lmef92",
-            "paddingBlock": null,
-            "paddingBottom": null,
-            "paddingEnd": null,
-            "paddingInline": null,
-            "paddingLeft": null,
-            "paddingRight": null,
-            "paddingStart": null,
-            "paddingTop": "xexx8yu",
+            "padding-kmVPX3": "padding-x1lmef92",
+            "paddingBlock-k8WAf4": null,
+            "paddingBottom-kGO01o": null,
+            "paddingEnd-kP0aTx": null,
+            "paddingInline-kg3NbH": null,
+            "paddingLeft-kE3dHu": null,
+            "paddingRight-kpe85a": null,
+            "paddingStart-kuDDbn": null,
+            "paddingTop-kLKAdn": "paddingTop-xexx8yu",
           },
         },
         {
-          "x1lmef92": {
-            "ltr": ".x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}",
+          "padding-x1lmef92": {
+            "ltr": ".padding-x1lmef92{padding:calc((100% - 50px) * .5) var(--rightpadding,20px)}",
             "priority": 1000,
             "rtl": null,
           },
-          "xexx8yu": {
-            "ltr": ".xexx8yu{padding-top:0}",
+          "paddingTop-xexx8yu": {
+            "ltr": ".paddingTop-xexx8yu{padding-top:0}",
             "priority": 4000,
             "rtl": null,
           },
         },
         {
           "short": {
-            "x1lmef92": [
+            "padding-x1lmef92": [
               "padding",
             ],
-            "xexx8yu": [
+            "paddingTop-xexx8yu": [
               "paddingTop",
             ],
           },
@@ -288,29 +321,32 @@ describe('stylex-create-test', () => {
 
   test('transforms style object with custom property', () => {
     expect(
-      styleXCreate({
-        default: {
-          '--background-color': 'red',
+      styleXCreate(
+        {
+          default: {
+            '--background-color': 'red',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "--background-color": "xgau0yw",
+            "--background-color": "--background-color-xgau0yw",
           },
         },
         {
-          "xgau0yw": {
-            "ltr": ".xgau0yw{--background-color:red}",
+          "--background-color-xgau0yw": {
+            "ltr": ".--background-color-xgau0yw{--background-color:red}",
             "priority": 1,
             "rtl": null,
           },
         },
         {
           "default": {
-            "xgau0yw": [
+            "--background-color-xgau0yw": [
               "--background-color",
             ],
           },
@@ -321,29 +357,32 @@ describe('stylex-create-test', () => {
 
   test('transforms style object with custom property as value', () => {
     expect(
-      styleXCreate({
-        default: {
-          '--final-color': 'var(--background-color)',
+      styleXCreate(
+        {
+          default: {
+            '--final-color': 'var(--background-color)',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "--final-color": "x13tgbkp",
+            "--final-color": "--final-color-x13tgbkp",
           },
         },
         {
-          "x13tgbkp": {
-            "ltr": ".x13tgbkp{--final-color:var(--background-color)}",
+          "--final-color-x13tgbkp": {
+            "ltr": ".--final-color-x13tgbkp{--final-color:var(--background-color)}",
             "priority": 1,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x13tgbkp": [
+            "--final-color-x13tgbkp": [
               "--final-color",
             ],
           },
@@ -354,47 +393,50 @@ describe('stylex-create-test', () => {
 
   test('transforms multiple namespaces', () => {
     expect(
-      styleXCreate({
-        default: {
-          backgroundColor: 'red',
-        },
+      styleXCreate(
+        {
+          default: {
+            backgroundColor: 'red',
+          },
 
-        default2: {
-          color: 'blue',
+          default2: {
+            color: 'blue',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "backgroundColor": "xrkmrrc",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
           },
           "default2": {
             "$$css": true,
-            "color": "xju2f9n",
+            "color-kMwMTN": "color-xju2f9n",
           },
         },
         {
-          "xju2f9n": {
-            "ltr": ".xju2f9n{color:blue}",
+          "backgroundColor-xrkmrrc": {
+            "ltr": ".backgroundColor-xrkmrrc{background-color:red}",
             "priority": 3000,
             "rtl": null,
           },
-          "xrkmrrc": {
-            "ltr": ".xrkmrrc{background-color:red}",
+          "color-xju2f9n": {
+            "ltr": ".color-xju2f9n{color:blue}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "xrkmrrc": [
+            "backgroundColor-xrkmrrc": [
               "backgroundColor",
             ],
           },
           "default2": {
-            "xju2f9n": [
+            "color-xju2f9n": [
               "color",
             ],
           },
@@ -405,29 +447,32 @@ describe('stylex-create-test', () => {
 
   test('does not transform attr() value', () => {
     expect(
-      styleXCreate({
-        default: {
-          content: 'attr(some-attribute)',
+      styleXCreate(
+        {
+          default: {
+            content: 'attr(some-attribute)',
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "content": "xd71okc",
+            "content-kah6P1": "content-xd71okc",
           },
         },
         {
-          "xd71okc": {
-            "ltr": ".xd71okc{content:attr(some-attribute)}",
+          "content-xd71okc": {
+            "ltr": ".content-xd71okc{content:attr(some-attribute)}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "xd71okc": [
+            "content-xd71okc": [
               "content",
             ],
           },
@@ -438,29 +483,32 @@ describe('stylex-create-test', () => {
 
   test('does not add units to variable value', () => {
     expect(
-      styleXCreate({
-        default: {
-          '--foo': 500,
+      styleXCreate(
+        {
+          default: {
+            '--foo': 500,
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "--foo": "xwzgxvi",
+            "--foo": "--foo-xwzgxvi",
           },
         },
         {
-          "xwzgxvi": {
-            "ltr": ".xwzgxvi{--foo:500}",
+          "--foo-xwzgxvi": {
+            "ltr": ".--foo-xwzgxvi{--foo:500}",
             "priority": 1,
             "rtl": null,
           },
         },
         {
           "default": {
-            "xwzgxvi": [
+            "--foo-xwzgxvi": [
               "--foo",
             ],
           },
@@ -471,44 +519,47 @@ describe('stylex-create-test', () => {
 
   test('transforms nested pseudo-class to CSS', () => {
     expect(
-      styleXCreate({
-        default: {
-          ':hover': {
-            backgroundColor: 'red',
-            color: 'blue',
+      styleXCreate(
+        {
+          default: {
+            ':hover': {
+              backgroundColor: 'red',
+              color: 'blue',
+            },
           },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            ":hover_backgroundColor": "x1gykpug",
-            ":hover_color": "x17z2mba",
+            ":hover_backgroundColor-kGzVvX": "backgroundColor-x1gykpug",
+            ":hover_color-kDPRdz": "color-x17z2mba",
           },
         },
         {
-          "x17z2mba": {
-            "ltr": ".x17z2mba:hover{color:blue}",
+          "backgroundColor-x1gykpug": {
+            "ltr": ".backgroundColor-x1gykpug:hover{background-color:red}",
             "priority": 3130,
             "rtl": null,
           },
-          "x1gykpug": {
-            "ltr": ".x1gykpug:hover{background-color:red}",
+          "color-x17z2mba": {
+            "ltr": ".color-x17z2mba:hover{color:blue}",
             "priority": 3130,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x17z2mba": [
-              ":hover",
-              "color",
-            ],
-            "x1gykpug": [
+            "backgroundColor-x1gykpug": [
               ":hover",
               "backgroundColor",
+            ],
+            "color-x17z2mba": [
+              ":hover",
+              "color",
             ],
           },
         },
@@ -518,44 +569,47 @@ describe('stylex-create-test', () => {
 
   test('transforms nested pseudo-classes within pseudo elements', () => {
     expect(
-      styleXCreate({
-        default: {
-          '::before': {
-            color: {
-              default: 'red',
-              ':hover': 'blue',
+      styleXCreate(
+        {
+          default: {
+            '::before': {
+              color: {
+                default: 'red',
+                ':hover': 'blue',
+              },
             },
           },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "::before_color": "x16oeupf xeb2lg0",
+            "::before_color-kxBb7d": "color-x16oeupf color-xeb2lg0",
           },
         },
         {
-          "x16oeupf": {
-            "ltr": ".x16oeupf::before{color:red}",
+          "color-x16oeupf": {
+            "ltr": ".color-x16oeupf::before{color:red}",
             "priority": 8000,
             "rtl": null,
           },
-          "xeb2lg0": {
-            "ltr": ".xeb2lg0::before:hover{color:blue}",
+          "color-xeb2lg0": {
+            "ltr": ".color-xeb2lg0::before:hover{color:blue}",
             "priority": 8130,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x16oeupf": [
+            "color-x16oeupf": [
               "::before",
               "default",
               "color",
             ],
-            "xeb2lg0": [
+            "color-xeb2lg0": [
               "::before",
               ":hover",
               "color",
@@ -568,44 +622,47 @@ describe('stylex-create-test', () => {
 
   test('transforms nested legacy pseudo-classes within pseudo elements', () => {
     expect(
-      styleXCreate({
-        default: {
-          '::before': {
-            color: 'red',
-            ':hover': {
-              color: 'blue',
+      styleXCreate(
+        {
+          default: {
+            '::before': {
+              color: 'red',
+              ':hover': {
+                color: 'blue',
+              },
             },
           },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "::before_:hover_color": "xeb2lg0",
-            "::before_color": "x16oeupf",
+            "::before_:hover_color-kkC3X7": "color-xeb2lg0",
+            "::before_color-kxBb7d": "color-x16oeupf",
           },
         },
         {
-          "x16oeupf": {
-            "ltr": ".x16oeupf::before{color:red}",
+          "color-x16oeupf": {
+            "ltr": ".color-x16oeupf::before{color:red}",
             "priority": 8000,
             "rtl": null,
           },
-          "xeb2lg0": {
-            "ltr": ".xeb2lg0::before:hover{color:blue}",
+          "color-xeb2lg0": {
+            "ltr": ".color-xeb2lg0::before:hover{color:blue}",
             "priority": 8130,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x16oeupf": [
+            "color-x16oeupf": [
               "::before",
               "color",
             ],
-            "xeb2lg0": [
+            "color-xeb2lg0": [
               "::before",
               ":hover",
               "color",
@@ -618,72 +675,75 @@ describe('stylex-create-test', () => {
 
   test('transforms nested pseudo-element within legacy pseudo class', () => {
     expect(
-      styleXCreate({
-        default: {
-          '::before': {
-            color: 'red',
-          },
-          ':hover': {
+      styleXCreate(
+        {
+          default: {
             '::before': {
-              color: {
-                default: 'blue',
-                ':hover': 'green',
-                ':active': 'yellow',
+              color: 'red',
+            },
+            ':hover': {
+              '::before': {
+                color: {
+                  default: 'blue',
+                  ':hover': 'green',
+                  ':active': 'yellow',
+                },
               },
             },
           },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "::before_color": "x16oeupf",
-            ":hover_::before_color": "xzzpreb x1gobd9t x1lvqgcc",
+            "::before_color-kxBb7d": "color-x16oeupf",
+            ":hover_::before_color-kFlxxK": "color-xzzpreb color-x1gobd9t color-x1lvqgcc",
           },
         },
         {
-          "x16oeupf": {
-            "ltr": ".x16oeupf::before{color:red}",
+          "color-x16oeupf": {
+            "ltr": ".color-x16oeupf::before{color:red}",
             "priority": 8000,
             "rtl": null,
           },
-          "x1gobd9t": {
-            "ltr": ".x1gobd9t:hover::before:hover{color:green}",
+          "color-x1gobd9t": {
+            "ltr": ".color-x1gobd9t:hover::before:hover{color:green}",
             "priority": 8260,
             "rtl": null,
           },
-          "x1lvqgcc": {
-            "ltr": ".x1lvqgcc:hover::before:active{color:yellow}",
+          "color-x1lvqgcc": {
+            "ltr": ".color-x1lvqgcc:hover::before:active{color:yellow}",
             "priority": 8300,
             "rtl": null,
           },
-          "xzzpreb": {
-            "ltr": ".xzzpreb:hover::before{color:blue}",
+          "color-xzzpreb": {
+            "ltr": ".color-xzzpreb:hover::before{color:blue}",
             "priority": 8130,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x16oeupf": [
+            "color-x16oeupf": [
               "::before",
               "color",
             ],
-            "x1gobd9t": [
+            "color-x1gobd9t": [
               ":hover",
               "::before",
               ":hover",
               "color",
             ],
-            "x1lvqgcc": [
+            "color-x1lvqgcc": [
               ":hover",
               "::before",
               ":active",
               "color",
             ],
-            "xzzpreb": [
+            "color-xzzpreb": [
               ":hover",
               "::before",
               "default",
@@ -717,41 +777,51 @@ describe('stylex-create-test', () => {
       },
     });
 
-    const beforeHoverClass = beforeHover.default['::before_color'];
-    const hoverBeforeClass = hoverBefore.default[':hover_::before_color'];
+    expect(beforeHover.default).toMatchInlineSnapshot(`
+      {
+        "$$css": true,
+        "kxBb7d": "xeb2lg0",
+      }
+    `);
+    expect(hoverBefore.default).toMatchInlineSnapshot(`
+      {
+        "$$css": true,
+        "kFlxxK": "xzzpreb",
+      }
+    `);
 
-    expect(beforeHoverClass).toMatchInlineSnapshot('"xeb2lg0"');
-    expect(hoverBeforeClass).toMatchInlineSnapshot('"xzzpreb"');
-
-    expect(beforeHoverClass).not.toEqual(hoverBeforeClass);
+    expect(beforeHover.default).not.toEqual(hoverBefore.default);
   });
 
   // This API will not launch as an array, but internally we can continue to use arrays
   test('transforms array values as fallbacks', () => {
     expect(
-      styleXCreate({
-        default: {
-          position: ['sticky', 'fixed'],
+      styleXCreate(
+        {
+          default: {
+            position: ['sticky', 'fixed'],
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "position": "x1ruww2u",
+            "position-kVAEAm": "position-x1ruww2u",
           },
         },
         {
-          "x1ruww2u": {
-            "ltr": ".x1ruww2u{position:sticky;position:fixed}",
+          "position-x1ruww2u": {
+            "ltr": ".position-x1ruww2u{position:sticky;position:fixed}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x1ruww2u": [
+            "position-x1ruww2u": [
               "position",
             ],
           },
@@ -762,68 +832,71 @@ describe('stylex-create-test', () => {
 
   test('transforms valid shorthands', () => {
     expect(
-      styleXCreate({
-        default: {
-          overflow: 'hidden',
-          borderStyle: 'dashed',
-          borderWidth: 1,
+      styleXCreate(
+        {
+          default: {
+            overflow: 'hidden',
+            borderStyle: 'dashed',
+            borderWidth: 1,
+          },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "borderBlockStyle": null,
-            "borderBlockWidth": null,
-            "borderBottomStyle": null,
-            "borderBottomWidth": null,
-            "borderInlineEndStyle": null,
-            "borderInlineEndWidth": null,
-            "borderInlineStartStyle": null,
-            "borderInlineStartWidth": null,
-            "borderInlineStyle": null,
-            "borderInlineWidth": null,
-            "borderLeftStyle": null,
-            "borderLeftWidth": null,
-            "borderRightStyle": null,
-            "borderRightWidth": null,
-            "borderStyle": "xbsl7fq",
-            "borderTopStyle": null,
-            "borderTopWidth": null,
-            "borderWidth": "xmkeg23",
-            "overflow": "xb3r6kr",
-            "overflowX": null,
-            "overflowY": null,
+            "borderBlockStyle-kDUl1X": null,
+            "borderBlockWidth-kLoX6v": null,
+            "borderBottomStyle-kfdmCh": null,
+            "borderBottomWidth-kt9PQ7": null,
+            "borderInlineEndStyle-k8ry5P": null,
+            "borderInlineEndWidth-ke9TFa": null,
+            "borderInlineStartStyle-kVhnKS": null,
+            "borderInlineStartWidth-k2ei4v": null,
+            "borderInlineStyle-kJRH4f": null,
+            "borderInlineWidth-kjGldf": null,
+            "borderLeftStyle-k4WBpm": null,
+            "borderLeftWidth-kZ1KPB": null,
+            "borderRightStyle-kSWEuD": null,
+            "borderRightWidth-kWqL5O": null,
+            "borderStyle-ksu8eU": "borderStyle-xbsl7fq",
+            "borderTopStyle-kPef9Z": null,
+            "borderTopWidth-kEafiO": null,
+            "borderWidth-kMzoRj": "borderWidth-xmkeg23",
+            "overflow-kVQacm": "overflow-xb3r6kr",
+            "overflowX-kXHlph": null,
+            "overflowY-kORKVm": null,
           },
         },
         {
-          "xb3r6kr": {
-            "ltr": ".xb3r6kr{overflow:hidden}",
+          "borderStyle-xbsl7fq": {
+            "ltr": ".borderStyle-xbsl7fq{border-style:dashed}",
             "priority": 2000,
             "rtl": null,
           },
-          "xbsl7fq": {
-            "ltr": ".xbsl7fq{border-style:dashed}",
+          "borderWidth-xmkeg23": {
+            "ltr": ".borderWidth-xmkeg23{border-width:1px}",
             "priority": 2000,
             "rtl": null,
           },
-          "xmkeg23": {
-            "ltr": ".xmkeg23{border-width:1px}",
+          "overflow-xb3r6kr": {
+            "ltr": ".overflow-xb3r6kr{overflow:hidden}",
             "priority": 2000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "xb3r6kr": [
-              "overflow",
-            ],
-            "xbsl7fq": [
+            "borderStyle-xbsl7fq": [
               "borderStyle",
             ],
-            "xmkeg23": [
+            "borderWidth-xmkeg23": [
               "borderWidth",
+            ],
+            "overflow-xb3r6kr": [
+              "overflow",
             ],
           },
         },
@@ -833,56 +906,59 @@ describe('stylex-create-test', () => {
 
   test('transforms media queries', () => {
     expect(
-      styleXCreate({
-        default: {
-          backgroundColor: 'red',
-          '@media (min-width: 1000px)': {
-            backgroundColor: 'blue',
-          },
+      styleXCreate(
+        {
+          default: {
+            backgroundColor: 'red',
+            '@media (min-width: 1000px)': {
+              backgroundColor: 'blue',
+            },
 
-          '@media (min-width: 2000px)': {
-            backgroundColor: 'purple',
+            '@media (min-width: 2000px)': {
+              backgroundColor: 'purple',
+            },
           },
         },
-      }),
+        options,
+      ),
     ).toMatchInlineSnapshot(`
       [
         {
           "default": {
             "$$css": true,
-            "@media (min-width: 1000px)_backgroundColor": "xc445zv",
-            "@media (min-width: 2000px)_backgroundColor": "x1ssfqz5",
-            "backgroundColor": "xrkmrrc",
+            "@media (min-width: 1000px)_backgroundColor-ksQ81T": "backgroundColor-xc445zv",
+            "@media (min-width: 2000px)_backgroundColor-kkpvmn": "backgroundColor-x1ssfqz5",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
           },
         },
         {
-          "x1ssfqz5": {
-            "ltr": "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
+          "backgroundColor-x1ssfqz5": {
+            "ltr": "@media (min-width: 2000px){.backgroundColor-x1ssfqz5.backgroundColor-x1ssfqz5{background-color:purple}}",
             "priority": 3200,
             "rtl": null,
           },
-          "xc445zv": {
-            "ltr": "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
+          "backgroundColor-xc445zv": {
+            "ltr": "@media (min-width: 1000px){.backgroundColor-xc445zv.backgroundColor-xc445zv{background-color:blue}}",
             "priority": 3200,
             "rtl": null,
           },
-          "xrkmrrc": {
-            "ltr": ".xrkmrrc{background-color:red}",
+          "backgroundColor-xrkmrrc": {
+            "ltr": ".backgroundColor-xrkmrrc{background-color:red}",
             "priority": 3000,
             "rtl": null,
           },
         },
         {
           "default": {
-            "x1ssfqz5": [
+            "backgroundColor-x1ssfqz5": [
               "@media (min-width: 2000px)",
               "backgroundColor",
             ],
-            "xc445zv": [
+            "backgroundColor-xc445zv": [
               "@media (min-width: 1000px)",
               "backgroundColor",
             ],
-            "xrkmrrc": [
+            "backgroundColor-xrkmrrc": [
               "backgroundColor",
             ],
           },
