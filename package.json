@@ -5,7 +5,6 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "npm run build",
-    "prepare": "husky install tools/husky",
     "build": "npm run build --workspaces --if-present",
     "flow": "flow",
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
@@ -21,7 +20,7 @@
     "packages/*",
     "apps/*"
   ],
-  "dependencies": {
+  "devDependencies": {
     "@types/estree": "^1.0.6",
     "@types/jest": "^29.5.13",
     "cross-env": "^7.0.3",
