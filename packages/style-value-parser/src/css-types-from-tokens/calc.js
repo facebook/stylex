@@ -127,12 +127,12 @@ const operationsParser: TokenParser<CalcValue> = TokenParser.sequence(
       .surroundedBy(TokenParser.tokens.Whitespace.optional)
       .map(([_, value]) => value),
   ),
-  TokenParser.sequence(
-    TokenParser.tokens.Delim.map((delim) => delim[4].value).where(
-      (delim) =>
-        delim === '*' || delim === '/' || delim === '+' || delim === '-',
-    ),
-    TokenParser.oneOrMore(
+  TokenParser.zeroOrMore(
+    TokenParser.sequence(
+      TokenParser.tokens.Delim.map((delim) => delim[4].value).where(
+        (delim) =>
+          delim === '*' || delim === '/' || delim === '+' || delim === '-',
+      ),
       TokenParser.oneOf(valueParser, () =>
         TokenParser.sequence(
           TokenParser.tokens.OpenParen,
@@ -142,8 +142,8 @@ const operationsParser: TokenParser<CalcValue> = TokenParser.sequence(
           .surroundedBy(TokenParser.tokens.Whitespace.optional)
           .map(([_, value]) => value),
       ),
-    ),
-  ).separatedBy(TokenParser.tokens.Whitespace).optional,
+    ).separatedBy(TokenParser.tokens.Whitespace),
+  ).separatedBy(TokenParser.tokens.Whitespace),
 )
   .separatedBy(TokenParser.tokens.Whitespace)
   .map(([firstValue, restOfTheValues]) => {
