@@ -7,7 +7,11 @@
  * @flow strict
  */
 
-import { type CalcConstant, calcConstant } from './calc-constant';
+import {
+  type CalcConstant,
+  allCalcConstants,
+  calcConstant,
+} from './calc-constant';
 import { Percentage } from './common-types';
 // import { type Dimension, dimension } from './dimension';
 
@@ -46,10 +50,10 @@ type CalcValue =
   | Division;
 
 const valueParser = TokenParser.oneOf(
+  calcConstant,
   TokenParser.tokens.Number.map((number) => number[4].value),
   TokenParser.tokens.Dimension.map((dimension) => dimension[4]),
   Percentage.parser,
-  calcConstant,
 );
 
 const composeAddAndSubtraction = (
@@ -57,6 +61,9 @@ const composeAddAndSubtraction = (
 ): CalcValue => {
   if (valuesAndOperators.length === 1) {
     if (typeof valuesAndOperators[0] === 'string') {
+      if (allCalcConstants.includes(valuesAndOperators[0])) {
+        return valuesAndOperators[0] as $FlowFixMe as CalcConstant;
+      }
       throw new Error('Invalid operator');
     }
     return valuesAndOperators[0];
@@ -124,7 +131,7 @@ const operationsParser: TokenParser<CalcValue> = TokenParser.sequence(
       operationsParser,
       TokenParser.tokens.CloseParen,
     )
-      .surroundedBy(TokenParser.tokens.Whitespace.optional)
+      .separatedBy(TokenParser.tokens.Whitespace.optional)
       .map(([_, value]) => value),
   ),
   TokenParser.zeroOrMore(
@@ -139,13 +146,13 @@ const operationsParser: TokenParser<CalcValue> = TokenParser.sequence(
           operationsParser,
           TokenParser.tokens.CloseParen,
         )
-          .surroundedBy(TokenParser.tokens.Whitespace.optional)
+          .separatedBy(TokenParser.tokens.Whitespace.optional)
           .map(([_, value]) => value),
       ),
-    ).separatedBy(TokenParser.tokens.Whitespace),
-  ).separatedBy(TokenParser.tokens.Whitespace),
+    ).separatedBy(TokenParser.tokens.Whitespace.optional),
+  ).separatedBy(TokenParser.tokens.Whitespace.optional),
 )
-  .separatedBy(TokenParser.tokens.Whitespace)
+  .separatedBy(TokenParser.tokens.Whitespace.optional)
   .map(([firstValue, restOfTheValues]) => {
     if (restOfTheValues == null || restOfTheValues.length === 0) {
       return firstValue;

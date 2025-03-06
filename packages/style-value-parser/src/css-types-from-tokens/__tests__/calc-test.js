@@ -132,17 +132,17 @@ describe('Test CSS Type: calc()', () => {
   });
 
   test('parses nested operations with parentheses', () => {
-    // expect(Calc.parser.parse('calc((10 + 5) * 2)')).toEqual(
-    //   new Calc({
-    //     type: '*',
-    //     left: {
-    //       type: '+',
-    //       left: 10,
-    //       right: 5,
-    //     },
-    //     right: 2,
-    //   }),
-    // );
+    expect(Calc.parser.parse('calc((10 + 5) * 2)')).toEqual(
+      new Calc({
+        type: '*',
+        left: {
+          type: '+',
+          left: 10,
+          right: 5,
+        },
+        right: 2,
+      }),
+    );
     expect(Calc.parser.parse('calc(100% - (30px / 2))')).toMatchObject(
       new Calc({
         type: '-',
@@ -186,17 +186,48 @@ describe('Test CSS Type: calc()', () => {
     );
   });
 
+  // NOTE: CSS requieres spaces after `+` and `-` for them to be considered as operators
+  // if there is a digit immediately after the operator
+  // This is consistent with the CSS spec
   test('handles whitespace correctly', () => {
-    // expect(Calc.parser.parse('calc( 10+5 )')).toEqual(
-    //   new Calc({
-    //     type: '+',
-    //     left: 10,
-    //     right: 5,
-    //   }),
-    // );
-    expect(Calc.parser.parse('calc( 10 + 5 )')).toEqual(
+    expect(Calc.parser.parse('calc(10+pi)')).toEqual(
       new Calc({
         type: '+',
+        left: 10,
+        right: 'pi',
+      }),
+    );
+    expect(Calc.parser.parse('calc(10*5)')).toEqual(
+      new Calc({
+        type: '*',
+        left: 10,
+        right: 5,
+      }),
+    );
+    expect(Calc.parser.parse('calc( 10*5 )')).toEqual(
+      new Calc({
+        type: '*',
+        left: 10,
+        right: 5,
+      }),
+    );
+    expect(Calc.parser.parse('calc( 10* 5 )')).toEqual(
+      new Calc({
+        type: '*',
+        left: 10,
+        right: 5,
+      }),
+    );
+    expect(Calc.parser.parse('calc( 10 *5 )')).toEqual(
+      new Calc({
+        type: '*',
+        left: 10,
+        right: 5,
+      }),
+    );
+    expect(Calc.parser.parse('calc( 10 * 5 )')).toEqual(
+      new Calc({
+        type: '*',
         left: 10,
         right: 5,
       }),

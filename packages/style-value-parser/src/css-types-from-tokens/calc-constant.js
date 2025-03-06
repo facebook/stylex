@@ -11,6 +11,14 @@ import { TokenParser } from '../core2';
 
 export type CalcConstant = 'pi' | 'e' | 'infinity' | '-infinity' | 'NaN';
 
+export const allCalcConstants: $ReadOnlyArray<CalcConstant> = [
+  'pi',
+  'e',
+  'infinity',
+  '-infinity',
+  'NaN',
+];
+
 export const calcConstant: TokenParser<CalcConstant> = TokenParser.oneOf(
   TokenParser.string('pi'),
   TokenParser.string('e'),
