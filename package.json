@@ -29,7 +29,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-ft-flow": "^3.0.11",
     "eslint-plugin-react": "^7.37.1",
-    "flow-bin": "^0.261.0",
+    "flow-bin": "^0.261.2",
     "hermes-eslint": "^0.26.0",
     "husky": "^8.0.0",
     "jest": "^30.0.0-alpha.6",

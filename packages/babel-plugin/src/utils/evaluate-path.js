@@ -172,7 +172,7 @@ function evaluateThemeRef(
         ? utils.genFileBasedIdentifier({ fileName, exportName })
         : utils.genFileBasedIdentifier({ fileName, exportName, key });
 
-    const {debug, enableDebugClassNames}  = state.traversalState.options;
+    const { debug, enableDebugClassNames } = state.traversalState.options;
 
     const varName =
       debug && enableDebugClassNames
