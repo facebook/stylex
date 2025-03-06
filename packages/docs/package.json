@@ -3,16 +3,11 @@
   "name": "docs",
   "version": "0.11.1",
   "scripts": {
-    "docusaurus": "docusaurus",
-    "app:build": "rimraf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build && node ./scripts/make-stylex-sheet.js",
-    "app:start": "docusaurus start",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
+    "build": "rimraf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build && node ./scripts/make-stylex-sheet.js",
     "clear": "docusaurus clear",
-    "serve": "serve ./build -c ../serve.json",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\""
+    "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\"",
+    "serve": "docusaurus serve",
+    "start": "docusaurus start"
   },
   "dependencies": {
     "@docusaurus/core": "2.4.1",
@@ -44,7 +39,6 @@
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "mkdirp": "^1.0.4",
-    "serve": "^14.2.4",
     "stylelint": "^14.9.1"
   },
   "browserslist": {
