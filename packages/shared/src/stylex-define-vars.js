@@ -36,7 +36,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   variables: Vars,
   options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
 ): [VarsObject<Vars>, { [string]: InjectableStyle }] {
-  const { classNamePrefix, themeName, debug } = {
+  const { classNamePrefix, themeName, debug, enableDebugClassNames } = {
     ...defaultOptions,
     ...options,
   };
@@ -56,7 +56,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     // Created hashed variable names with fileName//themeName//key
     const nameHash = key.startsWith('--')
       ? key.slice(2)
-      : debug
+      : debug && enableDebugClassNames
         ? key + '-' + classNamePrefix + createHash(`${themeName}.${key}`)
         : classNamePrefix + createHash(`${themeName}.${key}`);
 
