@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run app:build -w docs",
-  "outputDirectory": "apps/docs/build",
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "packages/docs/build",
   "headers": [
     {
       "source": "/(.*)",
