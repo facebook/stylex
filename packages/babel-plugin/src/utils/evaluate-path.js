@@ -173,9 +173,11 @@ function evaluateThemeRef(
         : utils.genFileBasedIdentifier({ fileName, exportName, key });
 
     const debug = state.traversalState.options.debug;
+    const enableDebugClassNames =
+      state.traversalState.options.enableDebugClassNames;
 
     const varName =
-      debug === true
+      debug && enableDebugClassNames
         ? key +
           '-' +
           state.traversalState.options.classNamePrefix +
