@@ -29,6 +29,7 @@ module.exports = {
     node: true,
   },
   ignorePatterns: [
+    'apps',
     'build',
     'coverage',
     'dist',
