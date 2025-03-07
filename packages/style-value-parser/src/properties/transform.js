@@ -7,8 +7,8 @@
  * @flow strict
  */
 
-import { Parser } from '../core';
-import { TransformFunction } from '../css-types/transform-function';
+import { TokenParser } from '../core2';
+import { TransformFunction } from '../css-types-from-tokens/transform-function';
 
 export class Transform {
   +value: $ReadOnlyArray<TransformFunction>;
@@ -21,9 +21,9 @@ export class Transform {
     return this.value.join(' ');
   }
 
-  static get parse(): Parser<Transform> {
-    return Parser.oneOrMore(TransformFunction.parse)
-      .separatedBy(Parser.whitespace)
+  static get parse(): TokenParser<Transform> {
+    return TokenParser.oneOrMore(TransformFunction.parser)
+      .separatedBy(TokenParser.tokens.Whitespace)
       .map((value) => new Transform(value));
   }
 }

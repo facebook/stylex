@@ -7,9 +7,9 @@
  * @flow strict
  */
 
-import { Parser } from '../core';
-import { Length, Px } from '../css-types/length';
-import { Color } from '../css-types/color';
+import { TokenParser } from '../core2';
+import { Length } from '../css-types-from-tokens/length';
+import { Color } from '../css-types-from-tokens/color';
 
 export class BoxShadow {
   +offsetX: Length;
@@ -35,28 +35,31 @@ export class BoxShadow {
     this.inset = inset;
   }
 
-  static get parse(): Parser<BoxShadow> {
-    const outerShadow = Parser.sequence(
-      Length.parse,
-      Length.parse,
-      Length.parse.optional,
-      Length.parse.optional,
-      Color.parse,
+  static get parse(): TokenParser<BoxShadow> {
+    const outerShadow = TokenParser.sequence(
+      Length.parser,
+      Length.parser,
+      Length.parser.optional,
+      Length.parser.optional,
+      Color.parser,
     )
-      .separatedBy(Parser.whitespace)
+      .separatedBy(TokenParser.tokens.Whitespace)
       .map(
         ([offsetX, offsetY, blurRadius, spreadRadius, color]) =>
           new BoxShadow(
             offsetX,
             offsetY,
-            blurRadius ?? new Px(0),
-            spreadRadius ?? new Px(0),
+            blurRadius ?? new Length(0, 'px'),
+            spreadRadius ?? new Length(0, 'px'),
             color,
           ),
       );
 
-    const insetShadow = Parser.setOf(outerShadow, Parser.string('inset'))
-      .separatedBy(Parser.whitespace)
+    const insetShadow = TokenParser.sequence(
+      outerShadow,
+      TokenParser.string('inset'),
+    )
+      .separatedBy(TokenParser.tokens.Whitespace)
       .map(
         ([shadow, _inset]) =>
           new BoxShadow(
@@ -69,7 +72,7 @@ export class BoxShadow {
           ),
       );
 
-    return Parser.oneOf(outerShadow, insetShadow);
+    return TokenParser.oneOf(insetShadow, outerShadow);
   }
 }
 
@@ -80,9 +83,13 @@ export class BoxShadowList {
     this.shadows = shadows;
   }
 
-  static get parse(): Parser<BoxShadowList> {
-    return Parser.oneOrMore(BoxShadow.parse)
-      .separatedBy(Parser.string(',').surroundedBy(Parser.whitespace.optional))
+  static get parse(): TokenParser<BoxShadowList> {
+    return TokenParser.oneOrMore(BoxShadow.parse)
+      .separatedBy(
+        TokenParser.tokens.Comma.surroundedBy(
+          TokenParser.tokens.Whitespace.optional,
+        ),
+      )
       .map((shadows) => new BoxShadowList(shadows));
   }
 }

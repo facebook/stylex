@@ -11,37 +11,40 @@ import {
   BorderRadiusIndividual,
   BorderRadiusShorthand,
 } from '../border-radius';
-import { Px, Rem } from '../../css-types/length';
-import { Percentage } from '../../css-types/common-types';
+import { Percentage } from '../../css-types-from-tokens/common-types';
+import { Length } from '../../css-types-from-tokens/length';
 
 describe('Test CSS property: `border-<dir>-<dir>-radius`', () => {
   test('Valid: border-<dir>-<dir>-radius: <length-percentage>', () => {
     expect(BorderRadiusIndividual.parse.parseToEnd('10px')).toEqual(
-      new BorderRadiusIndividual(new Px(10)),
+      new BorderRadiusIndividual(new Length(10, 'px')),
     );
     expect(BorderRadiusIndividual.parse.parseToEnd('0.5px')).toEqual(
-      new BorderRadiusIndividual(new Px(0.5)),
+      new BorderRadiusIndividual(new Length(0.5, 'px')),
     );
     expect(BorderRadiusIndividual.parse.parseToEnd('.5px')).toEqual(
-      new BorderRadiusIndividual(new Px(0.5)),
+      new BorderRadiusIndividual(new Length(0.5, 'px')),
     );
     expect(BorderRadiusIndividual.parse.parseToEnd('1rem')).toEqual(
-      new BorderRadiusIndividual(new Rem(1)),
+      new BorderRadiusIndividual(new Length(1, 'rem')),
     );
   });
 
   test('Valid: border-<dir>-<dir>-radius: <length-percentage> <length-percentage>', () => {
     expect(BorderRadiusIndividual.parse.parseToEnd('10px 20px')).toEqual(
-      new BorderRadiusIndividual(new Px(10), new Px(20)),
+      new BorderRadiusIndividual(new Length(10, 'px'), new Length(20, 'px')),
     );
     expect(BorderRadiusIndividual.parse.parseToEnd('0.5px 2rem')).toEqual(
-      new BorderRadiusIndividual(new Px(0.5), new Rem(2)),
+      new BorderRadiusIndividual(new Length(0.5, 'px'), new Length(2, 'rem')),
     );
     expect(BorderRadiusIndividual.parse.parseToEnd('.5px \n   4.5rem')).toEqual(
-      new BorderRadiusIndividual(new Px(0.5), new Rem(4.5)),
+      new BorderRadiusIndividual(new Length(0.5, 'px'), new Length(4.5, 'rem')),
     );
     expect(BorderRadiusIndividual.parse.parseToEnd('1rem .0005px')).toEqual(
-      new BorderRadiusIndividual(new Rem(1), new Px(0.0005)),
+      new BorderRadiusIndividual(
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
+      ),
     );
   });
 
@@ -59,48 +62,66 @@ describe('Test CSS property: `border-<dir>-<dir>-radius`', () => {
 describe('Test CSS property shorthand: `border-radius`', () => {
   test('Valid: border-radius: <length-percentage>', () => {
     expect(BorderRadiusShorthand.parse.parseToEnd('10px')).toEqual(
-      new BorderRadiusShorthand(new Px(10)),
+      new BorderRadiusShorthand(new Length(10, 'px')),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('0.5px')).toEqual(
-      new BorderRadiusShorthand(new Px(0.5)),
+      new BorderRadiusShorthand(new Length(0.5, 'px')),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('.5px')).toEqual(
-      new BorderRadiusShorthand(new Px(0.5)),
+      new BorderRadiusShorthand(new Length(0.5, 'px')),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('1rem')).toEqual(
-      new BorderRadiusShorthand(new Rem(1)),
+      new BorderRadiusShorthand(new Length(1, 'rem')),
     );
   });
 
   test('Valid: border-radius: <length-percentage> <length-percentage>', () => {
     expect(BorderRadiusShorthand.parse.parseToEnd('10px 20px')).toEqual(
-      new BorderRadiusShorthand(new Px(10), new Px(20)),
+      new BorderRadiusShorthand(new Length(10, 'px'), new Length(20, 'px')),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('0.5px 2rem')).toEqual(
-      new BorderRadiusShorthand(new Px(0.5), new Rem(2)),
+      new BorderRadiusShorthand(new Length(0.5, 'px'), new Length(2, 'rem')),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('.5px \n   4.5rem')).toEqual(
-      new BorderRadiusShorthand(new Px(0.5), new Rem(4.5)),
+      new BorderRadiusShorthand(new Length(0.5, 'px'), new Length(4.5, 'rem')),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('1rem .0005px')).toEqual(
-      new BorderRadiusShorthand(new Rem(1), new Px(0.0005)),
+      new BorderRadiusShorthand(new Length(1, 'rem'), new Length(0.0005, 'px')),
     );
   });
 
   test('Valid: border-radius: <length-percentage> <length-percentage> <length-percentage>', () => {
     expect(BorderRadiusShorthand.parse.parseToEnd('10px 20px 30px')).toEqual(
-      new BorderRadiusShorthand(new Px(10), new Px(20), new Px(30)),
+      new BorderRadiusShorthand(
+        new Length(10, 'px'),
+        new Length(20, 'px'),
+        new Length(30, 'px'),
+      ),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('0.5px 2rem 3rem')).toEqual(
-      new BorderRadiusShorthand(new Px(0.5), new Rem(2), new Rem(3)),
+      new BorderRadiusShorthand(
+        new Length(0.5, 'px'),
+        new Length(2, 'rem'),
+        new Length(3, 'rem'),
+      ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('.5px \n   4.5rem 6rem'),
-    ).toEqual(new BorderRadiusShorthand(new Px(0.5), new Rem(4.5), new Rem(6)));
+    ).toEqual(
+      new BorderRadiusShorthand(
+        new Length(0.5, 'px'),
+        new Length(4.5, 'rem'),
+        new Length(6, 'rem'),
+      ),
+    );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('1rem .0005px 0.0005rem'),
     ).toEqual(
-      new BorderRadiusShorthand(new Rem(1), new Px(0.0005), new Rem(0.0005)),
+      new BorderRadiusShorthand(
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
+        new Length(0.0005, 'rem'),
+      ),
     );
   });
 
@@ -108,36 +129,41 @@ describe('Test CSS property shorthand: `border-radius`', () => {
     expect(
       BorderRadiusShorthand.parse.parseToEnd('10px 20px 30px 40px'),
     ).toEqual(
-      new BorderRadiusShorthand(new Px(10), new Px(20), new Px(30), new Px(40)),
+      new BorderRadiusShorthand(
+        new Length(10, 'px'),
+        new Length(20, 'px'),
+        new Length(30, 'px'),
+        new Length(40, 'px'),
+      ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('0.5px 2rem 3rem 4rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Rem(2),
-        new Rem(3),
-        new Rem(4),
+        new Length(0.5, 'px'),
+        new Length(2, 'rem'),
+        new Length(3, 'rem'),
+        new Length(4, 'rem'),
       ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('.5px \n   4.5rem 6rem 7rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Rem(4.5),
-        new Rem(6),
-        new Rem(7),
+        new Length(0.5, 'px'),
+        new Length(4.5, 'rem'),
+        new Length(6, 'rem'),
+        new Length(7, 'rem'),
       ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('1rem .0005px 0.0005rem 0.5rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Rem(1),
-        new Px(0.0005),
-        new Rem(0.0005),
-        new Rem(0.5),
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
+        new Length(0.0005, 'rem'),
+        new Length(0.5, 'rem'),
       ),
     );
   });
@@ -176,40 +202,40 @@ describe('Test CSS property shorthand: `border-radius`', () => {
   test('Valid: border-radius: <length-percentage> / <length-percentage>', () => {
     expect(BorderRadiusShorthand.parse.parseToEnd('10px / 20px')).toEqual(
       new BorderRadiusShorthand(
-        new Px(10),
-        new Px(10),
-        new Px(10),
-        new Px(10),
-        new Px(20),
+        new Length(10, 'px'),
+        new Length(10, 'px'),
+        new Length(10, 'px'),
+        new Length(10, 'px'),
+        new Length(20, 'px'),
       ),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('0.5px / 2rem')).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Px(0.5),
-        new Px(0.5),
-        new Px(0.5),
-        new Rem(2),
+        new Length(0.5, 'px'),
+        new Length(0.5, 'px'),
+        new Length(0.5, 'px'),
+        new Length(0.5, 'px'),
+        new Length(2, 'rem'),
       ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('.5px \n   / 4.5rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Px(0.5),
-        new Px(0.5),
-        new Px(0.5),
-        new Rem(4.5),
+        new Length(0.5, 'px'),
+        new Length(0.5, 'px'),
+        new Length(0.5, 'px'),
+        new Length(0.5, 'px'),
+        new Length(4.5, 'rem'),
       ),
     );
     expect(BorderRadiusShorthand.parse.parseToEnd('1rem / .0005px')).toEqual(
       new BorderRadiusShorthand(
-        new Rem(1),
-        new Rem(1),
-        new Rem(1),
-        new Rem(1),
-        new Px(0.0005),
+        new Length(1, 'rem'),
+        new Length(1, 'rem'),
+        new Length(1, 'rem'),
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
       ),
     );
   });
@@ -219,48 +245,48 @@ describe('Test CSS property shorthand: `border-radius`', () => {
       BorderRadiusShorthand.parse.parseToEnd('10px 20px / 30px 40px'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(10),
-        new Px(20),
-        new Px(10),
-        new Px(20),
-        new Px(30),
-        new Px(40),
+        new Length(10, 'px'),
+        new Length(20, 'px'),
+        new Length(10, 'px'),
+        new Length(20, 'px'),
+        new Length(30, 'px'),
+        new Length(40, 'px'),
       ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('0.5px 2rem / 3rem 4rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Rem(2),
-        new Px(0.5),
-        new Rem(2),
-        new Rem(3),
-        new Rem(4),
+        new Length(0.5, 'px'),
+        new Length(2, 'rem'),
+        new Length(0.5, 'px'),
+        new Length(2, 'rem'),
+        new Length(3, 'rem'),
+        new Length(4, 'rem'),
       ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('.5px \n   4.5rem / 6rem 7rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Rem(4.5),
-        new Px(0.5),
-        new Rem(4.5),
-        new Rem(6),
-        new Rem(7),
+        new Length(0.5, 'px'),
+        new Length(4.5, 'rem'),
+        new Length(0.5, 'px'),
+        new Length(4.5, 'rem'),
+        new Length(6, 'rem'),
+        new Length(7, 'rem'),
       ),
     );
     expect(
       BorderRadiusShorthand.parse.parseToEnd('1rem .0005px / 0.0005rem 0.5rem'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Rem(1),
-        new Px(0.0005),
-        new Rem(1),
-        new Px(0.0005),
-        new Rem(0.0005),
-        new Rem(0.5),
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
+        new Length(0.0005, 'rem'),
+        new Length(0.5, 'rem'),
       ),
     );
   });
@@ -270,13 +296,13 @@ describe('Test CSS property shorthand: `border-radius`', () => {
       BorderRadiusShorthand.parse.parseToEnd('10px 20px 30px / 40px 50px 60px'),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(10),
-        new Px(20),
-        new Px(30),
-        new Px(20),
-        new Px(40),
-        new Px(50),
-        new Px(60),
+        new Length(10, 'px'),
+        new Length(20, 'px'),
+        new Length(30, 'px'),
+        new Length(20, 'px'),
+        new Length(40, 'px'),
+        new Length(50, 'px'),
+        new Length(60, 'px'),
       ),
     );
     expect(
@@ -285,13 +311,13 @@ describe('Test CSS property shorthand: `border-radius`', () => {
       ),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Rem(2),
-        new Rem(3),
-        new Rem(2),
-        new Rem(4),
-        new Rem(5),
-        new Rem(6),
+        new Length(0.5, 'px'),
+        new Length(2, 'rem'),
+        new Length(3, 'rem'),
+        new Length(2, 'rem'),
+        new Length(4, 'rem'),
+        new Length(5, 'rem'),
+        new Length(6, 'rem'),
       ),
     );
     expect(
@@ -300,13 +326,13 @@ describe('Test CSS property shorthand: `border-radius`', () => {
       ),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Px(0.5),
-        new Rem(4.5),
-        new Rem(6),
-        new Rem(4.5),
-        new Rem(7),
-        new Rem(8),
-        new Rem(9),
+        new Length(0.5, 'px'),
+        new Length(4.5, 'rem'),
+        new Length(6, 'rem'),
+        new Length(4.5, 'rem'),
+        new Length(7, 'rem'),
+        new Length(8, 'rem'),
+        new Length(9, 'rem'),
       ),
     );
     expect(
@@ -315,13 +341,13 @@ describe('Test CSS property shorthand: `border-radius`', () => {
       ),
     ).toEqual(
       new BorderRadiusShorthand(
-        new Rem(1),
-        new Px(0.0005),
-        new Rem(0.0005),
-        new Px(0.0005),
-        new Rem(0.5),
-        new Rem(0.6),
-        new Rem(0.7),
+        new Length(1, 'rem'),
+        new Length(0.0005, 'px'),
+        new Length(0.0005, 'rem'),
+        new Length(0.0005, 'px'),
+        new Length(0.5, 'rem'),
+        new Length(0.6, 'rem'),
+        new Length(0.7, 'rem'),
       ),
     );
   });

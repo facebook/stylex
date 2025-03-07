@@ -7,10 +7,10 @@
  * @flow strict
  */
 
-import type { LengthPercentage } from '../css-types/length-percentage';
+import type { LengthPercentage } from '../css-types-from-tokens/length-percentage';
 
-import { Parser } from '../core';
-import { lengthPercentage } from '../css-types/length-percentage';
+import { TokenParser } from '../core2';
+import { lengthPercentage } from '../css-types-from-tokens/length-percentage';
 
 export class BorderRadiusIndividual {
   horizontal: LengthPercentage;
@@ -30,10 +30,10 @@ export class BorderRadiusIndividual {
     return `${horizontal} ${vertical}`;
   }
 
-  static get parse(): Parser<BorderRadiusIndividual> {
-    return Parser.oneOf(
-      Parser.sequence(lengthPercentage, lengthPercentage).separatedBy(
-        Parser.whitespace,
+  static get parse(): TokenParser<BorderRadiusIndividual> {
+    return TokenParser.oneOf(
+      TokenParser.sequence(lengthPercentage, lengthPercentage).separatedBy(
+        TokenParser.tokens.Whitespace,
       ),
       lengthPercentage.map((p) => [p, p]),
     ).map(
@@ -132,12 +132,12 @@ export class BorderRadiusShorthand {
     return `${pStr} / ${sStr}`;
   }
 
-  static get parse(): Parser<BorderRadiusShorthand> {
-    const spaceSeparatedRadii = Parser.sequence(
+  static get parse(): TokenParser<BorderRadiusShorthand> {
+    const spaceSeparatedRadii = TokenParser.sequence(
       lengthPercentage,
-      lengthPercentage.prefix(Parser.whitespace).optional,
-      lengthPercentage.prefix(Parser.whitespace).optional,
-      lengthPercentage.prefix(Parser.whitespace).optional,
+      lengthPercentage.prefix(TokenParser.tokens.Whitespace).optional,
+      lengthPercentage.prefix(TokenParser.tokens.Whitespace).optional,
+      lengthPercentage.prefix(TokenParser.tokens.Whitespace).optional,
     ).map(
       ([
         topLeft,
@@ -147,17 +147,21 @@ export class BorderRadiusShorthand {
       ]) => [topLeft, topRight, bottomRight, bottomLeft],
     );
 
-    const assymtricBorder = Parser.sequence(
+    const assymtricBorder = TokenParser.sequence(
       spaceSeparatedRadii,
       spaceSeparatedRadii,
     )
-      .separatedBy(Parser.string('/').surroundedBy(Parser.whitespace))
+      .separatedBy(
+        TokenParser.tokens.Delim.map((delim) => delim[4].value)
+          .where((d) => d === '/')
+          .surroundedBy(TokenParser.tokens.Whitespace),
+      )
       .map(
         ([pRadii, sRadii = pRadii]) =>
           new BorderRadiusShorthand(...pRadii, ...sRadii),
       );
 
-    return Parser.oneOf(
+    return TokenParser.oneOf(
       assymtricBorder,
       spaceSeparatedRadii.map(
         (borders) => new BorderRadiusShorthand(...borders),

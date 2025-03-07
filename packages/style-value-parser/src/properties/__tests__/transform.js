@@ -13,15 +13,15 @@ import {
   Perspective,
   Rotate,
   Rotate3d,
-  RotateAxis,
+  RotateXYZ,
   Scale,
   Scale3d,
   Skew,
   Translate,
-} from '../../css-types/transform-function';
+} from '../../css-types-from-tokens/transform-function';
 
-import { Px } from '../../css-types/length';
-import { Deg } from '../../css-types/angle';
+import { Length } from '../../css-types-from-tokens/length';
+import { Angle } from '../../css-types-from-tokens/angle';
 import { Transform } from '../transform';
 
 describe('Test CSS property: `transform`', () => {
@@ -55,27 +55,32 @@ describe('Test CSS property: `transform`', () => {
     });
     test('perspective', () => {
       expect(Transform.parse.parse('perspective(100px)')).toEqual(
-        new Transform([new Perspective(new Px(100))]),
+        new Transform([new Perspective(new Length(100, 'px'))]),
       );
     });
     test('rotate', () => {
       expect(Transform.parse.parse('rotate(45deg)')).toEqual(
-        new Transform([new Rotate(new Deg(45))]),
+        new Transform([new Rotate(new Angle(45, 'deg'))]),
       );
     });
     test('rotate3d', () => {
       expect(Transform.parse.parse('rotate3d(1, 2, 3, 45deg)')).toEqual(
-        new Transform([new Rotate3d(1, 2, 3, new Deg(45))]),
+        new Transform([new Rotate3d(1, 2, 3, new Angle(45, 'deg'))]),
       );
     });
     test('rotateX', () => {
       expect(Transform.parse.parse('rotateX(45deg)')).toEqual(
-        new Transform([new RotateAxis(new Deg(45), 'X')]),
+        new Transform([new RotateXYZ(new Angle(45, 'deg'), 'X')]),
       );
     });
     test('rotateY', () => {
       expect(Transform.parse.parse('rotateY(45deg)')).toEqual(
-        new Transform([new RotateAxis(new Deg(45), 'Y')]),
+        new Transform([new RotateXYZ(new Angle(45, 'deg'), 'Y')]),
+      );
+    });
+    test('rotateZ', () => {
+      expect(Transform.parse.parse('rotateZ(45deg)')).toEqual(
+        new Transform([new RotateXYZ(new Angle(45, 'deg'), 'Z')]),
       );
     });
   });
@@ -87,14 +92,14 @@ describe('Test CSS property: `transform`', () => {
         ),
       ).toEqual(
         new Transform([
-          new Perspective(new Px(100)),
+          new Perspective(new Length(100, 'px')),
           new Matrix3d([1, 0, 0, 0, 0, 1, 0, 0, 0, 0.5, 1.5, 0, 0, 0, 0, 1]),
         ]),
       );
     });
     test('scale + rotate', () => {
       expect(Transform.parse.parse('scale(2) rotate(45deg)')).toEqual(
-        new Transform([new Scale(2, null), new Rotate(new Deg(45))]),
+        new Transform([new Scale(2, null), new Rotate(new Angle(45, 'deg'))]),
       );
     });
     test('scale3d + rotate3d', () => {
@@ -103,7 +108,7 @@ describe('Test CSS property: `transform`', () => {
       ).toEqual(
         new Transform([
           new Scale3d(2, 3, 4),
-          new Rotate3d(1, 2, 3, new Deg(45)),
+          new Rotate3d(1, 2, 3, new Angle(45, 'deg')),
         ]),
       );
     });
@@ -115,9 +120,9 @@ describe('Test CSS property: `transform`', () => {
       ).toEqual(
         new Transform([
           new Scale(2, null),
-          new Rotate(new Deg(45)),
-          new Translate(new Px(100), null),
-          new Skew(new Deg(45), null),
+          new Rotate(new Angle(45, 'deg')),
+          new Translate(new Length(100, 'px'), null),
+          new Skew(new Angle(45, 'deg'), null),
         ]),
       );
     });

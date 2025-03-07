@@ -24,7 +24,7 @@ export class TransformFunction {
       Rotate.parser,
       RotateXYZ.parser,
       Rotate3d.parser,
-      RotateAxis.parser,
+      // RotateAxis.parser,
       Scale.parser,
       Scale3d.parser,
       ScaleAxis.parser,
@@ -252,43 +252,43 @@ export class Rotate3d extends TransformFunction {
   }
 }
 
-export class RotateAxis extends TransformFunction {
-  +angle: Angle;
-  +axis: 'X' | 'Y' | 'Z';
-  constructor(angle: Angle, axis: 'X' | 'Y' | 'Z') {
-    super();
-    this.angle = angle;
-    this.axis = axis;
-  }
-  toString(): string {
-    return `rotate${this.axis}(${this.angle.toString()})`;
-  }
-  static get parser(): TokenParser<RotateAxis> {
-    return TokenParser.sequence(
-      TokenParser.sequence(
-        TokenParser.tokens.Function.map((v) => v[4].value).where(
-          (v) => v === 'rotate',
-        ),
-        TokenParser.oneOf<'X' | 'Y' | 'Z'>(
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'X',
-          ),
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'Y',
-          ),
-          TokenParser.tokens.Ident.map((v) => v[4].value).where(
-            (v) => v === 'Z',
-          ),
-        ),
-        TokenParser.tokens.OpenParen,
-      ).map(([_, axis, _1]) => axis),
-      Angle.parser,
-      TokenParser.tokens.CloseParen,
-    )
-      .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(([axis, angle]) => new RotateAxis(angle, axis));
-  }
-}
+// export class RotateAxis extends TransformFunction {
+//   +angle: Angle;
+//   +axis: 'X' | 'Y' | 'Z';
+//   constructor(angle: Angle, axis: 'X' | 'Y' | 'Z') {
+//     super();
+//     this.angle = angle;
+//     this.axis = axis;
+//   }
+//   toString(): string {
+//     return `rotate${this.axis}(${this.angle.toString()})`;
+//   }
+//   static get parser(): TokenParser<RotateAxis> {
+//     return TokenParser.sequence(
+//       TokenParser.sequence(
+//         TokenParser.tokens.Function.map((v) => v[4].value).where(
+//           (v) => v === 'rotate',
+//         ),
+//         TokenParser.oneOf<'X' | 'Y' | 'Z'>(
+//           TokenParser.tokens.Ident.map((v) => v[4].value).where(
+//             (v) => v === 'X',
+//           ),
+//           TokenParser.tokens.Ident.map((v) => v[4].value).where(
+//             (v) => v === 'Y',
+//           ),
+//           TokenParser.tokens.Ident.map((v) => v[4].value).where(
+//             (v) => v === 'Z',
+//           ),
+//         ),
+//         TokenParser.tokens.OpenParen,
+//       ).map(([_, axis, _1]) => axis),
+//       Angle.parser,
+//       TokenParser.tokens.CloseParen,
+//     )
+//       .separatedBy(TokenParser.tokens.Whitespace.optional)
+//       .map(([axis, angle]) => new RotateAxis(angle, axis));
+//   }
+// }
 
 export class Scale extends TransformFunction {
   +sx: number;
