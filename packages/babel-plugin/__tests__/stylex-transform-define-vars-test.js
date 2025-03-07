@@ -317,6 +317,41 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('transforms variables object with numeric keys and add stylex.inject in debug mode', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const buttonTheme = stylex.defineVars({
+            '10': {
+              default: 'blue',
+              '@media (prefers-color-scheme: dark)': 'lightblue',
+              '@media print': 'white',
+            },
+            '1.5 pixels': {
+              default: 'grey',
+              '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+            },
+            'corner#radius': 10,
+            '@@primary': {
+              default: 'pink',
+            },
+          });
+        `,
+          { ...defaultOpts, debug: true },
+        ).code,
+      ).toMatchInlineSnapshot(`
+        "import stylex from 'stylex';
+        export const buttonTheme = {
+          "10": "var(--_10-xhaj83f)",
+          "1.5 pixels": "var(--_1_5_pixels-xhrybbu)",
+          "corner#radius": "var(--corner_radius-x19gjwfn)",
+          "@@primary": "var(--__primary-x9xh8rb)",
+          __themeName__: "x568ih9"
+        };"
+      `);
+    });
+
     test('transforms variables object in non-haste env', () => {
       expect(
         transform(

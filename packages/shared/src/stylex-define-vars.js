@@ -53,11 +53,13 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   const variablesMap: {
     +[string]: { +nameHash: string, +value: VarsConfigValue },
   } = objMap(variables, (value, key) => {
-    // Created hashed variable names with fileName//themeName//key
+    const varSafeKey = (
+      key[0] >= '0' && key[0] <= '9' ? `_${key}` : key
+    ).replace(/[^a-zA-Z0-9]/g, '_');
     const nameHash = key.startsWith('--')
       ? key.slice(2)
       : debug && enableDebugClassNames
-        ? key + '-' + classNamePrefix + createHash(`${themeName}.${key}`)
+        ? varSafeKey + '-' + classNamePrefix + createHash(`${themeName}.${key}`)
         : classNamePrefix + createHash(`${themeName}.${key}`);
 
     if (isCSSType(value)) {
