@@ -84,10 +84,12 @@ export class Inset extends BasicShape {
       ).separatedBy(Parser.whitespace),
     );
 
+    // $FlowFixMe Need to migrate to TokenParser from Parser here
     const round: Parser<BorderRadiusShorthand> = Parser.sequence(
       Parser.string('round'),
       Parser.whitespace,
       BorderRadiusShorthand.parse,
+    // $FlowFixMe annotate props here
     ).map(([, , v]) => v);
 
     return Parser.sequence(
