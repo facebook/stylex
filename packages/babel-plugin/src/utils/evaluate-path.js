@@ -523,7 +523,6 @@ function _evaluate(path: NodePath<>, state: State): any {
     const elems: $ReadOnlyArray<NodePath<>> = arrPath.get('elements');
     for (const elem of elems) {
       const elemValue = evaluate(elem, state.traversalState, state.functions);
-      // const elemValue = evaluateCached(elem, state);
 
       if (elemValue.confident) {
         arr.push(elemValue.value);
@@ -568,7 +567,7 @@ function _evaluate(path: NodePath<>, state: State): any {
             state.functions,
             state.seen,
           );
-          // evaluateCached(keyPath, state);
+
           if (!confident) {
             resultDeopt &&
               deopt(resultDeopt, state, deoptReason ?? 'unknown error');
@@ -578,10 +577,10 @@ function _evaluate(path: NodePath<>, state: State): any {
         } else if (keyPath.isIdentifier()) {
           key = keyPath.node.name;
         } else {
-          // TODO: This is'nt handling all possible types that `keyPath` could be
+          // TODO: This isn't handling all possible types that `keyPath` could be
           key = (keyPath.node as $FlowFixMe).value;
         }
-        // todo(flow->ts): remove typecast
+
         const valuePath: NodePath<> = prop.get('value');
         let value = evaluate(
           valuePath,
@@ -804,7 +803,6 @@ function _evaluate(path: NodePath<>, state: State): any {
           state.traversalState,
           state.functions,
         );
-        // const parsedObj = evaluateCached(object, state);
         if (parsedObj.confident && property.isIdentifier()) {
           func = parsedObj.value[property.node.name];
           context = parsedObj.value;

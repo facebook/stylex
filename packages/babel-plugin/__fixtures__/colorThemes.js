@@ -13,7 +13,6 @@ import { colors } from './colors.stylex';
 
 import * as stylex from '@stylexjs/stylex';
 
-// Base WDS color palette; not meant to be used directly. Instead use semantic colors.
 const baseColorPalette = {
   neutralGray50: '#FAFAFA',
   neutralGray75: '#F4F4F4',
@@ -29,29 +28,7 @@ const baseColorPalette = {
   neutralGray850: '#1D1F1F',
   neutralGray900: '#161717',
   neutralGray1000: '#0A0A0A',
-  // Cool grays left out intentionally; they are not used in Web WDS.
-  // coolGray50: '#F7F8FA',
-  // coolGray75: '#F1F2F4',
-  // coolGray100: '#EAEDEE',
-  // coolGray200: '#D4D6D8',
-  // coolGray300: '#B3B9BD',
-  // coolGray400: '#8D9599',
-  // coolGray500: '#6C757A',
-  // coolGray600: '#5B6368',
-  // coolGray700: '#3E474D',
-  // coolGray800: '#20272B',
-  // coolGray900: '#12181C',
-  // coolGray1000: '#0A1014',
-  // coolGrayAlpha05: 'rgba(17, 27, 33, 0.05)',
-  // coolGrayAlpha10: 'rgba(17, 27, 33, 0.1)',
-  // coolGrayAlpha20: 'rgba(17, 27, 33, 0.2)',
-  // coolGrayAlpha30: 'rgba(17, 27, 33, 0.3)',
-  // coolGrayAlpha40: 'rgba(17, 27, 33, 0.4)',
-  // coolGrayAlpha50: 'rgba(17, 27, 33, 0.5)',
-  // coolGrayAlpha60: 'rgba(17, 27, 33, 0.6)',
-  // coolGrayAlpha70: 'rgba(17, 27, 33, 0.7)',
-  // coolGrayAlpha80: 'rgba(17, 27, 33, 0.8)',
-  // coolGrayAlpha90: 'rgba(17, 27, 33, 0.9)',
+
   warmGray50: '#FBFAF9',
   warmGray75: '#F7F5F3',
   warmGray100: '#F1EEEB',
@@ -340,23 +317,23 @@ const colorsDark = {
   persistentAlwaysWhite: baseColorPalette.whiteOpaque,
   persistentActivityIndicator: baseColorPalette.green400,
 
-  productSystemsBubbleSurfaceIncoming: baseColorPalette.neutralGray850, // surfaceElevatedDefault
+  productSystemsBubbleSurfaceIncoming: baseColorPalette.neutralGray850,
   productSystemsBubbleSurfaceOutgoing: baseColorPalette.green750,
-  productSystemsBubbleContentDeemphasized: baseColorPalette.whiteAlpha60, // contentDeemphasized
+  productSystemsBubbleContentDeemphasized: baseColorPalette.whiteAlpha60,
   productSystemsBubbleSurfaceOverlay: baseColorPalette.blackAlpha20,
   productSystemsBubbleSurfaceSystem: baseColorPalette.neutralGray850,
   productSystemsBubbleSurfaceE2E: baseColorPalette.neutralGray850,
-  productSystemsBubbleContentE2E: baseColorPalette.yellow300, // secondaryWarning
+  productSystemsBubbleContentE2E: baseColorPalette.yellow300,
   productSystemsBubbleSurfaceBusiness: baseColorPalette.neutralGray850,
   productSystemsBubbleContentBusiness: baseColorPalette.emerald400,
-  productSystemsChatSurfaceComposer: baseColorPalette.neutralGray800, // surfaceElevatedEmphasized
+  productSystemsChatSurfaceComposer: baseColorPalette.neutralGray800,
   productSystemsChatBackgroundWallpaper: baseColorPalette.neutralGray900,
   productSystemsChatForegroundWallpaper: baseColorPalette.whiteAlpha10,
-  productSystemsChatSurfaceTray: baseColorPalette.neutralGray900, // surfaceDefault
+  productSystemsChatSurfaceTray: baseColorPalette.neutralGray900,
   productSystemsStatusSeen: baseColorPalette.neutralGray500,
 
-  internalComponentsSurfaceNavBar: baseColorPalette.neutralGray850, // surfaceEmphasized
-  internalComponentsActiveListRow: baseColorPalette.whiteAlpha10, // surfaceHighlight
+  internalComponentsSurfaceNavBar: baseColorPalette.neutralGray850,
+  internalComponentsActiveListRow: baseColorPalette.whiteAlpha10,
 };
 
 const DARK = '@media (prefers-color-scheme: dark)';
