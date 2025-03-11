@@ -11,13 +11,14 @@
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
-    "lint:report": "eslint packages apps/docs apps/example-esbuild apps/example-rollup apps/example-webpack",
+    "lint:report": "eslint",
     "test:packages": "npm run test --workspaces --if-present",
     "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
   },
   "workspaces": [
     "packages/shared",
     "packages/stylex",
+    "packages/babel-plugin",
     "packages/*",
     "apps/*"
   ],
