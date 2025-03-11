@@ -89,7 +89,7 @@ export class Inset extends BasicShape {
       Parser.string('round'),
       Parser.whitespace,
       BorderRadiusShorthand.parse,
-    // $FlowFixMe annotate props here
+      // $FlowFixMe annotate props here
     ).map(([, , v]) => v);
 
     return Parser.sequence(
