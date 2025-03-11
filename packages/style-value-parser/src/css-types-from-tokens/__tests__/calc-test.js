@@ -186,7 +186,7 @@ describe('Test CSS Type: calc()', () => {
     );
   });
 
-  // NOTE: CSS requieres spaces after `+` and `-` for them to be considered as operators
+  // NOTE: CSS requires spaces after `+` and `-` for them to be considered as operators
   // if there is a digit immediately after the operator
   // This is consistent with the CSS spec
   test('handles whitespace correctly', () => {
