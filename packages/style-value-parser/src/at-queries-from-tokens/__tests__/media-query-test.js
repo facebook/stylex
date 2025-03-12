@@ -197,7 +197,9 @@ describe('Test CSS Type: @media queries', () => {
         },
       }
     `);
-    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual('@media screen and (device-aspect-ratio: 16 / 9)');
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(
+      '@media screen and (device-aspect-ratio: 16 / 9)',
+    );
   });
 
   test('@media (device-height: 500px)', () => {
@@ -512,11 +514,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (min-width: 500px) or (max-width: 600px)', () => {
     const query = '@media (min-width: 500px) or (max-width: 600px)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -545,13 +543,14 @@ describe('Test CSS Type: @media queries', () => {
         },
       }
     `);
-    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual("@media (min-width: 500px), (max-width: 600px)");
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(
+      '@media (min-width: 500px), (max-width: 600px)',
+    );
   });
 
   test('(width > 400px)', () => {
     const query = '(width > 400px)';
-    expect(mediaInequalityRuleParser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(mediaInequalityRuleParser.parseToEnd(query)).toMatchInlineSnapshot(`
       {
         "key": "min-width",
         "type": "pair",
@@ -567,8 +566,7 @@ describe('Test CSS Type: @media queries', () => {
   test('(width >= 400px)', () => {
     const query = '(width >= 400px)';
 
-    expect(mediaInequalityRuleParser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(mediaInequalityRuleParser.parseToEnd(query)).toMatchInlineSnapshot(`
       {
         "key": "min-width",
         "type": "pair",
@@ -584,11 +582,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (width >= 400px) and (width <= 700px)', () => {
     const query = '@media (width >= 400px) and (width <= 700px)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -617,13 +611,14 @@ describe('Test CSS Type: @media queries', () => {
         },
       }
     `);
-    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual("@media (min-width: 400px) and (max-width: 700px)");
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(
+      '@media (min-width: 400px) and (max-width: 700px)',
+    );
   });
 
   test('@media (768px <= width <= 1280px)', () => {
     const query = '@media (768px <= width <= 1280px)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -652,16 +647,14 @@ describe('Test CSS Type: @media queries', () => {
         },
       }
     `);
-    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual('@media (min-width: 768px) and (max-width: 1280px)');
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(
+      '@media (min-width: 768px) and (max-width: 1280px)',
+    );
   });
 
   test('@media (height > 500px) and (aspect-ratio: 16/9)', () => {
     const query = '@media (height > 500px) and (aspect-ratio: 16/9)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -689,16 +682,15 @@ describe('Test CSS Type: @media queries', () => {
         },
       }
     `);
-    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual('@media (min-height: 500.01px) and (aspect-ratio: 16 / 9)');
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(
+      '@media (min-height: 500.01px) and (aspect-ratio: 16 / 9)',
+    );
   });
 
   test('@media (color) and (min-width: 400px), screen and (max-width: 700px)', () => {
-    const query = '@media (color) and (min-width: 400px), screen and (max-width: 700px)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (color) and (min-width: 400px), screen and (max-width: 700px)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -751,8 +743,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media not all and (monochrome)', () => {
     const query = '@media not all and (monochrome)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -774,12 +765,9 @@ describe('Test CSS Type: @media queries', () => {
   });
 
   test('@media (min-aspect-ratio: 3/2) and (max-aspect-ratio: 16/9)', () => {
-    const query = '@media (min-aspect-ratio: 3 / 2) and (max-aspect-ratio: 16 / 9)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-aspect-ratio: 3 / 2) and (max-aspect-ratio: 16 / 9)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -810,12 +798,9 @@ describe('Test CSS Type: @media queries', () => {
   });
 
   test('@media (min-resolution: 300dpi) and (max-resolution: 600dpi)', () => {
-    const query = '@media (min-resolution: 300dpi) and (max-resolution: 600dpi)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-resolution: 300dpi) and (max-resolution: 600dpi)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -849,8 +834,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (scripting: none)', () => {
     const query = '@media (scripting: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "scripting",
@@ -864,8 +848,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (update: slow)', () => {
     const query = '@media (update: slow)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "update",
@@ -879,8 +862,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (overflow-inline: none)', () => {
     const query = '@media (overflow-inline: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "overflow-inline",
@@ -894,8 +876,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (display-mode: minimal-ui)', () => {
     const query = '@media (display-mode: minimal-ui)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "display-mode",
@@ -909,8 +890,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (hover: none)', () => {
     const query = '@media (hover: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "hover",
@@ -924,8 +904,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (any-hover: hover)', () => {
     const query = '@media (any-hover: hover)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "any-hover",
@@ -939,8 +918,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (pointer: none)', () => {
     const query = '@media (pointer: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "pointer",
@@ -954,8 +932,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (any-pointer: none)', () => {
     const query = '@media (any-pointer: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "any-pointer",
@@ -969,8 +946,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (light-level: washed)', () => {
     const query = '@media (light-level: washed)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "light-level",
@@ -984,8 +960,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (inverted-colors: none)', () => {
     const query = '@media (inverted-colors: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "inverted-colors",
@@ -999,8 +974,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (prefers-reduced-motion: no-preference)', () => {
     const query = '@media (prefers-reduced-motion: no-preference)';
-    expect(MediaQuery.parser.parseToEnd(query))
-    .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "prefers-reduced-motion",
@@ -1014,8 +988,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (prefers-contrast: no-preference)', () => {
     const query = '@media (prefers-contrast: no-preference)';
-    expect(MediaQuery.parser.parseToEnd(query))
-    .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "prefers-contrast",
@@ -1029,8 +1002,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (forced-colors: none)', () => {
     const query = '@media (forced-colors: none)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "forced-colors",
@@ -1044,8 +1016,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (prefers-reduced-transparency: no-preference)', () => {
     const query = '@media (prefers-reduced-transparency: no-preference)';
-    expect(MediaQuery.parser.parseToEnd(query))
-    .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "prefers-reduced-transparency",
@@ -1077,8 +1048,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (aspect-ratio: 16 / 9)', () => {
     const query = '@media (aspect-ratio: 16 / 9)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "aspect-ratio",
@@ -1096,8 +1066,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (device-aspect-ratio: 16 / 9)', () => {
     const query = '@media (device-aspect-ratio: 16 / 9)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "device-aspect-ratio",
@@ -1115,8 +1084,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (min-resolution: 150dpi)', () => {
     const query = '@media (min-resolution: 150dpi)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "min-resolution",
@@ -1131,36 +1099,32 @@ describe('Test CSS Type: @media queries', () => {
       }
     `);
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
-
   });
-
 
   test('@media (max-resolution: 600dppx)', () => {
     const query = '@media (max-resolution: 600dppx)';
 
-  expect(MediaQuery.parser.parseToEnd(query))
-  .toMatchInlineSnapshot(`
-  MediaQuery {
-    "queries": {
-      "key": "max-resolution",
-      "type": "pair",
-      "value": {
-        "signCharacter": undefined,
-        "type": "integer",
-        "unit": "dppx",
-        "value": 600,
-      },
-    },
-  }
-`);
-  expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
-});
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
+        MediaQuery {
+          "queries": {
+            "key": "max-resolution",
+            "type": "pair",
+            "value": {
+              "signCharacter": undefined,
+              "type": "integer",
+              "unit": "dppx",
+              "value": 600,
+            },
+          },
+        }
+    `);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
+  });
 
   test('@media (color-gamut: srgb)', () => {
     const query = '@media (color-gamut: srgb)';
 
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "color-gamut",
@@ -1174,8 +1138,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (display-mode: standalone)', () => {
     const query = '@media (display-mode: standalone)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "display-mode",
@@ -1185,17 +1148,12 @@ describe('Test CSS Type: @media queries', () => {
       }
     `);
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
-
   });
 
   test('@media (orientation: landscape) and (pointer: fine)', () => {
     const query = '@media (orientation: landscape) and (pointer: fine)';
 
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1219,8 +1177,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (prefers-color-scheme: dark)', () => {
     const query = '@media (prefers-color-scheme: dark)';
-    expect(MediaQuery.parser.parseToEnd(query))
-      .toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "key": "prefers-color-scheme",
@@ -1234,11 +1191,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (prefers-reduced-motion: reduce) and (update: slow)', () => {
     const query = '@media (prefers-reduced-motion: reduce) and (update: slow)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1262,9 +1215,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (width: 500px), (height: 400px)', () => {
     const query = '@media (width: 500px), (height: 400px)';
-    expect(
-      MediaQuery.parser.parseToEnd(query),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1298,11 +1249,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media not all and (monochrome) and (min-width: 600px)', () => {
     const query = '@media not all and (monochrome) and (min-width: 600px)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1335,9 +1282,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (min-width: 768px) and (max-width: 991px)', () => {
     const query = '@media (min-width: 768px) and (max-width: 991px)';
-    expect(
-      MediaQuery.parser.parseToEnd(query),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1371,10 +1316,7 @@ describe('Test CSS Type: @media queries', () => {
 
   test('@media (min-width: 1200px) and (orientation: landscape)', () => {
     const query = '@media (min-width: 1200px) and (orientation: landscape)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-query      ),
-    ).toMatchInlineSnapshot(`
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1402,12 +1344,9 @@ query      ),
   });
 
   test('@media (min-width: 992px) and (max-width: 1199px) and (pointer: fine)', () => {
-    const query = '@media (min-width: 992px) and (max-width: 1199px) and (pointer: fine)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 992px) and (max-width: 1199px) and (pointer: fine)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1445,12 +1384,9 @@ query      ),
   });
 
   test('@media (min-width: 576px) and (max-width: 767px) and (hover: none)', () => {
-    const query = '@media (min-width: 576px) and (max-width: 767px) and (hover: none)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 576px) and (max-width: 767px) and (hover: none)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1488,12 +1424,9 @@ query      ),
   });
 
   test('@media (min-width: 576px), (orientation: portrait) and (max-width: 767px)', () => {
-    const query = '@media (min-width: 576px), (orientation: portrait) and (max-width: 767px)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 576px), (orientation: portrait) and (max-width: 767px)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1536,12 +1469,9 @@ query      ),
   });
 
   test('@media (min-width: 768px) and (max-width: 991px), (orientation: landscape)', () => {
-    const query = '@media (min-width: 768px) and (max-width: 991px), (orientation: landscape)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 768px) and (max-width: 991px), (orientation: landscape)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1584,12 +1514,9 @@ query      ),
   });
 
   test('@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover)', () => {
-    const query = '@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1642,12 +1569,9 @@ query      ),
   });
 
   test('@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse)', () => {
-    const query = '@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1700,12 +1624,9 @@ query      ),
   });
 
   test('@media (min-width: 576px), (orientation: portrait) and (max-width: 767px), (prefers-color-scheme: dark)', () => {
-    const query = '@media (min-width: 576px), (orientation: portrait) and (max-width: 767px), (prefers-color-scheme: dark)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 576px), (orientation: portrait) and (max-width: 767px), (prefers-color-scheme: dark)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1753,12 +1674,9 @@ query      ),
   });
 
   test('@media (min-width: 768px) and (max-width: 991px), (orientation: landscape) and (update: fast), (prefers-reduced-motion: reduce)', () => {
-    const query = '@media (min-width: 768px) and (max-width: 991px), (orientation: landscape) and (update: fast), (prefers-reduced-motion: reduce)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 768px) and (max-width: 991px), (orientation: landscape) and (update: fast), (prefers-reduced-motion: reduce)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1816,12 +1734,9 @@ query      ),
   });
 
   test('@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover), (any-pointer: coarse) and (any-hover: none)', () => {
-    const query = '@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover), (any-pointer: coarse) and (any-hover: none)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 992px) and (max-width: 1199px), (pointer: fine) and (hover: hover), (any-pointer: coarse) and (any-hover: none)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1889,12 +1804,9 @@ query      ),
   });
 
   test('@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse), (prefers-reduced-transparency: reduce) and (forced-colors: active)', () => {
-    const query = '@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse), (prefers-reduced-transparency: reduce) and (forced-colors: active)';
-    expect(
-      MediaQuery.parser.parseToEnd(
-        query,
-      ),
-    ).toMatchInlineSnapshot(`
+    const query =
+      '@media (min-width: 576px) and (max-width: 767px), (hover: none) and (any-pointer: coarse), (prefers-reduced-transparency: reduce) and (forced-colors: active)';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
           "rules": [
@@ -1955,6 +1867,52 @@ query      ),
             },
           ],
           "type": "or",
+        },
+      }
+    `);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
+  });
+
+  // not queries with multiple clauses are broken
+  test.skip('@media not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px))', () => {
+    const query =
+      '@media not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px))';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 500,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 600,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
+            },
+          ],
+          "type": "and",
         },
       }
     `);

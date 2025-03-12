@@ -61,6 +61,12 @@ const _mediaKeywordParser: TokenParser<'screen' | 'print' | 'all'> =
     '=== "screen" | "print" | "all"',
   );
 
+function _isAndOrRule(
+  rule: MediaQueryRule,
+): rule is MediaAndRules | MediaOrRules {
+  return rule.type === 'and' || rule.type === 'or';
+}
+
 const mediaKeywordParser: TokenParser<MediaKeyword> = TokenParser.sequence(
   TokenParser.string('not').optional,
   _mediaKeywordParser,
@@ -281,9 +287,9 @@ export class MediaQuery {
     this.queries = queries;
   }
   toString(): string {
-    return `@media ${this.#toString(this.queries)}`;
+    return `@media ${this.#toString(this.queries, true)}`;
   }
-  #toString(queries: MediaQueryRule): string {
+  #toString(queries: MediaQueryRule, isTopLevel: boolean = false): string {
     switch (queries.type) {
       case 'media-keyword':
         return queries.not ? `not ${queries.key}` : queries.key;
@@ -299,11 +305,15 @@ export class MediaQuery {
         return `(${queries.key}: ${valueStr})`;
       }
       case 'not':
-        return `(not ${this.#toString(queries.rule)})`;
+        return queries.rule && _isAndOrRule(queries.rule)
+          ? `(not (${this.#toString(queries.rule)}))`
+          : `(not ${this.#toString(queries.rule)})`;
       case 'and':
         return queries.rules.map((rule) => this.#toString(rule)).join(' and ');
       case 'or':
-        return queries.rules.map((rule) => this.#toString(rule)).join(' or ');
+        return isTopLevel
+          ? queries.rules.map((rule) => this.#toString(rule)).join(', ')
+          : queries.rules.map((rule) => this.#toString(rule)).join(' or ');
       default:
         return '';
     }
@@ -377,7 +387,5 @@ export class MediaQuery {
               : querySets[0],
           ),
       );
-
-    // return recursiveParser.or(leadingNotParser);
   }
 }
