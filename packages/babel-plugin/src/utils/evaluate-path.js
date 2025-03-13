@@ -773,6 +773,15 @@ function _evaluate(path: NodePath<>, state: State): any {
           context = state.functions.memberExpressions[object.node.name];
           func = context[property.node.name];
         }
+        // if (
+        //   state.functions.memberExpressions[object.node.name] &&
+        //   state.functions.memberExpressions[object.node.name]?.[
+        //     property.node.name
+        //   ]
+        // ) {
+        //   context = state.functions.memberExpressions[object.node.name];
+        //   func = context[property.node.value];
+        // }
       }
 
       if (
@@ -810,6 +819,17 @@ function _evaluate(path: NodePath<>, state: State): any {
         if (parsedObj.confident && property.isStringLiteral()) {
           func = parsedObj.value[property.node.value];
           context = parsedObj.value;
+        }
+      }
+
+      if (func == null) {
+        const calleeFunc = evaluate(
+          callee,
+          state.traversalState,
+          state.functions,
+        );
+        if (calleeFunc.confident) {
+          func = calleeFunc.value;
         }
       }
     }
