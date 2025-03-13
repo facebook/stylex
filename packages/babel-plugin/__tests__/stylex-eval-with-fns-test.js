@@ -37,7 +37,10 @@ function transform(file, opts = defaultOpts) {
   return { code: result.code, styles: result.metadata.stylex };
 }
 
-const themeFile = path.resolve(__dirname, '../__fixtures__/colorThemes.js');
+const themeFile = path.resolve(
+  __dirname,
+  '../__fixtures__/themesComplexEval.js',
+);
 
 describe('create theme', () => {
   it('transform complex theme file', () => {
