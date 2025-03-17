@@ -5,8 +5,8 @@
   "description": "A simple webpack example to test stylexjs/webpack-plugin",
   "main": "index.js",
   "scripts": {
-    "app:build": "webpack",
-    "app:dev": "webpack --watch"
+    "example:build": "webpack",
+    "example:dev": "webpack --watch"
   },
   "license": "MIT",
   "dependencies": {

@@ -29,10 +29,10 @@ module.exports = {
     node: true,
   },
   ignorePatterns: [
-    'apps',
     'build',
     'coverage',
     'dist',
+    'examples',
     'lib',
     'node_modules',
     'next-env.d.ts',

@@ -77,4 +77,4 @@ List of custom babel plugins and presets which can be used during code transform
 
 ---
 You can see the example usage
-[here](https://github.com/facebook/stylex/apps/examples-esbuild).
+[here](https://github.com/facebook/stylex/examples/examples-esbuild).
