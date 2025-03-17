@@ -3,7 +3,7 @@
   "name": "example-cli",
   "version": "0.11.1",
   "scripts": {
-    "transform": "stylex --config .stylex.json5"
+    "example:build": "stylex --config .stylex.json5"
   },
   "dependencies": {
     "@stylexjs/open-props": "0.11.1",

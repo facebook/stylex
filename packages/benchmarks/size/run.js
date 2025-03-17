@@ -60,7 +60,7 @@ const sizes = getSizes(files);
 const aggregatedResults = {};
 sizes.forEach((entry) => {
   const { file, minified, compressed } = entry;
-  const filename = file.split('apps/')[1] || file.split('packages/')[1];
+  const filename = file.split('examples/')[1] || file.split('packages/')[1];
   aggregatedResults[filename] = {
     compressed,
     minified,

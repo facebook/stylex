@@ -20,7 +20,7 @@
     "packages/stylex",
     "packages/babel-plugin",
     "packages/*",
-    "apps/*"
+    "examples/*"
   ],
   "devDependencies": {
     "@types/estree": "^1.0.6",

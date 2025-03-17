@@ -63,7 +63,7 @@ If necessary, first build the StyleX packages (`npm run build`), then start the
 docs locally:
 
 ```
-npm run app:start -w docs
+npm run start -w docs
 ```
 
 ### New Features

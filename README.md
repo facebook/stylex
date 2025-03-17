@@ -39,8 +39,8 @@ This is the development monorepo for StyleX.
 - `.github`
   - Contains workflows used by GitHub Actions.
   - Contains issue templates and contribution guidelines.
-- `apps`
-  - Contains example apps using StyleX and integration with build tools.
+- `examples`
+  - Contains examples using StyleX and its integration with build tools.
 - `packages`
   - Contains the individual packages managed in the monorepo.
   - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
