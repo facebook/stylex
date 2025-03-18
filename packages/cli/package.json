@@ -27,7 +27,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@stylexjs/scripts": "0.11.1"
+    "scripts": "0.11.1"
   },
   "bin": {
     "stylex": "./lib/index.js"

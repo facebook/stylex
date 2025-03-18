@@ -9,19 +9,15 @@
  */
 
 const fsPromises = require('fs/promises');
-const monorepoPackage = require('../../package.json');
+const monorepoPackage = require('../../../package.json');
 const path = require('path');
 const translate = require('flow-api-translator');
+const utils = require('./flow-module-utils');
 const yargs = require('yargs/yargs');
-
-const {
-  findFlowModules,
-  patchFlowModulePaths,
-} = require('./handle-flow-modules');
 
 async function generateTypes(inputDir, outputDir, rootDir) {
   const rootPath = rootDir ?? path.resolve(inputDir, '../');
-  const flowModules = await findFlowModules(inputDir, rootPath);
+  const flowModules = await utils.findFlowModules(inputDir, rootPath);
 
   await fsPromises.mkdir(outputDir, { recursive: true });
   let dirents = await fsPromises.readdir(inputDir, { withFileTypes: true });
@@ -85,7 +81,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
 
           await fsPromises.writeFile(
             `${outputFullPath}.flow`,
-            patchFlowModulePaths(
+            utils.patchFlowModulePaths(
               outputFullPath,
               outputFlowContents,
               flowModules,

@@ -1,15 +1,12 @@
 {
   "private": true,
-  "name": "@stylexjs/scripts",
+  "name": "scripts",
   "version": "0.11.1",
   "description": "Helper scripts for stylex monorepo.",
   "license": "MIT",
   "bin": {
-    "gen-types": "./gen-types.js",
-    "rewrite-imports": "./rewrite-imports.js"
-  },
-  "scripts": {
-    "release": "./create-release.js"
+    "gen-types": "./flow-translator/generate-types.js",
+    "rewrite-imports": "./flow-translator/rewrite-imports.js"
   },
   "dependencies": {
     "flow-api-translator": "0.26.0",
