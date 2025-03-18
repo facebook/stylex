@@ -63,10 +63,10 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-replace": "^6.0.1",
-    "@stylexjs/scripts": "0.11.1",
     "babel-plugin-syntax-hermes-parser": "^0.26.0",
     "cross-env": "^7.0.3",
-    "rollup": "^4.24.0"
+    "rollup": "^4.24.0",
+    "scripts": "0.11.1"
   },
   "jest": {},
   "files": [

@@ -11,7 +11,8 @@
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
-    "lint:report": "eslint",
+    "lint:report": "eslint packages tools",
+    "release": "tools/npm/release.js",
     "test:packages": "npm run test --workspaces --if-present",
     "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
   },
@@ -38,7 +39,7 @@
     "prettier": "^3.5.0",
     "prettier-plugin-hermes-parser": "^0.26.0",
     "rimraf": "^5.0.10",
-    "typescript": "^5.3.3"
+    "yargs": "17.7.2"
   },
   "prettier": {
     "singleQuote": true,
