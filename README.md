@@ -42,15 +42,19 @@ This is the development monorepo for StyleX.
 - `examples`
   - Contains examples using StyleX and its integration with build tools.
 - `packages`
-  - Contains the individual packages managed in the monorepo.
+  - Contains the public and private packages managed in the monorepo.
   - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
+  - [benchmarks](https://github.com/facebook/stylex/blob/main/packages/benchmarks)
   - [cli](https://github.com/facebook/stylex/blob/main/packages/cli)
+  - [docs](https://github.com/facebook/stylex/blob/main/packages/docs)
   - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/eslint-plugin)
-  - [open-props](https://github.com/facebook/stylex/blob/main/packages/open-props)
+  - [postcss-plugin](https://github.com/facebook/stylex/blob/main/packages/postcss-plugin)
   - [rollup-plugin](https://github.com/facebook/stylex/blob/main/packages/rollup-plugin)
+  - [scripts](https://github.com/facebook/stylex/blob/main/packages/scripts)
   - [shared](https://github.com/facebook/stylex/blob/main/packages/shared)
+  - [style-value-parser](https://github.com/facebook/stylex/blob/main/packages/style-value-parser)
   - [stylex](https://github.com/facebook/stylex/blob/main/packages/stylex)
-  - [webpack-plugin](https://github.com/facebook/stylex/blob/main/packages/webpack-plugin)
+
 
 ### Tasks
 
