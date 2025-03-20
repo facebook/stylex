@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- *
  */
 
 'use strict';
@@ -138,8 +136,6 @@ describe('rollup-plugin-stylex', () => {
        *
        * This source code is licensed under the MIT license found in the
        * LICENSE file in the root directory of this source tree.
-       *
-       *
        */
 
       var styles$2 = {
@@ -155,8 +151,6 @@ describe('rollup-plugin-stylex', () => {
        *
        * This source code is licensed under the MIT license found in the
        * LICENSE file in the root directory of this source tree.
-       *
-       *
        */
 
       const styles$1 = {
@@ -173,8 +167,6 @@ describe('rollup-plugin-stylex', () => {
        *
        * This source code is licensed under the MIT license found in the
        * LICENSE file in the root directory of this source tree.
-       *
-       *
        */
 
       var styles = {
@@ -229,8 +221,6 @@ describe('rollup-plugin-stylex', () => {
          *
          * This source code is licensed under the MIT license found in the
          * LICENSE file in the root directory of this source tree.
-         *
-         *
          */
 
         var _inject2$2 = _inject;
@@ -240,7 +230,7 @@ describe('rollup-plugin-stylex', () => {
           bar: {
             "display-k1xSpc": "display-x1lliihq",
             "width-kzqmXN": "width-xh8yej3",
-            $$css: "__fixtures__/otherStyles.js:16"
+            $$css: "__fixtures__/otherStyles.js:14"
           }
         };
 
@@ -249,8 +239,6 @@ describe('rollup-plugin-stylex', () => {
          *
          * This source code is licensed under the MIT license found in the
          * LICENSE file in the root directory of this source tree.
-         *
-         *
          */
 
         var _inject2$1 = _inject;
@@ -262,7 +250,7 @@ describe('rollup-plugin-stylex', () => {
             "display-k1xSpc": "display-xt0psk2",
             "height-kZKoxP": "height-x1egiwwb",
             "width-kzqmXN": "width-x3hqpx7",
-            $$css: "__fixtures__/npmStyles.js:17"
+            $$css: "__fixtures__/npmStyles.js:15"
           }
         };
 
@@ -271,8 +259,6 @@ describe('rollup-plugin-stylex', () => {
          *
          * This source code is licensed under the MIT license found in the
          * LICENSE file in the root directory of this source tree.
-         *
-         *
          */
 
         var _inject2 = _inject;
@@ -307,7 +293,7 @@ describe('rollup-plugin-stylex', () => {
             "borderStartStartRadius-krdFHd": "borderStartStartRadius-xu4yf9m",
             "borderTopLeftRadius-kIxVMA": null,
             "borderTopRightRadius-ksF3WI": null,
-            $$css: "__fixtures__/index.js:26"
+            $$css: "__fixtures__/index.js:24"
           }
         };
         function App() {
