@@ -11,7 +11,7 @@
     "prettier": "prettier --write \"**/*.js\" \"**/*.ts\"",
     "prettier:report": "prettier --check \"**/*.js\"",
     "lint": "npm run lint:report -- --fix",
-    "lint:report": "eslint packages tools",
+    "lint:report": "eslint . --ext .js,.jsx,.mjs",
     "release": "tools/npm/release.js",
     "test:packages": "npm run test --workspaces --if-present",
     "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
@@ -30,6 +30,7 @@
     "eslint": "8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-ft-flow": "^3.0.11",
+    "eslint-plugin-headers": "~1.2.1",
     "eslint-plugin-react": "^7.37.1",
     "flow-bin": "^0.261.2",
     "hermes-eslint": "^0.26.0",

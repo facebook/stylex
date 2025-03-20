@@ -7,12 +7,14 @@
  *
  */
 
+const path = require('path');
+
 module.exports = {
   settings: {
     react: {
       pragma: 'React',
-      version: '17.0',
-      flowVersion: '0.214.0', // Flow version
+      version: '18.0',
+      flowVersion: '0.261.2', // Flow version
     },
     'ft-flow': {
       onlyFilesWithFlowAnnotation: true,
@@ -21,7 +23,7 @@ module.exports = {
   // babel parser to support ES6/7 features
   parser: 'hermes-eslint',
   extends: ['plugin:ft-flow/recommended', 'prettier'],
-  plugins: ['ft-flow', 'react', 'header'],
+  plugins: ['ft-flow', 'react', 'headers'],
   env: {
     browser: true,
     es6: true,
@@ -32,7 +34,7 @@ module.exports = {
     'build',
     'coverage',
     'dist',
-    'examples',
+    'flow-typed',
     'lib',
     'node_modules',
     'next-env.d.ts',
@@ -61,19 +63,12 @@ module.exports = {
     Partial: 'readonly',
   },
   rules: {
-    'header/header': [
-      2,
-      'block',
-      [
-        '*',
-        ' * Copyright (c) Meta Platforms, Inc. and affiliates.',
-        ' *',
-        ' * This source code is licensed under the MIT license found in the',
-        ' * LICENSE file in the root directory of this source tree.',
-        ' *',
-        { pattern: '(.*)?', template: ' *' },
-        ' ',
-      ],
+    'headers/header-format': [
+      'error',
+      {
+        source: 'file',
+        path: path.join(__dirname, './tools/eslint/copyright-header.txt'),
+      },
     ],
     camelcase: 0,
     'constructor-super': 2,
