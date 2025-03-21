@@ -61,6 +61,12 @@ const _mediaKeywordParser: TokenParser<'screen' | 'print' | 'all'> =
     '=== "screen" | "print" | "all"',
   );
 
+function _isAndOrRule(
+  rule: MediaQueryRule,
+): rule is MediaAndRules | MediaOrRules {
+  return rule.type === 'and' || rule.type === 'or';
+}
+
 const mediaKeywordParser: TokenParser<MediaKeyword> = TokenParser.sequence(
   TokenParser.string('not').optional,
   _mediaKeywordParser,
@@ -281,9 +287,9 @@ export class MediaQuery {
     this.queries = queries;
   }
   toString(): string {
-    return `@media ${this.#toString(this.queries)}`;
+    return `@media ${this.#toString(this.queries, true)}`;
   }
-  #toString(queries: MediaQueryRule): string {
+  #toString(queries: MediaQueryRule, isTopLevel: boolean = false): string {
     switch (queries.type) {
       case 'media-keyword':
         return queries.not ? `not ${queries.key}` : queries.key;
@@ -299,15 +305,55 @@ export class MediaQuery {
         return `(${queries.key}: ${valueStr})`;
       }
       case 'not':
-        return `(not ${this.#toString(queries.rule)})`;
+        return queries.rule && _isAndOrRule(queries.rule)
+          ? `(not (${this.#toString(queries.rule)}))`
+          : `(not ${this.#toString(queries.rule)})`;
       case 'and':
         return queries.rules.map((rule) => this.#toString(rule)).join(' and ');
       case 'or':
-        return queries.rules.map((rule) => this.#toString(rule)).join(' or ');
+        return isTopLevel
+          ? queries.rules.map((rule) => this.#toString(rule)).join(', ')
+          : queries.rules.map((rule) => this.#toString(rule)).join(' or ');
       default:
         return '';
     }
   }
+  static normalize(rule: MediaQueryRule): MediaQueryRule {
+    switch (rule.type) {
+      case 'and': {
+        const flattened: MediaQueryRule[] = [];
+        for (const r of rule.rules) {
+          const norm = MediaQuery.normalize(r);
+          if (norm.type === 'and') {
+            flattened.push(...norm.rules);
+          } else {
+            flattened.push(norm);
+          }
+        }
+        return { type: 'and', rules: flattened };
+      }
+      case 'or':
+        return {
+          type: 'or',
+          rules: rule.rules.map((r) => MediaQuery.normalize(r)),
+        };
+      case 'not': {
+        let count = 1;
+        let inner = MediaQuery.normalize(rule.rule);
+        while (inner.type === 'not') {
+          count++;
+          inner = MediaQuery.normalize(inner.rule);
+        }
+        if (inner.type === 'pair' || inner.type === 'word-rule') {
+          return count % 2 === 0 ? inner : { type: 'not', rule: inner };
+        }
+        return inner;
+      }
+      default:
+        return rule;
+    }
+  }
+
   static get parser(): TokenParser<MediaQuery> {
     const leadingNotParser = TokenParser.sequence(
       TokenParser.tokens.Ident.map(
@@ -369,15 +415,12 @@ export class MediaQuery {
       ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
-      .map(
-        ([_at, querySets]) =>
-          new MediaQuery(
-            querySets.length > 1
-              ? { type: 'or', rules: querySets }
-              : querySets[0],
-          ),
-      );
-
-    // return recursiveParser.or(leadingNotParser);
+      .map(([_at, querySets]) => {
+        const rule =
+          querySets.length > 1
+            ? { type: 'or', rules: querySets }
+            : querySets[0];
+        return new MediaQuery(this.normalize(rule));
+      });
   }
 }
