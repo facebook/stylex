@@ -75,6 +75,9 @@ export function readImportDeclarations(
             if (importedName === 'defineVars') {
               state.stylexDefineVarsImport.add(localName);
             }
+            if (importedName === 'defineConsts') {
+              state.stylexDefineConstsImport.add(localName);
+            }
             if (importedName === 'createTheme') {
               state.stylexCreateThemeImport.add(localName);
             }
@@ -141,6 +144,9 @@ export function readRequires(
           }
           if (prop.key.name === 'defineVars') {
             state.stylexDefineVarsImport.add(value.name);
+          }
+          if (prop.key.name === 'defineConsts') {
+            state.stylexDefineConstsImport.add(value.name);
           }
           if (prop.key.name === 'createTheme') {
             state.stylexCreateThemeImport.add(value.name);
