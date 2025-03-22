@@ -94,9 +94,9 @@ enforce over legacy logical styles.
 
 **Fix:** Replace with individual sub-properties. Note: this is autofixable.
 
-borderWidth borderStyle borderColor
-
----
+- `borderWidth`
+- `borderStyle`
+- `borderColor`
 
 ##### Disallowed: `animation`
 
@@ -114,3 +114,63 @@ borderWidth borderStyle borderColor
 
 This rule helps to sort the StyleX property keys according to
 [property priorities](https://github.com/facebook/stylex/blob/main/packages/shared/src/utils/property-priorities.js).
+
+# Enforce standard logical CSS properties in StyleX
+
+### Rule: `stylex-valid-shorthands`
+
+This ESLint rule enforces the use of individual longhand CSS properties in place
+of multivalue shorthands when using `stylex.create` for reasons of consistency
+and performance. The rule provides an autofix to replace the shorthand with the
+equivalent longhand properties.
+
+#### Not allowed
+
+Using multivalue shorthands that StyleX cannot safely split into equivalent
+longhands:
+
+- `margin: '8px 16px'`
+- `padding: '8px 16px 8px 16px'`
+
+#### Config options
+
+This rule has a few custom config options that can be set.
+
+```js
+{
+  allowImportant: false,                       // Whether `!important` is allowed
+  preferInline: false                          // Whether inline variants are preferred over directional
+}
+```
+
+### @stylexjs/stylex-enforce-extension
+
+This rule ensures consistent naming for StyleX theme files that export variables
+using `stylex.defineVars()`.
+
+#### Not allowed
+
+- Exporting `stylex.defineVars()` in a file **not** ending in `.stylex.jsx` or
+  `.stylex.tsx`
+- Using the `.stylex.jsx` / `.stylex.tsx` extension without exporting
+  `stylex.defineVars()`
+- Mixing `stylex.defineVars()` with other exports in the same file
+
+#### Instead...
+
+- Use `.stylex.jsx` or `.stylex.tsx` for files that only export
+  `stylex.defineVars()`
+- Export **only** theme vars from these files
+
+#### Config options
+
+```json
+{
+  "themeFileExtension": ".stylex.jsx" // default, can be customized
+}
+```
+
+### `stylex-no-unused`
+
+This rule flags unused styles created with `stylex.create(...)`. If a style key
+is defined but never used, the rule auto-strips them from the create call.
