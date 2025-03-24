@@ -34,22 +34,6 @@ feel fragile. Some of this stems from a misunderstanding of how CSS works, but a
 lot of it stems from the discipline and organization required to keep CSS
 selectors with different specificities from conflicting.
 
-Most existing solutions to this problem rely on rules and conventions.
-
-<details>
-  <summary>BEM and OOCSS Conventions</summary>
-  BEM and OOCSS introduce naming conventions to avoid these problems relying on
-  developers to consistently follow the rules, frequently avoiding merging styles at all.
-  This can lead to bloated CSS.
-</details>
-
-<details>
-  <summary>Utility Classes</summary>
-  Atomic utility class names like Tailwind CSS and Tachyons rely on conventions and lint rules
-  to ensure that conflicting class names are not applied on the same element. Such tooling adds
-  constraints on where and how styles can be applied, putting architectural limitations on styling.
-</details>
-
 StyleX aims to improve both the consistency and predictability of styles
 _and_ the expressive power available. We believe this is possible through
 build-tools.
@@ -57,9 +41,7 @@ build-tools.
 StyleX provides a completely predictable and deterministic styling
 system that works across files. It produces deterministic results not only when
 merging multiple selectors, but also when merging multiple shorthand and longhand
-properties. (e.g. `margin` vs `margin-top`).
-
-> "The last style applied always wins."
+properties (e.g. `margin` vs `margin-top`). The last style applied always wins.
 
 ### Low-cost abstractions
 
@@ -384,7 +366,7 @@ We have chosen to prioritize composability and consistency over short-term
 convenience. We lean on linting and types to create project-specific rules.
 
 We also avoid magic strings that have special meaning within a project globally.
-Instead, every style, every variable, and every shared constant is a 
+Instead, every style, every variable, and every shared constant is a
 JavaScript import without needing unique names or project configuration.
 
 
