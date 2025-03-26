@@ -69,3 +69,5 @@ export const ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS =
   'Only named parameters are allowed in Dynamic Style functions. Destructuring, spreading or default values are not allowed.';
 export const NON_CONTIGUOUS_VARS =
   'All variables passed to `stylex.firstThatWorks` must be contiguous.';
+export const NO_OBJECT_SPREADS =
+  'Object spreads are not allowed in stylex.create call.';

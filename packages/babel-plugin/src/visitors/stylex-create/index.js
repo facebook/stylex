@@ -351,11 +351,18 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
       SyntaxError,
     );
   }
-  if (path.node.arguments[0].type !== 'ObjectExpression') {
+
+  const arg = path.node.arguments[0];
+  if (arg.type !== 'ObjectExpression') {
     throw path.buildCodeFrameError(
       messages.NON_OBJECT_FOR_STYLEX_CALL,
       SyntaxError,
     );
+  }
+
+  const hasSpread = arg.properties.some((prop) => t.isSpreadElement(prop));
+  if (hasSpread) {
+    throw path.buildCodeFrameError(messages.NO_OBJECT_SPREADS, SyntaxError);
   }
 }
 
