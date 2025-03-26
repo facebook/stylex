@@ -61,61 +61,64 @@ export function addSourceMapData(
   obj: CompiledNamespaces,
   babelPath: NodePath<t.CallExpression>,
   state: StateManager,
+  locMap?: Map<string, t.SourceLocation>,
 ): CompiledNamespaces {
   const result: MutableCompiledNamespaces = {};
-  for (const [key, value] of Object.entries(obj)) {
-    // $FlowIgnore (this repo's flow_modules types for babel are incomplete)
-    const currentFile = babelPath.hub.file;
-    const sourceMap = currentFile.codeMap;
 
-    // Find the line number of a given style object
-    const styleNodePath = babelPath
-      // $FlowIgnore
-      .get('arguments.0.properties')
-      // $FlowIgnore
-      .find((prop) => {
-        return (
-          prop.node.key.name === key ||
-          // string and number properties (normalized to string)
-          String(prop.node.key.value) === key
-        );
+  // $FlowIgnore (this repo's flow_modules types for babel are incomplete)
+  const currentFile = babelPath.hub.file;
+  const sourceMap = currentFile.codeMap;
+
+  for (const [key, value] of Object.entries(obj)) {
+    let loc: t.SourceLocation | void;
+
+    if (locMap != null) {
+      loc = locMap.get(key);
+    } else {
+      // fallback to AST lookup
+      const styleNodePath = babelPath
+        // $FlowIgnore
+        .get('arguments.0.properties')
+        // $FlowIgnore
+        .find((prop) => {
+          return (
+            prop.node.key.name === key || String(prop.node.key.value) === key
+          );
+        });
+      loc = styleNodePath?.node.loc;
+    }
+
+    let originalLineNumber = loc?.start.line;
+    const originalColumn = loc?.start.column;
+
+    if (sourceMap && originalLineNumber != null) {
+      const originalPosition = sourceMap.originalPositionFor({
+        line: originalLineNumber,
+        column: originalColumn,
       });
 
-    if (styleNodePath) {
-      const generatedLineNumber = styleNodePath.node.loc?.start.line;
-
-      // Find the original line number in the source
-      let originalLineNumber = generatedLineNumber;
-      if (sourceMap && originalLineNumber) {
-        const originalPosition = sourceMap.originalPositionFor({
-          line: generatedLineNumber,
-          column: styleNodePath.node.loc?.start.column,
-        });
-        if (originalPosition && originalPosition.line !== null) {
-          originalLineNumber = originalPosition.line;
-        } else {
-          console.warn(
-            `Could not determine original line number for key: ${key}`,
-          );
-        }
+      if (originalPosition && originalPosition.line !== null) {
+        originalLineNumber = originalPosition.line;
+      } else {
+        console.warn(
+          `Could not determine original line number for key: ${key}`,
+        );
       }
-
-      // Add the file name and line number information to the compiled style
-      const shortFilename = createShortFilename(
-        currentFile.opts.filename || '',
-        state,
-      );
-      result[key] = {
-        ...value,
-        $$css:
-          shortFilename !== '' && originalLineNumber
-            ? `${shortFilename}:${originalLineNumber}`
-            : true,
-      };
-    } else {
-      // fallback in case no sourcemap data is found
-      result[key] = value;
     }
+
+    const shortFilename = createShortFilename(
+      currentFile.opts.filename || '',
+      state,
+    );
+
+    result[key] = {
+      ...value,
+      $$css:
+        shortFilename !== '' && originalLineNumber
+          ? `${shortFilename}:${originalLineNumber}`
+          : true,
+    };
   }
+
   return result;
 }

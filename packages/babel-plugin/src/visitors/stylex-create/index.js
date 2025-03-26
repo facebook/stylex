@@ -103,6 +103,20 @@ export default function transformStyleXCreate(
       memberExpressions[name].keyframes = { fn: keyframes };
     });
 
+    const debugSourceMapData = new Map<string, t.SourceLocation>();
+
+    if (state.isDebug && firstArg.isObjectExpression()) {
+      for (const prop of firstArg.get('properties')) {
+        if (
+          prop.isObjectProperty() &&
+          prop.node.key.type === 'Identifier' &&
+          prop.node.loc
+        ) {
+          debugSourceMapData.set(prop.node.key.name, prop.node.loc);
+        }
+      }
+    }
+
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
       firstArg,
       state,
@@ -155,7 +169,7 @@ export default function transformStyleXCreate(
 
     if (state.isDebug && state.opts.enableDebugDataProp) {
       compiledStyles = {
-        ...addSourceMapData(compiledStyles, path, state),
+        ...addSourceMapData(compiledStyles, path, state, debugSourceMapData),
       };
     }
     if (state.isDev && state.opts.enableDevClassNames) {
