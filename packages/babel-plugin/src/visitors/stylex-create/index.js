@@ -30,6 +30,39 @@ import { messages } from '@stylexjs/shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '@stylexjs/shared/lib/preprocess-rules';
 
+function cacheLocsFrom(
+  path: NodePath<t.ObjectExpression>,
+  locMap: Map<string, t.SourceLocation>,
+) {
+  for (const prop of path.get('properties')) {
+    if (prop.isObjectProperty()) {
+      const key = getKeyName(prop.node.key);
+      if (key != null && prop.node.loc) {
+        locMap.set(key, prop.node.loc);
+      }
+    } else if (prop.isSpreadElement()) {
+      const argument = prop.get('argument');
+      if (argument.isIdentifier()) {
+        const binding = path.scope.getBinding(argument.node.name);
+        if (
+          binding?.path.isVariableDeclarator() &&
+          binding.path.get('init').isObjectExpression()
+        ) {
+          cacheLocsFrom(binding.path.get('init'), locMap);
+        }
+      }
+    }
+  }
+}
+
+function getKeyName(key: t.Expression | t.PrivateName) {
+  if (t.isIdentifier(key)) return key.name;
+  if (t.isStringLiteral(key)) return key.value;
+  if (t.isNumericLiteral(key)) return String(key.value);
+  return null;
+}
+
+
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
 /// 2. It pre-processes valid-dynamic parts of style object such as custom presets (spreads)
@@ -106,15 +139,7 @@ export default function transformStyleXCreate(
     const debugSourceMapData = new Map<string, t.SourceLocation>();
 
     if (state.isDebug && firstArg.isObjectExpression()) {
-      for (const prop of firstArg.get('properties')) {
-        if (
-          prop.isObjectProperty() &&
-          prop.node.key.type === 'Identifier' &&
-          prop.node.loc
-        ) {
-          debugSourceMapData.set(prop.node.key.name, prop.node.loc);
-        }
-      }
+      cacheLocsFrom(firstArg, debugSourceMapData);
     }
 
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(

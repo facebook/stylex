@@ -242,6 +242,55 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('debug data generates with spread', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+    
+          const base = {
+            bar: {
+              color: 'blue',
+            },
+          };
+    
+          export const styles = stylex.create({
+            ...base,
+            foo: {
+              position: 'absolute',
+            },
+          });
+        `,
+          {
+            debug: true,
+            filename: '/html/js/components/SpreadTest.react.js',
+            unstable_moduleResolution: { type: 'commonJS' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        const base = {
+          bar: {
+            color: 'blue'
+          }
+        };
+        _inject2(".color-xju2f9n{color:blue}", 3000);
+        _inject2(".position-x10l6tqk{position:absolute}", 3000);
+        export const styles = {
+          bar: {
+            "color-kMwMTN": "color-xju2f9n",
+            $$css: true
+          },
+          foo: {
+            "position-kVAEAm": "position-x10l6tqk",
+            $$css: "components/SpreadTest.react.js:12"
+          }
+        };"
+      `);
+    });
+
     test('transforms style object with import *', () => {
       expect(
         transform(`
