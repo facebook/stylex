@@ -127,3 +127,21 @@ describe.skip('@stylexjs/babel-plugin', () => {
     });
   });
 });
+
+describe('stylex.create validation', () => {
+  test('throws on object spread in stylex.create', () => {
+    expect(() =>
+      transform(
+        `
+        import stylex from 'stylex';
+        const shared = { foo: { color: 'red' } };
+        const styles = stylex.create({
+          ...shared,
+          bar: { color: 'blue' }
+        });
+      `,
+        { filename: '/src/Foo.js' },
+      ),
+    ).toThrow(messages.NO_OBJECT_SPREADS);
+  });
+});
