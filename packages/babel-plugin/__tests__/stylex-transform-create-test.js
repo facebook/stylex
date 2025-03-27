@@ -222,6 +222,144 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stress test various key types and style variants (haste)', () => {
+      expect(
+        transform(
+          `
+            import stylex from 'stylex';
+
+            export const styles = stylex.create({
+              foo: {
+                color: 'red',
+                ':hover': {
+                  color: 'blue',
+                },
+                '@media (min-width: 768px)': {
+                  color: 'green',
+                },
+              },
+              'bar-baz': {
+                display: 'block',
+                padding: '10px',
+              },
+              1: {
+                fontSize: '14px',
+              },
+            });
+          `,
+          {
+            debug: true,
+            filename: '/src/components/Foo.react.js',
+            unstable_moduleResolution: { type: 'haste' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".fontSize-xif65rj{font-size:14px}", 3000);
+        _inject2(".color-x1e2nbdu{color:red}", 3000);
+        _inject2(".color-x17z2mba:hover{color:blue}", 3130);
+        _inject2("@media (min-width: 768px){.color-x1eatcr5.color-x1eatcr5{color:green}}", 3200);
+        _inject2(".display-x1lliihq{display:block}", 3000);
+        _inject2(".padding-x7z7khe{padding:10px}", 1000);
+        export const styles = {
+          "1": {
+            "fontSize-kGuDYH": "fontSize-xif65rj",
+            $$css: "Foo.react.js:18"
+          },
+          foo: {
+            "color-kMwMTN": "color-x1e2nbdu",
+            ":hover_color-kDPRdz": "color-x17z2mba",
+            "@media (min-width: 768px)_color-kvvVxc": "color-x1eatcr5",
+            $$css: "Foo.react.js:5"
+          },
+          "bar-baz": {
+            "display-k1xSpc": "display-x1lliihq",
+            "padding-kmVPX3": "padding-x7z7khe",
+            "paddingInline-kg3NbH": null,
+            "paddingStart-kuDDbn": null,
+            "paddingLeft-kE3dHu": null,
+            "paddingEnd-kP0aTx": null,
+            "paddingRight-kpe85a": null,
+            "paddingBlock-k8WAf4": null,
+            "paddingTop-kLKAdn": null,
+            "paddingBottom-kGO01o": null,
+            $$css: "Foo.react.js:14"
+          }
+        };"
+      `);
+    });
+
+    test('stress test various key types and style variants (commonJS)', () => {
+      expect(
+        transform(
+          `
+            import stylex from 'stylex';
+
+            export const styles = stylex.create({
+              foo: {
+                color: 'red',
+                ':hover': {
+                  color: 'blue',
+                },
+                '@media (min-width: 768px)': {
+                  color: 'green',
+                },
+              },
+              'bar-baz': {
+                display: 'block',
+                padding: '10px',
+              },
+              1: {
+                fontSize: '14px',
+              },
+            });
+          `,
+          {
+            debug: true,
+            filename: '/src/components/Foo.react.js',
+            unstable_moduleResolution: { type: 'commonJS' },
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".fontSize-xif65rj{font-size:14px}", 3000);
+        _inject2(".color-x1e2nbdu{color:red}", 3000);
+        _inject2(".color-x17z2mba:hover{color:blue}", 3130);
+        _inject2("@media (min-width: 768px){.color-x1eatcr5.color-x1eatcr5{color:green}}", 3200);
+        _inject2(".display-x1lliihq{display:block}", 3000);
+        _inject2(".padding-x7z7khe{padding:10px}", 1000);
+        export const styles = {
+          "1": {
+            "fontSize-kGuDYH": "fontSize-xif65rj",
+            $$css: "components/Foo.react.js:18"
+          },
+          foo: {
+            "color-kMwMTN": "color-x1e2nbdu",
+            ":hover_color-kDPRdz": "color-x17z2mba",
+            "@media (min-width: 768px)_color-kvvVxc": "color-x1eatcr5",
+            $$css: "components/Foo.react.js:5"
+          },
+          "bar-baz": {
+            "display-k1xSpc": "display-x1lliihq",
+            "padding-kmVPX3": "padding-x7z7khe",
+            "paddingInline-kg3NbH": null,
+            "paddingStart-kuDDbn": null,
+            "paddingLeft-kE3dHu": null,
+            "paddingEnd-kP0aTx": null,
+            "paddingRight-kpe85a": null,
+            "paddingBlock-k8WAf4": null,
+            "paddingTop-kLKAdn": null,
+            "paddingBottom-kGO01o": null,
+            $$css: "components/Foo.react.js:14"
+          }
+        };"
+      `);
+    });
+
     test('transforms style object', () => {
       expect(
         transform(`

@@ -74,10 +74,12 @@ export function addSourceMapData(
       .get('arguments.0.properties')
       // $FlowIgnore
       .find((prop) => {
+        const k = prop.node.key;
         return (
-          prop.node.key.name === key ||
           // string and number properties (normalized to string)
-          String(prop.node.key.value) === key
+          (t.isIdentifier(k) && k.name === key) ||
+          (t.isStringLiteral(k) && k.value === key) ||
+          (t.isNumericLiteral(k) && String(k.value) === key)
         );
       });
 
