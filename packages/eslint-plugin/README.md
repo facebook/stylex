@@ -42,12 +42,13 @@ opening your ESLint configuration file and adding the plugin and rules.
 ### @stylexjs/valid-styles
 
 StyleX requires styles that are statically analyzable. This rule will detect
-invalid styles that StyleX cannot handle and provides basic type checking for style values.
+invalid styles that StyleX cannot handle and provides basic type checking for
+style values.
 
 #### Disallowed CSS properties and suggested fixes
 
-Listed are common CSS properties that are **not allowed** in StyleX, along
-with their **suggested replacements**.
+Listed are common CSS properties that are **not allowed** in StyleX, along with
+their **suggested replacements**.
 
 ### @stylexjs/sort-keys
 
@@ -132,3 +133,33 @@ using `stylex.defineVars()`.
 
 This rule flags unused styles created with `stylex.create(...)`. If a style key
 is defined but never used, the rule auto-strips them from the create call.
+
+### `stylex-no-legacy-media-queries`
+
+This rule flags usages of the original media query/pseudo class syntax that
+wraps multiple property values within a single @-rule or pseudo class like this:
+
+```js
+const styles = stylex.create({
+  root: {
+    width: '100%',
+    '@media (min-width: 600px)': {
+      width: '50%',
+    },
+  },
+});
+```
+
+This syntax is deprecated and should be replaced with the new syntax specified
+[here](https://stylexjs.com/docs/learn/styling-ui/defining-styles/#media-queries-and-other--rules)
+
+```js
+const styles = stylex.create({
+  root: {
+    width: {
+      default: '100%',
+      '@media (min-width: 600px)': '50%',
+    },
+  },
+});
+```
