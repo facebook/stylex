@@ -19,6 +19,7 @@ import type {
   StyleX$Create,
   StyleX$CreateTheme,
   StyleX$DefineVars,
+  StyleX$DefineConsts,
   StyleXArray,
   StyleXStyles,
   StyleXStylesWithout,
@@ -91,6 +92,12 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   _styles: $FlowFixMe,
 ) {
   throw errorForFn('defineVars');
+};
+
+export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts(
+  _styles: $FlowFixMe,
+) {
+  throw errorForFn('defineConsts');
 };
 
 export const firstThatWorks = <T: string | number>(
