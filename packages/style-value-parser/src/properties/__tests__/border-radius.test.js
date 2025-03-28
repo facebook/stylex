@@ -198,7 +198,7 @@ describe('Test CSS property shorthand: `border-radius`', () => {
     );
   });
 
-  // Assymentric border-radius
+  // Asymmetric border-radius
   test('Valid: border-radius: <length-percentage> / <length-percentage>', () => {
     expect(BorderRadiusShorthand.parse.parseToEnd('10px / 20px')).toEqual(
       new BorderRadiusShorthand(
