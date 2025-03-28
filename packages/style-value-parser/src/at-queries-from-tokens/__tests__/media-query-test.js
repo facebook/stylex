@@ -1873,6 +1873,30 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
+  // nested not queries are broken
+  test.skip('@media not (not (not (min-width: 400px)))', () => {
+    const query = '@media not (not (not (min-width: 400px)))';
+    const mediaQuery = MediaQuery.parser.parseToEnd(query);
+    expect(mediaQuery).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rule": {
+            "key": "min-width",
+            "type": "pair",
+            "value": {
+              "signCharacter": undefined,
+              "type": "integer",
+              "unit": "px",
+              "value": 400,
+            },
+          },
+          "type": "not",
+        },
+      }
+    `);
+    expect(mediaQuery.toString()).toEqual('@media (min-width: 400px)');
+  });
+
   // not queries with multiple clauses are broken
   test.skip('@media not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px))', () => {
     const query =
@@ -1917,5 +1941,114 @@ describe('Test CSS Type: @media queries', () => {
       }
     `);
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
+  });
+  test('flattens nested and rules', () => {
+    const query =
+      '@media (min-width: 400px) and ((max-width: 700px) and (orientation: landscape))';
+    const mediaQuery = MediaQuery.parser.parseToEnd(query);
+    expect(mediaQuery).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 700,
+              },
+            },
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
+    expect(mediaQuery.toString()).toEqual(
+      '@media (min-width: 400px) and (max-width: 700px) and (orientation: landscape)',
+    );
+  });
+
+  test.skip('flattens complex nested and rules', () => {
+    const query =
+      '@media ((min-width: 400px) and (print)) and ((max-width: 700px) and (orientation: landscape))';
+    const mediaQuery = MediaQuery.parser.parseToEnd(query);
+    expect(mediaQuery).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rules": [
+            {
+              "key": "min-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 400,
+              },
+            },
+            {
+              "key": "max-width",
+              "type": "pair",
+              "value": {
+                "signCharacter": undefined,
+                "type": "integer",
+                "unit": "px",
+                "value": 700,
+              },
+            },
+            {
+              "key": "orientation",
+              "type": "pair",
+              "value": "landscape",
+            },
+          ],
+          "type": "and",
+        },
+      }
+    `);
+    expect(mediaQuery.toString()).toEqual(
+      '@media (min-width: 400px) and (max-width: 700px) and (orientation: landscape)',
+    );
+  });
+
+  // blocked by double not fix above
+  test.skip('removes duplicate nots', () => {
+    const query = '@media not (not (min-width: 400px))';
+    const mediaQuery = MediaQuery.parser.parseToEnd(query);
+    expect(mediaQuery).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "rule": {
+            "key": "min-width",
+            "type": "pair",
+            "value": {
+              "signCharacter": undefined,
+              "type": "integer",
+              "unit": "px",
+              "value": 400,
+            },
+          },
+          "type": "not",
+        },
+      }
+    `);
+    expect(mediaQuery.toString()).toEqual('@media (min-width: 400px)');
   });
 });

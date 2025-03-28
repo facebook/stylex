@@ -284,7 +284,7 @@ const mediaOrRulesParser: TokenParser<MediaOrRules | MediaQueryRule> =
 export class MediaQuery {
   queries: MediaQueryRule;
   constructor(queries: this['queries']) {
-    this.queries = queries;
+    this.queries = MediaQuery.normalize(queries);
   }
   toString(): string {
     return `@media ${this.#toString(this.queries, true)}`;
@@ -318,6 +318,42 @@ export class MediaQuery {
         return '';
     }
   }
+  static normalize(rule: MediaQueryRule): MediaQueryRule {
+    switch (rule.type) {
+      case 'and': {
+        const flattened: MediaQueryRule[] = [];
+        for (const r of rule.rules) {
+          const norm = MediaQuery.normalize(r);
+          if (norm.type === 'and') {
+            flattened.push(...norm.rules);
+          } else {
+            flattened.push(norm);
+          }
+        }
+        return { type: 'and', rules: flattened };
+      }
+      case 'or':
+        return {
+          type: 'or',
+          rules: rule.rules.map((r) => MediaQuery.normalize(r)),
+        };
+      case 'not': {
+        let count = 1;
+        let inner = MediaQuery.normalize(rule.rule);
+        while (inner.type === 'not') {
+          count++;
+          inner = MediaQuery.normalize(inner.rule);
+        }
+        if (inner.type === 'pair' || inner.type === 'word-rule') {
+          return count % 2 === 0 ? inner : { type: 'not', rule: inner };
+        }
+        return inner;
+      }
+      default:
+        return rule;
+    }
+  }
+
   static get parser(): TokenParser<MediaQuery> {
     const leadingNotParser = TokenParser.sequence(
       TokenParser.tokens.Ident.map(
@@ -379,13 +415,12 @@ export class MediaQuery {
       ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
-      .map(
-        ([_at, querySets]) =>
-          new MediaQuery(
-            querySets.length > 1
-              ? { type: 'or', rules: querySets }
-              : querySets[0],
-          ),
-      );
+      .map(([_at, querySets]) => {
+        const rule =
+          querySets.length > 1
+            ? { type: 'or', rules: querySets }
+            : querySets[0];
+        return new MediaQuery(rule);
+      });
   }
 }
