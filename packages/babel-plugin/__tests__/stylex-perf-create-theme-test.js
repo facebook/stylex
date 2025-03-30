@@ -14,7 +14,7 @@ jest.autoMockOff();
 const { transformFileSync } = require('@babel/core');
 const stylexPlugin = require('../src/index');
 const path = require('path');
-// const rootDir = path.resolve(__dirname, './__fixtures__');
+
 const classNamePrefix = 'x';
 const defaultOpts = {
   stylexSheetName: '<>',
@@ -40,7 +40,7 @@ function transform(file, opts = defaultOpts) {
 const themeFile = path.resolve(__dirname, '../__fixtures__/colorThemes.js');
 
 describe('create theme', () => {
-  it('should transform complex theme file', () => {
+  it('transform complex theme file', () => {
     const result = transform(themeFile);
     expect(result.code).toMatchSnapshot();
     expect(result.styles).toMatchSnapshot();

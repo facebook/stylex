@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`create theme should transform complex theme file 1`] = `
+exports[`create theme transform complex theme file 1`] = `
 "import type { Theme } from '@stylexjs/stylex';
 import { colors } from './colors.stylex';
 import * as stylex from '@stylexjs/stylex';
@@ -639,7 +639,7 @@ export const WDSDarkTheme: Theme<typeof colors> = {
 };"
 `;
 
-exports[`create theme should transform complex theme file 2`] = `
+exports[`create theme transform complex theme file 2`] = `
 [
   [
     "x122jrhm",
