@@ -523,6 +523,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     const elems: $ReadOnlyArray<NodePath<>> = arrPath.get('elements');
     for (const elem of elems) {
       const elemValue = evaluate(elem, state.traversalState, state.functions);
+      // const elemValue = evaluateCached(elem, state);
 
       if (elemValue.confident) {
         arr.push(elemValue.value);
@@ -555,13 +556,19 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (prop.isObjectProperty()) {
         const keyPath: NodePath<t.ObjectProperty['key']> = prop.get('key');
         let key: string | number | boolean;
-        if ((prop.node as t.ObjectProperty).computed) {
+        if (prop.node.computed) {
           const {
             confident,
             deopt: resultDeopt,
             reason: deoptReason,
             value,
-          } = evaluate(keyPath, state.traversalState, state.functions);
+          } = evaluate(
+            keyPath,
+            state.traversalState,
+            state.functions,
+            state.seen,
+          );
+          // evaluateCached(keyPath, state);
           if (!confident) {
             resultDeopt &&
               deopt(resultDeopt, state, deoptReason ?? 'unknown error');
@@ -576,7 +583,12 @@ function _evaluate(path: NodePath<>, state: State): any {
         }
         // todo(flow->ts): remove typecast
         const valuePath: NodePath<> = prop.get('value');
-        let value = evaluate(valuePath, state.traversalState, state.functions);
+        let value = evaluate(
+          valuePath,
+          state.traversalState,
+          state.functions,
+          state.seen,
+        );
         if (!value.confident) {
           value.deopt &&
             deopt(value.deopt, state, value.reason ?? 'unknown error');
@@ -792,6 +804,7 @@ function _evaluate(path: NodePath<>, state: State): any {
           state.traversalState,
           state.functions,
         );
+        // const parsedObj = evaluateCached(object, state);
         if (parsedObj.confident && property.isIdentifier()) {
           func = parsedObj.value[property.node.name];
           context = parsedObj.value;
@@ -889,6 +902,7 @@ export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
   functions: FunctionConfig = { identifiers: {}, memberExpressions: {} },
+  seen: Map<t.Node, Result> = new Map(),
 ): $ReadOnly<{
   confident: boolean,
   value: any,
@@ -901,7 +915,7 @@ export function evaluate(
   const state: State = {
     confident: true,
     deoptPath: null,
-    seen: new Map(),
+    seen,
     addedImports,
     functions,
     traversalState,
