@@ -42,14 +42,39 @@ const openPropsIncludePaths = getPackageIncludePaths('@stylexjs/open-props', [
   path.join(monorepoRoot, 'node_modules'),
 ]);
 
+const dev = process.env.NODE_ENV !== 'production';
+
 module.exports = {
   plugins: {
     '@stylexjs/postcss-plugin': {
       include: [
-        'app/**/*.{js,jsx,ts,tsx}',
-        'components/**/*.{js,jsx,ts,tsx}',
+        'app/**/*.{tsx,stylex.ts}',
+        'components/**/*.{tsx,stylex.ts}',
         ...openPropsIncludePaths,
       ],
+      babelConfig: {
+        babelrc: false,
+        parserOpts: {
+          plugins: ['typescript', 'jsx'],
+        },
+        plugins: [
+          [
+            '@stylexjs/babel-plugin',
+            {
+              dev: dev,
+              runtimeInjection: false,
+              genConditionalClasses: true,
+              treeshakeCompensation: true,
+              aliases: {
+                '@/*': [path.join(__dirname, '*')],
+              },
+              unstable_moduleResolution: {
+                type: 'commonJS',
+              },
+            },
+          ],
+        ],
+      },
       useCSSLayers: true,
     },
     autoprefixer: {},
