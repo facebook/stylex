@@ -17,7 +17,7 @@ module.exports = {
   webpack: (config, { dev, isServer }) => {
     // Process only files that require StyleX compilation using babel-loader
     config.module.rules.push({
-      test: /\.(tsx|stylex\.ts|jsx|stylex\.js)$/,
+      test: /\.(js|jsx|ts|tsx)$/,
       exclude: /node_modules(?!\/@stylexjs\/open-props)/,
       use: [
         {

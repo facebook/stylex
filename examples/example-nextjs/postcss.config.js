@@ -48,8 +48,8 @@ module.exports = {
   plugins: {
     '@stylexjs/postcss-plugin': {
       include: [
-        'app/**/*.{tsx,stylex.ts}',
-        'components/**/*.{tsx,stylex.ts}',
+        'app/**/*.{js,jsx,ts,tsx}',
+        'components/**/*.{js,jsx,ts,tsx}',
         ...openPropsIncludePaths,
       ],
       babelConfig: {
