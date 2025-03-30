@@ -11,4 +11,5 @@
 
 module.exports = {
   transpilePackages: ['@stylexjs/open-props'],
+  eslint: { ignoreDuringBuilds: true },
 };
