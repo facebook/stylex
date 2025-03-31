@@ -555,13 +555,19 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (prop.isObjectProperty()) {
         const keyPath: NodePath<t.ObjectProperty['key']> = prop.get('key');
         let key: string | number | boolean;
-        if ((prop.node as t.ObjectProperty).computed) {
+        if (prop.node.computed) {
           const {
             confident,
             deopt: resultDeopt,
             reason: deoptReason,
             value,
-          } = evaluate(keyPath, state.traversalState, state.functions);
+          } = evaluate(
+            keyPath,
+            state.traversalState,
+            state.functions,
+            state.seen,
+          );
+
           if (!confident) {
             resultDeopt &&
               deopt(resultDeopt, state, deoptReason ?? 'unknown error');
@@ -571,12 +577,17 @@ function _evaluate(path: NodePath<>, state: State): any {
         } else if (keyPath.isIdentifier()) {
           key = keyPath.node.name;
         } else {
-          // TODO: This is'nt handling all possible types that `keyPath` could be
+          // TODO: This isn't handling all possible types that `keyPath` could be
           key = (keyPath.node as $FlowFixMe).value;
         }
-        // todo(flow->ts): remove typecast
+
         const valuePath: NodePath<> = prop.get('value');
-        let value = evaluate(valuePath, state.traversalState, state.functions);
+        let value = evaluate(
+          valuePath,
+          state.traversalState,
+          state.functions,
+          state.seen,
+        );
         if (!value.confident) {
           value.deopt &&
             deopt(value.deopt, state, value.reason ?? 'unknown error');
@@ -889,6 +900,7 @@ export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
   functions: FunctionConfig = { identifiers: {}, memberExpressions: {} },
+  seen: Map<t.Node, Result> = new Map(),
 ): $ReadOnly<{
   confident: boolean,
   value: any,
@@ -901,7 +913,7 @@ export function evaluate(
   const state: State = {
     confident: true,
     deoptPath: null,
-    seen: new Map(),
+    seen,
     addedImports,
     functions,
     traversalState,
