@@ -5,6 +5,11 @@
 ### New features
 
 * Hash keys in compiled style objects to reduce generated code size.
+* Added lint rule to flag legacy media query/pseudoclass syntax.
+
+### Fixes
+* Performance improvements to `stylex.createTheme` compilation by caching object evaluation.
+* Disallowed spreading in `stylex.create` calls.
 
 ### Deprecations
 
