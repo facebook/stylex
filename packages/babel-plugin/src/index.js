@@ -21,6 +21,7 @@ import {
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
 import transformStyleXDefineVars from './visitors/stylex-define-vars';
+import transformStyleXDefineConsts from './visitors/stylex-define-consts';
 import transformStyleXCreateTheme from './visitors/stylex-create-theme';
 import transformStyleXKeyframes from './visitors/stylex-keyframes';
 import transformStylexCall, {
@@ -287,6 +288,7 @@ function styleXTransform(): PluginObj<> {
           transformStyleXKeyframes(path.parentPath, state);
         }
         transformStyleXDefineVars(path, state);
+        transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
         transformStyleXCreate(path, state);
       },

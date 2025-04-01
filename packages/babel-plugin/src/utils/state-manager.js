@@ -128,6 +128,7 @@ export default class StateManager {
   +stylexFirstThatWorksImport: Set<string> = new Set();
   +stylexKeyframesImport: Set<string> = new Set();
   +stylexDefineVarsImport: Set<string> = new Set();
+  +stylexDefineConstsImport: Set<string> = new Set();
   +stylexCreateThemeImport: Set<string> = new Set();
   +stylexTypesImport: Set<string> = new Set();
 
@@ -616,14 +617,38 @@ export default class StateManager {
   }
 
   addStyle(
-    style: [string, { ltr: string, rtl?: string | null }, number],
+    style: [
+      string,
+      (
+        | { ltr: string, rtl?: string | null }
+        | {
+            constKey: string,
+            constVal: string | number,
+            rtl?: string | null,
+            ltr: string,
+          }
+      ),
+      number,
+    ],
   ): void {
     this.metadata.stylex.push(style);
   }
 
   registerStyles(
     styles: $ReadOnlyArray<
-      [string, { ltr: string, rtl?: string | null }, number],
+      [
+        string,
+        (
+          | { ltr: string, rtl?: string | null }
+          | {
+              constKey: string,
+              constVal: string | number,
+              rtl?: string | null,
+              ltr: string,
+            }
+        ),
+        number,
+      ],
     >,
     path?: ?NodePath<>,
   ): void {
