@@ -11,6 +11,7 @@ const fs = require('fs');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
+const createTests = require('./tests/transform-create-tests');
 const createThemeTests = require('./tests/transform-create-theme-tests');
 
 // run.js --outfile filename.js
@@ -38,6 +39,7 @@ const options = {
 console.log('Running "perf" benchmark, please wait...');
 
 // Run tests
+createTests(options);
 createThemeTests(options);
 
 const aggregatedResultsString = JSON.stringify(aggregatedResults, null, 2);
