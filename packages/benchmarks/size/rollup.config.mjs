@@ -7,12 +7,17 @@
  *
  */
 
+import path from 'path';
 import stylexPlugin from '@stylexjs/rollup-plugin';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const config = {
-  input: './size/fixture/index.js',
+  input: path.resolve(__dirname, './fixtures/index.js'),
   output: {
-    file: './size/.build/bundle.js',
+    file: path.resolve(__dirname, './.build/bundle.js'),
     format: 'es',
   },
   // See all options in the babel plugin configuration docs:
