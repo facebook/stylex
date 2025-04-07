@@ -8,10 +8,11 @@
  */
 
 import type { Theme } from '@stylexjs/stylex';
-import { colors } from './colors.stylex';
-import * as stylex from '@stylexjs/stylex';
 
-export const WDSSystemTheme: Theme<typeof colors> = stylex.createTheme(colors, {
+import * as stylex from '@stylexjs/stylex';
+import { colors } from './colors.stylex';
+
+export const SystemTheme: Theme<typeof colors> = stylex.createTheme(colors, {
   '--accent': '#1DAA61',
   '--accent-deemphasized': '#D9FDD3',
   '--accent-emphasized': '#15603E',

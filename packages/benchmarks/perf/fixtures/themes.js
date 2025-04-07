@@ -9,9 +9,8 @@
 
 import type { Theme } from '@stylexjs/stylex';
 
-import { colors } from './colors.stylex';
-
 import * as stylex from '@stylexjs/stylex';
+import { colors } from './colors.stylex';
 
 const baseColorPalette = {
   neutralGray50: '#FAFAFA',
@@ -723,15 +722,15 @@ const darkTheme = {
     systemTheme['--internal-components-active-list-row'][DARK],
 };
 
-export const WDSSystemTheme: Theme<typeof colors> = stylex.createTheme(
+export const SystemTheme: Theme<typeof colors> = stylex.createTheme(
   colors,
   systemTheme,
 );
-export const WDSLightTheme: Theme<typeof colors> = stylex.createTheme(
+export const LightTheme: Theme<typeof colors> = stylex.createTheme(
   colors,
   lightTheme,
 );
-export const WDSDarkTheme: Theme<typeof colors> = stylex.createTheme(
+export const DarkTheme: Theme<typeof colors> = stylex.createTheme(
   colors,
   darkTheme,
 );
