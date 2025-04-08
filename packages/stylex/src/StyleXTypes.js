@@ -56,7 +56,7 @@ export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<
   false | ?$ReadOnly<{ ...T, $$css: true }>,
 >;
 export type XStyleWithout<+T: { +[string]: mixed }> = XStyle<
-  $ReadOnly<$Rest<NestedCSSPropTypes, $Exact<T>>>,
+  $ReadOnly<$Diff<NestedCSSPropTypes, $Exact<T>>>,
 >;
 
 export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
@@ -117,7 +117,7 @@ export type StaticStyles<+CSS: { +[string]: mixed } = CSSPropertiesWithExtras> =
   StyleXArray<false | ?GenStylePropType<$ReadOnly<CSS>>>;
 
 export type StaticStylesWithout<+CSS: { +[string]: mixed }> = StaticStyles<
-  $Rest<CSSPropertiesWithExtras, $ReadOnly<CSS>>,
+  Omit<CSSPropertiesWithExtras, $Keys<CSS>>,
 >;
 
 export type StyleXStyles<+CSS: { +[string]: mixed } = CSSPropertiesWithExtras> =
@@ -128,7 +128,7 @@ export type StyleXStyles<+CSS: { +[string]: mixed } = CSSPropertiesWithExtras> =
   >;
 
 export type StyleXStylesWithout<+CSS: { +[string]: mixed }> = StyleXStyles<
-  $Rest<CSSPropertiesWithExtras, $ReadOnly<CSS>>,
+  Omit<CSSPropertiesWithExtras, $Keys<CSS>>,
 >;
 
 export type VarGroup<+Tokens: { +[string]: mixed }, +_ID: string = string> = {
