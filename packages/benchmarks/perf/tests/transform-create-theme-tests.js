@@ -7,47 +7,33 @@
 
 'use strict';
 
-const stylexPlugin = require('@stylexjs/babel-plugin');
 const path = require('path');
-const { createSuite } = require('../helpers');
-const { transformFileSync } = require('@babel/core');
+const { createSuite, transformHaste } = require('../helpers');
 
-const defaultOpts = {
-  stylexSheetName: '<>',
-  unstable_moduleResolution: { type: 'haste' },
-  classNamePrefix: 'x',
-};
-
-const themeBasic = path.resolve(__dirname, '../fixtures/theme-basic.js');
-const themes = path.resolve(__dirname, '../fixtures/themes.js');
-
-function transform(file, opts = defaultOpts) {
-  const result = transformFileSync(file, {
-    filename: opts.filename || file || themes,
-    parserOpts: {
-      flow: 'all',
-    },
-    babelrc: false,
-    plugins: [
-      ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
-      [stylexPlugin, { ...defaultOpts, ...opts }],
-    ],
-  });
-  return { code: result.code, styles: result.metadata.stylex };
-}
+const createThemeBasic = path.resolve(
+  __dirname,
+  '../fixtures/createTheme-basic.js',
+);
+const createThemeComplex = path.resolve(
+  __dirname,
+  '../fixtures/createTheme-complex.js',
+);
 
 /**
  * Performance of 'createTheme' transform
  */
 function runSuite(options) {
-  const { suite, test } = createSuite('babel-plugin: createTheme', options);
+  const { suite, test } = createSuite(
+    'babel-plugin: stylex.createTheme',
+    options,
+  );
 
-  test('basic theme', () => {
-    transform(themeBasic);
+  test('basic themes', () => {
+    transformHaste(createThemeBasic);
   });
 
-  test('complex theme', () => {
-    transform(themes);
+  test('complex themes', () => {
+    transformHaste(createThemeComplex);
   });
 
   suite.run();

@@ -19,6 +19,7 @@ jobs:
     - name: 'Benchmark base'
       run: |
         git checkout -f ${{ github.event.pull_request.base.sha }}
+        git clean -fdx
         npm install --loglevel error
         if npm run perf -w benchmarks -- -o ${{ env.BASE_JSON }}; then
           echo "Ran successfully on base branch"
@@ -29,6 +30,7 @@ jobs:
     - name: 'Benchmark patch'
       run: |
         git checkout -f ${{ github.event.pull_request.head.sha }}
+        git clean -fdx
         npm install --loglevel error
         npm run perf -w benchmarks -- -o ${{ env.PATCH_JSON }}
         echo "Ran successfully on patch branch"
@@ -47,7 +49,7 @@ jobs:
         comment-author: 'github-actions[bot]'
         body: |
           <!-- workflow-benchmarks-perf-data -->
-          ### workflow: benchmarks/perf (native)
+          ### workflow: benchmarks/perf
           Comparison of performance test results, measured in operations per second. Larger is better.
           ${{ steps.collect.outputs.table }}
         edit-mode: replace
@@ -68,6 +70,7 @@ jobs:
     - name: 'Benchmark base'
       run: |
         git checkout -f ${{ github.event.pull_request.base.sha }}
+        git clean -fdx
         npm install --loglevel error
         if npm run size -w benchmarks -- -o ${{ env.BASE_JSON }}; then
           echo "Ran successfully on base branch"
@@ -78,6 +81,7 @@ jobs:
     - name: 'Benchmark patch'
       run: |
         git checkout -f ${{ github.event.pull_request.head.sha }}
+        git clean -fdx
         npm install --loglevel error
         npm run size -w benchmarks -- -o ${{ env.PATCH_JSON }}
         echo "Ran successfully on patch branch"

@@ -8,6 +8,8 @@
 'use strict';
 
 const Benchmark = require('benchmark');
+const stylexPlugin = require('@stylexjs/babel-plugin');
+const { transformFileSync } = require('@babel/core');
 
 /**
  * Test helpers
@@ -56,6 +58,28 @@ function createSuite(name, options) {
   return { suite, test };
 }
 
+const defaultOpts = {
+  stylexSheetName: '<>',
+  unstable_moduleResolution: { type: 'haste' },
+  classNamePrefix: 'x',
+};
+
+function transformHaste(file, opts = defaultOpts) {
+  const result = transformFileSync(file, {
+    filename: opts.filename || file || themes,
+    parserOpts: {
+      flow: 'all',
+    },
+    babelrc: false,
+    plugins: [
+      ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
+      [stylexPlugin, { ...defaultOpts, ...opts }],
+    ],
+  });
+  return { code: result.code, styles: result.metadata.stylex };
+}
+
 module.exports = {
   createSuite,
+  transformHaste,
 };
