@@ -12,7 +12,7 @@ jest.mock('@dual-bundle/import-meta-resolve');
 
 /* eslint-disable quotes */
 const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../../src/index');
+const stylexPlugin = require('../src/index');
 const jsx = require('@babel/plugin-syntax-jsx');
 const { utils } = require('@stylexjs/shared');
 const { moduleResolve } = require('@dual-bundle/import-meta-resolve');
