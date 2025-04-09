@@ -13,8 +13,8 @@ const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
 const {
   evaluateStyleXCreateArg,
-} = require('../../src/visitors/stylex-create/parse-stylex-create-arg');
-const { default: StateManager } = require('../../src/utils/state-manager');
+} = require('../src/visitors/stylex-create/parse-stylex-create-arg');
+const { default: StateManager } = require('../src/utils/state-manager');
 
 const { isNode } = require('@babel/types');
 
