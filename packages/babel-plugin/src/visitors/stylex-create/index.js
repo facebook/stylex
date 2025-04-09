@@ -124,12 +124,20 @@ export default function transformStyleXCreate(
     const injectedInheritStyles: { [string]: InjectableStyle } = {};
     if (fns != null) {
       const dynamicFnsNames = Object.values(fns)
-        ?.map((entry) => Object.keys(entry[1]))
+        ?.map((entry) =>
+          Object.entries(entry[1]).map(([variableName, obj]) => ({
+            variableName,
+            path: obj.path,
+          })),
+        )
         .flat();
-      dynamicFnsNames.forEach((fnsName) => {
-        injectedInheritStyles[fnsName] = {
+
+      dynamicFnsNames.forEach(({ variableName, path }) => {
+        // Pseudo elements can only access css vars via inheritance
+        const isPseudoElement = path.some((p) => p.startsWith('::'));
+        injectedInheritStyles[variableName] = {
           priority: 0,
-          ltr: `@property ${fnsName} { syntax: "*"; inherits: false;}`,
+          ltr: `@property ${variableName} { syntax: "*";${isPseudoElement ? '' : ' inherits: false;'}}`,
           rtl: null,
         };
       });
