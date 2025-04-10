@@ -13,175 +13,278 @@ const { transformSync } = require('@babel/core');
 const stylexPlugin = require('../src/index');
 
 function transform(source, opts = {}) {
-  return transformSync(source, {
+  const { code, metadata } = transformSync(source, {
     filename: opts.filename,
     parserOpts: {
       flow: 'all',
     },
-    plugins: [[stylexPlugin, { runtimeInjection: true, ...opts }]],
-  }).code;
+    plugins: [[stylexPlugin, { ...opts }]],
+  });
+
+  return { code, metadata };
 }
 
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] CSS keyframes', () => {
-    test('converts keyframes to CSS', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const name = stylex.keyframes({
-            from: {
-              backgroundColor: 'red',
-            },
+    test('keyframes object', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const name = stylex.keyframes({
+          from: {
+            color: 'red',
+          },
+          to: {
+            color: 'blue',
+          }
+        });
+      `);
 
-            to: {
-              backgroundColor: 'blue',
-            }
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2("@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}", 1);
-        const name = "xbopttm-B";"
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const name = "x2up61p-B";"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x2up61p-B",
+              {
+                "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+          ],
+        }
       `);
     });
 
-    test('converts keyframes to CSS with import *', () => {
-      expect(
+    test('local variable keyframes object', () => {
+      const callTransform = () =>
         transform(`
-          import * as stylex from 'stylex';
-          const name = stylex.keyframes({
-            from: {
-              backgroundColor: 'red',
-            },
+        import * as stylex from '@stylexjs/stylex';
+        const keyframes = {
+          from: {
+            color: 'red',
+          },
+          to: {
+            color: 'blue',
+          }
+        };
+        export const name = stylex.keyframes(keyframes);
+      `);
 
-            to: {
-              backgroundColor: 'blue',
-            }
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import * as stylex from 'stylex';
-        _inject2("@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}", 1);
-        const name = "xbopttm-B";"
+      expect(callTransform).toThrow();
+    });
+
+    test('local variables used in keyframes object', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'red';
+        export const name = stylex.keyframes({
+          from: {
+            color: COLOR,
+          },
+          to: {
+            color: 'blue',
+          }
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'red';
+        export const name = "x2up61p-B";"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x2up61p-B",
+              {
+                "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+          ],
+        }
       `);
     });
 
-    test('converts keyframes to CSS with named import', () => {
-      expect(
-        transform(`
-          import { keyframes } from 'stylex';
-          const name = keyframes({
-            from: {
-              backgroundColor: 'red',
-            },
-
-            to: {
-              backgroundColor: 'blue',
-            }
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import { keyframes } from 'stylex';
-        _inject2("@keyframes xbopttm-B{from{background-color:red;}to{background-color:blue;}}", 1);
-        const name = "xbopttm-B";"
+    test('template literals used in keyframes object', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'red';
+        const name = stylex.keyframes({
+          from: {
+            color: COLOR,
+          },
+          to: {
+            color: 'blue',
+          }
+        });
+        export const styles = stylex.create({
+          root: {
+            animationName: \`\${name}\`,
+          }
+        });
       `);
-    });
 
-    test('allows template literal references to keyframes', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const name = stylex.keyframes({
-            from: {
-              backgroundColor: 'blue',
-            },
-            to: {
-              backgroundColor: 'red',
-            },
-          });
-
-          const styles = stylex.create({
-            default: {
-              animation: \`3s \${name}\`,
-            },
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2("@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}", 1);
-        const name = "x3zqmp-B";
-        _inject2(".x1qs41r0{animation:3s x3zqmp-B}", 1000);"
-      `);
-    });
-
-    test('allows inline references to keyframes', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-
-          const styles = stylex.create({
-            default: {
-              animationName: stylex.keyframes({
-                from: {
-                  backgroundColor: 'blue',
-                },
-                to: {
-                  backgroundColor: 'red',
-                },
-              }),
-            },
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2("@keyframes x3zqmp-B{from{background-color:blue;}to{background-color:red;}}", 1);
-        _inject2(".xcoz2pf{animation-name:x3zqmp-B}", 3000);"
-      `);
-    });
-
-    test('generates RTL-specific keyframes', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const name = stylex.keyframes({
-            from: {
-              start: 0,
-            },
-
-            to: {
-              start: 500,
-            },
-          });
-
-          export const styles = stylex.create({
-            root: {
-              animationName: name,
-            },
-          });
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2("@keyframes x1jkcf39-B{from{inset-inline-start:0;}to{inset-inline-start:500px;}}", 1);
-        const name = "x1jkcf39-B";
-        _inject2(".x1vfi257{animation-name:x1jkcf39-B}", 3000);
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'red';
+        const name = "x2up61p-B";
         export const styles = {
           root: {
-            kKVMdj: "x1vfi257",
+            kKVMdj: "xx2qnu0",
             $$css: true
           }
         };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x2up61p-B",
+              {
+                "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+            [
+              "xx2qnu0",
+              {
+                "ltr": ".xx2qnu0{animation-name:x2up61p-B}",
+                "rtl": null,
+              },
+              3000,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('keyframes object used inline', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            animationName: stylex.keyframes({
+              from: {
+                color: 'red',
+              },
+              to: {
+                color: 'blue',
+              },
+            }),
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const styles = {
+          root: {
+            kKVMdj: "xx2qnu0",
+            $$css: true
+          }
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x2up61p-B",
+              {
+                "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+            [
+              "xx2qnu0",
+              {
+                "ltr": ".xx2qnu0{animation-name:x2up61p-B}",
+                "rtl": null,
+              },
+              3000,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('keyframes object', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const name = stylex.keyframes({
+          from: {
+            color: 'red',
+          },
+          to: {
+            color: 'blue',
+          }
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const name = "x2up61p-B";"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x2up61p-B",
+              {
+                "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('[legacy] keyframes object RTL polyfills', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const name = stylex.keyframes({
+          from: {
+            insetBlockStart: 0,
+          },
+          to: {
+            insetBlockStart: 100,
+          }
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const name = "x1o0a6zm-B";"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1o0a6zm-B",
+              {
+                "ltr": "@keyframes x1o0a6zm-B{from{top:0;}to{top:100px;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+          ],
+        }
       `);
     });
   });
