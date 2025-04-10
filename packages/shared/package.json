@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "babel-plugin-syntax-hermes-parser": "^0.26.0",
-    "scripts": "0.11.1"
+    "scripts": "0.11.2"
   },
   "jest": {
     "snapshotFormat": {
