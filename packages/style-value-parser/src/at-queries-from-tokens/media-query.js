@@ -43,7 +43,7 @@ type MediaRulePair = {
   key: string,
   value: MediaRuleValue,
 };
-type MediaNotRule = { type: 'not', rule: MediaRulePair | MediaWordRule };
+type MediaNotRule = { type: 'not', rule: MediaQueryRule };
 type MediaAndRules = { type: 'and', rules: $ReadOnlyArray<MediaQueryRule> };
 type MediaOrRules = { type: 'or', rules: $ReadOnlyArray<MediaQueryRule> };
 
