@@ -5,12 +5,13 @@
 ### New features
 
 * Hash keys in compiled style objects to reduce generated code size.
-* Added lint rule to flag legacy media query/pseudoclass syntax.
+* New eslint rule to flag use of legacy Media Query and pseudo-class syntax.
 
 ### Fixes
+
 * Fix pseudo-elements bug in dynamic styles.
 * Performance improvements to `stylex.createTheme` compilation by caching object evaluation.
-* Disallowed spreading in `stylex.create` calls.
+* Disallow spreading in `stylex.create` calls.
 
 ### Deprecations
 
