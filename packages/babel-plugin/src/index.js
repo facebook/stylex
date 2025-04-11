@@ -21,6 +21,7 @@ import {
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
 import transformStyleXDefineVars from './visitors/stylex-define-vars';
+import transformStyleXDefineConsts from './visitors/stylex-define-consts';
 import transformStyleXCreateTheme from './visitors/stylex-create-theme';
 import transformStyleXKeyframes from './visitors/stylex-keyframes';
 import transformStylexCall, {
@@ -287,6 +288,7 @@ function styleXTransform(): PluginObj<> {
           transformStyleXKeyframes(path.parentPath, state);
         }
         transformStyleXDefineVars(path, state);
+        transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
         transformStyleXCreate(path, state);
       },
@@ -326,7 +328,16 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  *
  * End-users can choose to not use this function and use their own logic instead.
  */
-export type Rule = [string, { ltr: string, rtl?: null | string }, number];
+export type Rule = [
+  string,
+  {
+    ltr: string,
+    rtl?: null | string,
+    constKey?: string,
+    constVal?: string | number,
+  },
+  number,
+];
 function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
@@ -335,10 +346,17 @@ function processStylexRules(
     return '';
   }
 
+  const constsMap: Map<string, string | number> = new Map();
+  for (const [keyhash, ruleObj] of rules) {
+    if (ruleObj?.constKey && ruleObj?.constVal) {
+      constsMap.set(`var(--${keyhash})`, ruleObj.constVal);
+    }
+  }
+
   const sortedRules = rules.sort(
     (
-      [_1, { ltr: rule1 }, firstPriority]: Rule,
-      [_2, { ltr: rule2 }, secondPriority]: Rule,
+      [_1, { ltr: rule1 }, firstPriority],
+      [_2, { ltr: rule2 }, secondPriority],
     ) => {
       const priorityComparison = firstPriority - secondPriority;
       if (priorityComparison !== 0) return priorityComparison;
@@ -355,14 +373,25 @@ function processStylexRules(
     },
   );
 
-  let lastKPri = -1; //Math.floor(sortedRules[0][2] / 1000);
+  let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
-    const [_key, _value, priority] = rule;
+    const [_key, styleObj, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
 
+    Object.keys(styleObj).forEach((dir) => {
+      let original = styleObj[dir];
+
+      for (const [varRef, constValue] of constsMap.entries()) {
+        if (typeof original === 'string') {
+          const replacement = String(constValue);
+          original = original.replaceAll(varRef, replacement);
+          styleObj[dir] = original;
+        }
+      }
+    });
+
     if (priorityLevel === lastKPri) {
-      const last = acc[acc.length - 1];
-      last.push(rule);
+      acc[acc.length - 1].push(rule);
       return acc;
     }
 
@@ -380,17 +409,18 @@ function processStylexRules(
   const collectedCSS = grouped
     .map((group, index) => {
       const collectedCSS = Array.from(
-        new Map(group.map(([a, b, _c]: Rule) => [a, b])).values(),
+        new Map(group.map(([a, b]) => [a, b])).values(),
       )
-        .flatMap(({ ltr, rtl }: any): Array<string> => {
+        .flatMap(({ ltr, rtl }) => {
           let ltrRule = ltr,
             rtlRule = rtl;
+
           if (!useLayers) {
             ltrRule = addSpecificityLevel(ltrRule, index);
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
 
-          return rtlRule != null
+          return rtlRule
             ? [
                 addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
                 addAncestorSelector(rtlRule, "html[dir='rtl']"),
