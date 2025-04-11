@@ -55,8 +55,9 @@ export type StyleXSingleStyle = false | ?NestedCSSPropTypes;
 export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<
   false | ?$ReadOnly<{ ...T, $$css: true }>,
 >;
-export type XStyleWithout<+T: { +[string]: mixed }> = XStyle<
-  $ReadOnly<$Diff<NestedCSSPropTypes, $Exact<T>>>,
+
+export type XStyleWithout<+T: { +[_K in keyof NestedCSSPropTypes]?: mixed }> = XStyle<
+  $ReadOnly<Omit<NestedCSSPropTypes, $Keys<T>>>,
 >;
 
 export type Keyframes = $ReadOnly<{ [name: string]: CSSProperties, ... }>;
