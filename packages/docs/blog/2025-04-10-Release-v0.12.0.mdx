@@ -16,38 +16,41 @@ StyleX v0.12.0 introduces performance optimizations, several bug fixes, a new li
 
 ## Performance
 
-### Hashing Style Object Keys
+### Object key minification
 
-We added a new config option to minify keys in compiled style objects to reduce overall code size. To enable, turn on `enableMinifyKeys` within your project's `.babelrc` file.
+The keys of compiled style objects are now minified to reduce overall code size.
 
-### `stylex.createTheme` object caching
+### Faster theme compilation
 
-We've made significant improvements to compilation time by caching evaluated theme objects (up to 3000x faster in certain object patterns!).
+Compiling `createTheme` calls is now several orders of magnitude faster. This was achieved by caching evaluated theme objects.
 
 ## ESLint improvements
 
 ### New `no-legacy-media-queries` rule
 
-A new rule has been added to the StyleX ESLint plugin to flag deprecated media query and pseudoclass syntax. This rule flags usage of the legacy media query and pseudoclass syntax that wraps multiple property values inside a single @-rule or pseudoclass block. This pattern is deprecated and should be replaced with the updated syntax [here](https://stylexjs.com/docs/learn/styling-ui/defining-styles/#media-queries-and-other--rules). (Thanks [vincentriemer](https://github.com/vincentriemer)!)
+A new rule has been added to the StyleX ESLint plugin to flag uses of the deprecated media query and pseudo-class syntax. This rule flags usage of the legacy media query and pseudo-class syntax that wraps multiple property values inside a single `@`-rule or pseudo-class block. This pattern is deprecated and should be replaced with the updated syntax [here](https://stylexjs.com/docs/learn/styling-ui/defining-styles/#media-queries-and-other--rules). (Thanks [vincentriemer](https://github.com/vincentriemer)!)
 
 ## Bug fixes
 
-### Pseudo-elements in dynamic styles
+### Styling pseudo-elements in dynamic styles
 
-Fixed a bug where styling on pseudo-elements was not set correctly in dynamic styles.
+Dynamic styles can now be used to style pseudo-elements. Previously, the generated CSS variables could not be inherited by pseudo-elements.
 
-### Disallowed Spreads in `stylex.create`
+### Disallow object spreads in `create`
 
-We’ve disallowed object spreading in `stylex.create` calls for planned runtime optimizations around style merging.
+Object spreading in `create` calls is now disallowed by the compiler, as this breaks runtime caching of style merging.
 
 ## Deprecations
 
-We're deprecating the following packages because maintaining high-quality support across multiple build tools isn't sustainable. Instead, we're focusing on the core StyleX toolchain and moving to community maintained plugins to provide and facilitate integrations.
+The following bundler integration packages have been deprecated. We're focusing development on the core StyleX toolchain, and providing consistent tools for use across different bundlers. We recommend using the [`@stylexjs/postcss-plugin`](https://stylexjs.com/docs/api/configuration/postcss-plugin/).
 
-- `@stylexjs/dev-runtime`
 - `@stylexjs/esbuild-plugin`
 - `@stylexjs/nextjs-plugin`
-- `@stylexjs/open-props` (replacement available at [`stylextras/open-props`](https://github.com/nmn/stylextras/tree/main/packages/open-props))
 - `@stylexjs/webpack-plugin`
 
-We recommend using the [`@stylexjs/postcss-plugin`](https://stylexjs.com/docs/api/configuration/postcss-plugin/) or the [`@stylexjs/rollup-plugin`](https://github.com/facebook/stylex/tree/main/packages/rollup-plugin) for integration instead.
+The [`@stylexjs/rollup-plugin`](https://github.com/facebook/stylex/tree/main/packages/rollup-plugin) remains, but may be generalized into an `unplugin` package to extend this option to other bundlers.
+
+The following other packages have also been deprecated.
+
+- `@stylexjs/dev-runtime`
+- `@stylexjs/open-props` (replacement available at [`stylextras/open-props`](https://github.com/nmn/stylextras/tree/main/packages/open-props))
