@@ -9,8 +9,8 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {
@@ -48,6 +48,7 @@ const defaultImportSource = '@stylexjs/stylex';
 const defaultImportMap = {
   create: 'stylex.create',
   createTheme: 'stylex.createTheme',
+  defineConsts: 'stylex.defineConsts',
   defineVars: 'stylex.defineVars',
   firstThatWorks: 'stylex.firstThatWorks',
   keyframes: 'stylex.keyframes',
@@ -66,16 +67,26 @@ function createStylesFixture({
   const importSource = _importSource || defaultImportSource;
   const importMap = _importMap || defaultImportMap;
 
-  const { create, createTheme, defineVars, firstThatWorks, keyframes, props } =
-    importMap;
+  const {
+    create,
+    createTheme,
+    defineConsts,
+    defineVars,
+    firstThatWorks,
+    keyframes,
+    props,
+  } = importMap;
 
   const from = importSource?.from || importSource;
 
-  // Generate the defineVars output first.
+  // Generate the defineConsts and defineVars output first.
   // This is inlined into the fixture so that createTheme works.
-  const defineVarsOutput = transform(
+  const defineConstsAndVarsOutput = transform(
     `
-    import ${importText} from "${from}";
+    import ${importText} from '${from}';
+    export const constants = ${defineConsts}({
+      mediaQuery: '@media (min-width: 768px)',
+    });
     export const vars = ${defineVars}({
       bar: 'left'
     });
@@ -87,7 +98,7 @@ function createStylesFixture({
   ).code;
 
   return `
-    ${defineVarsOutput}
+    ${defineConstsAndVarsOutput}
     const styles = ${create}({
       root: {
         animationName: ${keyframes}({
@@ -98,7 +109,10 @@ function createStylesFixture({
             backgroundColor: 'orange'
           },
         }),
-        color: 'red',
+        color: {
+          default: 'red',
+          [constants.mediaQuery]: 'blue'
+        },
         position: ${firstThatWorks}('sticky', 'fixed')
       }
     });
@@ -188,7 +202,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import * as stylex from "@stylexjs/stylex";
+        "import * as stylex from '@stylexjs/stylex';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -196,7 +215,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }
@@ -208,6 +227,60 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.props(styles.root, theme);"
       `);
 
+      expect(expectedImportTestMetadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xjx6k13-B",
+              {
+                "ltr": "@keyframes xjx6k13-B{from{background-color:yellow;}to{background-color:orange;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+            [
+              "x1qar0u3",
+              {
+                "ltr": ".x1qar0u3{animation-name:xjx6k13-B}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "x1e2nbdu",
+              {
+                "ltr": ".x1e2nbdu{color:red}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "x14693no",
+              {
+                "ltr": "@media (min-width: 768px){.x14693no.x14693no{color:blue}}",
+                "rtl": null,
+              },
+              3200,
+            ],
+            [
+              "x15oojuh",
+              {
+                "ltr": ".x15oojuh{position:fixed;position:sticky}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "xfnndu4",
+              {
+                "ltr": ".xfnndu4, .xfnndu4:root{--x1hi1hmf:green;}",
+                "rtl": null,
+              },
+              0.5,
+            ],
+          ],
+        }
+      `);
       expect(metadata).toEqual(expectedImportTestMetadata);
     });
 
@@ -217,6 +290,7 @@ describe('@stylexjs/babel-plugin', () => {
         importMap: {
           create: 'foo.create',
           createTheme: 'foo.createTheme',
+          defineConsts: 'foo.defineConsts',
           defineVars: 'foo.defineVars',
           firstThatWorks: 'foo.firstThatWorks',
           keyframes: 'foo.keyframes',
@@ -227,7 +301,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import * as foo from "@stylexjs/stylex";
+        "import * as foo from '@stylexjs/stylex';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -235,7 +314,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }
@@ -253,10 +332,11 @@ describe('@stylexjs/babel-plugin', () => {
     test('import: named', () => {
       const fixture = createStylesFixture({
         importText:
-          '{create, createTheme, defineVars, firstThatWorks, keyframes, props}',
+          '{create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, props}',
         importMap: {
           create: 'create',
           createTheme: 'createTheme',
+          defineConsts: 'defineConsts',
           defineVars: 'defineVars',
           firstThatWorks: 'firstThatWorks',
           keyframes: 'keyframes',
@@ -267,7 +347,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { create, createTheme, defineVars, firstThatWorks, keyframes, props } from "@stylexjs/stylex";
+        "import { create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, props } from '@stylexjs/stylex';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -275,7 +360,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }
@@ -295,6 +380,7 @@ describe('@stylexjs/babel-plugin', () => {
         importText: `{
           create as _create,
           createTheme as _createTheme,
+          defineConsts as _defineConsts,
           defineVars as _defineVars,
           firstThatWorks as _firstThatWorks,
           keyframes as _keyframes,
@@ -303,6 +389,7 @@ describe('@stylexjs/babel-plugin', () => {
         importMap: {
           create: '_create',
           createTheme: '_createTheme',
+          defineConsts: '_defineConsts',
           defineVars: '_defineVars',
           firstThatWorks: '_firstThatWorks',
           keyframes: '_keyframes',
@@ -313,7 +400,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { create as _create, createTheme as _createTheme, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, props as _props } from "@stylexjs/stylex";
+        "import { create as _create, createTheme as _createTheme, defineConsts as _defineConsts, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, props as _props } from '@stylexjs/stylex';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -321,7 +413,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }
@@ -347,7 +439,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture, options);
 
       expect(code).toMatchInlineSnapshot(`
-        "import * as stylex from "foo-bar";
+        "import * as stylex from 'foo-bar';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -355,7 +452,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }
@@ -378,6 +475,7 @@ describe('@stylexjs/babel-plugin', () => {
         importMap: {
           create: 'css.create',
           createTheme: 'css.createTheme',
+          defineConsts: 'css.defineConsts',
           defineVars: 'css.defineVars',
           firstThatWorks: 'css.firstThatWorks',
           keyframes: 'css.keyframes',
@@ -391,7 +489,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture, options);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { css, html } from "react-strict-dom";
+        "import { css, html } from 'react-strict-dom';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -399,7 +502,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }
@@ -425,7 +528,12 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import stylex from "stylex";
+        "import stylex from 'stylex';
+        export const constants = {
+          mediaQuery: "@media (min-width: 768px)",
+          __constName__: "vars.stylex.js//constants",
+          __constHash__: "05fd080c"
+        };
         export const vars = {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
@@ -433,7 +541,7 @@ describe('@stylexjs/babel-plugin', () => {
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
-            kMwMTN: "x1e2nbdu",
+            kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
           }

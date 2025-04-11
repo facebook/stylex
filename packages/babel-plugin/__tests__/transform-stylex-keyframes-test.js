@@ -9,8 +9,8 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {
@@ -58,24 +58,6 @@ describe('@stylexjs/babel-plugin', () => {
           ],
         }
       `);
-    });
-
-    test('local variable keyframes object', () => {
-      const callTransform = () =>
-        transform(`
-        import * as stylex from '@stylexjs/stylex';
-        const keyframes = {
-          from: {
-            color: 'red',
-          },
-          to: {
-            color: 'blue',
-          }
-        };
-        export const name = stylex.keyframes(keyframes);
-      `);
-
-      expect(callTransform).toThrow();
     });
 
     test('local variables used in keyframes object', () => {

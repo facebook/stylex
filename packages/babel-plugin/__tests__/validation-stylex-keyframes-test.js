@@ -19,16 +19,30 @@ function transform(source: string, opts: any = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [[stylexPlugin, opts]],
+    plugins: [[stylexPlugin, { ...opts }]],
   });
 }
 
 describe('@stylexjs/babel-plugin', () => {
-  /**
-   * stylex.keyframes
-   */
-
   describe('[validation] stylex.keyframes()', () => {
+    test('local variable keyframes object', () => {
+      const callTransform = () =>
+        transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const keyframes = {
+          from: {
+            color: 'red',
+          },
+          to: {
+            color: 'blue',
+          }
+        };
+        export const name = stylex.keyframes(keyframes);
+      `);
+
+      expect(callTransform).toThrow();
+    });
+
     test('only argument must be an object of objects', () => {
       // TODO: This needs a different message. It mentions stylex.create right now.
       expect(() => {
@@ -37,6 +51,7 @@ describe('@stylexjs/babel-plugin', () => {
           const name = stylex.keyframes(null);
         `);
       }).toThrow(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
@@ -45,15 +60,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `);
       }).toThrow(messages.NON_OBJECT_KEYFRAME);
-      expect(() => {
-        transform(`
-          import stylex from 'stylex';
-          const name = stylex.keyframes({
-            from: {},
-            to: {},
-          });
-        `);
-      }).not.toThrow();
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
@@ -64,6 +71,16 @@ describe('@stylexjs/babel-plugin', () => {
             '50%': {
               opacity: 0.5
             },
+          });
+        `);
+      }).not.toThrow();
+
+      expect(() => {
+        transform(`
+          import stylex from 'stylex';
+          const name = stylex.keyframes({
+            from: {},
+            to: {},
           });
         `);
       }).not.toThrow();

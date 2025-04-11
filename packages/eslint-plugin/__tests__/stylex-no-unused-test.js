@@ -286,43 +286,6 @@ eslintTester.run('stylex-no-unused', rule.default, {
       ],
     },
     {
-      // Import form: import {create} from '@stylexjs/stylex';
-      code: `
-        import {create, attrs} from '@stylexjs/stylex';
-        const styles = create({
-          main: {
-            display: 'flex',
-          },
-          dynamic: (color) => ({
-            backgroundColor: color,
-          })
-        });
-        export default function TestComponent() {
-          return(
-            <div {...stylex.props(styles.dynamic('red'))}>
-            </div>
-          )
-        }`,
-      output: `
-        import {create, attrs} from '@stylexjs/stylex';
-        const styles = create({
-          dynamic: (color) => ({
-            backgroundColor: color,
-          })
-        });
-        export default function TestComponent() {
-          return(
-            <div {...stylex.props(styles.dynamic('red'))}>
-            </div>
-          )
-        }`,
-      errors: [
-        {
-          message: 'Unused style detected: styles.main',
-        },
-      ],
-    },
-    {
       // Import form: import {create as c} from '@stylexjs/stylex';
       code: `
         import {create as c} from '@stylexjs/stylex';

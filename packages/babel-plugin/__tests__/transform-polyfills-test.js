@@ -9,8 +9,8 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {
