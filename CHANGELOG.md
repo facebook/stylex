@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.12.0 (TBD, 2025)
+## 0.12.0 (Apr 10, 2025)
 
 ### New features
 
@@ -8,6 +8,7 @@
 * Added lint rule to flag legacy media query/pseudoclass syntax.
 
 ### Fixes
+* Fix pseudo-elements bug in dynamic styles.
 * Performance improvements to `stylex.createTheme` compilation by caching object evaluation.
 * Disallowed spreading in `stylex.create` calls.
 
