@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "benchmarks",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "scripts": {
     "perf": "node ./perf/run.js",
     "size": "NODE_ENV=production rollup --config ./size/rollup.config.mjs && node ./size/run.js",
@@ -9,8 +9,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/babel-plugin": "0.11.1",
-    "@stylexjs/rollup-plugin": "0.11.1",
+    "@stylexjs/babel-plugin": "0.12.0",
+    "@stylexjs/rollup-plugin": "0.12.0",
     "benchmark": "^2.1.4",
     "brotli-size": "^4.0.0",
     "clean-css": "^5.3.3",
