@@ -11,8 +11,8 @@ jest.autoMockOff();
 
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
-const { evaluate } = require('../src/utils/evaluate-path');
-const { default: StateManager } = require('../src/utils/state-manager');
+const { evaluate } = require('../evaluate-path');
+const { default: StateManager } = require('../state-manager');
 
 function evaluateFirstStatement(code, functions) {
   const ast = parse(code);

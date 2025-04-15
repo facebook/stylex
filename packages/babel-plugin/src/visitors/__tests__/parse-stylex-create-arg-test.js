@@ -11,10 +11,8 @@ jest.autoMockOff();
 
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
-const {
-  evaluateStyleXCreateArg,
-} = require('../src/visitors/stylex-create/parse-stylex-create-arg');
-const { default: StateManager } = require('../src/utils/state-manager');
+const { evaluateStyleXCreateArg } = require('../parse-stylex-create-arg');
+const { default: StateManager } = require('../../utils/state-manager');
 
 const { isNode } = require('@babel/types');
 
@@ -74,6 +72,7 @@ describe('custom path evaluation works as expected', () => {
     expect(result.confident).toBe(true);
     expect(result.value).toEqual({});
   });
+
   test('Evaluates Static Style Object', () => {
     const result = evaluateFirstStatement(`
       const x = {
@@ -94,6 +93,7 @@ describe('custom path evaluation works as expected', () => {
       },
     });
   });
+
   test('Evaluates object with function styles (identifier)', () => {
     const result = evaluateFirstStatement(`
       const x = {

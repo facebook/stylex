@@ -338,8 +338,8 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       }).toThrowErrorMatchingInlineSnapshot(`
         "unknown file: Could not resolve the path to the imported file.
-        Please ensure that the theme file has a .stylex.js or .stylex.ts file extension and follows the
-        rules for defining variariables: 
+        Please ensure that the theme file has a .stylex.js or .stylex.ts extension and follows the
+        rules for defining variables:
 
         https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-variables
 

@@ -10,8 +10,8 @@
 /* eslint-disable no-unused-vars */
 import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
-import StateManager from '../../utils/state-manager';
-import { evaluate, type FunctionConfig } from '../../utils/evaluate-path';
+import StateManager from '../utils/state-manager';
+import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
 import { create, utils } from '@stylexjs/shared';
 import { messages } from '@stylexjs/shared';
 import {
