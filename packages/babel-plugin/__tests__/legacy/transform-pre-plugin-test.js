@@ -11,7 +11,7 @@ jest.autoMockOff();
 
 import * as t from '@babel/types';
 const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+const stylexPlugin = require('../../src/index');
 
 // A simple babel plugin that looks for inline() calls
 // hoists them out to stylex.create calls
