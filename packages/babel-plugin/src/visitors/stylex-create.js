@@ -9,23 +9,23 @@
 
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
-import type { FunctionConfig } from '../../utils/evaluate-path';
-import StateManager from '../../utils/state-manager';
+import type { FunctionConfig } from '../utils/evaluate-path';
+import StateManager from '../utils/state-manager';
 import {
   create as stylexCreate,
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   type InjectableStyle,
 } from '@stylexjs/shared';
-import { addSourceMapData } from '../../utils/add-sourcemap-data';
+import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
   convertToTestStyles,
   injectDevClassNames,
-} from '../../utils/dev-classname';
+} from '../utils/dev-classname';
 import {
   convertObjectToAST,
   removeObjectsWithSpreads,
-} from '../../utils/js-to-ast';
+} from '../utils/js-to-ast';
 import { messages } from '@stylexjs/shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '@stylexjs/shared/lib/preprocess-rules';
