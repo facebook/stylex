@@ -18,6 +18,7 @@ describe('Test CSS Type: @media queries', () => {
         "queries": {
           "key": "screen",
           "not": false,
+          "only": false,
           "type": "media-keyword",
         },
       }
@@ -32,6 +33,7 @@ describe('Test CSS Type: @media queries', () => {
         "queries": {
           "key": "print",
           "not": false,
+          "only": false,
           "type": "media-keyword",
         },
       }
@@ -100,6 +102,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "all",
               "not": true,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -123,6 +126,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "screen",
               "not": false,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -181,6 +185,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "screen",
               "not": false,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -718,6 +723,7 @@ describe('Test CSS Type: @media queries', () => {
                 {
                   "key": "screen",
                   "not": false,
+                  "only": false,
                   "type": "media-keyword",
                 },
                 {
@@ -750,6 +756,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "all",
               "not": true,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -1028,11 +1035,6 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
-  test.skip('@media (width: calc(100% - 20px))', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (width: calc(100% - 20px))'),
-    ).toMatchInlineSnapshot();
-  });
 
   test.skip('@media (min-width: calc(300px + 5em))', () => {
     expect(
@@ -1256,6 +1258,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "all",
               "not": true,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -2051,4 +2054,38 @@ describe('Test CSS Type: @media queries', () => {
     `);
     expect(mediaQuery.toString()).toEqual('@media (min-width: 400px)');
   });
+});
+
+test('@media only screen', () => {
+  const query = '@media only screen';
+  const parsed = MediaQuery.parser.parseToEnd(query);
+  expect(parsed.queries).toMatchInlineSnapshot(`
+    {
+      "key": "screen",
+      "not": false,
+      "only": true,
+      "type": "media-keyword",
+    }
+  `);
+  expect(parsed.toString()).toBe('@media only screen');
+});
+
+test('@media only print and (color)', () => {
+  const query = '@media only print and (color)';
+  const parsed = MediaQuery.parser.parseToEnd(query);
+  expect(parsed.toString()).toBe('@media only print and (color)');
+});
+
+test('@media not screen', () => {
+  const query = '@media not screen';
+  const parsed = MediaQuery.parser.parseToEnd(query);
+  expect(parsed.queries).toMatchInlineSnapshot(`
+    {
+      "key": "screen",
+      "not": true,
+      "only": false,
+      "type": "media-keyword",
+    }
+  `);
+  expect(parsed.toString()).toBe('@media not screen');
 });
