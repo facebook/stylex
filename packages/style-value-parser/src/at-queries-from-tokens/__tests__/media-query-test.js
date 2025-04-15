@@ -1035,17 +1035,32 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
-
-  test.skip('@media (min-width: calc(300px + 5em))', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (min-width: calc(300px + 5em))'),
-    ).toMatchInlineSnapshot();
+  test('@media (min-width: calc(300px + 5em))', () => {
+    const query = '@media (min-width: calc(300px + 5em))';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "key": "min-width",
+          "type": "pair",
+          "value": "calc(300px + 5em)",
+        },
+      }
+    `);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
-  test.skip('@media (max-height: calc(100vh - 50px))', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (max-height: calc(100vh - 50px))'),
-    ).toMatchInlineSnapshot();
+  test('@media (max-height: calc(100vh - 50px))', () => {
+    const query = '@media (max-height: calc(100vh - 50px))';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "key": "max-height",
+          "type": "pair",
+          "value": "calc(100vh - 50px)",
+        },
+      }
+    `);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
   test('@media (aspect-ratio: 16 / 9)', () => {
@@ -2054,38 +2069,38 @@ describe('Test CSS Type: @media queries', () => {
     `);
     expect(mediaQuery.toString()).toEqual('@media (min-width: 400px)');
   });
-});
 
-test('@media only screen', () => {
-  const query = '@media only screen';
-  const parsed = MediaQuery.parser.parseToEnd(query);
-  expect(parsed.queries).toMatchInlineSnapshot(`
-    {
-      "key": "screen",
-      "not": false,
-      "only": true,
-      "type": "media-keyword",
-    }
-  `);
-  expect(parsed.toString()).toBe('@media only screen');
-});
+  test('@media only screen', () => {
+    const query = '@media only screen';
+    const parsed = MediaQuery.parser.parseToEnd(query);
+    expect(parsed.queries).toMatchInlineSnapshot(`
+      {
+        "key": "screen",
+        "not": false,
+        "only": true,
+        "type": "media-keyword",
+      }
+    `);
+    expect(parsed.toString()).toBe('@media only screen');
+  });
 
-test('@media only print and (color)', () => {
-  const query = '@media only print and (color)';
-  const parsed = MediaQuery.parser.parseToEnd(query);
-  expect(parsed.toString()).toBe('@media only print and (color)');
-});
+  test('@media only print and (color)', () => {
+    const query = '@media only print and (color)';
+    const parsed = MediaQuery.parser.parseToEnd(query);
+    expect(parsed.toString()).toBe('@media only print and (color)');
+  });
 
-test('@media not screen', () => {
-  const query = '@media not screen';
-  const parsed = MediaQuery.parser.parseToEnd(query);
-  expect(parsed.queries).toMatchInlineSnapshot(`
-    {
-      "key": "screen",
-      "not": true,
-      "only": false,
-      "type": "media-keyword",
-    }
-  `);
-  expect(parsed.toString()).toBe('@media not screen');
+  test('@media not screen', () => {
+    const query = '@media not screen';
+    const parsed = MediaQuery.parser.parseToEnd(query);
+    expect(parsed.queries).toMatchInlineSnapshot(`
+      {
+        "key": "screen",
+        "not": true,
+        "only": false,
+        "type": "media-keyword",
+      }
+    `);
+    expect(parsed.toString()).toBe('@media not screen');
+  });
 });
