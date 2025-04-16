@@ -166,55 +166,57 @@ const operationsParser: TokenParser<CalcValue> = TokenParser.sequence(
     return splitByMultiplicationOrDivision(valuesAndOperators);
   });
 
-  export class Calc {
-    +value: CalcValue;
-    constructor(value: this['value']) {
-      this.value = value;
+export class Calc {
+  +value: CalcValue;
+  constructor(value: this['value']) {
+    this.value = value;
+  }
+  toString(): string {
+    return `calc(${calcValueToString(this.value)})`;
+  }
+  static get parser(): TokenParser<Calc> {
+    return TokenParser.sequence(
+      TokenParser.tokens.Function.map((func) => func[4].value).where(
+        (func) => func === 'calc',
+      ),
+      TokenParser.oneOf(operationsParser, valueParser),
+      TokenParser.tokens.CloseParen,
+    )
+      .separatedBy(TokenParser.tokens.Whitespace.optional)
+      .map(([_, value, _closeParen]) => new Calc(value));
+  }
+}
+
+function calcValueToString(value: CalcValue): string {
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    if (
+      value.type === '+' ||
+      value.type === '-' ||
+      value.type === '*' ||
+      value.type === '/'
+    ) {
+      return `${calcValueToString(value.left)} ${value.type} ${calcValueToString(value.right)}`;
     }
-    toString(): string {
-      return `calc(${calcValueToString(this.value)})`;
+
+    if ('value' in value && 'unit' in value && typeof value.unit === 'string') {
+      return `${value.value}${value.unit}`;
     }
-    static get parser(): TokenParser<Calc> {
-      return TokenParser.sequence(
-        TokenParser.tokens.Function.map((func) => func[4].value).where(
-          (func) => func === 'calc',
-        ),
-        TokenParser.oneOf(operationsParser, valueParser),
-        TokenParser.tokens.CloseParen,
-      )
-        .separatedBy(TokenParser.tokens.Whitespace.optional)
-        .map(([_, value, _closeParen]) => new Calc(value));
+
+    if (typeof value.toString === 'function') {
+      const result = value.toString();
+      if (result !== '[object Object]') {
+        return result;
+      }
     }
   }
 
-  function calcValueToString(value: CalcValue): string {
-    if (typeof value === 'number') {
-      return value.toString();
-    }
-    if (typeof value === 'string') {
-      return value;
-    }
-    if (typeof value === 'object' && value !== null) {
-      if ('type' in value) {
-        switch (value.type) {
-          case '+':
-          case '-':
-          case '*':
-          case '/':
-            return `${calcValueToString(value.left)} ${value.type} ${calcValueToString(value.right)}`;
-          default:
-            break;
-        }
-      }
-      if ('value' in value && 'unit' in value) {
-        return `${value.value}${value.unit}`;
-      }
-      if (typeof value.toString === 'function') {
-        const result = value.toString();
-        if (result !== '[object Object]') {
-          return result;
-        }
-      }
-    }
-    return '';
-  }
+  return '';
+}
