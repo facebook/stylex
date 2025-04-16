@@ -71,3 +71,5 @@ export const NON_CONTIGUOUS_VARS =
   'All variables passed to `stylex.firstThatWorks` must be contiguous.';
 export const NO_OBJECT_SPREADS =
   'Object spreads are not allowed in stylex.create call.';
+export const INVALID_CONST_KEY =
+  'Keys in defineConsts() cannot start with "--".';
