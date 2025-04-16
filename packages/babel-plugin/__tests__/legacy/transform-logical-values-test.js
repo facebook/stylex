@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+const stylexPlugin = require('../../src/index');
 
 function transform(source, opts = {}) {
   return transformSync(source, {
@@ -125,74 +125,6 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
         _inject2(".x1yc453h{text-align:start}", 3000);
         const classnames = "x1yc453h";"
-      `);
-    });
-
-    /**
-     * Non-standard values
-     */
-
-    test('[non-standard] value "end" (aka "inlineEnd") for "clear" property', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { clear: 'end' } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xodj72a{clear:right}", 3000, ".xodj72a{clear:left}");
-        const classnames = "xodj72a";"
-      `);
-    });
-
-    test('[non-standard] value "start" (aka "inlineStart") for "clear" property', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { clear: 'start' } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x390i0x{clear:left}", 3000, ".x390i0x{clear:right}");
-        const classnames = "x390i0x";"
-      `);
-    });
-
-    test('[non-standard] value "end" (aka "inlineEnd") for "float" property', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { float: 'end' } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x1guec7k{float:right}", 3000, ".x1guec7k{float:left}");
-        const classnames = "x1guec7k";"
-      `);
-    });
-
-    test('[non-standard] value "start" (aka "inlineStart") for "float" property', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { float: 'start' } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xrbpyxo{float:left}", 3000, ".xrbpyxo{float:right}");
-        const classnames = "xrbpyxo";"
       `);
     });
 

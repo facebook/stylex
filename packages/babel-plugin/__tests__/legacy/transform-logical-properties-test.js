@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+const stylexPlugin = require('../../src/index');
 
 function transform(source, opts = {}) {
   return transformSync(source, {
@@ -324,22 +324,6 @@ describe('@stylexjs/babel-plugin', () => {
 
     /* Position offsets */
 
-    test('"insetBlockStart"', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { insetBlockStart: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x13vifvy{top:0}", 4000);
-        const classnames = "x13vifvy";"
-      `);
-    });
-
     test('"insetBlock"', () => {
       expect(
         transform(`
@@ -629,170 +613,6 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
         _inject2(".x1c1uobl{padding-inline-start:0}", 3000);
         const classnames = "x1c1uobl";"
-      `);
-    });
-
-    /**
-     * Non-standard properties
-     */
-
-    test('[non-standard] "end" (aka "insetInlineEnd")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { end: 5 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xceh6e4{inset-inline-end:5px}", 3000);
-        const classnames = "xceh6e4";"
-      `);
-    });
-
-    test('[non-standard] "marginEnd" (aka "marginInlineEnd")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { marginEnd: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x14z9mp{margin-inline-end:0}", 3000);
-        const classnames = "x14z9mp";"
-      `);
-    });
-
-    test('[non-standard] "marginHorizontal" (aka "marginInline")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { marginHorizontal: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xrxpjvj{margin-inline:0}", 2000);
-        const classnames = "xrxpjvj";"
-      `);
-    });
-
-    test('[non-standard] "marginStart" (aka "marginInlineStart")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { marginStart: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x1lziwak{margin-inline-start:0}", 3000);
-        const classnames = "x1lziwak";"
-      `);
-    });
-
-    test('[non-standard] "marginVertical" (aka "marginBlock")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { marginVertical: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x10im51j{margin-block:0}", 2000);
-        const classnames = "x10im51j";"
-      `);
-    });
-
-    test('[non-standard] "paddingEnd" (aka "paddingInlineEnd")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { paddingEnd: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xyri2b{padding-inline-end:0}", 3000);
-        const classnames = "xyri2b";"
-      `);
-    });
-
-    test('[non-standard] "paddingHorizontal" (aka "paddingInline")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { paddingHorizontal: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xnjsko4{padding-inline:0}", 2000);
-        const classnames = "xnjsko4";"
-      `);
-    });
-
-    test('[non-standard] "paddingStart" (aka "paddingInlineStart")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { paddingStart: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x1c1uobl{padding-inline-start:0}", 3000);
-        const classnames = "x1c1uobl";"
-      `);
-    });
-
-    test('[non-standard] "paddingVertical" (aka "paddingBlock")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { paddingVertical: 0 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".xt970qd{padding-block:0}", 2000);
-        const classnames = "xt970qd";"
-      `);
-    });
-
-    test('[non-standard] "start" (aka "insetInlineStart")', () => {
-      expect(
-        transform(`
-          import stylex from 'stylex';
-          const styles = stylex.create({ x: { start: 5 } });
-          const classnames = stylex(styles.x);
-        `),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2(".x1fb7gu6{inset-inline-start:5px}", 3000);
-        const classnames = "x1fb7gu6";"
       `);
     });
 
