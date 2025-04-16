@@ -21,6 +21,7 @@ import {
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
 import transformStyleXDefineVars from './visitors/stylex-define-vars';
+import transformStyleXDefineConsts from './visitors/stylex-define-consts';
 import transformStyleXCreateTheme from './visitors/stylex-create-theme';
 import transformStyleXKeyframes from './visitors/stylex-keyframes';
 import transformStylexCall, {
@@ -287,6 +288,7 @@ function styleXTransform(): PluginObj<> {
           transformStyleXKeyframes(path.parentPath, state);
         }
         transformStyleXDefineVars(path, state);
+        transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
         transformStyleXCreate(path, state);
       },
@@ -355,7 +357,7 @@ function processStylexRules(
     },
   );
 
-  let lastKPri = -1; //Math.floor(sortedRules[0][2] / 1000);
+  let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
     const [_key, _value, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
