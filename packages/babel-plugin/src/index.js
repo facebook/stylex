@@ -29,9 +29,6 @@ import transformStylexCall, {
 } from './visitors/stylex-merge';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
-import transformStylexAttrs, {
-  skipStylexAttrsChildren,
-} from './visitors/stylex-attrs';
 
 const NAME = 'stylex';
 
@@ -152,14 +149,12 @@ function styleXTransform(): PluginObj<> {
               // should be kept.
               skipStylexMergeChildren(path, state);
               skipStylexPropsChildren(path, state);
-              skipStylexAttrsChildren(path, state);
             },
           });
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
               transformStylexProps(path, state);
-              transformStylexAttrs(path, state);
             },
           });
 

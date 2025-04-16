@@ -47,37 +47,6 @@ const errorForFn = (name: string) =>
   );
 const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
 
-export function attrs(
-  ...styles: $ReadOnlyArray<
-    StyleXArray<
-      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
-    >,
-  >
-): $ReadOnly<{
-  class?: string,
-  'data-style-src'?: string,
-  style?: string,
-}> {
-  const { className, 'data-style-src': dataStyleSrc, style } = props(...styles);
-  const result: {
-    class?: string,
-    'data-style-src'?: string,
-    style?: string,
-  } = {};
-  if (className != null && className !== '') {
-    result.class = className;
-  }
-  if (style != null && Object.keys(style).length > 0) {
-    result.style = Object.keys(style)
-      .map((key) => `${key}:${style[key]};`)
-      .join('');
-  }
-  if (dataStyleSrc != null && dataStyleSrc !== '') {
-    result['data-style-src'] = dataStyleSrc;
-  }
-  return result;
-}
-
 export const create: StyleX$Create = function stylexCreate<
   S: { +[string]: mixed },
 >(_styles: S): MapNamespaces<S> {
@@ -208,17 +177,6 @@ export const types = {
 
 type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
-  attrs: (
-    ...styles: $ReadOnlyArray<
-      StyleXArray<
-        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
-      >,
-    >
-  ) => $ReadOnly<{
-    class?: string,
-    'data-style-src'?: string,
-    style?: string,
-  }>,
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineVars: StyleX$DefineVars,
@@ -249,7 +207,7 @@ function _legacyMerge(
   const [className] = styleq(styles);
   return className;
 }
-_legacyMerge.attrs = attrs;
+
 _legacyMerge.create = create;
 _legacyMerge.createTheme = createTheme;
 _legacyMerge.defineVars = defineVars;
