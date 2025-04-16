@@ -25,7 +25,7 @@ export type InjectableStyle = {
 };
 
 export type InjectableConstStyle = {
-  +priority?: number,
+  +priority: number,
   +ltr: string,
   +rtl: null | string,
   +constKey: string,
