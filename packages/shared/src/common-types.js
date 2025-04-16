@@ -24,6 +24,14 @@ export type InjectableStyle = {
   +rtl: null | string,
 };
 
+export type InjectableConstStyle = {
+  +priority?: number,
+  +ltr: string,
+  +rtl: null | string,
+  +constKey: string,
+  +constVal: string | number,
+};
+
 export type StyleRule = [string, string, InjectableStyle];
 
 export type CompiledStyles = $ReadOnly<{

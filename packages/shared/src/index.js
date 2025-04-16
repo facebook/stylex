@@ -22,6 +22,7 @@ export type {
 
 import styleXCreateSet from './stylex-create';
 import styleXDefineVars from './stylex-define-vars';
+import styleXDefineConsts from './stylex-define-consts';
 import styleXCreateTheme from './stylex-create-theme';
 import stylexKeyframes from './stylex-keyframes';
 import stylexFirstThatWorks from './stylex-first-that-works';
@@ -44,6 +45,7 @@ import type {
 
 export const create: typeof styleXCreateSet = styleXCreateSet;
 export const defineVars: typeof styleXDefineVars = styleXDefineVars;
+export const defineConsts: typeof styleXDefineConsts = styleXDefineConsts;
 export const createTheme: typeof styleXCreateTheme = styleXCreateTheme;
 export const keyframes: typeof stylexKeyframes = stylexKeyframes;
 export const utils: {
