@@ -14,10 +14,8 @@ import * as messages from '../src/messages';
 const themeName = 'TestTheme.stylex.js//buttonTheme';
 const classNamePrefix = 'x';
 
-function getConstHash(key: string, value: string | number): string {
-  return (
-    classNamePrefix + createHash(`${themeName}.${key}`)
-  );
+function getConstHash(key: string, _value: string | number): string {
+  return classNamePrefix + createHash(`${themeName}.${key}`);
 }
 
 describe('styleXDefineConsts', () => {

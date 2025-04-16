@@ -328,7 +328,16 @@ function isExported(path: null | NodePath<t.Node>): boolean {
  *
  * End-users can choose to not use this function and use their own logic instead.
  */
-export type Rule = [string, { ltr: string, rtl?: null | string }, number];
+export type Rule = [
+  string,
+  {
+    ltr: string,
+    rtl?: null | string,
+    constKey?: string,
+    constVal?: string | number,
+  },
+  number,
+];
 function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
@@ -337,10 +346,55 @@ function processStylexRules(
     return '';
   }
 
-  const sortedRules = rules.sort(
+  const constantRules = rules.filter(
+    ([, ruleObj]) => ruleObj?.constKey != null && ruleObj?.constVal != null,
+  );
+  const nonConstantRules = rules.filter(
+    ([, ruleObj]) => !(ruleObj?.constKey != null && ruleObj?.constVal != null),
+  );
+
+  const constsMap: Map<string, string | number> = new Map();
+  for (const [keyhash, ruleObj] of constantRules) {
+    // $FlowFixMe null check above
+    const constVal: string | number = ruleObj.constVal;
+    const constName = `var(--${keyhash})`;
+    constsMap.set(constName, constVal);
+  }
+
+  function resolveConstant(
+    value: string | number,
+    visited: Set<string> = new Set(),
+  ): string | number {
+    if (typeof value !== 'string') return value;
+    const regex = /var\((--[A-Za-z0-9_-]+)\)/g;
+    let result: string = value;
+    let match: RegExp$matchResult | null;
+    while ((match = regex.exec(result)) !== null) {
+      if (match == null) continue;
+      const ref = match[1];
+      if (visited.has(ref)) {
+        throw new Error(`circular reference detected for constant ${ref}`);
+      }
+      const refKey = `var(${ref})`;
+      const refValue = constsMap.get(refKey);
+      if (refValue == null) continue;
+      visited.add(ref);
+      const replacement = resolveConstant(refValue, visited);
+      result = result.replace(match[0], replacement.toString());
+      visited.delete(ref);
+      regex.lastIndex = 0;
+    }
+    return result;
+  }
+
+  for (const [key, value] of constsMap.entries()) {
+    constsMap.set(key, resolveConstant(value));
+  }
+
+  const sortedRules = nonConstantRules.sort(
     (
-      [_1, { ltr: rule1 }, firstPriority]: Rule,
-      [_2, { ltr: rule2 }, secondPriority]: Rule,
+      [, { ltr: rule1 }, firstPriority]: [string, any, number],
+      [, { ltr: rule2 }, secondPriority]: [string, any, number],
     ) => {
       const priorityComparison = firstPriority - secondPriority;
       if (priorityComparison !== 0) return priorityComparison;
@@ -359,12 +413,23 @@ function processStylexRules(
 
   let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
-    const [_key, _value, priority] = rule;
+    const [_key, styleObj, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
 
+    Object.keys(styleObj).forEach((dir) => {
+      let original = styleObj[dir];
+
+      for (const [varRef, constValue] of constsMap.entries()) {
+        if (typeof original === 'string') {
+          const replacement = String(constValue);
+          original = original.replaceAll(varRef, replacement);
+          styleObj[dir] = original;
+        }
+      }
+    });
+
     if (priorityLevel === lastKPri) {
-      const last = acc[acc.length - 1];
-      last.push(rule);
+      acc[acc.length - 1].push(rule);
       return acc;
     }
 
@@ -382,17 +447,18 @@ function processStylexRules(
   const collectedCSS = grouped
     .map((group, index) => {
       const collectedCSS = Array.from(
-        new Map(group.map(([a, b, _c]: Rule) => [a, b])).values(),
+        new Map(group.map(([a, b]) => [a, b])).values(),
       )
-        .flatMap(({ ltr, rtl }: any): Array<string> => {
+        .flatMap(({ ltr, rtl }) => {
           let ltrRule = ltr,
             rtlRule = rtl;
+
           if (!useLayers) {
             ltrRule = addSpecificityLevel(ltrRule, index);
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
 
-          return rtlRule != null
+          return rtlRule
             ? [
                 addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
                 addAncestorSelector(rtlRule, "html[dir='rtl']"),
