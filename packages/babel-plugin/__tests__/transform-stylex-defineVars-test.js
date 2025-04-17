@@ -9,25 +9,28 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
 
-const defaultOpts = {
-  debug: false,
-  unstable_moduleResolution: {
-    rootDir: '/stylex/packages/',
-    type: 'commonJS',
-  },
-};
-
-function transform(source, opts = defaultOpts) {
+function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {
     filename: opts.filename || '/stylex/packages/TestTheme.stylex.js',
     parserOpts: {
       flow: 'all',
     },
     babelrc: false,
-    plugins: [[stylexPlugin, { ...defaultOpts, ...opts }]],
+    plugins: [
+      [
+        stylexPlugin,
+        {
+          unstable_moduleResolution: {
+            rootDir: '/stylex/packages/',
+            type: 'commonJS',
+          },
+          ...opts,
+        },
+      ],
+    ],
   });
   return { code, metadata };
 }
@@ -584,11 +587,11 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import * as stylex from '@stylexjs/stylex';
-          _inject2(":root, .xm1nzai{--xjrzwe6:red;--x1ybzi8d:green;--x1o4mfbm:blue;}", 0);
+          _inject2(":root, .xm1nzai{--color-xjrzwe6:red;--nextColor-x1ybzi8d:green;--otherColor-x1o4mfbm:blue;}", 0);
           export const vars = {
-            color: "var(--xjrzwe6)",
-            nextColor: "var(--x1ybzi8d)",
-            otherColor: "var(--x1o4mfbm)",
+            color: "var(--color-xjrzwe6)",
+            nextColor: "var(--nextColor-x1ybzi8d)",
+            otherColor: "var(--otherColor-x1o4mfbm)",
             __themeName__: "xm1nzai"
           };"
         `);
@@ -599,7 +602,7 @@ describe('@stylexjs/babel-plugin', () => {
               [
                 "xm1nzai",
                 {
-                  "ltr": ":root, .xm1nzai{--xjrzwe6:red;--x1ybzi8d:green;--x1o4mfbm:blue;}",
+                  "ltr": ":root, .xm1nzai{--color-xjrzwe6:red;--nextColor-x1ybzi8d:green;--otherColor-x1o4mfbm:blue;}",
                   "rtl": null,
                 },
                 0,

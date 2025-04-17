@@ -9,9 +9,9 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
-const jsx = require('@babel/plugin-syntax-jsx');
+import { transformSync } from '@babel/core';
+import jsx from '@babel/plugin-syntax-jsx';
+import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
   return transformSync(source, {
@@ -1014,6 +1014,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
   });
+
   describe('Keep stylex.create when needed', () => {
     test('stylex call with computed key access', () => {
       expect(
@@ -1048,6 +1049,7 @@ describe('@stylexjs/babel-plugin', () => {
         stylex.props(styles[variant]);"
       `);
     });
+
     test('stylex call with composition of external styles', () => {
       expect(
         transform(`
@@ -1197,6 +1199,7 @@ describe('@stylexjs/babel-plugin', () => {
           };"
         `);
       });
+
       test('stylex call with composition of external styles', () => {
         expect(
           transform(`
@@ -1259,6 +1262,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
   });
+
   describe('Setting custom import paths', () => {
     test('Basic stylex call', () => {
       expect(
@@ -1285,6 +1289,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
   });
+
   describe('Specific edge-case bugs', () => {
     test('Basic stylex call', () => {
       expect(
@@ -1491,6 +1496,7 @@ describe('@stylexjs/babel-plugin', () => {
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
     });
+
     test('Stylex call with debug on', () => {
       expect(
         transform(
@@ -1590,6 +1596,7 @@ describe('@stylexjs/babel-plugin', () => {
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
     });
+
     test('Stylex call with debug on and debug classnames off', () => {
       expect(
         transform(

@@ -9,9 +9,8 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const flowPlugin = require('@babel/plugin-syntax-flow');
-const stylexPlugin = require('../src/index');
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {
@@ -20,16 +19,7 @@ function transform(source, opts = {}) {
       flow: 'all',
     },
     babelrc: false,
-    plugins: [
-      flowPlugin,
-      [
-        stylexPlugin,
-        {
-          unstable_moduleResolution: { type: 'commonJS' },
-          ...opts,
-        },
-      ],
-    ],
+    plugins: [[stylexPlugin, { ...opts }]],
   });
 
   return { code, metadata };
@@ -1198,6 +1188,50 @@ describe('@stylexjs/babel-plugin', () => {
                     "rtl": null,
                   },
                   3060,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('pseudo-class generated order (nested)', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: {
+                  ':hover': {
+                    ':active':'red',
+                  },
+                  ':active': {
+                    ':hover':'red',
+                  },
+                },
+              },
+            });
+          `);
+
+          // TODO: Fix duplicate class name - https://github.com/facebook/stylex/issues/1001
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kMwMTN: "xa2ikkt xa2ikkt",
+                $$css: true
+              }
+            };"
+          `);
+
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xa2ikkt",
+                  {
+                    "ltr": ".xa2ikkt:active:hover{color:red}",
+                    "rtl": null,
+                  },
+                  3300,
                 ],
               ],
             }

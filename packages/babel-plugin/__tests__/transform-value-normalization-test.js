@@ -9,8 +9,8 @@
 
 jest.autoMockOff();
 
-const { transformSync } = require('@babel/core');
-const stylexPlugin = require('../src/index');
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
   return transformSync(source, {
@@ -317,6 +317,7 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
     });
+
     describe('useRemForFontSize: false', () => {
       test('ignores px font size', () => {
         expect(
