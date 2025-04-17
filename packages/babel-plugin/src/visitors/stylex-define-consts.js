@@ -98,7 +98,7 @@ export default function transformStyleXDefineConsts(
       obj.priority,
     ]);
 
-    state.registerStyles(styles);
+    state.registerStyles(styles, variableDeclaratorPath);
   }
 }
 

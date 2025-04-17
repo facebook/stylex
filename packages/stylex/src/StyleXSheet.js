@@ -91,12 +91,21 @@ export class StyleXSheet {
     this.injected = false;
     this.ruleForPriority = new Map();
     this.rules = [];
+    this.constantsCache = new Map();
 
     this.rootTheme = opts.rootTheme;
     this.rootDarkTheme = opts.rootDarkTheme;
     this.supportsVariables =
       opts.supportsVariables ?? doesSupportCSSVariables();
   }
+
+  constantsCache: Map<
+    string,
+    {|
+      value: string | number,
+      rules: Array<number | string>,
+    |},
+  >;
 
   rootTheme: ?Theme;
   rootDarkTheme: ?Theme;
@@ -280,24 +289,78 @@ export class StyleXSheet {
   /**
    * Insert a rule into the stylesheet.
    */
-  insert(rawLTRRule: string, priority: number, rawRTLRule: ?string) {
-    // Inject the stylesheet if it hasn't already been
-    if (this.injected === false) {
+  insert(
+    rawLTRRule: string,
+    priority: number,
+    rawRTLRule: ?string,
+    metadata?: ?{|
+      constKey?: string,
+      constVal?: string | number,
+    |},
+  ): void {
+    // 1) ensure the stylesheet exists
+    if (!this.injected) {
       this.inject();
     }
 
-    if (rawRTLRule != null) {
+    // 2) defineConsts update: patch or register constant values
+    if (
+      rawLTRRule === '' &&
+      metadata?.constKey != null &&
+      metadata.constVal != null
+    ) {
+      const key: string = (metadata.constKey: any);
+      const newVal: string = String((metadata.constVal: any));
+      console.log(`[defineConsts] invoked with key=${key}, constVal=${newVal}`);
+      console.log('[defineConsts] cache before:', this.constantsCache);
+
+      let entry = this.constantsCache.get(key);
+      if (!entry) {
+        // first defineConsts for this key nothing recorded yet
+        console.log(`[defineConsts] first define for key=${key}, recording value only`);
+        entry = { value: newVal, rules: [] };
+        this.constantsCache.set(key, entry);
+        console.log('[defineConsts] cache after adding entry:', this.constantsCache);
+      } else if (entry.value !== newVal) {
+        // update existing entry patch recorded rules
+        const oldVal = entry.value;
+        console.log(
+          `[defineConsts] updating key=${key} from oldVal=${oldVal} to newVal=${newVal}`,
+        );
+        entry.value = newVal;
+        this.constantsCache.set(key, entry);
+        console.log('[defineConsts] cache after updating value:', this.constantsCache);
+
+        for (const idx of entry.rules) {
+          const before = this.rules[idx];
+          this.rules[idx] = before.replaceAll(oldVal, newVal);
+          console.log(
+            `[defineConsts] patched rule index=${idx}`,
+            `before="${before}"`,
+            `after="${this.rules[idx]}"`,
+          );
+        }
+      } else {
+        console.log(`[defineConsts] key=${key} value unchanged (${entry.value}), nothing to do`);
+      }
+      return;
+    }
+
+    // 3) RTL variants
+    if (rawLTRRule != null && rawRTLRule != null) {
       this.insert(
         addAncestorSelector(rawLTRRule, "html:not([dir='rtl'])"),
         priority,
       );
-      this.insert(addAncestorSelector(rawRTLRule, "html[dir='rtl']"), priority);
+      this.insert(
+        addAncestorSelector(rawRTLRule, "html[dir='rtl']"),
+        priority,
+      );
       return;
     }
 
+    // 4) normal rule insertion (stylex.create)
     const rawRule = rawLTRRule;
-
-    // Don't insert this rule if it already exists
     if (this.rules.includes(rawRule)) {
       return;
     }
@@ -305,21 +368,37 @@ export class StyleXSheet {
     const rule = this.normalizeRule(
       addSpecificityLevel(rawRule, Math.floor(priority / 1000)),
     );
-
-    // Get the position where we should insert the rule
     const insertPos = this.getInsertPositionForPriority(priority);
     this.rules.splice(insertPos, 0, rule);
-
-    // Set this rule as the end of the priority group
     this.ruleForPriority.set(priority, rule);
+    console.log(`[stylex.create] inserted rule at index=${insertPos}:`, rule);
+    console.log('[stylex.create] cache before scanning for constants:', this.constantsCache);
 
+    // track usage of existing constants in this new rule
+    const CONST_REGEX = /var\(--([A-Za-z0-9_-]+)\)/g;
+    let m;
+    while ((m = CONST_REGEX.exec(rule))) {
+      const key = m[1];
+      const varCall = `var(--${key})`;
+      console.log(`[stylex.create] found ${varCall} in rule index=${insertPos}`);
+
+      let entry = this.constantsCache.get(key);
+      if (!entry) {
+        console.log(`[stylex.create] no existing cache entry for key=${key}, creating one`);
+        entry = { value: null, rules: [] };
+      }
+      entry.rules.push(insertPos);
+      console.log(`[stylex.create] recording rule index=${insertPos} under key=${key}, rules now:`, entry.rules);
+      this.constantsCache.set(key, entry);
+      console.log('[stylex.create] cache after mutation:', this.constantsCache);
+    }
+
+    // 5) finally, insert into the actual CSSOM
     if (this.isHeadless()) {
       return;
     }
-
     const tag = this.getTag();
     const sheet = tag.sheet;
-
     if (sheet != null) {
       try {
         sheet.insertRule(rule, Math.min(insertPos, sheet.cssRules.length));
@@ -327,7 +406,6 @@ export class StyleXSheet {
         console.error('insertRule error', err, rule, insertPos);
       }
     }
-    // Ignore the case where sheet == null. It's an edge-case Edge 17 bug.
   }
 }
 
