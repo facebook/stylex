@@ -53,18 +53,21 @@ describe('@stylexjs/babel-plugin', () => {
           const variables = stylex.createTheme();
         `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({});
         `);
       }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme(genStyles(), {});
         `);
       }).toThrow(messages.NON_STATIC_VALUE);
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
@@ -73,12 +76,14 @@ describe('@stylexjs/babel-plugin', () => {
       }).toThrow(
         'Can only override variables theme created with stylex.defineVars().',
       );
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({__themeName__: 'x568ih9'}, genStyles());
         `);
       }).toThrow(messages.NON_STATIC_VALUE);
+
       expect(() => {
         transform(`
           import stylex from 'stylex';
@@ -113,6 +118,7 @@ describe('@stylexjs/babel-plugin', () => {
           );
         `);
       }).not.toThrow();
+
       // string
       expect(() => {
         transform(`
@@ -123,6 +129,7 @@ describe('@stylexjs/babel-plugin', () => {
           );
         `);
       }).not.toThrow();
+
       // not static
       expect(() => {
         transform(`
@@ -133,6 +140,7 @@ describe('@stylexjs/babel-plugin', () => {
           );
         `);
       }).toThrow(messages.NON_STATIC_VALUE);
+
       expect(() => {
         transform(`
           import stylex from 'stylex';

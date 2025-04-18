@@ -38,11 +38,9 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
         `);
-
         expect(code).toMatchInlineSnapshot(
           '"import * as stylex from \'@stylexjs/stylex\';"',
         );
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -77,7 +75,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
         `);
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -88,7 +85,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -135,7 +131,6 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -161,7 +156,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -209,22 +203,23 @@ describe('@stylexjs/babel-plugin', () => {
             root: {
               '--background-color': 'red',
               '--otherColor': 'green',
+              '--foo': 10
             }
           });
         `);
-
         // Must not modify casing of custom properties
+        // Must not add units to unitless values
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
             root: {
               "--background-color": "xgau0yw",
               "--otherColor": "x1p9b6ba",
+              "--foo": "x40g909",
               $$css: true
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -244,11 +239,21 @@ describe('@stylexjs/babel-plugin', () => {
                 },
                 1,
               ],
+              [
+                "x40g909",
+                {
+                  "ltr": ".x40g909{--foo:10}",
+                  "rtl": null,
+                },
+                1,
+              ],
             ],
           }
         `);
       });
 
+      // TODO: eventually these multi-value shortforms should not be allowed
+      // Requires Meta migration to be completed.
       test('style object with shortform properties', () => {
         const { code, metadata } = transform(`
           import * as stylex from '@stylexjs/stylex';
@@ -276,7 +281,6 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           const borderRadius = 2;
@@ -376,7 +380,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -494,7 +497,6 @@ describe('@stylexjs/babel-plugin', () => {
           runtimeInjection: false,
           styleResolution: 'property-specificity',
         };
-
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -524,7 +526,6 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           options,
         );
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           const borderRadius = 2;
@@ -553,7 +554,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -700,7 +700,6 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -710,7 +709,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -733,7 +731,6 @@ describe('@stylexjs/babel-plugin', () => {
             filename: 'MyComponent.js',
             unstable_moduleResolution: { type: 'haste' },
           };
-
           const { code, metadata } = transform(
             `
             import * as stylex from '@stylexjs/stylex';
@@ -747,7 +744,6 @@ describe('@stylexjs/babel-plugin', () => {
           `,
             options,
           );
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             import { vars } from 'vars.stylex.js';
@@ -758,7 +754,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -784,7 +779,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(camelCased.code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -794,7 +788,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(camelCased.metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -818,9 +811,7 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(kebabCased.code).toEqual(camelCased.code);
-
           expect(kebabCased.metadata).toEqual(kebabCased.metadata);
 
           const customProperty = transform(`
@@ -831,7 +822,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(customProperty.code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -841,7 +831,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(customProperty.metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -849,6 +838,193 @@ describe('@stylexjs/babel-plugin', () => {
                   "x17389it",
                   {
                     "ltr": ".x17389it{transition-property:--foo}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+
+          const multiProperty = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              one: {
+                transitionProperty: 'opacity, insetInlineStart',
+              },
+              two: {
+                transitionProperty: 'opacity, inset-inline-start',
+              },
+            });
+          `);
+          expect(multiProperty.code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              one: {
+                k1ekBW: "xh6nlrc",
+                $$css: true
+              },
+              two: {
+                k1ekBW: "xh6nlrc",
+                $$css: true
+              }
+            };"
+          `);
+          expect(multiProperty.metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xh6nlrc",
+                  {
+                    "ltr": ".xh6nlrc{transition-property:opacity,inset-inline-start}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('set "willChange"', () => {
+          const camelCased = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                willChange: 'insetInlineStart',
+              },
+            });
+          `);
+          expect(camelCased.code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                k6sLGO: "x1n5prqt",
+                $$css: true
+              }
+            };"
+          `);
+          expect(camelCased.metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1n5prqt",
+                  {
+                    "ltr": ".x1n5prqt{will-change:inset-inline-start}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+
+          const kebabCased = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                willChange: 'inset-inline-start',
+              },
+            });
+          `);
+          expect(kebabCased.code).toEqual(camelCased.code);
+          expect(kebabCased.metadata).toEqual(kebabCased.metadata);
+
+          const customProperty = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                willChange: '--foo',
+              },
+            });
+          `);
+          expect(customProperty.code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                k6sLGO: "x1lxaxzv",
+                $$css: true
+              }
+            };"
+          `);
+          expect(customProperty.metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1lxaxzv",
+                  {
+                    "ltr": ".x1lxaxzv{will-change:--foo}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+
+          const multiProperty = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              one: {
+                willChange: 'opacity, insetInlineStart',
+              },
+              two: {
+                willChange: 'opacity, inset-inline-start',
+              }
+            });
+          `);
+          expect(multiProperty.code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              one: {
+                k6sLGO: "x30a982",
+                $$css: true
+              },
+              two: {
+                k6sLGO: "x30a982",
+                $$css: true
+              }
+            };"
+          `);
+          expect(multiProperty.metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x30a982",
+                  {
+                    "ltr": ".x30a982{will-change:opacity,inset-inline-start}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+
+          const keyword = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                willChange: 'scroll-position'
+              }
+            });
+          `);
+          expect(keyword.code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                k6sLGO: "x1q5hf6d",
+                $$css: true
+              }
+            };"
+          `);
+          expect(keyword.metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1q5hf6d",
+                  {
+                    "ltr": ".x1q5hf6d{will-change:scroll-position}",
                     "rtl": null,
                   },
                   3000,
@@ -867,7 +1043,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -877,7 +1052,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -903,7 +1077,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -913,7 +1086,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -921,42 +1093,6 @@ describe('@stylexjs/babel-plugin', () => {
                   "x1ruww2u",
                   {
                     "ltr": ".x1ruww2u{position:sticky;position:fixed}",
-                    "rtl": null,
-                  },
-                  3000,
-                ],
-              ],
-            }
-          `);
-        });
-
-        test('use "stylex.firstThatWorks"', () => {
-          const { code, metadata } = transform(`
-            import * as stylex from '@stylexjs/stylex';
-            export const styles = stylex.create({
-              root: {
-                position: stylex.firstThatWorks('sticky', 'fixed'),
-              }
-            });
-          `);
-
-          expect(code).toMatchInlineSnapshot(`
-            "import * as stylex from '@stylexjs/stylex';
-            export const styles = {
-              root: {
-                kVAEAm: "x15oojuh",
-                $$css: true
-              }
-            };"
-          `);
-
-          expect(metadata).toMatchInlineSnapshot(`
-            {
-              "stylex": [
-                [
-                  "x15oojuh",
-                  {
-                    "ltr": ".x15oojuh{position:fixed;position:sticky}",
                     "rtl": null,
                   },
                   3000,
@@ -975,7 +1111,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -985,7 +1120,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1011,7 +1145,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1021,7 +1154,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1039,6 +1171,161 @@ describe('@stylexjs/babel-plugin', () => {
         });
       });
 
+      describe('function value: stylex.firstThatWorks()', () => {
+        test('args: value, value', () => {
+          // Checks various combinations of fallbacks
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                position: stylex.firstThatWorks('sticky', 'fixed'),
+              }
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kVAEAm: "x15oojuh",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x15oojuh",
+                  {
+                    "ltr": ".x15oojuh{position:fixed;position:sticky}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+        });
+
+        // TODO: Fix parser bug
+        test.skip('args: value, var', () => {
+          // Checks various combinations of fallbacks
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: stylex.firstThatWorks('red', 'var(--color)'),
+              }
+            });
+          `);
+          expect(code).toMatchInlineSnapshot();
+          expect(metadata).toMatchInlineSnapshot();
+        });
+
+        test('args: var, value', () => {
+          // Checks various combinations of fallbacks
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: stylex.firstThatWorks('var(--color)', 'red'),
+              }
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kMwMTN: "x8nmrrw",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x8nmrrw",
+                  {
+                    "ltr": ".x8nmrrw{color:var(--color,red)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('args: var, var', () => {
+          // Checks various combinations of fallbacks
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: stylex.firstThatWorks('var(--color)', 'var(--otherColor)'),
+              }
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kMwMTN: "x1775bb3",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1775bb3",
+                  {
+                    "ltr": ".x1775bb3{color:var(--color,var(--otherColor))}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+        });
+
+        // TODO: Fix parser bug
+        test.skip('args: func, var, value', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: stylex.firstThatWorks('color-mix(in srgb, currentColor 20%, transparent)', 'var(--color)', 'red'),
+              }
+            });
+          `);
+          expect(code).toMatchInlineSnapshot();
+          expect(metadata).toMatchInlineSnapshot();
+        });
+
+        // TODO: Fix parser bug
+        test.skip('args: func, var, value, value', () => {
+          // Ignore simple fallbacks after the first one
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: stylex.firstThatWorks('color-mix(in srgb, currentColor 20%, transparent)', 'var(--color)', 'red', 'green'),
+              }
+            });
+          `);
+          expect(code).toMatchInlineSnapshot();
+          expect(metadata).toMatchInlineSnapshot();
+        });
+      });
+
+      describe.skip('function value: stylex.types.*()', () => {
+        // TODO: port tests from "stylex-types-test.js" in "shared"
+      });
+
       describe('object values: pseudo-classes', () => {
         test('invalid pseudo-class', () => {
           const { code, metadata } = transform(`
@@ -1051,8 +1338,8 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
-          // TODO: this should either fail or guarantee an insertion order relative to valid pseudo-classes
+          // TODO: this should either fail or guarantee an insertion
+          // order relative to valid pseudo-classes
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1062,7 +1349,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1093,7 +1379,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1104,7 +1389,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1143,7 +1427,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1153,7 +1436,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1210,7 +1492,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           // TODO: Fix duplicate class name - https://github.com/facebook/stylex/issues/1001
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
@@ -1221,7 +1502,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1249,7 +1529,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1259,7 +1538,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1292,7 +1570,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1303,7 +1580,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1339,7 +1615,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1349,7 +1624,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1377,7 +1651,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1387,7 +1660,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1418,7 +1690,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1428,7 +1699,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1468,7 +1738,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1478,7 +1747,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1524,7 +1792,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1534,7 +1801,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1582,7 +1848,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1592,7 +1857,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1637,7 +1901,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1647,7 +1910,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1685,7 +1947,6 @@ describe('@stylexjs/babel-plugin', () => {
             })
           });
         `);
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -1698,7 +1959,6 @@ describe('@stylexjs/babel-plugin', () => {
             }]
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -1743,7 +2003,6 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -1759,7 +2018,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -1802,7 +2060,6 @@ describe('@stylexjs/babel-plugin', () => {
             }),
           });
         `);
-
         // NOTE: the generated variable name is a little weird, but valid.
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
@@ -1817,7 +2074,6 @@ describe('@stylexjs/babel-plugin', () => {
             }]
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -1868,7 +2124,6 @@ describe('@stylexjs/babel-plugin', () => {
               })
             });
           `);
-
           // Check that dynamic number values get units where appropriate
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
@@ -1881,7 +2136,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1911,7 +2165,6 @@ describe('@stylexjs/babel-plugin', () => {
             filename: 'MyComponent.js',
             unstable_moduleResolution: { type: 'haste' },
           };
-
           const { code, metadata } = transform(
             `
             import * as stylex from '@stylexjs/stylex';
@@ -1925,7 +2178,6 @@ describe('@stylexjs/babel-plugin', () => {
           `,
             options,
           );
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             import { vars } from 'vars.stylex.js';
@@ -1938,7 +2190,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -1979,7 +2230,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -1993,7 +2243,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2048,7 +2297,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2062,7 +2310,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2143,7 +2390,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2157,7 +2403,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2209,7 +2454,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2221,7 +2465,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2257,7 +2500,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2269,7 +2511,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2308,7 +2549,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2320,7 +2560,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2368,7 +2607,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2382,7 +2620,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2452,7 +2689,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2466,7 +2702,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2538,7 +2773,6 @@ describe('@stylexjs/babel-plugin', () => {
               }),
             });
           `);
-
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
@@ -2552,7 +2786,6 @@ describe('@stylexjs/babel-plugin', () => {
               }]
             };"
           `);
-
           expect(metadata).toMatchInlineSnapshot(`
             {
               "stylex": [
@@ -2617,7 +2850,6 @@ describe('@stylexjs/babel-plugin', () => {
           debug: true,
           filename: '/html/js/components/Foo.react.js',
         };
-
         const { code, metadata } = transform(
           `
             import * as stylex from '@stylexjs/stylex';
@@ -2635,7 +2867,6 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           options,
         );
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -2653,7 +2884,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -2691,7 +2921,6 @@ describe('@stylexjs/babel-plugin', () => {
           debug: true,
           filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
         };
-
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -2709,7 +2938,6 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           options,
         );
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -2727,7 +2955,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -2766,7 +2993,6 @@ describe('@stylexjs/babel-plugin', () => {
           filename: '/html/js/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
-
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -2784,7 +3010,6 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           options,
         );
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -2802,7 +3027,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
@@ -2841,7 +3065,6 @@ describe('@stylexjs/babel-plugin', () => {
           filename: '/node_modules/npm-package/dist/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
-
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -2859,7 +3082,6 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           options,
         );
-
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
@@ -2877,7 +3099,6 @@ describe('@stylexjs/babel-plugin', () => {
             }
           };"
         `);
-
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [

@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { convertStyleToClassName } from '../src/convert-to-className';
+import { convertStyleToClassName } from '../convert-to-className';
 
 const extractBody = (str: string) => str.slice(str.indexOf('{') + 1, -1);
 

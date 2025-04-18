@@ -7,12 +7,8 @@
  * @flow strict
  */
 
-import {
-  NullPreRule,
-  PreRule,
-  PreRuleSet,
-} from '../../src/preprocess-rules/PreRule';
-import { flattenRawStyleObject } from '../../src/preprocess-rules/flatten-raw-style-obj';
+import { NullPreRule, PreRule, PreRuleSet } from '../PreRule';
+import { flattenRawStyleObject } from '../flatten-raw-style-obj';
 
 const options = {
   classNamePrefix: 'x',

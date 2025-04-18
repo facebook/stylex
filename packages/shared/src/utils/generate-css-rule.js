@@ -7,11 +7,11 @@
  * @flow strict
  */
 
-import generateLtr from './physical-rtl/generate-ltr';
-import generateRtl from './physical-rtl/generate-rtl';
-import { genCSSRule } from './utils/genCSSRule';
-import type { InjectableStyle } from './common-types';
-import getPriority from './utils/property-priorities';
+import generateLtr from '../physical-rtl/generate-ltr';
+import generateRtl from '../physical-rtl/generate-rtl';
+import { genCSSRule } from './genCSSRule';
+import type { InjectableStyle } from '../common-types';
+import getPriority from './property-priorities';
 
 export function generateRule(
   className: string,

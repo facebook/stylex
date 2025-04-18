@@ -9,7 +9,7 @@
 
 import type { InjectableStyle, StyleXOptions } from '../common-types';
 
-import { convertStyleToClassName } from '../convert-to-className';
+import { convertStyleToClassName } from '../utils/convert-to-className';
 import { arrayEquals } from '../utils/object-utils';
 import { sortAtRules, sortPseudos } from '../utils/rule-utils';
 

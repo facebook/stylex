@@ -198,7 +198,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('theme object deep in file tree', () => {
       const options = {
-        filename: '/stylex/packages/src/css/NestedTheme.stylex.js',
+        varsFilename: '/stylex/packages/src/css/vars.stylex.js',
       };
       const fixture = createFixture(`
         export const theme = stylex.createTheme(vars, ${themeObject});

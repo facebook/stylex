@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import splitValue from '../src/utils/split-css-value';
+import splitValue from '../split-css-value';
 
 describe('Ensure CSS values are split correctly', () => {
   test('simple space-separated numbers', () => {
