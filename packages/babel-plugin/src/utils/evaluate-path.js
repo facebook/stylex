@@ -26,7 +26,7 @@ import traverse from '@babel/traverse';
 import type { NodePath, Binding } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
-import { utils } from '@stylexjs/shared';
+import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
 
 // This file contains Babels metainterpreter that can evaluate static code.

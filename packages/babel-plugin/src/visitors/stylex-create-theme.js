@@ -17,7 +17,7 @@ import {
   keyframes as stylexKeyframes,
   types,
   type InjectableStyle,
-} from '@stylexjs/shared';
+} from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import path from 'path';

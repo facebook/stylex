@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { types as t } from '../../src/';
+import * as t from '../index';
 
 describe('stylex-types-test', () => {
   describe('class methods', () => {

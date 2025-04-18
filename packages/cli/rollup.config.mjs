@@ -25,8 +25,6 @@ const config = {
       resolveOnly: process.env['HASTE']
         ? []
         : [
-            '@stylexjs/shared',
-            '@stylexjs/shared/**/*',
             '@stylexjs/stylex',
             '@stylexjs/stylex/**/*',
           ],

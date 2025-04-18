@@ -6,9 +6,7 @@
  */
 import fs from 'fs/promises';
 import path from 'path';
-import { utils } from '@stylexjs/shared';
-
-const hash = utils.hash;
+import hash from './hash';
 
 // Default cache directory in `node_modules/.stylex-cache`
 export function getDefaultCachePath() {
