@@ -172,7 +172,7 @@ export class Calc {
     this.value = value;
   }
   toString(): string {
-    return this.value.toString();
+    return `calc(${calcValueToString(this.value)})`;
   }
   static get parser(): TokenParser<Calc> {
     return TokenParser.sequence(
@@ -185,4 +185,38 @@ export class Calc {
       .separatedBy(TokenParser.tokens.Whitespace.optional)
       .map(([_, value, _closeParen]) => new Calc(value));
   }
+}
+
+function calcValueToString(value: CalcValue): string {
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (typeof value === 'object' && value !== null) {
+    if (
+      value.type === '+' ||
+      value.type === '-' ||
+      value.type === '*' ||
+      value.type === '/'
+    ) {
+      return `${calcValueToString(value.left)} ${value.type} ${calcValueToString(value.right)}`;
+    }
+
+    if ('value' in value && 'unit' in value && typeof value.unit === 'string') {
+      return `${value.value}${value.unit}`;
+    }
+
+    if (typeof value.toString === 'function') {
+      const result = value.toString();
+      if (result !== '[object Object]') {
+        return result;
+      }
+    }
+  }
+
+  return '';
 }

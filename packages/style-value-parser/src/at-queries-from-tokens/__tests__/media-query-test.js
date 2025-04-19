@@ -18,6 +18,7 @@ describe('Test CSS Type: @media queries', () => {
         "queries": {
           "key": "screen",
           "not": false,
+          "only": false,
           "type": "media-keyword",
         },
       }
@@ -32,6 +33,7 @@ describe('Test CSS Type: @media queries', () => {
         "queries": {
           "key": "print",
           "not": false,
+          "only": false,
           "type": "media-keyword",
         },
       }
@@ -100,6 +102,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "all",
               "not": true,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -123,6 +126,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "screen",
               "not": false,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -181,6 +185,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "screen",
               "not": false,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -718,6 +723,7 @@ describe('Test CSS Type: @media queries', () => {
                 {
                   "key": "screen",
                   "not": false,
+                  "only": false,
                   "type": "media-keyword",
                 },
                 {
@@ -750,6 +756,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "all",
               "not": true,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -1028,22 +1035,32 @@ describe('Test CSS Type: @media queries', () => {
     expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
-  test.skip('@media (width: calc(100% - 20px))', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (width: calc(100% - 20px))'),
-    ).toMatchInlineSnapshot();
+  test('@media (min-width: calc(300px + 5em))', () => {
+    const query = '@media (min-width: calc(300px + 5em))';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "key": "min-width",
+          "type": "pair",
+          "value": "calc(300px + 5em)",
+        },
+      }
+    `);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
-  test.skip('@media (min-width: calc(300px + 5em))', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (min-width: calc(300px + 5em))'),
-    ).toMatchInlineSnapshot();
-  });
-
-  test.skip('@media (max-height: calc(100vh - 50px))', () => {
-    expect(
-      MediaQuery.parser.parseToEnd('@media (max-height: calc(100vh - 50px))'),
-    ).toMatchInlineSnapshot();
+  test('@media (max-height: calc(100vh - 50px))', () => {
+    const query = '@media (max-height: calc(100vh - 50px))';
+    expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
+      MediaQuery {
+        "queries": {
+          "key": "max-height",
+          "type": "pair",
+          "value": "calc(100vh - 50px)",
+        },
+      }
+    `);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
   });
 
   test('@media (aspect-ratio: 16 / 9)', () => {
@@ -1256,6 +1273,7 @@ describe('Test CSS Type: @media queries', () => {
             {
               "key": "all",
               "not": true,
+              "only": false,
               "type": "media-keyword",
             },
             {
@@ -1874,7 +1892,7 @@ describe('Test CSS Type: @media queries', () => {
   });
 
   // nested not queries are broken
-  test.skip('@media not (not (not (min-width: 400px)))', () => {
+  test('@media not (not (not (min-width: 400px)))', () => {
     const query = '@media not (not (not (min-width: 400px)))';
     const mediaQuery = MediaQuery.parser.parseToEnd(query);
     expect(mediaQuery).toMatchInlineSnapshot(`
@@ -1894,53 +1912,58 @@ describe('Test CSS Type: @media queries', () => {
         },
       }
     `);
-    expect(mediaQuery.toString()).toEqual('@media (min-width: 400px)');
+    expect(mediaQuery.toString()).toEqual('@media (not (min-width: 400px))');
   });
 
   // not queries with multiple clauses are broken
-  test.skip('@media not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px))', () => {
+  test('@media not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px))', () => {
     const query =
       '@media not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px))';
     expect(MediaQuery.parser.parseToEnd(query)).toMatchInlineSnapshot(`
       MediaQuery {
         "queries": {
-          "rules": [
-            {
-              "key": "min-width",
-              "type": "pair",
-              "value": {
-                "signCharacter": undefined,
-                "type": "integer",
-                "unit": "px",
-                "value": 500,
+          "rule": {
+            "rules": [
+              {
+                "key": "min-width",
+                "type": "pair",
+                "value": {
+                  "signCharacter": undefined,
+                  "type": "integer",
+                  "unit": "px",
+                  "value": 500,
+                },
               },
-            },
-            {
-              "key": "max-width",
-              "type": "pair",
-              "value": {
-                "signCharacter": undefined,
-                "type": "integer",
-                "unit": "px",
-                "value": 600,
+              {
+                "key": "max-width",
+                "type": "pair",
+                "value": {
+                  "signCharacter": undefined,
+                  "type": "integer",
+                  "unit": "px",
+                  "value": 600,
+                },
               },
-            },
-            {
-              "key": "max-width",
-              "type": "pair",
-              "value": {
-                "signCharacter": undefined,
-                "type": "integer",
-                "unit": "px",
-                "value": 400,
+              {
+                "key": "max-width",
+                "type": "pair",
+                "value": {
+                  "signCharacter": undefined,
+                  "type": "integer",
+                  "unit": "px",
+                  "value": 400,
+                },
               },
-            },
-          ],
-          "type": "and",
+            ],
+            "type": "and",
+          },
+          "type": "not",
         },
       }
     `);
-    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(query);
+    expect(MediaQuery.parser.parseToEnd(query).toString()).toEqual(
+      '@media (not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px)))',
+    );
   });
   test('flattens nested and rules', () => {
     const query =
@@ -2050,5 +2073,25 @@ describe('Test CSS Type: @media queries', () => {
       }
     `);
     expect(mediaQuery.toString()).toEqual('@media (min-width: 400px)');
+  });
+
+  test('@media only screen', () => {
+    const query = '@media only screen';
+    const parsed = MediaQuery.parser.parseToEnd(query);
+    expect(parsed.queries).toMatchInlineSnapshot(`
+      {
+        "key": "screen",
+        "not": false,
+        "only": true,
+        "type": "media-keyword",
+      }
+    `);
+    expect(parsed.toString()).toBe('@media only screen');
+  });
+
+  test('@media only print and (color)', () => {
+    const query = '@media only print and (color)';
+    const parsed = MediaQuery.parser.parseToEnd(query);
+    expect(parsed.toString()).toBe('@media only print and (color)');
   });
 });
