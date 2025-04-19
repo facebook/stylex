@@ -643,8 +643,8 @@ export default class StateManager {
           | {
               constKey: string,
               constVal: string | number,
-              rtl?: string | null,
               ltr: string,
+              rtl?: string | null,
             }
         ),
         number,
@@ -684,17 +684,48 @@ export default class StateManager {
 
       this.injectImportInserted = injectName;
     }
-    for (const [_key, { ltr, rtl }, priority] of styles) {
+
+    for (const [_key, styleObj, priority] of styles) {
+      // build metadataProps as before…
+      const metadataProps: Array<t.ObjectProperty> = [];
+      if ((styleObj as any).constKey != null) {
+        metadataProps.push(
+          t.objectProperty(
+            t.identifier('constKey'),
+            t.stringLiteral((styleObj as any).constKey),
+          ),
+        );
+      }
+      if ((styleObj as any).constVal != null) {
+        const val =
+          typeof (styleObj as any).constVal === 'number'
+            ? t.numericLiteral((styleObj as any).constVal)
+            : t.stringLiteral((styleObj as any).constVal);
+        metadataProps.push(
+          t.objectProperty(t.identifier('constVal'), val),
+        );
+      }
+
+      const args: Array<t.Expression> = [
+        // 1) ltr
+        t.stringLiteral(styleObj.ltr),
+        // 2) priority
+        t.numericLiteral(priority),
+        // 3) rtl OR explicit null
+        styleObj.rtl != null
+          ? t.stringLiteral(styleObj.rtl)
+          : t.nullLiteral(),
+        // 4) metadata object, only if we collected props
+        ...(metadataProps.length > 0
+          ? [t.objectExpression(metadataProps)]
+          : []),
+      ];
+
       statementPath.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(ltr),
-            t.numericLiteral(priority),
-            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-          ]),
-        ),
+        t.expressionStatement(t.callExpression(injectName, args)),
       );
     }
+
   }
 
   markComposedNamespace(

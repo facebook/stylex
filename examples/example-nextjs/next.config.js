@@ -12,7 +12,7 @@
 const path = require('path');
 
 module.exports = {
-  transpilePackages: ['@stylexjs/open-props'],
+  transpilePackages: ['@stylexjs/open-props', '@stylexjs/stylex'],
   eslint: { ignoreDuringBuilds: true },
   webpack: (config, { dev, isServer }) => {
     // Process only files that require StyleX compilation using babel-loader
@@ -31,7 +31,7 @@ module.exports = {
                 '@stylexjs/babel-plugin',
                 {
                   dev: dev,
-                  runtimeInjection: false,
+                  runtimeInjection: true,
                   genConditionalClasses: true,
                   treeshakeCompensation: true,
                   aliases: {

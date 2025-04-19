@@ -13,6 +13,7 @@ export default function inject(
   ltrRule: string,
   priority: number,
   rtlRule: ?string = null,
+  metadata?: { constKey?: string, constVal?: string | number },
 ): void {
-  styleSheet.insert(ltrRule, priority, rtlRule);
+  styleSheet.insert(ltrRule, priority, rtlRule, metadata);
 }
