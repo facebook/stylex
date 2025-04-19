@@ -94,7 +94,7 @@ export default function variableFallbacks(
   return [
     ...(valuesBeforeFirstVar.length > 0
       ? valuesBeforeFirstVar.map((val) => composeVars(...varValues, val))
-      : composeVars(...varValues)),
+      : [composeVars(...varValues)]),
     ...valuesAfterLastVar,
   ];
 }
