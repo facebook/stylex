@@ -1,6 +1,6 @@
-# @stylexjs/shared
+# shared
 
-This package contains most of the core JavaScript logic for stylex.
+This legacy package contains most of the core JavaScript logic for stylex.
 
 It exports two primary functions `create` and `keyframes`.
 

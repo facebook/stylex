@@ -10,9 +10,9 @@
 import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
-import { keyframes as stylexKeyframes, messages } from '@stylexjs/shared';
+import { keyframes as stylexKeyframes, messages } from '../shared';
 import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
-import { firstThatWorks as stylexFirstThatWorks } from '@stylexjs/shared';
+import { firstThatWorks as stylexFirstThatWorks } from '../shared';
 
 /// This function looks for `stylex.keyframes` calls and transforms them.
 /// 1. It finds the first argument to `stylex.keyframes` and validates it.

@@ -13,7 +13,7 @@ import type { NodePath } from '@babel/traverse';
 import type {
   CompiledNamespaces,
   StyleXOptions as RuntimeOptions,
-} from '@stylexjs/shared';
+} from '../shared';
 import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
 import fs from 'fs';

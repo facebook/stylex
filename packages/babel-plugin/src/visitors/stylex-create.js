@@ -16,7 +16,7 @@ import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   type InjectableStyle,
-} from '@stylexjs/shared';
+} from '../shared';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
   convertToTestStyles,
@@ -26,9 +26,9 @@ import {
   convertObjectToAST,
   removeObjectsWithSpreads,
 } from '../utils/js-to-ast';
-import { messages } from '@stylexjs/shared';
+import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
-import flatMapExpandedShorthands from '@stylexjs/shared/lib/preprocess-rules';
+import flatMapExpandedShorthands from '../shared/preprocess-rules';
 
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
