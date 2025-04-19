@@ -41,7 +41,6 @@ const config = {
     : [
         ...external,
         '@dual-bundle/import-meta-resolve',
-        '@stylexjs/shared',
         '@stylexjs/stylex',
       ],
   plugins: [
@@ -50,17 +49,7 @@ const config = {
       preferBuiltins: false,
       extensions,
       allowExportsFolderMapping: true,
-      rootDir,
-      // modulePaths: [path.resolve(__dirname, '../../node_modules')],
-      // resolveOnly: !process.env['HASTE']
-      //   ? []
-      //   : [
-      //       '@stylexjs/shared',
-      //       '@stylexjs/shared/**/*',
-      //       '@stylexjs/stylex',
-      //       '@stylexjs/stylex/**/*',
-      //       path.resolve(rootDir, 'node_modules/esm-resolve/bundle.js'),
-      //     ],
+      rootDir
     }),
     commonjs(),
     json(),

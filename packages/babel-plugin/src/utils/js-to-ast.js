@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { FlatCompiledStyles } from '../../../shared/src/common-types';
+import type { FlatCompiledStyles } from '../shared/common-types';
 
 import * as t from '@babel/types';
 

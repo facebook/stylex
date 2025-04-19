@@ -9,22 +9,22 @@
 
 'use strict';
 
-import {
-  PSEUDO_CLASS_PRIORITIES,
-  AT_RULE_PRIORITIES,
-  PSEUDO_ELEMENT_PRIORITY,
-} from '@stylexjs/shared';
-
 type PriorityAndType = {
   priority: number,
   type: 'string' | 'pseudoClass' | 'pseudoElement' | 'atRule',
 };
 
+const AT_CONTAINER_PRIORITY = 300;
+const AT_MEDIA_PRIORITY = 200;
+const AT_SUPPORT_PRIORITY = 30;
+const PSEUDO_CLASS_PRIORITY = 40;
+const PSEUDO_ELEMENT_PRIORITY = 5000;
+
 export default function getPropertyPriorityAndType(
   key: string,
 ): PriorityAndType {
   if (key.startsWith('@supports')) {
-    return { priority: AT_RULE_PRIORITIES['@supports'], type: 'atRule' };
+    return { priority: AT_SUPPORT_PRIORITY, type: 'atRule' };
   }
 
   if (key.startsWith('::')) {
@@ -32,23 +32,19 @@ export default function getPropertyPriorityAndType(
   }
 
   if (key.startsWith(':')) {
-    const prop =
-      key.startsWith(':') && key.includes('(')
-        ? key.slice(0, key.indexOf('('))
-        : key;
-
+    // TODO: Consider restoring pseudo-specific priorities
     return {
-      priority: PSEUDO_CLASS_PRIORITIES[prop] ?? 40,
+      priority: PSEUDO_CLASS_PRIORITY,
       type: 'pseudoClass',
     };
   }
 
   if (key.startsWith('@media')) {
-    return { priority: AT_RULE_PRIORITIES['@media'], type: 'atRule' };
+    return { priority: AT_MEDIA_PRIORITY, type: 'atRule' };
   }
 
   if (key.startsWith('@container')) {
-    return { priority: AT_RULE_PRIORITIES['@container'], type: 'atRule' };
+    return { priority: AT_CONTAINER_PRIORITY, type: 'atRule' };
   }
 
   return { priority: 1, type: 'string' };

@@ -12,13 +12,13 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
-import { create, utils } from '@stylexjs/shared';
-import { messages } from '@stylexjs/shared';
+import { create, utils } from '../shared';
+import { messages } from '../shared';
 import {
   timeUnits,
   lengthUnits,
   getNumberSuffix,
-} from '@stylexjs/shared/lib/utils/transform-value';
+} from '../shared/utils/transform-value';
 
 type TInlineStyles = {
   [string]: {
