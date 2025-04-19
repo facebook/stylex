@@ -100,4 +100,19 @@ describe('convert-to-className test', () => {
       'height:var(--y,var(--x,500px));height:var(--y,var(--x,100vh));height:100dvh',
     );
   });
+  test('handles array with variable default and multiple constant fallbacks', () => {
+    expect(convert(['height', ['var(--x)', 500, '100dvh']])).toEqual(
+      'height:var(--x);height:500px;height:100dvh',
+    );
+  });
+  test('handles array with variable default and multiple variable and constant fallbacks', () => {
+    expect(
+      convert(['height', ['var(--x)', 'var(--y)', 'var(--z)', '100dvh']]),
+    ).toEqual('height:var(--z,var(--y,var(--x)));height:100dvh');
+  });
+  test('handles array of all variables', () => {
+    expect(
+      convert(['height', ['var(--w)', 'var(--x)', 'var(--y)', 'var(--z)']]),
+    ).toEqual('height:var(--z,var(--y,var(--x,var(--w))))');
+  });
 });
