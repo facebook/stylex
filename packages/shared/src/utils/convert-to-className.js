@@ -7,14 +7,14 @@
  * @flow strict
  */
 
-import createHash from './hash';
-import type { TRawValue, StyleRule, StyleXOptions } from './common-types';
-import dashify from './utils/dashify';
+import createHash from '../hash';
+import type { TRawValue, StyleRule, StyleXOptions } from '../common-types';
+import dashify from './dashify';
 import transformValue from './transform-value';
 import { generateRule } from './generate-css-rule';
-import { defaultOptions } from './utils/default-options';
-import * as messages from './messages';
-import { sortAtRules, sortPseudos } from './utils/rule-utils';
+import { defaultOptions } from './default-options';
+import * as messages from '../messages';
+import { sortAtRules, sortPseudos } from './rule-utils';
 
 // This function takes a single style rule and transforms it into a CSS rule.
 // [color: 'red'] => ['color', 'classname-for-color-red', CSSRULE{ltr, rtl, priority}]

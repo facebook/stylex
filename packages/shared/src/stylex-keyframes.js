@@ -13,7 +13,7 @@ import createHash from './hash';
 import expandShorthands from './preprocess-rules/index';
 import generateLtr from './physical-rtl/generate-ltr';
 import generateRtl from './physical-rtl/generate-rtl';
-import transformValue from './transform-value';
+import transformValue from './utils/transform-value';
 import dashify from './utils/dashify';
 import {
   objFromEntries,

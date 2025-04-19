@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { PreRule } from '../src/preprocess-rules/PreRule';
+import { PreRule } from '../PreRule';
 
 const options = {
   classNamePrefix: 'x',

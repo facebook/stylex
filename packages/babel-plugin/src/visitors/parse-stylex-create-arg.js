@@ -18,7 +18,7 @@ import {
   timeUnits,
   lengthUnits,
   getNumberSuffix,
-} from '@stylexjs/shared/lib/transform-value';
+} from '@stylexjs/shared/lib/utils/transform-value';
 
 type TInlineStyles = {
   [string]: {

@@ -7,9 +7,9 @@
  * @flow strict
  */
 
-import type { StyleXOptions } from './common-types';
+import type { StyleXOptions } from '../common-types';
 
-import normalizeValue from './utils/normalize-value';
+import normalizeValue from './normalize-value';
 
 /**
  * Convert a CSS value in JS to the final CSS string value
