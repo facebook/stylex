@@ -560,33 +560,33 @@ describe('StateManager config parsing', () => {
     });
   });
 
-  describe('"useRemForFontSize" option (boolean)', () => {
+  describe('"enableFontSizePxToRem" option (boolean)', () => {
     test('logs errors if invalid', () => {
-      const stateManager = makeState({ useRemForFontSize: 'true' });
-      expect(stateManager.options.useRemForFontSize).toBe(false);
+      const stateManager = makeState({ enableFontSizePxToRem: 'true' });
+      expect(stateManager.options.enableFontSizePxToRem).toBe(false);
       expect(warnings).toEqual([
         [
           '[@stylexjs/babel-plugin]',
-          'Expected (options.useRemForFontSize) to be a boolean, but got `"true"`.',
+          'Expected (options.enableFontSizePxToRem) to be a boolean, but got `"true"`.',
         ],
       ]);
     });
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.useRemForFontSize).toBe(false);
+      expect(stateManager.options.enableFontSizePxToRem).toBe(false);
       expect(warnings).toEqual([]);
     });
 
     test('false value', () => {
-      const stateManager = makeState({ useRemForFontSize: false });
-      expect(stateManager.options.useRemForFontSize).toBe(false);
+      const stateManager = makeState({ enableFontSizePxToRem: false });
+      expect(stateManager.options.enableFontSizePxToRem).toBe(false);
       expect(warnings).toEqual([]);
     });
 
     test('true value', () => {
-      const stateManager = makeState({ useRemForFontSize: true });
-      expect(stateManager.options.useRemForFontSize).toBe(true);
+      const stateManager = makeState({ enableFontSizePxToRem: true });
+      expect(stateManager.options.enableFontSizePxToRem).toBe(true);
       expect(warnings).toEqual([]);
     });
   });

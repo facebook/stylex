@@ -38,13 +38,13 @@ const normalizers = [
 export default function normalizeValue(
   value: string,
   key: string,
-  { useRemForFontSize }: StyleXOptions,
+  { enableFontSizePxToRem }: StyleXOptions,
 ): string {
   if (value == null) {
     return value;
   }
   const parsedAST = parser(value);
-  const relevantNormalizers = useRemForFontSize
+  const relevantNormalizers = enableFontSizePxToRem
     ? [...normalizers, convertFontSizeToRem]
     : normalizers;
   return relevantNormalizers

@@ -193,6 +193,14 @@ export default class StateManager {
         'options.enableDevClassNames',
       );
 
+    const enableFontSizePxToRem: StyleXStateOptions['enableFontSizePxToRem'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableFontSizePxToRem ?? false,
+        false,
+        'options.enableFontSizePxToRem',
+      );
+
     const enableInlinedConditionalMerge: StyleXStateOptions['enableInlinedConditionalMerge'] =
       z.logAndDefault(
         z.boolean(),
@@ -256,14 +264,6 @@ export default class StateManager {
       ...configuredImportSources,
     ];
 
-    const useRemForFontSize: StyleXStateOptions['useRemForFontSize'] =
-      z.logAndDefault(
-        z.boolean(),
-        options.useRemForFontSize ?? false,
-        false,
-        'options.useRemForFontSize',
-      );
-
     const styleResolution: StyleXStateOptions['styleResolution'] =
       z.logAndDefault(
         z.unionOf3(
@@ -323,6 +323,7 @@ export default class StateManager {
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,
+      enableFontSizePxToRem,
       enableInlinedConditionalMerge,
       enableMinifiedKeys,
       importSources,
@@ -335,7 +336,6 @@ export default class StateManager {
       test,
       treeshakeCompensation,
       unstable_moduleResolution,
-      useRemForFontSize,
     };
     return opts;
   }
