@@ -106,3 +106,54 @@ test('inlines variables for older browsers', () => {
     .foo {color: bar}"
   `);
 });
+
+test('StyleXSheet handles constKey injection and constant replacement', () => {
+  const sheet = new StyleXSheet(testOpts);
+
+  // inject a rule that uses a constant
+  const constKey = 'x123abc';
+  const ruleWithRef = `.foo { padding: var(--${constKey}) }`;
+  sheet.insert(ruleWithRef, 0);
+
+  // now inject the constant with an empty rule (defineConsts behavior)
+  sheet.insert('', 0, null, {
+    constKey,
+    constVal: '12px',
+  });
+
+  // rule should now be updated in place
+  expect(sheet.getCSS()).toContain('.foo { padding: 12px }');
+
+  // inject again with a new value
+  sheet.insert('', 0, null, {
+    constKey,
+    constVal: '20px',
+  });
+
+  // rule should now be updated again
+  expect(sheet.getCSS()).toContain('.foo { padding: 20px }');
+});
+
+test('StyleXSheet avoids redundant updates for unchanged constants', () => {
+  const sheet = new StyleXSheet(testOpts);
+
+  const constKey = 'x456def';
+  const ruleWithRef = `.bar { margin: var(--${constKey}) }`;
+  sheet.insert(ruleWithRef, 0);
+
+  sheet.insert('', 0, null, {
+    constKey,
+    constVal: '8px',
+  });
+
+  const cssBefore = sheet.getCSS();
+
+  // inject same value again – should not change anything
+  sheet.insert('', 0, null, {
+    constKey,
+    constVal: '8px',
+  });
+
+  const cssAfter = sheet.getCSS();
+  expect(cssAfter).toBe(cssBefore);
+});
