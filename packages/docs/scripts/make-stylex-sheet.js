@@ -30,7 +30,6 @@ async function transformFile(filePath) {
           dev: false,
           test: false,
           stylexSheetName: '<>',
-          genConditionalClasses: true,
           unstable_moduleResolution: {
             type: 'commonJS',
             rootDir: path.join(__dirname, '../../..'),

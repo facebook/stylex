@@ -249,6 +249,39 @@ describe('StateManager config parsing', () => {
     });
   });
 
+  describe('"enableInlinedConditionalMerge" option (boolean)', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({
+        enableInlinedConditionalMerge: 'false',
+      });
+      expect(stateManager.options.enableInlinedConditionalMerge).toBe(true);
+      expect(warnings).toEqual([
+        [
+          '[@stylexjs/babel-plugin]',
+          'Expected (options.enableInlinedConditionalMerge) to be a boolean, but got `"false"`.',
+        ],
+      ]);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.enableInlinedConditionalMerge).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+
+    test('false value', () => {
+      const stateManager = makeState({ enableInlinedConditionalMerge: false });
+      expect(stateManager.options.enableInlinedConditionalMerge).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('true value', () => {
+      const stateManager = makeState({ enableInlinedConditionalMerge: true });
+      expect(stateManager.options.enableInlinedConditionalMerge).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+  });
+
   describe('"enableMinifiedKeys" option (boolean)', () => {
     test('logs errors if invalid', () => {
       const stateManager = makeState({ enableMinifiedKeys: 'false' });
@@ -280,37 +313,6 @@ describe('StateManager config parsing', () => {
         enableMinifiedKeys: true,
       });
       expect(stateManager.options.enableDebugDataProp).toBe(true);
-      expect(warnings).toEqual([]);
-    });
-  });
-
-  describe('"genConditionalClasses" option (boolean)', () => {
-    test('logs errors if invalid', () => {
-      const stateManager = makeState({ genConditionalClasses: 'true' });
-      expect(stateManager.options.genConditionalClasses).toBe(false);
-      expect(warnings).toEqual([
-        [
-          '[@stylexjs/babel-plugin]',
-          'Expected (options.genConditionalClasses) to be a boolean, but got `"true"`.',
-        ],
-      ]);
-    });
-
-    test('default value', () => {
-      const stateManager = makeState();
-      expect(stateManager.options.genConditionalClasses).toBe(false);
-      expect(warnings).toEqual([]);
-    });
-
-    test('false value', () => {
-      const stateManager = makeState({ genConditionalClasses: false });
-      expect(stateManager.options.genConditionalClasses).toBe(false);
-      expect(warnings).toEqual([]);
-    });
-
-    test('true value', () => {
-      const stateManager = makeState({ genConditionalClasses: true });
-      expect(stateManager.options.genConditionalClasses).toBe(true);
       expect(warnings).toEqual([]);
     });
   });

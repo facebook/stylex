@@ -74,8 +74,8 @@ export type StyleXOptions = $ReadOnly<{
   enableDebugClassNames?: boolean,
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
+  enableInlinedConditionalMerge: boolean,
   enableMinifiedKeys?: boolean,
-  genConditionalClasses: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
@@ -193,6 +193,14 @@ export default class StateManager {
         'options.enableDevClassNames',
       );
 
+    const enableInlinedConditionalMerge: StyleXStateOptions['enableInlinedConditionalMerge'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableInlinedConditionalMerge ?? true,
+        true,
+        'options.enableInlinedConditionalMerge',
+      );
+
     const enableMinifiedKeys: StyleXStateOptions['enableMinifiedKeys'] =
       z.logAndDefault(
         z.boolean(),
@@ -247,14 +255,6 @@ export default class StateManager {
       'stylex',
       ...configuredImportSources,
     ];
-
-    const genConditionalClasses: StyleXStateOptions['genConditionalClasses'] =
-      z.logAndDefault(
-        z.boolean(),
-        options.genConditionalClasses ?? false,
-        false,
-        'options.genConditionalClasses',
-      );
 
     const useRemForFontSize: StyleXStateOptions['useRemForFontSize'] =
       z.logAndDefault(
@@ -323,8 +323,8 @@ export default class StateManager {
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,
+      enableInlinedConditionalMerge,
       enableMinifiedKeys,
-      genConditionalClasses,
       importSources,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'
