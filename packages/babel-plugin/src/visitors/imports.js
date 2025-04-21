@@ -7,8 +7,9 @@
  * @flow strict
  */
 
-import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+
+import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 
 // Read imports of react and remember the name of the local variables for later

@@ -7,11 +7,12 @@
  * @flow strict
  */
 
+import type { NodePath } from '@babel/traverse';
+
 import * as t from '@babel/types';
 import { evaluate } from '../utils/evaluate-path';
 import { utils, defineConsts as styleXDefineConsts, messages } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
-import type { NodePath } from '@babel/traverse';
 import StateManager from '../utils/state-manager';
 import crypto from 'crypto';
 

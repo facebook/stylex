@@ -7,8 +7,9 @@
  * @flow strict
  */
 
-import createHash from '../hash';
 import type { TRawValue, StyleRule, StyleXOptions } from '../common-types';
+
+import createHash from '../hash';
 import dashify from './dashify';
 import transformValue from './transform-value';
 import { generateRule } from './generate-css-rule';

@@ -9,6 +9,7 @@
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
 import type { VarsConfig, VarsConfigValue } from './stylex-vars-utils';
+import { type CSSType, isCSSType } from './types';
 
 import createHash from './hash';
 import { objMap } from './utils/object-utils';
@@ -19,7 +20,6 @@ import {
   priorityForAtRule,
   wrapWithAtRules,
 } from './stylex-vars-utils';
-import { type CSSType, isCSSType } from './types';
 
 type VarsKeysWithStringValues<Vars: VarsConfig> = $ReadOnly<{
   [$Keys<Vars>]: string,

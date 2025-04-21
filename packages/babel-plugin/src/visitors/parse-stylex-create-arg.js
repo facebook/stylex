@@ -9,9 +9,11 @@
 
 /* eslint-disable no-unused-vars */
 import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
+
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
+import { evaluate } from '../utils/evaluate-path';
 import { create, utils } from '../shared';
 import { messages } from '../shared';
 import {

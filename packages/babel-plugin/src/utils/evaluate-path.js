@@ -21,9 +21,10 @@
  * - It can handle object spreads when the spread value itself is statically evaluated.
  */
 
+import type { NodePath, Binding } from '@babel/traverse';
+
 import { parseSync } from '@babel/core';
 import traverse from '@babel/traverse';
-import type { NodePath, Binding } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';

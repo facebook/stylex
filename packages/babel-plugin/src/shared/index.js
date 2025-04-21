@@ -7,6 +7,13 @@
  * @flow strict
  */
 
+import type {
+  InjectableStyle as _InjectableStyle,
+  CompiledNamespaces as _CompiledNamespaces,
+  MutableCompiledNamespaces as _MutableCompiledNamespaces,
+  StyleXOptions as _StyleXOptions,
+} from './common-types';
+
 export type {
   RawStyles,
   StyleRule,
@@ -35,13 +42,6 @@ import {
   AT_RULE_PRIORITIES as _AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY as _PSEUDO_ELEMENT_PRIORITY,
 } from './utils/property-priorities';
-
-import type {
-  InjectableStyle as _InjectableStyle,
-  CompiledNamespaces as _CompiledNamespaces,
-  MutableCompiledNamespaces as _MutableCompiledNamespaces,
-  StyleXOptions as _StyleXOptions,
-} from './common-types';
 
 export const create: typeof styleXCreateSet = styleXCreateSet;
 export const defineVars: typeof styleXDefineVars = styleXDefineVars;

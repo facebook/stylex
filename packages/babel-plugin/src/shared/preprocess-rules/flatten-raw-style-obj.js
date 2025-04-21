@@ -7,8 +7,9 @@
  * @flow strict
  */
 
-import flatMapExpandedShorthands from './index';
 import type { RawStyles, StyleXOptions, TStyleValue } from '../common-types';
+
+import flatMapExpandedShorthands from './index';
 
 import {
   NullPreRule,

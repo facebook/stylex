@@ -9,6 +9,7 @@
 
 import type { InjectableConstStyle, StyleXOptions } from './common-types';
 import type { ConstsConfig } from './stylex-consts-utils';
+
 import { defaultOptions } from './utils/default-options';
 import * as messages from './messages';
 

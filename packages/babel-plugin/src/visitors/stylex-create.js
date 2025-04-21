@@ -7,15 +7,16 @@
  * @flow strict
  */
 
-import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import type { FunctionConfig } from '../utils/evaluate-path';
+import type { InjectableStyle } from '../shared';
+
+import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import {
   create as stylexCreate,
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
-  type InjectableStyle,
 } from '../shared';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
