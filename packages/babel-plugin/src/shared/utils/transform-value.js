@@ -39,6 +39,7 @@ export default function transformValue(
       'url(',
       'linear-gradient(',
       'image-set(',
+      'var(--',
     ];
 
     const cssContentKeywords = new Set([
