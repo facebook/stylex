@@ -7,8 +7,11 @@
  * @flow strict
  */
 
-import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
+import type { InjectableStyle } from '../shared';
+
+import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import {
   defineVars as stylexDefineVars,
@@ -16,10 +19,9 @@ import {
   utils,
   keyframes as stylexKeyframes,
   types as stylexTypes,
-  type InjectableStyle,
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
-import { evaluate, type FunctionConfig } from '../utils/evaluate-path';
+import { evaluate } from '../utils/evaluate-path';
 
 /// This function looks for `stylex.defineVars` calls and transforms them.
 /// 1. It finds the first argument to `stylex.defineVars` and validates it.

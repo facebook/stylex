@@ -9,6 +9,8 @@
 
 'use strict';
 
+import type { StyleXOptions } from '../common-types';
+
 import convertFontSizeToRem from './normalizers/font-size-px-to-rem';
 import normalizeLeadingZero from './normalizers/leading-zero';
 import normalizeQuotes from './normalizers/quotes';
@@ -19,7 +21,6 @@ import normalizeZeroDimensions from './normalizers/zero-dimensions';
 import detectUnclosedFns from './normalizers/detect-unclosed-fns';
 import parser from 'postcss-value-parser';
 import convertCamelCaseValues from './normalizers/convert-camel-case-values';
-import type { StyleXOptions } from '../common-types';
 
 // `Timings` should be before `LeadingZero`, because it
 // changes 500ms to 0.5s, then `LeadingZero` makes it .5s

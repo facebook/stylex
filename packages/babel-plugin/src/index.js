@@ -7,10 +7,11 @@
  * @flow strict
  */
 
-import * as t from '@babel/types';
 import type { NodePath } from '@babel/traverse';
 import type { PluginObj } from '@babel/core';
 import type { StyleXOptions } from './utils/state-manager';
+
+import * as t from '@babel/types';
 import StateManager from './utils/state-manager';
 import {
   EXTENSIONS,
@@ -20,9 +21,9 @@ import {
 } from './utils/state-manager';
 import { readImportDeclarations, readRequires } from './visitors/imports';
 import transformStyleXCreate from './visitors/stylex-create';
+import transformStyleXCreateTheme from './visitors/stylex-create-theme';
 import transformStyleXDefineVars from './visitors/stylex-define-vars';
 import transformStyleXDefineConsts from './visitors/stylex-define-consts';
-import transformStyleXCreateTheme from './visitors/stylex-create-theme';
 import transformStyleXKeyframes from './visitors/stylex-keyframes';
 import transformStylexCall, {
   skipStylexMergeChildren,

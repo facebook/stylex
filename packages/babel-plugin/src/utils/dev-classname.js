@@ -8,6 +8,7 @@
  */
 
 import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
+
 import path from 'path';
 import StateManager from './state-manager';
 

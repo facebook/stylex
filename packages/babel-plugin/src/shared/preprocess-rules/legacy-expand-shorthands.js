@@ -7,9 +7,9 @@
  * @flow strict
  */
 
-import splitValue from '../utils/split-css-value';
-
 import type { TStyleValue } from '../common-types';
+
+import splitValue from '../utils/split-css-value';
 
 // TODO: to be added later.
 // const aliases = {

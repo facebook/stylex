@@ -7,21 +7,22 @@
  * @flow strict
  */
 
-import * as t from '@babel/types';
 import type { PluginPass } from '@babel/core';
 import type { NodePath } from '@babel/traverse';
 import type {
   CompiledNamespaces,
   StyleXOptions as RuntimeOptions,
 } from '../shared';
+import type { Check } from './validate';
+import type { ImportOptions } from '@babel/helper-module-imports';
+
+import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
 import path from 'path';
 import fs from 'fs';
 import url from 'url';
-import type { Check } from './validate';
 import * as z from './validate';
 import { addDefault, addNamed } from '@babel/helper-module-imports';
-import type { ImportOptions } from '@babel/helper-module-imports';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 
 type ImportAdditionOptions = Omit<
