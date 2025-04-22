@@ -14,7 +14,6 @@ const options = {
   dev: !isProd,
   test: false,
   stylexSheetName: '<>',
-  genConditionalClasses: true,
   unstable_moduleResolution: {
     type: 'commonJS',
     rootDir: path.join(__dirname, '../..'),

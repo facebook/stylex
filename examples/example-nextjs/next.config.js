@@ -32,7 +32,6 @@ module.exports = {
                 {
                   dev: dev,
                   runtimeInjection: false,
-                  genConditionalClasses: true,
                   treeshakeCompensation: true,
                   aliases: {
                     '@/*': [path.join(__dirname, '*')],

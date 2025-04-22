@@ -120,7 +120,7 @@ export default function transformStyleXMerge(
       break;
     }
   }
-  if (!state.options.genConditionalClasses && conditional) {
+  if (!state.options.enableInlinedConditionalMerge && conditional) {
     bailOut = true;
   }
   if (bailOut) {
