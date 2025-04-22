@@ -15,8 +15,8 @@ export const defaultOptions: StyleXOptions = {
   debug: false,
   enableDebugClassNames: true,
   enableDebugDataProp: true,
+  enableFontSizePxToRem: true,
   enableMinifiedKeys: true,
-  useRemForFontSize: true,
   styleResolution: 'application-order',
   test: false,
 };

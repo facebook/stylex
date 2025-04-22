@@ -14,7 +14,7 @@ const options = {
   styleResolution: 'legacy-expand-shorthands',
   dev: false,
   debug: false,
-  useRemForFontSize: true,
+  enableFontSizePxToRem: true,
   runtimeInjection: false,
   test: false,
 };

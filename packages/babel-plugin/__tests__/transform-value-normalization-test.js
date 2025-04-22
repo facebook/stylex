@@ -23,7 +23,6 @@ function transform(source, opts = {}) {
         stylexPlugin,
         {
           runtimeInjection: true,
-          useRemForFontSize: true,
           ...opts,
         },
       ],
@@ -268,10 +267,11 @@ describe('@stylexjs/babel-plugin', () => {
   });
 
   describe('[transform] fontSize with:', () => {
-    describe('useRemForFontSize: true', () => {
+    describe('enableFontSizePxToRem: true', () => {
       test('transforms font size from px to rem', () => {
         expect(
-          transform(`
+          transform(
+            `
             import stylex from 'stylex';
             const styles = stylex.create({
               foo: {
@@ -287,7 +287,9 @@ describe('@stylexjs/babel-plugin', () => {
                 fontSize: 'inherit',
               }
             });
-          `),
+          `,
+            { enableFontSizePxToRem: true },
+          ),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
@@ -301,14 +303,17 @@ describe('@stylexjs/babel-plugin', () => {
 
       test('transforms font size from px to rem even with calc', () => {
         expect(
-          transform(`
+          transform(
+            `
             import stylex from 'stylex';
             const styles = stylex.create({
               foo: {
                 fontSize: 'calc(100% - 24px)',
               },
             });
-          `),
+          `,
+            { enableFontSizePxToRem: true },
+          ),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
@@ -318,7 +323,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
-    describe('useRemForFontSize: false', () => {
+    describe('enableFontSizePxToRem: false', () => {
       test('ignores px font size', () => {
         expect(
           transform(
@@ -339,7 +344,6 @@ describe('@stylexjs/babel-plugin', () => {
               }
             });
           `,
-            { useRemForFontSize: false },
           ),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -363,7 +367,6 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `,
-            { useRemForFontSize: false },
           ),
         ).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
