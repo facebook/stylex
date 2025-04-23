@@ -14,7 +14,6 @@ import { evaluate } from '../utils/evaluate-path';
 import { utils, defineConsts as styleXDefineConsts, messages } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import StateManager from '../utils/state-manager';
-import crypto from 'crypto';
 
 export default function transformStyleXDefineConsts(
   callExpressionPath: NodePath<t.CallExpression>,
@@ -65,24 +64,12 @@ export default function transformStyleXDefineConsts(
     const exportName = varId.name;
     const themeName = utils.genFileBasedIdentifier({ fileName, exportName });
 
-    const constHash = crypto
-      .createHash('md5')
-      .update(JSON.stringify(value))
-      .digest('hex')
-      .slice(0, 8);
-
     const [transformedJsOutput, jsOutput] = styleXDefineConsts(value, {
       ...state.options,
       themeName,
     });
 
-    const outputWithName = {
-      ...transformedJsOutput,
-      __constName__: themeName,
-      __constHash__: constHash,
-    };
-
-    callExpressionPath.replaceWith(convertObjectToAST(outputWithName));
+    callExpressionPath.replaceWith(convertObjectToAST(transformedJsOutput));
 
     const styles = Object.entries(jsOutput).map(([_, obj]) => [
       obj.constKey,

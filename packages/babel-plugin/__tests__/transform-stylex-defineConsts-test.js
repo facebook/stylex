@@ -80,9 +80,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const breakpoints = {
           sm: "(min-width: 768px)",
           md: "(min-width: 1024px)",
-          lg: "(min-width: 1280px)",
-          __constName__: "TestTheme.stylex.js//breakpoints",
-          __constHash__: "1050fec2"
+          lg: "(min-width: 1280px)"
         };"
       `);
 
@@ -144,9 +142,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const breakpoints = {
           sm: "(min-width: 768px)",
           md: "(min-width: 1024px)",
-          lg: "(min-width: 1280px)",
-          __constName__: "TestTheme.stylex.js//breakpoints",
-          __constHash__: "1050fec2"
+          lg: "(min-width: 1280px)"
         };"
       `);
 
@@ -197,9 +193,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
         export const sizes = {
-          "font-size*large": "18px",
-          __constName__: "TestTheme.stylex.js//sizes",
-          __constHash__: "5fa8e495"
+          "font-size*large": "18px"
         };"
       `);
 
@@ -230,9 +224,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
         export const levels = {
-          "1": "one",
-          __constName__: "TestTheme.stylex.js//levels",
-          __constHash__: "37cea1df"
+          "1": "one"
         };"
       `);
 

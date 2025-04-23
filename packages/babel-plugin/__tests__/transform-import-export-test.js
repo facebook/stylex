@@ -204,9 +204,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
@@ -303,9 +301,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import * as foo from '@stylexjs/stylex';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
@@ -349,9 +345,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import { create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, props } from '@stylexjs/stylex';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
@@ -402,9 +396,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import { create as _create, createTheme as _createTheme, defineConsts as _defineConsts, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, props as _props } from '@stylexjs/stylex';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
@@ -441,9 +433,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from 'foo-bar';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
@@ -491,9 +481,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import { css, html } from 'react-strict-dom';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
@@ -530,9 +518,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(code).toMatchInlineSnapshot(`
         "import stylex from 'stylex';
         export const constants = {
-          mediaQuery: "@media (min-width: 768px)",
-          __constName__: "vars.stylex.js//constants",
-          __constHash__: "05fd080c"
+          mediaQuery: "@media (min-width: 768px)"
         };
         export const vars = {
           bar: "var(--x1hi1hmf)",
