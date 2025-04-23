@@ -18,6 +18,8 @@ describe('transformValue content property tests', () => {
       'image-set("image1x.png" 1x, "image2x.png" 2x)',
       '"prefix"attr(href)',
       'url(foo.jpg)attr(alt)',
+      'var(--test)',
+      'var(--test, "default")',
     ];
 
     functions.forEach((input) => {
