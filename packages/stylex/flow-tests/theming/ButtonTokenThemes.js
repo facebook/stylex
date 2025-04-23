@@ -9,9 +9,8 @@
 
 import type { Theme } from '../../src/stylex';
 
-import { ButtonTokens } from './ButtonTokens.stylex';
-
 import * as stylex from '../../src/stylex';
+import { ButtonTokens } from './ButtonTokens.stylex';
 
 /* eslint-disable no-unused-vars */
 
