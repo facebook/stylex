@@ -136,9 +136,12 @@ describe('Test CSS Type: calc()', () => {
       new Calc({
         type: '*',
         left: {
-          type: '+',
-          left: 10,
-          right: 5,
+          type: 'group',
+          expr: {
+            type: '+',
+            left: 10,
+            right: 5,
+          },
         },
         right: 2,
       }),
@@ -148,13 +151,16 @@ describe('Test CSS Type: calc()', () => {
         type: '-',
         left: new Percentage(100),
         right: {
-          type: '/',
-          left: {
-            type: NumberType.Integer,
-            value: 30,
-            unit: 'px',
+          type: 'group',
+          expr: {
+            type: '/',
+            left: {
+              type: NumberType.Integer,
+              value: 30,
+              unit: 'px',
+            },
+            right: 2,
           },
-          right: 2,
         },
       }),
     );

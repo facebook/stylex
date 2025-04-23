@@ -39,6 +39,8 @@ type Division = {
   right: CalcValue,
 };
 
+type Group = { type: 'group', expr: CalcValue };
+
 type CalcValue =
   | number
   | TokenDimension[4]
@@ -47,9 +49,10 @@ type CalcValue =
   | Addition
   | Subtraction
   | Multiplication
-  | Division;
+  | Division
+  | Group;
 
-const valueParser = TokenParser.oneOf(
+export const valueParser: TokenParser<CalcValue> = TokenParser.oneOf(
   calcConstant,
   TokenParser.tokens.Number.map((number) => number[4].value),
   TokenParser.tokens.Dimension.map((dimension) => dimension[4]),
@@ -124,31 +127,31 @@ const splitByMultiplicationOrDivision = (
   };
 };
 
-const operationsParser: TokenParser<CalcValue> = TokenParser.sequence(
-  TokenParser.oneOf(valueParser, () =>
-    TokenParser.sequence(
-      TokenParser.tokens.OpenParen,
-      operationsParser,
-      TokenParser.tokens.CloseParen,
+// needed for lazy ref
+// eslint-disable-next-line prefer-const
+let operationsParser: TokenParser<CalcValue>;
+
+// group all calculations to retain parentheses
+const parenthesizedParser: TokenParser<CalcValue> =
+  TokenParser.tokens.OpenParen.skip(TokenParser.tokens.Whitespace.optional)
+    .flatMap(() =>
+      operationsParser
+        .skip(TokenParser.tokens.Whitespace.optional)
+        .skip(TokenParser.tokens.CloseParen),
     )
-      .separatedBy(TokenParser.tokens.Whitespace.optional)
-      .map(([_, value]) => value),
-  ),
+    .map((expr) => ({ type: 'group', expr }));
+
+operationsParser = TokenParser.sequence(
+  // either a value or a group
+  TokenParser.oneOf(valueParser, parenthesizedParser),
+
   TokenParser.zeroOrMore(
     TokenParser.sequence(
       TokenParser.tokens.Delim.map((delim) => delim[4].value).where(
         (delim) =>
           delim === '*' || delim === '/' || delim === '+' || delim === '-',
       ),
-      TokenParser.oneOf(valueParser, () =>
-        TokenParser.sequence(
-          TokenParser.tokens.OpenParen,
-          operationsParser,
-          TokenParser.tokens.CloseParen,
-        )
-          .separatedBy(TokenParser.tokens.Whitespace.optional)
-          .map(([_, value]) => value),
-      ),
+      TokenParser.oneOf(valueParser, parenthesizedParser),
     ).separatedBy(TokenParser.tokens.Whitespace.optional),
   ).separatedBy(TokenParser.tokens.Whitespace.optional),
 )
