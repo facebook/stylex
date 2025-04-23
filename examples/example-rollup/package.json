@@ -6,14 +6,25 @@
   "main": "index.js",
   "scripts": {
     "example:build": "rollup --config ./rollup.config.mjs",
-    "example:dev": "rollup --config ./rollup.config.mjs --watch"
+    "example:dev": "rollup --config ./rollup.config.mjs --watch",
+    "example:serve": "serve"
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/stylex": "0.12.0"
+    "@stylexjs/stylex": "0.12.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.7",
     "@stylexjs/rollup-plugin": "0.12.0",
-    "rollup": "^4.24.0"
+    "rollup": "^4.24.0",
+    "serve": "^14.2.4"
   }
 }
