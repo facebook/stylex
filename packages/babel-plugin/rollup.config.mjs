@@ -21,13 +21,17 @@ const external = [
   '@babel/traverse',
   '@babel/types',
   '@babel/core',
-  'path',
-  'fs',
-  'assert',
-  'module',
-  'node:path',
+  'node:crypto',
   'node:fs',
   'node:module',
+  'node:path',
+  'node:url',
+  'assert',
+  'crypto',
+  'fs',
+  'module',
+  'path',
+  'url'
 ];
 
 const config = {
