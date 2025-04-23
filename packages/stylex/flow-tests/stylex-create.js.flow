@@ -17,7 +17,7 @@ import type {
   CompiledStyles,
   InlineStyles,
   StyleXVar,
-} from '../src/StyleXTypes';
+} from '../src/types/StyleXTypes';
 
 import * as stylex from '../src/stylex';
 import { legacyMerge } from '../src/stylex';

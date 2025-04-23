@@ -9,7 +9,7 @@
 
 /* eslint-disable no-unused-vars */
 
-import type { StyleXVar, VarGroup, Theme } from '../src/StyleXTypes';
+import type { StyleXVar, VarGroup, Theme } from '../src/types/StyleXTypes';
 
 import * as React from 'react';
 import * as stylex from '../src/stylex';

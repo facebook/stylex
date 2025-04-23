@@ -9,29 +9,17 @@
 
 /* eslint-disable no-unused-vars */
 
-import type {
-  StaticStyles,
-  StyleXStyles,
-  StaticStylesWithout,
-  StyleXStylesWithout,
-  StyleXClassNameFor,
-  InlineStyles,
-  XStyle,
-} from '@stylexjs/stylex/lib/StyleXTypes';
+import type { StaticStyles } from '@stylexjs/stylex';
 
 import React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import { legacyMerge } from '@stylexjs/stylex';
 
 type Props = {
-  xstyle?: StyleXStyles<>,
+  xstyle?: StaticStyles<>,
 };
 
 function Component({ xstyle }: Props) {
-  // $FlowExpectedError - `stylex()` can't handle dynamic styles
-  <div className={legacyMerge(xstyle)} />;
-
-  <div {...stylex.props([xstyle])} />;
+  return <div {...stylex.props(xstyle)} />;
 }
 
 const styles = stylex.create({

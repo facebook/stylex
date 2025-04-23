@@ -21,11 +21,9 @@ const args = yargs(process.argv)
     type: 'string',
   }).argv;
 
-const inputDir = path.join(process.cwd(), args.inputDir);
-const outputDir = path.join(process.cwd(), args.outputDir);
-rewriteImportsInFolder(inputDir, outputDir)
+rewriteImportsInFolder(args.inputDir, args.outputDir)
   .then(() => {
-    console.log('Done generating type definition files');
+    console.log('Successfully rewrote imports');
   })
   .catch((err) => {
     console.error(err);
@@ -36,21 +34,22 @@ async function rewriteImportsInFolder(
   inputDir /*: string*/,
   outputDir /*: string*/,
 ) {
-  await fs.mkdir(outputDir, { recursive: true });
-  const dirents = await fs.readdir(inputDir, { withFileTypes: true });
+  const inputAbsoluteDir = path.join(process.cwd(), inputDir);
+
+  const dirents = await fs.readdir(inputAbsoluteDir, {
+    recursive: true,
+    withFileTypes: true,
+  });
+
   for (const dirent of dirents) {
-    // We only care about the `stylex` package for now which has
-    // a flat file tree.
-    if (dirent.isDirectory()) {
-      continue;
-    }
     if (typeof dirent.name !== 'string' || !dirent.name.endsWith('.js')) {
       continue;
     }
     const fileName = dirent.name.toString();
-    const inputFullPath = path.join(inputDir, fileName);
-    const outputFullPath = path.join(outputDir, fileName);
-    const inputFile = await fs.readFile(inputFullPath, 'utf8');
+    const inputAbsoluteFilePath = path.join(dirent.path, fileName);
+    const inputRelativeDir = dirent.path.split(inputAbsoluteDir)[1];
+    const outputRelativePath = path.join(outputDir, inputRelativeDir, fileName);
+    const inputFile = await fs.readFile(inputAbsoluteFilePath, 'utf8');
     let outputFile = await translateFlowImportsTo(
       inputFile,
       {},
@@ -64,6 +63,8 @@ async function rewriteImportsInFolder(
         '',
       );
     }
-    await fs.writeFile(outputFullPath, outputFile);
+    const dirPath = path.dirname(outputRelativePath);
+    await fs.mkdir(dirPath, { recursive: true });
+    await fs.writeFile(outputRelativePath, outputFile);
   }
 }

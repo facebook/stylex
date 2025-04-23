@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { ValueWithDefault } from './util-types';
+import type { ValueWithDefault } from './StyleXUtils';
 
 export type CSSSyntax =
   | '*'

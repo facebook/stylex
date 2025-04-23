@@ -25,9 +25,9 @@ import type {
   StyleXStylesWithout,
   Theme,
   VarGroup,
-} from './StyleXTypes';
-import type { ValueWithDefault } from './util-types';
-import * as Types from './VarTypes';
+} from './types/StyleXTypes';
+import type { ValueWithDefault } from './types/StyleXUtils';
+import * as Types from './types/VarTypes';
 
 export type {
   StaticStyles,
@@ -57,16 +57,16 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
   throw errorForFn('createTheme');
 };
 
-export const defineVars: StyleX$DefineVars = function stylexDefineVars(
-  _styles: $FlowFixMe,
-) {
-  throw errorForFn('defineVars');
-};
-
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts(
   _styles: $FlowFixMe,
 ) {
   throw errorForFn('defineConsts');
+};
+
+export const defineVars: StyleX$DefineVars = function stylexDefineVars(
+  _styles: $FlowFixMe,
+) {
+  throw errorForFn('defineVars');
 };
 
 export const firstThatWorks = <T: string | number>(

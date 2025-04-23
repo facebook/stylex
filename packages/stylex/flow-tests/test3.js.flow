@@ -9,23 +9,19 @@
 
 /* eslint-disable no-unused-vars */
 
-import type {
-  StyleXClassNameFor,
-  XStyle,
-} from '@stylexjs/stylex/lib/StyleXTypes';
+import type { StaticStyles } from '@stylexjs/stylex';
 
 import React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import { legacyMerge } from '@stylexjs/stylex';
 
 type Props = {
-  xstyle?: XStyle<{
-    backgroundColor?: StyleXClassNameFor<'backgroundColor', string>,
+  xstyle?: StaticStyles<{
+    backgroundColor?: string,
   }>,
 };
 
 function Component({ xstyle }: Props) {
-  return <div className={legacyMerge(xstyle)} />;
+  return <div {...stylex.props(xstyle)} />;
 }
 
 const styles = stylex.create({

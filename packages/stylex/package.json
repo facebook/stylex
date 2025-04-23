@@ -2,29 +2,19 @@
   "name": "@stylexjs/stylex",
   "version": "0.12.0",
   "description": "A library for defining styles for optimized user interfaces.",
-  "main": "./lib/stylex.js",
+  "main": "./lib/cjs/stylex.js",
   "module": "./lib/es/stylex.mjs",
-  "types": "./lib/stylex.d.ts",
+  "types": "./lib/cjs/stylex.d.ts",
   "exports": {
     ".": {
       "import": "./lib/es/stylex.mjs",
-      "require": "./lib/stylex.js",
-      "types": "./lib/stylex.d.ts"
-    },
-    "./lib/StyleXTypes": {
-      "import": "./lib/StyleXTypes.js",
-      "require": "./lib/StyleXTypes.js",
-      "types": "./lib/StyleXTypes.d.ts"
-    },
-    "./lib/StyleXSheet": {
-      "import": "./lib/es/StyleXSheet.mjs",
-      "require": "./lib/StyleXSheet.js",
-      "types": "./lib/StyleXSheet.d.ts"
+      "require": "./lib/cjs/stylex.js",
+      "types": "./lib/cjs/stylex.d.ts"
     },
     "./lib/stylex-inject": {
-      "import": "./lib/es/stylex-inject.mjs",
-      "require": "./lib/stylex-inject.js",
-      "types": "./lib/stylex-inject.d.ts"
+      "import": "./lib/es/inject.mjs",
+      "require": "./lib/cjs/inject.js",
+      "types": "./lib/cjs/inject.d.ts"
     },
     "./package.json": "./package.json"
   },
@@ -34,13 +24,12 @@
   },
   "license": "MIT",
   "scripts": {
-    "prebuild": "gen-types -i src/ -o lib/",
-    "build:cjs": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
-    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
-    "postbuild:esm": "rollup -c ./rollup.config.mjs",
+    "prebuild": "rimraf lib && gen-types -i src/ -o lib/cjs && cp -r lib/cjs lib/es",
+    "build:cjs": "cross-env BABEL_ENV=cjs rollup -c ./rollup.config.mjs",
+    "build:esm": "cross-env BABEL_ENV=esm rollup -c ./rollup.config.mjs",
     "build": "npm run build:cjs && npm run build:esm",
-    "build-haste": "rewrite-imports -i src/ -o lib/",
-    "test": "jest"
+    "build-haste": "rimraf lib && rewrite-imports -i src/ -o lib/",
+    "test": "cross-env BABEL_ENV=test jest"
   },
   "dependencies": {
     "css-mediaquery": "^0.1.2",
@@ -65,10 +54,14 @@
     "@rollup/plugin-replace": "^6.0.1",
     "babel-plugin-syntax-hermes-parser": "^0.26.0",
     "cross-env": "^7.0.3",
+    "rimraf": "^5.0.10",
     "rollup": "^4.24.0",
     "scripts": "0.12.0"
   },
-  "jest": {},
+  "jest": {
+    "prettierPath": null,
+    "testEnvironment": "jsdom"
+  },
   "files": [
     "lib/*"
   ]
