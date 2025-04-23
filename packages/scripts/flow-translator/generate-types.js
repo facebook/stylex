@@ -148,7 +148,7 @@ const inputDir = path.join(process.cwd(), args.inputDir);
 const outputDir = path.join(process.cwd(), args.outputDir);
 generateTypes(inputDir, outputDir)
   .then(() => {
-    console.log('Done generating type definition files');
+    console.log('Successfully generated type definitions');
   })
   .catch((err) => {
     console.error(err);
