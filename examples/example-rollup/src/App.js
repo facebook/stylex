@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- *
  */
 
 'use strict';
@@ -18,20 +16,24 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.pink7,
+    backgroundColor: 'lightblue',
   },
   card: {
-    backgroundColor: colors.blue9,
-    padding: sizes.spacing5,
-    borderRadius: sizes.spacing2,
+    backgroundColor: '#fefefe',
+    padding: '1rem',
+    borderRadius: 10,
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    color: colors.gray0,
-    fontFamily: fonts.mono,
+    color: '#333',
+    fontFamily: 'Arial',
   },
 });
 
 export default function App() {
-  return stylex.props(styles.main, styles.card);
+  return (
+    <div {...stylex.props(styles.main)}>
+      <div {...stylex.props(styles.card)}>Content</div>
+    </div>
+  );
 }
