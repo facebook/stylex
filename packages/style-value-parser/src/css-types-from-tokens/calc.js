@@ -175,7 +175,7 @@ export class Calc {
     this.value = value;
   }
   toString(): string {
-    return this.value.toString();
+    return `calc(${calcValueToString(this.value)})`;
   }
   static get parser(): TokenParser<Calc> {
     return TokenParser.sequence(
@@ -188,4 +188,52 @@ export class Calc {
       .separatedBy(TokenParser.tokens.Whitespace.optional)
       .map(([_, value, _closeParen]) => new Calc(value));
   }
+}
+
+function calcValueToString(value: CalcValue | string): string {
+  // plain numbers
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+
+  // raw identifiers/constants
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  // explicit user‑written group
+  if (value != null && typeof value === 'object' && 'expr' in value) {
+    const group: Group = value as any;
+    return '(' + calcValueToString(group.expr) + ')';
+  }
+
+  // binary operations
+  if (
+    value != null &&
+    typeof value === 'object' &&
+    'left' in value &&
+    'right' in value &&
+    typeof (value as any).type === 'string'
+  ) {
+    const opNode: Addition | Subtraction | Multiplication | Division =
+      value as any;
+    return [
+      calcValueToString(opNode.left),
+      opNode.type,
+      calcValueToString(opNode.right),
+    ].join(' ');
+  }
+
+  // dimensions or percentages
+  if (
+    value != null &&
+    typeof value === 'object' &&
+    'value' in value &&
+    'unit' in value
+  ) {
+    const d: { value: number, unit: string } = value as any;
+    return `${d.value}${d.unit}`;
+  }
+
+  return String(value);
 }

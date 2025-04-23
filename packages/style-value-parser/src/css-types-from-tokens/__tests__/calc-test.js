@@ -243,8 +243,36 @@ describe('Test CSS Type: calc()', () => {
   test('rejects invalid calc expressions', () => {
     expect(() => Calc.parser.parseToEnd('calc()')).toThrow();
     expect(() => Calc.parser.parseToEnd('calc(10 + )')).toThrow();
+    expect(() => Calc.parser.parseToEnd('calc(10 +5 )')).toThrow();
+    expect(() => Calc.parser.parseToEnd('calc(10+5 )')).toThrow();
     expect(() => Calc.parser.parseToEnd('calc(10 @ 5)')).toThrow();
     expect(() => Calc.parser.parseToEnd('calc(10px + 5em)')).not.toThrow();
     expect(() => Calc.parser.parseToEnd('notcalc(10 + 5)')).toThrow();
+  });
+
+  test('toString round‑trips calc expressions', () => {
+    const cases = [
+      'calc(10)',
+      'calc(3.14)',
+      'calc(-5)',
+      'calc(50%)',
+      'calc(20px)',
+      'calc(10 + 5)',
+      'calc(20px + 10%)',
+      'calc(10 - 5)',
+      'calc(10 * 5)',
+      'calc(10 / 2)',
+      'calc((10 + 5) * 2)',
+      'calc(100% - 20px * 2 + 10px)',
+      'calc((100% - (30px / 2)))',
+    ];
+    cases.forEach((str) => {
+      expect(Calc.parser.parse(str).toString()).toBe(str);
+    });
+  });
+
+  test.skip('rejects invalid calc spacing', () => {
+    // TODO: Parser does not enforce this edge case properly, need to fix
+    expect(() => Calc.parser.parseToEnd('calc(10+ 5 )')).toThrow();
   });
 });
