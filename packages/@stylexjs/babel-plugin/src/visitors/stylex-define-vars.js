@@ -18,6 +18,7 @@ import {
   messages,
   utils,
   keyframes as stylexKeyframes,
+  positionTry as stylexPositionTry,
   types as stylexTypes,
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
@@ -74,7 +75,8 @@ export default function transformStyleXDefineVars(
     > = callExpressionPath.get('arguments');
     const firstArg = args[0];
 
-    const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+    const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
+      {};
 
     // eslint-disable-next-line no-inner-declarations
     function keyframes<
@@ -86,14 +88,31 @@ export default function transformStyleXDefineVars(
         animation,
         state.options,
       );
-      injectedKeyframes[animationName] = injectedStyle;
+      otherInjectedCSSRules[animationName] = injectedStyle;
       return animationName;
+    }
+
+    // eslint-disable-next-line no-inner-declarations
+    function positionTry<
+      Obj: {
+        +[k: string]: string | number,
+      },
+    >(fallbackStyles: Obj): string {
+      const [positionTryName, injectedStyle] = stylexPositionTry(
+        fallbackStyles,
+        state.options,
+      );
+      otherInjectedCSSRules[positionTryName] = injectedStyle;
+      return positionTryName;
     }
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
     state.stylexKeyframesImport.forEach((name) => {
       identifiers[name] = { fn: keyframes };
+    });
+    state.stylexPositionTryImport.forEach((name) => {
+      identifiers[name] = { fn: positionTry };
     });
     state.stylexTypesImport.forEach((name) => {
       identifiers[name] = stylexTypes;
@@ -104,6 +123,7 @@ export default function transformStyleXDefineVars(
       }
 
       memberExpressions[name].keyframes = { fn: keyframes };
+      memberExpressions[name].positionTry = { fn: positionTry };
       identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
     });
 
@@ -140,7 +160,7 @@ export default function transformStyleXDefineVars(
     );
 
     const injectedStyles = {
-      ...injectedKeyframes,
+      ...otherInjectedCSSRules,
       ...injectedStylesSansKeyframes,
     };
 

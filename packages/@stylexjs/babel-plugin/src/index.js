@@ -25,6 +25,7 @@ import transformStyleXCreateTheme from './visitors/stylex-create-theme';
 import transformStyleXDefineVars from './visitors/stylex-define-vars';
 import transformStyleXDefineConsts from './visitors/stylex-define-consts';
 import transformStyleXKeyframes from './visitors/stylex-keyframes';
+import transformStyleXPositionTry from './visitors/stylex-position-try';
 import transformStylexCall, {
   skipStylexMergeChildren,
 } from './visitors/stylex-merge';
@@ -278,10 +279,23 @@ function styleXTransform(): PluginObj<> {
 
       CallExpression(path: NodePath<t.CallExpression>) {
         if (path.parentPath.isVariableDeclarator()) {
-          // # Look for `stylex.keyframes` calls
-          //   Needs to be handled *before* `stylex.create` as the `create` call
-          //   may use the generated animation name.
-          transformStyleXKeyframes(path.parentPath, state);
+          const parentPath = path.parentPath;
+          if (parentPath.isVariableDeclarator()) {
+            // Look for `stylex.keyframes` calls
+            // Needs to be handled *before* `stylex.create` as the `create` call
+            // may use the generated animation name.
+            transformStyleXKeyframes(
+              parentPath as NodePath<t.VariableDeclarator>,
+              state,
+            );
+            // Look for `stylex.positionTry` calls
+            // Needs to be handled *before* `stylex.create` as the `create` call
+            // may use the generated position-try name.
+            transformStyleXPositionTry(
+              parentPath as NodePath<t.VariableDeclarator>,
+              state,
+            );
+          }
         }
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);

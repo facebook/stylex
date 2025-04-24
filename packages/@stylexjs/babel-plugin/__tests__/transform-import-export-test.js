@@ -52,6 +52,7 @@ const defaultImportMap = {
   defineVars: 'stylex.defineVars',
   firstThatWorks: 'stylex.firstThatWorks',
   keyframes: 'stylex.keyframes',
+  positionTry: 'stylex.positionTry',
   props: 'stylex.props',
 };
 
@@ -74,6 +75,7 @@ function createStylesFixture({
     defineVars,
     firstThatWorks,
     keyframes,
+    positionTry,
     props,
   } = importMap;
 
@@ -99,6 +101,15 @@ function createStylesFixture({
 
   return `
     ${defineConstsAndVarsOutput}
+    const fallback1 = ${positionTry}({
+      anchorName: '--myAnchor',
+      positionArea: 'top left',
+    });
+    const fallback2 = ${positionTry}({
+      anchorName: '--otherAnchor',
+      top: 'anchor(bottom)',
+      insetInlineStart: 'anchor(start)',
+    });
     const styles = ${create}({
       root: {
         animationName: ${keyframes}({
@@ -109,6 +120,7 @@ function createStylesFixture({
             backgroundColor: 'orange'
           },
         }),
+        positionTryFallbacks: \`\${fallback1}, \${fallback2}\`,
         color: {
           default: 'red',
           [constants.mediaQuery]: 'blue'
@@ -210,9 +222,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
@@ -229,6 +244,22 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "--x5jppmd",
+              {
+                "ltr": "@position-try --x5jppmd {anchor-name:anchor-name;anchor-name:--myAnchor;position-area:position-area;position-area:top left;}",
+                "rtl": "@position-try --x5jppmd {anchor-name:--myAnchor;position-area:top left;}",
+              },
+              1,
+            ],
+            [
+              "--x17pzx6",
+              {
+                "ltr": "@position-try --x17pzx6 {anchor-name:anchor-name;anchor-name:--otherAnchor;inset-inline-start:inset-inline-start;inset-inline-start:anchor(start);top:top;top:anchor(bottom);}",
+                "rtl": "@position-try --x17pzx6 {anchor-name:--otherAnchor;inset-inline-start:anchor(start);top:anchor(bottom);}",
+              },
+              1,
+            ],
+            [
               "xjx6k13-B",
               {
                 "ltr": "@keyframes xjx6k13-B{from{background-color:yellow;}to{background-color:orange;}}",
@@ -240,6 +271,14 @@ describe('@stylexjs/babel-plugin', () => {
               "x1qar0u3",
               {
                 "ltr": ".x1qar0u3{animation-name:xjx6k13-B}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "x7cint9",
+              {
+                "ltr": ".x7cint9{position-try-fallbacks:--x5jppmd,--x17pzx6}",
                 "rtl": null,
               },
               3000,
@@ -292,6 +331,7 @@ describe('@stylexjs/babel-plugin', () => {
           defineVars: 'foo.defineVars',
           firstThatWorks: 'foo.firstThatWorks',
           keyframes: 'foo.keyframes',
+          positionTry: 'foo.positionTry',
           props: 'foo.props',
         },
       });
@@ -307,9 +347,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
@@ -328,7 +371,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('import: named', () => {
       const fixture = createStylesFixture({
         importText:
-          '{create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, props}',
+          '{create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, positionTry, props}',
         importMap: {
           create: 'create',
           createTheme: 'createTheme',
@@ -336,6 +379,7 @@ describe('@stylexjs/babel-plugin', () => {
           defineVars: 'defineVars',
           firstThatWorks: 'firstThatWorks',
           keyframes: 'keyframes',
+          positionTry: 'positionTry',
           props: 'props',
         },
       });
@@ -343,7 +387,7 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, props } from '@stylexjs/stylex';
+        "import { create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, positionTry, props } from '@stylexjs/stylex';
         export const constants = {
           mediaQuery: "@media (min-width: 768px)"
         };
@@ -351,9 +395,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
@@ -378,6 +425,7 @@ describe('@stylexjs/babel-plugin', () => {
           defineVars as _defineVars,
           firstThatWorks as _firstThatWorks,
           keyframes as _keyframes,
+          positionTry as _positionTry,
           props as _props
         }`,
         importMap: {
@@ -387,6 +435,7 @@ describe('@stylexjs/babel-plugin', () => {
           defineVars: '_defineVars',
           firstThatWorks: '_firstThatWorks',
           keyframes: '_keyframes',
+          positionTry: '_positionTry',
           props: '_props',
         },
       });
@@ -394,7 +443,7 @@ describe('@stylexjs/babel-plugin', () => {
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { create as _create, createTheme as _createTheme, defineConsts as _defineConsts, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, props as _props } from '@stylexjs/stylex';
+        "import { create as _create, createTheme as _createTheme, defineConsts as _defineConsts, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, positionTry as _positionTry, props as _props } from '@stylexjs/stylex';
         export const constants = {
           mediaQuery: "@media (min-width: 768px)"
         };
@@ -402,9 +451,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
@@ -439,9 +491,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
@@ -469,6 +524,7 @@ describe('@stylexjs/babel-plugin', () => {
           defineVars: 'css.defineVars',
           firstThatWorks: 'css.firstThatWorks',
           keyframes: 'css.keyframes',
+          positionTry: 'css.positionTry',
           props: 'css.props',
         },
       });
@@ -487,9 +543,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true
@@ -524,9 +583,12 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const fallback1 = "--x5jppmd";
+        const fallback2 = "--x17pzx6";
         const styles = {
           root: {
             kKVMdj: "x1qar0u3",
+            k9M3vk: "x7cint9",
             kMwMTN: "x1e2nbdu x14693no",
             kVAEAm: "x15oojuh",
             $$css: true

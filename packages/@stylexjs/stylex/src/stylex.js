@@ -25,6 +25,7 @@ import type {
   StyleXStylesWithout,
   Theme,
   VarGroup,
+  PositionTry,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -77,6 +78,10 @@ export const firstThatWorks = <T: string | number>(
 
 export const keyframes = (_keyframes: Keyframes): string => {
   throw errorForFn('keyframes');
+};
+
+export const positionTry = (_positionTry: PositionTry): string => {
+  throw errorForFn('positionTry');
 };
 
 export function props(
@@ -184,6 +189,7 @@ type IStyleX = {
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
   keyframes: (keyframes: Keyframes) => string,
+  positionTry: (positionTry: PositionTry) => string,
   props: (
     this: ?mixed,
     ...styles: $ReadOnlyArray<
@@ -213,6 +219,7 @@ _legacyMerge.createTheme = createTheme;
 _legacyMerge.defineVars = defineVars;
 _legacyMerge.firstThatWorks = firstThatWorks;
 _legacyMerge.keyframes = keyframes;
+_legacyMerge.positionTry = positionTry;
 _legacyMerge.props = props;
 _legacyMerge.types = types;
 

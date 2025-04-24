@@ -17,6 +17,7 @@ import {
   createTheme as stylexCreateTheme,
   messages,
   keyframes as stylexKeyframes,
+  positionTry as stylexPositionTry,
   types,
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
@@ -78,7 +79,8 @@ export default function transformStyleXCreateTheme(
       );
     }
 
-    const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+    const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
+      {};
 
     // eslint-disable-next-line no-inner-declarations
     function keyframes<
@@ -90,14 +92,29 @@ export default function transformStyleXCreateTheme(
         animation,
         state.options,
       );
-      injectedKeyframes[animationName] = injectedStyle;
+      otherInjectedCSSRules[animationName] = injectedStyle;
       return animationName;
+    }
+
+    // eslint-disable-next-line no-inner-declarations
+    function positionTry<Obj: { +[k: string]: string | number }>(
+      animation: Obj,
+    ): string {
+      const [positionTryName, injectedStyle] = stylexPositionTry(
+        animation,
+        state.options,
+      );
+      otherInjectedCSSRules[positionTryName] = injectedStyle;
+      return positionTryName;
     }
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
     state.stylexKeyframesImport.forEach((name) => {
       identifiers[name] = { fn: keyframes };
+    });
+    state.stylexPositionTryImport.forEach((name) => {
+      identifiers[name] = { fn: positionTry };
     });
     state.stylexTypesImport.forEach((name) => {
       identifiers[name] = types;
@@ -108,6 +125,7 @@ export default function transformStyleXCreateTheme(
       }
 
       memberExpressions[name].keyframes = { fn: keyframes };
+      memberExpressions[name].positionTry = { fn: positionTry };
       identifiers[name] = { ...(identifiers[name] ?? {}), types };
     });
 
@@ -173,7 +191,7 @@ export default function transformStyleXCreateTheme(
     callExpressionPath.replaceWith(convertObjectToAST(overridesObj));
 
     const listOfStyles = Object.entries({
-      ...injectedKeyframes,
+      ...otherInjectedCSSRules,
       ...injectedStyles,
     }).map(([key, { priority, ...rest }]) => [key, rest, priority]);
 

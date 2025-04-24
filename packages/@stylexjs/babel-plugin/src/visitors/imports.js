@@ -64,6 +64,9 @@ export function readImportDeclarations(
             if (importedName === 'keyframes') {
               state.stylexKeyframesImport.add(localName);
             }
+            if (importedName === 'positionTry') {
+              state.stylexPositionTryImport.add(localName);
+            }
             if (importedName === 'include') {
               state.stylexIncludeImport.add(localName);
             }
@@ -130,6 +133,9 @@ export function readRequires(
           }
           if (prop.key.name === 'keyframes') {
             state.stylexKeyframesImport.add(value.name);
+          }
+          if (prop.key.name === 'positionTry') {
+            state.stylexPositionTryImport.add(value.name);
           }
           if (prop.key.name === 'include') {
             state.stylexIncludeImport.add(value.name);

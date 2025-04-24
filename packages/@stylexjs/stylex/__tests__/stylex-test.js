@@ -20,6 +20,7 @@ describe('stylex', () => {
       'defineVars',
       'firstThatWorks',
       'keyframes',
+      'positionTry',
     ].forEach((api) => {
       test(`stylex.${api}`, () => {
         expect(() => stylex[api]()).toThrow();
