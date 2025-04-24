@@ -51,3 +51,6 @@ export const ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS =
 export const ONLY_TOP_LEVEL =
   'create() is only allowed at the root of a program.';
 export const UNKNOWN_PROP_KEY = 'Unknown property key';
+
+export const POSITION_TRY_INVALID_PROPERTY =
+  'Invalid property in `positionTry()` call. It may only contain, positionAnchor, positionArea, inset properties (top, left, insetInline etc.), margin properties, size properties (height, inlineSize, etc.), and self-alignment properties (alignSelf, justifySelf, placeSelf)';

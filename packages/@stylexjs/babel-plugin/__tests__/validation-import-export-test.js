@@ -52,5 +52,23 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       }).not.toThrow();
     });
+
+    test('valid import: positionTry named import', () => {
+      expect(() => {
+        transform(`
+          import { positionTry } from '@stylexjs/stylex';
+          const positionName = positionTry({});
+        `);
+      }).not.toThrow();
+    });
+
+    test('valid import: positionTry from namespace import', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const positionName = stylex.positionTry({});
+        `);
+      }).not.toThrow();
+    });
   });
 });

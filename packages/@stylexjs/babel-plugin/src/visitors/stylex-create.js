@@ -17,6 +17,7 @@ import {
   create as stylexCreate,
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
+  positionTry as stylexPositionTry,
 } from '../shared';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
@@ -72,7 +73,8 @@ export default function transformStyleXCreate(
 
     state.inStyleXCreate = true;
 
-    const injectedKeyframes: { [animationName: string]: InjectableStyle } = {};
+    const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
+      {};
 
     // eslint-disable-next-line no-inner-declarations
     function keyframes<
@@ -84,8 +86,22 @@ export default function transformStyleXCreate(
         animation,
         state.options,
       );
-      injectedKeyframes[animationName] = injectedStyle;
+      otherInjectedCSSRules[animationName] = injectedStyle;
       return animationName;
+    }
+
+    // eslint-disable-next-line no-inner-declarations
+    function positionTry<
+      Obj: {
+        +[k: string]: string | number,
+      },
+    >(fallbackStyles: Obj): string {
+      const [positionTryName, injectedStyle] = stylexPositionTry(
+        fallbackStyles,
+        state.options,
+      );
+      otherInjectedCSSRules[positionTryName] = injectedStyle;
+      return positionTryName;
     }
 
     const identifiers: FunctionConfig['identifiers'] = {};
@@ -96,12 +112,16 @@ export default function transformStyleXCreate(
     state.stylexKeyframesImport.forEach((name) => {
       identifiers[name] = { fn: keyframes };
     });
+    state.stylexPositionTryImport.forEach((name) => {
+      identifiers[name] = { fn: positionTry };
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
       }
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
+      memberExpressions[name].positionTry = { fn: positionTry };
     });
 
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
@@ -149,7 +169,7 @@ export default function transformStyleXCreate(
       stylexCreate(plainObject, state.options);
 
     const injectedStyles = {
-      ...injectedKeyframes,
+      ...otherInjectedCSSRules,
       ...injectedStylesSansKeyframes,
       ...injectedInheritStyles,
     };

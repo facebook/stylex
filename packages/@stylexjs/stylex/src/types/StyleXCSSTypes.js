@@ -1411,8 +1411,8 @@ export type CSSProperties = $ReadOnly<{
   perspective?: all | perspective,
   perspectiveOrigin?: all | perspectiveOrigin,
   pointerEvents?: all | pointerEvents,
-  position?: all | position,
 
+  position?: all | position,
   positionAnchor?: all | string,
   positionArea?: all | positionArea,
   positionTry?: all | string,

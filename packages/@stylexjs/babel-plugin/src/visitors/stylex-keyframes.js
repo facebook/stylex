@@ -52,6 +52,7 @@ export default function transformStyleXKeyframes(
         SyntaxError,
       );
     }
+    // TODO: We should allow using references to local constants here.
     if (nodeInit.arguments[0].type !== 'ObjectExpression') {
       throw path.buildCodeFrameError(
         messages.nonStyleObject('keyframes'),

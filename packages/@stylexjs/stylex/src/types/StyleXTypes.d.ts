@@ -91,6 +91,54 @@ export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 // NOTE: `XStyle` has been deprecated in favor of `StaticStyles` and `StyleXStyles`.
 
 export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
+
+export type PositionTry = Readonly<{
+  // Anchor Positioning Properties
+  positionAnchor?: CSSProperties['positionAnchor'],
+  positionArea?: CSSProperties['positionArea'],
+  // inset Properties
+  top?: CSSProperties['top'],
+  right?: CSSProperties['right'],
+  bottom?: CSSProperties['bottom'],
+  left?: CSSProperties['left'],
+  inset?: CSSProperties['inset'],
+  insetBlock?: CSSProperties['insetBlock'],
+  insetBlockEnd?: CSSProperties['insetBlockEnd'],
+  insetBlockStart?: CSSProperties['insetBlockStart'],
+  insetInline?: CSSProperties['insetInline'],
+  insetInlineEnd?: CSSProperties['insetInlineEnd'],
+  insetInlineStart?: CSSProperties['insetInlineStart'],
+  // margin Properties
+  margin?: CSSProperties['margin'],
+  marginBlock?: CSSProperties['marginBlock'],
+  marginBlockEnd?: CSSProperties['marginBlockEnd'],
+  marginBlockStart?: CSSProperties['marginBlockStart'],
+  marginInline?: CSSProperties['marginInline'],
+  marginInlineEnd?: CSSProperties['marginInlineEnd'],
+  marginInlineStart?: CSSProperties['marginInlineStart'],
+  marginTop?: CSSProperties['marginTop'],
+  marginBottom?: CSSProperties['marginBottom'],
+  marginLeft?: CSSProperties['marginLeft'],
+  marginRight?: CSSProperties['marginRight'],
+  // size properties
+  width?: CSSProperties['width'],
+  height?: CSSProperties['height'],
+  minWidth?: CSSProperties['minWidth'],
+  minHeight?: CSSProperties['minHeight'],
+  maxWidth?: CSSProperties['maxWidth'],
+  maxHeight?: CSSProperties['maxHeight'],
+  blockSize?: CSSProperties['blockSize'],
+  inlineSize?: CSSProperties['inlineSize'],
+  minBlockSize?: CSSProperties['minBlockSize'],
+  minInlineSize?: CSSProperties['minInlineSize'],
+  maxBlockSize?: CSSProperties['maxBlockSize'],
+  maxInlineSize?: CSSProperties['maxInlineSize'],
+  // self alignment properties
+  alignSelf?: CSSProperties['alignSelf'],
+  justifySelf?: CSSProperties['justifySelf'],
+  placeSelf?: CSSProperties['placeSelf'],
+}>;
+
 export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
 type ComplexStyleValueType<T> =

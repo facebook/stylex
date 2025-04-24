@@ -16,6 +16,14 @@ describe('inject', () => {
     );
   });
 
+  test('@positionTry', () => {
+    const cssText =
+      '@position-try --name { top: anchor(bottom); left: anchor(left); }';
+    expect(inject(cssText, 10)).toMatchInlineSnapshot(
+      '"@position-try --name { top: anchor(bottom); left: anchor(left); }"',
+    );
+  });
+
   test('@media', () => {
     const cssText = '@media (min-width: 320px) { .color { color: red } }';
     expect(inject(cssText, 200)).toMatchInlineSnapshot(
