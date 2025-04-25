@@ -7,6 +7,5 @@
  * @flow strict
  */
 
-export * as core from './core';
-export * as types from './css-types';
+export * as core2 from './core2';
 export * as properties from './properties';
