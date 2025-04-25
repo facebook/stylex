@@ -7,8 +7,8 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
-import { TransformFunction } from '../css-types-from-tokens/transform-function';
+import { TokenParser } from '../token-parser';
+import { TransformFunction } from '../css-types/transform-function';
 
 export class Transform {
   +value: $ReadOnlyArray<TransformFunction>;

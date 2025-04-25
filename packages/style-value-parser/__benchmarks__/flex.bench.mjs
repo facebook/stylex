@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { Flex as FlexLegacy } from '../lib/css-types/flex.js';
-import { Flex as FlexNew } from '../lib/css-types-from-tokens/flex.js';
+import { Flex as FlexNew } from '../lib/css-types/flex.js';
 
 const flexSuite = new Benchmark.Suite('Flex');
 

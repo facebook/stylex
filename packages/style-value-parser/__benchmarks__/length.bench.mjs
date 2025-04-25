@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { Length as LengthLegacy } from '../lib/css-types/length.js';
-import { Length as LengthNew } from '../lib/css-types-from-tokens/length.js';
+import { Length as LengthNew } from '../lib/css-types/length.js';
 
 const lengthSuite = new Benchmark.Suite('Length');
 

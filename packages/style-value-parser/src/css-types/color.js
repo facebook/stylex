@@ -9,7 +9,7 @@
 
 import type { TokenHash } from '@csstools/css-tokenizer';
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import { AlphaValue } from './alpha-value';
 import { Angle } from './angle';
 import { Percentage } from './common-types';

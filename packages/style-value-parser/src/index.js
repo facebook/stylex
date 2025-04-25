@@ -7,5 +7,5 @@
  * @flow strict
  */
 
-export * as core2 from './core2';
+export * as tokenParser from './token-parser';
 export * as properties from './properties';

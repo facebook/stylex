@@ -15,7 +15,7 @@ import {
 import { Percentage } from './common-types';
 // import { type Dimension, dimension } from './dimension';
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import type { TokenDimension } from '@csstools/css-tokenizer';
 
 type Addition = {

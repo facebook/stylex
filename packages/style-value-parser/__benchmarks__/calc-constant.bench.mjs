@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { calcConstant as calcConstantLegacy } from '../lib/css-types/calc-constant.js';
-import { calcConstant as calcConstantNew } from '../lib/css-types-from-tokens/calc-constant.js';
+import { calcConstant as calcConstantNew } from '../lib/css-types/calc-constant.js';
 
 const calcConstantSuite = new Benchmark.Suite('CalcConstant');
 

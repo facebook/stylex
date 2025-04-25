@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 
 export class EasingFunction {
   static get parser(): TokenParser<EasingFunction> {

@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 
 export const UNITS_BASED_ON_FONT = ['ch', 'em', 'ex', 'ic', 'lh', 'rem', 'rlh'];
 

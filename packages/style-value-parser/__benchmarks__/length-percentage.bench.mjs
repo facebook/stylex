@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { lengthPercentage as lengthPercentageLegacy } from '../lib/css-types/length-percentage.js';
-import { lengthPercentage as lengthPercentageNew } from '../lib/css-types-from-tokens/length-percentage.js';
+import { lengthPercentage as lengthPercentageNew } from '../lib/css-types/length-percentage.js';
 
 const lengthPercentageSuite = new Benchmark.Suite('LengthPercentage');
 

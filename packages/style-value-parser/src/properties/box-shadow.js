@@ -7,9 +7,9 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
-import { Length } from '../css-types-from-tokens/length';
-import { Color } from '../css-types-from-tokens/color';
+import { TokenParser } from '../token-parser';
+import { Length } from '../css-types/length';
+import { Color } from '../css-types/color';
 
 export class BoxShadow {
   +offsetX: Length;
