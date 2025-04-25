@@ -10,7 +10,7 @@
 import { Position } from './position';
 
 // import { BorderRadiusShorthand } from '../properties/border-radius';
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import { type LengthPercentage, lengthPercentage } from './length-percentage';
 
 class BasicShape {

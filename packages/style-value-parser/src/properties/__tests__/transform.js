@@ -18,10 +18,10 @@ import {
   Scale3d,
   Skew,
   Translate,
-} from '../../css-types-from-tokens/transform-function';
+} from '../../css-types/transform-function';
 
-import { Length } from '../../css-types-from-tokens/length';
-import { Angle } from '../../css-types-from-tokens/angle';
+import { Length } from '../../css-types/length';
+import { Angle } from '../../css-types/angle';
 import { Transform } from '../transform';
 
 describe('Test CSS property: `transform`', () => {

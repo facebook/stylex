@@ -9,7 +9,7 @@
 
 import { Length } from './length';
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import { Angle } from './angle';
 import { Percentage, numberOrPercentage } from './common-types';
 import { lengthPercentage } from './length-percentage';

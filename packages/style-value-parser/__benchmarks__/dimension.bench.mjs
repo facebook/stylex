@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { dimension as dimensionLegacy } from '../lib/css-types/dimension.js';
-import { dimension as dimensionNew } from '../lib/css-types-from-tokens/dimension.js';
+import { dimension as dimensionNew } from '../lib/css-types/dimension.js';
 
 const dimensionSuite = new Benchmark.Suite('Dimension');
 

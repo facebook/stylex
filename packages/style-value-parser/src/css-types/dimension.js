@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import { Frequency } from './frequency';
 import { Length } from './length';
 import { Resolution } from './resolution';

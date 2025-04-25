@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 
 export type CalcConstant = 'pi' | 'e' | 'infinity' | '-infinity' | 'NaN';
 

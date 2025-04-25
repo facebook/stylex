@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { EasingFunction as EasingFunctionLegacy } from '../lib/css-types/easing-function.js';
-import { EasingFunction as EasingFunctionNew } from '../lib/css-types-from-tokens/easing-function.js';
+import { EasingFunction as EasingFunctionNew } from '../lib/css-types/easing-function.js';
 
 const easingFunctionSuite = new Benchmark.Suite('EasingFunction');
 

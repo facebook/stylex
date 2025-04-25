@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 
 // e.g. 1fr
 export class Flex {

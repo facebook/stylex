@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { Frequency as FrequencyLegacy } from '../lib/css-types/frequency.js';
-import { Frequency as FrequencyNew } from '../lib/css-types-from-tokens/frequency.js';
+import { Frequency as FrequencyNew } from '../lib/css-types/frequency.js';
 
 const frequencySuite = new Benchmark.Suite('Frequency');
 

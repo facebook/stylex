@@ -11,8 +11,8 @@ import {
   BorderRadiusIndividual,
   BorderRadiusShorthand,
 } from '../border-radius';
-import { Percentage } from '../../css-types-from-tokens/common-types';
-import { Length } from '../../css-types-from-tokens/length';
+import { Percentage } from '../../css-types/common-types';
+import { Length } from '../../css-types/length';
 
 describe('Test CSS property: `border-<dir>-<dir>-radius`', () => {
   test('Valid: border-<dir>-<dir>-radius: <length-percentage>', () => {

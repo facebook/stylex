@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { Color as ColorLegacy } from '../lib/css-types/color.js';
-import { Color as ColorNew } from '../lib/css-types-from-tokens/color.js';
+import { Color as ColorNew } from '../lib/css-types/color.js';
 
 const colorSuite = new Benchmark.Suite('Color');
 

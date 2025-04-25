@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { Angle as AngleLegacy } from '../lib/css-types/angle.js';
-import { Angle as AngleNew } from '../lib/css-types-from-tokens/angle.js';
+import { Angle as AngleNew } from '../lib/css-types/angle.js';
 
 const angleSuite = new Benchmark.Suite('Angle');
 

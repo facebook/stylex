@@ -8,10 +8,10 @@
  */
 
 import { BoxShadow, BoxShadowList } from '../box-shadow';
-import { Length } from '../../css-types-from-tokens/length';
-import { HashColor, Hsla, Rgba } from '../../css-types-from-tokens/color';
-import { Angle } from '../../css-types-from-tokens/angle';
-import { Percentage } from '../../css-types-from-tokens/common-types';
+import { Length } from '../../css-types/length';
+import { HashColor, Hsla, Rgba } from '../../css-types/color';
+import { Angle } from '../../css-types/angle';
+import { Percentage } from '../../css-types/common-types';
 
 describe('Test CSS property: `box-shadow`', () => {
   describe('BoxShadow', () => {

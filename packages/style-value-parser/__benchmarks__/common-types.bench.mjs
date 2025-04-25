@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { Percentage as PercentageLegacy } from '../lib/css-types/common-types.js';
-import { Percentage as PercentageNew } from '../lib/css-types-from-tokens/common-types.js';
+import { Percentage as PercentageNew } from '../lib/css-types/common-types.js';
 
 const commonTypesSuite = new Benchmark.Suite('CommonTypes');
 

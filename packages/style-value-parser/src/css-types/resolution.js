@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import type { TokenDimension } from '@csstools/css-tokenizer';
 import { TokenType } from '@csstools/css-tokenizer';
 

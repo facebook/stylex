@@ -11,9 +11,9 @@
 //   UNITS_BASED_ON_FONT,
 //   UNITS_BASED_ON_ABSOLUTE_UNITS,
 //   Length,
-// } from '../css-types-from-tokens/length';
+// } from '../css-types/length';
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import type {
   TokenAtKeyword,
   TokenDelim,

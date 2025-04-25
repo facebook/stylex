@@ -9,7 +9,7 @@
 
 import type { TokenDimension } from '@csstools/css-tokenizer';
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 
 export class Angle {
   +value: number;

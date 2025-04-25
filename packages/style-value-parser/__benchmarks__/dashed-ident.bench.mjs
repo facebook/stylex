@@ -9,7 +9,7 @@
 
 import Benchmark from 'benchmark';
 import { DashedIdentifier as DashedIdentifierLegacy } from '../lib/css-types/dashed-ident.js';
-import { DashedIdentifier as DashedIdentifierNew } from '../lib/css-types-from-tokens/dashed-ident.js';
+import { DashedIdentifier as DashedIdentifierNew } from '../lib/css-types/dashed-ident.js';
 
 const dashedIdentSuite = new Benchmark.Suite('DashedIdentifier');
 

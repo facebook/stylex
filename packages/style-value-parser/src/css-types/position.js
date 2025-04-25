@@ -8,7 +8,7 @@
  */
 
 import type { TokenIdent } from '@csstools/css-tokenizer';
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 import { TokenType } from '@csstools/css-tokenizer';
 import { type LengthPercentage, lengthPercentage } from './length-percentage';
 

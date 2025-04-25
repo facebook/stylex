@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { TokenParser } from '../core2';
+import { TokenParser } from '../token-parser';
 
 import { Angle } from './angle';
 import { Percentage } from './common-types';

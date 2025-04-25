@@ -7,10 +7,10 @@
  * @flow strict
  */
 
-import type { LengthPercentage } from '../css-types-from-tokens/length-percentage';
+import type { LengthPercentage } from '../css-types/length-percentage';
 
-import { TokenParser } from '../core2';
-import { lengthPercentage } from '../css-types-from-tokens/length-percentage';
+import { TokenParser } from '../token-parser';
+import { lengthPercentage } from '../css-types/length-percentage';
 
 export class BorderRadiusIndividual {
   horizontal: LengthPercentage;
