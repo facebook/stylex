@@ -332,7 +332,7 @@ const getNormalRuleParser = () =>
         TokenParser.tokens.OpenParen,
         TokenParser.tokens.CloseParen,
       ),
-  );
+  ).skip(TokenParser.tokens.Whitespace.optional);
 
 // now define notParser using the helper
 notParser = TokenParser.sequence(
@@ -350,6 +350,7 @@ export class MediaQuery {
   queries: MediaQueryRule;
   constructor(queries: MediaQueryRule) {
     this.queries = MediaQuery.normalize(queries);
+    // MediaQuery.validateOnlyAtTopLevel(this.queries, true);
   }
   toString(): string {
     return `@media ${this.#toString(this.queries, true)}`;
@@ -363,31 +364,33 @@ export class MediaQuery {
       case 'word-rule':
         return `(${queries.keyValue})`;
       case 'pair': {
-        let valueStr: string;
-        if (Array.isArray(queries.value)) {
-          valueStr = `${queries.value[0]} / ${queries.value[2]}`;
-        } else if (typeof queries.value === 'string') {
-          valueStr = queries.value;
-        } else if (
-          typeof queries.value === 'object' &&
-          queries.value !== null &&
-          typeof queries.value.toString === 'function'
-        ) {
-          const candidate = queries.value.toString();
-          if (
-            candidate === '[object Object]' &&
-            typeof queries.value !== 'string' &&
-            !Array.isArray(queries.value)
-          ) {
-            const dim = queries.value as Length;
-            valueStr = `${dim.value}${dim.unit}`;
-          } else {
-            valueStr = candidate;
-          }
-        } else {
-          valueStr = '';
+        const { key, value } = queries;
+
+        if (Array.isArray(value)) {
+          return `(${key}: ${value[0]} / ${value[2]})`;
         }
-        return `(${queries.key}: ${valueStr})`;
+
+        if (typeof value === 'string') {
+          return `(${key}: ${value})`;
+        }
+
+        if (
+          value != null &&
+          typeof value === 'object' &&
+          typeof (value as any).value === 'number' &&
+          typeof (value as any).unit === 'string'
+        ) {
+          const len = value as Length;
+          return `(${key}: ${len.value}${len.unit})`;
+        }
+
+        if (value != null && typeof value.toString === 'function') {
+          return `(${key}: ${value.toString()})`;
+        }
+
+        throw new Error(
+          `cannot serialize media-pair value for key "${key}": ${String(value)}`,
+        );
       }
       case 'not':
         return queries.rule &&
