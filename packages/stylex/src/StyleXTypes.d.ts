@@ -185,11 +185,11 @@ export type VarGroup<
 
 export type TokensFromVarGroup<T extends VarGroup<{}>> = T['__tokens'];
 
-export type IDFromVarGroup<T extends VarGroup<unknown, unknown>> =
+export type IDFromVarGroup<T extends VarGroup<{}>> =
   T['__opaqueId'];
 
 type TTokens = Readonly<{
-  [key: string]: CSSType | string | { [key: string]: string };
+  [key: string]: CSSType<null | string | number> | string | { [key: string]: string };
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
@@ -213,11 +213,11 @@ export type StyleX$DefineVars = <
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-declare class ThemeKey<out VG extends VarGroup> extends String {
+declare class ThemeKey<out VG extends VarGroup<{}>> extends String {
   private varGroup: VG;
 }
 export type Theme<
-  T extends VarGroup<unknown, symbol>,
+  T extends VarGroup<{}>,
   Tag extends symbol = symbol,
 > = Tag &
   Readonly<{
@@ -229,7 +229,7 @@ type OverridesForTokenType<Config extends { [key: string]: unknown }> = {
 };
 
 export type StyleX$CreateTheme = <
-  TVars extends VarGroup<unknown, unknown>,
+  TVars extends VarGroup<{}>,
   ThemeID extends symbol = symbol,
 >(
   baseTokens: TVars,
