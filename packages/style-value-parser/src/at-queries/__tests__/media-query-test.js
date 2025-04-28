@@ -2167,4 +2167,91 @@ describe('Test CSS Type: @media queries', () => {
       '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px)) and (not (max-width: 458px))',
     );
   });
+
+  test('rejects invalid media queries', () => {
+    const parse = (str: string) => MediaQuery.parser.parseToEnd(str);
+
+    // empty / missing rules
+    expect(() => parse('@media')).toThrow();
+    expect(() => parse('@media ')).toThrow();
+    expect(() => parse('@media ()')).toThrow();
+
+    // incorrect operators or delimiters
+    expect(() => parse('@media (width > )')).toThrow();
+    expect(() => parse('@media ( > 600px)')).toThrow();
+    expect(() => parse('@media (600px > width) or')).toThrow();
+    expect(() => parse('@media (width < )')).toThrow();
+    expect(() => parse('@media (width <=)')).toThrow();
+    expect(() => parse('@media (>= width)')).toThrow();
+    expect(() => parse('@media (width :)')).toThrow();
+    expect(() => parse('@media (: 600px)')).toThrow();
+    expect(() => parse('@media (min-width 600px)')).toThrow();
+
+    // illegal identifiers or token types
+    expect(() => parse('@media (width @ 600px)')).toThrow();
+    expect(() => parse('@media (width: #$%)')).toThrow();
+    expect(() => parse('@media (width: [])')).toThrow();
+
+    // unmatched or misnested parens
+    expect(() => parse('@media (width < 600px')).toThrow();
+    expect(() => parse('@media ((min-width: 600px)')).toThrow();
+    expect(() => parse('@media (min-width: 600px))')).toThrow();
+    expect(() =>
+      parse('@media ((min-width: 600px) and (max-width: 1200px)) and )'),
+    ).toThrow();
+    expect(() =>
+      parse('@media (min-width: 600px and max-width: 1200px)'),
+    ).toThrow();
+
+    // bad logical structure
+    expect(() => parse('@media and (min-width: 600px)')).toThrow();
+    expect(() => parse('@media or (max-width: 1200px)')).toThrow();
+    expect(() => parse('@media not and (print)')).toThrow();
+    expect(() => parse('@media not or (print)')).toThrow();
+    expect(() => parse('@media (min-width: 600px) or')).toThrow();
+    expect(() => parse('@media and')).toThrow();
+    expect(() => parse('@media (color) and')).toThrow();
+    expect(() =>
+      parse('@media (width > 1024px), and (height > 1024px)'),
+    ).toThrow();
+
+    // illegal use of variables in media queries
+    expect(() => parse('@media (min-width: var(--test))')).toThrow();
+    expect(() =>
+      parse('@media (min-width: var(--foo) and (max-width: 700px))'),
+    ).toThrow();
+    expect(() =>
+      parse('@media (min-width: var(foo) and (max-width: 700px))'),
+    ).toThrow();
+
+    // invalid `not` usage
+    expect(() => parse('@media not')).toThrow();
+    expect(() => parse('@media not (min-width: )')).toThrow();
+    expect(() => parse('@media (not)')).toThrow();
+    expect(() => parse('@media ((not (min-width: 600px))')).toThrow();
+
+    // incomplete rules
+    expect(() => parse('@media (width:)')).toThrow();
+    expect(() => parse('@media (min-width:)')).toThrow();
+    expect(() => parse('@media (max-width: )')).toThrow();
+
+    // unknown keyword or media types
+    expect(() => parse('@media 100gecs')).toThrow();
+    expect(() => parse('@media only 100gecs')).toThrow();
+    expect(() => parse('@media not 100gecs')).toThrow();
+
+    // malformed double inequalities
+    expect(() => parse('@media (300px < width <)')).toThrow();
+    expect(() => parse('@media (< width < 700px)')).toThrow();
+    expect(() => parse('@media (300px > > width < 700px)')).toThrow();
+
+    // broken groupings
+    expect(() => parse('@media ((width: 600px) and)')).toThrow();
+    expect(() => parse('@media ((and (width: 600px)))')).toThrow();
+    expect(() => parse('@media (())')).toThrow();
+
+    expect(() => parse('@media (only max-width: 500px)')).toThrow();
+    expect(() => parse('@media screen and (only screen) ')).toThrow();
+    expect(() => parse('@media not (only (screen))')).toThrow();
+  });
 });
