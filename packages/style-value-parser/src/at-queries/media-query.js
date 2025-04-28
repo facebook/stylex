@@ -8,15 +8,9 @@
  */
 
 import { TokenParser } from '../token-parser';
-import type {
-  TokenAtKeyword,
-  TokenDelim,
-  TokenDimension,
-} from '@csstools/css-tokenizer';
+import type { TokenAtKeyword, TokenDimension } from '@csstools/css-tokenizer';
 
-import {
-  Calc,
-} from '../css-types/calc';
+import { Calc } from '../css-types/calc';
 
 type Fraction = [number, '/', number];
 type WordRule = 'color' | 'monochrome' | 'grid' | 'color-index';
@@ -36,9 +30,9 @@ type MediaRulePair = {
   key: string,
   value: MediaRuleValue,
 };
-type MediaNotRule = { type: 'not', rule: MediaRulePair | MediaWordRule };
-type MediaAndRules = { type: 'and', rules: ReadonlyArray<MediaQueryRule> };
-type MediaOrRules = { type: 'or', rules: ReadonlyArray<MediaQueryRule> };
+type MediaNotRule = { type: 'not', rule: MediaQueryRule };
+type MediaAndRules = { type: 'and', rules: $ReadOnlyArray<MediaQueryRule> };
+type MediaOrRules = { type: 'or', rules: $ReadOnlyArray<MediaQueryRule> };
 
 type MediaQueryRule =
   | MediaKeyword
@@ -53,8 +47,8 @@ type MediaQueryRule =
 function adjustDimension(
   dimension: Length,
   op: string,
-  eq: string | undefined,
-  reversed = false
+  eq: string | void,
+  reversed: boolean = false,
 ): Length {
   let adjustedValue = dimension.value;
   const epsilon = 0.01;
@@ -79,14 +73,14 @@ function adjustDimension(
 
 const basicMediaTypeParser: TokenParser<'screen' | 'print' | 'all'> =
   TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue').where(
-    (key) => key === 'screen' || key === 'print' || key === 'all'
+    (key) => key === 'screen' || key === 'print' || key === 'all',
   );
 
 // updated to support optional "not" and "only"
 const mediaKeywordParser: TokenParser<MediaKeyword> = TokenParser.sequence(
   TokenParser.string('not').optional,
   TokenParser.string('only').optional,
-  basicMediaTypeParser
+  basicMediaTypeParser,
 )
   .separatedBy(TokenParser.tokens.Whitespace)
   .map(([not, only, keyword]) => ({
@@ -105,7 +99,6 @@ const mediaWordRuleParser: TokenParser<MediaWordRule> =
         key === 'monochrome' ||
         key === 'grid' ||
         key === 'color-index',
-      '=== "color" | "monochrome" | "grid" | "color-index"',
     )
     .map((key) => ({
       type: 'word-rule',
@@ -121,10 +114,10 @@ const mediaRuleValueParser: TokenParser<MediaRuleValue> = TokenParser.oneOf(
   TokenParser.sequence(
     TokenParser.tokens.Number.map((token) => token[4].value),
     TokenParser.tokens.Delim.where(
-      (token): token is any => token[4].value === '/'
+      (token): token is any => token[4].value === '/',
     ).map(() => '/'),
-    TokenParser.tokens.Number.map((token) => token[4].value)
-  ).separatedBy(TokenParser.tokens.Whitespace.optional)
+    TokenParser.tokens.Number.map((token) => token[4].value),
+  ).separatedBy(TokenParser.tokens.Whitespace.optional),
 );
 
 const simplePairParser: TokenParser<MediaRulePair> = TokenParser.sequence(
@@ -132,7 +125,7 @@ const simplePairParser: TokenParser<MediaRulePair> = TokenParser.sequence(
   TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue'),
   TokenParser.tokens.Colon,
   mediaRuleValueParser,
-  TokenParser.tokens.CloseParen
+  TokenParser.tokens.CloseParen,
 )
   .separatedBy(TokenParser.tokens.Whitespace.optional)
   .map(([_openParen, key, _colon, value, _closeParen]) => ({
@@ -141,35 +134,22 @@ const simplePairParser: TokenParser<MediaRulePair> = TokenParser.sequence(
     value,
   }));
 
-const notParser: TokenParser<MediaNotRule> = TokenParser.sequence(
-  TokenParser.tokens.OpenParen,
-  TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue').where(
-    (key) => key === 'not'
-  ),
-  TokenParser.tokens.Whitespace,
-  TokenParser.oneOf(simplePairParser, mediaWordRuleParser),
-  TokenParser.tokens.CloseParen
-).map(([_openParen, _not, _space, rule, _closeParen]) => ({
-  type: 'not',
-  rule,
-}));
-
 // forward inequality: (width <= 1250px) or (width < 1250px)
 export const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
   TokenParser.sequence(
     TokenParser.tokens.OpenParen,
     TokenParser.tokens.Ident.map(
       (token) => token[4].value,
-      '.stringValue'
+      '.stringValue',
     ).where((val) => val === 'width' || val === 'height'),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<'
+      (val) => val === '>' || val === '<',
     ),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '='
+      (val) => val === '=',
     ).optional,
     TokenParser.tokens.Dimension.map((token) => token[4]),
-    TokenParser.tokens.CloseParen
+    TokenParser.tokens.CloseParen,
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, key, op, eq, dimension, _closeParen]) => {
@@ -189,16 +169,16 @@ const mediaInequalityRuleParserReversed: TokenParser<MediaRulePair> =
     TokenParser.tokens.OpenParen,
     TokenParser.tokens.Dimension.map((token) => token[4]),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<'
+      (val) => val === '>' || val === '<',
     ),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '='
+      (val) => val === '=',
     ).optional,
     TokenParser.tokens.Ident.map(
       (token) => token[4].value,
-      '.stringValue'
+      '.stringValue',
     ).where((val) => val === 'width' || val === 'height'),
-    TokenParser.tokens.CloseParen
+    TokenParser.tokens.CloseParen,
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, dimension, op, eq, key, _closeParen]) => {
@@ -215,7 +195,7 @@ const mediaInequalityRuleParserReversed: TokenParser<MediaRulePair> =
 // combine both inequality forms
 const combinedInequalityParser: TokenParser<MediaRulePair> = TokenParser.oneOf(
   mediaInequalityRuleParser,
-  mediaInequalityRuleParserReversed
+  mediaInequalityRuleParserReversed,
 );
 
 const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
@@ -223,36 +203,26 @@ const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
     TokenParser.tokens.OpenParen,
     TokenParser.tokens.Dimension.map((token) => token[4]),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<'
+      (val) => val === '>' || val === '<',
     ),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '='
+      (val) => val === '=',
     ).optional,
     TokenParser.tokens.Ident.map(
       (token) => token[4].value,
-      '.stringValue'
+      '.stringValue',
     ).where((val) => val === 'width' || val === 'height'),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '>' || val === '<'
+      (val) => val === '>' || val === '<',
     ),
     TokenParser.tokens.Delim.map((token) => token[4].value).where(
-      (val) => val === '='
+      (val) => val === '=',
     ).optional,
     TokenParser.tokens.Dimension.map((token) => token[4]),
-    TokenParser.tokens.CloseParen
+    TokenParser.tokens.CloseParen,
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
-    .map(([
-      _openParen,
-      lower,
-      op,
-      eq,
-      key,
-      op2,
-      eq2,
-      upper,
-      _closeParen,
-    ]) => {
+    .map(([_openParen, lower, op, eq, key, op2, eq2, upper, _closeParen]) => {
       const lowerKey = op === '<' ? `min-${key}` : `max-${key}`;
       const upperKey = op2 === '<' ? `max-${key}` : `min-${key}`;
       const lowerValue = adjustDimension(lower, op, eq);
@@ -266,6 +236,7 @@ const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
       };
     });
 
+// update mediaAndRulesParser to use lazy notParser reference
 const mediaAndRulesParser: TokenParser<MediaAndRules | MediaQueryRule> =
   TokenParser.oneOrMore(
     TokenParser.oneOf(
@@ -273,26 +244,30 @@ const mediaAndRulesParser: TokenParser<MediaAndRules | MediaQueryRule> =
       () =>
         mediaOrRulesParser.surroundedBy(
           TokenParser.tokens.OpenParen,
-          TokenParser.tokens.CloseParen
+          TokenParser.tokens.CloseParen,
         ),
       () =>
         mediaAndRulesParser.surroundedBy(
           TokenParser.tokens.OpenParen,
-          TokenParser.tokens.CloseParen
+          TokenParser.tokens.CloseParen,
         ),
-      notParser,
+      () => notParser, // lazy reference
       doubleInequalityRuleParser,
       combinedInequalityParser,
       simplePairParser,
-      mediaWordRuleParser
-    )
+      mediaWordRuleParser,
+    ),
   )
     .separatedBy(
-      TokenParser.string('and').surroundedBy(TokenParser.tokens.Whitespace)
+      TokenParser.string('and').surroundedBy(TokenParser.tokens.Whitespace),
     )
-    .where(<T>(rules: ReadonlyArray<T>): rules is ReadonlyArray<T> => rules.length > 1)
+    .where(
+      <T>(rules: $ReadOnlyArray<T>): implies rules is $ReadOnlyArray<T> =>
+        Array.isArray(rules) && rules.length > 1,
+    )
     .map((rules) => (rules.length === 1 ? rules[0] : { type: 'and', rules }));
 
+// update mediaOrRulesParser to use lazy notParser reference
 const mediaOrRulesParser: TokenParser<MediaOrRules | MediaQueryRule> =
   TokenParser.oneOrMore(
     TokenParser.oneOf(
@@ -300,25 +275,76 @@ const mediaOrRulesParser: TokenParser<MediaOrRules | MediaQueryRule> =
       () =>
         mediaOrRulesParser.surroundedBy(
           TokenParser.tokens.OpenParen,
-          TokenParser.tokens.CloseParen
+          TokenParser.tokens.CloseParen,
         ),
       () =>
         mediaAndRulesParser.surroundedBy(
           TokenParser.tokens.OpenParen,
-          TokenParser.tokens.CloseParen
+          TokenParser.tokens.CloseParen,
         ),
-      notParser,
+      () => notParser, // lazy reference
       doubleInequalityRuleParser,
       combinedInequalityParser,
       simplePairParser,
-      mediaWordRuleParser
-    )
+      mediaWordRuleParser,
+    ),
   )
     .separatedBy(
-      TokenParser.string('or').surroundedBy(TokenParser.tokens.Whitespace)
+      TokenParser.string('or').surroundedBy(TokenParser.tokens.Whitespace),
     )
-    .where(<T>(rules: ReadonlyArray<T>): rules is ReadonlyArray<T> => rules.length > 1)
+    .where(
+      <T>(rules: $ReadOnlyArray<T>): implies rules is $ReadOnlyArray<T> =>
+        rules.length > 1,
+    )
     .map((rules) => (rules.length === 1 ? rules[0] : { type: 'or', rules }));
+
+// forward declaration for notParser to handle nested not expressions
+// eslint-disable-next-line prefer-const
+let notParser: TokenParser<MediaNotRule>;
+
+// helper that returns a parser for any valid media query rule
+const getNormalRuleParser = () =>
+  TokenParser.oneOf(
+    // new branch: allow a media keyword only if enclosed in parentheses
+    () =>
+      basicMediaTypeParser
+        .surroundedBy(
+          TokenParser.tokens.OpenParen,
+          TokenParser.tokens.CloseParen,
+        )
+        .map((keyword) => ({
+          type: 'media-keyword',
+          key: keyword,
+          not: false,
+        })),
+    mediaAndRulesParser,
+    mediaOrRulesParser,
+    simplePairParser,
+    mediaWordRuleParser,
+    () => notParser,
+    () =>
+      mediaOrRulesParser.surroundedBy(
+        TokenParser.tokens.OpenParen,
+        TokenParser.tokens.CloseParen,
+      ),
+    () =>
+      mediaAndRulesParser.surroundedBy(
+        TokenParser.tokens.OpenParen,
+        TokenParser.tokens.CloseParen,
+      ),
+  );
+
+// now define notParser using the helper
+notParser = TokenParser.sequence(
+  TokenParser.tokens.OpenParen,
+  TokenParser.string('not'),
+  TokenParser.tokens.Whitespace,
+  getNormalRuleParser(),
+  TokenParser.tokens.CloseParen,
+).map(([_openParen, _not, _space, rule, _closeParen]) => ({
+  type: 'not',
+  rule,
+}));
 
 export class MediaQuery {
   queries: MediaQueryRule;
@@ -330,9 +356,10 @@ export class MediaQuery {
   }
   #toString(queries: MediaQueryRule, isTopLevel: boolean = false): string {
     switch (queries.type) {
-      case 'media-keyword':
+      case 'media-keyword': {
         const prefix = queries.not ? 'not ' : queries.only ? 'only ' : '';
         return prefix + queries.key;
+      }
       case 'word-rule':
         return `(${queries.keyValue})`;
       case 'pair': {
@@ -346,10 +373,14 @@ export class MediaQuery {
           queries.value !== null &&
           typeof queries.value.toString === 'function'
         ) {
-          // call toString and if it returns "[object Object]", fallback to dimension formatting
           const candidate = queries.value.toString();
-          if (candidate === '[object Object]') {
-            valueStr = `${queries.value.value}${queries.value.unit}`;
+          if (
+            candidate === '[object Object]' &&
+            typeof queries.value !== 'string' &&
+            !Array.isArray(queries.value)
+          ) {
+            const dim = queries.value as Length;
+            valueStr = `${dim.value}${dim.unit}`;
           } else {
             valueStr = candidate;
           }
@@ -359,7 +390,8 @@ export class MediaQuery {
         return `(${queries.key}: ${valueStr})`;
       }
       case 'not':
-        return queries.rule && (queries.rule.type === 'and' || queries.rule.type === 'or')
+        return queries.rule &&
+          (queries.rule.type === 'and' || queries.rule.type === 'or')
           ? `(not (${this.#toString(queries.rule)}))`
           : `(not ${this.#toString(queries.rule)})`;
       case 'and':
@@ -375,7 +407,7 @@ export class MediaQuery {
   static normalize(rule: MediaQueryRule): MediaQueryRule {
     switch (rule.type) {
       case 'and': {
-        const flattened: MediaQueryRule[] = [];
+        const flattened: Array<MediaQueryRule> = [];
         for (const r of rule.rules) {
           const norm = MediaQuery.normalize(r);
           if (norm.type === 'and') {
@@ -393,15 +425,15 @@ export class MediaQuery {
         };
       case 'not': {
         let count = 1;
-        let inner = MediaQuery.normalize(rule.rule);
-        while (inner.type === 'not') {
+        let current = rule.rule;
+        while (current && current.type === 'not') {
           count++;
-          inner = MediaQuery.normalize(inner.rule);
+          current = current.rule;
         }
-        if (inner.type === 'pair' || inner.type === 'word-rule') {
-          return count % 2 === 0 ? inner : { type: 'not', rule: inner };
-        }
-        return inner;
+        const normalizedOperand = MediaQuery.normalize(current);
+        return count % 2 === 0
+          ? normalizedOperand
+          : { type: 'not', rule: normalizedOperand };
       }
       default:
         return rule;
@@ -411,33 +443,33 @@ export class MediaQuery {
     const leadingNotParser = TokenParser.sequence(
       TokenParser.tokens.Ident.map(
         (token) => token[4].value,
-        '.stringValue'
+        '.stringValue',
       ).where((key) => key === 'not'),
       TokenParser.oneOf(
         () =>
           mediaOrRulesParser.surroundedBy(
             TokenParser.tokens.OpenParen,
-            TokenParser.tokens.CloseParen
+            TokenParser.tokens.CloseParen,
           ),
         () =>
           mediaAndRulesParser.surroundedBy(
             TokenParser.tokens.OpenParen,
-            TokenParser.tokens.CloseParen
+            TokenParser.tokens.CloseParen,
           ),
-        notParser,
+        () => notParser,
         combinedInequalityParser,
         simplePairParser,
-        mediaWordRuleParser
-      )
+        mediaWordRuleParser,
+      ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
-      .map(([_not, queries]) => queries);
+      .map(([_not, queries]) => ({ type: 'not', rule: queries }));
 
     const normalRuleParser = TokenParser.oneOf(
       mediaAndRulesParser,
       mediaOrRulesParser,
       mediaKeywordParser,
-      notParser,
+      () => notParser,
       doubleInequalityRuleParser,
       combinedInequalityParser,
       simplePairParser,
@@ -445,31 +477,34 @@ export class MediaQuery {
       () =>
         mediaOrRulesParser.surroundedBy(
           TokenParser.tokens.OpenParen,
-          TokenParser.tokens.CloseParen
+          TokenParser.tokens.CloseParen,
         ),
       () =>
         mediaAndRulesParser.surroundedBy(
           TokenParser.tokens.OpenParen,
-          TokenParser.tokens.CloseParen
-        )
+          TokenParser.tokens.CloseParen,
+        ),
     );
 
     return TokenParser.sequence(
       TokenParser.tokens.AtKeyword.where(
-        (token: TokenAtKeyword): token is TokenAtKeyword =>
-          token[4].value === 'media'
+        (token: TokenAtKeyword): implies token is TokenAtKeyword =>
+          token[4].value === 'media',
       ),
       TokenParser.oneOrMore(
-        TokenParser.oneOf(leadingNotParser, normalRuleParser)
+        TokenParser.oneOf(leadingNotParser, normalRuleParser),
       ).separatedBy(
         TokenParser.tokens.Comma.surroundedBy(
-          TokenParser.tokens.Whitespace.optional
-        )
-      )
+          TokenParser.tokens.Whitespace.optional,
+        ),
+      ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
       .map(([_at, querySets]) => {
-        const rule = querySets.length > 1 ? { type: 'or', rules: querySets } : querySets[0];
+        const rule =
+          querySets.length > 1
+            ? { type: 'or', rules: querySets }
+            : querySets[0];
         return new MediaQuery(rule);
       });
   }
