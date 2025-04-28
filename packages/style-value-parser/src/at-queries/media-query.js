@@ -7,18 +7,16 @@
  * @flow strict
  */
 
-// import {
-//   UNITS_BASED_ON_FONT,
-//   UNITS_BASED_ON_ABSOLUTE_UNITS,
-//   Length,
-// } from '../css-types-from-tokens/length';
-
 import { TokenParser } from '../token-parser';
 import type {
   TokenAtKeyword,
   TokenDelim,
   TokenDimension,
 } from '@csstools/css-tokenizer';
+
+import {
+  Calc,
+} from '../css-types/calc';
 
 type Fraction = [number, '/', number];
 type WordRule = 'color' | 'monochrome' | 'grid' | 'color-index';
@@ -114,7 +112,10 @@ const mediaWordRuleParser: TokenParser<MediaWordRule> =
       keyValue: key,
     }));
 
+// modified mediaRuleValueParser to include calc support; this branch uses Calc.parser
+// and maps the output to its toString() representation.
 const mediaRuleValueParser: TokenParser<MediaRuleValue> = TokenParser.oneOf(
+  Calc.parser.map((calc) => calc.toString()),
   TokenParser.tokens.Dimension.map((token) => token[4]),
   TokenParser.tokens.Ident.map((token) => token[4].value),
   TokenParser.sequence(
@@ -335,11 +336,26 @@ export class MediaQuery {
       case 'word-rule':
         return `(${queries.keyValue})`;
       case 'pair': {
-        const valueStr = Array.isArray(queries.value)
-          ? `${queries.value[0]} / ${queries.value[2]}`
-          : typeof queries.value === 'string'
-            ? queries.value
-            : `${queries.value.value}${queries.value.unit}`;
+        let valueStr: string;
+        if (Array.isArray(queries.value)) {
+          valueStr = `${queries.value[0]} / ${queries.value[2]}`;
+        } else if (typeof queries.value === 'string') {
+          valueStr = queries.value;
+        } else if (
+          typeof queries.value === 'object' &&
+          queries.value !== null &&
+          typeof queries.value.toString === 'function'
+        ) {
+          // call toString and if it returns "[object Object]", fallback to dimension formatting
+          const candidate = queries.value.toString();
+          if (candidate === '[object Object]') {
+            valueStr = `${queries.value.value}${queries.value.unit}`;
+          } else {
+            valueStr = candidate;
+          }
+        } else {
+          valueStr = '';
+        }
         return `(${queries.key}: ${valueStr})`;
       }
       case 'not':
