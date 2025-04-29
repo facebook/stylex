@@ -7,14 +7,14 @@
  *
  */
 
+import { fileURLToPath } from 'url';
 import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import path from 'path';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BABEL_ENV = process.env['BABEL_ENV'];
-
-const __dirname = import.meta.dirname;
 
 const config = {
   input: {
@@ -29,10 +29,10 @@ const config = {
   plugins: [
     babel({
       babelHelpers: 'bundled',
-      configFile: path.resolve(__dirname, '.babelrc.js')
+      configFile: path.resolve(__dirname, '.babelrc.js'),
     }),
     resolve(),
-    commonjs()
+    commonjs(),
   ],
 };
 
