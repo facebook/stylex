@@ -73,7 +73,7 @@ export default function transformStyleXCreateTheme(
     );
     if (!confident1) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_STATIC_VALUE,
+        messages.nonStaticValue('createTheme'),
         SyntaxError,
       );
     }
@@ -121,13 +121,13 @@ export default function transformStyleXCreateTheme(
     );
     if (!confident2) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_STATIC_VALUE,
+        messages.nonStaticValue('createTheme'),
         SyntaxError,
       );
     }
     if (typeof overrides !== 'object' || overrides == null) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_OBJECT_FOR_STYLEX_CALL,
+        messages.nonStyleObject('createTheme'),
         SyntaxError,
       );
     }
@@ -194,14 +194,14 @@ function validateStyleXCreateTheme(
     variableDeclaratorPath.node.id.type !== 'Identifier'
   ) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.UNBOUND_STYLEX_CALL_VALUE,
+      messages.unboundCallValue('createTheme'),
       SyntaxError,
     );
   }
 
   if (callExpressionPath.node.arguments.length !== 2) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.ILLEGAL_ARGUMENT_LENGTH,
+      messages.illegalArgumentLength('createTheme', 2),
       SyntaxError,
     );
   }

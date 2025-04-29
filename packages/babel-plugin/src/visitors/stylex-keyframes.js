@@ -48,13 +48,13 @@ export default function transformStyleXKeyframes(
   ) {
     if (nodeInit.arguments.length !== 1) {
       throw path.buildCodeFrameError(
-        messages.ILLEGAL_ARGUMENT_LENGTH,
+        messages.illegalArgumentLength('keyframes', 1),
         SyntaxError,
       );
     }
     if (nodeInit.arguments[0].type !== 'ObjectExpression') {
       throw path.buildCodeFrameError(
-        messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL,
+        messages.nonStyleObject('keyframes'),
         SyntaxError,
       );
     }
@@ -62,7 +62,7 @@ export default function transformStyleXKeyframes(
     const init: ?NodePath<t.Expression> = path.get('init');
     if (init == null || !init.isCallExpression()) {
       throw path.buildCodeFrameError(
-        messages.NON_STATIC_KEYFRAME_VALUE,
+        messages.nonStaticValue('keyframes'),
         SyntaxError,
       );
     }
@@ -86,7 +86,10 @@ export default function transformStyleXKeyframes(
       memberExpressions,
     });
     if (!confident) {
-      throw path.buildCodeFrameError(messages.NON_STATIC_VALUE, SyntaxError);
+      throw path.buildCodeFrameError(
+        messages.nonStaticValue('keyframes'),
+        SyntaxError,
+      );
     }
     const plainObject = value;
     assertValidKeyframes(path, plainObject);
@@ -109,7 +112,7 @@ function assertValidKeyframes(
 ) {
   if (typeof obj !== 'object' || Array.isArray(obj) || obj == null) {
     throw path.buildCodeFrameError(
-      messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL,
+      messages.nonStyleObject('keyframes'),
       SyntaxError,
     );
   }
