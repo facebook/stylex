@@ -43,7 +43,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           stylex.createTheme({__themeName__: 'x568ih9'}, {});
         `);
-      }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
+      }).toThrow(messages.unboundCallValue('createTheme'));
     });
 
     test('it must have two arguments', () => {
@@ -52,21 +52,21 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const variables = stylex.createTheme();
         `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.illegalArgumentLength('createTheme', 2));
 
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme({});
         `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.illegalArgumentLength('createTheme', 2));
 
       expect(() => {
         transform(`
           import stylex from 'stylex';
           const variables = stylex.createTheme(genStyles(), {});
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('createTheme'));
 
       expect(() => {
         transform(`
@@ -82,7 +82,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const variables = stylex.createTheme({__themeName__: 'x568ih9'}, genStyles());
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('createTheme'));
 
       expect(() => {
         transform(`
@@ -102,7 +102,7 @@ describe('@stylexjs/babel-plugin', () => {
             {__themeName__: 'x568ih9', labelColor: 'var(--labelColorHash)'},
             {[labelColor]: 'red',});
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('createTheme'));
     });
 
     /* Values */
@@ -139,7 +139,7 @@ describe('@stylexjs/babel-plugin', () => {
             {labelColor: labelColor,}
           );
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('createTheme'));
 
       expect(() => {
         transform(`
@@ -149,7 +149,7 @@ describe('@stylexjs/babel-plugin', () => {
             {labelColor: labelColor(),}
           );
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('createTheme'));
     });
   });
 });

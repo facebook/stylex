@@ -50,7 +50,7 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           const name = stylex.keyframes(null);
         `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_KEYFRAMES_CALL);
+      }).toThrow(messages.nonStyleObject('keyframes'));
 
       expect(() => {
         transform(`

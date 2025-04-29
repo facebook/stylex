@@ -113,13 +113,13 @@ export default function transformStyleXDefineVars(
     });
     if (!confident) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_STATIC_VALUE,
+        messages.nonStaticValue('defineVars'),
         SyntaxError,
       );
     }
     if (typeof value !== 'object' || value == null) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_OBJECT_FOR_STYLEX_CALL,
+        messages.nonStyleObject('defineVars'),
         SyntaxError,
       );
     }
@@ -170,7 +170,7 @@ function validateStyleXDefineVars(
     variableDeclaratorPath.node.id.type !== 'Identifier'
   ) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.UNBOUND_STYLEX_CALL_VALUE,
+      messages.unboundCallValue('defineVars'),
       SyntaxError,
     );
   }
@@ -180,14 +180,14 @@ function validateStyleXDefineVars(
     !exportNamedDeclarationPath.isExportNamedDeclaration()
   ) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.NON_EXPORT_NAMED_DECLARATION,
+      messages.nonExportNamedDeclaration('defineVars'),
       SyntaxError,
     );
   }
 
   if (callExpressionPath.node.arguments.length !== 1) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.ILLEGAL_ARGUMENT_LENGTH,
+      messages.illegalArgumentLength('defineVars', 1),
       SyntaxError,
     );
   }

@@ -115,7 +115,7 @@ export default function transformStyleXCreate(
 
     if (!confident) {
       throw (deopt ?? path).buildCodeFrameError(
-        reason ?? messages.NON_STATIC_VALUE,
+        reason ?? messages.nonStaticValue('create'),
         SyntaxError,
       );
     }
@@ -343,7 +343,7 @@ export default function transformStyleXCreate(
 function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   if (path.parentPath == null || path.parentPath.isExpressionStatement()) {
     throw path.buildCodeFrameError(
-      messages.UNBOUND_STYLEX_CALL_VALUE,
+      messages.unboundCallValue('create'),
       SyntaxError,
     );
   }
@@ -356,7 +356,7 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   }
   if (path.node.arguments.length !== 1) {
     throw path.buildCodeFrameError(
-      messages.ILLEGAL_ARGUMENT_LENGTH,
+      messages.illegalArgumentLength('create', 1),
       SyntaxError,
     );
   }
@@ -364,7 +364,7 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   const arg = path.node.arguments[0];
   if (arg.type !== 'ObjectExpression') {
     throw path.buildCodeFrameError(
-      messages.NON_OBJECT_FOR_STYLEX_CALL,
+      messages.nonStyleObject('create'),
       SyntaxError,
     );
   }

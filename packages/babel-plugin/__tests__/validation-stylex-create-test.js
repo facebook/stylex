@@ -60,7 +60,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           stylex.create({});
         `);
-      }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
+      }).toThrow(messages.unboundCallValue('create'));
     });
 
     test('invalid use: not called at top level', () => {
@@ -80,7 +80,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const styles = stylex.create();
         `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.illegalArgumentLength('create', 1));
     });
 
     test('invalid argument: too many', () => {
@@ -89,7 +89,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const styles = stylex.create({}, {});
         `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.illegalArgumentLength('create', 1));
     });
 
     test('invalid argument: non-static', () => {
@@ -98,7 +98,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const styles = stylex.create(genStyles());
         `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      }).toThrow(messages.nonStyleObject('create'));
     });
 
     test('valid argument: object', () => {
@@ -123,7 +123,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
         `);
-        }).toThrow(messages.NON_STATIC_VALUE);
+        }).toThrow(messages.nonStaticValue('create'));
       });
 
       /* Style rules */

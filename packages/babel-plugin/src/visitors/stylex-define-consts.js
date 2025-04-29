@@ -45,13 +45,13 @@ export default function transformStyleXDefineConsts(
     const { confident, value } = evaluate(firstArg, state);
     if (!confident) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_STATIC_VALUE,
+        messages.nonStaticValue('defineConsts'),
         SyntaxError,
       );
     }
     if (typeof value !== 'object' || value == null) {
       throw callExpressionPath.buildCodeFrameError(
-        messages.NON_OBJECT_FOR_STYLEX_CALL,
+        messages.nonStyleObject('defineConsts'),
         SyntaxError,
       );
     }
@@ -99,7 +99,7 @@ function validateStyleXDefineConsts(
     variableDeclaratorPath.node.id.type !== 'Identifier'
   ) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.UNBOUND_STYLEX_CALL_VALUE,
+      messages.unboundCallValue('defineConsts'),
       SyntaxError,
     );
   }
@@ -109,14 +109,14 @@ function validateStyleXDefineConsts(
     !exportNamedDeclarationPath.isExportNamedDeclaration()
   ) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.NON_EXPORT_NAMED_DECLARATION,
+      messages.nonExportNamedDeclaration('defineConsts'),
       SyntaxError,
     );
   }
 
   if (callExpressionPath.node.arguments.length !== 1) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.ILLEGAL_ARGUMENT_LENGTH,
+      messages.illegalArgumentLength('defineConsts', 1),
       SyntaxError,
     );
   }

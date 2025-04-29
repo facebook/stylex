@@ -39,14 +39,14 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           const styles = stylex.defineVars({});
         `);
-      }).toThrow(messages.NON_EXPORT_NAMED_DECLARATION);
+      }).toThrow(messages.nonExportNamedDeclaration('defineVars'));
 
       expect(() => {
         transform(`
           import * as stylex from '@stylexjs/stylex';
           stylex.defineVars({});
         `);
-      }).toThrow(messages.UNBOUND_STYLEX_CALL_VALUE);
+      }).toThrow(messages.unboundCallValue('defineVars'));
     });
 
     test('invalid argument: none', () => {
@@ -55,7 +55,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const vars = stylex.defineVars();
         `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.illegalArgumentLength('defineVars', 1));
     });
 
     test('invalid argument: too many', () => {
@@ -64,7 +64,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const vars = stylex.defineVars({}, {});
         `);
-      }).toThrow(messages.ILLEGAL_ARGUMENT_LENGTH);
+      }).toThrow(messages.illegalArgumentLength('defineVars', 1));
     });
 
     test('invalid argument: number', () => {
@@ -73,7 +73,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const vars = stylex.defineVars(1);
         `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      }).toThrow(messages.nonStyleObject('defineVars'));
     });
 
     test('invalid argument: string', () => {
@@ -82,7 +82,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const vars = stylex.defineVars('1');
         `);
-      }).toThrow(messages.NON_OBJECT_FOR_STYLEX_CALL);
+      }).toThrow(messages.nonStyleObject('defineVars'));
     });
 
     test('invalid argument: non-static', () => {
@@ -91,7 +91,7 @@ describe('@stylexjs/babel-plugin', () => {
           import * as stylex from '@stylexjs/stylex';
           export const vars = stylex.defineVars(genStyles());
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('defineVars'));
     });
 
     test('valid argument: object', () => {
@@ -113,7 +113,7 @@ describe('@stylexjs/babel-plugin', () => {
             [labelColor]: 'red',
           });
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('defineVars'));
     });
 
     /* Values */
@@ -126,7 +126,7 @@ describe('@stylexjs/babel-plugin', () => {
             labelColor: labelColor,
           });
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('defineVars'));
 
       expect(() => {
         transform(`
@@ -135,7 +135,7 @@ describe('@stylexjs/babel-plugin', () => {
             labelColor: labelColor(),
           });
         `);
-      }).toThrow(messages.NON_STATIC_VALUE);
+      }).toThrow(messages.nonStaticValue('defineVars'));
     });
 
     test('valid value: number', () => {
