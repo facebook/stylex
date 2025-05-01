@@ -13,7 +13,7 @@
     "build": "rollup --config ./rollup.config.mjs",
     "build-haste": "HASTE=true rollup --config ./rollup.config.mjs",
     "build-watch": "rollup --config ./rollup.config.mjs --watch",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@babel/helper-module-imports": "^7.25.9",
@@ -34,12 +34,6 @@
     "babel-plugin-syntax-hermes-parser": "^0.26.0",
     "rollup": "^4.24.0",
     "scripts": "0.12.0"
-  },
-  "jest": {
-    "verbose": true,
-    "snapshotFormat": {
-      "printBasicPrototype": false
-    }
   },
   "files": [
     "flow_modules/*",
