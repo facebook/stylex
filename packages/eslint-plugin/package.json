@@ -13,7 +13,7 @@
     "build": "babel src/ --out-dir lib/",
     "prebuild-haste": "gen-types -i src/ -o lib/",
     "build-haste": "rollup --config ./rollup.config.mjs",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles --coverage"
   },
   "dependencies": {
     "css-shorthand-expand": "^1.2.0",

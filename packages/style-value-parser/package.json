@@ -7,7 +7,7 @@
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src --out-dir lib --ignore \"**/__tests__/**\",\"**/__benchmarks__/**\"",
-    "test": "jest",
+    "test": "jest --coverage",
     "benchmark": "find ./__benchmarks__ -name '*.bench.mjs' -exec node {} \\;"
   },
   "dependencies": {
@@ -16,11 +16,6 @@
   "devDependencies": {
     "@babel/node": "^7.23.9",
     "benchmark": "^2.1.4"
-  },
-  "jest": {
-    "snapshotFormat": {
-      "printBasicPrototype": false
-    }
   },
   "files": [
     "lib/*"
