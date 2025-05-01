@@ -577,6 +577,21 @@ type pointerEvents =
   | 'all'
   | 'inherit';
 type position = 'static' | 'relative' | 'absolute' | 'sticky' | 'fixed';
+type positionArea =
+  | 'top'
+  | 'left'
+  | 'bottom'
+  | 'right'
+  | 'center'
+  | 'start'
+  | 'end'
+  | 'span-start'
+  | 'span-end'
+  | 'block-start'
+  | 'block-end'
+  | 'inline-start'
+  | 'inline-end';
+type positionVisibility = 'always' | 'anchors-visible' | 'no-overflow';
 type quotes = string | 'none';
 type resize = 'none' | 'both' | 'horizontal' | 'vertical';
 type rowGap = number | string;
@@ -983,6 +998,8 @@ export type CSSProperties = $ReadOnly<{
   alignTracks?: all | string,
   justifyTracks?: all | string,
   masonryAutoFlow?: all | string,
+
+  anchorName?: all | string,
 
   // Not Allowed:
   // all?: all | all,
@@ -1395,6 +1412,14 @@ export type CSSProperties = $ReadOnly<{
   perspectiveOrigin?: all | perspectiveOrigin,
   pointerEvents?: all | pointerEvents,
   position?: all | position,
+
+  positionAnchor?: all | string,
+  positionArea?: all | positionArea,
+  positionTry?: all | string,
+  positionTryFallbacks?: all | string,
+  positionTryOptions?: all | string,
+  positionVisibility?: all | positionVisibility,
+
   quotes?: all | quotes,
   resize?: all | resize,
   rest?: all | rest,
