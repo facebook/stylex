@@ -135,7 +135,7 @@ const simplePairParser: TokenParser<MediaRulePair> = TokenParser.sequence(
   }));
 
 // forward inequality: (width <= 1250px) or (width < 1250px)
-export const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
+const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
   TokenParser.sequence(
     TokenParser.tokens.OpenParen,
     TokenParser.tokens.Ident.map(
