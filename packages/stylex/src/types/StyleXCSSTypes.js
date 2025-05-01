@@ -583,14 +583,14 @@ type positionArea =
   | 'bottom'
   | 'right'
   | 'center'
-  | 'start'
-  | 'end'
-  | 'span-start'
-  | 'span-end'
   | 'block-start'
   | 'block-end'
   | 'inline-start'
-  | 'inline-end';
+  | 'inline-end'
+  | 'span-inline-start'
+  | 'span-inline-end'
+  | 'span-block-start'
+  | 'span-block-end';
 type positionVisibility = 'always' | 'anchors-visible' | 'no-overflow';
 type quotes = string | 'none';
 type resize = 'none' | 'both' | 'horizontal' | 'vertical';
