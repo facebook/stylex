@@ -11,6 +11,7 @@ import { TokenParser } from '../token-parser';
 import type { TokenAtKeyword, TokenDimension } from '@csstools/css-tokenizer';
 
 import { Calc } from '../css-types/calc';
+import { MediaQueryErrors } from './messages';
 
 type Fraction = [number, '/', number];
 type WordRule = 'color' | 'monochrome' | 'grid' | 'color-index';
@@ -510,5 +511,27 @@ export class MediaQuery {
             : querySets[0];
         return new MediaQuery(rule);
       });
+  }
+}
+
+function _hasBalancedParens(str: string): boolean {
+  let count = 0;
+  for (const char of Array.from(str)) {
+    if (char === '(') count++;
+    if (char === ')') count--;
+    if (count < 0) return false;
+  }
+  return count === 0;
+}
+
+export function validateMediaQuery(input: string): MediaQuery {
+  if (!_hasBalancedParens(input)) {
+    throw new Error(MediaQueryErrors.UNBALANCED_PARENS);
+  }
+
+  try {
+    return MediaQuery.parser.parseToEnd(input);
+  } catch (err) {
+    throw new Error(MediaQueryErrors.SYNTAX_ERROR);
   }
 }
