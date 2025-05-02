@@ -10,7 +10,7 @@
 import { validateMediaQuery } from '../media-query';
 import { MediaQueryErrors } from '../messages';
 
-describe('@style-value-parser/at-queries', () => {
+describe('style-value-parser/at-queries', () => {
   describe('[validation] media queries', () => {
     describe('MediaQuery parser with simplified errors', () => {
       const parse = validateMediaQuery;

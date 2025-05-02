@@ -9,7 +9,7 @@
 
 import { MediaQuery } from '../media-query.js';
 
-describe('@style-value-parser/at-queries', () => {
+describe('style-value-parser/at-queries', () => {
   describe('[parse] media queries', () => {
     describe('keywords', () => {
       test('@media screen', () => {
