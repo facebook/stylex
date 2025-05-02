@@ -45,8 +45,8 @@ const argv = yargs(hideBin(process.argv)).option('outfile', {
 const outfile = argv.outfile;
 
 const files = [
-  path.join(__dirname, '../../stylex/lib/cjs/stylex.js'),
-  path.join(__dirname, '../../stylex/lib/cjs/inject.js'),
+  path.join(__dirname, '../../@stylexjs/stylex/lib/cjs/stylex.js'),
+  path.join(__dirname, '../../@stylexjs/stylex/lib/cjs/inject.js'),
   path.join(__dirname, './.build/bundle.js'),
   path.join(__dirname, './.build/stylex.css'),
 ];

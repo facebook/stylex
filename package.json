@@ -18,8 +18,9 @@
   },
   "workspaces": [
     "packages/shared",
-    "packages/stylex",
-    "packages/babel-plugin",
+    "packages/@stylexjs/stylex",
+    "packages/@stylexjs/babel-plugin",
+    "packages/@stylexjs/*",
     "packages/*",
     "examples/*"
   ],

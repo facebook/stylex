@@ -1,4 +1,4 @@
-# @stylexjs/style-value-parser
+# style-value-parser
 
 An experimental CSS value parser for StyleX. The parser is built on
 `@csstools/css-tokenizer`.
