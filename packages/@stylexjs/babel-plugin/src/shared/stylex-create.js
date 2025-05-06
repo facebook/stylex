@@ -99,9 +99,10 @@ export default function styleXCreateSet(
         Object.assign(classPathsInNamespace, classesToOriginalPath);
       });
 
-      const className =
-        classNameTuples.map(([className]) => className).join(' ') || null;
-      namespaceObj[key] = className;
+      const classNames = classNameTuples.map(([className]) => className);
+      const uniqueClassNames = new Set(classNames);
+      const className = Array.from(uniqueClassNames).join(' ');
+      namespaceObj[key] = className !== '' ? className : null;
 
       for (const [className, injectable] of classNameTuples) {
         if (injectedStyles[className] == null) {

@@ -1567,7 +1567,7 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
-        test('pseudo-class generated order (nested)', () => {
+        test('pseudo-class generated order (nested, same value)', () => {
           const { code, metadata } = transform(`
             import * as stylex from '@stylexjs/stylex';
             export const styles = stylex.create({
@@ -1583,12 +1583,11 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `);
-          // TODO: Fix duplicate class name - https://github.com/facebook/stylex/issues/1001
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: {
-                kMwMTN: "xa2ikkt xa2ikkt",
+                kMwMTN: "xa2ikkt",
                 $$css: true
               }
             };"
@@ -1600,6 +1599,55 @@ describe('@stylexjs/babel-plugin', () => {
                   "xa2ikkt",
                   {
                     "ltr": ".xa2ikkt:active:hover{color:red}",
+                    "rtl": null,
+                  },
+                  3300,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('pseudo-class generated order (nested, different value)', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: {
+                  ':hover': {
+                    ':active':'red',
+                  },
+                  ':active': {
+                    ':hover':'green',
+                  },
+                },
+              },
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kMwMTN: "xa2ikkt x13pwkn",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xa2ikkt",
+                  {
+                    "ltr": ".xa2ikkt:active:hover{color:red}",
+                    "rtl": null,
+                  },
+                  3300,
+                ],
+                [
+                  "x13pwkn",
+                  {
+                    "ltr": ".x13pwkn:active:hover{color:green}",
                     "rtl": null,
                   },
                   3300,
