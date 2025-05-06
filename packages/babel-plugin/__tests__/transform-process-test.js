@@ -40,6 +40,11 @@ export const constants = stylex.defineConsts({
   YELLOW: 'yellow',
   ORANGE: 'var(--orange)'
 });
+
+export const breakpoints = stylex.defineConsts({
+  small: '@media (max-width: 500px)',
+});
+
 export const styles = stylex.create({
   root: {
     animationName: stylex.keyframes({
@@ -55,7 +60,7 @@ export const styles = stylex.create({
     backgroundColor: 'red',
     borderColor: {
       default: 'green',
-      '@media (min-width:320px)': 'blue'
+      [breakpoints.small]: 'blue'
     },
     textShadow: {
       default: '1px 2px 3px 4px red',
@@ -85,7 +90,7 @@ describe('@stylexjs/babel-plugin', () => {
         "@keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         @keyframes xi07kvp-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
         .x1bg2uv5:not(#\\#){border-color:green}
-        @media (min-width:320px){.x1njqd6l.x1njqd6l:not(#\\#){border-color:blue}}
+        @media (max-width: 500px){.xtlvosw.xtlvosw:not(#\\#){border-color:blue}}
         .xckgs0v:not(#\\#):not(#\\#){animation-name:xi07kvp-B}
         .xrkmrrc:not(#\\#):not(#\\#){background-color:red}
         html:not([dir='rtl']) .x1skrh0i:not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
@@ -110,7 +115,7 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer priority2{
         .x1bg2uv5{border-color:green}
-        @media (min-width:320px){.x1njqd6l.x1njqd6l{border-color:blue}}
+        @media (max-width: 500px){.xtlvosw.xtlvosw{border-color:blue}}
         }
         @layer priority3{
         .xckgs0v{animation-name:xi07kvp-B}
