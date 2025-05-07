@@ -20,10 +20,15 @@ export function genCSSRule(
   decls: string,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
+  constRules: $ReadOnlyArray<string>,
 ): string {
+  const allRules = [...atRules, ...constRules];
   const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
-  let selectorForAtRules =
-    `.${className}` + atRules.map(() => `.${className}`).join('') + pseudo;
+
+  const repeatedSelector =
+    `.${className}` + allRules.map(() => `.${className}`).join('') + pseudo;
+
+  let selectorForAtRules = repeatedSelector;
 
   if (pseudos.includes('::thumb')) {
     selectorForAtRules = THUMB_VARIANTS.map(
@@ -31,8 +36,8 @@ export function genCSSRule(
     ).join(', ');
   }
 
-  return atRules.reduce(
-    (acc, atRule) => `${atRule}{${acc}}`,
+  return allRules.reduce(
+    (acc, rule) => `${rule}{${acc}}`,
     `${selectorForAtRules}{${decls}}`,
   );
 }

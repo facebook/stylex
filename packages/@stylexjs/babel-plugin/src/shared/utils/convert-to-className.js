@@ -28,6 +28,7 @@ export function convertStyleToClassName(
   objEntry: $ReadOnly<[string, TRawValue]>,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
+  constRules: $ReadOnlyArray<string>,
   options: StyleXOptions = defaultOptions,
 ): StyleRule {
   const {
@@ -50,7 +51,7 @@ export function convertStyleToClassName(
   }
 
   const sortedPseudos = sortPseudos(pseudos ?? []);
-  const sortedAtRules = sortAtRules(atRules ?? []);
+  const sortedAtRules = sortAtRules([...atRules, ...constRules]);
 
   const pseudoHashString = sortedPseudos.join('');
   const atRuleHashString = sortedAtRules.join('');
@@ -68,7 +69,14 @@ export function convertStyleToClassName(
       ? `${key}-${classNamePrefix}${createHash('<>' + stringToHash)}`
       : classNamePrefix + createHash('<>' + stringToHash);
 
-  const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
+  const cssRules = generateRule(
+    className,
+    dashedKey,
+    value,
+    pseudos,
+    atRules,
+    constRules,
+  );
 
   return [key, className, cssRules];
 }

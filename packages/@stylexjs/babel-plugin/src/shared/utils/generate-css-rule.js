@@ -20,6 +20,7 @@ export function generateRule(
   value: string | $ReadOnlyArray<string>,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
+  constRules: $ReadOnlyArray<string>,
 ): InjectableStyle {
   const pairs: $ReadOnlyArray<[string, string]> = Array.isArray(value)
     ? value.map((eachValue) => [key, eachValue])
@@ -34,15 +35,16 @@ export function generateRule(
     .map((pair) => pair.join(':'))
     .join(';');
 
-  const ltrRule = genCSSRule(className, ltrDecls, pseudos, atRules);
+  const ltrRule = genCSSRule(className, ltrDecls, pseudos, atRules, constRules);
   const rtlRule = !rtlDecls
     ? null
-    : genCSSRule(className, rtlDecls, pseudos, atRules);
+    : genCSSRule(className, rtlDecls, pseudos, atRules, constRules);
 
   const priority =
     getPriority(key) +
     pseudos.map(getPriority).reduce((a, b) => a + b, 0) +
-    atRules.map(getPriority).reduce((a, b) => a + b, 0);
+    atRules.map(getPriority).reduce((a, b) => a + b, 0) +
+    constRules.map(getPriority).reduce((a, b) => a + b, 0);
 
   return { priority, ltr: ltrRule, rtl: rtlRule };
 }

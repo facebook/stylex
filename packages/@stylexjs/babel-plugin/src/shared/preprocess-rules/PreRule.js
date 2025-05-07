@@ -68,6 +68,10 @@ export class PreRule implements IPreRule {
     return sortAtRules(unsortedAtRules);
   }
 
+  get constRules(): $ReadOnlyArray<string> {
+    return this.keyPath.filter((key) => key.startsWith('var(--'));
+  }
+
   compiled(
     options: StyleXOptions,
   ): $ReadOnlyArray<[string, InjectableStyle, ClassesToOriginalPaths]> {
@@ -75,8 +79,32 @@ export class PreRule implements IPreRule {
       [this.property, this.value],
       this.pseudos ?? [],
       this.atRules ?? [],
+      this.constRules ?? [],
       options,
     );
+
+    // if (constWrapper != null) {
+    //   const wrappedLTR =
+    //     rule.ltr != null
+    //       ? `${constWrapper}{${rule.ltr}}`
+    //       : null;
+
+    //   const wrappedRTL =
+    //     rule.rtl != null
+    //       ? `${constWrapper}{${rule.rtl}}`
+    //       : null;
+
+    //   return [[
+    //     className,
+    //     {
+    //       ltr: wrappedLTR,
+    //       rtl: wrappedRTL,
+    //       priority: rule.priority,
+    //     },
+    //     { [className]: this.keyPath },
+    //   ]];
+    // }
+
     return [[className, rule, { [className]: this.keyPath }]];
   }
 
