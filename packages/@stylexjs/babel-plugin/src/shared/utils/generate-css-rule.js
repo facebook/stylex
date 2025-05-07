@@ -26,6 +26,7 @@ function buildNestedCSSRule(
   decls: string,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
+  constRules: $ReadOnlyArray<string>
 ): string {
   const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
 
@@ -50,6 +51,7 @@ export function generateCSSRule(
   value: string | $ReadOnlyArray<string>,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
+  constRules: $ReadOnlyArray<string>,
 ): InjectableStyle {
   const pairs: $ReadOnlyArray<[string, string]> = Array.isArray(value)
     ? value.map((eachValue) => [key, eachValue])
@@ -64,15 +66,16 @@ export function generateCSSRule(
     .map((pair) => pair.join(':'))
     .join(';');
 
-  const ltrRule = buildNestedCSSRule(className, ltrDecls, pseudos, atRules);
+  const ltrRule = buildNestedCSSRule(className, ltrDecls, pseudos, atRules, constRules);
   const rtlRule = !rtlDecls
     ? null
-    : buildNestedCSSRule(className, rtlDecls, pseudos, atRules);
+    : buildNestedCSSRule(className, rtlDecls, pseudos, atRules, constRules);
 
   const priority =
     getPriority(key) +
     pseudos.map(getPriority).reduce((a, b) => a + b, 0) +
-    atRules.map(getPriority).reduce((a, b) => a + b, 0);
+    atRules.map(getPriority).reduce((a, b) => a + b, 0) +
+    constRules.map(getPriority).reduce((a, b) => a + b, 0);
 
   return { priority, ltr: ltrRule, rtl: rtlRule };
 }

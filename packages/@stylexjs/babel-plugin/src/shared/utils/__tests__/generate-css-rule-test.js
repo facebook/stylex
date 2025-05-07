@@ -17,13 +17,14 @@ describe('generateCSSRule', () => {
       ['100vh', '100dvh'],
       [],
       [],
+      [],
     );
     expect(result.ltr).toBe('.abc123{height:100vh;height:100dvh}');
     expect(result.rtl).toBe(null);
   });
 
   test('applies pseudo selector', () => {
-    const result = generateCSSRule('abc123', 'color', 'red', [':hover'], []);
+    const result = generateCSSRule('abc123', 'color', 'red', [':hover'], [], []);
     expect(result.ltr).toBe('.abc123:hover{color:red}');
     expect(result.rtl).toBe(null);
   });
@@ -35,6 +36,7 @@ describe('generateCSSRule', () => {
       'none',
       [],
       ['@media (max-width: 600px)'],
+      [],
     );
     expect(result.ltr).toBe(
       '@media (max-width: 600px){.abc123.abc123{display:none}}',
@@ -49,6 +51,7 @@ describe('generateCSSRule', () => {
       '16px',
       [],
       ['@supports (font-size: 1rem)', '@media (min-width: 768px)'],
+      [],
     );
     expect(result.ltr).toBe(
       '@media (min-width: 768px){@supports (font-size: 1rem){.abc123.abc123.abc123{font-size:16px}}}',
@@ -63,6 +66,7 @@ describe('generateCSSRule', () => {
       'red',
       ['::thumb'],
       ['@media (hover: hover)'],
+      [],
     );
     expect(result.ltr).toBe(
       '@media (hover: hover){.abc123.abc123::-webkit-slider-thumb, .abc123.abc123::-moz-range-thumb, .abc123.abc123::-ms-thumb{background:red}}',
