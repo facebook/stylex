@@ -12,7 +12,7 @@ import type { TRawValue, StyleRule, StyleXOptions } from '../common-types';
 import createHash from '../hash';
 import dashify from './dashify';
 import transformValue from './transform-value';
-import { generateRule } from './generate-css-rule';
+import { generateCSSRule } from './generate-css-rule';
 import { defaultOptions } from './default-options';
 import * as messages from '../messages';
 import { sortAtRules, sortPseudos } from './rule-utils';
@@ -68,7 +68,13 @@ export function convertStyleToClassName(
       ? `${key}-${classNamePrefix}${createHash('<>' + stringToHash)}`
       : classNamePrefix + createHash('<>' + stringToHash);
 
-  const cssRules = generateRule(className, dashedKey, value, pseudos, atRules);
+  const cssRules = generateCSSRule(
+    className,
+    dashedKey,
+    value,
+    pseudos,
+    atRules,
+  );
 
   return [key, className, cssRules];
 }

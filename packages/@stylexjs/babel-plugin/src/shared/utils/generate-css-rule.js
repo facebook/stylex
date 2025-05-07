@@ -7,16 +7,46 @@
  * @flow strict
  */
 
+'use strict';
+
 import type { InjectableStyle } from '../common-types';
 
 import generateLtr from '../physical-rtl/generate-ltr';
 import generateRtl from '../physical-rtl/generate-rtl';
-import { genCSSRule } from './genCSSRule';
 import getPriority from './property-priorities';
 
-export function generateRule(
+const THUMB_VARIANTS = [
+  '::-webkit-slider-thumb',
+  '::-moz-range-thumb',
+  '::-ms-thumb',
+];
+
+function buildNestedCSSRule(
   className: string,
-  key: string, // pre-dashed
+  decls: string,
+  pseudos: $ReadOnlyArray<string>,
+  atRules: $ReadOnlyArray<string>,
+): string {
+  const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
+
+  let selectorForAtRules =
+    `.${className}` + atRules.map(() => `.${className}`).join('') + pseudo;
+
+  if (pseudos.includes('::thumb')) {
+    selectorForAtRules = THUMB_VARIANTS.map(
+      (suffix) => selectorForAtRules + suffix,
+    ).join(', ');
+  }
+
+  return atRules.reduce(
+    (acc, atRule) => `${atRule}{${acc}}`,
+    `${selectorForAtRules}{${decls}}`,
+  );
+}
+
+export function generateCSSRule(
+  className: string,
+  key: string,
   value: string | $ReadOnlyArray<string>,
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
@@ -34,10 +64,10 @@ export function generateRule(
     .map((pair) => pair.join(':'))
     .join(';');
 
-  const ltrRule = genCSSRule(className, ltrDecls, pseudos, atRules);
+  const ltrRule = buildNestedCSSRule(className, ltrDecls, pseudos, atRules);
   const rtlRule = !rtlDecls
     ? null
-    : genCSSRule(className, rtlDecls, pseudos, atRules);
+    : buildNestedCSSRule(className, rtlDecls, pseudos, atRules);
 
   const priority =
     getPriority(key) +
