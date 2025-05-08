@@ -10,7 +10,7 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-no-legacy-media-queries');
+const rule = require('../src/stylex-no-legacy-contextual-styles');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 });
 
-eslintTester.run('stylex-no-legacy-media-queries', rule.default, {
+eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
   valid: [
     {
       code: `
