@@ -8,11 +8,9 @@ sidebar_position: 2
 
 # Using styles
 
-Once styles have been defined, they can be converted to props that can be spread
-on HTML elements using the [`stylex.props`](../../api/javascript/props.mdx) function. The `stylex.props` function
-sets the appropriate `className` prop on the HTML element and, when using
-[dynamic styles](/docs/learn/styling-ui/defining-styles/#dynamic-styles), the
-`style` prop.
+Once styles have been defined, they must be converted to `className` and
+`styles` props that can be spread on HTML elements using the
+[`stylex.props`](../../api/javascript/props.mdx) function.
 
 ```tsx
 <div {...stylex.props(styles.base)} />
@@ -21,22 +19,17 @@ sets the appropriate `className` prop on the HTML element and, when using
 While this is the simplest case, it is trivial to merge multiple style objects,
 use them conditionally, or even compose styles across module boundaries.
 
-:::tip For Solid, Svelte, Qwik, Vue, & others: `stylex.attrs`
-
-For frameworks that expect `class` instead of `className`, use `style.attrs` instead.
-The usage is otherwise identical to `stylex.props`.
-
-`stylex.attrs` also converts any `style` value to a string, which is useful for
-server-side rendering and frameworks that don't accept objects for `style`.
-
-:::
-
 ## Merging styles
 
 The `stylex.props` function can take a list of styles and merge them in a
-deterministic way, where “the last style applied always wins”.
+deterministic way, where the last style applied always wins. The order in which
+the styles are defined does not affect the resulting styles, only the order in
+which they are applied to the HTML element.
 
-Consider that a couple of style objects are defined as so:
+Using `stylex.props` is only required when styles are set on React
+DOM host elements like `<div>`.
+
+Consider styles that are defined as follows:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -56,30 +49,27 @@ const styles = stylex.create({
 ```
 
 The resulting HTML element will have purple text, because that style was applied
-last. Instead, if the order of the styles were reversed, the text would be gray.
+last. If instead the order of the styles were reversed, the text would be gray.
 
 ```tsx
 <div {...stylex.props(styles.highlighted, styles.base)} />
 ```
 
-**Note:** The order in which the styles are defined does not affect the
-resulting styles, only the order in which they are applied to the HTML element.
+A simple way to think about the `stylex.props` function is that merges many
+objects and the later objects have precedence over previous objects.
 
-:::info Like `Object.assign`
+Each individual style object can be passed to `stylex.props` as a separate
+argument, or passed in as an array of styles.
 
-A simple way to think about the `stylex.props` function is that it does what
-`Object.assign` does. It merges many objects and the later objects have
-precedence over previous objects.
-
-The actual implementation is optimized for performance.
-
-:::
+```tsx
+<div {...stylex.props([styles.base, styles.highlighted])} />
+```
 
 ## Conditional styles
 
-Styles can be applied conditionally at runtime by using common JavaScript
+Styles can be applied conditionally at runtime using common JavaScript
 patterns such as ternary expressions and the `&&` operator. `stylex.props`
-ignores falsy values such as `null`, `undefined` or `false`.
+ignores falsy values such as `null`, `undefined`, or `false`.
 
 ```tsx
 <div
@@ -93,10 +83,13 @@ ignores falsy values such as `null`, `undefined` or `false`.
 
 ## Style variants
 
-A common styling pattern called "variants" lets you apply one of a list of
-possible styles based on the value of the prop named `variant`. StyleX supports this pattern without an additional API. Instead, an object property lookup can be used to achieve the same result.
+A common styling pattern called "variants" lets you apply styles based on the
+value of a specific prop, e.g., `variant`. StyleX supports this pattern without
+an additional API. Instead, an object property lookup can be used to achieve
+the same result.
 
-First, each variant can be defined with the appropriate variant name for the style object.
+First, each variant can be defined with the appropriate variant name for the
+style object.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -119,7 +112,7 @@ const styles = stylex.create({
 });
 ```
 
-Then, the appropriate styles can be applied by using the variant prop as a key
+The appropriate styles can then be applied by using the `variant` prop as a key
 on the `styles` object.
 
 ```tsx
@@ -130,55 +123,35 @@ function Button({variant, ...props}) {
 
 ## Styles as props
 
-Although StyleX encourages co-locating styles, it is possible to pass and use
-styles across file and component boundaries. It is idiomatic to pass override
-styles to a component as props.
+StyleX encourages co-locating styles, but it's also possible to pass and use
+styles across file and component boundaries using component props.
 
 ### Passing style props to components
+
+When using custom components, styles created with StyleX can be passed down
+as props.
 
 ```tsx
 <CustomComponent style={styles.base} />
 ```
 
-:::warning
-
-The `stylex.props` functions returns an object with `className` and `style`.
-Don't use it when the styles are to be merged within a component.
-
-```tsx
-// NO!
-<CustomComponent style={stylex.props(styles.base)} />
-```
-
-:::
-
-Multiple style objects, including conditional styles, can be passed in
-using an array literal:
+StyleX will correctly merge nested arrays of styles, which means you can use
+the same patterns described above to combine or conditionally apply styles.
 
 ```tsx
 <CustomComponent style={[styles.base, isHighlighted && styles.highlighted]} />
 ```
 
-:::info Prop names are arbitrary
-
-`style` is an arbitrary prop name. You can choose your own prop names for your
-codebase.
-
-:::
-
-### Accepting styles in components
-
-Accepting custom `StyleXStyles` is as simple as accepting any other prop. and
-applying it with the `stylex.props` function. Just like local styles.
+When combining local styles with styles passed in as props, it's idiomatic to
+apply the styles passed in as props *after* the local styles. Although, there's
+nothing wrong with applying certain local styles last, if you require them to
+always take priority over prop styles.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
 
-// Local Styles
 const styles = stylex.create({
-  base: {
-    /*...*/
-  },
+  base: { /*...*/ }
 });
 
 function CustomComponent({style}) {
@@ -186,13 +159,12 @@ function CustomComponent({style}) {
 }
 ```
 
-It is idiomatic to apply styles passed in as props after the local styles. This
-convention makes design system components predictable to use and easy to
-customize.
+In these examples the `style` prop name is arbitrary. You can use any prop
+name, just like when passing any other types of data to React components.
 
 ## “Unsetting” styles
 
-Sometimes, styles need to be removed rather than applied. While, CSS provides
+Sometimes, styles need to be removed rather than applied. While CSS provides
 values such as `initial`, `inherit`, `unset`, and `revert`, the simplest
 solution to do this in StyleX is to set the value to `null`.
 
@@ -201,10 +173,10 @@ import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: {
-    color: null,
+    color: null
   },
 });
 ```
 
 Setting a style property to `null` removes any previously applied style for it
-by StyleX.
+by StyleX. And it doesn't result in additional generated CSS.
