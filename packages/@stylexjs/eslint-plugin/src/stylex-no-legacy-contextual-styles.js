@@ -18,7 +18,7 @@ type Schema = {
   allowLineSeparatedGroups: boolean,
 };
 
-const stylexNoLegacyMediaQueries = {
+const stylexNoLegacyContextualStyles = {
   meta: {
     type: 'suggestion',
     docs: {
@@ -159,4 +159,4 @@ const stylexNoLegacyMediaQueries = {
   },
 };
 
-export default stylexNoLegacyMediaQueries as typeof stylexNoLegacyMediaQueries;
+export default stylexNoLegacyContextualStyles as typeof stylexNoLegacyContextualStyles;
