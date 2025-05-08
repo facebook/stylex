@@ -110,7 +110,7 @@ styles3.foo satisfies StyleXStylesWithout<{ width: unknown }>;
 stylex.props(styles3.foo);
 
 /**
- * CONDITIONAL STYLES
+ * CONTEXTUAL STYLES
  */
 const styles4: Readonly<{
   foo: Readonly<{
@@ -139,7 +139,7 @@ styles4.foo satisfies StyleXStyles<{ width?: unknown }>;
 stylex.props(styles4.foo);
 
 /**
- * NESTED CONDITIONAL STYLES
+ * NESTED CONTEXTUAL STYLES
  */
 const styles5: Readonly<{
   foo: Readonly<{
@@ -171,7 +171,7 @@ styles5.foo satisfies StyleXStyles<{ width?: unknown }>;
 stylex.props(styles5.foo);
 
 /**
- * DYNAMIC NESTED CONDITIONAL STYLES
+ * DYNAMIC CONTEXTUAL STYLES
  */
 const styles6: Readonly<{
   foo: (mobile: number) => Readonly<

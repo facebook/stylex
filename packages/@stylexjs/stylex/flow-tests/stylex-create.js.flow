@@ -114,7 +114,7 @@ legacyMerge(styles3.foo);
 stylex.props([styles3.foo]);
 
 /**
- * CONDITIONAL STYLES
+ * CONTEXTUAL STYLES
  */
 const styles4: $ReadOnly<{
   foo: $ReadOnly<{
@@ -141,7 +141,7 @@ legacyMerge(styles4.foo);
 stylex.props([styles4.foo]);
 
 /**
- * NESTED CONDITIONAL STYLES
+ * NESTED CONTEXTUAL STYLES
  */
 const styles5: $ReadOnly<{
   foo: $ReadOnly<{
@@ -171,7 +171,7 @@ legacyMerge(styles5.foo);
 stylex.props([styles5.foo]);
 
 /**
- * DYNAMIC NESTED CONDITIONAL STYLES
+ * DYNAMIC CONTEXTUAL STYLES
  */
 const styles6: $ReadOnly<{
   foo: (number) => $ReadOnly<

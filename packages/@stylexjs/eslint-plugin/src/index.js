@@ -18,13 +18,13 @@ const rules: {
   'sort-keys': typeof sortKeys,
   'valid-shorthands': typeof validShorthands,
   'no-unused': typeof noUnused,
-  'no-legacy-Contextual-styles': typeof noLegacyContextualStyles,
+  'no-legacy-contextual-styles': typeof noLegacyContextualStyles,
 } = {
   'valid-styles': validStyles,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
   'no-unused': noUnused,
-  'no-legacy-Contextual-styles': noLegacyContextualStyles,
+  'no-legacy-contextual-styles': noLegacyContextualStyles,
 };
 
 export { rules };

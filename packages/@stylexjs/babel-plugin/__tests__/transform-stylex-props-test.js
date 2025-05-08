@@ -539,7 +539,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    describe('with conditional styles and collisions', () => {
+    describe('with contextual styles and collisions', () => {
       test('stylex call with conditions', () => {
         expect(
           transform(
