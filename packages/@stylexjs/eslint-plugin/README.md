@@ -134,7 +134,7 @@ using `stylex.defineVars()`.
 This rule flags unused styles created with `stylex.create(...)`. If a style key
 is defined but never used, the rule auto-strips them from the create call.
 
-### `stylex-no-legacy-conditional-styles`
+### `stylex-no-legacy-contextual-styles`
 
 This rule flags usages of the original media query/pseudo class syntax that
 wraps multiple property values within a single @-rule or pseudo class like this:
