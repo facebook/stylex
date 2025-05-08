@@ -463,10 +463,12 @@ function processStylexRules(
           let ltrRule = ltr,
             rtlRule = rtl;
 
+          /*
           if (!useLayers) {
             ltrRule = addSpecificityLevel(ltrRule, index);
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
+          */
 
           return rtlRule
             ? [
