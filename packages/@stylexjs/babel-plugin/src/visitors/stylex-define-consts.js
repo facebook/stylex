@@ -15,6 +15,13 @@ import { utils, defineConsts as styleXDefineConsts, messages } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import StateManager from '../utils/state-manager';
 
+/// This function looks for `stylex.defineConsts` calls and transforms them.
+/// 1. It finds and validates the first argument to `stylex.defineConsts`.
+/// 2. It evaluates the style const object to a JS value, erroring on non-static or non-object values.
+/// 3. It generates a theme name from the filename and export name for hashing.
+/// 4. It invokes `stylexDefineConsts` to transform the JS object and collect injected styles.
+/// 5. It creates a map of key-value pairs of constants to be inlined.
+/// 6. It replaces the call with the transformed AST and registers the styles in state.
 export default function transformStyleXDefineConsts(
   callExpressionPath: NodePath<t.CallExpression>,
   state: StateManager,
