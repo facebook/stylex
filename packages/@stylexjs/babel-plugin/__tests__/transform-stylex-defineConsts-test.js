@@ -11,6 +11,7 @@
 
 jest.autoMockOff();
 
+import path from 'path';
 import { transformSync } from '@babel/core';
 import stylexPlugin from '../src/index';
 
@@ -35,6 +36,28 @@ function transform(source, opts = {}) {
       ],
     ],
   });
+  return { code, metadata };
+}
+
+function transformWithInlineConsts(source, opts = {}) {
+  const { code, metadata } = transformSync(source, {
+    filename: path.join(__dirname, '__fixtures__/main.stylex.js'),
+    parserOpts: { sourceType: 'module' },
+    babelrc: false,
+    plugins: [
+      [
+        stylexPlugin,
+        {
+          ...opts,
+          unstable_moduleResolution: {
+            rootDir: path.join(__dirname, '__fixtures__'),
+            type: 'commonJS',
+          },
+        },
+      ],
+    ],
+  });
+
   return { code, metadata };
 }
 
@@ -241,6 +264,217 @@ describe('@stylexjs/babel-plugin', () => {
             0,
           ],
         ]
+      `);
+    });
+  });
+
+  describe('[transform] stylex.defineConsts() in stylex.create() ', () => {
+    test('adds placeholder for constant value from constants.stylex', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { colors } from './constants.stylex';
+
+        export const styles = stylex.create({
+          root: {
+            backgroundColor: colors.background,
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { colors } from './constants.stylex';
+        export const styles = {
+          root: {
+            kWkggS: "xw8d3ix",
+            $$css: true
+          }
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xw8d3ix",
+              {
+                "ltr": ".xw8d3ix{background-color:var(--x180gk19)}",
+                "rtl": null,
+              },
+              3000,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('adds media query placeholder from constants.stylex', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from './constants.stylex';
+
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'red',
+              [breakpoints.small]: 'blue',
+            },
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from './constants.stylex';
+        export const styles = {
+          root: {
+            kMwMTN: "x1e2nbdu xbs0o1n",
+            $$css: true
+          }
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1e2nbdu",
+              {
+                "ltr": ".x1e2nbdu{color:red}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "xbs0o1n",
+              {
+                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "rtl": null,
+              },
+              6000,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('adds multiple media query placeholders from constants.stylex', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from './constants.stylex';
+
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'red',
+              [breakpoints.small]: 'blue',
+              [breakpoints.big]: 'yellow',
+            },
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from './constants.stylex';
+        export const styles = {
+          root: {
+            kMwMTN: "x1e2nbdu xbs0o1n x1ru35j7",
+            $$css: true
+          }
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1e2nbdu",
+              {
+                "ltr": ".x1e2nbdu{color:red}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "xbs0o1n",
+              {
+                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "rtl": null,
+              },
+              6000,
+            ],
+            [
+              "x1ru35j7",
+              {
+                "ltr": "var(--xr4bctk){.x1ru35j7.x1ru35j7{color:yellow}}",
+                "rtl": null,
+              },
+              6000,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('adds nested media query placeholders from constants.stylex', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { breakpoints, colors } from './constants.stylex';
+
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              [breakpoints.big]: {
+                default: colors.red,
+                [breakpoints.small]: colors.blue,
+              },
+            },
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { breakpoints, colors } from './constants.stylex';
+        export const styles = {
+          root: {
+            kMwMTN: "x1mqxbix x1iobwbz xrf68et",
+            $$css: true
+          }
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1mqxbix",
+              {
+                "ltr": ".x1mqxbix{color:black}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "x1iobwbz",
+              {
+                "ltr": "var(--xr4bctk){.x1iobwbz.x1iobwbz{color:var(--x1itgfi6)}}",
+                "rtl": null,
+              },
+              6000,
+            ],
+            [
+              "xrf68et",
+              {
+                "ltr": "var(--x1r2wpmh){var(--xr4bctk){.xrf68et.xrf68et.xrf68et{color:var(--x9g651j)}}}",
+                "rtl": null,
+              },
+              9000,
+            ],
+          ],
+        }
       `);
     });
   });

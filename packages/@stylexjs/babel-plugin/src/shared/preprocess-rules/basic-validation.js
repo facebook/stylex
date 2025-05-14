@@ -58,7 +58,15 @@ function validateConditionalStyles(
 ): void {
   for (const key in val) {
     const v = val[key];
-    if (!(key.startsWith('@') || key.startsWith(':') || key === 'default')) {
+    if (
+      !(
+        key.startsWith('@') ||
+        key.startsWith(':') ||
+        // This is a placeholder for `defineConsts` values that are later inlined
+        key.startsWith('var(--') ||
+        key === 'default'
+      )
+    ) {
       throw new Error(messages.INVALID_PSEUDO_OR_AT_RULE);
     }
     if (conditions.includes(key)) {
