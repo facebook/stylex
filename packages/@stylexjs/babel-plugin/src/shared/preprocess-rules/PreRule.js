@@ -68,6 +68,11 @@ export class PreRule implements IPreRule {
     return sortAtRules(unsortedAtRules);
   }
 
+  get constRules(): $ReadOnlyArray<string> {
+    // This is a placeholder for `defineConsts` values that are later inlined
+    return this.keyPath.filter((key) => key.startsWith('var(--'));
+  }
+
   compiled(
     options: StyleXOptions,
   ): $ReadOnlyArray<[string, InjectableStyle, ClassesToOriginalPaths]> {
@@ -75,8 +80,10 @@ export class PreRule implements IPreRule {
       [this.property, this.value],
       this.pseudos ?? [],
       this.atRules ?? [],
+      this.constRules ?? [],
       options,
     );
+
     return [[className, rule, { [className]: this.keyPath }]];
   }
 

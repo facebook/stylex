@@ -12,7 +12,7 @@ import { convertStyleToClassName } from '../convert-to-className';
 const extractBody = (str: string) => str.slice(str.indexOf('{') + 1, -1);
 
 const convert = (styles: Parameters<typeof convertStyleToClassName>[0]) =>
-  extractBody(convertStyleToClassName(styles, [], [])[2].ltr);
+  extractBody(convertStyleToClassName(styles, [], [], [])[2].ltr);
 
 describe('convert-to-className test', () => {
   test('converts style to className', () => {
@@ -26,7 +26,7 @@ describe('convert-to-className test', () => {
       styleResolution: 'application-order',
       test: false,
     };
-    const result = convertStyleToClassName(['margin', 10], [], [], options);
+    const result = convertStyleToClassName(['margin', 10], [], [], [], options);
     const className = result[1];
     expect(className.startsWith('margin-x')).toBe(true);
   });
@@ -39,7 +39,7 @@ describe('convert-to-className test', () => {
       styleResolution: 'application-order',
       test: false,
     };
-    const result = convertStyleToClassName(['margin', 10], [], [], options);
+    const result = convertStyleToClassName(['margin', 10], [], [], [], options);
     const className = result[1];
     expect(className.startsWith('x')).toBe(true);
     expect(className.startsWith('margin-x')).toBe(false);
@@ -52,7 +52,7 @@ describe('convert-to-className test', () => {
       styleResolution: 'application-order',
       test: false,
     };
-    const result = convertStyleToClassName(['margin', 10], [], [], options);
+    const result = convertStyleToClassName(['margin', 10], [], [], [], options);
     const className = result[1];
     expect(className.startsWith('x')).toBe(true);
     expect(className.startsWith('margin-x')).toBe(false);

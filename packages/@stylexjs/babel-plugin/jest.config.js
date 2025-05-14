@@ -26,5 +26,6 @@ module.exports = {
   snapshotFormat: {
     printBasicPrototype: false,
   },
+  testPathIgnorePatterns: ['/__fixtures__/'],
   verbose: true,
 };
