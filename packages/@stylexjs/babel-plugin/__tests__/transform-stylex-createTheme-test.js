@@ -820,10 +820,54 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     describe('options `dev:true`', () => {
-      test('adds style injection', () => {
+      test('adds dev data', () => {
         const options = {
           dev: true,
           filename: '/html/js/components/Foo.react.js',
+        };
+        const fixture = createFixture(`
+          export const theme = stylex.createTheme(vars, {
+            color: 'orange'
+          });
+        `);
+        const { code, metadata } = transform(fixture, options);
+
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          export const vars = {
+            color: "var(--xwx8imx)",
+            otherColor: "var(--xaaua2w)",
+            radius: "var(--xbbre8)",
+            __themeName__: "xop34xu"
+          };
+          export const theme = {
+            Foo__theme: "Foo__theme",
+            $$css: true,
+            xop34xu: "xowvtgn xop34xu"
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xowvtgn",
+                {
+                  "ltr": ".xowvtgn, .xowvtgn:root{--xwx8imx:orange;}",
+                  "rtl": null,
+                },
+                0.5,
+              ],
+            ],
+          }
+        `);
+      });
+    });
+
+    describe('options `runtimeInjection:true`', () => {
+      test('adds style injection', () => {
+        const options = {
+          filename: '/html/js/components/Foo.react.js',
+          runtimeInjection: true,
         };
         const fixture = createFixture(`
           export const theme = stylex.createTheme(vars, {
@@ -844,7 +888,6 @@ describe('@stylexjs/babel-plugin', () => {
           };
           _inject2(".xowvtgn, .xowvtgn:root{--xwx8imx:orange;}", 0.5);
           export const theme = {
-            Foo__theme: "Foo__theme",
             $$css: true,
             xop34xu: "xowvtgn xop34xu"
           };"
