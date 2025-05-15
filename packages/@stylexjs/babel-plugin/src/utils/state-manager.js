@@ -228,8 +228,8 @@ export default class StateManager {
     const configRuntimeInjection: StyleXOptions['runtimeInjection'] =
       z.logAndDefault(
         checkRuntimeInjection,
-        options.runtimeInjection ?? dev,
-        dev,
+        options.runtimeInjection ?? false,
+        false,
         'options.runtimeInjection',
       );
 

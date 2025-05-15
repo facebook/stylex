@@ -130,10 +130,6 @@ describe('StateManager config parsing', () => {
       expect(stateManager.options.debug).toBe(true);
       // enableDevClassNames is disabled by default in 'dev'
       expect(stateManager.options.enableDevClassNames).toBe(false);
-      // runtimeInjection is enabled by default in 'dev'
-      expect(stateManager.options.runtimeInjection).toBe(
-        '@stylexjs/stylex/lib/stylex-inject',
-      );
       expect(warnings).toEqual([]);
     });
   });

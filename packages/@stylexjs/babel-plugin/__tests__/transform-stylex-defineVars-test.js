@@ -743,10 +743,7 @@ describe('@stylexjs/babel-plugin', () => {
         );
 
         expect(code).toMatchInlineSnapshot(`
-          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          var _inject2 = _inject;
-          import * as stylex from '@stylexjs/stylex';
-          _inject2(":root, .xop34xu{--color-xwx8imx:red;--nextColor-xk6xtqk:green;--otherColor-xaaua2w:blue;}", 0);
+          "import * as stylex from '@stylexjs/stylex';
           export const vars = {
             color: "var(--color-xwx8imx)",
             nextColor: "var(--nextColor-xk6xtqk)",
@@ -772,10 +769,55 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
+    describe('options `runtimeInjection:true`', () => {
+      test('tokens object', () => {
+        const options = { runtimeInjection: true };
+        const { code, metadata } = transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          export const vars = stylex.defineVars({
+            color: 'red',
+            nextColor: 'green',
+            otherColor: 'blue'
+          });
+        `,
+          options,
+        );
+
+        expect(code).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import * as stylex from '@stylexjs/stylex';
+          _inject2(":root, .xop34xu{--xwx8imx:red;--xk6xtqk:green;--xaaua2w:blue;}", 0);
+          export const vars = {
+            color: "var(--xwx8imx)",
+            nextColor: "var(--xk6xtqk)",
+            otherColor: "var(--xaaua2w)",
+            __themeName__: "xop34xu"
+          };"
+        `);
+
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:red;--xk6xtqk:green;--xaaua2w:blue;}",
+                  "rtl": null,
+                },
+                0,
+              ],
+            ],
+          }
+        `);
+      });
+    });
+
     describe('options `themeFileExtension`', () => {
       test('processes tokens in files with configured extension', () => {
         const options = {
-          dev: true,
+          debug: true,
           filename: '/stylex/packages/src/vars/default.cssvars.js',
           unstable_moduleResolution: {
             rootDir: '/stylex/packages/',
@@ -794,10 +836,7 @@ describe('@stylexjs/babel-plugin', () => {
         );
 
         expect(code).toMatchInlineSnapshot(`
-          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-          var _inject2 = _inject;
-          import * as stylex from '@stylexjs/stylex';
-          _inject2(":root, .x1bxutiz{--color-x1lzcbr1:red;}", 0);
+          "import * as stylex from '@stylexjs/stylex';
           export const vars = {
             color: "var(--color-x1lzcbr1)",
             __themeName__: "x1bxutiz"

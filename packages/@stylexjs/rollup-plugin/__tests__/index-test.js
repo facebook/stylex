@@ -204,10 +204,11 @@ describe('rollup-plugin-stylex', () => {
     `);
   });
 
-  describe('when in dev mode', () => {
+  describe('runtimeInjection:true', () => {
     it('preserves stylex.inject calls and does not extract CSS', async () => {
       const { css, js } = await runStylex({
-        dev: true,
+        debug: true,
+        runtimeInjection: true,
       });
 
       expect(css).toBeUndefined();

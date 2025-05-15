@@ -175,7 +175,7 @@ export default function stylexPlugin({
       }
 
       if (
-        !dev &&
+        !options.runtimeInjection &&
         (metadata as $FlowFixMe).stylex != null &&
         (metadata as $FlowFixMe).stylex.length > 0
       ) {
