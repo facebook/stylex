@@ -79,7 +79,7 @@ export default function transformStyleXCreateTheme(
       );
     }
 
-    const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
+    const otherInjectedCSSRules: { [propertyName: string]: InjectableStyle } =
       {};
 
     // eslint-disable-next-line no-inner-declarations
@@ -98,10 +98,10 @@ export default function transformStyleXCreateTheme(
 
     // eslint-disable-next-line no-inner-declarations
     function positionTry<Obj: { +[k: string]: string | number }>(
-      animation: Obj,
+      fallbackStyles: Obj,
     ): string {
       const [positionTryName, injectedStyle] = stylexPositionTry(
-        animation,
+        fallbackStyles,
         state.options,
       );
       otherInjectedCSSRules[positionTryName] = injectedStyle;

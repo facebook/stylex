@@ -73,7 +73,7 @@ export default function transformStyleXCreate(
 
     state.inStyleXCreate = true;
 
-    const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
+    const otherInjectedCSSRules: { [propertyName: string]: InjectableStyle } =
       {};
 
     // eslint-disable-next-line no-inner-declarations
