@@ -38,8 +38,7 @@ const styles = stylex.create({
 });
 ```
 
-To declare keyframes in a separate file, you can use `defineVars` to hold
-animation names:
+To use `keyframes` return values in a separate file, you can use `defineVars` to hold animation names:
 
 ```tsx title="animations.stylex.js"
 import * as stylex from '@stylexjs/stylex';
@@ -68,4 +67,4 @@ export const animations = stylex.defineVars({
 ```
 
 These variables can then be imported and used like any other variables created
-with defineVars.
+with `defineVars`.
