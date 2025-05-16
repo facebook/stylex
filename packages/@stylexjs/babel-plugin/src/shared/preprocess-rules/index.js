@@ -23,7 +23,7 @@ export function getExpandedKeys(
   options: StyleXOptions,
 ): $ReadOnlyArray<string> {
   return Object.keys(
-    expansions[options.styleResolution ?? 'application-order'],
+    expansions[options.styleResolution ?? 'property-specificity'],
   );
 }
 
@@ -42,7 +42,7 @@ export default function flatMapExpandedShorthands(
   const expansion: (
     string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
-    expansions[options.styleResolution ?? 'application-order'][key];
+    expansions[options.styleResolution ?? 'property-specificity'][key];
   if (expansion) {
     if (Array.isArray(value)) {
       throw new Error(
