@@ -22,6 +22,7 @@ const plugin = ({
   include,
   exclude,
   useCSSLayers = false,
+  importSources = ['@stylexjs/stylex', 'stylex'],
 }) => {
   exclude = [
     // Exclude type declaration files by default because it never contains any CSS rules.
@@ -49,6 +50,7 @@ const plugin = ({
           cwd,
           babelConfig,
           useCSSLayers,
+          importSources,
           isDev,
         });
 
