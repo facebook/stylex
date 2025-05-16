@@ -104,7 +104,8 @@ function createBuilder() {
 
   // Transforms the included files, bundles the CSS, and returns the result.
   async function build({ shouldSkipTransformError }) {
-    const { cwd, babelConfig, useCSSLayers, isDev } = getConfig();
+    const { cwd, babelConfig, useCSSLayers, importSources, isDev } =
+      getConfig();
 
     const files = getFiles();
     const filesToTransform = [];
@@ -140,7 +141,7 @@ function createBuilder() {
       filesToTransform.map((file) => {
         const filePath = path.resolve(cwd, file);
         const contents = fs.readFileSync(filePath, 'utf-8');
-        if (!bundler.shouldTransform(contents)) {
+        if (!bundler.shouldTransform(contents, { importSources })) {
           return;
         }
         return bundler.transform(filePath, contents, babelConfig, {
