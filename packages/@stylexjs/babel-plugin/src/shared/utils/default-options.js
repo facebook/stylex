@@ -19,6 +19,6 @@ export const defaultOptions: StyleXOptions = {
   enableFontSizePxToRem: false,
   enableLogicalStylesPolyfill: false,
   enableMinifiedKeys: true,
-  styleResolution: 'application-order',
+  styleResolution: 'property-specificity',
   test: false,
 };

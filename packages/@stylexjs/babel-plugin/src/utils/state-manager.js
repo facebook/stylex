@@ -282,8 +282,8 @@ export default class StateManager {
           z.literal('property-specificity'),
           z.literal('legacy-expand-shorthands'),
         ),
-        options.styleResolution ?? 'application-order',
-        'application-order',
+        options.styleResolution ?? 'property-specificity',
+        'property-specificity',
         'options.styleResolution',
       );
 
