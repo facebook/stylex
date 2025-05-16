@@ -418,7 +418,7 @@ describe('StateManager config parsing', () => {
   describe('"styleResolution" option', () => {
     test('logs errors if invalid', () => {
       const stateManager = makeState({ styleResolution: 'something-else' });
-      expect(stateManager.options.styleResolution).toBe('application-order');
+      expect(stateManager.options.styleResolution).toBe('property-specificity');
       expect(warnings).toMatchInlineSnapshot(`
         [
           [
@@ -435,7 +435,7 @@ describe('StateManager config parsing', () => {
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.styleResolution).toBe('application-order');
+      expect(stateManager.options.styleResolution).toBe('property-specificity');
       expect(warnings).toEqual([]);
     });
 

@@ -23,7 +23,7 @@ const styles = stylex.create({
     borderRadius: '8px',
   },
   gradientBackground: {
-    background: 'linear-gradient(45deg, #CE5AD8, #00A1FF)',
+    backgroundImage: 'linear-gradient(45deg, #CE5AD8, #00A1FF)',
     backgroundSize: '200% 200%',
     animationName: gradientShift,
     animationDuration: '3s',

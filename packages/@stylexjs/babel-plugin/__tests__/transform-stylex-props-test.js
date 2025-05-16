@@ -296,14 +296,6 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           foo: {
             kmVPX3: "x14odnwx",
-            kg3NbH: null,
-            kuDDbn: null,
-            kE3dHu: null,
-            kP0aTx: null,
-            kpe85a: null,
-            k8WAf4: null,
-            kLKAdn: null,
-            kGO01o: null,
             $$css: true
           }
         };
@@ -320,14 +312,14 @@ describe('@stylexjs/babel-plugin', () => {
           const borderRadius = 2;
           export const styles = stylex.create({
             default: {
-              marginTop: 5,
-              marginEnd: 10,
               marginBottom: 15,
-              marginStart: 20,
+              marginInlineEnd: 10,
+              marginInlineStart: 20,
+              marginTop: 5,
             },
             override: {
-              marginBottom: 100,
               margin: 0,
+              marginBottom: 100,
             }
           });
           const result = stylex.props(styles.default, styles.override);
@@ -337,36 +329,28 @@ describe('@stylexjs/babel-plugin', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         const borderRadius = 2;
-        _inject2(".x1ok221b{margin-top:5px}", 4000);
-        _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
         _inject2(".x1fqp7bg{margin-bottom:15px}", 4000);
+        _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
         _inject2(".xqsn43r{margin-inline-start:20px}", 3000);
+        _inject2(".x1ok221b{margin-top:5px}", 4000);
         _inject2(".x1ghz6dp{margin:0}", 1000);
+        _inject2(".xiv7p99{margin-bottom:100px}", 4000);
         export const styles = {
           default: {
-            keoZOQ: "x1ok221b",
-            k71WvV: "x1sa5p1d",
             k1K539: "x1fqp7bg",
+            k71WvV: "x1sa5p1d",
             keTefX: "xqsn43r",
-            koQZXg: null,
-            km5ZXQ: null,
+            keoZOQ: "x1ok221b",
             $$css: true
           },
           override: {
             kogj98: "x1ghz6dp",
-            kUOVxO: null,
-            keTefX: null,
-            koQZXg: null,
-            k71WvV: null,
-            km5ZXQ: null,
-            kqGvvJ: null,
-            keoZOQ: null,
-            k1K539: null,
+            k1K539: "xiv7p99",
             $$css: true
           }
         };
         const result = {
-          className: "x1ghz6dp"
+          className: "x1sa5p1d xqsn43r x1ok221b x1ghz6dp xiv7p99"
         };"
       `);
     });
@@ -1350,22 +1334,10 @@ describe('@stylexjs/babel-plugin', () => {
           sidebar: {
             "boxSizing-kB7OPa": "boxSizing-x9f619",
             "gridArea-kJuA4N": "gridArea-x1yc5d2u",
-            "gridRow-kbNqZ1": null,
-            "gridRowStart-k1lYIM": null,
-            "gridRowEnd-kpJH7q": null,
-            "gridColumn-kBCFzs": null,
-            "gridColumnStart-kEXP64": null,
-            "gridColumnEnd-kWZpDQ": null,
             $$css: true
           },
           content: {
             "gridArea-kJuA4N": "gridArea-x1fdo2jl",
-            "gridRow-kbNqZ1": null,
-            "gridRowStart-k1lYIM": null,
-            "gridRowEnd-kpJH7q": null,
-            "gridColumn-kBCFzs": null,
-            "gridColumnStart-kEXP64": null,
-            "gridColumnEnd-kWZpDQ": null,
             $$css: true
           },
           root: {

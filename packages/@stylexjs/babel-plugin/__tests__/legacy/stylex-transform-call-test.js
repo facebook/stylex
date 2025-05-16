@@ -19,7 +19,17 @@ function transform(source, opts = {}) {
     parserOpts: {
       flow: 'all',
     },
-    plugins: [jsx, [stylexPlugin, { runtimeInjection: true, ...opts }]],
+    plugins: [
+      jsx,
+      [
+        stylexPlugin,
+        {
+          styleResolution: 'application-order',
+          runtimeInjection: true,
+          ...opts,
+        },
+      ],
+    ],
   }).code;
 }
 

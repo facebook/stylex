@@ -23,13 +23,14 @@ const fadeAnimation = stylex.keyframes({
 const styles = stylex.create({
   foo: {
     animationName: fadeAnimation,
-    display: 'flex',
-    marginStart: 10,
-    marginBlockStart: 99,
-    height: 500,
-    ':hover': {
-      background: 'red',
+    backgroundColor: {
+      default: null,
+      ':hover': 'red',
     },
+    display: 'flex',
+    height: 500,
+    marginBlockStart: 99,
+    marginInlineStart: 10,
   },
 });
 
