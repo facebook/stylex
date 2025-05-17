@@ -20,7 +20,7 @@ module.exports = function createBundler() {
       if (typeof importSource === 'string') {
         return sourceCode.includes(importSource);
       }
-      return importSource.includes(sourceCode.from);
+      return sourceCode.includes(importSource.from);
     });
   }
 
