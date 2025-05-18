@@ -5,6 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const createPlugin = require('./plugin');
+import { css } from 'react-strict-dom';
 
-module.exports = createPlugin();
+export const styles = css.create({
+  object: {
+    backgroundColor: 'yellow',
+  },
+});

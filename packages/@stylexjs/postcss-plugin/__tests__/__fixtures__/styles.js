@@ -5,6 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const createPlugin = require('./plugin');
+import * as stylex from '@stylexjs/stylex';
 
-module.exports = createPlugin();
+export const styles = stylex.create({
+  container: {
+    backgroundColor: 'red',
+  },
+});

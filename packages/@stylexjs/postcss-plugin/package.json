@@ -8,6 +8,16 @@
     "url": "git+https://github.com/facebook/stylex.git"
   },
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__fixtures__/"
+    ],
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "@babel/core": "^7.26.8",
     "@stylexjs/babel-plugin": "0.12.0",
@@ -15,5 +25,11 @@
     "fast-glob": "^3.3.2",
     "glob-parent": "^6.0.2",
     "is-glob": "^4.0.3"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.25.3",
+    "jest": "^30.0.0-alpha.7",
+    "react": "^18.2.0"
   }
 }
