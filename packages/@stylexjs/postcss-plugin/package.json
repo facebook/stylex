@@ -11,13 +11,6 @@
   "scripts": {
     "test": "jest"
   },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/__fixtures__/"
-    ],
-    "testEnvironment": "node"
-  },
   "dependencies": {
     "@babel/core": "^7.26.8",
     "@stylexjs/babel-plugin": "0.12.0",
