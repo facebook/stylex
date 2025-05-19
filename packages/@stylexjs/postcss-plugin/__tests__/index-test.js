@@ -22,7 +22,7 @@ describe('@stylexjs/postcss-plugin', () => {
       cwd: fixturesDir,
       include: ['**/*.js'],
       babelConfig: {
-        configFile: path.join(fixturesDir, '.babelrc.json'),
+        configFile: path.join(fixturesDir, '.babelrc.js'),
       },
       ...options,
     });
