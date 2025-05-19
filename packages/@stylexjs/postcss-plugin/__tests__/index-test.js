@@ -96,7 +96,6 @@ describe('@stylexjs/postcss-plugin', () => {
       importSources: ['custom'],
       babelConfig: {
         babelrc: false,
-        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
         plugins: [
           [
             '@stylexjs/babel-plugin',
@@ -121,7 +120,6 @@ describe('@stylexjs/postcss-plugin', () => {
       importSources: [{ as: 'css', from: 'react-strict-dom' }],
       babelConfig: {
         babelrc: false,
-        presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
         plugins: [
           [
             '@stylexjs/babel-plugin',
