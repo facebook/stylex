@@ -13,6 +13,8 @@
 * The `runtimeInjection` compiler option is now disabled by default when `dev` is true.
 * The ESLint rule `no-legacy-conditional-styles` is renamed to `no-legacy-contextual-styles`.
 * The `useRemForFontSize` compiler option is renamed to `enableFontSizePxToRem`. It is disabled by default and should not be used directly.
+* The `genConditionalClasses` compiler option is renamed to `enableInlinedConditionalMerge`. It is enabled by default and should not be used directly.
+* The `attrs` API is removed due to low usage and redundancy with the `props` API.
 
 ### Fixes
 
@@ -22,7 +24,7 @@
 * Fix incorrect compiler error messages.
 * Fix a bug that incorrectly wrapped CSS variables in quotes when used in the `content` property.
 * Fix a bug in the `firstThatWorks` API when the last value was a variable.
-* The `genConditionalClasses` compiler option is renamed to `enableInlinedConditionalMerge`. It is enabled by default and should not be used directly.
+* Allow `importSources` to be configured in the PostCSS plugin for React Strict DOM compatibility.
 
 ### Deprecations
 
@@ -38,8 +40,8 @@
 ### Fixes
 
 * Fix pseudo-elements bug in dynamic styles.
-* Performance improvements to `stylex.createTheme` compilation by caching object evaluation.
-* Disallow spreading in `stylex.create` calls.
+* Performance improvements to `createTheme` compilation by caching object evaluation.
+* Disallow spreading in `create` calls.
 
 ### Deprecations
 
@@ -54,7 +56,7 @@
 
 ### Fixes
 
-* Fix `style.create` compilation regression for string and number keys.
+* Fix `create` compilation regression for string and number keys.
 * Fix babel path resolution within monorepos.
 
 
