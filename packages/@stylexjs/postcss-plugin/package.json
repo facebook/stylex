@@ -18,11 +18,5 @@
     "fast-glob": "^3.3.2",
     "glob-parent": "^6.0.2",
     "is-glob": "^4.0.3"
-  },
-  "devDependencies": {
-    "@babel/preset-env": "^7.26.0",
-    "@babel/preset-react": "^7.25.3",
-    "jest": "^30.0.0-alpha.7",
-    "react": "^18.2.0"
   }
 }
