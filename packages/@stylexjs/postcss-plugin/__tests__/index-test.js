@@ -35,7 +35,7 @@ describe('@stylexjs/postcss-plugin', () => {
     return result;
   }
 
-  it('extracts CSS from StyleX files', async () => {
+  test('extracts CSS from StyleX files', async () => {
     const result = await runStylexPostcss();
 
     expect(result.css).toMatchInlineSnapshot(`
@@ -48,14 +48,14 @@ describe('@stylexjs/postcss-plugin', () => {
     expect(result.messages.some((m) => m.type === 'dir-dependency')).toBe(true);
   });
 
-  it('handles empty CSS input without @stylex rule', async () => {
+  test('handles empty CSS input without @stylex rule', async () => {
     const result = await runStylexPostcss({}, '/* No stylex rule here */');
 
     expect(result.css).toMatchInlineSnapshot('"/* No stylex rule here */"');
     expect(result.messages.length).toBe(0);
   });
 
-  it('supports CSS layers', async () => {
+  test('supports CSS layers', async () => {
     const result = await runStylexPostcss({ useCSSLayers: true });
 
     expect(result.css).toContain('@layer');
@@ -69,7 +69,7 @@ describe('@stylexjs/postcss-plugin', () => {
     `);
   });
 
-  it('handles exclude patterns', async () => {
+  test('handles exclude patterns', async () => {
     const result = await runStylexPostcss({
       exclude: ['**/styles-second.js'],
     });
@@ -82,7 +82,7 @@ describe('@stylexjs/postcss-plugin', () => {
     );
   });
 
-  it('respects string syntax for importSources', async () => {
+  test('respects string syntax for importSources', async () => {
     // Default importSources should not process any files
     const defaultResult = await runStylexPostcss({
       include: ['**/import-sources-*.js'],
@@ -115,7 +115,7 @@ describe('@stylexjs/postcss-plugin', () => {
     );
   });
 
-  it('supports object syntax for importSources', async () => {
+  test('supports object syntax for importSources', async () => {
     const result = await runStylexPostcss({
       include: ['**/import-sources-object.js'],
       importSources: [{ as: 'css', from: 'react-strict-dom' }],
@@ -140,7 +140,7 @@ describe('@stylexjs/postcss-plugin', () => {
     );
   });
 
-  it('skips files that do not match include/exclude patterns', async () => {
+  test('skips files that do not match include/exclude patterns', async () => {
     const result = await runStylexPostcss({
       include: ['**/styles-second.js'],
     });
