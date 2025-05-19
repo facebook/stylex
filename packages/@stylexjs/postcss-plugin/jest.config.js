@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const createPlugin = require('./plugin');
+'use strict';
 
-module.exports = createPlugin();
+module.exports = {
+  testPathIgnorePatterns: ['/__fixtures__/'],
+  testEnvironment: 'node',
+};

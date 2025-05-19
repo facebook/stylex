@@ -5,6 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const createPlugin = require('./plugin');
+import * as custom from 'custom';
 
-module.exports = createPlugin();
+export const styles = custom.create({
+  string: {
+    backgroundColor: 'blue',
+  },
+});
