@@ -15,5 +15,8 @@
     "fast-glob": "^3.3.2",
     "glob-parent": "^6.0.2",
     "is-glob": "^4.0.3"
+  },
+  "devDependencies": {
+    "@csstools/postcss-cascade-layers": "^5.0.1"
   }
 }

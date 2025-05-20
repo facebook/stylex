@@ -130,8 +130,13 @@ and specify desired options. Refer to
 ### useCSSLayers
 
 ```js
-useCSSLayers: boolean; // Default: false
+useCSSLayers: 'none' | 'native' | 'polyfill'; // Default: 'none'
 ```
 
-Enabling this option switches Stylex from using `:not(#\#)` to using `@layers`
-for handling CSS specificity.
+The `useCSSLayers` option controls how StyleX handles CSS specificity and layer
+management. It supports three strategies:
+
+- `'none'` (default): Uses `:not(#\#)` to handle CSS specificity without layers
+- `'native'`: Uses native CSS `@layer` for handling CSS specificity
+- `'polyfill'`: Uses `@csstools/postcss-cascade-layers` to polyfill CSS layers
+  for browsers that don't support them

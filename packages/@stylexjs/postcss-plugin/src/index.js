@@ -7,8 +7,11 @@
 
 const postcss = require('postcss');
 const createBuilder = require('./builder');
+const cascadeLayers = require('@csstools/postcss-cascade-layers');
 
 const PLUGIN_NAME = '@stylexjs/postcss-plugin';
+
+const VALID_CSS_LAYERS = ['none', 'native', 'polyfill'];
 
 const builder = createBuilder();
 
@@ -21,8 +24,15 @@ const plugin = ({
   babelConfig = {},
   include,
   exclude,
-  useCSSLayers = false,
+  useCSSLayers = 'none',
 }) => {
+  if (!VALID_CSS_LAYERS.includes(useCSSLayers)) {
+    throw new Error(
+      `Invalid useCSSLayers value: "${useCSSLayers}". ` +
+        `Valid values are: ${VALID_CSS_LAYERS.join(', ')}`,
+    );
+  }
+
   exclude = [
     // Exclude type declaration files by default because it never contains any CSS rules.
     '**/*.d.ts',
@@ -51,7 +61,6 @@ const plugin = ({
           useCSSLayers,
           isDev,
         });
-
         // Find the "@stylex" at-rule
         const styleXAtRule = builder.findStyleXAtRule(root);
         if (styleXAtRule == null) {
@@ -76,7 +85,20 @@ const plugin = ({
         const css = await builder.build({
           shouldSkipTransformError,
         });
-        const parsed = await postcss.parse(css, {
+
+        let processedCss = css;
+        if (useCSSLayers === 'polyfill') {
+          const result = await postcss([
+            cascadeLayers({
+              onRevertLayerKeyword: 'warn',
+              onConditionalRulesChangingLayerOrder: 'warn',
+              onImportLayerRule: 'warn',
+            }),
+          ]).process(css);
+          processedCss = result.css;
+        }
+
+        const parsed = await postcss.parse(processedCss, {
           from: fileName,
         });
 
@@ -93,7 +115,7 @@ const plugin = ({
     ],
   };
 };
-
+// console.log('plugin', plugin);
 plugin.postcss = true;
 
 module.exports = plugin;

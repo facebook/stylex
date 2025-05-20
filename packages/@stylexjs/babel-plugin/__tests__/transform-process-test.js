@@ -128,15 +128,15 @@ describe('@stylexjs/babel-plugin', () => {
       expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
         "@keyframes x4ssjuf-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         @keyframes x4ssjuf-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
-        .x1bg2uv5:not(#\\#){border-color:green}
-        .xdmqw5o:not(#\\#):not(#\\#){animation-name:x4ssjuf-B}
-        .xrkmrrc:not(#\\#):not(#\\#){background-color:red}
-        html:not([dir='rtl']) .x1skrh0i:not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
-        html[dir='rtl'] .x1skrh0i:not(#\\#):not(#\\#){text-shadow:-1px 2px 3px 4px red}
-        @media (min-width:320px){html:not([dir='rtl']) .x1cmij7u.x1cmij7u:not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
-        @media (min-width:320px){html[dir='rtl'] .x1cmij7u.x1cmij7u:not(#\\#):not(#\\#){text-shadow:-10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.x1l0eizu.x1l0eizu:not(#\\#):not(#\\#):not(#\\#){border-color:blue}}
-        @media (max-width: 500px){@media (max-width: 1000px){.x5i7zo.x5i7zo.x5i7zo:not(#\\#):not(#\\#):not(#\\#):not(#\\#){border-color:yellow}}}"
+        .x1bg2uv5{border-color:green}
+        .xdmqw5o{animation-name:x4ssjuf-B}
+        .xrkmrrc{background-color:red}
+        html:not([dir='rtl']) .x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        html[dir='rtl'] .x1skrh0i{text-shadow:-1px 2px 3px 4px red}
+        @media (min-width:320px){html:not([dir='rtl']) .x1cmij7u.x1cmij7u{text-shadow:10px 20px 30px 40px green}}
+        @media (min-width:320px){html[dir='rtl'] .x1cmij7u.x1cmij7u{text-shadow:-10px 20px 30px 40px green}}
+        @media (max-width: 1000px){.x1l0eizu.x1l0eizu{border-color:blue}}
+        @media (max-width: 500px){@media (max-width: 1000px){.x5i7zo.x5i7zo.x5i7zo{border-color:yellow}}}"
       `);
     });
 

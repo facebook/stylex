@@ -35,8 +35,8 @@ const options = {
   useCSSLayers: {
     alias: 'l',
     describe: 'Use CSS layers to optimize CSS rendering',
-    type: 'boolean',
-    default: false,
+    type: 'string',
+    default: 'none',
   },
   babelPresets: {
     describe:

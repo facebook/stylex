@@ -460,13 +460,8 @@ function processStylexRules(
         new Map(group.map(([a, b]) => [a, b])).values(),
       )
         .flatMap(({ ltr, rtl }) => {
-          let ltrRule = ltr,
+          const ltrRule = ltr,
             rtlRule = rtl;
-
-          if (!useLayers) {
-            ltrRule = addSpecificityLevel(ltrRule, index);
-            rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
-          }
 
           return rtlRule
             ? [
@@ -514,22 +509,6 @@ function addAncestorSelector(
 /**
  * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
  */
-function addSpecificityLevel(selector: string, index: number): string {
-  if (selector.startsWith('@keyframes')) {
-    return selector;
-  }
-  const pseudo = Array.from({ length: index })
-    .map(() => ':not(#\\#)')
-    .join('');
-
-  const lastOpenCurly = selector.includes('::')
-    ? selector.indexOf('::')
-    : selector.lastIndexOf('{');
-  const beforeCurly = selector.slice(0, lastOpenCurly);
-  const afterCurly = selector.slice(lastOpenCurly);
-
-  return `${beforeCurly}${pseudo}${afterCurly}`;
-}
 
 export type StyleXTransformObj = $ReadOnly<{
   (): PluginObj<>,

@@ -150,7 +150,7 @@ function createBuilder() {
       }),
     );
 
-    const css = bundler.bundle({ useCSSLayers });
+    const css = bundler.bundle({ useCSSLayers: useCSSLayers !== 'none' });
     return css;
   }
 

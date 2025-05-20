@@ -101,7 +101,7 @@ module.exports = {
   plugins: {
     '@stylexjs/postcss-plugin': {
       include: ['src/**/*.{js,jsx}'],
-      useCSSLayers: true,
+      useCSSLayers: 'native',
       babelConfig,
     },
   },

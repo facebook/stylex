@@ -71,7 +71,7 @@ const modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType> =
 const babelPresets: $ReadOnlyArray<any> = args.babelPresets;
 const babelPluginsPre: $ReadOnlyArray<any> = args.babelPluginsPre;
 const babelPluginsPost: $ReadOnlyArray<any> = args.babelPluginsPost;
-const useCSSLayers: boolean = args.useCSSLayers;
+const useCSSLayers: 'none' | 'native' | 'polyfill' = args.useCSSLayers;
 const styleXConfig: StyleXOptions = (config.styleXConfig as $FlowFixMe) ?? {};
 
 const cliArgsConfig: CliConfig = {
