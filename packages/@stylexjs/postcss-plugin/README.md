@@ -140,3 +140,14 @@ management. It supports three strategies:
 - `'native'`: Uses native CSS `@layer` for handling CSS specificity
 - `'polyfill'`: Uses `@csstools/postcss-cascade-layers` to polyfill CSS layers
   for browsers that don't support them
+
+---
+
+### importSources
+
+```js
+importSources: Array<string | { from: string, as: string }>; // Default: ['@stylexjs/stylex', 'stylex']
+```
+
+Possible strings where you can import stylex from. Files that do not match the
+import sources may be skipped from being processed to speed up compilation.

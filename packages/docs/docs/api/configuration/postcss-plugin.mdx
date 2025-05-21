@@ -41,6 +41,17 @@ Array of paths or glob patterns to exclude from compilation. Paths in `exclude` 
 
 ---
 
+## importSources
+
+```js
+importSources: Array<string | { from: string, as: string }>; // Default: ['@stylexjs/stylex', 'stylex']
+```
+
+Possible strings where you can import stylex from. Files that do not match the
+import sources may be skipped from being processed to speed up compilation.
+
+---
+
 ### include
 
 ```js

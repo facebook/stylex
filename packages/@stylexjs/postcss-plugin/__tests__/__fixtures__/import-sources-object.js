@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import { css } from 'react-strict-dom';
 
-module.exports = {
-  testPathIgnorePatterns: ['/__fixtures__/'],
-  testEnvironment: 'node',
-};
+export const styles = css.create({
+  object: {
+    backgroundColor: 'yellow',
+  },
+});

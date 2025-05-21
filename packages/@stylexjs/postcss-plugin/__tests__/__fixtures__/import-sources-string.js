@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import * as custom from 'custom';
 
-module.exports = {
-  testPathIgnorePatterns: ['/__fixtures__/'],
-  testEnvironment: 'node',
-};
+export const styles = custom.create({
+  string: {
+    backgroundColor: 'blue',
+  },
+});

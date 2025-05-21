@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import * as stylex from '@stylexjs/stylex';
 
-module.exports = {
-  testPathIgnorePatterns: ['/__fixtures__/'],
-  testEnvironment: 'node',
-};
+export const styles = stylex.create({
+  second: {
+    backgroundColor: 'green',
+  },
+});

@@ -13,8 +13,15 @@ module.exports = function createBundler() {
   const styleXRulesMap = new Map();
 
   // Determines if the source code should be transformed based on the presence of StyleX imports.
-  function shouldTransform(sourceCode) {
-    return sourceCode.includes('stylex');
+  function shouldTransform(sourceCode, options) {
+    const { importSources } = options;
+
+    return importSources.some((importSource) => {
+      if (typeof importSource === 'string') {
+        return sourceCode.includes(importSource);
+      }
+      return sourceCode.includes(importSource.from);
+    });
   }
 
   // Transforms the source code using Babel, extracting StyleX rules and storing them.
@@ -25,6 +32,7 @@ module.exports = function createBundler() {
         filename: id,
         caller: {
           name: '@stylexjs/postcss-plugin',
+          platform: 'web',
           isDev,
         },
         ...babelConfig,
