@@ -31,13 +31,19 @@ import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CompiledStyles,
+  InlineStyles,
+  Keyframes,
+  MapNamespaces,
   StaticStyles,
   StaticStylesWithout,
+  StyleXArray,
   StyleXStyles,
   StyleXStylesWithout,
   Theme,
   Types,
   VarGroup,
+  PositionTry,
 };
 
 import { styleq } from 'styleq';
