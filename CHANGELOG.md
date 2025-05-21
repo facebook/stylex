@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.13.0
+## 0.13.1 (May 21, 2025)
+
+### Fixes
+
+* Export additional Types.
+
+## 0.13.0 (May 19, 2025)
 
 ### New features
 
