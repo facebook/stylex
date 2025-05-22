@@ -2,11 +2,12 @@
   "private": true,
   "name": "style-value-parser",
   "version": "0.13.0",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src --out-dir lib --ignore \"**/__tests__/**\",\"**/__benchmarks__/**\"",
+    "prepare": "npm run build",
     "test": "jest --coverage",
     "benchmark": "find ./__benchmarks__ -name '*.bench.mjs' -exec node {} \\;"
   },
@@ -14,7 +15,12 @@
     "@csstools/css-tokenizer": "^3.0.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
     "@babel/node": "^7.23.9",
+    "@babel/plugin-transform-flow-strip-types": "^7.23.3",
+    "@babel/preset-env": "^7.23.9",
+    "@babel/preset-flow": "^7.23.3",
     "benchmark": "^2.1.4"
   },
   "files": [

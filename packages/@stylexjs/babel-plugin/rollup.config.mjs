@@ -31,7 +31,7 @@ const external = [
   'fs',
   'module',
   'path',
-  'url'
+  'url',
 ];
 
 const config = {
@@ -42,18 +42,14 @@ const config = {
   },
   external: process.env['HASTE']
     ? external
-    : [
-        ...external,
-        '@dual-bundle/import-meta-resolve',
-        '@stylexjs/stylex',
-      ],
+    : [...external, '@dual-bundle/import-meta-resolve', '@stylexjs/stylex'],
   plugins: [
     babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
     nodeResolve({
       preferBuiltins: false,
       extensions,
       allowExportsFolderMapping: true,
-      rootDir
+      rootDir,
     }),
     commonjs(),
     json(),

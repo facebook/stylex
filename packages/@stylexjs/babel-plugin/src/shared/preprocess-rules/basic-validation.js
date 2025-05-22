@@ -9,6 +9,21 @@
 
 import * as messages from '../messages';
 import { isPlainObject } from '../utils/object-utils';
+import { validateMediaQuery } from 'style-value-parser';
+
+function validateStyles(key: string): void {
+  if (key.startsWith('@media')) {
+    try {
+      validateMediaQuery(key);
+    } catch (error) {
+      console.log('INVALID MEDIA QUERY:', key);
+    }
+  } else if (key.startsWith(':')) {
+    // Add pseudo-selector validation here if needed
+  } else if (key.startsWith('var(--')) {
+    // Add CSS variable validation here if needed
+  }
+}
 
 export function validateNamespace(
   namespace: mixed,
@@ -72,6 +87,7 @@ function validateConditionalStyles(
     if (conditions.includes(key)) {
       throw new Error(messages.DUPLICATE_CONDITIONAL);
     }
+    validateStyles(key);
     if (v === null || typeof v === 'string' || typeof v === 'number') {
       continue;
     }
