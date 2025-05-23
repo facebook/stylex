@@ -26,6 +26,7 @@ import type {
   Theme,
   VarGroup,
   PositionTry,
+  ViewTransitionClass,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -119,6 +120,12 @@ export function props(
   }
   return result;
 }
+
+export const viewTransitionClass = (
+  _viewTransitionClass: ViewTransitionClass,
+): string => {
+  throw errorForFn('viewTransitionClass');
+};
 
 export const types = {
   angle: <T: string | 0 = string | 0>(
