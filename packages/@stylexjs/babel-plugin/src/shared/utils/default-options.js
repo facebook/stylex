@@ -17,6 +17,6 @@ export const defaultOptions: StyleXOptions = {
   enableDebugDataProp: true,
   enableFontSizePxToRem: true,
   enableMinifiedKeys: true,
-  styleResolution: 'application-order',
+  styleResolution: 'property-specificity',
   test: false,
 };
