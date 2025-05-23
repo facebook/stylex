@@ -67,6 +67,9 @@ export function readImportDeclarations(
             if (importedName === 'positionTry') {
               state.stylexPositionTryImport.add(localName);
             }
+            if (importedName === 'viewTransitionClass') {
+              state.stylexViewTransitionClassImport.add(localName);
+            }
             if (importedName === 'include') {
               state.stylexIncludeImport.add(localName);
             }
@@ -136,6 +139,9 @@ export function readRequires(
           }
           if (prop.key.name === 'positionTry') {
             state.stylexPositionTryImport.add(value.name);
+          }
+          if (prop.key.name === 'viewTransitionClass') {
+            state.stylexViewTransitionClassImport.add(value.name);
           }
           if (prop.key.name === 'include') {
             state.stylexIncludeImport.add(value.name);
