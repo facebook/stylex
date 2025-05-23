@@ -31,6 +31,7 @@ import transformStylexCall, {
 } from './visitors/stylex-merge';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
+import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
 
 const NAME = 'stylex';
 
@@ -285,6 +286,13 @@ function styleXTransform(): PluginObj<> {
             // Needs to be handled *before* `stylex.create` as the `create` call
             // may use the generated animation name.
             transformStyleXKeyframes(
+              parentPath as NodePath<t.VariableDeclarator>,
+              state,
+            );
+            // Look for `stylex.viewTransitionClass` calls
+            // Needs to be handled *after* `stylex.keyframes` since the `viewTransitionClass`
+            // call may use the generated animation name.
+            transformStyleXViewTransitionClass(
               parentPath as NodePath<t.VariableDeclarator>,
               state,
             );

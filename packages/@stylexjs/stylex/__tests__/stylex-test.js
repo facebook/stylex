@@ -21,6 +21,7 @@ describe('stylex', () => {
       'firstThatWorks',
       'keyframes',
       'positionTry',
+      'viewTransitionClass',
     ].forEach((api) => {
       test(`stylex.${api}`, () => {
         expect(() => stylex[api]()).toThrow();

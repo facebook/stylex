@@ -24,6 +24,14 @@ describe('inject', () => {
     );
   });
 
+  test('::view-transition', () => {
+    const cssText =
+      '::view-transition-group(*.name){transition-property:none;}::view-transition-image-pair(*.name){border-radius:16px;}::view-transition-old(*.name){animation-duration:.5s;}::view-transition-new(*.name){animation-timing-function:ease-out;}';
+    expect(inject(cssText, 10)).toMatchInlineSnapshot(
+      '"::view-transition-group(*.name){transition-property:none;}::view-transition-image-pair(*.name){border-radius:16px;}::view-transition-old(*.name){animation-duration:.5s;}::view-transition-new(*.name){animation-timing-function:ease-out;}"',
+    );
+  });
+
   test('@media', () => {
     const cssText = '@media (min-width: 320px) { .color { color: red } }';
     expect(inject(cssText, 200)).toMatchInlineSnapshot(

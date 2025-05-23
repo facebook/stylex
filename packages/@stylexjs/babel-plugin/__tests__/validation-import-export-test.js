@@ -70,5 +70,23 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       }).not.toThrow();
     });
+
+    test('valid import: viewTransitionClass named import', () => {
+      expect(() => {
+        transform(`
+          import { viewTransitionClass } from '@stylexjs/stylex';
+          const transitionCls = viewTransitionClass({});
+        `);
+      }).not.toThrow();
+    });
+
+    test('valid import: viewTransitionClass from namespace import', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const transitionCls = stylex.viewTransitionClass({});
+        `);
+      }).not.toThrow();
+    });
   });
 });

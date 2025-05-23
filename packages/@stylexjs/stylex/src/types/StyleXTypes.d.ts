@@ -139,6 +139,13 @@ export type PositionTry = Readonly<{
   placeSelf?: CSSProperties['placeSelf'],
 }>;
 
+export type ViewTransitionClass = Readonly<{
+  group?: CSSProperties,
+  imagePair?: CSSProperties,
+  old?: CSSProperties,
+  new?: CSSProperties,
+}>;
+
 export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
 type ComplexStyleValueType<T> =
