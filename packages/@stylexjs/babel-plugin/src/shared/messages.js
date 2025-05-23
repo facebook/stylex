@@ -54,3 +54,6 @@ export const UNKNOWN_PROP_KEY = 'Unknown property key';
 
 export const POSITION_TRY_INVALID_PROPERTY =
   'Invalid property in `positionTry()` call. It may only contain, positionAnchor, positionArea, inset properties (top, left, insetInline etc.), margin properties, size properties (height, inlineSize, etc.), and self-alignment properties (alignSelf, justifySelf, placeSelf)';
+
+export const VIEW_TRANSITION_CLASS_INVALID_PROPERTY =
+  'Invlid property in `viewTransitionClass()` call. It may only contain group, imagePair, old, and new properties';
