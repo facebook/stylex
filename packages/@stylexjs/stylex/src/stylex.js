@@ -215,6 +215,7 @@ type IStyleX = {
     'data-style-src'?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
   }>,
+  viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   __customProperties?: { [string]: mixed },
   ...
@@ -235,5 +236,6 @@ _legacyMerge.keyframes = keyframes;
 _legacyMerge.positionTry = positionTry;
 _legacyMerge.props = props;
 _legacyMerge.types = types;
+_legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;
