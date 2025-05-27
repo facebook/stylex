@@ -118,7 +118,6 @@ describe('@stylexjs/babel-plugin', () => {
           },
         });
       `);
-
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
         const fadeIn = "x18re5ia-B";
@@ -140,6 +139,61 @@ describe('@stylexjs/babel-plugin', () => {
               "x1jn504y-B",
               {
                 "ltr": "@keyframes x1jn504y-B{from{opacity:1;}to{opacity:0;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+            [
+              "xfh0f9i",
+              {
+                "ltr": "::view-transition-old(*.xfh0f9i){animation-name:x1jn504y-B;animation-duration:1s;}::view-transition-new(*.xfh0f9i){animation-name:x18re5ia-B;animation-duration:1s;}",
+                "rtl": null,
+              },
+              1,
+            ],
+          ],
+        }
+      `);
+    });
+    test('using inline keyframes', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const cls = stylex.viewTransitionClass({
+          old: {
+            animationName: stylex.keyframes({
+              from: {opacity: 1},
+              to: {opacity: 0},
+            }),
+            animationDuration: '1s',
+          },
+          new: {
+            animationName: stylex.keyframes({
+              from: {opacity: 0},
+              to: {opacity: 1},
+            }),
+            animationDuration: '1s',
+          },
+        });
+      `);
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        const cls = "xfh0f9i";"
+      `);
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1jn504y-B",
+              {
+                "ltr": "@keyframes x1jn504y-B{from{opacity:1;}to{opacity:0;}}",
+                "rtl": null,
+              },
+              1,
+            ],
+            [
+              "x18re5ia-B",
+              {
+                "ltr": "@keyframes x18re5ia-B{from{opacity:0;}to{opacity:1;}}",
                 "rtl": null,
               },
               1,

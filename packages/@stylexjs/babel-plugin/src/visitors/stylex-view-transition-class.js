@@ -19,6 +19,7 @@ import {
   keyframes as stylexKeyframes,
 } from '../shared';
 import stylexViewTransitionClass from '../shared/stylex-view-transition-class';
+import type { InjectableStyle } from '../shared/common-types';
 
 /// This function looks for `stylex.viewTransitionClass` calls within variable declarations and transforms them.
 /// 1. It finds the first argument to `stylex.viewTransitionClass` and validates it.
@@ -68,20 +69,37 @@ export default function transformStyleXViewTransitionClass(
     const args: $ReadOnlyArray<NodePath<>> = init.get('arguments');
     const firstArgPath = args[0];
 
+    const otherInjectedCSSRules: { [propertyName: string]: InjectableStyle } =
+      {};
+
+    // eslint-disable-next-line no-inner-declarations
+    function keyframes<
+      Obj: {
+        +[key: string]: { +[k: string]: string | number },
+      },
+    >(animation: Obj): string {
+      const [animationName, injectedStyle] = stylexKeyframes(
+        animation,
+        state.options,
+      );
+      otherInjectedCSSRules[animationName] = injectedStyle;
+      return animationName;
+    }
+
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
     state.stylexKeyframesImport.forEach((name) => {
-      identifiers[name] = { fn: stylexKeyframes };
+      identifiers[name] = { fn: keyframes };
     });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
       }
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
-      memberExpressions[name].keyframes = { fn: stylexKeyframes };
+      memberExpressions[name].keyframes = { fn: keyframes };
     });
 
     const { confident, value } = evaluate(firstArgPath, state, {
@@ -105,10 +123,16 @@ export default function transformStyleXViewTransitionClass(
     // This should be a string
     init.replaceWith(t.stringLiteral(viewTransitionClassName));
 
-    state.registerStyles(
-      [[viewTransitionClassName, { ltr, rtl }, priority]],
-      path,
+    const injectedStyles = {
+      ...otherInjectedCSSRules,
+      [viewTransitionClassName]: { priority, ltr, rtl },
+    };
+
+    const listOfStyles = Object.entries(injectedStyles).map(
+      ([key, { priority, ...rest }]) => [key, rest, priority],
     );
+
+    state.registerStyles(listOfStyles, path);
   }
 }
 
