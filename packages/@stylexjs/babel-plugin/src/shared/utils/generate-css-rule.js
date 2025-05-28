@@ -9,7 +9,8 @@
 
 'use strict';
 
-import type { InjectableStyle } from '../common-types';
+import type { InjectableStyle, StyleXOptions } from '../common-types';
+import { defaultOptions } from './default-options';
 
 import generateLtr from '../physical-rtl/generate-ltr';
 import generateRtl from '../physical-rtl/generate-rtl';
@@ -55,16 +56,17 @@ export function generateCSSRule(
   pseudos: $ReadOnlyArray<string>,
   atRules: $ReadOnlyArray<string>,
   constRules: $ReadOnlyArray<string>,
+  options: StyleXOptions = defaultOptions,
 ): InjectableStyle {
   const pairs: $ReadOnlyArray<[string, string]> = Array.isArray(value)
     ? value.map((eachValue) => [key, eachValue])
     : [[key, value]];
 
-  const ltrPairs = pairs.map(generateLtr);
+  const ltrPairs = pairs.map((pair) => generateLtr(pair, options));
   const ltrDecls = ltrPairs.map((pair) => pair.join(':')).join(';');
 
   const rtlDecls = pairs
-    .map(generateRtl)
+    .map((pair) => generateRtl(pair, options))
     .filter(Boolean)
     .map((pair) => pair.join(':'))
     .join(';');

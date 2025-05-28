@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { StyleXOptions } from '../common-types';
+import { defaultOptions } from '../utils/default-options';
 import parser from 'postcss-value-parser';
 
 const cursorFlip: $ReadOnly<{ [string]: string }> = {
@@ -178,11 +180,15 @@ const propertyToRTL: $ReadOnly<{
   },
 };
 
-export default function generateRTL([key, value]: $ReadOnly<
-  [string, string],
->): ?$ReadOnly<[string, string]> {
-  if (propertyToRTL[key]) {
-    return propertyToRTL[key]([key, value]);
+export default function generateRTL(
+  [key, value]: $ReadOnly<[string, string]>,
+  options: StyleXOptions = defaultOptions,
+): ?$ReadOnly<[string, string]> {
+  const { enableLogicalStylesPolyfill, styleResolution } = options;
+
+  if ((!enableLogicalStylesPolyfill && styleResolution === 'legacy-expand-shorthands') || !propertyToRTL[key]) {
+    return null;
   }
-  return null;
+
+  return propertyToRTL[key]([key, value]);
 }

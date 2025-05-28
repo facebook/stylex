@@ -7,6 +7,9 @@
  * @flow strict
  */
 
+import type { StyleXOptions } from '../common-types';
+import { defaultOptions } from '../utils/default-options';
+
 const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   start: 'left',
   end: 'right',
@@ -120,10 +123,14 @@ const propertyToLTR: $ReadOnly<{
 
 export default function generateLTR(
   pair: $ReadOnly<[string, string]>,
+  options: StyleXOptions = defaultOptions,
 ): $ReadOnly<[string, string]> {
+  const { enableLogicalStylesPolyfill, styleResolution } = options;
   const [key] = pair;
-  if (propertyToLTR[key]) {
-    return propertyToLTR[key](pair);
+
+  if ((!enableLogicalStylesPolyfill && styleResolution === 'legacy-expand-shorthands' ) || !propertyToLTR[key]) {
+    return pair;
   }
-  return pair;
+
+  return propertyToLTR[key](pair);
 }

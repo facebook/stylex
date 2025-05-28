@@ -28,6 +28,7 @@ function transform(source, opts = {}) {
         {
           runtimeInjection: true,
           styleResolution: 'legacy-expand-shorthands',
+          enableLogicalStylesPolyfill: true,
           ...opts,
         },
       ],
