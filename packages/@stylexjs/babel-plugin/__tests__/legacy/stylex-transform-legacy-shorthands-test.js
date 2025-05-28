@@ -54,19 +54,19 @@ describe('Legacy-shorthand-expansion resolution', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
-        _inject2(".x1mpkggp{padding-right:5px}", 3000, ".x1mpkggp{padding-left:5px}");
+        _inject2(".x1gabggj{padding-right:5px}", 3000, ".x1gabggj{padding-left:5px}");
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
         export const styles = {
           foo: {
             kLKAdn: "x123j3cw",
-            kP0aTx: "x1mpkggp",
+            kwRFfy: "x1gabggj",
             kGO01o: "xs9asl8",
-            kuDDbn: "x1t2a60a",
+            kZCmMZ: "xaso8d8",
             $$css: true
           }
         };
-        "x123j3cw x1mpkggp xs9asl8 x1t2a60a";"
+        "x123j3cw x1gabggj xs9asl8 xaso8d8";"
       `);
     });
     test('stylex call with short-form property collisions', () => {
@@ -92,13 +92,13 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        _inject2(".x1sln4lm{padding-left:10px}", 3000, ".x1sln4lm{padding-right:10px}");
-        "x1nn3v0j xg83lxy x1120s5i x1sln4lm";"
+        _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+        "x1nn3v0j x14vy60q x1120s5i xe2zdcy";"
       `);
     });
     test('stylex call with short-form property collisions with null', () => {
@@ -124,12 +124,12 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        "x1nn3v0j xg83lxy x1120s5i";"
+        "x1nn3v0j x14vy60q x1120s5i";"
       `);
     });
   });
@@ -149,18 +149,18 @@ describe('Legacy-shorthand-expansion resolution', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1mpkggp{padding-right:5px}", 3000, ".x1mpkggp{padding-left:5px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x1gabggj{padding-right:5px}", 3000, ".x1gabggj{padding-left:5px}");
         export const styles = {
           foo: {
-            kuDDbn: "x1t2a60a",
-            kP0aTx: "x1mpkggp",
+            kZCmMZ: "xaso8d8",
+            kwRFfy: "x1gabggj",
             kE3dHu: null,
             kpe85a: null,
             $$css: true
           }
         };
-        "x1t2a60a x1mpkggp";"
+        "xaso8d8 x1gabggj";"
       `);
     });
     test('stylex call with short-form property collisions', () => {
@@ -186,13 +186,13 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        _inject2(".x1sln4lm{padding-left:10px}", 3000, ".x1sln4lm{padding-right:10px}");
-        "x1nn3v0j xg83lxy x1120s5i x1sln4lm";"
+        _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+        "x1nn3v0j x14vy60q x1120s5i xe2zdcy";"
       `);
     });
     test('stylex call with short-form property collisions with null', () => {
@@ -218,12 +218,12 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        "x1nn3v0j xg83lxy x1120s5i";"
+        "x1nn3v0j x14vy60q x1120s5i";"
       `);
     });
   });
