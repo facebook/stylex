@@ -726,9 +726,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x17adc0v{margin-left:10px}", 3000, ".x17adc0v{margin-right:10px}");
-          _inject2(".xmo9yow{margin-right:10px}", 3000, ".xmo9yow{margin-left:10px}");
-          const classnames = "x17adc0v xmo9yow";"
+          _inject2(".x1hm9lzh{margin-left:10px}", 3000, ".x1hm9lzh{margin-right:10px}");
+          _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+          const classnames = "x1hm9lzh x1sa5p1d";"
         `);
       });
 
@@ -749,8 +749,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x17adc0v{margin-left:10px}", 3000, ".x17adc0v{margin-right:10px}");
-          const classnames = "x17adc0v";"
+          _inject2(".x1hm9lzh{margin-left:10px}", 3000, ".x1hm9lzh{margin-right:10px}");
+          const classnames = "x1hm9lzh";"
         `);
       });
 
@@ -771,8 +771,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".xmo9yow{margin-right:10px}", 3000, ".xmo9yow{margin-left:10px}");
-          const classnames = "xmo9yow";"
+          _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+          const classnames = "x1sa5p1d";"
         `);
       });
 
@@ -793,9 +793,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1sln4lm{padding-left:10px}", 3000, ".x1sln4lm{padding-right:10px}");
-          _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
-          const classnames = "x1sln4lm x1iji9kk";"
+          _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+          _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
+          const classnames = "xe2zdcy x2vl965";"
         `);
       });
 
@@ -816,8 +816,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1sln4lm{padding-left:10px}", 3000, ".x1sln4lm{padding-right:10px}");
-          const classnames = "x1sln4lm";"
+          _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+          const classnames = "xe2zdcy";"
         `);
       });
 
@@ -838,8 +838,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
-          const classnames = "x1iji9kk";"
+          _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
+          const classnames = "x2vl965";"
         `);
       });
 
@@ -883,8 +883,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x73b8pu{border-left-color:0}", 3000, ".x73b8pu{border-right-color:0}");
-          const classnames = "x73b8pu";"
+          _inject2(".x1t19a1o{border-left-color:0}", 3000, ".x1t19a1o{border-right-color:0}");
+          const classnames = "x1t19a1o";"
         `);
       });
 
@@ -1244,9 +1244,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x17adc0v{margin-start:10px}", 3000);
-          _inject2(".xmo9yow{margin-end:10px}", 3000);
-          const classnames = "x17adc0v xmo9yow";"
+          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
+          const classnames = "x1hm9lzh x1sa5p1d";"
         `);
       });
 
@@ -1267,8 +1267,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x17adc0v{margin-start:10px}", 3000);
-          const classnames = "x17adc0v";"
+          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          const classnames = "x1hm9lzh";"
         `);
       });
 
@@ -1289,8 +1289,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".xmo9yow{margin-end:10px}", 3000);
-          const classnames = "xmo9yow";"
+          _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
+          const classnames = "x1sa5p1d";"
         `);
       });
 
@@ -1311,9 +1311,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1sln4lm{padding-start:10px}", 3000);
-          _inject2(".x1iji9kk{padding-end:10px}", 3000);
-          const classnames = "x1sln4lm x1iji9kk";"
+          _inject2(".xe2zdcy{padding-inline-start:10px}", 3000);
+          _inject2(".x2vl965{padding-inline-end:10px}", 3000);
+          const classnames = "xe2zdcy x2vl965";"
         `);
       });
 
@@ -1334,8 +1334,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1sln4lm{padding-start:10px}", 3000);
-          const classnames = "x1sln4lm";"
+          _inject2(".xe2zdcy{padding-inline-start:10px}", 3000);
+          const classnames = "xe2zdcy";"
         `);
       });
 
@@ -1356,8 +1356,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1iji9kk{padding-end:10px}", 3000);
-          const classnames = "x1iji9kk";"
+          _inject2(".x2vl965{padding-inline-end:10px}", 3000);
+          const classnames = "x2vl965";"
         `);
       });
 
@@ -1401,8 +1401,8 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x73b8pu{border-start-color:0}", 3000);
-          const classnames = "x73b8pu";"
+          _inject2(".x1t19a1o{border-inline-start-color:0}", 3000);
+          const classnames = "x1t19a1o";"
         `);
       });
 
