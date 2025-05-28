@@ -10,6 +10,7 @@
 'use strict';
 
 import type { Node } from 'estree';
+import createImportTracker from './utils/createImportTracker';
 
 /*:: import { Rule } from 'eslint'; */
 
@@ -18,7 +19,7 @@ const stylexEnforceExtension = {
     type: 'problem',
     docs: {
       description:
-        'Ensure that files exporting StyleX Vars using `stylex.defineVars` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
+        'Ensure that files exporting StyleX Vars using `defineVars` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
       category: 'Possible Errors',
       recommended: false,
     },
@@ -26,6 +27,22 @@ const stylexEnforceExtension = {
       {
         type: 'object',
         properties: {
+          validImports: {
+            type: 'array',
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
+            default: ['stylex', '@stylexjs/stylex'],
+          },
           themeFileExtension: {
             type: 'string',
             default: '.stylex.jsx',
@@ -40,8 +57,12 @@ const stylexEnforceExtension = {
     let hasOtherExports = false;
     const fileName = context.getFilename();
     const options = context.options[0] || {};
+    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
+      options;
     const themeFileExtension = options.themeFileExtension || '.stylex.jsx';
     const themeTsxExtension = themeFileExtension.replace('.jsx', '.tsx');
+
+    const importTracker = createImportTracker(importsToLookFor);
 
     function isStyleXVarsExport(node: Node): boolean {
       const callee =
@@ -52,11 +73,13 @@ const stylexEnforceExtension = {
             : null;
 
       return (
-        callee?.type === 'MemberExpression' &&
-        callee.object?.type === 'Identifier' &&
-        callee.object.name === 'stylex' &&
-        callee.property?.type === 'Identifier' &&
-        callee.property.name === 'defineVars'
+        (callee?.type === 'MemberExpression' &&
+          callee.object?.type === 'Identifier' &&
+          importTracker.isStylexDefaultImport(callee.object.name) &&
+          callee.property?.type === 'Identifier' &&
+          callee.property.name === 'defineVars') ||
+        (callee?.type === 'Identifier' &&
+          importTracker.isStylexNamedImport('defineVars', callee.name))
       );
     }
 
@@ -87,29 +110,33 @@ const stylexEnforceExtension = {
         context.report({
           node,
           message:
-            'Files that export `stylex.defineVars()` must not export anything else.',
+            'Files that export `defineVars()` must not export anything else.',
         });
       }
 
       if (hasStyleXVarsExports && !isStylexFile) {
         context.report({
           node,
-          message: `Files that export StyleX variables defined with \`stylex.defineVars()\` must end with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+          message: `Files that export StyleX variables defined with \`defineVars()\` must end with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
         });
       }
 
       if (!hasStyleXVarsExports && isStylexFile) {
         context.report({
           node,
-          message: `Only StyleX variables defined with \`stylex.defineVars()\` can be exported from a file with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+          message: `Only StyleX variables defined with \`defineVars()\` can be exported from a file with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
         });
       }
     }
 
     return {
+      ImportDeclaration: importTracker.ImportDeclaration,
       'ExportNamedDeclaration, ExportDefaultDeclaration'(node: Node): void {
         checkExports(node);
         reportErrors(node);
+      },
+      'Program:exit'() {
+        importTracker.clear();
       },
     };
   },
