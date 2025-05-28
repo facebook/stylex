@@ -16,7 +16,7 @@ sidebar_position: 2
 type Options = {
   // Possible strings where you can import stylex from
   //
-  // Default: ['@stylexjs/stylex']
+  // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 
   // Custom limits for values of various properties
@@ -98,7 +98,7 @@ type PropLimits = {
 type Options = {
   // Possible string where you can import stylex from
   //
-  // Default: ['@stylexjs/stylex']
+  // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 
   // Minimum number of keys required after which the rule is enforced
@@ -128,4 +128,63 @@ type Options = {
     ]
   }
 }
+```
+
+### `@stylexjs/stylex-valid-shorthands` rule
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  //
+  // Default: ['stylex', '@stylexjs/stylex']
+  validImports: Array<string | { from: string, as: string }>,
+
+  // Whether `!important` is allowed
+  //
+  // Default: false
+  allowImportant: boolean,
+
+  // Whether the expansion uses logical direction properties over physical
+  //
+  // Default: false
+  preferInline: boolean,
+};
+```
+
+### `@stylexjs/stylex-enforce-extension` rule
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  //
+  // Default: ['stylex', '@stylexjs/stylex']
+  validImports: Array<string | { from: string, as: string }>,
+
+  // The file extension to enforce for theme files
+  //
+  // Default: '.stylex.js'
+  themeFileExtension: string,
+};
+```
+
+### `@stylexjs/stylex-no-unused` rule
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  //
+  // Default: ['stylex', '@stylexjs/stylex']
+  validImports: Array<string | { from: string, as: string }>,
+};
+```
+
+### `@stylexjs/stylex-no-legacy-contextual-styles` rule
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  //
+  // Default: ['stylex', '@stylexjs/stylex']
+  validImports: Array<string | { from: string, as: string }>,
+};
 ```

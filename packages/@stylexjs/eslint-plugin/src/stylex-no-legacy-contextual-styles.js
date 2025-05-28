@@ -9,11 +9,13 @@
 
 'use strict';
 
-import type { Node, ImportDeclaration, CallExpression } from 'estree';
+import type { Node, CallExpression } from 'estree';
+import type { ValidImportSource } from './utils/createImportTracker';
+import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
-  validImports: Array<string>,
+  validImports: Array<ValidImportSource>,
   minKeys: number,
   allowLineSeparatedGroups: boolean,
 };
@@ -32,7 +34,18 @@ const stylexNoLegacyContextualStyles = {
         properties: {
           validImports: {
             type: 'array',
-            items: { type: 'string' },
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
             default: ['stylex', '@stylexjs/stylex'],
           },
         },
@@ -45,17 +58,17 @@ const stylexNoLegacyContextualStyles = {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
     }: Schema = context.options[0] || {};
 
-    const styleXDefaultImports = new Set<string>();
-    const styleXCreateImports = new Set<string>();
+    const importTracker = createImportTracker(importsToLookFor);
 
     function isStylexCreateCallee(node: Node) {
       return (
         (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
-          styleXDefaultImports.has(node.object.name) &&
+          importTracker.isStylexDefaultImport(node.object.name) &&
           node.property.type === 'Identifier' &&
           node.property.name === 'create') ||
-        (node.type === 'Identifier' && styleXCreateImports.has(node.name))
+        (node.type === 'Identifier' &&
+          importTracker.isStylexNamedImport('create', node.name))
       );
     }
 
@@ -69,34 +82,7 @@ const stylexNoLegacyContextualStyles = {
     }
 
     return {
-      ImportDeclaration(node: ImportDeclaration): void {
-        if (
-          node.source.type !== 'Literal' ||
-          typeof node.source.value !== 'string'
-        ) {
-          return;
-        }
-
-        if (!importsToLookFor.includes(node.source.value)) {
-          return;
-        }
-
-        node.specifiers.forEach((specifier) => {
-          if (
-            specifier.type === 'ImportDefaultSpecifier' ||
-            specifier.type === 'ImportNamespaceSpecifier'
-          ) {
-            styleXDefaultImports.add(specifier.local.name);
-          }
-
-          if (
-            specifier.type === 'ImportSpecifier' &&
-            specifier.imported.name === 'create'
-          ) {
-            styleXCreateImports.add(specifier.local.name);
-          }
-        });
-      },
+      ImportDeclaration: importTracker.ImportDeclaration,
 
       CallExpression(node: CallExpression): void {
         const firstArg = node.arguments[0];
@@ -154,6 +140,9 @@ const stylexNoLegacyContextualStyles = {
             });
           });
         }
+      },
+      'Program:exit'() {
+        importTracker.clear();
       },
     };
   },
