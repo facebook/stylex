@@ -11,6 +11,7 @@
 
 import type {
   CallExpression,
+  Node,
   Property,
   ObjectExpression,
   Comment,
@@ -24,6 +25,7 @@ import {
 } from './utils/splitShorthands.js';
 import { CANNOT_FIX } from './utils/splitShorthands.js';
 import getSourceCode from './utils/getSourceCode';
+import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
 const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
@@ -75,7 +77,18 @@ const stylexValidShorthands = {
         properties: {
           validImports: {
             type: 'array',
-            items: { type: 'string' },
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
             default: ['stylex', '@stylexjs/stylex'],
           },
           allowImportant: {
@@ -93,8 +106,24 @@ const stylexValidShorthands = {
   },
   create(context: Rule.RuleContext): { ... } {
     const options = context.options[0] || {};
+    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
+      options;
     const allowImportant = options.allowImportant || false;
     const preferInline = options.preferInline || false;
+
+    const importTracker = createImportTracker(importsToLookFor);
+
+    function isStylexCreateCallee(node: Node) {
+      return (
+        (node.type === 'MemberExpression' &&
+          node.object.type === 'Identifier' &&
+          importTracker.isStylexDefaultImport(node.object.name) &&
+          node.property.type === 'Identifier' &&
+          node.property.name === 'create') ||
+        (node.type === 'Identifier' &&
+          importTracker.isStylexNamedImport('create', node.name))
+      );
+    }
 
     function validateObject(obj: ObjectExpression) {
       for (const prop of obj.properties) {
@@ -197,15 +226,11 @@ const stylexValidShorthands = {
     }
 
     return {
+      ImportDeclaration: importTracker.ImportDeclaration,
       CallExpression(
         node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
       ) {
-        const isStyleXCall =
-          node.callee.type === 'MemberExpression' &&
-          node.callee.object.type === 'Identifier' &&
-          node.callee.object.name === 'stylex' &&
-          node.callee.property.type === 'Identifier' &&
-          node.callee.property.name === 'create';
+        const isStyleXCall = isStylexCreateCallee(node.callee);
 
         if (!isStyleXCall) {
           return;
@@ -225,6 +250,9 @@ const stylexValidShorthands = {
             validateObject(namespaceProp.value);
           }
         }
+      },
+      'Program:exit'() {
+        importTracker.clear();
       },
     };
   },

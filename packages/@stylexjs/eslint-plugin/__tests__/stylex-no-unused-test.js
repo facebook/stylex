@@ -202,6 +202,35 @@ eslintTester.run('stylex-no-unused', rule.default, {
       })
     `,
     },
+    {
+      // importSources with custom import
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            color: 'red',
+          },
+        });
+        export default function Component() {
+          return <div {...stylex.props(styles.main)} />;
+        }
+      `,
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            color: 'red',
+          },
+        });
+        export default function Component() {
+          return <div {...css.props(styles.main)} />;
+        }
+      `,
+    },
   ],
   invalid: [
     {
@@ -319,6 +348,72 @@ eslintTester.run('stylex-no-unused', rule.default, {
       errors: [
         {
           message: 'Unused style detected: styles.main',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            color: 'red',
+          },
+          unused: {
+            fontSize: '16px',
+          },
+        });
+        export default function Component() {
+          return <div {...stylex.props(styles.main)} />;
+        }
+      `,
+      output: `
+        import stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            color: 'red',
+          },
+        });
+        export default function Component() {
+          return <div {...stylex.props(styles.main)} />;
+        }
+      `,
+      errors: [
+        {
+          message: 'Unused style detected: styles.unused',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            color: 'red',
+          },
+          unused: {
+            fontSize: '16px',
+          },
+        });
+        export default function Component() {
+          return <div {...css.props(styles.main)} />;
+        }
+      `,
+      output: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            color: 'red',
+          },
+        });
+        export default function Component() {
+          return <div {...css.props(styles.main)} />;
+        }
+      `,
+      errors: [
+        {
+          message: 'Unused style detected: styles.unused',
         },
       ],
     },

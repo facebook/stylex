@@ -24,11 +24,17 @@ const invalidExportWithDefineVars =
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.stylex.jsx',
     },
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.stylex.tsx',
     },
     {
@@ -40,12 +46,18 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       filename: 'testComponent.tsx',
     },
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.custom.jsx',
       options: [{ themeFileExtension: '.custom.jsx' }],
     },
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.custom.tsx',
       options: [{ themeFileExtension: '.custom.jsx' }],
     },
@@ -56,21 +68,42 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
+        import stylex from 'stylex';
         export const vars = stylex.defineVars({ color: 'red' });
         export default stylex.defineVars({ background: 'blue' });
       `,
       filename: 'myComponent.stylex.jsx',
     },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import stylex from 'custom-stylex';
+        export const vars = stylex.defineVars({});
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        export const vars = css.defineVars({});
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
   ],
 
   invalid: [
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.jsx',
       errors: [{ message: invalidFilenameWithDefineVars }],
     },
     {
       code: `
+        import stylex from 'stylex';
         export const vars = stylex.defineVars({ color: 'red' });
         export const somethingElse = someFunction();
         export default stylex.defineVars({ background: 'blue' });
@@ -83,6 +116,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
+        import stylex from 'stylex';
         export const vars = someFunction();
         export const somethingElse = someFunction();
         export default stylex.defineVars({ background: 'blue' });
@@ -96,6 +130,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
+        import stylex from 'stylex';
         export const vars = stylex.defineVars({
           color: 'blue',
         });
@@ -106,6 +141,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
+        import stylex from 'stylex';
         export const vars = stylex.defineVars({
           color: 'red',
         });
@@ -115,7 +151,10 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [{ message: invalidExportWithDefineVars }],
     },
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.tsx',
       errors: [{ message: invalidFilenameWithDefineVars }],
     },
@@ -130,7 +169,10 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [{ message: invalidFilenameWithoutDefineVars }],
     },
     {
-      code: 'export const vars = stylex.defineVars({});',
+      code: `
+        import stylex from 'stylex';
+        export const vars = stylex.defineVars({});
+      `,
       filename: 'testComponent.jsx',
       options: [{ themeFileExtension: '.custom.jsx' }],
       errors: [
@@ -148,6 +190,56 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
         {
           message:
             'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.custom.jsx` or `.custom.tsx` extension.',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import stylex from 'custom-stylex';
+        export const vars = stylex.defineVars({});
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        {
+          message:
+            'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        export const vars = css.defineVars({});
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        {
+          message:
+            'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: 'export const somethingElse = {};',
+      filename: 'testComponent.stylex.jsx',
+      errors: [
+        {
+          message:
+            'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: 'export const somethingElse = {};',
+      filename: 'testComponent.stylex.jsx',
+      errors: [
+        {
+          message:
+            'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.',
         },
       ],
     },

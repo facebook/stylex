@@ -140,6 +140,29 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            marginInlineEnd: '14px',
+            marginInlineStart: '14px',
+          },
+        })
+      `,
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            borderRadius: 5,
+          },
+        })
+      `,
+    },
   ],
   invalid: [
     {
@@ -927,6 +950,58 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "padding: 10em 1em" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            margin: '10px 12px',
+          },
+        });
+      `,
+      output: `
+        import stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            marginBlock: '10px',
+            marginInline: '12px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "margin: 10px 12px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            padding: '5px 10px',
+          },
+        });
+      `,
+      output: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            paddingBlock: '5px',
+            paddingInline: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "padding: 5px 10px" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

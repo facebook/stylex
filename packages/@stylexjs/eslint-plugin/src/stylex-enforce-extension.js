@@ -10,6 +10,7 @@
 'use strict';
 
 import type { Node } from 'estree';
+import createImportTracker from './utils/createImportTracker';
 
 /*:: import { Rule } from 'eslint'; */
 
@@ -26,6 +27,22 @@ const stylexEnforceExtension = {
       {
         type: 'object',
         properties: {
+          validImports: {
+            type: 'array',
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
+            default: ['stylex', '@stylexjs/stylex'],
+          },
           themeFileExtension: {
             type: 'string',
             default: '.stylex.jsx',
@@ -40,8 +57,12 @@ const stylexEnforceExtension = {
     let hasOtherExports = false;
     const fileName = context.getFilename();
     const options = context.options[0] || {};
+    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
+      options;
     const themeFileExtension = options.themeFileExtension || '.stylex.jsx';
     const themeTsxExtension = themeFileExtension.replace('.jsx', '.tsx');
+
+    const importTracker = createImportTracker(importsToLookFor);
 
     function isStyleXVarsExport(node: Node): boolean {
       const callee =
@@ -52,11 +73,13 @@ const stylexEnforceExtension = {
             : null;
 
       return (
-        callee?.type === 'MemberExpression' &&
-        callee.object?.type === 'Identifier' &&
-        callee.object.name === 'stylex' &&
-        callee.property?.type === 'Identifier' &&
-        callee.property.name === 'defineVars'
+        (callee?.type === 'MemberExpression' &&
+          callee.object?.type === 'Identifier' &&
+          importTracker.isStylexDefaultImport(callee.object.name) &&
+          callee.property?.type === 'Identifier' &&
+          callee.property.name === 'defineVars') ||
+        (callee?.type === 'Identifier' &&
+          importTracker.isStylexNamedImport('defineVars', callee.name))
       );
     }
 
@@ -107,9 +130,13 @@ const stylexEnforceExtension = {
     }
 
     return {
+      ImportDeclaration: importTracker.ImportDeclaration,
       'ExportNamedDeclaration, ExportDefaultDeclaration'(node: Node): void {
         checkExports(node);
         reportErrors(node);
+      },
+      'Program:exit'() {
+        importTracker.clear();
       },
     };
   },
