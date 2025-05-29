@@ -15,11 +15,11 @@ const ruleTester = new RuleTester({
 });
 
 const invalidFilenameWithDefineVars =
-  'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.';
+  'Files that export StyleX variables defined with `defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.';
 const invalidFilenameWithoutDefineVars =
-  'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.';
+  'Only StyleX variables defined with `defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.';
 const invalidExportWithDefineVars =
-  'Files that export `stylex.defineVars()` must not export anything else.';
+  'Files that export `defineVars()` must not export anything else.';
 
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
@@ -178,7 +178,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.custom.jsx` or `.custom.tsx` extension.',
+            'Files that export StyleX variables defined with `defineVars()` must end with the `.custom.jsx` or `.custom.tsx` extension.',
         },
       ],
     },
@@ -189,7 +189,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.custom.jsx` or `.custom.tsx` extension.',
+            'Only StyleX variables defined with `defineVars()` can be exported from a file with the `.custom.jsx` or `.custom.tsx` extension.',
         },
       ],
     },
@@ -203,7 +203,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.',
+            'Files that export StyleX variables defined with `defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.',
         },
       ],
     },
@@ -217,7 +217,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Files that export StyleX variables defined with `stylex.defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.',
+            'Files that export StyleX variables defined with `defineVars()` must end with the `.stylex.jsx` or `.stylex.tsx` extension.',
         },
       ],
     },
@@ -228,7 +228,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.',
+            'Only StyleX variables defined with `defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.',
         },
       ],
     },
@@ -239,7 +239,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       errors: [
         {
           message:
-            'Only StyleX variables defined with `stylex.defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.',
+            'Only StyleX variables defined with `defineVars()` can be exported from a file with the `.stylex.jsx` or `.stylex.tsx` extension.',
         },
       ],
     },

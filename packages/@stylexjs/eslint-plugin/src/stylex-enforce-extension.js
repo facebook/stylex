@@ -19,7 +19,7 @@ const stylexEnforceExtension = {
     type: 'problem',
     docs: {
       description:
-        'Ensure that files exporting StyleX Vars using `stylex.defineVars` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
+        'Ensure that files exporting StyleX Vars using `defineVars` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
       category: 'Possible Errors',
       recommended: false,
     },
@@ -110,21 +110,21 @@ const stylexEnforceExtension = {
         context.report({
           node,
           message:
-            'Files that export `stylex.defineVars()` must not export anything else.',
+            'Files that export `defineVars()` must not export anything else.',
         });
       }
 
       if (hasStyleXVarsExports && !isStylexFile) {
         context.report({
           node,
-          message: `Files that export StyleX variables defined with \`stylex.defineVars()\` must end with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+          message: `Files that export StyleX variables defined with \`defineVars()\` must end with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
         });
       }
 
       if (!hasStyleXVarsExports && isStylexFile) {
         context.report({
           node,
-          message: `Only StyleX variables defined with \`stylex.defineVars()\` can be exported from a file with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+          message: `Only StyleX variables defined with \`defineVars()\` can be exported from a file with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
         });
       }
     }
