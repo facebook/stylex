@@ -52,10 +52,7 @@ export default function createImportTracker(
 
     if (typeof foundImportSource === 'string') {
       node.specifiers.forEach((specifier) => {
-        if (
-          specifier.type === 'ImportDefaultSpecifier' ||
-          specifier.type === 'ImportNamespaceSpecifier'
-        ) {
+        if (specifier.type === 'ImportNamespaceSpecifier') {
           styleXDefaultImports.add(specifier.local.name);
         }
 
