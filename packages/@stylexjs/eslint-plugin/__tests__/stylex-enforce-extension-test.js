@@ -25,14 +25,14 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.stylex.jsx',
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.stylex.tsx',
@@ -47,7 +47,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.custom.jsx',
@@ -55,7 +55,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.custom.tsx',
@@ -68,7 +68,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({ color: 'red' });
         export default stylex.defineVars({ background: 'blue' });
       `,
@@ -77,7 +77,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.stylex.jsx',
@@ -95,7 +95,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
   invalid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.jsx',
@@ -103,7 +103,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({ color: 'red' });
         export const somethingElse = someFunction();
         export default stylex.defineVars({ background: 'blue' });
@@ -116,7 +116,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = someFunction();
         export const somethingElse = someFunction();
         export default stylex.defineVars({ background: 'blue' });
@@ -130,7 +130,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({
           color: 'blue',
         });
@@ -141,7 +141,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({
           color: 'red',
         });
@@ -152,7 +152,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.tsx',
@@ -170,7 +170,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.jsx',
@@ -196,7 +196,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         export const vars = stylex.defineVars({});
       `,
       filename: 'testComponent.jsx',

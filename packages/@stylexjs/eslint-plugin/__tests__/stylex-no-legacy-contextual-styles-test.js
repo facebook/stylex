@@ -24,7 +24,7 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
   valid: [
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           '::placeholder': {
@@ -47,7 +47,7 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             '::placeholder': {
@@ -81,7 +81,7 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
   invalid: [
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           width: '100%',
@@ -120,7 +120,7 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             width: '100%',

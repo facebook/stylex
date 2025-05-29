@@ -25,7 +25,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       // all style used; identifier and literal
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderColor: {
@@ -65,7 +65,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       // stylex not default export
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderColor: {
@@ -105,7 +105,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       // indirect usage of style
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             display: 'flex',
@@ -154,7 +154,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       // styles default export
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderColor: {
@@ -175,7 +175,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       // styles named default inline export
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       export default styles = stylex.create({
         maxDimensionsModal: {
           maxWidth: '90%',
@@ -190,7 +190,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       // styles anonymous default inline export
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       export default stylex.create({
         maxDimensionsModal: {
           maxWidth: '90%',
@@ -206,7 +206,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
       // importSources with custom import
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             color: 'red',
@@ -235,7 +235,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
   invalid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderColor: {
@@ -258,7 +258,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
         }
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           dynamic: (color) => ({
             backgroundColor: color,
@@ -354,7 +354,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             color: 'red',
@@ -368,7 +368,7 @@ eslintTester.run('stylex-no-unused', rule.default, {
         }
       `,
       output: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             color: 'red',

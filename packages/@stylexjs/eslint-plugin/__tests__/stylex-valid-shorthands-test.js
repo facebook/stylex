@@ -24,7 +24,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
   valid: [
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           marginInlineEnd: '14px',
@@ -35,7 +35,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderRadius: 5,
@@ -45,7 +45,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           margin: 10,
@@ -55,7 +55,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           marginInline: 0,
@@ -65,7 +65,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           paddingInline: 0,
@@ -75,7 +75,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           marginBlock: 10,
@@ -85,7 +85,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           paddingBlock: 10,
@@ -95,7 +95,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           padding: 'calc(0.5 * 100px)',
@@ -105,7 +105,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           marginTop: '10em',
@@ -118,7 +118,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderWidth: '1px',
@@ -131,7 +131,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderColor: 'rgb(0, 0, 0)',
@@ -143,7 +143,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             marginInlineEnd: '14px',
@@ -167,7 +167,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
   invalid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             margin: '10px 12px 13px 14px',
@@ -175,7 +175,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             marginTop: '10px',
@@ -194,7 +194,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderRight: '4px solid var(--fds-gray-10)'
@@ -211,7 +211,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ preferInline: true }],
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderRadius: '10px 15px 20px 25px',
@@ -219,7 +219,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderStartStartRadius: '10px',
@@ -238,7 +238,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderRadius: '10px 15px 20px 25px',
@@ -246,7 +246,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             borderTopLeftRadius: '10px',
@@ -265,7 +265,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             marginHorizontal: '10px',
@@ -276,7 +276,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             marginInline: '10px',
@@ -307,7 +307,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             margin: '10px 10px 10px',
@@ -317,7 +317,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             margin: '10px',
@@ -343,7 +343,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               borderColor: 'rgb(0, 0, 0), rgb(5, 5, 5)',
@@ -352,7 +352,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           })
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               borderTopColor: 'rgb(0, 0, 0),',
@@ -379,7 +379,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
@@ -406,7 +406,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
 
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               borderWidth: '1px 2px 3px 4px',
@@ -421,7 +421,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               borderTopWidth: '1px',
@@ -492,7 +492,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             outline: '2px dashed red',
@@ -500,7 +500,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             outlineWidth: '2px',
@@ -518,7 +518,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
@@ -526,7 +526,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               backgroundColor: '#ff0',
@@ -548,7 +548,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ allowImportant: true }],
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               background: '#ff0 url("image.jpg") no-repeat fixed center / cover !important',
@@ -556,7 +556,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               backgroundColor: '#ff0 !important',
@@ -577,7 +577,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               margin: '0px',
@@ -587,7 +587,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               margin: '0px',
@@ -611,7 +611,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ allowImportant: true }],
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               margin: '10px 12px 13px 14px !important',
@@ -619,7 +619,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginTop: '10px !important',
@@ -638,7 +638,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               margin: '10px 12px 13px 14px !important',
@@ -646,7 +646,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginTop: '10px',
@@ -666,7 +666,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ preferInline: true }],
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               margin: '10em 1em 5em 2em',
@@ -674,7 +674,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginTop: '10em',
@@ -693,7 +693,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               margin: '10em 1em',
@@ -701,7 +701,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginBlock: '10em',
@@ -718,7 +718,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginInline: '10em 1em',
@@ -726,7 +726,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginInlineStart: '10em',
@@ -743,7 +743,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginBlock: '10em 1em',
@@ -751,7 +751,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               marginBlockStart: '10em',
@@ -768,7 +768,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               paddingBlock: '10em 1em',
@@ -776,7 +776,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               paddingBlockStart: '10em',
@@ -793,7 +793,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderWidth: '4px 5px 6px 7px',
@@ -817,7 +817,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderTopWidth: '4px',
@@ -839,7 +839,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ preferInline: true }],
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderWidth: '4px 5px 6px 7px',
@@ -863,7 +863,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderTopWidth: '4px',
@@ -884,7 +884,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               paddingTop: '10em',
@@ -897,7 +897,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               paddingTop: '10em',
@@ -930,7 +930,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               padding: '10em 1em',
@@ -938,7 +938,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           });
         `,
       output: `
-          import stylex from 'stylex';
+          import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
               paddingBlock: '10em',
@@ -956,7 +956,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             margin: '10px 12px',
@@ -964,7 +964,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         });
       `,
       output: `
-        import stylex from 'custom-stylex';
+        import * as stylex from 'custom-stylex';
         const styles = stylex.create({
           main: {
             marginBlock: '10px',
