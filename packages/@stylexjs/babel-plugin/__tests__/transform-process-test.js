@@ -112,14 +112,6 @@ describe('@stylexjs/babel-plugin', () => {
             kKVMdj: "xdmqw5o",
             kWkggS: "xrkmrrc",
             kVAM5u: "x1bg2uv5 x1l0eizu x5i7zo",
-            kzOINU: null,
-            kGJrpR: null,
-            kaZRDh: null,
-            kBCPoo: null,
-            k26BEO: null,
-            k5QoK5: null,
-            kLZC3w: null,
-            kL6WhQ: null,
             kKMj4B: "x1skrh0i x1cmij7u",
             $$css: true
           }
@@ -152,14 +144,6 @@ describe('@stylexjs/babel-plugin', () => {
             kKVMdj: "xdmqw5o",
             kWkggS: "xrkmrrc",
             kVAM5u: "x1bg2uv5 x1l0eizu x5i7zo",
-            kzOINU: null,
-            kGJrpR: null,
-            kaZRDh: null,
-            kBCPoo: null,
-            k26BEO: null,
-            k5QoK5: null,
-            kLZC3w: null,
-            kL6WhQ: null,
             kKMj4B: "x1skrh0i x1cmij7u",
             $$css: true
           }
