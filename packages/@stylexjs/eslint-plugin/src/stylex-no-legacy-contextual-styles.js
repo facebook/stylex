@@ -10,9 +10,8 @@
 'use strict';
 
 import type { Node, CallExpression } from 'estree';
-import createImportTracker, {
-  type ValidImportSource,
-} from './utils/createImportTracker';
+import type { ValidImportSource} from './utils/createImportTracker';
+import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
