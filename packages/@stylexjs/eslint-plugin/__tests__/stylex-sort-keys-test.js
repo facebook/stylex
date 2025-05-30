@@ -24,7 +24,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
   valid: [
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           borderColor: {
@@ -43,7 +43,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           width: {
@@ -144,7 +144,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
             borderColor: 'red',
@@ -159,7 +159,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         nav: {
           maxWidth: {
@@ -174,7 +174,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
   invalid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             padding: 10,
@@ -184,7 +184,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             animationDuration: '100ms',
@@ -202,7 +202,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const obj = { fontSize: '12px' };
         const styles = stylex.create({
           button: {
@@ -215,7 +215,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const obj = { fontSize: '12px' };
         const styles = stylex.create({
           button: {
@@ -264,7 +264,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
             borderColor: 'red',
@@ -277,7 +277,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         });
       `,
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
           '0%': {
             borderColor: 'red',
@@ -439,7 +439,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           // zee
@@ -450,7 +450,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           // bar
@@ -469,13 +469,13 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { backgroundColor: 'red', alignItems: 'center', }
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { alignItems: 'center', backgroundColor: 'red', }
       })
@@ -489,7 +489,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { // foo
           // foo
@@ -501,7 +501,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: { // foo
           // bar
@@ -521,7 +521,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           /*
@@ -537,7 +537,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           alignItems: 'center',
@@ -561,7 +561,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           backgroundColor: 'red',             //       foo
@@ -570,7 +570,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           alignItems: 'center',       // baz
@@ -587,7 +587,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           /*
@@ -598,7 +598,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           alignItems: 'center',
@@ -617,7 +617,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           // foo
@@ -628,7 +628,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       })
       `,
       output: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         foo: {
           // foo
