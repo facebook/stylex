@@ -57,7 +57,7 @@ export default function styleXPositionTry(
       ? null
       : `@position-try ${positionTryName} {${rtlString}}`;
 
-  return [positionTryName, { ltr, rtl, priority: 1 }];
+  return [positionTryName, { ltr, rtl, priority: 0 }];
 }
 
 function preprocessProperties(

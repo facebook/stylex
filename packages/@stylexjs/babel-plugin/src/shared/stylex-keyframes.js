@@ -65,7 +65,7 @@ export default function styleXKeyframes(
       ? null
       : `@keyframes ${animationName}{${rtlString}}`;
 
-  return [animationName, { ltr, rtl, priority: 1 }];
+  return [animationName, { ltr, rtl, priority: 0 }];
 }
 
 function expandFrameShorthands(

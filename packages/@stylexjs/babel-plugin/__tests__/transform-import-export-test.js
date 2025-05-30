@@ -274,7 +274,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --x5jppmd {anchor-name:anchor-name;anchor-name:--myAnchor;position-area:position-area;position-area:top left;}",
                 "rtl": "@position-try --x5jppmd {anchor-name:--myAnchor;position-area:top left;}",
               },
-              1,
+              0,
             ],
             [
               "--x17pzx6",
@@ -282,7 +282,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --x17pzx6 {anchor-name:anchor-name;anchor-name:--otherAnchor;inset-inline-start:inset-inline-start;inset-inline-start:anchor(start);top:top;top:anchor(bottom);}",
                 "rtl": "@position-try --x17pzx6 {anchor-name:--otherAnchor;inset-inline-start:anchor(start);top:anchor(bottom);}",
               },
-              1,
+              0,
             ],
             [
               "xjx6k13-B",
@@ -290,7 +290,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes xjx6k13-B{from{background-color:yellow;}to{background-color:orange;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
             [
               "x1qar0u3",

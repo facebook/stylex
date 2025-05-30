@@ -64,17 +64,7 @@ describe('rollup-plugin-stylex', () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 
     expect(css).toMatchInlineSnapshot(`
-      "@layer priority1 {
-        @keyframes xgnty7z-B {
-          0% {
-            opacity: .25;
-          }
-
-          100% {
-            opacity: 1;
-          }
-        }
-      }
+      "@layer priority1;
 
       @layer priority2 {
         .x1oz5o6v:hover {
@@ -123,6 +113,16 @@ describe('rollup-plugin-stylex', () => {
 
         .x3hqpx7 {
           width: 50%;
+        }
+      }
+
+      @keyframes xgnty7z-B {
+        0% {
+          opacity: .25;
+        }
+
+        100% {
+          opacity: 1;
         }
       }
       "
@@ -263,7 +263,7 @@ describe('rollup-plugin-stylex', () => {
          */
 
         var _inject2 = _inject;
-        _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 1);
+        _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 0);
         _inject2(".animationName-xeuoslp{animation-name:xgnty7z-B}", 3000);
         _inject2(".display-x78zum5{display:flex}", 3000);
         _inject2(".marginInlineStart-x1hm9lzh{margin-inline-start:10px}", 3000);
@@ -314,17 +314,7 @@ describe('rollup-plugin-stylex', () => {
         /^stylex.[0-9a-f]{8}\.css$/.test(chunkOrAsset.fileName),
     );
     expect(css.source).toMatchInlineSnapshot(`
-      "@layer priority1 {
-        @keyframes xgnty7z-B {
-          0% {
-            opacity: .25;
-          }
-
-          100% {
-            opacity: 1;
-          }
-        }
-      }
+      "@layer priority1;
 
       @layer priority2 {
         .x1oz5o6v:hover {
@@ -373,6 +363,16 @@ describe('rollup-plugin-stylex', () => {
 
         .x3hqpx7 {
           width: 50%;
+        }
+      }
+
+      @keyframes xgnty7z-B {
+        0% {
+          opacity: .25;
+        }
+
+        100% {
+          opacity: 1;
         }
       }
       "

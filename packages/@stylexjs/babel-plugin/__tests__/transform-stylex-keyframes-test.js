@@ -53,7 +53,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
           ],
         }
@@ -89,7 +89,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
           ],
         }
@@ -136,7 +136,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
             [
               "xx2qnu0",
@@ -187,7 +187,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
             [
               "xx2qnu0",
@@ -229,7 +229,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes x2up61p-B{from{color:red;}to{color:blue;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
           ],
         }
@@ -263,7 +263,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes x1o0a6zm-B{from{top:0;}to{top:100px;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
           ],
         }

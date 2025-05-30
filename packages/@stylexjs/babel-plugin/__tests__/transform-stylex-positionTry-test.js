@@ -52,7 +52,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --xhs37kq {height:height;height:100px;left:left;left:0;position-anchor:position-anchor;position-anchor:--anchor;top:top;top:0;width:width;width:100px;}",
                 "rtl": "@position-try --xhs37kq {height:100px;left:0;position-anchor:--anchor;top:0;width:100px;}",
               },
-              1,
+              0,
             ],
           ],
         }
@@ -87,7 +87,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --xhs37kq {height:height;height:100px;left:left;left:0;position-anchor:position-anchor;position-anchor:--anchor;top:top;top:0;width:width;width:100px;}",
                 "rtl": "@position-try --xhs37kq {height:100px;left:0;position-anchor:--anchor;top:0;width:100px;}",
               },
-              1,
+              0,
             ],
           ],
         }
@@ -132,7 +132,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --x1oyda6q {height:height;height:100px;left:left;left:0;top:top;top:0;width:width;width:100px;}",
                 "rtl": "@position-try --x1oyda6q {height:100px;left:0;top:0;width:100px;}",
               },
-              1,
+              0,
             ],
             [
               "x4uh2cz",
@@ -182,7 +182,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --xhs37kq {height:height;height:100px;left:left;left:0;position-anchor:position-anchor;position-anchor:--anchor;top:top;top:0;width:width;width:100px;}",
                 "rtl": "@position-try --xhs37kq {height:100px;left:0;position-anchor:--anchor;top:0;width:100px;}",
               },
-              1,
+              0,
             ],
             [
               "xlj2pck",

@@ -192,7 +192,7 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2("@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}", 1);
+        _inject2("@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}", 0);
         const fade = "__hashed_var__1cb153o-B";
         _inject2(".__hashed_var__1xwo6t1{animation-name:__hashed_var__1cb153o-B}", 3000);
         "__hashed_var__1xwo6t1";"
@@ -205,7 +205,7 @@ describe('Evaluation of imported values works based on configuration', () => {
               "ltr": "@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}",
               "rtl": null,
             },
-            1,
+            0,
           ],
           [
             "__hashed_var__1xwo6t1",

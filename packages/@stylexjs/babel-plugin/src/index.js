@@ -464,10 +464,12 @@ function processStylexRules(
 
   const collectedCSS = grouped
     .map((group, index) => {
+      const pri = group[0][2];
       const collectedCSS = Array.from(
         new Map(group.map(([a, b]) => [a, b])).values(),
       )
-        .flatMap(({ ltr, rtl }) => {
+        .flatMap((rule) => {
+          const { ltr, rtl } = rule;
           let ltrRule = ltr,
             rtlRule = rtl;
 
@@ -485,7 +487,8 @@ function processStylexRules(
         })
         .join('\n');
 
-      return useLayers
+      // Don't put @property, @keyframe, @position-try in layers
+      return useLayers && pri > 0
         ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
         : collectedCSS;
     })
