@@ -63,7 +63,7 @@ export function wrapWithAtRules(ltr: string, atRule: string): string {
 
 export function priorityForAtRule(atRule: string): number {
   if (atRule === 'default') {
-    return 0;
+    return 1;
   }
   return atRule.split(SPLIT_TOKEN).length;
 }
