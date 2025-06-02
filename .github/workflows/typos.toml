@@ -1,10 +1,11 @@
 [files]
 extend-exclude = [
   "*.snap",
-  "packages/@stylexjs/babel-plugin/__tests__/", # False positives on hashed object-key names
-  "packages/benchmarks/**/fixtures/", # Fixture data has lots of typos
-  "packages/shared/__tests__/", # False positives on hashed object-key names
   "flow-typed/*",
+  # Too many false positives on inline snapshots
+  "packages/**/__tests__/",
+  # Fixture data has lots of typos
+  "packages/benchmarks/**/fixtures/",
 ]
 
 [default.extend-words]
