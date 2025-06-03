@@ -860,9 +860,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x73b8pu{border-left-color:0}", 3000, ".x73b8pu{border-right-color:0}");
-          _inject2(".x75gl4q{border-right-color:0}", 3000, ".x75gl4q{border-left-color:0}");
-          const classnames = "x73b8pu x75gl4q";"
+          _inject2(".x1t19a1o{border-left-color:0}", 3000, ".x1t19a1o{border-right-color:0}");
+          _inject2(".x14mj1wy{border-right-color:0}", 3000, ".x14mj1wy{border-left-color:0}");
+          const classnames = "x1t19a1o x14mj1wy";"
         `);
       });
 
@@ -905,9 +905,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1lq8e90{border-left-style:0}", 3000, ".x1lq8e90{border-right-style:0}");
-          _inject2(".x1s5wcua{border-right-style:0}", 3000, ".x1s5wcua{border-left-style:0}");
-          const classnames = "x1lq8e90 x1s5wcua";"
+          _inject2(".xl8mozw{border-left-style:0}", 3000, ".xl8mozw{border-right-style:0}");
+          _inject2(".x10o505a{border-right-style:0}", 3000, ".x10o505a{border-left-style:0}");
+          const classnames = "xl8mozw x10o505a";"
         `);
       });
 
@@ -928,9 +928,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".xm0m39n{border-left-width:0}", 3000, ".xm0m39n{border-right-width:0}");
-          _inject2(".xcfux6l{border-right-width:0}", 3000, ".xcfux6l{border-left-width:0}");
-          const classnames = "xm0m39n xcfux6l";"
+          _inject2(".x14e42zd{border-left-width:0}", 3000, ".x14e42zd{border-right-width:0}");
+          _inject2(".x10w94by{border-right-width:0}", 3000, ".x10w94by{border-left-width:0}");
+          const classnames = "x14e42zd x10w94by";"
         `);
       });
 
@@ -1378,9 +1378,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x73b8pu{border-start-color:0}", 3000);
-          _inject2(".x75gl4q{border-end-color:0}", 3000);
-          const classnames = "x73b8pu x75gl4q";"
+          _inject2(".x1t19a1o{border-inline-start-color:0}", 3000);
+          _inject2(".x14mj1wy{border-inline-end-color:0}", 3000);
+          const classnames = "x1t19a1o x14mj1wy";"
         `);
       });
 
@@ -1423,9 +1423,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1lq8e90{border-start-style:0}", 3000);
-          _inject2(".x1s5wcua{border-end-style:0}", 3000);
-          const classnames = "x1lq8e90 x1s5wcua";"
+          _inject2(".xl8mozw{border-inline-start-style:0}", 3000);
+          _inject2(".x10o505a{border-inline-end-style:0}", 3000);
+          const classnames = "xl8mozw x10o505a";"
         `);
       });
 
@@ -1446,9 +1446,9 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".xm0m39n{border-start-width:0}", 3000);
-          _inject2(".xcfux6l{border-end-width:0}", 3000);
-          const classnames = "xm0m39n xcfux6l";"
+          _inject2(".x14e42zd{border-inline-start-width:0}", 3000);
+          _inject2(".x10w94by{border-inline-end-width:0}", 3000);
+          const classnames = "x14e42zd x10w94by";"
         `);
       });
 
