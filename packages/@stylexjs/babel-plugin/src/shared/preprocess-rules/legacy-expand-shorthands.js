@@ -87,9 +87,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   border: (rawValue: TStyleValue): TReturn => {
     return [
       ['borderTop', rawValue],
-      ['borderEnd', rawValue],
+      ['borderInlineEnd', rawValue],
       ['borderBottom', rawValue],
-      ['borderStart', rawValue],
+      ['borderInlineStart', rawValue],
     ];
   },
 
@@ -98,9 +98,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['borderTopColor', top],
-      ['borderEndColor', right],
+      ['borderInlineEndColor', right],
       ['borderBottomColor', bottom],
-      ['borderStartColor', left],
+      ['borderInlineStartColor', left],
     ];
   },
   borderHorizontal: (rawValue: TStyleValue): TReturn => {
@@ -114,9 +114,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['borderTopStyle', top],
-      ['borderEndStyle', right],
+      ['borderInlineEndStyle', right],
       ['borderBottomStyle', bottom],
-      ['borderStartStyle', left],
+      ['borderInlineStartStyle', left],
     ];
   },
   borderVertical: (rawValue: TStyleValue): TReturn => {
@@ -130,23 +130,23 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['borderTopWidth', top],
-      ['borderEndWidth', right],
+      ['borderInlineEndWidth', right],
       ['borderBottomWidth', bottom],
-      ['borderStartWidth', left],
+      ['borderInlineStartWidth', left],
     ];
   },
 
   borderHorizontalColor: (rawValue: TStyleValue): TReturn => [
-    ['borderStartColor', rawValue],
-    ['borderEndColor', rawValue],
+    ['borderInlineStartColor', rawValue],
+    ['borderInlineEndColor', rawValue],
   ],
   borderHorizontalStyle: (rawValue: TStyleValue): TReturn => [
-    ['borderStartStyle', rawValue],
-    ['borderEndStyle', rawValue],
+    ['borderInlineStartStyle', rawValue],
+    ['borderInlineEndStyle', rawValue],
   ],
   borderHorizontalWidth: (rawValue: TStyleValue): TReturn => [
-    ['borderStartWidth', rawValue],
-    ['borderEndWidth', rawValue],
+    ['borderInlineStartWidth', rawValue],
+    ['borderInlineEndWidth', rawValue],
   ],
   borderVerticalColor: (rawValue: TStyleValue): TReturn => [
     ['borderTopColor', rawValue],
