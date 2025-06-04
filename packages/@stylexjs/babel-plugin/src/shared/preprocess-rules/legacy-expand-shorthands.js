@@ -366,6 +366,19 @@ const aliases = {
   borderInlineStyle: shorthands.borderHorizontalStyle,
   borderInlineColor: shorthands.borderHorizontalColor,
 
+  borderTopStartRadius: (val: TStyleValue): TReturn => [
+    ['borderStartStartRadius', val],
+  ],
+  borderTopEndRadius: (val: TStyleValue): TReturn => [
+    ['borderStartEndRadius', val],
+  ],
+  borderBottomStartRadius: (val: TStyleValue): TReturn => [
+    ['borderEndStartRadius', val],
+  ],
+  borderBottomEndRadius: (val: TStyleValue): TReturn => [
+    ['borderEndEndRadius', val],
+  ],
+
   gridGap: shorthands.gap,
   gridRowGap: (value: TStyleValue): TReturn => [['rowGap', value]],
   gridColumnGap: (value: TStyleValue): TReturn => [['columnGap', value]],
