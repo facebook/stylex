@@ -165,10 +165,10 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
-      ['borderTopStartRadius', top],
-      ['borderTopEndRadius', right],
-      ['borderBottomEndRadius', bottom],
-      ['borderBottomStartRadius', left],
+      ['borderStartStartRadius', top],
+      ['borderStartEndRadius', right],
+      ['borderEndEndRadius', bottom],
+      ['borderEndStartRadius', left],
     ];
   },
 
@@ -365,18 +365,6 @@ const aliases = {
   borderInlineWidth: shorthands.borderHorizontalWidth,
   borderInlineStyle: shorthands.borderHorizontalStyle,
   borderInlineColor: shorthands.borderHorizontalColor,
-  borderStartStartRadius: (val: TStyleValue): TReturn => [
-    ['borderTopStartRadius', val],
-  ],
-  borderStartEndRadius: (val: TStyleValue): TReturn => [
-    ['borderTopEndRadius', val],
-  ],
-  borderEndStartRadius: (val: TStyleValue): TReturn => [
-    ['borderBottomStartRadius', val],
-  ],
-  borderEndEndRadius: (val: TStyleValue): TReturn => [
-    ['borderBottomEndRadius', val],
-  ],
 
   gridGap: shorthands.gap,
   gridRowGap: (value: TStyleValue): TReturn => [['rowGap', value]],
