@@ -80,6 +80,14 @@ const inlinePropertyToLTR: $ReadOnly<{
     'border-bottom-right-radius',
     val,
   ],
+  'inset-inline-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'left',
+    val,
+  ],
+  'inset-inline-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'right',
+    val,
+  ],
 };
 
 const propertyToLTR: $ReadOnly<{
@@ -166,7 +174,11 @@ const propertyToLTR: $ReadOnly<{
     val
       .split(' ')
       .map((word) =>
-        word === 'start' ? 'left' : word === 'end' ? 'right' : word,
+        word === 'insetInlineStart'
+          ? 'left'
+          : word === 'insetInlineEnd'
+            ? 'right'
+            : word,
       )
       .join(' '),
   ],

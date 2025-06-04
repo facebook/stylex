@@ -199,9 +199,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
   inset: (rawValue: TStyleValue): TReturn => [
     ['top', rawValue],
-    ['end', rawValue],
+    ['insetInlineEnd', rawValue],
     ['bottom', rawValue],
-    ['start', rawValue],
+    ['insetInlineStart', rawValue],
   ],
   insetInline: (rawValue: TStyleValue): TReturn => [
     ...shorthands.start(rawValue),
@@ -212,24 +212,24 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ['bottom', rawValue],
   ],
   start: (rawValue: TStyleValue): TReturn => [
-    ['start', rawValue],
+    ['insetInlineStart', rawValue],
     ['left', null],
     ['right', null],
   ],
   end: (rawValue: TStyleValue): TReturn => [
-    ['end', rawValue],
+    ['insetInlineEnd', rawValue],
     ['left', null],
     ['right', null],
   ],
   left: (rawValue: TStyleValue): TReturn => [
     ['left', rawValue],
-    ['start', null],
-    ['end', null],
+    ['insetInlineStart', null],
+    ['insetInlineend', null],
   ],
   right: (rawValue: TStyleValue): TReturn => [
     ['right', rawValue],
-    ['start', null],
-    ['end', null],
+    ['insetInlineStart', null],
+    ['insetInlineEnd', null],
   ],
 
   gap: (rawValue: TStyleValue): TReturn => {
