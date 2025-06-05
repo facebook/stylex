@@ -105,8 +105,8 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   },
   borderHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
-      ['borderStart', rawValue],
-      ['borderEnd', rawValue],
+      ['borderInlineStart', rawValue],
+      ['borderInlineEnd', rawValue],
     ];
   },
   borderStyle: (rawValue: TStyleValue): TReturn => {
@@ -340,6 +340,9 @@ const aliases = {
   minInlineSize: (val: TStyleValue): TReturn => [['minWidth', val]],
   maxBlockSize: (val: TStyleValue): TReturn => [['maxHeight', val]],
   maxInlineSize: (val: TStyleValue): TReturn => [['maxWidth', val]],
+
+  borderStart: (val: TStyleValue): TReturn => [['borderInlineStart', val]],
+  borderEnd: (val: TStyleValue): TReturn => [['borderInlineEnd', val]],
 
   borderBlockWidth: shorthands.borderVerticalWidth,
   borderBlockStyle: shorthands.borderVerticalStyle,
