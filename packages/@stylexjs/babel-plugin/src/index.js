@@ -31,6 +31,8 @@ import transformStylexCall, {
 } from './visitors/stylex-merge';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
+import postcss from 'postcss';
+import cascadeLayers from '@csstools/postcss-cascade-layers';
 
 const NAME = 'stylex';
 
@@ -348,12 +350,12 @@ export type Rule = [
   },
   number,
 ];
-function processStylexRules(
+async function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
-): string {
+): Promise<string> {
   if (rules.length === 0) {
-    return '';
+    return Promise.resolve('');
   }
 
   const constantRules = rules.filter(
@@ -478,7 +480,10 @@ function processStylexRules(
     })
     .join('\n');
 
-  return header + collectedCSS;
+  if (!useLayers) {
+    return transformCollectedCSS(collectedCSS);
+  }
+  return Promise.resolve(header + collectedCSS);
 }
 
 styleXTransform.processStylexRules = processStylexRules;
@@ -509,6 +514,10 @@ function addAncestorSelector(
 /**
  * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
  */
+
+async function transformCollectedCSS(collectedCSS: string): Promise<string> {
+  return (await postcss([cascadeLayers()]).process(collectedCSS)).css;
+}
 
 export type StyleXTransformObj = $ReadOnly<{
   (): PluginObj<>,

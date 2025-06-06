@@ -40,10 +40,7 @@ describe('@stylexjs/postcss-plugin', () => {
 
     expect(result.css).toMatchInlineSnapshot(`
       ".x1u857p9{background-color:green}
-      .xrkmrrc{background-color:red}
-      .xg6iff7{min-height:100vh}
-      .x1gan7if{padding-bottom:32px}
-      .x1miatn0{padding-top:32px}"
+      .xrkmrrc{background-color:red}"
     `);
 
     // Check that messages contain dependency information
@@ -59,34 +56,16 @@ describe('@stylexjs/postcss-plugin', () => {
   });
 
   test('supports CSS layers', async () => {
-    const result = await runStylexPostcss({ useCSSLayers: 'native' });
+    const result = await runStylexPostcss({ useCSSLayers: true });
 
     expect(result.css).toContain('@layer');
     expect(result.css).toMatchInlineSnapshot(`
       "
-      @layer priority1, priority2;
+      @layer priority1;
       @layer priority1{
       .x1u857p9{background-color:green}
       .xrkmrrc{background-color:red}
-      }
-      @layer priority2{
-      .xg6iff7{min-height:100vh}
-      .x1gan7if{padding-bottom:32px}
-      .x1miatn0{padding-top:32px}
       }"
-    `);
-  });
-
-  test('supports polyfill for CSS layers', async () => {
-    const result = await runStylexPostcss({ useCSSLayers: 'polyfill' });
-
-    expect(result.css).toMatchInlineSnapshot(`
-      "
-      .x1u857p9{background-color:green}
-      .xrkmrrc{background-color:red}
-      .xg6iff7:not(#\\#){min-height:100vh}
-      .x1gan7if:not(#\\#){padding-bottom:32px}
-      .x1miatn0:not(#\\#){padding-top:32px}"
     `);
   });
 
@@ -98,12 +77,9 @@ describe('@stylexjs/postcss-plugin', () => {
     // Should not contain styles-second.js styles
     expect(result.css).not.toContain('green');
 
-    expect(result.css).toMatchInlineSnapshot(`
-      ".xrkmrrc{background-color:red}
-      .xg6iff7{min-height:100vh}
-      .x1gan7if{padding-bottom:32px}
-      .x1miatn0{padding-top:32px}"
-    `);
+    expect(result.css).toMatchInlineSnapshot(
+      '".xrkmrrc{background-color:red}"',
+    );
   });
 
   test('respects string syntax for importSources', async () => {

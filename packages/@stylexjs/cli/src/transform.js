@@ -81,7 +81,7 @@ export async function compileDirectory(
 
   const compiledCSS = await styleXPlugin.processStylexRules(
     Array.from(config.state.styleXRules.values()).flat(),
-    config.useCSSLayers !== 'none',
+    config.useCSSLayers,
   );
 
   const cssBundlePath = path.join(config.output, config.styleXBundleName);

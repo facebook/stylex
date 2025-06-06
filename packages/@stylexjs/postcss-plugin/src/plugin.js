@@ -6,12 +6,9 @@
  */
 const postcss = require('postcss');
 const createBuilder = require('./builder');
-const cascadeLayers = require('@csstools/postcss-cascade-layers');
 
 module.exports = function createPlugin() {
   const PLUGIN_NAME = '@stylexjs/postcss-plugin';
-
-  const VALID_CSS_LAYERS = ['none', 'native', 'polyfill'];
 
   const builder = createBuilder();
 
@@ -24,7 +21,7 @@ module.exports = function createPlugin() {
     babelConfig = {},
     include,
     exclude,
-    useCSSLayers = 'none',
+    useCSSLayers = false,
     importSources = ['@stylexjs/stylex', 'stylex'],
   }) => {
     exclude = [
@@ -33,12 +30,6 @@ module.exports = function createPlugin() {
       '**/*.flow',
       ...(exclude ?? []),
     ];
-
-    if (!VALID_CSS_LAYERS.includes(useCSSLayers)) {
-      throw new Error(
-        `Invalid useCSSLayers value: "${useCSSLayers}". Valid values are: ${VALID_CSS_LAYERS.join(', ')}`,
-      );
-    }
 
     // Whether to skip the error when transforming StyleX rules.
     // Useful in watch mode where Fast Refresh can recover from errors.
@@ -87,18 +78,7 @@ module.exports = function createPlugin() {
           const css = await builder.build({
             shouldSkipTransformError,
           });
-          let processedCss = css;
-          if (useCSSLayers === 'polyfill') {
-            const result = await postcss([
-              cascadeLayers({
-                onRevertLayerKeyword: 'warn',
-                onConditionalRulesChangingLayerOrder: 'warn',
-                onImportLayerRule: 'warn',
-              }),
-            ]).process(css);
-            processedCss = result.css;
-          }
-          const parsed = await postcss.parse(processedCss, {
+          const parsed = await postcss.parse(css, {
             from: fileName,
           });
 

@@ -37,7 +37,7 @@ export type PluginOptions = $ReadOnly<{
     plugins?: $ReadOnlyArray<PluginItem>,
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
-  useCSSLayers?: 'none' | 'native' | 'polyfill',
+  useCSSLayers?: boolean,
   lightningcssOptions?: Omit<
     TransformOptions<{}>,
     'code' | 'filename' | 'visitor',
@@ -63,7 +63,7 @@ export default function stylexPlugin({
   fileName = 'stylex.css',
   babelConfig: { plugins = [], presets = [] } = {},
   importSources = ['stylex', '@stylexjs/stylex'],
-  useCSSLayers = 'none',
+  useCSSLayers = false,
   lightningcssOptions,
   ...options
 }: PluginOptions = {}): Plugin<> {
@@ -73,12 +73,12 @@ export default function stylexPlugin({
     buildStart() {
       stylexRules = {};
     },
-    generateBundle(this: PluginContext) {
+    async generateBundle(this: PluginContext) {
       const rules: Array<Rule> = Object.values(stylexRules).flat();
       if (rules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(
+        const collectedCSS = await stylexBabelPlugin.processStylexRules(
           rules,
-          useCSSLayers !== 'none',
+          useCSSLayers,
         );
 
         // Process the CSS using lightningcss

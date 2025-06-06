@@ -34,7 +34,7 @@ describe('rollup-plugin-stylex', () => {
           exclude: [/npmStyles\.js/],
         }),
         stylexPlugin({
-          useCSSLayers: 'native',
+          useCSSLayers: true,
           ...options,
           lightningcssOptions: { minify: false },
         }),

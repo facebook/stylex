@@ -14,7 +14,6 @@
   "dependencies": {
     "@babel/core": "^7.26.8",
     "@stylexjs/babel-plugin": "0.13.0",
-    "@csstools/postcss-cascade-layers": "^5.0.1",
     "postcss": "^8.4.49",
     "fast-glob": "^3.3.2",
     "glob-parent": "^6.0.2",

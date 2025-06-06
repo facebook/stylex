@@ -23,7 +23,7 @@ export type CliConfig = {
   babelPluginsPre?: $ReadOnlyArray<any>,
   babelPluginsPost?: $ReadOnlyArray<any>,
   modules_EXPERIMENTAL: $ReadOnlyArray<ModuleType>,
-  useCSSLayers?: 'none' | 'native' | 'polyfill',
+  useCSSLayers?: boolean,
   styleXConfig?: StyleXOptions,
 };
 

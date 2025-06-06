@@ -90,19 +90,19 @@ export const styles = stylex.create({
 
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylexPlugin.processStylexRules', () => {
-    test('no rules', () => {
+    test('no rules', async () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';
       `);
       expect(code).toMatchInlineSnapshot(
         '"import * as stylex from \'@stylexjs/stylex\';"',
       );
-      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(
-        '""',
-      );
+      expect(
+        await stylexPlugin.processStylexRules(metadata),
+      ).toMatchInlineSnapshot('""');
     });
 
-    test('all rules (useLayers:false)', () => {
+    test('all rules (useLayers:false)', async () => {
       const { code, metadata } = transform(fixture);
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -125,7 +125,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };"
       `);
-      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
+      expect(await stylexPlugin.processStylexRules(metadata))
+        .toMatchInlineSnapshot(`
         "@keyframes x4ssjuf-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         @keyframes x4ssjuf-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
         .x1bg2uv5{border-color:green}
@@ -140,7 +141,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('all rules (useLayers:true)', () => {
+    test('all rules (useLayers:true)', async () => {
       const { code, metadata } = transform(fixture, {
         useLayers: true,
       });
@@ -165,7 +166,7 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };"
       `);
-      expect(stylexPlugin.processStylexRules(metadata, true))
+      expect(await stylexPlugin.processStylexRules(metadata, true))
         .toMatchInlineSnapshot(`
         "
         @layer priority1, priority2, priority3, priority4, priority5;
