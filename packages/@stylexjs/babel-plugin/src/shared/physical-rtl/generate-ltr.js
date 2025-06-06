@@ -15,6 +15,18 @@ const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   end: 'right',
 };
 
+const logicalToStandard: $ReadOnly<{ [string]: string }> = {
+  start: 'inline-start',
+  end: 'inline-end',
+};
+
+const convertToStandardProperties: $ReadOnly<{
+  [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
+}> = {
+  float: ([key, val]) => [key, logicalToStandard[val] ?? val],
+  clear: ([key, val]) => [key, logicalToStandard[val] ?? val],
+};
+
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToLTR: $ReadOnly<{
   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
@@ -78,6 +90,14 @@ const inlinePropertyToLTR: $ReadOnly<{
   ],
   'border-end-end-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
     'border-bottom-right-radius',
+    val,
+  ],
+  'inset-inline-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'left',
+    val,
+  ],
+  'inset-inline-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'right',
     val,
   ],
 };
@@ -166,7 +186,11 @@ const propertyToLTR: $ReadOnly<{
     val
       .split(' ')
       .map((word) =>
-        word === 'start' ? 'left' : word === 'end' ? 'right' : word,
+        word === 'start' || word === 'insetInlineStart'
+          ? 'left'
+          : word === 'end' || word === 'insetInlineEnd'
+            ? 'right'
+            : word,
       )
       .join(' '),
   ],
@@ -181,6 +205,9 @@ export default function generateLTR(
 
   if (styleResolution === 'legacy-expand-shorthands') {
     if (!enableLogicalStylesPolyfill) {
+      if (convertToStandardProperties[key]) {
+        return convertToStandardProperties[key](pair);
+      }
       return pair;
     }
 
