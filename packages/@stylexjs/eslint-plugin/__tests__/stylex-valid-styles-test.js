@@ -689,23 +689,49 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
+            borderVerticalWidth: '2px',
+            borderVerticalStyle: 'solid',
+            borderVerticalColor: 'red',
+            borderHorizontalWidth: '1px',
+            borderHorizontalStyle: 'dashed',
+            borderHorizontalColor: 'blue',
             borderStartWidth: '2px',
-            borderEndWidth: '3px',
             borderStartStyle: 'solid',
-            borderEndStyle: 'dashed',
-            borderStartColor: 'red',
-            borderEndColor: 'blue',
+            borderStartColor: 'green',
+            borderEndWidth: '3px',
+            borderEndStyle: 'dotted',
+            borderEndColor: 'purple',
           },
         });
       `,
       errors: [
         {
           message:
-            'The key "borderStartWidth" is not a standard CSS property. Did you mean "borderInlineStartWidth"?',
+            'The key "borderVerticalWidth" is not a standard CSS property. Did you mean "borderBlockWidth"?',
         },
         {
           message:
-            'The key "borderEndWidth" is not a standard CSS property. Did you mean "borderInlineEndWidth"?',
+            'The key "borderVerticalStyle" is not a standard CSS property. Did you mean "borderBlockStyle"?',
+        },
+        {
+          message:
+            'The key "borderVerticalColor" is not a standard CSS property. Did you mean "borderBlockColor"?',
+        },
+        {
+          message:
+            'The key "borderHorizontalWidth" is not a standard CSS property. Did you mean "borderInlineWidth"?',
+        },
+        {
+          message:
+            'The key "borderHorizontalStyle" is not a standard CSS property. Did you mean "borderInlineStyle"?',
+        },
+        {
+          message:
+            'The key "borderHorizontalColor" is not a standard CSS property. Did you mean "borderInlineColor"?',
+        },
+        {
+          message:
+            'The key "borderStartWidth" is not a standard CSS property. Did you mean "borderInlineStartWidth"?',
         },
         {
           message:
@@ -713,11 +739,15 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         },
         {
           message:
-            'The key "borderEndStyle" is not a standard CSS property. Did you mean "borderInlineEndStyle"?',
+            'The key "borderStartColor" is not a standard CSS property. Did you mean "borderInlineStartColor"?',
         },
         {
           message:
-            'The key "borderStartColor" is not a standard CSS property. Did you mean "borderInlineStartColor"?',
+            'The key "borderEndWidth" is not a standard CSS property. Did you mean "borderInlineEndWidth"?',
+        },
+        {
+          message:
+            'The key "borderEndStyle" is not a standard CSS property. Did you mean "borderInlineEndStyle"?',
         },
         {
           message:
@@ -728,12 +758,90 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
+            borderBlockWidth: '2px',
+            borderBlockStyle: 'solid',
+            borderBlockColor: 'red',
+            borderInlineWidth: '1px',
+            borderInlineStyle: 'dashed',
+            borderInlineColor: 'blue',
             borderInlineStartWidth: '2px',
-            borderInlineEndWidth: '3px',
             borderInlineStartStyle: 'solid',
-            borderInlineEndStyle: 'dashed',
-            borderInlineStartColor: 'red',
-            borderInlineEndColor: 'blue',
+            borderInlineStartColor: 'green',
+            borderInlineEndWidth: '3px',
+            borderInlineEndStyle: 'dotted',
+            borderInlineEndColor: 'purple',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            borderTopStartRadius: '4px',
+            borderTopEndRadius: '5px',
+            borderBottomStartRadius: '6px',
+            borderBottomEndRadius: '7px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The key "borderTopStartRadius" is not a standard CSS property. Did you mean "borderStartStartRadius"?',
+        },
+        {
+          message:
+            'The key "borderTopEndRadius" is not a standard CSS property. Did you mean "borderStartEndRadius"?',
+        },
+        {
+          message:
+            'The key "borderBottomStartRadius" is not a standard CSS property. Did you mean "borderEndStartRadius"?',
+        },
+        {
+          message:
+            'The key "borderBottomEndRadius" is not a standard CSS property. Did you mean "borderEndEndRadius"?',
+        },
+      ],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            borderStartStartRadius: '4px',
+            borderStartEndRadius: '5px',
+            borderEndStartRadius: '6px',
+            borderEndEndRadius: '7px',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            end: '5px',
+            start: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The key "end" is not a standard CSS property. Did you mean "insetInlineEnd"?',
+        },
+        {
+          message:
+            'The key "start" is not a standard CSS property. Did you mean "insetInlineStart"?',
+        },
+      ],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            insetInlineEnd: '5px',
+            insetInlineStart: '10px',
           },
         });
       `,
@@ -1438,6 +1546,52 @@ revert`,
             'revert',
         },
       ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'start',
+            clear: 'start',
+          },
+          bar: {
+            float: 'end',
+            clear: 'end',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+        },
+        {
+          message:
+            'The value "start" is not a standard CSS value for "clear". Did you mean "inline-start"?',
+        },
+        {
+          message:
+            'The value "end" is not a standard CSS value for "float". Did you mean "inline-end"?',
+        },
+        {
+          message:
+            'The value "end" is not a standard CSS value for "clear". Did you mean "inline-end"?',
+        },
+      ],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'inline-start',
+            clear: 'inline-start',
+          },
+          bar: {
+            float: 'inline-end',
+            clear: 'inline-end',
+          }
+        });
+      `,
     },
   ],
 });
