@@ -20,9 +20,9 @@ const styles = stylex.create({
   iframe: {
     position: 'absolute',
     top: 0,
-    end: 0,
+    insetInlineEnd: 0,
     bottom: 0,
-    start: 0,
+    insetInlineStart: 0,
   },
 });
 
