@@ -362,8 +362,6 @@ const float = makeUnionRule(
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   makeLiteralRule('none'),
-  makeLiteralRule('start'),
-  makeLiteralRule('end'),
   makeLiteralRule('inline-start'),
   makeLiteralRule('inline-end'),
 );
@@ -1595,21 +1593,37 @@ const SupportedVendorSpecificCSSProperties = {
   ),
 };
 
-const validStyleMapping: $ReadOnly<{ [key: string]: ?string }> = {
+const convertToStandardProperties: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',
   marginEnd: 'marginInlineEnd',
   marginHorizontal: 'marginInline',
   marginVertical: 'marginBlock',
+
   paddingStart: 'paddingInlineStart',
   paddingEnd: 'paddingInlineEnd',
   paddingHorizontal: 'paddingInline',
   paddingVertical: 'paddingBlock',
+
+  borderVerticalWidth: 'borderBlockWidth',
+  borderVerticalStyle: 'borderBlockStyle',
+  borderVerticalColor: 'borderBlockColor',
+  borderHorizontalWidth: 'borderInlineWidth',
+  borderHorizontalStyle: 'borderInlineStyle',
+  borderHorizontalColor: 'borderInlineColor',
   borderStartWidth: 'borderInlineStartWidth',
-  borderEndWidth: 'borderInlineEndWidth',
   borderStartStyle: 'borderInlineStartStyle',
-  borderEndStyle: 'borderInlineEndStyle',
   borderStartColor: 'borderInlineStartColor',
+  borderEndWidth: 'borderInlineEndWidth',
+  borderEndStyle: 'borderInlineEndStyle',
   borderEndColor: 'borderInlineEndColor',
+
+  borderTopStartRadius: 'borderStartStartRadius',
+  borderTopEndRadius: 'borderStartEndRadius',
+  borderBottomStartRadius: 'borderEndStartRadius',
+  borderBottomEndRadius: 'borderEndEndRadius',
+
+  end: 'insetInlineEnd',
+  start: 'insetInlineStart',
 };
 
 const SVGProperties = {
@@ -1685,13 +1699,6 @@ const CSSProperties = {
   backgroundSize: backgroundSize,
   baselineShift: baselineShift,
   behavior: behavior,
-
-  borderBottomEndRadius: borderBottomRightRadius,
-  borderEndEndRadius: borderBottomRightRadius,
-  borderBottomLeftRadius: borderBottomRightRadius,
-  borderEndStartRadius: borderBottomRightRadius,
-  borderBottomRightRadius: borderBottomRightRadius,
-  borderBottomStartRadius: borderBottomLeftRadius,
 
   borderCollapse: borderCollapse,
 
@@ -1771,12 +1778,15 @@ const CSSProperties = {
   borderSpacing: borderSpacing,
 
   borderRadius: borderRadius,
-  borderTopEndRadius: borderTopRightRadius,
   borderStartStartRadius: borderTopRightRadius,
-  borderTopLeftRadius: borderTopRightRadius,
   borderStartEndRadius: borderTopRightRadius,
+  borderEndStartRadius: borderBottomRightRadius,
+  borderEndEndRadius: borderBottomRightRadius,
+
+  borderTopLeftRadius: borderTopLeftRadius,
   borderTopRightRadius: borderTopRightRadius,
-  borderTopStartRadius: borderTopLeftRadius,
+  borderBottomLeftRadius: borderBottomLeftRadius,
+  borderBottomRightRadius: borderBottomRightRadius,
 
   boxAlign: boxAlign,
   boxDecorationBreak: boxDecorationBreak,
@@ -1921,8 +1931,6 @@ const CSSProperties = {
   right: isStringOrNumber,
   bottom: isStringOrNumber,
   left: isStringOrNumber,
-  end: isStringOrNumber,
-  start: isStringOrNumber,
   insetBlock: isStringOrNumber,
   insetBlockStart: top,
   insetBlockEnd: isStringOrNumber,
@@ -2678,12 +2686,13 @@ const stylexValidStyles = {
           });
 
           const replacementKey =
-            style.key.type === 'Identifier' && validStyleMapping[style.key.name]
-              ? validStyleMapping[style.key.name]
+            style.key.type === 'Identifier' &&
+            convertToStandardProperties[style.key.name]
+              ? convertToStandardProperties[style.key.name]
               : style.key.type === 'Literal' &&
                   typeof style.key.value === 'string' &&
-                  validStyleMapping[style.key.value]
-                ? validStyleMapping[style.key.value]
+                  convertToStandardProperties[style.key.value]
+                ? convertToStandardProperties[style.key.value]
                 : null;
 
           let originalKey = '';
@@ -2760,6 +2769,30 @@ const stylexValidStyles = {
             for (const key of dynamicStyleVariables) {
               varsWithFnArgs.set(key, 'ARG');
             }
+          }
+
+          if (
+            (key === 'float' || key === 'clear') &&
+            style.value.type === 'Literal' &&
+            typeof style.value.value === 'string' &&
+            (style.value.value === 'start' || style.value.value === 'end')
+          ) {
+            const replacement =
+              style.value.value === 'start' ? 'inline-start' : 'inline-end';
+            return context.report({
+              node: style.value,
+              loc: style.value.loc,
+              message: `The value "${style.value.value}" is not a standard CSS value for "${key}". Did you mean "${replacement}"?`,
+              fix: (fixer) =>
+                fixer.replaceText(style.value, `'${replacement}'`),
+              suggest: [
+                {
+                  desc: `Replace "${style.value.value}" with "${replacement}"?`,
+                  fix: (fixer) =>
+                    fixer.replaceText(style.value, `'${replacement}'`),
+                },
+              ],
+            } as Rule.ReportDescriptor);
           }
 
           const check = ruleChecker(style.value, varsWithFnArgs, style);
