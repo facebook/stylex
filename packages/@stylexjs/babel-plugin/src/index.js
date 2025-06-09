@@ -33,6 +33,7 @@ import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import postcss from 'postcss';
 import cascadeLayers from '@csstools/postcss-cascade-layers';
+import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
 
 const NAME = 'stylex';
 
@@ -290,6 +291,13 @@ function styleXTransform(): PluginObj<> {
               parentPath as NodePath<t.VariableDeclarator>,
               state,
             );
+            // Look for `stylex.viewTransitionClass` calls
+            // Needs to be handled *after* `stylex.keyframes` since the `viewTransitionClass`
+            // call may use the generated animation name.
+            transformStyleXViewTransitionClass(
+              parentPath as NodePath<t.VariableDeclarator>,
+              state,
+            );
             // Look for `stylex.positionTry` calls
             // Needs to be handled *before* `stylex.create` as the `create` call
             // may use the generated position-try name.
@@ -458,10 +466,12 @@ async function processStylexRules(
 
   const collectedCSS = grouped
     .map((group, index) => {
+      const pri = group[0][2];
       const collectedCSS = Array.from(
         new Map(group.map(([a, b]) => [a, b])).values(),
       )
-        .flatMap(({ ltr, rtl }) => {
+        .flatMap((rule) => {
+          const { ltr, rtl } = rule;
           const ltrRule = ltr,
             rtlRule = rtl;
 
@@ -474,15 +484,21 @@ async function processStylexRules(
         })
         .join('\n');
 
-      return useLayers
+      if (!useLayers) {
+        return `@layer priority${index + 1}{\n${collectedCSS}\n}`;
+      }
+      // Don't put @property, @keyframe, @position-try in layers
+      return pri > 0
         ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
         : collectedCSS;
     })
     .join('\n');
 
   if (!useLayers) {
-    return transformCollectedCSS(collectedCSS);
+    const css = await transformCollectedCSS(header + collectedCSS);
+    return css.trim();
   }
+
   return Promise.resolve(header + collectedCSS);
 }
 
@@ -512,9 +528,9 @@ function addAncestorSelector(
 }
 
 /**
- * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
+ * Uses @csstools/postcss-cascade-layers to apply specificity adjustments
+ * via `:not(#\#)` as a polyfill for CSS @layer at-rules.
  */
-
 async function transformCollectedCSS(collectedCSS: string): Promise<string> {
   return (await postcss([cascadeLayers()]).process(collectedCSS)).css;
 }

@@ -108,6 +108,13 @@ export type PositionTry = $ReadOnly<{
   placeSelf?: CSSProperties['placeSelf'],
 }>;
 
+export type ViewTransitionClass = $ReadOnly<{
+  group?: CSSProperties,
+  imagePair?: CSSProperties,
+  old?: CSSProperties,
+  new?: CSSProperties,
+}>;
+
 export type LegacyThemeStyles = $ReadOnly<{
   [constantName: string]: string,
   ...

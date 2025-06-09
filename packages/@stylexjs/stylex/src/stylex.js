@@ -26,18 +26,25 @@ import type {
   Theme,
   VarGroup,
   PositionTry,
+  ViewTransitionClass,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CompiledStyles,
+  InlineStyles,
+  Keyframes,
+  MapNamespaces,
   StaticStyles,
   StaticStylesWithout,
+  StyleXArray,
   StyleXStyles,
   StyleXStylesWithout,
   Theme,
   Types,
   VarGroup,
+  PositionTry,
 };
 
 import { styleq } from 'styleq';
@@ -113,6 +120,12 @@ export function props(
   }
   return result;
 }
+
+export const viewTransitionClass = (
+  _viewTransitionClass: ViewTransitionClass,
+): string => {
+  throw errorForFn('viewTransitionClass');
+};
 
 export const types = {
   angle: <T: string | 0 = string | 0>(
@@ -202,6 +215,7 @@ type IStyleX = {
     'data-style-src'?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
   }>,
+  viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   __customProperties?: { [string]: mixed },
   ...
@@ -222,5 +236,6 @@ _legacyMerge.keyframes = keyframes;
 _legacyMerge.positionTry = positionTry;
 _legacyMerge.props = props;
 _legacyMerge.types = types;
+_legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;

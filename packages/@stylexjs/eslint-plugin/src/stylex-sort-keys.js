@@ -13,7 +13,6 @@ import type { Token } from 'eslint/eslint-ast';
 import type { RuleFixer, SourceCode } from 'eslint/eslint-rule';
 import type {
   CallExpression,
-  ImportDeclaration,
   Node,
   Property,
   SpreadElement,
@@ -23,6 +22,7 @@ import type {
 import getSourceCode from './utils/getSourceCode';
 import getPropertyName from './utils/getPropertyName';
 import getPropertyPriorityAndType from './utils/getPropertyPriorityAndType';
+import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
@@ -106,21 +106,19 @@ const stylexSortKeys = {
       allowLineSeparatedGroups = false,
     }: Schema = context.options[0] || {};
 
-    const styleXDefaultImports = new Set<string>();
-    const styleXCreateImports = new Set<string>();
-    const styleXKeyframesImports = new Set<string>();
+    const importTracker = createImportTracker(importsToLookFor);
 
     function isStylexCallee(node: Node) {
       return (
         (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
-          styleXDefaultImports.has(node.object.name) &&
+          importTracker.isStylexDefaultImport(node.object.name) &&
           node.property.type === 'Identifier' &&
           (node.property.name === 'create' ||
             node.property.name === 'keyframes')) ||
         (node.type === 'Identifier' &&
-          (styleXCreateImports.has(node.name) ||
-            styleXKeyframesImports.has(node.name)))
+          (importTracker.isStylexNamedImport('create', node.name) ||
+            importTracker.isStylexNamedImport('keyframes', node.name)))
       );
     }
 
@@ -138,56 +136,7 @@ const stylexSortKeys = {
     let objectExpressionNestingLevel = -1;
 
     return {
-      ImportDeclaration(node: ImportDeclaration) {
-        if (
-          node.source.type !== 'Literal' ||
-          typeof node.source.value !== 'string'
-        ) {
-          return;
-        }
-
-        const foundImportSource = importsToLookFor.find((importSource) => {
-          if (typeof importSource === 'string') {
-            return importSource === node.source.value;
-          }
-          return importSource.from === node.source.value;
-        });
-
-        if (typeof foundImportSource === 'string') {
-          node.specifiers.forEach((specifier) => {
-            if (
-              specifier.type === 'ImportDefaultSpecifier' ||
-              specifier.type === 'ImportNamespaceSpecifier'
-            ) {
-              styleXDefaultImports.add(specifier.local.name);
-            }
-
-            if (
-              specifier.type === 'ImportSpecifier' &&
-              specifier.imported.name === 'create'
-            ) {
-              styleXCreateImports.add(specifier.local.name);
-            }
-
-            if (
-              specifier.type === 'ImportSpecifier' &&
-              specifier.imported.name === 'keyframes'
-            ) {
-              styleXKeyframesImports.add(specifier.local.name);
-            }
-          });
-        }
-
-        if (typeof foundImportSource === 'object') {
-          node.specifiers.forEach((specifier) => {
-            if (specifier.type === 'ImportSpecifier') {
-              if (specifier.imported.name === foundImportSource.as) {
-                styleXDefaultImports.add(specifier.local.name);
-              }
-            }
-          });
-        }
-      },
+      ImportDeclaration: importTracker.ImportDeclaration,
       CallExpression(
         node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
       ) {
@@ -331,9 +280,7 @@ const stylexSortKeys = {
         }
       },
       'Program:exit'() {
-        styleXCreateImports.clear();
-        styleXDefaultImports.clear();
-        styleXKeyframesImports.clear();
+        importTracker.clear();
       },
     };
   },

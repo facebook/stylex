@@ -76,6 +76,7 @@ export function convertStyleToClassName(
     pseudos,
     atRules,
     constRules,
+    options,
   );
 
   return [key, className, cssRules];

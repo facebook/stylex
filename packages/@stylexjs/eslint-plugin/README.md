@@ -55,6 +55,14 @@ their **suggested replacements**.
 This rule helps to sort the StyleX property keys according to
 [property priorities](https://github.com/facebook/stylex/blob/main/packages/shared/src/utils/property-priorities.js).
 
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
+```
+
 ### stylex/stylex-valid-shorthands
 
 This ESLint rule enforces the use of individual longhand CSS properties in place
@@ -98,7 +106,8 @@ This rule has a few custom config options that can be set.
 ```js
 {
   allowImportant: false,                       // Whether `!important` is allowed
-  preferInline: false                          // Whether the expansion uses logical direction properties over physical
+  preferInline: false,                         // Whether the expansion uses logical direction properties over physical
+  validImports: ['stylex', '@stylexjs/stylex']
 }
 ```
 
@@ -125,7 +134,8 @@ using `stylex.defineVars()`.
 
 ```json
 {
-  "themeFileExtension": ".stylex.js" // default, can be customized
+  "themeFileExtension": ".stylex.js", // default, can be customized
+  "validImports": ["stylex", "@stylexjs/stylex"]
 }
 ```
 
@@ -134,10 +144,26 @@ using `stylex.defineVars()`.
 This rule flags unused styles created with `stylex.create(...)`. If a style key
 is defined but never used, the rule auto-strips them from the create call.
 
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
+```
+
 ### `stylex-no-legacy-contextual-styles`
 
 This rule flags usages of the original media query/pseudo class syntax that
 wraps multiple property values within a single @-rule or pseudo class like this:
+
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
+```
 
 ```js
 const styles = stylex.create({

@@ -28,6 +28,7 @@ function transform(source, opts = {}) {
         {
           runtimeInjection: true,
           styleResolution: 'legacy-expand-shorthands',
+          enableLogicalStylesPolyfill: true,
           ...opts,
         },
       ],
@@ -37,7 +38,7 @@ function transform(source, opts = {}) {
 
 describe('Legacy-shorthand-expansion resolution', () => {
   describe('while using RN non-standard shorthands', () => {
-    test('stylex call with exported short-form properties', () => {
+    test('padding: basic shorthand', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -53,22 +54,46 @@ describe('Legacy-shorthand-expansion resolution', () => {
         var _inject2 = _inject;
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
-        _inject2(".x1mpkggp{padding-right:5px}", 3000, ".x1mpkggp{padding-left:5px}");
+        _inject2(".x1gabggj{padding-right:5px}", 3000, ".x1gabggj{padding-left:5px}");
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
         export const styles = {
           foo: {
             kLKAdn: "x123j3cw",
-            kP0aTx: "x1mpkggp",
+            kwRFfy: "x1gabggj",
             kGO01o: "xs9asl8",
-            kuDDbn: "x1t2a60a",
+            kZCmMZ: "xaso8d8",
             $$css: true
           }
         };
-        "x123j3cw x1mpkggp xs9asl8 x1t2a60a";"
+        "x123j3cw x1gabggj xs9asl8 xaso8d8";"
       `);
     });
-    test('stylex call with short-form property collisions', () => {
+
+    test('margin: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              margin: '10px 20px 30px 40px'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1anpbxc{margin-top:10px}", 4000);
+        _inject2(".x3aesyq{margin-right:20px}", 3000, ".x3aesyq{margin-left:20px}");
+        _inject2(".x4n8cb0{margin-bottom:30px}", 4000);
+        _inject2(".x11hdunq{margin-left:40px}", 3000, ".x11hdunq{margin-right:40px}");
+        "x1anpbxc x3aesyq x4n8cb0 x11hdunq";"
+      `);
+    });
+
+    test('padding: with longhand property collisions', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -91,16 +116,17 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        _inject2(".x1sln4lm{padding-left:10px}", 3000, ".x1sln4lm{padding-right:10px}");
-        "x1nn3v0j xg83lxy x1120s5i x1sln4lm";"
+        _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+        "x1nn3v0j x14vy60q x1120s5i xe2zdcy";"
       `);
     });
-    test('stylex call with short-form property collisions with null', () => {
+
+    test('padding: with null longhand property collisions', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -123,17 +149,64 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        "x1nn3v0j xg83lxy x1120s5i";"
+        "x1nn3v0j x14vy60q x1120s5i";"
+      `);
+    });
+
+    test('borderColor: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              borderColor: 'red blue green yellow'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1uu1fcu{border-top-color:red}", 4000);
+        _inject2(".xcejqfc{border-right-color:blue}", 3000, ".xcejqfc{border-left-color:blue}");
+        _inject2(".x1hnil3p{border-bottom-color:green}", 4000);
+        _inject2(".xqzb60q{border-left-color:yellow}", 3000, ".xqzb60q{border-right-color:yellow}");
+        "x1uu1fcu xcejqfc x1hnil3p xqzb60q";"
+      `);
+    });
+
+    test('borderWidth: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              borderWidth: '1px 2px 3px 4px'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x178xt8z{border-top-width:1px}", 4000);
+        _inject2(".x1alpsbp{border-right-width:2px}", 3000, ".x1alpsbp{border-left-width:2px}");
+        _inject2(".x2x41l1{border-bottom-width:3px}", 4000);
+        _inject2(".x56jcm7{border-left-width:4px}", 3000, ".x56jcm7{border-right-width:4px}");
+        "x178xt8z x1alpsbp x2x41l1 x56jcm7";"
       `);
     });
   });
+
   describe('while using standard logical properties', () => {
-    test('stylex call with exported short-form properties', () => {
+    test('paddingInline: basic shorthand', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -148,21 +221,22 @@ describe('Legacy-shorthand-expansion resolution', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1mpkggp{padding-right:5px}", 3000, ".x1mpkggp{padding-left:5px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x1gabggj{padding-right:5px}", 3000, ".x1gabggj{padding-left:5px}");
         export const styles = {
           foo: {
-            kuDDbn: "x1t2a60a",
-            kP0aTx: "x1mpkggp",
+            kZCmMZ: "xaso8d8",
+            kwRFfy: "x1gabggj",
             kE3dHu: null,
             kpe85a: null,
             $$css: true
           }
         };
-        "x1t2a60a x1mpkggp";"
+        "xaso8d8 x1gabggj";"
       `);
     });
-    test('stylex call with short-form property collisions', () => {
+
+    test('padding: with longhand property collisions', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -185,16 +259,17 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        _inject2(".x1sln4lm{padding-left:10px}", 3000, ".x1sln4lm{padding-right:10px}");
-        "x1nn3v0j xg83lxy x1120s5i x1sln4lm";"
+        _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+        "x1nn3v0j x14vy60q x1120s5i xe2zdcy";"
       `);
     });
-    test('stylex call with short-form property collisions with null', () => {
+
+    test('padding: with null longhand property collisions', () => {
       expect(
         transform(`
           import stylex from 'stylex';
@@ -217,12 +292,172 @@ describe('Legacy-shorthand-expansion resolution', () => {
         import stylex from 'stylex';
         _inject2(".x123j3cw{padding-top:5px}", 4000);
         _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".x1t2a60a{padding-left:5px}", 3000, ".x1t2a60a{padding-right:5px}");
-        _inject2(".x1iji9kk{padding-right:10px}", 3000, ".x1iji9kk{padding-left:10px}");
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
         _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".xg83lxy{padding-right:2px}", 3000, ".xg83lxy{padding-left:2px}");
+        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        "x1nn3v0j xg83lxy x1120s5i";"
+        "x1nn3v0j x14vy60q x1120s5i";"
+      `);
+    });
+
+    test('marginInline: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              marginInline: 5
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xpcyujq{margin-left:5px}", 3000, ".xpcyujq{margin-right:5px}");
+        _inject2(".xf6vk7d{margin-right:5px}", 3000, ".xf6vk7d{margin-left:5px}");
+        export const styles = {
+          foo: {
+            keTefX: "xpcyujq",
+            k71WvV: "xf6vk7d",
+            koQZXg: null,
+            km5ZXQ: null,
+            $$css: true
+          }
+        };
+        "xpcyujq xf6vk7d";"
+      `);
+    });
+
+    test('margin: with longhand property collisions', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              margin: 5,
+              marginInlineEnd: 10,
+            },
+
+            bar: {
+              margin: 2,
+              marginInlineStart: 10,
+            },
+          });
+          stylex(styles.foo, styles.bar);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1ok221b{margin-top:5px}", 4000);
+        _inject2(".xu06os2{margin-bottom:5px}", 4000);
+        _inject2(".xpcyujq{margin-left:5px}", 3000, ".xpcyujq{margin-right:5px}");
+        _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+        _inject2(".xr9ek0c{margin-top:2px}", 4000);
+        _inject2(".xnnr8r{margin-right:2px}", 3000, ".xnnr8r{margin-left:2px}");
+        _inject2(".xjpr12u{margin-bottom:2px}", 4000);
+        _inject2(".x1hm9lzh{margin-left:10px}", 3000, ".x1hm9lzh{margin-right:10px}");
+        "xr9ek0c xnnr8r xjpr12u x1hm9lzh";"
+      `);
+    });
+
+    test('margin: with null longhand property collisions', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              margin: 5,
+              marginInlineEnd: 10,
+            },
+
+            bar: {
+              margin: 2,
+              marginInlineStart: null,
+            },
+          });
+          stylex(styles.foo, styles.bar);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1ok221b{margin-top:5px}", 4000);
+        _inject2(".xu06os2{margin-bottom:5px}", 4000);
+        _inject2(".xpcyujq{margin-left:5px}", 3000, ".xpcyujq{margin-right:5px}");
+        _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+        _inject2(".xr9ek0c{margin-top:2px}", 4000);
+        _inject2(".xnnr8r{margin-right:2px}", 3000, ".xnnr8r{margin-left:2px}");
+        _inject2(".xjpr12u{margin-bottom:2px}", 4000);
+        "xr9ek0c xnnr8r xjpr12u";"
+      `);
+    });
+
+    test('border: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              border: '1px solid red'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x122jhqu{border-top:1px solid red}", 2000);
+        _inject2(".xcmqxwo{border-right:1px solid red}", 2000, ".xcmqxwo{border-left:1px solid red}");
+        _inject2(".xql0met{border-bottom:1px solid red}", 2000);
+        _inject2(".x1lsjq1p{border-left:1px solid red}", 2000, ".x1lsjq1p{border-right:1px solid red}");
+        "x122jhqu xcmqxwo xql0met x1lsjq1p";"
+      `);
+    });
+
+    test('borderInlineColor: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              borderInlineColor: 'red'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1777cdg{border-left-color:red}", 3000, ".x1777cdg{border-right-color:red}");
+        _inject2(".x9cubbk{border-right-color:red}", 3000, ".x9cubbk{border-left-color:red}");
+        "x1777cdg x9cubbk";"
+      `);
+    });
+
+    test('borderInlineWidth: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              borderInlineWidth: 1
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xpilrb4{border-left-width:1px}", 3000, ".xpilrb4{border-right-width:1px}");
+        _inject2(".x1lun4ml{border-right-width:1px}", 3000, ".x1lun4ml{border-left-width:1px}");
+        "xpilrb4 x1lun4ml";"
       `);
     });
   });

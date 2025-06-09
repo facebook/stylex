@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { StyleXOptions } from '../common-types';
+import { defaultOptions } from '../utils/default-options';
 import parser from 'postcss-value-parser';
 
 const cursorFlip: $ReadOnly<{ [string]: string }> = {
@@ -92,9 +94,76 @@ function flipShadow(value: string) {
 //   },
 // };
 
-const logicalToPhysical: $ReadOnly<{ [string]: ?string }> = {
+const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   start: 'right',
   end: 'left',
+};
+
+// These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
+const inlinePropertyToRTL: $ReadOnly<{
+  [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
+}> = {
+  'margin-inline-start': ([_key, val]) => ['margin-right', val],
+  'margin-inline-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'margin-left',
+    val,
+  ],
+  'padding-inline-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'padding-right',
+    val,
+  ],
+  'padding-inline-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'padding-left',
+    val,
+  ],
+  'border-inline-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right',
+    val,
+  ],
+  'border-inline-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left',
+    val,
+  ],
+  'border-inline-start-width': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right-width',
+    val,
+  ],
+  'border-inline-end-width': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left-width',
+    val,
+  ],
+  'border-inline-start-color': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right-color',
+    val,
+  ],
+  'border-inline-end-color': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left-color',
+    val,
+  ],
+  'border-inline-start-style': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right-style',
+    val,
+  ],
+  'border-inline-end-style': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left-style',
+    val,
+  ],
+  'border-start-start-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-top-right-radius',
+    val,
+  ],
+  'border-end-start-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-bottom-right-radius',
+    val,
+  ],
+  'border-start-end-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-top-left-radius',
+    val,
+  ],
+  'border-end-end-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-bottom-left-radius',
+    val,
+  ],
 };
 
 const propertyToRTL: $ReadOnly<{
@@ -102,44 +171,70 @@ const propertyToRTL: $ReadOnly<{
     $ReadOnly<[string, string]>,
   ) => $ReadOnly<[string, string]> | null,
 }> = {
-  'margin-start': ([_key, val]) => ['margin-right', val],
-  // 'margin-inline-start': ([key, val]) => ['margin-right', val],
-  'margin-end': ([_key, val]) => ['margin-left', val],
-  // 'margin-inline-end': ([key, val]) => ['margin-left', val],
-  'padding-start': ([_key, val]) => ['padding-right', val],
-  // 'padding-inline-start': ([key, val]) => ['padding-right', val],
-  'padding-end': ([_key, val]) => ['padding-left', val],
-  // 'padding-inline-end': ([_key, val]) => ['padding-left', val],
-  'border-start': ([_key, val]) => ['border-right', val],
-  // 'border-inline-start': ([_key, val]) => ['border-right', val],
-  'border-end': ([_key, val]) => ['border-left', val],
-  // 'border-inline-end': ([_key, val]) => ['border-left', val],
-  'border-start-width': ([_key, val]) => ['border-right-width', val],
-  // 'border-inline-start-width': ([_key, val]) => ['border-right-width', val],
-  'border-end-width': ([_key, val]) => ['border-left-width', val],
-  // 'border-inline-end-width': ([_key, val]) => ['border-left-width', val],
-  'border-start-color': ([_key, val]) => ['border-right-color', val],
-  // 'border-inline-start-color': ([_key, val]) => ['border-right-color', val],
-  'border-end-color': ([_key, val]) => ['border-left-color', val],
-  // 'border-inline-end-color': ([_key, val]) => ['border-left-color', val],
-  'border-start-style': ([_key, val]) => ['border-right-style', val],
-  // 'border-inline-start-style': ([_key, val]) => ['border-right-style', val],
-  'border-end-style': ([_key, val]) => ['border-left-style', val],
-  // 'border-inline-end-style': ([_key, val]) => ['border-left-style', val],
-  'border-top-start-radius': ([_key, val]) => ['border-top-right-radius', val],
-  // 'border-start-start-radius': ([_key, val]) => ['border-top-right-radius', val],
-  'border-bottom-start-radius': ([_key, val]) => [
+  'margin-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'margin-right',
+    val,
+  ],
+  'margin-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'margin-left',
+    val,
+  ],
+  'padding-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'padding-right',
+    val,
+  ],
+  'padding-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'padding-left',
+    val,
+  ],
+  'border-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right',
+    val,
+  ],
+  'border-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left',
+    val,
+  ],
+  'border-start-width': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right-width',
+    val,
+  ],
+  'border-end-width': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left-width',
+    val,
+  ],
+  'border-start-color': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right-color',
+    val,
+  ],
+  'border-end-color': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left-color',
+    val,
+  ],
+  'border-start-style': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-right-style',
+    val,
+  ],
+  'border-end-style': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-left-style',
+    val,
+  ],
+  'border-top-start-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-top-right-radius',
+    val,
+  ],
+  'border-bottom-start-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
     'border-bottom-right-radius',
     val,
   ],
-  // 'border-end-start-radius': ([_key, val]) => ['border-bottom-right-radius', val],
-  'border-top-end-radius': ([_key, val]) => ['border-top-left-radius', val],
-  // 'border-start-end-radius': ([_key, val]) => ['border-top-left-radius', val],
-  'border-bottom-end-radius': ([_key, val]) => [
+  'border-top-end-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'border-top-left-radius',
+    val,
+  ],
+  'border-bottom-end-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
     'border-bottom-left-radius',
     val,
   ],
-  // 'border-end-end-radius': ([key, val]) => ['border-bottom-left-radius', val],
   float: ([key, val]) =>
     logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
   clear: ([key, val]) =>
@@ -178,11 +273,25 @@ const propertyToRTL: $ReadOnly<{
   },
 };
 
-export default function generateRTL([key, value]: $ReadOnly<
-  [string, string],
->): ?$ReadOnly<[string, string]> {
-  if (propertyToRTL[key]) {
-    return propertyToRTL[key]([key, value]);
+export default function generateRTL(
+  [key, value]: $ReadOnly<[string, string]>,
+  options: StyleXOptions = defaultOptions,
+): ?$ReadOnly<[string, string]> {
+  const { enableLogicalStylesPolyfill, styleResolution } = options;
+
+  if (styleResolution === 'legacy-expand-shorthands') {
+    if (!enableLogicalStylesPolyfill) {
+      return null;
+    }
+
+    if (inlinePropertyToRTL[key]) {
+      return inlinePropertyToRTL[key]([key, value]);
+    }
   }
-  return null;
+
+  if (!propertyToRTL[key]) {
+    return null;
+  }
+
+  return propertyToRTL[key]([key, value]);
 }

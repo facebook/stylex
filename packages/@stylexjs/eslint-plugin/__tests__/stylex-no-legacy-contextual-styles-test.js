@@ -24,7 +24,7 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
   valid: [
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           '::placeholder': {
@@ -44,11 +44,44 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
       });
     `,
     },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import * as stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            '::placeholder': {
+              color: '#999',
+            },
+            width: {
+              default: '100%',
+              '@media (min-width: 600px)': {
+                default: '50%',
+                '@media screen': '40%'
+              },
+            }
+          },
+        });
+      `,
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            '::placeholder': {
+              color: '#999',
+            },
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
           width: '100%',
@@ -81,6 +114,46 @@ eslintTester.run('stylex-no-legacy-contextual-styles', rule.default, {
         {
           message:
             'This pseudo class syntax is deprecated. Use the new syntax specified here: https://stylexjs.com/docs/learn/styling-ui/defining-styles/#pseudo-classes',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import * as stylex from 'custom-stylex';
+        const styles = stylex.create({
+          main: {
+            width: '100%',
+            ':hover': {
+              width: '50%',
+            }
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'This pseudo class syntax is deprecated. Use the new syntax specified here: https://stylexjs.com/docs/learn/styling-ui/defining-styles/#pseudo-classes',
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            width: '100%',
+            '@media (max-width: 600px)': {
+              width: '50%',
+            }
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'This media query syntax is deprecated. Use the new syntax specified here: https://stylexjs.com/docs/learn/styling-ui/defining-styles/#media-queries-and-other--rules',
         },
       ],
     },

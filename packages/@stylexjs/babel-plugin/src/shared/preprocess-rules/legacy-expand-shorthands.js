@@ -87,9 +87,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   border: (rawValue: TStyleValue): TReturn => {
     return [
       ['borderTop', rawValue],
-      ['borderEnd', rawValue],
+      ['borderInlineEnd', rawValue],
       ['borderBottom', rawValue],
-      ['borderStart', rawValue],
+      ['borderInlineStart', rawValue],
     ];
   },
 
@@ -98,9 +98,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['borderTopColor', top],
-      ['borderEndColor', right],
+      ['borderInlineEndColor', right],
       ['borderBottomColor', bottom],
-      ['borderStartColor', left],
+      ['borderInlineStartColor', left],
     ];
   },
   borderHorizontal: (rawValue: TStyleValue): TReturn => {
@@ -114,9 +114,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['borderTopStyle', top],
-      ['borderEndStyle', right],
+      ['borderInlineEndStyle', right],
       ['borderBottomStyle', bottom],
-      ['borderStartStyle', left],
+      ['borderInlineStartStyle', left],
     ];
   },
   borderVertical: (rawValue: TStyleValue): TReturn => {
@@ -130,23 +130,23 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['borderTopWidth', top],
-      ['borderEndWidth', right],
+      ['borderInlineEndWidth', right],
       ['borderBottomWidth', bottom],
-      ['borderStartWidth', left],
+      ['borderInlineStartWidth', left],
     ];
   },
 
   borderHorizontalColor: (rawValue: TStyleValue): TReturn => [
-    ['borderStartColor', rawValue],
-    ['borderEndColor', rawValue],
+    ['borderInlineStartColor', rawValue],
+    ['borderInlineEndColor', rawValue],
   ],
   borderHorizontalStyle: (rawValue: TStyleValue): TReturn => [
-    ['borderStartStyle', rawValue],
-    ['borderEndStyle', rawValue],
+    ['borderInlineStartStyle', rawValue],
+    ['borderInlineEndStyle', rawValue],
   ],
   borderHorizontalWidth: (rawValue: TStyleValue): TReturn => [
-    ['borderStartWidth', rawValue],
-    ['borderEndWidth', rawValue],
+    ['borderInlineStartWidth', rawValue],
+    ['borderInlineEndWidth', rawValue],
   ],
   borderVerticalColor: (rawValue: TStyleValue): TReturn => [
     ['borderTopColor', rawValue],
@@ -245,9 +245,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['marginTop', top],
-      ['marginEnd', right],
+      ['marginInlineEnd', right],
       ['marginBottom', bottom],
-      ['marginStart', left],
+      ['marginInlineStart', left],
     ];
   },
   marginHorizontal: (rawValue: TStyleValue): TReturn => [
@@ -255,24 +255,24 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ...shorthands.marginEnd(rawValue),
   ],
   marginStart: (rawValue: TStyleValue): TReturn => [
-    ['marginStart', rawValue],
+    ['marginInlineStart', rawValue],
     ['marginLeft', null],
     ['marginRight', null],
   ],
   marginEnd: (rawValue: TStyleValue): TReturn => [
-    ['marginEnd', rawValue],
+    ['marginInlineEnd', rawValue],
     ['marginLeft', null],
     ['marginRight', null],
   ],
   marginLeft: (rawValue: TStyleValue): TReturn => [
     ['marginLeft', rawValue],
-    ['marginStart', null],
-    ['marginEnd', null],
+    ['marginInlineStart', null],
+    ['marginInlineEnd', null],
   ],
   marginRight: (rawValue: TStyleValue): TReturn => [
     ['marginRight', rawValue],
-    ['marginStart', null],
-    ['marginEnd', null],
+    ['marginInlineStart', null],
+    ['marginInlineEnd', null],
   ],
   marginVertical: (rawValue: TStyleValue): TReturn => {
     return [
@@ -293,9 +293,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
     return [
       ['paddingTop', top],
-      ['paddingEnd', right],
+      ['paddingInlineEnd', right],
       ['paddingBottom', bottom],
-      ['paddingStart', left],
+      ['paddingInlineStart', left],
     ];
   },
   paddingHorizontal: (val: TStyleValue): TReturn => [
@@ -303,12 +303,12 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ...shorthands.paddingEnd(val),
   ],
   paddingStart: (val: TStyleValue): TReturn => [
-    ['paddingStart', val],
+    ['paddingInlineStart', val],
     ['paddingLeft', null],
     ['paddingRight', null],
   ],
   paddingEnd: (val: TStyleValue): TReturn => [
-    ['paddingEnd', val],
+    ['paddingInlineEnd', val],
     ['paddingLeft', null],
     ['paddingRight', null],
   ],
@@ -319,8 +319,8 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   ],
   paddingRight: (val: TStyleValue): TReturn => [
     ['paddingRight', val],
-    ['paddingStart', null],
-    ['paddingEnd', null],
+    ['paddingInlineStart', null],
+    ['paddingInlineEnd', null],
   ],
   paddingVertical: (val: TStyleValue): TReturn => [
     ['paddingTop', val],
@@ -365,24 +365,6 @@ const aliases = {
   borderInlineWidth: shorthands.borderHorizontalWidth,
   borderInlineStyle: shorthands.borderHorizontalStyle,
   borderInlineColor: shorthands.borderHorizontalColor,
-  borderInlineStartWidth: (val: TStyleValue): TReturn => [
-    ['borderStartWidth', val],
-  ],
-  borderInlineStartStyle: (val: TStyleValue): TReturn => [
-    ['borderStartStyle', val],
-  ],
-  borderInlineStartColor: (val: TStyleValue): TReturn => [
-    ['borderStartColor', val],
-  ],
-  borderInlineEndWidth: (val: TStyleValue): TReturn => [
-    ['borderEndWidth', val],
-  ],
-  borderInlineEndStyle: (val: TStyleValue): TReturn => [
-    ['borderEndStyle', val],
-  ],
-  borderInlineEndColor: (val: TStyleValue): TReturn => [
-    ['borderEndColor', val],
-  ],
   borderStartStartRadius: (val: TStyleValue): TReturn => [
     ['borderTopStartRadius', val],
   ],
@@ -404,8 +386,6 @@ const aliases = {
   marginBlockStart: (val: TStyleValue): TReturn => [['marginTop', val]],
   marginBlockEnd: (val: TStyleValue): TReturn => [['marginBottom', val]],
   marginInline: shorthands.marginHorizontal,
-  marginInlineStart: (val: TStyleValue): TReturn => [['marginStart', val]],
-  marginInlineEnd: (val: TStyleValue): TReturn => [['marginEnd', val]],
 
   overflowBlock: (value: TStyleValue): TReturn => [['overflowY', value]],
   overflowInline: (value: TStyleValue): TReturn => [['overflowX', value]],
@@ -414,8 +394,6 @@ const aliases = {
   paddingBlockStart: (val: TStyleValue): TReturn => [['paddingTop', val]],
   paddingBlockEnd: (val: TStyleValue): TReturn => [['paddingBottom', val]],
   paddingInline: shorthands.paddingHorizontal,
-  paddingInlineStart: (val: TStyleValue): TReturn => [['paddingStart', val]],
-  paddingInlineEnd: (val: TStyleValue): TReturn => [['paddingEnd', val]],
 
   scrollMarginBlockStart: (value: TStyleValue): TReturn => [
     ['scrollMarginTop', value],

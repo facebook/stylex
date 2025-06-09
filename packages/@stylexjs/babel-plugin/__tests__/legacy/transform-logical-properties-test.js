@@ -27,7 +27,7 @@ describe('@stylexjs/babel-plugin', () => {
    * CSS logical properties transform
    */
 
-  describe('[transform] CSS logical properties', () => {
+  describe('[transform] CSS logical properties (styleResolution: "application-order")', () => {
     /* Border colors */
 
     test('"borderBlockColor"', () => {
@@ -319,6 +319,72 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
         _inject2(".x10w94by{border-inline-end-width:0}", 3000);
         const classnames = "x10w94by";"
+      `);
+    });
+
+    /* Border radius */
+
+    test('"borderTopStartRadius"', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({ x: { borderTopStartRadius: 5 } });
+          const classnames = stylex(styles.x);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x13t61ll{border-start-start-radius:5px}", 3000);
+        const classnames = "x13t61ll";"
+      `);
+    });
+
+    test('"borderBottomStartRadius"', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({ x: { borderBottomStartRadius: 5 } });
+          const classnames = stylex(styles.x);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xbxn0j6{border-end-start-radius:5px}", 3000);
+        const classnames = "xbxn0j6";"
+      `);
+    });
+
+    test('"borderTopEndRadius"', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({ x: { borderTopEndRadius: 5 } });
+          const classnames = stylex(styles.x);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1kchd1x{border-start-end-radius:5px}", 3000);
+        const classnames = "x1kchd1x";"
+      `);
+    });
+
+    test('"borderBottomEndRadius"', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({ x: { borderBottomEndRadius: 5 } });
+          const classnames = stylex(styles.x);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1u0fnx4{border-end-end-radius:5px}", 3000);
+        const classnames = "x1u0fnx4";"
       `);
     });
 
@@ -638,6 +704,1044 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xi71r3n{margin:1 2 3 4}", 1000);
         "xi71r3n";"
       `);
+    });
+  });
+
+  describe('[transform] CSS logical properties  (styleResolution: "legacy-expand-shorthands")', () => {
+    describe('with enableLogicalStylesPolyfill: true', () => {
+      test('marginInline', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { marginInline: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1hm9lzh{margin-left:10px}", 3000, ".x1hm9lzh{margin-right:10px}");
+          _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+          const classnames = "x1hm9lzh x1sa5p1d";"
+        `);
+      });
+
+      test('marginInlineStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { marginInlineStart: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1hm9lzh{margin-left:10px}", 3000, ".x1hm9lzh{margin-right:10px}");
+          const classnames = "x1hm9lzh";"
+        `);
+      });
+
+      test('marginInlineEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { marginInlineEnd: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+          const classnames = "x1sa5p1d";"
+        `);
+      });
+
+      test('paddingInline', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { paddingInline: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+          _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
+          const classnames = "xe2zdcy x2vl965";"
+        `);
+      });
+
+      test('paddingInlineStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { paddingInlineStart: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
+          const classnames = "xe2zdcy";"
+        `);
+      });
+
+      test('paddingInlineEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { paddingInlineEnd: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
+          const classnames = "x2vl965";"
+        `);
+      });
+
+      test('borderInlineColor', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineColor: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1t19a1o{border-left-color:0}", 3000, ".x1t19a1o{border-right-color:0}");
+          _inject2(".x14mj1wy{border-right-color:0}", 3000, ".x14mj1wy{border-left-color:0}");
+          const classnames = "x1t19a1o x14mj1wy";"
+        `);
+      });
+
+      test('borderInlineStartColor', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineStartColor: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1t19a1o{border-left-color:0}", 3000, ".x1t19a1o{border-right-color:0}");
+          const classnames = "x1t19a1o";"
+        `);
+      });
+
+      test('borderInlineStyle', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineStyle: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xl8mozw{border-left-style:0}", 3000, ".xl8mozw{border-right-style:0}");
+          _inject2(".x10o505a{border-right-style:0}", 3000, ".x10o505a{border-left-style:0}");
+          const classnames = "xl8mozw x10o505a";"
+        `);
+      });
+
+      test('borderInlineWidth', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineWidth: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x14e42zd{border-left-width:0}", 3000, ".x14e42zd{border-right-width:0}");
+          _inject2(".x10w94by{border-right-width:0}", 3000, ".x10w94by{border-left-width:0}");
+          const classnames = "x14e42zd x10w94by";"
+        `);
+      });
+
+      test('borderBlockColor', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBlockColor: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x4q076{border-top-color:0}", 4000);
+          _inject2(".x1ylptbq{border-bottom-color:0}", 4000);
+          const classnames = "x4q076 x1ylptbq";"
+        `);
+      });
+
+      test('borderBlockStyle', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBlockStyle: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1d917x0{border-top-style:0}", 4000);
+          _inject2(".x1nmap2y{border-bottom-style:0}", 4000);
+          const classnames = "x1d917x0 x1nmap2y";"
+        `);
+      });
+
+      test('borderBlockWidth', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBlockWidth: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x972fbf{border-top-width:0}", 4000);
+          _inject2(".x1qhh985{border-bottom-width:0}", 4000);
+          const classnames = "x972fbf x1qhh985";"
+        `);
+      });
+
+      test('insetBlock', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetBlock: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x13vifvy{top:0}", 4000);
+          _inject2(".x1ey2m1c{bottom:0}", 4000);
+          const classnames = "x13vifvy x1ey2m1c";"
+        `);
+      });
+
+      test('insetBlockStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetBlockStart: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x13vifvy{top:0}", 4000);
+          const classnames = "x13vifvy";"
+        `);
+      });
+
+      test('insetBlockEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetBlockEnd: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1ey2m1c{bottom:0}", 4000);
+          const classnames = "x1ey2m1c";"
+        `);
+      });
+
+      test('insetInline', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetInline: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x17qophe{left:0}", 3000, ".x17qophe{right:0}");
+          _inject2(".xds687c{right:0}", 3000, ".xds687c{left:0}");
+          const classnames = "x17qophe xds687c";"
+        `);
+      });
+
+      test('insetInlineStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetInlineStart: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x17qophe{left:0}", 3000, ".x17qophe{right:0}");
+          const classnames = "x17qophe";"
+        `);
+      });
+
+      test('insetInlineEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetInlineEnd: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xds687c{right:0}", 3000, ".xds687c{left:0}");
+          const classnames = "xds687c";"
+        `);
+      });
+
+      test('borderTopStartRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderTopStartRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x8u2fvd{border-top-left-radius:5px}", 3000, ".x8u2fvd{border-top-right-radius:5px}");
+          const classnames = "x8u2fvd";"
+        `);
+      });
+
+      test('borderBottomStartRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBottomStartRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x5yzy4c{border-bottom-left-radius:5px}", 3000, ".x5yzy4c{border-bottom-right-radius:5px}");
+          const classnames = "x5yzy4c";"
+        `);
+      });
+
+      test('borderTopEndRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderTopEndRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1ht7hnu{border-top-right-radius:5px}", 3000, ".x1ht7hnu{border-top-left-radius:5px}");
+          const classnames = "x1ht7hnu";"
+        `);
+      });
+
+      test('borderBottomEndRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBottomEndRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: true,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1quq95r{border-bottom-right-radius:5px}", 3000, ".x1quq95r{border-bottom-left-radius:5px}");
+          const classnames = "x1quq95r";"
+        `);
+      });
+    });
+
+    describe('with enableLogicalStylesPolyfill: false', () => {
+      test('marginInline', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { marginInline: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
+          const classnames = "x1hm9lzh x1sa5p1d";"
+        `);
+      });
+
+      test('marginInlineStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { marginInlineStart: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1hm9lzh{margin-inline-start:10px}", 3000);
+          const classnames = "x1hm9lzh";"
+        `);
+      });
+
+      test('marginInlineEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { marginInlineEnd: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1sa5p1d{margin-inline-end:10px}", 3000);
+          const classnames = "x1sa5p1d";"
+        `);
+      });
+
+      test('paddingInline', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { paddingInline: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xe2zdcy{padding-inline-start:10px}", 3000);
+          _inject2(".x2vl965{padding-inline-end:10px}", 3000);
+          const classnames = "xe2zdcy x2vl965";"
+        `);
+      });
+
+      test('paddingInlineStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { paddingInlineStart: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xe2zdcy{padding-inline-start:10px}", 3000);
+          const classnames = "xe2zdcy";"
+        `);
+      });
+
+      test('paddingInlineEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { paddingInlineEnd: '10px' } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x2vl965{padding-inline-end:10px}", 3000);
+          const classnames = "x2vl965";"
+        `);
+      });
+
+      test('borderInlineColor', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineColor: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1t19a1o{border-inline-start-color:0}", 3000);
+          _inject2(".x14mj1wy{border-inline-end-color:0}", 3000);
+          const classnames = "x1t19a1o x14mj1wy";"
+        `);
+      });
+
+      test('borderInlineStartColor', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineStartColor: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1t19a1o{border-inline-start-color:0}", 3000);
+          const classnames = "x1t19a1o";"
+        `);
+      });
+
+      test('borderInlineStyle', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineStyle: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xl8mozw{border-inline-start-style:0}", 3000);
+          _inject2(".x10o505a{border-inline-end-style:0}", 3000);
+          const classnames = "xl8mozw x10o505a";"
+        `);
+      });
+
+      test('borderInlineWidth', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderInlineWidth: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x14e42zd{border-inline-start-width:0}", 3000);
+          _inject2(".x10w94by{border-inline-end-width:0}", 3000);
+          const classnames = "x14e42zd x10w94by";"
+        `);
+      });
+
+      test('borderBlockColor', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBlockColor: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x4q076{border-top-color:0}", 4000);
+          _inject2(".x1ylptbq{border-bottom-color:0}", 4000);
+          const classnames = "x4q076 x1ylptbq";"
+        `);
+      });
+
+      test('borderBlockStyle', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBlockStyle: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1d917x0{border-top-style:0}", 4000);
+          _inject2(".x1nmap2y{border-bottom-style:0}", 4000);
+          const classnames = "x1d917x0 x1nmap2y";"
+        `);
+      });
+
+      test('borderBlockWidth', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBlockWidth: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x972fbf{border-top-width:0}", 4000);
+          _inject2(".x1qhh985{border-bottom-width:0}", 4000);
+          const classnames = "x972fbf x1qhh985";"
+        `);
+      });
+
+      test('insetBlock', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetBlock: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x13vifvy{top:0}", 4000);
+          _inject2(".x1ey2m1c{bottom:0}", 4000);
+          const classnames = "x13vifvy x1ey2m1c";"
+        `);
+      });
+
+      test('insetBlockStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetBlockStart: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x13vifvy{top:0}", 4000);
+          const classnames = "x13vifvy";"
+        `);
+      });
+
+      test('insetBlockEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetBlockEnd: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1ey2m1c{bottom:0}", 4000);
+          const classnames = "x1ey2m1c";"
+        `);
+      });
+
+      test('insetInline', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetInline: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x17qophe{start:0}", 3000);
+          _inject2(".xds687c{end:0}", 3000);
+          const classnames = "x17qophe xds687c";"
+        `);
+      });
+
+      test('insetInlineStart', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetInlineStart: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x17qophe{start:0}", 3000);
+          const classnames = "x17qophe";"
+        `);
+      });
+
+      test('insetInlineEnd', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { insetInlineEnd: 0 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".xds687c{end:0}", 3000);
+          const classnames = "xds687c";"
+        `);
+      });
+
+      test('borderTopStartRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderTopStartRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x8u2fvd{border-top-start-radius:5px}", 3000);
+          const classnames = "x8u2fvd";"
+        `);
+      });
+
+      test('borderBottomStartRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBottomStartRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x5yzy4c{border-bottom-start-radius:5px}", 3000);
+          const classnames = "x5yzy4c";"
+        `);
+      });
+
+      test('borderTopEndRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderTopEndRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1ht7hnu{border-top-end-radius:5px}", 3000);
+          const classnames = "x1ht7hnu";"
+        `);
+      });
+
+      test('borderBottomEndRadius', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({ x: { borderBottomEndRadius: 5 } });
+            const classnames = stylex(styles.x);
+          `,
+            {
+              styleResolution: 'legacy-expand-shorthands',
+              enableLogicalStylesPolyfill: false,
+            },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".x1quq95r{border-bottom-end-radius:5px}", 3000);
+          const classnames = "x1quq95r";"
+        `);
+      });
     });
   });
 });

@@ -22,8 +22,10 @@ import type {
   ExportDefaultDeclaration,
   ExportNamedDeclaration,
   ReturnStatement,
+  ImportDeclaration,
 } from 'estree';
 import getSourceCode from './utils/getSourceCode';
+import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
 type PropertyValue =
@@ -53,25 +55,49 @@ function getPropertiesByName(node: Node | null) {
 const stylexNoUnused = {
   meta: {
     fixable: 'code',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          validImports: {
+            type: 'array',
+            items: {
+              oneOf: [
+                { type: 'string' },
+                {
+                  type: 'object',
+                  properties: {
+                    from: { type: 'string' },
+                    as: { type: 'string' },
+                  },
+                },
+              ],
+            },
+            default: ['stylex', '@stylexjs/stylex'],
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
   },
   create(context: Rule.RuleContext): { ... } {
+    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
+      context.options[0] || {};
+
+    const importTracker = createImportTracker(importsToLookFor);
     const stylexProperties = new Map<string, Map<any, PropertyValue>>();
-    let stylexImportObject = 'stylex';
-    let stylexImportProperty = 'create';
 
     function isStylexCreate(node: Node) {
       return (
         // const styles = s.create({...})   OR    const styles = stylex.create({...})
-        (stylexImportObject !== '' &&
-          node.type === 'MemberExpression' &&
+        (node.type === 'MemberExpression' &&
           node.object.type === 'Identifier' &&
-          node.object.name === stylexImportObject &&
+          importTracker.isStylexDefaultImport(node.object.name) &&
           node.property.type === 'Identifier' &&
-          node.property.name === stylexImportProperty) ||
+          node.property.name === 'create') ||
         // const styles = c({...})   OR   const styles = create({...})
-        (stylexImportObject === '' &&
-          node.type === 'Identifier' &&
-          node.name === stylexImportProperty)
+        (node.type === 'Identifier' &&
+          importTracker.isStylexNamedImport('create', node.name))
       );
     }
 
@@ -132,48 +158,17 @@ const stylexNoUnused = {
       };
     }
 
-    function parseStylexImportStyle(node: Node) {
-      // identify stylex import
-      if (
-        node.source?.value === '@stylexjs/stylex' &&
-        // $FlowFixMe[prop-missing]
-        node.importKind === 'value' &&
-        node.specifiers &&
-        node.specifiers.length > 0
-      ) {
-        // extract stylex import pattern
-        node.specifiers.forEach((specifier) => {
-          const specifierType = specifier.type;
-          if (specifierType === 'ImportNamespaceSpecifier') {
-            // import * as stylex from '@stylexjs/stylex';
-            stylexImportObject = specifier.local.name;
-            stylexImportProperty = 'create';
-          } else if (specifierType === 'ImportDefaultSpecifier') {
-            if (specifier.local.name === 'stylex') {
-              // import stylex from '@stylexjs/stylex';
-              stylexImportObject = 'stylex';
-              stylexImportProperty = 'create';
-            }
-          } else if (specifierType === 'ImportSpecifier') {
-            if (specifier.imported?.name === 'create') {
-              // import {create} from '@stylexjs/stylex'  OR   import {create as c} from '@stylexjs/stylex'
-              stylexImportObject = '';
-              stylexImportProperty = specifier.local.name;
-            }
-          }
-        });
-      }
-    }
-
     return {
       Program(node: Program) {
-        // detect stylex import style, which then decides which variables are stylex styles
+        // Process imports first
         node.body
-          .map((node) => (node.type === 'ImportDeclaration' ? node : null))
-          .filter(Boolean)
-          .forEach(parseStylexImportStyle);
-        // stylex.create can only be singular variable declarations at the root
-        // of the file so we can look directly on Program and populate our set.
+          .filter(
+            (node): node is ImportDeclaration =>
+              node.type === 'ImportDeclaration',
+          )
+          .forEach(importTracker.ImportDeclaration);
+
+        // Then process stylex.create declarations
         node.body
           .filter(({ type }) => type === 'VariableDeclaration')
           .map(({ declarations }) =>
@@ -275,6 +270,7 @@ const stylexNoUnused = {
         });
 
         stylexProperties.clear();
+        importTracker.clear();
       },
     };
   },

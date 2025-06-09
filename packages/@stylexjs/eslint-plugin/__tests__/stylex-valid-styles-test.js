@@ -24,7 +24,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
     // test for local static variables
     `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const start = 'start';
       const styles = stylex.create({
         default: {
@@ -38,7 +38,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
-      import stylex from "stylex";
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         validStyle: {
           marginInlineStart: "10px",
@@ -53,7 +53,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const start = 'start';
       const grayscale = 'grayscale';
       const styles = stylex.create({
@@ -68,7 +68,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const bounce = stylex.keyframes({
         '0%': {
           transform: 'translateY(0)',
@@ -89,7 +89,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         default: {
           animationName: stylex.keyframes({
@@ -109,7 +109,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const bounce = stylex.keyframes({
         '0%': {
           transform: 'translateY(0)',
@@ -140,7 +140,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     // test for nested styles
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const TRANSPARENT = 0;
         const OPAQUE = 1;
         const styles = stylex.create({
@@ -197,7 +197,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             width: '50%',
@@ -211,7 +211,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           base: {
             width: {
@@ -226,26 +226,26 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       options: [{ allowOuterPseudoAndMedia: true }],
     },
     // test for positive numbers
-    'import stylex from "stylex"; stylex.create({default: {marginInlineStart: 5}});',
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
-    'import stylex from "stylex"; stylex.create({"default-1": {marginInlineStart: 5}});',
-    'import stylex from "stylex"; stylex.create({["default-1"]: {marginInlineStart: 5}});',
+    'import * as stylex from \'@stylexjs/stylex\'; stylex.create({"default-1": {marginInlineStart: 5}});',
+    'import * as stylex from \'@stylexjs/stylex\'; stylex.create({["default-1"]: {marginInlineStart: 5}});',
     // test for numbers as namespaces
-    'import stylex from "stylex"; stylex.create({0: {marginInlineStart: 5}});',
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({0: {marginInlineStart: 5}});",
     // test for computed numbers as namespaces
-    'import stylex from "stylex"; stylex.create({[0]: {marginInlineStart: 5}});',
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({[0]: {marginInlineStart: 5}});",
     // test for negative values.
-    'import stylex from "stylex"; stylex.create({default: {marginInlineStart: -5}});',
-    "import stylex from 'stylex'; stylex.create({default: {textAlign: 'start'}});",
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: -5}});",
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'start'}});",
     // test for presets
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          textAlign: 'start',
        }
      });`,
     // test for Math
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          marginInlineStart: Math.abs(-1),
@@ -254,7 +254,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          paddingInlineEnd: Math.round(5 / 2),
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      const x = 5;
      stylex.create({
        default: {
@@ -265,7 +265,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
        },
      })`,
     // test for Search
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'WebkitAppearance': 'textfield',
@@ -284,7 +284,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
        },
      })`,
     // test for input ranges
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'WebkitAppearance': 'textfield',
@@ -306,86 +306,86 @@ eslintTester.run('stylex-valid-styles', rule.default, {
        },
      })`,
     // test for color
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': 'red',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': '#fff',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': '#fafbfc',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'color': '#fafbfcfc',
        },
      })`,
     // test for relative width
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30rem',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30em',
        },
       })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30ch',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30ex',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30vh',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30vw',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'contain': '300px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicSize': '300px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicSize': 'auto 300px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        a: {
          interpolateSize: 'numeric-only',
@@ -394,28 +394,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          interpolateSize: 'allow-keywords',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicInlineSize': '300px',
          'containIntrinsicBlockSize': '200px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicInlineSize': 'auto 300px',
          'containIntrinsicBlockSize': 'auto 200px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicWidth': '300px',
          'containIntrinsicHeight': '200px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'containIntrinsicWidth': 'auto 300px',
@@ -424,63 +424,63 @@ eslintTester.run('stylex-valid-styles', rule.default, {
      })`,
 
     // test for absolute width
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30px',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30cm',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30mm',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30in',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30pc',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '30pt',
        },
      })`,
     // test for percentage
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          'width': '50%',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
        default: {
          fontWeight: 'var(--weight)',
        },
      })`,
-    `import stylex from "stylex";
+    `import * as stylex from '@stylexjs/stylex';
      stylex.create({
       default: {
         fontWeight: 'var(--🔴)',
       },
     })`,
     `
-    import stylex from "stylex";
+    import * as stylex from '@stylexjs/stylex';
     const red = 'var(--🔴)';
     stylex.create({
       default: {
@@ -489,7 +489,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     })`,
     // test for field-sizing
     `
-    import stylex from "stylex";
+    import * as stylex from '@stylexjs/stylex';
     const red = 'var(--🔴)';
     stylex.create({
       default: {
@@ -497,7 +497,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     })`,
     `
-    import stylex from "stylex";
+    import * as stylex from '@stylexjs/stylex';
     const red = 'var(--🔴)';
     stylex.create({
       default: {
@@ -506,7 +506,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     })`,
     // test for stylex create vars tokens
     `
-    import stylex from 'stylex';
+    import * as stylex from '@stylexjs/stylex';
     import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens.stylex';
     stylex.create({
       root: {
@@ -519,7 +519,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `,
     // test using vars as keys
     `
-    import stylex from 'stylex';
+    import * as stylex from '@stylexjs/stylex';
     import { componentVars } from './bug.stylex';
     stylex.create({
       host: {
@@ -529,7 +529,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `,
     // test using vars as keys in dynamic styles
     `
-    import stylex from'stylex';
+    import * as stylex from'stylex';
     import { tokens } from 'tokens.stylex';
     stylex.create({
       root: (position) => ({
@@ -539,7 +539,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     `,
     // test importing vars from paths including code file extension
     `
-    import stylex from 'stylex';
+    import * as stylex from '@stylexjs/stylex';
     import { vars } from './vars.stylex';
     import { varsJs } from './vars.stylex.js';
     import { varsTs } from './vars.stylex.ts';
@@ -563,7 +563,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
   invalid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = {default: {width: '30pt'}};
         stylex.create(styles);
       `,
@@ -574,7 +574,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
-      code: "import stylex from 'stylex'; stylex.create({default: {textAlin: 'left'}});",
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -582,14 +582,14 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             {
               desc: 'Did you mean "textAlign"?',
               output:
-                "import stylex from 'stylex'; stylex.create({default: {textAlign: 'left'}});",
+                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
             },
           ],
         },
       ],
     },
     {
-      code: "import stylex from 'stylex'; stylex.create({default: {textAlin: 'left'}});",
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -597,14 +597,14 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             {
               desc: 'Did you mean "textAlign"?',
               output:
-                "import stylex from 'stylex'; stylex.create({default: {textAlign: 'left'}});",
+                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
             },
           ],
         },
       ],
     },
     {
-      code: 'import stylex from "stylex"; stylex.create({default: {["textAlin"]: \'left\'}});',
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {[\"textAlin\"]: 'left'}});",
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
@@ -612,7 +612,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             {
               desc: 'Did you mean "textAlign"?',
               output:
-                'import stylex from "stylex"; stylex.create({default: {["textAlign"]: \'left\'}});',
+                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {[\"textAlign\"]: 'left'}});",
             },
           ],
         },
@@ -620,7 +620,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
             marginStart: '10px',
@@ -669,7 +669,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         },
       ],
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
             marginInlineStart: '10px',
@@ -686,7 +686,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
             borderStartWidth: '2px',
@@ -725,7 +725,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         },
       ],
       output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           invalidStyle: {
             borderInlineStartWidth: '2px',
@@ -739,7 +739,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
     },
     {
-      code: "import stylex from 'stylex'; stylex.create({default: {textAlign: 'lfet'}});",
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
           message: `textAlign value must be one of:
@@ -759,7 +759,7 @@ revert`,
       ],
     },
     {
-      code: 'import stylex from "stylex"; stylex.create({default: {fontWeight: 10001}});',
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {fontWeight: 10001}});",
       errors: [
         {
           message: `fontWeight value must be one of:
@@ -778,7 +778,7 @@ revert`,
       ],
     },
     {
-      code: 'import stylex from "stylex"; stylex.create({default: {content: 100 + 100}});',
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {content: 100 + 100}});",
       errors: [
         {
           message: `content value must be one of:
@@ -792,7 +792,7 @@ revert`,
       ],
     },
     {
-      code: "import stylex from 'stylex'; stylex.create({default: {':hover': {textAlin: 'left'}}});",
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {':hover': {textAlin: 'left'}}});",
       options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
@@ -801,7 +801,7 @@ revert`,
       ],
     },
     {
-      code: "import stylex from 'stylex'; stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {':focus': {textAlign: 'lfet'}}});",
       options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
@@ -822,7 +822,7 @@ revert`,
             {
               desc: 'Did you mean "left"? Replace "lfet" with "left"',
               output:
-                "import stylex from 'stylex'; stylex.create({default: {':focus': {textAlign: 'left'}}});",
+                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {':focus': {textAlign: 'left'}}});",
             },
           ],
         },
@@ -830,7 +830,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         stylex.create({
           default: {
             ':focs': {
@@ -849,7 +849,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         stylex.create({
           default: {
             ':focus': {
@@ -869,7 +869,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const bounce = stylex.keyframes({
           '0%': {
             transform: 'translateY(0)',
@@ -905,7 +905,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "1px solid blue",
@@ -920,7 +920,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -936,7 +936,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: '1px solid rgba(var(--black), 0.0975)',
@@ -951,7 +951,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -967,7 +967,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "solid blue 1px",
@@ -982,7 +982,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -998,7 +998,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "blue 1px solid",
@@ -1013,7 +1013,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -1029,7 +1029,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "1px blue solid",
@@ -1044,7 +1044,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -1060,7 +1060,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "1px solid",
@@ -1075,7 +1075,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -1090,7 +1090,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "1px var(--foo)",
@@ -1105,7 +1105,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -1120,7 +1120,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "1px",
@@ -1135,7 +1135,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
@@ -1149,7 +1149,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: "none",
@@ -1164,7 +1164,7 @@ revert`,
             {
               desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderStyle: 'none',
@@ -1178,7 +1178,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: 0,
@@ -1193,7 +1193,7 @@ revert`,
             {
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: 0,
@@ -1207,7 +1207,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             border: 4,
@@ -1222,7 +1222,7 @@ revert`,
             {
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
               output: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             borderWidth: 4,
@@ -1236,7 +1236,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'custom-import';
+        import * as stylex from 'custom-import';
         const styles = stylex.create({
           default: {
             border: 4,
@@ -1252,7 +1252,7 @@ revert`,
             {
               desc: "Replace 'border' set to a number with 'borderWidth' instead?",
               output: `
-        import stylex from 'custom-import';
+        import * as stylex from 'custom-import';
         const styles = stylex.create({
           default: {
             borderWidth: 4,
@@ -1266,7 +1266,7 @@ revert`,
     },
     {
       code: `
-      import stylex from'stylex';
+      import * as stylex from'stylex';
       import {TextTypeTokens as TextType, ColorTokens} from 'DspSharedTextTokens';
       stylex.create({
         root: {
@@ -1445,7 +1445,7 @@ revert`,
 eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
   valid: [
     `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         default: {
           display: 'grid',
@@ -1457,7 +1457,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
     `,
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             display: 'grid',
@@ -1478,7 +1478,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             display: 'grid',
@@ -1498,7 +1498,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
     },
     {
       code: `
-        import stylex from'stylex';
+        import * as stylex from'stylex';
         const styles = stylex.create({
           default: {
             textUnderlineOffset: 'auto',
@@ -1508,7 +1508,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
     },
     {
       code: `
-        import stylex from'stylex';
+        import * as stylex from'stylex';
         const styles = stylex.create({
           default: {
             textUnderlineOffset: '1px',
@@ -1518,7 +1518,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
     },
     {
       code: `
-        import stylex from'stylex';
+        import * as stylex from'stylex';
         const styles = stylex.create({
           default: {
             textUnderlineOffset: '100%',
@@ -1528,7 +1528,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
     },
     {
       code: `
-        import stylex from'stylex';
+        import * as stylex from'stylex';
         const styles = stylex.create({
           base: {
             backgroundColor: {
@@ -1542,7 +1542,7 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
   invalid: [
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             display: 'grid',
@@ -1574,7 +1574,7 @@ revert`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             display: 'grid',
@@ -1601,7 +1601,7 @@ grid properties disallowed for testing`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             display: 'grid',
@@ -1628,7 +1628,7 @@ grid properties disallowed for testing`,
     },
     {
       code: `
-        import stylex from 'stylex';
+        import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
             display: 'grid',
@@ -1650,7 +1650,7 @@ This property is not supported in legacy StyleX resolution.`,
     },
     {
       code: `
-      import stylex from 'stylex';
+      import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         base:{
           background: ''
@@ -1665,7 +1665,7 @@ This property is not supported in legacy StyleX resolution.`,
     },
     {
       code: `
-        import stylex from'stylex';
+        import * as stylex from'stylex';
         const styles = stylex.create({
           b:{
             textUnderlineOffset: '',

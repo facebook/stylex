@@ -42,14 +42,11 @@ import { breakpoints, colors } from './constants.stylex.js';
 
 const styles = stylex.create({
   container: {
-    [breakpoints.small]: {
-      padding: '8px',
-    },
-    [breakpoints.medium]: {
-      padding: '16px',
-    },
-    [breakpoints.large]: {
-      padding: '24px',
+    padding: {
+      default: '4px'
+      [breakpoints.small]: '8px',
+      [breakpoints.medium]: '16px',
+      [breakpoints.large]: '24px',
     },
   },
   label: {

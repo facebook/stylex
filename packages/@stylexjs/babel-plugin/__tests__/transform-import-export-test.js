@@ -54,6 +54,7 @@ const defaultImportMap = {
   keyframes: 'stylex.keyframes',
   positionTry: 'stylex.positionTry',
   props: 'stylex.props',
+  viewTransitionClass: 'stylex.viewTransitionClass',
 };
 
 function createStylesFixture({
@@ -77,6 +78,7 @@ function createStylesFixture({
     keyframes,
     positionTry,
     props,
+    viewTransitionClass,
   } = importMap;
 
   const from = importSource?.from || importSource;
@@ -101,6 +103,20 @@ function createStylesFixture({
 
   return `
     ${defineConstsAndVarsOutput}
+    const viewTransition1 = ${viewTransitionClass}({
+      group: {
+        transitionProperty: 'none',
+      },
+      imagePair: {
+        borderRadius: 16,
+      },
+      old: {
+        animationDuration: '0.5s',
+      },
+      new: {
+        animationTimingFunction: 'ease-out',
+      },
+    });
     const fallback1 = ${positionTry}({
       anchorName: '--myAnchor',
       positionArea: 'top left',
@@ -222,6 +238,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
@@ -244,12 +261,20 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "xchu1hv",
+              {
+                "ltr": "::view-transition-group(*.xchu1hv){transition-property:none;}::view-transition-image-pair(*.xchu1hv){border-radius:16px;}::view-transition-old(*.xchu1hv){animation-duration:.5s;}::view-transition-new(*.xchu1hv){animation-timing-function:ease-out;}",
+                "rtl": null,
+              },
+              1,
+            ],
+            [
               "--x5jppmd",
               {
                 "ltr": "@position-try --x5jppmd {anchor-name:anchor-name;anchor-name:--myAnchor;position-area:position-area;position-area:top left;}",
                 "rtl": "@position-try --x5jppmd {anchor-name:--myAnchor;position-area:top left;}",
               },
-              1,
+              0,
             ],
             [
               "--x17pzx6",
@@ -257,7 +282,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@position-try --x17pzx6 {anchor-name:anchor-name;anchor-name:--otherAnchor;inset-inline-start:inset-inline-start;inset-inline-start:anchor(start);top:top;top:anchor(bottom);}",
                 "rtl": "@position-try --x17pzx6 {anchor-name:--otherAnchor;inset-inline-start:anchor(start);top:anchor(bottom);}",
               },
-              1,
+              0,
             ],
             [
               "xjx6k13-B",
@@ -265,7 +290,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@keyframes xjx6k13-B{from{background-color:yellow;}to{background-color:orange;}}",
                 "rtl": null,
               },
-              1,
+              0,
             ],
             [
               "x1qar0u3",
@@ -333,6 +358,7 @@ describe('@stylexjs/babel-plugin', () => {
           keyframes: 'foo.keyframes',
           positionTry: 'foo.positionTry',
           props: 'foo.props',
+          viewTransitionClass: 'foo.viewTransitionClass',
         },
       });
 
@@ -347,6 +373,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
@@ -371,7 +398,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('import: named', () => {
       const fixture = createStylesFixture({
         importText:
-          '{create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, positionTry, props}',
+          '{create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, positionTry, props, viewTransitionClass}',
         importMap: {
           create: 'create',
           createTheme: 'createTheme',
@@ -381,13 +408,14 @@ describe('@stylexjs/babel-plugin', () => {
           keyframes: 'keyframes',
           positionTry: 'positionTry',
           props: 'props',
+          viewTransitionClass: 'viewTransitionClass',
         },
       });
 
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, positionTry, props } from '@stylexjs/stylex';
+        "import { create, createTheme, defineConsts, defineVars, firstThatWorks, keyframes, positionTry, props, viewTransitionClass } from '@stylexjs/stylex';
         export const constants = {
           mediaQuery: "@media (min-width: 768px)"
         };
@@ -395,6 +423,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
@@ -426,7 +455,8 @@ describe('@stylexjs/babel-plugin', () => {
           firstThatWorks as _firstThatWorks,
           keyframes as _keyframes,
           positionTry as _positionTry,
-          props as _props
+          props as _props,
+          viewTransitionClass as _viewTransitionClass
         }`,
         importMap: {
           create: '_create',
@@ -437,13 +467,14 @@ describe('@stylexjs/babel-plugin', () => {
           keyframes: '_keyframes',
           positionTry: '_positionTry',
           props: '_props',
+          viewTransitionClass: '_viewTransitionClass',
         },
       });
 
       const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
-        "import { create as _create, createTheme as _createTheme, defineConsts as _defineConsts, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, positionTry as _positionTry, props as _props } from '@stylexjs/stylex';
+        "import { create as _create, createTheme as _createTheme, defineConsts as _defineConsts, defineVars as _defineVars, firstThatWorks as _firstThatWorks, keyframes as _keyframes, positionTry as _positionTry, props as _props, viewTransitionClass as _viewTransitionClass } from '@stylexjs/stylex';
         export const constants = {
           mediaQuery: "@media (min-width: 768px)"
         };
@@ -451,6 +482,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
@@ -491,6 +523,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
@@ -526,6 +559,7 @@ describe('@stylexjs/babel-plugin', () => {
           keyframes: 'css.keyframes',
           positionTry: 'css.positionTry',
           props: 'css.props',
+          viewTransitionClass: 'css.viewTransitionClass',
         },
       });
 
@@ -543,6 +577,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
@@ -583,6 +618,7 @@ describe('@stylexjs/babel-plugin', () => {
           bar: "var(--x1hi1hmf)",
           __themeName__: "xop34xu"
         };
+        const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
         const styles = {
