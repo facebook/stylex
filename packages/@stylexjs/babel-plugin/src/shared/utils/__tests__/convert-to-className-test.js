@@ -23,7 +23,7 @@ describe('convert-to-className test', () => {
       classNamePrefix: 'x',
       dev: false,
       debug: true,
-      styleResolution: 'application-order',
+      styleResolution: 'property-specificity',
       test: false,
     };
     const result = convertStyleToClassName(['margin', 10], [], [], [], options);
@@ -36,7 +36,7 @@ describe('convert-to-className test', () => {
       dev: false,
       debug: true,
       enableDebugClassNames: false,
-      styleResolution: 'application-order',
+      styleResolution: 'property-specificity',
       test: false,
     };
     const result = convertStyleToClassName(['margin', 10], [], [], [], options);
@@ -49,7 +49,7 @@ describe('convert-to-className test', () => {
       classNamePrefix: 'x',
       dev: false,
       debug: false,
-      styleResolution: 'application-order',
+      styleResolution: 'property-specificity',
       test: false,
     };
     const result = convertStyleToClassName(['margin', 10], [], [], [], options);

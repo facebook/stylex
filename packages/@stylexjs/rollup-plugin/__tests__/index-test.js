@@ -67,12 +67,6 @@ describe('rollup-plugin-stylex', () => {
       "@layer priority1;
 
       @layer priority2 {
-        .x1oz5o6v:hover {
-          background: red;
-        }
-      }
-
-      @layer priority3 {
         .xeuoslp {
           animation-name: xgnty7z-B;
         }
@@ -96,9 +90,13 @@ describe('rollup-plugin-stylex', () => {
         .x1hm9lzh {
           margin-inline-start: 10px;
         }
+
+        .x1gykpug:hover {
+          background-color: red;
+        }
       }
 
-      @layer priority4 {
+      @layer priority3 {
         .x1egiwwb {
           height: 500px;
         }
@@ -172,26 +170,12 @@ describe('rollup-plugin-stylex', () => {
       var styles = {
         foo: {
           kKVMdj: "xeuoslp",
-          k1xSpc: "x78zum5",
-          keTefX: "x1hm9lzh",
-          koQZXg: null,
-          km5ZXQ: null,
-          keoZOQ: "xlrshdv",
-          kZKoxP: "x1egiwwb",
-          kEyE8R: "x1oz5o6v",
-          kwRxUf: null,
-          kmvik3: null,
-          kGzVvX: null,
-          kBPHsk: null,
-          kIpHjZ: null,
-          kwsBex: null,
-          kKEIo6: null,
-          kdqC5e: null,
-          kIjLOv: null,
-          kA1KOB: null,
+          kWkggS: "x1gykpug",
           krdFHd: "xu4yf9m",
-          kIxVMA: null,
-          ksF3WI: null,
+          k1xSpc: "x78zum5",
+          kZKoxP: "x1egiwwb",
+          keTefX: "x1hm9lzh",
+          keoZOQ: "xlrshdv",
           $$css: true
         }
       };
@@ -265,35 +249,21 @@ describe('rollup-plugin-stylex', () => {
         var _inject2 = _inject;
         _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 0);
         _inject2(".animationName-xeuoslp{animation-name:xgnty7z-B}", 3000);
+        _inject2(".backgroundColor-x1gykpug:hover{background-color:red}", 3130);
+        _inject2(".borderStartStartRadius-xu4yf9m{border-start-start-radius:7.5px}", 3000);
         _inject2(".display-x78zum5{display:flex}", 3000);
+        _inject2(".height-x1egiwwb{height:500px}", 4000);
         _inject2(".marginInlineStart-x1hm9lzh{margin-inline-start:10px}", 3000);
         _inject2(".marginTop-xlrshdv{margin-top:99px}", 4000);
-        _inject2(".height-x1egiwwb{height:500px}", 4000);
-        _inject2(".background-x1oz5o6v:hover{background:red}", 1130);
-        _inject2(".borderStartStartRadius-xu4yf9m{border-start-start-radius:7.5px}", 3000);
         var styles = {
           foo: {
             "animationName-kKVMdj": "animationName-xeuoslp",
-            "display-k1xSpc": "display-x78zum5",
-            "marginInlineStart-keTefX": "marginInlineStart-x1hm9lzh",
-            "marginLeft-koQZXg": null,
-            "marginRight-km5ZXQ": null,
-            "marginTop-keoZOQ": "marginTop-xlrshdv",
-            "height-kZKoxP": "height-x1egiwwb",
-            ":hover_background-kEyE8R": "background-x1oz5o6v",
-            ":hover_backgroundAttachment-kwRxUf": null,
-            ":hover_backgroundClip-kmvik3": null,
-            ":hover_backgroundColor-kGzVvX": null,
-            ":hover_backgroundImage-kBPHsk": null,
-            ":hover_backgroundOrigin-kIpHjZ": null,
-            ":hover_backgroundPosition-kwsBex": null,
-            ":hover_backgroundPositionX-kKEIo6": null,
-            ":hover_backgroundPositionY-kdqC5e": null,
-            ":hover_backgroundRepeat-kIjLOv": null,
-            ":hover_backgroundSize-kA1KOB": null,
+            "backgroundColor-kWkggS": "backgroundColor-x1gykpug",
             "borderStartStartRadius-krdFHd": "borderStartStartRadius-xu4yf9m",
-            "borderTopLeftRadius-kIxVMA": null,
-            "borderTopRightRadius-ksF3WI": null,
+            "display-k1xSpc": "display-x78zum5",
+            "height-kZKoxP": "height-x1egiwwb",
+            "marginInlineStart-keTefX": "marginInlineStart-x1hm9lzh",
+            "marginTop-keoZOQ": "marginTop-xlrshdv",
             $$css: "__fixtures__/index.js:24"
           }
         };
@@ -317,12 +287,6 @@ describe('rollup-plugin-stylex', () => {
       "@layer priority1;
 
       @layer priority2 {
-        .x1oz5o6v:hover {
-          background: red;
-        }
-      }
-
-      @layer priority3 {
         .xeuoslp {
           animation-name: xgnty7z-B;
         }
@@ -346,9 +310,13 @@ describe('rollup-plugin-stylex', () => {
         .x1hm9lzh {
           margin-inline-start: 10px;
         }
+
+        .x1gykpug:hover {
+          background-color: red;
+        }
       }
 
-      @layer priority4 {
+      @layer priority3 {
         .x1egiwwb {
           height: 500px;
         }
