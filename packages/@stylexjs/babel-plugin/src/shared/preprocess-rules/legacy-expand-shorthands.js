@@ -105,8 +105,8 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
   },
   borderHorizontal: (rawValue: TStyleValue): TReturn => {
     return [
-      ['borderStart', rawValue],
-      ['borderEnd', rawValue],
+      ['borderInlineStart', rawValue],
+      ['borderInlineEnd', rawValue],
     ];
   },
   borderStyle: (rawValue: TStyleValue): TReturn => {
@@ -165,10 +165,10 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
 
     return [
-      ['borderTopStartRadius', top],
-      ['borderTopEndRadius', right],
-      ['borderBottomEndRadius', bottom],
-      ['borderBottomStartRadius', left],
+      ['borderStartStartRadius', top],
+      ['borderStartEndRadius', right],
+      ['borderEndEndRadius', bottom],
+      ['borderEndStartRadius', left],
     ];
   },
 
@@ -199,9 +199,9 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
 
   inset: (rawValue: TStyleValue): TReturn => [
     ['top', rawValue],
-    ['end', rawValue],
+    ['insetInlineEnd', rawValue],
     ['bottom', rawValue],
-    ['start', rawValue],
+    ['insetInlineStart', rawValue],
   ],
   insetInline: (rawValue: TStyleValue): TReturn => [
     ...shorthands.start(rawValue),
@@ -212,24 +212,24 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ['bottom', rawValue],
   ],
   start: (rawValue: TStyleValue): TReturn => [
-    ['start', rawValue],
+    ['insetInlineStart', rawValue],
     ['left', null],
     ['right', null],
   ],
   end: (rawValue: TStyleValue): TReturn => [
-    ['end', rawValue],
+    ['insetInlineEnd', rawValue],
     ['left', null],
     ['right', null],
   ],
   left: (rawValue: TStyleValue): TReturn => [
     ['left', rawValue],
-    ['start', null],
-    ['end', null],
+    ['insetInlineStart', null],
+    ['insetInlineEnd', null],
   ],
   right: (rawValue: TStyleValue): TReturn => [
     ['right', rawValue],
-    ['start', null],
-    ['end', null],
+    ['insetInlineStart', null],
+    ['insetInlineEnd', null],
   ],
 
   gap: (rawValue: TStyleValue): TReturn => {
@@ -341,6 +341,9 @@ const aliases = {
   maxBlockSize: (val: TStyleValue): TReturn => [['maxHeight', val]],
   maxInlineSize: (val: TStyleValue): TReturn => [['maxWidth', val]],
 
+  borderStart: (val: TStyleValue): TReturn => [['borderInlineStart', val]],
+  borderEnd: (val: TStyleValue): TReturn => [['borderInlineEnd', val]],
+
   borderBlockWidth: shorthands.borderVerticalWidth,
   borderBlockStyle: shorthands.borderVerticalStyle,
   borderBlockColor: shorthands.borderVerticalColor,
@@ -365,17 +368,18 @@ const aliases = {
   borderInlineWidth: shorthands.borderHorizontalWidth,
   borderInlineStyle: shorthands.borderHorizontalStyle,
   borderInlineColor: shorthands.borderHorizontalColor,
-  borderStartStartRadius: (val: TStyleValue): TReturn => [
-    ['borderTopStartRadius', val],
+
+  borderTopStartRadius: (val: TStyleValue): TReturn => [
+    ['borderStartStartRadius', val],
   ],
-  borderStartEndRadius: (val: TStyleValue): TReturn => [
-    ['borderTopEndRadius', val],
+  borderTopEndRadius: (val: TStyleValue): TReturn => [
+    ['borderStartEndRadius', val],
   ],
-  borderEndStartRadius: (val: TStyleValue): TReturn => [
-    ['borderBottomStartRadius', val],
+  borderBottomStartRadius: (val: TStyleValue): TReturn => [
+    ['borderEndStartRadius', val],
   ],
-  borderEndEndRadius: (val: TStyleValue): TReturn => [
-    ['borderBottomEndRadius', val],
+  borderBottomEndRadius: (val: TStyleValue): TReturn => [
+    ['borderEndEndRadius', val],
   ],
 
   gridGap: shorthands.gap,
