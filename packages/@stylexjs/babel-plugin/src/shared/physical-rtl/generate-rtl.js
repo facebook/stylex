@@ -164,6 +164,14 @@ const inlinePropertyToRTL: $ReadOnly<{
     'border-bottom-left-radius',
     val,
   ],
+  'inset-inline-start': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'right',
+    val,
+  ],
+  'inset-inline-end': ([_key, val]: $ReadOnly<[string, string]>) => [
+    'left',
+    val,
+  ],
 };
 
 const propertyToRTL: $ReadOnly<{
@@ -252,7 +260,11 @@ const propertyToRTL: $ReadOnly<{
       key,
       words
         .map((word) =>
-          word === 'start' ? 'right' : word === 'end' ? 'left' : word,
+          word === 'start' || word === 'insetInlineStart'
+            ? 'right'
+            : word === 'end' || word === 'insetInlineEnd'
+              ? 'left'
+              : word,
         )
         .join(' '),
     ];
