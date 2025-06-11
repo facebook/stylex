@@ -77,7 +77,9 @@ async function genSheet() {
 
   const ruleSets = await Promise.all(allFiles.map(transformFile));
 
-  const generatedCSS = stylexBabelPlugin.processStylexRules(ruleSets.flat());
+  const generatedCSS = await stylexBabelPlugin.processStylexRules(
+    ruleSets.flat(),
+  );
 
   await mkdirp(path.join(__dirname, '../.stylex/'));
 

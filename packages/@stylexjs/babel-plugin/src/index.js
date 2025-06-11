@@ -31,6 +31,8 @@ import transformStylexCall, {
 } from './visitors/stylex-merge';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
+import postcss from 'postcss';
+import cascadeLayers from '@csstools/postcss-cascade-layers';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
 
 const NAME = 'stylex';
@@ -356,12 +358,12 @@ export type Rule = [
   },
   number,
 ];
-function processStylexRules(
+async function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
-): string {
+): Promise<string> {
   if (rules.length === 0) {
-    return '';
+    return Promise.resolve('');
   }
 
   const constantRules = rules.filter(
@@ -470,13 +472,8 @@ function processStylexRules(
       )
         .flatMap((rule) => {
           const { ltr, rtl } = rule;
-          let ltrRule = ltr,
+          const ltrRule = ltr,
             rtlRule = rtl;
-
-          if (!useLayers) {
-            ltrRule = addSpecificityLevel(ltrRule, index);
-            rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
-          }
 
           return rtlRule
             ? [
@@ -487,14 +484,22 @@ function processStylexRules(
         })
         .join('\n');
 
+      if (!useLayers) {
+        return `@layer priority${index + 1}{\n${collectedCSS}\n}`;
+      }
       // Don't put @property, @keyframe, @position-try in layers
-      return useLayers && pri > 0
+      return pri > 0
         ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
         : collectedCSS;
     })
     .join('\n');
 
-  return header + collectedCSS;
+  if (!useLayers) {
+    const css = await transformCollectedCSS(header + collectedCSS);
+    return css.trim();
+  }
+
+  return Promise.resolve(header + collectedCSS);
 }
 
 styleXTransform.processStylexRules = processStylexRules;
@@ -523,23 +528,11 @@ function addAncestorSelector(
 }
 
 /**
- * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
+ * Uses @csstools/postcss-cascade-layers to apply specificity adjustments
+ * via `:not(#\#)` as a polyfill for CSS @layer at-rules.
  */
-function addSpecificityLevel(selector: string, index: number): string {
-  if (selector.startsWith('@keyframes')) {
-    return selector;
-  }
-  const pseudo = Array.from({ length: index })
-    .map(() => ':not(#\\#)')
-    .join('');
-
-  const lastOpenCurly = selector.includes('::')
-    ? selector.indexOf('::')
-    : selector.lastIndexOf('{');
-  const beforeCurly = selector.slice(0, lastOpenCurly);
-  const afterCurly = selector.slice(lastOpenCurly);
-
-  return `${beforeCurly}${pseudo}${afterCurly}`;
+async function transformCollectedCSS(collectedCSS: string): Promise<string> {
+  return (await postcss([cascadeLayers()]).process(collectedCSS)).css;
 }
 
 export type StyleXTransformObj = $ReadOnly<{
