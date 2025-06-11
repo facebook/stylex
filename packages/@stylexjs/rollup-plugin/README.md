@@ -43,7 +43,7 @@ The name of the output css file.
 ---
 ### useCSSLayers
 ```js
-useCSSLayers: boolean // Default: true
+useCSSLayers: boolean // Default: false
 ```
 Enabling this option switches Stylex from using `:not(#\#)` to using `@layers` for handling CSS specificity.
 
