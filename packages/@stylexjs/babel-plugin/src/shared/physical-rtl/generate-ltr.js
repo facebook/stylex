@@ -13,18 +13,16 @@ import { defaultOptions } from '../utils/default-options';
 const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   start: 'left',
   end: 'right',
+  'inline-start': 'left',
+  'inline-end': 'right',
 };
 
-const logicalToStandard: $ReadOnly<{ [string]: string }> = {
-  start: 'inline-start',
-  end: 'inline-end',
-};
-
-const convertToStandardProperties: $ReadOnly<{
+// These values are polyfilled to LTR/RTL equivalents due to incomplete browser support, regardless of `enableLogicalStylesPolyfill`
+const legacyValuesPolyfill: $ReadOnly<{
   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
 }> = {
-  float: ([key, val]) => [key, logicalToStandard[val] ?? val],
-  clear: ([key, val]) => [key, logicalToStandard[val] ?? val],
+  float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
+  clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
 };
 
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
@@ -205,8 +203,8 @@ export default function generateLTR(
 
   if (styleResolution === 'legacy-expand-shorthands') {
     if (!enableLogicalStylesPolyfill) {
-      if (convertToStandardProperties[key]) {
-        return convertToStandardProperties[key](pair);
+      if (legacyValuesPolyfill[key]) {
+        return legacyValuesPolyfill[key](pair);
       }
       return pair;
     }
