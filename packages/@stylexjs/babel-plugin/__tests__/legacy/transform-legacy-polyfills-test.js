@@ -1012,8 +1012,8 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "xodj72a",
               {
-                "ltr": ".xodj72a{clear:inline-end}",
-                "rtl": null,
+                "ltr": ".xodj72a{clear:right}",
+                "rtl": ".xodj72a{clear:left}",
               },
               3000,
             ],
@@ -1036,8 +1036,8 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x390i0x",
               {
-                "ltr": ".x390i0x{clear:inline-start}",
-                "rtl": null,
+                "ltr": ".x390i0x{clear:left}",
+                "rtl": ".x390i0x{clear:right}",
               },
               3000,
             ],
@@ -1060,8 +1060,8 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1guec7k",
               {
-                "ltr": ".x1guec7k{float:inline-end}",
-                "rtl": null,
+                "ltr": ".x1guec7k{float:right}",
+                "rtl": ".x1guec7k{float:left}",
               },
               3000,
             ],
@@ -1084,8 +1084,8 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "xrbpyxo",
               {
-                "ltr": ".xrbpyxo{float:inline-start}",
-                "rtl": null,
+                "ltr": ".xrbpyxo{float:left}",
+                "rtl": ".xrbpyxo{float:right}",
               },
               3000,
             ],

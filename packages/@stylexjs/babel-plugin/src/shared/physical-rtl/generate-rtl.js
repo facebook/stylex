@@ -97,6 +97,16 @@ function flipShadow(value: string) {
 const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   start: 'right',
   end: 'left',
+  'inline-start': 'right',
+  'inline-end': 'left',
+};
+
+// These values are polyfilled to LTR/RTL equivalents due to incomplete browser support, regardless of `enableLogicalStylesPolyfill`
+const legacyValuesPolyfill: $ReadOnly<{
+  [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
+}> = {
+  float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
+  clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
 };
 
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
@@ -293,6 +303,10 @@ export default function generateRTL(
 
   if (styleResolution === 'legacy-expand-shorthands') {
     if (!enableLogicalStylesPolyfill) {
+      if (legacyValuesPolyfill[key]) {
+        return legacyValuesPolyfill[key]([key, value]);
+      }
+
       return null;
     }
 
