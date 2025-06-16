@@ -20,7 +20,7 @@ export const DEFAULT_IMPORT = `Error: Cannot use default imports.
 
 Please define your styles without depending on values imported from other files.
 
-You *may* use named imports to use variables defined with \`stylex.defineVars\` in a file with \`.stylex.js\` or \`.stylex.ts\` file.
+You *may* use named imports to use variables defined with \`defineVars\` in a file with \`.stylex.js\` or \`.stylex.ts\` file.
 See: https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-variables for more information.
 `;
 

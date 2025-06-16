@@ -156,7 +156,7 @@ export default function transformStyleXCreateTheme(
       variables.__themeName__ === ''
     ) {
       throw callExpressionPath.buildCodeFrameError(
-        'Can only override variables theme created with stylex.defineVars().',
+        'Can only override variables theme created with defineVars().',
         SyntaxError,
       );
     }

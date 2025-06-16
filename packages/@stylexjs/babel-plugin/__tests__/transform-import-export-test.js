@@ -251,8 +251,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         stylex.props(styles.root, theme);"
       `);
@@ -386,8 +386,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         foo.props(styles.root, theme);"
       `);
@@ -436,8 +436,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         props(styles.root, theme);"
       `);
@@ -495,8 +495,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         _props(styles.root, theme);"
       `);
@@ -536,8 +536,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         stylex.props(styles.root, theme);"
       `);
@@ -590,8 +590,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         css.props(styles.root, theme);"
       `);
@@ -631,8 +631,8 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4 xop34xu",
+          $$css: true
         };
         stylex.props(styles.root, theme);"
       `);

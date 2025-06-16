@@ -28,7 +28,7 @@ export default function styleXCreateTheme(
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__themeName__ !== 'string') {
     throw new Error(
-      'Can only override variables theme created with stylex.defineVars().',
+      'Can only override variables theme created with defineVars().',
     );
   }
 
@@ -85,8 +85,10 @@ export default function styleXCreateTheme(
   const themeClass = `${overrideClassName} ${themeVars.__themeName__}`;
 
   return [
-    // $FlowFixMe[invalid-computed-prop]
-    { $$css: true, [themeVars.__themeName__]: themeClass },
+    {
+      [themeVars.__themeName__]: themeClass,
+      $$css: true,
+    },
     stylesToInject,
   ];
 }

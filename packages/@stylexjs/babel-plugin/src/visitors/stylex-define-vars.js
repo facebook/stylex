@@ -146,7 +146,7 @@ export default function transformStyleXDefineVars(
 
     const fileName = state.fileNameForHashing;
     if (fileName == null) {
-      throw new Error('No filename found for generating theme name.');
+      throw new Error('No filename found for generating defineVars key name.');
     }
 
     const exportName = varId.name;
