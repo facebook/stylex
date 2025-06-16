@@ -48,7 +48,7 @@ export default function isAnimationName(
       } else {
         return {
           message:
-            'All expressions in a template literal must be a `stylex.keyframes(...)` function call',
+            'All expressions in a template literal must be a `keyframes(...)` function call',
         };
       }
     }
@@ -60,7 +60,7 @@ export default function isAnimationName(
       ) {
         return {
           message:
-            'All expressions in a template literal must be a `stylex.keyframes(...)` function call',
+            'All expressions in a template literal must be a `keyframes(...)` function call',
         };
       }
       if (
@@ -79,7 +79,7 @@ export default function isAnimationName(
     }
     return {
       message:
-        'a `stylex.keyframes(...)` function call, a reference to it or a many such valid',
+        'a `keyframes(...)` function call, a reference to it or a many such valid',
     };
   };
 }

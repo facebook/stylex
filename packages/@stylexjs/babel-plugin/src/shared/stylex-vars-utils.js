@@ -37,7 +37,7 @@ export function collectVarsByAtRule(
     return;
   }
   if (Array.isArray(value)) {
-    throw new Error('Array is not supported in stylex.defineVars');
+    throw new Error('Array is not supported in defineVars');
   }
   if (typeof value === 'object') {
     if (value.default === undefined) {
@@ -76,7 +76,7 @@ export function getDefaultValue(value: VarsConfigValue): ?string {
     return null;
   }
   if (Array.isArray(value)) {
-    throw new Error('Array is not supported in stylex.defineVars');
+    throw new Error('Array is not supported in defineVars');
   }
   if (typeof value === 'object') {
     if (value.default === undefined) {
@@ -84,5 +84,5 @@ export function getDefaultValue(value: VarsConfigValue): ?string {
     }
     return getDefaultValue(value.default);
   }
-  throw new Error('Invalid value in stylex.defineVars');
+  throw new Error('Invalid value in defineVars');
 }

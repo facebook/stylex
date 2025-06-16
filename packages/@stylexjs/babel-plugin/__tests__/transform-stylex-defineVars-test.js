@@ -37,6 +37,39 @@ function transform(source, opts = {}) {
 
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.defineVars()', () => {
+    test('tokens as null', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({
+          color: null,
+          nextColor: {
+            default: null
+          },
+          otherColor: {
+            default: null,
+            '@media (prefers-color-scheme: dark)': null,
+            '@media print': null,
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const vars = {
+          color: "var(--xwx8imx)",
+          nextColor: "var(--xk6xtqk)",
+          otherColor: "var(--xaaua2w)",
+          __themeName__: "xop34xu"
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [],
+        }
+      `);
+    });
+
     test('tokens object', () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';

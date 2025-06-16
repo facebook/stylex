@@ -175,14 +175,17 @@ function evaluateThemeRef(
 
     const { debug, enableDebugClassNames } = state.traversalState.options;
 
-    const varSafeKey = (
-      key[0] >= '0' && key[0] <= '9' ? `_${key}` : key
-    ).replace(/[^a-zA-Z0-9]/g, '_');
+    const varSafeKey =
+      key === '__themeName__'
+        ? ''
+        : (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
+            /[^a-zA-Z0-9]/g,
+            '_',
+          ) + '-';
 
     const varName =
       debug && enableDebugClassNames
         ? varSafeKey +
-          '-' +
           state.traversalState.options.classNamePrefix +
           utils.hash(strToHash)
         : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
