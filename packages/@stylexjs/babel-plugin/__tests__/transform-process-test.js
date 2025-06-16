@@ -148,8 +148,8 @@ describe('@stylexjs/babel-plugin', () => {
         };"
       `);
       expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}"
+        ":root, .stylexvars{--blue-xpqh4lw:blue;}
+        :root, .stylexvars{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}"
       `);
     });
 
@@ -175,11 +175,13 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const themeColor = {
           $$css: true,
-          xsg933n: "x6xqkwy xsg933n"
+          xsg933n: "x6xqkwy",
+          __rootVars__: "stylexvars"
         };
         export const themeSpacing = {
           $$css: true,
-          xbiwvf9: "x57uvma xbiwvf9"
+          xbiwvf9: "x57uvma",
+          __rootVars__: "stylexvars"
         };
         export const styles = {
           root: {
@@ -202,8 +204,8 @@ describe('@stylexjs/babel-plugin', () => {
         "@property --color { syntax: "*"; inherits: false;}
         @keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         @keyframes xi07kvp-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        :root, .stylexvars{--blue-xpqh4lw:blue;}
+        :root, .stylexvars{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy, .x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma, .x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .padding-xss17vw:not(#\\#){padding:var(--large-x1ec7iuc)}
@@ -244,11 +246,13 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const themeColor = {
           $$css: true,
-          xsg933n: "x6xqkwy xsg933n"
+          xsg933n: "x6xqkwy",
+          __rootVars__: "stylexvars"
         };
         export const themeSpacing = {
           $$css: true,
-          xbiwvf9: "x57uvma xbiwvf9"
+          xbiwvf9: "x57uvma",
+          __rootVars__: "stylexvars"
         };
         export const styles = {
           root: {
@@ -274,8 +278,8 @@ describe('@stylexjs/babel-plugin', () => {
         @property --color { syntax: "*"; inherits: false;}
         @keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         @keyframes xi07kvp-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        :root, .stylexvars{--blue-xpqh4lw:blue;}
+        :root, .stylexvars{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy, .x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma, .x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         @layer priority2{

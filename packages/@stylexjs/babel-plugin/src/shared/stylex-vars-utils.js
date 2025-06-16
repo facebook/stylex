@@ -19,6 +19,8 @@ export type VarsConfig = $ReadOnly<{
 
 const SPLIT_TOKEN = '__$$__';
 
+export const ROOT_VARS_CLASSNAME = 'stylexvars';
+
 export function collectVarsByAtRule(
   key: string,
   { nameHash, value }: { +nameHash: string, +value: VarsConfigValue },
@@ -37,7 +39,7 @@ export function collectVarsByAtRule(
     return;
   }
   if (Array.isArray(value)) {
-    throw new Error('Array is not supported in stylex.defineVars');
+    throw new Error('Array is not supported in defineVars');
   }
   if (typeof value === 'object') {
     if (value.default === undefined) {
@@ -76,7 +78,7 @@ export function getDefaultValue(value: VarsConfigValue): ?string {
     return null;
   }
   if (Array.isArray(value)) {
-    throw new Error('Array is not supported in stylex.defineVars');
+    throw new Error('Array is not supported in defineVars');
   }
   if (typeof value === 'object') {
     if (value.default === undefined) {
@@ -84,5 +86,5 @@ export function getDefaultValue(value: VarsConfigValue): ?string {
     }
     return getDefaultValue(value.default);
   }
-  throw new Error('Invalid value in stylex.defineVars');
+  throw new Error('Invalid value in defineVars');
 }

@@ -252,7 +252,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         stylex.props(styles.root, theme);"
       `);
@@ -387,7 +388,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         foo.props(styles.root, theme);"
       `);
@@ -437,7 +439,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         props(styles.root, theme);"
       `);
@@ -496,7 +499,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         _props(styles.root, theme);"
       `);
@@ -537,7 +541,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         stylex.props(styles.root, theme);"
       `);
@@ -591,7 +596,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         css.props(styles.root, theme);"
       `);
@@ -632,7 +638,8 @@ describe('@stylexjs/babel-plugin', () => {
         };
         const theme = {
           $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars"
         };
         stylex.props(styles.root, theme);"
       `);

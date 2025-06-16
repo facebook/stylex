@@ -11,6 +11,7 @@ import type { InjectableStyle, StyleXOptions } from './common-types';
 
 import createHash from './hash';
 import {
+  ROOT_VARS_CLASSNAME,
   collectVarsByAtRule,
   priorityForAtRule,
   wrapWithAtRules,
@@ -28,7 +29,7 @@ export default function styleXCreateTheme(
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__themeName__ !== 'string') {
     throw new Error(
-      'Can only override variables theme created with stylex.defineVars().',
+      'Can only override variables theme created with defineVars().',
     );
   }
 
@@ -82,11 +83,15 @@ export default function styleXCreateTheme(
     }
   }
 
-  const themeClass = `${overrideClassName} ${themeVars.__themeName__}`;
+  const themeClass = `${overrideClassName}`;
 
   return [
     // $FlowFixMe[invalid-computed-prop]
-    { $$css: true, [themeVars.__themeName__]: themeClass },
+    {
+      $$css: true,
+      [themeVars.__themeName__]: themeClass,
+      __rootVars__: ROOT_VARS_CLASSNAME,
+    },
     stylesToInject,
   ];
 }
