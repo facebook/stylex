@@ -15,23 +15,11 @@ const fadeAnimation = "xgnty7z-B";
 const styles = {
   foo: {
     kKVMdj: "xeuoslp",
+    kWkggS: "x1gykpug",
     k1xSpc: "x78zum5",
-    keTefX: "x1hm9lzh",
-    koQZXg: null,
-    km5ZXQ: null,
-    keoZOQ: "xlrshdv",
     kZKoxP: "x1egiwwb",
-    kEyE8R: "x1oz5o6v",
-    kwRxUf: null,
-    kmvik3: null,
-    kGzVvX: null,
-    kBPHsk: null,
-    kIpHjZ: null,
-    kwsBex: null,
-    kKEIo6: null,
-    kdqC5e: null,
-    kIjLOv: null,
-    kA1KOB: null,
+    keoZOQ: "xlrshdv",
+    keTefX: "x1hm9lzh",
     $$css: true
   }
 };
