@@ -251,8 +251,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         stylex.props(styles.root, theme);"
       `);
@@ -386,8 +387,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         foo.props(styles.root, theme);"
       `);
@@ -436,8 +438,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         props(styles.root, theme);"
       `);
@@ -495,8 +498,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         _props(styles.root, theme);"
       `);
@@ -536,8 +540,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         stylex.props(styles.root, theme);"
       `);
@@ -590,8 +595,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         css.props(styles.root, theme);"
       `);
@@ -631,8 +637,9 @@ describe('@stylexjs/babel-plugin', () => {
           }
         };
         const theme = {
-          $$css: true,
-          xop34xu: "xfnndu4 xop34xu"
+          xop34xu: "xfnndu4",
+          __rootVars__: "stylexvars",
+          $$css: true
         };
         stylex.props(styles.root, theme);"
       `);

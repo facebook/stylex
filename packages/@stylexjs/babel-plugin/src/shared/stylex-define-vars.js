@@ -15,6 +15,7 @@ import createHash from './hash';
 import { objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
 import {
+  ROOT_VARS_CLASSNAME,
   collectVarsByAtRule,
   getDefaultValue,
   priorityForAtRule,
@@ -115,7 +116,7 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    const selector = `:root, .${themeNameHash}`;
+    const selector = `:root, .${ROOT_VARS_CLASSNAME}`;
 
     let ltr = `${selector}{${value.join('')}}`;
     if (atRule !== 'default') {
