@@ -44,14 +44,16 @@ function transform(source, opts = {}) {
  * StyleX exports to make sure they are transformed as expected.
  */
 
-function createFixture(fixture, { varsFilename, varsLiterals } = {}) {
-  const createKey = (key) => (varsLiterals ? `'--${key}'` : key);
+function transformWithFixture(fixture, fixtureOptions, pluginOptions) {
+  const { varsFilename, varsLiterals } = fixtureOptions || {};
+
   // Generate defineVars output first.
   // This is inlined into the fixture so that createTheme works.
-  const options = {
+  const createKey = (key) => (varsLiterals ? `'--${key}'` : key);
+  const fixtureTransformOptions = {
     filename: varsFilename || '/stylex/packages/vars.stylex.js',
   };
-  const defineVarsOutput = transform(
+  const { code: _code, metadata: _metadata } = transform(
     `
     import * as stylex from '@stylexjs/stylex';
     export const vars = stylex.defineVars({
@@ -67,13 +69,21 @@ function createFixture(fixture, { varsFilename, varsLiterals } = {}) {
       ${createKey('radius')}: 10
     });
   `,
-    options,
-  ).code;
+    fixtureTransformOptions,
+  );
 
-  return `
-    ${defineVarsOutput}
+  // Generate the final transform
+  const { code, metadata } = transform(
+    `
+    ${_code}
     ${fixture}
-  `;
+  `,
+    pluginOptions,
+  );
+
+  _metadata.stylex.push(...metadata.stylex);
+
+  return { code, metadata: _metadata };
 }
 
 const themeObject = `{
@@ -92,10 +102,9 @@ const themeObject = `{
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.createTheme()', () => {
     test('theme object', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
         export const theme = stylex.createTheme(vars, ${themeObject});
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -113,6 +122,30 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata).toMatchInlineSnapshot(`
         {
           "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
             [
               "x4aw18j",
               {
@@ -143,13 +176,16 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('theme object (haste)', () => {
-      const options = {
+      const pluginOptions = {
         unstable_moduleResolution: { type: 'haste' },
       };
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(
+        `
         export const theme = stylex.createTheme(vars, ${themeObject});
-      `);
-      const { code, metadata } = transform(fixture, options);
+      `,
+        null,
+        pluginOptions,
+      );
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -167,6 +203,30 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata).toMatchInlineSnapshot(`
         {
           "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
             [
               "x4aw18j",
               {
@@ -197,50 +257,76 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('theme object deep in file tree', () => {
-      const options = {
+      const fixtureOptions = {
         varsFilename: '/stylex/packages/src/css/vars.stylex.js',
       };
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(
+        `
         export const theme = stylex.createTheme(vars, ${themeObject});
-      `);
-      const { code, metadata } = transform(fixture, options);
+      `,
+        fixtureOptions,
+      );
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
         export const vars = {
-          color: "var(--xwx8imx)",
-          otherColor: "var(--xaaua2w)",
-          radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          color: "var(--xt4ziaz)",
+          otherColor: "var(--x1e3it8h)",
+          radius: "var(--x1onrunl)",
+          __themeName__: "x1xohuxq"
         };
         export const theme = {
           $$css: true,
-          xop34xu: "x4aw18j xop34xu"
+          x1xohuxq: "xv0nx9o x1xohuxq"
         };"
       `);
       expect(metadata).toMatchInlineSnapshot(`
         {
           "stylex": [
             [
-              "x4aw18j",
+              "x1xohuxq",
               {
-                "ltr": ".x4aw18j, .x4aw18j:root{--xwx8imx:green;--xaaua2w:antiquewhite;--xbbre8:6px;}",
+                "ltr": ":root, .x1xohuxq{--xt4ziaz:blue;--x1e3it8h:grey;--x1onrunl:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "x1xohuxq-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .x1xohuxq{--xt4ziaz:lightblue;--x1e3it8h:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "x1xohuxq-bdddrq",
+              {
+                "ltr": "@media print{:root, .x1xohuxq{--xt4ziaz:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xv0nx9o",
+              {
+                "ltr": ".xv0nx9o, .xv0nx9o:root{--xt4ziaz:green;--x1e3it8h:antiquewhite;--x1onrunl:6px;}",
                 "rtl": null,
               },
               0.5,
             ],
             [
-              "x4aw18j-1lveb7",
+              "xv0nx9o-1lveb7",
               {
-                "ltr": "@media (prefers-color-scheme: dark){.x4aw18j, .x4aw18j:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
+                "ltr": "@media (prefers-color-scheme: dark){.xv0nx9o, .xv0nx9o:root{--xt4ziaz:lightgreen;--x1e3it8h:floralwhite;}}",
                 "rtl": null,
               },
               0.6,
             ],
             [
-              "x4aw18j-bdddrq",
+              "xv0nx9o-bdddrq",
               {
-                "ltr": "@media print{.x4aw18j, .x4aw18j:root{--xwx8imx:transparent;}}",
+                "ltr": "@media print{.xv0nx9o, .xv0nx9o:root{--xt4ziaz:transparent;}}",
                 "rtl": null,
               },
               0.6,
@@ -251,7 +337,9 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('literal tokens theme object', () => {
-      const fixture = createFixture(
+      const fixtureOptions = { varsLiterals: true };
+
+      const { code, metadata } = transformWithFixture(
         `
         export const theme = stylex.createTheme(vars, {
           '--color': 'green',
@@ -259,10 +347,8 @@ describe('@stylexjs/babel-plugin', () => {
           '--radius': 6
         });
       `,
-        { varsLiterals: true },
+        fixtureOptions,
       );
-
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -281,6 +367,30 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--color:blue;--otherColor:grey;--radius:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--color:lightblue;--otherColor:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--color:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
               "x1l2ihi1",
               {
                 "ltr": ".x1l2ihi1, .x1l2ihi1:root{--color:green;--otherColor:purple;--radius:6;}",
@@ -294,11 +404,10 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('local variable theme object', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
         const themeObj = ${themeObject};
         export const theme = stylex.createTheme(vars, themeObj);
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -329,6 +438,30 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
               "x4aw18j",
               {
                 "ltr": ".x4aw18j, .x4aw18j:root{--xwx8imx:green;--xaaua2w:antiquewhite;--xbbre8:6px;}",
@@ -358,13 +491,12 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('local variables used in theme objects', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
         const RADIUS = 10;
         export const theme = stylex.createTheme(vars, {
           radius: RADIUS
         });
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -384,6 +516,30 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
               "x1s6ff5p",
               {
                 "ltr": ".x1s6ff5p, .x1s6ff5p:root{--xbbre8:10;}",
@@ -397,13 +553,12 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('template literals used in theme objects', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
         const name = 'light';
         export const theme = stylex.createTheme(vars, {
           color: \`\${name}green\`
         });
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -423,6 +578,30 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
               "xp8mj21",
               {
                 "ltr": ".xp8mj21, .xp8mj21:root{--xwx8imx:lightgreen;}",
@@ -436,13 +615,12 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('expressions used in theme objects', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
         const RADIUS = 10;
         export const theme = stylex.createTheme(vars, {
           radius: RADIUS * 2
         });
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -462,6 +640,30 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
               "x1et03wi",
               {
                 "ltr": ".x1et03wi, .x1et03wi:root{--xbbre8:20;}",
@@ -475,7 +677,7 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('stylex.types used in theme object', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
        const RADIUS = 10;
         export const theme = stylex.createTheme(vars, {
           color: stylex.types.color({
@@ -490,7 +692,6 @@ describe('@stylexjs/babel-plugin', () => {
           radius: stylex.types.length({ default: RADIUS * 2 })
         });
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -509,6 +710,30 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata).toMatchInlineSnapshot(`
         {
           "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
             [
               "x5gq8ml",
               {
@@ -539,14 +764,13 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('multiple theme objects (same vars)', () => {
-      const fixture = createFixture(`
+      const { code, metadata } = transformWithFixture(`
         export const theme = stylex.createTheme(vars, ${themeObject});
         export const otherTheme = stylex.createTheme(vars, {
           color: 'skyblue',
           radius: '8px',
         });
       `);
-      const { code, metadata } = transform(fixture);
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -568,6 +792,30 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata).toMatchInlineSnapshot(`
         {
           "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
             [
               "x4aw18j",
               {
@@ -606,29 +854,163 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('multiple theme objects (different vars)', () => {
-      const fixture1 = createFixture(`
+      const { code: code1, metadata: metadata1 } = transformWithFixture(`
         export const theme = stylex.createTheme(vars, ${themeObject});
       `);
-      const fixture2 = createFixture(
+      const { code: code2, metadata: metadata2 } = transformWithFixture(
         `
         export const theme = stylex.createTheme(vars, ${themeObject});
       `,
         { varsFilename: '/stylex/packages/otherVars.stylex.js' },
       );
 
-      const { code: code1, metadata: metadata1 } = transform(fixture1);
-      const { code: code2, metadata: metadata2 } = transform(fixture2);
-
       expect(code1).not.toEqual(code2);
       expect(metadata1).not.toEqual(metadata2);
+
+      expect(code1).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const vars = {
+          color: "var(--xwx8imx)",
+          otherColor: "var(--xaaua2w)",
+          radius: "var(--xbbre8)",
+          __themeName__: "xop34xu"
+        };
+        export const theme = {
+          $$css: true,
+          xop34xu: "x4aw18j xop34xu"
+        };"
+      `);
+
+      expect(code2).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const vars = {
+          color: "var(--x103gslp)",
+          otherColor: "var(--x1e7put6)",
+          radius: "var(--xm3n3tg)",
+          __themeName__: "x1ngxneg"
+        };
+        export const theme = {
+          $$css: true,
+          x1ngxneg: "xgl5cw9 x1ngxneg"
+        };"
+      `);
+
+      expect(metadata1).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "x4aw18j",
+              {
+                "ltr": ".x4aw18j, .x4aw18j:root{--xwx8imx:green;--xaaua2w:antiquewhite;--xbbre8:6px;}",
+                "rtl": null,
+              },
+              0.5,
+            ],
+            [
+              "x4aw18j-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){.x4aw18j, .x4aw18j:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
+                "rtl": null,
+              },
+              0.6,
+            ],
+            [
+              "x4aw18j-bdddrq",
+              {
+                "ltr": "@media print{.x4aw18j, .x4aw18j:root{--xwx8imx:transparent;}}",
+                "rtl": null,
+              },
+              0.6,
+            ],
+          ],
+        }
+      `);
+
+      expect(metadata2).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1ngxneg",
+              {
+                "ltr": ":root, .x1ngxneg{--x103gslp:blue;--x1e7put6:grey;--xm3n3tg:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "x1ngxneg-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .x1ngxneg{--x103gslp:lightblue;--x1e7put6:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "x1ngxneg-bdddrq",
+              {
+                "ltr": "@media print{:root, .x1ngxneg{--x103gslp:white;}}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xgl5cw9",
+              {
+                "ltr": ".xgl5cw9, .xgl5cw9:root{--x103gslp:green;--x1e7put6:antiquewhite;--xm3n3tg:6px;}",
+                "rtl": null,
+              },
+              0.5,
+            ],
+            [
+              "xgl5cw9-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){.xgl5cw9, .xgl5cw9:root{--x103gslp:lightgreen;--x1e7put6:floralwhite;}}",
+                "rtl": null,
+              },
+              0.6,
+            ],
+            [
+              "xgl5cw9-bdddrq",
+              {
+                "ltr": "@media print{.xgl5cw9, .xgl5cw9:root{--x103gslp:transparent;}}",
+                "rtl": null,
+              },
+              0.6,
+            ],
+          ],
+        }
+      `);
     });
 
     test('themes are indifferent to order of keys', () => {
-      const fixture1 = createFixture(`
+      const { code: code1, metadata: metadata1 } = transformWithFixture(`
         export const theme = stylex.createTheme(vars, ${themeObject});
       `);
-
-      const fixture2 = createFixture(`
+      const { code: code2, metadata: metadata2 } = transformWithFixture(`
         export const theme = stylex.createTheme(vars, {
           radius: '6px',
           otherColor: {
@@ -643,9 +1025,6 @@ describe('@stylexjs/babel-plugin', () => {
         });
       `);
 
-      const { code: code1, metadata: metadata1 } = transform(fixture1);
-      const { code: code2, metadata: metadata2 } = transform(fixture2);
-
       expect(code1).toEqual(code2);
       expect(metadata1).toEqual(metadata2);
     });
@@ -653,16 +1032,19 @@ describe('@stylexjs/babel-plugin', () => {
     // TODO: Add debug data to compiled themes
     describe('options `debug:true`', () => {
       test('adds debug data', () => {
-        const options = {
+        const pluginOptions = {
           debug: true,
           filename: '/html/js/components/Foo.react.js',
         };
-        const fixture = createFixture(`
+        const { code, metadata } = transformWithFixture(
+          `
           export const theme = stylex.createTheme(vars, {
             color: 'orange'
           });
-        `);
-        const { code, metadata } = transform(fixture, options);
+        `,
+          null,
+          pluginOptions,
+        );
 
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
@@ -680,6 +1062,30 @@ describe('@stylexjs/babel-plugin', () => {
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
+              [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-1lveb7",
+                {
+                  "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-bdddrq",
+                {
+                  "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
               [
                 "xowvtgn",
                 {
@@ -694,16 +1100,19 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       test('adds debug data for npm packages', () => {
-        const options = {
+        const pluginOptions = {
           debug: true,
           filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
         };
-        const fixture = createFixture(`
+        const { code, metadata } = transformWithFixture(
+          `
           export const theme = stylex.createTheme(vars, {
             color: 'orange'
           });
-        `);
-        const { code, metadata } = transform(fixture, options);
+        `,
+          null,
+          pluginOptions,
+        );
 
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
@@ -721,6 +1130,30 @@ describe('@stylexjs/babel-plugin', () => {
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
+              [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-1lveb7",
+                {
+                  "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-bdddrq",
+                {
+                  "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
               [
                 "xowvtgn",
                 {
@@ -735,17 +1168,20 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       test('adds debug data (haste)', () => {
-        const options = {
+        const pluginOptions = {
           debug: true,
           filename: '/html/js/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
-        const fixture = createFixture(`
+        const { code, metadata } = transformWithFixture(
+          `
           export const theme = stylex.createTheme(vars, {
             color: 'orange'
           });
-        `);
-        const { code, metadata } = transform(fixture, options);
+        `,
+          null,
+          pluginOptions,
+        );
 
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
@@ -764,6 +1200,30 @@ describe('@stylexjs/babel-plugin', () => {
           {
             "stylex": [
               [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-1lveb7",
+                {
+                  "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-bdddrq",
+                {
+                  "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
                 "xowvtgn",
                 {
                   "ltr": ".xowvtgn, .xowvtgn:root{--xwx8imx:orange;}",
@@ -777,17 +1237,20 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       test('adds debug data for npm packages (haste)', () => {
-        const options = {
+        const pluginOptions = {
           debug: true,
           filename: '/node_modules/npm-package/dist/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
-        const fixture = createFixture(`
+        const { code, metadata } = transformWithFixture(
+          `
           export const theme = stylex.createTheme(vars, {
             color: 'orange'
           });
-        `);
-        const { code, metadata } = transform(fixture, options);
+        `,
+          null,
+          pluginOptions,
+        );
 
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
@@ -805,6 +1268,30 @@ describe('@stylexjs/babel-plugin', () => {
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
+              [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-1lveb7",
+                {
+                  "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-bdddrq",
+                {
+                  "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
               [
                 "xowvtgn",
                 {
@@ -821,16 +1308,19 @@ describe('@stylexjs/babel-plugin', () => {
 
     describe('options `dev:true`', () => {
       test('adds dev data', () => {
-        const options = {
+        const pluginOptions = {
           dev: true,
           filename: '/html/js/components/Foo.react.js',
         };
-        const fixture = createFixture(`
+        const { code, metadata } = transformWithFixture(
+          `
           export const theme = stylex.createTheme(vars, {
             color: 'orange'
           });
-        `);
-        const { code, metadata } = transform(fixture, options);
+        `,
+          null,
+          pluginOptions,
+        );
 
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
@@ -850,6 +1340,30 @@ describe('@stylexjs/babel-plugin', () => {
           {
             "stylex": [
               [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-1lveb7",
+                {
+                  "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-bdddrq",
+                {
+                  "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
                 "xowvtgn",
                 {
                   "ltr": ".xowvtgn, .xowvtgn:root{--xwx8imx:orange;}",
@@ -865,16 +1379,19 @@ describe('@stylexjs/babel-plugin', () => {
 
     describe('options `runtimeInjection:true`', () => {
       test('adds style injection', () => {
-        const options = {
+        const pluginOptions = {
           filename: '/html/js/components/Foo.react.js',
           runtimeInjection: true,
         };
-        const fixture = createFixture(`
+        const { code, metadata } = transformWithFixture(
+          `
           export const theme = stylex.createTheme(vars, {
             color: 'orange'
           });
-        `);
-        const { code, metadata } = transform(fixture, options);
+        `,
+          null,
+          pluginOptions,
+        );
 
         expect(code).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -895,6 +1412,30 @@ describe('@stylexjs/babel-plugin', () => {
         expect(metadata).toMatchInlineSnapshot(`
           {
             "stylex": [
+              [
+                "xop34xu",
+                {
+                  "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-1lveb7",
+                {
+                  "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
+              [
+                "xop34xu-bdddrq",
+                {
+                  "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                  "rtl": null,
+                },
+                0.1,
+              ],
               [
                 "xowvtgn",
                 {
