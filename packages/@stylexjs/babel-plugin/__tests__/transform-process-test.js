@@ -9,29 +9,21 @@
 
 jest.autoMockOff();
 
-import path from 'path';
 import { transformSync } from '@babel/core';
 import stylexPlugin from '../src/index';
 
 function transform(source, opts = {}) {
-  const fixturesDir = path.join(__dirname, '__fixtures__');
-
   const pluginOpts = {
-    ...opts,
+    debug: true,
+    styleResolution: 'property-specificity',
     unstable_moduleResolution: {
-      rootDir: fixturesDir,
+      rootDir: '/src/app/',
       type: 'commonJS',
     },
+    ...opts,
   };
 
-  const main = transformSync(source, {
-    filename: path.join(fixturesDir, 'main.js'),
-    parserOpts: { sourceType: 'module' },
-    babelrc: false,
-    plugins: [[stylexPlugin, pluginOpts]],
-  });
-
-  const consts = transformSync(
+  const tokens = transformSync(
     `
     import * as stylex from '@stylexjs/stylex';
     export const constants = stylex.defineConsts({
@@ -45,16 +37,48 @@ function transform(source, opts = {}) {
     });
     `,
     {
-      filename: path.join(fixturesDir, 'constants.stylex.js'),
-      parserOpts: { sourceType: 'module' },
+      filename: '/src/app/tokens.stylex.js',
+      parserOpts: { flow: 'all' },
+      babelrc: false,
+      plugins: [[stylexPlugin, pluginOpts]],
+    },
+  );
+
+  const otherTokens = transformSync(
+    `
+    import * as stylex from '@stylexjs/stylex';
+    export const spacing = stylex.defineVars({
+      small: '2px',
+      medium: '4px',
+      large: '8px'
+    });
+    `,
+    {
+      filename: '/src/app/otherTokens.stylex.js',
+      parserOpts: { flow: 'all' },
+      babelrc: false,
+      plugins: [[stylexPlugin, pluginOpts]],
+    },
+  );
+
+  const main = transformSync(
+    `
+  ${tokens.code}
+  ${otherTokens.code.replace("import * as stylex from '@stylexjs/stylex';", '')}
+  ${source.replace("import * as stylex from '@stylexjs/stylex';", '')}
+  `,
+    {
+      filename: '/src/app/main.js',
+      parserOpts: { flow: 'all' },
       babelrc: false,
       plugins: [[stylexPlugin, pluginOpts]],
     },
   );
 
   const metadata = [
+    ...(tokens.metadata.stylex || []),
+    ...(otherTokens.metadata.stylex || []),
     ...(main.metadata.stylex || []),
-    ...(consts.metadata.stylex || []),
   ];
 
   return { code: main.code, metadata };
@@ -62,7 +86,14 @@ function transform(source, opts = {}) {
 
 const fixture = `
 import * as stylex from '@stylexjs/stylex';
-import { constants, vars } from './constants.stylex';
+export const themeColor = stylex.createTheme(vars, {
+  blue: 'lightblue'
+});
+export const themeSpacing = stylex.createTheme(spacing, {
+  small: '5px',
+  medium: '10px',
+  large: '20px'
+});
 export const styles = stylex.create({
   root: {
     animationName: stylex.keyframes({
@@ -86,7 +117,8 @@ export const styles = stylex.create({
     textShadow: {
       default: '1px 2px 3px 4px red',
       '@media (min-width:320px)': '10px 20px 30px 40px green'
-    }
+    },
+    padding: spacing.large
   },
   dynamic: (color) => ({ color })
 });
@@ -95,41 +127,72 @@ export const styles = stylex.create({
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylexPlugin.processStylexRules', () => {
     test('no rules', () => {
-      const { code, metadata } = transform(`
-        import * as stylex from '@stylexjs/stylex';
+      const { code, metadata } = transform('');
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const constants = {
+          YELLOW: "yellow",
+          ORANGE: "var(--orange)",
+          mediaBig: "@media (max-width: 1000px)",
+          mediaSmall: "@media (max-width: 500px)"
+        };
+        export const vars = {
+          blue: "var(--blue-xpqh4lw)",
+          __themeName__: "xsg933n"
+        };
+        export const spacing = {
+          small: "var(--small-x19twipt)",
+          medium: "var(--medium-xypjos2)",
+          large: "var(--large-x1ec7iuc)",
+          __themeName__: "xbiwvf9"
+        };"
       `);
-      expect(code).toMatchInlineSnapshot(
-        '"import * as stylex from \'@stylexjs/stylex\';"',
-      );
-      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(
-        '":root, .x1nqdfg0{--x1i1e39s:blue;}"',
-      );
+      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}"
+      `);
     });
 
     test('all rules (useLayers:false)', () => {
       const { code, metadata } = transform(fixture);
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
-        import { constants, vars } from './constants.stylex';
+        export const constants = {
+          YELLOW: "yellow",
+          ORANGE: "var(--orange)",
+          mediaBig: "@media (max-width: 1000px)",
+          mediaSmall: "@media (max-width: 500px)"
+        };
+        export const vars = {
+          blue: "var(--blue-xpqh4lw)",
+          __themeName__: "xsg933n"
+        };
+        export const spacing = {
+          small: "var(--small-x19twipt)",
+          medium: "var(--medium-xypjos2)",
+          large: "var(--large-x1ec7iuc)",
+          __themeName__: "xbiwvf9"
+        };
+        export const themeColor = {
+          $$css: true,
+          xsg933n: "x6xqkwy xsg933n"
+        };
+        export const themeSpacing = {
+          $$css: true,
+          xbiwvf9: "x57uvma xbiwvf9"
+        };
         export const styles = {
           root: {
-            kKVMdj: "xdmqw5o",
-            kWkggS: "xrkmrrc",
-            kVAM5u: "x1bg2uv5 xwguixi x5i7zo",
-            kzOINU: null,
-            kGJrpR: null,
-            kaZRDh: null,
-            kBCPoo: null,
-            k26BEO: null,
-            k5QoK5: null,
-            kLZC3w: null,
-            kL6WhQ: null,
-            kKMj4B: "x1skrh0i x1cmij7u",
-            $$css: true
+            "animationName-kKVMdj": "animationName-xckgs0v",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
+            "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-x1cmij7u",
+            "padding-kmVPX3": "padding-xss17vw",
+            $$css: "app/main.js:31"
           },
           dynamic: color => [{
-            kMwMTN: "xfx01vb",
-            $$css: true
+            "color-kMwMTN": "color-xfx01vb",
+            $$css: "app/main.js:56"
           }, {
             "--color": color != null ? color : undefined
           }]
@@ -137,19 +200,23 @@ describe('@stylexjs/babel-plugin', () => {
       `);
       expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
         "@property --color { syntax: "*"; inherits: false;}
-        @keyframes x4ssjuf-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
-        @keyframes x4ssjuf-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
-        :root, .x1nqdfg0{--x1i1e39s:blue;}
-        .x1bg2uv5:not(#\\#){border-color:green}
-        .xdmqw5o:not(#\\#):not(#\\#){animation-name:x4ssjuf-B}
-        .xrkmrrc:not(#\\#):not(#\\#){background-color:red}
-        .xfx01vb:not(#\\#):not(#\\#){color:var(--color)}
-        html:not([dir='rtl']) .x1skrh0i:not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
-        html[dir='rtl'] .x1skrh0i:not(#\\#):not(#\\#){text-shadow:-1px 2px 3px 4px red}
-        @media (min-width:320px){html:not([dir='rtl']) .x1cmij7u.x1cmij7u:not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
-        @media (min-width:320px){html[dir='rtl'] .x1cmij7u.x1cmij7u:not(#\\#):not(#\\#){text-shadow:-10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.xwguixi.xwguixi:not(#\\#):not(#\\#):not(#\\#){border-color:var(--x1i1e39s)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.x5i7zo.x5i7zo.x5i7zo:not(#\\#):not(#\\#):not(#\\#):not(#\\#){border-color:yellow}}}"
+        @keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
+        @keyframes xi07kvp-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .x6xqkwy, .x6xqkwy:root{--blue-xpqh4lw:lightblue;}
+        .x57uvma, .x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
+        .padding-xss17vw:not(#\\#){padding:var(--large-x1ec7iuc)}
+        .borderColor-x1bg2uv5:not(#\\#):not(#\\#){border-color:green}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
+        .animationName-xckgs0v:not(#\\#):not(#\\#):not(#\\#){animation-name:xi07kvp-B}
+        .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
+        .color-xfx01vb:not(#\\#):not(#\\#):not(#\\#){color:var(--color)}
+        html:not([dir='rtl']) .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
+        html[dir='rtl'] .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:-1px 2px 3px 4px red}
+        @media (min-width:320px){html:not([dir='rtl']) .textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
+        @media (min-width:320px){html[dir='rtl'] .textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:-10px 20px 30px 40px green}}"
       `);
     });
 
@@ -159,26 +226,42 @@ describe('@stylexjs/babel-plugin', () => {
       });
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
-        import { constants, vars } from './constants.stylex';
+        export const constants = {
+          YELLOW: "yellow",
+          ORANGE: "var(--orange)",
+          mediaBig: "@media (max-width: 1000px)",
+          mediaSmall: "@media (max-width: 500px)"
+        };
+        export const vars = {
+          blue: "var(--blue-xpqh4lw)",
+          __themeName__: "xsg933n"
+        };
+        export const spacing = {
+          small: "var(--small-x19twipt)",
+          medium: "var(--medium-xypjos2)",
+          large: "var(--large-x1ec7iuc)",
+          __themeName__: "xbiwvf9"
+        };
+        export const themeColor = {
+          $$css: true,
+          xsg933n: "x6xqkwy xsg933n"
+        };
+        export const themeSpacing = {
+          $$css: true,
+          xbiwvf9: "x57uvma xbiwvf9"
+        };
         export const styles = {
           root: {
-            kKVMdj: "xdmqw5o",
-            kWkggS: "xrkmrrc",
-            kVAM5u: "x1bg2uv5 xwguixi x5i7zo",
-            kzOINU: null,
-            kGJrpR: null,
-            kaZRDh: null,
-            kBCPoo: null,
-            k26BEO: null,
-            k5QoK5: null,
-            kLZC3w: null,
-            kL6WhQ: null,
-            kKMj4B: "x1skrh0i x1cmij7u",
-            $$css: true
+            "animationName-kKVMdj": "animationName-xckgs0v",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
+            "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-x1cmij7u",
+            "padding-kmVPX3": "padding-xss17vw",
+            $$css: "app/main.js:31"
           },
           dynamic: color => [{
-            kMwMTN: "xfx01vb",
-            $$css: true
+            "color-kMwMTN": "color-xfx01vb",
+            $$css: "app/main.js:56"
           }, {
             "--color": color != null ? color : undefined
           }]
@@ -187,28 +270,30 @@ describe('@stylexjs/babel-plugin', () => {
       expect(stylexPlugin.processStylexRules(metadata, true))
         .toMatchInlineSnapshot(`
         "
-        @layer priority1, priority2, priority3, priority4, priority5;
+        @layer priority1, priority2, priority3, priority4;
         @property --color { syntax: "*"; inherits: false;}
-        @keyframes x4ssjuf-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
-        @keyframes x4ssjuf-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
-        :root, .x1nqdfg0{--x1i1e39s:blue;}
+        @keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
+        @keyframes xi07kvp-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .x6xqkwy, .x6xqkwy:root{--blue-xpqh4lw:lightblue;}
+        .x57uvma, .x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         @layer priority2{
-        .x1bg2uv5{border-color:green}
+        .padding-xss17vw{padding:var(--large-x1ec7iuc)}
         }
         @layer priority3{
-        .xdmqw5o{animation-name:x4ssjuf-B}
-        .xrkmrrc{background-color:red}
-        .xfx01vb{color:var(--color)}
-        html:not([dir='rtl']) .x1skrh0i{text-shadow:1px 2px 3px 4px red}
-        html[dir='rtl'] .x1skrh0i{text-shadow:-1px 2px 3px 4px red}
-        @media (min-width:320px){html:not([dir='rtl']) .x1cmij7u.x1cmij7u{text-shadow:10px 20px 30px 40px green}}
-        @media (min-width:320px){html[dir='rtl'] .x1cmij7u.x1cmij7u{text-shadow:-10px 20px 30px 40px green}}
+        .borderColor-x1bg2uv5{border-color:green}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
-        @media (max-width: 1000px){.xwguixi.xwguixi{border-color:var(--x1i1e39s)}}
-        }
-        @layer priority5{
-        @media (max-width: 500px){@media (max-width: 1000px){.x5i7zo.x5i7zo.x5i7zo{border-color:yellow}}}
+        .animationName-xckgs0v{animation-name:xi07kvp-B}
+        .backgroundColor-xrkmrrc{background-color:red}
+        .color-xfx01vb{color:var(--color)}
+        html:not([dir='rtl']) .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        html[dir='rtl'] .textShadow-x1skrh0i{text-shadow:-1px 2px 3px 4px red}
+        @media (min-width:320px){html:not([dir='rtl']) .textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}
+        @media (min-width:320px){html[dir='rtl'] .textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:-10px 20px 30px 40px green}}
         }"
       `);
     });
