@@ -529,7 +529,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('multiple variables objects', () => {
+    test('multiple variables objects (same file)', () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({
@@ -614,6 +614,66 @@ describe('@stylexjs/babel-plugin', () => {
               "x1pfrffu",
               {
                 "ltr": ":root, .x1pfrffu{--xnjepv0:var(--xwx8imx);}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('multiple variables objects (different files)', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({
+          color: 'red'
+        });
+      `);
+
+      const { code: code2, metadata: metadata2 } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const otherVars = stylex.defineVars({
+          otherColor: 'orange'
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const vars = {
+          color: "var(--xwx8imx)",
+          __themeName__: "xop34xu"
+        };"
+      `);
+      expect(code2).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const otherVars = {
+          otherColor: "var(--xnjepv0)",
+          __themeName__: "x1pfrffu"
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:red;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+          ],
+        }
+      `);
+      expect(metadata2).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1pfrffu",
+              {
+                "ltr": ":root, .x1pfrffu{--xnjepv0:orange;}",
                 "rtl": null,
               },
               0.1,
