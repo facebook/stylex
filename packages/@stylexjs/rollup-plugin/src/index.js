@@ -73,10 +73,10 @@ export default function stylexPlugin({
     buildStart() {
       stylexRules = {};
     },
-    generateBundle(this: PluginContext) {
+    async generateBundle(this: PluginContext) {
       const rules: Array<Rule> = Object.values(stylexRules).flat();
       if (rules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(
+        const collectedCSS = await stylexBabelPlugin.processStylexRules(
           rules,
           useCSSLayers,
         );

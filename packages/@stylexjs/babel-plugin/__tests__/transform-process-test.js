@@ -94,19 +94,19 @@ export const styles = stylex.create({
 
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylexPlugin.processStylexRules', () => {
-    test('no rules', () => {
+    test('no rules', async () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';
       `);
       expect(code).toMatchInlineSnapshot(
         '"import * as stylex from \'@stylexjs/stylex\';"',
       );
-      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(
-        '":root, .x1nqdfg0{--x1i1e39s:blue;}"',
-      );
+      expect(
+        await stylexPlugin.processStylexRules(metadata),
+      ).toMatchInlineSnapshot('":root, .x1nqdfg0{--x1i1e39s:blue;}"');
     });
 
-    test('all rules (useLayers:false)', () => {
+    test('all rules (useLayers:false)', async () => {
       const { code, metadata } = transform(fixture);
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -135,25 +135,25 @@ describe('@stylexjs/babel-plugin', () => {
           }]
         };"
       `);
-      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
+      expect(await stylexPlugin.processStylexRules(metadata))
+        .toMatchInlineSnapshot(`
         "@property --color { syntax: "*"; inherits: false;}
         @keyframes x4ssjuf-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
-        @keyframes x4ssjuf-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}
-        :root, .x1nqdfg0{--x1i1e39s:blue;}
+        @keyframes x4ssjuf-B{0%{box-shadow:-1px 2px 3px 4px red;color:yellow;}100%{box-shadow:-10px 20px 30px 40px green;color:var(--orange);}}:root, .x1nqdfg0{--x1i1e39s:blue;}
         .x1bg2uv5:not(#\\#){border-color:green}
         .xdmqw5o:not(#\\#):not(#\\#){animation-name:x4ssjuf-B}
         .xrkmrrc:not(#\\#):not(#\\#){background-color:red}
         .xfx01vb:not(#\\#):not(#\\#){color:var(--color)}
-        html:not([dir='rtl']) .x1skrh0i:not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
-        html[dir='rtl'] .x1skrh0i:not(#\\#):not(#\\#){text-shadow:-1px 2px 3px 4px red}
-        @media (min-width:320px){html:not([dir='rtl']) .x1cmij7u.x1cmij7u:not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
-        @media (min-width:320px){html[dir='rtl'] .x1cmij7u.x1cmij7u:not(#\\#):not(#\\#){text-shadow:-10px 20px 30px 40px green}}
+        html:not([dir='rtl']):not(#\\#):not(#\\#) .x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        html[dir='rtl']:not(#\\#):not(#\\#) .x1skrh0i{text-shadow:-1px 2px 3px 4px red}
+        @media (min-width:320px){html:not([dir='rtl']):not(#\\#):not(#\\#) .x1cmij7u.x1cmij7u{text-shadow:10px 20px 30px 40px green}}
+        @media (min-width:320px){html[dir='rtl']:not(#\\#):not(#\\#) .x1cmij7u.x1cmij7u{text-shadow:-10px 20px 30px 40px green}}
         @media (max-width: 1000px){.xwguixi.xwguixi:not(#\\#):not(#\\#):not(#\\#){border-color:var(--x1i1e39s)}}
         @media (max-width: 500px){@media (max-width: 1000px){.x5i7zo.x5i7zo.x5i7zo:not(#\\#):not(#\\#):not(#\\#):not(#\\#){border-color:yellow}}}"
       `);
     });
 
-    test('all rules (useLayers:true)', () => {
+    test('all rules (useLayers:true)', async () => {
       const { code, metadata } = transform(fixture, {
         useLayers: true,
       });
@@ -184,7 +184,7 @@ describe('@stylexjs/babel-plugin', () => {
           }]
         };"
       `);
-      expect(stylexPlugin.processStylexRules(metadata, true))
+      expect(await stylexPlugin.processStylexRules(metadata, true))
         .toMatchInlineSnapshot(`
         "
         @layer priority1, priority2, priority3, priority4, priority5;
