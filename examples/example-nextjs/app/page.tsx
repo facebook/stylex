@@ -15,8 +15,19 @@ import {
   spacing,
   text,
   scales,
+  colors,
+  fontSizes
 } from './globalTokens.stylex';
 import Counter from './Counter';
+
+const darkColors = stylex.createTheme(colors, {
+  red: 'darkred',
+});
+
+const biggerFonts = stylex.createTheme(fontSizes, {
+  big: '36px',
+});
+
 
 const HOMEPAGE = 'https://stylexjs.com';
 
@@ -29,9 +40,12 @@ export default function Home() {
           <code {...stylex.props(style.code)}>app/page.tsx</code>
         </p>
       </div>
-      <div {...stylex.props(style.hero)}>
+      <div {...stylex.props(darkColors, style.hero)}>
         <h1 {...stylex.props(style.h1)}>
-          Next.js App Dir<span {...stylex.props(style.emoji)}>♥️</span>️StyleX
+          This is dark red<span {...stylex.props(style.emoji)}>♥️</span>
+          <h1 {...stylex.props(biggerFonts, style.h1)}>
+          This is red, and larger<span {...stylex.props(style.emoji)}>♥️</span>️
+        </h1>
         </h1>
         <Counter />
       </div>
@@ -98,7 +112,8 @@ const style = stylex.create({
     gap: spacing.xl,
   },
   h1: {
-    fontSize: text.h1,
+    fontSize: fontSizes.big,
+    color: colors.red,
     lineHeight: 1,
     fontFamily: $.fontSans,
     fontWeight: 400,

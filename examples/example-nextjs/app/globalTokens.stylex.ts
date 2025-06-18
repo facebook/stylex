@@ -290,3 +290,15 @@ export const scales = stylex.defineVars({
   medium: 'scale(1)',
   large: 'scale(1.2)',
 });
+
+
+export const colors = stylex.defineVars({
+  red: 'red',
+  blue: 'blue',
+});
+
+
+export const fontSizes = stylex.defineVars({
+  small: '16px',
+  big: '24px',
+});
