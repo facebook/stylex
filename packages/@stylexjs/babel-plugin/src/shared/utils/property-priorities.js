@@ -658,20 +658,17 @@ export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{ [string]: number }> = {
   ':last-of-type': 55,
   ':only-child': 56,
   ':only-of-type': 57,
-
   ':nth-child': 60,
   ':nth-last-child': 61,
   ':nth-of-type': 62,
   ':nth-last-of-type': 63, // 'nth-last-of-type' is the same priority as 'nth-of-type
   ':empty': 70,
-
   ':link': 80,
   ':any-link': 81,
   ':local-link': 82,
   ':target-within': 83,
   ':target': 84,
   ':visited': 85,
-
   ':enabled': 91,
   ':disabled': 92,
   ':required': 93,
@@ -681,7 +678,6 @@ export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{ [string]: number }> = {
   ':placeholder-shown': 97,
   ':in-range': 98,
   ':out-of-range': 99,
-
   ':default': 100,
   ':checked': 101,
   ':indeterminate': 101,
@@ -689,9 +685,7 @@ export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{ [string]: number }> = {
   ':valid': 103,
   ':invalid': 104,
   ':user-invalid': 105,
-
   ':autofill': 110,
-
   ':picture-in-picture': 120,
   ':modal': 121,
   ':fullscreen': 122,
@@ -700,7 +694,6 @@ export const PSEUDO_CLASS_PRIORITIES: $ReadOnly<{ [string]: number }> = {
   ':current': 125,
   ':past': 126,
   ':future': 127,
-
   ':hover': 130,
   ':focusWithin': 140,
   ':focus': 150,
@@ -752,17 +745,17 @@ export default function getPriority(key: string): number {
     return PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
   }
 
-  if (longHandPhysical.has(key)) {
-    return 4000;
-  }
-  if (longHandLogical.has(key)) {
-    return 3000;
+  if (shorthandsOfShorthands.has(key)) {
+    return 1000;
   }
   if (shorthandsOfLonghands.has(key)) {
     return 2000;
   }
-  if (shorthandsOfShorthands.has(key)) {
-    return 1000;
+  if (longHandLogical.has(key)) {
+    return 3000;
+  }
+  if (longHandPhysical.has(key)) {
+    return 4000;
   }
   return 3000;
 }

@@ -893,7 +893,7 @@ revert`,
         {
           message: `animationName value must be one of:
 none
-a \`stylex.keyframes(...)\` function call, a reference to it or a many such valid
+a \`keyframes(...)\` function call, a reference to it or a many such valid
 null
 initial
 inherit
