@@ -30,7 +30,7 @@ for
 
 ### stylex.create()
 
-Styles are defined as a map of CSS rules using `stylex.create()`. In the example
+Styles are defined as a map of CSS rules using `create`. In the example
 below, there are 2 different CSS rules. The names "root" and "highlighted" are
 arbitrary names given to the rules.
 
@@ -75,7 +75,7 @@ code with a "compiled style" object.
 
 ### stylex.props()
 
-Applying style rules to specific elements is done using `stylex.props`. Each
+Applying style rules to specific elements is done using `props`. Each
 argument to this function must be a reference to a compiled style object, or an
 array of compiled style objects. The function merges styles from left to right.
 
@@ -83,9 +83,9 @@ array of compiled style objects. The function merges styles from left to right.
 <div {...stylex.props(styles.root, styles.highlighted)} />
 ```
 
-The `stylex.props` function returns React props as required to render an
+The `props` function returns React props as required to render an
 element. StyleX styles can still be passed to other components via props, but
-only the components rendering host platform elements will use `stylex.props()`.
+only the components rendering host platform elements will use `props()`.
 For example:
 
 ```tsx
@@ -125,7 +125,7 @@ style property values passed in via props.
 
 ### stylex.firstThatWorks()
 
-Defining fallback styles is done with `stylex.firstThatWorks()`. This is useful
+Defining fallback styles is done with `firstThatWorks`. This is useful
 for engines that may not support a specific style property.
 
 ```tsx

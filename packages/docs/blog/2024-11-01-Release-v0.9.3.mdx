@@ -5,9 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 slug: v0.9.3
 title: Release 0.9.3
-authors: 
+authors:
   - nmn
-tags: 
+tags:
   - release
 ---
 
@@ -16,14 +16,14 @@ StyleX v0.9.3 is now available with some big improvements and bug-fixes.
 ## Improvements to Theming APIs
 
 There are some big improvements to the predictability and reliability of our
-theming APIs — `stylex.defineVars` and `stylex.createTheme`.
+theming APIs — `defineVars` and `createTheme`.
 
 ### Breaking Change: Themes are now exclusive
 
-When you create a `VarGroup` with `stylex.defineVars`, you are able to theme
-any subset of the variables within using the `stylex.createTheme` API. These
-themes can then be applied like any other StyleX styles using `stylex.props`
-(or `stylex.attrs`). If you try to apply multiple themes for the same `VarGroup`,
+When you create a `VarGroup` with `defineVars`, you are able to theme
+any subset of the variables within using the `createTheme` API. These
+themes can then be applied like any other StyleX styles using `props`
+(or `attrs`). If you try to apply multiple themes for the same `VarGroup`,
 on the same element, *the last applied theme wins*, just as you might expect.
 
 However, previously, if you instead applied one theme on a parent element,
@@ -118,7 +118,7 @@ We will be making further improvements to minimize any such edge-cases.
 
 The StyleX Babel plugin now uses the `esm-resolve` package to resolve ESM imports.
 This should fix most situations where the compiler would fail to resolve `VarGroup`
-imports in result in the compilation of `stylex.create` to fail.
+imports in result in the compilation of `create` to fail.
 
 Thanks [hipstersmoothie](https://github.com/hipstersmoothie)!
 
@@ -131,7 +131,7 @@ expected, ran into certain browser bugs and resulted in styles that were unneces
 bloated.
 
 In v0.9.3, `null` values for Dynamic styles work exactly the same as using `null`
-as a static value within `stylex.create`. This means any previously applied value
+as a static value within `create`. This means any previously applied value
 for the given property will be removed and no className will be applied for that
 property.
 
@@ -141,7 +141,7 @@ property.
 The `@stylexjs/dev-runtime` package is a development-only package that lets you use
 a *much slower* version of StyleX that runs entirely at runtime. Previously, it worked
 by patching the main `@stylexjs/stylex` package at runtime. However, this did not always
-work reliably. 
+work reliably.
 
 **Breaking Change**: The `@stylexjs/dev-runtime` package now *returns* the StyleX API.
 

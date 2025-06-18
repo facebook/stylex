@@ -41,8 +41,8 @@ export const dracula = stylex.createTheme(colors, {
 
 ## Applying Themes
 
-A “theme” is a style object similar to the ones created with `stylex.create()`.
-They can be applied to an element using `stylex.props()` to override variables
+A “theme” is a style object similar to the ones created with `create()`.
+They can be applied to an element using `props()` to override variables
 for that element and all its descendants.
 
 ```tsx title="components/MyComponent.js"
@@ -66,7 +66,7 @@ theme. This choice has been to help catch accidental omissions. Even at the cost
 of occasional tedium.
 
 Unlike when defining and using variables, themes can be created with
-`stylex.createTheme()` anywhere in a codebase, and passed around across files or
+`createTheme` anywhere in a codebase, and passed around across files or
 components.
 
 :::info

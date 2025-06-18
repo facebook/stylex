@@ -66,7 +66,7 @@ This rule helps to sort the StyleX property keys according to
 ### stylex/stylex-valid-shorthands
 
 This ESLint rule enforces the use of individual longhand CSS properties in place
-of multivalue shorthands when using `stylex.create` for reasons of consistency
+of multivalue shorthands when using `create` for reasons of consistency
 and performance. The rule provides an autofix to replace the shorthand with the
 equivalent longhand properties.
 
@@ -114,20 +114,20 @@ This rule has a few custom config options that can be set.
 ### @stylexjs/stylex-enforce-extension
 
 This rule ensures consistent naming for StyleX theme files that export variables
-using `stylex.defineVars()`.
+using `defineVars`.
 
 #### Not allowed
 
-- Exporting `stylex.defineVars()` in a file **not** ending in `.stylex.js` or
+- Exporting `defineVars` in a file **not** ending in `.stylex.js` or
   `.stylex.ts`
 - Using the `.stylex.js` / `.stylex.ts` extension without exporting
-  `stylex.defineVars()`
-- Mixing `stylex.defineVars()` with other exports in the same file
+  `defineVars`
+- Mixing `defineVars` with other exports in the same file
 
 #### Instead...
 
 - Use `.stylex.js` or `.stylex.ts` for files that only export
-  `stylex.defineVars()`
+  `defineVars`
 - Export **only** theme vars from these files
 
 #### Config options
@@ -141,7 +141,7 @@ using `stylex.defineVars()`.
 
 ### `stylex-no-unused`
 
-This rule flags unused styles created with `stylex.create(...)`. If a style key
+This rule flags unused styles created with `create(...)`. If a style key
 is defined but never used, the rule auto-strips them from the create call.
 
 #### Config options

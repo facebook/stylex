@@ -5,9 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 slug: v0.8.0
 title: Release 0.8.0
-authors: 
+authors:
   - nmn
-tags: 
+tags:
   - release
 ---
 
@@ -62,7 +62,7 @@ This rule offers an autofix for all disallowed properties.
 ### New `enforce-extension` rule
 
 This new rule enforces the [rules when defining variables](https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-variables)._createMdxContent
-It enforces that usages of `stylex.defineVars` are named exports within a file with a `.stylex.js` (or '.ts' or '.jsx' or '.tsx') extension,
+It enforces that usages of `defineVars` are named exports within a file with a `.stylex.js` (or '.ts' or '.jsx' or '.tsx') extension,
 and that such a file does not have any other exports.
 
 
@@ -79,7 +79,7 @@ Notably, the `valid-styles` rule should now understand:
 
 StyleX's compilation process is conceptually a three step process:
 
-1. Transform JavaScript source files to replace usages of `stylex.create` etc. 
+1. Transform JavaScript source files to replace usages of `create` etc.
    with the resulting classNames and collect the generated CSS.
 2. De-duplicate and sort all the collected CSS.
 3. Write the CSS to a file.
@@ -99,7 +99,7 @@ We've made two small but important improvements for theming in StyleX.
 
 ### Use `stylex.firstThatWorks` to define fallback values for CSS variables.
 
-StyleX has a `stylex.firstThatWorks` function that can be used to define fallback values for CSS property.
+StyleX has a `firstThatWorks` function that can be used to define fallback values for CSS property.
 This is akin to using the same property multiple times with different values in CSS.
 
 ```css
@@ -143,8 +143,8 @@ const styles = stylex.create({
 
 ### Themes have higher specificity than default var values
 
-The CSS rule created with `stylex.createTheme` now has higher specificity than the rule
-created with `stylex.defineVars`.
+The CSS rule created with `createTheme` now has higher specificity than the rule
+created with `defineVars`.
 
 This should not have been issue in the vast majority of cases already, as we always sorted
 the rules in the correct order. However, in extreme edge-cases where you may be loading multiple
@@ -170,7 +170,3 @@ projects to our [ecosystem page](https://stylexjs.com/docs/learn/ecosystem/).
 
 We've also updated the search on our website to be much more comprehensive and accurate.
 (Powered by Algolia)
-
-
-
-

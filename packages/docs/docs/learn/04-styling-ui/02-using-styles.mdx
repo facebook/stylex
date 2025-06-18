@@ -10,7 +10,7 @@ sidebar_position: 2
 
 Once styles have been defined, they must be converted to `className` and
 `styles` props that can be spread on HTML elements using the
-[`stylex.props`](../../api/javascript/props.mdx) function.
+[`props`](../../api/javascript/props.mdx) function.
 
 ```tsx
 <div {...stylex.props(styles.base)} />
@@ -21,12 +21,12 @@ use them conditionally, or even compose styles across module boundaries.
 
 ## Merging styles
 
-The `stylex.props` function can take a list of styles and merge them in a
+The `props` function can take a list of styles and merge them in a
 deterministic way, where the last style applied always wins. The order in which
 the styles are defined does not affect the resulting styles, only the order in
 which they are applied to the HTML element.
 
-Using `stylex.props` is only required when styles are set on React
+Using `props` is only required when styles are set on React
 DOM host elements like `<div>`.
 
 Consider styles that are defined as follows:
@@ -55,10 +55,10 @@ last. If instead the order of the styles were reversed, the text would be gray.
 <div {...stylex.props(styles.highlighted, styles.base)} />
 ```
 
-A simple way to think about the `stylex.props` function is that merges many
+A simple way to think about the `props` function is that merges many
 objects and the later objects have precedence over previous objects.
 
-Each individual style object can be passed to `stylex.props` as a separate
+Each individual style object can be passed to `props` as a separate
 argument, or passed in as an array of styles.
 
 ```tsx
@@ -68,7 +68,7 @@ argument, or passed in as an array of styles.
 ## Conditional styles
 
 Styles can be applied conditionally at runtime using common JavaScript
-patterns such as ternary expressions and the `&&` operator. `stylex.props`
+patterns such as ternary expressions and the `&&` operator. `props`
 ignores falsy values such as `null`, `undefined`, or `false`.
 
 ```tsx
