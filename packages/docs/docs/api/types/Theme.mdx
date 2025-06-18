@@ -13,7 +13,7 @@ type Theme<T extends VarGroup<unknown, symbol>>
 ```
 
 A `Theme` is a type that represents a style that *themes* a set of variables in a given
-`VarGroup`. It's the result of calling [`stylex.createTheme`](../javascript/createTheme.mdx).
+`VarGroup`. It's the result of calling [`createTheme`](../javascript/createTheme.mdx).
 
 
 ```tsx
@@ -62,5 +62,5 @@ Now, `theme1` has a unique type identity and a different `Theme` for `vars`
 would not satisfy `typeof theme1`.
 
 This advanced use-case should be rarely needed, but it's available when it is.
-  
+
 </details>

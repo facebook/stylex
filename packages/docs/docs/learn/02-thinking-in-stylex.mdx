@@ -56,8 +56,8 @@ Here's how this plays out in practice:
 #### 1. Styles created and applied locally
 
 When authoring and consuming styles within the same file, the cost of StyleX is zero.
-This is because in addition to compiling away `stylex.create` calls, StyleX also
-compiles away `stylex.props` calls when possible.
+This is because in addition to compiling away `create` calls, StyleX also
+compiles away `props` calls when possible.
 
 So,
 
@@ -95,9 +95,9 @@ There is no runtime overhead here.
 #### 2. Using styles across files
 
 Passing styles across file boundaries incurs a small cost for the
-additional power and expressivity. The `stylex.create` call is not deleted
+additional power and expressivity. The `create` call is not deleted
 entirely and instead leaves behind an object mapping keys to
-class names. And the `stylex.props()` calls are executed at runtime.
+class names. And the `props` calls are executed at runtime.
 
 This code, for example:
 
@@ -156,7 +156,7 @@ function MyComponent({style}) {
 
 
 This is a little more code, but the runtime cost is still minimal
-because of how fast the `stylex.props()` function is.
+because of how fast the `props` function is.
 
 Most other styling solutions don't enable composition of styles across file
 boundaries. The state of the art is to combine lists of class names.
@@ -173,7 +173,7 @@ At its core, StyleX can be boiled down to two functions:
 1. `stylex.create`
 2. `stylex.props`
 
-`stylex.create` is used to create styles and `stylex.props` is used to apply
+`create` is used to create styles and `props` is used to apply
 those styles to an element.
 
 Within these two functions, we choose to rely on common JS patterns rather than
@@ -257,12 +257,12 @@ We want styles to be type-safe, so we've spent a lot of time coming up with
 APIs to replace these strings with references to JavaScript constants. So far this
 is reflected in the following APIs:
 
-1. `stylex.create` Abstracts away the generated class names entirely. You deal
+1. `create` Abstracts away the generated class names entirely. You deal
    with "opaque" JavaScript objects with strong types to indicate the styles
    they represent.
-2. `stylex.defineVars` Abstracts away the names of CSS variables generated.
+2. `defineVars` Abstracts away the names of CSS variables generated.
    They can be imported as constants and used within styles directly.
-3. `stylex.keyframes` Abstracts away the names of keyframe animations. Instead
+3. `keyframes` Abstracts away the names of keyframe animations. Instead
    they are declared as constants and used by reference.
 
 We're looking into ways to make other CSS identifiers such as
@@ -275,7 +275,7 @@ been tailored to work best with React today, it is designed to be used with any
 JavaScript framework that allows authoring markup in JavaScript. This includes frameworks
 that use JSX, template strings, etc.
 
-`stylex.props` returns an object with `className` and `style` properties. A wrapper
+`props` returns an object with `className` and `style` properties. A wrapper
 function may be needed to convert this to make it work with various frameworks.
 
 ### Encapsulation

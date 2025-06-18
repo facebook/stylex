@@ -31,7 +31,7 @@ for these variables for UI sub-trees.
 
 ## Defining Variables
 
-A group of variables are defined using the `stylex.defineVars` function:
+A group of variables are defined using the `defineVars` function:
 
 ```tsx title="tokens.stylex.js"
 import * as stylex from '@stylexjs/stylex';
@@ -52,7 +52,7 @@ This function, too, is processed at compile-time and CSS variable names are
 automatically generated.
 
 This defines the variables at `:root` of the HTML document. They can be imported
-as constants and used within `stylex.create` calls.
+as constants and used within `create` calls.
 
 ### Using Media Queries
 
@@ -78,7 +78,7 @@ Similarly, `@supports` can be used as well.
 ## Rules when defining variables
 
 Variables are the only type of non-local value that can be used within a
-`stylex.create` call. This is made possible by enforcing a few rules:
+`create` call. This is made possible by enforcing a few rules:
 
 #### 1. Variables must be defined in `.stylex.js` files
 
@@ -93,7 +93,7 @@ Variables must be in a file with one of the following extensions:
 
 #### 2. Variables must be named exports
 
-Every `stylex.defineVars` call _must_ be a named export.
+Every `defineVars` call _must_ be a named export.
 
 ##### Allowed:
 

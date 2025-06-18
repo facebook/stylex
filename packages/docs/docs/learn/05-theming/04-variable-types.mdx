@@ -96,9 +96,9 @@ The primary utility of `stylex.types.*` functions is to enable functionality
 by declaring types for variables in the generated CSS. However, the StyleX API
 also enhances the type-safety within your own codebase.
 
-When a variable is declared with a certain type within `stylex.defineVars`, the
+When a variable is declared with a certain type within `defineVars`, the
 static types will enforce that the same type function is used when the variable
-is themed within a `stylex.createTheme` call.
+is themed within a `createTheme` call.
 
 
 ```tsx title="theme.js"
@@ -114,8 +114,8 @@ export const highContrast = stylex.createTheme(tokens, {
 });
 ```
 
-Since the types for the variables are already declared within the `stylex.defineVars`
-call, the usage type functions within `stylex.createTheme` is functionally a no-op, but
+Since the types for the variables are already declared within the `defineVars`
+call, the usage type functions within `createTheme` is functionally a no-op, but
 is required by the static types for type-safety.
 
 ## Example use-cases
@@ -123,7 +123,7 @@ is required by the static types for type-safety.
 ### Simulating [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round)
 
 Modern browsers are starting to support
-the [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round) function in CSS. 
+the [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round) function in CSS.
 However, the feature can be simulated with a variable with an `integer` type:
 
 ```tsx
@@ -150,7 +150,7 @@ It is usually not possible to animate gradients. However, by using a typed
 within it.
 
 Instead of animating a *normal* CSS property, the `angle` variable can be
-animated with `stylex.keyframes`:
+animated with `keyframes`:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';

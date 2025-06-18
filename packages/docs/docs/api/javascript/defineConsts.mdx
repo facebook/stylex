@@ -8,9 +8,9 @@ sidebar_position: 3
 
 # `stylex.defineConsts`
 
-Defines static style constants that can be used directly in `stylex.create` calls anywhere in the codebase. Unlike `stylex.defineVars`, these values are inlined at build time and do not generate actual CSS variables.
+Defines static style constants that can be used directly in `create` calls anywhere in the codebase. Unlike `defineVars`, these values are inlined at build time and do not generate actual CSS variables.
 
-*Note: `stylex.defineConsts` is an experimental feature and cannot currently be used with `stylex.firstThatWorks` or when `runtimeInjection` is enabled.*
+*Note: `defineConsts` is an experimental feature and cannot currently be used with `firstThatWorks` or when `runtimeInjection` is enabled.*
 
 Common use cases include:
 - Media queries
@@ -49,7 +49,7 @@ export const animations = stylex.defineConsts({
 });
 ```
 
-You can then import and use these constants in any `stylex.create` call:
+You can then import and use these constants in any `create` call:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';

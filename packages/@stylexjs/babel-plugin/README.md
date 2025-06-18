@@ -6,7 +6,7 @@ generated from all JS files within your project should be concatenated together 
 file using the `processStyles` function which is also exported from the same module.
 
 `@stylexjs/babel-plugin` is fairly lightweight. It pre-computes `stylex` related functions like
-`stylex.create` and `stylex.keyframes` by converting the argument AST to a JS object and transforming them
+`create` and `keyframes` by converting the argument AST to a JS object and transforming them
 by passing them to the functions of the corresponding names within `@stylex/shared`
 
 

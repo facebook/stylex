@@ -5,9 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 slug: v0.6.1
 title: Release 0.6.1
-authors: 
+authors:
   - nmn
-tags: 
+tags:
   - release
 ---
 
@@ -21,8 +21,8 @@ and themes in StyleX.
 
 ### Fallback values for variables
 
-You can now provide a fallback value for variables defined with the `stylex.defineVars` API.
-This new capability does not introduce any new API. Instead, the existing `stylex.firstThatWorks` API
+You can now provide a fallback value for variables defined with the `defineVars` API.
+This new capability does not introduce any new API. Instead, the existing `firstThatWorks` API
 now supports variables as arguments.
 
 ```tsx
@@ -44,7 +44,7 @@ StyleX introduces a brand new set of APIs for defining `<syntax>` types for CSS
 variables. This results in `@property` rules in the generated CSS output which
 can be used to animate CSS variables as well as other special use-cases.
 
-The new `stylex.types.*` functions can be used when defining variables to define
+The new `types.*` functions can be used when defining variables to define
 them with a particular type.
 
 ```tsx
@@ -66,7 +66,7 @@ const typedTokens = stylex.defineVars({
 ```
 
 Once variables have been defined with types, they can be animated
-with `stylex.keyframes` just like any other CSS property.
+with `keyframes` just like any other CSS property.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -99,7 +99,7 @@ This new capability is primarily about CSS types, but the new API
 also makes the TypeScript (or Flow) types for the variables more powerful.
 
 As can be seen in the example, generic type arguments can be used to constrain
-the values the variable can take when creating themes with `stylex.createTheme`.
+the values the variable can take when creating themes with `createTheme`.
 
 
 ## ESlint plugin
@@ -120,13 +120,11 @@ The `valid-styles` rule has been improved to allow more expressive
 ## Miscellaneous
 
 - ESlint `'valid-styles'` rule now allows using variables created with
-  `stylex.defineVars` as keys within dynamic styles.
-- Bug-fixes to the experimental `stylex.include` API
-- Fixed debug className generation for `stylex.createTheme`
+  `defineVars` as keys within dynamic styles.
+- Bug-fixes to the experimental `include` API
+- Fixed debug className generation for `createTheme`
 - Units are no longer removed from `0` values
 - Compilation bug-fixes
 
 Our [Ecosystem](/docs/learn/ecosystem/) page continues to grow with community projects. Including a
 [Prettier plugin](https://github.com/nedjulius/prettier-plugin-stylex-key-sort) for sorting StyleX styles.
-
-
