@@ -1,8 +1,8 @@
-nmn:
-  name: Naman Goel
-  title: StyleX Lead
-  url: https://github.com/nmn
-  image_url: /img/nmn.jpg
+mellyeliu:
+  name: Melissa Liu
+  title: StyleX Contributor
+  url: https://github.com/mellyeliu
+  image_url: /img/mellyeliu.jpg
 
 necolas:
   name: Nicolas Gallagher
@@ -10,8 +10,14 @@ necolas:
   url: https://github.com/necolas
   image_url: /img/necolas.jpg
 
-mellyeliu:
-  name: Melissa Liu
+nmn:
+  name: Naman Goel
+  title: StyleX Lead
+  url: https://github.com/nmn
+  image_url: /img/nmn.jpg
+
+vincentriemer:
+  name: Vincent Riemer
   title: StyleX Contributor
-  url: https://github.com/mellyeliu
-  image_url: /img/mellyeliu.jpg
+  url: https://github.com/vincentriemer
+  image_url: /img/vincentriemer.png
