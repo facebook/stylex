@@ -122,7 +122,9 @@ export type LegacyThemeStyles = $ReadOnly<{
 
 type ComplexStyleValueType<+T> =
   T extends StyleXVar<infer U>
-    ? U
+    ? U extends CSSType<infer V>
+      ? V
+      : U
     : T extends string | number | null
       ? T
       : T extends $ReadOnlyArray<infer U>

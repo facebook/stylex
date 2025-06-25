@@ -150,7 +150,9 @@ export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
 
 type ComplexStyleValueType<T> =
   T extends StyleXVar<infer U>
-    ? U
+    ? U extends CSSType<infer V>
+      ? V
+      : U
     : T extends string | number | null
       ? T
       : T extends ReadonlyArray<infer U>

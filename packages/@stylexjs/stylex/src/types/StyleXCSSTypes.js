@@ -9,8 +9,6 @@
 
 'use strict';
 
-import type { CSSType } from './VarTypes';
-
 type CSSCursor =
   | 'auto'
   | 'default'
@@ -102,7 +100,7 @@ type alignSelf =
   | 'safe center'
   | 'unsafe center'
   | all;
-type all = null | 'initial' | 'inherit' | 'unset' | CSSType;
+type all = null | 'initial' | 'inherit' | 'unset';
 type animationDelay = time;
 type animationDirection = singleAnimationDirection;
 type animationDuration = time;
