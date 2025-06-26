@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.14.0 (June 30, 2025)
+
+### New features
+
+* Add `viewTransitionClass` API for creating CSS View Transitions.
+* ESLint plugin includes `validImports` options for all rules.
+* ESLint plugin includes autofix for all remaining nonstandard CSS properties when using the `valid-styles` rule.
+
+### Breaking changes
+
+* Make `property-specificity` the default `styleResolution`.
+
+### Fixes
+
+* Fix theming in dev/debug mode.
+* Avoid putting certain `@-rules` in `@layer` blocks.
+* Fix type exports for TypeScript.
+
 ## 0.13.1 (May 21, 2025)
 
 ### Fixes
