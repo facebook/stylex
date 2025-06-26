@@ -73,10 +73,11 @@ export default function transformStyleXCreateTheme(
       state,
     );
     if (!confident1) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('createTheme'),
-        SyntaxError,
-      );
+      console.log('broken');
+      // throw callExpressionPath.buildCodeFrameError(
+      //   messages.nonStaticValue('createTheme'),
+      //   SyntaxError,
+      // );
     }
 
     const otherInjectedCSSRules: { [propertyName: string]: InjectableStyle } =
@@ -138,10 +139,11 @@ export default function transformStyleXCreateTheme(
       },
     );
     if (!confident2) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('createTheme'),
-        SyntaxError,
-      );
+      console.log('broken2');
+      // throw callExpressionPath.buildCodeFrameError(
+      //   messages.nonStaticValue('createTheme'),
+      //   SyntaxError,
+      // );
     }
     if (typeof overrides !== 'object' || overrides == null) {
       throw callExpressionPath.buildCodeFrameError(
