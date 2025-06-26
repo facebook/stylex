@@ -55,11 +55,12 @@ When `true`, StyleX will insert function calls to inject the CSS rules at runtim
 ### `importSources`
 
 ```ts
-importSources: Array<string> // Default: ['@stylexjs/stylex']
+importSources: Array<string | { from: string, as: string }> // Default: ['@stylexjs/stylex']
 ```
 
-Override the package name where you can import stylex from.
-Used for setting up custom module aliases.
+Override the package name where you can import stylex from. Used for setting up custom module aliases.
+
+Example: `importSources: ['stylex', { from: '@acme/ui', as: 'css' }]`
 
 ---
 
