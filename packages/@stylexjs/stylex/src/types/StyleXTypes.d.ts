@@ -193,7 +193,9 @@ export type CompiledStyles =
 
 declare const StyleXInlineStylesTag: unique symbol;
 
-export type InlineStyles = typeof StyleXInlineStylesTag;
+export type InlineStyles = {
+  _opaque: typeof StyleXInlineStylesTag;
+};
 
 type _GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, Readonly<CSS[Key]>>;
