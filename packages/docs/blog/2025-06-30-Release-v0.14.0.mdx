@@ -18,7 +18,7 @@ StyleX v0.14.0 introduces new APIs to the compiler and linter, as well as a coup
 
 ### Compiler: `viewTransitionClass`
 
-The [`viewTransitionClass`](https://stylexjs.com/docs/api/javascript/viewTransitionClass/) API allows you to use StyleX to customize your [CSS View Transitions](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API). This API works nicely with React’s new [<ViewTransition />](https://react.dev/reference/react/ViewTransition) component:
+The [`viewTransitionClass`](https://stylexjs.com/docs/api/javascript/viewTransitionClass/) API allows you to use StyleX to customize your [CSS View Transitions](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API). This API works nicely with React’s new [`<ViewTransition />`](https://react.dev/reference/react/ViewTransition) component:
 
 ```tsx
 import {unstable_ViewTransition as ViewTransition} from 'react';
@@ -46,7 +46,7 @@ const transitionClass = stylex.viewTransitionClass({
 
 ### Linter: `validImports`
 
-The `@stylexjs/eslint-plugin` package now supports the `validImports` option for all rules, allowing you to configure where the linter expects StyleX to be imported from. This is equivalent to the [`importSources`](https://stylexjs.com/docs/api/configuration/babel-plugin/#importsources) option for the compiler. Thanks to @javascripter for this improvement.
+The `@stylexjs/eslint-plugin` package now supports the `validImports` option for all rules, allowing you to configure where the linter expects StyleX to be imported from. This is equivalent to the [`importSources`](https://stylexjs.com/docs/api/configuration/babel-plugin/#importsources) option for the compiler. Thanks to [@javascripter](https://github.com/javascripter) for this improvement.
 
 ```ts
 {
@@ -75,4 +75,4 @@ If you experience visual regressions, set `styleResolution` to `application-orde
 
 * [babel-plugin] Fix theming in dev/debug mode.
 * [eslint-plugin] Add autofix support for all remaining nonstandard CSS properties to the `valid-styles` rule.
-* [stylex] Fix the TypeScript types. Thanks to @pawelblaszczyk5 for this improvement.
+* [stylex] Fix the TypeScript types. Thanks to [@pawelblaszczyk5](https://github.com/pawelblaszczyk5) for this improvement.
