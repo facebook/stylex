@@ -65,9 +65,7 @@ export default function transformStyleXDefineConsts(
 
     const fileName = state.fileNameForHashing;
     if (fileName == null) {
-      throw new Error(
-        'No filename found for generating defineConsts key name.',
-      );
+      throw new Error(messages.cannotGenerateHash('defineConsts'));
     }
 
     const exportName = varId.name;
