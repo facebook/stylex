@@ -22,6 +22,8 @@ export const nonExportNamedDeclaration = (fn: string): string =>
   `The return value of ${fn}() must be bound to a named export.`;
 export const unboundCallValue = (fn: string): string =>
   `${fn}() calls must be bound to a bare variable.`;
+export const cannotGenerateHash = (fn: string): string =>
+  `Unable to generate hash for ${fn}(). Check that the file has a valid extension and that unstable_moduleResolution is configured.`;
 
 export const DUPLICATE_CONDITIONAL =
   'The same pseudo selector or at-rule cannot be used more than once.';
