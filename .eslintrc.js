@@ -36,6 +36,7 @@ module.exports = {
     'dist',
     'flow-typed',
     'lib',
+    'flow_modules',
     'node_modules',
     'next-env.d.ts',
     'next.config.js',

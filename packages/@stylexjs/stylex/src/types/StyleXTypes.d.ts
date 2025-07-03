@@ -94,56 +94,56 @@ export type Keyframes = Readonly<{ [name: string]: CSSProperties }>;
 
 export type PositionTry = Readonly<{
   // Anchor Positioning Properties
-  positionAnchor?: CSSProperties['positionAnchor'],
-  positionArea?: CSSProperties['positionArea'],
+  positionAnchor?: CSSProperties['positionAnchor'];
+  positionArea?: CSSProperties['positionArea'];
   // inset Properties
-  top?: CSSProperties['top'],
-  right?: CSSProperties['right'],
-  bottom?: CSSProperties['bottom'],
-  left?: CSSProperties['left'],
-  inset?: CSSProperties['inset'],
-  insetBlock?: CSSProperties['insetBlock'],
-  insetBlockEnd?: CSSProperties['insetBlockEnd'],
-  insetBlockStart?: CSSProperties['insetBlockStart'],
-  insetInline?: CSSProperties['insetInline'],
-  insetInlineEnd?: CSSProperties['insetInlineEnd'],
-  insetInlineStart?: CSSProperties['insetInlineStart'],
+  top?: CSSProperties['top'];
+  right?: CSSProperties['right'];
+  bottom?: CSSProperties['bottom'];
+  left?: CSSProperties['left'];
+  inset?: CSSProperties['inset'];
+  insetBlock?: CSSProperties['insetBlock'];
+  insetBlockEnd?: CSSProperties['insetBlockEnd'];
+  insetBlockStart?: CSSProperties['insetBlockStart'];
+  insetInline?: CSSProperties['insetInline'];
+  insetInlineEnd?: CSSProperties['insetInlineEnd'];
+  insetInlineStart?: CSSProperties['insetInlineStart'];
   // margin Properties
-  margin?: CSSProperties['margin'],
-  marginBlock?: CSSProperties['marginBlock'],
-  marginBlockEnd?: CSSProperties['marginBlockEnd'],
-  marginBlockStart?: CSSProperties['marginBlockStart'],
-  marginInline?: CSSProperties['marginInline'],
-  marginInlineEnd?: CSSProperties['marginInlineEnd'],
-  marginInlineStart?: CSSProperties['marginInlineStart'],
-  marginTop?: CSSProperties['marginTop'],
-  marginBottom?: CSSProperties['marginBottom'],
-  marginLeft?: CSSProperties['marginLeft'],
-  marginRight?: CSSProperties['marginRight'],
+  margin?: CSSProperties['margin'];
+  marginBlock?: CSSProperties['marginBlock'];
+  marginBlockEnd?: CSSProperties['marginBlockEnd'];
+  marginBlockStart?: CSSProperties['marginBlockStart'];
+  marginInline?: CSSProperties['marginInline'];
+  marginInlineEnd?: CSSProperties['marginInlineEnd'];
+  marginInlineStart?: CSSProperties['marginInlineStart'];
+  marginTop?: CSSProperties['marginTop'];
+  marginBottom?: CSSProperties['marginBottom'];
+  marginLeft?: CSSProperties['marginLeft'];
+  marginRight?: CSSProperties['marginRight'];
   // size properties
-  width?: CSSProperties['width'],
-  height?: CSSProperties['height'],
-  minWidth?: CSSProperties['minWidth'],
-  minHeight?: CSSProperties['minHeight'],
-  maxWidth?: CSSProperties['maxWidth'],
-  maxHeight?: CSSProperties['maxHeight'],
-  blockSize?: CSSProperties['blockSize'],
-  inlineSize?: CSSProperties['inlineSize'],
-  minBlockSize?: CSSProperties['minBlockSize'],
-  minInlineSize?: CSSProperties['minInlineSize'],
-  maxBlockSize?: CSSProperties['maxBlockSize'],
-  maxInlineSize?: CSSProperties['maxInlineSize'],
+  width?: CSSProperties['width'];
+  height?: CSSProperties['height'];
+  minWidth?: CSSProperties['minWidth'];
+  minHeight?: CSSProperties['minHeight'];
+  maxWidth?: CSSProperties['maxWidth'];
+  maxHeight?: CSSProperties['maxHeight'];
+  blockSize?: CSSProperties['blockSize'];
+  inlineSize?: CSSProperties['inlineSize'];
+  minBlockSize?: CSSProperties['minBlockSize'];
+  minInlineSize?: CSSProperties['minInlineSize'];
+  maxBlockSize?: CSSProperties['maxBlockSize'];
+  maxInlineSize?: CSSProperties['maxInlineSize'];
   // self alignment properties
-  alignSelf?: CSSProperties['alignSelf'],
-  justifySelf?: CSSProperties['justifySelf'],
-  placeSelf?: CSSProperties['placeSelf'],
+  alignSelf?: CSSProperties['alignSelf'];
+  justifySelf?: CSSProperties['justifySelf'];
+  placeSelf?: CSSProperties['placeSelf'];
 }>;
 
 export type ViewTransitionClass = Readonly<{
-  group?: CSSProperties,
-  imagePair?: CSSProperties,
-  old?: CSSProperties,
-  new?: CSSProperties,
+  group?: CSSProperties;
+  imagePair?: CSSProperties;
+  old?: CSSProperties;
+  new?: CSSProperties;
 }>;
 
 export type LegacyThemeStyles = Readonly<{ [constantName: string]: string }>;
@@ -244,11 +244,13 @@ export type VarGroup<
 
 export type TokensFromVarGroup<T extends VarGroup<{}>> = T['__tokens'];
 
-export type IDFromVarGroup<T extends VarGroup<{}>> =
-  T['__opaqueId'];
+export type IDFromVarGroup<T extends VarGroup<{}>> = T['__opaqueId'];
 
 type TTokens = Readonly<{
-  [key: string]: CSSType<null | string | number> | string | { [key: string]: string };
+  [key: string]:
+    | CSSType<null | string | number>
+    | string
+    | { [key: string]: string };
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
@@ -282,10 +284,7 @@ export type StyleX$DefineVars = <
 declare class ThemeKey<out VG extends VarGroup<{}>> extends String {
   private varGroup: VG;
 }
-export type Theme<
-  T extends VarGroup<{}>,
-  Tag extends symbol = symbol,
-> = Tag &
+export type Theme<T extends VarGroup<{}>, Tag extends symbol = symbol> = Tag &
   Readonly<{
     theme: StyleXClassNameFor<ThemeKey<T>, IDFromVarGroup<T>>;
   }>;
