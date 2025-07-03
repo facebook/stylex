@@ -75,6 +75,7 @@ export type StyleXOptions = $ReadOnly<{
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
   enableInlinedConditionalMerge?: boolean,
+  enableLegacyValueFlipping?: boolean,
   enableLogicalStylesPolyfill?: boolean,
   enableMinifiedKeys?: boolean,
   importSources: $ReadOnlyArray<
@@ -220,6 +221,14 @@ export default class StateManager {
         'options.enableMinifiedKeys',
       );
 
+    const enableLegacyValueFlipping: StyleXStateOptions['enableLegacyValueFlipping'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableLegacyValueFlipping ?? false,
+        false,
+        'options.enableLegacyValueFlipping',
+      );
+
     const enableLogicalStylesPolyfill: StyleXStateOptions['enableLogicalStylesPolyfill'] =
       z.logAndDefault(
         z.boolean(),
@@ -337,6 +346,7 @@ export default class StateManager {
       enableFontSizePxToRem,
       enableInlinedConditionalMerge,
       enableMinifiedKeys,
+      enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
       importSources,
       rewriteAliases:

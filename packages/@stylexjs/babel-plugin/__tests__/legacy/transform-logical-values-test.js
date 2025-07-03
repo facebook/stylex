@@ -134,11 +134,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value "e-resize" for "cursor" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { cursor: 'e-resize' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -150,11 +153,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value "w-resize" for "cursor" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { cursor: 'w-resize' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -166,11 +172,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value "ne-resize" for "cursor" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { cursor: 'ne-resize' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -182,11 +191,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value "nw-resize" for "cursor" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { cursor: 'nw-resize' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -198,11 +210,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value "se-resize" for "cursor" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { cursor: 'se-resize' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -214,11 +229,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value "sw-resize" for "cursor" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { cursor: 'sw-resize' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -280,11 +298,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value of "boxShadow" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: 'none' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -293,11 +314,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x1gnnqk1";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: '1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -306,11 +330,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "xtgyqtp";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: '-1px -1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -319,11 +346,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x1d2r41h";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: 'inset 1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -332,11 +362,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x1x0mpz7";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: '1px 1px 1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -345,11 +378,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x1fumi7f";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: 'inset 1px 1px 1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -358,11 +394,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x1fs23zf";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { boxShadow: '2px 2px 2px 2px red, inset 1px 1px 1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -374,11 +413,14 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('[legacy] value of "textShadow" property', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { textShadow: 'none' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -387,11 +429,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x19pm5ym";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { textShadow: '1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -400,11 +445,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x12y90mb";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { textShadow: '-1px -1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
@@ -413,11 +461,14 @@ describe('@stylexjs/babel-plugin', () => {
         const classnames = "x1l3mtsg";"
       `);
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({ x: { textShadow: '1px 1px 1px #000' } });
           const classnames = stylex(styles.x);
-        `),
+        `,
+          { enableLegacyValueFlipping: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
