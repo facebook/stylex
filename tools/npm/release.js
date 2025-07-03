@@ -109,7 +109,7 @@ if (commit) {
   // commit
   execSync(`git commit -m "${pkgVersion}" --no-verify`, { stdio: 'inherit' });
   // tag
-  execSync(`git tag -fam ${pkgVersion} "${pkgVersion}"`, { stdio: 'inherit' });
+  // execSync(`git tag -fam ${pkgVersion} "${pkgVersion}"`, { stdio: 'inherit' });
 }
 
 if (publish) {
@@ -134,5 +134,5 @@ if (publish) {
     }
   });
   // push changes
-  execSync('git push --tags origin main', { stdio: 'inherit' });
+  // execSync('git push --tags origin main', { stdio: 'inherit' });
 }
