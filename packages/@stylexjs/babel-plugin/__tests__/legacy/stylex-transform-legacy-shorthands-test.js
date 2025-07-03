@@ -236,6 +236,36 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
       `);
     });
 
+    test('paddingInline: basic multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              paddingInline: "5px 10px"
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
+        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
+        export const styles = {
+          foo: {
+            kZCmMZ: "xaso8d8",
+            kwRFfy: "x2vl965",
+            kE3dHu: null,
+            kpe85a: null,
+            $$css: true
+          }
+        };
+        "xaso8d8 x2vl965";"
+      `);
+    });
+
     test('padding: with longhand property collisions', () => {
       expect(
         transform(`
@@ -328,6 +358,64 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
           }
         };
         "xpcyujq xf6vk7d";"
+      `);
+    });
+
+    test('marginInline: basic multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              marginInline: "5px 10px"
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xpcyujq{margin-left:5px}", 3000, ".xpcyujq{margin-right:5px}");
+        _inject2(".x1sa5p1d{margin-right:10px}", 3000, ".x1sa5p1d{margin-left:10px}");
+        export const styles = {
+          foo: {
+            keTefX: "xpcyujq",
+            k71WvV: "x1sa5p1d",
+            koQZXg: null,
+            km5ZXQ: null,
+            $$css: true
+          }
+        };
+        "xpcyujq x1sa5p1d";"
+      `);
+    });
+
+    test('marginBlock: basic multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              marginBlock: "5px 10px"
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1ok221b{margin-top:5px}", 4000);
+        _inject2(".xyorhqc{margin-bottom:10px}", 4000);
+        export const styles = {
+          foo: {
+            keoZOQ: "x1ok221b",
+            k1K539: "xyorhqc",
+            $$css: true
+          }
+        };
+        "x1ok221b xyorhqc";"
       `);
     });
 
@@ -717,6 +805,34 @@ describe('legacy-shorthand-expansion resolution (enableLogicalStylesPolyfill: fa
         _inject2(".x1120s5i{padding-bottom:2px}", 4000);
         _inject2(".xe2zdcy{padding-inline-start:10px}", 3000);
         "x1nn3v0j x14vy60q x1120s5i xe2zdcy";"
+      `);
+    });
+
+    test('paddingBlock: basic multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            foo: {
+              paddingBlock: "5px 10px"
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x123j3cw{padding-top:5px}", 4000);
+        _inject2(".x1a8lsjc{padding-bottom:10px}", 4000);
+        export const styles = {
+          foo: {
+            kLKAdn: "x123j3cw",
+            kGO01o: "x1a8lsjc",
+            $$css: true
+          }
+        };
+        "x123j3cw x1a8lsjc";"
       `);
     });
 
