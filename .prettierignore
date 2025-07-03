@@ -5,7 +5,8 @@
 build
 coverage
 lib
+flow_modules
 node_modules
 *.mdx
 **/__mocks__/snapshot*
-packages/benchmarks/size/fixture/lotsOfStyles.js
+packages/benchmarks/size/fixtures/lotsOfStyles.js

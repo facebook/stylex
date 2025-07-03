@@ -13,7 +13,7 @@ import type { StyleXVar, VarGroup, Theme } from '../src/types/StyleXTypes';
 
 import * as React from 'react';
 import * as stylex from '../src/stylex';
-import {legacyMerge} from '../src/stylex';
+import { legacyMerge } from '../src/stylex';
 
 const DARK = '@media (prefers-color-scheme: dark)';
 
