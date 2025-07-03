@@ -76,24 +76,6 @@ function flipShadow(value: string) {
   }
 }
 
-// // Should we be flipping shadows at all?
-// // I think the better approach would be to let engineers use
-// // CSS-vars directly.
-// const shadowsFlip: $ReadOnly<{
-//   [key: string]: (
-//     $ReadOnly<[string, string]>,
-//   ) => $ReadOnly<[string, string]> | null,
-// }> = {
-//   'box-shadow': ([key, val]) => {
-//     const rtlVal = flipShadow(val);
-//     return rtlVal ? [key, rtlVal] : null;
-//   },
-//   'text-shadow': ([key, val]) => {
-//     const rtlVal = flipShadow(val);
-//     return rtlVal ? [key, rtlVal] : null;
-//   },
-// };
-
 const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   start: 'right',
   end: 'left',
@@ -187,6 +169,7 @@ const inlinePropertyToRTL: $ReadOnly<{
 const propertyToRTL: $ReadOnly<{
   [key: string]: (
     $ReadOnly<[string, string]>,
+    options: StyleXOptions,
   ) => $ReadOnly<[string, string]> | null,
 }> = {
   'margin-start': ([_key, val]: $ReadOnly<[string, string]>) => [
@@ -279,17 +262,25 @@ const propertyToRTL: $ReadOnly<{
         .join(' '),
     ];
   },
-  cursor: ([key, val]) =>
-    cursorFlip[val] != null ? [key, cursorFlip[val]] : null,
 
-  // Should we be flipping shadows at all?
-  // I think the better approach would be to let engineers use
-  // CSS-vars directly.
-  'box-shadow': ([key, val]) => {
+  // Legacy / Incorrect value flipping
+  cursor: ([key, val], options = defaultOptions) => {
+    if (!options.enableLegacyValueFlipping) {
+      return null;
+    }
+    return cursorFlip[val] != null ? [key, cursorFlip[val]] : null;
+  },
+  'box-shadow': ([key, val], options = defaultOptions) => {
+    if (!options.enableLegacyValueFlipping) {
+      return null;
+    }
     const rtlVal = flipShadow(val);
     return rtlVal ? [key, rtlVal] : null;
   },
-  'text-shadow': ([key, val]) => {
+  'text-shadow': ([key, val], options = defaultOptions) => {
+    if (!options.enableLegacyValueFlipping) {
+      return null;
+    }
     const rtlVal = flipShadow(val);
     return rtlVal ? [key, rtlVal] : null;
   },
@@ -319,5 +310,5 @@ export default function generateRTL(
     return null;
   }
 
-  return propertyToRTL[key]([key, value]);
+  return propertyToRTL[key]([key, value], options);
 }
