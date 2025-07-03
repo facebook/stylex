@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.14.0 (June 30, 2025)
+## 0.14.1 (Jul 3, 2025)
+
+### Fixes
+
+* Another fix for TypeScript types.
+
+## 0.14.0 (Jun 30, 2025)
 
 ### New features
 
