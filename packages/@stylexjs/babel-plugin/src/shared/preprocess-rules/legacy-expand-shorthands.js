@@ -250,10 +250,10 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
       ['marginInlineStart', left],
     ];
   },
-  marginHorizontal: (rawValue: TStyleValue): TReturn => [
-    ...shorthands.marginStart(rawValue),
-    ...shorthands.marginEnd(rawValue),
-  ],
+  marginHorizontal: (rawValue: TStyleValue): TReturn => {
+    const [start, end = start] = splitValue(rawValue);
+    return [...shorthands.marginStart(start), ...shorthands.marginEnd(end)];
+  },
   marginStart: (rawValue: TStyleValue): TReturn => [
     ['marginInlineStart', rawValue],
     ['marginLeft', null],
@@ -275,9 +275,10 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ['marginInlineEnd', null],
   ],
   marginVertical: (rawValue: TStyleValue): TReturn => {
+    const [top, bottom = top] = splitValue(rawValue);
     return [
-      ['marginTop', rawValue],
-      ['marginBottom', rawValue],
+      ['marginTop', top],
+      ['marginBottom', bottom],
     ];
   },
 
@@ -298,10 +299,10 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
       ['paddingInlineStart', left],
     ];
   },
-  paddingHorizontal: (val: TStyleValue): TReturn => [
-    ...shorthands.paddingStart(val),
-    ...shorthands.paddingEnd(val),
-  ],
+  paddingHorizontal: (val: TStyleValue): TReturn => {
+    const [start, end = start] = splitValue(val);
+    return [...shorthands.paddingStart(start), ...shorthands.paddingEnd(end)];
+  },
   paddingStart: (val: TStyleValue): TReturn => [
     ['paddingInlineStart', val],
     ['paddingLeft', null],
@@ -322,10 +323,13 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ['paddingInlineStart', null],
     ['paddingInlineEnd', null],
   ],
-  paddingVertical: (val: TStyleValue): TReturn => [
-    ['paddingTop', val],
-    ['paddingBottom', val],
-  ],
+  paddingVertical: (val: TStyleValue): TReturn => {
+    const [top, bottom = top] = splitValue(val);
+    return [
+      ['paddingTop', top],
+      ['paddingBottom', bottom],
+    ];
+  },
 };
 
 const aliases = {
