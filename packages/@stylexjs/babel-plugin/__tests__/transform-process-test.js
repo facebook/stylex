@@ -138,13 +138,13 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
-          __themeName__: "xsg933n"
+          __varGroupHash__: "xsg933n"
         };
         export const spacing = {
           small: "var(--small-x19twipt)",
           medium: "var(--medium-xypjos2)",
           large: "var(--large-x1ec7iuc)",
-          __themeName__: "xbiwvf9"
+          __varGroupHash__: "xbiwvf9"
         };"
       `);
       expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
@@ -165,13 +165,13 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
-          __themeName__: "xsg933n"
+          __varGroupHash__: "xsg933n"
         };
         export const spacing = {
           small: "var(--small-x19twipt)",
           medium: "var(--medium-xypjos2)",
           large: "var(--large-x1ec7iuc)",
-          __themeName__: "xbiwvf9"
+          __varGroupHash__: "xbiwvf9"
         };
         export const themeColor = {
           xsg933n: "x6xqkwy xsg933n",
@@ -234,13 +234,13 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
-          __themeName__: "xsg933n"
+          __varGroupHash__: "xsg933n"
         };
         export const spacing = {
           small: "var(--small-x19twipt)",
           medium: "var(--medium-xypjos2)",
           large: "var(--large-x1ec7iuc)",
-          __themeName__: "xbiwvf9"
+          __varGroupHash__: "xbiwvf9"
         };
         export const themeColor = {
           xsg933n: "x6xqkwy xsg933n",

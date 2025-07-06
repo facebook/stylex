@@ -169,14 +169,14 @@ function evaluateThemeRef(
     }
 
     const strToHash =
-      key === '__themeName__'
+      key === '__varGroupHash__'
         ? utils.genFileBasedIdentifier({ fileName, exportName })
         : utils.genFileBasedIdentifier({ fileName, exportName, key });
 
     const { debug, enableDebugClassNames } = state.traversalState.options;
 
     const varSafeKey =
-      key === '__themeName__'
+      key === '__varGroupHash__'
         ? ''
         : (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
             /[^a-zA-Z0-9]/g,
@@ -190,7 +190,7 @@ function evaluateThemeRef(
           utils.hash(strToHash)
         : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
 
-    if (key === '__themeName__') {
+    if (key === '__varGroupHash__') {
       return varName;
     }
     return `var(--${varName})`;

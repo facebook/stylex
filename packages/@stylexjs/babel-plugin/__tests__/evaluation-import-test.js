@@ -88,13 +88,13 @@ describe('Evaluation of imported values works based on configuration', () => {
       `);
     });
 
-    test('Importing file with ".stylex" and reading __themeName__ returns a className', () => {
+    test('Importing file with ".stylex" and reading __varGroupHash__ returns a className', () => {
       const transformation = transform(`
         import stylex from 'stylex';
         import { MyTheme } from 'otherFile.stylex';
         const styles = stylex.create({
           red: {
-            color: MyTheme.__themeName__,
+            color: MyTheme.__varGroupHash__,
           }
         });
         stylex(styles.red);
@@ -422,7 +422,7 @@ describe('Evaluation of imported values works based on configuration', () => {
         import { MyTheme } from './otherFile.stylex.js';
         const styles = stylex.create({
           red: {
-            color: MyTheme.__themeName__,
+            color: MyTheme.__varGroupHash__,
           }
         });
         stylex(styles.red);

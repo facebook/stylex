@@ -150,10 +150,10 @@ export default function transformStyleXCreateTheme(
       );
     }
 
-    // Check that first arg has __themeName__ set
+    // Check that first arg has __varGroupHash__ set
     if (
-      typeof variables.__themeName__ !== 'string' ||
-      variables.__themeName__ === ''
+      typeof variables.__varGroupHash__ !== 'string' ||
+      variables.__varGroupHash__ === ''
     ) {
       throw callExpressionPath.buildCodeFrameError(
         'Can only override variables theme created with defineVars().',

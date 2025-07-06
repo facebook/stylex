@@ -112,7 +112,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         export const theme = {
           xop34xu: "x4aw18j xop34xu",
@@ -193,7 +193,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         export const theme = {
           xop34xu: "x4aw18j xop34xu",
@@ -273,7 +273,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xt4ziaz)",
           otherColor: "var(--x1e3it8h)",
           radius: "var(--x1onrunl)",
-          __themeName__: "x1xohuxq"
+          __varGroupHash__: "x1xohuxq"
         };
         export const theme = {
           x1xohuxq: "xv0nx9o x1xohuxq",
@@ -356,7 +356,7 @@ describe('@stylexjs/babel-plugin', () => {
           "--color": "var(--color)",
           "--otherColor": "var(--otherColor)",
           "--radius": "var(--radius)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         export const theme = {
           xop34xu: "x1l2ihi1 xop34xu",
@@ -415,7 +415,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         const themeObj = {
           color: {
@@ -504,7 +504,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         const RADIUS = 10;
         export const theme = {
@@ -566,7 +566,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         const name = 'light';
         export const theme = {
@@ -628,7 +628,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         const RADIUS = 10;
         export const theme = {
@@ -699,7 +699,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         const RADIUS = 10;
         export const theme = {
@@ -778,7 +778,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         export const theme = {
           xop34xu: "x4aw18j xop34xu",
@@ -873,7 +873,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--xwx8imx)",
           otherColor: "var(--xaaua2w)",
           radius: "var(--xbbre8)",
-          __themeName__: "xop34xu"
+          __varGroupHash__: "xop34xu"
         };
         export const theme = {
           xop34xu: "x4aw18j xop34xu",
@@ -887,7 +887,7 @@ describe('@stylexjs/babel-plugin', () => {
           color: "var(--x103gslp)",
           otherColor: "var(--x1e7put6)",
           radius: "var(--xm3n3tg)",
-          __themeName__: "x1ngxneg"
+          __varGroupHash__: "x1ngxneg"
         };
         export const theme = {
           x1ngxneg: "xgl5cw9 x1ngxneg",
@@ -1052,7 +1052,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "var(--xwx8imx)",
             otherColor: "var(--xaaua2w)",
             radius: "var(--xbbre8)",
-            __themeName__: "xop34xu"
+            __varGroupHash__: "xop34xu"
           };
           export const theme = {
             xop34xu: "xowvtgn xop34xu",
@@ -1120,7 +1120,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "var(--xwx8imx)",
             otherColor: "var(--xaaua2w)",
             radius: "var(--xbbre8)",
-            __themeName__: "xop34xu"
+            __varGroupHash__: "xop34xu"
           };
           export const theme = {
             xop34xu: "xowvtgn xop34xu",
@@ -1189,7 +1189,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "var(--xwx8imx)",
             otherColor: "var(--xaaua2w)",
             radius: "var(--xbbre8)",
-            __themeName__: "xop34xu"
+            __varGroupHash__: "xop34xu"
           };
           export const theme = {
             xop34xu: "xowvtgn xop34xu",
@@ -1258,7 +1258,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "var(--xwx8imx)",
             otherColor: "var(--xaaua2w)",
             radius: "var(--xbbre8)",
-            __themeName__: "xop34xu"
+            __varGroupHash__: "xop34xu"
           };
           export const theme = {
             xop34xu: "xowvtgn xop34xu",
@@ -1328,7 +1328,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "var(--xwx8imx)",
             otherColor: "var(--xaaua2w)",
             radius: "var(--xbbre8)",
-            __themeName__: "xop34xu"
+            __varGroupHash__: "xop34xu"
           };
           export const theme = {
             Foo__theme: "Foo__theme",
@@ -1401,7 +1401,7 @@ describe('@stylexjs/babel-plugin', () => {
             color: "var(--xwx8imx)",
             otherColor: "var(--xaaua2w)",
             radius: "var(--xbbre8)",
-            __themeName__: "xop34xu"
+            __varGroupHash__: "xop34xu"
           };
           _inject2(".xowvtgn, .xowvtgn:root{--xwx8imx:orange;}", 0.5);
           export const theme = {
