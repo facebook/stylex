@@ -69,11 +69,11 @@ export default function transformStyleXDefineConsts(
     }
 
     const exportName = varId.name;
-    const themeName = utils.genFileBasedIdentifier({ fileName, exportName });
+    const exportId = utils.genFileBasedIdentifier({ fileName, exportName });
 
     const [transformedJsOutput, jsOutput] = styleXDefineConsts(value, {
       ...state.options,
-      themeName,
+      exportId,
     });
 
     callExpressionPath.replaceWith(convertObjectToAST(transformedJsOutput));

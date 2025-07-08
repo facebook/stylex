@@ -17,12 +17,12 @@ import createHash from './hash';
 
 export default function styleXDefineConsts<Vars: ConstsConfig>(
   constants: Vars,
-  options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
+  options: $ReadOnly<{ ...Partial<StyleXOptions>, exportId: string, ... }>,
 ): [
   { [string]: string | number }, // jsOutput JS output
   { [string]: InjectableConstStyle }, // metadata for registerinjectableStyles
 ] {
-  const { classNamePrefix, themeName, debug, enableDebugClassNames } = {
+  const { classNamePrefix, exportId, debug, enableDebugClassNames } = {
     ...defaultOptions,
     ...options,
   };
@@ -39,14 +39,14 @@ export default function styleXDefineConsts<Vars: ConstsConfig>(
       key[0] >= '0' && key[0] <= '9' ? `_${key}` : key
     ).replace(/[^a-zA-Z0-9]/g, '_');
 
-    const nameHash =
+    const constKey =
       debug && enableDebugClassNames
-        ? `${varSafeKey}-${classNamePrefix}${createHash(`${themeName}.${key}`)}`
-        : `${classNamePrefix}${createHash(`${themeName}.${key}`)}`;
+        ? `${varSafeKey}-${classNamePrefix}${createHash(`${exportId}.${key}`)}`
+        : `${classNamePrefix}${createHash(`${exportId}.${key}`)}`;
 
     jsOutput[key] = value;
-    injectableStyles[nameHash] = {
-      constKey: nameHash,
+    injectableStyles[constKey] = {
+      constKey,
       constVal: value,
       priority: 0,
       ltr: '',

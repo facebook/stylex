@@ -22,11 +22,11 @@ import { defaultOptions } from './utils/default-options';
 // and returns a hashed className with variables overrides.
 //
 export default function styleXCreateTheme(
-  themeVars: { +__themeName__: string, +[string]: string },
+  themeVars: { +__varGroupHash__: string, +[string]: string },
   variables: { +[string]: string | { default: string, +[string]: string } },
   options?: StyleXOptions,
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
-  if (typeof themeVars.__themeName__ !== 'string') {
+  if (typeof themeVars.__varGroupHash__ !== 'string') {
     throw new Error(
       'Can only override variables theme created with defineVars().',
     );
@@ -82,11 +82,11 @@ export default function styleXCreateTheme(
     }
   }
 
-  const themeClass = `${overrideClassName} ${themeVars.__themeName__}`;
+  const themeClass = `${overrideClassName} ${themeVars.__varGroupHash__}`;
 
   return [
     {
-      [themeVars.__themeName__]: themeClass,
+      [themeVars.__varGroupHash__]: themeClass,
       $$css: true,
     },
     stylesToInject,

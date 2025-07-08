@@ -27,21 +27,21 @@ type VarsKeysWithStringValues<Vars: VarsConfig> = $ReadOnly<{
 
 type VarsObject<Vars: VarsConfig> = $ReadOnly<{
   ...VarsKeysWithStringValues<Vars>,
-  __themeName__: string,
+  __varGroupHash__: string,
 }>;
 
 // Similar to `stylex.create` it takes an object of variables with their values
 // and returns a string after hashing it.
 export default function styleXDefineVars<Vars: VarsConfig>(
   variables: Vars,
-  options: $ReadOnly<{ ...Partial<StyleXOptions>, themeName: string, ... }>,
+  options: $ReadOnly<{ ...Partial<StyleXOptions>, exportId: string, ... }>,
 ): [VarsObject<Vars>, { [string]: InjectableStyle }] {
-  const { classNamePrefix, themeName, debug, enableDebugClassNames } = {
+  const { classNamePrefix, exportId, debug, enableDebugClassNames } = {
     ...defaultOptions,
     ...options,
   };
 
-  const themeNameHash = classNamePrefix + createHash(themeName);
+  const varGroupHash = classNamePrefix + createHash(exportId);
 
   const typedVariables: {
     [string]: $ReadOnly<{
@@ -59,8 +59,8 @@ export default function styleXDefineVars<Vars: VarsConfig>(
     const nameHash = key.startsWith('--')
       ? key.slice(2)
       : debug && enableDebugClassNames
-        ? varSafeKey + '-' + classNamePrefix + createHash(`${themeName}.${key}`)
-        : classNamePrefix + createHash(`${themeName}.${key}`);
+        ? varSafeKey + '-' + classNamePrefix + createHash(`${exportId}.${key}`)
+        : classNamePrefix + createHash(`${exportId}.${key}`);
 
     if (isCSSType(value)) {
       const v: CSSType<> = value;
@@ -80,7 +80,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 
   const injectableStyles = constructCssVariablesString(
     variablesMap,
-    themeNameHash,
+    varGroupHash,
   );
 
   const injectableTypes: { +[string]: InjectableStyle } = objMap(
@@ -95,7 +95,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
   return [
     {
       ...themeVariablesObject,
-      __themeName__: themeNameHash,
+      __varGroupHash__: varGroupHash,
     },
     { ...injectableTypes, ...injectableStyles },
   ];
@@ -103,7 +103,7 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 
 function constructCssVariablesString(
   variables: { +[string]: { +nameHash: string, +value: VarsConfigValue } },
-  themeNameHash: string,
+  varGroupHash: string,
 ): { [string]: InjectableStyle } {
   const rulesByAtRule: { [string]: Array<string> } = {};
 
@@ -115,14 +115,14 @@ function constructCssVariablesString(
   for (const [atRule, value] of Object.entries(rulesByAtRule)) {
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
 
-    const selector = `:root, .${themeNameHash}`;
+    const selector = `:root, .${varGroupHash}`;
 
     let ltr = `${selector}{${value.join('')}}`;
     if (atRule !== 'default') {
       ltr = wrapWithAtRules(ltr, atRule);
     }
 
-    result[themeNameHash + suffix] = {
+    result[varGroupHash + suffix] = {
       ltr,
       rtl: null,
       priority: priorityForAtRule(atRule) * 0.1,

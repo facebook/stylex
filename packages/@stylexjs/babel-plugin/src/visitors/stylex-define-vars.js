@@ -155,7 +155,7 @@ export default function transformStyleXDefineVars(
       value,
       {
         ...state.options,
-        themeName: utils.genFileBasedIdentifier({ fileName, exportName }),
+        exportId: utils.genFileBasedIdentifier({ fileName, exportName }),
       },
     );
 
