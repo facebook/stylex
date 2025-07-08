@@ -9,7 +9,7 @@ interfaces.
 
 Documentation for individual packages can be found in their respective README
 files. Start with
-[`@stylexjs/stylex`](https://github.com/facebook/stylex/blob/main/packages/stylex).
+[`@stylexjs/stylex`](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/stylex).
 
 ### Example
 
@@ -43,17 +43,17 @@ This is the development monorepo for StyleX.
   - Contains examples using StyleX and its integration with build tools.
 - `packages`
   - Contains the public and private packages managed in the monorepo.
-  - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/babel-plugin)
+  - [babel-plugin](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/babel-plugin)
   - [benchmarks](https://github.com/facebook/stylex/blob/main/packages/benchmarks)
-  - [cli](https://github.com/facebook/stylex/blob/main/packages/cli)
+  - [cli](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/cli)
   - [docs](https://github.com/facebook/stylex/blob/main/packages/docs)
-  - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/eslint-plugin)
-  - [postcss-plugin](https://github.com/facebook/stylex/blob/main/packages/postcss-plugin)
-  - [rollup-plugin](https://github.com/facebook/stylex/blob/main/packages/rollup-plugin)
+  - [eslint-plugin](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/eslint-plugin)
+  - [postcss-plugin](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/postcss-plugin)
+  - [rollup-plugin](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/rollup-plugin)
   - [scripts](https://github.com/facebook/stylex/blob/main/packages/scripts)
-  - [shared](https://github.com/facebook/stylex/blob/main/packages/shared)
+  - [shared](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/babel-plugin/shared)
   - [style-value-parser](https://github.com/facebook/stylex/blob/main/packages/style-value-parser)
-  - [stylex](https://github.com/facebook/stylex/blob/main/packages/stylex)
+  - [stylex](https://github.com/facebook/stylex/blob/main/packages/@stylexjs/stylex)
 
 
 ### Tasks
