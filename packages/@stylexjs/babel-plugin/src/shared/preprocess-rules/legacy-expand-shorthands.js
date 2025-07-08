@@ -197,20 +197,27 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ];
   },
 
-  inset: (rawValue: TStyleValue): TReturn => [
-    ['top', rawValue],
-    ['insetInlineEnd', rawValue],
-    ['bottom', rawValue],
-    ['insetInlineStart', rawValue],
-  ],
-  insetInline: (rawValue: TStyleValue): TReturn => [
-    ...shorthands.start(rawValue),
-    ...shorthands.end(rawValue),
-  ],
-  insetBlock: (rawValue: TStyleValue): TReturn => [
-    ['top', rawValue],
-    ['bottom', rawValue],
-  ],
+  inset: (rawValue: TStyleValue): TReturn => {
+    const [top, right = top, bottom = top, left = right] = splitValue(rawValue);
+
+    return [
+      ['top', top],
+      ['insetInlineEnd', right],
+      ['bottom', bottom],
+      ['insetInlineStart', left],
+    ];
+  },
+  insetInline: (rawValue: TStyleValue): TReturn => {
+    const [start, end = start] = splitValue(rawValue);
+    return [...shorthands.start(start), ...shorthands.end(end)];
+  },
+  insetBlock: (rawValue: TStyleValue): TReturn => {
+    const [top, bottom = top] = splitValue(rawValue);
+    return [
+      ['top', top],
+      ['bottom', bottom],
+    ];
+  },
   start: (rawValue: TStyleValue): TReturn => [
     ['insetInlineStart', rawValue],
     ['left', null],

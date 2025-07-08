@@ -548,6 +548,136 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         "xpilrb4 x1lun4ml";"
       `);
     });
+
+    test('inset: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              inset: 10
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1eu8d0j{top:10px}", 4000);
+        _inject2(".xo2ifbc{right:10px}", 3000, ".xo2ifbc{left:10px}");
+        _inject2(".x1jn9clo{bottom:10px}", 4000);
+        _inject2(".xi5uv41{left:10px}", 3000, ".xi5uv41{right:10px}");
+        "x1eu8d0j xo2ifbc x1jn9clo xi5uv41";"
+      `);
+    });
+
+    test('inset: multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              inset: '10px 20px 30px 40px'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1eu8d0j{top:10px}", 4000);
+        _inject2(".x2ss2xj{right:20px}", 3000, ".x2ss2xj{left:20px}");
+        _inject2(".xwajptj{bottom:30px}", 4000);
+        _inject2(".x9pwknu{left:40px}", 3000, ".x9pwknu{right:40px}");
+        "x1eu8d0j x2ss2xj xwajptj x9pwknu";"
+      `);
+    });
+
+    test('insetInline: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              insetInline: 10
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xi5uv41{left:10px}", 3000, ".xi5uv41{right:10px}");
+        _inject2(".xo2ifbc{right:10px}", 3000, ".xo2ifbc{left:10px}");
+        "xi5uv41 xo2ifbc";"
+      `);
+    });
+
+    test('insetInline: multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              insetInline: '10px 20px'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xi5uv41{left:10px}", 3000, ".xi5uv41{right:10px}");
+        _inject2(".x2ss2xj{right:20px}", 3000, ".x2ss2xj{left:20px}");
+        "xi5uv41 x2ss2xj";"
+      `);
+    });
+
+    test('insetBlock: basic shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              insetBlock: 10
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1eu8d0j{top:10px}", 4000);
+        _inject2(".x1jn9clo{bottom:10px}", 4000);
+        "x1eu8d0j x1jn9clo";"
+      `);
+    });
+
+    test('insetBlock: multivalue shorthand', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            foo: {
+              insetBlock: '10px 20px'
+            }
+          });
+          stylex(styles.foo);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".x1eu8d0j{top:10px}", 4000);
+        _inject2(".xjnlgov{bottom:20px}", 4000);
+        "x1eu8d0j xjnlgov";"
+      `);
+    });
   });
 });
 
