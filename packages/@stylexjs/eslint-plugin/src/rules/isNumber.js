@@ -18,42 +18,62 @@ import type { Node } from 'estree';
 import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
 
 const numericOperators = new Set(['+', '-', '*', '/']);
+const mathFunctions = new Set(['abs', 'ceil', 'floor', 'round']);
 
-const isNumber: RuleCheck = makeVariableCheckingRule(
-  (node: Node, variables?: Variables): RuleResponse =>
-    (node.type === 'Literal' && typeof node.value === 'number') ||
-    (node.type === 'BinaryExpression' &&
-      numericOperators.has(node.operator) &&
-      isNumber(node.left, variables) &&
-      isNumber(node.right, variables)) ||
-    (node.type === 'UnaryExpression' &&
-      node.operator === '-' &&
-      isNumber(node.argument, variables)) ||
-    isMathCall(node, variables)
-      ? undefined
-      : {
-          message: 'a number literal or math expression',
-        },
+export const isNumber: RuleCheck = makeVariableCheckingRule(
+  (node: Node, variables?: Variables): RuleResponse => {
+    if (node.type === 'Literal' && typeof node.value === 'number') {
+      return undefined;
+    }
+
+    if (node.type === 'Identifier') {
+      const value = variables?.get(node.name);
+      return value?.type === 'number'
+        ? undefined
+        : { message: 'a number literal or math expression' };
+    }
+
+    if (node.type === 'UnaryExpression' && node.operator === '-') {
+      return isNumber(node.argument, variables);
+    }
+
+    if (
+      node.type === 'BinaryExpression' &&
+      numericOperators.has(node.operator)
+    ) {
+      const left = isNumber(node.left, variables);
+      const right = isNumber(node.right, variables);
+      return left === undefined && right === undefined
+        ? undefined
+        : { message: 'a number literal or math expression' };
+    }
+
+    if (node.type === 'MemberExpression' && node.object.type === 'Identifier') {
+      return undefined;
+    }
+
+    if (node.type === 'CallExpression') {
+      return undefined;
+    }
+
+    if (isMathCall(node)) {
+      return undefined;
+    }
+
+    return { message: 'a number literal or math expression' };
+  },
 );
 
-export function isMathCall(node: Node, variables?: Variables): RuleResponse {
-  return node.type === 'CallExpression' &&
+export function isMathCall(node: Node): boolean {
+  return (
+    node.type === 'CallExpression' &&
     node.callee.type === 'MemberExpression' &&
     node.callee.object.type === 'Identifier' &&
     node.callee.object.name === 'Math' &&
     node.callee.property.type === 'Identifier' &&
-    ['abs', 'ceil', 'floor', 'round'].includes(node.callee.property.name) &&
-    node.arguments.every(
-      (arg) =>
-        (arg.type === 'Literal' ||
-          arg.type === 'UnaryExpression' ||
-          arg.type === 'BinaryExpression') &&
-        isNumber(arg, variables),
-    )
-    ? undefined
-    : {
-        message: 'a math expression',
-      };
+    mathFunctions.has(node.callee.property.name) &&
+    node.arguments.length === 1
+  );
 }
 
-export default isNumber as RuleCheck;
+export default isNumber;
