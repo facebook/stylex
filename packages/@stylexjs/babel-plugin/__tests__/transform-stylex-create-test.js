@@ -109,6 +109,57 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('nested referenced style object', () => {
+        const { code, metadata } = transform(`
+          import * as stylex from '@stylexjs/stylex';
+          function fooBar() {
+            const styles = stylex.create({
+              root: {
+                backgroundColor: 'red',
+                color: 'blue',
+              }
+            });
+            console.log(styles);
+          }
+        `);
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          const _styles = {
+            root: {
+              kWkggS: "xrkmrrc",
+              kMwMTN: "xju2f9n",
+              $$css: true
+            }
+          };
+          function fooBar() {
+            const styles = _styles;
+            console.log(styles);
+          }"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xrkmrrc",
+                {
+                  "ltr": ".xrkmrrc{background-color:red}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "xju2f9n",
+                {
+                  "ltr": ".xju2f9n{color:blue}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
       test('style object (multiple)', () => {
         // Check multiple objects and different key types
         const { code, metadata } = transform(`

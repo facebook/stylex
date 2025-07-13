@@ -31,6 +31,7 @@ import {
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
+import { pathReplaceHoisted } from '../utils/ast-helpers';
 
 function isSafeToSkipNullCheck(expr: t.Expression): boolean {
   if (t.isTemplateLiteral(expr)) return true;
@@ -374,7 +375,7 @@ export default function transformStyleXCreate(
 
     state.registerStyles(listOfStyles, path);
 
-    path.replaceWith(resultAst);
+    pathReplaceHoisted(path, resultAst);
 
     if (Object.keys(injectedStyles).length === 0) {
       return;
@@ -391,13 +392,7 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
       SyntaxError,
     );
   }
-  const nearestStatement = findNearestStatementAncestor(path);
-  if (
-    !nearestStatement.parentPath.isProgram() &&
-    !nearestStatement.parentPath.isExportNamedDeclaration()
-  ) {
-    throw path.buildCodeFrameError(messages.ONLY_TOP_LEVEL, SyntaxError);
-  }
+
   if (path.node.arguments.length !== 1) {
     throw path.buildCodeFrameError(
       messages.illegalArgumentLength('create', 1),
@@ -417,17 +412,6 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   if (hasSpread) {
     throw path.buildCodeFrameError(messages.NO_OBJECT_SPREADS, SyntaxError);
   }
-}
-
-// Find the nearest statement ancestor of a given path.
-function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
-  if (path.isStatement()) {
-    return path;
-  }
-  if (path.parentPath == null) {
-    throw new Error('Unexpected Path found that is not part of the AST.');
-  }
-  return findNearestStatementAncestor(path.parentPath);
 }
 
 function legacyExpandShorthands(

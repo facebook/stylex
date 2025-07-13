@@ -71,7 +71,7 @@ describe('@stylexjs/babel-plugin', () => {
             const styles = stylex.create({});
           }
        `);
-      }).toThrow(messages.ONLY_TOP_LEVEL);
+      }).not.toThrow(messages.ONLY_TOP_LEVEL);
     });
 
     test('invalid argument: none', () => {
