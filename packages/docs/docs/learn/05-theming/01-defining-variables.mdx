@@ -48,7 +48,7 @@ export const tokens = stylex.defineVars({
 });
 ```
 
-This function, too, is processed at compile-time and CSS variable names are
+This function, too, is processed at compile-time and unique CSS variable names are
 automatically generated.
 
 This defines the variables at `:root` of the HTML document. They can be imported
@@ -75,7 +75,40 @@ export const colors = stylex.defineVars({
 
 Similarly, `@supports` can be used as well.
 
-## Rules when defining variables
+### Manual Variable Names
+
+The `defineVars` function lets you use treat variables as typical javascript objects.
+Behind the scenes, StyleX will generate unique and deterministic variable names based
+on the file name, variable name bound to `defineVars` and the key within the object.
+
+However, there cases where you may want to manually specify the variable name.
+This done by using strings that start with `--` as the object keys within your `defineVars` call.
+
+```tsx title="tokens.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+export const tokens = stylex.defineVars({
+  '--primaryText': 'black',
+  '--secondaryText': '#333',
+  '--accent': 'blue',
+});
+```
+
+This call will use the exact strings as variable names in the generated CSS:
+`--primaryText`, `--secondaryText`, `--accent`.
+
+:::warning Ensure Uniqueness
+
+When using manual variable names, StyleX can no longer ensure that your variable
+names are globally unique. You will have to ensure that no two variable declarations
+with `defineVars` define the same manual variable name.
+
+:::
+
+Other than the name of the CSS variable in the generated CSS, these variables work
+just like any other variables defined with `defineVars`.
+
+## Rules when defining variable names 
 
 Variables are the only type of non-local value that can be used within a
 `create` call. This is made possible by enforcing a few rules:

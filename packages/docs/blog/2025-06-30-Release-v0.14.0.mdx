@@ -37,11 +37,19 @@ const transitionClass = stylex.viewTransitionClass({
   },
 });
 
-// in a component definition
+// In a <ViewTransition> component
 
 <ViewTransition default={transitionClass}>
   <Content />
 </ViewTransition>
+
+// Or in Styles
+
+const styles = stylex.create({
+  container: {
+    viewTransitionClass: transitionClass,
+  },
+});
 ```
 
 ### Linter: `validImports`
@@ -59,17 +67,23 @@ The `@stylexjs/eslint-plugin` package now supports the `validImports` option for
 
 ### Style resolution
 
-StyleX will now use `property-specificity` instead of `application-order` as the default value for the `styleResolution` option (the strategy used to merge styles). The difference between these 2 strategies is as follows:
+StyleX now defaults to the `property-specificity` strategy instead of `application-order` for the `styleResolution` option. The difference between these 2 strategies is as follows:
 
 * `application-order`
   * The last style wins, i.e., `margin` wins over `marginTop` if it appears last in the order of styles.
-  * Larger generated JavaScript objects.
+  * Matches the behavior of inline styles in the browser.
 * `property-specificity`
   * The more specific style wins, i.e., `marginTop` wins over `margin` irrespective of the order of styles.
-  * Disallows more shorthands, e.g., `background`, `border`.
-  * Smaller generated JavaScript objects.
+  * Matches the behavior of Styling in React Native.
 
-If you experience visual regressions, set `styleResolution` to `application-order`. However, the [performance metrics](https://github.com/facebook/stylex/pull/1064) we track are all significantly improved or neutral when using `property-specificity`, therefore, we strongly encourage migration.
+Set `styleResolution` to `application-order` in your configuration to maintain the previous default behaviour
+and avoid visual regressions.
+
+We're making this change now as `application-order` could lead to significantly larger generated JavaScript objects,
+and have a [performance impact](https://github.com/facebook/stylex/pull/1064).
+
+This is a trade-off as we've heard that `application-order` is usually more intuitive for developers. We are working
+on making `application-order` more performant so using it remains a viable option.
 
 ## Fixes
 
