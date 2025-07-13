@@ -31,7 +31,7 @@ import {
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
-import { pathReplaceHoisted } from '../utils/ast-helpers';
+import { hoistExpression, pathReplaceHoisted } from '../utils/ast-helpers';
 
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
@@ -329,7 +329,7 @@ export default function transformStyleXCreate(
               prop.value = t.arrowFunctionExpression(
                 params,
                 t.arrayExpression([
-                  value,
+                  hoistExpression(path, value),
                   t.objectExpression(
                     Object.entries(inlineStyles).map(([key, value]) =>
                       t.objectProperty(t.stringLiteral(key), value.expression),
