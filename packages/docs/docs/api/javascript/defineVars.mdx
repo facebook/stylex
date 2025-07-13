@@ -47,3 +47,34 @@ const styles = stylex.create({
   },
 });
 ```
+
+### Manual Variable Names
+
+`defineVars` will result in uniquely named variables in the generated CSS file.
+Use object keys that start with `--` to manually specify the variable name.
+
+```tsx title="vars.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+export const tokens = stylex.defineVars({
+  '--primaryText': 'black',
+  '--secondaryText': '#333',
+  '--accent': 'blue',
+});
+```
+
+Using it remains the same:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { tokens } from './vars.stylex.js';
+
+const styles = stylex.create({
+  container: {
+    color: tokens['--primaryText'],
+    backgroundColor: tokens['--accent'],
+  },
+});
+```
+
+Variable name uniqueness will need to be ensured manually when using manual variable names.
