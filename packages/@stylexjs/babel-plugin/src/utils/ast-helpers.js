@@ -18,6 +18,25 @@ type ImportAdditionOptions = Omit<
 
 import * as t from '@babel/types';
 
+export function hoistExpression(
+  path: NodePath<>,
+  astExpression: t.Expression,
+): t.Expression {
+  const programStatementPath = getProgramStatement(path);
+  if (programStatementPath == null) {
+    return astExpression;
+  }
+
+  const nameIdent = path.scope.generateUidIdentifier();
+
+  programStatementPath.insertBefore(
+    t.variableDeclaration('const', [
+      t.variableDeclarator(nameIdent, astExpression),
+    ]),
+  );
+  return nameIdent;
+}
+
 export function pathReplaceHoisted(
   path: NodePath<>,
   astExpression: t.Expression,

@@ -31,7 +31,7 @@ import {
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
-import { pathReplaceHoisted } from '../utils/ast-helpers';
+import { hoistExpression, pathReplaceHoisted } from '../utils/ast-helpers';
 
 function isSafeToSkipNullCheck(expr: t.Expression): boolean {
   if (t.isTemplateLiteral(expr)) return true;
@@ -353,7 +353,7 @@ export default function transformStyleXCreate(
               prop.value = t.arrowFunctionExpression(
                 params,
                 t.arrayExpression([
-                  conditionalObj,
+                  hoistExpression(path, conditionalObj),
                   t.objectExpression(
                     Object.entries(inlineStyles).map(([key, val]) =>
                       t.objectProperty(t.stringLiteral(key), val.expression),

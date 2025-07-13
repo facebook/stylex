@@ -368,13 +368,14 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
+        const _temp = {
+          "--__hashed_var__1jqb1tb": color != null ? "__hashed_var__b69i2g" : color,
+          $$css: true
+        };
         _inject2(".__hashed_var__b69i2g{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb)}", 1);
         _inject2("@property ----__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}", 0);
         const styles = {
-          color: color => [{
-            "--__hashed_var__1jqb1tb": color != null ? "__hashed_var__b69i2g" : color,
-            $$css: true
-          }, {
+          color: color => [_temp, {
             "----__hashed_var__1jqb1tb": color != null ? color : undefined
           }]
         };
