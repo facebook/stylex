@@ -1857,5 +1857,89 @@ revert`,
         },
       ],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            margin: "10",
+            height: "10",
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'margin value must be one of:\n' +
+            'a number literal or math expression\n' +
+            'a non-numeric string\n' +
+            'null\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
+        },
+        {
+          message:
+            'height value must be one of:\n' +
+            'a non-numeric string\n' +
+            'a number literal or math expression\n' +
+            'available\n' +
+            'min-content\n' +
+            'max-content\n' +
+            'fit-content\n' +
+            'auto\n' +
+            'a number ending in px, mm, in, pc, pt\n' +
+            'a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax\n' +
+            'A string literal representing a percentage (e.g. 100%)\n' +
+            'null\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            margin: "10",
+            marginTop: "10.1",
+            marginRight: "-10",
+            marginBottom: "-1.0",
+            marginLeft: "-0.10",
+            padding: "0.1234",
+            paddingTop: "100000",
+            paddingRight: "10",
+            paddingBottom: "10",
+            paddingLeft: "10",
+            width: "10",
+            height: "10",
+            minWidth: "10",
+            maxWidth: "10",
+            minHeight: "10",
+            maxHeight: "10",
+            top: "10",
+            right: "10",
+            bottom: "10",
+            left: "10",
+            inset: "10",
+            borderWidth: "10",
+            borderTopWidth: "10",
+            borderRightWidth: "10",
+            borderBottomWidth: "10",
+            borderLeftWidth: "10",
+            gap: "10",
+            rowGap: "10",
+            columnGap: "10",
+            lineHeight: "10",
+            outlineWidth: "10",
+          },
+        });
+      `,
+      errors: Array(31).fill({}),
+    },
   ],
 });
