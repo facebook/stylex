@@ -140,6 +140,17 @@ const isRelativeLength: RuleCheck = (
 
 const isLength = makeUnionRule(isAbsoluteLength, isRelativeLength);
 
+const isNonNumericString: RuleCheck = (node: Node): RuleResponse => {
+  if (node.type === 'Literal' && typeof node.value === 'string') {
+    if (/^[-+]?(?:\d+|\d*\.\d+)$/.test(node.value)) {
+      return {
+        message: 'a non-numeric string',
+      };
+    }
+  }
+  return undefined;
+};
+
 // NOTE: converted from Flow types to function calls using this
 // https://astexplorer.net/#/gist/87e64b378349f13e885f9b6968c1e556/4b4ff0358de33cf86b8b21d29c17504d789babf9
 const all: RuleCheck = makeUnionRule(
@@ -149,9 +160,12 @@ const all: RuleCheck = makeUnionRule(
   makeLiteralRule('unset'),
   makeLiteralRule('revert'),
 );
+
+const length = makeUnionRule(isNumber, isNonNumericString);
+
 const color = makeUnionRule(isString, isNamedColor, isHexColor);
 const width = makeUnionRule(
-  isString,
+  isNonNumericString,
   isNumber,
   makeLiteralRule('available'),
   makeLiteralRule('min-content'),
@@ -166,7 +180,7 @@ const borderWidth = makeUnionRule(
   makeLiteralRule('thin'),
   makeLiteralRule('medium'),
   makeLiteralRule('thick'),
-  isString,
+  isNonNumericString,
   isLength,
 );
 const lengthPercentage = isStringOrNumber;
@@ -688,12 +702,20 @@ const columnFill = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('balance'),
 );
-const columnGap = makeUnionRule(isNumber, isString, makeLiteralRule('normal'));
+const columnGap = makeUnionRule(
+  isNumber,
+  isNonNumericString,
+  makeLiteralRule('normal'),
+);
 const columnSpan = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('all'),
 );
-const columnWidth = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
+const columnWidth = makeUnionRule(
+  isNumber,
+  isNonNumericString,
+  makeLiteralRule('auto'),
+);
 const columns = makeUnionRule(columnWidth, columnCount);
 const contain = makeUnionRule(
   makeLiteralRule('none'),
@@ -835,7 +857,7 @@ const fontWeight = makeUnionRule(
   makeRangeRule(1, 1000, 'a number between 1 and 1000'),
   isCSSVariable,
 );
-const gap = isStringOrNumber;
+const gap = length;
 const grid = makeUnionRule(gridTemplate, isString);
 const gridArea = makeUnionRule(gridLine, isString);
 const gridAutoColumns = trackSize;
@@ -952,7 +974,7 @@ const lineBreak = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('strict'),
 );
-const lineHeight = isStringOrNumber;
+const lineHeight = length;
 const listStyleImage = makeUnionRule(isString, makeLiteralRule('none'));
 const listStylePosition = makeUnionRule(
   makeLiteralRule('inside'),
@@ -963,9 +985,17 @@ const listStyle = makeUnionRule(
   listStylePosition,
   listStyleImage,
 );
-const margin = isStringOrNumber;
-const marginLeft = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
-const marginTop = makeUnionRule(isNumber, isString, makeLiteralRule('auto'));
+const margin = length;
+const marginLeft = makeUnionRule(
+  isNumber,
+  isNonNumericString,
+  makeLiteralRule('auto'),
+);
+const marginTop = makeUnionRule(
+  isNumber,
+  isNonNumericString,
+  makeLiteralRule('auto'),
+);
 const markerOffset = makeUnionRule(isNumber, makeLiteralRule('auto'));
 const mask = maskLayer;
 const maskClip = isString;
@@ -981,7 +1011,7 @@ const maskType = makeUnionRule(
 );
 const maxWidth = makeUnionRule(
   isNumber,
-  isString,
+  isNonNumericString,
   makeLiteralRule('none'),
   makeLiteralRule('max-content'),
   makeLiteralRule('min-content'),
@@ -991,7 +1021,7 @@ const maxWidth = makeUnionRule(
 const maxBlockSize = maxWidth;
 const maxHeight = makeUnionRule(
   isNumber,
-  isString,
+  isNonNumericString,
   makeLiteralRule('none'),
   makeLiteralRule('max-content'),
   makeLiteralRule('min-content'),
@@ -1001,7 +1031,7 @@ const maxHeight = makeUnionRule(
 const maxInlineSize = maxWidth;
 const minWidth = makeUnionRule(
   isNumber,
-  isString,
+  isNonNumericString,
   makeLiteralRule('auto'),
   makeLiteralRule('max-content'),
   makeLiteralRule('min-content'),
@@ -1011,7 +1041,7 @@ const minWidth = makeUnionRule(
 const minBlockSize = minWidth;
 const minHeight = makeUnionRule(
   isNumber,
-  isString,
+  isNonNumericString,
   makeLiteralRule('auto'),
   makeLiteralRule('max-content'),
   makeLiteralRule('min-content'),
@@ -1092,13 +1122,13 @@ const overscrollBehaviorY = makeUnionRule(
   makeLiteralRule('contain'),
   makeLiteralRule('auto'),
 );
-const padding = isStringOrNumber;
-const paddingLeft = isStringOrNumber;
+const padding = length;
+const paddingLeft = length;
 // const paddingBlockEnd = paddingLeft;
 // const paddingBlockStart = paddingLeft;
-const paddingBottom = isStringOrNumber;
-const paddingRight = isStringOrNumber;
-const paddingTop = isStringOrNumber;
+const paddingBottom = length;
+const paddingRight = length;
+const paddingTop = length;
 const pageBreakAfter = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('always'),
@@ -1145,7 +1175,7 @@ const resize = makeUnionRule(
   makeLiteralRule('horizontal'),
   makeLiteralRule('vertical'),
 );
-const rowGap = isStringOrNumber;
+const rowGap = length;
 const rubyAlign = makeUnionRule(
   makeLiteralRule('start'),
   makeLiteralRule('center'),
@@ -1562,7 +1592,6 @@ const voiceStress = makeUnionRule(
 );
 const voiceVolume = makeUnionRule(makeLiteralRule('silent'), isString);
 const maskImage = maskReference;
-const top = isStringOrNumber;
 
 const SupportedVendorSpecificCSSProperties = {
   MozOsxFontSmoothing: makeLiteralRule('grayscale'),
@@ -1926,17 +1955,17 @@ const CSSProperties = {
   initialLetter: initialLetter,
   initialLetterAlign: initialLetterAlign,
 
-  inset: isStringOrNumber,
-  top: top,
-  right: isStringOrNumber,
-  bottom: isStringOrNumber,
-  left: isStringOrNumber,
-  insetBlock: isStringOrNumber,
-  insetBlockStart: top,
-  insetBlockEnd: isStringOrNumber,
-  insetInline: isStringOrNumber,
-  insetInlineStart: isStringOrNumber,
-  insetInlineEnd: isStringOrNumber,
+  inset: length,
+  top: length,
+  right: length,
+  bottom: length,
+  left: length,
+  insetBlock: length,
+  insetBlockStart: length,
+  insetBlockEnd: length,
+  insetInline: length,
+  insetInlineStart: length,
+  insetInlineEnd: length,
 
   height: width,
   width: width,
