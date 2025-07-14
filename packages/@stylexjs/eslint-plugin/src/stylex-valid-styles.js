@@ -1117,7 +1117,7 @@ const pageBreakInside = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
 );
-const perspective = makeUnionRule(makeLiteralRule('none'), isNumber);
+const perspective = makeUnionRule(makeLiteralRule('none'), isNumber, isString);
 const perspectiveOrigin = isString;
 const pointerEvents = makeUnionRule(
   makeLiteralRule('auto'),
@@ -1938,7 +1938,7 @@ const CSSProperties = {
   insetInlineStart: isStringOrNumber,
   insetInlineEnd: isStringOrNumber,
 
-  height: isStringOrNumber,
+  height: width,
   width: width,
   blockSize: blockSize,
   inlineSize: inlineSize,
