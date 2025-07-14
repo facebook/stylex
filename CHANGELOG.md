@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.2 (Jul 14, 2025)
+
+### Fixes
+
+* ESLint plugin style validation for length properties (#1136)
+* Remove legacy RTL flipping of boxShadow, cursor, textShadow values.
+
 ## 0.14.1 (Jul 3, 2025)
 
 ### Fixes
