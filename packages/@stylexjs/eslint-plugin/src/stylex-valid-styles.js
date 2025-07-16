@@ -186,28 +186,28 @@ const borderWidth = makeUnionRule(
 const lengthPercentage = isStringOrNumber;
 const borderImageSource = makeUnionRule(makeLiteralRule('none'), isString);
 const time = isString;
-const singleAnimationDirection = makeUnionRule(
+const animationDirection = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('reverse'),
   makeLiteralRule('alternate'),
   makeLiteralRule('alternate-reverse'),
 );
-const singleAnimationFillMode = makeUnionRule(
+const animationFillMode = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('forwards'),
   makeLiteralRule('backwards'),
   makeLiteralRule('both'),
 );
-const singleAnimationIterationCount = makeUnionRule(
+const animationIterationCount = makeUnionRule(
   makeLiteralRule('infinite'),
   isNumber,
 );
 
-const singleAnimationPlayState = makeUnionRule(
+const animationPlayState = makeUnionRule(
   makeLiteralRule('running'),
   makeLiteralRule('paused'),
 );
-const singleTransitionTimingFunction = makeUnionRule(
+const animationTimingFunction = makeUnionRule(
   makeLiteralRule('ease'),
   makeLiteralRule('linear'),
   makeLiteralRule('ease-in'),
@@ -396,17 +396,6 @@ const gridTemplate = makeUnionRule(
   isString,
 );
 const gridTemplateAreas = makeUnionRule(makeLiteralRule('none'), isString);
-const gridTemplateColumns = makeUnionRule(
-  makeLiteralRule('none'),
-  makeLiteralRule('subgrid'),
-  isString,
-);
-const gridTemplateRows = makeUnionRule(
-  makeLiteralRule('none'),
-  makeLiteralRule('subgrid'),
-  isString,
-);
-const gridRowGap = lengthPercentage;
 const trackBreadth = makeUnionRule(
   lengthPercentage,
   isString,
@@ -425,7 +414,6 @@ const columnRule = makeUnionRule(
   columnRuleStyle,
   columnRuleColor,
 );
-const singleTimingFunction = singleTransitionTimingFunction;
 const shapeBox = makeUnionRule(box, makeLiteralRule('margin-box'));
 const geometryBox = makeUnionRule(
   shapeBox,
@@ -454,63 +442,31 @@ const maskLayer = makeUnionRule(
   compositeOperator,
 );
 
-const alignContent = makeUnionRule(
+const alignBase = makeUnionRule(
+  'normal',
+  'stretch',
   'center',
   'start',
   'end',
   'flex-start',
   'flex-end',
-  'normal',
   'baseline',
   'first baseline',
   'last baseline',
+  'safe center',
+  'unsafe center',
+);
+
+const alignContent = makeUnionRule(
+  alignBase,
   'space-between',
   'space-around',
   'space-evenly',
-  'stretch',
-  'safe center',
-  'unsafe center',
 );
-const alignItems = makeUnionRule(
-  'normal',
-  'stretch',
-  'center',
-  'start',
-  'end',
-  'flex-start',
-  'flex-end',
-  'self-start',
-  'self-end',
-  'baseline',
-  'first baseline',
-  'last baseline',
-  'safe center',
-  'unsafe center',
-);
-const alignSelf = makeUnionRule(
-  'auto',
-  'normal',
-  'center',
-  'start',
-  'end',
-  'self-start',
-  'self-end',
-  'flex-start',
-  'flex-end',
-  'baseline',
-  'first baseline',
-  'last baseline',
-  'stretch',
-  'safe center',
-  'unsafe center',
-);
-const animationDelay = time;
-const animationDirection = singleAnimationDirection;
-const animationDuration = time;
-const animationFillMode = singleAnimationFillMode;
-const animationIterationCount = singleAnimationIterationCount;
-const animationPlayState = singleAnimationPlayState;
-const animationTimingFunction = singleTimingFunction;
+
+const alignItems = makeUnionRule(alignBase, 'self-start', 'self-end');
+
+const alignSelf = makeUnionRule(alignBase, 'auto', 'self-start', 'self-end');
 const appearance = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('none'),
@@ -581,16 +537,6 @@ const border =
     }
     return response;
   };
-// const borderBlockEnd = makeUnionRule(borderWidth, borderStyle, color);
-// const borderBlockEndColor = color;
-// const borderBlockEndStyle = borderStyle;
-// const borderBlockEndWidth = borderWidth;
-// const borderBlockStart = makeUnionRule(borderWidth, borderStyle, color);
-// const borderBlockStartColor = color;
-// const borderBlockStartStyle = borderStyle;
-// const borderBlockStartWidth = borderWidth;
-const borderBottomLeftRadius = lengthPercentage;
-const borderBottomRightRadius = lengthPercentage;
 const borderBottomStyle = brStyle;
 const borderBottomWidth = borderWidth;
 const borderCollapse = makeUnionRule(
@@ -607,10 +553,7 @@ const borderImage = makeUnionRule(
 const borderLeftColor = color;
 const borderLeftStyle = brStyle;
 const borderLeftWidth = borderWidth;
-const borderRadius = lengthPercentage;
 const borderSpacing = isStringOrNumber;
-const borderTopLeftRadius = lengthPercentage;
-const borderTopRightRadius = lengthPercentage;
 const borderTopStyle = brStyle;
 const borderTopWidth = borderWidth;
 const boxDecorationBreak = makeUnionRule(
@@ -644,21 +587,7 @@ const boxSuppress = makeUnionRule(
   makeLiteralRule('discard'),
   makeLiteralRule('hide'),
 );
-const breakAfter = makeUnionRule(
-  makeLiteralRule('auto'),
-  makeLiteralRule('avoid'),
-  makeLiteralRule('avoid-page'),
-  makeLiteralRule('page'),
-  makeLiteralRule('left'),
-  makeLiteralRule('right'),
-  makeLiteralRule('recto'),
-  makeLiteralRule('verso'),
-  makeLiteralRule('avoid-column'),
-  makeLiteralRule('column'),
-  makeLiteralRule('avoid-region'),
-  makeLiteralRule('region'),
-);
-const breakBefore = makeUnionRule(
+const breakBeforeOrAfter = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
   makeLiteralRule('avoid-page'),
@@ -865,9 +794,7 @@ const gridAutoFlow = makeUnionRule(isString, makeLiteralRule('dense'));
 const gridAutoRows = trackSize;
 const gridColumn = makeUnionRule(gridLine, isString);
 const gridColumnEnd = gridLine;
-const gridColumnGap = lengthPercentage;
 const gridColumnStart = gridLine;
-const gridGap = makeUnionRule(gridRowGap, gridColumnGap);
 const gridRow = makeUnionRule(gridLine, isString);
 const gridRowEnd = gridLine;
 const gridRowStart = gridLine;
@@ -905,23 +832,8 @@ const isolation = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('isolate'),
 );
-const justifyContent = makeUnionRule(
-  'center',
-  'start',
-  'end',
-  'flex-start',
-  'flex-end',
-  'left',
-  'right',
-  'normal',
-  'space-between',
-  'space-around',
-  'space-evenly',
-  'stretch',
-  'safe center',
-  'unsafe center',
-);
-const justifyItems = makeUnionRule(
+
+const justifyBase = [
   'normal',
   'stretch',
   'center',
@@ -929,8 +841,6 @@ const justifyItems = makeUnionRule(
   'end',
   'flex-start',
   'flex-end',
-  'self-start',
-  'self-end',
   'left',
   'right',
   'baseline',
@@ -938,32 +848,34 @@ const justifyItems = makeUnionRule(
   'last baseline',
   'safe center',
   'unsafe center',
+];
+
+const justifyContent = makeUnionRule(
+  ...justifyBase,
+  'space-between',
+  'space-around',
+  'space-evenly',
+);
+
+const justifyItems = makeUnionRule(
+  ...justifyBase,
+  'self-start',
+  'self-end',
   'legacy right',
   'legacy left',
   'legacy center',
 );
+
 // There's an optional overflowPosition (safe vs unsafe) prefix to
 // [selfPosition | 'left' | 'right']. It's not used on www, so, it's not added
 // here.
 const justifySelf = makeUnionRule(
   'auto',
-  'normal',
-  'stretch',
-  'center',
-  'start',
-  'end',
-  'flex-start',
-  'flex-end',
+  ...justifyBase,
   'self-start',
   'self-end',
-  'left',
-  'right',
-  'baseline',
-  'first baseline',
-  'last baseline',
-  'safe center',
-  'unsafe center',
 );
+
 const letterSpacing = makeUnionRule(
   makeLiteralRule('normal'),
   lengthPercentage,
@@ -1009,7 +921,7 @@ const maskType = makeUnionRule(
   makeLiteralRule('luminance'),
   makeLiteralRule('alpha'),
 );
-const maxWidth = makeUnionRule(
+const minMaxLength = makeUnionRule(
   isNumber,
   isNonNumericString,
   makeLiteralRule('none'),
@@ -1018,37 +930,6 @@ const maxWidth = makeUnionRule(
   makeLiteralRule('fit-content'),
   makeLiteralRule('fill-available'),
 );
-const maxBlockSize = maxWidth;
-const maxHeight = makeUnionRule(
-  isNumber,
-  isNonNumericString,
-  makeLiteralRule('none'),
-  makeLiteralRule('max-content'),
-  makeLiteralRule('min-content'),
-  makeLiteralRule('fit-content'),
-  makeLiteralRule('fill-available'),
-);
-const maxInlineSize = maxWidth;
-const minWidth = makeUnionRule(
-  isNumber,
-  isNonNumericString,
-  makeLiteralRule('auto'),
-  makeLiteralRule('max-content'),
-  makeLiteralRule('min-content'),
-  makeLiteralRule('fit-content'),
-  makeLiteralRule('fill-available'),
-);
-const minBlockSize = minWidth;
-const minHeight = makeUnionRule(
-  isNumber,
-  isNonNumericString,
-  makeLiteralRule('auto'),
-  makeLiteralRule('max-content'),
-  makeLiteralRule('min-content'),
-  makeLiteralRule('fit-content'),
-  makeLiteralRule('fill-available'),
-);
-const minInlineSize = minWidth;
 
 const mixBlendMode = blendMode;
 const motionPath = makeUnionRule(
@@ -1056,9 +937,8 @@ const motionPath = makeUnionRule(
   geometryBox,
   makeLiteralRule('none'),
 );
-const motionOffset = lengthPercentage;
 const motionRotation = isStringOrNumber;
-const motion = makeUnionRule(motionPath, motionOffset, motionRotation);
+const motion = makeUnionRule(motionPath, lengthPercentage, motionRotation);
 const objectFit = makeUnionRule(
   makeLiteralRule('fill'),
   makeLiteralRule('contain'),
@@ -1095,13 +975,7 @@ const overflowWrap = makeUnionRule(
   makeLiteralRule('break-word'),
   makeLiteralRule('anywhere'),
 );
-const overflowX = makeUnionRule(
-  makeLiteralRule('visible'),
-  makeLiteralRule('hidden'),
-  makeLiteralRule('scroll'),
-  makeLiteralRule('auto'),
-);
-const overflowY = makeUnionRule(
+const overflowDir = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
   makeLiteralRule('scroll'),
@@ -1112,31 +986,8 @@ const overscrollBehavior = makeUnionRule(
   makeLiteralRule('contain'),
   makeLiteralRule('auto'),
 );
-const overscrollBehaviorX = makeUnionRule(
-  makeLiteralRule('none'),
-  makeLiteralRule('contain'),
-  makeLiteralRule('auto'),
-);
-const overscrollBehaviorY = makeUnionRule(
-  makeLiteralRule('none'),
-  makeLiteralRule('contain'),
-  makeLiteralRule('auto'),
-);
-const padding = length;
-const paddingLeft = length;
-// const paddingBlockEnd = paddingLeft;
-// const paddingBlockStart = paddingLeft;
-const paddingBottom = length;
-const paddingRight = length;
-const paddingTop = length;
-const pageBreakAfter = makeUnionRule(
-  makeLiteralRule('auto'),
-  makeLiteralRule('always'),
-  makeLiteralRule('avoid'),
-  makeLiteralRule('left'),
-  makeLiteralRule('right'),
-);
-const pageBreakBefore = makeUnionRule(
+
+const pageBreak = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('always'),
   makeLiteralRule('avoid'),
@@ -1210,7 +1061,6 @@ const scrollSnapType = makeUnionRule(
   makeLiteralRule('y mandatory'),
 );
 const shapeImageThreshold = isStringOrNumber;
-const shapeMargin = lengthPercentage;
 const shapeOutside = makeUnionRule(makeLiteralRule('none'), shapeBox, isString);
 const tabSize = isStringOrNumber;
 const tableLayout = makeUnionRule(
@@ -1342,10 +1192,8 @@ const transformStyle = makeUnionRule(
   makeLiteralRule('flat'),
   makeLiteralRule('preserve-3d'),
 );
-const transitionDelay = time;
-const transitionDuration = time;
 const transitionProperty = isString;
-const transitionTimingFunction = singleTransitionTimingFunction;
+const transitionTimingFunction = animationTimingFunction;
 const unicodeBidi = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('embed'),
@@ -1484,7 +1332,7 @@ const marker = makeUnionRule(makeLiteralRule('none'), isString);
 const markerEnd = makeUnionRule(makeLiteralRule('none'), isString);
 const markerMid = makeUnionRule(makeLiteralRule('none'), isString);
 const markerStart = makeUnionRule(makeLiteralRule('none'), isString);
-const pauseAfter = makeUnionRule(
+const pauseOrRest = makeUnionRule(
   isNumber,
   makeLiteralRule('none'),
   makeLiteralRule('x-weak'),
@@ -1493,35 +1341,6 @@ const pauseAfter = makeUnionRule(
   makeLiteralRule('strong'),
   makeLiteralRule('x-strong'),
 );
-const pauseBefore = makeUnionRule(
-  isNumber,
-  makeLiteralRule('none'),
-  makeLiteralRule('x-weak'),
-  makeLiteralRule('weak'),
-  makeLiteralRule('medium'),
-  makeLiteralRule('strong'),
-  makeLiteralRule('x-strong'),
-);
-const pause = makeUnionRule(pauseBefore, pauseAfter);
-const restAfter = makeUnionRule(
-  isNumber,
-  makeLiteralRule('none'),
-  makeLiteralRule('x-weak'),
-  makeLiteralRule('weak'),
-  makeLiteralRule('medium'),
-  makeLiteralRule('strong'),
-  makeLiteralRule('x-strong'),
-);
-const restBefore = makeUnionRule(
-  isNumber,
-  makeLiteralRule('none'),
-  makeLiteralRule('x-weak'),
-  makeLiteralRule('weak'),
-  makeLiteralRule('medium'),
-  makeLiteralRule('strong'),
-  makeLiteralRule('x-strong'),
-);
-const rest = makeUnionRule(restBefore, restAfter);
 const shapeRendering = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('optimizeSpeed'),
@@ -1702,9 +1521,9 @@ const CSSProperties = {
     '`animation` is not recommended. Please use `animationName`, `animationDuration`, etc. instead',
   ),
   animationComposition: makeUnionRule('replace', 'add', 'accumulate'),
-  animationDelay: animationDelay,
+  animationDelay: time,
   animationDirection: animationDirection,
-  animationDuration: animationDuration,
+  animationDuration: time,
   animationFillMode: animationFillMode,
   animationIterationCount: animationIterationCount,
   animationPlayState: animationPlayState,
@@ -1806,16 +1625,16 @@ const CSSProperties = {
 
   borderSpacing: borderSpacing,
 
-  borderRadius: borderRadius,
-  borderStartStartRadius: borderTopRightRadius,
-  borderStartEndRadius: borderTopRightRadius,
-  borderEndStartRadius: borderBottomRightRadius,
-  borderEndEndRadius: borderBottomRightRadius,
+  borderRadius: lengthPercentage,
+  borderStartStartRadius: lengthPercentage,
+  borderStartEndRadius: lengthPercentage,
+  borderEndStartRadius: lengthPercentage,
+  borderEndEndRadius: lengthPercentage,
 
-  borderTopLeftRadius: borderTopLeftRadius,
-  borderTopRightRadius: borderTopRightRadius,
-  borderBottomLeftRadius: borderBottomLeftRadius,
-  borderBottomRightRadius: borderBottomRightRadius,
+  borderTopLeftRadius: lengthPercentage,
+  borderTopRightRadius: lengthPercentage,
+  borderBottomLeftRadius: lengthPercentage,
+  borderBottomRightRadius: lengthPercentage,
 
   boxAlign: boxAlign,
   boxDecorationBreak: boxDecorationBreak,
@@ -1828,8 +1647,8 @@ const CSSProperties = {
   boxShadow: boxShadow,
   boxSizing: boxSizing,
   boxSuppress: boxSuppress,
-  breakAfter: breakAfter,
-  breakBefore: breakBefore,
+  breakAfter: breakBeforeOrAfter,
+  breakBefore: breakBeforeOrAfter,
   breakInside: breakInside,
   captionSide: captionSide,
   caretColor: color,
@@ -1924,19 +1743,19 @@ const CSSProperties = {
   gridAutoRows: gridAutoRows,
   gridColumn: gridColumn,
   gridColumnEnd: gridColumnEnd,
-  gridColumnGap: gridColumnGap,
+  gridColumnGap: lengthPercentage,
   gridColumnStart: gridColumnStart,
 
   gridRow: gridRow,
   gridRowEnd: gridRowEnd,
-  gridGap: gridGap,
-  gridRowGap: gridRowGap,
+  gridGap: lengthPercentage,
+  gridRowGap: lengthPercentage,
 
   gridRowStart: gridRowStart,
   gridTemplate: gridTemplate,
   gridTemplateAreas: gridTemplateAreas,
-  gridTemplateColumns: gridTemplateColumns,
-  gridTemplateRows: gridTemplateRows,
+  gridTemplateColumns: gridTemplate,
+  gridTemplateRows: gridTemplate,
 
   hangingPunctuation: makeUnionRule(
     'none',
@@ -1974,14 +1793,14 @@ const CSSProperties = {
 
   interpolateSize: interpolateSize,
 
-  maxHeight: maxHeight,
-  maxWidth: maxWidth,
-  maxBlockSize: maxBlockSize,
-  maxInlineSize: maxInlineSize,
-  minBlockSize: minBlockSize,
-  minHeight: minHeight,
-  minInlineSize: minInlineSize,
-  minWidth: minWidth,
+  maxHeight: minMaxLength,
+  maxWidth: minMaxLength,
+  maxBlockSize: minMaxLength,
+  maxInlineSize: minMaxLength,
+  minBlockSize: minMaxLength,
+  minHeight: minMaxLength,
+  minInlineSize: minMaxLength,
+  minWidth: minMaxLength,
 
   isolation: isolation,
   justifyContent: justifyContent,
@@ -2045,7 +1864,7 @@ const CSSProperties = {
 
   mixBlendMode: mixBlendMode,
   motion: motion,
-  motionOffset: motionOffset,
+  motionOffset: lengthPercentage,
   motionPath: motionPath,
   motionRotation: motionRotation,
   objectFit: objectFit,
@@ -2084,37 +1903,37 @@ const CSSProperties = {
   overflowAnchor: overflowAnchor,
   overflowClipBox: overflowClipBox,
   overflowWrap: overflowWrap,
-  overflowX: overflowX,
-  overflowY: overflowY,
+  overflowX: overflowDir,
+  overflowY: overflowDir,
   overscrollBehavior: overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorInline: overscrollBehaviorX,
-  overscrollBehaviorX: overscrollBehaviorX,
-  overscrollBehaviorY: overscrollBehaviorY,
+  overscrollBehaviorX: overscrollBehavior,
+  overscrollBehaviorY: overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorBlock: overscrollBehaviorY,
   overflowClipMargin: isString,
 
   paintOrder: makeUnionRule('normal', 'fill', 'stroke', 'markers', isString),
 
-  padding: padding,
-  paddingBlock: paddingTop,
-  paddingBlockEnd: paddingTop,
-  paddingBlockStart: paddingTop,
-  paddingBottom: paddingBottom,
-  paddingInline: paddingLeft,
-  paddingInlineEnd: paddingLeft,
-  paddingInlineStart: paddingLeft,
-  paddingLeft: paddingLeft,
-  paddingRight: paddingRight,
-  paddingTop: paddingTop,
+  padding: length,
+  paddingBlock: length,
+  paddingBlockEnd: length,
+  paddingBlockStart: length,
+  paddingBottom: length,
+  paddingInline: length,
+  paddingInlineEnd: length,
+  paddingInlineStart: length,
+  paddingLeft: length,
+  paddingRight: length,
+  paddingTop: length,
 
-  pageBreakAfter: pageBreakAfter,
-  pageBreakBefore: pageBreakBefore,
+  pageBreakAfter: pageBreak,
+  pageBreakBefore: pageBreak,
   pageBreakInside: pageBreakInside,
-  pause: pause,
-  pauseAfter: pauseAfter,
-  pauseBefore: pauseBefore,
+  pause: pauseOrRest,
+  pauseAfter: pauseOrRest,
+  pauseBefore: pauseOrRest,
   perspective: perspective,
   perspectiveOrigin: perspectiveOrigin,
   pointerEvents: pointerEvents,
@@ -2128,9 +1947,9 @@ const CSSProperties = {
 
   quotes: quotes,
   resize: resize,
-  rest: rest,
-  restAfter: restAfter,
-  restBefore: restBefore,
+  rest: pauseOrRest,
+  restAfter: pauseOrRest,
+  restBefore: pauseOrRest,
 
   rotate: isString, // angle
   scale: makeUnionRule(isString, isNumber),
@@ -2175,7 +1994,7 @@ const CSSProperties = {
   scrollSnapMarginTop: makeUnionRule(isNumber, isString),
 
   shapeImageThreshold: shapeImageThreshold,
-  shapeMargin: shapeMargin,
+  shapeMargin: lengthPercentage,
   shapeOutside: shapeOutside,
   shapeRendering: shapeRendering,
   speak: speak,
@@ -2232,8 +2051,8 @@ const CSSProperties = {
   transformOrigin: transformOrigin,
   transformStyle: transformStyle,
   transition: isString,
-  transitionDelay: transitionDelay,
-  transitionDuration: transitionDuration,
+  transitionDelay: time,
+  transitionDuration: time,
   transitionProperty: transitionProperty,
   transitionTimingFunction: transitionTimingFunction,
   unicodeBidi: unicodeBidi,
