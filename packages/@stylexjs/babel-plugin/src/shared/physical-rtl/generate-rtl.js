@@ -70,7 +70,7 @@ function flipShadow(value: string) {
     builtDefs.push(parts.join(' '));
   }
 
-  const rtl = builtDefs.join(', ');
+  const rtl = builtDefs.join(',');
   if (rtl !== value) {
     return rtl;
   }
