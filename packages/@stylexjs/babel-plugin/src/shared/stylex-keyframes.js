@@ -46,7 +46,7 @@ export default function styleXKeyframes(
   );
 
   const ltrStyles = objMap(expandedObject, (frame) =>
-    objMapEntry(frame, generateLtr),
+    objMapEntry(frame, (entry) => generateLtr(entry, options)),
   );
   const rtlStyles = objMap(expandedObject, (frame) =>
     objMapEntry(frame, (entry) => generateRtl(entry, options) ?? entry),

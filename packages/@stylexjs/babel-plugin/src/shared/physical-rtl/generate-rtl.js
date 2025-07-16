@@ -287,22 +287,23 @@ const propertyToRTL: $ReadOnly<{
 };
 
 export default function generateRTL(
-  [key, value]: $ReadOnly<[string, string]>,
+  pair: $ReadOnly<[string, string]>,
   options: StyleXOptions = defaultOptions,
 ): ?$ReadOnly<[string, string]> {
   const { enableLogicalStylesPolyfill, styleResolution } = options;
+  const [key] = pair;
 
   if (styleResolution === 'legacy-expand-shorthands') {
     if (!enableLogicalStylesPolyfill) {
       if (legacyValuesPolyfill[key]) {
-        return legacyValuesPolyfill[key]([key, value]);
+        return legacyValuesPolyfill[key](pair);
       }
 
       return null;
     }
 
     if (inlinePropertyToRTL[key]) {
-      return inlinePropertyToRTL[key]([key, value]);
+      return inlinePropertyToRTL[key](pair);
     }
   }
 
@@ -310,5 +311,5 @@ export default function generateRTL(
     return null;
   }
 
-  return propertyToRTL[key]([key, value], options);
+  return propertyToRTL[key](pair, options);
 }
