@@ -27,4 +27,4 @@ function isStringImpl(node: Node, _variables?: Variables): RuleResponse {
   };
 }
 const isString: RuleCheck = makeVariableCheckingRule(isStringImpl);
-export default isString as RuleCheck;
+export default isString;
