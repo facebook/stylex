@@ -42,6 +42,8 @@ import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isPercentage from './rules/isPercentage';
 import isAnimationName from './rules/isAnimationName';
+import isAbsoluteLength from './rules/isAbsoluteLength';
+import isRelativeLength from './rules/isRelativeLength';
 import isStylexDefineVarsToken from './rules/isStylexDefineVarsToken';
 import { borderSplitter } from './utils/split-css-value';
 import evaluate from './utils/evaluate';
@@ -71,72 +73,6 @@ const isStringOrNumber = makeUnionRule(isString, isNumber);
 const isNamedColor = makeUnionRule(
   ...Array.from(namedColors).map((color) => makeLiteralRule(color)),
 );
-
-const absoluteLengthUnits = new Set(['px', 'mm', 'in', 'pc', 'pt']);
-const isAbsoluteLength: RuleCheck = (
-  node: Node,
-  _variables?: Variables,
-): RuleResponse => {
-  if (node.type === 'Literal') {
-    const val = node.value;
-    if (
-      typeof val === 'string' &&
-      Array.from(absoluteLengthUnits).some((unit) =>
-        val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
-      )
-    ) {
-      return undefined;
-    }
-  }
-  return {
-    message: `a number ending in ${Array.from(absoluteLengthUnits).join(', ')}`,
-  };
-};
-
-const relativeLengthUnits = new Set([
-  // font units
-  'ch',
-  'em',
-  'ex',
-  'ic',
-  'rem',
-  // viewport units
-  'vh',
-  'vw',
-  'vmin',
-  'vmax',
-  'svh',
-  'dvh',
-  'lvh',
-  'svw',
-  'dvw',
-  'ldw',
-  // container units
-  'cqw',
-  'cqh',
-  'cqmin',
-  'cqmax',
-]);
-const isRelativeLength: RuleCheck = (
-  node: Node,
-  _variables?: Variables,
-): RuleResponse => {
-  if (node.type === 'Literal') {
-    const val = node.value;
-    if (
-      typeof val === 'string' &&
-      Array.from(relativeLengthUnits).some((unit) =>
-        val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
-      )
-    ) {
-      return undefined;
-    }
-  }
-
-  return {
-    message: `a number ending in ${Array.from(relativeLengthUnits).join(', ')}`,
-  };
-};
 
 const isLength = makeUnionRule(isAbsoluteLength, isRelativeLength);
 

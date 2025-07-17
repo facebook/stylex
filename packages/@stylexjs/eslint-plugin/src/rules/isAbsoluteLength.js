@@ -16,20 +16,25 @@ import type {
 } from '../stylex-valid-styles';
 import type { Node } from 'estree';
 
-import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
-
-function isPercentage(node: Node, _variables?: Variables): RuleResponse {
+const absoluteLengthUnits = new Set(['px', 'mm', 'in', 'pc', 'pt']);
+const isAbsoluteLength: RuleCheck = (
+  node: Node,
+  _variables?: Variables,
+): RuleResponse => {
   if (node.type === 'Literal') {
     const val = node.value;
     if (
       typeof val === 'string' &&
-      val.match(new RegExp('^([-,+]?\\d+(\\.\\d+)?%)$'))
+      Array.from(absoluteLengthUnits).some((unit) =>
+        val.match(new RegExp(`^([-,+]?\\d+(\\.\\d+)?${unit})$`)),
+      )
     ) {
       return undefined;
     }
   }
   return {
-    message: 'A string literal representing a percentage (e.g. 100%)',
+    message: `a number ending in ${Array.from(absoluteLengthUnits).join(', ')}`,
   };
-}
-export default makeVariableCheckingRule(isPercentage) as RuleCheck;
+};
+
+export default isAbsoluteLength;
