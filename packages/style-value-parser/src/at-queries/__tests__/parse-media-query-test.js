@@ -1126,7 +1126,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 768,
@@ -1136,7 +1135,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "max-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 991,
@@ -1518,7 +1516,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "min-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 768,
@@ -1528,7 +1525,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "max-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 991,
@@ -1566,7 +1562,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "min-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 992,
@@ -1576,7 +1571,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "max-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 1199,
@@ -1624,7 +1618,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "min-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 576,
@@ -1634,7 +1627,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "max-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 767,
@@ -1735,7 +1727,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "min-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 768,
@@ -1745,7 +1736,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "max-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 991,
@@ -1798,7 +1788,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "min-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 992,
@@ -1808,7 +1797,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "max-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 1199,
@@ -1871,7 +1859,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "min-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 576,
@@ -1881,7 +1868,6 @@ describe('style-value-parser/at-queries', () => {
                       "key": "max-width",
                       "type": "pair",
                       "value": {
-                        "signCharacter": undefined,
                         "type": "integer",
                         "unit": "px",
                         "value": 767,
@@ -2025,34 +2011,9 @@ describe('style-value-parser/at-queries', () => {
               "rule": {
                 "rules": [
                   {
-                    "key": "min-width",
-                    "type": "pair",
-                    "value": {
-                      "signCharacter": undefined,
-                      "type": "integer",
-                      "unit": "px",
-                      "value": 500,
-                    },
-                  },
-                  {
-                    "key": "max-width",
-                    "type": "pair",
-                    "value": {
-                      "signCharacter": undefined,
-                      "type": "integer",
-                      "unit": "px",
-                      "value": 600,
-                    },
-                  },
-                  {
-                    "key": "max-width",
-                    "type": "pair",
-                    "value": {
-                      "signCharacter": undefined,
-                      "type": "integer",
-                      "unit": "px",
-                      "value": 400,
-                    },
+                    "key": "all",
+                    "not": true,
+                    "type": "media-keyword",
                   },
                 ],
                 "type": "and",
@@ -2062,7 +2023,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (not ((min-width: 500px) and (max-width: 600px) and (max-width: 400px)))"',
+          '"@media (not (not all))"',
         );
       });
 
@@ -2112,53 +2073,22 @@ describe('style-value-parser/at-queries', () => {
             "queries": {
               "rules": [
                 {
+                  "key": "min-width",
+                  "type": "pair",
+                  "value": {
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1024.01,
+                  },
+                },
+                {
                   "key": "max-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 1440,
                   },
-                },
-                {
-                  "rule": {
-                    "key": "max-width",
-                    "type": "pair",
-                    "value": {
-                      "signCharacter": undefined,
-                      "type": "integer",
-                      "unit": "px",
-                      "value": 1024,
-                    },
-                  },
-                  "type": "not",
-                },
-                {
-                  "rule": {
-                    "key": "max-width",
-                    "type": "pair",
-                    "value": {
-                      "signCharacter": undefined,
-                      "type": "integer",
-                      "unit": "px",
-                      "value": 768,
-                    },
-                  },
-                  "type": "not",
-                },
-                {
-                  "rule": {
-                    "key": "max-width",
-                    "type": "pair",
-                    "value": {
-                      "signCharacter": undefined,
-                      "type": "integer",
-                      "unit": "px",
-                      "value": 458,
-                    },
-                  },
-                  "type": "not",
                 },
               ],
               "type": "and",
@@ -2166,7 +2096,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px)) and (not (max-width: 458px))"',
+          '"@media (min-width: 1024.01px) and (max-width: 1440px)"',
         );
       });
     });
@@ -2271,7 +2201,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 400,
@@ -2281,7 +2210,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "max-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700,
@@ -2414,7 +2342,6 @@ describe('style-value-parser/at-queries', () => {
                     "key": "min-width",
                     "type": "pair",
                     "value": {
-                      "signCharacter": undefined,
                       "type": "integer",
                       "unit": "px",
                       "value": 600,
@@ -2424,7 +2351,6 @@ describe('style-value-parser/at-queries', () => {
                     "key": "max-width",
                     "type": "pair",
                     "value": {
-                      "signCharacter": undefined,
                       "type": "integer",
                       "unit": "px",
                       "value": 900,
@@ -2589,7 +2515,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 400,
@@ -2599,7 +2524,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "max-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700,
@@ -2627,17 +2551,15 @@ describe('style-value-parser/at-queries', () => {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
-                    "value": 399.99,
+                    "value": 400.01,
                   },
                 },
                 {
                   "key": "max-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700,
@@ -2649,7 +2571,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (min-width: 399.99px) and (max-width: 700px)"',
+          '"@media (min-width: 400.01px) and (max-width: 700px)"',
         );
       });
 
@@ -2665,7 +2587,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 400,
@@ -2675,7 +2596,6 @@ describe('style-value-parser/at-queries', () => {
                   "key": "max-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700,
@@ -2700,23 +2620,21 @@ describe('style-value-parser/at-queries', () => {
             "queries": {
               "rules": [
                 {
-                  "key": "max-width",
-                  "type": "pair",
-                  "value": {
-                    "signCharacter": undefined,
-                    "type": "integer",
-                    "unit": "px",
-                    "value": 1000,
-                  },
-                },
-                {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1000,
                   },
                 },
               ],
@@ -2725,7 +2643,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 1000px) and (min-width: 700px)"',
+          '"@media (min-width: 700px) and (max-width: 1000px)"',
         );
       });
 
@@ -2738,23 +2656,21 @@ describe('style-value-parser/at-queries', () => {
             "queries": {
               "rules": [
                 {
-                  "key": "max-width",
-                  "type": "pair",
-                  "value": {
-                    "signCharacter": undefined,
-                    "type": "integer",
-                    "unit": "px",
-                    "value": 1000.01,
-                  },
-                },
-                {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 999.99,
                   },
                 },
               ],
@@ -2763,7 +2679,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 1000.01px) and (min-width: 700px)"',
+          '"@media (min-width: 700px) and (max-width: 999.99px)"',
         );
       });
 
@@ -2776,23 +2692,21 @@ describe('style-value-parser/at-queries', () => {
             "queries": {
               "rules": [
                 {
-                  "key": "max-width",
-                  "type": "pair",
-                  "value": {
-                    "signCharacter": undefined,
-                    "type": "integer",
-                    "unit": "px",
-                    "value": 1000,
-                  },
-                },
-                {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700.01,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 1000,
                   },
                 },
               ],
@@ -2801,7 +2715,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 1000px) and (min-width: 700.01px)"',
+          '"@media (min-width: 700.01px) and (max-width: 1000px)"',
         );
       });
 
@@ -2814,23 +2728,21 @@ describe('style-value-parser/at-queries', () => {
             "queries": {
               "rules": [
                 {
-                  "key": "max-width",
-                  "type": "pair",
-                  "value": {
-                    "signCharacter": undefined,
-                    "type": "integer",
-                    "unit": "px",
-                    "value": 1000.01,
-                  },
-                },
-                {
                   "key": "min-width",
                   "type": "pair",
                   "value": {
-                    "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
                     "value": 700.01,
+                  },
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "type": "integer",
+                    "unit": "px",
+                    "value": 999.99,
                   },
                 },
               ],
@@ -2839,9 +2751,113 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 1000.01px) and (min-width: 700.01px)"',
+          '"@media (min-width: 700.01px) and (max-width: 999.99px)"',
         );
       });
+    });
+  });
+  describe('simplify range intervals', () => {
+    test('@media (min-width: 100px) and not (max-width: 200px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (not (max-width: 200px))',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 200.01px)');
+    });
+
+    test('@media (min-width: 100px) and (min-width: 200px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (min-width: 200px)',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 200px)');
+    });
+
+    test('@media (max-width: 200px) and not (max-width: 300px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (not (max-width: 200px)) and (not (max-width: 300px))',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 300.01px)');
+    });
+
+    test('@media (min-width: 100px) and not (max-width: 50px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (not (max-width: 50px))',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 100px)');
+    });
+
+    test('@media (min-width: 100px) and not (max-width: 100px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (not (max-width: 100px))',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 100.01px)');
+    });
+
+    test('@media (min-width: 100px) and not (max-width: 99.99px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (not (max-width: 99.99px))',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 100px)');
+    });
+
+    test('@media (min-width: 100px) and not (max-width: 99.99px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (not (max-width: 99.99px))',
+      );
+      expect(parsed.toString()).toBe('@media (min-width: 100px)');
+    });
+
+    test('@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px)) and (not (max-width: 458px))', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px)) and (not (max-width: 458px))',
+      );
+      expect(parsed.toString()).toBe(
+        '@media (min-width: 1024.01px) and (max-width: 1440px)',
+      );
+    });
+
+    test('@media (min-width: 100px) and (max-width: 500px) and (not (min-width: 600px)) => always-false', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (max-width: 500px) and (not (min-width: 600px))',
+      );
+      expect(parsed.toString()).toBe(
+        '@media (min-width: 100px) and (max-width: 500px)',
+      );
+    });
+
+    test('@media (min-width: 100px) and (max-width: 500px) and (not (max-width: 200px)) => (min-width: 200.01px) and (max-width: 500px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (max-width: 500px) and (not (max-width: 200px))',
+      );
+      expect(parsed.toString()).toBe(
+        '@media (min-width: 200.01px) and (max-width: 500px)',
+      );
+    });
+
+    test('@media (min-width: 100px) and (max-width: 500px) and (not (max-width: 200px)) and (not (min-width: 400px)) => (min-width: 200.01px) and (max-width: 399.99px)', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (max-width: 500px) and (not (max-width: 200px)) and (not (min-width: 400px))',
+      );
+      expect(parsed.toString()).toBe(
+        '@media (min-width: 200.01px) and (max-width: 399.99px)',
+      );
+    });
+
+    test('@media (min-width: 100px) and (orientation: landscape) => should not simplify', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: 100px) and (orientation: landscape)',
+      );
+      expect(parsed.toString()).toBe(
+        '@media (min-width: 100px) and (orientation: landscape)',
+      );
+    });
+
+    test('@media (min-width: calc(100px + 2em)) and (max-width: 500px) => should not simplify', () => {
+      const parsed = MediaQuery.parser.parseToEnd(
+        '@media (min-width: calc(100px + 2em)) and (max-width: 500px)',
+      );
+      expect(parsed.toString()).toBe(
+        '@media (min-width: calc(100px + 2em)) and (max-width: 500px)',
+      );
     });
   });
 });
