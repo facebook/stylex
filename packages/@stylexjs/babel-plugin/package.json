@@ -21,8 +21,9 @@
     "@babel/traverse": "^7.26.8",
     "@babel/types": "^7.26.8",
     "@dual-bundle/import-meta-resolve": "^4.1.0",
-    "@stylexjs/stylex": "0.14.3",
-    "postcss-value-parser": "^4.1.0"
+    "@stylexjs/stylex": "0.14.2",
+    "postcss-value-parser": "^4.1.0",
+    "style-value-parser": "0.14.2"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^5.1.1",
