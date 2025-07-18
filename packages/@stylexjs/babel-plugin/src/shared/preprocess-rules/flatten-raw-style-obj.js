@@ -10,6 +10,7 @@
 import type { RawStyles, StyleXOptions, TStyleValue } from '../common-types';
 
 import flatMapExpandedShorthands from './index';
+import { lastMediaQueryWinsTransform } from 'style-value-parser';
 
 import {
   NullPreRule,
@@ -23,7 +24,10 @@ export function flattenRawStyleObject(
   style: RawStyles,
   options: StyleXOptions,
 ): $ReadOnlyArray<$ReadOnly<[string, IPreRule]>> {
-  return _flattenRawStyleObject(style, [], options);
+  const processedStyle = options.enableLastMediaQueryWins
+    ? lastMediaQueryWinsTransform(style)
+    : style;
+  return _flattenRawStyleObject(processedStyle, [], options);
 }
 
 export function _flattenRawStyleObject(

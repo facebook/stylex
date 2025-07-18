@@ -1817,8 +1817,66 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       describe('object values: queries', () => {
+        test('media queries with last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media (max-width: 1000px)': 'blue',
+                  '@media (max-width: 500px)': 'purple',
+                }
+              },
+            });
+          `,
+            { enableLastMediaQueryWins: true },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc x1wa28t1 x1lr89ez",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1wa28t1",
+                  {
+                    "ltr": "@media (max-width: 1000px) and (not (max-width: 500px)){.x1wa28t1.x1wa28t1{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x1lr89ez",
+                  {
+                    "ltr": "@media (max-width: 500px){.x1lr89ez.x1lr89ez{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('media queries', () => {
-          const { code, metadata } = transform(`
+          const { code, metadata } = transform(
+            `
             import * as stylex from '@stylexjs/stylex';
             export const styles = stylex.create({
               root: {
@@ -1829,7 +1887,8 @@ describe('@stylexjs/babel-plugin', () => {
                 }
               },
             });
-          `);
+          `,
+          );
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
