@@ -16,24 +16,20 @@ const stylex = {
 describe('Media Query Transformer', () => {
   test('basic usage: multiple widths', () => {
     const originalStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': '1 / 4',
-          '@media (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
-        },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': '1 / 4',
+        '@media (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
       },
     };
 
     const expectedStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
-          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
-        },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+        '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
       },
     };
 
@@ -43,30 +39,26 @@ describe('Media Query Transformer', () => {
 
   test('basic usage: nested query', () => {
     const originalStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': {
-            '@media (max-width: 1024px)': '1 / 3',
-            '@media (max-width: 768px)': '1 / -1',
-          },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': {
           '@media (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
+        '@media (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
       },
     };
 
     const expectedStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (min-width: 1024.01px) and (max-width: 1440px)': {
-            '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
-            '@media (max-width: 768px)': '1 / -1',
-          },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 1024.01px) and (max-width: 1440px)': {
           '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
+        '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
       },
     };
 
@@ -76,33 +68,29 @@ describe('Media Query Transformer', () => {
 
   test('basic usage: nested query', () => {
     const originalStyles = {
-      table: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': {
-            '@media (max-width: 1024px)': '1 / 3',
-            '@media (max-width: 768px)': '1 / -1',
-          },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': {
           '@media (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
-        padding: '10px',
+        '@media (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
       },
+      padding: '10px',
     };
 
     const expectedStyles = {
-      table: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (min-width: 1024.01px) and (max-width: 1440px)': {
-            '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
-            '@media (max-width: 768px)': '1 / -1',
-          },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 1024.01px) and (max-width: 1440px)': {
           '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
-        padding: '10px',
+        '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
       },
+      padding: '10px',
     };
 
     const result = lastMediaQueryWinsTransform(originalStyles);
@@ -112,40 +100,36 @@ describe('Media Query Transformer', () => {
 
   test('basic usage: complex object', () => {
     const originalStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': '1 / 4',
-          '@media (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
-        },
-        grid: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': '1 / 4',
-        },
-        gridRow: {
-          default: '1 / 2',
-          padding: '10px',
-        },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': '1 / 4',
+        '@media (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
+      },
+      grid: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': '1 / 4',
+      },
+      gridRow: {
+        default: '1 / 2',
+        padding: '10px',
       },
     };
 
     const expectedStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
-          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
-        },
-        grid: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': '1 / 4',
-        },
-        gridRow: {
-          default: '1 / 2',
-          padding: '10px',
-        },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+        '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
+      },
+      grid: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': '1 / 4',
+      },
+      gridRow: {
+        default: '1 / 2',
+        padding: '10px',
       },
     };
 
@@ -155,26 +139,22 @@ describe('Media Query Transformer', () => {
 
   test('basic usage: lots and lots of widths', () => {
     const originalStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (max-width: 1440px)': '1 / 4',
-          '@media (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
-          '@media (max-width: 458px)': '1 / -1',
-        },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (max-width: 1440px)': '1 / 4',
+        '@media (max-width: 1024px)': '1 / 3',
+        '@media (max-width: 768px)': '1 / -1',
+        '@media (max-width: 458px)': '1 / -1',
       },
     };
 
     const expectedStyles = {
-      foo: {
-        gridColumn: {
-          default: '1 / 2',
-          '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
-          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
-          '@media (min-width: 458.01px) and (max-width: 768px)': '1 / -1',
-          '@media (max-width: 458px)': '1 / -1',
-        },
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+        '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+        '@media (min-width: 458.01px) and (max-width: 768px)': '1 / -1',
+        '@media (max-width: 458px)': '1 / -1',
       },
     };
 
@@ -238,22 +218,18 @@ describe('Media Query Transformer', () => {
 
   test('single word condition', () => {
     const originalStyles = stylex.create({
-      colorMode: {
-        mode: {
-          default: 'normal',
-          '@media (color)': 'colorful',
-          '@media (monochrome)': 'grayscale',
-        },
+      mode: {
+        default: 'normal',
+        '@media (color)': 'colorful',
+        '@media (monochrome)': 'grayscale',
       },
     });
 
     const expectedStyles = {
-      colorMode: {
-        mode: {
-          default: 'normal',
-          '@media (color) and (not (monochrome))': 'colorful',
-          '@media (monochrome)': 'grayscale',
-        },
+      mode: {
+        default: 'normal',
+        '@media (color) and (not (monochrome))': 'colorful',
+        '@media (monochrome)': 'grayscale',
       },
     };
 
@@ -263,23 +239,19 @@ describe('Media Query Transformer', () => {
 
   test('handles comma-separated (or) media queries', () => {
     const originalStyles = stylex.create({
-      container: {
-        width: {
-          default: '100%',
-          '@media screen, (max-width: 800px)': '80%',
-          '@media (max-width: 500px)': '60%',
-        },
+      width: {
+        default: '100%',
+        '@media screen, (max-width: 800px)': '80%',
+        '@media (max-width: 500px)': '60%',
       },
     });
 
     const expectedStyles = {
-      container: {
-        width: {
-          default: '100%',
-          '@media screen and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
-            '80%',
-          '@media (max-width: 500px)': '60%',
-        },
+      width: {
+        default: '100%',
+        '@media screen and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
+          '80%',
+        '@media (max-width: 500px)': '60%',
       },
     };
 
@@ -289,25 +261,21 @@ describe('Media Query Transformer', () => {
 
   test.skip('handles and media queries', () => {
     const originalStyles = stylex.create({
-      container: {
-        width: {
-          default: '100%',
-          '@media (min-width: 900px)': '80%',
-          '@media (min-width: 500px) and (max-width: 899px) and (max-height: 300px)':
-            '50%',
-        },
+      width: {
+        default: '100%',
+        '@media (min-width: 900px)': '80%',
+        '@media (min-width: 500px) and (max-width: 899px) and (max-height: 300px)':
+          '50%',
       },
     });
 
     const expectedStyles = {
-      container: {
-        width: {
-          default: '100%',
-          '@media (min-width: 900px) and (not ((min-width: 500px) and (max-width: 899px) and (max-height: 300px)))':
-            '80%',
-          '@media (min-width: 500px) and (max-width: 899px) and (max-height: 300px)':
-            '50%',
-        },
+      width: {
+        default: '100%',
+        '@media (min-width: 900px) and (not ((min-width: 500px) and (max-width: 899px) and (max-height: 300px)))':
+          '80%',
+        '@media (min-width: 500px) and (max-width: 899px) and (max-height: 300px)':
+          '50%',
       },
     };
 
@@ -317,23 +285,19 @@ describe('Media Query Transformer', () => {
 
   test.skip('combination of keywords and rules', () => {
     const originalStyles = stylex.create({
-      container: {
-        width: {
-          default: '100%',
-          '@media screen and (min-width: 900px)': '80%',
-          '@media print and (max-width: 500px)': '50%',
-        },
+      width: {
+        default: '100%',
+        '@media screen and (min-width: 900px)': '80%',
+        '@media print and (max-width: 500px)': '50%',
       },
     });
 
     const expectedStyles = {
-      container: {
-        width: {
-          default: '100%',
-          '@media screen and (min-width: 900px) and (not (print and (max-width: 500px)))':
-            '80%',
-          '@media print and (max-width: 500px)': '50%',
-        },
+      width: {
+        default: '100%',
+        '@media screen and (min-width: 900px) and (not (print and (max-width: 500px)))':
+          '80%',
+        '@media print and (max-width: 500px)': '50%',
       },
     };
 
@@ -362,20 +326,16 @@ describe('Media Query Transformer', () => {
 
   test('ignores legacy media query syntax', () => {
     const originalStyles = {
-      root: {
-        width: '100%',
-        '@media (min-width: 600px)': {
-          width: '50%',
-        },
+      width: '100%',
+      '@media (min-width: 600px)': {
+        width: '50%',
       },
     };
 
     const expectedStyles = {
-      root: {
-        width: '100%',
-        '@media (min-width: 600px)': {
-          width: '50%',
-        },
+      width: '100%',
+      '@media (min-width: 600px)': {
+        width: '50%',
       },
     };
 

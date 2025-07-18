@@ -53,6 +53,10 @@ function dfsProcessQueries(
 ): {
   [key: string]: any,
 } {
+  if (Array.isArray(obj)) {
+    // Ignore `firstThatWorks` arrays
+    return obj;
+  }
   const result: { [key: string]: any } = {};
 
   Object.entries(obj).forEach(([key, value]) => {
@@ -64,7 +68,7 @@ function dfsProcessQueries(
   });
 
   if (
-    depth >= 2 &&
+    depth >= 1 &&
     Object.keys(result).some((key) => key.startsWith('@media '))
   ) {
     const mediaKeys = Object.keys(result).filter((key) =>
