@@ -17,6 +17,7 @@
     "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
   },
   "workspaces": [
+    "packages/style-value-parser",
     "packages/shared",
     "packages/@stylexjs/stylex",
     "packages/@stylexjs/babel-plugin",
@@ -39,7 +40,7 @@
     "jest": "^30.0.0-alpha.7",
     "jest-environment-jsdom": "^30.0.0-alpha.7",
     "lint-staged": "^13.0.3",
-    "prettier": "^3.5.0",
+    "prettier": "^3.2.5",
     "prettier-plugin-hermes-parser": "^0.26.0",
     "rimraf": "^5.0.10",
     "yargs": "17.7.2"

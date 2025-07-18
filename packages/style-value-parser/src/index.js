@@ -9,3 +9,4 @@
 
 export * as tokenParser from './token-parser';
 export * as properties from './properties';
+export { lastMediaQueryWinsTransform } from './at-queries/media-query-transform.js';
