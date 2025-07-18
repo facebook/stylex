@@ -53,8 +53,6 @@ function adjustDimension(
   let adjustedValue = dimension.value;
   const epsilon = 0.01;
   if (eq !== '=') {
-    // For max-width cases, we need to subtract epsilon to ensure the boundary is exclusive
-    // For min-width cases, we need to add epsilon to ensure the boundary is exclusive
     if (isMaxWidth) {
       adjustedValue -= epsilon;
     } else {
@@ -218,9 +216,6 @@ const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, lower, op, eq, key, op2, eq2, upper, _closeParen]) => {
-      // For double inequality like (1000px > width >= 700px):
-      // - The first part (1000px > width) becomes max-width: 999.99px
-      // - The second part (width >= 700px) becomes min-width: 700px
       const lowerKey = op === '>' ? `max-${key}` : `min-${key}`;
       const upperKey = op2 === '>' ? `min-${key}` : `max-${key}`;
       const lowerIsMaxWidth = lowerKey.startsWith('max-');
@@ -346,11 +341,101 @@ notParser = TokenParser.sequence(
   rule,
 }));
 
+function isNumericLength(val: mixed): boolean {
+  return (
+    typeof val === 'object' &&
+    val !== null &&
+    !Array.isArray(val) &&
+    typeof val.value === 'number' &&
+    typeof val.unit === 'string' &&
+    (val.type === 'integer' || val.type === 'number')
+  );
+}
+
+function mergeIntervalsForAnd(
+  rules: Array<MediaQueryRule>,
+): Array<MediaQueryRule> {
+  const intervals: Array<[number, number]> = [];
+  const epsilon: number = 0.01;
+  for (const rule: MediaQueryRule of rules) {
+    if (
+      rule.type === 'pair' &&
+      (rule.key === 'min-width' || rule.key === 'max-width') &&
+      isNumericLength(rule.value)
+    ) {
+      const val = rule.value as any;
+      intervals.push(
+        rule.key === 'min-width'
+          ? [val.value, Infinity]
+          : [-Infinity, val.value],
+      );
+    } else if (
+      rule.type === 'not' &&
+      rule.rule &&
+      rule.rule.type === 'pair' &&
+      (rule.rule.key === 'min-width' || rule.rule.key === 'max-width') &&
+      isNumericLength(rule.rule.value)
+    ) {
+      const val = rule.rule.value as any;
+      if (rule.rule.key === 'min-width') {
+        intervals.push([-Infinity, val.value - epsilon]);
+      } else {
+        intervals.push([val.value + epsilon, Infinity]);
+      }
+    } else {
+      return rules;
+    }
+  }
+  if (intervals.length === 0) return rules;
+
+  let lower: number = -Infinity;
+  let upper: number = Infinity;
+  for (const [l, u]: [number, number] of intervals) {
+    if (l > lower) lower = l;
+    if (u < upper) upper = u;
+  }
+
+  if (lower > upper) {
+    return [
+      {
+        type: 'media-keyword',
+        key: 'all',
+        not: true,
+      },
+    ];
+  }
+  const result: Array<MediaQueryRule> = [];
+  if (lower !== -Infinity) {
+    result.push({
+      type: 'pair',
+      key: 'min-width',
+      value: { value: lower, unit: 'px', type: 'integer' } as any,
+    });
+  }
+  if (upper !== Infinity) {
+    result.push({
+      type: 'pair',
+      key: 'max-width',
+      value: { value: upper, unit: 'px', type: 'integer' } as any,
+    });
+  }
+  return result;
+}
+
+function mergeAndSimplifyRanges(
+  rules: Array<MediaQueryRule>,
+): Array<MediaQueryRule> {
+  try {
+    return mergeIntervalsForAnd(rules);
+  } catch (e) {
+    return rules;
+  }
+}
+
 export class MediaQuery {
   queries: MediaQueryRule;
   constructor(queries: MediaQueryRule) {
     this.queries = MediaQuery.normalize(queries);
-    // MediaQuery.validateOnlyAtTopLevel(this.queries, true);
   }
   toString(): string {
     return `@media ${this.#toString(this.queries, true)}`;
@@ -419,7 +504,8 @@ export class MediaQuery {
             flattened.push(norm);
           }
         }
-        return { type: 'and', rules: flattened };
+        const merged = mergeAndSimplifyRanges(flattened);
+        return { type: 'and', rules: merged };
       }
       case 'or':
         return {

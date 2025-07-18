@@ -30,9 +30,8 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px))':
-            '1 / 4',
-          '@media (max-width: 1024px) and (not (max-width: 768px))': '1 / 3',
+          '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
       },
@@ -61,13 +60,11 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px))':
-            {
-              '@media (max-width: 1024px) and (not (max-width: 768px))':
-                '1 / 3',
-              '@media (max-width: 768px)': '1 / -1',
-            },
-          '@media (max-width: 1024px) and (not (max-width: 768px))': '1 / 3',
+          '@media (min-width: 1024.01px) and (max-width: 1440px)': {
+            '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+            '@media (max-width: 768px)': '1 / -1',
+          },
+          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
       },
@@ -97,13 +94,11 @@ describe('Media Query Transformer', () => {
       table: {
         gridColumn: {
           default: '1 / 2',
-          '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px))':
-            {
-              '@media (max-width: 1024px) and (not (max-width: 768px))':
-                '1 / 3',
-              '@media (max-width: 768px)': '1 / -1',
-            },
-          '@media (max-width: 1024px) and (not (max-width: 768px))': '1 / 3',
+          '@media (min-width: 1024.01px) and (max-width: 1440px)': {
+            '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+            '@media (max-width: 768px)': '1 / -1',
+          },
+          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
         padding: '10px',
@@ -139,9 +134,8 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px))':
-            '1 / 4',
-          '@media (max-width: 1024px) and (not (max-width: 768px))': '1 / 3',
+          '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
           '@media (max-width: 768px)': '1 / -1',
         },
         grid: {
@@ -176,11 +170,9 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media (max-width: 1440px) and (not (max-width: 1024px)) and (not (max-width: 768px)) and (not (max-width: 458px))':
-            '1 / 4',
-          '@media (max-width: 1024px) and (not (max-width: 768px)) and (not (max-width: 458px))':
-            '1 / 3',
-          '@media (max-width: 768px) and (not (max-width: 458px))': '1 / -1',
+          '@media (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+          '@media (min-width: 458.01px) and (max-width: 768px)': '1 / -1',
           '@media (max-width: 458px)': '1 / -1',
         },
       },
@@ -230,7 +222,7 @@ describe('Media Query Transformer', () => {
       container: {
         width: {
           default: '100%',
-          '@media screen and (not (max-width: 500px)), (max-width: 800px) and (not (max-width: 500px))':
+          '@media screen and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
             '80%',
           '@media (max-width: 500px)': '60%',
         },

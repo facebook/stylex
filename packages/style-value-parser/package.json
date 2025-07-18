@@ -15,7 +15,8 @@
   },
   "devDependencies": {
     "@babel/node": "^7.23.9",
-    "benchmark": "^2.1.4"
+    "benchmark": "^2.1.4",
+    "prettier": "^2.8.8"
   },
   "files": [
     "lib/*"
