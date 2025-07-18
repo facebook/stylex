@@ -2577,7 +2577,7 @@ describe('style-value-parser/at-queries', () => {
         );
       });
 
-      test('@media (400px <= width <= 700px)', () => {
+      test('@media (1000px <= width <= 700px)', () => {
         const parsed = MediaQuery.parser.parseToEnd(
           '@media (400px <= width <= 700px)',
         );
@@ -2691,9 +2691,9 @@ describe('style-value-parser/at-queries', () => {
         );
       });
 
-      test('@media (400px >= width >= 700px)', () => {
+      test('@media (1000px >= width >= 700px)', () => {
         const parsed = MediaQuery.parser.parseToEnd(
-          '@media (400px >= width >= 700px)',
+          '@media (1000px >= width >= 700px)',
         );
         expect(parsed).toMatchInlineSnapshot(`
           MediaQuery {
@@ -2706,7 +2706,7 @@ describe('style-value-parser/at-queries', () => {
                     "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
-                    "value": 400,
+                    "value": 1000,
                   },
                 },
                 {
@@ -2725,13 +2725,13 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 400px) and (min-width: 700px)"',
+          '"@media (max-width: 1000px) and (min-width: 700px)"',
         );
       });
 
-      test('@media (400px > width >= 700px)', () => {
+      test('@media (1000px > width >= 700px)', () => {
         const parsed = MediaQuery.parser.parseToEnd(
-          '@media (400px > width >= 700px)',
+          '@media (1000px > width >= 700px)',
         );
         expect(parsed).toMatchInlineSnapshot(`
           MediaQuery {
@@ -2744,7 +2744,7 @@ describe('style-value-parser/at-queries', () => {
                     "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
-                    "value": 400.01,
+                    "value": 1000.01,
                   },
                 },
                 {
@@ -2763,13 +2763,13 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 400.01px) and (min-width: 700px)"',
+          '"@media (max-width: 1000.01px) and (min-width: 700px)"',
         );
       });
 
-      test('@media (400px >= width > 700px)', () => {
+      test('@media (1000px >= width > 700px)', () => {
         const parsed = MediaQuery.parser.parseToEnd(
-          '@media (400px >= width > 700px)',
+          '@media (1000px >= width > 700px)',
         );
         expect(parsed).toMatchInlineSnapshot(`
           MediaQuery {
@@ -2782,7 +2782,7 @@ describe('style-value-parser/at-queries', () => {
                     "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
-                    "value": 400,
+                    "value": 1000,
                   },
                 },
                 {
@@ -2801,13 +2801,13 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 400px) and (min-width: 700.01px)"',
+          '"@media (max-width: 1000px) and (min-width: 700.01px)"',
         );
       });
 
-      test('@media (400px > width > 700px)', () => {
+      test('@media (1000px > width > 700px)', () => {
         const parsed = MediaQuery.parser.parseToEnd(
-          '@media (400px > width > 700px)',
+          '@media (1000px > width > 700px)',
         );
         expect(parsed).toMatchInlineSnapshot(`
           MediaQuery {
@@ -2820,7 +2820,7 @@ describe('style-value-parser/at-queries', () => {
                     "signCharacter": undefined,
                     "type": "integer",
                     "unit": "px",
-                    "value": 400.01,
+                    "value": 1000.01,
                   },
                 },
                 {
@@ -2839,7 +2839,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (max-width: 400.01px) and (min-width: 700.01px)"',
+          '"@media (max-width: 1000.01px) and (min-width: 700.01px)"',
         );
       });
     });
