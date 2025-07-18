@@ -2,7 +2,8 @@
   "private": true,
   "name": "style-value-parser",
   "version": "0.14.2",
-  "main": "src/index.js",
+  "type": "module",
+  "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
@@ -10,14 +11,18 @@
     "test": "jest --coverage",
     "benchmark": "find ./__benchmarks__ -name '*.bench.mjs' -exec node {} \\;"
   },
+  "files": [
+    "lib/*"
+  ],
   "dependencies": {
     "@csstools/css-tokenizer": "^3.0.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.23.9",
+    "@babel/core": "^7.23.9",
     "@babel/node": "^7.23.9",
-    "benchmark": "^2.1.4"
-  },
-  "files": [
-    "lib/*"
-  ]
+    "@babel/preset-env": "^7.23.9",
+    "benchmark": "^2.1.4",
+    "jest": "^29.7.0"
+  }
 }
