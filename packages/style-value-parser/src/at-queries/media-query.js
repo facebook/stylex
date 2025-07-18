@@ -44,29 +44,21 @@ type MediaQueryRule =
   | MediaOrRules;
 
 // helper to adjust the numeric value when no equality sign is present.
-// note: this uses a fixed epsilon of 0.01; adjust as needed per unit.
 function adjustDimension(
   dimension: Length,
   op: string,
   eq: string | void,
-  reversed: boolean = false,
+  isMaxWidth: boolean = false,
 ): Length {
   let adjustedValue = dimension.value;
   const epsilon = 0.01;
   if (eq !== '=') {
-    if (!reversed) {
-      if (op === '>') {
-        adjustedValue += epsilon;
-      } else if (op === '<') {
-        adjustedValue -= epsilon;
-      }
+    // For max-width cases, we need to subtract epsilon to ensure the boundary is exclusive
+    // For min-width cases, we need to add epsilon to ensure the boundary is exclusive
+    if (isMaxWidth) {
+      adjustedValue -= epsilon;
     } else {
-      // reversed inequality has the opposite adjustment
-      if (op === '>') {
-        adjustedValue -= epsilon;
-      } else if (op === '<') {
-        adjustedValue += epsilon;
-      }
+      adjustedValue += epsilon;
     }
   }
   return { ...dimension, value: adjustedValue };
@@ -156,7 +148,8 @@ const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
     .map(([_openParen, key, op, eq, dimension, _closeParen]) => {
       // for forward inequality, e.g. (width < 1250px) becomes max-width
       const finalKey = op === '>' ? `min-${key}` : `max-${key}`;
-      const adjustedDimension = adjustDimension(dimension, op, eq);
+      const isMaxWidth = finalKey.startsWith('max-');
+      const adjustedDimension = adjustDimension(dimension, op, eq, isMaxWidth);
       return {
         type: 'pair',
         key: finalKey,
@@ -185,7 +178,8 @@ const mediaInequalityRuleParserReversed: TokenParser<MediaRulePair> =
     .map(([_openParen, dimension, op, eq, key, _closeParen]) => {
       // reversed inequality: (1250px > width) becomes max-width
       const finalKey = op === '>' ? `max-${key}` : `min-${key}`;
-      const adjustedDimension = adjustDimension(dimension, op, eq, true);
+      const isMaxWidth = finalKey.startsWith('max-');
+      const adjustedDimension = adjustDimension(dimension, op, eq, isMaxWidth);
       return {
         type: 'pair',
         key: finalKey,
@@ -224,10 +218,15 @@ const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, lower, op, eq, key, op2, eq2, upper, _closeParen]) => {
-      const lowerKey = op === '<' ? `min-${key}` : `max-${key}`;
-      const upperKey = op2 === '<' ? `max-${key}` : `min-${key}`;
-      const lowerValue = adjustDimension(lower, op, eq);
-      const upperValue = adjustDimension(upper, op2, eq2);
+      // For double inequality like (1000px > width >= 700px):
+      // - The first part (1000px > width) becomes max-width: 999.99px
+      // - The second part (width >= 700px) becomes min-width: 700px
+      const lowerKey = op === '>' ? `max-${key}` : `min-${key}`;
+      const upperKey = op2 === '>' ? `min-${key}` : `max-${key}`;
+      const lowerIsMaxWidth = lowerKey.startsWith('max-');
+      const upperIsMaxWidth = upperKey.startsWith('max-');
+      const lowerValue = adjustDimension(lower, op, eq, lowerIsMaxWidth);
+      const upperValue = adjustDimension(upper, op2, eq2, upperIsMaxWidth);
       return {
         type: 'and',
         rules: [
