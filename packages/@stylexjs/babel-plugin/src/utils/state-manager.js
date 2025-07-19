@@ -75,6 +75,7 @@ export type StyleXOptions = $ReadOnly<{
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
   enableInlinedConditionalMerge?: boolean,
+  enableLastMediaQueryWins?: boolean,
   enableLegacyValueFlipping?: boolean,
   enableLogicalStylesPolyfill?: boolean,
   enableMinifiedKeys?: boolean,
@@ -221,6 +222,14 @@ export default class StateManager {
         'options.enableMinifiedKeys',
       );
 
+    const enableLastMediaQueryWins: StyleXStateOptions['enableLastMediaQueryWins'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableLastMediaQueryWins ?? false,
+        false,
+        'options.enableLastMediaQueryWins',
+      );
+
     const enableLegacyValueFlipping: StyleXStateOptions['enableLegacyValueFlipping'] =
       z.logAndDefault(
         z.boolean(),
@@ -346,6 +355,7 @@ export default class StateManager {
       enableFontSizePxToRem,
       enableInlinedConditionalMerge,
       enableMinifiedKeys,
+      enableLastMediaQueryWins,
       enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
       importSources,
