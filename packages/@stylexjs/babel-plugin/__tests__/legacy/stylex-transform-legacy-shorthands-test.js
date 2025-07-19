@@ -40,34 +40,56 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
   describe('while using RN non-standard properties', () => {
     test('padding: with longhand property collisions', () => {
       expect(
-        transform(`
+        transform(
+          `
           import stylex from 'stylex';
           const styles = stylex.create({
             foo: {
               padding: 5,
-              paddingEnd: 10,
+              paddingInlineEnd: 10,
             },
 
             bar: {
               padding: 2,
-              paddingStart: 10,
+              paddingInlineStart: 10,
+              paddingLeft: 22
             },
           });
-          stylex(styles.foo, styles.bar);
-        `),
+          stylex(styles.foo, styles.bar)
+          export const string = stylex(styles.foo, styles.bar, xstyle);
+        `,
+          { debug: true },
+        ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x123j3cw{padding-top:5px}", 4000);
-        _inject2(".xs9asl8{padding-bottom:5px}", 4000);
-        _inject2(".xaso8d8{padding-left:5px}", 3000, ".xaso8d8{padding-right:5px}");
-        _inject2(".x2vl965{padding-right:10px}", 3000, ".x2vl965{padding-left:10px}");
-        _inject2(".x1nn3v0j{padding-top:2px}", 4000);
-        _inject2(".x14vy60q{padding-right:2px}", 3000, ".x14vy60q{padding-left:2px}");
-        _inject2(".x1120s5i{padding-bottom:2px}", 4000);
-        _inject2(".xe2zdcy{padding-left:10px}", 3000, ".xe2zdcy{padding-right:10px}");
-        "x1nn3v0j x14vy60q x1120s5i xe2zdcy";"
+        _inject2(".paddingTop-x123j3cw{padding-top:5px}", 4000);
+        _inject2(".paddingBottom-xs9asl8{padding-bottom:5px}", 4000);
+        _inject2(".paddingInlineStart-xaso8d8{padding-left:5px}", 3000, ".paddingInlineStart-xaso8d8{padding-right:5px}");
+        _inject2(".paddingInlineEnd-x2vl965{padding-right:10px}", 3000, ".paddingInlineEnd-x2vl965{padding-left:10px}");
+        _inject2(".paddingTop-x1nn3v0j{padding-top:2px}", 4000);
+        _inject2(".paddingBottom-x1120s5i{padding-bottom:2px}", 4000);
+        _inject2(".paddingLeft-xnljgj5{padding-left:22px}", 4000);
+        const styles = {
+          foo: {
+            "paddingTop-kLKAdn": "paddingTop-x123j3cw",
+            "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
+            "paddingInlineStart-kZCmMZ": "paddingInlineStart-xaso8d8",
+            "paddingInlineEnd-kwRFfy": "paddingInlineEnd-x2vl965",
+            $$css: true
+          },
+          bar: {
+            "paddingTop-kLKAdn": "paddingTop-x1nn3v0j",
+            "paddingInlineEnd-kwRFfy": null,
+            "paddingBottom-kGO01o": "paddingBottom-x1120s5i",
+            "paddingInlineStart-kZCmMZ": null,
+            "paddingLeft-kE3dHu": "paddingLeft-xnljgj5",
+            $$css: true
+          }
+        };
+        "paddingTop-x1nn3v0j paddingBottom-x1120s5i paddingLeft-xnljgj5";
+        export const string = stylex(styles.foo, styles.bar, xstyle);"
       `);
     });
 
