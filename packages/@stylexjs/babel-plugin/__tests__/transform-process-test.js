@@ -191,7 +191,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "app/main.js:31"
           },
           dynamic: color => [{
-            "color-kMwMTN": "color-xfx01vb",
+            "color-kMwMTN": color != null ? "color-xfx01vb" : color,
             $$css: "app/main.js:56"
           }, {
             "--color": color != null ? color : undefined
@@ -257,7 +257,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "app/main.js:31"
           },
           dynamic: color => [{
-            "color-kMwMTN": "color-xfx01vb",
+            "color-kMwMTN": color != null ? "color-xfx01vb" : color,
             $$css: "app/main.js:56"
           }, {
             "--color": color != null ? color : undefined
