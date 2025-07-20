@@ -250,10 +250,15 @@ export default function transformStyleXCreate(
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
 
-              value.properties = value.properties.map((prop) => {
-                if (!t.isObjectProperty(prop)) {
-                  return prop;
+              const conditionalProps: Array<
+                t.ObjectProperty | t.SpreadElement,
+              > = [];
+
+              value.properties.forEach((prop) => {
+                if (!t.isObjectProperty(prop) || t.isPrivateName(prop.key)) {
+                  return;
                 }
+
                 const objProp: t.ObjectProperty = prop;
                 const propKey =
                   objProp.key.type === 'Identifier' && !objProp.computed
@@ -262,76 +267,54 @@ export default function transformStyleXCreate(
                       ? objProp.key.value
                       : null;
 
-                if (propKey != null) {
-                  const dynamicMatch = dynamicStyles.filter(
-                    ({ key }) => key === propKey,
-                  );
-                  if (dynamicMatch.length > 0) {
-                    const value = objProp.value;
-                    if (t.isStringLiteral(value)) {
-                      const classList = value.value.split(' ');
-                      if (classList.length === 1) {
-                        const cls = classList[0];
-                        const expr = dynamicMatch.find(
-                          ({ path }) => origClassPaths[cls] === path,
-                        )?.expression;
-                        if (expr != null) {
-                          objProp.value = t.conditionalExpression(
-                            t.binaryExpression('==', expr, t.nullLiteral()),
-                            t.nullLiteral(),
-                            value,
-                          );
-                        }
-                      } else if (
-                        classList.some((cls) =>
-                          dynamicMatch.find(
-                            ({ path }) => origClassPaths[cls] === path,
-                          ),
-                        )
-                      ) {
-                        const exprArray: $ReadOnlyArray<t.Expression> =
-                          classList.map((cls, index) => {
-                            const expr = dynamicMatch.find(
-                              ({ path }) => origClassPaths[cls] === path,
-                            )?.expression;
-                            const suffix =
-                              index === classList.length - 1 ? '' : ' ';
-                            if (expr != null) {
-                              return t.conditionalExpression(
-                                t.binaryExpression('==', expr, t.nullLiteral()),
-                                t.stringLiteral(''),
-                                t.stringLiteral(cls + suffix),
-                              );
-                            }
-                            return t.stringLiteral(cls + suffix);
-                          });
-
-                        const [first, ...rest] = exprArray;
-
-                        objProp.value = rest.reduce(
-                          (
-                            acc: t.Expression,
-                            curr: t.Expression,
-                          ): t.Expression => {
-                            return t.binaryExpression('+', acc, curr);
-                          },
-                          first as t.Expression,
-                        );
-                      }
-                    }
-                  }
+                if (propKey == null || propKey === '$$css') {
+                  conditionalProps.push(objProp);
+                  return;
                 }
 
-                return objProp;
+                const classList = t.isStringLiteral(objProp.value)
+                  ? objProp.value.value.split(' ')
+                  : [];
+
+                const exprList: t.Expression[] = [];
+
+                classList.forEach((cls) => {
+                  const expr = dynamicStyles.find(
+                    ({ path }) => origClassPaths[cls] === path,
+                  )?.expression;
+
+                  if (expr) {
+                    exprList.push(
+                      t.conditionalExpression(
+                        t.binaryExpression('!=', expr, t.nullLiteral()),
+                        t.stringLiteral(cls),
+                        expr,
+                      ),
+                    );
+                  } else {
+                    exprList.push(t.stringLiteral(cls));
+                  }
+                });
+
+                const joined =
+                  exprList.length === 0
+                    ? t.stringLiteral('')
+                    : exprList.reduce((acc, curr) =>
+                        t.binaryExpression('+', acc, curr),
+                      );
+
+                conditionalProps.push(t.objectProperty(objProp.key, joined));
               });
+
+              const conditionalObj = t.objectExpression(conditionalProps);
 
               prop.value = t.arrowFunctionExpression(
                 params,
                 t.arrayExpression([
-                  value,
+                  conditionalObj,
                   t.objectExpression(
-                    Object.entries(inlineStyles).map(([key, value]) =>
-                      t.objectProperty(t.stringLiteral(key), value.expression),
+                    Object.entries(inlineStyles).map(([key, val]) =>
+                      t.objectProperty(t.stringLiteral(key), val.expression),
                     ),
                   ),
                 ]),
