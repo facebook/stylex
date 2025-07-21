@@ -1817,8 +1817,75 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       describe('object values: queries', () => {
+        test('media queries with last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media (max-width: 900px)': 'blue',
+                  '@media (max-width: 500px)': 'purple',
+                  '@media (max-width: 400px)': 'green',
+                }
+              },
+            });
+          `,
+            { enableLastMediaQueryWins: true },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc xdm03ys xb3e2qq x856a2w",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xdm03ys",
+                  {
+                    "ltr": "@media (min-width: 500.01px) and (max-width: 900px){.xdm03ys.xdm03ys{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "xb3e2qq",
+                  {
+                    "ltr": "@media (min-width: 400.01px) and (max-width: 500px){.xb3e2qq.xb3e2qq{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x856a2w",
+                  {
+                    "ltr": "@media (max-width: 400px){.x856a2w.x856a2w{background-color:green}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('media queries', () => {
-          const { code, metadata } = transform(`
+          const { code, metadata } = transform(
+            `
             import * as stylex from '@stylexjs/stylex';
             export const styles = stylex.create({
               root: {
@@ -1829,7 +1896,8 @@ describe('@stylexjs/babel-plugin', () => {
                 }
               },
             });
-          `);
+          `,
+          );
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
