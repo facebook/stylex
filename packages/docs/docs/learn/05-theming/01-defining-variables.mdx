@@ -22,14 +22,14 @@ In addition to authoring styles for your components that generate atomic styles,
 StyleX also has APIs for defining CSS Custom Properties (CSS variables) in a
 reliable, predictable and type-safe way.
 
-### Design Inspiration
+### Design inspiration
 
 The design of the theming APIs in StyleX are directly inspired by React's
 Context APIs. Variables are defined with default values similar to how React
 Contexts are created, and themes can be created to “provide” different values
 for these variables for UI sub-trees.
 
-## Defining Variables
+## Defining variables
 
 A group of variables are defined using the `defineVars` function:
 
@@ -37,22 +37,20 @@ A group of variables are defined using the `defineVars` function:
 import * as stylex from '@stylexjs/stylex';
 
 export const tokens = stylex.defineVars({
-  primaryText: 'black',
-  secondaryText: '#333',
   accent: 'blue',
   background: 'white',
-  lineColor: 'gray',
   borderRadius: '4px',
   fontFamily: 'system-ui, sans-serif',
   fontSize: '16px',
+  lineColor: 'gray',
+  primaryText: 'black',
+  secondaryText: '#333',
 });
 ```
 
-This function, too, is processed at compile-time and CSS variable names are
-automatically generated.
+This function, too, is processed at compile-time and unique CSS variable names are automatically generated. These values can then be imported and used within `create` calls.
 
-This defines the variables at `:root` of the HTML document. They can be imported
-as constants and used within `create` calls.
+To create variables with stable names that match the exact strings provided, use a key that starts with `--`. Doing so will mean that those variables are not unique to a given `defineVars` call.
 
 ### Using Media Queries
 
