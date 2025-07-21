@@ -52,6 +52,7 @@ export type StyleXOptions = $ReadOnly<{
   enableDebugDataProp?: ?boolean,
   enableDevClassNames?: ?boolean,
   enableFontSizePxToRem?: ?boolean,
+  enableLastMediaQueryWins?: ?boolean,
   enableLegacyValueFlipping?: ?boolean,
   enableLogicalStylesPolyfill?: ?boolean,
   enableMinifiedKeys?: ?boolean,

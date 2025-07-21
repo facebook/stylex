@@ -42,8 +42,8 @@ describe('Media Query Transformer', () => {
       gridColumn: {
         default: '1 / 2',
         '@media (max-width: 1440px)': {
-          '@media (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
+          '@media (max-height: 1024px)': '1 / 3',
+          '@media (max-height: 768px)': '1 / -1',
         },
         '@media (max-width: 1024px)': '1 / 3',
         '@media (max-width: 768px)': '1 / -1',
@@ -54,8 +54,8 @@ describe('Media Query Transformer', () => {
       gridColumn: {
         default: '1 / 2',
         '@media (min-width: 1024.01px) and (max-width: 1440px)': {
-          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
-          '@media (max-width: 768px)': '1 / -1',
+          '@media (min-height: 768.01px) and (max-height: 1024px)': '1 / 3',
+          '@media (max-height: 768px)': '1 / -1',
         },
         '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
         '@media (max-width: 768px)': '1 / -1',
@@ -137,7 +137,7 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 
-  test('basic usage: lots and lots of widths', () => {
+  test('basic usage: lots and lots of max-widths', () => {
     const originalStyles = {
       gridColumn: {
         default: '1 / 2',
@@ -155,6 +155,29 @@ describe('Media Query Transformer', () => {
         '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
         '@media (min-width: 458.01px) and (max-width: 768px)': '1 / -1',
         '@media (max-width: 458px)': '1 / -1',
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('basic usage: lots and lots of min-widths', () => {
+    const originalStyles = {
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 768px)': '1 / -1',
+        '@media (min-width: 1024px)': '1 / 3',
+        '@media (min-width: 1440px)': '1 / 4',
+      },
+    };
+
+    const expectedStyles = {
+      gridColumn: {
+        default: '1 / 2',
+        '@media (min-width: 768px) and (max-width: 1023.99px)': '1 / -1',
+        '@media (min-width: 1024px) and (max-width: 1439.99px)': '1 / 3',
+        '@media (min-width: 1440px)': '1 / 4',
       },
     };
 
@@ -391,6 +414,32 @@ describe('Media Query Transformer', () => {
             '1 / 4',
           '@media (min-height: 500.01px) and (max-height: 700px)': '1 / 3',
           '@media (max-height: 500px)': '1 / -1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width with ranges', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-width: 900px)': '1 / 4',
+          '@media (max-width: 1040px) and (min-width: 600px)': '1 / 3',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 900px) and (max-width: 1440px) and (not ((min-width: 600px) and (max-width: 1040px)))':
+            '1 / 4',
+          '@media (min-width: 600px) and (max-width: 1040px)': '1 / 3',
         },
       },
     };
