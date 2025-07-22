@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.3 (Jul 22, 2025)
+
+### Fixes
+
+* Do not emit class names for `null` or `undefined` dynamic styles.
+* Optimize dynamic styles output for binary and unary expressions.
+
 ## 0.14.2 (Jul 14, 2025)
 
 ### Fixes
