@@ -32,6 +32,14 @@ import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
 
+function isSafeToSkipNullCheck(expr: t.Expression) {
+  return (
+    (t.isBinaryExpression(expr) &&
+      ['+', '-', '*', '/', '**'].includes(expr.operator)) ||
+    (t.isUnaryExpression(expr) && ['-', '+'].includes(expr.operator))
+  );
+}
+
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
 /// 2. It pre-processes valid-dynamic parts of style object such as custom presets (spreads)
@@ -283,7 +291,7 @@ export default function transformStyleXCreate(
                     ({ path }) => origClassPaths[cls] === path,
                   )?.expression;
 
-                  if (expr) {
+                  if (expr && !isSafeToSkipNullCheck(expr)) {
                     exprList.push(
                       t.conditionalExpression(
                         t.binaryExpression('!=', expr, t.nullLiteral()),
