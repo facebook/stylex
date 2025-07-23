@@ -182,6 +182,60 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 
+  test('basic usage: multiple heights', () => {
+    const originalStyles = {
+      foo: {
+        gridRow: {
+          default: '1 / 2',
+          '@media (max-height: 1200px)': '1 / 4',
+          '@media (max-height: 900px)': '1 / 3',
+          '@media (max-height: 600px)': '1 / -1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridRow: {
+          default: '1 / 2',
+          '@media (min-height: 900.01px) and (max-height: 1200px)': '1 / 4',
+          '@media (min-height: 600.01px) and (max-height: 900px)': '1 / 3',
+          '@media (max-height: 600px)': '1 / -1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('basic usage: min/max heights', () => {
+    const originalStyles = {
+      foo: {
+        gridRow: {
+          default: '1 / 2',
+          '@media (min-height: 1200px) and (max-height: 1400px)': '1 / 4',
+          '@media (max-height: 900px)': '1 / 3',
+          '@media (max-height: 600px)': '1 / -1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridRow: {
+          default: '1 / 2',
+          '@media (min-height: 1200px) and (max-height: 1400px)': '1 / 4',
+          '@media (min-height: 600.01px) and (max-height: 900px)': '1 / 3',
+          '@media (max-height: 600px)': '1 / -1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
   test('single word condition', () => {
     const originalStyles = stylex.create({
       colorMode: {
@@ -321,6 +375,62 @@ describe('Media Query Transformer', () => {
         width: '100%',
         '@media (min-width: 600px)': {
           width: '50%',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width and height', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (max-height: 900px)': '1 / 4',
+          '@media (max-width: 1024px)': '1 / 3',
+          '@media (max-width: 768px)': '1 / -1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 1024.01px) and (max-width: 1440px) and (max-height: 900px)':
+            '1 / 4',
+          '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+          '@media (max-width: 768px)': '1 / -1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width and height with only height changing', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (max-height: 900px)': '1 / 4',
+          '@media (max-height: 700px)': '1 / 3',
+          '@media (max-height: 500px)': '1 / -1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-height: 700.01px) and (max-height: 900px)':
+            '1 / 4',
+          '@media (min-height: 500.01px) and (max-height: 700px)': '1 / 3',
+          '@media (max-height: 500px)': '1 / -1',
         },
       },
     };
