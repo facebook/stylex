@@ -355,71 +355,100 @@ function isNumericLength(val: mixed): boolean {
 function mergeIntervalsForAnd(
   rules: Array<MediaQueryRule>,
 ): Array<MediaQueryRule> {
-  const intervals: Array<[number, number]> = [];
   const epsilon: number = 0.01;
+  const dimensions = ['width', 'height'];
+  const intervals: { [dim: string]: Array<[number, number]> } = {
+    width: [],
+    height: [],
+  };
+
   for (const rule: MediaQueryRule of rules) {
-    if (
-      rule.type === 'pair' &&
-      (rule.key === 'min-width' || rule.key === 'max-width') &&
-      isNumericLength(rule.value)
-    ) {
-      const val = rule.value as any;
-      intervals.push(
-        rule.key === 'min-width'
-          ? [val.value, Infinity]
-          : [-Infinity, val.value],
-      );
-    } else if (
-      rule.type === 'not' &&
-      rule.rule &&
-      rule.rule.type === 'pair' &&
-      (rule.rule.key === 'min-width' || rule.rule.key === 'max-width') &&
-      isNumericLength(rule.rule.value)
-    ) {
-      const val = rule.rule.value as any;
-      if (rule.rule.key === 'min-width') {
-        intervals.push([-Infinity, val.value - epsilon]);
-      } else {
-        intervals.push([val.value + epsilon, Infinity]);
+    for (const dim of dimensions) {
+      if (
+        rule.type === 'pair' &&
+        (rule.key === `min-${dim}` || rule.key === `max-${dim}`) &&
+        isNumericLength(rule.value)
+      ) {
+        const val = rule.value as any;
+        intervals[dim].push(
+          rule.key === `min-${dim}`
+            ? [val.value, Infinity]
+            : [-Infinity, val.value],
+        );
+        break;
+      } else if (
+        rule.type === 'not' &&
+        rule.rule &&
+        rule.rule.type === 'pair' &&
+        (rule.rule.key === `min-${dim}` || rule.rule.key === `max-${dim}`) &&
+        isNumericLength(rule.rule.value)
+      ) {
+        const val = rule.rule.value as any;
+        if (rule.rule.key === `min-${dim}`) {
+          intervals[dim].push([-Infinity, val.value - epsilon]);
+        } else {
+          intervals[dim].push([val.value + epsilon, Infinity]);
+        }
+        break;
       }
-    } else {
+    }
+    if (
+      !(
+        (rule.type === 'pair' &&
+          (rule.key === 'min-width' ||
+            rule.key === 'max-width' ||
+            rule.key === 'min-height' ||
+            rule.key === 'max-height') &&
+          isNumericLength(rule.value)) ||
+        (rule.type === 'not' &&
+          rule.rule &&
+          rule.rule.type === 'pair' &&
+          (rule.rule.key === 'min-width' ||
+            rule.rule.key === 'max-width' ||
+            rule.rule.key === 'min-height' ||
+            rule.rule.key === 'max-height') &&
+          isNumericLength(rule.rule.value))
+      )
+    ) {
       return rules;
     }
   }
-  if (intervals.length === 0) return rules;
 
-  let lower: number = -Infinity;
-  let upper: number = Infinity;
-  for (const [l, u]: [number, number] of intervals) {
-    if (l > lower) lower = l;
-    if (u < upper) upper = u;
-  }
-
-  if (lower > upper) {
-    return [
-      {
-        type: 'media-keyword',
-        key: 'all',
-        not: true,
-      },
-    ];
-  }
   const result: Array<MediaQueryRule> = [];
-  if (lower !== -Infinity) {
-    result.push({
-      type: 'pair',
-      key: 'min-width',
-      value: { value: lower, unit: 'px', type: 'integer' } as any,
-    });
+  for (const dim of dimensions) {
+    const dimIntervals = intervals[dim];
+    if (dimIntervals.length === 0) continue;
+    let lower: number = -Infinity;
+    let upper: number = Infinity;
+    for (const [l, u]: [number, number] of dimIntervals) {
+      if (l > lower) lower = l;
+      if (u < upper) upper = u;
+    }
+    if (lower > upper) {
+      return [
+        {
+          type: 'media-keyword',
+          key: 'all',
+          not: true,
+        },
+      ];
+    }
+    if (lower !== -Infinity) {
+      result.push({
+        type: 'pair',
+        key: `min-${dim}`,
+        value: { value: lower, unit: 'px', type: 'integer' } as any,
+      });
+    }
+    if (upper !== Infinity) {
+      result.push({
+        type: 'pair',
+        key: `max-${dim}`,
+        value: { value: upper, unit: 'px', type: 'integer' } as any,
+      });
+    }
   }
-  if (upper !== Infinity) {
-    result.push({
-      type: 'pair',
-      key: 'max-width',
-      value: { value: upper, unit: 'px', type: 'integer' } as any,
-    });
-  }
-  return result;
+  return result.length > 0 ? result : rules;
 }
 
 function mergeAndSimplifyRanges(
