@@ -358,6 +358,43 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test.skip('works with firstThatWorks', () => {
+      const { code } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { colors } from './constants.stylex';
+
+        export const styles = stylex.create({
+          nodeEnd: (animationDuration) => ({
+            foo: {
+              color: stylex.firstThatWorks(colors.background, 'transparent'),
+            },
+          }),
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+      `);
+    });
+
+    test.skip('works with dynamic styles', () => {
+      const { code } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from './constants.stylex';
+
+        export const styles = stylex.create({
+          nodeEnd: (animationDuration) => ({
+            transition: {
+              [breakpoints.small]: 'none',
+              default: \`transform \${animationDuration}ms ease-in-out\`,
+            },
+          }),
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+      `);
+    });
+
     test('adds multiple media query placeholders from constants.stylex', () => {
       const { code, metadata } = transformWithInlineConsts(`
         import * as stylex from '@stylexjs/stylex';
