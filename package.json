@@ -51,6 +51,7 @@
       "prettier-plugin-hermes-parser"
     ],
     "proseWrap": "always",
+    "trailingComma": "all",
     "overrides": [
       {
         "files": [
