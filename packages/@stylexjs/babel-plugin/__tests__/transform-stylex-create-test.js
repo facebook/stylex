@@ -2029,6 +2029,790 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     describe('dynamic styles', () => {
+      describe('safe conditional checks', () => {
+        test('template literal expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: \`\${color}\`,
+                color: \`\${color}px\`,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--backgroundColor": \`\${color}\` != null ? \`\${color}\` : undefined,
+                "--color": \`\${color}px\` != null ? \`\${color}px\` : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('binary expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (width, height) => ({
+                width: width + 100,
+                height: height * 2,
+                margin: width - 50,
+                padding: height / 2,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (width, height) => [{
+                kzqmXN: "x1bl4301",
+                kZKoxP: "x1f5funs",
+                kogj98: "x1cpkpif",
+                kmVPX3: "x6rcfto",
+                $$css: true
+              }, {
+                "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width + 100),
+                "--height": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(height * 2),
+                "--margin": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width - 50),
+                "--padding": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(height / 2)
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1bl4301",
+                  {
+                    "ltr": ".x1bl4301{width:var(--width)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1f5funs",
+                  {
+                    "ltr": ".x1f5funs{height:var(--height)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1cpkpif",
+                  {
+                    "ltr": ".x1cpkpif{margin:var(--margin)}",
+                    "rtl": null,
+                  },
+                  1000,
+                ],
+                [
+                  "x6rcfto",
+                  {
+                    "ltr": ".x6rcfto{padding:var(--padding)}",
+                    "rtl": null,
+                  },
+                  1000,
+                ],
+                [
+                  "--width",
+                  {
+                    "ltr": "@property --width { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--height",
+                  {
+                    "ltr": "@property --height { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--margin",
+                  {
+                    "ltr": "@property --margin { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--padding",
+                  {
+                    "ltr": "@property --padding { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('unary expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (value) => ({
+                opacity: -value,
+                transform: +value,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: value => [{
+                kSiTet: "xa0d40w",
+                k3aq6I: "x1uosm7l",
+                $$css: true
+              }, {
+                "--opacity": -value != null ? -value : undefined,
+                "--transform": +value != null ? +value : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xa0d40w",
+                  {
+                    "ltr": ".xa0d40w{opacity:var(--opacity)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1uosm7l",
+                  {
+                    "ltr": ".x1uosm7l{transform:var(--transform)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--opacity",
+                  {
+                    "ltr": "@property --opacity { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--transform",
+                  {
+                    "ltr": "@property --transform { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('logical expressions with safe left side', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: color || 'red',
+                color: color || 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--backgroundColor": (color || 'red') != null ? color || 'red' : undefined,
+                "--color": (color || 'black') != null ? color || 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('logical expressions with safe right side', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: 'red' || color,
+                color: 'black' || color,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xrkmrrc",
+                kMwMTN: "x1mqxbix",
+                $$css: true
+              }, {}]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1mqxbix",
+                  {
+                    "ltr": ".x1mqxbix{color:black}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('nullish coalescing with safe left side', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: color ?? 'red',
+                color: color ?? 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--backgroundColor": (color ?? 'red') != null ? color ?? 'red' : undefined,
+                "--color": (color ?? 'black') != null ? color ?? 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('conditional expressions with safe branches', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color, isDark) => ({
+                backgroundColor: isDark ? 'black' : 'white',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (color, isDark) => [{
+                kWkggS: "xr5ldyu",
+                $$css: true
+              }, {
+                "--backgroundColor": (isDark ? 'black' : 'white') != null ? isDark ? 'black' : 'white' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('conditional expressions with safe branches', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color, isDark) => ({
+                backgroundColor: isDark ? ('black') : 'white',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (color, isDark) => [{
+                kWkggS: "xr5ldyu",
+                $$css: true
+              }, {
+                "--backgroundColor": (isDark ? 'black' : 'white') != null ? isDark ? 'black' : 'white' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('complex nested safe expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (width, height, color) => ({
+                width: (width + 100) || 200,
+                height: (height * 2) ?? 300,
+                backgroundColor: \`\${color}\` || 'red',
+                color: (-color) || 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (width, height, color) => [{
+                kzqmXN: "x1bl4301",
+                kZKoxP: "x1f5funs",
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width + 100 || 200),
+                "--height": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(height * 2 ?? 300),
+                "--backgroundColor": (\`\${color}\` || 'red') != null ? \`\${color}\` || 'red' : undefined,
+                "--color": (-color || 'black') != null ? -color || 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1bl4301",
+                  {
+                    "ltr": ".x1bl4301{width:var(--width)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1f5funs",
+                  {
+                    "ltr": ".x1f5funs{height:var(--height)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--width",
+                  {
+                    "ltr": "@property --width { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--height",
+                  {
+                    "ltr": "@property --height { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('complex safe ternary expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (isDark, isLarge, isActive, width, height, color) => ({
+                backgroundColor: isDark ? (isLarge ? 'black' : 'gray') : (isActive ? 'blue' : 'white'),
+                color: isDark ? (color || 'white') : (color ?? 'black'),
+                width: isLarge ? (width + 100) : (width - 50),
+                height: isActive ? (height * 2) : (height / 2),
+                margin: isDark ? ((width + height) || 20) : ((width - height) ?? 10),
+                padding: isLarge ? ((width * height) + 50) : ((width / height) - 25),
+                fontSize: isDark ? (isLarge ? (width + 20) : (width - 10)) : (isActive ? (height + 15) : (height - 5)),
+                opacity: isLarge ? (isActive ? 1 : 0.8) : (isDark ? 0.9 : 0.7),
+                transform: isActive ? (isLarge ? 'scale(1.2)' : 'scale(1.1)') : (isDark ? 'rotate(5deg)' : 'rotate(-5deg)'),
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (isDark, isLarge, isActive, width, height, color) => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                kzqmXN: "x1bl4301",
+                kZKoxP: "x1f5funs",
+                kogj98: "x1cpkpif",
+                kmVPX3: "x6rcfto",
+                kGuDYH: "x6zurak",
+                kSiTet: "xa0d40w",
+                k3aq6I: "x1uosm7l",
+                $$css: true
+              }, {
+                "--backgroundColor": (isDark ? isLarge ? 'black' : 'gray' : isActive ? 'blue' : 'white') != null ? isDark ? isLarge ? 'black' : 'gray' : isActive ? 'blue' : 'white' : undefined,
+                "--color": (isDark ? color || 'white' : color ?? 'black') != null ? isDark ? color || 'white' : color ?? 'black' : undefined,
+                "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(isLarge ? width + 100 : width - 50),
+                "--height": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(isActive ? height * 2 : height / 2),
+                "--margin": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(isDark ? width + height || 20 : width - height ?? 10),
+                "--padding": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(isLarge ? width * height + 50 : width / height - 25),
+                "--fontSize": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(isDark ? isLarge ? width + 20 : width - 10 : isActive ? height + 15 : height - 5),
+                "--opacity": (isLarge ? isActive ? 1 : 0.8 : isDark ? 0.9 : 0.7) != null ? isLarge ? isActive ? 1 : 0.8 : isDark ? 0.9 : 0.7 : undefined,
+                "--transform": (isActive ? isLarge ? 'scale(1.2)' : 'scale(1.1)' : isDark ? 'rotate(5deg)' : 'rotate(-5deg)') != null ? isActive ? isLarge ? 'scale(1.2)' : 'scale(1.1)' : isDark ? 'rotate(5deg)' : 'rotate(-5deg)' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1bl4301",
+                  {
+                    "ltr": ".x1bl4301{width:var(--width)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1f5funs",
+                  {
+                    "ltr": ".x1f5funs{height:var(--height)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1cpkpif",
+                  {
+                    "ltr": ".x1cpkpif{margin:var(--margin)}",
+                    "rtl": null,
+                  },
+                  1000,
+                ],
+                [
+                  "x6rcfto",
+                  {
+                    "ltr": ".x6rcfto{padding:var(--padding)}",
+                    "rtl": null,
+                  },
+                  1000,
+                ],
+                [
+                  "x6zurak",
+                  {
+                    "ltr": ".x6zurak{font-size:var(--fontSize)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xa0d40w",
+                  {
+                    "ltr": ".xa0d40w{opacity:var(--opacity)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1uosm7l",
+                  {
+                    "ltr": ".x1uosm7l{transform:var(--transform)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--width",
+                  {
+                    "ltr": "@property --width { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--height",
+                  {
+                    "ltr": "@property --height { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--margin",
+                  {
+                    "ltr": "@property --margin { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--padding",
+                  {
+                    "ltr": "@property --padding { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--fontSize",
+                  {
+                    "ltr": "@property --fontSize { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--opacity",
+                  {
+                    "ltr": "@property --opacity { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--transform",
+                  {
+                    "ltr": "@property --transform { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+      });
+
       test('style function', () => {
         const { code, metadata } = transform(`
           import * as stylex from '@stylexjs/stylex';
@@ -2371,6 +3155,569 @@ describe('@stylexjs/babel-plugin', () => {
                   "----x1anmu0j",
                   {
                     "ltr": "@property ----x1anmu0j { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+      });
+
+      describe('safe conditional checks', () => {
+        test('template literal expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: \`\${color}\`,
+                color: \`\${color}px\`,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--backgroundColor": \`\${color}\` != null ? \`\${color}\` : undefined,
+                "--color": \`\${color}px\` != null ? \`\${color}px\` : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('binary expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (width, height) => ({
+                width: width + 100,
+                height: height * 2,
+                margin: width - 50,
+                padding: height / 2,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (width, height) => [{
+                kzqmXN: "x1bl4301",
+                kZKoxP: "x1f5funs",
+                kogj98: "x1cpkpif",
+                kmVPX3: "x6rcfto",
+                $$css: true
+              }, {
+                "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width + 100),
+                "--height": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(height * 2),
+                "--margin": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width - 50),
+                "--padding": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(height / 2)
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1bl4301",
+                  {
+                    "ltr": ".x1bl4301{width:var(--width)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1f5funs",
+                  {
+                    "ltr": ".x1f5funs{height:var(--height)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1cpkpif",
+                  {
+                    "ltr": ".x1cpkpif{margin:var(--margin)}",
+                    "rtl": null,
+                  },
+                  1000,
+                ],
+                [
+                  "x6rcfto",
+                  {
+                    "ltr": ".x6rcfto{padding:var(--padding)}",
+                    "rtl": null,
+                  },
+                  1000,
+                ],
+                [
+                  "--width",
+                  {
+                    "ltr": "@property --width { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--height",
+                  {
+                    "ltr": "@property --height { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--margin",
+                  {
+                    "ltr": "@property --margin { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--padding",
+                  {
+                    "ltr": "@property --padding { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('unary expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (value) => ({
+                opacity: -value,
+                transform: +value,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: value => [{
+                kSiTet: "xa0d40w",
+                k3aq6I: "x1uosm7l",
+                $$css: true
+              }, {
+                "--opacity": -value != null ? -value : undefined,
+                "--transform": +value != null ? +value : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xa0d40w",
+                  {
+                    "ltr": ".xa0d40w{opacity:var(--opacity)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1uosm7l",
+                  {
+                    "ltr": ".x1uosm7l{transform:var(--transform)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--opacity",
+                  {
+                    "ltr": "@property --opacity { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--transform",
+                  {
+                    "ltr": "@property --transform { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('logical expressions with safe left side', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: color || 'red',
+                color: color || 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--backgroundColor": (color || 'red') != null ? color || 'red' : undefined,
+                "--color": (color || 'black') != null ? color || 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('logical expressions with safe right side', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: 'red' || color,
+                color: 'black' || color,
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xrkmrrc",
+                kMwMTN: "x1mqxbix",
+                $$css: true
+              }, {}]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1mqxbix",
+                  {
+                    "ltr": ".x1mqxbix{color:black}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('nullish coalescing with safe left side', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color) => ({
+                backgroundColor: color ?? 'red',
+                color: color ?? 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: color => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--backgroundColor": (color ?? 'red') != null ? color ?? 'red' : undefined,
+                "--color": (color ?? 'black') != null ? color ?? 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('conditional expressions with safe branches', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (color, isDark) => ({
+                backgroundColor: isDark ? 'black' : 'white',
+                color: isDark ? color : 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (color, isDark) => [{
+                kWkggS: "xr5ldyu",
+                kMwMTN: (isDark ? color : 'black') != null ? "xfx01vb" : isDark ? color : 'black',
+                $$css: true
+              }, {
+                "--backgroundColor": (isDark ? 'black' : 'white') != null ? isDark ? 'black' : 'white' : undefined,
+                "--color": (isDark ? color : 'black') != null ? isDark ? color : 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('complex nested safe expressions', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (width, height, color) => ({
+                width: (width + 100) || 200,
+                height: (height * 2) ?? 300,
+                backgroundColor: \`\${color}\` || 'red',
+                color: (-color) || 'black',
+              })
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (width, height, color) => [{
+                kzqmXN: "x1bl4301",
+                kZKoxP: "x1f5funs",
+                kWkggS: "xr5ldyu",
+                kMwMTN: "xfx01vb",
+                $$css: true
+              }, {
+                "--width": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(width + 100 || 200),
+                "--height": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(height * 2 ?? 300),
+                "--backgroundColor": (\`\${color}\` || 'red') != null ? \`\${color}\` || 'red' : undefined,
+                "--color": (-color || 'black') != null ? -color || 'black' : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1bl4301",
+                  {
+                    "ltr": ".x1bl4301{width:var(--width)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "x1f5funs",
+                  {
+                    "ltr": ".x1f5funs{height:var(--height)}",
+                    "rtl": null,
+                  },
+                  4000,
+                ],
+                [
+                  "xr5ldyu",
+                  {
+                    "ltr": ".xr5ldyu{background-color:var(--backgroundColor)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xfx01vb",
+                  {
+                    "ltr": ".xfx01vb{color:var(--color)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "--width",
+                  {
+                    "ltr": "@property --width { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--height",
+                  {
+                    "ltr": "@property --height { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--backgroundColor",
+                  {
+                    "ltr": "@property --backgroundColor { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--color",
+                  {
+                    "ltr": "@property --color { syntax: "*"; inherits: false;}",
                     "rtl": null,
                   },
                   0,
