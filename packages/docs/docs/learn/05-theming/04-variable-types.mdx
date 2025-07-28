@@ -18,7 +18,7 @@ option needs to be enabled in the StyleX Babel configuration to enable theming A
 
 :::
 
-:::warning Advanced use-cases
+:::warning Advanced use-case
 
 Declaring types for variables is an advanced use-case. It is not necessary for
 the majority of use-cases.
@@ -130,10 +130,13 @@ However, the feature can be simulated with a variable with an `integer` type:
 const styles = stylex.create({
   gradient: {
     // Math.floor
-    [tokens.int]: `calc(16 / 9)`
+    [tokens.int]: `calc(16 / 9)`,
 
     // Math.round
-    [tokens.int]: `calc((16 / 9) + 0.5)`
+    [tokens.int]: `calc((16 / 9) + 0.5)`,
+
+    // Now, the "integer" value can be used for styling:
+    width: `calc(${tokens.int} * 1px)`,
   },
 })
 ```
@@ -161,9 +164,11 @@ const rotate = stylex.keyframes({
   to: { [tokens.angle]: '360deg' },
 });
 
+const colors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff'].join(', ');
+
 const styles = stylex.create({
   gradient: {
-    backgroundImage: `conic-gradient(from ${tokens.angle}, ...colors)`,
+    backgroundImage: `conic-gradient(from ${tokens.angle}, ${colors})`,
     animationName: rotate,
     animationDuration: '10s',
     animationTimingFunction: 'linear',
