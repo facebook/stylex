@@ -164,9 +164,11 @@ const rotate = stylex.keyframes({
   to: { [tokens.angle]: '360deg' },
 });
 
+const colors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff'].join(', ');
+
 const styles = stylex.create({
   gradient: {
-    backgroundImage: `conic-gradient(from ${tokens.angle}, ...colors)`,
+    backgroundImage: `conic-gradient(from ${tokens.angle}, ${colors})`,
     animationName: rotate,
     animationDuration: '10s',
     animationTimingFunction: 'linear',
