@@ -292,9 +292,9 @@ export default function transformStyleXCreate(
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
 
-              const conditionalProps: Array<
-                t.ObjectProperty | t.SpreadElement,
-              > = [];
+              const staticProps: Array<t.ObjectProperty> = [];
+
+              const conditionalProps: Array<t.ObjectProperty> = [];
 
               value.properties.forEach((prop) => {
                 if (!t.isObjectProperty(prop) || t.isPrivateName(prop.key)) {
@@ -303,14 +303,18 @@ export default function transformStyleXCreate(
 
                 const objProp: t.ObjectProperty = prop;
                 const propKey =
-                  objProp.key.type === 'Identifier' && !objProp.computed
+                  t.isIdentifier(objProp.key) && !objProp.computed
                     ? objProp.key.name
-                    : objProp.key.type === 'StringLiteral'
+                    : t.isStringLiteral(objProp.key)
                       ? objProp.key.value
                       : null;
 
-                if (propKey == null || propKey === '$$css') {
-                  conditionalProps.push(objProp);
+                if (propKey == null) {
+                  staticProps.push(objProp);
+                  return;
+                }
+
+                if (propKey === '$$css') {
                   return;
                 }
 
@@ -318,6 +322,7 @@ export default function transformStyleXCreate(
                   ? objProp.value.value.split(' ')
                   : [];
 
+                let isStatic = true;
                 const exprList: t.Expression[] = [];
 
                 classList.forEach((cls) => {
@@ -326,6 +331,7 @@ export default function transformStyleXCreate(
                   )?.expression;
 
                   if (expr && !isSafeToSkipNullCheck(expr)) {
+                    isStatic = false;
                     exprList.push(
                       t.conditionalExpression(
                         t.binaryExpression('!=', expr, t.nullLiteral()),
@@ -345,22 +351,52 @@ export default function transformStyleXCreate(
                         t.binaryExpression('+', acc, curr),
                       );
 
-                conditionalProps.push(t.objectProperty(objProp.key, joined));
+                if (isStatic) {
+                  staticProps.push(t.objectProperty(objProp.key, joined));
+                } else {
+                  conditionalProps.push(t.objectProperty(objProp.key, joined));
+                }
               });
 
-              const conditionalObj = t.objectExpression(conditionalProps);
+              let staticObj = null;
+              let conditionalObj = null;
 
-              prop.value = t.arrowFunctionExpression(
-                params,
-                t.arrayExpression([
-                  hoistExpression(path, conditionalObj),
-                  t.objectExpression(
-                    Object.entries(inlineStyles).map(([key, val]) =>
-                      t.objectProperty(t.stringLiteral(key), val.expression),
-                    ),
+              if (staticProps.length > 0) {
+                staticProps.push(
+                  t.objectProperty(
+                    t.stringLiteral('$$css'),
+                    t.booleanLiteral(true),
                   ),
-                ]),
+                );
+                staticObj = t.objectExpression(staticProps);
+              }
+
+              if (conditionalProps.length > 0) {
+                conditionalProps.push(
+                  t.objectProperty(
+                    t.identifier('$$css'),
+                    t.booleanLiteral(true),
+                  ),
+                );
+                conditionalObj = t.objectExpression(conditionalProps);
+              }
+
+              let finalFnValue: t.Expression = t.objectExpression(
+                Object.entries(inlineStyles).map(([key, val]) =>
+                  t.objectProperty(t.stringLiteral(key), val.expression),
+                ),
               );
+              if (staticObj != null || conditionalObj != null) {
+                finalFnValue = t.arrayExpression(
+                  [
+                    staticObj && hoistExpression(path, staticObj),
+                    conditionalObj,
+                    finalFnValue,
+                  ].filter(Boolean),
+                );
+              }
+
+              prop.value = t.arrowFunctionExpression(params, finalFnValue);
             }
           }
         }

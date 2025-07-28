@@ -181,10 +181,6 @@ describe('@stylexjs/babel-plugin', () => {
           xbiwvf9: "x57uvma xbiwvf9",
           $$css: true
         };
-        const _temp = {
-          "color-kMwMTN": color != null ? "color-xfx01vb" : color,
-          $$css: "app/main.js:56"
-        };
         export const styles = {
           root: {
             "animationName-kKVMdj": "animationName-xckgs0v",
@@ -194,7 +190,10 @@ describe('@stylexjs/babel-plugin', () => {
             "padding-kmVPX3": "padding-xss17vw",
             $$css: "app/main.js:31"
           },
-          dynamic: color => [_temp, {
+          dynamic: color => [{
+            "color-kMwMTN": color != null ? "color-xfx01vb" : color,
+            $$css: true
+          }, {
             "--color": color != null ? color : undefined
           }]
         };"
@@ -248,10 +247,6 @@ describe('@stylexjs/babel-plugin', () => {
           xbiwvf9: "x57uvma xbiwvf9",
           $$css: true
         };
-        const _temp = {
-          "color-kMwMTN": color != null ? "color-xfx01vb" : color,
-          $$css: "app/main.js:56"
-        };
         export const styles = {
           root: {
             "animationName-kKVMdj": "animationName-xckgs0v",
@@ -261,7 +256,10 @@ describe('@stylexjs/babel-plugin', () => {
             "padding-kmVPX3": "padding-xss17vw",
             $$css: "app/main.js:31"
           },
-          dynamic: color => [_temp, {
+          dynamic: color => [{
+            "color-kMwMTN": color != null ? "color-xfx01vb" : color,
+            $$css: true
+          }, {
             "--color": color != null ? color : undefined
           }]
         };"
