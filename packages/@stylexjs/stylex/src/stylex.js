@@ -146,9 +146,7 @@ export const types = {
   image: <T: string = string>(_v: ValueWithDefault<T>): Types.Image<T> => {
     throw errorForType('image');
   },
-  integer: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): Types.Integer<T> => {
+  integer: <T: number = number>(_v: ValueWithDefault<T>): Types.Integer<T> => {
     throw errorForType('integer');
   },
   lengthPercentage: <T: number | string = number | string>(
@@ -166,9 +164,7 @@ export const types = {
   ): Types.Percentage<T> => {
     throw errorForType('percentage');
   },
-  number: <T: number | string = number | string>(
-    _v: ValueWithDefault<T>,
-  ): Types.Num<T> => {
+  number: <T: number = number>(_v: ValueWithDefault<T>): Types.Num<T> => {
     throw errorForType('number');
   },
   resolution: <T: string = string>(
