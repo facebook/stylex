@@ -292,6 +292,9 @@ export default function transformStyleXCreate(
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
 
+              let cssTagValue: t.Expression | t.PatternLike =
+                t.booleanLiteral(true);
+
               const staticProps: Array<t.ObjectProperty> = [];
 
               const conditionalProps: Array<t.ObjectProperty> = [];
@@ -315,6 +318,7 @@ export default function transformStyleXCreate(
                 }
 
                 if (propKey === '$$css') {
+                  cssTagValue = objProp.value;
                   return;
                 }
 
@@ -363,20 +367,14 @@ export default function transformStyleXCreate(
 
               if (staticProps.length > 0) {
                 staticProps.push(
-                  t.objectProperty(
-                    t.stringLiteral('$$css'),
-                    t.booleanLiteral(true),
-                  ),
+                  t.objectProperty(t.stringLiteral('$$css'), cssTagValue),
                 );
                 staticObj = t.objectExpression(staticProps);
               }
 
               if (conditionalProps.length > 0) {
                 conditionalProps.push(
-                  t.objectProperty(
-                    t.identifier('$$css'),
-                    t.booleanLiteral(true),
-                  ),
+                  t.objectProperty(t.identifier('$$css'), cssTagValue),
                 );
                 conditionalObj = t.objectExpression(conditionalProps);
               }
