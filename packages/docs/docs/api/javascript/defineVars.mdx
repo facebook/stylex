@@ -18,7 +18,9 @@ function defineVars<Styles extends {[key: string]: Value}>(
 ```
 
 By default, `defineVars` will create unique, hashed variable names. To create
-variables with stable names use a key that starts with `--`.
+variables with custom names use a key that starts with `--`. These will generate
+CSS custom properties with the provided name instead of generating a globally
+unique name.
 
 ### Example use:
 

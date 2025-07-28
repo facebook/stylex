@@ -61,9 +61,8 @@ const styles = stylex.create({
 <div {...stylex.props(dracula, styles.container)}>{children}</div>;
 ```
 
-**NOTE:** All variables in a variable group must be overridden when creating a
-theme. This choice has been to help catch accidental omissions. Even at the cost
-of occasional tedium.
+**NOTE:** Any variables that are not overridden will revert back to their 
+default value that was set in the `defineVars` declaration.
 
 Unlike when defining and using variables, themes can be created with
 `createTheme` anywhere in a codebase, and passed around across files or
