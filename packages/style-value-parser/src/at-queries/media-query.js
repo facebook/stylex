@@ -17,7 +17,7 @@ type Fraction = [number, '/', number];
 type WordRule = 'color' | 'monochrome' | 'grid' | 'color-index';
 type Length = TokenDimension[4];
 
-type MediaRuleValue = Length | string | Fraction;
+type MediaRuleValue = number | Length | string | Fraction;
 
 type MediaKeyword = {
   type: 'media-keyword',
@@ -109,6 +109,7 @@ const mediaRuleValueParser: TokenParser<MediaRuleValue> = TokenParser.oneOf(
     ).map(() => '/'),
     TokenParser.tokens.Number.map((token) => token[4].value),
   ).separatedBy(TokenParser.tokens.Whitespace.optional),
+  TokenParser.tokens.Number.map((token) => token[4].value),
 );
 
 const simplePairParser: TokenParser<MediaRulePair> = TokenParser.sequence(
