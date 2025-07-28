@@ -27,21 +27,21 @@ export function hoistExpression(
     return astExpression;
   }
 
-  const nameIdent = path.scope.generateUidIdentifier();
+  const hoistedIdent = path.scope.generateUidIdentifier();
 
   programStatementPath.insertBefore(
     t.variableDeclaration('const', [
-      t.variableDeclarator(nameIdent, astExpression),
+      t.variableDeclarator(hoistedIdent, astExpression),
     ]),
   );
-  return nameIdent;
+  return hoistedIdent;
 }
 
 export function pathReplaceHoisted(
   path: NodePath<>,
   astExpression: t.Expression,
 ): void {
-  // If the object is already hoisted, leave it inlined.
+  // If the object is already hoisted, leave it inlined
   if (isProgramLevel(path)) {
     path.replaceWith(astExpression);
     return;

@@ -160,6 +160,125 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('multiple nested referenced style object', () => {
+        const { code, metadata } = transform(`
+          import * as stylex from '@stylexjs/stylex';
+          function fooBar() {
+            const styles = stylex.create({
+              root: {
+                backgroundColor: 'red',
+                color: 'blue',
+              }
+            });
+            const styles2 = stylex.create({
+              root: {
+                backgroundColor: 'blue',
+                color: 'green',
+              }
+            });
+            console.log(styles);
+            console.log(styles2);
+          }
+          const otherFunction = () => {
+            const styles3 = stylex.create({
+              root: {
+                backgroundColor: 'green',
+                color: 'red',
+              }
+            });
+            console.log(styles3);
+          }
+        `);
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          const _styles = {
+            root: {
+              kWkggS: "xrkmrrc",
+              kMwMTN: "xju2f9n",
+              $$css: true
+            }
+          };
+          const _styles2 = {
+            root: {
+              kWkggS: "x1t391ir",
+              kMwMTN: "x1prwzq3",
+              $$css: true
+            }
+          };
+          function fooBar() {
+            const styles = _styles;
+            const styles2 = _styles2;
+            console.log(styles);
+            console.log(styles2);
+          }
+          const _styles3 = {
+            root: {
+              kWkggS: "x1u857p9",
+              kMwMTN: "x1e2nbdu",
+              $$css: true
+            }
+          };
+          const otherFunction = () => {
+            const styles3 = _styles3;
+            console.log(styles3);
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xrkmrrc",
+                {
+                  "ltr": ".xrkmrrc{background-color:red}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "xju2f9n",
+                {
+                  "ltr": ".xju2f9n{color:blue}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "x1t391ir",
+                {
+                  "ltr": ".x1t391ir{background-color:blue}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "x1prwzq3",
+                {
+                  "ltr": ".x1prwzq3{color:green}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "x1u857p9",
+                {
+                  "ltr": ".x1u857p9{background-color:green}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "x1e2nbdu",
+                {
+                  "ltr": ".x1e2nbdu{color:red}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
       test('style object (multiple)', () => {
         // Check multiple objects and different key types
         const { code, metadata } = transform(`
