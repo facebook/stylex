@@ -32,12 +32,45 @@ import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
 
-function isSafeToSkipNullCheck(expr: t.Expression) {
-  return (
-    (t.isBinaryExpression(expr) &&
-      ['+', '-', '*', '/', '**'].includes(expr.operator)) ||
-    (t.isUnaryExpression(expr) && ['-', '+'].includes(expr.operator))
-  );
+function isSafeToSkipNullCheck(expr: t.Expression): boolean {
+  if (t.isTemplateLiteral(expr)) return true;
+
+  if (
+    t.isStringLiteral(expr) ||
+    t.isNumericLiteral(expr) ||
+    t.isBooleanLiteral(expr)
+  )
+    return true;
+
+  if (t.isBinaryExpression(expr)) {
+    return ['+', '-', '*', '/', '%', '**'].includes(expr.operator);
+  }
+
+  if (t.isUnaryExpression(expr)) {
+    return ['-', '+'].includes(expr.operator);
+  }
+
+  if (t.isConditionalExpression(expr)) {
+    return (
+      isSafeToSkipNullCheck(expr.consequent) &&
+      isSafeToSkipNullCheck(expr.alternate)
+    );
+  }
+
+  if (t.isLogicalExpression(expr)) {
+    if (expr.operator === '??' || expr.operator === '||') {
+      return (
+        isSafeToSkipNullCheck(expr.left) || isSafeToSkipNullCheck(expr.right)
+      );
+    }
+    if (expr.operator === '&&') {
+      return (
+        isSafeToSkipNullCheck(expr.left) && isSafeToSkipNullCheck(expr.right)
+      );
+    }
+  }
+
+  return false;
 }
 
 /// This function looks for `stylex.create` calls and transforms them.
