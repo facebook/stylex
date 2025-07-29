@@ -9,10 +9,6 @@
 
 import { lastMediaQueryWinsTransform } from '../media-query-transform.js';
 
-const stylex = {
-  create: (styles) => styles,
-};
-
 describe('Media Query Transformer', () => {
   test('basic usage: multiple widths', () => {
     const originalStyles = {
@@ -240,13 +236,13 @@ describe('Media Query Transformer', () => {
   });
 
   test('single word condition', () => {
-    const originalStyles = stylex.create({
+    const originalStyles = {
       mode: {
         default: 'normal',
         '@media (color)': 'colorful',
         '@media (monochrome)': 'grayscale',
       },
-    });
+    };
 
     const expectedStyles = {
       mode: {
@@ -261,13 +257,13 @@ describe('Media Query Transformer', () => {
   });
 
   test('handles comma-separated (or) media queries', () => {
-    const originalStyles = stylex.create({
+    const originalStyles = {
       width: {
         default: '100%',
         '@media screen, (max-width: 800px)': '80%',
         '@media (max-width: 500px)': '60%',
       },
-    });
+    };
 
     const expectedStyles = {
       width: {
@@ -283,14 +279,14 @@ describe('Media Query Transformer', () => {
   });
 
   test.skip('handles and media queries', () => {
-    const originalStyles = stylex.create({
+    const originalStyles = {
       width: {
         default: '100%',
         '@media (min-width: 900px)': '80%',
         '@media (min-width: 500px) and (max-width: 899px) and (max-height: 300px)':
           '50%',
       },
-    });
+    };
 
     const expectedStyles = {
       width: {
@@ -307,13 +303,13 @@ describe('Media Query Transformer', () => {
   });
 
   test.skip('combination of keywords and rules', () => {
-    const originalStyles = stylex.create({
+    const originalStyles = {
       width: {
         default: '100%',
         '@media screen and (min-width: 900px)': '80%',
         '@media print and (max-width: 500px)': '50%',
       },
-    });
+    };
 
     const expectedStyles = {
       width: {
