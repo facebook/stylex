@@ -539,14 +539,33 @@ export class MediaQuery {
           : `(not ${this.#toString(queries.rule)})`;
       case 'and':
         return queries.rules.map((rule) => this.#toString(rule)).join(' and ');
-      case 'or':
+      case 'or': {
+        const validRules = queries.rules.filter(
+          (r) => !(r.type === 'or' && r.rules.length === 0),
+        );
+        if (validRules.length === 0) return 'not all';
+        if (validRules.length === 1)
+          return this.#toString(validRules[0], isTopLevel);
+
+        const formattedRules = validRules.map((rule) => {
+          if (rule.type === 'and' || rule.type === 'or') {
+            const ruleString = this.#toString(rule);
+            const result = !isTopLevel ? `(${ruleString})` : ruleString;
+            return result;
+          }
+          return this.#toString(rule);
+        });
+
         return isTopLevel
-          ? queries.rules.map((rule) => this.#toString(rule)).join(', ')
-          : queries.rules.map((rule) => this.#toString(rule)).join(' or ');
+          ? formattedRules.join(', ')
+          : formattedRules.join(' or ');
+      }
+
       default:
         return '';
     }
   }
+
   static normalize(rule: MediaQueryRule): MediaQueryRule {
     switch (rule.type) {
       case 'and': {
@@ -560,6 +579,8 @@ export class MediaQuery {
           }
         }
         const merged = mergeAndSimplifyRanges(flattened);
+        if (merged.length === 0)
+          return { type: 'media-keyword', key: 'all', not: true };
         return { type: 'and', rules: merged };
       }
       case 'or':
@@ -567,22 +588,30 @@ export class MediaQuery {
           type: 'or',
           rules: rule.rules.map((r) => MediaQuery.normalize(r)),
         };
+
       case 'not': {
-        let count = 1;
-        let current = rule.rule;
-        while (current && current.type === 'not') {
-          count++;
-          current = current.rule;
+        const normalizedOperand = MediaQuery.normalize(rule.rule);
+
+        if (
+          normalizedOperand.type === 'media-keyword' &&
+          normalizedOperand.key === 'all' &&
+          normalizedOperand.not
+        ) {
+          return { type: 'media-keyword', key: 'all', not: false };
         }
-        const normalizedOperand = MediaQuery.normalize(current);
-        return count % 2 === 0
-          ? normalizedOperand
-          : { type: 'not', rule: normalizedOperand };
+
+        if (normalizedOperand.type === 'not') {
+          return MediaQuery.normalize(normalizedOperand.rule);
+        }
+
+        return { type: 'not', rule: normalizedOperand };
       }
+
       default:
         return rule;
     }
   }
+
   static get parser(): TokenParser<MediaQuery> {
     const leadingNotParser = TokenParser.sequence(
       TokenParser.tokens.Ident.map(

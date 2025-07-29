@@ -2008,23 +2008,13 @@ describe('style-value-parser/at-queries', () => {
         expect(parsed).toMatchInlineSnapshot(`
           MediaQuery {
             "queries": {
-              "rule": {
-                "rules": [
-                  {
-                    "key": "all",
-                    "not": true,
-                    "type": "media-keyword",
-                  },
-                ],
-                "type": "and",
-              },
-              "type": "not",
+              "key": "all",
+              "not": false,
+              "type": "media-keyword",
             },
           }
         `);
-        expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (not (not all))"',
-        );
+        expect(parsed.toString()).toMatchInlineSnapshot('"@media all"');
       });
 
       test('@media not all and (monochrome) and (min-width: 600px)', () => {
