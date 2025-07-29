@@ -1832,7 +1832,7 @@ describe('@stylexjs/babel-plugin', () => {
               },
             });
           `,
-            { enableLastMediaQueryWins: true },
+            { enableMediaQueryOrder: true },
           );
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';

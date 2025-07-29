@@ -24,7 +24,7 @@ export function flattenRawStyleObject(
   style: RawStyles,
   options: StyleXOptions,
 ): $ReadOnlyArray<$ReadOnly<[string, IPreRule]>> {
-  const processedStyle = options.enableLastMediaQueryWins
+  const processedStyle = options.enableMediaQueryOrder
     ? lastMediaQueryWinsTransform(style)
     : style;
   return _flattenRawStyleObject(processedStyle, [], options);

@@ -17,7 +17,7 @@ export const defaultOptions: StyleXOptions = {
   enableDevClassNames: false,
   enableDebugDataProp: true,
   enableFontSizePxToRem: false,
-  enableLastMediaQueryWins: false,
+  enableMediaQueryOrder: false,
   enableLegacyValueFlipping: false,
   enableLogicalStylesPolyfill: false,
   enableMinifiedKeys: true,

@@ -418,7 +418,59 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 
-  test('mixed min/max width with ranges', () => {
+  test('mixed min/max width with disjoint ranges', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-width: 900px)': '1 / 4',
+          '@media (max-width: 800px) and (min-width: 600px)': '1 / 3',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 900px) and (max-width: 1440px)': '1 / 4',
+          '@media (min-width: 600px) and (max-width: 800px)': '1 / 3',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width with many disjoint ranges', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-width: 900px)': '1 / 4',
+          '@media (max-width: 800px) and (min-width: 600px)': '1 / 3',
+          '@media (max-width: 500px)': '1 / 1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 900px) and (max-width: 1440px)': '1 / 4',
+          '@media (min-width: 600px) and (max-width: 800px)': '1 / 3',
+          '@media (max-width: 500px)': '1 / 1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width with overlapping ranges', () => {
     const originalStyles = {
       foo: {
         gridColumn: {
@@ -433,9 +485,91 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media (min-width: 900px) and (max-width: 1440px) and (not ((min-width: 600px) and (max-width: 1040px)))':
-            '1 / 4',
+          '@media (min-width: 1040.01px) and (max-width: 1440px)': '1 / 4',
           '@media (min-width: 600px) and (max-width: 1040px)': '1 / 3',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width with mixed ranges', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-width: 900px)': '1 / 4',
+          '@media (max-width: 1100px) and (min-width: 1000px)': '1 / 3',
+          '@media (max-width: 500px) and (min-width: 400px)': '1 / 1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 900px) and (max-width: 999.99px) or (min-width: 1100.01px) and (max-width: 1440px)':
+            '1 / 4',
+          '@media (min-width: 1000px) and (max-width: 1100px)': '1 / 3',
+          '@media (min-width: 400px) and (max-width: 500px)': '1 / 1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width with intersecting ranges', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-width: 900px)': '1 / 4',
+          '@media (max-width: 1100px) and (min-width: 1000px)': '1 / 3',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 900px) and (max-width: 999.99px) or (min-width: 1100.01px) and (max-width: 1440px)':
+            '1 / 4',
+          '@media (min-width: 1000px) and (max-width: 1100px)': '1 / 3',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed min/max width with many intersecting ranges', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (max-width: 1440px) and (min-width: 900px)': '1 / 4',
+          '@media (max-width: 1100px) and (min-width: 1000px)': '1 / 3',
+          '@media (max-width: 1050px) and (min-width: 1010px)': '1 / -1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 900px) and (max-width: 999.99px) or (min-width: 1100.01px) and (max-width: 1440px)':
+            '1 / 4',
+          '@media (min-width: 1000px) and (max-width: 1009.99px) or (min-width: 1050.01px) and (max-width: 1100px)':
+            '1 / 3',
+          '@media (min-width: 1010px) and (max-width: 1050px)': '1 / -1',
         },
       },
     };
