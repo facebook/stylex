@@ -9,12 +9,17 @@
     ".": {
       "import": "./lib/es/stylex.mjs",
       "require": "./lib/cjs/stylex.js",
-      "types": "./lib/cjs/stylex.d.ts"
+      "types": "./lib/es/stylex.d.ts"
     },
     "./lib/stylex-inject": {
       "import": "./lib/es/inject.mjs",
       "require": "./lib/cjs/inject.js",
-      "types": "./lib/cjs/inject.d.ts"
+      "types": "./lib/es/inject.d.ts"
+    },
+    "./lib/types/StyleXTypes": {
+      "import": "./lib/es/types/StyleXTypes.mjs",
+      "require": "./lib/cjs/types/StyleXTypes.js",
+      "types": "./lib/es/types/StyleXTypes.d.ts"
     },
     "./package.json": "./package.json"
   },

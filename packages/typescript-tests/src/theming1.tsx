@@ -8,7 +8,7 @@
  */
 
 /* eslint-disable no-unused-vars */
-
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import type {
   TokensFromVarGroup,
@@ -16,7 +16,7 @@ import type {
   VarGroup,
   Theme,
   CompiledStyles,
-} from '@stylexjs/stylex/lib/StyleXTypes';
+} from '@stylexjs/stylex/lib/types/StyleXTypes';
 
 const DARK = '@media (prefers-color-scheme: dark)' as const;
 
@@ -242,3 +242,24 @@ const wronglyTypedTheme2 = stylex.createTheme(typedTokens, {
     '@media (prefer-reduced-motion: reduce)': 0,
   }),
 });
+
+// ZIndex
+
+const zIndexTokens = stylex.defineVars({
+  ten: stylex.types.number(10),
+});
+const zIndexThemeBroken = stylex.createTheme(zIndexTokens, {
+  // @ts-expect-error - strings should not be allowed as a number
+  ten: stylex.types.number('20'),
+});
+const zIndexThemeOK = stylex.createTheme(zIndexTokens, {
+  ten: stylex.types.number(20),
+});
+
+const zIndexStyles = stylex.create({
+  test: {
+    zIndex: zIndexTokens.ten,
+  },
+});
+
+const validStyles: stylex.StyleXStyles = zIndexStyles.test;

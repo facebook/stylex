@@ -9,20 +9,16 @@
 
 /* eslint-disable no-unused-vars */
 
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles, StyleXStyles } from '@stylexjs/stylex';
+import type { StaticStyles } from '@stylexjs/stylex';
 
 type Props = {
-  xstyle?: StyleXStyles;
-  staticXstyle?: StaticStyles;
+  xstyle?: StaticStyles;
 };
 
-function Component({ xstyle, staticXstyle }: Props): null {
-  <div {...stylex.props(xstyle)} />;
-
-  <div {...stylex.props([staticXstyle])} />;
-
-  return null;
+function Component({ xstyle }: Props) {
+  return <div {...stylex.props(xstyle)} />;
 }
 
 const styles = stylex.create({
@@ -32,5 +28,9 @@ const styles = stylex.create({
 });
 
 function OtherComponent() {
-  <Component xstyle={styles.base} />;
+  return <Component xstyle={styles.base} />;
+}
+
+function OtherComponent2() {
+  return <Component xstyle={[styles.base, undefined]} />;
 }

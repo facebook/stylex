@@ -18,7 +18,7 @@ import type {
   StyleXClassNameFor,
   InlineStyles,
   StyleXVar,
-} from '@stylexjs/stylex/lib/StyleXTypes';
+} from '@stylexjs/stylex/lib/types/StyleXTypes';
 
 /* eslint-disable no-unused-vars */
 
