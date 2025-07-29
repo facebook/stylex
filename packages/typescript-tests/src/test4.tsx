@@ -9,6 +9,7 @@
 
 /* eslint-disable no-unused-vars */
 
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import type { StaticStyles } from '@stylexjs/stylex';
 
