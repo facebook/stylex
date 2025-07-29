@@ -363,6 +363,37 @@ function mergeIntervalsForAnd(
     height: [],
   };
 
+  for (const rule of rules) {
+    if (rule.type === 'not' && rule.rule.type === 'and') {
+      const inner = rule.rule.rules;
+      if (inner.length === 2) {
+        const [left, right] = inner;
+
+        const leftBranch = mergeIntervalsForAnd([
+          ...rules.filter((r) => r !== rule),
+          { type: 'not', rule: left },
+        ]);
+        const rightBranch = mergeIntervalsForAnd([
+          ...rules.filter((r) => r !== rule),
+          { type: 'not', rule: right },
+        ]);
+
+        return [
+          {
+            type: 'or',
+            rules: [leftBranch, rightBranch]
+              .filter((branch) => branch.length > 0)
+              .map((branch) =>
+                branch.length === 1
+                  ? branch[0]
+                  : { type: 'and', rules: branch },
+              ),
+          },
+        ];
+      }
+    }
+  }
+
   for (const rule: MediaQueryRule of rules) {
     for (const dim of dimensions) {
       if (
@@ -426,13 +457,7 @@ function mergeIntervalsForAnd(
       if (u < upper) upper = u;
     }
     if (lower > upper) {
-      return [
-        {
-          type: 'media-keyword',
-          key: 'all',
-          not: true,
-        },
-      ];
+      return [];
     }
     if (lower !== -Infinity) {
       result.push({
