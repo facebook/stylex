@@ -9,7 +9,7 @@
 
 import type { Theme } from '@stylexjs/stylex';
 
-import { ButtonTokens } from './ButtonTokens.stylex';
+import { ButtonTokens } from './ButtonTokens.stylex.js';
 
 import * as stylex from '@stylexjs/stylex';
 
