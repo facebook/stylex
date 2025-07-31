@@ -14,11 +14,13 @@ tags:
 
 StyleX v0.15.0 introduces significant improvements to media query handling, dynamic styles optimization, and improvements to the linter, types, and documentation.
 
-## Media query parsing
+## Media query ordering
 
-We integrated our in-house media query parser with the compiler, allowing for improvements in media query validation, normalization, and ordering! This is gated behind the config option `enableMediaQueryOrder`.
+Previously, media queries within a style property were applied in a predetermined sorting order. This often meant that the order you authored the queries did not match how they were applied, so we recommended manually ensuring your media queries didn’t overlap to prevent unexpected overrides in behavior.
 
-Previously, media query ordering was non-deterministic because the compiler ordered media queries alphabetically. Developers had to manually ensure that media query bounds did not overlap, which went against common expectations for the last media query listed to take precedence. The new system resolves this by ensuring earlier queries are negated by later ones, ensuring predictable behavior across all usage contexts.
+We've integrated our in-house media query parser and transformer handle this automatically. You can now write overlapping media queries in a style property in the order you desire, and the compiler will rewrite them so that later queries take precedence over earlier ones.
+
+The compiler now also validates media query syntax and simplifies complex queries when possible, opening the door to later optimizations.
 
 As an example, take this `create` call:
 ```tsx
@@ -48,11 +50,13 @@ const styles = stylex.create({
 });
 ```
 
-The compiler now also validates media query syntax and simplifies complex queries when possible, opening the door to later optimizations.
+This new feature is gated behind the config option `enableMediaQueryOrder`.
 
-## Dynamic styles rewrite
+## Dynamic styles improvements
 
-The dynamic styles system has undergone a major rewrite to improve performance and reliability. The new implementation includes a fix to make dynamic styles classnames conditional on runtime values, aligning styling behaviour with React DOM expectations. We've also optimized how the compiler handles binary and unary expressions, conditional statements, and template literals within dynamic styles.
+Dynamic styles should now work more consistently when given the same values as static styles. Improvements have been made to how we handle `null` and `undefined` values.
+
+We've also made optimizations in how we process dynamic styles to improve performance and minimize the amount of generated Javascript. We do this by using heuristics to detect values that can never be nullable.
 
 ## Fixes
 
