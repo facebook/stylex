@@ -88,6 +88,9 @@ export function readImportDeclarations(
             if (importedName === 'types') {
               state.stylexTypesImport.add(localName);
             }
+            if (importedName === 'when') {
+              state.stylexWhenImport.add(localName);
+            }
           }
         }
       }
@@ -160,6 +163,9 @@ export function readRequires(
           }
           if (prop.key.name === 'types') {
             state.stylexTypesImport.add(value.name);
+          }
+          if (prop.key.name === 'when') {
+            state.stylexWhenImport.add(value.name);
           }
         }
       }

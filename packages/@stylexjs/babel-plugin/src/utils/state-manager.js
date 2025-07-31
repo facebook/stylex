@@ -135,6 +135,7 @@ export default class StateManager {
   +stylexCreateThemeImport: Set<string> = new Set();
   +stylexTypesImport: Set<string> = new Set();
   +stylexViewTransitionClassImport: Set<string> = new Set();
+  +stylexWhenImport: Set<string> = new Set();
 
   injectImportInserted: ?t.Identifier = null;
 

@@ -18,6 +18,7 @@ import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   positionTry as stylexPositionTry,
+  when as stylexWhen,
 } from '../shared';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
@@ -157,6 +158,9 @@ export default function transformStyleXCreate(
     state.stylexPositionTryImport.forEach((name) => {
       identifiers[name] = { fn: positionTry };
     });
+    state.stylexWhenImport.forEach((name) => {
+      identifiers[name] = stylexWhen;
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
@@ -164,6 +168,7 @@ export default function transformStyleXCreate(
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
       memberExpressions[name].positionTry = { fn: positionTry };
+      identifiers[name] = { ...(identifiers[name] ?? {}), when: stylexWhen };
     });
 
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
