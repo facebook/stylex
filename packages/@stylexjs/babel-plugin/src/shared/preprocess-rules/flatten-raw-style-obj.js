@@ -11,6 +11,7 @@ import type { RawStyles, StyleXOptions, TStyleValue } from '../common-types';
 
 import flatMapExpandedShorthands from './index';
 import { lastMediaQueryWinsTransform } from 'style-value-parser';
+import * as messages from '../messages';
 
 import {
   NullPreRule,
@@ -24,10 +25,14 @@ export function flattenRawStyleObject(
   style: RawStyles,
   options: StyleXOptions,
 ): $ReadOnlyArray<$ReadOnly<[string, IPreRule]>> {
-  const processedStyle = options.enableMediaQueryOrder
-    ? lastMediaQueryWinsTransform(style)
-    : style;
-  return _flattenRawStyleObject(processedStyle, [], options);
+  try {
+    const processedStyle = options.enableMediaQueryOrder
+      ? lastMediaQueryWinsTransform(style)
+      : style;
+    return _flattenRawStyleObject(processedStyle, [], options);
+  } catch (error) {
+    throw new Error(messages.INVALID_MEDIA_QUERY_SYNTAX);
+  }
 }
 
 export function _flattenRawStyleObject(

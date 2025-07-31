@@ -39,6 +39,7 @@ export const INVALID_CONST_KEY =
   'Keys in defineConsts() cannot start with "--".';
 export const INVALID_PSEUDO = 'Invalid pseudo selector, not on the whitelist.';
 export const INVALID_PSEUDO_OR_AT_RULE = 'Invalid pseudo or at-rule.';
+export const INVALID_MEDIA_QUERY_SYNTAX = 'Invalid media query syntax.';
 export const LINT_UNCLOSED_FUNCTION = 'Rule contains an unclosed function';
 export const LOCAL_ONLY =
   'The return value of create() should not be exported.';
