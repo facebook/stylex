@@ -25,14 +25,15 @@ export function flattenRawStyleObject(
   style: RawStyles,
   options: StyleXOptions,
 ): $ReadOnlyArray<$ReadOnly<[string, IPreRule]>> {
+  let processedStyle = style;
   try {
-    const processedStyle = options.enableMediaQueryOrder
+    processedStyle = options.enableMediaQueryOrder
       ? lastMediaQueryWinsTransform(style)
       : style;
-    return _flattenRawStyleObject(processedStyle, [], options);
   } catch (error) {
     throw new Error(messages.INVALID_MEDIA_QUERY_SYNTAX);
   }
+  return _flattenRawStyleObject(processedStyle, [], options);
 }
 
 export function _flattenRawStyleObject(
