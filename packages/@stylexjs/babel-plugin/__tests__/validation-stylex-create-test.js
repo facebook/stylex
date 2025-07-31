@@ -573,6 +573,22 @@ describe('@stylexjs/babel-plugin', () => {
         }).toThrow(messages.INVALID_PSEUDO_OR_AT_RULE);
 
         expect(() => {
+          transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                'color': {
+                  '@media not ((not (min-width: 400px))': 'blue'
+                },
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true },
+          );
+        }).toThrow(messages.INVALID_MEDIA_QUERY_SYNTAX);
+
+        expect(() => {
           transform(`
             import * as stylex from '@stylexjs/stylex';
             const styles = stylex.create({
