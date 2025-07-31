@@ -53,7 +53,7 @@ export function descendant(pseudo: string): string {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the previous sibling observer
  */
-export function prevSibling(pseudo: string): string {
+export function siblingBefore(pseudo: string): string {
   validatePseudoSelector(pseudo);
   return `:where(.stylex-target${pseudo} ~ *)`;
 }
@@ -65,11 +65,18 @@ export function prevSibling(pseudo: string): string {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the next sibling observer
  */
-export function nextSibling(pseudo: string): string {
+export function siblingAfter(pseudo: string): string {
   validatePseudoSelector(pseudo);
   return `:has(~ .stylex-target${pseudo})`;
 }
 
+/**
+ * Creates selector that observes if the given pseudo-class is
+ * active on any sibling with the "defaultTargetId"
+ *
+ * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
+ * @returns A :where() clause for the any sibling observer
+ */
 export function anySibling(pseudo: string): string {
   validatePseudoSelector(pseudo);
   return `:where(.stylex-target${pseudo} ~ *, :has(~ .stylex-target${pseudo}))`;

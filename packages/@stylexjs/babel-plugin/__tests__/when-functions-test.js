@@ -33,9 +33,10 @@ describe('@stylexjs/babel-plugin', () => {
         
         const styles = create({
             container: {
-            [when.ancestor(':hover')]: {
-                backgroundColor: 'red',
-            },
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor(':hover')]: 'red',
+              },
             },
         });
 
@@ -46,7 +47,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            ktED7Z: "x26ppzc",
+            kWkggS: "x1t391ir x26ppzc",
             $$css: true
           }
         };
@@ -55,6 +56,14 @@ describe('@stylexjs/babel-plugin', () => {
 
       expect(metadata.stylex).toMatchInlineSnapshot(`
         [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
           [
             "x26ppzc",
             {
@@ -67,14 +76,15 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('when.prevSibling function', () => {
+    test('when.siblingBefore function', () => {
       const { code, metadata } = transform(`
         import { when, create } from '@stylexjs/stylex';
         
         const styles = create({
           container: {
-            [when.prevSibling(':focus')]: {
-              backgroundColor: 'blue',
+            backgroundColor: {
+              default: 'blue',
+              [when.siblingBefore(':focus')]: 'red',
             },
           },
         });
@@ -86,7 +96,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kBya5t: "x16bwp6f",
+            kWkggS: "x1t391ir xeb64px",
             $$css: true
           }
         };
@@ -96,9 +106,17 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata.stylex).toMatchInlineSnapshot(`
         [
           [
-            "x16bwp6f",
+            "x1t391ir",
             {
-              "ltr": ".x16bwp6f:where(.stylex-target:focus ~ *){background-color:blue}",
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "xeb64px",
+            {
+              "ltr": ".xeb64px:where(.stylex-target:focus ~ *){background-color:red}",
               "rtl": null,
             },
             3040,
@@ -113,11 +131,10 @@ describe('@stylexjs/babel-plugin', () => {
         
         const styles = stylex.create({
           container: {
-            [stylex.when.ancestor(':hover')]: {
-              backgroundColor: 'red',
-            },
-            [stylex.when.prevSibling(':focus')]: {
-              backgroundColor: 'blue',
+            backgroundColor: {
+              default: 'blue',
+              [stylex.when.ancestor(':hover')]: 'red',
+              [stylex.when.siblingBefore(':focus')]: 'green',
             },
           },
         });
@@ -129,8 +146,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         const styles = {
           container: {
-            ktED7Z: "x26ppzc",
-            kBya5t: "x16bwp6f",
+            kWkggS: "x1t391ir x26ppzc xhhxj74",
             $$css: true
           }
         };
@@ -140,6 +156,14 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata.stylex).toMatchInlineSnapshot(`
         [
           [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
             "x26ppzc",
             {
               "ltr": ".x26ppzc:where(.stylex-target:hover *){background-color:red}",
@@ -148,9 +172,9 @@ describe('@stylexjs/babel-plugin', () => {
             3040,
           ],
           [
-            "x16bwp6f",
+            "xhhxj74",
             {
-              "ltr": ".x16bwp6f:where(.stylex-target:focus ~ *){background-color:blue}",
+              "ltr": ".xhhxj74:where(.stylex-target:focus ~ *){background-color:green}",
               "rtl": null,
             },
             3040,
@@ -165,11 +189,10 @@ describe('@stylexjs/babel-plugin', () => {
         
         const styles = create({
           container: {
-            [w.ancestor(':hover')]: {
-              backgroundColor: 'red',
-            },
-            [w.prevSibling(':focus')]: {
-              backgroundColor: 'blue',
+            backgroundColor: {
+              default: 'blue',
+              [w.ancestor(':hover')]: 'red',
+              [w.siblingBefore(':focus')]: 'green',
             },
           },
         });
@@ -181,8 +204,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when as w, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            ktED7Z: "x26ppzc",
-            kBya5t: "x16bwp6f",
+            kWkggS: "x1t391ir x26ppzc xhhxj74",
             $$css: true
           }
         };
@@ -192,6 +214,14 @@ describe('@stylexjs/babel-plugin', () => {
       expect(metadata.stylex).toMatchInlineSnapshot(`
         [
           [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
             "x26ppzc",
             {
               "ltr": ".x26ppzc:where(.stylex-target:hover *){background-color:red}",
@@ -200,9 +230,9 @@ describe('@stylexjs/babel-plugin', () => {
             3040,
           ],
           [
-            "x16bwp6f",
+            "xhhxj74",
             {
-              "ltr": ".x16bwp6f:where(.stylex-target:focus ~ *){background-color:blue}",
+              "ltr": ".xhhxj74:where(.stylex-target:focus ~ *){background-color:green}",
               "rtl": null,
             },
             3040,
@@ -220,8 +250,9 @@ describe('@stylexjs/babel-plugin', () => {
           
           const styles = create({
             container: {
-              [when.ancestor('hover')]: {
-                backgroundColor: 'red',
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor('hover')]: 'red',
               },
             },
           });
@@ -236,8 +267,9 @@ describe('@stylexjs/babel-plugin', () => {
           
           const styles = create({
             container: {
-              [when.ancestor('::before')]: {
-                backgroundColor: 'red',
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor('::before')]: 'red',
               },
             },
           });
