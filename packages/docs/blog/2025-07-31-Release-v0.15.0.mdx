@@ -18,7 +18,7 @@ StyleX v0.15.0 introduces significant improvements to media query handling, dyna
 
 Previously, media queries within a style property were applied in a predetermined sorting order. This often meant that the order you authored the queries did not match how they were applied, so we recommended manually ensuring your media queries didn’t overlap to prevent unexpected overrides in behavior.
 
-We've integrated our in-house media query parser and transformer handle this automatically. You can now write overlapping media queries in a style property in the order you desire, and the compiler will rewrite them so that later queries take precedence over earlier ones.
+We've integrated our in-house media query parser and transformer to handle this automatically. You can now write overlapping media queries in a contextual style in the order you desire, and the compiler will rewrite them so that later queries take precedence over earlier ones.
 
 The compiler now also validates media query syntax and simplifies complex queries when possible, opening the door to later optimizations.
 
@@ -42,8 +42,8 @@ const styles = stylex.create({
   foo: {
     gridColumn: {
       default: '1 / 2',
- 	    '@media (max-width: 1440px) and (min-width: 1024.1px)': '1 / 3',
-      '@media (min-width: 768.1px) and (max-width: 1024px)': '1 / 3',
+      '@media (max-width: 1440px) and (min-width: 1024.01px)': '1 / 4',
+      '@media (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
       '@media (max-width: 768px)': '1 / -1',
     },
   },
