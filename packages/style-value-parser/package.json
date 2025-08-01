@@ -1,6 +1,5 @@
 {
-  "private": true,
-  "name": "style-value-parser",
+  "name": "@stylexjs/style-value-parser",
   "version": "0.15.1",
   "type": "module",
   "main": "lib/index.js",
