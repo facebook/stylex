@@ -14,8 +14,9 @@ import parser from 'postcss-value-parser';
 function printNode(node: PostCSSValueASTNode): string {
   switch (node.type) {
     case 'word':
-    case 'string':
       return `${node.value}`;
+    case 'string':
+      return `${node.quote}${node.value}${node.quote}`;
     case 'function':
       return `${node.value}(${node.nodes.map(printNode).join('')})`;
     default:
