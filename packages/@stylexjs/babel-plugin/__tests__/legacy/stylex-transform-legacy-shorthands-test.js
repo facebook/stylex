@@ -733,6 +733,232 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         "x1eu8d0j xjnlgov";"
       `);
     });
+
+    test('listStyle: basic shorthand', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            none: {
+              listStyle: 'none'
+            },
+            square: {
+              listStyle: 'square'
+            },
+            inside: {
+              listStyle: 'inside'
+            },
+            custom1: {
+              listStyle: '"--"'
+            },
+            custom2: {
+              listStyle: "'=='"
+            }
+          });
+        `,
+          { debug: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".listStyleType-x3ct3a4{list-style-type:none}", 3000);
+        _inject2(".listStyleType-x152237o{list-style-type:square}", 3000);
+        _inject2(".listStylePosition-x1cy9i3i{list-style-position:inside}", 3000);
+        _inject2(".listStyleType-x1jzm7bx{list-style-type:\\"--\\"}", 3000);
+        _inject2(".listStyleType-x1tpmu87{list-style-type:'=='}", 3000);
+        export const styles = {
+          none: {
+            "listStyleType-kH6xsr": "listStyleType-x3ct3a4",
+            "listStylePosition-kpqbRz": null,
+            "listStyleImage-khnUzm": null,
+            $$css: true
+          },
+          square: {
+            "listStyleType-kH6xsr": "listStyleType-x152237o",
+            "listStylePosition-kpqbRz": null,
+            "listStyleImage-khnUzm": null,
+            $$css: true
+          },
+          inside: {
+            "listStyleType-kH6xsr": null,
+            "listStylePosition-kpqbRz": "listStylePosition-x1cy9i3i",
+            "listStyleImage-khnUzm": null,
+            $$css: true
+          },
+          custom1: {
+            "listStyleType-kH6xsr": "listStyleType-x1jzm7bx",
+            "listStylePosition-kpqbRz": null,
+            "listStyleImage-khnUzm": null,
+            $$css: true
+          },
+          custom2: {
+            "listStyleType-kH6xsr": "listStyleType-x1tpmu87",
+            "listStylePosition-kpqbRz": null,
+            "listStyleImage-khnUzm": null,
+            $$css: true
+          }
+        };"
+      `);
+    });
+
+    test('listStyle: multi-value shorthand', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            one: {
+              listStyle: 'none inside'
+            },
+            two: {
+              listStyle: 'none square'
+            },
+            three: {
+              listStyle: 'simp-chinese-informal linear-gradient(90deg, white 100%)'
+            },
+            four: {
+              listStyle: 'outside "+" linear-gradient(90deg, white 100%)'
+            },
+          });
+        `,
+          { debug: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".listStyleType-x3ct3a4{list-style-type:none}", 3000);
+        _inject2(".listStylePosition-x1cy9i3i{list-style-position:inside}", 3000);
+        _inject2(".listStyleType-x152237o{list-style-type:square}", 3000);
+        _inject2(".listStyleImage-xnbnhf8{list-style-image:none}", 3000);
+        _inject2(".listStyleType-xl2um64{list-style-type:simp-chinese-informal}", 3000);
+        _inject2(".listStyleImage-x1qcowux{list-style-image:linear-gradient(90deg,white 100%)}", 3000);
+        _inject2(".listStyleType-xqkogtj{list-style-type:\\"+\\"}", 3000);
+        _inject2(".listStylePosition-x43c9pm{list-style-position:outside}", 3000);
+        export const styles = {
+          one: {
+            "listStyleType-kH6xsr": "listStyleType-x3ct3a4",
+            "listStylePosition-kpqbRz": "listStylePosition-x1cy9i3i",
+            "listStyleImage-khnUzm": null,
+            $$css: true
+          },
+          two: {
+            "listStyleType-kH6xsr": "listStyleType-x152237o",
+            "listStylePosition-kpqbRz": null,
+            "listStyleImage-khnUzm": "listStyleImage-xnbnhf8",
+            $$css: true
+          },
+          three: {
+            "listStyleType-kH6xsr": "listStyleType-xl2um64",
+            "listStylePosition-kpqbRz": null,
+            "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
+            $$css: true
+          },
+          four: {
+            "listStyleType-kH6xsr": "listStyleType-xqkogtj",
+            "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
+            "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
+            $$css: true
+          }
+        };"
+      `);
+    });
+
+    test('listStyle: with longhand collisions', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            one: {
+              listStyle: 'none inside',
+              listStyleType: 'square'
+            },
+            two: {
+              listStyle: 'none georgian',
+              listStylePosition: 'outside'
+            },
+            three: {
+              listStyle: 'simp-chinese-informal linear-gradient(90deg, white 100%)',
+              listStylePosition: 'outside',
+              listStyleType: 'square',
+            },
+            four: {
+              listStyle: 'inside "--" linear-gradient(90deg, white 100%)',
+              listStylePosition: 'outside',
+              listStyleType: 'square',
+            },
+          });
+        `,
+          { debug: true },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".listStylePosition-x1cy9i3i{list-style-position:inside}", 3000);
+        _inject2(".listStyleType-x152237o{list-style-type:square}", 3000);
+        _inject2(".listStyleType-x12kno0j{list-style-type:georgian}", 3000);
+        _inject2(".listStyleImage-xnbnhf8{list-style-image:none}", 3000);
+        _inject2(".listStylePosition-x43c9pm{list-style-position:outside}", 3000);
+        _inject2(".listStyleImage-x1qcowux{list-style-image:linear-gradient(90deg,white 100%)}", 3000);
+        export const styles = {
+          one: {
+            "listStylePosition-kpqbRz": "listStylePosition-x1cy9i3i",
+            "listStyleImage-khnUzm": null,
+            "listStyleType-kH6xsr": "listStyleType-x152237o",
+            $$css: true
+          },
+          two: {
+            "listStyleType-kH6xsr": "listStyleType-x12kno0j",
+            "listStyleImage-khnUzm": "listStyleImage-xnbnhf8",
+            "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
+            $$css: true
+          },
+          three: {
+            "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
+            "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
+            "listStyleType-kH6xsr": "listStyleType-x152237o",
+            $$css: true
+          },
+          four: {
+            "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
+            "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
+            "listStyleType-kH6xsr": "listStyleType-x152237o",
+            $$css: true
+          }
+        };"
+      `);
+    });
+
+    test('listStyle: invalid values', () => {
+      expect(() =>
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            none: {
+              listStyle: 'none inherit'
+            },
+          });
+        `,
+        ),
+      ).toThrow();
+      expect(() =>
+        transform(
+          `
+          import stylex from 'stylex';
+          export const styles = stylex.create({
+            none: {
+              listStyle: 'none var(--image)'
+            },
+          });
+        `,
+        ),
+      ).toThrow();
+    });
   });
 });
 
