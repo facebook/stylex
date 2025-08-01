@@ -174,7 +174,7 @@ function evaluatePartialObjectRecursively(
         if (!result.confident) {
           const fullKeyPath = [...keyPath, key];
           const varName =
-            '--' +
+            '--x-' +
             (keyPath.length > 0
               ? utils.hash([...keyPath, key].join('_'))
               : key);
