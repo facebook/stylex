@@ -1,11 +1,15 @@
 # Changelog
 
+## 0.15.2 (Aug 1, 2025)
+
+- Exclude private dependencies from `@stylexjs/babel-plugin` package.
+- Reduce chances of dynamic variable name collisions.
+
 ## 0.15.1 (Aug 1, 2025)
 
 ### Fixes
 
 - Hoist stylex.create and static className objects to the top level for support inside functions
-- Publish `style-value-parser`
 
 ## 0.15.0 (Jul 31, 2025)
 
