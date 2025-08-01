@@ -368,14 +368,14 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__b69i2g{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb)}", 1);
-        _inject2("@property ----__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}", 0);
+        _inject2(".__hashed_var__1w8wjxo{--__hashed_var__1jqb1tb:var(--x---__hashed_var__1jqb1tb)}", 1);
+        _inject2("@property --x---__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}", 0);
         const styles = {
           color: color => [{
-            "--__hashed_var__1jqb1tb": color != null ? "__hashed_var__b69i2g" : color,
+            "--__hashed_var__1jqb1tb": color != null ? "__hashed_var__1w8wjxo" : color,
             $$css: true
           }, {
-            "----__hashed_var__1jqb1tb": color != null ? color : undefined
+            "--x---__hashed_var__1jqb1tb": color != null ? color : undefined
           }]
         };
         stylex.props(styles.color('red'));"
@@ -383,17 +383,17 @@ describe('Evaluation of imported values works based on configuration', () => {
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
         [
           [
-            "__hashed_var__b69i2g",
+            "__hashed_var__1w8wjxo",
             {
-              "ltr": ".__hashed_var__b69i2g{--__hashed_var__1jqb1tb:var(----__hashed_var__1jqb1tb)}",
+              "ltr": ".__hashed_var__1w8wjxo{--__hashed_var__1jqb1tb:var(--x---__hashed_var__1jqb1tb)}",
               "rtl": null,
             },
             1,
           ],
           [
-            "----__hashed_var__1jqb1tb",
+            "--x---__hashed_var__1jqb1tb",
             {
-              "ltr": "@property ----__hashed_var__1jqb1tb { syntax: "*"; inherits: false;}",
+              "ltr": "@property --x---__hashed_var__1jqb1tb { syntax: "*"; inherits: false;}",
               "rtl": null,
             },
             0,

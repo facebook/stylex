@@ -191,15 +191,15 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "app/main.js:31"
           },
           dynamic: color => [{
-            "color-kMwMTN": color != null ? "color-xfx01vb" : color,
+            "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
             $$css: "app/main.js:56"
           }, {
-            "--color": color != null ? color : undefined
+            "--x-color": color != null ? color : undefined
           }]
         };"
       `);
       expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
-        "@property --color { syntax: "*"; inherits: false;}
+        "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
@@ -211,7 +211,7 @@ describe('@stylexjs/babel-plugin', () => {
         @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
         .animationName-xckgs0v:not(#\\#):not(#\\#):not(#\\#){animation-name:xi07kvp-B}
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
-        .color-xfx01vb:not(#\\#):not(#\\#):not(#\\#){color:var(--color)}
+        .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
       `);
@@ -257,10 +257,10 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "app/main.js:31"
           },
           dynamic: color => [{
-            "color-kMwMTN": color != null ? "color-xfx01vb" : color,
+            "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
             $$css: "app/main.js:56"
           }, {
-            "--color": color != null ? color : undefined
+            "--x-color": color != null ? color : undefined
           }]
         };"
       `);
@@ -268,7 +268,7 @@ describe('@stylexjs/babel-plugin', () => {
         .toMatchInlineSnapshot(`
         "
         @layer priority1, priority2, priority3, priority4;
-        @property --color { syntax: "*"; inherits: false;}
+        @property --x-color { syntax: "*"; inherits: false;}
         @keyframes xi07kvp-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
@@ -285,7 +285,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer priority4{
         .animationName-xckgs0v{animation-name:xi07kvp-B}
         .backgroundColor-xrkmrrc{background-color:red}
-        .color-xfx01vb{color:var(--color)}
+        .color-x14rh7hd{color:var(--x-color)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}
         }"
