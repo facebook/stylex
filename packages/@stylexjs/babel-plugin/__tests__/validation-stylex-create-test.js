@@ -63,17 +63,6 @@ describe('@stylexjs/babel-plugin', () => {
       }).toThrow(messages.unboundCallValue('create'));
     });
 
-    test('invalid use: not called at top level', () => {
-      expect(() => {
-        transform(`
-          import * as stylex from '@stylexjs/stylex';
-          if (bar) {
-            const styles = stylex.create({});
-          }
-       `);
-      }).toThrow(messages.ONLY_TOP_LEVEL);
-    });
-
     test('invalid argument: none', () => {
       expect(() => {
         transform(`

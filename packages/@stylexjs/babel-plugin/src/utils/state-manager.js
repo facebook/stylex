@@ -14,7 +14,6 @@ import type {
   StyleXOptions as RuntimeOptions,
 } from '../shared';
 import type { Check } from './validate';
-import type { ImportOptions } from '@babel/helper-module-imports';
 
 import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
@@ -22,13 +21,12 @@ import path from 'path';
 import fs from 'fs';
 import url from 'url';
 import * as z from './validate';
-import { addDefault, addNamed } from '@babel/helper-module-imports';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
-
-type ImportAdditionOptions = Omit<
-  Partial<ImportOptions>,
-  'ensureLiveReference' | 'ensureNoContext',
->;
+import {
+  addDefaultImport,
+  addNamedImport,
+  getProgramStatement,
+} from './ast-helpers';
 
 export type ImportPathResolution =
   | false
@@ -415,99 +413,6 @@ export default class StateManager {
     return typeof runInj === 'string' ? { from: runInj } : runInj || null;
   }
 
-  addNamedImport(
-    statementPath: NodePath<>,
-    as: string,
-    from: string,
-    options: ImportAdditionOptions,
-  ): t.Identifier {
-    const identifier = addNamed(statementPath, as, from, options);
-    const programPath = getProgramPath(statementPath);
-    if (programPath == null) {
-      return identifier;
-    }
-    const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
-    let targetImportIndex = -1;
-    for (let i = 0; i < bodyPath.length; i++) {
-      const statement = bodyPath[i];
-      if (statement.isImportDeclaration()) {
-        targetImportIndex = i;
-        if (
-          statement.node.specifiers.find(
-            (s) =>
-              s.type === 'ImportSpecifier' &&
-              s.local.type === 'Identifier' &&
-              s.local.name === identifier.name,
-          )
-        ) {
-          break;
-        }
-      }
-    }
-    if (targetImportIndex === -1) {
-      return identifier;
-    }
-    const lastImport = bodyPath[targetImportIndex];
-    if (lastImport == null) {
-      return identifier;
-    }
-    const importName = statementPath.scope.generateUidIdentifier(as);
-
-    lastImport.insertAfter(
-      t.variableDeclaration('var', [
-        t.variableDeclarator(importName, identifier),
-      ]),
-    );
-
-    return importName;
-  }
-
-  addDefaultImport(
-    statementPath: NodePath<>,
-    from: string,
-    options: ImportAdditionOptions,
-  ): t.Identifier {
-    const identifier = addDefault(statementPath, from, options);
-    const programPath = getProgramPath(statementPath);
-    if (programPath == null) {
-      return identifier;
-    }
-    const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
-    let targetImportIndex = -1;
-    for (let i = 0; i < bodyPath.length; i++) {
-      const statement = bodyPath[i];
-      if (statement.isImportDeclaration()) {
-        targetImportIndex = i;
-        if (
-          statement.node.specifiers.find(
-            (s) =>
-              s.type === 'ImportDefaultSpecifier' &&
-              s.local.type === 'Identifier' &&
-              s.local.name === identifier.name,
-          )
-        ) {
-          break;
-        }
-      }
-    }
-    if (targetImportIndex === -1) {
-      return identifier;
-    }
-    const lastImport = bodyPath[targetImportIndex];
-    if (lastImport == null) {
-      return identifier;
-    }
-    const importName = statementPath.scope.generateUidIdentifier('inject');
-
-    lastImport.insertAfter(
-      t.variableDeclaration('var', [
-        t.variableDeclarator(importName, identifier),
-      ]),
-    );
-
-    return importName;
-  }
-
   get opts(): StyleXStateOptions {
     return { ...this.options };
   }
@@ -708,10 +613,10 @@ export default class StateManager {
       const { from, as } = runtimeInjection;
       injectName =
         as != null
-          ? this.addNamedImport(statementPath, as, from, {
+          ? addNamedImport(statementPath, as, from, {
               nameHint: 'inject',
             })
-          : this.addDefaultImport(statementPath, from, {
+          : addDefaultImport(statementPath, from, {
               nameHint: 'inject',
             });
 
@@ -837,30 +742,6 @@ export const matchesFileSuffix: (string) => (string) => boolean =
     ['', ...EXTENSIONS].some((extension) =>
       filename.endsWith(`${allowedSuffix}${extension}`),
     );
-
-const getProgramPath = (path: NodePath<>): null | NodePath<t.Program> => {
-  let programPath = path;
-  while (programPath != null && !programPath.isProgram()) {
-    if (programPath.parentPath) {
-      programPath = programPath.parentPath;
-    } else {
-      return null;
-    }
-  }
-  return programPath;
-};
-
-const getProgramStatement = (path: NodePath<>): NodePath<> => {
-  let programPath = path;
-  while (
-    programPath.parentPath != null &&
-    !programPath.parentPath.isProgram() &&
-    programPath.parentPath != null
-  ) {
-    programPath = programPath.parentPath;
-  }
-  return programPath;
-};
 
 export function getRelativePath(from: string, to: string): string {
   const relativePath = path.relative(path.parse(from).dir, to);
