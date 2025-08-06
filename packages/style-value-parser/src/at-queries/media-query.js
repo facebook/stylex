@@ -362,6 +362,11 @@ function mergeIntervalsForAnd(
     width: [],
     height: [],
   };
+  // Track units for each dimension
+  const units: { [dim: string]: string } = {
+    width: 'px',
+    height: 'px',
+  };
 
   for (const rule of rules) {
     if (rule.type === 'not' && rule.rule.type === 'and') {
@@ -402,6 +407,7 @@ function mergeIntervalsForAnd(
         isNumericLength(rule.value)
       ) {
         const val = rule.value as any;
+        units[dim] = intervals[dim].length === 0 ? val.unit : units[dim];
         intervals[dim].push(
           rule.key === `min-${dim}`
             ? [val.value, Infinity]
@@ -416,6 +422,7 @@ function mergeIntervalsForAnd(
         isNumericLength(rule.rule.value)
       ) {
         const val = rule.rule.value as any;
+        units[dim] = intervals[dim].length === 0 ? val.unit : units[dim];
         if (rule.rule.key === `min-${dim}`) {
           intervals[dim].push([-Infinity, val.value - epsilon]);
         } else {
@@ -463,14 +470,14 @@ function mergeIntervalsForAnd(
       result.push({
         type: 'pair',
         key: `min-${dim}`,
-        value: { value: lower, unit: 'px', type: 'integer' } as any,
+        value: { value: lower, unit: units[dim], type: 'integer' } as any,
       });
     }
     if (upper !== Infinity) {
       result.push({
         type: 'pair',
         key: `max-${dim}`,
-        value: { value: upper, unit: 'px', type: 'integer' } as any,
+        value: { value: upper, unit: units[dim], type: 'integer' } as any,
       });
     }
   }
