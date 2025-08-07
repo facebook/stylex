@@ -130,9 +130,7 @@ describe('[transform] stylex.create()', () => {
       import stylex from 'stylex';
       function Demo() {
         return <div>
-                    <button {...{
-            className: "xjyslct xc342km xng3xce x6tqnqi x1awj2ng"
-          }}>
+                    <button className="xjyslct xc342km xng3xce x6tqnqi x1awj2ng">
                       Hello
                     </button>
                   </div>;

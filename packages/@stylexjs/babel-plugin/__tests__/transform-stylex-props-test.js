@@ -59,6 +59,140 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    describe('props calls with jsx', () => {
+      const options = {
+        debug: true,
+        dev: true,
+        filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
+      };
+
+      test('local static styles', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              }
+            });
+            function Foo() {
+              return (
+                <>
+                  <div id="test" {...stylex.props(styles.red)}>Hello World</div>
+                  <div className="test" {...stylex.props(styles.red)} id="test">Hello World</div>
+                  <div id="test" {...stylex.props(styles.red)} className="test">Hello World</div>
+                </>
+              );
+            }
+          `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          function Foo() {
+            return <>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4">Hello World</div>
+                            <div className="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4" id="test">Hello World</div>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4" className="test">Hello World</div>
+                          </>;
+          }"
+        `);
+      });
+
+      test('local dynamic styles', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              },
+              opacity: (opacity) => ({
+                opacity
+              })
+            });
+            function Foo() {
+              return (
+                <div id="test" {...stylex.props(styles.red, styles.opacity(1))}>
+                  Hello World
+                </div>
+              );
+            }
+          `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          _inject2(".opacity-xb4nw82{opacity:var(--x-opacity)}", 3000);
+          _inject2("@property --x-opacity { syntax: \\"*\\"; inherits: false;}", 0);
+          const styles = {
+            red: {
+              "color-kMwMTN": "color-x1e2nbdu",
+              $$css: "npm-package:components/Foo.react.js:4"
+            },
+            opacity: opacity => [{
+              "opacity-kSiTet": opacity != null ? "opacity-xb4nw82" : opacity,
+              $$css: "npm-package:components/Foo.react.js:7"
+            }, {
+              "--x-opacity": opacity != null ? opacity : undefined
+            }]
+          };
+          function Foo() {
+            return <div id="test" {...stylex.props(styles.red, styles.opacity(1))}>
+                            Hello World
+                          </div>;
+          }"
+        `);
+      });
+
+      test('non-local styles', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              }
+            });
+            function Foo(props) {
+              return (
+                <div id="test" {...stylex.props(props.style, styles.red)}>
+                  Hello World
+                </div>
+              );
+            }
+          `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          const styles = {
+            red: {
+              "color-kMwMTN": "color-x1e2nbdu",
+              $$css: "npm-package:components/Foo.react.js:4"
+            }
+          };
+          function Foo(props) {
+            return <div id="test" {...stylex.props(props.style, styles.red)}>
+                            Hello World
+                          </div>;
+          }"
+        `);
+      });
+    });
+
     test('stylex call with number', () => {
       expect(
         transform(`
@@ -1161,16 +1295,10 @@ describe('@stylexjs/babel-plugin', () => {
           import stylex from 'stylex';
           function MyComponent() {
             return <>
-                            <div {...{
-                className: "x1e2nbdu"
-              }} />
-                            <div {...{
-                className: "x1t391ir"
-              }} />
+                            <div className="x1e2nbdu" />
+                            <div className="x1t391ir" />
                             <CustomComponent xstyle={styles.foo} />
-                            <div {...{
-                className: "x1e2nbdu x1t391ir"
-              }} />
+                            <div className="x1e2nbdu x1t391ir" />
                           </>;
           }
           _inject2(".x1e2nbdu{color:red}", 3000);

@@ -202,6 +202,48 @@ export default function transformStylexProps(
     // convert resolvedStyles to a string + ternary expressions
     // We no longer need the keys, so we can just use the values.
     const stringExpression = makeStringExpression(resolvedArgs);
+
+    // Check if this is used as a JSX spread attribute and optimize
+    // the output to avoid object creation and Babel helper
+    if (path.parentPath.node.type === 'JSXSpreadAttribute') {
+      if (
+        t.isObjectExpression(stringExpression) &&
+        stringExpression.properties.length > 0 &&
+        stringExpression.properties.every(
+          (prop) =>
+            t.isObjectProperty(prop) &&
+            (t.isIdentifier(prop.key) || t.isStringLiteral(prop.key)) &&
+            !prop.computed,
+        )
+      ) {
+        // Convert each property to a JSX attribute
+        const jsxAttributes = stringExpression.properties
+          .filter((prop) => t.isObjectProperty(prop))
+          .map((prop) => {
+            const objectProp = prop;
+            const key = objectProp.key;
+            let attrName = '';
+            if (t.isIdentifier(key)) {
+              attrName = key.name;
+            } else if (t.isStringLiteral(key)) {
+              attrName = key.value;
+            }
+            // Handle JSX attribute value based on its type
+            let attributeValue;
+            if (t.isStringLiteral(objectProp.value)) {
+              attributeValue = objectProp.value;
+            } else {
+              attributeValue = t.stringLiteral(String(objectProp.value));
+            }
+            return t.jsxAttribute(t.jsxIdentifier(attrName), attributeValue);
+          });
+
+        // Replace the spread element with multiple JSX attributes
+        path.parentPath.replaceWithMultiple(jsxAttributes);
+        return;
+      }
+    }
+
     path.replaceWith(stringExpression);
   }
 }
