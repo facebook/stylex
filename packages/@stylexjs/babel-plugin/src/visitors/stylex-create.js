@@ -329,22 +329,25 @@ export default function transformStyleXCreate(
                 let isStatic = true;
                 const exprList: t.Expression[] = [];
 
-                classList.forEach((cls) => {
+                classList.forEach((cls, index) => {
                   const expr = dynamicStyles.find(
                     ({ path }) => origClassPaths[cls] === path,
                   )?.expression;
+
+                  const isLast = index === classList.length - 1;
+                  const clsWithSpace = isLast ? cls : cls + ' ';
 
                   if (expr && !isSafeToSkipNullCheck(expr)) {
                     isStatic = false;
                     exprList.push(
                       t.conditionalExpression(
                         t.binaryExpression('!=', expr, t.nullLiteral()),
-                        t.stringLiteral(cls),
+                        t.stringLiteral(clsWithSpace),
                         expr,
                       ),
                     );
                   } else {
-                    exprList.push(t.stringLiteral(cls));
+                    exprList.push(t.stringLiteral(clsWithSpace));
                   }
                 });
 
