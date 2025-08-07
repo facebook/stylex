@@ -629,4 +629,56 @@ describe('Media Query Transformer', () => {
     const result = lastMediaQueryWinsTransform(originalStyles);
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
+
+  test('skips range simplification for media queries with conflicting units in same dimension across queries', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 768px) and (max-width: 1200px)': '1 / 4',
+          '@media (min-width: 50em)': '1 / 3',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 768px) and (max-width: 1200px) and (not (min-width: 50em))':
+            '1 / 4',
+          '@media (min-width: 50em)': '1 / 3',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('skips range simplification for media queries with conflicting units in same dimension and query', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 768px) and (max-width: 1200em)': '1 / 4',
+          '@media (min-width: 50em)': '1 / 3',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (min-width: 768px) and (max-width: 1200em) and (not (min-width: 50em))':
+            '1 / 4',
+          '@media (min-width: 50em)': '1 / 3',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
 });

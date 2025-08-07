@@ -362,11 +362,10 @@ function mergeIntervalsForAnd(
     width: [],
     height: [],
   };
-  // Track units for each dimension
-  const units: { [dim: string]: string } = {
-    width: 'px',
-    height: 'px',
-  };
+
+  const units: { [dim: string]: string } = {};
+
+  let hasAnyUnitConflicts = false;
 
   for (const rule of rules) {
     if (rule.type === 'not' && rule.rule.type === 'and') {
@@ -407,7 +406,12 @@ function mergeIntervalsForAnd(
         isNumericLength(rule.value)
       ) {
         const val = rule.value as any;
-        units[dim] = intervals[dim].length === 0 ? val.unit : units[dim];
+
+        if (intervals[dim].length === 0) {
+          units[dim] = val.unit;
+        } else if (units[dim] !== val.unit) {
+          hasAnyUnitConflicts = true;
+        }
         intervals[dim].push(
           rule.key === `min-${dim}`
             ? [val.value, Infinity]
@@ -422,7 +426,11 @@ function mergeIntervalsForAnd(
         isNumericLength(rule.rule.value)
       ) {
         const val = rule.rule.value as any;
-        units[dim] = intervals[dim].length === 0 ? val.unit : units[dim];
+        if (intervals[dim].length === 0) {
+          units[dim] = val.unit;
+        } else if (units[dim] !== val.unit) {
+          hasAnyUnitConflicts = true;
+        }
         if (rule.rule.key === `min-${dim}`) {
           intervals[dim].push([-Infinity, val.value - epsilon]);
         } else {
@@ -454,9 +462,15 @@ function mergeIntervalsForAnd(
   }
 
   const result: Array<MediaQueryRule> = [];
+
+  if (hasAnyUnitConflicts) {
+    return rules;
+  }
+
   for (const dim of dimensions) {
     const dimIntervals = intervals[dim];
     if (dimIntervals.length === 0) continue;
+
     let lower: number = -Infinity;
     let upper: number = Infinity;
     for (const [l, u]: [number, number] of dimIntervals) {
