@@ -4078,7 +4078,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: (hover, active, focus) => [{
-                kMwMTN: (hover != null ? "x1qvlgnj" : hover) + (active != null ? "xx746rz" : active) + (focus != null ? "x152n5rj" : focus) + "x126ychx",
+                kMwMTN: (hover != null ? "x1qvlgnj " : hover) + (active != null ? "xx746rz " : active) + (focus != null ? "x152n5rj " : focus) + "x126ychx",
                 $$css: true
               }, {
                 "--x-1113oo7": hover != null ? hover : undefined,
@@ -4329,7 +4329,7 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             const _temp = {
-              kxBb7d: "x16oeupf" + "xndy4z1",
+              kxBb7d: "x16oeupf " + "xndy4z1",
               "$$css": true
             };
             export const styles = {
@@ -4389,7 +4389,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: (a, b, c) => [{
-                kzqmXN: "x11ymkkh" + (b != null ? "x17gmrvw" : b) + (c != null ? "x1bai16n" : c),
+                kzqmXN: "x11ymkkh " + (b != null ? "x17gmrvw " : b) + (c != null ? "x1bai16n" : c),
                 $$css: true
               }, {
                 "--x-1xmrurk": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)('color-mix(' + color + ', blue)'),
@@ -4471,7 +4471,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: (a, b, c) => [{
-                kMwMTN: (a != null ? "x3d248p" : a) + (b != null ? "x1iuwwch" : b) + (c != null ? "x5268pl" : c),
+                kMwMTN: (a != null ? "x3d248p " : a) + (b != null ? "x1iuwwch " : b) + (c != null ? "x5268pl" : c),
                 $$css: true
               }, {
                 "--x-4xs81a": a != null ? a : undefined,
@@ -4555,7 +4555,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: (a, b, c) => [{
-                kGuDYH: (a != null ? "xww4jgc" : a) + (b != null ? "xfqys7t" : b) + (c != null ? "x13w7uki" : c),
+                kGuDYH: (a != null ? "xww4jgc " : a) + (b != null ? "xfqys7t " : b) + (c != null ? "x13w7uki" : c),
                 $$css: true
               }, {
                 "--x-19zvkyr": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(a),
@@ -5240,9 +5240,9 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2("@property --x-marginTop { syntax: \\"*\\"; inherits: false;}", 0);
           export const styles = {
             default: margin => [_temp, {
-              k71WvV: (margin != null ? "x17e2bsb" : margin) + "xtcj1g9",
-              k1K539: (margin != null ? "xg6eqc8" : margin) + "xgrn1a3",
-              keTefX: (margin != null ? "x19ja4a5" : margin) + "x2tye95",
+              k71WvV: (margin != null ? "x17e2bsb " : margin) + "xtcj1g9",
+              k1K539: (margin != null ? "xg6eqc8 " : margin) + "xgrn1a3",
+              keTefX: (margin != null ? "x19ja4a5 " : margin) + "x2tye95",
               $$css: true
             }, {
               "--x-14mfytm": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(margin),
