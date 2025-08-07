@@ -363,6 +363,10 @@ function mergeIntervalsForAnd(
     height: [],
   };
 
+  const units: { [dim: string]: string } = {};
+
+  let hasAnyUnitConflicts = false;
+
   for (const rule of rules) {
     if (rule.type === 'not' && rule.rule.type === 'and') {
       const inner = rule.rule.rules;
@@ -402,6 +406,12 @@ function mergeIntervalsForAnd(
         isNumericLength(rule.value)
       ) {
         const val = rule.value as any;
+
+        if (intervals[dim].length === 0) {
+          units[dim] = val.unit;
+        } else if (units[dim] !== val.unit) {
+          hasAnyUnitConflicts = true;
+        }
         intervals[dim].push(
           rule.key === `min-${dim}`
             ? [val.value, Infinity]
@@ -416,6 +426,11 @@ function mergeIntervalsForAnd(
         isNumericLength(rule.rule.value)
       ) {
         const val = rule.rule.value as any;
+        if (intervals[dim].length === 0) {
+          units[dim] = val.unit;
+        } else if (units[dim] !== val.unit) {
+          hasAnyUnitConflicts = true;
+        }
         if (rule.rule.key === `min-${dim}`) {
           intervals[dim].push([-Infinity, val.value - epsilon]);
         } else {
@@ -447,9 +462,15 @@ function mergeIntervalsForAnd(
   }
 
   const result: Array<MediaQueryRule> = [];
+
+  if (hasAnyUnitConflicts) {
+    return rules;
+  }
+
   for (const dim of dimensions) {
     const dimIntervals = intervals[dim];
     if (dimIntervals.length === 0) continue;
+
     let lower: number = -Infinity;
     let upper: number = Infinity;
     for (const [l, u]: [number, number] of dimIntervals) {
@@ -463,14 +484,14 @@ function mergeIntervalsForAnd(
       result.push({
         type: 'pair',
         key: `min-${dim}`,
-        value: { value: lower, unit: 'px', type: 'integer' } as any,
+        value: { value: lower, unit: units[dim], type: 'integer' } as any,
       });
     }
     if (upper !== Infinity) {
       result.push({
         type: 'pair',
         key: `max-${dim}`,
-        value: { value: upper, unit: 'px', type: 'integer' } as any,
+        value: { value: upper, unit: units[dim], type: 'integer' } as any,
       });
     }
   }
