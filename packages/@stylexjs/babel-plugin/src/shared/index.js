@@ -37,12 +37,14 @@ import stylexFirstThatWorks from './stylex-first-that-works';
 import hash from './hash';
 import genFileBasedIdentifier from './utils/file-based-identifier';
 import * as m from './messages';
-export * as types from './types';
 import {
   PSEUDO_CLASS_PRIORITIES as _PSEUDO_CLASS_PRIORITIES,
   AT_RULE_PRIORITIES as _AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY as _PSEUDO_ELEMENT_PRIORITY,
 } from './utils/property-priorities';
+
+export * as types from './types';
+export * as when from './when/when';
 
 export const create: typeof styleXCreateSet = styleXCreateSet;
 export const defineVars: typeof styleXDefineVars = styleXDefineVars;
