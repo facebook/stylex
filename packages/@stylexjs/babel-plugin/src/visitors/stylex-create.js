@@ -31,7 +31,6 @@ import {
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
-import { hoistExpression, pathReplaceHoisted } from '../utils/ast-helpers';
 
 function isSafeToSkipNullCheck(expr: t.Expression): boolean {
   if (t.isTemplateLiteral(expr)) return true;
@@ -292,12 +291,9 @@ export default function transformStyleXCreate(
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
 
-              let cssTagValue: t.Expression | t.PatternLike =
-                t.booleanLiteral(true);
-
-              const staticProps: Array<t.ObjectProperty> = [];
-
-              const conditionalProps: Array<t.ObjectProperty> = [];
+              const conditionalProps: Array<
+                t.ObjectProperty | t.SpreadElement,
+              > = [];
 
               value.properties.forEach((prop) => {
                 if (!t.isObjectProperty(prop) || t.isPrivateName(prop.key)) {
@@ -306,19 +302,14 @@ export default function transformStyleXCreate(
 
                 const objProp: t.ObjectProperty = prop;
                 const propKey =
-                  t.isIdentifier(objProp.key) && !objProp.computed
+                  objProp.key.type === 'Identifier' && !objProp.computed
                     ? objProp.key.name
-                    : t.isStringLiteral(objProp.key)
+                    : objProp.key.type === 'StringLiteral'
                       ? objProp.key.value
                       : null;
 
-                if (propKey == null) {
-                  staticProps.push(objProp);
-                  return;
-                }
-
-                if (propKey === '$$css') {
-                  cssTagValue = objProp.value;
+                if (propKey == null || propKey === '$$css') {
+                  conditionalProps.push(objProp);
                   return;
                 }
 
@@ -326,7 +317,6 @@ export default function transformStyleXCreate(
                   ? objProp.value.value.split(' ')
                   : [];
 
-                let isStatic = true;
                 const exprList: t.Expression[] = [];
 
                 classList.forEach((cls, index) => {
@@ -338,7 +328,6 @@ export default function transformStyleXCreate(
                   const clsWithSpace = isLast ? cls : cls + ' ';
 
                   if (expr && !isSafeToSkipNullCheck(expr)) {
-                    isStatic = false;
                     exprList.push(
                       t.conditionalExpression(
                         t.binaryExpression('!=', expr, t.nullLiteral()),
@@ -358,46 +347,22 @@ export default function transformStyleXCreate(
                         t.binaryExpression('+', acc, curr),
                       );
 
-                if (isStatic) {
-                  staticProps.push(t.objectProperty(objProp.key, joined));
-                } else {
-                  conditionalProps.push(t.objectProperty(objProp.key, joined));
-                }
+                conditionalProps.push(t.objectProperty(objProp.key, joined));
               });
 
-              let staticObj = null;
-              let conditionalObj = null;
+              const conditionalObj = t.objectExpression(conditionalProps);
 
-              if (staticProps.length > 0) {
-                staticProps.push(
-                  t.objectProperty(t.stringLiteral('$$css'), cssTagValue),
-                );
-                staticObj = t.objectExpression(staticProps);
-              }
-
-              if (conditionalProps.length > 0) {
-                conditionalProps.push(
-                  t.objectProperty(t.identifier('$$css'), cssTagValue),
-                );
-                conditionalObj = t.objectExpression(conditionalProps);
-              }
-
-              let finalFnValue: t.Expression = t.objectExpression(
-                Object.entries(inlineStyles).map(([key, val]) =>
-                  t.objectProperty(t.stringLiteral(key), val.expression),
-                ),
+              prop.value = t.arrowFunctionExpression(
+                params,
+                t.arrayExpression([
+                  conditionalObj,
+                  t.objectExpression(
+                    Object.entries(inlineStyles).map(([key, val]) =>
+                      t.objectProperty(t.stringLiteral(key), val.expression),
+                    ),
+                  ),
+                ]),
               );
-              if (staticObj != null || conditionalObj != null) {
-                finalFnValue = t.arrayExpression(
-                  [
-                    staticObj && hoistExpression(path, staticObj),
-                    conditionalObj,
-                    finalFnValue,
-                  ].filter(Boolean),
-                );
-              }
-
-              prop.value = t.arrowFunctionExpression(params, finalFnValue);
             }
           }
         }
@@ -412,7 +377,7 @@ export default function transformStyleXCreate(
 
     state.registerStyles(listOfStyles, path);
 
-    pathReplaceHoisted(path, resultAst);
+    path.replaceWith(resultAst);
 
     if (Object.keys(injectedStyles).length === 0) {
       return;
@@ -429,7 +394,13 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
       SyntaxError,
     );
   }
-
+  const nearestStatement = findNearestStatementAncestor(path);
+  if (
+    !nearestStatement.parentPath.isProgram() &&
+    !nearestStatement.parentPath.isExportNamedDeclaration()
+  ) {
+    throw path.buildCodeFrameError(messages.ONLY_TOP_LEVEL, SyntaxError);
+  }
   if (path.node.arguments.length !== 1) {
     throw path.buildCodeFrameError(
       messages.illegalArgumentLength('create', 1),
@@ -449,6 +420,17 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
   if (hasSpread) {
     throw path.buildCodeFrameError(messages.NO_OBJECT_SPREADS, SyntaxError);
   }
+}
+
+// Find the nearest statement ancestor of a given path.
+function findNearestStatementAncestor(path: NodePath<>): NodePath<t.Statement> {
+  if (path.isStatement()) {
+    return path;
+  }
+  if (path.parentPath == null) {
+    throw new Error('Unexpected Path found that is not part of the AST.');
+  }
+  return findNearestStatementAncestor(path.parentPath);
 }
 
 function legacyExpandShorthands(
