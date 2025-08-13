@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.3 (Aug 13, 2025)
+
+- Optimize precomputed `props` calls in JSX.
+- Fix class name construction for dynamic contextual styles.
+- Handle all unit values in media query rewriting.
+
 ## 0.15.2 (Aug 1, 2025)
 
 - Exclude private dependencies from `@stylexjs/babel-plugin` package.
@@ -9,7 +15,7 @@
 
 ### Fixes
 
-- Hoist stylex.create and static className objects to the top level for support inside functions
+- Hoist stylex.create and static className objects to the top level for support inside functions.
 
 ## 0.15.0 (Jul 31, 2025)
 
