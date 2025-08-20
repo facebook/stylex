@@ -439,7 +439,7 @@ function processStylexRules(
 
   let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
-    const [_key, styleObj, priority] = rule;
+    const [key, { ...styleObj }, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
 
     Object.keys(styleObj).forEach((dir) => {
@@ -470,12 +470,12 @@ function processStylexRules(
     });
 
     if (priorityLevel === lastKPri) {
-      acc[acc.length - 1].push(rule);
+      acc[acc.length - 1].push([key, styleObj, priority]);
       return acc;
     }
 
     lastKPri = priorityLevel;
-    acc.push([rule]);
+    acc.push([[key, styleObj, priority]]);
     return acc;
   }, []);
 
