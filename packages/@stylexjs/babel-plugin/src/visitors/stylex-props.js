@@ -8,12 +8,14 @@
  */
 
 import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import { props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
+import stylexDefaultMarker from '../shared/stylex-defaultMarker';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -64,6 +66,26 @@ export default function transformStylexProps(
 
   let currentIndex = -1;
   let bailOutIndex: ?number = null;
+
+  const identifiers: FunctionConfig['identifiers'] = {};
+  const memberExpressions: FunctionConfig['memberExpressions'] = {};
+
+  state.stylexDefaultMarkerImport.forEach((name) => {
+    identifiers[name] = () => stylexDefaultMarker(state.options);
+  });
+
+  state.stylexImport.forEach((name) => {
+    memberExpressions[name] = {
+      defaultMarker: {
+        fn: () => stylexDefaultMarker(state.options),
+      },
+    };
+  });
+
+  const evaluatePathFnConfig: FunctionConfig = {
+    identifiers,
+    memberExpressions,
+  };
 
   const resolvedArgs: ResolvedArgs = [];
   for (const arg of args) {
@@ -162,7 +184,11 @@ export default function transformStylexProps(
         if (nonNullProps === true) {
           styleNonNullProps = true;
         } else {
-          const { confident, value: styleValue } = evaluate(path, state);
+          const { confident, value: styleValue } = evaluate(
+            path,
+            state,
+            evaluatePathFnConfig,
+          );
           if (!confident || styleValue == null) {
             nonNullProps = true;
             styleNonNullProps = true;
