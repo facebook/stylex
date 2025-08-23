@@ -32,6 +32,7 @@ import transformStylexCall, {
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
+import transformStyleXDefaultMarker from './visitors/stylex-default-marker';
 
 const NAME = 'stylex';
 
@@ -305,6 +306,8 @@ function styleXTransform(): PluginObj<> {
             );
           }
         }
+
+        transformStyleXDefaultMarker(path, state);
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
