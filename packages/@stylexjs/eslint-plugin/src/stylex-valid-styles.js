@@ -393,12 +393,22 @@ const stylexValidStyles = {
             return context.report({
               node: style.key,
               loc: style.key.loc,
-              message: 'Computed key cannot depend on function argument',
+              message: 'Computed key cannot depend on function argument.',
             } as Rule.ReportDescriptor);
           } else {
             styleKey = val;
           }
         }
+
+        // Allow computed keys from stylex.js files to bypass strict validation
+        const isComputedKeyFromStylexDefineVarsTokens =
+          stylexDefineVarsTokenImports.size > 0 &&
+          isStylexDefineVarsToken(styleKey, stylexDefineVarsTokenImports);
+
+        if (isComputedKeyFromStylexDefineVarsTokens) {
+          return undefined;
+        }
+
         if (styleKey.type !== 'Literal' && styleKey.type !== 'Identifier') {
           return context.report({
             node: styleKey,
@@ -469,7 +479,7 @@ const stylexValidStyles = {
               replacementKey &&
               (style.key.type === 'Identifier' || style.key.type === 'Literal')
                 ? `The key "${originalKey}" is not a standard CSS property. Did you mean "${replacementKey}"?`
-                : 'This is not a key that is allowed by stylex',
+                : 'This is not a key that is allowed by stylex.',
             fix: (fixer) => {
               if (replacementKey) {
                 return fixer.replaceText(style.key, replacementKey);

@@ -559,6 +559,58 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     })
     `,
+    // test computed keys with media query constants from stylex.js files
+    `
+    import * as stylex from '@stylexjs/stylex';
+    import { mediaQueries } from './media.stylex';
+    stylex.create({
+      root: {
+        [mediaQueries.mobile]: {
+          width: '100%',
+        },
+        [mediaQueries.tablet]: {
+          width: '50%',
+        },
+        [mediaQueries.desktop]: {
+          width: '25%',
+        },
+      },
+    })
+    `,
+    // test legacy complex media query expressions from stylex.js files
+    `
+    import * as stylex from '@stylexjs/stylex';
+    import { mediaQueries } from './complex-media.stylex';
+    stylex.create({
+      component: {
+        [mediaQueries.darkMode]: {
+          backgroundColor: 'black',
+          color: 'white',
+        },
+        [mediaQueries.highContrast]: {
+          borderWidth: '2px',
+          borderStyle: 'solid',
+        },
+        [mediaQueries.print]: {
+          display: 'none',
+        },
+      },
+    })
+    `,
+    // test computed keys with simple media query expressions from stylex.js files
+    `
+     import * as stylex from '@stylexjs/stylex';
+     import { mediaQueries } from './complex-media.stylex';
+     stylex.create({
+        root: {
+          width: {
+            default: 800,
+            [mediaQueries.medium]: '100%',
+            [mediaQueries.large]: 1366,
+          },
+        },
+     })
+     `,
   ],
   invalid: [
     {
@@ -577,7 +629,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed by stylex.',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
@@ -592,7 +644,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed by stylex.',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
@@ -607,7 +659,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {[\"textAlin\"]: 'left'}});",
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed by stylex.',
           suggestions: [
             {
               desc: 'Did you mean "textAlign"?',
@@ -904,7 +956,7 @@ revert`,
       options: [{ allowOuterPseudoAndMedia: true }],
       errors: [
         {
-          message: 'This is not a key that is allowed by stylex',
+          message: 'This is not a key that is allowed by stylex.',
         },
       ],
     },
@@ -1592,6 +1644,39 @@ revert`,
           }
         });
       `,
+    },
+    // test that computed keys not from stylex.js files still trigger errors
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        import { someVar } from './regular.js';
+        const styles = stylex.create({
+          root: {
+            [someVar]: 'red',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: 'Computed key cannot be resolved.',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const dynamicKey = 'dynamic';
+        const styles = stylex.create({
+          root: {
+            [dynamicKey]: 'blue',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex.',
+        },
+      ],
     },
   ],
 });
