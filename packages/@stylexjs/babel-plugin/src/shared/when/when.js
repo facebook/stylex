@@ -31,7 +31,7 @@ function validatePseudoSelector(pseudo: string): void {
  */
 export function ancestor(pseudo: string): string {
   validatePseudoSelector(pseudo);
-  return `:where(.stylex-target${pseudo} *)`;
+  return `:where(.x-default-marker${pseudo} *)`;
 }
 
 /**
@@ -43,7 +43,7 @@ export function ancestor(pseudo: string): string {
  */
 export function descendant(pseudo: string): string {
   validatePseudoSelector(pseudo);
-  return `:has(.stylex-target${pseudo})`;
+  return `:has(.x-default-marker${pseudo})`;
 }
 
 /**
@@ -55,7 +55,7 @@ export function descendant(pseudo: string): string {
  */
 export function siblingBefore(pseudo: string): string {
   validatePseudoSelector(pseudo);
-  return `:where(.stylex-target${pseudo} ~ *)`;
+  return `:where(.x-default-marker${pseudo} ~ *)`;
 }
 
 /**
@@ -67,7 +67,7 @@ export function siblingBefore(pseudo: string): string {
  */
 export function siblingAfter(pseudo: string): string {
   validatePseudoSelector(pseudo);
-  return `:has(~ .stylex-target${pseudo})`;
+  return `:has(~ .x-default-marker${pseudo})`;
 }
 
 /**
@@ -79,5 +79,5 @@ export function siblingAfter(pseudo: string): string {
  */
 export function anySibling(pseudo: string): string {
   validatePseudoSelector(pseudo);
-  return `:where(.stylex-target${pseudo} ~ *, :has(~ .stylex-target${pseudo}))`;
+  return `:where(.x-default-marker${pseudo} ~ *, :has(~ .x-default-marker${pseudo}))`;
 }

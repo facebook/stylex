@@ -47,7 +47,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x26ppzc",
+            kWkggS: "x1t391ir x148kuu",
             $$css: true
           }
         };
@@ -65,9 +65,9 @@ describe('@stylexjs/babel-plugin', () => {
             3000,
           ],
           [
-            "x26ppzc",
+            "x148kuu",
             {
-              "ltr": ".x26ppzc:where(.stylex-target:hover *){background-color:red}",
+              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
               "rtl": null,
             },
             3040,
@@ -96,7 +96,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir xeb64px",
+            kWkggS: "x1t391ir x1i6rnlt",
             $$css: true
           }
         };
@@ -114,9 +114,9 @@ describe('@stylexjs/babel-plugin', () => {
             3000,
           ],
           [
-            "xeb64px",
+            "x1i6rnlt",
             {
-              "ltr": ".xeb64px:where(.stylex-target:focus ~ *){background-color:red}",
+              "ltr": ".x1i6rnlt:where(.x-default-marker:focus ~ *){background-color:red}",
               "rtl": null,
             },
             3040,
@@ -146,7 +146,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x26ppzc xhhxj74",
+            kWkggS: "x1t391ir x148kuu xpijypl",
             $$css: true
           }
         };
@@ -164,17 +164,17 @@ describe('@stylexjs/babel-plugin', () => {
             3000,
           ],
           [
-            "x26ppzc",
+            "x148kuu",
             {
-              "ltr": ".x26ppzc:where(.stylex-target:hover *){background-color:red}",
+              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
               "rtl": null,
             },
             3040,
           ],
           [
-            "xhhxj74",
+            "xpijypl",
             {
-              "ltr": ".xhhxj74:where(.stylex-target:focus ~ *){background-color:green}",
+              "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
               "rtl": null,
             },
             3040,
@@ -204,7 +204,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when as w, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x26ppzc xhhxj74",
+            kWkggS: "x1t391ir x148kuu xpijypl",
             $$css: true
           }
         };
@@ -222,17 +222,17 @@ describe('@stylexjs/babel-plugin', () => {
             3000,
           ],
           [
-            "x26ppzc",
+            "x148kuu",
             {
-              "ltr": ".x26ppzc:where(.stylex-target:hover *){background-color:red}",
+              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
               "rtl": null,
             },
             3040,
           ],
           [
-            "xhhxj74",
+            "xpijypl",
             {
-              "ltr": ".xhhxj74:where(.stylex-target:focus ~ *){background-color:green}",
+              "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
               "rtl": null,
             },
             3040,
