@@ -23,7 +23,7 @@ function validatePseudoSelector(pseudo: string): void {
 
 /**
  * Creates selector that observes if the given pseudo-class is
- * active on an ancestor with the "defaultTargetId"
+ * active on an ancestor with the "defaultMarker"
  *
  *
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
@@ -36,7 +36,7 @@ export function ancestor(pseudo: string): string {
 
 /**
  * Creates selector that observes if the given pseudo-class is
- * active on a descendant with the "defaultTargetId"
+ * active on a descendant with the "defaultMarker"
  *
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the descendant observer
@@ -48,7 +48,7 @@ export function descendant(pseudo: string): string {
 
 /**
  * Creates selector that observes if the given pseudo-class is
- * active on a previous sibling with the "defaultTargetId"
+ * active on a previous sibling with the "defaultMarker"
  *
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the previous sibling observer
@@ -60,7 +60,7 @@ export function siblingBefore(pseudo: string): string {
 
 /**
  * Creates selector that observes if the given pseudo-class is
- * active on a next sibling with the "defaultTargetId"
+ * active on a next sibling with the "defaultMarker"
  *
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the next sibling observer
@@ -72,7 +72,7 @@ export function siblingAfter(pseudo: string): string {
 
 /**
  * Creates selector that observes if the given pseudo-class is
- * active on any sibling with the "defaultTargetId"
+ * active on any sibling with the "defaultMarker"
  *
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the any sibling observer

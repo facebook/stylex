@@ -12,13 +12,13 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import * as messages from '../shared/messages';
-import stylexDefaultTarget from '../shared/stylex-defaultTarget';
+import stylexDefaultMarker from '../shared/stylex-defaultMarker';
 
 /**
- * Transforms calls to `stylex.defaultTarget()` (or imported `defaultTarget()`)
- * into a string literal: "stylex-target".
+ * Transforms calls to `stylex.defaultMarker()` (or imported `defaultMarker()`)
+ * into a string literal: "stylex-marker".
  */
-export default function transformStyleXDefaultTarget(
+export default function transformStyleXDefaultMarker(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ): void {
@@ -30,22 +30,22 @@ export default function transformStyleXDefaultTarget(
 
   if (
     (node.callee.type === 'Identifier' &&
-      state.stylexDefaultTargetImport.has(node.callee.name)) ||
+      state.stylexDefaultMarkerImport.has(node.callee.name)) ||
     (node.callee.type === 'MemberExpression' &&
       node.callee.object.type === 'Identifier' &&
       node.callee.property.type === 'Identifier' &&
-      node.callee.property.name === 'defaultTarget' &&
+      node.callee.property.name === 'defaultMarker' &&
       state.stylexImport.has(node.callee.object.name))
   ) {
     // Validate: no arguments expected
     if (node.arguments.length !== 0) {
       throw path.buildCodeFrameError(
-        messages.illegalArgumentLength('defaultTarget', 0),
+        messages.illegalArgumentLength('defaultMarker', 0),
         SyntaxError,
       );
     }
 
-    const value = stylexDefaultTarget(state.options);
+    const value = stylexDefaultMarker(state.options);
     path.replaceWith(t.stringLiteral(value));
   }
 }

@@ -10,10 +10,10 @@
 import type { StyleXOptions } from './common-types';
 import { defaultOptions } from './utils/default-options';
 
-export default function stylexDefaultTarget(
+export default function stylexDefaultMarker(
   options?: StyleXOptions = defaultOptions,
 ): string {
   const prefix =
     options.classNamePrefix != null ? `${options.classNamePrefix}-` : '';
-  return `${prefix}default-target`;
+  return `${prefix}default-marker`;
 }
