@@ -91,6 +91,9 @@ export function readImportDeclarations(
             if (importedName === 'when') {
               state.stylexWhenImport.add(localName);
             }
+            if (importedName === 'defaultTarget') {
+              state.stylexDefaultTargetImport.add(localName);
+            }
           }
         }
       }
@@ -166,6 +169,9 @@ export function readRequires(
           }
           if (prop.key.name === 'when') {
             state.stylexWhenImport.add(value.name);
+          }
+          if (prop.key.name === 'defaultTarget') {
+            state.stylexDefaultTargetImport.add(value.name);
           }
         }
       }

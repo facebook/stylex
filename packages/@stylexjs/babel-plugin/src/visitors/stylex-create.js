@@ -20,6 +20,7 @@ import {
   positionTry as stylexPositionTry,
   when as stylexWhen,
 } from '../shared';
+import stylexDefaultTarget from '../shared/stylex-defaultTarget';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
   convertToTestStyles,
@@ -158,6 +159,9 @@ export default function transformStyleXCreate(
     state.stylexPositionTryImport.forEach((name) => {
       identifiers[name] = { fn: positionTry };
     });
+    state.stylexDefaultTargetImport.forEach((name) => {
+      identifiers[name] = () => stylexDefaultTarget(state.options);
+    });
     state.stylexWhenImport.forEach((name) => {
       identifiers[name] = stylexWhen;
     });
@@ -168,6 +172,9 @@ export default function transformStyleXCreate(
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
       memberExpressions[name].positionTry = { fn: positionTry };
+      memberExpressions[name].defaultTarget = {
+        fn: () => stylexDefaultTarget(state.options),
+      };
       identifiers[name] = { ...(identifiers[name] ?? {}), when: stylexWhen };
     });
 

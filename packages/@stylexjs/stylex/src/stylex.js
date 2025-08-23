@@ -131,6 +131,10 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
+export const defaultTarget = (): string => {
+  throw errorForFn('defaultTarget');
+};
+
 export const types = {
   angle: <T: string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
@@ -198,6 +202,7 @@ type IStyleX = {
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineVars: StyleX$DefineVars,
+  defaultTarget: () => string,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
@@ -231,6 +236,7 @@ function _legacyMerge(
 _legacyMerge.create = create;
 _legacyMerge.createTheme = createTheme;
 _legacyMerge.defineVars = defineVars;
+_legacyMerge.defaultTarget = defaultTarget;
 _legacyMerge.firstThatWorks = firstThatWorks;
 _legacyMerge.keyframes = keyframes;
 _legacyMerge.positionTry = positionTry;
