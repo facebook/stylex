@@ -131,7 +131,7 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
-export const defaultMarker = (): string => {
+export const defaultMarker = (): StaticStyles<> => {
   throw errorForFn('defaultMarker');
 };
 
@@ -202,7 +202,7 @@ type IStyleX = {
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineVars: StyleX$DefineVars,
-  defaultMarker: () => string,
+  defaultMarker: () => StaticStyles<>,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,

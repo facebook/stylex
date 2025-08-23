@@ -277,4 +277,36 @@ describe('@stylexjs/babel-plugin', () => {
       ).toThrow('Pseudo selector cannot start with "::"');
     });
   });
+  describe('[transform] using stylex.defaultMarker', () => {
+    test('named import', () => {
+      const { code } = transform(`
+          import { defaultMarker, props } from '@stylexjs/stylex';
+          
+          const classNames = props(defaultMarker());
+        `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { defaultMarker, props } from '@stylexjs/stylex';
+        const classNames = props({
+          "x-default-marker": "x-default-marker",
+          $$css: true
+        });"
+      `);
+    });
+    test('namespace import', () => {
+      const { code } = transform(`
+          import * as stylex from '@stylexjs/stylex';
+          
+          const classNames = stylex.props(stylex.defaultMarker());
+        `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        const classNames = stylex.props({
+          "x-default-marker": "x-default-marker",
+          $$css: true
+        });"
+      `);
+    });
+  });
 });

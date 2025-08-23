@@ -12,8 +12,11 @@ import { defaultOptions } from './utils/default-options';
 
 export default function stylexDefaultMarker(
   options?: StyleXOptions = defaultOptions,
-): string {
+): { [string]: string | true } {
   const prefix =
     options.classNamePrefix != null ? `${options.classNamePrefix}-` : '';
-  return `${prefix}default-marker`;
+  return {
+    [`${prefix}default-marker`]: `${prefix}default-marker`,
+    $$css: true,
+  };
 }

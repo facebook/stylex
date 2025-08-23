@@ -13,6 +13,7 @@ import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import * as messages from '../shared/messages';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
+import { convertObjectToAST } from '../utils/js-to-ast';
 
 /**
  * Transforms calls to `stylex.defaultMarker()` (or imported `defaultMarker()`)
@@ -46,6 +47,6 @@ export default function transformStyleXDefaultMarker(
     }
 
     const value = stylexDefaultMarker(state.options);
-    path.replaceWith(t.stringLiteral(value));
+    path.replaceWith(convertObjectToAST(value));
   }
 }
