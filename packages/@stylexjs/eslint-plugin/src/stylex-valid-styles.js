@@ -36,7 +36,7 @@ import isString from './rules/isString';
 import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isAnimationName from './rules/isAnimationName';
-import isStylexDefineVarsToken from './rules/isStylexDefineVarsToken';
+import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
 import {
@@ -182,14 +182,25 @@ const stylexValidStyles = {
       propLimits = {},
     }: Schema = context.options[0] || {};
 
-    function isValidStylexDefineVarsFileExtension(filename: string) {
-      const stylexExtension = '.stylex';
+    /**
+     * Check if a file has a valid extension for StyleX variable imports.
+     *
+     * `.stylex`: used when importing `defineVars` or `defineConsts`. This prevents
+     *   the linter/compiler from marking imports as unresolved and allows computed
+     *   keys in those cases.
+     *
+     * `.transformed`: used for files that have already been processed by a custom
+     *   transform that pre-resolve StyleX variables to silence ESLint/compiler errors.
+     *
+     */
+    function isValidStylexResolvedVarsFileExtension(filename: string) {
+      const baseExtensions = ['.stylex', '.transformed'];
       const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
       return ['', ...extensions].some((ext) =>
-        filename.endsWith(`${stylexExtension}${ext}`),
+        baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
       );
     }
-    const stylexDefineVarsTokenImports = new Set<string>();
+    const stylexResolvedVarsTokenImports = new Set<string>();
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
     const styleXKeyframesImports = new Set<string>();
@@ -308,7 +319,7 @@ const stylexValidStyles = {
                   ? key.name
                   : resolveKey(key, variables)
                 : null;
-          if (isStylexDefineVarsToken(key, stylexDefineVarsTokenImports)) {
+          if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
             return undefined;
           }
           if (
@@ -378,7 +389,9 @@ const stylexValidStyles = {
             message: 'Private properties are not allowed in stylex',
           } as Rule.ReportDescriptor);
         }
-        if (isStylexDefineVarsToken(styleKey, stylexDefineVarsTokenImports)) {
+        if (
+          isStylexResolvedVarsToken(styleKey, stylexResolvedVarsTokenImports)
+        ) {
           return undefined;
         }
         if (style.computed && styleKey.type !== 'Literal') {
@@ -513,8 +526,11 @@ const stylexValidStyles = {
         }
 
         const isReferencingStylexDefineVarsTokens =
-          stylexDefineVarsTokenImports.size > 0 &&
-          isStylexDefineVarsToken(style.value, stylexDefineVarsTokenImports);
+          stylexResolvedVarsTokenImports.size > 0 &&
+          isStylexResolvedVarsToken(
+            style.value,
+            stylexResolvedVarsTokenImports,
+          );
         if (!isReferencingStylexDefineVarsTokens) {
           let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables;
           if (dynamicStyleVariables.size > 0) {
@@ -692,10 +708,10 @@ const stylexValidStyles = {
         });
 
         const isStylexImport = foundImportSource !== undefined;
-        const isStylexDefineVarsImport =
-          isValidStylexDefineVarsFileExtension(sourceValue);
+        const isStylexResolvedVarsImport =
+          isValidStylexResolvedVarsFileExtension(sourceValue);
 
-        if (!(isStylexImport || isStylexDefineVarsImport)) {
+        if (!(isStylexImport || isStylexResolvedVarsImport)) {
           return;
         }
         if (isStylexImport) {
@@ -733,10 +749,10 @@ const stylexValidStyles = {
           }
         }
 
-        if (isStylexDefineVarsImport) {
+        if (isStylexResolvedVarsImport) {
           node.specifiers.forEach((specifier) => {
             if (specifier.type === 'ImportSpecifier') {
-              stylexDefineVarsTokenImports.add(specifier.local.name);
+              stylexResolvedVarsTokenImports.add(specifier.local.name);
             }
           });
         }
