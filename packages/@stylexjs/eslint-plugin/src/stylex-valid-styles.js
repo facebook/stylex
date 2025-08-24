@@ -183,10 +183,10 @@ const stylexValidStyles = {
     }: Schema = context.options[0] || {};
 
     function isValidStylexDefineVarsFileExtension(filename: string) {
-      const stylexExtension = '.stylex';
+      const baseExtensions = ['.stylex', '.constants'];
       const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
       return ['', ...extensions].some((ext) =>
-        filename.endsWith(`${stylexExtension}${ext}`),
+        baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
       );
     }
     const stylexDefineVarsTokenImports = new Set<string>();
