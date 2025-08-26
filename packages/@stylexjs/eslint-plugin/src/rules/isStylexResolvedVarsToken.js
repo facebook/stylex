@@ -12,14 +12,14 @@ import type { Expression, Pattern } from 'estree';
 
 export default function isStylexDefineVarsToken(
   node: Expression | Pattern,
-  stylexDefineVarsTokenImports: Set<string>,
+  stylexResolvedVarsTokenImports: Set<string>,
 ): boolean {
   if (node != null) {
     if (node.type === 'MemberExpression' && node.object.type === 'Identifier') {
-      return stylexDefineVarsTokenImports.has(node.object.name);
+      return stylexResolvedVarsTokenImports.has(node.object.name);
     }
     if (node.type === 'Identifier') {
-      return stylexDefineVarsTokenImports.has(node.name);
+      return stylexResolvedVarsTokenImports.has(node.name);
     }
     if (node.type === 'TemplateLiteral' && node.expressions.length > 0) {
       return (
@@ -29,7 +29,7 @@ export default function isStylexDefineVarsToken(
               expression.type === 'MemberExpression' &&
               expression.object.type === 'Identifier'
             ) {
-              return stylexDefineVarsTokenImports.has(expression.object.name)
+              return stylexResolvedVarsTokenImports.has(expression.object.name)
                 ? invalidTokenCounter
                 : invalidTokenCounter + 1;
             }

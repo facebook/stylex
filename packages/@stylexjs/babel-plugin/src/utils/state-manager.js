@@ -507,15 +507,22 @@ export default class StateManager {
       return false;
     }
 
+    const themeFileExtension =
+      this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
+    const transformedVarsFileExtension = '.transformed';
+
+    const isValidStylexFile = matchesFileSuffix(themeFileExtension)(importPath);
+    const isValidTransformedVarsFile = matchesFileSuffix(
+      transformedVarsFileExtension,
+    )(importPath);
+
+    if (!isValidStylexFile && !isValidTransformedVarsFile) {
+      return false;
+    }
+
     switch (this.options.unstable_moduleResolution?.type) {
       case 'commonJS': {
         const aliases = this.options.aliases;
-        const themeFileExtension =
-          this.options.unstable_moduleResolution?.themeFileExtension ??
-          '.stylex';
-        if (!matchesFileSuffix(themeFileExtension)(importPath)) {
-          return false;
-        }
         const resolvedFilePath = filePathResolver(
           importPath,
           sourceFilePath,
@@ -526,22 +533,10 @@ export default class StateManager {
           : false;
       }
       case 'haste': {
-        const themeFileExtension =
-          this.options.unstable_moduleResolution.themeFileExtension ??
-          '.stylex';
-        if (!matchesFileSuffix(themeFileExtension)(importPath)) {
-          return false;
-        }
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
       }
       case 'experimental_crossFileParsing': {
         const aliases = this.options.aliases;
-        const themeFileExtension =
-          this.options.unstable_moduleResolution.themeFileExtension ??
-          '.stylex';
-        if (!matchesFileSuffix(themeFileExtension)(importPath)) {
-          return false;
-        }
         const resolvedFilePath = filePathResolver(
           importPath,
           sourceFilePath,
