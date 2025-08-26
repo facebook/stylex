@@ -373,25 +373,128 @@ describe('@stylexjs/babel-plugin', () => {
       `);
 
       expect(code).toMatchInlineSnapshot(`
+            `);
+    });
+
+    test('works with dynamic styles constants', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { colors } from './constants.stylex';
+
+        export const styles = stylex.create({
+          node: (padding) => ({
+            padding: padding,
+            color: colors.background,
+          }),
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { colors } from './constants.stylex';
+        const _temp = {
+          kMwMTN: "xy1iwrb",
+          "$$css": true
+        };
+        export const styles = {
+          node: padding => [_temp, {
+            kmVPX3: padding != null ? "x1fozly0" : padding,
+            $$css: true
+          }, {
+            "--x-padding": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(padding)
+          }]
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1fozly0",
+              {
+                "ltr": ".x1fozly0{padding:var(--x-padding)}",
+                "rtl": null,
+              },
+              1000,
+            ],
+            [
+              "xy1iwrb",
+              {
+                "ltr": ".xy1iwrb{color:var(--x180gk19)}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "--x-padding",
+              {
+                "ltr": "@property --x-padding { syntax: "*"; inherits: false;}",
+                "rtl": null,
+              },
+              0,
+            ],
+          ],
+        }
       `);
     });
 
-    test.skip('works with dynamic styles', () => {
-      const { code } = transformWithInlineConsts(`
+    test('works with dynamic styles at-rules', () => {
+      const { code, metadata } = transformWithInlineConsts(`
         import * as stylex from '@stylexjs/stylex';
         import { breakpoints } from './constants.stylex';
 
         export const styles = stylex.create({
-          nodeEnd: (animationDuration) => ({
-            transition: {
-              [breakpoints.small]: 'none',
-              default: \`transform \${animationDuration}ms ease-in-out\`,
+          node: (color) => ({
+            color: {
+              [breakpoints.small]: 'blue',
+              default: color,
             },
           }),
         });
       `);
 
       expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from './constants.stylex';
+        export const styles = {
+          node: color => [{
+            kMwMTN: "xbs0o1n " + (color != null ? "x3d248p" : color),
+            $$css: true
+          }, {
+            "--x-4xs81a": color != null ? color : undefined
+          }]
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xbs0o1n",
+              {
+                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "rtl": null,
+              },
+              6000,
+            ],
+            [
+              "x3d248p",
+              {
+                "ltr": ".x3d248p{color:var(--x-4xs81a)}",
+                "rtl": null,
+              },
+              3000,
+            ],
+            [
+              "--x-4xs81a",
+              {
+                "ltr": "@property --x-4xs81a { syntax: "*"; inherits: false;}",
+                "rtl": null,
+              },
+              0,
+            ],
+          ],
+        }
       `);
     });
 
