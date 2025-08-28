@@ -55,6 +55,10 @@ const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength);
 const isNonNumericString: RuleCheck = (node: Node): RuleResponse => {
   if (node.type === 'Literal' && typeof node.value === 'string') {
     if (/^[-+]?(?:\d+|\d*\.\d+)$/.test(node.value)) {
+      if (node.value === '0') {
+        return undefined;
+      }
+
       return {
         message: 'a non-numeric string',
       };

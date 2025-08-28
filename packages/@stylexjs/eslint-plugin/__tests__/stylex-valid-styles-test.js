@@ -236,6 +236,9 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     "import * as stylex from '@stylexjs/stylex'; stylex.create({[0]: {marginInlineStart: 5}});",
     // test for negative values.
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: -5}});",
+    // test for unitless length value 0
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {margin: 0}});",
+    "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {padding: '0'}});",
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'start'}});",
     // test for presets
     `import * as stylex from '@stylexjs/stylex';
