@@ -79,6 +79,7 @@ export default function stylexPlugin({
         const collectedCSS = stylexBabelPlugin.processStylexRules(
           rules,
           useCSSLayers,
+          options?.styleResolution,
         );
 
         // Process the CSS using lightningcss

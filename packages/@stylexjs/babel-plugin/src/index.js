@@ -359,6 +359,10 @@ export type Rule = [
 function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
+  styleResolution?:
+    | 'application-order'
+    | 'property-specificity'
+    | 'legacy-expand-shorthands',
 ): string {
   if (rules.length === 0) {
     return '';
