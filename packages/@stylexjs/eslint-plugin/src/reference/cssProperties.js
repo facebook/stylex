@@ -1994,10 +1994,6 @@ const CSSProperties = {
   pointerEvents: pointerEvents,
   position: position,
 
-  positionTryFallbacks: makeUnionRule(
-    makeLiteralRule('none'),
-    isString,
-  ) as RuleCheck,
 
   // Shorthand not yet supported
   placeContent: isString,

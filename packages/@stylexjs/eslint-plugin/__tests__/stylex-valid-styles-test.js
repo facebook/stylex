@@ -571,22 +571,19 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
-    // test for positionTryFallbacks with string variable
+    // test for positionTryFallbacks with stylex variable
     `
     import * as stylex from '@stylexjs/stylex';
-    const fallbackName = '--my-fallback';
-    stylex.create({
-      default: {
-        positionTryFallbacks: fallbackName,
-      },
+    const fallback = stylex.positionTry({
+      positionAnchor: '--anchor',
+      top: '0',
+      left: '0',
+      width: '100px',
+      height: '100px'
     });
-    `,
-    // test for positionTryFallbacks with multiple fallbacks
-    `
-    import * as stylex from '@stylexjs/stylex';
     stylex.create({
-      default: {
-        positionTryFallbacks: '--fallback1, --fallback2, --fallback3',
+      anchor: {
+        positionTryFallbacks: fallback,
       },
     });
     `,
@@ -1985,7 +1982,8 @@ revert`,
         {
           message: `positionTryFallbacks value must be one of:
 none
-a string literal
+a CSS Variable
+a \`positionTry(...)\` function call, a reference to it or a many such valid
 null
 initial
 inherit
