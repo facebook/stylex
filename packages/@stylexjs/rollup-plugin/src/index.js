@@ -76,10 +76,10 @@ export default function stylexPlugin({
     generateBundle(this: PluginContext) {
       const rules: Array<Rule> = Object.values(stylexRules).flat();
       if (rules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(
-          rules,
-          useCSSLayers,
-        );
+        const collectedCSS = stylexBabelPlugin.processStylexRules(rules, {
+          useLayers: useCSSLayers,
+          enableLTRRTLComments: options?.enableLTRRTLComments,
+        });
 
         // Process the CSS using lightningcss
         const { code } = transform({

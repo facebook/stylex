@@ -81,7 +81,10 @@ export async function compileDirectory(
 
   const compiledCSS = await styleXPlugin.processStylexRules(
     Array.from(config.state.styleXRules.values()).flat(),
-    config.useCSSLayers,
+    {
+      useLayers: config.useCSSLayers,
+      enableLTRRTLComments: config.styleXConfig?.enableLTRRTLComments,
+    },
   );
 
   const cssBundlePath = path.join(config.output, config.styleXBundleName);

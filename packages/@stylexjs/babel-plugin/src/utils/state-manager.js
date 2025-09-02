@@ -76,6 +76,7 @@ export type StyleXOptions = $ReadOnly<{
   enableMediaQueryOrder?: boolean,
   enableLegacyValueFlipping?: boolean,
   enableLogicalStylesPolyfill?: boolean,
+  enableLTRRTLComments?: boolean,
   enableMinifiedKeys?: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
@@ -244,6 +245,14 @@ export default class StateManager {
         'options.enableLogicalStylesPolyfill',
       );
 
+    const enableLTRRTLComments: StyleXStateOptions['enableLTRRTLComments'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableLTRRTLComments ?? false,
+        false,
+        'options.enableLTRRTLComments',
+      );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
       options.test ?? false,
@@ -356,6 +365,7 @@ export default class StateManager {
       enableMediaQueryOrder,
       enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
+      enableLTRRTLComments,
       importSources,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'

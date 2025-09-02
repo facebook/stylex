@@ -22,6 +22,7 @@ module.exports = function createPlugin() {
     include,
     exclude,
     useCSSLayers = false,
+    styleResolution = 'property-specificity',
     importSources = ['@stylexjs/stylex', 'stylex'],
   }) => {
     exclude = [
@@ -50,6 +51,7 @@ module.exports = function createPlugin() {
             cwd,
             babelConfig,
             useCSSLayers,
+            styleResolution,
             importSources,
             isDev,
           });

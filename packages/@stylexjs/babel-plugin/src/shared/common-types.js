@@ -55,6 +55,7 @@ export type StyleXOptions = $ReadOnly<{
   enableMediaQueryOrder?: ?boolean,
   enableLegacyValueFlipping?: ?boolean,
   enableLogicalStylesPolyfill?: ?boolean,
+  enableLTRRTLComments?: ?boolean,
   enableMinifiedKeys?: ?boolean,
   styleResolution:
     | 'application-order' // The last style applied wins.
