@@ -482,6 +482,23 @@ function processStylexRules(
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
 
+          if (styleResolution === 'legacy-expand-shorthands') {
+            // check if the selector looks like .xtrlmmh, .xtrlmmh:root
+            // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
+            // This is to ensure the themes always have precedence over the
+            // default variable values
+            ltrRule = ltrRule.replace(
+              /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+              '.$1.$1, .$1.$1:root',
+            );
+            if (rtlRule) {
+              rtlRule = rtlRule.replace(
+                /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+                '.$1.$1, .$1.$1:root',
+              );
+            }
+          }
+
           return rtlRule
             ? styleResolution === 'legacy-expand-shorthands'
               ? [

@@ -149,13 +149,7 @@ describe('@stylexjs/babel-plugin', () => {
           __varGroupHash__: "xbiwvf9"
         };"
       `);
-      expect(
-        stylexPlugin.processStylexRules(
-          metadata,
-          false,
-          'legacy-expand-shorthands',
-        ),
-      ).toMatchInlineSnapshot(`
+      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
         ":root, .xsg933n{--blue-xpqh4lw:blue;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}"
       `);
@@ -385,6 +379,38 @@ describe('@stylexjs/babel-plugin', () => {
         .marginTop-x1anpbxc:not(#\\#):not(#\\#){margin-top:10px}
         .paddingBottom-xs9asl8:not(#\\#):not(#\\#){padding-bottom:5px}
         .paddingTop-x123j3cw:not(#\\#):not(#\\#){padding-top:5px}"
+      `);
+    });
+
+    test('legacy-expand-shorthands duplicates theme selectors for higher precedence', () => {
+      const { _code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const themeColor = stylex.createTheme(vars, {
+          blue: 'lightblue'
+        });
+        export const themeSpacing = stylex.createTheme(spacing, {
+          small: '5px',
+          medium: '10px',
+          large: '20px'
+        });
+      `,
+        {
+          styleResolution: 'legacy-expand-shorthands',
+        },
+      );
+
+      expect(
+        stylexPlugin.processStylexRules(
+          metadata,
+          false,
+          'legacy-expand-shorthands',
+        ),
+      ).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
+        .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}"
       `);
     });
   });
