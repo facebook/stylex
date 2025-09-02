@@ -483,10 +483,15 @@ function processStylexRules(
           }
 
           return rtlRule
-            ? [
-                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                addAncestorSelector(rtlRule, "html[dir='rtl']"),
-              ]
+            ? styleResolution === 'legacy-expand-shorthands'
+              ? [
+                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
+                ]
+              : [
+                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
+                ]
             : [ltrRule];
         })
         .join('\n');
