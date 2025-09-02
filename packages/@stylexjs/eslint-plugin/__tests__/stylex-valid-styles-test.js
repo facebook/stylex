@@ -562,6 +562,34 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     })
     `,
+    // test for positionTryFallbacks with 'none'
+    `
+    import * as stylex from '@stylexjs/stylex';
+    stylex.create({
+      default: {
+        positionTryFallbacks: 'none',
+      },
+    });
+    `,
+    // test for positionTryFallbacks with string variable
+    `
+    import * as stylex from '@stylexjs/stylex';
+    const fallbackName = '--my-fallback';
+    stylex.create({
+      default: {
+        positionTryFallbacks: fallbackName,
+      },
+    });
+    `,
+    // test for positionTryFallbacks with multiple fallbacks
+    `
+    import * as stylex from '@stylexjs/stylex';
+    stylex.create({
+      default: {
+        positionTryFallbacks: '--fallback1, --fallback2, --fallback3',
+      },
+    });
+    `,
   ],
   invalid: [
     {
@@ -1943,6 +1971,28 @@ revert`,
         });
       `,
       errors: Array(31).fill({}),
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            positionTryFallbacks: 42,
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `positionTryFallbacks value must be one of:
+none
+a string literal
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
     },
   ],
 });
