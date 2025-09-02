@@ -104,8 +104,14 @@ function createBuilder() {
 
   // Transforms the included files, bundles the CSS, and returns the result.
   async function build({ shouldSkipTransformError }) {
-    const { cwd, babelConfig, useCSSLayers, importSources, isDev } =
-      getConfig();
+    const {
+      cwd,
+      babelConfig,
+      useCSSLayers,
+      enableLTRRTLComments,
+      importSources,
+      isDev,
+    } = getConfig();
 
     const files = getFiles();
     const filesToTransform = [];
@@ -151,7 +157,7 @@ function createBuilder() {
       }),
     );
 
-    const css = bundler.bundle({ useCSSLayers });
+    const css = bundler.bundle({ useCSSLayers, enableLTRRTLComments });
     return css;
   }
 

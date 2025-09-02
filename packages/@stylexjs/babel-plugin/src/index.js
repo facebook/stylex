@@ -358,8 +358,18 @@ export type Rule = [
 ];
 function processStylexRules(
   rules: Array<Rule>,
-  useLayers: boolean = false,
+  config?:
+    | boolean
+    | {
+        useLayers?: boolean,
+        enableLTRRTLComments?: boolean,
+        ...
+      },
 ): string {
+  const {
+    useLayers = false,
+    enableLTRRTLComments: _enableLTRRTLComments = false,
+  } = typeof config === 'boolean' ? { useLayers: config } : config ?? {};
   if (rules.length === 0) {
     return '';
   }

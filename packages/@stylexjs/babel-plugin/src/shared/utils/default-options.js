@@ -20,6 +20,7 @@ export const defaultOptions: StyleXOptions = {
   enableMediaQueryOrder: false,
   enableLegacyValueFlipping: false,
   enableLogicalStylesPolyfill: false,
+  enableLTRRTLComments: false,
   enableMinifiedKeys: true,
   styleResolution: 'property-specificity',
   test: false,
