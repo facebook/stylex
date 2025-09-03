@@ -222,14 +222,14 @@ describe('@stylexjs/babel-plugin', () => {
         .margin-xymmreb:not(#\\#){margin:10px 20px}
         .padding-xss17vw:not(#\\#){padding:var(--large-x1ec7iuc)}
         .borderColor-x1bg2uv5:not(#\\#):not(#\\#){border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
         .animationName-xckgs0v:not(#\\#):not(#\\#):not(#\\#){animation-name:xi07kvp-B}
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
         html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
       `);
     });
@@ -423,6 +423,117 @@ describe('@stylexjs/babel-plugin', () => {
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}"
+      `);
+    });
+
+    test('media query grouping - rules with same media query are grouped together', () => {
+      const { _code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          container: {
+            '@media (max-width: 768px)': {
+              width: '10px',
+              height: '20px',
+            },
+            color: {
+              default: 'black',
+              '@media (max-width: 308px)': 'white',
+              '@media (max-width: 768px)': 'red',
+            },
+            backgroundColor: {
+              default: 'white',
+              '@media (max-width: 768px)': 'blue',
+              '@media (min-width: 1024px)': 'yellow',
+            },
+            fontSize: {
+              default: '16px',
+              '@media (max-width: 768px)': '14px',
+            },
+            padding: {
+              default: '10px',
+              '@media (min-width: 1024px)': '20px',
+            },
+            margin: {
+              default: '5px',
+              '@media (min-width: 1024px)': '10px',
+            }
+          }
+        });
+      `,
+      );
+
+      const css = stylexPlugin.processStylexRules(metadata);
+
+      expect(css).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .margin-x16zck5j:not(#\\#){margin:5px}
+        .padding-x7z7khe:not(#\\#){padding:10px}
+        .backgroundColor-x12peec7:not(#\\#):not(#\\#){background-color:white}
+        .color-x1mqxbix:not(#\\#):not(#\\#){color:black}
+        .fontSize-x1j61zf2:not(#\\#):not(#\\#){font-size:16px}
+        @media (min-width: 1024px){
+        .margin-x1nff4mz.margin-x1nff4mz:not(#\\#){margin:10px}
+        .padding-x1glw0n9.padding-x1glw0n9:not(#\\#){padding:20px}
+        .backgroundColor-xkbfoqe.backgroundColor-xkbfoqe:not(#\\#):not(#\\#){background-color:yellow}
+        }
+        @media (max-width: 768px){
+        .backgroundColor-xycim1f.backgroundColor-xycim1f:not(#\\#):not(#\\#){background-color:blue}
+        .color-x9i7o1z.color-x9i7o1z:not(#\\#):not(#\\#){color:red}
+        .fontSize-xt5ov9y.fontSize-xt5ov9y:not(#\\#):not(#\\#){font-size:14px}
+        .height-x12z8348.height-x12z8348:not(#\\#):not(#\\#):not(#\\#){height:20px}
+        .width-x7lwmry.width-x7lwmry:not(#\\#):not(#\\#):not(#\\#){width:10px}
+        }
+        @media (max-width: 308px){.color-x1760m8v.color-x1760m8v:not(#\\#):not(#\\#){color:white}}"
+      `);
+    });
+
+    test('media query grouping with layers - rules with same media query are grouped together', () => {
+      const { _code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          container: {
+            color: {
+              default: 'black',
+              '@media (max-width: 768px)': 'red',
+            },
+            backgroundColor: {
+              default: 'white',
+              '@media (max-width: 768px)': 'blue',
+            },
+            fontSize: {
+              default: '16px',
+              '@media (max-width: 768px)': '14px',
+            }
+          }
+        });
+      `,
+        {
+          useLayers: true,
+        },
+      );
+
+      const css = stylexPlugin.processStylexRules(metadata, true);
+
+      expect(css).toMatchInlineSnapshot(`
+        "
+        @layer priority1, priority2;
+        @layer priority1{
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        }
+        @layer priority2{
+        .backgroundColor-x12peec7{background-color:white}
+        .color-x1mqxbix{color:black}
+        .fontSize-x1j61zf2{font-size:16px}
+        @media (max-width: 768px){
+        .backgroundColor-xycim1f.backgroundColor-xycim1f{background-color:blue}
+        .color-x9i7o1z.color-x9i7o1z{color:red}
+        .fontSize-xt5ov9y.fontSize-xt5ov9y{font-size:14px}
+        }
+        }"
       `);
     });
   });
