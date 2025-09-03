@@ -55,6 +55,7 @@ export type RuleCheck = (
   node: $ReadOnly<Expression | Pattern>,
   variables?: Variables,
   prop?: $ReadOnly<Property>,
+  context?: Rule.RuleContext,
 ) => RuleResponse;
 export type RuleResponse = void | {
   message: string,
@@ -567,7 +568,12 @@ const stylexValidStyles = {
             } as Rule.ReportDescriptor);
           }
 
-          const check = ruleChecker(style.value, varsWithFnArgs, style);
+          const check = ruleChecker(
+            style.value,
+            varsWithFnArgs,
+            style,
+            context,
+          );
           if (check != null) {
             const { message, suggest } = check;
             return context.report({
