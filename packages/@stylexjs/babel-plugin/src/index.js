@@ -469,49 +469,84 @@ function processStylexRules(
   const collectedCSS = grouped
     .map((group, index) => {
       const pri = group[0][2];
-      const collectedCSS = Array.from(
-        new Map(group.map(([a, b]) => [a, b])).values(),
-      )
-        .flatMap((rule) => {
-          const { ltr, rtl } = rule;
-          let ltrRule = ltr,
-            rtlRule = rtl;
+      const rules = Array.from(new Map(group.map(([a, b]) => [a, b])).values());
 
-          if (!useLayers) {
-            ltrRule = addSpecificityLevel(ltrRule, index);
-            rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
-          }
+      const mediaQueryGroups = new Map();
+      const nonMediaRules = [];
 
-          if (styleResolution === 'legacy-expand-shorthands') {
-            // check if the selector looks like .xtrlmmh, .xtrlmmh:root
-            // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
-            // This is to ensure the themes always have precedence over the
-            // default variable values
-            ltrRule = ltrRule.replace(
+      rules.forEach((rule) => {
+        const { ltr, rtl } = rule;
+        let ltrRule = ltr,
+          rtlRule = rtl;
+
+        if (!useLayers) {
+          ltrRule = addSpecificityLevel(ltrRule, index);
+          rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
+        }
+
+        if (styleResolution === 'legacy-expand-shorthands') {
+          // check if the selector looks like .xtrlmmh, .xtrlmmh:root
+          // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
+          // This is to ensure the themes always have precedence over the
+          // default variable values
+          ltrRule = ltrRule.replace(
+            /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+            '.$1.$1, .$1.$1:root',
+          );
+          if (rtlRule) {
+            rtlRule = rtlRule.replace(
               /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
               '.$1.$1, .$1.$1:root',
             );
-            if (rtlRule) {
-              rtlRule = rtlRule.replace(
-                /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
-                '.$1.$1, .$1.$1:root',
-              );
-            }
           }
+        }
 
-          return rtlRule
-            ? styleResolution === 'legacy-expand-shorthands'
-              ? [
-                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
-                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
-                ]
-              : [
-                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
-                ]
-            : [ltrRule];
-        })
-        .join('\n');
+        const processedRules = rtlRule
+          ? styleResolution === 'legacy-expand-shorthands'
+            ? [
+                `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                `/* @rtl begin */${rtlRule}/* @rtl end */`,
+              ]
+            : [
+                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                addAncestorSelector(rtlRule, "html[dir='rtl']"),
+              ]
+          : [ltrRule];
+
+        processedRules.forEach((processedRule) => {
+          const mediaQueryMatch = processedRule.match(
+            /^(@media[^{]+)\{(.+)\}$/,
+          );
+          if (mediaQueryMatch) {
+            const [, mediaQuery, innerRule] = mediaQueryMatch;
+            if (!mediaQueryGroups.has(mediaQuery)) {
+              mediaQueryGroups.set(mediaQuery, []);
+            }
+            const existingRules = mediaQueryGroups.get(mediaQuery);
+            if (existingRules) {
+              existingRules.push(innerRule);
+            }
+          } else {
+            nonMediaRules.push(processedRule);
+          }
+        });
+      });
+
+      const allRules = [
+        ...nonMediaRules,
+        ...Array.from(mediaQueryGroups.entries())
+          .filter(
+            ([, innerRules]) =>
+              Array.isArray(innerRules) && innerRules.length > 0,
+          )
+          .map(([mediaQuery, innerRules]) => {
+            return innerRules.length === 1
+              ? `${mediaQuery}{${innerRules[0]}}`
+              : `${mediaQuery}{\n${innerRules.join('\n')}\n}`;
+          }),
+      ];
+
+      const collectedCSS = allRules.join('\n');
 
       // Don't put @property, @keyframe, @position-try in layers
       return useLayers && pri > 0

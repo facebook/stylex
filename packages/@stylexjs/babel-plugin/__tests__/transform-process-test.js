@@ -413,5 +413,126 @@ describe('@stylexjs/babel-plugin', () => {
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}"
       `);
     });
+
+    test('media query grouping - rules with same media query are grouped together', () => {
+      const { _code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          container: {
+            color: {
+              default: 'black',
+              '@media (max-width: 768px)': 'red',
+            },
+            backgroundColor: {
+              default: 'white',
+              '@media (max-width: 768px)': 'blue',
+            },
+            fontSize: {
+              default: '16px',
+              '@media (max-width: 768px)': '14px',
+            },
+            padding: {
+              default: '10px',
+              '@media (min-width: 1024px)': '20px',
+            },
+            margin: {
+              default: '5px',
+              '@media (min-width: 1024px)': '10px',
+            }
+          }
+        });
+      `,
+      );
+
+      const css = stylexPlugin.processStylexRules(metadata);
+
+      // Count occurrences of each media query to verify grouping
+      const maxWidth768Count = (css.match(/@media \(max-width: 768px\)/g) || [])
+        .length;
+      const minWidth1024Count = (
+        css.match(/@media \(min-width: 1024px\)/g) || []
+      ).length;
+
+      // Each media query should appear only once (grouped together)
+      expect(maxWidth768Count).toBe(1);
+      expect(minWidth1024Count).toBe(1);
+
+      // Snapshot test to verify the exact output structure
+      expect(css).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .margin-x16zck5j:not(#\\#){margin:5px}
+        .padding-x7z7khe:not(#\\#){padding:10px}
+        @media (min-width: 1024px){
+        .margin-x1nff4mz.margin-x1nff4mz:not(#\\#){margin:10px}
+        .padding-x1glw0n9.padding-x1glw0n9:not(#\\#){padding:20px}
+        }
+        .backgroundColor-x12peec7:not(#\\#):not(#\\#){background-color:white}
+        .color-x1mqxbix:not(#\\#):not(#\\#){color:black}
+        .fontSize-x1j61zf2:not(#\\#):not(#\\#){font-size:16px}
+        @media (max-width: 768px){
+        .backgroundColor-xycim1f.backgroundColor-xycim1f:not(#\\#):not(#\\#){background-color:blue}
+        .color-x9i7o1z.color-x9i7o1z:not(#\\#):not(#\\#){color:red}
+        .fontSize-xt5ov9y.fontSize-xt5ov9y:not(#\\#):not(#\\#){font-size:14px}
+        }"
+      `);
+    });
+
+    test('media query grouping with layers - rules with same media query are grouped together', () => {
+      const { _code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          container: {
+            color: {
+              default: 'black',
+              '@media (max-width: 768px)': 'red',
+            },
+            backgroundColor: {
+              default: 'white',
+              '@media (max-width: 768px)': 'blue',
+            },
+            fontSize: {
+              default: '16px',
+              '@media (max-width: 768px)': '14px',
+            }
+          }
+        });
+      `,
+        {
+          useLayers: true,
+        },
+      );
+
+      const css = stylexPlugin.processStylexRules(metadata, true);
+
+      // Count occurrences of the media query to verify grouping
+      const maxWidth768Count = (css.match(/@media \(max-width: 768px\)/g) || [])
+        .length;
+
+      // Media query should appear only once (grouped together)
+      expect(maxWidth768Count).toBe(1);
+
+      // Snapshot test to verify the exact output structure
+      expect(css).toMatchInlineSnapshot(`
+        "
+        @layer priority1, priority2;
+        @layer priority1{
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        }
+        @layer priority2{
+        .backgroundColor-x12peec7{background-color:white}
+        .color-x1mqxbix{color:black}
+        .fontSize-x1j61zf2{font-size:16px}
+        @media (max-width: 768px){
+        .backgroundColor-xycim1f.backgroundColor-xycim1f{background-color:blue}
+        .color-x9i7o1z.color-x9i7o1z{color:red}
+        .fontSize-xt5ov9y.fontSize-xt5ov9y{font-size:14px}
+        }
+        }"
+      `);
+    });
   });
 });
