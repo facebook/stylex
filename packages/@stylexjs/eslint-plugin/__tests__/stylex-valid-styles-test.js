@@ -587,6 +587,29 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
+    // test for positionTryFallbacks with multiple stylex variables
+    `
+    import * as stylex from '@stylexjs/stylex';
+    const fallback1 = stylex.positionTry({
+      positionAnchor: '--anchor',
+      top: '0',
+      left: '0',
+      width: '100px',
+      height: '100px'
+    });
+    const fallback2 = stylex.positionTry({
+      positionAnchor: '--anchor',
+      bottom: '0',
+      right: '0',
+      width: '100px',
+      height: '100px'
+    });
+    stylex.create({
+      anchor: {
+        positionTryFallbacks: \`\${fallback1}, \${fallback2}\`,
+      },
+    });
+    `,
   ],
   invalid: [
     {

@@ -1994,7 +1994,6 @@ const CSSProperties = {
   pointerEvents: pointerEvents,
   position: position,
 
-
   // Shorthand not yet supported
   placeContent: isString,
   placeItems: isString,
