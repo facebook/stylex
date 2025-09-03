@@ -14,35 +14,49 @@ import type {
   RuleResponse,
   Variables,
 } from '../stylex-valid-styles';
-import type { Node } from 'estree';
+import type { Node, Property } from 'estree';
+/*:: import { Rule } from 'eslint'; */
 import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
 
 const numericOperators = new Set(['+', '-', '*', '/']);
 const mathFunctions = new Set(['abs', 'ceil', 'floor', 'round']);
 
 export const isNumber: RuleCheck = makeVariableCheckingRule(
-  (node: Node, variables?: Variables): RuleResponse => {
+  (
+    node: Node,
+    variables?: Variables,
+    prop?: $ReadOnly<Property>,
+    context?: Rule.RuleContext,
+  ): RuleResponse => {
     if (node.type === 'Literal' && typeof node.value === 'number') {
       return undefined;
     }
 
-    if (node.type === 'Identifier') {
-      const value = variables?.get(node.name);
-      return value?.type === 'number'
+    if (node.type === 'Identifier' && context) {
+      // $FlowFixMe[prop-missing] Flow libdefs doesn't know Rule.RuleContext has `getScope`
+      const scope = context.getScope();
+      const variable = scope.set.get(node.name);
+      const def = variable?.defs?.[0];
+
+      const isLocalConst =
+        def?.node?.type === 'VariableDeclarator' &&
+        def.parent?.kind === 'const';
+
+      return isLocalConst || variables?.get(node.name)?.type === 'number'
         ? undefined
         : { message: 'a number literal or math expression' };
     }
 
     if (node.type === 'UnaryExpression' && node.operator === '-') {
-      return isNumber(node.argument, variables);
+      return isNumber(node.argument, variables, prop, context);
     }
 
     if (
       node.type === 'BinaryExpression' &&
       numericOperators.has(node.operator)
     ) {
-      const left = isNumber(node.left, variables);
-      const right = isNumber(node.right, variables);
+      const left = isNumber(node.left, variables, prop, context);
+      const right = isNumber(node.right, variables, prop, context);
       return left === undefined && right === undefined
         ? undefined
         : { message: 'a number literal or math expression' };

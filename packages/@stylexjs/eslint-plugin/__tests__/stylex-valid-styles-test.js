@@ -257,6 +257,15 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          paddingInlineEnd: Math.round(5 / 2),
        },
      })`,
+    // test for locally declared constants
+    `import * as stylex from '@stylexjs/stylex';
+    const FOO = 5;
+     stylex.create({
+       default: {
+         scrollMarginTop: FOO + 5,
+         scrollMarginBottom: FOO * 5,
+       },
+     })`,
     `import * as stylex from '@stylexjs/stylex';
      const x = 5;
      stylex.create({
@@ -621,6 +630,50 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       errors: [
         {
           message: 'Styles must be represented as JavaScript objects',
+        },
+      ],
+    },
+    {
+      code: `import * as stylex from '@stylexjs/stylex';
+    import { FOO } from 'foo';
+     stylex.create({
+       default: {
+         scrollMarginTop: FOO + 5,
+       },
+     })`,
+      errors: [
+        {
+          message:
+            'scrollMarginTop value must be one of:\n' +
+            'a number literal or math expression\n' +
+            'a string literal\n' +
+            'null\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
+        },
+      ],
+    },
+    {
+      code: `import * as stylex from '@stylexjs/stylex';
+    const FOO = 'bad string';
+     stylex.create({
+       default: {
+         scrollMarginTop: FOO + 5,
+       },
+     })`,
+      errors: [
+        {
+          message:
+            'scrollMarginTop value must be one of:\n' +
+            'a number literal or math expression\n' +
+            'a string literal\n' +
+            'null\n' +
+            'initial\n' +
+            'inherit\n' +
+            'unset\n' +
+            'revert',
         },
       ],
     },
