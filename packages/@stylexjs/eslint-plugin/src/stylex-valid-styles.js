@@ -36,7 +36,9 @@ import isString from './rules/isString';
 import makeUnionRule from './rules/makeUnionRule';
 import isNumber from './rules/isNumber';
 import isAnimationName from './rules/isAnimationName';
+import isPositionTryFallbacks from './rules/isPositionTryFallbacks';
 import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
+import isCSSVariable from './rules/isCSSVariable';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
 import {
@@ -204,6 +206,7 @@ const stylexValidStyles = {
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
     const styleXKeyframesImports = new Set<string>();
+    const styleXPositionTryImports = new Set<string>();
 
     const overrides: PropLimits = {
       ...(banPropsForLegacy ? legacyProps : {}),
@@ -216,6 +219,12 @@ const stylexValidStyles = {
       animationName: makeUnionRule(
         makeLiteralRule('none'),
         isAnimationName(styleXDefaultImports, styleXKeyframesImports),
+        all,
+      ),
+      positionTryFallbacks: makeUnionRule(
+        makeLiteralRule('none'),
+        isCSSVariable,
+        isPositionTryFallbacks(styleXDefaultImports, styleXPositionTryImports),
         all,
       ),
     };
@@ -734,6 +743,12 @@ const stylexValidStyles = {
                 specifier.imported.name === 'keyframes'
               ) {
                 styleXKeyframesImports.add(specifier.local.name);
+              }
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === 'positionTry'
+              ) {
+                styleXPositionTryImports.add(specifier.local.name);
               }
             });
           }
