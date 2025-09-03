@@ -10,6 +10,7 @@
 import validStyles from './stylex-valid-styles';
 import sortKeys from './stylex-sort-keys';
 import validShorthands from './stylex-valid-shorthands';
+import enforceExtension from './stylex-enforce-extension';
 import noUnused from './stylex-no-unused';
 import noLegacyContextualStyles from './stylex-no-legacy-contextual-styles';
 
@@ -17,12 +18,14 @@ const rules: {
   'valid-styles': typeof validStyles,
   'sort-keys': typeof sortKeys,
   'valid-shorthands': typeof validShorthands,
+  'enforce-extension': typeof enforceExtension,
   'no-unused': typeof noUnused,
   'no-legacy-contextual-styles': typeof noLegacyContextualStyles,
 } = {
   'valid-styles': validStyles,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
+  'enforce-extension': enforceExtension,
   'no-unused': noUnused,
   'no-legacy-contextual-styles': noLegacyContextualStyles,
 };
