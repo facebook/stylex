@@ -359,6 +359,10 @@ export type Rule = [
 function processStylexRules(
   rules: Array<Rule>,
   useLayers: boolean = false,
+  styleResolution?:
+    | 'application-order'
+    | 'property-specificity'
+    | 'legacy-expand-shorthands',
 ): string {
   if (rules.length === 0) {
     return '';
@@ -478,11 +482,33 @@ function processStylexRules(
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
 
+          if (styleResolution === 'legacy-expand-shorthands') {
+            // check if the selector looks like .xtrlmmh, .xtrlmmh:root
+            // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
+            // This is to ensure the themes always have precedence over the
+            // default variable values
+            ltrRule = ltrRule.replace(
+              /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+              '.$1.$1, .$1.$1:root',
+            );
+            if (rtlRule) {
+              rtlRule = rtlRule.replace(
+                /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+                '.$1.$1, .$1.$1:root',
+              );
+            }
+          }
+
           return rtlRule
-            ? [
-                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                addAncestorSelector(rtlRule, "html[dir='rtl']"),
-              ]
+            ? styleResolution === 'legacy-expand-shorthands'
+              ? [
+                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
+                ]
+              : [
+                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
+                ]
             : [ltrRule];
         })
         .join('\n');
