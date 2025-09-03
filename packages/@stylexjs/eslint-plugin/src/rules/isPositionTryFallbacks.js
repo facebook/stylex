@@ -79,7 +79,7 @@ export default function isPositionTryFallbacks(
     }
     return {
       message:
-        'a `positionTry(...)` function call, a reference to it or a many such valid',
+        'a `positionTry(...)` function call, a reference to it, or a list of references',
     };
   };
 }

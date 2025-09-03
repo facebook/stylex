@@ -571,7 +571,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
-    // test for positionTryFallbacks with stylex variable
+    // test for positionTryFallbacks with `positionTry` references
     `
     import * as stylex from '@stylexjs/stylex';
     const fallback = stylex.positionTry({
@@ -587,7 +587,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
-    // test for positionTryFallbacks with multiple stylex variables
+    // test for positionTryFallbacks with a template literal containing multiple `positionTry` references
     `
     import * as stylex from '@stylexjs/stylex';
     const fallback1 = stylex.positionTry({
@@ -2006,7 +2006,83 @@ revert`,
           message: `positionTryFallbacks value must be one of:
 none
 a CSS Variable
-a \`positionTry(...)\` function call, a reference to it or a many such valid
+a \`positionTry(...)\` function call, a reference to it, or a list of references
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for positionTryFallbacks with incorrectly formatted template literal - missing comma
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const fallback1 = stylex.positionTry({
+          positionAnchor: '--anchor',
+          top: '0',
+          left: '0',
+          width: '100px',
+          height: '100px'
+        });
+        const fallback2 = stylex.positionTry({
+          positionAnchor: '--anchor',
+          bottom: '0',
+          right: '0',
+          width: '100px',
+          height: '100px'
+        });
+        stylex.create({
+          anchor: {
+            positionTryFallbacks: \`\${fallback1} \${fallback2}\`,
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `positionTryFallbacks value must be one of:
+none
+a CSS Variable
+position try fallbacks must be separated by a comma and a space (", ")
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for positionTryFallbacks with incorrectly formatted template literal - missing space after comma
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const fallback1 = stylex.positionTry({
+          positionAnchor: '--anchor',
+          top: '0',
+          left: '0',
+          width: '100px',
+          height: '100px'
+        });
+        const fallback2 = stylex.positionTry({
+          positionAnchor: '--anchor',
+          bottom: '0',
+          right: '0',
+          width: '100px',
+          height: '100px'
+        });
+        stylex.create({
+          anchor: {
+            positionTryFallbacks: \`\${fallback1},\${fallback2}\`,
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `positionTryFallbacks value must be one of:
+none
+a CSS Variable
+position try fallbacks must be separated by a comma and a space (", ")
 null
 initial
 inherit
