@@ -446,11 +446,26 @@ function processStylexRules(
       let original = styleObj[dir];
 
       for (const [varRef, constValue] of constsMap.entries()) {
-        if (typeof original === 'string') {
-          const replacement = String(constValue);
-          original = original.replaceAll(varRef, replacement);
-          styleObj[dir] = original;
+        if (typeof original !== 'string') continue;
+
+        const replacement = String(constValue);
+
+        original = original.replaceAll(varRef, replacement);
+
+        // When the replacement is a variable, we need to replace the key to allow variable overrides
+        if (replacement.startsWith('var(') && replacement.endsWith(')')) {
+          const inside = replacement.slice(4, -1).trim();
+          // Account for fallback variables
+          const commaIdx = inside.indexOf(',');
+          const targetName = (
+            commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
+          ).trim();
+
+          const constName = varRef.slice(4, -1);
+          original = original.replaceAll(`${constName}:`, `${targetName}:`);
         }
+
+        styleObj[dir] = original;
       }
     });
 
