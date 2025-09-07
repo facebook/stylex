@@ -100,7 +100,6 @@ export default function transformStylexProps(
           state,
           evaluatePathFnConfig,
         );
-        console.log('resolved', resolved);
         if (resolved === 'other') {
           bailOutIndex = currentIndex;
           bailOut = true;
