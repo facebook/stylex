@@ -632,10 +632,10 @@ declare export class NodePath<+T: Node = Node> {
   getCompletionRecords(): Array<NodePath<>>;
 
   getSibling(key: string | number): NodePath<>;
-  getsiblingBefore(): NodePath<>;
-  getsiblingAfter(): NodePath<>;
-  getAllsiblingBefores(): Array<NodePath<>>;
-  getAllsiblingAfters(): Array<NodePath<>>;
+  getSiblingBefore(): NodePath<>;
+  getSiblingAfter(): NodePath<>;
+  getAllSiblingBefore(): Array<NodePath<>>;
+  getAllSiblingAfter(): Array<NodePath<>>;
 
   get<K: $Keys<T>>(
     key: K,
