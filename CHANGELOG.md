@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.4 (Sep 7, 2025)
+
+- Add configuration modes to `processStylexRules`.
+- Support local resolved constants, `positionTry`, and '0' values in `valid-styles` ESLint rule.
+- Implement `defineConsts` for dynamic styles.
+- Create `.transformed` file extension for preresolved variables.
+
 ## 0.15.3 (Aug 13, 2025)
 
 - Optimize precomputed `props` calls in JSX.
