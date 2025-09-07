@@ -135,6 +135,9 @@ describe('@stylexjs/babel-plugin', () => {
               default: 'blue',
               [stylex.when.ancestor(':hover')]: 'red',
               [stylex.when.siblingBefore(':focus')]: 'green',
+              [stylex.when.anySibling(':active')]: 'yellow',
+              [stylex.when.siblingAfter(':focus')]: 'purple',
+              [stylex.when.descendant(':focus')]: 'orange',
             },
           },
         });
@@ -146,7 +149,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x148kuu xpijypl",
+            kWkggS: "x1t391ir x148kuu xpijypl xoev4mv xczfykd x1r4rfca",
             $$css: true
           }
         };
@@ -178,6 +181,30 @@ describe('@stylexjs/babel-plugin', () => {
               "rtl": null,
             },
             3040,
+          ],
+          [
+            "xoev4mv",
+            {
+              "ltr": ".xoev4mv:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:yellow}",
+              "rtl": null,
+            },
+            3040,
+          ],
+          [
+            "xczfykd",
+            {
+              "ltr": ".xczfykd:has(~ .x-default-marker:focus){background-color:purple}",
+              "rtl": null,
+            },
+            3045,
+          ],
+          [
+            "x1r4rfca",
+            {
+              "ltr": ".x1r4rfca:has(.x-default-marker:focus){background-color:orange}",
+              "rtl": null,
+            },
+            3045,
           ],
         ]
       `);
