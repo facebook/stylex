@@ -368,7 +368,7 @@ function processStylexRules(
 ): string {
   const {
     useLayers = false,
-    enableLTRRTLComments: _enableLTRRTLComments = false,
+    enableLTRRTLComments = false,
   } = typeof config === 'boolean' ? { useLayers: config } : config ?? {};
   if (rules.length === 0) {
     return '';
@@ -489,10 +489,15 @@ function processStylexRules(
           }
 
           return rtlRule
-            ? [
-                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                addAncestorSelector(rtlRule, "html[dir='rtl']"),
-              ]
+            ? enableLTRRTLComments
+              ? [
+                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
+                ]
+              : [
+                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
+                ]
             : [ltrRule];
         })
         .join('\n');
