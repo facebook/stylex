@@ -77,11 +77,10 @@ async function genSheet() {
 
   const ruleSets = await Promise.all(allFiles.map(transformFile));
 
-  const generatedCSS = stylexBabelPlugin.processStylexRules(
-    ruleSets.flat(),
-    false,
-    'property-specificity',
-  );
+  const generatedCSS = stylexBabelPlugin.processStylexRules(ruleSets.flat(), {
+    useLayers: false,
+    enableLTRRTLComments: false,
+  });
 
   await mkdirp(path.join(__dirname, '../.stylex/'));
 
