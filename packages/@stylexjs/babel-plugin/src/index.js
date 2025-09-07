@@ -366,10 +366,8 @@ function processStylexRules(
         ...
       },
 ): string {
-  const {
-    useLayers = false,
-    enableLTRRTLComments = false,
-  } = typeof config === 'boolean' ? { useLayers: config } : config ?? {};
+  const { useLayers = false, enableLTRRTLComments = false } =
+    typeof config === 'boolean' ? { useLayers: config } : config ?? {};
   if (rules.length === 0) {
     return '';
   }
@@ -486,6 +484,21 @@ function processStylexRules(
           if (!useLayers) {
             ltrRule = addSpecificityLevel(ltrRule, index);
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
+          }
+
+          // check if the selector looks like .xtrlmmh, .xtrlmmh:root
+          // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
+          // This is to ensure the themes always have precedence over the
+          // default variable values
+          ltrRule = ltrRule.replace(
+            /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+            '.$1.$1, .$1.$1:root',
+          );
+          if (rtlRule) {
+            rtlRule = rtlRule.replace(
+              /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+              '.$1.$1, .$1.$1:root',
+            );
           }
 
           return rtlRule
