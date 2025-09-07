@@ -7,6 +7,18 @@
  * @flow strict
  */
 
+import type { StyleXOptions } from '../common-types';
+
+import { defaultOptions } from '../utils/default-options';
+
+function getDefaultMarkerClassName(
+  options: StyleXOptions = defaultOptions,
+): string {
+  const prefix =
+    options.classNamePrefix != null ? `${options.classNamePrefix}-` : '';
+  return `${prefix}default-marker`;
+}
+
 /**
  * Validates that a pseudo selector starts with ':' but not '::'
  */
@@ -29,9 +41,14 @@ function validatePseudoSelector(pseudo: string): void {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the ancestor observer
  */
-export function ancestor(pseudo: string): string {
+export function ancestor(
+  pseudo: string,
+  options: string | StyleXOptions = defaultOptions,
+): string {
   validatePseudoSelector(pseudo);
-  return `:where(.x-default-marker${pseudo} *)`;
+  const defaultMarker =
+    typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+  return `:where(.${defaultMarker}${pseudo} *)`;
 }
 
 /**
@@ -41,9 +58,14 @@ export function ancestor(pseudo: string): string {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the descendant observer
  */
-export function descendant(pseudo: string): string {
+export function descendant(
+  pseudo: string,
+  options: string | StyleXOptions = defaultOptions,
+): string {
   validatePseudoSelector(pseudo);
-  return `:has(.x-default-marker${pseudo})`;
+  const defaultMarker =
+    typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+  return `:has(.${defaultMarker}${pseudo})`;
 }
 
 /**
@@ -53,9 +75,14 @@ export function descendant(pseudo: string): string {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the previous sibling observer
  */
-export function siblingBefore(pseudo: string): string {
+export function siblingBefore(
+  pseudo: string,
+  options: string | StyleXOptions = defaultOptions,
+): string {
   validatePseudoSelector(pseudo);
-  return `:where(.x-default-marker${pseudo} ~ *)`;
+  const defaultMarker =
+    typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+  return `:where(.${defaultMarker}${pseudo} ~ *)`;
 }
 
 /**
@@ -65,9 +92,14 @@ export function siblingBefore(pseudo: string): string {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the next sibling observer
  */
-export function siblingAfter(pseudo: string): string {
+export function siblingAfter(
+  pseudo: string,
+  options: string | StyleXOptions = defaultOptions,
+): string {
   validatePseudoSelector(pseudo);
-  return `:has(~ .x-default-marker${pseudo})`;
+  const defaultMarker =
+    typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+  return `:has(~ .${defaultMarker}${pseudo})`;
 }
 
 /**
@@ -77,7 +109,12 @@ export function siblingAfter(pseudo: string): string {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the any sibling observer
  */
-export function anySibling(pseudo: string): string {
+export function anySibling(
+  pseudo: string,
+  options: string | StyleXOptions = defaultOptions,
+): string {
   validatePseudoSelector(pseudo);
-  return `:where(.x-default-marker${pseudo} ~ *, :has(~ .x-default-marker${pseudo}))`;
+  const defaultMarker =
+    typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+  return `:where(.${defaultMarker}${pseudo} ~ *, :has(~ .${defaultMarker}${pseudo}))`;
 }

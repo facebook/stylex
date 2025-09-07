@@ -18,7 +18,7 @@ import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   positionTry as stylexPositionTry,
-  when as stylexWhen,
+  when as _stylexWhen,
 } from '../shared';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
@@ -150,6 +150,13 @@ export default function transformStyleXCreate(
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    const stylexWhen = Object.fromEntries(
+      Object.entries(_stylexWhen).map(([key, value]) => [
+        key,
+        (pseudo: string, marker?: string) =>
+          (value as $FlowFixMe)(pseudo, marker ?? state.options),
+      ]),
+    );
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
