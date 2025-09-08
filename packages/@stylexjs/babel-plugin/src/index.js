@@ -470,57 +470,98 @@ function processStylexRules(
       ';\n'
     : '';
 
-  const collectedCSS = grouped
+  const globalMediaQueryGroups: Map<string, Array<string>> = new Map();
+  const globalNonMediaRules: Array<string> = [];
+
+  const perGroupOutput = grouped
     .map((group, index) => {
       const pri = group[0][2];
-      const collectedCSS = Array.from(
-        new Map(group.map(([a, b]) => [a, b])).values(),
-      )
-        .flatMap((rule) => {
-          const { ltr, rtl } = rule;
-          let ltrRule = ltr,
-            rtlRule = rtl;
+      const rules = Array.from(new Map(group.map(([a, b]) => [a, b])).values());
 
-          if (!useLayers) {
-            ltrRule = addSpecificityLevel(ltrRule, index);
-            rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
-          }
+      const mediaQueryGroups = useLayers ? new Map() : globalMediaQueryGroups;
+      const nonMediaRules = useLayers ? [] : globalNonMediaRules;
 
-          // check if the selector looks like .xtrlmmh, .xtrlmmh:root
-          // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
-          // This is to ensure the themes always have precedence over the
-          // default variable values
-          ltrRule = ltrRule.replace(
+      rules.forEach((rule) => {
+        const { ltr, rtl } = rule;
+        let ltrRule = ltr,
+          rtlRule = rtl;
+
+        if (!useLayers) {
+          ltrRule = addSpecificityLevel(ltrRule, index);
+          rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
+        }
+
+        ltrRule = ltrRule.replace(
+          /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+          '.$1.$1, .$1.$1:root',
+        );
+        if (rtlRule) {
+          rtlRule = rtlRule.replace(
             /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
             '.$1.$1, .$1.$1:root',
           );
-          if (rtlRule) {
-            rtlRule = rtlRule.replace(
-              /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
-              '.$1.$1, .$1.$1:root',
-            );
+        }
+
+        const processedRules = rtlRule
+          ? enableLTRRTLComments
+            ? [
+                `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                `/* @rtl begin */${rtlRule}/* @rtl end */`,
+              ]
+            : [
+                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                addAncestorSelector(rtlRule, "html[dir='rtl']"),
+              ]
+          : [ltrRule];
+
+        processedRules.forEach((processedRule) => {
+          const mediaQueryMatch = processedRule.match(
+            /^(@media[^{]+)\{([\s\S]*)\}$/m,
+          );
+          if (mediaQueryMatch) {
+            const [, rawMQ, innerContent] = mediaQueryMatch;
+            const mq = rawMQ.trim().replace(/\s+/g, ' ');
+            if (!mediaQueryGroups.has(mq)) mediaQueryGroups.set(mq, []);
+            const arr = mediaQueryGroups.get(mq);
+            if (arr) arr.push(innerContent.trim());
+          } else {
+            nonMediaRules.push(processedRule);
           }
+        });
+      });
 
-          return rtlRule
-            ? enableLTRRTLComments
-              ? [
-                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
-                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
-                ]
-              : [
-                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
-                ]
-            : [ltrRule];
-        })
-        .join('\n');
-
-      // Don't put @property, @keyframe, @position-try in layers
-      return useLayers && pri > 0
-        ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
-        : collectedCSS;
+      if (useLayers) {
+        const allRules = [
+          ...nonMediaRules,
+          ...Array.from(mediaQueryGroups.entries())
+            .filter(([, inner]) => inner.length > 0)
+            .map(([mq, inner]) =>
+              inner.length === 1
+                ? `${mq}{${inner[0]}}`
+                : `${mq}{\n${inner.join('\n')}\n}`,
+            ),
+        ];
+        const collected = allRules.join('\n');
+        return pri > 0
+          ? `@layer priority${index + 1}{\n${collected}\n}`
+          : collected;
+      }
+      return '';
     })
     .join('\n');
+
+  const collectedCSS = useLayers
+    ? perGroupOutput
+    : [
+        ...globalNonMediaRules,
+        ...Array.from(globalMediaQueryGroups.entries())
+          .filter(([, inner]) => inner.length > 0)
+          .map(([mq, inner]) =>
+            inner.length === 1
+              ? `${mq}{${inner[0]}}`
+              : `${mq}{\n${inner.join('\n')}\n}`,
+          ),
+      ].join('\n');
 
   return header + collectedCSS;
 }
