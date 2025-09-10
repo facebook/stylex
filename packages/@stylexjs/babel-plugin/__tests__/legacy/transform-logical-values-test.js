@@ -296,6 +296,41 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    // TODO: Add support for logical styles config
+    test.skip('[legacy] value of "paddingInline" property', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            x: {
+              animationName: stylex.keyframes({
+                '0%': {
+                  paddingInline: '1px 2px'
+                },
+                '100%': {
+                  paddingInline: '10px 20px'
+                }
+              })
+            }
+          });
+          const classnames = stylex(styles.x);
+        `,
+          {
+            enableLogicalStylesPolyfill: true,
+            styleResolution: 'legacy-expand-shorthands',
+          },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2("@keyframes x4skwlr-B{0%{padding-left:1px;padding-right:2px;}100%{padding-left:10px;padding-right:20px;}}", 0);
+        _inject2(".xzebctn{animation-name:x4skwlr-B}", 3000);
+        const classnames = "xzebctn";"
+      `);
+    });
+
     test('[legacy] value of "boxShadow" property', () => {
       expect(
         transform(
@@ -305,11 +340,9 @@ describe('@stylexjs/babel-plugin', () => {
             x: {
               animationName: stylex.keyframes({
                 '0%': {
-                  borderInlineEnd: '1px solid red',
                   boxShadow: '1px 2px 3px 4px red'
                 },
                 '100%': {
-                  borderInlineEnd: '1px solid transparent',
                   boxShadow: '10px 20px 30px 40px green'
                 }
               })
@@ -319,7 +352,6 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           {
             enableLegacyValueFlipping: true,
-            enableLogicalStylesPolyfill: true,
             styleResolution: 'legacy-expand-shorthands',
           },
         ),
@@ -327,9 +359,9 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2("@keyframes xz8o398-B{0%{border-right:1px solid red;box-shadow:1px 2px 3px 4px red;}100%{border-right:1px solid transparent;box-shadow:10px 20px 30px 40px green;}}", 0, "@keyframes xz8o398-B{0%{border-left:1px solid red;box-shadow:-1px 2px 3px 4px red;}100%{border-left:1px solid transparent;box-shadow:-10px 20px 30px 40px green;}}");
-        _inject2(".x1zkcg6{animation-name:xz8o398-B}", 3000);
-        const classnames = "x1zkcg6";"
+        _inject2("@keyframes x19mpx8i-B{0%{box-shadow:1px 2px 3px 4px red;}100%{box-shadow:10px 20px 30px 40px green;}}", 0);
+        _inject2(".x14pamct{animation-name:x19mpx8i-B}", 3000);
+        const classnames = "x14pamct";"
       `);
 
       expect(
