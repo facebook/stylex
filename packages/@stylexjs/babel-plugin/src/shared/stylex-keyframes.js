@@ -46,18 +46,24 @@ export default function styleXKeyframes(
   );
 
   const ltrStyles = objMap(expandedObject, (frame) =>
-    objMapEntry(frame, generateLtr),
+    objMapEntry(frame, (entry) => generateLtr(entry, options)),
   );
   const rtlStyles = objMap(expandedObject, (frame) =>
-    objMapEntry(frame, (entry) => generateRtl(entry) ?? entry),
+    objMapEntry(frame, (entry) => generateRtl(entry, options) ?? entry),
+  );
+  const stableStyles = objMap(expandedObject, (frame) =>
+    objMapEntry(frame, generateLtr),
   );
 
   const ltrString = constructKeyframesObj(ltrStyles);
   const rtlString = constructKeyframesObj(rtlStyles);
+  const stableString = constructKeyframesObj(stableStyles);
 
+  // NOTE: Use a direction-agnostic hash to keep LTR/RTL classnames stable across builds.
   // NOTE: '<>' and '-B' is used to keep existing hashes stable.
   // They should be removed in a future version.
-  const animationName = classNamePrefix + createHash('<>' + ltrString) + '-B';
+  const animationName =
+    classNamePrefix + createHash('<>' + stableString) + '-B';
 
   const ltr = `@keyframes ${animationName}{${ltrString}}`;
   const rtl =
