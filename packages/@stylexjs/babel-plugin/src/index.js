@@ -372,6 +372,20 @@ function processStylexRules(
     return '';
   }
 
+  // Check if any rules contain float properties
+  let hasFloatProperty = false;
+  for (const [, ruleObj] of rules) {
+    const { ltr, rtl } = ruleObj;
+    if (ltr && (ltr.includes('float:') || ltr.includes('clear:'))) {
+      hasFloatProperty = true;
+      break;
+    }
+    if (rtl && (rtl.includes('float:') || rtl.includes('clear:'))) {
+      hasFloatProperty = true;
+      break;
+    }
+  }
+
   const constantRules = rules.filter(
     ([, ruleObj]) => ruleObj?.constKey != null && ruleObj?.constVal != null,
   );
@@ -479,6 +493,21 @@ function processStylexRules(
     return acc;
   }, []);
 
+  // Add logical direction CSS custom properties if float properties are detected
+  let logicalDirectionRules = '';
+  if (hasFloatProperty) {
+    logicalDirectionRules = `
+:root, [dir="ltr"] {
+  --start: left;
+  --end: right;
+}
+[dir="rtl"] {
+  --start: right;
+  --end: left;
+}
+`;
+  }
+
   const header = useLayers
     ? '\n@layer ' +
       grouped.map((_, index) => `priority${index + 1}`).join(', ') +
@@ -537,7 +566,7 @@ function processStylexRules(
     })
     .join('\n');
 
-  return header + collectedCSS;
+  return logicalDirectionRules + header + collectedCSS;
 }
 
 styleXTransform.processStylexRules = processStylexRules;
