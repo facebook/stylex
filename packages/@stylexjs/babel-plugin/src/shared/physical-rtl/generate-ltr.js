@@ -18,12 +18,13 @@ const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
 };
 
 // These values are polyfilled to LTR/RTL equivalents due to incomplete browser support, regardless of `enableLogicalStylesPolyfill`
-const legacyValuesPolyfill: $ReadOnly<{
-  [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
-}> = {
-  float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
-  clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
-};
+// Note: Currently unused after removing legacy polyfill blocks, but kept for potential future use
+// const legacyValuesPolyfill: $ReadOnly<{
+//   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
+// }> = {
+//   float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
+//   clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
+// };
 
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToLTR: $ReadOnly<{
@@ -203,9 +204,6 @@ export default function generateLTR(
 
   if (styleResolution === 'legacy-expand-shorthands') {
     if (!enableLogicalStylesPolyfill) {
-      if (legacyValuesPolyfill[key]) {
-        return legacyValuesPolyfill[key](pair);
-      }
       return pair;
     }
 

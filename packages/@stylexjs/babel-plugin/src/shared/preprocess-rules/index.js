@@ -10,7 +10,11 @@
 import type { StyleXOptions, TStyleValue } from '../common-types';
 
 import applicationOrder from './application-order';
-import legacyExpandShorthands from './legacy-expand-shorthands';
+import legacyExpandShorthands, {
+  processProperty,
+  LOGICAL_FLOAT_START_VAR,
+  LOGICAL_FLOAT_END_VAR,
+} from './legacy-expand-shorthands';
 import propertySpecificity from './property-specificity';
 
 const expansions = {
@@ -39,6 +43,19 @@ export default function flatMapExpandedShorthands(
   if (key.startsWith('var(') && key.endsWith(')')) {
     key = key.slice(4, -1);
   }
+
+  // For legacy-expand-shorthands, use the new processProperty function
+  // which handles both logical float/clear values and regular expansions
+  if (options.styleResolution === 'legacy-expand-shorthands') {
+    if (Array.isArray(value)) {
+      throw new Error(
+        'Cannot use fallbacks for shorthands. Use the expansion instead.',
+      );
+    }
+    return processProperty(key, value);
+  }
+
+  // For other style resolutions, use the original logic
   const expansion: (
     string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
@@ -53,3 +70,6 @@ export default function flatMapExpandedShorthands(
   }
   return [[key, value]];
 }
+
+// Export the CSS custom property variable names for use in CSS generation
+export { LOGICAL_FLOAT_START_VAR, LOGICAL_FLOAT_END_VAR };

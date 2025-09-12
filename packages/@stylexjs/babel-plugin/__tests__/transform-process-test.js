@@ -220,7 +220,16 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
+        "
+        :root, [dir="ltr"] {
+          --1t497je: left;
+          --1bs9lmi: right;
+        }
+        [dir="rtl"] {
+          --1t497je: right;
+          --1bs9lmi: left;
+        }
+        @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
@@ -236,7 +245,7 @@ describe('@stylexjs/babel-plugin', () => {
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
-        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--start)}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
       `);
@@ -302,6 +311,15 @@ describe('@stylexjs/babel-plugin', () => {
         }),
       ).toMatchInlineSnapshot(`
         "
+        :root, [dir="ltr"] {
+          --1t497je: left;
+          --1bs9lmi: right;
+        }
+        [dir="rtl"] {
+          --1t497je: right;
+          --1bs9lmi: left;
+        }
+
         @layer priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
@@ -324,7 +342,7 @@ describe('@stylexjs/babel-plugin', () => {
         .backgroundColor-xrkmrrc{background-color:red}
         .color-x14rh7hd{color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f{float:left}
-        html[dir='rtl'] .float-x1kmio9f{float:right}
+        html[dir='rtl'] .float-x1kmio9f{float:var(--start)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}
         }"
@@ -377,7 +395,7 @@ describe('@stylexjs/babel-plugin', () => {
             "paddingInlineEnd-kwRFfy": "paddingInlineEnd-x1q3ajuy",
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-x1gx403c",
-            "float-kyUFMd": "float-x1kmio9f",
+            "float-kyUFMd": "float-x1vdj7i2",
             $$css: "app/main.js:23"
           }
         };"
@@ -389,10 +407,18 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: true,
         }),
       ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        "
+        :root, [dir="ltr"] {
+          --1t497je: left;
+          --1bs9lmi: right;
+        }
+        [dir="rtl"] {
+          --1t497je: right;
+          --1bs9lmi: left;
+        }
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        /* @ltr begin */.float-x1kmio9f:not(#\\#){float:left}/* @ltr end */
-        /* @rtl begin */.float-x1kmio9f:not(#\\#){float:right}/* @rtl end */
+        .float-x1vdj7i2:not(#\\#){float:var(--1t497je)}
         /* @ltr begin */.marginInlineStart-xqsn43r:not(#\\#){margin-left:20px}/* @ltr end */
         /* @rtl begin */.marginInlineStart-xqsn43r:not(#\\#){margin-right:20px}/* @rtl end */
         /* @ltr begin */.marginInlineEnd-x3aesyq:not(#\\#){margin-right:20px}/* @ltr end */

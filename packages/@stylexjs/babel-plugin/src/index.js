@@ -32,6 +32,10 @@ import transformStylexCall, {
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
+import {
+  LOGICAL_FLOAT_START_VAR,
+  LOGICAL_FLOAT_END_VAR,
+} from './shared/preprocess-rules';
 
 const NAME = 'stylex';
 
@@ -372,6 +376,20 @@ function processStylexRules(
     return '';
   }
 
+  // Check if any rules contain float properties
+  let hasFloatProperty = false;
+  for (const [, ruleObj] of rules) {
+    const { ltr, rtl } = ruleObj;
+    if (ltr && (ltr.includes('float:') || ltr.includes('clear:'))) {
+      hasFloatProperty = true;
+      break;
+    }
+    if (rtl && (rtl.includes('float:') || rtl.includes('clear:'))) {
+      hasFloatProperty = true;
+      break;
+    }
+  }
+
   const constantRules = rules.filter(
     ([, ruleObj]) => ruleObj?.constKey != null && ruleObj?.constVal != null,
   );
@@ -479,6 +497,21 @@ function processStylexRules(
     return acc;
   }, []);
 
+  // Add logical direction CSS custom properties if float properties are detected
+  let logicalDirectionRules = '';
+  if (hasFloatProperty) {
+    logicalDirectionRules = `
+:root, [dir="ltr"] {
+  ${LOGICAL_FLOAT_START_VAR}: left;
+  ${LOGICAL_FLOAT_END_VAR}: right;
+}
+[dir="rtl"] {
+  ${LOGICAL_FLOAT_START_VAR}: right;
+  ${LOGICAL_FLOAT_END_VAR}: left;
+}
+`;
+  }
+
   const header = useLayers
     ? '\n@layer ' +
       grouped.map((_, index) => `priority${index + 1}`).join(', ') +
@@ -537,7 +570,7 @@ function processStylexRules(
     })
     .join('\n');
 
-  return header + collectedCSS;
+  return logicalDirectionRules + header + collectedCSS;
 }
 
 styleXTransform.processStylexRules = processStylexRules;

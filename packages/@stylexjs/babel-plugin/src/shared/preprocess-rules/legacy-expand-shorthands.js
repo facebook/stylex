@@ -10,6 +10,31 @@
 import type { TStyleValue } from '../common-types';
 
 import splitValue from '../utils/split-css-value';
+import hash from '../hash';
+
+// Generate hashed custom property names for logical float values using existing hash function
+const LOGICAL_FLOAT_START_VAR = `--${hash('logical-float-start')}`;
+const LOGICAL_FLOAT_END_VAR = `--${hash('logical-float-end')}`;
+
+// Function to process float and clear properties with logical values
+function processLogicalFloatValue(
+  property: string,
+  value: TStyleValue,
+): TReturn | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  if (property === 'float' || property === 'clear') {
+    if (value === 'inline-start') {
+      return [[property, `var(${LOGICAL_FLOAT_START_VAR})`]];
+    } else if (value === 'inline-end') {
+      return [[property, `var(${LOGICAL_FLOAT_END_VAR})`]];
+    }
+  }
+
+  return null;
+}
 
 // TODO: to be added later.
 // const aliases = {
@@ -522,4 +547,24 @@ const expansions = {
   ...aliases,
 };
 
+// Main function to handle property expansions and logical value replacements
+function processProperty(property: string, value: TStyleValue): TReturn {
+  // First check for logical float/clear values
+  const logicalResult = processLogicalFloatValue(property, value);
+  if (logicalResult != null) {
+    return logicalResult;
+  }
+
+  // Then check for shorthand expansions
+  const expandFn = expansions[property];
+  if (expandFn != null) {
+    return expandFn(value);
+  }
+
+  // Return original property if no transformation needed
+  return [[property, value]];
+}
+
+// Export both the expansions object and the processing function
 export default expansions as typeof expansions;
+export { processProperty, LOGICAL_FLOAT_START_VAR, LOGICAL_FLOAT_END_VAR };
