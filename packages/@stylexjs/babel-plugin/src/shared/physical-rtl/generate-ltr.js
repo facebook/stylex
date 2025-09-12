@@ -10,6 +10,25 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 
+<<<<<<< HEAD
+=======
+const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
+  start: 'left',
+  end: 'right',
+  'inline-start': 'left',
+  'inline-end': 'right',
+};
+
+// These values are polyfilled to LTR/RTL equivalents due to incomplete browser support, regardless of `enableLogicalStylesPolyfill`
+// Note: Currently unused after removing legacy polyfill blocks, but kept for potential future use
+// const legacyValuesPolyfill: $ReadOnly<{
+//   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
+// }> = {
+//   float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
+//   clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
+// };
+
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToLTR: $ReadOnly<{
   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,

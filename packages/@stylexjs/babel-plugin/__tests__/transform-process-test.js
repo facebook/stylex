@@ -249,12 +249,21 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "
         :root, [dir="ltr"] {
+<<<<<<< HEAD
           --1bs9lmi: left;
           --1t497je: right;
         }
         [dir="rtl"] {
           --1bs9lmi: right;
           --1t497je: left;
+=======
+          --1t497je: left;
+          --1bs9lmi: right;
+        }
+        [dir="rtl"] {
+          --1t497je: right;
+          --1bs9lmi: left;
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
         }
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
@@ -275,12 +284,18 @@ describe('@stylexjs/babel-plugin', () => {
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
 <<<<<<< HEAD
+<<<<<<< HEAD
         .float-x3e4l88:not(#\\#):not(#\\#):not(#\\#){float:var(--1bs9lmi)}
 =======
         html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
         html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
         .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
 >>>>>>> c5624860 ([babel-plugin] fix defineVars at-rules priorities (#1272))
+=======
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
+        .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--start)}
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
       `);
@@ -356,12 +371,21 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "
         :root, [dir="ltr"] {
+<<<<<<< HEAD
           --1bs9lmi: left;
           --1t497je: right;
         }
         [dir="rtl"] {
           --1bs9lmi: right;
           --1t497je: left;
+=======
+          --1t497je: left;
+          --1bs9lmi: right;
+        }
+        [dir="rtl"] {
+          --1t497je: right;
+          --1bs9lmi: left;
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
         }
 
         @layer priority1, priority2, priority3, priority4;
@@ -392,9 +416,13 @@ describe('@stylexjs/babel-plugin', () => {
         .float-x3e4l88{float:var(--1bs9lmi)}
 =======
         html:not([dir='rtl']) .float-x1kmio9f{float:left}
+<<<<<<< HEAD
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
 >>>>>>> c5624860 ([babel-plugin] fix defineVars at-rules priorities (#1272))
+=======
+        html[dir='rtl'] .float-x1kmio9f{float:var(--start)}
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}
         }"
@@ -537,12 +565,17 @@ describe('@stylexjs/babel-plugin', () => {
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-x1gx403c",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "float-kyUFMd": "float-x3e4l88",
             $$css: "app/main.js:23"
 =======
             "float-kyUFMd": "float-x1kmio9f",
             $$css: "app/main.js:25"
 >>>>>>> c5624860 ([babel-plugin] fix defineVars at-rules priorities (#1272))
+=======
+            "float-kyUFMd": "float-x1vdj7i2",
+            $$css: "app/main.js:23"
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
           }
         };"
       `);
@@ -553,6 +586,7 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: true,
         }),
       ).toMatchInlineSnapshot(`
+<<<<<<< HEAD
 <<<<<<< HEAD
         "
         :root, [dir="ltr"] {
@@ -575,6 +609,20 @@ describe('@stylexjs/babel-plugin', () => {
         /* @ltr begin */.float-x1kmio9f:not(#\\#){float:left}/* @ltr end */
         /* @rtl begin */.float-x1kmio9f:not(#\\#){float:right}/* @rtl end */
 >>>>>>> c5624860 ([babel-plugin] fix defineVars at-rules priorities (#1272))
+=======
+        "
+        :root, [dir="ltr"] {
+          --1t497je: left;
+          --1bs9lmi: right;
+        }
+        [dir="rtl"] {
+          --1t497je: right;
+          --1bs9lmi: left;
+        }
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .float-x1vdj7i2:not(#\\#){float:var(--1t497je)}
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
         /* @ltr begin */.marginInlineStart-xqsn43r:not(#\\#){margin-left:20px}/* @ltr end */
         /* @rtl begin */.marginInlineStart-xqsn43r:not(#\\#){margin-right:20px}/* @rtl end */
         /* @ltr begin */.marginInlineEnd-x3aesyq:not(#\\#){margin-right:20px}/* @ltr end */

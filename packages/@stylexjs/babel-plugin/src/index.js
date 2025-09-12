@@ -37,6 +37,10 @@ import {
   LOGICAL_FLOAT_END_VAR,
 } from './shared/preprocess-rules/legacy-expand-shorthands';
 import transformStyleXDefaultMarker from './visitors/stylex-default-marker';
+import {
+  LOGICAL_FLOAT_START_VAR,
+  LOGICAL_FLOAT_END_VAR,
+} from './shared/preprocess-rules';
 
 const NAME = 'stylex';
 

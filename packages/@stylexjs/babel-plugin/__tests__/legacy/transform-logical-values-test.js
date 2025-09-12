@@ -43,8 +43,13 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
+<<<<<<< HEAD
         _inject2(".x1s2rbg3{clear:var(--1t497je)}", 3000);
         const classnames = "x1s2rbg3";"
+=======
+        _inject2(".xof8tvn{clear:right}", 3000, ".xof8tvn{clear:var(--end)}");
+        const classnames = "xof8tvn";"
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
       `);
     });
 
@@ -59,8 +64,13 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
+<<<<<<< HEAD
         _inject2(".xnaenqf{clear:var(--1bs9lmi)}", 3000);
         const classnames = "xnaenqf";"
+=======
+        _inject2(".x18lmvvi{clear:left}", 3000, ".x18lmvvi{clear:var(--start)}");
+        const classnames = "x18lmvvi";"
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
       `);
     });
 
@@ -75,8 +85,13 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
+<<<<<<< HEAD
         _inject2(".x1vdj7i2{float:var(--1t497je)}", 3000);
         const classnames = "x1vdj7i2";"
+=======
+        _inject2(".x1h0q493{float:right}", 3000, ".x1h0q493{float:var(--end)}");
+        const classnames = "x1h0q493";"
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
       `);
     });
 
@@ -91,8 +106,13 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
+<<<<<<< HEAD
         _inject2(".x3e4l88{float:var(--1bs9lmi)}", 3000);
         const classnames = "x3e4l88";"
+=======
+        _inject2(".x1kmio9f{float:left}", 3000, ".x1kmio9f{float:var(--start)}");
+        const classnames = "x1kmio9f";"
+>>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
       `);
     });
 
