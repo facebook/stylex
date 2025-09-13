@@ -18,7 +18,9 @@ import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   positionTry as stylexPositionTry,
+  when as _stylexWhen,
 } from '../shared';
+import stylexDefaultMarker from '../shared/stylex-defaultMarker';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
   convertToTestStyles,
@@ -148,6 +150,13 @@ export default function transformStyleXCreate(
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    const stylexWhen = Object.fromEntries(
+      Object.entries(_stylexWhen).map(([key, value]) => [
+        key,
+        (pseudo: string, marker?: string) =>
+          (value as $FlowFixMe)(pseudo, marker ?? state.options),
+      ]),
+    );
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
@@ -157,6 +166,12 @@ export default function transformStyleXCreate(
     state.stylexPositionTryImport.forEach((name) => {
       identifiers[name] = { fn: positionTry };
     });
+    state.stylexDefaultMarkerImport.forEach((name) => {
+      identifiers[name] = () => stylexDefaultMarker(state.options);
+    });
+    state.stylexWhenImport.forEach((name) => {
+      identifiers[name] = stylexWhen;
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
@@ -164,6 +179,10 @@ export default function transformStyleXCreate(
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
       memberExpressions[name].positionTry = { fn: positionTry };
+      memberExpressions[name].defaultMarker = {
+        fn: () => stylexDefaultMarker(state.options),
+      };
+      identifiers[name] = { ...(identifiers[name] ?? {}), when: stylexWhen };
     });
 
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
