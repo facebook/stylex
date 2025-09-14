@@ -5,6 +5,8 @@
   "description": "Simple esbuild example for @stylexjs/esbuild-plugin",
   "main": "src/App.jsx",
   "scripts": {
+    "example:dev": "node scripts/build.mjs -w",
+    "example:preview": "node scripts/build.mjs -s",
     "example:build": "node scripts/build.mjs",
     "example:lint": "eslint \"**/*.{js,jsx}\""
   },
