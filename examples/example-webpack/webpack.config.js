@@ -45,6 +45,11 @@ const config = (env, argv) => {
           test: /\.(css)$/,
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
         },
+        {
+          test: /\.svg$/i,
+          issuer: /\.[jt]sx?$/,
+          use: ['file-loader'],
+        },
       ],
     },
     resolve: {

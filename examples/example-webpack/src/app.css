@@ -1,9 +1,25 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+@layer reset {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background-color: #242424;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  }
+}
+
+:root {
+  --fg1: hsl(0, 0%, 0%);
+  --bg1: hsl(276, 17%, 96%);
+  --pink-h: 295;
+  --pink-s: 62%;
+  --pink-l: 60%;
+  --cyan-h: 202;
+  --cyan-s: 100%;
+  --cyan-l: 50%;
 }
 
 /* The @stylex directive is used by the StyleX PostCSS plugin.

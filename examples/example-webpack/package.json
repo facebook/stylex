@@ -21,12 +21,13 @@
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
     "mini-css-extract-plugin": "^2.9.4",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.2.0",
     "react-refresh": "^0.17.0",
-    "style-loader": "^4.0.0",
+    "serve": "^14.2.5",
     "webpack": "^5.101.3",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.2"
@@ -34,7 +35,6 @@
   "dependencies": {
     "@stylexjs/stylex": "^0.15.4",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "serve": "^14.2.5"
+    "react-dom": "^19.1.1"
   }
 }
