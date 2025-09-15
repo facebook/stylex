@@ -8,6 +8,7 @@ import React from 'react';
 import webpackLogo from './assets/webpack.svg';
 import stylexLogo from './assets/stylex.svg';
 import * as stylex from '@stylexjs/stylex';
+import { colors } from './tokens.stylex';
 
 import './app.css';
 import CtaButton from './components/CTAButton';
@@ -36,7 +37,7 @@ const styles = stylex.create({
     willChange: 'filter',
   },
   header: {
-    color: '#fff',
+    color: colors.textPrimary,
     fontSize: '3.2em',
     lineHeight: 1.1,
   },

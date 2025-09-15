@@ -88,7 +88,7 @@ module.exports = {
 };
 ```
 
-### 6. CSS Entry Point (`src/app.css`)
+### 6. CSS entry point (`src/app.css`)
 
 The CSS file includes the StyleX injection point:
 

@@ -6,20 +6,15 @@
   }
 
   body {
-    background-color: #242424;
+    background-color: #f5f3f7;
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   }
-}
 
-:root {
-  --fg1: hsl(0, 0%, 0%);
-  --bg1: hsl(276, 17%, 96%);
-  --pink-h: 295;
-  --pink-s: 62%;
-  --pink-l: 60%;
-  --cyan-h: 202;
-  --cyan-s: 100%;
-  --cyan-l: 50%;
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #242424;
+    }
+  }
 }
 
 /* The @stylex directive is used by the StyleX PostCSS plugin.

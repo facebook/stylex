@@ -5,9 +5,9 @@
   "description": "A simple webpack example to test stylexjs/webpack-plugin",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack serve --config ./webpack.config.js --mode development",
-    "serve": "serve dist",
-    "build": "webpack --mode production"
+    "example:dev": "webpack serve --config ./webpack.config.js --mode development",
+    "example:serve": "serve dist",
+    "example:build": "webpack --mode production"
   },
   "license": "MIT",
   "devDependencies": {

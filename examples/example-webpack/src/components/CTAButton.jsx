@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { colors } from '../tokens.stylex';
 
 export default function CtaButton({ children, color, to }) {
   return (
@@ -27,15 +28,14 @@ export default function CtaButton({ children, color, to }) {
 const styles = stylex.create({
   base: {
     alignItems: 'center',
-    backgroundColor: 'var(--fg1)',
+    backgroundColor: colors.fg1,
     borderRadius: 8,
     boxShadow: {
       default: '0 0 2px rgba(0,0,0,0.35)',
       ':hover': '0 0 10px rgba(0,0,0,0.75)',
     },
     color: {
-      default: 'var(--bg1)',
-      ':hover': 'var(--bg1)',
+      default: colors.bg1,
     },
     display: 'flex',
     fontWeight: 'bold',
@@ -59,29 +59,27 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
   },
   pink: {
-    backgroundColor: 'hsl(var(--pink-h), var(--pink-s), var(--pink-l))',
+    backgroundColor: `hsl(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL})`,
     boxShadow: {
       default:
-        '0 0 2px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.35)',
+        `0 0 2px hsla(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL}, 0.35)`,
       ':hover':
-        '0 0 10px hsla(var(--pink-h), var(--pink-s), var(--pink-l), 0.75)',
+        `0 0 10px hsla(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL}, 0.75)`,
     },
     color: {
-      default: 'white',
-      ':hover': 'white',
+      default: colors.white,
     },
   },
   blue: {
-    backgroundColor: 'hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))',
+    backgroundColor: `hsl(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL})`,
     boxShadow: {
       default:
-        '0 0 2px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.35)',
+        `0 0 2px hsla(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL}, 0.35)`,
       ':hover':
-        '0 0 10px hsla(var(--cyan-h), var(--cyan-s), var(--cyan-l), 0.75)',
+        `0 0 10px hsla(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL}, 0.75)`,
     },
     color: {
-      default: 'white',
-      ':hover': 'white',
+      default: colors.white,
     },
   },
 });
