@@ -104,7 +104,7 @@ const stylexValidStyles = {
           },
           allowRawCSSVars: {
             type: 'boolean',
-            default: false,
+            default: true,
           },
           allowOuterPseudoAndMedia: {
             type: 'boolean',
@@ -185,7 +185,7 @@ const stylexValidStyles = {
 
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
-      allowRawCSSVars = false,
+      allowRawCSSVars = true,
       allowOuterPseudoAndMedia,
       banPropsForLegacy = false,
       propLimits = {},
