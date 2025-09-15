@@ -102,6 +102,10 @@ const stylexValidStyles = {
             },
             default: ['stylex', '@stylexjs/stylex'],
           },
+          allowRawCSSVars: {
+            type: 'boolean',
+            default: false,
+          },
           allowOuterPseudoAndMedia: {
             type: 'boolean',
             default: false,
@@ -162,6 +166,7 @@ const stylexValidStyles = {
             as: string,
           },
       >,
+      allowRawCSSVars: boolean,
       allowOuterPseudoAndMedia: boolean,
       banPropsForLegacy: boolean,
       propLimits?: PropLimits,
@@ -180,6 +185,7 @@ const stylexValidStyles = {
 
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      allowRawCSSVars = false,
       allowOuterPseudoAndMedia,
       banPropsForLegacy = false,
       propLimits = {},
@@ -459,6 +465,10 @@ const stylexValidStyles = {
         }
         const ruleChecker = CSSPropertiesWithOverrides[key];
         if (ruleChecker == null) {
+          if (allowRawCSSVars && micromatch.isMatch(key, '--*')) {
+            return;
+          }
+
           const closestKey = CSSPropertyKeys.find((cssProp) => {
             const distance = getDistance(key, cssProp, 2);
             return distance <= 2;
