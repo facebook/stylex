@@ -1796,6 +1796,18 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
           },
         });`,
     },
+    // test for allowed raw CSS variable overrides
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            '--bar': '0',
+          }
+        })
+      `,
+      options: [{ allowRawCSSVars: true }],
+    },
   ],
   invalid: [
     {
@@ -2141,6 +2153,23 @@ initial
 inherit
 unset
 revert`,
+        },
+      ],
+    },
+    // test for disallowed raw CSS variable overrides
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            '--bar': '0',
+          }
+        })
+      `,
+      options: [{ allowRawCSSVars: false }],
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex',
         },
       ],
     },
