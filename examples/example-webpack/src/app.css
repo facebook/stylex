@@ -1,0 +1,24 @@
+@layer reset {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background-color: #f5f3f7;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #242424;
+    }
+  }
+}
+
+/* The @stylex directive is used by the StyleX PostCSS plugin.
+ * It will be replaced with generated CSS at build time.
+ */
+/* @stylex-injection-point */
+@stylex;
