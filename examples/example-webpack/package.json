@@ -5,17 +5,36 @@
   "description": "A simple webpack example to test stylexjs/webpack-plugin",
   "main": "index.js",
   "scripts": {
-    "example:build": "webpack",
-    "example:dev": "webpack --watch"
+    "example:dev": "webpack serve --config ./webpack.config.js --mode development",
+    "example:serve": "serve dist",
+    "example:build": "webpack --mode production"
   },
   "license": "MIT",
-  "dependencies": {
-    "@stylexjs/stylex": "0.15.4"
-  },
   "devDependencies": {
-    "@stylexjs/webpack-plugin": "0.11.1",
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "@babel/preset-react": "^7.27.1",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
+    "@stylexjs/babel-plugin": "^0.15.4",
+    "@stylexjs/eslint-plugin": "^0.15.4",
+    "@stylexjs/postcss-plugin": "^0.15.4",
+    "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.6.0",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.0"
+    "mini-css-extract-plugin": "^2.9.4",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
+    "react-refresh": "^0.17.0",
+    "serve": "^14.2.5",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "^0.15.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   }
 }
