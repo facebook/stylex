@@ -1,0 +1,94 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+slug: v0.16.0
+title: Release 0.16.0
+authors: [mellyeliu, nmn]
+tags:
+  - release
+---
+
+# Release 0.16.0
+
+This release adds support for a long-requested feature—descendent and sibling selectors! We've also expanded `defineConsts` capabilities, improved our lint rules, added a webpack example, and made some performance optimizations.
+
+## Descendent and sibling selectors
+
+
+## `defineConsts` improvements
+
+We’ve added support for overriding `defineConsts` constants that reference CSS variables (`var(--*)`) when set to variables and variable fallbacks. Constants now behave like passthroughs, with overrides applying to the original CSS variable. This allows you to re-define them within `create` calls as you would for `defineVars`.
+
+```tsx
+export const colors = stylex.defineConsts({
+  bg: "var(--background-color)",
+  accent: "var(--accent, lightblue)",
+});
+
+import {colors} from "./colors.stylex.js";
+const styles = stylex.create({
+  root: {
+    [colors.bg]: "red",
+    [colors.accent]: "darkblue",
+  },
+});
+```
+
+We've also added support for `defineConsts` in dynamic styles. You can now use `defineConsts` to declare media queries within dynamic styles as you would in regular StyleX namespaces.
+
+```tsx
+const style = stylex.create({
+  main: (height) => ({
+    color: {
+      default: colors.red,
+      [breakpoints.sm]: colors.blue,
+      [breakpoints.md]: colors.yellow,
+    },
+    height: height - 10,
+  }),
+});
+```
+
+## Linter improvements
+
+We made several improvements and lint fixes to the `valid-styles` rule. The `valid-styles` rule now has support for locally resolved constants.
+
+```tsx
+const HEIGHT = 5;
+
+const styles = stylex.create({
+  default: {
+    scrollMarginTop: HEIGHT + 5,
+    scrollMarginBottom: HEIGHT * 5,
+  },
+});
+```
+
+We added linter support for setting CSS custom properties within `create` calls. (Thanks [@dwei-figma](https://github.com/dwei-figma)!)
+
+```tsx
+const HEIGHT = 5;
+
+const styles = stylex.create({
+  default: {
+    --background-color: 'red',
+  },
+});
+```
+
+
+We also added support for positionTry styles (Thanks [@abhakat](https://github.com/abhakat)!), migrated object type validation to Flow (Thanks [@jcperez-ch](https://github.com/jcperez-ch)!), and of 0 values as strings ('0') for length properties.
+
+## Bug fixes
+
+- Fixed class name construction for dynamic contextual styles.
+- Reduced chances of dynamic variable name collisions. (Thanks [@necolas](https://github.com/necolas)!)
+
+## Miscellaneous
+
+- A [webpack example](https://stylex.org/playground/) was added to our suite of StyleX example integrations! (Thanks [@RavenColEvol](https://github.com/RavenColEvol)!)
+- Support to hoist `stylex.create` and nested objects within functions.
+- Optimized precomputed props calls in JSX. (Thanks [@necolas](https://github.com/necolas)!)
+- More efficient handling of null/undefined in dynamic styles.
