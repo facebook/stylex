@@ -846,13 +846,8 @@ const stylexValidStyles = {
                 }
               });
             } else {
-              return context.report({
-                node: namespace.value,
-                loc: namespace.value.loc,
-                message:
-                  'Styles must be represented as JavaScript objects, not ' +
-                  styles.type,
-              });
+              // This case should be already handled by type checking.
+              return;
             }
           }
           styles.properties.forEach((prop) =>
