@@ -32,6 +32,7 @@ import transformStylexCall, {
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
+import transformStyleXDefaultMarker from './visitors/stylex-default-marker';
 
 const NAME = 'stylex';
 
@@ -279,32 +280,32 @@ function styleXTransform(): PluginObj<> {
       },
 
       CallExpression(path: NodePath<t.CallExpression>) {
-        if (path.parentPath.isVariableDeclarator()) {
-          const parentPath = path.parentPath;
-          if (parentPath.isVariableDeclarator()) {
-            // Look for `stylex.keyframes` calls
-            // Needs to be handled *before* `stylex.create` as the `create` call
-            // may use the generated animation name.
-            transformStyleXKeyframes(
-              parentPath as NodePath<t.VariableDeclarator>,
-              state,
-            );
-            // Look for `stylex.viewTransitionClass` calls
-            // Needs to be handled *after* `stylex.keyframes` since the `viewTransitionClass`
-            // call may use the generated animation name.
-            transformStyleXViewTransitionClass(
-              parentPath as NodePath<t.VariableDeclarator>,
-              state,
-            );
-            // Look for `stylex.positionTry` calls
-            // Needs to be handled *before* `stylex.create` as the `create` call
-            // may use the generated position-try name.
-            transformStyleXPositionTry(
-              parentPath as NodePath<t.VariableDeclarator>,
-              state,
-            );
-          }
+        const parentPath = path.parentPath;
+        if (parentPath.isVariableDeclarator()) {
+          // Look for `stylex.keyframes` calls
+          // Needs to be handled *before* `stylex.create` as the `create` call
+          // may use the generated animation name.
+          transformStyleXKeyframes(
+            parentPath as NodePath<t.VariableDeclarator>,
+            state,
+          );
+          // Look for `stylex.viewTransitionClass` calls
+          // Needs to be handled *after* `stylex.keyframes` since the `viewTransitionClass`
+          // call may use the generated animation name.
+          transformStyleXViewTransitionClass(
+            parentPath as NodePath<t.VariableDeclarator>,
+            state,
+          );
+          // Look for `stylex.positionTry` calls
+          // Needs to be handled *before* `stylex.create` as the `create` call
+          // may use the generated position-try name.
+          transformStyleXPositionTry(
+            parentPath as NodePath<t.VariableDeclarator>,
+            state,
+          );
         }
+
+        transformStyleXDefaultMarker(path, state);
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);

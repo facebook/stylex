@@ -1,0 +1,337 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+'use strict';
+
+jest.autoMockOff();
+
+import { transformSync } from '@babel/core';
+import stylexPlugin from '../src/index';
+
+function transform(source, opts = {}) {
+  const result = transformSync(source, {
+    filename: opts.filename ?? 'test.js',
+    parserOpts: {
+      flow: 'all',
+    },
+    babelrc: false,
+    plugins: [[stylexPlugin, { ...opts }]],
+  });
+
+  return result;
+}
+
+describe('@stylexjs/babel-plugin', () => {
+  describe('[transform] when functions', () => {
+    test('when.ancestor function', () => {
+      const { code, metadata } = transform(`
+        import { when, create } from '@stylexjs/stylex';
+        
+        const styles = create({
+            container: {
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor(':hover')]: 'red',
+              },
+            },
+        });
+
+        console.log(styles.container);
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { when, create } from '@stylexjs/stylex';
+        const styles = {
+          container: {
+            kWkggS: "x1t391ir x148kuu",
+            $$css: true
+          }
+        };
+        console.log(styles.container);"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "x148kuu",
+            {
+              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
+              "rtl": null,
+            },
+            3040,
+          ],
+        ]
+      `);
+    });
+
+    test('when.siblingBefore function', () => {
+      const { code, metadata } = transform(`
+        import { when, create } from '@stylexjs/stylex';
+        
+        const styles = create({
+          container: {
+            backgroundColor: {
+              default: 'blue',
+              [when.siblingBefore(':focus')]: 'red',
+            },
+          },
+        });
+
+        console.log(styles.container);
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { when, create } from '@stylexjs/stylex';
+        const styles = {
+          container: {
+            kWkggS: "x1t391ir x1i6rnlt",
+            $$css: true
+          }
+        };
+        console.log(styles.container);"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "x1i6rnlt",
+            {
+              "ltr": ".x1i6rnlt:where(.x-default-marker:focus ~ *){background-color:red}",
+              "rtl": null,
+            },
+            3040,
+          ],
+        ]
+      `);
+    });
+
+    test('namespace imports', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        
+        const styles = stylex.create({
+          container: {
+            backgroundColor: {
+              default: 'blue',
+              [stylex.when.ancestor(':hover')]: 'red',
+              [stylex.when.siblingBefore(':focus')]: 'green',
+              [stylex.when.anySibling(':active')]: 'yellow',
+              [stylex.when.siblingAfter(':focus')]: 'purple',
+              [stylex.when.descendant(':focus')]: 'orange',
+            },
+          },
+        });
+
+        console.log(styles.container);
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        const styles = {
+          container: {
+            kWkggS: "x1t391ir x148kuu xpijypl xoev4mv xczfykd x1r4rfca",
+            $$css: true
+          }
+        };
+        console.log(styles.container);"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "x148kuu",
+            {
+              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
+              "rtl": null,
+            },
+            3040,
+          ],
+          [
+            "xpijypl",
+            {
+              "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
+              "rtl": null,
+            },
+            3040,
+          ],
+          [
+            "xoev4mv",
+            {
+              "ltr": ".xoev4mv:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:yellow}",
+              "rtl": null,
+            },
+            3040,
+          ],
+          [
+            "xczfykd",
+            {
+              "ltr": ".xczfykd:has(~ .x-default-marker:focus){background-color:purple}",
+              "rtl": null,
+            },
+            3045,
+          ],
+          [
+            "x1r4rfca",
+            {
+              "ltr": ".x1r4rfca:has(.x-default-marker:focus){background-color:orange}",
+              "rtl": null,
+            },
+            3045,
+          ],
+        ]
+      `);
+    });
+
+    test('aliased imports', () => {
+      const { code, metadata } = transform(`
+        import { when as w, create } from '@stylexjs/stylex';
+        
+        const styles = create({
+          container: {
+            backgroundColor: {
+              default: 'blue',
+              [w.ancestor(':hover')]: 'red',
+              [w.siblingBefore(':focus')]: 'green',
+            },
+          },
+        });
+
+        console.log(styles.container);
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { when as w, create } from '@stylexjs/stylex';
+        const styles = {
+          container: {
+            kWkggS: "x1t391ir x148kuu xpijypl",
+            $$css: true
+          }
+        };
+        console.log(styles.container);"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "x148kuu",
+            {
+              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
+              "rtl": null,
+            },
+            3040,
+          ],
+          [
+            "xpijypl",
+            {
+              "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
+              "rtl": null,
+            },
+            3040,
+          ],
+        ]
+      `);
+    });
+  });
+
+  describe('[validation] when functions', () => {
+    test('validates pseudo selector format', () => {
+      expect(() =>
+        transform(`
+          import { when, create } from '@stylexjs/stylex';
+          
+          const styles = create({
+            container: {
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor('hover')]: 'red',
+              },
+            },
+          });
+        `),
+      ).toThrow('Pseudo selector must start with ":"');
+    });
+
+    test('rejects pseudo-elements', () => {
+      expect(() =>
+        transform(`
+          import { when, create } from '@stylexjs/stylex';
+          
+          const styles = create({
+            container: {
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor('::before')]: 'red',
+              },
+            },
+          });
+        `),
+      ).toThrow('Pseudo selector cannot start with "::"');
+    });
+  });
+  describe('[transform] using stylex.defaultMarker', () => {
+    test('named import', () => {
+      const { code } = transform(`
+        import { defaultMarker, props } from '@stylexjs/stylex';
+        
+        const classNames = props(defaultMarker());
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { defaultMarker, props } from '@stylexjs/stylex';
+        const classNames = {
+          className: "x-default-marker"
+        };"
+      `);
+    });
+    test('namespace import', () => {
+      const { code } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        
+        const classNames = stylex.props(stylex.defaultMarker());
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        const classNames = {
+          className: "x-default-marker"
+        };"
+      `);
+    });
+  });
+});

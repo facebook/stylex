@@ -131,6 +131,28 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
+export const defaultMarker = (): StaticStyles<> => {
+  throw errorForFn('defaultMarker');
+};
+
+export const when = {
+  ancestor: (_pseudo?: string): string => {
+    throw errorForFn('when.ancestor');
+  },
+  descendant: (_pseudo?: string): string => {
+    throw errorForFn('when.descendant');
+  },
+  siblingBefore: (_pseudo?: string): string => {
+    throw errorForFn('when.siblingBefore');
+  },
+  siblingAfter: (_pseudo?: string): string => {
+    throw errorForFn('when.siblingAfter');
+  },
+  anySibling: (_pseudo?: string): string => {
+    throw errorForFn('when.anySibling');
+  },
+};
+
 export const types = {
   angle: <T: string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
@@ -198,6 +220,7 @@ type IStyleX = {
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineVars: StyleX$DefineVars,
+  defaultMarker: () => StaticStyles<>,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
@@ -217,6 +240,7 @@ type IStyleX = {
   }>,
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
+  when: typeof when,
   __customProperties?: { [string]: mixed },
   ...
 };
@@ -231,11 +255,13 @@ function _legacyMerge(
 _legacyMerge.create = create;
 _legacyMerge.createTheme = createTheme;
 _legacyMerge.defineVars = defineVars;
+_legacyMerge.defaultMarker = defaultMarker;
 _legacyMerge.firstThatWorks = firstThatWorks;
 _legacyMerge.keyframes = keyframes;
 _legacyMerge.positionTry = positionTry;
 _legacyMerge.props = props;
 _legacyMerge.types = types;
+_legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;
