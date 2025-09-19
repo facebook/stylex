@@ -241,20 +241,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        stylex.props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(expectedImportTestMetadata).toMatchInlineSnapshot(`
@@ -376,20 +369,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        foo.props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(metadata).toEqual(expectedImportTestMetadata);
@@ -426,20 +412,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(metadata).toEqual(expectedImportTestMetadata);
@@ -485,20 +464,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        _props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(metadata).toEqual(expectedImportTestMetadata);
@@ -526,20 +498,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        stylex.props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(metadata).toEqual(expectedImportTestMetadata);
@@ -580,20 +545,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        css.props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(metadata).toEqual(expectedImportTestMetadata);
@@ -621,20 +579,13 @@ describe('@stylexjs/babel-plugin', () => {
         const viewTransition1 = "xchu1hv";
         const fallback1 = "--x5jppmd";
         const fallback2 = "--x17pzx6";
-        const styles = {
-          root: {
-            kKVMdj: "x1qar0u3",
-            k9M3vk: "x7cint9",
-            kMwMTN: "x1e2nbdu x14693no",
-            kVAEAm: "x15oojuh",
-            $$css: true
-          }
-        };
         const theme = {
           xop34xu: "xfnndu4 xop34xu",
           $$css: true
         };
-        stylex.props(styles.root, theme);"
+        ({
+          className: "x1qar0u3 x7cint9 x1e2nbdu x14693no x15oojuh xfnndu4 xop34xu"
+        });"
       `);
 
       expect(metadata).toEqual(expectedImportTestMetadata);
