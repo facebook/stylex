@@ -13,8 +13,8 @@ import splitValue from '../utils/split-css-value';
 import hash from '../hash';
 
 // Generate hashed custom property names for logical float values using existing hash function
-const LOGICAL_FLOAT_START_VAR = `--${hash('logical-float-start')}`;
-const LOGICAL_FLOAT_END_VAR = `--${hash('logical-float-end')}`;
+export const LOGICAL_FLOAT_START_VAR = `--${hash('logical-float-start')}`;
+export const LOGICAL_FLOAT_END_VAR = `--${hash('logical-float-end')}`;
 
 // Function to process float and clear properties with logical values
 function processLogicalFloatValue(
@@ -567,4 +567,4 @@ function processProperty(property: string, value: TStyleValue): TReturn {
 
 // Export both the expansions object and the processing function
 export default expansions as typeof expansions;
-export { processProperty, LOGICAL_FLOAT_START_VAR, LOGICAL_FLOAT_END_VAR };
+export { processProperty };

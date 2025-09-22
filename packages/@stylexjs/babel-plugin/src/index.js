@@ -35,7 +35,7 @@ import transformStyleXViewTransitionClass from './visitors/stylex-view-transitio
 import {
   LOGICAL_FLOAT_START_VAR,
   LOGICAL_FLOAT_END_VAR,
-} from './shared/preprocess-rules';
+} from './shared/preprocess-rules/legacy-expand-shorthands';
 
 const NAME = 'stylex';
 

@@ -395,7 +395,7 @@ describe('@stylexjs/babel-plugin', () => {
             "paddingInlineEnd-kwRFfy": "paddingInlineEnd-x1q3ajuy",
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-x1gx403c",
-            "float-kyUFMd": "float-x1vdj7i2",
+            "float-kyUFMd": "float-x1kmio9f",
             $$css: "app/main.js:23"
           }
         };"
@@ -418,7 +418,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         :root, .xsg933n{--blue-xpqh4lw:blue;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        .float-x1vdj7i2:not(#\\#){float:var(--1t497je)}
+        /* @ltr begin */.float-x1kmio9f:not(#\\#){float:left}/* @ltr end */
+        /* @rtl begin */.float-x1kmio9f:not(#\\#){float:var(--1bs9lmi)}/* @rtl end */
         /* @ltr begin */.marginInlineStart-xqsn43r:not(#\\#){margin-left:20px}/* @ltr end */
         /* @rtl begin */.marginInlineStart-xqsn43r:not(#\\#){margin-right:20px}/* @rtl end */
         /* @ltr begin */.marginInlineEnd-x3aesyq:not(#\\#){margin-right:20px}/* @ltr end */
