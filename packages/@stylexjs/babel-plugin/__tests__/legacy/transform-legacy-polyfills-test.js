@@ -262,8 +262,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".xodj72a{clear:right}",
+<<<<<<< HEAD
                 "rtl": ".xodj72a{clear:var(--end)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".xodj72a{clear:var(--1t497je)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -288,8 +292,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".x390i0x{clear:left}",
+<<<<<<< HEAD
                 "rtl": ".x390i0x{clear:var(--start)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".x390i0x{clear:var(--1bs9lmi)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -314,8 +322,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".x1guec7k{float:right}",
+<<<<<<< HEAD
                 "rtl": ".x1guec7k{float:var(--end)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".x1guec7k{float:var(--1t497je)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -340,8 +352,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".xrbpyxo{float:left}",
+<<<<<<< HEAD
                 "rtl": ".xrbpyxo{float:var(--start)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".xrbpyxo{float:var(--1bs9lmi)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -655,8 +671,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".xodj72a{clear:right}",
+<<<<<<< HEAD
                 "rtl": ".xodj72a{clear:var(--end)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".xodj72a{clear:var(--1t497je)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -684,8 +704,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".x390i0x{clear:left}",
+<<<<<<< HEAD
                 "rtl": ".x390i0x{clear:var(--start)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".x390i0x{clear:var(--1bs9lmi)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -713,8 +737,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".x1guec7k{float:right}",
+<<<<<<< HEAD
                 "rtl": ".x1guec7k{float:var(--end)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".x1guec7k{float:var(--1t497je)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],
@@ -742,8 +770,12 @@ describe('@stylexjs/babel-plugin', () => {
                 "rtl": null,
 =======
                 "ltr": ".xrbpyxo{float:left}",
+<<<<<<< HEAD
                 "rtl": ".xrbpyxo{float:var(--start)}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "rtl": ".xrbpyxo{float:var(--1bs9lmi)}",
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
               },
               3000,
             ],

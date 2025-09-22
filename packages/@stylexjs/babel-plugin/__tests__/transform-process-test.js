@@ -285,6 +285,7 @@ describe('@stylexjs/babel-plugin', () => {
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         .float-x3e4l88:not(#\\#):not(#\\#):not(#\\#){float:var(--1bs9lmi)}
 =======
         html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
@@ -296,6 +297,15 @@ describe('@stylexjs/babel-plugin', () => {
         .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
         html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--start)}
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
+        .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--start)}
+=======
+        html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--1bs9lmi)}
+>>>>>>> a0af739 (fix: Use hashed CSS custom properties for float/clear logical values)
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
       `);
@@ -417,12 +427,16 @@ describe('@stylexjs/babel-plugin', () => {
 =======
         html:not([dir='rtl']) .float-x1kmio9f{float:left}
 <<<<<<< HEAD
+<<<<<<< HEAD
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
 >>>>>>> c5624860 ([babel-plugin] fix defineVars at-rules priorities (#1272))
 =======
         html[dir='rtl'] .float-x1kmio9f{float:var(--start)}
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+        html[dir='rtl'] .float-x1kmio9f{float:var(--1bs9lmi)}
+>>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}
         }"

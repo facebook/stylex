@@ -10,8 +10,6 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 
-<<<<<<< HEAD
-=======
 const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
   start: 'left',
   end: 'right',
@@ -28,7 +26,6 @@ const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
 //   clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
 // };
 
->>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToLTR: $ReadOnly<{
   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
