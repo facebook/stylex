@@ -245,7 +245,7 @@ describe('@stylexjs/babel-plugin', () => {
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
-        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--start)}
+        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:var(--1bs9lmi)}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
       `);
@@ -342,7 +342,7 @@ describe('@stylexjs/babel-plugin', () => {
         .backgroundColor-xrkmrrc{background-color:red}
         .color-x14rh7hd{color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f{float:left}
-        html[dir='rtl'] .float-x1kmio9f{float:var(--start)}
+        html[dir='rtl'] .float-x1kmio9f{float:var(--1bs9lmi)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}
         }"

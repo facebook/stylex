@@ -10,6 +10,10 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 import parser from 'postcss-value-parser';
+import {
+  LOGICAL_FLOAT_START_VAR,
+  LOGICAL_FLOAT_END_VAR,
+} from '../preprocess-rules/legacy-expand-shorthands';
 
 const cursorFlip: $ReadOnly<{ [string]: string }> = {
   'e-resize': 'w-resize',
@@ -77,20 +81,11 @@ function flipShadow(value: string) {
 }
 
 const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
-  start: 'var(--start)',
-  end: 'var(--end)',
-  'inline-start': 'var(--start)',
-  'inline-end': 'var(--end)',
+  start: `var(${LOGICAL_FLOAT_END_VAR})`,
+  end: `var(${LOGICAL_FLOAT_START_VAR})`,
+  'inline-start': `var(${LOGICAL_FLOAT_END_VAR})`,
+  'inline-end': `var(${LOGICAL_FLOAT_START_VAR})`,
 };
-
-// These values are polyfilled to LTR/RTL equivalents due to incomplete browser support, regardless of `enableLogicalStylesPolyfill`
-// Note: Currently unused after removing legacy polyfill blocks, but kept for potential future use
-// const legacyValuesPolyfill: $ReadOnly<{
-//   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
-// }> = {
-//   float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
-//   clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
-// };
 
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToRTL: $ReadOnly<{

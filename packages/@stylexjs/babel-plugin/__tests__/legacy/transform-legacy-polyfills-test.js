@@ -258,7 +258,7 @@ describe('@stylexjs/babel-plugin', () => {
               "xodj72a",
               {
                 "ltr": ".xodj72a{clear:right}",
-                "rtl": ".xodj72a{clear:var(--end)}",
+                "rtl": ".xodj72a{clear:var(--1t497je)}",
               },
               3000,
             ],
@@ -279,7 +279,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x390i0x",
               {
                 "ltr": ".x390i0x{clear:left}",
-                "rtl": ".x390i0x{clear:var(--start)}",
+                "rtl": ".x390i0x{clear:var(--1bs9lmi)}",
               },
               3000,
             ],
@@ -300,7 +300,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x1guec7k",
               {
                 "ltr": ".x1guec7k{float:right}",
-                "rtl": ".x1guec7k{float:var(--end)}",
+                "rtl": ".x1guec7k{float:var(--1t497je)}",
               },
               3000,
             ],
@@ -321,7 +321,7 @@ describe('@stylexjs/babel-plugin', () => {
               "xrbpyxo",
               {
                 "ltr": ".xrbpyxo{float:left}",
-                "rtl": ".xrbpyxo{float:var(--start)}",
+                "rtl": ".xrbpyxo{float:var(--1bs9lmi)}",
               },
               3000,
             ],
@@ -631,7 +631,7 @@ describe('@stylexjs/babel-plugin', () => {
               "xodj72a",
               {
                 "ltr": ".xodj72a{clear:right}",
-                "rtl": ".xodj72a{clear:var(--end)}",
+                "rtl": ".xodj72a{clear:var(--1t497je)}",
               },
               3000,
             ],
@@ -655,7 +655,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x390i0x",
               {
                 "ltr": ".x390i0x{clear:left}",
-                "rtl": ".x390i0x{clear:var(--start)}",
+                "rtl": ".x390i0x{clear:var(--1bs9lmi)}",
               },
               3000,
             ],
@@ -679,7 +679,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x1guec7k",
               {
                 "ltr": ".x1guec7k{float:right}",
-                "rtl": ".x1guec7k{float:var(--end)}",
+                "rtl": ".x1guec7k{float:var(--1t497je)}",
               },
               3000,
             ],
@@ -703,7 +703,7 @@ describe('@stylexjs/babel-plugin', () => {
               "xrbpyxo",
               {
                 "ltr": ".xrbpyxo{float:left}",
-                "rtl": ".xrbpyxo{float:var(--start)}",
+                "rtl": ".xrbpyxo{float:var(--1bs9lmi)}",
               },
               3000,
             ],
