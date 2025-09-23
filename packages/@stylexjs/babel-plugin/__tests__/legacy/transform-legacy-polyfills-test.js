@@ -258,6 +258,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x1s2rbg3",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x1s2rbg3{clear:var(--1t497je)}",
                 "rtl": null,
 =======
@@ -268,6 +269,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".xodj72a{clear:var(--1t497je)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".x1s2rbg3{clear:var(--1t497je)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -288,6 +293,7 @@ describe('@stylexjs/babel-plugin', () => {
               "xnaenqf",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".xnaenqf{clear:var(--1bs9lmi)}",
                 "rtl": null,
 =======
@@ -298,6 +304,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".x390i0x{clear:var(--1bs9lmi)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".xnaenqf{clear:var(--1bs9lmi)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -318,6 +328,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x1vdj7i2",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x1vdj7i2{float:var(--1t497je)}",
                 "rtl": null,
 =======
@@ -328,6 +339,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".x1guec7k{float:var(--1t497je)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".x1vdj7i2{float:var(--1t497je)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -348,6 +363,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x3e4l88",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x3e4l88{float:var(--1bs9lmi)}",
                 "rtl": null,
 =======
@@ -358,6 +374,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".xrbpyxo{float:var(--1bs9lmi)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".x3e4l88{float:var(--1bs9lmi)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -667,6 +687,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x1s2rbg3",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x1s2rbg3{clear:var(--1t497je)}",
                 "rtl": null,
 =======
@@ -677,6 +698,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".xodj72a{clear:var(--1t497je)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".x1s2rbg3{clear:var(--1t497je)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -700,6 +725,7 @@ describe('@stylexjs/babel-plugin', () => {
               "xnaenqf",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".xnaenqf{clear:var(--1bs9lmi)}",
                 "rtl": null,
 =======
@@ -710,6 +736,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".x390i0x{clear:var(--1bs9lmi)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".xnaenqf{clear:var(--1bs9lmi)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -733,6 +763,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x1vdj7i2",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x1vdj7i2{float:var(--1t497je)}",
                 "rtl": null,
 =======
@@ -743,6 +774,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".x1guec7k{float:var(--1t497je)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".x1vdj7i2{float:var(--1t497je)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -766,6 +801,7 @@ describe('@stylexjs/babel-plugin', () => {
               "x3e4l88",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x3e4l88{float:var(--1bs9lmi)}",
                 "rtl": null,
 =======
@@ -776,6 +812,10 @@ describe('@stylexjs/babel-plugin', () => {
 =======
                 "rtl": ".xrbpyxo{float:var(--1bs9lmi)}",
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
+=======
+                "ltr": ".x3e4l88{float:var(--1bs9lmi)}",
+                "rtl": null,
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
               },
               3000,
             ],
@@ -1085,10 +1125,14 @@ describe('@stylexjs/babel-plugin', () => {
               "x1s2rbg3",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x1s2rbg3{clear:var(--1t497je)}",
 =======
                 "ltr": ".xodj72a{clear:end}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "ltr": ".x1s2rbg3{clear:var(--1t497je)}",
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
                 "rtl": null,
               },
               3000,
@@ -1113,10 +1157,14 @@ describe('@stylexjs/babel-plugin', () => {
               "xnaenqf",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".xnaenqf{clear:var(--1bs9lmi)}",
 =======
                 "ltr": ".x390i0x{clear:start}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "ltr": ".xnaenqf{clear:var(--1bs9lmi)}",
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
                 "rtl": null,
               },
               3000,
@@ -1141,10 +1189,14 @@ describe('@stylexjs/babel-plugin', () => {
               "x1vdj7i2",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x1vdj7i2{float:var(--1t497je)}",
 =======
                 "ltr": ".x1guec7k{float:end}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "ltr": ".x1vdj7i2{float:var(--1t497je)}",
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
                 "rtl": null,
               },
               3000,
@@ -1169,10 +1221,14 @@ describe('@stylexjs/babel-plugin', () => {
               "x3e4l88",
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 "ltr": ".x3e4l88{float:var(--1bs9lmi)}",
 =======
                 "ltr": ".xrbpyxo{float:start}",
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+                "ltr": ".x3e4l88{float:var(--1bs9lmi)}",
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
                 "rtl": null,
               },
               3000,

@@ -45,6 +45,7 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         _inject2(".x1s2rbg3{clear:var(--1t497je)}", 3000);
         const classnames = "x1s2rbg3";"
 =======
@@ -54,6 +55,10 @@ describe('@stylexjs/babel-plugin', () => {
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
         const classnames = "xof8tvn";"
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+        _inject2(".x1s2rbg3{clear:var(--1t497je)}", 3000);
+        const classnames = "x1s2rbg3";"
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
       `);
     });
 
@@ -70,6 +75,7 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         _inject2(".xnaenqf{clear:var(--1bs9lmi)}", 3000);
         const classnames = "xnaenqf";"
 =======
@@ -79,6 +85,10 @@ describe('@stylexjs/babel-plugin', () => {
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
         const classnames = "x18lmvvi";"
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+        _inject2(".xnaenqf{clear:var(--1bs9lmi)}", 3000);
+        const classnames = "xnaenqf";"
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
       `);
     });
 
@@ -95,6 +105,7 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         _inject2(".x1vdj7i2{float:var(--1t497je)}", 3000);
         const classnames = "x1vdj7i2";"
 =======
@@ -104,6 +115,10 @@ describe('@stylexjs/babel-plugin', () => {
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
         const classnames = "x1h0q493";"
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+        _inject2(".x1vdj7i2{float:var(--1t497je)}", 3000);
+        const classnames = "x1vdj7i2";"
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
       `);
     });
 
@@ -120,6 +135,7 @@ describe('@stylexjs/babel-plugin', () => {
         import stylex from 'stylex';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         _inject2(".x3e4l88{float:var(--1bs9lmi)}", 3000);
         const classnames = "x3e4l88";"
 =======
@@ -129,6 +145,10 @@ describe('@stylexjs/babel-plugin', () => {
 >>>>>>> 6f1ffa77 (fix: Use hashed CSS custom properties for float/clear logical values)
         const classnames = "x1kmio9f";"
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
+=======
+        _inject2(".x3e4l88{float:var(--1bs9lmi)}", 3000);
+        const classnames = "x3e4l88";"
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)
       `);
     });
 

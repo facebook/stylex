@@ -548,6 +548,7 @@ const expansions = {
 };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Export the expansions object
 =======
 // Main function to handle property expansions and logical value replacements
@@ -572,3 +573,7 @@ function processProperty(property: string, value: TStyleValue): TReturn {
 >>>>>>> c89af941 (feat: Add CSS custom properties polyfill for logical float/clear values)
 export default expansions as typeof expansions;
 export { processProperty, LOGICAL_FLOAT_START_VAR, LOGICAL_FLOAT_END_VAR };
+=======
+// Export the expansions object
+export default expansions as typeof expansions;
+>>>>>>> 81170ee3 (Auto-flipping CSS custom properties for logical float/clear)

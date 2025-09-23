@@ -10,10 +10,6 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 import parser from 'postcss-value-parser';
-import {
-  LOGICAL_FLOAT_START_VAR,
-  LOGICAL_FLOAT_END_VAR,
-} from '../preprocess-rules/legacy-expand-shorthands';
 
 const cursorFlip: $ReadOnly<{ [string]: string }> = {
   'e-resize': 'w-resize',
