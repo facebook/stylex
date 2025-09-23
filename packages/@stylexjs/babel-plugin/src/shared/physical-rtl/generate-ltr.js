@@ -10,13 +10,6 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 
-const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
-  start: 'left',
-  end: 'right',
-  'inline-start': 'left',
-  'inline-end': 'right',
-};
-
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToLTR: $ReadOnly<{
   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
@@ -158,14 +151,6 @@ const propertyToLTR: $ReadOnly<{
   'border-bottom-end-radius': ([_key, val]: $ReadOnly<[string, string]>) => [
     'border-bottom-right-radius',
     val,
-  ],
-  float: ([key, val]: $ReadOnly<[string, string]>) => [
-    key,
-    logicalToPhysical[val] ?? val,
-  ],
-  clear: ([key, val]: $ReadOnly<[string, string]>) => [
-    key,
-    logicalToPhysical[val] ?? val,
   ],
   start: ([_key, val]: $ReadOnly<[string, string]>) => ['left', val],
   // 'inset-inline-start': ([key, val]: $ReadOnly<[string, string]>) => ['left', val],

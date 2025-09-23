@@ -10,10 +10,6 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 import parser from 'postcss-value-parser';
-import {
-  LOGICAL_FLOAT_START_VAR,
-  LOGICAL_FLOAT_END_VAR,
-} from '../preprocess-rules/legacy-expand-shorthands';
 
 const cursorFlip: $ReadOnly<{ [string]: string }> = {
   'e-resize': 'w-resize',
@@ -79,13 +75,6 @@ function flipShadow(value: string) {
     return rtl;
   }
 }
-
-const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
-  start: `var(${LOGICAL_FLOAT_END_VAR})`,
-  end: `var(${LOGICAL_FLOAT_START_VAR})`,
-  'inline-start': `var(${LOGICAL_FLOAT_END_VAR})`,
-  'inline-end': `var(${LOGICAL_FLOAT_START_VAR})`,
-};
 
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToRTL: $ReadOnly<{
@@ -232,10 +221,6 @@ const propertyToRTL: $ReadOnly<{
     'border-bottom-left-radius',
     val,
   ],
-  float: ([key, val]) =>
-    logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
-  clear: ([key, val]) =>
-    logicalToPhysical[val] != null ? [key, logicalToPhysical[val]] : null,
   start: ([_key, val]) => ['right', val],
   // 'inset-inline-start': ([key, val]) => ['right', val],
   end: ([_key, val]) => ['left', val],

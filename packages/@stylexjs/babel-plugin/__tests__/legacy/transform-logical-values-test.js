@@ -43,8 +43,8 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".xof8tvn{clear:right}", 3000, ".xof8tvn{clear:var(--1t497je)}");
-        const classnames = "xof8tvn";"
+        _inject2(".x1s2rbg3{clear:var(--1t497je)}", 3000);
+        const classnames = "x1s2rbg3";"
       `);
     });
 
@@ -59,8 +59,8 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x18lmvvi{clear:left}", 3000, ".x18lmvvi{clear:var(--1bs9lmi)}");
-        const classnames = "x18lmvvi";"
+        _inject2(".xnaenqf{clear:var(--1bs9lmi)}", 3000);
+        const classnames = "xnaenqf";"
       `);
     });
 
@@ -75,8 +75,8 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1h0q493{float:right}", 3000, ".x1h0q493{float:var(--1t497je)}");
-        const classnames = "x1h0q493";"
+        _inject2(".x1vdj7i2{float:var(--1t497je)}", 3000);
+        const classnames = "x1vdj7i2";"
       `);
     });
 
@@ -91,8 +91,8 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".x1kmio9f{float:left}", 3000, ".x1kmio9f{float:var(--1bs9lmi)}");
-        const classnames = "x1kmio9f";"
+        _inject2(".x3e4l88{float:var(--1bs9lmi)}", 3000);
+        const classnames = "x3e4l88";"
       `);
     });
 
