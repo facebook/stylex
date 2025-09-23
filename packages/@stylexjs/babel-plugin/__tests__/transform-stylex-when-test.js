@@ -19,7 +19,16 @@ function transform(source, opts = {}) {
       flow: 'all',
     },
     babelrc: false,
-    plugins: [[stylexPlugin, { ...opts }]],
+    plugins: [
+      [
+        stylexPlugin,
+        {
+          treeshakeCompensation: true,
+          unstable_moduleResolution: { type: 'haste' },
+          ...opts,
+        },
+      ],
+    ],
   });
 
   return result;
@@ -330,6 +339,44 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         const classNames = {
           className: "x-default-marker"
+        };"
+      `);
+    });
+  });
+
+  describe('[transform] using custom markers', () => {
+    test('named import of custom marker', () => {
+      const { code } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        import {customMarker} from 'custom-marker.stylex';
+
+        const styles = stylex.create({
+          foo: {
+            backgroundColor: {
+              default: 'blue',
+              [stylex.when.ancestor(':hover', customMarker)]: 'red',
+            },
+          },
+        });
+        
+        const container = stylex.props(customMarker);
+        const classNames = stylex.props(styles.foo);
+      `,
+        { runtimeInjection: true },
+      );
+
+      expect(code).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import * as stylex from '@stylexjs/stylex';
+        import 'custom-marker.stylex';
+        import { customMarker } from 'custom-marker.stylex';
+        _inject2(".x1t391ir{background-color:blue}", 3000);
+        _inject2(".x7rpj1w:where(.x1lc2aw:hover *){background-color:red}", 3011.3);
+        const container = stylex.props(customMarker);
+        const classNames = {
+          className: "x1t391ir x7rpj1w"
         };"
       `);
     });

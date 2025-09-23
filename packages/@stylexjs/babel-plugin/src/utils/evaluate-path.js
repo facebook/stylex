@@ -205,6 +205,11 @@ function evaluateThemeRef(
         if (key === '__IS_PROXY') {
           return true;
         }
+        if (key === 'toString') {
+          return () =>
+            state.traversalState.options.classNamePrefix +
+            utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }));
+        }
         return resolveKey(key);
       },
       set(_, key: string, value: string) {

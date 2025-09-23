@@ -23,6 +23,7 @@ describe('stylex', () => {
       'positionTry',
       'viewTransitionClass',
       'defaultMarker',
+      'defineMarker',
     ].forEach((api) => {
       test(`stylex.${api}`, () => {
         expect(() => stylex[api]()).toThrow();
