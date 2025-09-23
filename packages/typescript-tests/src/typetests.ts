@@ -294,3 +294,18 @@ styles8.foo satisfies StyleXStylesWithout<{ height: unknown }>;
 styles8.foo satisfies StyleXStylesWithout<{ color: unknown }>;
 
 stylex.props(styles8.foo);
+
+// StyleX consts
+
+const consts = stylex.defineConsts({
+  foo: 'bar',
+  bar: 123,
+  baz: {
+    default: 'qux',
+    '@media (max-width: 1000px)': 'quuz',
+  }
+} as const)
+
+consts.foo satisfies StyleXVar<'bar'>;
+consts.bar satisfies StyleXVar<123>;
+consts.baz satisfies StyleXVar<'qux' | 'quuz'>;
