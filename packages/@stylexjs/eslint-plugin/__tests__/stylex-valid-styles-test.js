@@ -1845,6 +1845,26 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darken, exclusion',
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -2227,6 +2247,97 @@ revert`,
       errors: [
         {
           message: 'This is not a key that is allowed by stylex',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'invalid-blend-mode',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `backgroundBlendMode value must be one of:
+normal
+multiply
+screen
+overlay
+darken
+lighten
+color-dodge
+color-burn
+hard-light
+soft-light
+difference
+exclusion
+hue
+saturation
+color
+luminosity
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for backgroundBlendMode with invalid blend mode value in comma-separated list
+    // 'darke' should be 'darken'
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darke, exclusion',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `backgroundBlendMode value must be one of:
+normal
+multiply
+screen
+overlay
+darken
+lighten
+color-dodge
+color-burn
+hard-light
+soft-light
+difference
+exclusion
+hue
+saturation
+color
+luminosity
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for incorrect spacing around comma in backgroundBlendMode
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darken,exclusion',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            "backgroundBlendMode values must be separated by a comma and a space (', ')",
         },
       ],
     },
