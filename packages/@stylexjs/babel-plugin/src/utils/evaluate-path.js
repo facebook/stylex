@@ -63,6 +63,7 @@ export type FunctionConfig = {
       },
     },
   },
+  disableImports?: boolean,
 };
 
 type State = {
@@ -201,6 +202,9 @@ function evaluateThemeRef(
     {},
     {
       get(_, key: string) {
+        if (key === '__IS_PROXY') {
+          return true;
+        }
         return resolveKey(key);
       },
       set(_, key: string, value: string) {
@@ -908,7 +912,11 @@ const importsForState = new WeakMap<StateManager, Set<string>>();
 export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
-  functions: FunctionConfig = { identifiers: {}, memberExpressions: {} },
+  functions: FunctionConfig = {
+    identifiers: {},
+    memberExpressions: {},
+    disableImports: false,
+  },
   seen: Map<t.Node, Result> = new Map(),
 ): $ReadOnly<{
   confident: boolean,
