@@ -304,6 +304,7 @@ const stylexValidStyles = {
       style: Node,
       level: number,
       propName: null | string,
+      outerIsPseudoElement: boolean,
     ): void {
       // currently ignoring preset spreads.
       if (style.type === 'Property') {
@@ -312,7 +313,12 @@ const stylexValidStyles = {
           const styleValue: ObjectExpression = style.value;
           // TODO: Remove this soon
           // But we want to make sure that the same "condition" isn't repeated
-          if (level > 0 && propName == null) {
+          if (
+            level > 0 &&
+            propName == null &&
+            // Allow exactly one inner level when the outer/top nested layer is a pseudo-element
+            !(outerIsPseudoElement && level === 1)
+          ) {
             return context.report({
               node: style.value as Node,
               loc: style.value.loc,
@@ -394,6 +400,7 @@ const stylexValidStyles = {
                 keyName === 'default'
                   ? null
                   : keyName),
+              outerIsPseudoElement || keyName.startsWith('::'),
             ),
           );
         }
@@ -851,7 +858,7 @@ const stylexValidStyles = {
             }
           }
           styles.properties.forEach((prop) =>
-            checkStyleProperty(prop, 0, null),
+            checkStyleProperty(prop, 0, null, false),
           );
           // Reset local variables.
           dynamicStyleVariables.clear();

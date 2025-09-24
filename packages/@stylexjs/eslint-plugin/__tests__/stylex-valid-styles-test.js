@@ -624,6 +624,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            ':focus': {
+              ':hover': {
+                ':active': {
+                  color: 'red'
+                }
+              }
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'You cannot nest styles more than one level deep',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
         const styles = {default: {width: '30pt'}};
         stylex.create(styles);
       `,
@@ -1808,6 +1830,21 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
       `,
       options: [{ allowRawCSSVars: true }],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            '::after': {
+              ':hover': {
+                content: ''
+              }
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
   ],
   invalid: [
     {
@@ -1839,6 +1876,26 @@ initial
 inherit
 unset
 revert`,
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            ':focus': {
+              '::after': {
+                content: ''
+              }
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'You cannot nest styles more than one level deep',
         },
       ],
     },
