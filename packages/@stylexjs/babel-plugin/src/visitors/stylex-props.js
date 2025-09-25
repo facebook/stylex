@@ -213,29 +213,34 @@ export default function transformStylexProps(
         if (nonNullProps === true) {
           styleNonNullProps = true;
         } else {
-          const { confident, value: styleValue } = evaluate(
-            path,
-            state,
-            evaluatePathFnConfig,
-          );
-          if (
-            !confident ||
-            styleValue == null ||
-            styleValue.__IS_PROXY === true
-          ) {
+          try {
+            const { confident, value: styleValue } = evaluate(
+              path,
+              state,
+              evaluatePathFnConfig,
+            );
+            if (
+              !confident ||
+              styleValue == null ||
+              styleValue.__IS_PROXY === true
+            ) {
+              nonNullProps = true;
+              styleNonNullProps = true;
+            } else {
+              styleNonNullProps =
+                nonNullProps === true ? true : [...nonNullProps];
+              if (nonNullProps !== true) {
+                nonNullProps = [
+                  ...nonNullProps,
+                  ...Object.keys(styleValue).filter(
+                    (key) => styleValue[key] !== null,
+                  ),
+                ];
+              }
+            }
+          } catch {
             nonNullProps = true;
             styleNonNullProps = true;
-          } else {
-            styleNonNullProps =
-              nonNullProps === true ? true : [...nonNullProps];
-            if (nonNullProps !== true) {
-              nonNullProps = [
-                ...nonNullProps,
-                ...Object.keys(styleValue).filter(
-                  (key) => styleValue[key] !== null,
-                ),
-              ];
-            }
           }
         }
 
@@ -356,16 +361,20 @@ function parseNullableStyle(
     }
   }
 
-  const parsedObj = evaluate(path, state, evaluatePathFnConfig);
-  if (
-    parsedObj.confident &&
-    parsedObj.value != null &&
-    typeof parsedObj.value === 'object'
-  ) {
-    if (parsedObj.value.__IS_PROXY === true) {
-      return 'other';
+  try {
+    const parsedObj = evaluate(path, state, evaluatePathFnConfig);
+    if (
+      parsedObj.confident &&
+      parsedObj.value != null &&
+      typeof parsedObj.value === 'object'
+    ) {
+      if (parsedObj.value.__IS_PROXY === true) {
+        return 'other';
+      }
+      return parsedObj.value;
     }
-    return parsedObj.value;
+  } catch {
+    return 'other';
   }
 
   return 'other';
