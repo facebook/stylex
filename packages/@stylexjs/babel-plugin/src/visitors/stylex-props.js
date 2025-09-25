@@ -85,6 +85,7 @@ export default function transformStylexProps(
   const evaluatePathFnConfig: FunctionConfig = {
     identifiers,
     memberExpressions,
+    disableImports: true,
   };
 
   const resolvedArgs: ResolvedArgs = [];
@@ -217,7 +218,11 @@ export default function transformStylexProps(
             state,
             evaluatePathFnConfig,
           );
-          if (!confident || styleValue == null) {
+          if (
+            !confident ||
+            styleValue == null ||
+            styleValue.__IS_PROXY === true
+          ) {
             nonNullProps = true;
             styleNonNullProps = true;
           } else {
@@ -357,6 +362,9 @@ function parseNullableStyle(
     parsedObj.value != null &&
     typeof parsedObj.value === 'object'
   ) {
+    if (parsedObj.value.__IS_PROXY === true) {
+      return 'other';
+    }
     return parsedObj.value;
   }
 
