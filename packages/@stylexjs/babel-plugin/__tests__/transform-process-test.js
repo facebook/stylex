@@ -331,6 +331,86 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('all rules (legacyDisableLayers:true)', () => {
+      const { code, metadata } = transform(fixture);
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const constants = {
+          YELLOW: "yellow",
+          ORANGE: "var(--orange-theme-color)",
+          mediaBig: "@media (max-width: 1000px)",
+          mediaSmall: "@media (max-width: 500px)"
+        };
+        export const vars = {
+          blue: "var(--blue-xpqh4lw)",
+          __varGroupHash__: "xsg933n"
+        };
+        export const spacing = {
+          small: "var(--small-x19twipt)",
+          medium: "var(--medium-xypjos2)",
+          large: "var(--large-x1ec7iuc)",
+          __varGroupHash__: "xbiwvf9"
+        };
+        export const themeColor = {
+          xsg933n: "x6xqkwy xsg933n",
+          $$css: true
+        };
+        export const themeSpacing = {
+          xbiwvf9: "x57uvma xbiwvf9",
+          $$css: true
+        };
+        export const styles = {
+          root: {
+            "animationName-kKVMdj": "animationName-x13ah0pd",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
+            "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-x1cmij7u",
+            "padding-kmVPX3": "padding-xss17vw",
+            "margin-kogj98": "margin-xymmreb",
+            "float-kyUFMd": "float-x1kmio9f",
+            $$css: "app/main.js:31"
+          },
+          overrideColor: {
+            "--orange-theme-color": "--orange-theme-color-xufgesz",
+            $$css: "app/main.js:58"
+          },
+          dynamic: color => [{
+            "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
+            $$css: "app/main.js:61"
+          }, {
+            "--x-color": color != null ? color : undefined
+          }]
+        };"
+      `);
+      expect(
+        stylexPlugin.processStylexRules(metadata, {
+          useLayers: false,
+          enableLTRRTLComments: false,
+          legacyDisableLayers: true,
+        }),
+      ).toMatchInlineSnapshot(`
+        "@property --x-color { syntax: "*"; inherits: false;}
+        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
+        .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
+        .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        .margin-xymmreb{margin:10px 20px}
+        .padding-xss17vw{padding:var(--large-x1ec7iuc)}
+        .borderColor-x1bg2uv5{border-color:green}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        .animationName-x13ah0pd{animation-name:x35atj5-B}
+        .backgroundColor-xrkmrrc{background-color:red}
+        .color-x14rh7hd{color:var(--x-color)}
+        html:not([dir='rtl']) .float-x1kmio9f{float:left}
+        html[dir='rtl'] .float-x1kmio9f{float:right}
+        .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (min-width:320px){.textShadow-x1cmij7u.textShadow-x1cmij7u{text-shadow:10px 20px 30px 40px green}}"
+      `);
+    });
+
     test('legacy-expand-shorthands with logical styles polyfill', () => {
       const { code, metadata } = transform(
         `

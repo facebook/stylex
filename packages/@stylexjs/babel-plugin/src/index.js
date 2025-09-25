@@ -364,11 +364,15 @@ function processStylexRules(
     | {
         useLayers?: boolean,
         enableLTRRTLComments?: boolean,
+        legacyDisableLayers?: boolean,
         ...
       },
 ): string {
-  const { useLayers = false, enableLTRRTLComments = false } =
-    typeof config === 'boolean' ? { useLayers: config } : config ?? {};
+  const {
+    useLayers = false,
+    enableLTRRTLComments = false,
+    legacyDisableLayers = false,
+  } = typeof config === 'boolean' ? { useLayers: config } : config ?? {};
   if (rules.length === 0) {
     return '';
   }
@@ -497,7 +501,7 @@ function processStylexRules(
           let ltrRule = ltr,
             rtlRule = rtl;
 
-          if (!useLayers) {
+          if (!useLayers && !legacyDisableLayers) {
             ltrRule = addSpecificityLevel(ltrRule, index);
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
