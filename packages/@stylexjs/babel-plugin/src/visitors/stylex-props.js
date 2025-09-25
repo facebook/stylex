@@ -85,6 +85,7 @@ export default function transformStylexProps(
   const evaluatePathFnConfig: FunctionConfig = {
     identifiers,
     memberExpressions,
+    disableImports: true,
   };
 
   const resolvedArgs: ResolvedArgs = [];
@@ -212,34 +213,29 @@ export default function transformStylexProps(
         if (nonNullProps === true) {
           styleNonNullProps = true;
         } else {
-          try {
-            const { confident, value: styleValue } = evaluate(
-              path,
-              state,
-              evaluatePathFnConfig,
-            );
-            if (
-              !confident ||
-              styleValue == null ||
-              styleValue.__IS_PROXY === true
-            ) {
-              nonNullProps = true;
-              styleNonNullProps = true;
-            } else {
-              styleNonNullProps =
-                nonNullProps === true ? true : [...nonNullProps];
-              if (nonNullProps !== true) {
-                nonNullProps = [
-                  ...nonNullProps,
-                  ...Object.keys(styleValue).filter(
-                    (key) => styleValue[key] !== null,
-                  ),
-                ];
-              }
-            }
-          } catch {
+          const { confident, value: styleValue } = evaluate(
+            path,
+            state,
+            evaluatePathFnConfig,
+          );
+          if (
+            !confident ||
+            styleValue == null ||
+            styleValue.__IS_PROXY === true
+          ) {
             nonNullProps = true;
             styleNonNullProps = true;
+          } else {
+            styleNonNullProps =
+              nonNullProps === true ? true : [...nonNullProps];
+            if (nonNullProps !== true) {
+              nonNullProps = [
+                ...nonNullProps,
+                ...Object.keys(styleValue).filter(
+                  (key) => styleValue[key] !== null,
+                ),
+              ];
+            }
           }
         }
 
@@ -360,20 +356,16 @@ function parseNullableStyle(
     }
   }
 
-  try {
-    const parsedObj = evaluate(path, state, evaluatePathFnConfig);
-    if (
-      parsedObj.confident &&
-      parsedObj.value != null &&
-      typeof parsedObj.value === 'object'
-    ) {
-      if (parsedObj.value.__IS_PROXY === true) {
-        return 'other';
-      }
-      return parsedObj.value;
+  const parsedObj = evaluate(path, state, evaluatePathFnConfig);
+  if (
+    parsedObj.confident &&
+    parsedObj.value != null &&
+    typeof parsedObj.value === 'object'
+  ) {
+    if (parsedObj.value.__IS_PROXY === true) {
+      return 'other';
     }
-  } catch {
-    return 'other';
+    return parsedObj.value;
   }
 
   return 'other';
