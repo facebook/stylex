@@ -415,7 +415,11 @@ function _evaluate(path: NodePath<>, state: State): any {
       const importedName =
         imported.type === 'Identifier' ? imported.name : imported.value;
       const importPath = binding.path.parentPath;
-      if (importPath && importPath.isImportDeclaration()) {
+      if (
+        importPath &&
+        importPath.isImportDeclaration() &&
+        !state.functions.disableImports
+      ) {
         const absPath = state.traversalState.importPathResolver(
           importPath.node.source.value,
         );
