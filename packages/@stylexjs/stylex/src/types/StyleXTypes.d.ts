@@ -248,9 +248,9 @@ export type IDFromVarGroup<T extends VarGroup<{}>> = T['__opaqueId'];
 
 type TTokens = Readonly<{
   [key: string]:
+    | NestedVarObject<null | string | number>
+    | StyleXVar<null | string | number>
     | CSSType<null | string | number>
-    | string
-    | { [key: string]: string };
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
@@ -264,7 +264,7 @@ type NestedVarObject<T> =
   | T
   | Readonly<{
       default: NestedVarObject<T>;
-      [key: `@${string}`]: NestedVarObject<T>;
+      [key: AtRuleStr]: NestedVarObject<T>;
     }>;
 
 export type StyleX$DefineConsts = <
