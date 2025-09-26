@@ -205,6 +205,9 @@ function evaluateThemeRef(
         if (key === '__IS_PROXY') {
           return true;
         }
+        if (key === 'toString') {
+          return () => resolveKey('');
+        }
         return resolveKey(key);
       },
       set(_, key: string, value: string) {
