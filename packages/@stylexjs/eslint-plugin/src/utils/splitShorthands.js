@@ -115,10 +115,34 @@ const toCamelCase = (str: string) => {
   return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
 };
 
+/* Modern CSS color functions that should be treated as single values */
+const MODERN_COLOR_FUNCTIONS = [
+  'oklch', 'oklab', 'lch', 'lab', 'color', 'hwb'
+];
+
+/* Check if a value contains modern CSS color functions */
+function containsModernColorFunction(str: string): boolean {
+  const colorFunctionRegex = new RegExp(
+    `\\b(${MODERN_COLOR_FUNCTIONS.join('|')})\\s*\\(`, 'i'
+  );
+  return colorFunctionRegex.test(str);
+}
+
 /* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
 In cases with simple spaces between comma-separated parameters, we can preprocess the values by stripping the spaces.
 If there are still spaces remaining, such as in edge cases involving `calc()` or gradient values, we won't provide an auto-fix. */
 function processWhitespacesinFunctions(str: string) {
+  // If the value contains modern CSS color functions that css-shorthand-expand doesn't understand,
+  // treat it as a single value that shouldn't be expanded
+  if (containsModernColorFunction(str)) {
+    return {
+      strippedValue: str,
+      canFix: true,
+      isInvalidShorthand: false,
+      isModernColorFunction: true,
+    };
+  }
+
   // Strip spaces after commas within parentheses
   const strippedValue = str.replace(/\(\s*([^)]+?)\s*\)/g, (match, p1) => {
     const strippedContent = p1.replace(/,\s+/g, ',');
@@ -143,6 +167,7 @@ function processWhitespacesinFunctions(str: string) {
     strippedValue,
     canFix,
     isInvalidShorthand,
+    isModernColorFunction: false,
   };
 }
 
@@ -168,11 +193,16 @@ export function splitSpecificShorthands(
   isNumber: boolean = false,
   _preferInline: boolean = false,
 ): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
-  const { strippedValue, canFix, isInvalidShorthand } =
+  const { strippedValue, canFix, isInvalidShorthand, isModernColorFunction } =
     processWhitespacesinFunctions(value);
 
   if (!canFix && isInvalidShorthand) {
     return [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  // If this is a modern CSS color function, don't expand it - treat as single value
+  if (isModernColorFunction) {
+    return [[toCamelCase(property), value]];
   }
 
   const longform = cssExpand(property, strippedValue);
