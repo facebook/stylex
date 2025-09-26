@@ -422,7 +422,49 @@ const backfaceVisibility: RuleCheck = makeUnionRule(
 );
 // type background = string | finalBgLayer;
 const backgroundAttachment: RuleCheck = attachment;
-const backgroundBlendMode: RuleCheck = blendMode;
+const backgroundBlendMode: RuleCheck = (
+  node: Expression | Pattern,
+  _variables?: Variables,
+  prop?: Property,
+) => {
+  if (node.type !== 'Literal' || prop == null) {
+    return blendMode(node, _variables, prop);
+  }
+
+  if (typeof node.value === 'string') {
+    const value: string = node.value;
+    const items = value.split(', ');
+    if (value.split(',').length !== items.length) {
+      return {
+        message:
+          "backgroundBlendMode values must be separated by a comma and a space (', ')",
+        suggest: {
+          desc: 'Replace comma with a comma and a space (", ")',
+          fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+            return fixer.replaceText(
+              prop,
+              `backgroundBlendMode: '${value.replace(',', ', ')}'`,
+            );
+          },
+        },
+      };
+    }
+    for (const item of items) {
+      const response = blendMode(
+        { type: 'Literal', value: item, raw: `'${item}'` },
+        _variables,
+        prop,
+      );
+      if (response !== undefined) {
+        return {
+          message: response.message,
+        };
+      }
+    }
+
+    return undefined;
+  }
+};
 const backgroundClip: RuleCheck = makeUnionRule(
   'border-box',
   'padding-box',
