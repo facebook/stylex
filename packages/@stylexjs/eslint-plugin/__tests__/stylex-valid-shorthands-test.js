@@ -141,6 +141,66 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     `,
     },
     {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'oklch(0.928 0.006 264.531)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'oklab(0.9 -0.003 -0.003)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'lch(50% 20 240)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'lab(50% -20 -20)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'color(display-p3 1 0.5 0)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'hwb(240 100% 50%)',
+        },
+      })
+    `,
+    },
+    {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
         import * as stylex from 'custom-stylex';
