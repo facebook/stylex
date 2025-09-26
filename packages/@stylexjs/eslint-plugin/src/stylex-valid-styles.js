@@ -491,62 +491,47 @@ const stylexValidStyles = {
                 ? convertToStandardProperties[style.key.value]
                 : null;
 
-          let originalKey = '';
-
-          if (style.key.type === 'Identifier') {
-            originalKey = style.key.name;
-          } else if (
-            style.key.type === 'Literal' &&
-            typeof style.key.value === 'string'
+          if (
+            replacementKey == null ||
+            !(style.key.type === 'Identifier' || style.key.type === 'Literal')
           ) {
-            originalKey = style.key.value;
-          }
-
-          return context.report({
-            node: style.key,
-            loc: style.key.loc,
-            message:
-              replacementKey &&
-              (style.key.type === 'Identifier' || style.key.type === 'Literal')
-                ? `The key "${originalKey}" is not a standard CSS property. Did you mean "${replacementKey}"?`
-                : 'This is not a key that is allowed by stylex',
-            fix: (fixer) => {
-              if (replacementKey) {
-                return fixer.replaceText(style.key, replacementKey);
-              }
-              return null;
-            },
-            suggest:
-              closestKey != null
-                ? [
-                    {
-                      desc: `Did you mean "${closestKey}"?`,
-                      fix: (fixer) => {
-                        if (style.key.type === 'Identifier') {
-                          return fixer.replaceText(style.key, closestKey);
-                        } else if (
-                          style.key.type === 'Literal' &&
-                          (typeof style.key.value === 'string' ||
-                            typeof style.key.value === 'number' ||
-                            typeof style.key.value === 'boolean' ||
-                            style.key.value == null)
-                        ) {
-                          const styleKey: Literal = style.key;
-                          const raw = style.key.raw;
-                          if (raw != null) {
-                            const quoteType = raw.substr(0, 1);
-                            return fixer.replaceText(
-                              styleKey,
-                              `${quoteType}${closestKey}${quoteType}`,
-                            );
+            return context.report({
+              node: style.key,
+              loc: style.key.loc,
+              message: 'This is not a key that is allowed by stylex',
+              suggest:
+                closestKey != null
+                  ? [
+                      {
+                        desc: `Did you mean "${closestKey}"?`,
+                        fix: (fixer) => {
+                          if (style.key.type === 'Identifier') {
+                            return fixer.replaceText(style.key, closestKey);
+                          } else if (
+                            style.key.type === 'Literal' &&
+                            (typeof style.key.value === 'string' ||
+                              typeof style.key.value === 'number' ||
+                              typeof style.key.value === 'boolean' ||
+                              style.key.value == null)
+                          ) {
+                            const styleKey: Literal = style.key;
+                            const raw = style.key.raw;
+                            if (raw != null) {
+                              const quoteType = raw.substr(0, 1);
+                              return fixer.replaceText(
+                                styleKey,
+                                `${quoteType}${closestKey}${quoteType}`,
+                              );
+                            }
                           }
-                        }
-                        return null;
+                          return null;
+                        },
                       },
-                    },
-                  ]
-                : undefined,
-          } as Rule.ReportDescriptor);
+                    ]
+                  : undefined,
+            } as Rule.ReportDescriptor);
+          }
+          return;
         }
         if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
@@ -576,22 +561,7 @@ const stylexValidStyles = {
             typeof style.value.value === 'string' &&
             (style.value.value === 'start' || style.value.value === 'end')
           ) {
-            const replacement =
-              style.value.value === 'start' ? 'inline-start' : 'inline-end';
-            return context.report({
-              node: style.value,
-              loc: style.value.loc,
-              message: `The value "${style.value.value}" is not a standard CSS value for "${key}". Did you mean "${replacement}"?`,
-              fix: (fixer) =>
-                fixer.replaceText(style.value, `'${replacement}'`),
-              suggest: [
-                {
-                  desc: `Replace "${style.value.value}" with "${replacement}"?`,
-                  fix: (fixer) =>
-                    fixer.replaceText(style.value, `'${replacement}'`),
-                },
-              ],
-            } as Rule.ReportDescriptor);
+            return;
           }
 
           const check = ruleChecker(
