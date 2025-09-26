@@ -602,14 +602,25 @@ const stylexValidStyles = {
           );
           if (check != null) {
             const { message, suggest } = check;
+            const isBackgroundBlendModeFormatError =
+              key === 'backgroundBlendMode' &&
+              typeof message === 'string' &&
+              message.indexOf(
+                'backgroundBlendMode values must be separated by a comma and a space',
+              ) !== -1;
+
+            const finalMessage = isBackgroundBlendModeFormatError
+              ? message.split('\n')[0]
+              : `${key} value must be one of:\n${message}${
+                  key === 'lineHeight'
+                    ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
+                    : ''
+                }`;
+
             return context.report({
               node: style.value,
               loc: style.value.loc,
-              message: `${key} value must be one of:\n${message}${
-                key === 'lineHeight'
-                  ? '\nBe careful when fixing: lineHeight: 10px is not the same as lineHeight: 10'
-                  : ''
-              }`,
+              message: finalMessage,
               suggest: suggest != null ? [suggest] : undefined,
             } as Rule.ReportDescriptor);
           }
