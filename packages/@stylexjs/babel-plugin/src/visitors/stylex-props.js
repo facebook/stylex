@@ -24,7 +24,21 @@ type StyleObject = {
   [key: string]: string | null | boolean,
 };
 
-type ConditionalStyle = [t.Expression, ?StyleObject, ?StyleObject];
+class ConditionalStyle {
+  test: t.Expression;
+  primary: ?StyleObject;
+  fallback: ?StyleObject;
+  constructor(
+    test: t.Expression,
+    primary: ?StyleObject,
+    fallback: ?StyleObject,
+  ) {
+    this.test = test;
+    this.primary = primary;
+    this.fallback = fallback;
+  }
+}
+
 type ResolvedArg = ?StyleObject | ConditionalStyle;
 type ResolvedArgs = Array<ResolvedArg>;
 
@@ -128,7 +142,7 @@ export default function transformStylexProps(
           bailOutIndex = currentIndex;
           bailOut = true;
         } else {
-          resolvedArgs.push([test, primary, fallback]);
+          resolvedArgs.push(new ConditionalStyle(test, primary, fallback));
           conditional++;
         }
         break;
@@ -156,7 +170,9 @@ export default function transformStylexProps(
           bailOutIndex = currentIndex;
           bailOut = true;
         } else {
-          resolvedArgs.push([leftPath.node, rightResolved, null]);
+          resolvedArgs.push(
+            new ConditionalStyle(leftPath.node, rightResolved, null),
+          );
           conditional++;
         }
         break;
@@ -373,8 +389,10 @@ function parseNullableStyle(
 
 function makeStringExpression(values: ResolvedArgs): t.Expression {
   const conditions = values
-    .filter((v: ResolvedArg): v is ConditionalStyle => Array.isArray(v))
-    .map((v: ConditionalStyle) => v[0]);
+    .filter(
+      (v: ResolvedArg): v is ConditionalStyle => v instanceof ConditionalStyle,
+    )
+    .map((v: ConditionalStyle) => v.test);
 
   if (conditions.length === 0) {
     const result = props(values as any);
@@ -385,8 +403,8 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
   const objEntries = conditionPermutations.map((permutation) => {
     let i = 0;
     const args = values.map((v) => {
-      if (Array.isArray(v)) {
-        const [_test, primary, fallback] = v;
+      if (v instanceof ConditionalStyle) {
+        const { primary, fallback } = v;
         return permutation[i++] ? primary : fallback;
       } else {
         return v;
