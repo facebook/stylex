@@ -24,7 +24,21 @@ type StyleObject = {
   [key: string]: string | null | boolean,
 };
 
-type ConditionalStyle = [t.Expression, ?StyleObject, ?StyleObject];
+class ConditionalStyle {
+  test: t.Expression;
+  primary: ?StyleObject;
+  fallback: ?StyleObject;
+  constructor(
+    test: t.Expression,
+    primary: ?StyleObject,
+    fallback: ?StyleObject,
+  ) {
+    this.test = test;
+    this.primary = primary;
+    this.fallback = fallback;
+  }
+}
+
 type ResolvedArg = ?StyleObject | ConditionalStyle;
 type ResolvedArgs = Array<ResolvedArg>;
 
@@ -90,81 +104,75 @@ export default function transformStylexProps(
 
   const resolvedArgs: ResolvedArgs = [];
   for (const argPath of argsPath) {
-    const arg = argPath.node;
     currentIndex++;
-    switch (arg.type) {
-      case 'ObjectExpression':
-      case 'Identifier':
-      case 'MemberExpression': {
-        const resolved = parseNullableStyle(
-          argPath,
-          state,
-          evaluatePathFnConfig,
-        );
-        if (resolved === 'other') {
-          bailOutIndex = currentIndex;
-          bailOut = true;
-        } else {
-          resolvedArgs.push(resolved);
-        }
-        break;
-      }
-      case 'ConditionalExpression': {
-        const { test } = arg;
-        const consequentPath = argPath.get('consequent');
-        const alternatePath = argPath.get('alternate');
 
-        const primary = parseNullableStyle(
-          consequentPath,
-          state,
-          evaluatePathFnConfig,
-        );
-        const fallback = parseNullableStyle(
-          alternatePath,
-          state,
-          evaluatePathFnConfig,
-        );
-        if (primary === 'other' || fallback === 'other') {
-          bailOutIndex = currentIndex;
-          bailOut = true;
-        } else {
-          resolvedArgs.push([test, primary, fallback]);
-          conditional++;
-        }
-        break;
+    if (
+      argPath.isObjectExpression() ||
+      argPath.isIdentifier() ||
+      argPath.isMemberExpression()
+    ) {
+      const resolved = parseNullableStyle(argPath, state, evaluatePathFnConfig);
+      if (resolved === 'other') {
+        bailOutIndex = currentIndex;
+        bailOut = true;
+      } else {
+        resolvedArgs.push(resolved);
       }
-      case 'LogicalExpression': {
-        if (arg.operator !== '&&') {
-          bailOutIndex = currentIndex;
-          bailOut = true;
-          break;
-        }
-        const leftPath = argPath.get('left');
-        const rightPath = argPath.get('right');
+    } else if (argPath.isConditionalExpression()) {
+      const arg = argPath.node;
+      const { test } = arg;
+      const consequentPath = argPath.get('consequent');
+      const alternatePath = argPath.get('alternate');
 
-        const leftResolved = parseNullableStyle(
-          leftPath,
-          state,
-          evaluatePathFnConfig,
-        );
-        const rightResolved = parseNullableStyle(
-          rightPath,
-          state,
-          evaluatePathFnConfig,
-        );
-        if (leftResolved !== 'other' || rightResolved === 'other') {
-          bailOutIndex = currentIndex;
-          bailOut = true;
-        } else {
-          resolvedArgs.push([leftPath.node, rightResolved, null]);
-          conditional++;
-        }
-        break;
+      const primary = parseNullableStyle(
+        consequentPath,
+        state,
+        evaluatePathFnConfig,
+      );
+      const fallback = parseNullableStyle(
+        alternatePath,
+        state,
+        evaluatePathFnConfig,
+      );
+      if (primary === 'other' || fallback === 'other') {
+        bailOutIndex = currentIndex;
+        bailOut = true;
+      } else {
+        resolvedArgs.push(new ConditionalStyle(test, primary, fallback));
+        conditional++;
       }
-      default:
+    } else if (argPath.isLogicalExpression()) {
+      const arg = argPath.node;
+      if (arg.operator !== '&&') {
         bailOutIndex = currentIndex;
         bailOut = true;
         break;
+      }
+      const leftPath = argPath.get('left');
+      const rightPath = argPath.get('right');
+
+      const leftResolved = parseNullableStyle(
+        leftPath,
+        state,
+        evaluatePathFnConfig,
+      );
+      const rightResolved = parseNullableStyle(
+        rightPath,
+        state,
+        evaluatePathFnConfig,
+      );
+      if (leftResolved !== 'other' || rightResolved === 'other') {
+        bailOutIndex = currentIndex;
+        bailOut = true;
+      } else {
+        resolvedArgs.push(
+          new ConditionalStyle(leftPath.node, rightResolved, null),
+        );
+        conditional++;
+      }
+    } else {
+      bailOutIndex = currentIndex;
+      bailOut = true;
     }
     if (conditional > 4) {
       bailOut = true;
@@ -373,8 +381,10 @@ function parseNullableStyle(
 
 function makeStringExpression(values: ResolvedArgs): t.Expression {
   const conditions = values
-    .filter((v: ResolvedArg): v is ConditionalStyle => Array.isArray(v))
-    .map((v: ConditionalStyle) => v[0]);
+    .filter(
+      (v: ResolvedArg): v is ConditionalStyle => v instanceof ConditionalStyle,
+    )
+    .map((v: ConditionalStyle) => v.test);
 
   if (conditions.length === 0) {
     const result = props(values as any);
@@ -385,8 +395,8 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
   const objEntries = conditionPermutations.map((permutation) => {
     let i = 0;
     const args = values.map((v) => {
-      if (Array.isArray(v)) {
-        const [_test, primary, fallback] = v;
+      if (v instanceof ConditionalStyle) {
+        const { primary, fallback } = v;
         return permutation[i++] ? primary : fallback;
       } else {
         return v;
