@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0 (Sep 25, 2025)
+- Added support for descendant and shared selectors.
+- Support CSS variable overrides with `defineConsts`.
+- Add `valid-styles` support to CSS variable overrides in `create` calls.
+- Replace `valid-styles` object check with Flow typing
+
 ## 0.15.4 (Sep 7, 2025)
 
 - Add configuration modes to `processStylexRules`.
