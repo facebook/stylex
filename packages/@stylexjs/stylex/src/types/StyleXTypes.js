@@ -225,9 +225,11 @@ export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-export type StyleX$DefineConsts = <DefaultTokens: TTokens, ID: string = string>(
+export type StyleX$DefineConsts = <
+  DefaultTokens: { +[string]: number | string },
+>(
   tokens: DefaultTokens,
-) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
+) => DefaultTokens;
 
 // opaque type ThemeKey<+_VG: VarGroup<{ +[string]: mixed }>>: string = string;
 export opaque type Theme<
