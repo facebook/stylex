@@ -259,7 +259,7 @@ export default function transformStyleXCreate(
       };
     }
 
-    if (varName != null) {
+    if (varName != null && isTopLevel(path)) {
       const stylesToRemember = removeObjectsWithSpreads(compiledStyles);
       state.styleMap.set(varName, stylesToRemember);
       state.styleVars.set(varName, path.parentPath as $FlowFixMe);
@@ -507,4 +507,13 @@ function legacyExpandShorthands(
     .filter(Boolean);
 
   return expandedKeysToKeyPaths;
+}
+
+function isTopLevel(path: NodePath<>): boolean {
+  if (path.isStatement()) {
+    return (
+      path.parentPath?.isProgram() || path.parentPath?.isExportDeclaration()
+    );
+  }
+  return path.parentPath != null && isTopLevel(path.parentPath);
 }
