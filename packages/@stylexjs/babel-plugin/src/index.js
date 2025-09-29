@@ -369,6 +369,7 @@ function processStylexRules(
         useLayers?: boolean,
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
+        useLegacyClassnamesSort?: boolean,
         ...
       },
 ): string {
@@ -376,6 +377,7 @@ function processStylexRules(
     useLayers = false,
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
+    useLegacyClassnamesSort = false,
   } = typeof config === 'boolean' ? { useLayers: config } : config ?? {};
   if (rules.length === 0) {
     return '';
@@ -442,21 +444,26 @@ function processStylexRules(
 
   const sortedRules = nonConstantRules.sort(
     (
-      [, { ltr: rule1 }, firstPriority]: [string, any, number],
-      [, { ltr: rule2 }, secondPriority]: [string, any, number],
+      [classname1, { ltr: rule1 }, firstPriority]: [string, any, number],
+      [classname2, { ltr: rule2 }, secondPriority]: [string, any, number],
     ) => {
       const priorityComparison = firstPriority - secondPriority;
       if (priorityComparison !== 0) return priorityComparison;
-      if (rule1.startsWith('@') && !rule2.startsWith('@')) {
-        const query1 = rule1.slice(0, rule1.indexOf('{'));
-        const query2 = rule2.slice(0, rule2.indexOf('{'));
-        if (query1 !== query2) {
-          return query1.localeCompare(query2);
+
+      if (useLegacyClassnamesSort) {
+        return classname1.localeCompare(classname2);
+      } else {
+        if (rule1.startsWith('@') && !rule2.startsWith('@')) {
+          const query1 = rule1.slice(0, rule1.indexOf('{'));
+          const query2 = rule2.slice(0, rule2.indexOf('{'));
+          if (query1 !== query2) {
+            return query1.localeCompare(query2);
+          }
         }
+        const property1 = rule1.slice(rule1.lastIndexOf('{'));
+        const property2 = rule2.slice(rule2.lastIndexOf('{'));
+        return property1.localeCompare(property2);
       }
-      const property1 = rule1.slice(rule1.lastIndexOf('{'));
-      const property2 = rule2.slice(rule2.lastIndexOf('{'));
-      return property1.localeCompare(property2);
     },
   );
 
