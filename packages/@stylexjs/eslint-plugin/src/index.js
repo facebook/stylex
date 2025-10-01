@@ -13,6 +13,7 @@ import validShorthands from './stylex-valid-shorthands';
 import enforceExtension from './stylex-enforce-extension';
 import noUnused from './stylex-no-unused';
 import noLegacyContextualStyles from './stylex-no-legacy-contextual-styles';
+import noLookaheadSelectors from './stylex-no-lookahead-selectors';
 
 const rules: {
   'valid-styles': typeof validStyles,
@@ -21,6 +22,7 @@ const rules: {
   'enforce-extension': typeof enforceExtension,
   'no-unused': typeof noUnused,
   'no-legacy-contextual-styles': typeof noLegacyContextualStyles,
+  'no-lookahead-selectors': typeof noLookaheadSelectors,
 } = {
   'valid-styles': validStyles,
   'sort-keys': sortKeys,
@@ -28,6 +30,7 @@ const rules: {
   'enforce-extension': enforceExtension,
   'no-unused': noUnused,
   'no-legacy-contextual-styles': noLegacyContextualStyles,
+  'no-lookahead-selectors': noLookaheadSelectors,
 };
 
 export { rules };
