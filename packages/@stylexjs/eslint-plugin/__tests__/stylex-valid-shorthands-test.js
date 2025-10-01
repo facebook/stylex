@@ -201,6 +201,96 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     `,
     },
     {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'rgb(255 0 0 / 0.5)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'hsl(220 3% 15% / 10%)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'hsb(220 3% 15% / 10%)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'oklch(0.7 0.15 180 / 0.8)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'oklab(0.7 0.15 -0.1 / 0.8)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'lch(70% 15 180 / 0.8)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'lab(70% -10 20 / 0.8)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'color(display-p3 0.7 0.2 0.1 / 0.8)',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderColor: 'hwb(220 3% 15% / 10%)',
+        },
+      })
+    `,
+    },
+    {
       options: [{ validImports: ['custom-stylex'] }],
       code: `
         import * as stylex from 'custom-stylex';
@@ -406,7 +496,6 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
-              borderColor: 'rgb(0, 0, 0), rgb(5, 5, 5)',
               borderWidth: 'var(--vertical-border-width, 10) var(--horizontal-border-width, 15)',
             },
           })
@@ -415,10 +504,6 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
-              borderTopColor: 'rgb(0, 0, 0),',
-              borderRightColor: 'rgb(5, 5, 5)',
-              borderBottomColor: 'rgb(0, 0, 0),',
-              borderLeftColor: 'rgb(5, 5, 5)',
               borderTopWidth: 'var(--vertical-border-width, 10)',
               borderRightWidth: 'var(--horizontal-border-width, 15)',
               borderBottomWidth: 'var(--vertical-border-width, 10)',
@@ -427,10 +512,6 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           })
         `,
       errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "borderColor: rgb(0, 0, 0), rgb(5, 5, 5)" are not supported in StyleX. Separate into individual properties.',
-        },
         {
           message:
             'Property shorthands using multiple values like "borderWidth: var(--vertical-border-width, 10) var(--horizontal-border-width, 15)" are not supported in StyleX. Separate into individual properties.',
