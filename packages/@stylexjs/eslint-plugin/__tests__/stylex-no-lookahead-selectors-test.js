@@ -240,7 +240,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
           button: {
             color: {
               default: 'black',
-              [stylex.when.descendant(':dark')]: 'red',
+              [stylex.when.descendant(':hover')]: 'red',
             },
           },
         });
@@ -265,7 +265,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
             },
             padding: {
               default: 0,
-              [stylex.when.siblingBefore(':focus')]:10, // valid
+              [stylex.when.siblingBefore(':focus')]: 10, // valid
             },
           },
         });
@@ -317,6 +317,26 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
         {
           message:
             'stylex.when.descendant has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
+        },
+      ],
+    },
+    {
+      // Named import with lookahead selector
+      code: `
+        import { create, when } from '@stylexjs/stylex';
+        const styles = create({
+          button: {
+            color: {
+              default: 'black',
+              [when.anySibling(':hover')]: 'white',
+            },
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'stylex.when.anySibling has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
         },
       ],
     },

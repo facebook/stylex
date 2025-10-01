@@ -66,26 +66,36 @@ const stylexNoLookaheadSelectors = {
       }
 
       const callee = node.callee;
-      if (
-        callee.object.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier'
-      ) {
+      if (callee.property.type !== 'Identifier') {
         return false;
       }
 
-      const whenMember = callee.object;
-      if (
-        whenMember.object.type !== 'Identifier' ||
-        whenMember.property.type !== 'Identifier'
-      ) {
-        return false;
+      if (callee.object.type === 'Identifier') {
+        return (
+          importTracker.isStylexNamedImport('when', callee.object.name) &&
+          lookaheadSelectors.includes(callee.property.name)
+        );
       }
 
-      return (
-        importTracker.isStylexDefaultImport(whenMember.object.name) &&
-        whenMember.property.name === 'when' &&
-        lookaheadSelectors.includes(callee.property.name)
-      );
+      if (
+        callee.object.type === 'MemberExpression' &&
+        callee.object.object.type === 'Identifier' &&
+        callee.object.property.type === 'Identifier'
+      ) {
+        const whenMember = callee.object;
+        if (
+          whenMember.object.type === 'Identifier' &&
+          whenMember.property.type === 'Identifier'
+        ) {
+          return (
+            importTracker.isStylexDefaultImport(whenMember.object.name) &&
+            whenMember.property.name === 'when' &&
+            lookaheadSelectors.includes(callee.property.name)
+          );
+        }
+      }
+
+      return false;
     }
 
     return {
