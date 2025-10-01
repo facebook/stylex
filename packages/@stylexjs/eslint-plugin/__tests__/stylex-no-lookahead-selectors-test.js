@@ -156,14 +156,14 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
       ],
     },
     {
-      // stylex.when.nextSibling usage
+      // stylex.when.siblingAfter usage
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           item: {
             marginTop: {
               default: '0px',
-              [stylex.when.nextSibling(':active')]: '10px',
+              [stylex.when.siblingAfter(':active')]: '10px',
             },
           },
         });
@@ -171,7 +171,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
       errors: [
         {
           message:
-            'stylex.when.nextSibling has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
+            'stylex.when.siblingAfter has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
         },
       ],
     },
@@ -191,7 +191,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
             },
             padding: {
               default: 'none',
-              [stylex.when.nextSibling(':selected')]: '10px',
+              [stylex.when.siblingAfter(':selected')]: '10px',
             },
           },
         });
@@ -207,7 +207,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
         },
         {
           message:
-            'stylex.when.nextSibling has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
+            'stylex.when.siblingAfter has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
         },
       ],
     },
@@ -286,7 +286,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
             ':hover': {
               color: {
                 default: 'black',
-                [stylex.when.nextSibling(':active')]: 'red',
+                [stylex.when.siblingAfter(':active')]: 'red',
               },
             },
           },
@@ -295,7 +295,7 @@ eslintTester.run('stylex-no-lookahead-selectors', rule.default, {
       errors: [
         {
           message:
-            'stylex.when.nextSibling has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
+            'stylex.when.siblingAfter has limited browser support. See https://caniuse.com/css-has for browser compatibility.',
         },
       ],
     },
