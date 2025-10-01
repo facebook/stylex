@@ -117,13 +117,22 @@ const toCamelCase = (str: string) => {
 
 /* Modern CSS color functions that should be treated as single values */
 const MODERN_COLOR_FUNCTIONS = [
-  'oklch', 'oklab', 'lch', 'lab', 'color', 'hwb'
+  'oklch',
+  'oklab',
+  'lch',
+  'lab',
+  'color',
+  'hwb',
+  'hsl',
+  'hsb',
+  'rgb',
 ];
 
 /* Check if a value contains modern CSS color functions */
 function containsModernColorFunction(str: string): boolean {
   const colorFunctionRegex = new RegExp(
-    `\\b(${MODERN_COLOR_FUNCTIONS.join('|')})\\s*\\(`, 'i'
+    `\\b(${MODERN_COLOR_FUNCTIONS.join('|')})\\s*\\(`,
+    'i',
   );
   return colorFunctionRegex.test(str);
 }
