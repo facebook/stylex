@@ -2541,7 +2541,7 @@ declare export function buildChildren(
 ): ReturnedChild[];
 
 /*
-Skipping all the asertX functions as they're not supported in Flow yet.
+Skipping all the assertX functions as they're not supported in Flow yet.
 */
 // TODO: What is this????
 declare export var _default$4: {
