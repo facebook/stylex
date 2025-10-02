@@ -18,7 +18,7 @@ const stylexNoLookaheadSelectors = {
     type: 'problem',
     docs: {
       description:
-        'Disallow usage of stylex.when.anySibling, stylex.when.ancestor, and stylex.when.nextSibling due to limited browser support',
+        'Disallow usage of stylex.when.anySibling, stylex.when.descendant, and stylex.when.siblingAfter due to limited browser support',
       category: 'Possible Errors',
       recommended: true,
     },
@@ -55,7 +55,7 @@ const stylexNoLookaheadSelectors = {
 
     // These selectors rely on the CSS `has()` selector, which does not yet have widespread browser support
     // See: https://caniuse.com/css-has
-    const lookaheadSelectors = ['anySibling', 'descendant', 'nextSibling'];
+    const lookaheadSelectors = ['anySibling', 'descendant', 'siblingAfter'];
 
     function isStylexWhenLookaheadSelector(node: Node): boolean {
       if (
