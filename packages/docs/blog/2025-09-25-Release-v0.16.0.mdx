@@ -16,9 +16,9 @@ This release adds support for a long-requested feature—descendant and sibling 
 
 ## Descendant and sibling selectors
 
-We’re adding a new suite of APIs under `stylex.when` with support for descendant and sibling selectors: `ancestor`, `descendant`, `sibling`, `prevSibling`, and `nextSibling`.
+We’re adding a new suite of APIs under `stylex.when` with support for descendant and sibling selectors: `ancestor`, `descendant`, `anySibling`, `siblingBefore`, and `siblingAfter`.
 - Ancestor/descendant (`stylex.when.ancestor` and `stylex.when.descendant`) selectors let you style an element based on the state of ancestors or descendants in the DOM tree.
-- Sibling selectors (`stylex.when.sibling`, `stylex.when.prevSibling` and `stylex.when.nextSibling`) let you style an element based on the state of adjacent siblings.
+- Sibling selectors (`stylex.when.anySibling`, `stylex.when.siblingBefore` and `stylex.when.siblingAfter`) let you style an element based on the state of adjacent siblings.
 
 To use descendant and sibling selectors, you'll need to mark the element being observed by passing the `stylex.defaultMarker` class name. Support for custom markers will be added in a future release.
 
@@ -39,7 +39,7 @@ const styles = stylex.create({
 </div>
 ```
 
-Note: Lookahead selectors like `stylex.when.nextSibling`, `stylex.when.sibling`, and `stylex.when.descendant` rely on the CSS `has()` selector, which does not yet have [widespread browser support](https://caniuse.com/css-has).
+Note: Lookahead selectors like `stylex.when.siblingAfter`, `stylex.when.anySibling`, and `stylex.when.descendant` rely on the CSS `has()` selector, which does not yet have [widespread browser support](https://caniuse.com/css-has).
 
 ## `defineConsts` improvements
 
@@ -93,8 +93,6 @@ const styles = stylex.create({
 We added linter support for setting CSS custom properties within `create` calls. (Thanks [@dwei-figma](https://github.com/dwei-figma)!)
 
 ```tsx
-const HEIGHT = 5;
-
 const styles = stylex.create({
   default: {
     --background-color: 'red',
