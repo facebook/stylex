@@ -715,6 +715,15 @@ export const AT_RULE_PRIORITIES: $ReadOnly<AtRulePriorities> = {
 
 export const PSEUDO_ELEMENT_PRIORITY: number = 5000;
 
+const ANCESTOR_SELECTOR = /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+\*\)$/;
+const DESCENDANT_SELECTOR = /^:where\(:has\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/;
+const SIBLING_BEFORE_SELECTOR =
+  /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*\)$/;
+const SIBLING_AFTER_SELECTOR =
+  /^:where\(:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/;
+const ANY_SIBLING_SELECTOR =
+  /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*,\s+:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/;
+
 export default function getPriority(key: string): number {
   if (key.startsWith('--')) {
     return 1;
@@ -734,6 +743,48 @@ export default function getPriority(key: string): number {
 
   if (key.startsWith('::')) {
     return PSEUDO_ELEMENT_PRIORITY;
+  }
+
+  const ancestorMatch = ANCESTOR_SELECTOR.exec(key);
+
+  if (ancestorMatch) {
+    const [_all, pseudo] = ancestorMatch;
+    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
+    return 10 + basePseudoPriority / 100;
+  }
+
+  const descendantMatch = DESCENDANT_SELECTOR.exec(key);
+
+  if (descendantMatch) {
+    const [_all, pseudo] = descendantMatch;
+    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
+    return 15 + basePseudoPriority / 100;
+  }
+
+  const siblingBeforeMatch = SIBLING_BEFORE_SELECTOR.exec(key);
+  if (siblingBeforeMatch) {
+    const [_all, pseudo] = siblingBeforeMatch;
+    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
+    return 20 + basePseudoPriority / 100;
+  }
+
+  const siblingAfterMatch = SIBLING_AFTER_SELECTOR.exec(key);
+  if (siblingAfterMatch) {
+    const [_all, pseudo] = siblingAfterMatch;
+    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
+    return 30 + basePseudoPriority / 100;
+  }
+
+  const anySiblingMatch = ANY_SIBLING_SELECTOR.exec(key);
+  if (anySiblingMatch) {
+    const [_all, pseudo1, pseudo2] = anySiblingMatch;
+    const basePseudoPriority1 = PSEUDO_CLASS_PRIORITIES[pseudo1] ?? 40;
+    const basePseudoPriority2 = PSEUDO_CLASS_PRIORITIES[pseudo2] ?? 40;
+    const basePseudoPriority = Math.max(
+      basePseudoPriority1,
+      basePseudoPriority2,
+    );
+    return 40 + basePseudoPriority / 100;
   }
 
   if (key.startsWith(':')) {
