@@ -1,14 +1,14 @@
 {
   "private": true,
   "name": "typescript-tests",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "type": "module",
   "scripts": {
     "test": "tsc"
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/stylex": "0.16.0",
+    "@stylexjs/stylex": "0.16.1",
     "typescript": "^5.8.3"
   },
   "engines": {

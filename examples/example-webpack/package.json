@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "example-webpack",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "A simple webpack example to test stylexjs/webpack-plugin",
   "main": "index.js",
   "scripts": {
@@ -15,9 +15,9 @@
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.27.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
-    "@stylexjs/babel-plugin": "0.16.0",
-    "@stylexjs/eslint-plugin": "0.16.0",
-    "@stylexjs/postcss-plugin": "0.16.0",
+    "@stylexjs/babel-plugin": "0.16.1",
+    "@stylexjs/eslint-plugin": "0.16.1",
+    "@stylexjs/postcss-plugin": "0.16.1",
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
@@ -33,7 +33,7 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.16.0",
+    "@stylexjs/stylex": "0.16.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   }
