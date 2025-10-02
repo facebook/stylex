@@ -10,7 +10,6 @@
     "example:start": "next start"
   },
   "dependencies": {
-    "@stylexjs/open-props": "0.11.1",
     "@stylexjs/stylex": "0.16.1",
     "next": "14.2.21",
     "react": "^18.3.0",
