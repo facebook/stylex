@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.1 (Oct 2, 2025)
+- New `no-lookahead-selector` lint rule to flag certain descendant and sibling selectors.
+- Fix priorities for descendant and sibling selectors.
+- Fix color functions for `valid-shorthands` rule.
+- Fix hoisting issues with duplicate keys in `create` calls.
+- Add storybook example.
+
 ## 0.16.0 (Sep 25, 2025)
 - Added support for descendant and shared selectors.
 - Support CSS variable overrides with `defineConsts`.

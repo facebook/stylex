@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/eslint-plugin",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "StyleX eslint plugin.",
   "main": "lib/index.js",
   "repository": {
