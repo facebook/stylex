@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/stylex",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "A library for defining styles for optimized user interfaces.",
   "main": "./lib/cjs/stylex.js",
   "module": "./lib/es/stylex.mjs",
@@ -61,7 +61,7 @@
     "cross-env": "^7.0.3",
     "rimraf": "^5.0.10",
     "rollup": "^4.24.0",
-    "scripts": "0.16.0"
+    "scripts": "0.16.1"
   },
   "files": [
     "lib/*"
