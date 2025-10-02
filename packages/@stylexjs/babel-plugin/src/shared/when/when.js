@@ -65,7 +65,7 @@ export function descendant(
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:has(.${defaultMarker}${pseudo})`;
+  return `:where(:has(.${defaultMarker}${pseudo}))`;
 }
 
 /**
@@ -99,7 +99,7 @@ export function siblingAfter(
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:has(~ .${defaultMarker}${pseudo})`;
+  return `:where(:has(~ .${defaultMarker}${pseudo}))`;
 }
 
 /**
