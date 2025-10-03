@@ -10,8 +10,7 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import { spacing, text, globalTokens as $ } from './globalTokens.stylex';
-import { colors } from '@stylexjs/open-props/lib/colors.stylex';
+import { spacing, text, globalTokens as $, colors } from './globalTokens.stylex';
 import { useState } from 'react';
 
 export default function Counter() {

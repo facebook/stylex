@@ -12,7 +12,6 @@
 const path = require('path');
 
 module.exports = {
-  transpilePackages: ['@stylexjs/open-props'],
   eslint: { ignoreDuringBuilds: true },
   webpack: (config, { dev, isServer }) => {
     // Process only files that require StyleX compilation using babel-loader
