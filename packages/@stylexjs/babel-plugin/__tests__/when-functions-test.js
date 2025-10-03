@@ -314,10 +314,9 @@ describe('@stylexjs/babel-plugin', () => {
 
       expect(code).toMatchInlineSnapshot(`
         "import { defaultMarker, props } from '@stylexjs/stylex';
-        const classNames = props({
-          "x-default-marker": "x-default-marker",
-          $$css: true
-        });"
+        const classNames = {
+          className: "x-default-marker"
+        };"
       `);
     });
     test('namespace import', () => {
@@ -329,10 +328,9 @@ describe('@stylexjs/babel-plugin', () => {
 
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
-        const classNames = stylex.props({
-          "x-default-marker": "x-default-marker",
-          $$css: true
-        });"
+        const classNames = {
+          className: "x-default-marker"
+        };"
       `);
     });
   });
