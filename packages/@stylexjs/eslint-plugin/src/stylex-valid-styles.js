@@ -67,6 +67,12 @@ export type RuleResponse = void | {
     desc: string,
   },
 };
+type ValidationResult =
+  | RuleResponse
+  | {
+      ...Rule.ReportDescriptor,
+      isSpecialCase: true,
+    };
 
 const showError =
   (message: string): RuleCheck =>
@@ -300,6 +306,112 @@ const stylexValidStyles = {
       );
     }
 
+    function validateStyleValue(
+      valueNode: Expression | Pattern,
+      varsWithFnArgs: Variables,
+      style: Property,
+      styleKey: Expression | PrivateIdentifier,
+      propertyKey: string,
+      ruleChecker: RuleCheck,
+    ): ValidationResult | null {
+      // For: condition ? <style-value> : <style-value>
+      if (valueNode.type === 'ConditionalExpression') {
+        const trueCheck = validateStyleValue(
+          valueNode.consequent,
+          varsWithFnArgs,
+          style,
+          styleKey,
+          propertyKey,
+          ruleChecker,
+        );
+        if (trueCheck != null) {
+          return trueCheck;
+        }
+        const falseCheck = validateStyleValue(
+          valueNode.alternate,
+          varsWithFnArgs,
+          style,
+          styleKey,
+          propertyKey,
+          ruleChecker,
+        );
+        if (falseCheck != null) {
+          return falseCheck;
+        }
+        return null;
+      }
+
+      // For: color: "blue" || "green" or zIndex: var ?? 10
+      if (
+        valueNode.type === 'LogicalExpression' &&
+        ['||', '??'].includes(valueNode.operator)
+      ) {
+        const leftCheck = validateStyleValue(
+          valueNode.left,
+          varsWithFnArgs,
+          style,
+          styleKey,
+          propertyKey,
+          ruleChecker,
+        );
+        if (leftCheck != null) {
+          return leftCheck;
+        }
+        const rightCheck = validateStyleValue(
+          valueNode.right,
+          varsWithFnArgs,
+          style,
+          styleKey,
+          propertyKey,
+          ruleChecker,
+        );
+        if (rightCheck != null) {
+          return rightCheck;
+        }
+        return null;
+      }
+
+      if (
+        (propertyKey === 'float' || propertyKey === 'clear') &&
+        valueNode.type === 'Literal' &&
+        typeof valueNode.value === 'string' &&
+        (valueNode.value === 'start' || valueNode.value === 'end')
+      ) {
+        const replacement =
+          valueNode.value === 'start' ? 'inline-start' : 'inline-end';
+        return {
+          node: valueNode,
+          loc: valueNode.loc,
+          message: `The value "${valueNode.value}" is not a standard CSS value for "${propertyKey}". Did you mean "${replacement}"?`,
+          fix: (fixer) => fixer.replaceText(valueNode, `'${replacement}'`),
+          suggest: [
+            {
+              desc: `Replace "${valueNode.value}" with "${replacement}"?`,
+              fix: (fixer) => fixer.replaceText(valueNode, `'${replacement}'`),
+            },
+          ],
+          isSpecialCase: true,
+        };
+      }
+
+      const check = ruleChecker(valueNode, varsWithFnArgs, style, context);
+      if (check != null) {
+        return check;
+      }
+      if (
+        valueNode.type === 'Literal' &&
+        typeof valueNode.value === 'string' &&
+        isWhiteSpaceOrEmpty(valueNode.value) &&
+        styleKey.name !== 'content'
+      ) {
+        return {
+          node: valueNode,
+          loc: valueNode.loc,
+          message: 'The empty string is not allowed by Stylex.',
+          isSpecialCase: true,
+        };
+      }
+    }
     function checkStyleProperty(
       style: Node,
       level: number,
@@ -570,37 +682,25 @@ const stylexValidStyles = {
             }
           }
 
-          if (
-            (key === 'float' || key === 'clear') &&
-            style.value.type === 'Literal' &&
-            typeof style.value.value === 'string' &&
-            (style.value.value === 'start' || style.value.value === 'end')
-          ) {
-            const replacement =
-              style.value.value === 'start' ? 'inline-start' : 'inline-end';
-            return context.report({
-              node: style.value,
-              loc: style.value.loc,
-              message: `The value "${style.value.value}" is not a standard CSS value for "${key}". Did you mean "${replacement}"?`,
-              fix: (fixer) =>
-                fixer.replaceText(style.value, `'${replacement}'`),
-              suggest: [
-                {
-                  desc: `Replace "${style.value.value}" with "${replacement}"?`,
-                  fix: (fixer) =>
-                    fixer.replaceText(style.value, `'${replacement}'`),
-                },
-              ],
-            } as Rule.ReportDescriptor);
-          }
-
-          const check = ruleChecker(
+          const check = validateStyleValue(
             style.value,
             varsWithFnArgs,
             style,
-            context,
+            styleKey,
+            key,
+            ruleChecker,
           );
           if (check != null) {
+            if (check.isSpecialCase) {
+              return context.report({
+                node: check.node,
+                loc: check.loc,
+                message: check.message,
+                fix: check.fix,
+                suggest: check.suggest,
+              });
+            }
+
             const { message, suggest } = check;
             const isBackgroundBlendModeFormatError =
               key === 'backgroundBlendMode' &&
@@ -622,18 +722,6 @@ const stylexValidStyles = {
               loc: style.value.loc,
               message: finalMessage,
               suggest: suggest != null ? [suggest] : undefined,
-            } as Rule.ReportDescriptor);
-          }
-          if (
-            style.value.type === 'Literal' &&
-            typeof style.value.value === 'string' &&
-            isWhiteSpaceOrEmpty(style.value.value) &&
-            styleKey.name !== 'content'
-          ) {
-            return context.report({
-              node: style.value,
-              loc: style.value.loc,
-              message: 'The empty string is not allowed by Stylex.',
             } as Rule.ReportDescriptor);
           }
         }
