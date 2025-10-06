@@ -34,7 +34,7 @@ const styles = stylex.create({
     },
 });
 
-<div {...stylex.props(stylex.defaultMarker)}>
+<div {...stylex.props(stylex.defaultMarker())}>
   <div {...stylex.props(styles.foo)}> Some Content </div>
 </div>
 ```
