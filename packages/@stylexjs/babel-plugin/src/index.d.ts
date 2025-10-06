@@ -42,8 +42,7 @@ declare function processStylexRules(
         useLayers?: boolean,
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
-        ...
-      },
+      }
 ): string;
 export type StyleXTransformObj = Readonly<{
   (): PluginObj;
