@@ -214,6 +214,7 @@ const stylexValidStyles = {
     const styleXCreateImports = new Set<string>();
     const styleXKeyframesImports = new Set<string>();
     const styleXPositionTryImports = new Set<string>();
+    const styleXWhenImports = new Set<string>();
 
     const overrides: PropLimits = {
       ...(banPropsForLegacy ? legacyProps : {}),
@@ -417,25 +418,52 @@ const stylexValidStyles = {
         ) {
           return undefined;
         }
+
+        let isStylexWhenCall = false;
         if (style.computed && styleKey.type !== 'Literal') {
-          const val = evaluate(styleKey, variables);
-          if (val == null) {
-            return context.report({
-              node: style.key,
-              loc: style.key.loc,
-              message: 'Computed key cannot be resolved.',
-            } as Rule.ReportDescriptor);
-          } else if (val === 'ARG') {
-            return context.report({
-              node: style.key,
-              loc: style.key.loc,
-              message: 'Computed key cannot depend on function argument',
-            } as Rule.ReportDescriptor);
-          } else {
-            styleKey = val;
+          if (
+            styleKey.type === 'CallExpression' &&
+            styleKey.callee.type === 'MemberExpression'
+          ) {
+            const calleeObject = styleKey.callee.object;
+            const calleeProperty = styleKey.callee.property;
+
+            isStylexWhenCall =
+              (calleeObject.type === 'MemberExpression' &&
+                calleeObject.object.type === 'Identifier' &&
+                styleXDefaultImports.has(calleeObject.object.name) &&
+                calleeObject.property.type === 'Identifier' &&
+                calleeObject.property.name === 'when' &&
+                calleeProperty.type === 'Identifier') ||
+              (calleeObject.type === 'Identifier' &&
+                styleXWhenImports.has(calleeObject.name) &&
+                calleeProperty.type === 'Identifier');
+
+            if (!isStylexWhenCall) {
+              const val = evaluate(styleKey, variables);
+              if (val == null) {
+                return context.report({
+                  node: style.key,
+                  loc: style.key.loc,
+                  message: 'Computed key cannot be resolved.',
+                } as Rule.ReportDescriptor);
+              } else if (val === 'ARG') {
+                return context.report({
+                  node: style.key,
+                  loc: style.key.loc,
+                  message: 'Computed key cannot depend on function argument',
+                } as Rule.ReportDescriptor);
+              } else {
+                styleKey = val;
+              }
+            }
           }
         }
-        if (styleKey.type !== 'Literal' && styleKey.type !== 'Identifier') {
+        if (
+          styleKey.type !== 'Literal' &&
+          styleKey.type !== 'Identifier' &&
+          !isStylexWhenCall
+        ) {
           return context.report({
             node: styleKey,
             loc: styleKey.loc,
@@ -443,6 +471,26 @@ const stylexValidStyles = {
               'All keys in a stylex object must be static literal values.',
           } as Rule.ReportDescriptor);
         }
+        if (styleKey.type === 'CallExpression') {
+          const parentKey = propName;
+          if (parentKey && CSSPropertiesWithOverrides[parentKey]) {
+            const ruleChecker = CSSPropertiesWithOverrides[parentKey];
+            if (typeof ruleChecker === 'function') {
+              const check = ruleChecker(style.value, variables, style, context);
+              if (check != null) {
+                const { message, suggest } = check;
+                return context.report({
+                  node: style.value,
+                  loc: style.value.loc,
+                  message: `${parentKey} value must be one of:\n${message}`,
+                  suggest: suggest != null ? [suggest] : undefined,
+                } as Rule.ReportDescriptor);
+              }
+            }
+          }
+          return undefined;
+        }
+
         const key =
           propName ??
           (styleKey.type === 'Identifier' ? styleKey.name : styleKey.value);
@@ -783,6 +831,12 @@ const stylexValidStyles = {
                 specifier.imported.name === 'positionTry'
               ) {
                 styleXPositionTryImports.add(specifier.local.name);
+              }
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === 'when'
+              ) {
+                styleXWhenImports.add(specifier.local.name);
               }
             });
           }

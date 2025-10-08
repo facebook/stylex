@@ -225,6 +225,51 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    {
+      code: `
+        import { create, when } from '@stylexjs/stylex';
+        const styles = create({
+          base: {
+            width: {
+              default: 10,
+              [when.descendant(":focus")]: 20,
+              [when.siblingAfter(":active")]: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import { create, when } from 'stylex';
+        const styles = create({
+          base: {
+            width: {
+              default: 10,
+              [when.descendant(":focus")]: 20,
+              [when.siblingAfter(":active")]: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: {
+              default: 10,
+              [stylex.when.descendant(":focus")]: 20,
+              [stylex.when.siblingAfter(":active")]: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
@@ -2338,6 +2383,79 @@ revert`,
         {
           message:
             "backgroundBlendMode values must be separated by a comma and a space (', ')",
+        },
+      ],
+    },
+    // test for when function from other library
+    {
+      code: `
+             import { when } from 'some-other-library';
+             import { create } from '@stylexjs/stylex';
+             const styles = create({
+               base: {
+                 width: {
+                   default: 10,
+                   [when.descendant(":focus")]: 20,
+                 },
+               },
+             })
+           `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'Computed key cannot be resolved.',
+        },
+      ],
+    },
+    // test for invalid CSS values in stylex.when calls
+    {
+      code: `
+             import * as stylex from '@stylexjs/stylex';
+             const styles = stylex.create({
+               base: {
+                 float: {
+                   default: 'left',
+                   [stylex.when.ancestor(":hover")]: 'dsdfdsdfsdfsdfsdfsdf',
+                   [stylex.when.descendant(":focus")]: 30,
+                   [stylex.when.siblingAfter(":active")]: 40,
+                 },
+               },
+             })
+           `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+      ],
+    },
+    // test for invalid CSS value in stylex.when call
+    {
+      code: `
+             import { when, create } from '@stylexjs/stylex';
+             const styles = create({
+               base: {
+                 float: {
+                   default: 'left',
+                   [when.descendant(":focus")]: 'invalid-value',
+                 },
+               },
+             })
+           `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
         },
       ],
     },
