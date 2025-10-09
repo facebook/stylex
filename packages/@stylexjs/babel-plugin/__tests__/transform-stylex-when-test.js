@@ -119,7 +119,7 @@ describe('@stylexjs/babel-plugin', () => {
               "ltr": ".x1i6rnlt:where(.x-default-marker:focus ~ *){background-color:red}",
               "rtl": null,
             },
-            3021.5,
+            3031.5,
           ],
         ]
       `);
@@ -180,7 +180,7 @@ describe('@stylexjs/babel-plugin', () => {
               "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
               "rtl": null,
             },
-            3021.5,
+            3031.5,
           ],
           [
             "xoev4mv",
@@ -188,7 +188,7 @@ describe('@stylexjs/babel-plugin', () => {
               "ltr": ".xoev4mv:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:yellow}",
               "rtl": null,
             },
-            3041.7,
+            3021.7,
           ],
           [
             "x1v1vkh3",
@@ -196,7 +196,7 @@ describe('@stylexjs/babel-plugin', () => {
               "ltr": ".x1v1vkh3:where(:has(~ .x-default-marker:focus)){background-color:purple}",
               "rtl": null,
             },
-            3031.5,
+            3041.5,
           ],
           [
             "x9zntq3",
@@ -262,7 +262,7 @@ describe('@stylexjs/babel-plugin', () => {
               "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
               "rtl": null,
             },
-            3021.5,
+            3031.5,
           ],
         ]
       `);
