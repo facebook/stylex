@@ -715,14 +715,14 @@ export const AT_RULE_PRIORITIES: $ReadOnly<AtRulePriorities> = {
 
 export const PSEUDO_ELEMENT_PRIORITY: number = 5000;
 
-const ANCESTOR_SELECTOR = /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+\*\)$/;
-const DESCENDANT_SELECTOR = /^:where\(:has\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/;
-const SIBLING_BEFORE_SELECTOR =
-  /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*\)$/;
-const SIBLING_AFTER_SELECTOR =
-  /^:where\(:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/;
-const ANY_SIBLING_SELECTOR =
-  /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*,\s+:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/;
+const RELATIONAL_SELECTORS = {
+  ANCESTOR: /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+\*\)$/,
+  DESCENDANT: /^:where\(:has\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/,
+  SIBLING_BEFORE: /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*\)$/,
+  SIBLING_AFTER: /^:where\(:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/,
+  ANY_SIBLING:
+    /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*,\s+:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/,
+};
 
 export default function getPriority(key: string): number {
   if (key.startsWith('--')) {
@@ -745,46 +745,34 @@ export default function getPriority(key: string): number {
     return PSEUDO_ELEMENT_PRIORITY;
   }
 
-  const ancestorMatch = ANCESTOR_SELECTOR.exec(key);
+  const pseudoBase = (p: string): number =>
+    (PSEUDO_CLASS_PRIORITIES[p] ?? 40) / 100;
 
+  const ancestorMatch = RELATIONAL_SELECTORS.ANCESTOR.exec(key);
   if (ancestorMatch) {
-    const [_all, pseudo] = ancestorMatch;
-    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
-    return 10 + basePseudoPriority / 100;
+    return 10 + pseudoBase(ancestorMatch[1]);
   }
 
-  const descendantMatch = DESCENDANT_SELECTOR.exec(key);
-
+  const descendantMatch = RELATIONAL_SELECTORS.DESCENDANT.exec(key);
   if (descendantMatch) {
-    const [_all, pseudo] = descendantMatch;
-    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
-    return 15 + basePseudoPriority / 100;
+    return 15 + pseudoBase(descendantMatch[1]);
   }
 
-  const siblingBeforeMatch = SIBLING_BEFORE_SELECTOR.exec(key);
-  if (siblingBeforeMatch) {
-    const [_all, pseudo] = siblingBeforeMatch;
-    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
-    return 20 + basePseudoPriority / 100;
-  }
-
-  const siblingAfterMatch = SIBLING_AFTER_SELECTOR.exec(key);
-  if (siblingAfterMatch) {
-    const [_all, pseudo] = siblingAfterMatch;
-    const basePseudoPriority = PSEUDO_CLASS_PRIORITIES[pseudo] ?? 40;
-    return 30 + basePseudoPriority / 100;
-  }
-
-  const anySiblingMatch = ANY_SIBLING_SELECTOR.exec(key);
-  if (anySiblingMatch) {
-    const [_all, pseudo1, pseudo2] = anySiblingMatch;
-    const basePseudoPriority1 = PSEUDO_CLASS_PRIORITIES[pseudo1] ?? 40;
-    const basePseudoPriority2 = PSEUDO_CLASS_PRIORITIES[pseudo2] ?? 40;
-    const basePseudoPriority = Math.max(
-      basePseudoPriority1,
-      basePseudoPriority2,
+  const anySiblingMatch = RELATIONAL_SELECTORS.ANY_SIBLING.exec(key);
+  if (anySiblingMatch)
+    return (
+      20 +
+      Math.max(pseudoBase(anySiblingMatch[1]), pseudoBase(anySiblingMatch[2]))
     );
-    return 40 + basePseudoPriority / 100;
+
+  const siblingBeforeMatch = RELATIONAL_SELECTORS.SIBLING_BEFORE.exec(key);
+  if (siblingBeforeMatch) {
+    return 30 + pseudoBase(siblingBeforeMatch[1]);
+  }
+
+  const siblingAfterMatch = RELATIONAL_SELECTORS.SIBLING_AFTER.exec(key);
+  if (siblingAfterMatch) {
+    return 40 + pseudoBase(siblingAfterMatch[1]);
   }
 
   if (key.startsWith(':')) {
