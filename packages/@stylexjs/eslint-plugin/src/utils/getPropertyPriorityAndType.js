@@ -11,19 +11,24 @@
 
 type PriorityAndType = {
   priority: number,
-  type: 'string' | 'pseudoClass' | 'pseudoElement' | 'atRule' | 'knownCssProperty',
+  type:
+    | 'string'
+    | 'pseudoClass'
+    | 'pseudoElement'
+    | 'atRule'
+    | 'knownCssProperty',
 };
 
-// Based on https://github.com/kutsan/stylelint-config-clean-order
-const CSS_PROPERTY_PRIORITIES = [
+// Based on https://github.com/kutsan/stylelint-config-clean-order/tree/v7.0.0
+const CLEAN_ORDER_PRIORITIES = [
   '', // index 0 - unused
-  
+
   // Priority 1: composes
   'composes',
-  
+
   // Priority 2: all
   'all',
-  
+
   // Priority 3+: interaction (starting at 3)
   'pointerEvents',
   'touchAction',
@@ -208,31 +213,55 @@ const CSS_PROPERTY_PRIORITIES = [
   'minBlockSize',
   'maxBlockSize',
   'margin',
+  'marginBlock', //
+  'marginBlockStart', //
+  'marginBlockEnd', //
+  'marginInline', //
+  'marginInlineStart', //
+  'marginInlineEnd', //
   'marginTop',
   'marginRight',
   'marginBottom',
   'marginLeft',
-  'marginBlock',
-  'marginBlockStart',
-  'marginBlockEnd',
-  'marginInline',
-  'marginInlineStart',
-  'marginInlineEnd',
   'padding',
+  'paddingBlock', //
+  'paddingBlockStart', //
+  'paddingBlockEnd', //
+  'paddingInline', //
+  'paddingInlineStart', //
+  'paddingInlineEnd', //
   'paddingTop',
   'paddingRight',
   'paddingBottom',
   'paddingLeft',
-  'paddingBlock',
-  'paddingBlockStart',
-  'paddingBlockEnd',
-  'paddingInline',
-  'paddingInlineStart',
-  'paddingInlineEnd',
   'border',
   'borderColor',
   'borderStyle',
   'borderWidth',
+  'borderBlock', //
+  'borderBlockColor', //
+  'borderBlockStyle', //
+  'borderBlockWidth', //
+  'borderBlockStart', //
+  'borderBlockStartColor', //
+  'borderBlockStartStyle', //
+  'borderBlockStartWidth', //
+  'borderBlockEnd', //
+  'borderBlockEndColor', //
+  'borderBlockEndStyle', //
+  'borderBlockEndWidth', //
+  'borderInline', //
+  'borderInlineColor', //
+  'borderInlineStyle', //
+  'borderInlineWidth', //
+  'borderInlineStart', //
+  'borderInlineStartColor', //
+  'borderInlineStartStyle', //
+  'borderInlineStartWidth', //
+  'borderInlineEnd', //
+  'borderInlineEndColor', //
+  'borderInlineEndStyle', //
+  'borderInlineEndWidth', //
   'borderTop',
   'borderTopColor',
   'borderTopStyle',
@@ -249,30 +278,6 @@ const CSS_PROPERTY_PRIORITIES = [
   'borderLeftColor',
   'borderLeftStyle',
   'borderLeftWidth',
-  'borderBlock',
-  'borderBlockColor',
-  'borderBlockStyle',
-  'borderBlockWidth',
-  'borderBlockStart',
-  'borderBlockStartColor',
-  'borderBlockStartStyle',
-  'borderBlockStartWidth',
-  'borderBlockEnd',
-  'borderBlockEndColor',
-  'borderBlockEndStyle',
-  'borderBlockEndWidth',
-  'borderInline',
-  'borderInlineColor',
-  'borderInlineStyle',
-  'borderInlineWidth',
-  'borderInlineStart',
-  'borderInlineStartColor',
-  'borderInlineStartStyle',
-  'borderInlineStartWidth',
-  'borderInlineEnd',
-  'borderInlineEndColor',
-  'borderInlineEndStyle',
-  'borderInlineEndWidth',
   'borderRadius',
   'borderTopLeftRadius',
   'borderTopRightRadius',
@@ -479,20 +484,26 @@ const CSS_PROPERTY_PRIORITIES = [
   'viewTimelineName',
   'viewTimelineAxis',
   'viewTimelineInset',
-  'viewTransitionName'
+  'viewTransitionName',
 ];
-
-const BASE_PRIORITY = CSS_PROPERTY_PRIORITIES.length - 1;
-
-const AT_CONTAINER_PRIORITY = BASE_PRIORITY + 300;
-const AT_MEDIA_PRIORITY = BASE_PRIORITY + 200;
-const AT_SUPPORT_PRIORITY = BASE_PRIORITY + 30;
-const PSEUDO_CLASS_PRIORITY = BASE_PRIORITY + 40;
-const PSEUDO_ELEMENT_PRIORITY = BASE_PRIORITY + 5000;
 
 export default function getPropertyPriorityAndType(
   key: string,
+  order: 'asc' | 'clean-order' | 'recess-order',
 ): PriorityAndType {
+  let BASE_PRIORITY = 0;
+  if (order === 'clean-order') {
+    BASE_PRIORITY = CLEAN_ORDER_PRIORITIES.length - 1;
+  } else if (order === 'recess-order') {
+    BASE_PRIORITY = 0;
+  }
+
+  const AT_CONTAINER_PRIORITY = BASE_PRIORITY + 300;
+  const AT_MEDIA_PRIORITY = BASE_PRIORITY + 200;
+  const AT_SUPPORT_PRIORITY = BASE_PRIORITY + 30;
+  const PSEUDO_CLASS_PRIORITY = BASE_PRIORITY + 40;
+  const PSEUDO_ELEMENT_PRIORITY = BASE_PRIORITY + 5000;
+
   if (key.startsWith('@supports')) {
     return { priority: AT_SUPPORT_PRIORITY, type: 'atRule' };
   }
@@ -517,9 +528,11 @@ export default function getPropertyPriorityAndType(
     return { priority: AT_CONTAINER_PRIORITY, type: 'atRule' };
   }
 
-  const index = CSS_PROPERTY_PRIORITIES.indexOf(key);
-  if (index !== -1) {
-    return { priority: index, type: 'knownCssProperty' };
+  if (order === 'clean-order') {
+    const index = CLEAN_ORDER_PRIORITIES.indexOf(key);
+    if (index !== -1) {
+      return { priority: index, type: 'knownCssProperty' };
+    }
   }
 
   return { priority: 1, type: 'string' };

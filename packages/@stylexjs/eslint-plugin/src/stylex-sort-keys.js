@@ -33,6 +33,7 @@ type Schema = {
         as: string,
       },
   >,
+  order: 'asc' | 'clean-order' | 'recess-order',
   minKeys: number,
   allowLineSeparatedGroups: boolean,
 };
@@ -45,9 +46,13 @@ type Stack = null | {
   numKeys: number,
 };
 
-function isValidOrder(prevName: string, currName: string): boolean {
-  const prev = getPropertyPriorityAndType(prevName);
-  const curr = getPropertyPriorityAndType(currName);
+function isValidOrder(
+  prevName: string,
+  currName: string,
+  order: Schema['order'],
+): boolean {
+  const prev = getPropertyPriorityAndType(prevName, order);
+  const curr = getPropertyPriorityAndType(currName, order);
 
   if (prev.type !== 'string' || curr.type !== 'string') {
     return prev.priority <= curr.priority;
@@ -85,6 +90,10 @@ const stylexSortKeys = {
             },
             default: ['stylex', '@stylexjs/stylex'],
           },
+          order: {
+            enum: ['asc', 'clean-order', 'recess-order'],
+            default: 'asc',
+          },
           minKeys: {
             type: 'integer',
             minimum: 2,
@@ -102,6 +111,7 @@ const stylexSortKeys = {
   create(context: Rule.RuleContext): { ... } {
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      order = 'asc',
       minKeys = 2,
       allowLineSeparatedGroups = false,
     }: Schema = context.options[0] || {};
@@ -263,7 +273,7 @@ const stylexSortKeys = {
           return;
         }
 
-        if (!isValidOrder(prevName, currName)) {
+        if (!isValidOrder(prevName, currName, order)) {
           context.report({
             // $FlowFixMe
             node,
