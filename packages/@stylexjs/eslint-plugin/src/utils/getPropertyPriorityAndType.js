@@ -78,11 +78,11 @@ const CLEAN_ORDER_PRIORITIES = [
   'scrollSnapAlign',
   'scrollSnapStop',
   'contentVisibility',
+  'containIntrinsicInlineSize', //
+  'containIntrinsicBlockSize', //
   'containIntrinsicSize',
   'containIntrinsicWidth',
   'containIntrinsicHeight',
-  'containIntrinsicInlineSize',
-  'containIntrinsicBlockSize',
   'speak',
   'speakAs',
 
@@ -90,17 +90,17 @@ const CLEAN_ORDER_PRIORITIES = [
   'isolation',
   'position',
   'zIndex',
+  'inset', //
+  'insetBlock', //
+  'insetBlockStart', //
+  'insetBlockEnd', //
+  'insetInline', //
+  'insetInlineStart', //
+  'insetInlineEnd', //
   'top',
   'right',
   'bottom',
   'left',
-  'inset',
-  'insetBlock',
-  'insetBlockStart',
-  'insetBlockEnd',
-  'insetInline',
-  'insetInlineStart',
-  'insetInlineEnd',
   'zoom',
   'transformOrigin',
   'transformBox',
@@ -124,16 +124,16 @@ const CLEAN_ORDER_PRIORITIES = [
   'clear',
   'contain',
   'overflow',
+  'overflowBlock', //
+  'overflowInline', //
   'overflowX',
   'overflowY',
-  'overflowBlock',
-  'overflowInline',
   'overflowClipMargin',
   'overscrollBehavior',
+  'overscrollBehaviorInline', //
+  'overscrollBehaviorBlock', //
   'overscrollBehaviorX',
   'overscrollBehaviorY',
-  'overscrollBehaviorInline',
-  'overscrollBehaviorBlock',
   'display',
   'tableLayout',
   'borderSpacing',
@@ -202,16 +202,16 @@ const CLEAN_ORDER_PRIORITIES = [
   'aspectRatio',
   'width',
   'inlineSize',
+  'minInlineSize', //
+  'maxInlineSize', //
   'minWidth',
   'maxWidth',
-  'minInlineSize',
-  'maxInlineSize',
   'height',
   'blockSize',
+  'minBlockSize', //
+  'maxBlockSize', //
   'minHeight',
   'maxHeight',
-  'minBlockSize',
-  'maxBlockSize',
   'margin',
   'marginBlock', //
   'marginBlockStart', //
@@ -279,14 +279,14 @@ const CLEAN_ORDER_PRIORITIES = [
   'borderLeftStyle',
   'borderLeftWidth',
   'borderRadius',
+  'borderStartStartRadius', //
+  'borderStartEndRadius', //
+  'borderEndStartRadius', //
+  'borderEndEndRadius', //
   'borderTopLeftRadius',
   'borderTopRightRadius',
   'borderBottomRightRadius',
   'borderBottomLeftRadius',
-  'borderStartStartRadius',
-  'borderStartEndRadius',
-  'borderEndStartRadius',
-  'borderEndEndRadius',
   'borderImage',
   'borderImageSource',
   'borderImageSlice',
@@ -487,16 +487,540 @@ const CLEAN_ORDER_PRIORITIES = [
   'viewTransitionName',
 ];
 
+// Based on https://github.com/stormwarning/stylelint-config-recess-order/blob/293c244a8aea70f4abd81f0daa6653cae1c89351/groups.js
+const RECESS_ORDER_PRIORITIES = [
+  'composes',
+
+  'all',
+
+  // positioned layout
+  'position',
+  'inset',
+  'insetBlock',
+  'insetBlockStart',
+  'insetBlockEnd',
+  'insetInline',
+  'insetInlineStart',
+  'insetInlineEnd',
+  'top',
+  'right',
+  'bottom',
+  'left',
+  'zIndex',
+  'float',
+  'clear',
+
+  // display
+  'boxSizing',
+  'display',
+  'visibility',
+
+  // flexible box layout
+  'flex',
+  'flexGrow',
+  'flexShrink',
+  'flexBasis',
+  'flexFlow',
+  'flexDirection',
+  'flexWrap',
+  'WebkitBoxOrient',
+
+  // grid layout
+  'grid',
+  'gridArea',
+  'gridTemplate',
+  'gridTemplateAreas',
+  'gridTemplateRows',
+  'gridTemplateColumns',
+  'gridRow',
+  'gridRowStart',
+  'gridRowEnd',
+  'gridColumn',
+  'gridColumnStart',
+  'gridColumnEnd',
+  'gridAutoRows',
+  'gridAutoColumns',
+  'gridAutoFlow',
+  'gridGap',
+  'gridRowGap',
+  'gridColumnGap',
+
+  // box alignment
+  'gap',
+  'rowGap',
+  'columnGap',
+  'placeContent',
+  'placeItems',
+  'placeSelf',
+  'alignContent',
+  'alignItems',
+  'alignSelf',
+  'justifyContent',
+  'justifyItems',
+  'justifySelf',
+
+  // order
+  'order',
+
+  // box sizing
+  'inlineSize',
+  'minInlineSize',
+  'maxInlineSize',
+  'width',
+  'minWidth',
+  'maxWidth',
+  'blockSize',
+  'minBlockSize',
+  'maxBlockSize',
+  'height',
+  'minHeight',
+  'maxHeight',
+  'aspectRatio',
+  'containIntrinsicInlineSize',
+  'containIntrinsicBlockSize',
+  'containIntrinsicSize',
+  'containIntrinsicWidth',
+  'containIntrinsicHeight',
+
+  // box model
+  'padding',
+  'paddingBlock',
+  'paddingBlockStart',
+  'paddingBlockEnd',
+  'paddingInline',
+  'paddingInlineStart',
+  'paddingInlineEnd',
+  'paddingTop',
+  'paddingRight',
+  'paddingBottom',
+  'paddingLeft',
+  'margin',
+  'marginBlock',
+  'marginBlockStart',
+  'marginBlockEnd',
+  'marginInline',
+  'marginInlineStart',
+  'marginInlineEnd',
+  'marginTop',
+  'marginRight',
+  'marginBottom',
+  'marginLeft',
+
+  // containment
+  'contain',
+  'container',
+  'containerName',
+  'containerType',
+  'contentVisibility',
+
+  // overflow
+  'overflow',
+  'overflowInline',
+  'overflowBlock',
+  'overflowX',
+  'overflowY',
+  'scrollbarGutter',
+  'WebkitOverflowScrolling',
+  'MsOverflowX',
+  'MsOverflowY',
+  'MsOverflowStyle',
+  'textOverflow',
+  'WebkitLineClamp',
+  'lineClamp',
+  'scrollBehaviour',
+
+  // overscroll behavior
+  'overscrollBehavior',
+  'overscrollBehaviorInline',
+  'overscrollBehaviorBlock',
+  'overscrollBehaviorX',
+  'overscrollBehaviorY',
+
+  // fonts
+  'font',
+  'fontFamily',
+  'fontSize',
+  'fontSizeAdjust',
+  'fontVariationSettings',
+  'fontStyle',
+  'fontWeight',
+  'fontOpticalSizing',
+  'fontStretch',
+  'fontFeatureSettings',
+  'fontKerning',
+  'fontVariant',
+  'fontVariantLigatures',
+  'fontVariantCaps',
+  'fontVariantAlternates',
+  'fontVariantNumeric',
+  'fontVariantEastAsian',
+  'fontVariantPosition',
+  'WebkitFontSmoothing',
+  'MozOsxFontSmoothing',
+  'fontSmooth',
+  'fontSynthesis',
+  'fontSynthesisWeight',
+  'fontSynthesisStyle',
+  'fontSynthesisSmallCaps',
+
+  // inline layout
+  'lineHeight',
+  'verticalAlign',
+  'alignmentBaseline',
+  'baselineShift',
+  'dominantBaseline',
+
+  // colors
+  'basePalette',
+  'overrideColors',
+  'fontPalette',
+  'color',
+  'WebkitTextFillColor',
+  'WebkitTextStroke',
+  'WebkitTextStrokeWidth',
+  'WebkitTextStrokeColor',
+
+  // text
+  'textAlign',
+  'textAlignLast',
+  'textJustify',
+  'textIndent',
+  'textTransform',
+  'wordSpacing',
+  'letterSpacing',
+  'hyphens',
+  'hyphenateCharacter',
+  'lineBreak',
+  'wordBreak',
+  'textWrap',
+  'textWrapMode',
+  'textWrapStyle',
+  'wordWrap',
+  'overflowWrap',
+  'tabSize',
+  'whiteSpace',
+  'whiteSpaceCollapse',
+
+  // text decoration
+  'textEmphasis',
+  'textEmphasisColor',
+  'textEmphasisStyle',
+  'textEmphasisPosition',
+  'textDecoration',
+  'textDecorationLine',
+  'textDecorationThickness',
+  'textDecorationStyle',
+  'textDecorationColor',
+  'textDecorationSkipInk',
+  'textUnderlinePosition',
+  'textUnderlineOffset',
+  'textShadow',
+
+  // ruby layout
+  'rubyPosition',
+  'rubyAlign',
+
+  // font loading
+  'src',
+  'fontDisplay',
+  'unicodeRange',
+  'sizeAdjust',
+  'ascentOverride',
+  'descentOverride',
+  'lineGapOverride',
+
+  // basic user interface
+  'appearance',
+  'accentColor',
+  'pointerEvents',
+  'MsTouchAction',
+  'touchAction',
+  'cursor',
+  'caretColor',
+  'zoom',
+  'resize',
+  'userSelect',
+  'WebkitUserSelect',
+  'navIndex',
+  'navUp',
+  'navRight',
+  'navDown',
+  'navLeft',
+  'outline',
+  'outlineWidth',
+  'outlineStyle',
+  'outlineColor',
+  'outlineOffset',
+
+  // color adjustment
+  'colorScheme',
+  'forcedColorAdjust',
+  'printColorAdjust',
+
+  // table
+  'tableLayout',
+  'emptyCells',
+  'captionSide',
+  'borderSpacing',
+  'borderCollapse',
+
+  // generated content
+  'content',
+  'quotes',
+
+  // lists and counters
+  'listStyle',
+  'listStylePosition',
+  'listStyleType',
+  'listStyleImage',
+  'counterReset',
+  'counterSet',
+  'counterIncrement',
+
+  // scroll snap
+  'scrollSnapType',
+  'scrollSnapAlign',
+  'scrollSnapStop',
+  'scrollPadding',
+  'scrollPaddingBlock',
+  'scrollPaddingBlockStart',
+  'scrollPaddingBlockEnd',
+  'scrollPaddingInline',
+  'scrollPaddingInlineStart',
+  'scrollPaddingInlineEnd',
+  'scrollPaddingTop',
+  'scrollPaddingRight',
+  'scrollPaddingBottom',
+  'scrollPaddingLeft',
+  'scrollMargin',
+  'scrollMarginBlock',
+  'scrollMarginBlockStart',
+  'scrollMarginBlockEnd',
+  'scrollMarginInline',
+  'scrollMarginInlineStart',
+  'scrollMarginInlineEnd',
+  'scrollMarginTop',
+  'scrollMarginRight',
+  'scrollMarginBottom',
+  'scrollMarginLeft',
+
+  // scrollbars styling
+  'scrollbarColor',
+  'scrollbarWidth',
+
+  // images
+  'objectFit',
+  'objectPosition',
+  'MsInterpolationMode',
+  'imageOrientation',
+  'imageRendering',
+  'imageResolution',
+
+  // backgrounds and borders
+  'background',
+  'backgroundColor',
+  'backgroundImage',
+  'backgroundRepeat',
+  'backgroundAttachment',
+  'backgroundPosition',
+  'backgroundPositionX',
+  'backgroundPositionY',
+  'backgroundClip',
+  'backgroundOrigin',
+  'backgroundSize',
+  'border',
+  'borderColor',
+  'borderStyle',
+  'borderWidth',
+  'borderBlock',
+  'borderBlockStart',
+  'borderBlockStartColor',
+  'borderBlockStartStyle',
+  'borderBlockStartWidth',
+  'borderBlockEnd',
+  'borderBlockEndColor',
+  'borderBlockEndStyle',
+  'borderBlockEndWidth',
+  'borderInline',
+  'borderInlineStart',
+  'borderInlineStartColor',
+  'borderInlineStartStyle',
+  'borderInlineStartWidth',
+  'borderInlineEnd',
+  'borderInlineEndColor',
+  'borderInlineEndStyle',
+  'borderInlineEndWidth',
+  'borderTop',
+  'borderTopColor',
+  'borderTopStyle',
+  'borderTopWidth',
+  'borderRight',
+  'borderRightColor',
+  'borderRightStyle',
+  'borderRightWidth',
+  'borderBottom',
+  'borderBottomColor',
+  'borderBottomStyle',
+  'borderBottomWidth',
+  'borderLeft',
+  'borderLeftColor',
+  'borderLeftStyle',
+  'borderLeftWidth',
+  'borderRadius',
+  'borderStartStartRadius',
+  'borderStartEndRadius',
+  'borderEndStartRadius',
+  'borderEndEndRadius',
+  'borderTopLeftRadius',
+  'borderTopRightRadius',
+  'borderBottomRightRadius',
+  'borderBottomLeftRadius',
+  'borderImage',
+  'borderImageSource',
+  'borderImageSlice',
+  'borderImageWidth',
+  'borderImageOutset',
+  'borderImageRepeat',
+  'boxShadow',
+
+  // compositing and blending
+  'backgroundBlendMode',
+  'isolation',
+  'mixBlendMode',
+  'opacity',
+
+  // filter effects
+  'filter',
+  'backdropFilter',
+
+  // masking
+  'clip',
+  'clipPath',
+  'clipRule',
+  'maskBorder',
+  'maskBorderSource',
+  'maskBorderSlice',
+  'maskBorderWidth',
+  'maskBorderOutset',
+  'maskBorderRepeat',
+  'maskBorderMode',
+  'mask',
+  'maskImage',
+  'maskMode',
+  'maskRepeat',
+  'maskPosition',
+  'maskClip',
+  'maskOrigin',
+  'maskSize',
+  'maskComposite',
+  'maskType',
+
+  // shapes
+  'shapeOutside',
+  'shapeImageThreshold',
+  'shapeMargin',
+
+  // writing modes
+  'direction',
+  'unicodeBidi',
+  'writingMode',
+  'textOrientation',
+  'textCombineUpright',
+
+  // svg presentation attributes
+  'textAnchor',
+  'fill',
+  'fillRule',
+  'fillOpacity',
+  'stroke',
+  'strokeOpacity',
+  'strokeWidth',
+  'strokeLinecap',
+  'strokeLinejoin',
+  'strokeMiterlimit',
+  'strokeDasharray',
+  'strokeDashoffset',
+  'colorInterpolation',
+  'colorInterpolationFilters',
+  'floodColor',
+  'floodOpacity',
+  'lightingColor',
+  'marker',
+  'markerStart',
+  'markerMid',
+  'markerEnd',
+  'stopColor',
+  'stopOpacity',
+  'paintOrder',
+  'shapeRendering',
+  'textRendering',
+
+  // transforms
+  'transform',
+  'transformOrigin',
+  'transformBox',
+  'transformStyle',
+  'rotate',
+  'scale',
+  'translate',
+  'perspective',
+  'perspectiveOrigin',
+  'backfaceVisibility',
+
+  // transitions
+  'transition',
+  'transitionDelay',
+  'transitionTimingFunction',
+  'transitionDuration',
+  'transitionProperty',
+
+  // view transitions
+  'viewTransitionName',
+  'viewTransitionClass',
+
+  // animations
+  'animation',
+  'animationName',
+  'animationDuration',
+  'animationTimingFunction',
+  'animationDelay',
+  'animationIterationCount',
+  'animationDirection',
+  'animationFillMode',
+  'animationPlayState',
+  'animationComposition',
+
+  // motion path
+  'offset',
+  'offsetPosition',
+  'offsetPath',
+  'offsetDistance',
+  'offsetRotate',
+  'offsetAnchor',
+
+  // will change
+  'willChange',
+
+  // fragmentation
+  'breakBefore',
+  'breakAfter',
+  'breakInside',
+  'widows',
+  'orphans',
+];
+
+const ORDER_PRIORITIES = {
+  'clean-order': CLEAN_ORDER_PRIORITIES,
+  'recess-order': RECESS_ORDER_PRIORITIES,
+};
+
 export default function getPropertyPriorityAndType(
   key: string,
   order: 'asc' | 'clean-order' | 'recess-order',
 ): PriorityAndType {
-  let BASE_PRIORITY = 0;
-  if (order === 'clean-order') {
-    BASE_PRIORITY = CLEAN_ORDER_PRIORITIES.length - 1;
-  } else if (order === 'recess-order') {
-    BASE_PRIORITY = 0;
-  }
+  let BASE_PRIORITY = ORDER_PRIORITIES[order]
+    ? ORDER_PRIORITIES[order].length - 1
+    : 0;
 
   const AT_CONTAINER_PRIORITY = BASE_PRIORITY + 300;
   const AT_MEDIA_PRIORITY = BASE_PRIORITY + 200;
@@ -528,8 +1052,8 @@ export default function getPropertyPriorityAndType(
     return { priority: AT_CONTAINER_PRIORITY, type: 'atRule' };
   }
 
-  if (order === 'clean-order') {
-    const index = CLEAN_ORDER_PRIORITIES.indexOf(key);
+  if (ORDER_PRIORITIES[order]) {
+    const index = ORDER_PRIORITIES[order].indexOf(key);
     if (index !== -1) {
       return { priority: index, type: 'knownCssProperty' };
     }
