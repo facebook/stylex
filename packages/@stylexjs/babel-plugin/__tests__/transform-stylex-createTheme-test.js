@@ -128,7 +128,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -136,7 +136,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -144,7 +144,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x4aw18j",
@@ -209,7 +209,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -217,7 +217,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -225,7 +225,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x4aw18j",
@@ -289,7 +289,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .x1xohuxq{--xt4ziaz:blue;--x1e3it8h:grey;--x1onrunl:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1xohuxq-1lveb7",
@@ -297,7 +297,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .x1xohuxq{--xt4ziaz:lightblue;--x1e3it8h:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1xohuxq-bdddrq",
@@ -305,7 +305,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .x1xohuxq{--xt4ziaz:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xv0nx9o",
@@ -372,7 +372,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--color:blue;--otherColor:grey;--radius:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -380,7 +380,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--color:lightblue;--otherColor:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -388,7 +388,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--color:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1l2ihi1",
@@ -443,7 +443,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -451,7 +451,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -459,7 +459,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x4aw18j",
@@ -521,7 +521,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -529,7 +529,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -537,7 +537,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1s6ff5p",
@@ -583,7 +583,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -591,7 +591,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -599,7 +599,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xp8mj21",
@@ -645,7 +645,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -653,7 +653,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -661,7 +661,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1et03wi",
@@ -716,7 +716,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -724,7 +724,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -732,7 +732,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x5gq8ml",
@@ -798,7 +798,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -806,7 +806,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -814,7 +814,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x4aw18j",
@@ -904,7 +904,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1lveb7",
@@ -912,7 +912,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -920,7 +920,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x4aw18j",
@@ -959,7 +959,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":root, .x1ngxneg{--x103gslp:blue;--x1e7put6:grey;--xm3n3tg:10;}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1ngxneg-1lveb7",
@@ -967,7 +967,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .x1ngxneg{--x103gslp:lightblue;--x1e7put6:rgba(0, 0, 0, 0.8);}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "x1ngxneg-bdddrq",
@@ -975,7 +975,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .x1ngxneg{--x103gslp:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xgl5cw9",
@@ -1068,7 +1068,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1lveb7",
@@ -1076,7 +1076,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-bdddrq",
@@ -1084,7 +1084,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xowvtgn",
@@ -1136,7 +1136,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1lveb7",
@@ -1144,7 +1144,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-bdddrq",
@@ -1152,7 +1152,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xowvtgn",
@@ -1205,7 +1205,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1lveb7",
@@ -1213,7 +1213,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-bdddrq",
@@ -1221,7 +1221,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xowvtgn",
@@ -1274,7 +1274,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1lveb7",
@@ -1282,7 +1282,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-bdddrq",
@@ -1290,7 +1290,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xowvtgn",
@@ -1345,7 +1345,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1lveb7",
@@ -1353,7 +1353,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-bdddrq",
@@ -1361,7 +1361,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xowvtgn",
@@ -1418,7 +1418,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1lveb7",
@@ -1426,7 +1426,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-bdddrq",
@@ -1434,7 +1434,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xowvtgn",
