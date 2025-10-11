@@ -33,7 +33,11 @@ function transform(source, opts = {}) {
       mediaSmall: '@media (max-width: 500px)'
     });
     export const vars = stylex.defineVars({
-      blue: 'blue'
+      blue: 'blue',
+      marginTokens: {
+        default: "10px",
+        "@media (min-width: 600px)": "20px"
+      }
     });
     `,
     {
@@ -107,6 +111,7 @@ export const styles = stylex.create({
       }
     }),
     backgroundColor: 'red',
+    margin: vars.marginTokens,
     borderColor: {
       default: 'green',
       [constants.mediaBig]: {
@@ -143,6 +148,7 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
+          marginTokens: "var(--marginTokens-x8nt2k2)",
           __varGroupHash__: "xsg933n"
         };
         export const spacing = {
@@ -158,7 +164,8 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}"
       `);
     });
@@ -175,6 +182,7 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
+          marginTokens: "var(--marginTokens-x8nt2k2)",
           __varGroupHash__: "xsg933n"
         };
         export const spacing = {
@@ -195,20 +203,20 @@ describe('@stylexjs/babel-plugin', () => {
           root: {
             "animationName-kKVMdj": "animationName-x13ah0pd",
             "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "margin-kogj98": "margin-xymmreb",
             "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
             "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-x1cmij7u",
             "padding-kmVPX3": "padding-xss17vw",
-            "margin-kogj98": "margin-xymmreb",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:31"
+            $$css: "app/main.js:32"
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:58"
+            $$css: "app/main.js:60"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:61"
+            $$css: "app/main.js:63"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -222,7 +230,8 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
@@ -256,6 +265,7 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
+          marginTokens: "var(--marginTokens-x8nt2k2)",
           __varGroupHash__: "xsg933n"
         };
         export const spacing = {
@@ -276,20 +286,20 @@ describe('@stylexjs/babel-plugin', () => {
           root: {
             "animationName-kKVMdj": "animationName-x13ah0pd",
             "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "margin-kogj98": "margin-xymmreb",
             "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
             "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-x1cmij7u",
             "padding-kmVPX3": "padding-xss17vw",
-            "margin-kogj98": "margin-xymmreb",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:31"
+            $$css: "app/main.js:32"
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:58"
+            $$css: "app/main.js:60"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:61"
+            $$css: "app/main.js:63"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -305,7 +315,8 @@ describe('@stylexjs/babel-plugin', () => {
         @layer priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
@@ -343,6 +354,7 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
+          marginTokens: "var(--marginTokens-x8nt2k2)",
           __varGroupHash__: "xsg933n"
         };
         export const spacing = {
@@ -363,20 +375,20 @@ describe('@stylexjs/babel-plugin', () => {
           root: {
             "animationName-kKVMdj": "animationName-x13ah0pd",
             "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "margin-kogj98": "margin-xymmreb",
             "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
             "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-x1cmij7u",
             "padding-kmVPX3": "padding-xss17vw",
-            "margin-kogj98": "margin-xymmreb",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:31"
+            $$css: "app/main.js:32"
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:58"
+            $$css: "app/main.js:60"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:61"
+            $$css: "app/main.js:63"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -391,7 +403,8 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;}
+        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
@@ -439,6 +452,7 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const vars = {
           blue: "var(--blue-xpqh4lw)",
+          marginTokens: "var(--marginTokens-x8nt2k2)",
           __varGroupHash__: "xsg933n"
         };
         export const spacing = {
@@ -458,7 +472,7 @@ describe('@stylexjs/babel-plugin', () => {
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-x1gx403c",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:23"
+            $$css: "app/main.js:24"
           }
         };"
       `);
@@ -469,7 +483,8 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: true,
         }),
       ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         /* @ltr begin */.float-x1kmio9f:not(#\\#){float:left}/* @ltr end */
         /* @rtl begin */.float-x1kmio9f:not(#\\#){float:right}/* @rtl end */
@@ -512,7 +527,8 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;}
+        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}"
@@ -563,7 +579,8 @@ describe('@stylexjs/babel-plugin', () => {
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
-        :root, .xsg933n{--xpqh4lw:blue;}
+        :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
         .x4hn0rr.x4hn0rr, .x4hn0rr.x4hn0rr:root{--x1ec7iuc:20px;--xypjos2:10px;--x19twipt:5px;}
         .x1coplze.x1coplze, .x1coplze.x1coplze:root{--xpqh4lw:lightblue;}
         .xufgesz{--orange-theme-color:red}
@@ -598,7 +615,8 @@ describe('@stylexjs/babel-plugin', () => {
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
-        :root, .xsg933n{--xpqh4lw:blue;}
+        :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;}
+        @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
         .x1coplze.x1coplze, .x1coplze.x1coplze:root{--xpqh4lw:lightblue;}
         .x4hn0rr.x4hn0rr, .x4hn0rr.x4hn0rr:root{--x1ec7iuc:20px;--xypjos2:10px;--x19twipt:5px;}
         .xufgesz{--orange-theme-color:red}
