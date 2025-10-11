@@ -111,6 +111,22 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      options: [{ order: 'recess-order' }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const obj = { fontSize: '12px' };
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
+          ...obj,
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
       options: [{ allowLineSeparatedGroups: true }],
       code: `
       import { create as cr } from '@stylexjs/stylex';
@@ -127,6 +143,21 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean-order', allowLineSeparatedGroups: true }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
+
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ order: 'recess-order', allowLineSeparatedGroups: true }],
       code: `
       import { create as cr } from '@stylexjs/stylex';
       const styles = cr({
@@ -168,6 +199,18 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       options: [{ validImports: ['a'], order: 'clean-order' }],
+      code: `
+      import { create as cr } from 'a';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ validImports: ['a'], order: 'recess-order' }],
       code: `
       import { create as cr } from 'a';
       const styles = cr({
@@ -224,6 +267,22 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     },
     {
       options: [{ order: 'clean-order' }],
+      code: `
+        import { keyframes } from 'stylex';
+        const someAnimation = keyframes({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+    },
+    {
+      options: [{ order: 'recess-order' }],
       code: `
         import { keyframes } from 'stylex';
         const someAnimation = keyframes({
