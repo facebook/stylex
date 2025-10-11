@@ -395,8 +395,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message:
-            'StyleX property key "fontSize" should be above "animationDuration"',
+          message: `StyleX property key "fontSize" should be above "animationDuration"`,
         },
       ],
     },
