@@ -1181,5 +1181,36 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         },
       ],
     },
+    {
+      code: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          width: {
+            [when.siblingAfter(":active")]: 30,
+            [when.descendant(":focus")]: 20,
+          },
+          display: 'flex',
+        },
+      });
+      `,
+      output: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            [when.siblingAfter(":active")]: 30,
+            [when.descendant(":focus")]: 20,
+          },
+        },
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key "display" should be above "width"',
+        },
+      ],
+    },
   ],
 });

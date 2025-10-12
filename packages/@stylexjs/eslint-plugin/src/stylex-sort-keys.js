@@ -284,8 +284,10 @@ const stylexSortKeys = {
           });
         }
       },
-      'CallExpression:exit'() {
-        if (isInsideStyleXCreateCall) {
+      'CallExpression:exit'(
+        node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
+      ) {
+        if (isInsideStyleXCreateCall && isStylexDeclaration(node)) {
           isInsideStyleXCreateCall = false;
         }
       },
