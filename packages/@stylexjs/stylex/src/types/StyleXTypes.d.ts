@@ -267,7 +267,11 @@ type NestedVarObject<T> =
       [key: AtRuleStr]: NestedVarObject<T>;
     }>;
 
-export type StyleX$DefineConsts = <DefaultTokens extends {}>(
+export type StyleX$DefineConsts = <
+  DefaultTokens extends {
+    [key: string]: number | string;
+  },
+>(
   tokens: DefaultTokens,
 ) => DefaultTokens;
 

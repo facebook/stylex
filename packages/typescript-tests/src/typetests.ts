@@ -300,12 +300,7 @@ stylex.props(styles8.foo);
 const consts = stylex.defineConsts({
   foo: 'bar',
   bar: 123,
-  baz: {
-    default: 'qux',
-    '@media (max-width: 1000px)': 'quuz',
-  }
-} as const)
+} as const);
 
-consts.foo satisfies StyleXVar<'bar'>;
-consts.bar satisfies StyleXVar<123>;
-consts.baz satisfies StyleXVar<'qux' | 'quuz'>;
+consts.foo satisfies 'bar';
+consts.bar satisfies 123;
