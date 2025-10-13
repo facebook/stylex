@@ -69,9 +69,9 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
   throw errorForFn('createTheme');
 };
 
-export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts(
-  _styles: $FlowFixMe,
-) {
+export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
+  T: { +[string]: number | string },
+>(_styles: T): T {
   throw errorForFn('defineConsts');
 };
 

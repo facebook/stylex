@@ -250,7 +250,7 @@ type TTokens = Readonly<{
   [key: string]:
     | NestedVarObject<null | string | number>
     | StyleXVar<null | string | number>
-    | CSSType<null | string | number>
+    | CSSType<null | string | number>;
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
@@ -268,11 +268,12 @@ type NestedVarObject<T> =
     }>;
 
 export type StyleX$DefineConsts = <
-  DefaultTokens extends TTokens,
-  ID extends symbol = symbol,
+  DefaultTokens extends {
+    [key: string]: number | string;
+  },
 >(
   tokens: DefaultTokens,
-) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
+) => DefaultTokens;
 
 export type StyleX$DefineVars = <
   DefaultTokens extends TTokens,
