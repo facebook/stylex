@@ -58,7 +58,6 @@ export default function styleXCreateTheme(
     .map((atRule) => wrapWithAtRules(rulesByAtRule[atRule].join(''), atRule))
     .join('');
 
-  // Create a class name hash
   const overrideClassName = classNamePrefix + createHash(atRulesStringForHash);
 
   const stylesToInject: { [string]: InjectableStyle } = {};
@@ -67,19 +66,14 @@ export default function styleXCreateTheme(
     const decls = rulesByAtRule[atRule].join('');
     const rule = `.${overrideClassName}, .${overrideClassName}:root{${decls}}`;
 
-    if (atRule === 'default') {
-      stylesToInject[overrideClassName] = {
-        ltr: rule,
-        priority: 0.5,
-        rtl: null,
-      };
-    } else {
-      stylesToInject[overrideClassName + '-' + createHash(atRule)] = {
-        ltr: wrapWithAtRules(rule, atRule),
-        priority: 0.5 + 0.1 * priorityForAtRule(atRule),
-        rtl: null,
-      };
-    }
+    const priority = 0.4 + priorityForAtRule(atRule) / 10;
+    const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
+
+    stylesToInject[overrideClassName + suffix] = {
+      ltr: rule,
+      priority: priority,
+      rtl: null,
+    };
   }
 
   const themeClass = `${overrideClassName} ${themeVars.__varGroupHash__}`;
