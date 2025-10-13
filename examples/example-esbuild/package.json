@@ -10,7 +10,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/open-props": "0.11.1",
     "@stylexjs/stylex": "0.16.1",
     "react": "^18.3.0",
     "react-dom": "^18.3.0"
