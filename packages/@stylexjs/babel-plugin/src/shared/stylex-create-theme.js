@@ -68,9 +68,10 @@ export default function styleXCreateTheme(
 
     const priority = 0.4 + priorityForAtRule(atRule) / 10;
     const suffix = atRule === 'default' ? '' : `-${createHash(atRule)}`;
+    const ltr = atRule === 'default' ? rule : wrapWithAtRules(rule, atRule);
 
     stylesToInject[overrideClassName + suffix] = {
-      ltr: rule,
+      ltr: ltr,
       priority: priority,
       rtl: null,
     };
