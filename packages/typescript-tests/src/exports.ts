@@ -14,7 +14,7 @@ export const vars = stylex.defineVars({
 
 export const consts = stylex.defineConsts({
   bar: '100%',
-  baz: stylex.types.lengthPercentage(100),
+  baz: 100,
 });
 
 export const theme = stylex.createTheme(vars, {
