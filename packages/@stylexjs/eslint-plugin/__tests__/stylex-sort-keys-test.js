@@ -395,7 +395,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "fontSize" should be above "animationDuration"`,
+          message:
+            'StyleX property key "fontSize" should be above "animationDuration"',
         },
       ],
     },
@@ -428,7 +429,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "alignSelf" should be above "borderColor"`,
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
         },
       ],
     },
@@ -465,7 +467,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           message: 'StyleX property key "display" should be above "alignItems"',
         },
         {
-          message: `StyleX property key "alignSelf" should be above "borderColor"`,
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
         },
       ],
     },
@@ -492,7 +495,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "borderColor" should be above "display"`,
+          message:
+            'StyleX property key "borderColor" should be above "display"',
         },
       ],
     },
@@ -553,7 +557,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "borderColor" should be above "display"`,
+          message:
+            'StyleX property key "borderColor" should be above "display"',
         },
       ],
     },
@@ -587,7 +592,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "display" should be above "borderColor"`,
+          message:
+            'StyleX property key "display" should be above "borderColor"',
         },
       ],
     },
@@ -620,83 +626,87 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "borderColor" should be above "display"`,
-        },
-      ],
-    },
-    {
-      options: [{ order: 'clean-order' }],
-      code: `
-        import { keyframes as kf } from 'stylex';
-        const someAnimation = kf({
-          '0%': {
-            borderColor: 'red',
-            display: 'none',
-          },
-          '100%': {
-            display: 'flex',
-            borderColor: 'green',
-          },
-        });
-      `,
-      output: `
-        import { keyframes as kf } from 'stylex';
-        const someAnimation = kf({
-          '0%': {
-            display: 'none',
-            borderColor: 'red',
-          },
-          '100%': {
-            display: 'flex',
-            borderColor: 'green',
-          },
-        });
-      `,
-      errors: [
-        {
-          message: `StyleX property key "display" should be above "borderColor"`,
-        },
-      ],
-    },
-    {
-      code: `
-      import { create } from 'stylex';
-      const styles = create({
-        main: {
-          display: 'flex',
-          borderColor: {
-            default: 'green',
-            '@media (min-width: 1540px)': 1366,
-            ':hover': 'red',
-          },
-          borderRadius: 10,
-        },
-      });`,
-      output: `
-      import { create } from 'stylex';
-      const styles = create({
-        main: {
-          borderColor: {
-            default: 'green',
-            '@media (min-width: 1540px)': 1366,
-            ':hover': 'red',
-          },
-          display: 'flex',
-          borderRadius: 10,
-        },
-      });`,
-      errors: [
-        {
-          message: `StyleX property key "borderColor" should be above "display"`,
-        },
-        {
-          message: `StyleX property key ":hover" should be above "@media (min-width: 1540px)"`,
+          message:
+            'StyleX property key "borderColor" should be above "display"',
         },
       ],
     },
     {
       options: [{ order: 'clean-order' }],
       code: `
+        import { keyframes as kf } from 'stylex';
+        const someAnimation = kf({
+          '0%': {
+            borderColor: 'red',
+            display: 'none',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+      output: `
+        import { keyframes as kf } from 'stylex';
+        const someAnimation = kf({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "display" should be above "borderColor"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          display: 'flex',
+          borderColor: {
+            default: 'green',
+            '@media (min-width: 1540px)': 1366,
+            ':hover': 'red',
+          },
+          borderRadius: 10,
+        },
+      });`,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          borderColor: {
+            default: 'green',
+            '@media (min-width: 1540px)': 1366,
+            ':hover': 'red',
+          },
+          display: 'flex',
+          borderRadius: 10,
+        },
+      });`,
+      errors: [
+        {
+          message:
+            'StyleX property key "borderColor" should be above "display"',
+        },
+        {
+          message:
+            'StyleX property key ":hover" should be above "@media (min-width: 1540px)"',
+        },
+      ],
+    },
+    {
+      options: [{ order: 'clean-order' }],
+      code: `
       import { create } from 'stylex';
       const styles = create({
         main: {
@@ -724,10 +734,12 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       });`,
       errors: [
         {
-          message: `StyleX property key ":hover" should be above "@media (min-width: 1540px)"`,
+          message:
+            'StyleX property key ":hover" should be above "@media (min-width: 1540px)"',
         },
         {
-          message: `StyleX property key "display" should be above "borderColor"`,
+          message:
+            'StyleX property key "display" should be above "borderColor"',
         },
       ],
     },
@@ -795,7 +807,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "backgroundColor" should be above "display"`,
+          message:
+            'StyleX property key "backgroundColor" should be above "display"',
         },
       ],
     },
@@ -833,7 +846,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "display" should be above "backgroundColor"`,
+          message:
+            'StyleX property key "display" should be above "backgroundColor"',
         },
       ],
     },
@@ -1077,7 +1091,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "alignSelf" should be above "borderColor"`,
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
         },
       ],
     },
@@ -1113,10 +1128,11 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "display" should be above "alignItems"`,
+          message: 'StyleX property key "display" should be above "alignItems"',
         },
         {
-          message: `StyleX property key "alignSelf" should be above "borderColor"`,
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
         },
       ],
     },
@@ -1144,7 +1160,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "animationDuration" should be above "padding"`,
+          message:
+            'StyleX property key "animationDuration" should be above "padding"',
         },
       ],
     },
@@ -1177,7 +1194,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: `StyleX property key "fontSize" should be above "animationDuration"`,
+          message:
+            'StyleX property key "fontSize" should be above "animationDuration"',
         },
       ],
     },
