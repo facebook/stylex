@@ -44,11 +44,12 @@ function validatePseudoSelector(pseudo: string): void {
 export function ancestor(
   pseudo: string,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(.${defaultMarker}${pseudo} *)`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(.${defaultMarker}${pseudo} *)` as StringPrefix<':where'>;
 }
 
 /**
@@ -61,11 +62,13 @@ export function ancestor(
 export function descendant(
   pseudo: string,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(:has(.${defaultMarker}${pseudo}))`;
+
+  // $FlowFixMe[incompatible-cast]
+  return `:where(:has(.${defaultMarker}${pseudo}))` as StringPrefix<':where'>;
 }
 
 /**
@@ -78,11 +81,12 @@ export function descendant(
 export function siblingBefore(
   pseudo: string,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(.${defaultMarker}${pseudo} ~ *)`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(.${defaultMarker}${pseudo} ~ *)` as StringPrefix<':where'>;
 }
 
 /**
@@ -95,11 +99,12 @@ export function siblingBefore(
 export function siblingAfter(
   pseudo: string,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(:has(~ .${defaultMarker}${pseudo}))`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(:has(~ .${defaultMarker}${pseudo}))` as StringPrefix<':where'>;
 }
 
 /**
@@ -112,9 +117,10 @@ export function siblingAfter(
 export function anySibling(
   pseudo: string,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(.${defaultMarker}${pseudo} ~ *, :has(~ .${defaultMarker}${pseudo}))`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(.${defaultMarker}${pseudo} ~ *, :has(~ .${defaultMarker}${pseudo}))` as StringPrefix<':where'>;
 }
