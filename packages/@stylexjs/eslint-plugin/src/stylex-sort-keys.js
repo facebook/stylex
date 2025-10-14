@@ -33,7 +33,7 @@ type Schema = {
         as: string,
       },
   >,
-  order: 'asc' | 'clean-order' | 'recess-order',
+  order: 'default' | 'clean-order' | 'recess-order',
   minKeys: number,
   allowLineSeparatedGroups: boolean,
 };
@@ -91,8 +91,8 @@ const stylexSortKeys = {
             default: ['stylex', '@stylexjs/stylex'],
           },
           order: {
-            enum: ['asc', 'clean-order', 'recess-order'],
-            default: 'asc',
+            enum: ['default', 'clean-order', 'recess-order'],
+            default: 'default',
           },
           minKeys: {
             type: 'integer',
@@ -111,7 +111,7 @@ const stylexSortKeys = {
   create(context: Rule.RuleContext): { ... } {
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
-      order = 'asc',
+      order = 'default',
       minKeys = 2,
       allowLineSeparatedGroups = false,
     }: Schema = context.options[0] || {};

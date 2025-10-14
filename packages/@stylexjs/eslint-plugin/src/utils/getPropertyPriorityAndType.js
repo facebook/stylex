@@ -1010,14 +1010,14 @@ const RECESS_ORDER_PRIORITIES = [
 ];
 
 const ORDER_PRIORITIES = {
-  asc: undefined,
+  default: undefined,
   'clean-order': CLEAN_ORDER_PRIORITIES,
   'recess-order': RECESS_ORDER_PRIORITIES,
 };
 
 export default function getPropertyPriorityAndType(
   key: string,
-  order: 'asc' | 'clean-order' | 'recess-order',
+  order: 'default' | 'clean-order' | 'recess-order',
 ): PriorityAndType {
   const BASE_PRIORITY = ORDER_PRIORITIES[order]
     ? ORDER_PRIORITIES[order].length - 1
