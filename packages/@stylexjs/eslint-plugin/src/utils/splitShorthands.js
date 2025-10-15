@@ -137,13 +137,30 @@ function containsModernColorFunction(str: string): boolean {
   return colorFunctionRegex.test(str);
 }
 
+/* Check if a value contains multiple CSS color functions separated by spaces,
+   which would indicate an actual shorthand usage pattern */
+function containsMultipleColorFunctions(str: string): boolean {
+  const colorFunctionPattern = `\\b(${MODERN_COLOR_FUNCTIONS.join('|')})\\s*\\([^)]*\\)`;
+  const multipleColorFunctionRegex = new RegExp(
+    `${colorFunctionPattern}\\s+${colorFunctionPattern}`,
+    'i',
+  );
+  return multipleColorFunctionRegex.test(str);
+}
+
 /* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
 In cases with simple spaces between comma-separated parameters, we can preprocess the values by stripping the spaces.
 If there are still spaces remaining, such as in edge cases involving `calc()` or gradient values, we won't provide an auto-fix. */
 function processWhitespacesinFunctions(str: string) {
+  // Check if this is a single modern CSS color function (should be allowed)
+  const hasSingleColorFunction = containsModernColorFunction(str);
+
+  // Check if this has multiple color functions separated by spaces (actual shorthand pattern)
+  const hasMultipleColorFunctions = containsMultipleColorFunctions(str);
+
   // If the value contains modern CSS color functions that css-shorthand-expand doesn't understand,
-  // treat it as a single value that shouldn't be expanded
-  if (containsModernColorFunction(str)) {
+  // treat it as a single value that shouldn't be expanded - unless it's an actual shorthand pattern
+  if (hasSingleColorFunction && !hasMultipleColorFunctions) {
     return {
       strippedValue: str,
       canFix: true,
