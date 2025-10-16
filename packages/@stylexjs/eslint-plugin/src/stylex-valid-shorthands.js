@@ -68,7 +68,7 @@ const stylexValidShorthands = {
       description:
         'Require shorthand properties to be split into individual properties',
       recommended: false,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
+      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
     },
     fixable: 'code',
     schema: [

@@ -62,7 +62,7 @@ const stylexSortKeys = {
     docs: {
       description: 'Require style properties to be sorted by key',
       recommended: false,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
+      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
     },
     fixable: 'code',
     schema: [
