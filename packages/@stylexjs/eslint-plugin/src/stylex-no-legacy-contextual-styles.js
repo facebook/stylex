@@ -26,7 +26,7 @@ const stylexNoLegacyContextualStyles = {
     docs: {
       description: 'Disallow legacy media query/pseudo class syntax',
       recommended: true,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
+      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
     },
     schema: [
       {
