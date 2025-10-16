@@ -290,3 +290,13 @@ export const scales = stylex.defineVars({
   medium: 'scale(1)',
   large: 'scale(1.2)',
 });
+
+export const colors = stylex.defineVars({
+  blue3: '#74c0fc',
+  blue7: '#1c7ed6',
+  gray3: '#dee2e6',
+  gray4: '#ced4da',
+  gray8: '#343a40',
+  gray9: '#212529',
+  lime7: '#74b816'
+})
