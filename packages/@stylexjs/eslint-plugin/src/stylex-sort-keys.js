@@ -33,7 +33,7 @@ type Schema = {
         as: string,
       },
   >,
-  order: 'default' | 'clean-order' | 'recess-order',
+  order: 'default' | 'clean' | 'recess',
   minKeys: number,
   allowLineSeparatedGroups: boolean,
 };
@@ -91,7 +91,7 @@ const stylexSortKeys = {
             default: ['stylex', '@stylexjs/stylex'],
           },
           order: {
-            enum: ['default', 'clean-order', 'recess-order'],
+            enum: ['default', 'clean', 'recess'],
             default: 'default',
           },
           minKeys: {
