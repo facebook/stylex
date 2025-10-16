@@ -160,7 +160,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1lveb7",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -168,7 +168,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1e6ryz3",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -176,7 +176,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-bdddrq",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}",
+                "ltr": "@media print{.x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -249,7 +249,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1lveb7",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -257,7 +257,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1e6ryz3",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -265,7 +265,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-bdddrq",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}",
+                "ltr": "@media print{.x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -337,7 +337,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1qn30me-1lveb7",
               {
-                "ltr": ".x1qn30me, .x1qn30me:root{--xt4ziaz:lightgreen;--x1e3it8h:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x1qn30me, .x1qn30me:root{--xt4ziaz:lightgreen;--x1e3it8h:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -345,7 +345,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1qn30me-1e6ryz3",
               {
-                "ltr": ".x1qn30me, .x1qn30me:root{--x1e3it8h:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x1qn30me, .x1qn30me:root{--x1e3it8h:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -353,7 +353,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1qn30me-bdddrq",
               {
-                "ltr": ".x1qn30me, .x1qn30me:root{--xt4ziaz:transparent;}",
+                "ltr": "@media print{.x1qn30me, .x1qn30me:root{--xt4ziaz:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -502,7 +502,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1lveb7",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -510,7 +510,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1e6ryz3",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -518,7 +518,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-bdddrq",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}",
+                "ltr": "@media print{.x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -783,7 +783,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x5gq8ml-1lveb7",
               {
-                "ltr": ".x5gq8ml, .x5gq8ml:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x5gq8ml, .x5gq8ml:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -791,7 +791,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x5gq8ml-bdddrq",
               {
-                "ltr": ".x5gq8ml, .x5gq8ml:root{--xwx8imx:transparent;}",
+                "ltr": "@media print{.x5gq8ml, .x5gq8ml:root{--xwx8imx:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -865,7 +865,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1lveb7",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -873,7 +873,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1e6ryz3",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -881,7 +881,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-bdddrq",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}",
+                "ltr": "@media print{.x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -979,7 +979,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1lveb7",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xwx8imx:lightgreen;--xaaua2w:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -987,7 +987,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-1e6ryz3",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x10yrbfs, .x10yrbfs:root{--xaaua2w:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -995,7 +995,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x10yrbfs-bdddrq",
               {
-                "ltr": ".x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}",
+                "ltr": "@media print{.x10yrbfs, .x10yrbfs:root{--xwx8imx:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -1042,7 +1042,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1k4bs7r-1lveb7",
               {
-                "ltr": ".x1k4bs7r, .x1k4bs7r:root{--x103gslp:lightgreen;--x1e7put6:floralwhite;}",
+                "ltr": "@media (prefers-color-scheme: dark){.x1k4bs7r, .x1k4bs7r:root{--x103gslp:lightgreen;--x1e7put6:floralwhite;}}",
                 "rtl": null,
               },
               0.6000000000000001,
@@ -1050,7 +1050,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1k4bs7r-1e6ryz3",
               {
-                "ltr": ".x1k4bs7r, .x1k4bs7r:root{--x1e7put6:oklab(0.7 -0.3 -0.4);}",
+                "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){.x1k4bs7r, .x1k4bs7r:root{--x1e7put6:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
               0.7,
@@ -1058,7 +1058,7 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1k4bs7r-bdddrq",
               {
-                "ltr": ".x1k4bs7r, .x1k4bs7r:root{--x103gslp:transparent;}",
+                "ltr": "@media print{.x1k4bs7r, .x1k4bs7r:root{--x103gslp:transparent;}}",
                 "rtl": null,
               },
               0.6000000000000001,
