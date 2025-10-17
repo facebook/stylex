@@ -555,15 +555,6 @@ const stylexValidStyles = {
             }
           }
 
-          if (
-            (key === 'float' || key === 'clear') &&
-            style.value.type === 'Literal' &&
-            typeof style.value.value === 'string' &&
-            (style.value.value === 'start' || style.value.value === 'end')
-          ) {
-            return;
-          }
-
           const check = ruleChecker(
             style.value,
             varsWithFnArgs,

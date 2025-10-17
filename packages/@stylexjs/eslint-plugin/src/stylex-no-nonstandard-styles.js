@@ -9,7 +9,6 @@
 
 'use strict';
 
-import getDistance from './utils/getDistance';
 import type {
   CallExpression,
   Directive,
@@ -21,18 +20,14 @@ import type {
   Pattern,
   Program,
   Property,
-  Literal,
   Statement,
   VariableDeclaration,
   VariableDeclarator,
   PrivateIdentifier,
 } from 'estree';
-import micromatch from 'micromatch';
 /*:: import { Rule } from 'eslint'; */
 import makeLiteralRule from './rules/makeLiteralRule';
-import isString from './rules/isString';
 import makeUnionRule from './rules/makeUnionRule';
-import isNumber from './rules/isNumber';
 import isAnimationName from './rules/isAnimationName';
 import isPositionTryFallbacks from './rules/isPositionTryFallbacks';
 import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
@@ -40,7 +35,6 @@ import isCSSVariable from './rules/isCSSVariable';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
 import {
-  CSSPropertyKeys,
   CSSProperties,
   convertToStandardProperties,
   all,
@@ -63,11 +57,7 @@ export type RuleResponse = void | {
   },
 };
 
-const showError =
-  (message: string): RuleCheck =>
-  () => ({ message });
-
-const stylexValidStyles = {
+const stylexNoNonstandardStyles = {
   meta: {
     type: 'problem',
     hasSuggestions: true,
@@ -98,36 +88,6 @@ const stylexValidStyles = {
             },
             default: ['stylex', '@stylexjs/stylex'],
           },
-          banPropsForLegacy: {
-            type: 'boolean',
-            default: false,
-          },
-          propLimits: {
-            type: 'object',
-            additionalProperties: {
-              type: 'object',
-              properties: {
-                limit: {
-                  oneOf: [
-                    { type: 'null' },
-                    { type: 'string' },
-                    { type: 'number' },
-                    {
-                      type: 'array',
-                      items: {
-                        oneOf: [
-                          { type: 'null' },
-                          { type: 'string' },
-                          { type: 'number' },
-                        ],
-                      },
-                    },
-                  ],
-                },
-                reason: { type: 'string' },
-              },
-            },
-          },
         },
       },
     ],
@@ -141,48 +101,19 @@ const stylexValidStyles = {
             as: string,
           },
       >,
-      banPropsForLegacy: boolean,
-      propLimits?: PropLimits,
     };
     const {
-      banPropsForLegacy = false,
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
-      propLimits = {},
     }: Schema = context.options[0] || {};
     const importTracker = createImportTracker(importsToLookFor);
     const variables = new Map<string, Expression | 'ARG'>();
     const dynamicStyleVariables = new Set<string>();
-
-    type PropLimits = {
-      [string]: {
-        limit: null | string | number | Array<string | number>,
-        reason: string,
-      },
-    };
-
-    const legacyReason =
-      'This property is not supported in legacy StyleX resolution.';
-    const legacyProps: PropLimits = {
-      'grid*': { limit: null, reason: legacyReason },
-      'mask+([a-zA-Z])': { limit: null, reason: legacyReason },
-      blockOverflow: { limit: null, reason: legacyReason },
-      inlineOverflow: { limit: null, reason: legacyReason },
-      transitionProperty: {
-        limit: ['opacity', 'transform', 'opacity, transform', 'none'],
-        reason: legacyReason,
-      },
-    };
 
     const stylexResolvedVarsTokenImports = new Set<string>();
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
     const styleXKeyframesImports = new Set<string>();
     const styleXPositionTryImports = new Set<string>();
-
-    const overrides: PropLimits = {
-      ...(banPropsForLegacy ? legacyProps : {}),
-      ...propLimits,
-    };
 
     const CSSPropertiesWithOverrides: { [string]: RuleCheck } = {
       ...CSSProperties,
@@ -199,50 +130,6 @@ const stylexValidStyles = {
         all,
       ),
     };
-    for (const overrideKey in overrides) {
-      const { limit, reason } = overrides[overrideKey];
-      const overrideValue =
-        limit === null
-          ? showError(reason)
-          : limit === '*'
-            ? makeUnionRule(isString, isNumber, all)
-            : limit === 'string'
-              ? makeUnionRule(isString, all)
-              : limit === 'number'
-                ? makeUnionRule(isNumber, all)
-                : typeof limit === 'string' || typeof limit === 'number'
-                  ? makeUnionRule(limit, all)
-                  : Array.isArray(limit)
-                    ? makeUnionRule(
-                        ...limit.map((l) => {
-                          if (l === '*') {
-                            return makeUnionRule(isString, isNumber);
-                          }
-                          if (l === 'string') {
-                            return isString;
-                          }
-                          if (l === 'number') {
-                            return isNumber;
-                          }
-                          return l;
-                        }),
-                        all,
-                      )
-                    : undefined;
-      if (overrideValue === undefined) {
-        // skip
-        continue;
-      }
-      if (overrideKey.includes('*') || overrideKey.includes('+')) {
-        for (const key in CSSPropertiesWithOverrides) {
-          if (micromatch.isMatch(key, overrideKey)) {
-            CSSPropertiesWithOverrides[key] = overrideValue;
-          }
-        }
-      } else {
-        CSSPropertiesWithOverrides[overrideKey] = overrideValue;
-      }
-    }
 
     function isStylexCreateCallee(node: Node) {
       return (
@@ -345,10 +232,6 @@ const stylexValidStyles = {
 
       const ruleChecker = CSSPropertiesWithOverrides[key];
       if (ruleChecker == null) {
-        const closestKey = CSSPropertyKeys.find((cssProp) => {
-          const distance = getDistance(key, cssProp, 2);
-          return distance <= 2;
-        });
         const replacementKey =
           style.key.type === 'Identifier' &&
           convertToStandardProperties[style.key.name]
@@ -380,37 +263,6 @@ const stylexValidStyles = {
             fix: (fixer) => {
               return fixer.replaceText(style.key, replacementKey);
             },
-            suggest:
-              closestKey != null
-                ? [
-                    {
-                      desc: `Did you mean "${closestKey}"?`,
-                      fix: (fixer) => {
-                        if (style.key.type === 'Identifier') {
-                          return fixer.replaceText(style.key, closestKey);
-                        }
-                        if (
-                          style.key.type === 'Literal' &&
-                          (typeof style.key.value === 'string' ||
-                            typeof style.key.value === 'number' ||
-                            typeof style.key.value === 'boolean' ||
-                            style.key.value == null)
-                        ) {
-                          const styleKey: Literal = style.key;
-                          const raw = style.key.raw;
-                          if (raw != null) {
-                            const quoteType = raw.substr(0, 1);
-                            return fixer.replaceText(
-                              styleKey,
-                              `${quoteType}${closestKey}${quoteType}`,
-                            );
-                          }
-                        }
-                        return null;
-                      },
-                    },
-                  ]
-                : undefined,
           } as Rule.ReportDescriptor);
         }
         return;
@@ -422,28 +274,39 @@ const stylexValidStyles = {
       const isReferencingStylexDefineVarsTokens =
         stylexResolvedVarsTokenImports.size > 0 &&
         isStylexResolvedVarsToken(style.value, stylexResolvedVarsTokenImports);
-      if (
-        !isReferencingStylexDefineVarsTokens &&
-        (key === 'float' || key === 'clear') &&
-        style.value.type === 'Literal' &&
-        typeof style.value.value === 'string' &&
-        (style.value.value === 'start' || style.value.value === 'end')
-      ) {
-        const replacement =
-          style.value.value === 'start' ? 'inline-start' : 'inline-end';
-        return context.report({
-          node: style.value,
-          loc: style.value.loc,
-          message: `The value "${style.value.value}" is not a standard CSS value for "${key}". Did you mean "${replacement}"?`,
-          fix: (fixer) => fixer.replaceText(style.value, `'${replacement}'`),
-          suggest: [
-            {
-              desc: `Replace "${style.value.value}" with "${replacement}"?`,
-              fix: (fixer) =>
-                fixer.replaceText(style.value, `'${replacement}'`),
-            },
-          ],
-        } as Rule.ReportDescriptor);
+      if (!isReferencingStylexDefineVarsTokens) {
+        let varsWithFnArgs: Map<string, Expression | 'ARG'> = variables;
+        if (dynamicStyleVariables.size > 0) {
+          varsWithFnArgs = new Map();
+          for (const [key, value] of variables) {
+            varsWithFnArgs.set(key, value);
+          }
+          for (const key of dynamicStyleVariables) {
+            varsWithFnArgs.set(key, 'ARG');
+          }
+        }
+        if (
+          (key === 'float' || key === 'clear') &&
+          style.value.type === 'Literal' &&
+          typeof style.value.value === 'string' &&
+          (style.value.value === 'start' || style.value.value === 'end')
+        ) {
+          const replacement =
+            style.value.value === 'start' ? 'inline-start' : 'inline-end';
+          return context.report({
+            node: style.value,
+            loc: style.value.loc,
+            message: `The value "${style.value.value}" is not a standard CSS value for "${key}". Did you mean "${replacement}"?`,
+            fix: (fixer) => fixer.replaceText(style.value, `'${replacement}'`),
+            suggest: [
+              {
+                desc: `Replace "${style.value.value}" with "${replacement}"?`,
+                fix: (fixer) =>
+                  fixer.replaceText(style.value, `'${replacement}'`),
+              },
+            ],
+          } as Rule.ReportDescriptor);
+        }
       }
     }
 
@@ -543,23 +406,45 @@ const stylexValidStyles = {
           });
       },
       CallExpression(node: CallExpression) {
+        if (!isStylexCreateDeclaration(node)) {
+          return;
+        }
         const namespaces = node.arguments[0];
-        if (
-          !isStylexCreateDeclaration(node) ||
-          namespaces.type !== 'ObjectExpression'
-        ) {
+        if (namespaces.type !== 'ObjectExpression') {
           return;
         }
 
-        namespaces.properties.forEach((namespace) => {
+        namespaces.properties.forEach((property) => {
           // we only care about properties with object values
-          if (
-            namespace.type !== 'Property' ||
-            namespace.value.type !== 'ObjectExpression'
-          ) {
+          if (property.type !== 'Property') {
             return;
           }
-          namespace.value.properties.forEach((prop) =>
+
+          let styles = property.value;
+
+          if (
+            styles.type === 'ArrowFunctionExpression' &&
+            (styles.body.type === 'ObjectExpression' ||
+              // $FlowFixMe
+              (styles.body.type === 'TSAsExpression' &&
+                styles.body.expression.type === 'ObjectExpression'))
+          ) {
+            const params = styles.params;
+            styles =
+              // $FlowFixMe[incompatible-type] TSAsExpression is relevant to the context of typescript
+              styles.type === 'TSAsExpression'
+                ? styles.expression
+                : styles.body;
+            params.forEach((param) => {
+              if (param.type === 'Identifier') {
+                dynamicStyleVariables.add(param.name);
+              }
+            });
+          } else if (styles.type !== 'ObjectExpression') {
+            return;
+          }
+
+          styles.properties.forEach((prop) =>
             checkStyleProperty(prop, 0, null, false),
           );
           // Reset local variables.
@@ -573,5 +458,5 @@ const stylexValidStyles = {
     };
   },
 };
-export default stylexValidStyles as typeof stylexValidStyles;
+export default stylexNoNonstandardStyles as typeof stylexNoNonstandardStyles;
 /* eslint-enable object-shorthand */
