@@ -42,6 +42,26 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      options: [{ order: 'clean' }],
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          display: 'flex',
+          borderColor: {
+            default: 'green',
+            ':hover': 'red',
+            '@media (min-width: 1540px)': 1366,
+          },
+          borderRadius: 10,
+        },
+        dynamic: (color) => ({
+          backgroundColor: color,
+        })
+      })
+    `,
+    },
+    {
       code: `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
@@ -75,6 +95,38 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      options: [{ order: 'clean' }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const obj = { fontSize: '12px' };
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
+          ...obj,
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ order: 'recess' }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const obj = { fontSize: '12px' };
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
+          ...obj,
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
       options: [{ allowLineSeparatedGroups: true }],
       code: `
       import { create as cr } from '@stylexjs/stylex';
@@ -82,6 +134,36 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         button: {
           alignItems: 'center',
           display: 'flex',
+
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ order: 'clean', allowLineSeparatedGroups: true }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
+
+          alignSelf: 'center',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ order: 'recess', allowLineSeparatedGroups: true }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
 
           alignSelf: 'center',
           borderColor: 'black',
@@ -116,6 +198,30 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      options: [{ validImports: ['a'], order: 'clean' }],
+      code: `
+      import { create as cr } from 'a';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
+      options: [{ validImports: ['a'], order: 'recess' }],
+      code: `
+      import { create as cr } from 'a';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          borderColor: 'black',
+        }
+      });
+    `,
+    },
+    {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
       code: `
       import { css } from 'a';
@@ -123,6 +229,23 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         button: {
           borderColor: 'black',
           display: 'flex',
+        }
+      });
+      `,
+    },
+    {
+      options: [
+        {
+          validImports: [{ from: 'a', as: 'css' }],
+          order: 'clean',
+        },
+      ],
+      code: `
+      import { css } from 'a';
+      const styles = css.create({
+        button: {
+          display: 'flex',
+          borderColor: 'black',
         }
       });
       `,
@@ -143,6 +266,38 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
     },
     {
+      options: [{ order: 'clean' }],
+      code: `
+        import { keyframes } from 'stylex';
+        const someAnimation = keyframes({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+    },
+    {
+      options: [{ order: 'recess' }],
+      code: `
+        import { keyframes } from 'stylex';
+        const someAnimation = keyframes({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+    },
+    {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const someAnimation = stylex.keyframes({
@@ -158,6 +313,22 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
     },
     {
+      options: [{ order: 'clean' }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const someAnimation = stylex.keyframes({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+    },
+    {
       code: `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
@@ -166,7 +337,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             default: "1080px",
             "@media (min-width: 2000px)": "calc((1080 / 24) * 1rem)"
           },
-          paddingVertical: 0,
+          paddingBlock: 0,
         },
       });`,
     },
@@ -197,6 +368,35 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key "animationDuration" should be above "padding"',
+        },
+      ],
+    },
+    {
+      options: [{ order: 'clean' }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            padding: 10,
+            fontSize: 12,
+            animationDuration: '100ms',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "fontSize" should be above "animationDuration"',
         },
       ],
     },
@@ -235,6 +435,44 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       ],
     },
     {
+      options: [{ order: 'clean' }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const obj = { fontSize: '12px' };
+        const styles = stylex.create({
+          button: {
+            alignItems: 'center',
+            display: 'flex',
+            ...obj,
+            borderColor: 'red', // ok
+            alignSelf: 'center',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const obj = { fontSize: '12px' };
+        const styles = stylex.create({
+          button: {
+            display: 'flex',
+            alignItems: 'center',
+            ...obj,
+            alignSelf: 'center',
+            borderColor: 'red', // ok
+          }
+        });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key "display" should be above "alignItems"',
+        },
+        {
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
+        },
+      ],
+    },
+    {
       code: `
         import { create } from 'stylex';
         const styles = create({
@@ -259,6 +497,34 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key "borderColor" should be above "display"',
+        },
+      ],
+    },
+    {
+      options: [{ order: 'clean' }],
+      code: `
+        import { create } from 'stylex';
+        const styles = create({
+          button: {
+            alignItems: 'center',
+            display: 'flex',
+            borderColor: 'red',
+          }
+        });
+      `,
+      output: `
+        import { create } from 'stylex';
+        const styles = create({
+          button: {
+            display: 'flex',
+            alignItems: 'center',
+            borderColor: 'red',
+          }
+        });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key "display" should be above "alignItems"',
         },
       ],
     },
@@ -297,6 +563,41 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       ],
     },
     {
+      options: [{ order: 'clean' }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const someAnimation = stylex.keyframes({
+          '0%': {
+            borderColor: 'red',
+            display: 'none',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const someAnimation = stylex.keyframes({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "display" should be above "borderColor"',
+        },
+      ],
+    },
+    {
       code: `
         import { keyframes as kf } from 'stylex';
         const someAnimation = kf({
@@ -327,6 +628,41 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key "borderColor" should be above "display"',
+        },
+      ],
+    },
+    {
+      options: [{ order: 'clean' }],
+      code: `
+        import { keyframes as kf } from 'stylex';
+        const someAnimation = kf({
+          '0%': {
+            borderColor: 'red',
+            display: 'none',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+      output: `
+        import { keyframes as kf } from 'stylex';
+        const someAnimation = kf({
+          '0%': {
+            display: 'none',
+            borderColor: 'red',
+          },
+          '100%': {
+            display: 'flex',
+            borderColor: 'green',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "display" should be above "borderColor"',
         },
       ],
     },
@@ -365,6 +701,45 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key ":hover" should be above "@media (min-width: 1540px)"',
+        },
+      ],
+    },
+    {
+      options: [{ order: 'clean' }],
+      code: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          borderColor: {
+            default: 'green',
+            '@media (min-width: 1540px)': 1366,
+            ':hover': 'red',
+          },
+          display: 'flex',
+          borderRadius: 10,
+        },
+      });`,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        main: {
+          display: 'flex',
+          borderColor: {
+            default: 'green',
+            '@media (min-width: 1540px)': 1366,
+            ':hover': 'red',
+          },
+          borderRadius: 10,
+        },
+      });`,
+      errors: [
+        {
+          message:
+            'StyleX property key ":hover" should be above "@media (min-width: 1540px)"',
+        },
+        {
+          message:
+            'StyleX property key "display" should be above "borderColor"',
         },
       ],
     },
@@ -434,6 +809,45 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key "backgroundColor" should be above "display"',
+        },
+      ],
+    },
+    {
+      options: [{ order: 'clean' }],
+      code: `
+      import { create } from 'stylex';
+      const styles = create({
+        foo: {
+          backgroundColor: {
+            // foo
+            default: 'red',
+            // bar
+            /* Block comment */
+            ':hover': 'brown',
+          },
+          display: 'flex',
+        }
+      });
+      `,
+      output: `
+      import { create } from 'stylex';
+      const styles = create({
+        foo: {
+          display: 'flex',
+          backgroundColor: {
+            // foo
+            default: 'red',
+            // bar
+            /* Block comment */
+            ':hover': 'brown',
+          },
+        }
+      });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "display" should be above "backgroundColor"',
         },
       ],
     },
@@ -683,6 +1097,46 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       ],
     },
     {
+      options: [{ order: 'clean', allowLineSeparatedGroups: true }],
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          alignItems: 'center',
+          display: 'flex',
+          // foo
+
+          // bar
+          borderColor: 'black',
+          alignSelf: 'center',
+        }
+      });
+      `,
+      output: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          display: 'flex',
+          alignItems: 'center',
+          // foo
+
+          alignSelf: 'center',
+          // bar
+          borderColor: 'black',
+        }
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key "display" should be above "alignItems"',
+        },
+        {
+          message:
+            'StyleX property key "alignSelf" should be above "borderColor"',
+        },
+      ],
+    },
+    {
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
       code: `
         import { css } from 'a';
@@ -708,6 +1162,71 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         {
           message:
             'StyleX property key "animationDuration" should be above "padding"',
+        },
+      ],
+    },
+    {
+      options: [
+        {
+          validImports: [{ from: 'a', as: 'css' }],
+          order: 'clean',
+        },
+      ],
+      code: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          }
+        });
+      `,
+      output: `
+        import { css } from 'a';
+        const styles = css.create({
+          main: {
+            padding: 10,
+            fontSize: 12,
+            animationDuration: '100ms',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "fontSize" should be above "animationDuration"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          width: {
+            [when.siblingAfter(":active")]: 30,
+            [when.descendant(":focus")]: 20,
+          },
+          display: 'flex',
+        },
+      });
+      `,
+      output: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            [when.siblingAfter(":active")]: 30,
+            [when.descendant(":focus")]: 20,
+          },
+        },
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key "display" should be above "width"',
         },
       ],
     },
