@@ -270,6 +270,61 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+
+        import { colors } from './vars.stylex';
+
+        const styles = stylex.create({
+          base: {
+            backgroundColor: {
+              default: colors.bg,
+              [stylex.when.descendant(":focus")]: colors.bgFocus,
+              [stylex.when.siblingAfter(":active")]: colors.bgActive,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              backgroundColor: {
+                default: 'transparent',
+                [stylex.when.descendant(":focus")]: 'blue',
+                [stylex.when.siblingAfter(":active")]: 'red',
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+
+        import { colors } from './vars.stylex';
+
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              backgroundColor: {
+                default: colors.bg,
+                [stylex.when.descendant(":focus")]: colors.bgFocus,
+                [stylex.when.siblingAfter(":active")]: colors.bgActive,
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces

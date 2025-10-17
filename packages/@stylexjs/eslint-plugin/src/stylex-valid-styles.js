@@ -471,25 +471,6 @@ const stylexValidStyles = {
               'All keys in a stylex object must be static literal values.',
           } as Rule.ReportDescriptor);
         }
-        if (styleKey.type === 'CallExpression') {
-          const parentKey = propName;
-          if (parentKey && CSSPropertiesWithOverrides[parentKey]) {
-            const ruleChecker = CSSPropertiesWithOverrides[parentKey];
-            if (typeof ruleChecker === 'function') {
-              const check = ruleChecker(style.value, variables, style, context);
-              if (check != null) {
-                const { message, suggest } = check;
-                return context.report({
-                  node: style.value,
-                  loc: style.value.loc,
-                  message: `${parentKey} value must be one of:\n${message}`,
-                  suggest: suggest != null ? [suggest] : undefined,
-                } as Rule.ReportDescriptor);
-              }
-            }
-          }
-          return undefined;
-        }
 
         const key =
           propName ??
