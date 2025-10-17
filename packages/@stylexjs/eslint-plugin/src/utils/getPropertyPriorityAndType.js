@@ -1011,8 +1011,8 @@ const RECESS_ORDER_PRIORITIES = [
 
 const ORDER_PRIORITIES = {
   default: undefined,
-  'clean': CLEAN_ORDER_PRIORITIES,
-  'recess': RECESS_ORDER_PRIORITIES,
+  clean: CLEAN_ORDER_PRIORITIES,
+  recess: RECESS_ORDER_PRIORITIES,
 };
 
 export default function getPropertyPriorityAndType(
