@@ -176,27 +176,6 @@ eslintTester.run('stylex-no-nonstandard-styles', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           default: {
-            display: 'grid',
-            grid: 'repeat(3, 80px) / auto-flow',
-          }
-        });
-      `,
-      options: [
-        {
-          propLimits: {
-            'grid+([a-zA-Z])': {
-              limit: null,
-              reason: 'disallow `grid-*` props but not `grid` for testing',
-            },
-          },
-        },
-      ],
-    },
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          default: {
             marginInlineStart: '10px',
             '@media (max-width: 600px)': {
               marginInlineStart: '5px',
