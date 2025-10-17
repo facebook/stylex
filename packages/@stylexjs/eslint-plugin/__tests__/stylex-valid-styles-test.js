@@ -2514,5 +2514,31 @@ revert`,
         },
       ],
     },
+    // test for trying to use `stylex.when` as outer key which is not supported
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: 10,
+            [stylex.when.descendant(":focus")]: {
+              width: 20,
+            },
+            [stylex.when.siblingAfter(":active")]: {
+              width: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+        {
+          message: 'Keys must be strings',
+        },
+      ],
+    },
   ],
 });
