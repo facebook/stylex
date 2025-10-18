@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.2 (Oct 13, 2025)
+- Handle descendant selector styles in `valid-styles` rule.
+- Adjust descendant selector `.when` priorities.
+- Fix `defineVars` and `createTheme` at-rules priorities.
+- Update `defineConsts` types for non-stylex usage.
+
 ## 0.16.1 (Oct 2, 2025)
 - New `no-lookahead-selector` lint rule to flag certain descendant and sibling selectors.
 - Fix priorities for descendant and sibling selectors.
