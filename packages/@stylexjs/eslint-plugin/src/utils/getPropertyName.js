@@ -77,6 +77,13 @@ function getStaticPropertyName(node: Node | ChainExpression): string | null {
       return prop.name;
     }
 
+    if (prop.type === 'CallExpression') {
+      const arg = prop.arguments[0];
+      if (arg) {
+        return getStaticStringValue(arg);
+      }
+    }
+
     return getStaticStringValue(prop);
   }
 

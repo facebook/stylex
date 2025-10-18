@@ -1204,9 +1204,71 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       import { create, when } from '@stylexjs/stylex';
       const styles = create({
         base: {
+          display: 'flex',
           width: {
-            [when.siblingAfter(":active")]: 30,
-            [when.descendant(":focus")]: 20,
+            ':hover': 10,
+            default: 20,
+          },
+        },
+      });
+      `,
+      output: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            default: 20,
+            ':hover': 10,
+          },
+        },
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key "default" should be above ":hover"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            ':focus': 10,
+            ':hover': 20,
+          },
+        },
+      });
+      `,
+      output: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            ':hover': 20,
+            ':focus': 10,
+          },
+        },
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key ":hover" should be above ":focus"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          width: {
+            [when.siblingAfter(':active')]: 30,
+            [when.descendant(':focus')]: 20,
           },
           display: 'flex',
         },
@@ -1218,15 +1280,80 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         base: {
           display: 'flex',
           width: {
-            [when.siblingAfter(":active")]: 30,
-            [when.descendant(":focus")]: 20,
+            [when.siblingAfter(':active')]: 30,
+            [when.descendant(':focus')]: 20,
           },
         },
       });
       `,
       errors: [
         {
+          message: 'StyleX property key ":focus" should be above ":active"',
+        },
+        {
           message: 'StyleX property key "display" should be above "width"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            [when.siblingAfter(':active')]: 30,
+            [when.descendant(':focus')]: 20,
+          },
+        },
+      });
+      `,
+      output: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            [when.descendant(':focus')]: 20,
+            [when.siblingAfter(':active')]: 30,
+          },
+        },
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key ":focus" should be above ":active"',
+        },
+      ],
+    },
+    {
+      code: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            [when[api](\`:active\`)]: 30,
+            [when[api](\`:focus\`)]: 20,
+          },
+        },
+      });
+      `,
+      output: `
+      import { create, when } from '@stylexjs/stylex';
+      const styles = create({
+        base: {
+          display: 'flex',
+          width: {
+            [when[api](\`:focus\`)]: 20,
+            [when[api](\`:active\`)]: 30,
+          },
+        },
+      });
+      `,
+      errors: [
+        {
+          message: 'StyleX property key ":focus" should be above ":active"',
         },
       ],
     },
