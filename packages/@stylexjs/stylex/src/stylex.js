@@ -81,6 +81,10 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
+export const defineMarker = (): StaticStyles<> => {
+  throw errorForFn('defineMarker');
+};
+
 export const firstThatWorks = <T: string | number>(
   ..._styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
@@ -220,6 +224,7 @@ type IStyleX = {
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineVars: StyleX$DefineVars,
+  defineMarker: () => StaticStyles<>,
   defaultMarker: () => StaticStyles<>,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
@@ -254,6 +259,7 @@ function _legacyMerge(
 
 _legacyMerge.create = create;
 _legacyMerge.createTheme = createTheme;
+_legacyMerge.defineMarker = defineMarker;
 _legacyMerge.defineVars = defineVars;
 _legacyMerge.defaultMarker = defaultMarker;
 _legacyMerge.firstThatWorks = firstThatWorks;
