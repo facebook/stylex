@@ -22,6 +22,7 @@
     "@babel/types": "^7.26.8",
     "@dual-bundle/import-meta-resolve": "^4.1.0",
     "@stylexjs/stylex": "0.16.2",
+    "@stylexjs/shared": "0.16.2",
     "postcss-value-parser": "^4.1.0"
   },
   "devDependencies": {

@@ -41,7 +41,7 @@ import {
   PSEUDO_CLASS_PRIORITIES as _PSEUDO_CLASS_PRIORITIES,
   AT_RULE_PRIORITIES as _AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY as _PSEUDO_ELEMENT_PRIORITY,
-} from './utils/property-priorities';
+} from '@stylexjs/shared';
 
 export * as types from './types';
 export * as when from './when/when';
