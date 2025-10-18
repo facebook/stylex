@@ -10,7 +10,7 @@
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "babel src/ --out-dir lib/",
-    "test": "jest --coverage"
+    "test": "jest --coverage --passWithNoTests"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
