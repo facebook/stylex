@@ -78,9 +78,15 @@ function getStaticPropertyName(node: Node | ChainExpression): string | null {
     }
 
     if (prop.type === 'CallExpression') {
-      const arg = prop.arguments[0];
-      if (arg) {
-        return getStaticStringValue(arg);
+      const callee = getCalleeName(prop.callee);
+      if (!callee) return null;
+
+      if (callee.startsWith('stylex.when') || callee.startsWith('when')) {
+        const relation = callee.split('.').pop();
+        const arg = prop.arguments[0];
+        if (!arg) return null;
+
+        return `:when:${relation ?? ''}${getStaticStringValue(arg) ?? ''}`;
       }
     }
 
@@ -88,6 +94,25 @@ function getStaticPropertyName(node: Node | ChainExpression): string | null {
   }
 
   return null;
+}
+
+function getCalleeName(node: Node): string | null {
+  const parts: string[] = [];
+  let current = node;
+
+  while (current && current.type === 'MemberExpression') {
+    if (current.property.type === 'Identifier') {
+      parts.unshift(current.property.name);
+    }
+
+    current = current.object;
+  }
+
+  if (current && current.type === 'Identifier') {
+    parts.unshift(current.name);
+  }
+
+  return parts.length > 0 ? parts.join('.') : null;
 }
 
 export default function getPropertyName(
