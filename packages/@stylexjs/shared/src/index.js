@@ -9,11 +9,22 @@
 
 import {
   default as _getPriority,
+  getAtRulePriority as _getAtRulePriority,
+  getPseudoElementPriority as _getPseudoElementPriority,
+  getPseudoClassPriority as _getPseudoClassPriority,
+  getDefaultPriority as _getDefaultPriority,
   PSEUDO_CLASS_PRIORITIES as _PSEUDO_CLASS_PRIORITIES,
   AT_RULE_PRIORITIES as _AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY as _PSEUDO_ELEMENT_PRIORITY,
 } from './utils/property-priorities';
 
+export const getAtRulePriority: typeof _getAtRulePriority = _getAtRulePriority;
+export const getPseudoElementPriority: typeof _getPseudoElementPriority =
+  _getPseudoElementPriority;
+export const getPseudoClassPriority: typeof _getPseudoClassPriority =
+  _getPseudoClassPriority;
+export const getDefaultPriority: typeof _getDefaultPriority =
+  _getDefaultPriority;
 export const getPriority: typeof _getPriority = _getPriority;
 
 export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES =

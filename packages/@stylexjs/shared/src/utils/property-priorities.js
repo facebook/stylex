@@ -724,7 +724,7 @@ const RELATIONAL_SELECTORS = {
     /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*,\s+:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/,
 };
 
-export default function getPriority(key: string): number {
+export function getAtRulePriority(key: string): number | void {
   if (key.startsWith('--')) {
     return 1;
   }
@@ -740,11 +740,15 @@ export default function getPriority(key: string): number {
   if (key.startsWith('@container')) {
     return AT_RULE_PRIORITIES['@container'];
   }
+}
 
+export function getPseudoElementPriority(key: string): number | void {
   if (key.startsWith('::')) {
     return PSEUDO_ELEMENT_PRIORITY;
   }
+}
 
+export function getPseudoClassPriority(key: string): number | void {
   const pseudoBase = (p: string): number =>
     (PSEUDO_CLASS_PRIORITIES[p] ?? 40) / 100;
 
@@ -783,7 +787,9 @@ export default function getPriority(key: string): number {
 
     return PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
   }
+}
 
+export function getDefaultPriority(key: string): number | void {
   if (shorthandsOfShorthands.has(key)) {
     return 1000;
   }
@@ -796,5 +802,20 @@ export default function getPriority(key: string): number {
   if (longHandPhysical.has(key)) {
     return 4000;
   }
+}
+
+export default function getPriority(key: string): number {
+  const atRulePriority = getAtRulePriority(key);
+  if (atRulePriority) return atRulePriority;
+
+  const pseudoElementPriority = getPseudoElementPriority(key);
+  if (pseudoElementPriority) return pseudoElementPriority;
+
+  const pseudoClassPriority = getPseudoClassPriority(key);
+  if (pseudoClassPriority) return pseudoClassPriority;
+
+  const defaultPriority = getDefaultPriority(key);
+  if (defaultPriority) return defaultPriority;
+
   return 3000;
 }

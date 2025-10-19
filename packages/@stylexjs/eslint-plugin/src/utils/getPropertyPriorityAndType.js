@@ -10,9 +10,10 @@
 'use strict';
 
 import {
-  PSEUDO_CLASS_PRIORITIES,
-  AT_RULE_PRIORITIES,
-  PSEUDO_ELEMENT_PRIORITY,
+  getAtRulePriority,
+  getPseudoElementPriority,
+  getPseudoClassPriority,
+  getDefaultPriority,
 } from '@stylexjs/shared';
 
 import CLEAN_ORDER_PRIORITIES from '../reference/cleanOrderPriorities';
@@ -38,51 +39,42 @@ export default function getPropertyPriorityAndType(
   key: string,
   order: 'default' | 'clean' | 'recess',
 ): PriorityAndType {
-  const BASE_PRIORITY = ORDER_PRIORITIES[order]
+  const orderPriority = ORDER_PRIORITIES[order]
     ? ORDER_PRIORITIES[order].length - 1
     : 0;
 
-  if (key.startsWith('@supports')) {
+  const atRulePriority = getAtRulePriority(key);
+  if (atRulePriority) {
     return {
-      priority: BASE_PRIORITY + AT_RULE_PRIORITIES['@supports'],
+      priority: orderPriority + atRulePriority,
       type: 'atRule',
     };
   }
 
-  if (key.startsWith('::')) {
+  const pseudoElementPriority = getPseudoElementPriority(key);
+  if (pseudoElementPriority) {
     return {
-      priority: BASE_PRIORITY + PSEUDO_ELEMENT_PRIORITY,
+      priority: orderPriority + pseudoElementPriority,
       type: 'pseudoElement',
     };
   }
 
-  if (key.startsWith(':')) {
-    const prop =
-      key.startsWith(':') && key.includes('(')
-        ? key.slice(0, key.indexOf('('))
-        : key;
-
+  const pseudoClassPriority = getPseudoClassPriority(key);
+  if (pseudoClassPriority) {
     return {
-      priority: PSEUDO_CLASS_PRIORITIES[prop] ?? 40,
+      priority: orderPriority + pseudoClassPriority,
       type: 'pseudoClass',
     };
   }
 
-  if (key.startsWith('@media')) {
-    return {
-      priority: BASE_PRIORITY + AT_RULE_PRIORITIES['@media'],
-      type: 'atRule',
-    };
-  }
-
-  if (key.startsWith('@container')) {
-    return {
-      priority: BASE_PRIORITY + AT_RULE_PRIORITIES['@container'],
-      type: 'atRule',
-    };
-  }
-
-  if (ORDER_PRIORITIES[order]) {
+  if (order === 'default') {
+    const defaultPriority = getDefaultPriority(
+      key.replace(/[A-Z]/g, '-$&').toLowerCase(),
+    );
+    if (defaultPriority) {
+      return { priority: defaultPriority, type: 'knownCssProperty' };
+    }
+  } else if (ORDER_PRIORITIES[order]) {
     const index = ORDER_PRIORITIES[order].indexOf(key);
     if (index !== -1) {
       return { priority: index, type: 'knownCssProperty' };
