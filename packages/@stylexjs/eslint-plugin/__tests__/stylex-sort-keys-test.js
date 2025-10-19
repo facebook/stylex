@@ -1312,7 +1312,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       `,
       errors: [
         {
-          message: 'StyleX property key ":focus" should be above ":active"',
+          message:
+            'StyleX property key ":when:descendant:focus" should be above ":when:siblingAfter:active"',
         },
         {
           message: 'StyleX property key "display" should be above "width"',
@@ -1326,7 +1327,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         base: {
           display: 'flex',
           width: {
-            [when.siblingAfter(':active')]: 30,
+            [stylex.when.siblingAfter(':active')]: 30,
             [when.descendant(':focus')]: 20,
           },
         },
@@ -1339,14 +1340,15 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           display: 'flex',
           width: {
             [when.descendant(':focus')]: 20,
-            [when.siblingAfter(':active')]: 30,
+            [stylex.when.siblingAfter(':active')]: 30,
           },
         },
       });
       `,
       errors: [
         {
-          message: 'StyleX property key ":focus" should be above ":active"',
+          message:
+            'StyleX property key ":when:descendant:focus" should be above ":when:siblingAfter:active"',
         },
       ],
     },
@@ -1357,8 +1359,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         base: {
           display: 'flex',
           width: {
-            [when[api](\`:active\`)]: 30,
             [when[api](\`:focus\`)]: 20,
+            [when[api](\`:active\`)]: 30,
           },
         },
       });
@@ -1369,15 +1371,16 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         base: {
           display: 'flex',
           width: {
-            [when[api](\`:focus\`)]: 20,
             [when[api](\`:active\`)]: 30,
+            [when[api](\`:focus\`)]: 20,
           },
         },
       });
       `,
       errors: [
         {
-          message: 'StyleX property key ":focus" should be above ":active"',
+          message:
+            'StyleX property key ":when:api:active" should be above ":when:api:focus"',
         },
       ],
     },

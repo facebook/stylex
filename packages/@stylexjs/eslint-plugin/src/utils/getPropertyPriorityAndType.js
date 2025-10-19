@@ -59,6 +59,58 @@ export default function getPropertyPriorityAndType(
     };
   }
 
+  if (key.startsWith(':when:ancestor')) {
+    const ancestorPriority = getPseudoClassPriority(
+      key.replace(':when:ancestor', ''),
+    );
+    if (ancestorPriority) {
+      return {
+        priority: orderPriority + ancestorPriority / 100 + 10,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:descendant')) {
+    const descendantPriority = getPseudoClassPriority(
+      key.replace(':when:descendant', ''),
+    );
+    if (descendantPriority) {
+      return {
+        priority: orderPriority + descendantPriority / 100 + 15,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:anySibling')) {
+    const anySiblingPriority = getPseudoClassPriority(
+      key.replace(':when:anySibling', ''),
+    );
+    if (anySiblingPriority) {
+      return {
+        priority: orderPriority + anySiblingPriority / 100 + 20,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:siblingBefore')) {
+    const siblingBeforePriority = getPseudoClassPriority(
+      key.replace(':when:siblingBefore', ''),
+    );
+    if (siblingBeforePriority) {
+      return {
+        priority: orderPriority + siblingBeforePriority / 100 + 30,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:siblingAfter')) {
+    const siblingAfterPriority = getPseudoClassPriority(
+      key.replace(':when:siblingAfter', ''),
+    );
+    if (siblingAfterPriority) {
+      return {
+        priority: orderPriority + siblingAfterPriority / 100 + 40,
+        type: 'pseudoClass',
+      };
+    }
+  }
+
   const pseudoClassPriority = getPseudoClassPriority(key);
   if (pseudoClassPriority) {
     return {
