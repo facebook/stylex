@@ -88,8 +88,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           alignItems: 'center',
           display: 'flex',
           ...obj,
-          alignSelf: 'center',
           borderColor: 'black',
+          alignSelf: 'center',
         }
       });
     `,
@@ -127,6 +127,30 @@ eslintTester.run('stylex-sort-keys', rule.default, {
     `,
     },
     {
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          marginBlock: 6,
+          marginInline: 8,
+        }
+      });
+    `,
+    },
+    {
+      code: `
+      import { create as cr } from '@stylexjs/stylex';
+      const styles = cr({
+        button: {
+          margin: 16,
+          marginInline: 8,
+          marginBlockEnd: 6,
+          marginLeft: 4,
+        }
+      });
+    `,
+    },
+    {
       options: [{ allowLineSeparatedGroups: true }],
       code: `
       import { create as cr } from '@stylexjs/stylex';
@@ -135,8 +159,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           alignItems: 'center',
           display: 'flex',
 
-          alignSelf: 'center',
           borderColor: 'black',
+          alignSelf: 'center',
         }
       });
     `,
@@ -333,11 +357,11 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         nav: {
+          paddingBlock: 0,
           maxWidth: {
             default: "1080px",
             "@media (min-width: 2000px)": "calc((1080 / 24) * 1rem)"
           },
-          paddingBlock: 0,
         },
       });`,
     },
@@ -348,8 +372,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
-            padding: 10,
             animationDuration: '100ms',
+            padding: 10,
             fontSize: 12,
           }
         });
@@ -358,8 +382,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
-            animationDuration: '100ms',
             padding: 10,
+            animationDuration: '100ms',
             fontSize: 12,
           }
         });
@@ -367,7 +391,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'StyleX property key "animationDuration" should be above "padding"',
+            'StyleX property key "padding" should be above "animationDuration"',
         },
       ],
     },
@@ -409,8 +433,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             alignItems: 'center',
             display: 'flex',
             ...obj,
-            borderColor: 'red', // ok
             alignSelf: 'center',
+            borderColor: 'red', // ok
           }
         });
       `,
@@ -422,15 +446,15 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             alignItems: 'center',
             display: 'flex',
             ...obj,
-            alignSelf: 'center',
             borderColor: 'red', // ok
+            alignSelf: 'center',
           }
         });
       `,
       errors: [
         {
           message:
-            'StyleX property key "alignSelf" should be above "borderColor"',
+            'StyleX property key "borderColor" should be above "alignSelf"',
         },
       ],
     },
@@ -1070,8 +1094,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           // foo
 
           // bar
-          borderColor: 'black',
           alignSelf: 'center',
+          borderColor: 'black',
         }
       });
       `,
@@ -1083,16 +1107,16 @@ eslintTester.run('stylex-sort-keys', rule.default, {
           display: 'flex',
           // foo
 
-          alignSelf: 'center',
-          // bar
           borderColor: 'black',
+          // bar
+          alignSelf: 'center',
         }
       });
       `,
       errors: [
         {
           message:
-            'StyleX property key "alignSelf" should be above "borderColor"',
+            'StyleX property key "borderColor" should be above "alignSelf"',
         },
       ],
     },
@@ -1142,8 +1166,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import { css } from 'a';
         const styles = css.create({
           main: {
-            padding: 10,
             animationDuration: '100ms',
+            padding: 10,
             fontSize: 12,
           }
         });
@@ -1152,8 +1176,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import { css } from 'a';
         const styles = css.create({
           main: {
-            animationDuration: '100ms',
             padding: 10,
+            animationDuration: '100ms',
             fontSize: 12,
           }
         });
@@ -1161,7 +1185,7 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       errors: [
         {
           message:
-            'StyleX property key "animationDuration" should be above "padding"',
+            'StyleX property key "padding" should be above "animationDuration"',
         },
       ],
     },
