@@ -194,7 +194,11 @@ const stylexValidStyles = {
     /**
      * Check if a file has a valid extension for StyleX variable imports.
      *
-     * `.stylex`: used when importing `defineVars` or `defineConsts`. This prevents
+     * `.stylex`: used when importing `defineVars` or `defineConsts` variables. This prevents
+     *   the linter/compiler from marking imports as unresolved and allows computed
+     *   keys in those cases.
+     *
+     *  `.stylex.const`: used when importing `defineConsts` constants. This prevents
      *   the linter/compiler from marking imports as unresolved and allows computed
      *   keys in those cases.
      *
@@ -203,7 +207,7 @@ const stylexValidStyles = {
      *
      */
     function isValidStylexResolvedVarsFileExtension(filename: string) {
-      const baseExtensions = ['.stylex', '.transformed'];
+      const baseExtensions = ['.stylex', '.stylex.const', '.transformed'];
       const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
       return ['', ...extensions].some((ext) =>
         baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),

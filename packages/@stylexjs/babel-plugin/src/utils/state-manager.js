@@ -458,15 +458,21 @@ export default class StateManager {
     const themeFileExtension =
       this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
 
-    if (
-      filename == null ||
-      !matchesFileSuffix(themeFileExtension)(filename) ||
-      this.options.unstable_moduleResolution == null
-    ) {
+    const constsFileExtension = `${themeFileExtension}.const}`;
+
+    if (filename == null || this.options.unstable_moduleResolution == null) {
       return null;
     }
 
-    switch (this.options.unstable_moduleResolution.type) {
+    const isThemeFile = matchesFileSuffix(themeFileExtension)(filename);
+
+    const isConstsOnlyFile = matchesFileSuffix(constsFileExtension)(filename);
+
+    if (!isThemeFile && !isConstsOnlyFile) {
+      return null;
+    }
+
+    switch (this.options.unstable_moduleResolution?.type) {
       case 'haste':
         return path.basename(filename);
       default:
@@ -521,14 +527,23 @@ export default class StateManager {
 
     const themeFileExtension =
       this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
+
+    const constsFileExtension = `${themeFileExtension}.const}`;
+
     const transformedVarsFileExtension = '.transformed';
 
     const isValidStylexFile = matchesFileSuffix(themeFileExtension)(importPath);
     const isValidTransformedVarsFile = matchesFileSuffix(
       transformedVarsFileExtension,
     )(importPath);
+    const isValidConstsOnlyFile =
+      matchesFileSuffix(constsFileExtension)(importPath);
 
-    if (!isValidStylexFile && !isValidTransformedVarsFile) {
+    if (
+      !isValidStylexFile &&
+      !isValidTransformedVarsFile &&
+      !isValidConstsOnlyFile
+    ) {
       return false;
     }
 
