@@ -2514,7 +2514,7 @@ revert`,
         },
       ],
     },
-    // test for trying to use `stylex.when` as outer key which is not supported
+    // test for trying to use `stylex.when` as outer key when `allowOuterPseudoAndMedia` is false
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -2530,7 +2530,7 @@ revert`,
           },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
+      options: [{ allowOuterPseudoAndMedia: false }],
       errors: [
         {
           message: 'Keys must be strings',
