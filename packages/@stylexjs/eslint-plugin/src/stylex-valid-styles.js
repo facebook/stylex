@@ -46,7 +46,6 @@ import {
   CSSProperties,
   CSSPropertyReplacements,
   pseudoElements,
-  convertToStandardProperties,
   pseudoClassesAndAtRules,
   allModifiers,
   all,
@@ -529,41 +528,10 @@ const stylexValidStyles = {
             return distance <= 2;
           });
 
-          const replacementKey =
-            style.key.type === 'Identifier' &&
-            convertToStandardProperties[style.key.name]
-              ? convertToStandardProperties[style.key.name]
-              : style.key.type === 'Literal' &&
-                  typeof style.key.value === 'string' &&
-                  convertToStandardProperties[style.key.value]
-                ? convertToStandardProperties[style.key.value]
-                : null;
-
-          let originalKey = '';
-
-          if (style.key.type === 'Identifier') {
-            originalKey = style.key.name;
-          } else if (
-            style.key.type === 'Literal' &&
-            typeof style.key.value === 'string'
-          ) {
-            originalKey = style.key.value;
-          }
-
           return context.report({
             node: style.key,
             loc: style.key.loc,
-            message:
-              replacementKey &&
-              (style.key.type === 'Identifier' || style.key.type === 'Literal')
-                ? `The key "${originalKey}" is not a standard CSS property. Did you mean "${replacementKey}"?`
-                : 'This is not a key that is allowed by stylex',
-            fix: (fixer) => {
-              if (replacementKey) {
-                return fixer.replaceText(style.key, replacementKey);
-              }
-              return null;
-            },
+            message: 'This is not a key that is allowed by stylex',
             suggest:
               closestKey != null
                 ? [
@@ -616,30 +584,6 @@ const stylexValidStyles = {
             for (const key of dynamicStyleVariables) {
               varsWithFnArgs.set(key, 'ARG');
             }
-          }
-
-          if (
-            (key === 'float' || key === 'clear') &&
-            style.value.type === 'Literal' &&
-            typeof style.value.value === 'string' &&
-            (style.value.value === 'start' || style.value.value === 'end')
-          ) {
-            const replacement =
-              style.value.value === 'start' ? 'inline-start' : 'inline-end';
-            return context.report({
-              node: style.value,
-              loc: style.value.loc,
-              message: `The value "${style.value.value}" is not a standard CSS value for "${key}". Did you mean "${replacement}"?`,
-              fix: (fixer) =>
-                fixer.replaceText(style.value, `'${replacement}'`),
-              suggest: [
-                {
-                  desc: `Replace "${style.value.value}" with "${replacement}"?`,
-                  fix: (fixer) =>
-                    fixer.replaceText(style.value, `'${replacement}'`),
-                },
-              ],
-            } as Rule.ReportDescriptor);
           }
 
           const check = ruleChecker(
