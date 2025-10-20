@@ -286,6 +286,61 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+
+        import { colors } from './vars.stylex';
+
+        const styles = stylex.create({
+          base: {
+            backgroundColor: {
+              default: colors.bg,
+              [stylex.when.descendant(":focus")]: colors.bgFocus,
+              [stylex.when.siblingAfter(":active")]: colors.bgActive,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              backgroundColor: {
+                default: 'transparent',
+                [stylex.when.descendant(":focus")]: 'blue',
+                [stylex.when.siblingAfter(":active")]: 'red',
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+
+        import { colors } from './vars.stylex';
+
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              backgroundColor: {
+                default: colors.bg,
+                [stylex.when.descendant(":focus")]: colors.bgFocus,
+                [stylex.when.siblingAfter(":active")]: colors.bgActive,
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
@@ -2206,6 +2261,32 @@ revert`,
         {
           message:
             'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+      ],
+    },
+    // test for trying to use `stylex.when` as outer key when `allowOuterPseudoAndMedia` is false
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: 10,
+            [stylex.when.descendant(":focus")]: {
+              width: 20,
+            },
+            [stylex.when.siblingAfter(":active")]: {
+              width: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: false }],
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+        {
+          message: 'Keys must be strings',
         },
       ],
     },
