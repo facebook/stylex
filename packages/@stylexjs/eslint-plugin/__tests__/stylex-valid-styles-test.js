@@ -731,6 +731,14 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginStart: 10}});",
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex',
+        },
+      ],
+    },
+    {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {

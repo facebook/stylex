@@ -46,7 +46,6 @@ import {
   CSSProperties,
   CSSPropertyReplacements,
   pseudoElements,
-  convertToStandardProperties,
   pseudoClassesAndAtRules,
   allModifiers,
   all,
@@ -481,57 +480,41 @@ const stylexValidStyles = {
             return distance <= 2;
           });
 
-          const replacementKey =
-            style.key.type === 'Identifier' &&
-            convertToStandardProperties[style.key.name]
-              ? convertToStandardProperties[style.key.name]
-              : style.key.type === 'Literal' &&
-                  typeof style.key.value === 'string' &&
-                  convertToStandardProperties[style.key.value]
-                ? convertToStandardProperties[style.key.value]
-                : null;
-
-          if (
-            replacementKey == null ||
-            !(style.key.type === 'Identifier' || style.key.type === 'Literal')
-          ) {
-            return context.report({
-              node: style.key,
-              loc: style.key.loc,
-              message: 'This is not a key that is allowed by stylex',
-              suggest:
-                closestKey != null
-                  ? [
-                      {
-                        desc: `Did you mean "${closestKey}"?`,
-                        fix: (fixer) => {
-                          if (style.key.type === 'Identifier') {
-                            return fixer.replaceText(style.key, closestKey);
-                          } else if (
-                            style.key.type === 'Literal' &&
-                            (typeof style.key.value === 'string' ||
-                              typeof style.key.value === 'number' ||
-                              typeof style.key.value === 'boolean' ||
-                              style.key.value == null)
-                          ) {
-                            const styleKey: Literal = style.key;
-                            const raw = style.key.raw;
-                            if (raw != null) {
-                              const quoteType = raw.substr(0, 1);
-                              return fixer.replaceText(
-                                styleKey,
-                                `${quoteType}${closestKey}${quoteType}`,
-                              );
-                            }
+          return context.report({
+            node: style.key,
+            loc: style.key.loc,
+            message: 'This is not a key that is allowed by stylex',
+            suggest:
+              closestKey != null
+                ? [
+                    {
+                      desc: `Did you mean "${closestKey}"?`,
+                      fix: (fixer) => {
+                        if (style.key.type === 'Identifier') {
+                          return fixer.replaceText(style.key, closestKey);
+                        } else if (
+                          style.key.type === 'Literal' &&
+                          (typeof style.key.value === 'string' ||
+                            typeof style.key.value === 'number' ||
+                            typeof style.key.value === 'boolean' ||
+                            style.key.value == null)
+                        ) {
+                          const styleKey: Literal = style.key;
+                          const raw = style.key.raw;
+                          if (raw != null) {
+                            const quoteType = raw.substr(0, 1);
+                            return fixer.replaceText(
+                              styleKey,
+                              `${quoteType}${closestKey}${quoteType}`,
+                            );
                           }
-                          return null;
-                        },
+                        }
+                        return null;
                       },
-                    ]
-                  : undefined,
-            } as Rule.ReportDescriptor);
-          }
-          return;
+                    },
+                  ]
+                : undefined,
+          } as Rule.ReportDescriptor);
         }
         if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
