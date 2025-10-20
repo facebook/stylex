@@ -7,8 +7,6 @@
  * @flow strict
  */
 
-import type { FlatCompiledStyles } from '../shared/common-types';
-
 import * as t from '@babel/types';
 
 type NestedStringObject = $ReadOnly<{
@@ -34,12 +32,6 @@ export function convertObjectToAST(
       ),
     ),
   );
-}
-
-export function removeObjectsWithSpreads(obj: {
-  +[string]: FlatCompiledStyles,
-}): { +[string]: FlatCompiledStyles } {
-  return Object.fromEntries(Object.entries(obj).filter(Boolean));
 }
 
 function canBeIdentifier(str: string): boolean {

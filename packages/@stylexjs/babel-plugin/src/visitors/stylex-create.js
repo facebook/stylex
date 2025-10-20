@@ -26,10 +26,7 @@ import {
   convertToTestStyles,
   injectDevClassNames,
 } from '../utils/dev-classname';
-import {
-  convertObjectToAST,
-  removeObjectsWithSpreads,
-} from '../utils/js-to-ast';
+import { convertObjectToAST } from '../utils/js-to-ast';
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
@@ -260,7 +257,9 @@ export default function transformStyleXCreate(
     }
 
     if (varName != null && isTopLevel(path)) {
-      const stylesToRemember = removeObjectsWithSpreads(compiledStyles);
+      const stylesToRemember = Object.fromEntries(
+        Object.entries(compiledStyles),
+      );
       state.styleMap.set(varName, stylesToRemember);
       state.styleVars.set(varName, path.parentPath as $FlowFixMe);
     }
