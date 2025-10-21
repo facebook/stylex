@@ -189,7 +189,11 @@ export default function transformStylexProps(
             state,
             evaluatePathFnConfig,
           );
-          if (!confident || styleValue == null) {
+          if (
+            !confident ||
+            styleValue == null ||
+            styleValue.__IS_PROXY === true
+          ) {
             nonNullProps = true;
             styleNonNullProps = true;
           } else {

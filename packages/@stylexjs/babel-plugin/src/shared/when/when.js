@@ -11,9 +11,36 @@ import type { StyleXOptions } from '../common-types';
 
 import { defaultOptions } from '../utils/default-options';
 
+function fromProxy(value: mixed): ?string {
+  if (
+    typeof value === 'object' &&
+    value != null &&
+    value.__IS_PROXY === true &&
+    typeof value.toString === 'function'
+  ) {
+    return value.toString();
+  }
+  return null;
+}
+
+function fromStyleXStyle(value: mixed): ?string {
+  if (typeof value === 'object' && value != null && value.$$css === true) {
+    return Object.keys(value).find((key) => key !== '$$css');
+  }
+  return null;
+}
+
 function getDefaultMarkerClassName(
   options: StyleXOptions = defaultOptions,
 ): string {
+  const valueFromProxy = fromProxy(options);
+  if (valueFromProxy != null) {
+    return valueFromProxy;
+  }
+  const valueFromStyleXStyle = fromStyleXStyle(options);
+  if (valueFromStyleXStyle != null) {
+    return valueFromStyleXStyle;
+  }
   const prefix =
     options.classNamePrefix != null ? `${options.classNamePrefix}-` : '';
   return `${prefix}default-marker`;
