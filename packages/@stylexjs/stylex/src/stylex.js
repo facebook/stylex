@@ -131,24 +131,79 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
-export const defaultMarker = (): StaticStyles<> => {
+export const defaultMarker = (): $ReadOnly<{
+  marker: 'default-marker',
+  $$css: true,
+}> => {
   throw errorForFn('defaultMarker');
 };
 
+type PseudoToSuffix = {
+  ':hover': StringSuffix<':hover'>,
+  ':focus': StringSuffix<':focus'>,
+  ':active': StringSuffix<':active'>,
+  ':visited': StringSuffix<':visited'>,
+  ':focus-visible': StringSuffix<':focus-visible'>,
+  ':focus-within': StringSuffix<':focus-within'>,
+  ':target': StringSuffix<':target'>,
+  ':target-within': StringSuffix<':target-within'>,
+  ':first-child': StringSuffix<':first-child'>,
+  ':last-child': StringSuffix<':last-child'>,
+  ':only-child': StringSuffix<':only-child'>,
+  ':empty': StringSuffix<':empty'>,
+  ':link': StringSuffix<':link'>,
+  ':any-link': StringSuffix<':any-link'>,
+  ':enabled': StringSuffix<':enabled'>,
+  ':disabled': StringSuffix<':disabled'>,
+  ':required': StringSuffix<':required'>,
+  ':optional': StringSuffix<':optional'>,
+  ':read-only': StringSuffix<':read-only'>,
+  ':read-write': StringSuffix<':read-write'>,
+  ':placeholder-shown': StringSuffix<':placeholder-shown'>,
+  ':in-range': StringSuffix<':in-range'>,
+  ':out-of-range': StringSuffix<':out-of-range'>,
+  ':default': StringSuffix<':default'>,
+  ':checked': StringSuffix<':checked'>,
+  ':indeterminate': StringSuffix<':indeterminate'>,
+  ':blank': StringSuffix<':blank'>,
+  ':valid': StringSuffix<':valid'>,
+  ':invalid': StringSuffix<':invalid'>,
+  ':user-invalid': StringSuffix<':user-invalid'>,
+  ':autofill': StringSuffix<':autofill'>,
+  ':picture-in-picture': StringSuffix<':picture-in-picture'>,
+  ':modal': StringSuffix<':modal'>,
+  ':fullscreen': StringSuffix<':fullscreen'>,
+  ':paused': StringSuffix<':paused'>,
+  ':playing': StringSuffix<':playing'>,
+  ':current': StringSuffix<':current'>,
+  ':past': StringSuffix<':past'>,
+  ':future': StringSuffix<':future'>,
+};
+
 export const when = {
-  ancestor: (_pseudo?: string): string => {
+  ancestor: <P: $Keys<PseudoToSuffix>>(
+    _pseudo?: P,
+  ): StringPrefix<':where-ancestor'> & PseudoToSuffix[P] => {
     throw errorForFn('when.ancestor');
   },
-  descendant: (_pseudo?: string): string => {
+  descendant: <P: $Keys<PseudoToSuffix>>(
+    _pseudo?: P,
+  ): StringPrefix<':where-descendant'> & PseudoToSuffix[P] => {
     throw errorForFn('when.descendant');
   },
-  siblingBefore: (_pseudo?: string): string => {
+  siblingBefore: <P: $Keys<PseudoToSuffix>>(
+    _pseudo?: P,
+  ): StringPrefix<':where-sibling-before'> & PseudoToSuffix[P] => {
     throw errorForFn('when.siblingBefore');
   },
-  siblingAfter: (_pseudo?: string): string => {
+  siblingAfter: <P: $Keys<PseudoToSuffix>>(
+    _pseudo?: P,
+  ): StringPrefix<':where-sibling-after'> & PseudoToSuffix[P] => {
     throw errorForFn('when.siblingAfter');
   },
-  anySibling: (_pseudo?: string): string => {
+  anySibling: <P: $Keys<PseudoToSuffix>>(
+    _pseudo?: P,
+  ): StringPrefix<':where-any-sibling'> & PseudoToSuffix[P] => {
     throw errorForFn('when.anySibling');
   },
 };
@@ -221,7 +276,10 @@ type IStyleX = {
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
-  defaultMarker: () => StaticStyles<>,
+  defaultMarker: () => $ReadOnly<{
+    marker: 'default-marker',
+    $$css: true,
+  }>,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
