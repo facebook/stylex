@@ -665,7 +665,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       })
     })
     `,
-    // test importing vars from paths including code file extension
+    // test importing vars from paths including theme file extension
     `
     import * as stylex from '@stylexjs/stylex';
     import { vars } from './vars.stylex';
@@ -687,6 +687,43 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     })
     `,
+    // test importing consts from paths including consts file extension
+    `
+        import * as stylex from '@stylexjs/stylex';
+        import { consts } from './vars.stylex.const.js';
+        import { constsJs } from './consts.stylex.const.js';
+        import { constsTs } from './consts.stylex.const.ts';
+        import { constsTsx } from './consts.stylex.const.tsx';
+        import { constsJsx } from './consts.stylex.const.jsx';
+        import { constsMjs } from './consts.stylex.const.mjs';
+        import { constsCjs } from './consts.stylex.const.cjs';
+        stylex.create({
+          root: {
+            borderRadius: consts.borderRadius,
+            margin: constsJs.margin,
+            padding: constsTs.padding,
+            height: constsTsx.height,
+            width: constsJsx.width,
+            minHeight: constsMjs.minHeight,
+            maxWidth: constsCjs.maxWidth,
+          },
+        })
+        `,
+    // test importing vars from paths including custom theme file extension
+    {
+      code: `
+    import * as stylex from '@stylexjs/stylex';
+    import { vars } from './vars.css.js';
+    import { consts } from './consts.css.const.js';
+    stylex.create({
+      root: {
+        borderRadius: vars.borderRadius,
+        margin: consts.margin,
+      },
+    })
+    `,
+      options: [{ themeFileExtension: '.css' }],
+    },
     // test for positionTryFallbacks with 'none'
     `
     import * as stylex from '@stylexjs/stylex';

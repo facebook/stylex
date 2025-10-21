@@ -146,6 +146,8 @@ const stylexValidStyles = {
   create(context: Rule.RuleContext): { ... } {
     const variables = new Map<string, Expression | 'ARG'>();
     const dynamicStyleVariables = new Set<string>();
+    const options = context.options[0] || {};
+    const themeFileExtension = options.themeFileExtension || '.stylex';
 
     const legacyReason =
       'This property is not supported in legacy StyleX resolution.';
@@ -205,8 +207,15 @@ const stylexValidStyles = {
      *   transform that pre-resolve StyleX variables to silence ESLint/compiler errors.
      *
      */
-    function isValidStylexResolvedVarsFileExtension(filename: string) {
-      const baseExtensions = ['.stylex', '.stylex.const', '.transformed'];
+    function isValidStylexResolvedVarsFileExtension(
+      filename: string,
+      themeFileExtension: string,
+    ) {
+      const baseExtensions = [
+        themeFileExtension,
+        `${themeFileExtension}.const`,
+        '.transformed',
+      ];
       const extensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
       return ['', ...extensions].some((ext) =>
         baseExtensions.some((base) => filename.endsWith(`${base}${ext}`)),
@@ -729,7 +738,10 @@ const stylexValidStyles = {
 
         const isStylexImport = foundImportSource !== undefined;
         const isStylexResolvedVarsImport =
-          isValidStylexResolvedVarsFileExtension(sourceValue);
+          isValidStylexResolvedVarsFileExtension(
+            sourceValue,
+            themeFileExtension,
+          );
 
         if (!(isStylexImport || isStylexResolvedVarsImport)) {
           return;
