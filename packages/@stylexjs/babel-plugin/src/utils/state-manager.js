@@ -458,7 +458,7 @@ export default class StateManager {
     const themeFileExtension =
       this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
 
-    const constsFileExtension = `${themeFileExtension}.const}`;
+    const constsFileExtension = `${themeFileExtension}.const`;
 
     if (filename == null || this.options.unstable_moduleResolution == null) {
       return null;
@@ -528,7 +528,7 @@ export default class StateManager {
     const themeFileExtension =
       this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
 
-    const constsFileExtension = `${themeFileExtension}.const}`;
+    const constsFileExtension = `${themeFileExtension}.const`;
 
     const transformedVarsFileExtension = '.transformed';
 
