@@ -544,6 +544,22 @@ describe('StateManager config parsing', () => {
       expect(warnings).toEqual([]);
     });
 
+    test('"custom" type', () => {
+      const stateManager = makeState({
+        unstable_moduleResolution: {
+          type: 'custom',
+          filePathResolver() {},
+          getCanonicalFilePath() {},
+        },
+      });
+      expect(stateManager.options.unstable_moduleResolution).toEqual({
+        type: 'custom',
+        filePathResolver: expect.any(Function),
+        getCanonicalFilePath: expect.any(Function),
+      });
+      expect(warnings).toEqual([]);
+    });
+
     test('"rootDir" option', () => {
       const stateManager = makeState({
         unstable_moduleResolution: { type: 'commonJS', rootDir: '/test/' },

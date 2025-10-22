@@ -78,6 +78,15 @@ export const number: PrimitiveChecker<number> =
     return value;
   };
 
+export const func: <T: Function>(msg?: Msg) => Check<T> =
+  (message = defaultMessage('a function')) =>
+  (value: mixed, name?: string) => {
+    if (typeof value !== 'function') {
+      return new Error(message(value, name));
+    }
+    return value as $FlowFixMe;
+  };
+
 export const literal: <T: string | number | boolean>(
   T,
   msg?: Msg,
