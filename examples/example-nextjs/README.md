@@ -7,13 +7,13 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
-npm run dev
+npm run example:dev
 # or
-yarn dev
+yarn example:dev
 # or
-pnpm dev
+pnpm example:dev
 # or
-bun dev
+bun example:dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

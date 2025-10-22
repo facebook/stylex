@@ -81,7 +81,7 @@ module.exports = {
   plugins: ['@stylexjs'],
   rules: {
     '@stylexjs/valid-styles': 'error',
-    '@stylexjs/no-unused': 'error', 
+    '@stylexjs/no-unused': 'error',
     '@stylexjs/valid-shorthands': 'warn',
     '@stylexjs/sort-keys': 'warn'
   },
@@ -114,11 +114,11 @@ The CSS file includes the StyleX injection point:
 
 ```bash
 # Development server
-npm run dev
+npm run example:dev
 
-# Production build  
-npm run build
+# Production build
+npm run example:build
 
 # Serve built files
-npm run serve
+npm run example:serve
 ```
