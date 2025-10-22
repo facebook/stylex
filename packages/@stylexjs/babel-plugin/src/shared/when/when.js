@@ -33,6 +33,48 @@ function validatePseudoSelector(pseudo: string): void {
   }
 }
 
+type PseudoToSuffix = {
+  ':hover': StringSuffix<':hover'>,
+  ':focus': StringSuffix<':focus'>,
+  ':active': StringSuffix<':active'>,
+  ':visited': StringSuffix<':visited'>,
+  ':focus-visible': StringSuffix<':focus-visible'>,
+  ':focus-within': StringSuffix<':focus-within'>,
+  ':target': StringSuffix<':target'>,
+  ':target-within': StringSuffix<':target-within'>,
+  ':first-child': StringSuffix<':first-child'>,
+  ':last-child': StringSuffix<':last-child'>,
+  ':only-child': StringSuffix<':only-child'>,
+  ':empty': StringSuffix<':empty'>,
+  ':link': StringSuffix<':link'>,
+  ':any-link': StringSuffix<':any-link'>,
+  ':enabled': StringSuffix<':enabled'>,
+  ':disabled': StringSuffix<':disabled'>,
+  ':required': StringSuffix<':required'>,
+  ':optional': StringSuffix<':optional'>,
+  ':read-only': StringSuffix<':read-only'>,
+  ':read-write': StringSuffix<':read-write'>,
+  ':placeholder-shown': StringSuffix<':placeholder-shown'>,
+  ':in-range': StringSuffix<':in-range'>,
+  ':out-of-range': StringSuffix<':out-of-range'>,
+  ':default': StringSuffix<':default'>,
+  ':checked': StringSuffix<':checked'>,
+  ':indeterminate': StringSuffix<':indeterminate'>,
+  ':blank': StringSuffix<':blank'>,
+  ':valid': StringSuffix<':valid'>,
+  ':invalid': StringSuffix<':invalid'>,
+  ':user-invalid': StringSuffix<':user-invalid'>,
+  ':autofill': StringSuffix<':autofill'>,
+  ':picture-in-picture': StringSuffix<':picture-in-picture'>,
+  ':modal': StringSuffix<':modal'>,
+  ':fullscreen': StringSuffix<':fullscreen'>,
+  ':paused': StringSuffix<':paused'>,
+  ':playing': StringSuffix<':playing'>,
+  ':current': StringSuffix<':current'>,
+  ':past': StringSuffix<':past'>,
+  ':future': StringSuffix<':future'>,
+};
+
 /**
  * Creates selector that observes if the given pseudo-class is
  * active on an ancestor with the "defaultMarker"
@@ -41,14 +83,15 @@ function validatePseudoSelector(pseudo: string): void {
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the ancestor observer
  */
-export function ancestor(
-  pseudo: string,
+export function ancestor<P: $Keys<PseudoToSuffix>>(
+  pseudo: P,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where-ancestor'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(.${defaultMarker}${pseudo} *)`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(.${defaultMarker}${pseudo} *)` as StringPrefix<':where-ancestor'>;
 }
 
 /**
@@ -58,14 +101,16 @@ export function ancestor(
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the descendant observer
  */
-export function descendant(
-  pseudo: string,
+export function descendant<P: $Keys<PseudoToSuffix>>(
+  pseudo: P,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where-descendant'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(:has(.${defaultMarker}${pseudo}))`;
+
+  // $FlowFixMe[incompatible-cast]
+  return `:where(:has(.${defaultMarker}${pseudo}))` as StringPrefix<':where-descendant'>;
 }
 
 /**
@@ -75,14 +120,15 @@ export function descendant(
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the previous sibling observer
  */
-export function siblingBefore(
-  pseudo: string,
+export function siblingBefore<P: $Keys<PseudoToSuffix>>(
+  pseudo: P,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where-sibling-before'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(.${defaultMarker}${pseudo} ~ *)`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(.${defaultMarker}${pseudo} ~ *)` as StringPrefix<':where-sibling-before'>;
 }
 
 /**
@@ -92,14 +138,15 @@ export function siblingBefore(
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :has() clause for the next sibling observer
  */
-export function siblingAfter(
-  pseudo: string,
+export function siblingAfter<P: $Keys<PseudoToSuffix>>(
+  pseudo: P,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where-sibling-after'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(:has(~ .${defaultMarker}${pseudo}))`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(:has(~ .${defaultMarker}${pseudo}))` as StringPrefix<':where-sibling-after'>;
 }
 
 /**
@@ -109,12 +156,13 @@ export function siblingAfter(
  * @param pseudo - The pseudo selector (e.g., ':hover', ':focus')
  * @returns A :where() clause for the any sibling observer
  */
-export function anySibling(
-  pseudo: string,
+export function anySibling<P: $Keys<PseudoToSuffix>>(
+  pseudo: P,
   options: string | StyleXOptions = defaultOptions,
-): string {
+): StringPrefix<':where-any-sibling'> {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
-  return `:where(.${defaultMarker}${pseudo} ~ *, :has(~ .${defaultMarker}${pseudo}))`;
+  // $FlowFixMe[incompatible-cast]
+  return `:where(.${defaultMarker}${pseudo} ~ *, :has(~ .${defaultMarker}${pseudo}))` as StringPrefix<':where-any-sibling'>;
 }
