@@ -46,10 +46,20 @@ type ModuleResolution =
       type: 'experimental_crossFileParsing',
       rootDir?: string,
       themeFileExtension?: ?string,
+    }>
+  | $ReadOnly<{
+      type: 'custom',
+      themeFileExtension?: ?string,
+      filePathResolver: (
+        importPath: string,
+        sourceFilePath: string,
+        aliases: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
+      ) => string | void,
+      getCanonicalFilePath: (filePath: string) => string,
     }>;
 
 // eslint-disable-next-line no-unused-vars
-const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
+const CheckModuleResolution: Check<ModuleResolution> = z.unionOf4(
   z.object({
     type: z.literal('commonJS'),
     rootDir: z.unionOf(z.nullish(), z.string()),
@@ -58,6 +68,19 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
   z.object({
     type: z.literal('haste'),
     themeFileExtension: z.unionOf(z.nullish(), z.string()),
+  }),
+  z.object({
+    type: z.literal('custom'),
+    themeFileExtension: z.unionOf(z.nullish(), z.string()),
+    filePathResolver:
+      z.func<
+        (
+          importPath: string,
+          sourceFilePath: string,
+          aliases: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
+        ) => string | void,
+      >(),
+    getCanonicalFilePath: z.func<(filePath: string) => string>(),
   }),
   z.object({
     type: z.literal('experimental_crossFileParsing'),
@@ -475,6 +498,10 @@ export default class StateManager {
     switch (this.options.unstable_moduleResolution?.type) {
       case 'haste':
         return path.basename(filename);
+      case 'custom':
+        return this.options.unstable_moduleResolution.getCanonicalFilePath(
+          filename,
+        );
       default:
         return this.getCanonicalFilePath(filename);
     }
@@ -561,6 +588,18 @@ export default class StateManager {
       }
       case 'haste': {
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
+      }
+      case 'custom': {
+        const aliases = this.options.aliases;
+        const moduleResolution = this.options.unstable_moduleResolution;
+        const result = moduleResolution.filePathResolver(
+          importPath,
+          sourceFilePath,
+          aliases,
+        );
+        return result
+          ? ['themeNameRef', moduleResolution.getCanonicalFilePath(result)]
+          : false;
       }
       case 'experimental_crossFileParsing': {
         const aliases = this.options.aliases;
