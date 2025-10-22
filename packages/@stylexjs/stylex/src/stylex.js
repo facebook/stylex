@@ -219,6 +219,7 @@ type IStyleX = {
   (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
+  defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
   defaultMarker: () => StaticStyles<>,
   firstThatWorks: <T: string | number>(
@@ -254,6 +255,7 @@ function _legacyMerge(
 
 _legacyMerge.create = create;
 _legacyMerge.createTheme = createTheme;
+_legacyMerge.defineConsts = defineConsts;
 _legacyMerge.defineVars = defineVars;
 _legacyMerge.defaultMarker = defaultMarker;
 _legacyMerge.firstThatWorks = firstThatWorks;
