@@ -60,7 +60,15 @@ const stylexEnforceExtension = {
     const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
       options;
     const themeFileExtension = options.themeFileExtension || '.stylex.jsx';
-    const themeTsxExtension = themeFileExtension.replace('.jsx', '.tsx');
+
+    const supportedExtensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
+    const baseExtension = themeFileExtension.replace(
+      /\.(js|ts|tsx|jsx|mjs|cjs)$/,
+      '',
+    );
+    const allThemeExtensions = supportedExtensions.map(
+      (ext) => baseExtension + ext,
+    );
 
     const importTracker = createImportTracker(importsToLookFor);
 
@@ -102,9 +110,9 @@ const stylexEnforceExtension = {
     }
 
     function reportErrors(node: Node): void {
-      const isStylexFile =
-        fileName.endsWith(themeFileExtension) ||
-        fileName.endsWith(themeTsxExtension);
+      const isStylexFile = allThemeExtensions.some((ext) =>
+        fileName.endsWith(ext),
+      );
 
       if (hasStyleXVarsExports && hasOtherExports) {
         context.report({
@@ -113,18 +121,23 @@ const stylexEnforceExtension = {
             'Files that export `defineVars()` must not export anything else.',
         });
       }
+      const currentExt =
+        fileName.match(/\.(js|ts|tsx|jsx|mjs|cjs)$/)?.[0] || '';
+      const suggestedExtension = currentExt
+        ? baseExtension + currentExt
+        : baseExtension + '.js';
 
       if (hasStyleXVarsExports && !isStylexFile) {
         context.report({
           node,
-          message: `Files that export StyleX variables defined with \`defineVars()\` must end with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+          message: `Files that export \`stylex.defineVars()\` variables must end with a \`${suggestedExtension}\` extension.`,
         });
       }
 
       if (!hasStyleXVarsExports && isStylexFile) {
         context.report({
           node,
-          message: `Only StyleX variables defined with \`defineVars()\` can be exported from a file with the \`${themeFileExtension}\` or \`${themeTsxExtension}\` extension.`,
+          message: `Only StyleX variables defined with \`defineVars()\` can be exported from a file with a \`${suggestedExtension}\` extension.`,
         });
       }
     }
