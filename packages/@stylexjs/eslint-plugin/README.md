@@ -127,14 +127,14 @@ using `defineVars`.
 #### Instead...
 
 - Use `.stylex.js` or `.stylex.ts` for files that only export
-  `defineVars`
+  `defineVars` or `defineConsts`
 - Export **only** theme vars from these files
 
 #### Config options
 
 ```json
 {
-  "themeFileExtension": ".stylex.js", // default, can be customized
+  "themeFileExtension": ".stylex", // default, can be customized
   "validImports": ["stylex", "@stylexjs/stylex"]
 }
 ```

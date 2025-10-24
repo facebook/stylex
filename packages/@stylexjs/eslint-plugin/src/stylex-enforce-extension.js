@@ -19,7 +19,7 @@ const stylexEnforceExtension = {
     type: 'problem',
     docs: {
       description:
-        'Ensure that files exporting StyleX vars/consts using `defineVars` or `defineConsts` end with a specified extension (default `.stylex.jsx` or `.stylex.tsx`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
+        'Ensure that files exporting StyleX vars/consts using `defineVars` or `defineConsts` end with a specified extension (default `.stylex`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
       category: 'Possible Errors',
       recommended: false,
     },
@@ -45,7 +45,7 @@ const stylexEnforceExtension = {
           },
           themeFileExtension: {
             type: 'string',
-            default: '.stylex.jsx',
+            default: '.stylex',
           },
         },
         additionalProperties: false,
@@ -59,8 +59,15 @@ const stylexEnforceExtension = {
     const options = context.options[0] || {};
     const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
       options;
-    const themeFileExtension = options.themeFileExtension || '.stylex.jsx';
-    const themeTsExtension = themeFileExtension.replace('.js', '.ts');
+
+    const themeFileExtension = (
+      options.themeFileExtension || '.stylex'
+    ).replace(/\.(js|ts|tsx|jsx|mjs|cjs)$/, '');
+
+    const supportedExtensions = ['.js', '.ts', '.tsx', '.jsx', '.mjs', '.cjs'];
+    const allThemeExtensions = supportedExtensions.map(
+      (ext) => themeFileExtension + ext,
+    );
 
     const importTracker = createImportTracker(importsToLookFor);
 
@@ -104,29 +111,35 @@ const stylexEnforceExtension = {
     }
 
     function reportErrors(node: Node): void {
-      const isStylexFile =
-        fileName.endsWith(themeFileExtension) ||
-        fileName.endsWith(themeTsExtension);
+      const isStylexFile = allThemeExtensions.some((ext) =>
+        fileName.endsWith(ext),
+      );
 
       if (hasRestrictedExports && hasOtherExports) {
         context.report({
           node,
           message:
-            'Files that export StyleX variables/constants must not export anything else.',
+            'Files that export variables from `stylex.defineVars()` or `stylex.defineConsts()` must not export anything else.',
         });
       }
+
+      const currentExt =
+        fileName.match(/\.(js|ts|tsx|jsx|mjs|cjs)$/)?.[0] || '';
+      const suggestedExtension = currentExt
+        ? themeFileExtension + currentExt
+        : themeFileExtension + '.js';
 
       if (hasRestrictedExports && !isStylexFile) {
         context.report({
           node,
-          message: `Files that export StyleX variables/constants must end with the ${themeFileExtension === themeTsExtension ? `\`${themeFileExtension}\`` : `\`${themeFileExtension}\` or \`${themeTsExtension}\``} extension.`,
+          message: `Files that export variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` must end with a \`${suggestedExtension}\` extension.`,
         });
       }
 
       if (!hasRestrictedExports && isStylexFile) {
         context.report({
           node,
-          message: `Only StyleX variables/constants can be exported from a file with the ${themeFileExtension === themeTsExtension ? `\`${themeFileExtension}\`` : `\`${themeFileExtension}\` or \`${themeTsExtension}\``} extension.`,
+          message: `Only variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedExtension}\` extension.`,
         });
       }
     }
