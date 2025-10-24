@@ -11,7 +11,6 @@
 
 import type {
   CallExpression,
-  Node,
   Property,
   ObjectExpression,
   Comment,
@@ -26,7 +25,8 @@ import {
 import { CANNOT_FIX } from './utils/splitShorthands.js';
 import getSourceCode from './utils/getSourceCode';
 import createImportTracker from './utils/createImportTracker';
-/*:: import { Rule } from 'eslint'; */
+import isStylexCreateCallee from './utils/isStylexCreateCallee';
+/*:: import { Rule } from 'eslint';*/
 
 const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   marginStart: 'marginInlineStart',
@@ -112,18 +112,6 @@ const stylexValidShorthands = {
     const preferInline = options.preferInline || false;
 
     const importTracker = createImportTracker(importsToLookFor);
-
-    function isStylexCreateCallee(node: Node) {
-      return (
-        (node.type === 'MemberExpression' &&
-          node.object.type === 'Identifier' &&
-          importTracker.isStylexDefaultImport(node.object.name) &&
-          node.property.type === 'Identifier' &&
-          node.property.name === 'create') ||
-        (node.type === 'Identifier' &&
-          importTracker.isStylexNamedImport('create', node.name))
-      );
-    }
 
     function validateObject(obj: ObjectExpression) {
       for (const prop of obj.properties) {
@@ -230,7 +218,7 @@ const stylexValidShorthands = {
       CallExpression(
         node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
       ) {
-        const isStyleXCall = isStylexCreateCallee(node.callee);
+        const isStyleXCall = isStylexCreateCallee(node.callee, importTracker);
 
         if (!isStyleXCall) {
           return;
