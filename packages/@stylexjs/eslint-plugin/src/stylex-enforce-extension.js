@@ -47,6 +47,11 @@ const stylexEnforceExtension = {
             type: 'string',
             default: '.stylex',
           },
+          // This is a legacy option that allows mixed exports in theme files. This is for internal legacy patterns and should not be used by external users.
+          legacyAllowMixedExports: {
+            type: 'boolean',
+            default: false,
+          },
         },
         additionalProperties: false,
       },
@@ -57,8 +62,10 @@ const stylexEnforceExtension = {
     let hasOtherExports = false;
     const fileName = context.getFilename();
     const options = context.options[0] || {};
-    const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
-      options;
+    const {
+      validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      legacyAllowMixedExports = false,
+    } = options;
 
     const themeFileExtension = (
       options.themeFileExtension || '.stylex'
@@ -115,7 +122,7 @@ const stylexEnforceExtension = {
         fileName.endsWith(ext),
       );
 
-      if (hasRestrictedExports && hasOtherExports) {
+      if (hasRestrictedExports && hasOtherExports && !legacyAllowMixedExports) {
         context.report({
           node,
           message:

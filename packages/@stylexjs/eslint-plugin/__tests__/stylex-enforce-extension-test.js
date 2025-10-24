@@ -93,7 +93,6 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({ color: 'red' });
         export const consts = stylex.defineConsts({ color: 'red' });
-        export default stylex.defineVars({ background: 'blue' });
       `,
       filename: 'myComponent.stylex.jsx',
     },
@@ -172,6 +171,82 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       filename: 'testComponent.custom.jsx',
       options: [{ themeFileExtension: '.custom' }],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.tsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.tsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.ts',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.js',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.custom.ts',
+      options: [
+        { legacyAllowMixedExports: true, themeFileExtension: '.custom' },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.custom.js',
+      options: [
+        { legacyAllowMixedExports: true, themeFileExtension: '.custom' },
+      ],
+    },
   ],
 
   invalid: [
@@ -200,39 +275,29 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({ color: 'red' });
         export const somethingElse = someFunction();
-        export default stylex.defineVars({ background: 'blue' });
       `,
       filename: 'myComponent.stylex.jsx',
-      errors: [
-        { message: invalidExportFromThemeFiles },
-        { message: invalidExportFromThemeFiles },
-      ],
+      errors: [{ message: invalidExportFromThemeFiles }],
     },
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         export const consts = stylex.defineConsts({ color: 'red' });
         export const somethingElse = someFunction();
-        export default stylex.defineConsts({ background: 'blue' });
       `,
       filename: 'myComponent.stylex.jsx',
-      errors: [
-        { message: invalidExportFromThemeFiles },
-        { message: invalidExportFromThemeFiles },
-      ],
+      errors: [{ message: invalidExportFromThemeFiles }],
     },
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         export const vars = someFunction();
         export const somethingElse = someFunction();
-        export default stylex.defineVars({ background: 'blue' });
       `,
       filename: 'myComponent.stylex.jsx',
       errors: [
         { message: invalidFilenameWithoutRestrictedExports('.stylex.jsx') },
         { message: invalidFilenameWithoutRestrictedExports('.stylex.jsx') },
-        { message: invalidExportFromThemeFiles },
       ],
     },
     {
@@ -428,6 +493,26 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
           message: invalidFilenameWithoutRestrictedExports('.stylex.jsx'),
         },
       ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: false }],
+      errors: [{ message: invalidExportFromThemeFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: false }],
+      errors: [{ message: invalidExportFromThemeFiles }],
     },
   ],
 });
