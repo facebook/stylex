@@ -172,6 +172,26 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       filename: 'testComponent.custom.jsx',
       options: [{ themeFileExtension: '.custom' }],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+        export default stylex.defineVars({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+        export default stylex.defineConsts({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
   ],
 
   invalid: [
@@ -427,6 +447,34 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
         {
           message: invalidFilenameWithoutRestrictedExports('.stylex.jsx'),
         },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({ color: 'red' });
+        export const somethingElse = someFunction();
+        export default stylex.defineVars({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: false }],
+      errors: [
+        { message: invalidExportFromThemeFiles },
+        { message: invalidExportFromThemeFiles },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+        export default stylex.defineConsts({ background: 'blue' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: false }],
+      errors: [
+        { message: invalidExportFromThemeFiles },
+        { message: invalidExportFromThemeFiles },
       ],
     },
   ],
