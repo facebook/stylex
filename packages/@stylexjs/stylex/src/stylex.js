@@ -29,6 +29,7 @@ import type {
   VarGroup,
   PositionTry,
   ViewTransitionClass,
+  StyleX$When,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -60,7 +61,7 @@ const errorForFn = (name: string) =>
 const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  S: { +[string]: mixed },
+  const S: { +[string]: mixed },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -70,7 +71,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  T: { +[string]: number | string },
+  const T: { +[string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -138,72 +139,20 @@ export const defaultMarker = (): $ReadOnly<{
   throw errorForFn('defaultMarker');
 };
 
-type PseudoToSuffix = {
-  ':hover': StringSuffix<':hover'>,
-  ':focus': StringSuffix<':focus'>,
-  ':active': StringSuffix<':active'>,
-  ':visited': StringSuffix<':visited'>,
-  ':focus-visible': StringSuffix<':focus-visible'>,
-  ':focus-within': StringSuffix<':focus-within'>,
-  ':target': StringSuffix<':target'>,
-  ':target-within': StringSuffix<':target-within'>,
-  ':first-child': StringSuffix<':first-child'>,
-  ':last-child': StringSuffix<':last-child'>,
-  ':only-child': StringSuffix<':only-child'>,
-  ':empty': StringSuffix<':empty'>,
-  ':link': StringSuffix<':link'>,
-  ':any-link': StringSuffix<':any-link'>,
-  ':enabled': StringSuffix<':enabled'>,
-  ':disabled': StringSuffix<':disabled'>,
-  ':required': StringSuffix<':required'>,
-  ':optional': StringSuffix<':optional'>,
-  ':read-only': StringSuffix<':read-only'>,
-  ':read-write': StringSuffix<':read-write'>,
-  ':placeholder-shown': StringSuffix<':placeholder-shown'>,
-  ':in-range': StringSuffix<':in-range'>,
-  ':out-of-range': StringSuffix<':out-of-range'>,
-  ':default': StringSuffix<':default'>,
-  ':checked': StringSuffix<':checked'>,
-  ':indeterminate': StringSuffix<':indeterminate'>,
-  ':blank': StringSuffix<':blank'>,
-  ':valid': StringSuffix<':valid'>,
-  ':invalid': StringSuffix<':invalid'>,
-  ':user-invalid': StringSuffix<':user-invalid'>,
-  ':autofill': StringSuffix<':autofill'>,
-  ':picture-in-picture': StringSuffix<':picture-in-picture'>,
-  ':modal': StringSuffix<':modal'>,
-  ':fullscreen': StringSuffix<':fullscreen'>,
-  ':paused': StringSuffix<':paused'>,
-  ':playing': StringSuffix<':playing'>,
-  ':current': StringSuffix<':current'>,
-  ':past': StringSuffix<':past'>,
-  ':future': StringSuffix<':future'>,
-};
-
-export const when = {
-  ancestor: <P: $Keys<PseudoToSuffix>>(
-    _pseudo?: P,
-  ): StringPrefix<':where-ancestor'> & PseudoToSuffix[P] => {
+export const when: StyleX$When = {
+  ancestor: (_p) => {
     throw errorForFn('when.ancestor');
   },
-  descendant: <P: $Keys<PseudoToSuffix>>(
-    _pseudo?: P,
-  ): StringPrefix<':where-descendant'> & PseudoToSuffix[P] => {
+  descendant: (_p) => {
     throw errorForFn('when.descendant');
   },
-  siblingBefore: <P: $Keys<PseudoToSuffix>>(
-    _pseudo?: P,
-  ): StringPrefix<':where-sibling-before'> & PseudoToSuffix[P] => {
+  siblingBefore: (_p) => {
     throw errorForFn('when.siblingBefore');
   },
-  siblingAfter: <P: $Keys<PseudoToSuffix>>(
-    _pseudo?: P,
-  ): StringPrefix<':where-sibling-after'> & PseudoToSuffix[P] => {
+  siblingAfter: (_p) => {
     throw errorForFn('when.siblingAfter');
   },
-  anySibling: <P: $Keys<PseudoToSuffix>>(
-    _pseudo?: P,
-  ): StringPrefix<':where-any-sibling'> & PseudoToSuffix[P] => {
+  anySibling: (_p) => {
     throw errorForFn('when.anySibling');
   },
 };

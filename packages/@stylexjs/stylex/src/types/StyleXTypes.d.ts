@@ -301,3 +301,21 @@ export type StyleX$CreateTheme = <
   baseTokens: TVars,
   overrides: OverridesForTokenType<TokensFromVarGroup<TVars>>,
 ) => Theme<TVars, ThemeID>;
+
+export type StyleX$When = {
+  ancestor: <const Pseudo extends string>(
+    _pseudo?: Pseudo,
+  ) => `:where-ancestor(${Pseudo})`;
+  descendant: <const Pseudo extends string>(
+    _pseudo?: Pseudo,
+  ) => `:where-descendant(${Pseudo})`;
+  siblingBefore: <const Pseudo extends string>(
+    _pseudo?: Pseudo,
+  ) => `:where-sibling-before(${Pseudo})`;
+  siblingAfter: <const Pseudo extends string>(
+    _pseudo?: Pseudo,
+  ) => `:where-sibling-after(${Pseudo})`;
+  anySibling: <const Pseudo extends string>(
+    _pseudo?: Pseudo,
+  ) => `:where-any-sibling(${Pseudo})`;
+};

@@ -4,18 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow strict
+ *
  */
 
 /* eslint-disable no-unused-vars */
 
-import React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import type {
-  MapNamespace,
-  StyleXClassNameFor,
-  StyleXStyles,
-} from '../src/types/StyleXTypes';
 
 const styles = stylex.create({
   base: {
@@ -29,4 +23,4 @@ const styles = stylex.create({
   },
 });
 
-styles.base as StyleXStyles<{ color: 'red' | 'blue' | 'green' }>;
+styles.base satisfies stylex.StyleXStyles<{ color: 'red' | 'blue' | 'green' }>;
