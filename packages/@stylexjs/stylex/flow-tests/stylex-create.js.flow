@@ -249,7 +249,7 @@ stylex.props([styles7.foo]);
 
 const vars = stylex.defineVars({
   accent: 'red',
-});
+} as const);
 
 vars.accent as StyleXVar<'red'>;
 
@@ -262,7 +262,7 @@ const styles8: $ReadOnly<{
   foo: {
     color: vars.accent,
   },
-});
+} as const);
 
 styles8.foo as StaticStyles<>;
 // $FlowExpectedError[incompatible-cast] - We want to disallow extra keys

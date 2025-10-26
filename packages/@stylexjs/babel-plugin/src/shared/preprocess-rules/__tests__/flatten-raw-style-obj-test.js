@@ -17,7 +17,7 @@ const options = {
   runtimeInjection: false,
   dev: false,
   test: false,
-};
+} as const;
 
 describe('Flatten Style Object with legacy shorthand expansion', () => {
   describe('Simple Objects', () => {
