@@ -17,9 +17,9 @@ import type { Check } from './validate';
 
 import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
-import path from 'path';
-import fs from 'fs';
-import url from 'url';
+import path from 'node:path';
+import fs from 'node:fs';
+import url from 'node:url';
 import * as z from './validate';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 import {

@@ -10,7 +10,7 @@
 
 import type { Rule, Options as StyleXOptions } from '@stylexjs/babel-plugin';
 import yargs from 'yargs';
-import path from 'path';
+import path from 'node:path';
 import ansis from 'ansis';
 import JSON5 from 'json5';
 import { isDir } from './files';
@@ -18,7 +18,7 @@ import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
 import { startWatcher } from './watcher';
-import fs from 'fs';
+import fs from 'node:fs';
 import { clearInputModuleDir, copyNodeModules } from './modules';
 import type { CliConfig, ModuleType, TransformConfig } from './config';
 

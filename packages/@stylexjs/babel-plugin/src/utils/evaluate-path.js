@@ -100,7 +100,7 @@ function evaluateImportedFile(
   state: State,
   bindingPath: NodePath<>,
 ): any {
-  const fs = require('fs');
+  const fs = require('node:fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   // It's safe to use `.babelrc` here because we're only
   // interested in the JS runtime, and not the CSS.
@@ -553,6 +553,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         if (!state.confident) {
           return deopt(prop, state, state.deoptReason ?? 'unknown error');
         }
+        // $FlowFixMe[unsafe-object-assign]
         Object.assign(obj, spreadExpression);
         continue;
       }

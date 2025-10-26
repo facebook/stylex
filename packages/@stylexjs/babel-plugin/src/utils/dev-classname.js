@@ -9,7 +9,7 @@
 
 import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
 
-import path from 'path';
+import path from 'node:path';
 import StateManager from './state-manager';
 
 // TODO: We will need to maintain the full path to the file eventually

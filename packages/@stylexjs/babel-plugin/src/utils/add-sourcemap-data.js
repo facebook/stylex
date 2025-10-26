@@ -11,7 +11,7 @@ import type { NodePath } from '@babel/traverse';
 import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
 
 import * as t from '@babel/types';
-import path from 'path';
+import path from 'node:path';
 import StateManager from './state-manager';
 
 function getPackagePrefix(absolutePath: string): ?string {

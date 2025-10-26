@@ -141,6 +141,7 @@ function evaluatePartialObjectRecursively(
       if (!result.confident) {
         return result;
       }
+      // $FlowFixMe[unsafe-object-assign]
       Object.assign(obj, result.value);
       continue;
     }
@@ -173,6 +174,7 @@ function evaluatePartialObjectRecursively(
           return { confident: false, deopt: result.deopt, value: null };
         }
         obj[key] = result.value;
+        // $FlowFixMe[unsafe-object-assign]
         Object.assign(inlineStyles, result.inlineStyles);
       } else {
         const result = evaluate(valuePath, traversalState, functions);
