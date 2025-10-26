@@ -4,8 +4,13 @@
   "private": false,
   "description": "Universal bundler plugin for StyleX using unplugin",
   "license": "MIT",
-  "main": "src/index.js",
-  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/es/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    "import": "./lib/es/index.mjs",
+    "require": "./lib/index.js"
+  },
   "keywords": [
     "stylex",
     "css",
@@ -15,6 +20,12 @@
     "webpack",
     "rspack"
   ],
+  "scripts": {
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
+    "build": "npm run build:cjs && npm run build:esm",
+    "test": "jest"
+  },
   "peerDependencies": {
     "unplugin": "^1.7.1"
   },
@@ -26,5 +37,8 @@
     "@stylexjs/babel-plugin": "0.16.2",
     "browserslist": "^4.24.0",
     "lightningcss": "^1.29.1"
-  }
+  },
+  "files": [
+    "lib/*"
+  ]
 }
