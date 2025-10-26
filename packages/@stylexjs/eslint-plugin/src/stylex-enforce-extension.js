@@ -19,7 +19,7 @@ const stylexEnforceExtension = {
     type: 'problem',
     docs: {
       description:
-        'Ensure that files exporting StyleX vars/consts using `defineVars` or `defineConsts` end with a specified extension (default `.stylex`), and that files exporting other values must not use that extension. Mixed exports are not allowed. Users can define a custom extension using the `themeFileExtension` option.',
+        'Ensure that files exporting `defineVars` or `defineConsts` variables end with a configurable extension, defaulting to `.stylex`, with an option to enforce an additional `.const` suffix for `defineConsts`. Mixed exports are not allowed unless explicitly configured for legacy support.',
       category: 'Possible Errors',
       recommended: false,
     },
@@ -52,6 +52,10 @@ const stylexEnforceExtension = {
             type: 'boolean',
             default: false,
           },
+          enforceDefineConstsExtension: {
+            type: 'boolean',
+            default: false,
+          },
         },
         additionalProperties: false,
       },
@@ -60,11 +64,14 @@ const stylexEnforceExtension = {
   create(context: Rule.RuleContext): { ... } {
     let hasRestrictedExports = false;
     let hasOtherExports = false;
+    let hasDefineConstsExports = false;
+    let hasDefineVarsExports = false;
     const fileName = context.getFilename();
     const options = context.options[0] || {};
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
       legacyAllowMixedExports = false,
+      enforceDefineConstsExtension = false,
     } = options;
 
     const themeFileExtension = (
@@ -75,10 +82,13 @@ const stylexEnforceExtension = {
     const allThemeExtensions = supportedExtensions.map(
       (ext) => themeFileExtension + ext,
     );
+    const allConstExtensions = supportedExtensions.map(
+      (ext) => themeFileExtension + '.const' + ext,
+    );
 
     const importTracker = createImportTracker(importsToLookFor);
 
-    function isRestrictedExport(node: Node): boolean {
+    function isDefineVarsExport(node: Node): boolean {
       const callee =
         node.type === 'VariableDeclarator'
           ? (node.init as any)?.callee
@@ -91,11 +101,28 @@ const stylexEnforceExtension = {
           callee.object?.type === 'Identifier' &&
           importTracker.isStylexDefaultImport(callee.object.name) &&
           callee.property?.type === 'Identifier' &&
-          (callee.property.name === 'defineVars' ||
-            callee.property.name === 'defineConsts')) ||
+          callee.property.name === 'defineVars') ||
         (callee?.type === 'Identifier' &&
-          (importTracker.isStylexNamedImport('defineVars', callee.name) ||
-            importTracker.isStylexNamedImport('defineConsts', callee.name)))
+          importTracker.isStylexNamedImport('defineVars', callee.name))
+      );
+    }
+
+    function isDefineConstsExport(node: Node): boolean {
+      const callee =
+        node.type === 'VariableDeclarator'
+          ? (node.init as any)?.callee
+          : node.type === 'CallExpression'
+            ? node.callee
+            : null;
+
+      return (
+        (callee?.type === 'MemberExpression' &&
+          callee.object?.type === 'Identifier' &&
+          importTracker.isStylexDefaultImport(callee.object.name) &&
+          callee.property?.type === 'Identifier' &&
+          callee.property.name === 'defineConsts') ||
+        (callee?.type === 'Identifier' &&
+          importTracker.isStylexNamedImport('defineConsts', callee.name))
       );
     }
 
@@ -109,45 +136,91 @@ const stylexEnforceExtension = {
         : [declaration];
 
       declarations.forEach((decl: Node) => {
-        if (isRestrictedExport(decl)) {
-          hasRestrictedExports = true;
+        if (isDefineConstsExport(decl)) {
+          hasDefineConstsExports = true;
+        } else if (isDefineVarsExport(decl)) {
+          hasDefineVarsExports = true;
         } else {
           hasOtherExports = true;
         }
       });
+      hasRestrictedExports = hasDefineConstsExports || hasDefineVarsExports;
     }
 
     function reportErrors(node: Node): void {
       const isStylexFile = allThemeExtensions.some((ext) =>
         fileName.endsWith(ext),
       );
-
-      if (hasRestrictedExports && hasOtherExports && !legacyAllowMixedExports) {
-        context.report({
-          node,
-          message:
-            'Files that export variables from `stylex.defineVars()` or `stylex.defineConsts()` must not export anything else.',
-        });
-      }
+      const isConstFile = allConstExtensions.some((ext) =>
+        fileName.endsWith(ext),
+      );
 
       const currentExt =
         fileName.match(/\.(js|ts|tsx|jsx|mjs|cjs)$/)?.[0] || '';
       const suggestedExtension = currentExt
         ? themeFileExtension + currentExt
         : themeFileExtension + '.js';
+      const suggestedConstExtension = currentExt
+        ? themeFileExtension + '.const' + currentExt
+        : themeFileExtension + '.const.js';
+
+      // Handle defineConsts extension enforcement
+      if (enforceDefineConstsExtension) {
+        if (hasDefineConstsExports && !isConstFile) {
+          context.report({
+            node,
+            message: `Files that export variables from \`stylex.defineConsts()\` must end with a \`${suggestedConstExtension}\` extension.`,
+          });
+        }
+
+        if (!hasDefineConstsExports && isConstFile) {
+          context.report({
+            node,
+            message: `Only variables from \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedConstExtension}\` extension.`,
+          });
+        }
+
+        if (
+          hasDefineConstsExports &&
+          (hasOtherExports || hasDefineVarsExports)
+        ) {
+          context.report({
+            node,
+            message:
+              'Files that export variables from `stylex.defineConsts()` must not export anything else.',
+          });
+        }
+      }
+
+      const functionsToLint = enforceDefineConstsExtension
+        ? '`stylex.defineVars()`'
+        : '`stylex.defineVars()` or `stylex.defineConsts()`';
+
+      if (hasRestrictedExports && hasOtherExports && !legacyAllowMixedExports) {
+        if (!enforceDefineConstsExtension || hasDefineVarsExports) {
+          context.report({
+            node,
+            message: `Files that export variables from ${functionsToLint} must not export anything else.`,
+          });
+        }
+      }
 
       if (hasRestrictedExports && !isStylexFile) {
-        context.report({
-          node,
-          message: `Files that export variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` must end with a \`${suggestedExtension}\` extension.`,
-        });
+        if (!enforceDefineConstsExtension || hasDefineVarsExports) {
+          context.report({
+            node,
+            message: `Files that export variables from ${functionsToLint} must end with a \`${suggestedExtension}\` extension.`,
+          });
+        }
       }
 
       if (!hasRestrictedExports && isStylexFile) {
-        context.report({
-          node,
-          message: `Only variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedExtension}\` extension.`,
-        });
+        if (!enforceDefineConstsExtension || hasDefineVarsExports) {
+          context.report({
+            node,
+            message: `Only variables from ${functionsToLint} can be exported from a file with a \`${suggestedExtension}\` extension.`,
+          });
+        }
       }
     }
 
