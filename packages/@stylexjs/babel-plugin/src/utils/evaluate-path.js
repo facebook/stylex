@@ -100,7 +100,7 @@ function evaluateImportedFile(
   state: State,
   bindingPath: NodePath<>,
 ): any {
-  const fs = require('fs');
+  const fs = require('node:fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   // It's safe to use `.babelrc` here because we're only
   // interested in the JS runtime, and not the CSS.
@@ -553,6 +553,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         if (!state.confident) {
           return deopt(prop, state, state.deoptReason ?? 'unknown error');
         }
+        // $FlowFixMe[unsafe-object-assign]
         Object.assign(obj, spreadExpression);
         continue;
       }
@@ -607,15 +608,19 @@ function _evaluate(path: NodePath<>, state: State): any {
   if (path.isLogicalExpression()) {
     // If we are confident that the left side of an && is false, or the left
     // side of an || is true, we can be confident about the entire expression
-    const stateForLeft = { ...state, deoptPath: null, confident: true };
+    const stateForLeft = {
+      ...state,
+      deoptPath: null,
+      confident: true,
+    } as const;
     const leftPath = path.get('left');
-    const left = evaluateCached(leftPath, stateForLeft);
-    const leftConfident = stateForLeft.confident;
+    const left = evaluateCached(leftPath, stateForLeft as $FlowFixMe);
+    const leftConfident: boolean = stateForLeft.confident as $FlowFixMe;
 
     const stateForRight = { ...state, deoptPath: null, confident: true };
     const rightPath = path.get('right');
-    const right = evaluateCached(rightPath, stateForRight);
-    const rightConfident = stateForRight.confident;
+    const right = evaluateCached(rightPath, stateForRight as $FlowFixMe);
+    const rightConfident: boolean = stateForRight.confident as $FlowFixMe;
 
     switch (path.node.operator) {
       case '||': {

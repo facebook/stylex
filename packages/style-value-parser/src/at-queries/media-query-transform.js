@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { MediaQueryRule } from './media-query';
+
 import { MediaQuery } from './media-query.js';
 
 export function lastMediaQueryWinsTransform(styles: Object): Object {
@@ -41,10 +43,10 @@ function combineMediaQueryWithNegations(
         current.queries,
         ...negations.map((mq) => ({ type: 'not', rule: mq.queries })),
       ],
-    };
+    } as const;
   }
 
-  return new MediaQuery(combinedAst);
+  return new MediaQuery(combinedAst as $FlowFixMe as MediaQueryRule);
 }
 
 function dfsProcessQueries(

@@ -474,7 +474,7 @@ describe('@stylexjs/babel-plugin', () => {
           };"
         `);
 
-        // $FlowFixMe
+        // $FlowFixMe[prop-missing]
         expect(result?.metadata?.stylex).toMatchInlineSnapshot(`
           [
             [

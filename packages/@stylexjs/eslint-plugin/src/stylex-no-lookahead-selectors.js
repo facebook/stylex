@@ -73,7 +73,7 @@ const stylexNoLookaheadSelectors = {
       if (callee.object.type === 'Identifier') {
         return (
           importTracker.isStylexNamedImport('when', callee.object.name) &&
-          lookaheadSelectors.includes(callee.property.name)
+          lookaheadSelectors.includes(callee.property.name as $FlowFixMe)
         );
       }
 
@@ -90,7 +90,7 @@ const stylexNoLookaheadSelectors = {
           return (
             importTracker.isStylexDefaultImport(whenMember.object.name) &&
             whenMember.property.name === 'when' &&
-            lookaheadSelectors.includes(callee.property.name)
+            lookaheadSelectors.includes(callee.property.name as $FlowFixMe)
           );
         }
       }

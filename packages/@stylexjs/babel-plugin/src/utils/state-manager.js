@@ -17,9 +17,9 @@ import type { Check } from './validate';
 
 import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
-import path from 'path';
-import fs from 'fs';
-import url from 'url';
+import path from 'node:path';
+import fs from 'node:fs';
+import url from 'node:url';
 import * as z from './validate';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 import {
@@ -616,38 +616,42 @@ export default class StateManager {
   }
 
   addStyle(
-    style: [
-      string,
-      (
-        | { ltr: string, rtl?: string | null }
-        | {
-            constKey: string,
-            constVal: string | number,
-            rtl?: string | null,
-            ltr: string,
-          }
-      ),
-      number,
-    ],
+    style: $ReadOnly<
+      [
+        string,
+        (
+          | $ReadOnly<{ ltr: string, rtl?: string | null }>
+          | $ReadOnly<{
+              constKey: string,
+              constVal: string | number,
+              rtl?: string | null,
+              ltr: string,
+            }>
+        ),
+        number,
+      ],
+    >,
   ): void {
     this.metadata.stylex.push(style);
   }
 
   registerStyles(
     styles: $ReadOnlyArray<
-      [
-        string,
-        (
-          | { ltr: string, rtl?: string | null }
-          | {
-              constKey: string,
-              constVal: string | number,
-              rtl?: string | null,
-              ltr: string,
-            }
-        ),
-        number,
-      ],
+      $ReadOnly<
+        [
+          string,
+          (
+            | $ReadOnly<{ ltr: string, rtl?: string | null }>
+            | $ReadOnly<{
+                constKey: string,
+                constVal: string | number,
+                rtl?: string | null,
+                ltr: string,
+              }>
+          ),
+          number,
+        ],
+      >,
     >,
     path?: ?NodePath<>,
   ): void {

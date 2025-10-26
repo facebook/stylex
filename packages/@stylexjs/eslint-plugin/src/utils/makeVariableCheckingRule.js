@@ -23,9 +23,9 @@ export default function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
     context?: Rule.RuleContext,
   ): RuleResponse => {
     if (
-      // $FlowFixMe
+      // $FlowFixMe[invalid-compare]
       node.type === 'TSSatisfiesExpression' ||
-      // $FlowFixMe
+      // $FlowFixMe[invalid-compare]
       node.type === 'TSAsExpression'
     ) {
       return varCheckingRule(node.expression, variables, prop, context);

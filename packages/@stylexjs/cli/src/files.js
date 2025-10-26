@@ -7,11 +7,11 @@
  * @flow strict
  */
 
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import errors from './errors';
 
-// $FlowFixMe
+// $FlowFixMe[missing-export]
 import { mkdirp } from 'mkdirp';
 
 export function getInputDirectoryFiles(inputDir: string): Array<string> {

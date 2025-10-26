@@ -1,6 +1,3 @@
-[version]
-0.261.2
-
 [ignore]
 .*/build/.*
 .*/dist/.*
@@ -10,22 +7,16 @@
 
 [include]
 
-[libs]
-flow-typed
-
 [lints]
 
 [options]
 enums=true
 emoji=true
-this_type_guards=true
 casting_syntax=as
 exact_by_default=true
 experimental.const_params=true
 module.use_strict=true
 munge_underscores=true
-suppress_type=$FlowFixMe
-suppress_type=$FlowTODO
 module.name_mapper='^@stylexjs/babel-plugin$' -> '<PROJECT_ROOT>/packages/@stylexjs/babel-plugin/src/index.js'
 module.name_mapper='^@stylexjs/stylex$' -> '<PROJECT_ROOT>/packages/@stylexjs/stylex/src/stylex.js'
 module.name_mapper='^style-value-parser$' -> '<PROJECT_ROOT>/packages/style-value-parser/src/index.js'

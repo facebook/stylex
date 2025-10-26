@@ -10,3 +10,4 @@ node_modules
 *.mdx
 **/__mocks__/snapshot*
 packages/benchmarks/size/fixtures/lotsOfStyles.js
+flow-typed

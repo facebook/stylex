@@ -25,11 +25,10 @@ export class Frequency {
   }
   static UNITS: $ReadOnlyArray<'Hz' | 'KHz'> = ['Hz', 'KHz'];
   static get parser(): TokenParser<Frequency> {
-    return TokenParser.tokens.Dimension.map((val) =>
-      val[4].unit === 'Hz' || val[4].unit === 'KHz'
-        ? [val[4].value, val[4].unit]
-        : null,
-    )
+    return TokenParser.tokens.Dimension.map((val) => {
+      const unit = val[4].unit;
+      return unit === 'Hz' || unit === 'KHz' ? [val[4].value, unit] : null;
+    })
       .where((v) => v !== null)
       .map(([value, unit]) => new Frequency(value, unit));
   }

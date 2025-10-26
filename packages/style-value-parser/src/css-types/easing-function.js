@@ -160,10 +160,10 @@ export class StepsKeyword extends EasingFunction {
   static get parser(): TokenParser<StepsKeyword> {
     return TokenParser.oneOf(
       TokenParser.tokens.Ident.map((v) => v[4].value).where(
-        (v) => v === 'step-start',
+        (v): implies v is 'step-start' => v === 'step-start',
       ),
       TokenParser.tokens.Ident.map((v) => v[4].value).where(
-        (v) => v === 'step-end',
+        (v): implies v is 'step-end' => v === 'step-end',
       ),
     ).map((keyword) => new StepsKeyword(keyword));
   }

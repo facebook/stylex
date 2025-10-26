@@ -10,7 +10,7 @@
 
 import type { Rule, Options as StyleXOptions } from '@stylexjs/babel-plugin';
 import yargs from 'yargs';
-import path from 'path';
+import path from 'node:path';
 import ansis from 'ansis';
 import JSON5 from 'json5';
 import { isDir } from './files';
@@ -18,7 +18,7 @@ import { compileDirectory } from './transform';
 import options from './options';
 import errors from './errors';
 import { startWatcher } from './watcher';
-import fs from 'fs';
+import fs from 'node:fs';
 import { clearInputModuleDir, copyNodeModules } from './modules';
 import type { CliConfig, ModuleType, TransformConfig } from './config';
 
@@ -47,7 +47,7 @@ let config: { +[string]: mixed } = {};
 const args = yargs(process.argv)
   .scriptName('stylex')
   .usage(usage)
-  // $FlowFixMe[incompatible-call]
+  // $FlowFixMe[incompatible-type]
   .options(options)
   .help(true)
   .config(
@@ -99,7 +99,7 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
     compiledJS: new Map<string, string>(),
     styleXRules: new Map<string, Array<Rule>>(),
     copiedNodeModules: false,
-  };
+  } as const;
   for (let i = 0; i < cliArgsConfig.input.length; i++) {
     const inputPath = path.isAbsolute(cliArgsConfig.input[i])
       ? cliArgsConfig.input[i]
@@ -133,7 +133,7 @@ async function styleXCompile(cliArgsConfig: CliConfig) {
       babelPluginsPost,
       useCSSLayers,
       styleXConfig,
-      state: configState,
+      state: configState as $FlowFixMe,
     };
     if (!isDir(config.input)) {
       throw errors.dirNotFound;

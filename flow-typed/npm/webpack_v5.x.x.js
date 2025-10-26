@@ -9,8 +9,11 @@
 // flow-typed version: d55f290df6/webpack_v5.x.x/flow_>=v0.104.x
 
 declare module 'webpack' {
-  import typeof { Server } from 'http';
-  import typeof { Stats as FsStats } from 'fs';
+  import typeof { Stats as FsStats } from 'node:fs';
+
+  type Server = any;
+  type $ElementType<O, K> = O[K];
+  type $PropertyType<O, K> = O[K];
 
   declare class $WebpackError extends Error {
     constructor(message: string): WebpackError;
