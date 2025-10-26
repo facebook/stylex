@@ -10,10 +10,10 @@
 type Groups = { [key: number]: { start: ?number, rules: Array<string> } };
 type SeenRules = { [key: string]: boolean };
 
-export type OrderedCSSStyleSheet = {|
+export type OrderedCSSStyleSheet = $ReadOnly<{
   getTextContent: () => string,
   insert: (cssText: string, groupValue: number) => void,
-|};
+}>;
 
 /**
  * Order-based insertion of CSS.
@@ -141,7 +141,7 @@ export function createOrderedCSSStyleSheet(
         }
       }
     },
-  };
+  } as const;
 
   return OrderedCSSStyleSheet;
 }
@@ -156,7 +156,7 @@ function encodeGroupRule(group: number) {
 
 const groupPattern = /["']/g;
 function decodeGroupRule(cssRule: CSSRule) {
-  // $FlowIgnore
+  // $FlowExpectedError[prop-missing]
   return Number(cssRule.selectorText.split(groupPattern)[1]);
 }
 

@@ -87,7 +87,8 @@ export function addNamedImport(
   if (programPath == null) {
     return identifier;
   }
-  const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
+  const bodyPath: $ReadOnlyArray<NodePath<t.Statement>> =
+    programPath.get('body');
   let targetImportIndex = -1;
   for (let i = 0; i < bodyPath.length; i++) {
     const statement = bodyPath[i];
@@ -133,7 +134,8 @@ export function addDefaultImport(
   if (programPath == null) {
     return identifier;
   }
-  const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
+  const bodyPath: $ReadOnlyArray<NodePath<t.Statement>> =
+    programPath.get('body');
   let targetImportIndex = -1;
   for (let i = 0; i < bodyPath.length; i++) {
     const statement = bodyPath[i];

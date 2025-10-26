@@ -20,7 +20,7 @@ type Props = {
 };
 
 function Component({ xstyle }: Props) {
-  // $FlowExpectedError - `stylex()` can't handle dynamic styles
+  // $FlowExpectedError[incompatible-type] - `stylex()` can't handle dynamic styles
   <div className={legacyMerge(xstyle)} />;
 
   <div {...stylex.props([xstyle])} />;

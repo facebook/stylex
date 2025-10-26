@@ -79,6 +79,7 @@ export function evaluateStyleXCreateArg(
     const fnPath: NodePath<t.ArrowFunctionExpression> = valPath;
     const allParams: Array<
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
+      // $FlowFixMe[incompatible-type]
     > = fnPath.get('params');
 
     validateDynamicStyleParams(fnPath, allParams);

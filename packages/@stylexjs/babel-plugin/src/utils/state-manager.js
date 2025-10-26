@@ -616,38 +616,42 @@ export default class StateManager {
   }
 
   addStyle(
-    style: [
-      string,
-      (
-        | { ltr: string, rtl?: string | null }
-        | {
-            constKey: string,
-            constVal: string | number,
-            rtl?: string | null,
-            ltr: string,
-          }
-      ),
-      number,
-    ],
+    style: $ReadOnly<
+      [
+        string,
+        (
+          | $ReadOnly<{ ltr: string, rtl?: string | null }>
+          | $ReadOnly<{
+              constKey: string,
+              constVal: string | number,
+              rtl?: string | null,
+              ltr: string,
+            }>
+        ),
+        number,
+      ],
+    >,
   ): void {
     this.metadata.stylex.push(style);
   }
 
   registerStyles(
     styles: $ReadOnlyArray<
-      [
-        string,
-        (
-          | { ltr: string, rtl?: string | null }
-          | {
-              constKey: string,
-              constVal: string | number,
-              rtl?: string | null,
-              ltr: string,
-            }
-        ),
-        number,
-      ],
+      $ReadOnly<
+        [
+          string,
+          (
+            | $ReadOnly<{ ltr: string, rtl?: string | null }>
+            | $ReadOnly<{
+                constKey: string,
+                constVal: string | number,
+                rtl?: string | null,
+                ltr: string,
+              }>
+          ),
+          number,
+        ],
+      >,
     >,
     path?: ?NodePath<>,
   ): void {

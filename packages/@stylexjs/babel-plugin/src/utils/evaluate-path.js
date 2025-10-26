@@ -608,15 +608,19 @@ function _evaluate(path: NodePath<>, state: State): any {
   if (path.isLogicalExpression()) {
     // If we are confident that the left side of an && is false, or the left
     // side of an || is true, we can be confident about the entire expression
-    const stateForLeft = { ...state, deoptPath: null, confident: true };
+    const stateForLeft = {
+      ...state,
+      deoptPath: null,
+      confident: true,
+    } as const;
     const leftPath = path.get('left');
-    const left = evaluateCached(leftPath, stateForLeft);
-    const leftConfident = stateForLeft.confident;
+    const left = evaluateCached(leftPath, stateForLeft as $FlowFixMe);
+    const leftConfident: boolean = stateForLeft.confident as $FlowFixMe;
 
     const stateForRight = { ...state, deoptPath: null, confident: true };
     const rightPath = path.get('right');
-    const right = evaluateCached(rightPath, stateForRight);
-    const rightConfident = stateForRight.confident;
+    const right = evaluateCached(rightPath, stateForRight as $FlowFixMe);
+    const rightConfident: boolean = stateForRight.confident as $FlowFixMe;
 
     switch (path.node.operator) {
       case '||': {

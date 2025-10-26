@@ -337,9 +337,9 @@ notParser = TokenParser.sequence(
   TokenParser.tokens.Whitespace,
   getNormalRuleParser(),
   TokenParser.tokens.CloseParen,
-).map(([_openParen, _not, _space, rule, _closeParen]) => ({
+).map(([_openParen, _not, _space, rule, _closeParen]): MediaNotRule => ({
   type: 'not',
-  rule,
+  rule: rule as $FlowFixMe,
 }));
 
 function isNumericLength(val: mixed): boolean {

@@ -641,9 +641,9 @@ declare module '@babel/traverse' {
     get<K: $Keys<T>>(
       key: K,
       context?: boolean | TraversalContext,
-    ): NodePathResult<$NonMaybeType<T[K]>> | T[K] extends null | void
+    ): NodePathResult<$NonMaybeType<T[K]>> | (T[K] extends null | void
       ? null
-      : empty;
+      : empty);
     // get(key: string, context?: boolean | TraversalContext): NodePath | NodePath[];
 
     getBindingIdentifiers(duplicates: true): Record<string, t.Identifier[]>;

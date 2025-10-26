@@ -61,16 +61,16 @@ export function addSourceMapData(
 ): CompiledNamespaces {
   const result: MutableCompiledNamespaces = {};
   for (const [key, value] of Object.entries(obj)) {
-    // $FlowIgnore (this repo's flow_modules types for babel are incomplete)
+    // $FlowFixMe[prop-missing] (this repo's flow_modules types for babel are incomplete)
     const currentFile = babelPath.hub.file;
     const sourceMap = currentFile.codeMap;
 
     // Find the line number of a given style object
     const styleNodePath = babelPath
-      // $FlowIgnore
+      // $FlowFixMe[prop-missing]
       .get('arguments.0.properties')
-      // $FlowIgnore
-      .find((prop) => {
+      // $FlowFixMe[incompatible-use]
+      .find((prop: NodePath<t.Property>) => {
         const k = prop.node.key;
         return (
           // string and number properties (normalized to string)

@@ -13,9 +13,9 @@ import { canUseDOM } from './utils';
 import { createCSSStyleSheet } from './createCSSStyleSheet';
 import { createOrderedCSSStyleSheet } from './createOrderedCSSStyleSheet';
 
-type Sheet = {
+type Sheet = $ReadOnly<{
   ...OrderedCSSStyleSheet,
-};
+}>;
 
 const roots = new WeakMap<Node, number>();
 const sheets: Array<Sheet> = [];

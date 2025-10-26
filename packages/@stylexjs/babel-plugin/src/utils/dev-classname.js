@@ -39,7 +39,7 @@ export function injectDevClassNames(
       varName,
       state.filename ?? 'UnknownFile',
     );
-    // $FlowFixMe
+    // $FlowFixMe[cannot-spread-indexer]
     result[key] = {
       [devClassName]: devClassName,
       ...value,

@@ -33,6 +33,7 @@ export function collectVarsByAtRule(
     collection[key].push(`--${nameHash}:${val};`);
     return;
   }
+  // $FlowFixMe[invalid-compare]
   if (value === null) {
     return;
   }
