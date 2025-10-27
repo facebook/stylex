@@ -31,7 +31,6 @@ import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
 
 // This file contains Babels metainterpreter that can evaluate static code.
-const PROXY_MARKER = '__isProxy__';
 const VALID_CALLEES = ['String', 'Number', 'Math', 'Object', 'Array'];
 const INVALID_METHODS = [
   'random',
@@ -42,6 +41,7 @@ const INVALID_METHODS = [
   'seal',
   'splice',
 ];
+const PROXY_MARKER = Symbol('StyleXProxyMarker');
 
 function isValidCallee(val: string): boolean {
   return (VALID_CALLEES as $ReadOnlyArray<string>).includes(val);
@@ -406,7 +406,8 @@ function _evaluate(path: NodePath<>, state: State): any {
 
     const result = object[property];
 
-    // handle nested member expression
+    // handle nested member expressions by converting proxy to
+    // its primitive value for the terminal access of this MemberExpression
     const parent = path.parentPath;
 
     const isChainedAccess =

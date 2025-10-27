@@ -300,7 +300,11 @@ stylex.props(styles8.foo);
 const consts = stylex.defineConsts({
   foo: 'bar',
   bar: 123,
+  baz: {
+    qux: 'quux',
+  },
 } as const);
 
 consts.foo satisfies 'bar';
 consts.bar satisfies 123;
+consts.baz satisfies { qux: 'quux' };
