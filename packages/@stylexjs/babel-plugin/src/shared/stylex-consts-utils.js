@@ -7,7 +7,10 @@
  * @flow strict
  */
 
-export type ConstsConfigValue = string | number;
+export type ConstsConfigValue =
+  | string
+  | number
+  | { [string]: ConstsConfigValue };
 
 export type ConstsConfig = $ReadOnly<{
   [string]: ConstsConfigValue,
