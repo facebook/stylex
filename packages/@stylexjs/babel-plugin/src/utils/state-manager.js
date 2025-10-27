@@ -249,8 +249,8 @@ export default class StateManager {
     const enableMediaQueryOrder: StyleXStateOptions['enableMediaQueryOrder'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableMediaQueryOrder ?? false,
-        false,
+        options.enableMediaQueryOrder ?? true,
+        true,
         'options.enableMediaQueryOrder',
       );
 
