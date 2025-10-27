@@ -45,7 +45,10 @@ export const zIndices = stylex.defineConsts({
 
 export const animations = stylex.defineConsts({
   easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  fast: '150ms',
+  speed: {
+    slow: '300ms',
+    fast: '150ms',
+  }
 });
 ```
 
@@ -60,7 +63,7 @@ const styles = stylex.create({
     position: 'relative',
     zIndex: zIndices.modal,
     transitionTimingFunction: animations.easeInOut,
-    transitionDuration: animations.fast,
+    transitionDuration: animations.speed.fast,
     color: {
       default: 'black',
       [breakpoints.small]: 'red',
