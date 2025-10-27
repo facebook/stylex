@@ -49,10 +49,6 @@ const stylexValidateMediaQueries = {
     ],
   },
   create(context: Rule.RuleContext): { ... } {
-    if (!lastMediaQueryWinsTransform) {
-      return {};
-    }
-
     const options = context.options[0] || {};
     const { validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'] } =
       options;
@@ -139,9 +135,7 @@ const stylexValidateMediaQueries = {
       }
 
       try {
-        if (lastMediaQueryWinsTransform) {
-          lastMediaQueryWinsTransform(styleObj);
-        }
+        lastMediaQueryWinsTransform(styleObj);
       } catch (error) {
         const mediaQueryProps = findMediaQueries(obj);
 
