@@ -1,19 +1,32 @@
 # Changelog
 
+## 0.16.3 (Oct 27, 2025)
+
+- Add configs to `sort-keys` property ordering.
+- Create new `defineConsts` specific file extension.
+- Add `defineConsts` and various file extension support to `enforce-extension`.
+- Add config for custom module resolution.
+- Turn `enableMediaQueryOrder` on by default.
+- Updates to docs and Flow.
+
 ## 0.16.2 (Oct 13, 2025)
+
 - Handle descendant selector styles in `valid-styles` rule.
 - Adjust descendant selector `.when` priorities.
 - Fix `defineVars` and `createTheme` at-rules priorities.
 - Update `defineConsts` types for non-stylex usage.
 
 ## 0.16.1 (Oct 2, 2025)
-- New `no-lookahead-selector` lint rule to flag certain descendant and sibling selectors.
+
+- New `no-lookahead-selector` lint rule to flag certain descendant and sibling
+  selectors.
 - Fix priorities for descendant and sibling selectors.
 - Fix color functions for `valid-shorthands` rule.
 - Fix hoisting issues with duplicate keys in `create` calls.
 - Add storybook example.
 
 ## 0.16.0 (Sep 25, 2025)
+
 - Added support for descendant and shared selectors.
 - Support CSS variable overrides with `defineConsts`.
 - Add `valid-styles` support to CSS variable overrides in `create` calls.
@@ -22,7 +35,8 @@
 ## 0.15.4 (Sep 7, 2025)
 
 - Add configuration modes to `processStylexRules`.
-- Support local resolved constants, `positionTry`, and '0' values in `valid-styles` ESLint rule.
+- Support local resolved constants, `positionTry`, and '0' values in
+  `valid-styles` ESLint rule.
 - Implement `defineConsts` for dynamic styles.
 - Create `.transformed` file extension for preresolved variables.
 
@@ -41,7 +55,8 @@
 
 ### Fixes
 
-- Hoist stylex.create and static className objects to the top level for support inside functions.
+- Hoist stylex.create and static className objects to the top level for support
+  inside functions.
 
 ## 0.15.0 (Jul 31, 2025)
 
