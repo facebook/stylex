@@ -171,11 +171,7 @@ function evaluateThemeRef(
     const strToHash =
       key === '__varGroupHash__'
         ? utils.genFileBasedIdentifier({ fileName, exportName })
-        : utils.genFileBasedIdentifier({
-            fileName,
-            exportName,
-            key,
-          });
+        : utils.genFileBasedIdentifier({ fileName, exportName, key });
 
     const { debug, enableDebugClassNames } = state.traversalState.options;
 
