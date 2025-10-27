@@ -1987,7 +1987,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       describe('object values: queries', () => {
-        test('media queries with last query wins', () => {
+        test('media queries without last query wins', () => {
           const { code, metadata } = transform(
             `
             import * as stylex from '@stylexjs/stylex';
@@ -2053,6 +2053,72 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        test('media queries without last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media (max-width: 900px)': 'blue',
+                  '@media (max-width: 500px)': 'purple',
+                  '@media (max-width: 400px)': 'green',
+                }
+              },
+            });
+          `,
+            { enableMediaQueryOrder: false },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc xn8cmr1 x1lr89ez x856a2w",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xn8cmr1",
+                  {
+                    "ltr": "@media (max-width: 900px){.xn8cmr1.xn8cmr1{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x1lr89ez",
+                  {
+                    "ltr": "@media (max-width: 500px){.x1lr89ez.x1lr89ez{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x856a2w",
+                  {
+                    "ltr": "@media (max-width: 400px){.x856a2w.x856a2w{background-color:green}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('media queries', () => {
           const { code, metadata } = transform(
             `
@@ -2072,7 +2138,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: {
-                kWkggS: "xrkmrrc xc445zv x1ssfqz5",
+                kWkggS: "xrkmrrc xw6up8c x1ssfqz5",
                 $$css: true
               }
             };"
@@ -2089,9 +2155,9 @@ describe('@stylexjs/babel-plugin', () => {
                   3000,
                 ],
                 [
-                  "xc445zv",
+                  "xw6up8c",
                   {
-                    "ltr": "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
+                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c.xw6up8c{background-color:blue}}",
                     "rtl": null,
                   },
                   3200,
@@ -4389,7 +4455,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: (a, b, c) => [{
-                kzqmXN: "x11ymkkh " + (b != null ? "x17gmrvw " : b) + (c != null ? "x1bai16n" : c),
+                kzqmXN: "x11ymkkh " + "x38mdg9 " + (c != null ? "x1bai16n" : c),
                 $$css: true
               }, {
                 "--x-1xmrurk": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)('color-mix(' + color + ', blue)'),
@@ -4410,9 +4476,9 @@ describe('@stylexjs/babel-plugin', () => {
                   4000,
                 ],
                 [
-                  "x17gmrvw",
+                  "x38mdg9",
                   {
-                    "ltr": "@media (min-width: 1000px){.x17gmrvw.x17gmrvw{width:var(--x-wm47pl)}}",
+                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.x38mdg9.x38mdg9{width:var(--x-wm47pl)}}",
                     "rtl": null,
                   },
                   4200,
