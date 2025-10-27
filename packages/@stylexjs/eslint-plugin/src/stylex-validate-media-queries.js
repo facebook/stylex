@@ -11,14 +11,8 @@
 
 import type { CallExpression, Node, Property, ObjectExpression } from 'estree';
 import createImportTracker from './utils/createImportTracker';
+import { lastMediaQueryWinsTransform } from 'style-value-parser';
 /*:: import { Rule } from 'eslint'; */
-
-let lastMediaQueryWinsTransform = null;
-try {
-  // $FlowFixMe Dynamic import for style-value-parser since it might not be available in all environments
-  const styleValueParser = require('style-value-parser');
-  lastMediaQueryWinsTransform = styleValueParser.lastMediaQueryWinsTransform;
-} catch (e) {}
 
 const stylexValidateMediaQueries = {
   meta: {
