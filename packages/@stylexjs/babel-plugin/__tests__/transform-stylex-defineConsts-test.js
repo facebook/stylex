@@ -617,5 +617,250 @@ describe('@stylexjs/babel-plugin', () => {
         }
       `);
     });
+    test('nested constants object', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.defineConsts({
+          button: {
+            fill: {
+              primary: 'blue',
+              secondary: 'gray',
+            },
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const tokens = {
+          button: {
+            fill: {
+              primary: "blue",
+              secondary: "gray"
+            }
+          }
+        };"
+      `);
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xreo3at",
+              {
+                "constKey": "xreo3at",
+                "constVal": "blue",
+                "ltr": "",
+                "rtl": null,
+              },
+              0,
+            ],
+            [
+              "x3rbt3c",
+              {
+                "constKey": "x3rbt3c",
+                "constVal": "gray",
+                "ltr": "",
+                "rtl": null,
+              },
+              0,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('uses nested constants in stylex.create', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.defineConsts({
+          button: {
+            fill: {
+              primary: 'blue',
+            },
+          },
+        });
+        export const styles = stylex.create({
+          root: {
+            backgroundColor: tokens.button.fill.primary,
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const tokens = {
+          button: {
+            fill: {
+              primary: "blue"
+            }
+          }
+        };
+        export const styles = {
+          root: {
+            kWkggS: "x1t391ir",
+            $$css: true
+          }
+        };"
+      `);
+
+      // Verify const entry and CSS rule with inlined value
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x1wyxh8f",
+              {
+                "constKey": "x1wyxh8f",
+                "constVal": "blue",
+                "ltr": "",
+                "rtl": null,
+              },
+              0,
+            ],
+            [
+              "x1t391ir",
+              {
+                "ltr": ".x1t391ir{background-color:blue}",
+                "rtl": null,
+              },
+              3000,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('deeply nested constants', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.defineConsts({
+          level1: {
+            level2: {
+              level3: {
+                level4: 'deep-value',
+              },
+            },
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const tokens = {
+          level1: {
+            level2: {
+              level3: {
+                level4: "deep-value"
+              }
+            }
+          }
+        };"
+      `);
+
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x67bk05",
+              {
+                "constKey": "x67bk05",
+                "constVal": "deep-value",
+                "ltr": "",
+                "rtl": null,
+              },
+              0,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('mixed flat and nested constants', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.defineConsts({
+          flatColor: 'red',
+          nested: {
+            color: 'blue',
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const tokens = {
+          flatColor: "red",
+          nested: {
+            color: "blue"
+          }
+        };"
+      `);
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x19gcf6u",
+              {
+                "constKey": "x19gcf6u",
+                "constVal": "red",
+                "ltr": "",
+                "rtl": null,
+              },
+              0,
+            ],
+            [
+              "x49cdii",
+              {
+                "constKey": "x49cdii",
+                "constVal": "blue",
+                "ltr": "",
+                "rtl": null,
+              },
+              0,
+            ],
+          ],
+        }
+      `);
+    });
+
+    test('deep chained imported constants work in stylex.create', () => {
+      const { code, metadata } = transformWithInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { nestedTokens } from './constants.stylex';
+        export const styles = stylex.create({
+          root: {
+            backgroundColor: nestedTokens.button.fill.primary,
+          },
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        import { nestedTokens } from './constants.stylex';
+        export const styles = {
+          root: {
+            kWkggS: "x13bhmi6",
+            $$css: true
+          }
+        };"
+      `);
+
+      // Should produce a style rule for backgroundColor referencing a CSS variable
+      // (The const entries themselves are in the metadata of constants.stylex, not this file)
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "x13bhmi6",
+              {
+                "ltr": ".x13bhmi6{background-color:var(--x529nz8)}",
+                "rtl": null,
+              },
+              3000,
+            ],
+          ],
+        }
+      `);
+    });
   });
 });

@@ -31,7 +31,7 @@ import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
 
 // This file contains Babels metainterpreter that can evaluate static code.
-
+const PROXY_MARKER = '__isProxy__';
 const VALID_CALLEES = ['String', 'Number', 'Math', 'Object', 'Array'];
 const INVALID_METHODS = [
   'random',
@@ -172,7 +172,11 @@ function evaluateThemeRef(
     const strToHash =
       key === '__varGroupHash__'
         ? utils.genFileBasedIdentifier({ fileName, exportName })
-        : utils.genFileBasedIdentifier({ fileName, exportName, key });
+        : utils.genFileBasedIdentifier({
+            fileName,
+            exportName,
+            key,
+          });
 
     const { debug, enableDebugClassNames } = state.traversalState.options;
 
@@ -197,30 +201,32 @@ function evaluateThemeRef(
     return `var(--${varName})`;
   };
 
-  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
-  const proxy = new Proxy(
-    {},
-    {
-      get(_, key: string) {
-        if (key === '__IS_PROXY') {
-          return true;
-        }
-        if (key === 'toString') {
-          return () =>
-            state.traversalState.options.classNamePrefix +
-            utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }));
-        }
-        return resolveKey(key);
-      },
-      set(_, key: string, value: string) {
-        throw new Error(
-          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
-        );
-      },
-    },
-  );
+  const createNestedProxy = (currentPath: Array<string> = []): any => {
+    return new Proxy(
+      {},
+      {
+        get(_, key: string) {
+          if (key === PROXY_MARKER) {
+            return true;
+          }
 
-  return proxy;
+          if (key === 'valueOf' || key === 'toString') {
+            return () => resolveKey(currentPath.join('.'));
+          }
+
+          const newPath = [...currentPath, key];
+          return createNestedProxy(newPath);
+        },
+        set(_, key: string, value: string) {
+          throw new Error(
+            `Cannot set value ${value} to key ${[...currentPath, key].join('.')} in theme ${fileName}`,
+          );
+        },
+      },
+    );
+  };
+
+  return createNestedProxy();
 }
 
 /**
@@ -398,7 +404,21 @@ function _evaluate(path: NodePath<>, state: State): any {
       return deopt(propPath, state, errMsgs.UNEXPECTED_MEMBER_LOOKUP);
     }
 
-    return object[property];
+    const result = object[property];
+
+    // handle nested member expression
+    const parent = path.parentPath;
+
+    const isChainedAccess =
+      parent != null &&
+      parent.isMemberExpression() &&
+      parent.get('object').node === path.node;
+
+    if (result?.[PROXY_MARKER] && !isChainedAccess) {
+      return result.valueOf();
+    }
+
+    return result;
   }
 
   if (path.isReferencedIdentifier()) {
