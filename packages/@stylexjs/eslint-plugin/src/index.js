@@ -15,6 +15,7 @@ import noUnused from './stylex-no-unused';
 import sortKeys from './stylex-sort-keys';
 import validShorthands from './stylex-valid-shorthands';
 import validStyles from './stylex-valid-styles';
+import validateMediaQueries from './stylex-validate-media-queries';
 
 const rules: {
   'enforce-extension': typeof enforceExtension,
@@ -25,6 +26,7 @@ const rules: {
   'sort-keys': typeof sortKeys,
   'valid-shorthands': typeof validShorthands,
   'valid-styles': typeof validStyles,
+  'validate-media-queries': typeof validateMediaQueries,
 } = {
   'enforce-extension': enforceExtension,
   'no-legacy-contextual-styles': noLegacyContextualStyles,
@@ -34,6 +36,7 @@ const rules: {
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
   'valid-styles': validStyles,
+  'validate-media-queries': validateMediaQueries,
 };
 
 export { rules };

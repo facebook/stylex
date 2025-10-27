@@ -591,6 +591,78 @@ describe('@stylexjs/babel-plugin', () => {
         }).toThrow(messages.INVALID_PSEUDO_OR_AT_RULE);
       });
 
+      test('soft validation: invalid media query does not throw with softMediaQueryValidation enabled', () => {
+        const consoleWarnSpy = jest
+          .spyOn(console, 'warn')
+          .mockImplementation(() => {});
+
+        expect(() => {
+          transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                'color': {
+                  '@media not ((not (min-width: 400px))': 'blue'
+                },
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true, softMediaQueryValidation: true },
+          );
+        }).not.toThrow();
+
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          expect.stringContaining('Invalid media query syntax'),
+        );
+
+        consoleWarnSpy.mockRestore();
+      });
+
+      test('soft validation: invalid media query still throws without softMediaQueryValidation', () => {
+        expect(() => {
+          transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                'color': {
+                  '@media not ((not (min-width: 400px))': 'blue'
+                },
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true, softMediaQueryValidation: false },
+          );
+        }).toThrow(messages.INVALID_MEDIA_QUERY_SYNTAX);
+      });
+
+      test('soft validation: valid media query does not warn', () => {
+        const consoleWarnSpy = jest
+          .spyOn(console, 'warn')
+          .mockImplementation(() => {});
+
+        expect(() => {
+          transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                'color': {
+                  '@media (min-width: 768px)': 'blue'
+                },
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true, softMediaQueryValidation: true },
+          );
+        }).not.toThrow();
+
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+        consoleWarnSpy.mockRestore();
+      });
+
       test('valid object value: key is "default"', () => {
         expect(() => {
           transform(`
