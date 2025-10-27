@@ -26,6 +26,48 @@ const config = {
   organizationName: 'facebook',
   projectName: 'stylex',
 
+  plugins: [
+    function () {
+      const webpack = require('webpack');
+      const fs = require('fs');
+
+      return {
+        name: 'playground-webpack-config',
+        configureWebpack() {
+          return {
+            resolve: {
+              fallback: {
+                fs: false,
+                path: false,
+                url: false,
+                assert: false,
+              },
+              alias: {
+                '@dual-bundle/import-meta-resolve': false,
+              },
+            },
+            plugins: [
+              new webpack.NormalModuleReplacementPlugin(
+                /^node:/,
+                (resource) => {
+                  resource.request = resource.request.replace(/^node:/, '');
+                },
+              ),
+              new webpack.ProvidePlugin({
+                process: 'process/browser',
+              }),
+              new webpack.DefinePlugin({
+                STYLEX_SOURCE: JSON.stringify(
+                  fs.readFileSync(require.resolve('@stylexjs/stylex'), 'utf8'),
+                ),
+              }),
+            ],
+          };
+        },
+      };
+    },
+  ],
+
   presets: [
     [
       'classic',
