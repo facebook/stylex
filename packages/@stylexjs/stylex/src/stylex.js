@@ -69,8 +69,10 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
   throw errorForFn('createTheme');
 };
 
+type DefineConstsTokens = string | number | { +[string]: DefineConstsTokens };
+
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  T: { +[string]: number | string },
+  T: DefineConstsTokens,
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
