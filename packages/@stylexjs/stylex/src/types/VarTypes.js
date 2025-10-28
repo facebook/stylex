@@ -91,11 +91,11 @@ export type CSSType<+T: InnerValue> =
   | Color<T>
   | Url<T>
   | Image<T>
-  | Integer<T>
+  | Integer<number>
   | LengthPercentage<T>
   | Length<T>
   | Percentage<T>
-  | Num<T>
+  | Num<number>
   | Resolution<T>
   | Time<T>
   | TransformFunction<T>
