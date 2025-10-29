@@ -199,12 +199,13 @@ export type InlineStyles = {
 
 type _GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, Readonly<CSS[Key]>>;
-}>;
+}> &
+  Partial<{
+    [Key in Exclude<keyof CSSPropertiesWithExtras, keyof CSS>]: never;
+  }>;
+
 type GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<
-  _GenStylePropType<CSS> &
-    Partial<{
-      [Key in Exclude<keyof CSSPropertiesWithExtras, keyof CSS>]: never;
-    }>
+  _GenStylePropType<CSS>
 >;
 
 // Replace `XStyle` with this.
