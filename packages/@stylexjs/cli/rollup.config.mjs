@@ -24,10 +24,7 @@ const config = {
       extensions,
       resolveOnly: process.env['HASTE']
         ? []
-        : [
-            '@stylexjs/stylex',
-            '@stylexjs/stylex/**/*',
-          ],
+        : ['@stylexjs/stylex', '@stylexjs/stylex/**/*'],
     }),
     commonjs(),
     json(),
