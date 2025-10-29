@@ -37,7 +37,7 @@ export default function styleXDefineConsts<Vars: ConstsConfig>(
     value: ConstsOutput,
     path: Array<string>,
   ): ConstsOutput => {
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === 'object' && value != null) {
       const nested: { [string]: ConstsOutput } = {};
       for (const [k, v] of Object.entries(value)) {
         nested[k] = processEntry(k, v, [...path, k]);
