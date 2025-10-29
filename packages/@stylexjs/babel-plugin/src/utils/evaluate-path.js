@@ -197,11 +197,11 @@ function evaluateThemeRef(
     return `var(--${varName})`;
   };
 
-  const createNestedProxy = (currentPath: Array<string> = []): any => {
+  const createNestedProxy = (currentPath: Array<string | symbol> = []): any => {
     return new Proxy(
       {},
       {
-        get(_, key: string) {
+        get(_, key: string | symbol) {
           if (key === PROXY_MARKER) {
             return true;
           }
