@@ -231,15 +231,15 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `);
         }).toThrowErrorMatchingInlineSnapshot(`
-                  "unknown file: Referenced constant is not defined.
-                    3 |           const styles = stylex.create({
-                    4 |             root: {
-                  > 5 |               [backgroundColor]: 'red',
-                      |                ^^^^^^^^^^^^^^^
-                    6 |             }
-                    7 |           });
-                    8 |         "
-              `);
+          "unknown file: Referenced constant is not defined.
+            3 |           const styles = stylex.create({
+            4 |             root: {
+          > 5 |               [backgroundColor]: 'red',
+              |                ^^^^^^^^^^^^^^^
+            6 |             }
+            7 |           });
+            8 |         "
+        `);
       });
 
       /* Values */

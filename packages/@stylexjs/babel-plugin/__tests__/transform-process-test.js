@@ -241,7 +241,16 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
+        "
+              :root, [dir="ltr"] {
+                --stylex-logical-end: left;
+                --stylex-logical-start: right;
+              }
+              [dir="rtl"] {
+                --stylex-logical-end: right;
+                --stylex-logical-start: left;
+              }
+              @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
@@ -259,8 +268,7 @@ describe('@stylexjs/babel-plugin', () => {
         .animationName-x13ah0pd:not(#\\#):not(#\\#):not(#\\#){animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
-        html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
-        html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
+        .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:inline-start}
         .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
@@ -330,6 +338,15 @@ describe('@stylexjs/babel-plugin', () => {
         }),
       ).toMatchInlineSnapshot(`
         "
+              :root, [dir="ltr"] {
+                --stylex-logical-end: left;
+                --stylex-logical-start: right;
+              }
+              [dir="rtl"] {
+                --stylex-logical-end: right;
+                --stylex-logical-start: left;
+              }
+              
         @layer priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
@@ -354,8 +371,7 @@ describe('@stylexjs/babel-plugin', () => {
         .animationName-x13ah0pd{animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc{background-color:red}
         .color-x14rh7hd{color:var(--x-color)}
-        html:not([dir='rtl']) .float-x1kmio9f{float:left}
-        html[dir='rtl'] .float-x1kmio9f{float:right}
+        .float-x1kmio9f{float:inline-start}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
@@ -424,7 +440,16 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
+        "
+              :root, [dir="ltr"] {
+                --stylex-logical-end: left;
+                --stylex-logical-start: right;
+              }
+              [dir="rtl"] {
+                --stylex-logical-end: right;
+                --stylex-logical-start: left;
+              }
+              @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
@@ -442,8 +467,7 @@ describe('@stylexjs/babel-plugin', () => {
         .animationName-x13ah0pd{animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc{background-color:red}
         .color-x14rh7hd{color:var(--x-color)}
-        html:not([dir='rtl']) .float-x1kmio9f{float:left}
-        html[dir='rtl'] .float-x1kmio9f{float:right}
+        .float-x1kmio9f{float:inline-start}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}"
@@ -510,13 +534,21 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: true,
         }),
       ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
+        "
+              :root, [dir="ltr"] {
+                --stylex-logical-end: left;
+                --stylex-logical-start: right;
+              }
+              [dir="rtl"] {
+                --stylex-logical-end: right;
+                --stylex-logical-start: left;
+              }
+              :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
-        /* @ltr begin */.float-x1kmio9f:not(#\\#){float:left}/* @ltr end */
-        /* @rtl begin */.float-x1kmio9f:not(#\\#){float:right}/* @rtl end */
+        .float-x1kmio9f:not(#\\#){float:inline-start}
         /* @ltr begin */.marginInlineStart-xqsn43r:not(#\\#){margin-left:20px}/* @ltr end */
         /* @rtl begin */.marginInlineStart-xqsn43r:not(#\\#){margin-right:20px}/* @rtl end */
         /* @ltr begin */.marginInlineEnd-x3aesyq:not(#\\#){margin-right:20px}/* @ltr end */
@@ -607,7 +639,16 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
+        "
+              :root, [dir="ltr"] {
+                --stylex-logical-end: left;
+                --stylex-logical-start: right;
+              }
+              [dir="rtl"] {
+                --stylex-logical-end: right;
+                --stylex-logical-start: left;
+              }
+              @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
         :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
@@ -625,8 +666,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x13ah0pd{animation-name:x35atj5-B}
         .xrkmrrc{background-color:red}
         .x14rh7hd{color:var(--x-color)}
-        /* @ltr begin */.x1kmio9f{float:left}/* @ltr end */
-        /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
+        .x1kmio9f{float:inline-start}
         .x18abd1y{outline-color:var(--xkxfyv)}
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
         @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}"
@@ -646,7 +686,16 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
+        "
+              :root, [dir="ltr"] {
+                --stylex-logical-end: left;
+                --stylex-logical-start: right;
+              }
+              [dir="rtl"] {
+                --stylex-logical-end: right;
+                --stylex-logical-start: left;
+              }
+              @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
         :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
@@ -664,8 +713,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x13ah0pd{animation-name:x35atj5-B}
         .x14rh7hd{color:var(--x-color)}
         .x18abd1y{outline-color:var(--xkxfyv)}
-        /* @ltr begin */.x1kmio9f{float:left}/* @ltr end */
-        /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
+        .x1kmio9f{float:inline-start}
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
         .xrkmrrc{background-color:red}
         @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}"

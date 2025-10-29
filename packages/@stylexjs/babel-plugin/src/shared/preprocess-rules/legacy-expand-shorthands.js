@@ -11,6 +11,9 @@ import type { TStyleValue } from '../common-types';
 
 import splitValue from '../utils/split-css-value';
 
+export const LOGICAL_FLOAT_START_VAR = '--stylex-logical-end';
+export const LOGICAL_FLOAT_END_VAR = '--stylex-logical-start';
+
 // TODO: to be added later.
 // const aliases = {
 //   marginInlineStart: (rawValue) => [['marginStart', rawValue]],

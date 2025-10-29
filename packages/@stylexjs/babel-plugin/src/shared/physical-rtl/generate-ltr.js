@@ -10,21 +10,6 @@
 import type { StyleXOptions } from '../common-types';
 import { defaultOptions } from '../utils/default-options';
 
-const logicalToPhysical: $ReadOnly<{ [string]: string }> = {
-  start: 'left',
-  end: 'right',
-  'inline-start': 'left',
-  'inline-end': 'right',
-};
-
-// These values are polyfilled to LTR/RTL equivalents due to incomplete browser support, regardless of `enableLogicalStylesPolyfill`
-const legacyValuesPolyfill: $ReadOnly<{
-  [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
-}> = {
-  float: ([key, val]) => [key, logicalToPhysical[val] ?? val],
-  clear: ([key, val]) => [key, logicalToPhysical[val] ?? val],
-};
-
 // These properties are kept for a polyfill that is only used with `legacy-expand-shorthands`
 const inlinePropertyToLTR: $ReadOnly<{
   [key: string]: ($ReadOnly<[string, string]>) => $ReadOnly<[string, string]>,
@@ -167,14 +152,6 @@ const propertyToLTR: $ReadOnly<{
     'border-bottom-right-radius',
     val,
   ],
-  float: ([key, val]: $ReadOnly<[string, string]>) => [
-    key,
-    logicalToPhysical[val] ?? val,
-  ],
-  clear: ([key, val]: $ReadOnly<[string, string]>) => [
-    key,
-    logicalToPhysical[val] ?? val,
-  ],
   start: ([_key, val]: $ReadOnly<[string, string]>) => ['left', val],
   // 'inset-inline-start': ([key, val]: $ReadOnly<[string, string]>) => ['left', val],
   end: ([_key, val]: $ReadOnly<[string, string]>) => ['right', val],
@@ -203,9 +180,6 @@ export default function generateLTR(
 
   if (styleResolution === 'legacy-expand-shorthands') {
     if (!enableLogicalStylesPolyfill) {
-      if (legacyValuesPolyfill[key]) {
-        return legacyValuesPolyfill[key](pair);
-      }
       return pair;
     }
 
