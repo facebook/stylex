@@ -6,15 +6,15 @@
  *
  *
  */
-import stylexPlugin from '@stylexjs/eslint-plugin'
-import tseslint, { parser as typescriptParser } from 'typescript-eslint'
-import storybookPlugin from 'eslint-plugin-storybook'
-import importPlugin from 'eslint-plugin-import'
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import stylexPlugin from '@stylexjs/eslint-plugin';
+import tseslint, { parser as typescriptParser } from 'typescript-eslint';
+import storybookPlugin from 'eslint-plugin-storybook';
+import importPlugin from 'eslint-plugin-import';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const typescriptPlugin = tseslint.config({
   files: ['**/*.ts', '**/*.tsx'],
@@ -26,46 +26,43 @@ const typescriptPlugin = tseslint.config({
         caughtErrors: 'none',
         argsIgnorePattern: '^_',
         destructuredArrayIgnorePattern: '^_',
-        varsIgnorePattern: '^_.'
-      }
+        varsIgnorePattern: '^_.',
+      },
     ],
     '@typescript-eslint/object-curly-spacing': ['warn'],
     '@typescript-eslint/consistent-type-imports': ['error'],
-    'no-undef': 'off'
-  }
-})
+    'no-undef': 'off',
+  },
+});
 
 export default [
   {
-    ignores: [
-        'postcss.config.*',
-        'storybook-static/',
-      ]
+    ignores: ['postcss.config.*', 'storybook-static/'],
   },
   {
     plugins: {
       '@stylexjs': stylexPlugin,
-        ...typescriptPlugin,
-        ...storybookPlugin.configs['flat/recommended'],
-        import: importPlugin,
+      ...typescriptPlugin,
+      ...storybookPlugin.configs['flat/recommended'],
+      import: importPlugin,
     },
-  
+
     languageOptions: {
-        parser: typescriptParser,
-        parserOptions: {
-          ecmaVersion: 12,
-          sourceType: 'module',
-          tsconfigRootDir: __dirname,
-          ecmaFeatures: {
-            jsx: true
-          }
-        }
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 12,
+        sourceType: 'module',
+        tsconfigRootDir: __dirname,
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
     settings: {
       'import/ignore': ['node_modules'],
       react: {
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
     rules: {
       '@stylexjs/valid-styles': 'error',
@@ -74,4 +71,4 @@ export default [
       'ft-flow/generic-spacing': 0,
     },
   },
-] 
+];

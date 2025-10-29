@@ -12,7 +12,7 @@ import replace from '@rollup/plugin-replace';
 import stylexPlugin from '@stylexjs/rollup-plugin';
 
 const babelPlugin = babel({
-  babelHelpers: 'bundled'
+  babelHelpers: 'bundled',
 });
 
 const config = {
@@ -28,13 +28,15 @@ const config = {
     resolve(),
     commonjs(),
     replace({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      'process.env.NODE_ENV': JSON.stringify(
+        process.env.NODE_ENV || 'development',
+      ),
       preventAssignment: true,
     }),
     stylexPlugin({
       fileName: 'stylex.css',
       runtimeInjection: true,
-    })
+    }),
   ],
 };
 
