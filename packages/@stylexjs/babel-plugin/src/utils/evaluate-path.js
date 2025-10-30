@@ -41,7 +41,46 @@ const INVALID_METHODS = [
   'seal',
   'splice',
 ];
+
 const PROXY_MARKER = Symbol('StyleXProxyMarker');
+
+function getFullMemberPath(path: NodePath<t.Expression>) {
+  const parts: Array<string> = [];
+  let current = path;
+
+  while (current.isMemberExpression()) {
+    const prop = current.get('property');
+    if (prop.isIdentifier()) {
+      parts.unshift(prop.node.name);
+    } else if (prop.isStringLiteral()) {
+      parts.unshift(prop.node.value);
+    } else if (current.node.computed) {
+      return null;
+    }
+    current = current.get('object');
+  }
+
+  return {
+    parts,
+    baseObject: current,
+  };
+}
+
+function getOuterMostMemberExpression(path: NodePath<>): NodePath<> {
+  let current = path;
+  while (current.parentPath) {
+    const parent = current.parentPath;
+    if (
+      parent.isMemberExpression() &&
+      parent.get('object').node === current.node
+    ) {
+      current = parent;
+    } else {
+      break;
+    }
+  }
+  return current;
+}
 
 function isValidCallee(val: string): boolean {
   return (VALID_CALLEES as $ReadOnlyArray<string>).includes(val);
@@ -197,32 +236,32 @@ function evaluateThemeRef(
     return `var(--${varName})`;
   };
 
-  const createNestedProxy = (currentPath: Array<string | symbol> = []): any => {
-    return new Proxy(
-      {},
-      {
-        get(_, key: string | symbol) {
-          if (key === PROXY_MARKER) {
-            return true;
-          }
+  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
+  const proxy = new Proxy(
+    {},
+    {
+      get(_, key: string) {
+        if ((key as any) === PROXY_MARKER) {
+          return true;
+        }
+        // for flattened member access, keys are converted to `a.b.c.d` with a __nested__ prefix
+        // prefixing avoids conflicts with literal keys that contain dots
+        if (key.startsWith('__nested__')) {
+          const actualKey = key.slice('__nested__'.length);
+          return resolveKey(actualKey);
+        }
 
-          if (key === 'valueOf' || key === 'toString') {
-            return () => resolveKey(currentPath.join('.'));
-          }
-
-          const newPath = [...currentPath, key];
-          return createNestedProxy(newPath);
-        },
-        set(_, key: string, value: string) {
-          throw new Error(
-            `Cannot set value ${value} to key ${[...currentPath, key].join('.')} in theme ${fileName}`,
-          );
-        },
+        return resolveKey(key);
       },
-    );
-  };
+      set(_, key: string, value: string) {
+        throw new Error(
+          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
+        );
+      },
+    },
+  );
 
-  return createNestedProxy();
+  return proxy;
 }
 
 /**
@@ -379,6 +418,25 @@ function _evaluate(path: NodePath<>, state: State): any {
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
+    const outerMost = getOuterMostMemberExpression(path);
+
+    // to handle nested member expressions, we wait until we are at the outer most member expression
+    // and then we can extract the full path and evaluate it via the object proxy
+    if (outerMost === path) {
+      const pathInfo = getFullMemberPath(path);
+
+      if (pathInfo != null && pathInfo.parts.length > 0) {
+        const baseObject = evaluateCached(pathInfo.baseObject, state);
+        if (!state.confident) {
+          return;
+        }
+
+        if (baseObject[PROXY_MARKER]) {
+          return baseObject[`__nested__${pathInfo.parts.join('.')}`];
+        }
+      }
+    }
+
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
       return;
@@ -400,22 +458,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       return deopt(propPath, state, errMsgs.UNEXPECTED_MEMBER_LOOKUP);
     }
 
-    const result = object[property];
-
-    // handle nested member expressions by converting proxy to
-    // its primitive value for the terminal access of this MemberExpression
-    const parent = path.parentPath;
-
-    const isChainedAccess =
-      parent != null &&
-      parent.isMemberExpression() &&
-      parent.get('object').node === path.node;
-
-    if (result?.[PROXY_MARKER] && !isChainedAccess) {
-      return result.valueOf();
-    }
-
-    return result;
+    return object[property];
   }
 
   if (path.isReferencedIdentifier()) {
