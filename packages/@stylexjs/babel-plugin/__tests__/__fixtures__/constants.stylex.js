@@ -28,4 +28,5 @@ export const nestedTokens = stylex.defineConsts({
       primary: 'blue',
     },
   },
+  'button.fill.primary': 'red',
 });
