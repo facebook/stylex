@@ -53,7 +53,7 @@ their **suggested replacements**.
 ### @stylexjs/sort-keys
 
 This rule helps to sort the StyleX property keys according to
-[property priorities](https://github.com/facebook/stylex/blob/main/packages/shared/src/utils/property-priorities.js).
+[property priorities](https://github.com/facebook/stylex/blob/main/packages/%40stylexjs/babel-plugin/src/shared/utils/property-priorities.js).
 
 #### Config options
 
@@ -63,7 +63,7 @@ This rule helps to sort the StyleX property keys according to
 }
 ```
 
-### stylex/stylex-valid-shorthands
+### @stylexjs/valid-shorthands
 
 This ESLint rule enforces the use of individual longhand CSS properties in place
 of multivalue shorthands when using `create` for reasons of consistency
@@ -111,7 +111,7 @@ This rule has a few custom config options that can be set.
 }
 ```
 
-### @stylexjs/stylex-enforce-extension
+### @stylexjs/enforce-extension
 
 This rule ensures consistent naming for StyleX theme files that export variables
 using `defineVars`.
@@ -139,7 +139,7 @@ using `defineVars`.
 }
 ```
 
-### `stylex-no-unused`
+### `@stylexjs/no-unused`
 
 This rule flags unused styles created with `create(...)`. If a style key
 is defined but never used, the rule auto-strips them from the create call.
@@ -152,7 +152,7 @@ is defined but never used, the rule auto-strips them from the create call.
 }
 ```
 
-### `stylex-no-legacy-contextual-styles`
+### `@stylexjs/no-legacy-contextual-styles`
 
 This rule flags usages of the original media query/pseudo class syntax that
 wraps multiple property values within a single @-rule or pseudo class like this:
