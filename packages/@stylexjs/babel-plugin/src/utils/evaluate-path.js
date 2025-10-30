@@ -244,12 +244,6 @@ function evaluateThemeRef(
         if ((key as any) === PROXY_MARKER) {
           return true;
         }
-        // for flattened member access, keys are converted to `a.b.c.d` with a __nested__ prefix
-        // prefixing avoids conflicts with literal keys that contain dots
-        if (key.startsWith('__nested__')) {
-          const actualKey = key.slice('__nested__'.length);
-          return resolveKey(actualKey);
-        }
 
         return resolveKey(key);
       },
@@ -432,7 +426,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         }
 
         if (baseObject[PROXY_MARKER]) {
-          return baseObject[`__nested__${pathInfo.parts.join('.')}`];
+          return baseObject[pathInfo.parts.join('.')];
         }
       }
     }

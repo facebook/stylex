@@ -862,5 +862,23 @@ describe('@stylexjs/babel-plugin', () => {
         }
       `);
     });
+
+    test('conflicting nested and flat constant names throws error', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const tokens = stylex.defineConsts({
+            button: {
+              fill: {
+                primary: 'blue',
+              },
+            },
+            'button.fill.primary': 'red',
+          });
+        `);
+      }).toThrow(
+        /Conflicting constant paths detected: "button\.fill\.primary"/,
+      );
+    });
   });
 });

@@ -31,6 +31,7 @@ export default function styleXDefineConsts<Vars: ConstsConfig>(
 
   const jsOutput: { [string]: ConstsOutput } = {};
   const injectableStyles: { [string]: InjectableConstStyle } = {};
+  const seenPaths: Set<string> = new Set();
 
   const processEntry = (
     key: string,
@@ -47,6 +48,14 @@ export default function styleXDefineConsts<Vars: ConstsConfig>(
 
     if (typeof value === 'string' || typeof value === 'number') {
       const fullPath = path.join('.');
+
+      if (seenPaths.has(fullPath)) {
+        throw new Error(
+          `Conflicting constant paths detected: "${fullPath}". This can happen when you have both nested properties (e.g., {a: {b: 'value'}}) and a literal dotted key (e.g., {'a.b': 'value'}) that resolve to the same path.`,
+        );
+      }
+      seenPaths.add(fullPath);
+
       const varSafeKey = path
         .map((segment) =>
           segment[0] >= '0' && segment[0] <= '9' ? `_${segment}` : segment,
