@@ -21,6 +21,7 @@
     "@babel/traverse": "^7.26.8",
     "@babel/types": "^7.26.8",
     "@dual-bundle/import-meta-resolve": "^4.1.0",
+    "@stylexjs/shared": "0.16.3",
     "@stylexjs/stylex": "0.16.3",
     "postcss-value-parser": "^4.1.0"
   },
