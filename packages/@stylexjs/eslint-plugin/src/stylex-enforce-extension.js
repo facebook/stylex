@@ -47,7 +47,6 @@ const stylexEnforceExtension = {
             type: 'string',
             default: '.stylex',
           },
-          // This is a legacy option that allows mixed exports in theme files. This is for internal legacy patterns and should not be used by external users.
           legacyAllowMixedExports: {
             type: 'boolean',
             default: false,
@@ -66,6 +65,7 @@ const stylexEnforceExtension = {
     let hasOtherExports = false;
     let hasDefineConstsExports = false;
     let hasDefineVarsExports = false;
+    let reportedDefaultExportError = false;
     const fileName = context.getFilename();
     const options = context.options[0] || {};
     const {
@@ -87,6 +87,11 @@ const stylexEnforceExtension = {
     );
 
     const importTracker = createImportTracker(importsToLookFor);
+    const defineVarsVariables = new Set<string>();
+    const defineConstsVariables = new Set<string>();
+
+    const getDefaultExportErrorMessage = (type: string) =>
+      `Default exports are not allowed for variables from \`stylex.${type}()\`. Use named exports instead.`;
 
     function isDefineVarsExport(node: Node): boolean {
       const callee =
@@ -126,10 +131,87 @@ const stylexEnforceExtension = {
       );
     }
 
+    function checkDefaultExport(node: Node, declaration: Node): boolean {
+      if (isDefineConstsExport(declaration)) {
+        context.report({
+          node,
+          message: getDefaultExportErrorMessage('defineConsts'),
+        });
+        reportedDefaultExportError = true;
+        hasDefineConstsExports = true;
+        hasRestrictedExports = true;
+        return true;
+      }
+      if (isDefineVarsExport(declaration)) {
+        context.report({
+          node,
+          message: getDefaultExportErrorMessage('defineVars'),
+        });
+        reportedDefaultExportError = true;
+        hasDefineVarsExports = true;
+        hasRestrictedExports = true;
+        return true;
+      }
+      if (declaration.type === 'Identifier') {
+        const varName = declaration.name;
+        if (defineConstsVariables.has(varName)) {
+          context.report({
+            node,
+            message: getDefaultExportErrorMessage('defineConsts'),
+          });
+          reportedDefaultExportError = true;
+          hasDefineConstsExports = true;
+          hasRestrictedExports = true;
+          return true;
+        }
+        if (defineVarsVariables.has(varName)) {
+          context.report({
+            node,
+            message: getDefaultExportErrorMessage('defineVars'),
+          });
+          reportedDefaultExportError = true;
+          hasDefineVarsExports = true;
+          hasRestrictedExports = true;
+          return true;
+        }
+      }
+      if (declaration.type === 'VariableDeclaration') {
+        const declarations = declaration.declarations || [];
+        for (const decl of declarations) {
+          if (isDefineConstsExport(decl)) {
+            context.report({
+              node,
+              message: getDefaultExportErrorMessage('defineConsts'),
+            });
+            reportedDefaultExportError = true;
+            hasDefineConstsExports = true;
+            hasRestrictedExports = true;
+            return true;
+          }
+          if (isDefineVarsExport(decl)) {
+            context.report({
+              node,
+              message: getDefaultExportErrorMessage('defineVars'),
+            });
+            reportedDefaultExportError = true;
+            hasDefineVarsExports = true;
+            hasRestrictedExports = true;
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
     function checkExports(node: Node): void {
       const declaration = (node as any).declaration;
+      const isDefaultExport = node.type === 'ExportDefaultDeclaration';
 
       if (!declaration) return;
+
+      if (isDefaultExport && checkDefaultExport(node, declaration)) {
+        return;
+      }
 
       const declarations = Array.isArray(declaration.declarations)
         ? declaration.declarations
@@ -138,8 +220,20 @@ const stylexEnforceExtension = {
       declarations.forEach((decl: Node) => {
         if (isDefineConstsExport(decl)) {
           hasDefineConstsExports = true;
+          if (
+            decl.type === 'VariableDeclarator' &&
+            decl.id?.type === 'Identifier'
+          ) {
+            defineConstsVariables.add(decl.id.name);
+          }
         } else if (isDefineVarsExport(decl)) {
           hasDefineVarsExports = true;
+          if (
+            decl.type === 'VariableDeclarator' &&
+            decl.id?.type === 'Identifier'
+          ) {
+            defineVarsVariables.add(decl.id.name);
+          }
         } else {
           hasOtherExports = true;
         }
@@ -164,7 +258,6 @@ const stylexEnforceExtension = {
         ? themeFileExtension + '.const' + currentExt
         : themeFileExtension + '.const.js';
 
-      // Handle defineConsts extension enforcement
       if (enforceDefineConstsExtension) {
         if (hasDefineConstsExports && !isConstFile) {
           context.report({
@@ -226,9 +319,32 @@ const stylexEnforceExtension = {
 
     return {
       ImportDeclaration: importTracker.ImportDeclaration,
+      VariableDeclaration(node: Node): void {
+        const declarations = (node as any).declarations || [];
+        declarations.forEach((decl: Node) => {
+          if (isDefineConstsExport(decl)) {
+            if (
+              decl.type === 'VariableDeclarator' &&
+              decl.id?.type === 'Identifier'
+            ) {
+              defineConstsVariables.add(decl.id.name);
+            }
+          } else if (isDefineVarsExport(decl)) {
+            if (
+              decl.type === 'VariableDeclarator' &&
+              decl.id?.type === 'Identifier'
+            ) {
+              defineVarsVariables.add(decl.id.name);
+            }
+          }
+        });
+      },
       'ExportNamedDeclaration, ExportDefaultDeclaration'(node: Node): void {
+        reportedDefaultExportError = false;
         checkExports(node);
-        reportErrors(node);
+        if (!reportedDefaultExportError) {
+          reportErrors(node);
+        }
       },
       'Program:exit'() {
         importTracker.clear();

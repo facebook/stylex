@@ -26,6 +26,8 @@ const invalidConstsFilenameWithoutRestrictedExports = (suggestedExtension) =>
   `Only variables from \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedExtension}\` extension.`;
 const invalidExportFromConstsFiles =
   'Files that export variables from `stylex.defineConsts()` must not export anything else.';
+const invalidDefaultExport = (type) =>
+  `Default exports are not allowed for variables from \`stylex.${type}()\`. Use named exports instead.`;
 
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
@@ -799,6 +801,65 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
         { enforceDefineConstsExtension: true, themeFileExtension: '.custom' },
       ],
       errors: [{ message: invalidExportFromConstsFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export default stylex.defineVars({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineVars') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export default stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineConsts') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const vars = stylex.defineVars({ color: 'red' });
+        export default vars;
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineVars') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const consts = stylex.defineConsts({ color: 'red' });
+        export default consts;
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineConsts') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export default stylex.defineVars({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidDefaultExport('defineVars') }],
+    },
+    {
+      code: `
+        import { defineVars } from '@stylexjs/stylex';
+        export default defineVars({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineVars') }],
+    },
+    {
+      code: `
+        import { defineConsts } from '@stylexjs/stylex';
+        export default defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineConsts') }],
     },
   ],
 });
