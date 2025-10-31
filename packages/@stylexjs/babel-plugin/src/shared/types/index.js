@@ -87,7 +87,7 @@ export class Angle<+T: AngleValue> extends BaseCSSType implements CSSType<T> {
 }
 export const angle: <T: AngleValue = AngleValue>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Angle<T> = Angle.create;
 
 type ColorValue = string;
@@ -101,7 +101,7 @@ export class Color<+T: ColorValue> extends BaseCSSType implements CSSType<T> {
 }
 export const color: <T: ColorValue = ColorValue>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Color<T> = Color.create;
 
 type URLValue = string;
@@ -115,7 +115,7 @@ export class Url<+T: URLValue> extends BaseCSSType implements CSSType<T> {
   }
 }
 export const url: <T: URLValue = URLValue>(value: ValueWithDefault) => Url<T> =
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
   Url.create;
 
 type ImageValue = string;
@@ -135,7 +135,7 @@ export class Image<+T: ImageValue> extends Url<T> implements CSSType<T> {
 }
 export const image: <T: ImageValue = ImageValue>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Image<T> = Image.create;
 
 type IntegerValue = number;
@@ -152,7 +152,7 @@ export class Integer<+T: IntegerValue>
   }
 }
 export const integer: <T: IntegerValue = IntegerValue>(value: T) => Integer<T> =
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
   Integer.create;
 
 type LengthPercentageValue = string;
@@ -178,7 +178,7 @@ export class LengthPercentage<+_T: LengthPercentageValue>
 }
 export const lengthPercentage: <_T: LengthPercentageValue | number>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => LengthPercentage<string> = LengthPercentage.createLength;
 
 type LengthValue = number | string;
@@ -198,7 +198,7 @@ export class Length<+_T: LengthValue>
 }
 export const length: <T: LengthValue = LengthValue>(
   value: NestedWithNumbers,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Length<T> = Length.create;
 
 type PercentageValue = string | number;
@@ -218,7 +218,7 @@ export class Percentage<+_T: PercentageValue>
 }
 export const percentage: <T: PercentageValue = PercentageValue>(
   value: NestedWithNumbers,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Percentage<T> = Percentage.create;
 
 type NumberValue = number;
@@ -235,7 +235,7 @@ export class Num<+T: NumberValue> extends BaseCSSType implements CSSType<T> {
 }
 export const number: <T: NumberValue = NumberValue>(
   value: NestedWithNumbers,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Num<T> = Num.create;
 
 type ResolutionValue = string | 0;
@@ -255,7 +255,7 @@ export class Resolution<+T: ResolutionValue>
 }
 export const resolution: <T: ResolutionValue = ResolutionValue>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Resolution<T> = Resolution.create;
 
 type TimeValue = string | 0;
@@ -270,7 +270,7 @@ export class Time<+T: TimeValue> extends BaseCSSType implements CSSType<T> {
 }
 export const time: <T: TimeValue = TimeValue>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => Time<T> = Time.create;
 
 type TransformFunctionValue = string;
@@ -292,7 +292,7 @@ export const transformFunction: <
   T: TransformFunctionValue = TransformFunctionValue,
 >(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => TransformFunction<T> = TransformFunction.create;
 
 type TransformListValue = string;
@@ -312,7 +312,7 @@ export class TransformList<T: TransformListValue>
 }
 export const transformList: <T: TransformListValue = TransformListValue>(
   value: ValueWithDefault,
-  // $FlowFixMe[method-unbinding]
+  // $FlowIgnore[method-unbinding]
 ) => TransformList<T> = TransformList.create;
 
 const convertNumberToStringUsing =

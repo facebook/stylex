@@ -9,7 +9,7 @@
 
 import type { Rule } from '@stylexjs/babel-plugin';
 
-import path from 'node:path';
+import path from 'path';
 import * as babel from '@babel/core';
 import styleXPlugin from '@stylexjs/babel-plugin';
 import {
@@ -23,7 +23,7 @@ import {
 } from './files';
 import type { TransformConfig } from './config';
 import ansis from 'ansis';
-import fs from 'node:fs';
+import fs from 'fs';
 import {
   writeCache,
   readCache,

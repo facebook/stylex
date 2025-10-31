@@ -25,10 +25,9 @@ export class Time {
   }
   static UNITS: $ReadOnlyArray<'s' | 'ms'> = ['s', 'ms'];
   static get parser(): TokenParser<Time> {
-    return TokenParser.tokens.Dimension.map((v) => {
-      const unit = v[4].unit;
-      return unit === 's' || unit === 'ms' ? [v[4].value, unit] : null;
-    })
+    return TokenParser.tokens.Dimension.map((v) =>
+      v[4].unit === 's' || v[4].unit === 'ms' ? [v[4].value, v[4].unit] : null,
+    )
       .where((v) => v != null)
       .map(([v, unit]) => new Time(v, unit));
   }

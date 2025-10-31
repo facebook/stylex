@@ -35,7 +35,7 @@ type MediaNotRule = { type: 'not', rule: MediaQueryRule };
 type MediaAndRules = { type: 'and', rules: $ReadOnlyArray<MediaQueryRule> };
 type MediaOrRules = { type: 'or', rules: $ReadOnlyArray<MediaQueryRule> };
 
-export type MediaQueryRule =
+type MediaQueryRule =
   | MediaKeyword
   | MediaWordRule
   | MediaRulePair
@@ -85,7 +85,7 @@ const mediaWordRuleParser: TokenParser<MediaWordRule> =
   TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue')
     .surroundedBy(TokenParser.tokens.OpenParen, TokenParser.tokens.CloseParen)
     .where(
-      (key): implies key is WordRule =>
+      (key) =>
         key === 'color' ||
         key === 'monochrome' ||
         key === 'grid' ||
@@ -337,9 +337,9 @@ notParser = TokenParser.sequence(
   TokenParser.tokens.Whitespace,
   getNormalRuleParser(),
   TokenParser.tokens.CloseParen,
-).map(([_openParen, _not, _space, rule, _closeParen]): MediaNotRule => ({
+).map(([_openParen, _not, _space, rule, _closeParen]) => ({
   type: 'not',
-  rule: rule as $FlowFixMe,
+  rule,
 }));
 
 function isNumericLength(val: mixed): boolean {
@@ -699,7 +699,7 @@ export class MediaQuery {
           querySets.length > 1
             ? { type: 'or', rules: querySets }
             : querySets[0];
-        return new MediaQuery(rule as $FlowFixMe as MediaQueryRule);
+        return new MediaQuery(rule);
       });
   }
 }

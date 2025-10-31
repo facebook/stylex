@@ -36,6 +36,6 @@ const styles = stylex.create({
 function OtherComponent() {
   <Component xstyle={styles.valid} />;
 
-  // $FlowExpectedError[incompatible-type] - `color` is not allowed
+  // $FlowExpectedError - `color` is not allowed
   <Component xstyle={styles.invalid} />;
 }

@@ -10,9 +10,9 @@
 
 import type { TransformConfig } from './config';
 
-import fs from 'node:fs';
+import fs from 'fs';
 import { createRequire } from 'module';
-import path from 'node:path';
+import path from 'path';
 
 const COMPILED_MODULES_DIR_NAME = 'stylex_compiled_modules';
 

@@ -315,7 +315,7 @@ function parseNullableStyle(
     if (objName != null && propName != null) {
       const style = state.styleMap.get(objName);
       if (style != null && style[String(propName)] != null) {
-        // $FlowFixMe[incompatible-type]
+        // $FlowFixMe
         return style[String(propName)];
       }
     }

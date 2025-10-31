@@ -149,7 +149,7 @@ export const object: <T: { +[string]: Check<mixed> }>(
     if (typeof value !== 'object' || value == null) {
       return new Error(message(value, name));
     }
-    // $FlowFixMe[incompatible-type]
+    // $FlowFixMe
     const result: Partial<{ ...ObjOfChecks<T> }> = {};
     for (const key in shape) {
       const check = shape[key];
@@ -188,7 +188,7 @@ export const objectOf: <T>(
     if (typeof value !== 'object' || value == null) {
       return new Error(message(value, name));
     }
-    // $FlowFixMe[incompatible-type]
+    // $FlowFixMe
     const result: { [string]: T } = {};
     for (const key in value) {
       const item = check(

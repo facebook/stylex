@@ -15,9 +15,9 @@ import { compileDirectory } from '../src/transform';
 import * as cacheModule from '../src/cache';
 import { getDefaultCachePath, findProjectRoot } from '../src/cache';
 
-const fs = require('node:fs').promises;
+const fs = require('fs').promises;
 import { isDir, getRelativePath } from '../src/files';
-import * as path from 'node:path';
+import * as path from 'path';
 
 const cp = require('child_process');
 

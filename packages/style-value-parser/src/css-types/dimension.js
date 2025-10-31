@@ -14,7 +14,7 @@ import { Resolution } from './resolution';
 import { Time } from './time';
 
 function arrIncludes<T>(arr: $ReadOnlyArray<T>, val: mixed): implies val is T {
-  // $FlowFixMe[incompatible-type] - Needed until fix lands in Flow
+  // $FlowFixMe[incompatible-type-guard] - Needed until fix lands in Flow
   return arr.includes(val);
 }
 

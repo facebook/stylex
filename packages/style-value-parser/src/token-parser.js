@@ -240,7 +240,7 @@ export class TokenParser<+T> {
         input.setCurrentIndex(currentIndex);
         return new Error(`Expected token type ${tokenType}, got ${token[0]}`);
       }
-      // $FlowFixMe[incompatible-type]
+      // $FlowFixMe[incompatible-cast]
       return token as TT;
     }, label);
   }
@@ -489,7 +489,7 @@ class TokenParserSequence<
             if (separator != null && input.currentIndex > currentIndex) {
               if (parser instanceof TokenOptionalParser) {
                 // X === void | X
-                // $FlowFixMe[incompatible-type]
+                // $FlowFixMe[incompatible-type-arg]
                 parser = TokenParser.sequence(separator, parser.parser).map(
                   ([_separator, value]) => value,
                 ).optional;

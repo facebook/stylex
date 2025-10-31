@@ -156,7 +156,7 @@ const stylexValidShorthands = {
           node: property,
           message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
           fix: (fixer) => {
-            // $FlowFixMe[incompatible-type] - We've already checked that key is a string and in legacyNameMapping
+            // $FlowFixMe - We've already checked that key is a string and in legacyNameMapping
             return fixer.replaceText(property.key, legacyNameMapping[key]);
           },
         });

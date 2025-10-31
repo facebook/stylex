@@ -388,7 +388,7 @@ function processStylexRules(
 
   const constsMap: Map<string, string | number> = new Map();
   for (const [keyhash, ruleObj] of constantRules) {
-    // $FlowFixMe[incompatible-type] - null check above
+    // $FlowFixMe null check above
     const constVal: string | number = ruleObj.constVal;
     const constName = `var(--${keyhash})`;
     constsMap.set(constName, constVal);

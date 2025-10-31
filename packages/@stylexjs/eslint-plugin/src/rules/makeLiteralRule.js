@@ -55,15 +55,12 @@ export default function makeLiteralRule(
               },
             }
           : undefined;
-
-      // $FlowFixMe[incompatible-type]
       return {
         ...defaultFailure,
         distance: distance,
         suggest,
-      } as const;
+      };
     }
-    // $FlowFixMe[incompatible-type]
     return defaultFailure;
   }
   return makeVariableCheckingRule(literalChecker);

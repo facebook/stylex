@@ -64,11 +64,7 @@ const composeAddAndSubtraction = (
 ): CalcValue => {
   if (valuesAndOperators.length === 1) {
     if (typeof valuesAndOperators[0] === 'string') {
-      if (
-        allCalcConstants.includes(
-          valuesAndOperators[0] as $FlowFixMe as CalcConstant,
-        )
-      ) {
+      if (allCalcConstants.includes(valuesAndOperators[0])) {
         return valuesAndOperators[0] as $FlowFixMe as CalcConstant;
       }
       throw new Error('Invalid operator');

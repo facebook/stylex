@@ -43,7 +43,6 @@ export default function flatMapExpandedShorthands(
     string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
     expansions[options.styleResolution ?? 'property-specificity'][key];
-  // $FlowFixMe[constant-condition] - expansion is a function
   if (expansion) {
     if (Array.isArray(value)) {
       throw new Error(

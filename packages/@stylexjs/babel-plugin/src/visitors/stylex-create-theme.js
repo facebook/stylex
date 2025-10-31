@@ -22,7 +22,7 @@ import {
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
-import path from 'node:path';
+import path from 'path';
 
 /// This function looks for `stylex.createTheme` calls and transforms them.
 /// 1. It finds the first two arguments to `stylex.createTheme` and validates those.

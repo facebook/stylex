@@ -373,9 +373,7 @@ const stylexNoNonstandardStyles = {
             decl.init.callee.name === 'require' &&
             decl.init.arguments.length === 1 &&
             decl.init.arguments[0].type === 'Literal' &&
-            importsToLookFor.includes(
-              decl.init.arguments[0].value as $FlowFixMe,
-            )
+            importsToLookFor.includes(decl.init.arguments[0].value)
           ) {
             if (decl.id.type === 'Identifier') {
               styleXDefaultImports.add(decl.id.name);
@@ -427,14 +425,13 @@ const stylexNoNonstandardStyles = {
           if (
             styles.type === 'ArrowFunctionExpression' &&
             (styles.body.type === 'ObjectExpression' ||
-              // $FlowFixMe[invalid-compare]
+              // $FlowFixMe
               (styles.body.type === 'TSAsExpression' &&
-                // $FlowFixMe[invalid-compare]
                 styles.body.expression.type === 'ObjectExpression'))
           ) {
             const params = styles.params;
             styles =
-              // $FlowFixMe[invalid-compare] TSAsExpression is relevant to the context of typescript
+              // $FlowFixMe[incompatible-type] TSAsExpression is relevant to the context of typescript
               styles.type === 'TSAsExpression'
                 ? styles.expression
                 : styles.body;

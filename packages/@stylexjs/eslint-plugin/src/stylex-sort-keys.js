@@ -275,16 +275,12 @@ const stylexSortKeys = {
 
         if (!isValidOrder(prevName, currName, order)) {
           context.report({
-            // $FlowFixMe[incompatible-type]
+            // $FlowFixMe
             node,
             loc: node.key.loc,
             message: `StyleX property key "${currName}" should be above "${prevName}"`,
-            // $FlowFixMe[incompatible-type]
-            fix: createFix({
-              prevNode: prevNode as $FlowFixMe,
-              currNode: node as $FlowFixMe,
-              sourceCode,
-            }),
+            // $FlowFixMe
+            fix: createFix({ prevNode, currNode: node, sourceCode }),
           });
         }
       },

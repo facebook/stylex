@@ -72,13 +72,11 @@ function validateConditionalStyles(
     if (conditions.includes(key)) {
       throw new Error(messages.DUPLICATE_CONDITIONAL);
     }
-    // $FlowFixMe[invalid-compare]
     if (v === null || typeof v === 'string' || typeof v === 'number') {
       continue;
     }
     if (Array.isArray(v)) {
       for (const vv of v) {
-        // $FlowFixMe[invalid-compare]
         if (vv === null || typeof vv === 'string' || typeof vv === 'number') {
           continue;
         }

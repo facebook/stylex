@@ -11,7 +11,7 @@ import type { NodePath } from '@babel/traverse';
 import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
 
 import * as t from '@babel/types';
-import path from 'node:path';
+import path from 'path';
 import StateManager from './state-manager';
 
 function getPackagePrefix(absolutePath: string): ?string {
@@ -61,16 +61,16 @@ export function addSourceMapData(
 ): CompiledNamespaces {
   const result: MutableCompiledNamespaces = {};
   for (const [key, value] of Object.entries(obj)) {
-    // $FlowFixMe[prop-missing] (this repo's flow_modules types for babel are incomplete)
+    // $FlowIgnore (this repo's flow_modules types for babel are incomplete)
     const currentFile = babelPath.hub.file;
     const sourceMap = currentFile.codeMap;
 
     // Find the line number of a given style object
     const styleNodePath = babelPath
-      // $FlowFixMe[prop-missing]
+      // $FlowIgnore
       .get('arguments.0.properties')
-      // $FlowFixMe[incompatible-use]
-      .find((prop: NodePath<t.Property>) => {
+      // $FlowIgnore
+      .find((prop) => {
         const k = prop.node.key;
         return (
           // string and number properties (normalized to string)

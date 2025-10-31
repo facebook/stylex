@@ -688,9 +688,7 @@ const stylexValidStyles = {
             decl.init.callee.name === 'require' &&
             decl.init.arguments.length === 1 &&
             decl.init.arguments[0].type === 'Literal' &&
-            importsToLookFor.includes(
-              decl.init.arguments[0].value as $FlowFixMe,
-            )
+            importsToLookFor.includes(decl.init.arguments[0].value)
           ) {
             if (decl.id.type === 'Identifier') {
               styleXDefaultImports.add(decl.id.name);
@@ -833,14 +831,13 @@ const stylexValidStyles = {
             if (
               styles.type === 'ArrowFunctionExpression' &&
               (styles.body.type === 'ObjectExpression' ||
-                // $FlowFixMe[invalid-compare]
+                // $FlowFixMe
                 (styles.body.type === 'TSAsExpression' &&
-                  // $FlowFixMe[invalid-compare]
                   styles.body.expression.type === 'ObjectExpression'))
             ) {
               const params = styles.params;
               styles = styles.body;
-              // $FlowFixMe[invalid-compare]
+              // $FlowFixMe
               if (styles.type === 'TSAsExpression') {
                 styles = styles.expression;
               }

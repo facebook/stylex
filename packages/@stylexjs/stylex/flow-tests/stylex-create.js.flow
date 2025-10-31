@@ -104,7 +104,7 @@ styles3.foo as StyleXStyles<{ width: number | string }>;
 styles3.foo as StyleXStyles<{ width?: mixed }>;
 
 styles3.foo as XStyle<>;
-// $FlowExpectedError[incompatible-type] - value can be '100%' or '200%'.
+// $FlowExpectedError[incompatible-cast] - value can be '100%' or '200%'.
 styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', '100%'> }>;
 styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', '100%' | '200%'> }>;
 styles3.foo as XStyle<{ width: StyleXClassNameFor<'width', number | string> }>;
@@ -194,11 +194,11 @@ const styles6: $ReadOnly<{
     },
   }),
 });
-// $FlowExpectedError[incompatible-type] - Functions don't return static styles.
+// $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
 styles6.foo(100) as StaticStyles<>;
-// $FlowExpectedError[incompatible-type] - Functions don't return static styles.
+// $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
 styles6.foo(100) as StaticStyles<{ width: '100%' | '100dvw' | number }>;
-// $FlowExpectedError[incompatible-type] - Functions don't return static styles.
+// $FlowExpectedError[incompatible-cast] - Functions don't return static styles.
 styles6.foo(100) as StaticStyles<{ width: number | string }>;
 // Functions return StyleXStyles!
 styles6.foo(100) as StyleXStyles<>;
@@ -210,7 +210,7 @@ styles6.foo(100)[0] as CompiledStyles;
 styles6.foo(100)[1] as InlineStyles;
 styles6.foo(100) as $ReadOnly<[CompiledStyles, InlineStyles]>;
 
-// $FlowExpectedError[incompatible-type] - `legacyMerge()` can't handle dynamic styles.
+// $FlowExpectedError[incompatible-call] - `legacyMerge()` can't handle dynamic styles.
 legacyMerge(styles6.foo(100));
 legacyMerge(styles6.foo(100)[0]);
 stylex.props(styles6.foo(100));
@@ -249,7 +249,7 @@ stylex.props([styles7.foo]);
 
 const vars = stylex.defineVars({
   accent: 'red',
-} as const);
+});
 
 vars.accent as StyleXVar<'red'>;
 
@@ -262,24 +262,24 @@ const styles8: $ReadOnly<{
   foo: {
     color: vars.accent,
   },
-} as const);
+});
 
 styles8.foo as StaticStyles<>;
-// $FlowExpectedError[incompatible-type] - We want to disallow extra keys
+// $FlowExpectedError[incompatible-cast] - We want to disallow extra keys
 styles8.foo as StaticStyles<{}>;
 styles8.foo as StaticStyles<{ color: 'red' }>;
 styles8.foo as StaticStyles<{ color: mixed }>;
 // (styles8.foo as StaticStylesWithout<{ height: mixed }>);
 // - @ts-expect-error - The style does have `width`
 // (styles8.foo as StaticStylesWithout<{ color: mixed }>);
-// $FlowExpectedError[incompatible-type] - 'number' is not assignable to 'red'.
+// $FlowExpectedError[incompatible-cast] - 'number' is not assignable to 'red'.
 styles8.foo as StaticStyles<{ color: 100 }>;
-// $FlowExpectedError[incompatible-type] - 'blue' is not assignable to 'red'.
+// $FlowExpectedError[incompatible-cast] - 'blue' is not assignable to 'red'.
 styles8.foo as StaticStyles<{ color: 'blue' }>;
 styles8.foo as StaticStyles<{ color: number | string }>;
 styles8.foo as StaticStyles<{ color?: mixed, height?: string }>;
 styles8.foo as StyleXStyles<>;
-// $FlowExpectedError[incompatible-type] - We want to disallow extra keys
+// $FlowExpectedError[incompatible-cast] - We want to disallow extra keys
 styles8.foo as StyleXStyles<{}>;
 styles8.foo as StyleXStyles<{ color: 'red' }>;
 styles8.foo as StyleXStyles<{ color: number | string }>;

@@ -86,7 +86,7 @@ function getStaticPropertyName(node: Node | ChainExpression): string | null {
 export default function getPropertyName(
   node: $ReadOnly<{ ...Property, ... }>,
 ): string | null {
-  // $FlowFixMe[incompatible-type]
+  // $FlowFixMe
   const staticName = getStaticPropertyName(node);
 
   return staticName !== null ? staticName : node.key.name || null;

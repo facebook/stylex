@@ -21,11 +21,11 @@ export default function resolveKey(
     if (existingVar === 'ARG') {
       return undefined;
     }
-    // $FlowFixMe[invalid-compare]
+    // $FlowFixMe
     if (existingVar.type === 'TSAsExpression') {
       existingVar = existingVar.expression;
     }
-    // $FlowFixMe[invalid-compare]
+    // $FlowFixMe
     if (existingVar.type === 'TSSatisfiesExpression') {
       existingVar = existingVar.expression;
     }
