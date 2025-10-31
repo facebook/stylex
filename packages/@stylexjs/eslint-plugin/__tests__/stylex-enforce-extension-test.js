@@ -20,6 +20,12 @@ const invalidFilenameWithoutRestrictedExports = (suggestedExtension) =>
   `Only variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedExtension}\` extension.`;
 const invalidExportFromThemeFiles =
   'Files that export variables from `stylex.defineVars()` or `stylex.defineConsts()` must not export anything else.';
+const invalidConstsFilenameWithRestrictedExports = (suggestedExtension) =>
+  `Files that export variables from \`stylex.defineConsts()\` must end with a \`${suggestedExtension}\` extension.`;
+const invalidConstsFilenameWithoutRestrictedExports = (suggestedExtension) =>
+  `Only variables from \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedExtension}\` extension.`;
+const invalidExportFromConstsFiles =
+  'Files that export variables from `stylex.defineConsts()` must not export anything else.';
 
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
@@ -197,6 +203,54 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       `,
       filename: 'myComponent.stylex.tsx',
       options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.js',
+      options: [{ enforceDefineConstsExtension: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.tsx',
+      options: [{ enforceDefineConstsExtension: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.ts',
+      options: [{ enforceDefineConstsExtension: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.cjs',
+      options: [{ enforceDefineConstsExtension: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.mjs',
+      options: [{ enforceDefineConstsExtension: true }],
     },
     {
       code: `
@@ -513,6 +567,238 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       filename: 'myComponent.stylex.jsx',
       options: [{ legacyAllowMixedExports: false }],
       errors: [{ message: invalidExportFromThemeFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithRestrictedExports('.stylex.const.jsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.tsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithRestrictedExports('.stylex.const.tsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.js',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithRestrictedExports('.stylex.const.js'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.ts',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithRestrictedExports('.stylex.const.ts'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+      `,
+      filename: 'myComponent.jsx',
+      options: [
+        { enforceDefineConstsExtension: true, themeFileExtension: '.custom' },
+      ],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithRestrictedExports('.custom.const.jsx'),
+        },
+      ],
+    },
+    {
+      code: 'export const somethingElse = {};',
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.jsx'),
+        },
+      ],
+    },
+    {
+      code: 'export const somethingElse = {};',
+      filename: 'myComponent.stylex.const.tsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.tsx'),
+        },
+      ],
+    },
+    {
+      code: 'export const somethingElse = {};',
+      filename: 'myComponent.stylex.const.js',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.js'),
+        },
+      ],
+    },
+    {
+      code: 'export const somethingElse = {};',
+      filename: 'myComponent.stylex.const.ts',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.ts'),
+        },
+      ],
+    },
+    {
+      code: 'export const vars = stylex.defineVars({});',
+      filename: 'myComponent.stylex.const.cjs',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.cjs'),
+        },
+      ],
+    },
+    {
+      code: 'export const somethingElse = {};',
+      filename: 'myComponent.stylex.const.mjs',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.mjs'),
+        },
+      ],
+    },
+    {
+      code: 'export const vars = stylex.defineVars({});',
+      filename: 'myComponent.custom.const.jsx',
+      options: [
+        { enforceDefineConstsExtension: true, themeFileExtension: '.custom' },
+      ],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.custom.const.jsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const consts_2 = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromConstsFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.const.tsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromConstsFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = stylex.defineVars({ color: 'red' });
+      `,
+      filename: 'myComponent.stylex.const.js',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message: invalidExportFromConstsFiles,
+        },
+        {
+          message:
+            'Files that export variables from `stylex.defineVars()` must end with a `.stylex.js` extension.',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.const.ts',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromConstsFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.const.cjs',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromConstsFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.const.mjs',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromConstsFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.custom.const.jsx',
+      options: [
+        { enforceDefineConstsExtension: true, themeFileExtension: '.custom' },
+      ],
+      errors: [{ message: invalidExportFromConstsFiles }],
     },
   ],
 });
