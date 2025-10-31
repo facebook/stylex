@@ -498,7 +498,7 @@ describe('@stylexjs/babel-plugin', () => {
             "paddingInlineEnd-kwRFfy": "paddingInlineEnd-x1q3ajuy",
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-x1gx403c",
-            "float-kyUFMd": "float-x1kmio9f",
+            "float-kyUFMd": "float-xtrg13t",
             $$css: "app/main.js:25"
           }
         };"
@@ -515,8 +515,7 @@ describe('@stylexjs/babel-plugin', () => {
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
-        /* @ltr begin */.float-x1kmio9f:not(#\\#){float:left}/* @ltr end */
-        /* @rtl begin */.float-x1kmio9f:not(#\\#){float:right}/* @rtl end */
+        .float-xtrg13t:not(#\\#){float:var(--stylex-logical-end)}
         /* @ltr begin */.marginInlineStart-xqsn43r:not(#\\#){margin-left:20px}/* @ltr end */
         /* @rtl begin */.marginInlineStart-xqsn43r:not(#\\#){margin-right:20px}/* @rtl end */
         /* @ltr begin */.marginInlineEnd-x3aesyq:not(#\\#){margin-right:20px}/* @ltr end */
