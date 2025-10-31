@@ -53,6 +53,7 @@ export type StyleXOptions = $ReadOnly<{
   enableDevClassNames?: ?boolean,
   enableFontSizePxToRem?: ?boolean,
   enableMediaQueryOrder?: ?boolean,
+  softMediaQueryValidation?: ?boolean,
   enableLegacyValueFlipping?: ?boolean,
   enableLogicalStylesPolyfill?: ?boolean,
   enableLTRRTLComments?: ?boolean,
