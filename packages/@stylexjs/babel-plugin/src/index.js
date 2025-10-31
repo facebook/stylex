@@ -362,20 +362,8 @@ export type Rule = [
   number,
 ];
 
-function getLogicalFloatVars(rules: Array<Rule>): string {
-  const hasLogicalFloat = rules.some(([, { ltr, rtl }]) => {
-    const ltrStr = String(ltr);
-    const rtlStr = rtl ? String(rtl) : '';
-    return (
-      ltrStr.includes(LOGICAL_FLOAT_START_VAR) ||
-      ltrStr.includes(LOGICAL_FLOAT_END_VAR) ||
-      rtlStr.includes(LOGICAL_FLOAT_START_VAR) ||
-      rtlStr.includes(LOGICAL_FLOAT_END_VAR)
-    );
-  });
-
-  return hasLogicalFloat
-    ? `:root, [dir="ltr"] {
+function getLogicalFloatVars(): string {
+  return `:root, [dir="ltr"] {
   ${LOGICAL_FLOAT_START_VAR}: left;
   ${LOGICAL_FLOAT_END_VAR}: right;
 }
@@ -383,8 +371,7 @@ function getLogicalFloatVars(rules: Array<Rule>): string {
   ${LOGICAL_FLOAT_START_VAR}: right;
   ${LOGICAL_FLOAT_END_VAR}: left;
 }
-`
-    : '';
+`;
 }
 
 function processStylexRules(
@@ -521,7 +508,7 @@ function processStylexRules(
     return acc;
   }, []);
 
-  const logicalFloatVars = getLogicalFloatVars(nonConstantRules);
+  const logicalFloatVars = getLogicalFloatVars();
 
   const header = useLayers
     ? '\n@layer ' +
