@@ -6,11 +6,13 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
+import { sizes } from './sizes.stylex';
 
 export const styles = stylex.create({
   root: {
     backgroundColor: 'transparent',
     borderWidth: 0,
+    borderRadius: sizes.borderRadiusMedium,
     color: {
       default: 'inherit',
       ':hover': 'black',
@@ -19,9 +21,10 @@ export const styles = stylex.create({
     display: 'inline-block',
     fontFamily: 'inherit',
     fontSize: 'inherit',
+    gap: sizes.gapSmall,
     lineHeight: 'inherit',
-    margin: 0,
-    padding: 0,
+    margin: sizes.marginTiny,
+    padding: sizes.paddingTiny,
     textAlign: 'inherit',
     textDecoration: {
       default: 'inherit',
@@ -38,12 +41,17 @@ export const styles = stylex.create({
   },
   wrapper: {
     alignItems: 'center',
-    borderRadius: 4,
+    borderRadius: sizes.borderRadiusLarge,
     display: 'flex',
+    gap: sizes.gapMedium,
     height: 254,
     justifyContent: 'center',
+    margin: sizes.marginSmall,
     minHeight: 100,
     overflow: 'hidden',
+    padding: sizes.paddingMedium,
+    paddingBlock: sizes.paddingLarge,
+    paddingInline: sizes.paddingSmall,
     position: 'relative',
     textAlign: 'center',
     width: '100%',
@@ -52,6 +60,7 @@ export const styles = stylex.create({
     },
   },
   button: {
+    borderRadius: sizes.borderRadiusMedium,
     color: {
       default: 'var(--blue-link)',
       ':hover': {
@@ -60,16 +69,38 @@ export const styles = stylex.create({
       },
       ':active': 'scale(0.9)',
     },
+    height: sizes.buttonHeightMedium,
+    padding: sizes.paddingSmall,
+    paddingBlock: sizes.paddingTiny,
+    paddingInline: sizes.paddingMedium,
+  },
+  buttonSmall: {
+    borderRadius: sizes.borderRadiusSmall,
+    height: sizes.buttonHeightSmall,
+    margin: sizes.marginTiny,
+    padding: sizes.paddingTiny,
+    paddingBlock: sizes.paddingTiny,
+    paddingInline: sizes.paddingSmall,
+  },
+  buttonLarge: {
+    borderRadius: sizes.borderRadiusLarge,
+    height: sizes.buttonHeightLarge,
+    margin: sizes.marginSmall,
+    padding: sizes.paddingLarge,
+    paddingBlock: sizes.paddingMedium,
+    paddingInline: sizes.paddingLarge,
   },
   linkUnderline: {
     backgroundColor: 'var(--primary-button-background)',
-    borderTopEndRadius: 1,
-    borderTopStartRadius: 1,
+    borderTopEndRadius: sizes.borderRadiusSmall,
+    borderTopStartRadius: sizes.borderRadiusSmall,
     bottom: 0,
-    end: 2,
+    end: sizes.paddingSmall,
     height: 3,
+    margin: sizes.marginTiny,
+    padding: sizes.paddingTiny,
     position: 'absolute',
-    start: 2,
+    start: sizes.paddingSmall,
     transform: 'scaleY(0)',
     transformOrigin: 'center bottom',
     transitionDuration: 'var(--fds-fast)',
@@ -77,14 +108,33 @@ export const styles = stylex.create({
     transitionTimingFunction: 'var(--fds-soft)',
   },
   outerWithExpandedOnLargeScreensGlobalPanel: {
+    borderRadius: sizes.borderRadiusMedium,
+    gap: sizes.gapSmall,
     insetInlineStart: {
       default: 'var(--global-panel-width-expanded)',
       '@media (max-width: 1200px)': 'var(--global-panel-width)',
     },
+    margin: sizes.marginMedium,
+    padding: sizes.paddingMedium,
     width: {
       default: 'calc(100% - var(--global-panel-width-expanded))',
       '@media (max-width: 1200px)': 'calc(100% - var(--global-panel-width))',
     },
+  },
+  panel: {
+    borderRadius: sizes.borderRadiusLarge,
+    gap: sizes.gapMedium,
+    margin: sizes.marginLarge,
+    padding: sizes.paddingLarge,
+    paddingBlock: sizes.paddingMedium,
+    paddingInline: sizes.paddingLarge,
+  },
+  panelHeader: {
+    borderRadius: sizes.borderRadiusMedium,
+    gap: sizes.gapSmall,
+    margin: sizes.marginSmall,
+    marginBlockEnd: sizes.marginMedium,
+    padding: sizes.paddingMedium,
   },
   dynamicHeight: (height) => ({ height }),
   dynamicPadding: (paddingTop, paddingBottom) => ({
@@ -98,4 +148,7 @@ export const styles = stylex.create({
   dynamicLetterSpacing: (letterSpacing) => ({ letterSpacing }),
   dynamicTextTransform: (textTransform) => ({ textTransform }),
   dynamicTextDecoration: (textDecoration) => ({ textDecoration }),
+  dynamicBorderRadius: (borderRadius) => ({ borderRadius }),
+  dynamicMargin: (margin) => ({ margin }),
+  dynamicGap: (gap) => ({ gap }),
 });
