@@ -31,7 +31,6 @@ import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
 
 // This file contains Babels metainterpreter that can evaluate static code.
-
 const VALID_CALLEES = ['String', 'Number', 'Math', 'Object', 'Array'];
 const INVALID_METHODS = [
   'random',
@@ -42,6 +41,46 @@ const INVALID_METHODS = [
   'seal',
   'splice',
 ];
+
+const PROXY_MARKER = Symbol('StyleXProxyMarker');
+
+function getFullMemberPath(path: NodePath<t.Expression>) {
+  const parts: Array<string> = [];
+  let current = path;
+
+  while (current.isMemberExpression()) {
+    const prop = current.get('property');
+    if (prop.isIdentifier()) {
+      parts.unshift(prop.node.name);
+    } else if (prop.isStringLiteral()) {
+      parts.unshift(prop.node.value);
+    } else if (current.node.computed) {
+      return null;
+    }
+    current = current.get('object');
+  }
+
+  return {
+    parts,
+    baseObject: current,
+  };
+}
+
+function getOuterMostMemberExpression(path: NodePath<>): NodePath<> {
+  let current = path;
+  while (current.parentPath) {
+    const parent = current.parentPath;
+    if (
+      parent.isMemberExpression() &&
+      parent.get('object').node === current.node
+    ) {
+      current = parent;
+    } else {
+      break;
+    }
+  }
+  return current;
+}
 
 function isValidCallee(val: string): boolean {
   return (VALID_CALLEES as $ReadOnlyArray<string>).includes(val);
@@ -201,6 +240,10 @@ function evaluateThemeRef(
     {},
     {
       get(_, key: string) {
+        if ((key as any) === PROXY_MARKER) {
+          return true;
+        }
+
         return resolveKey(key);
       },
       set(_, key: string, value: string) {
@@ -368,6 +411,25 @@ function _evaluate(path: NodePath<>, state: State): any {
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
+    const outerMost = getOuterMostMemberExpression(path);
+
+    // to handle nested member expressions, we wait until we are at the outer most member expression
+    // and then we can extract the full path and evaluate it via the object proxy
+    if (outerMost === path) {
+      const pathInfo = getFullMemberPath(path);
+
+      if (pathInfo != null && pathInfo.parts.length > 0) {
+        const baseObject = evaluateCached(pathInfo.baseObject, state);
+        if (!state.confident) {
+          return;
+        }
+
+        if (baseObject[PROXY_MARKER]) {
+          return baseObject[pathInfo.parts.join('.')];
+        }
+      }
+    }
+
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
       return;
