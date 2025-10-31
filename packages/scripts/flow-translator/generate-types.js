@@ -105,7 +105,7 @@ async function generateTypes(inputDir, outputDir, rootDir) {
           );
         } catch (err) {
           console.log(`Failed to process file: ${inputFullPath}`);
-          throw err;
+          // throw err;
         }
       }
     }
