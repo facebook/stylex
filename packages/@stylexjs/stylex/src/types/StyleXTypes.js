@@ -145,7 +145,7 @@ export type MapNamespaces<+S: { +[string]: mixed }> = $ReadOnly<{
     ? (...args: Args) => $ReadOnly<[MapNamespace<Obj>, InlineStyles]>
     : MapNamespace<S[Key]>,
 }>;
-export type StyleX$Create = <S: { +[string]: { ... } }>(
+export type StyleX$Create = <const S: { +[string]: { ... } }>(
   styles: S,
 ) => MapNamespaces<S>;
 
@@ -226,7 +226,7 @@ export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
 export type StyleX$DefineConsts = <
-  DefaultTokens: { +[string]: number | string },
+  const DefaultTokens: { +[string]: number | string },
 >(
   tokens: DefaultTokens,
 ) => DefaultTokens;
@@ -254,3 +254,11 @@ export type StyleX$CreateTheme = <
   baseTokens: BaseTokens,
   overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
 ) => Theme<BaseTokens, ID>;
+
+export type StyleX$When = {
+  ancestor: (_pseudo?: StringPrefix<':'>) => ':where-ancestor',
+  descendant: (_pseudo?: StringPrefix<':'>) => ':where-descendant',
+  siblingBefore: (_pseudo?: StringPrefix<':'>) => ':where-sibling-before',
+  siblingAfter: (_pseudo?: StringPrefix<':'>) => ':where-sibling-after',
+  anySibling: (_pseudo?: StringPrefix<':'>) => ':where-any-sibling',
+};
