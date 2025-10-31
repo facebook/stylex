@@ -628,9 +628,9 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "x1fhb4fj",
+              "x1wx8h15",
               {
-                "ltr": ".x1fhb4fj{clear:var(--stylex-logical-start)}",
+                "ltr": ".x1wx8h15{clear:var(--stylex-logical-end)}",
                 "rtl": null,
               },
               3000,
@@ -652,9 +652,9 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "x1wx8h15",
+              "x1fhb4fj",
               {
-                "ltr": ".x1wx8h15{clear:var(--stylex-logical-end)}",
+                "ltr": ".x1fhb4fj{clear:var(--stylex-logical-start)}",
                 "rtl": null,
               },
               3000,
@@ -676,9 +676,9 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "xj87blo",
+              "xtrg13t",
               {
-                "ltr": ".xj87blo{float:var(--stylex-logical-start)}",
+                "ltr": ".xtrg13t{float:var(--stylex-logical-end)}",
                 "rtl": null,
               },
               3000,
@@ -700,9 +700,9 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "xtrg13t",
+              "xj87blo",
               {
-                "ltr": ".xtrg13t{float:var(--stylex-logical-end)}",
+                "ltr": ".xj87blo{float:var(--stylex-logical-start)}",
                 "rtl": null,
               },
               3000,
@@ -1010,10 +1010,10 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "x1fhb4fj",
+              "x1wx8h15",
               {
-                "ltr": ".x1fhb4fj{clear:var(--stylex-logical-start)}",
-                "rtl": ".x1fhb4fj{clear:var(--stylex-logical-start)}",
+                "ltr": ".x1wx8h15{clear:var(--stylex-logical-end)}",
+                "rtl": ".x1wx8h15{clear:var(--stylex-logical-end)}",
               },
               3000,
             ],
@@ -1034,10 +1034,10 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "x1wx8h15",
+              "x1fhb4fj",
               {
-                "ltr": ".x1wx8h15{clear:var(--stylex-logical-end)}",
-                "rtl": ".x1wx8h15{clear:var(--stylex-logical-end)}",
+                "ltr": ".x1fhb4fj{clear:var(--stylex-logical-start)}",
+                "rtl": ".x1fhb4fj{clear:var(--stylex-logical-start)}",
               },
               3000,
             ],
@@ -1058,10 +1058,10 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "xj87blo",
+              "xtrg13t",
               {
-                "ltr": ".xj87blo{float:var(--stylex-logical-start)}",
-                "rtl": ".xj87blo{float:var(--stylex-logical-start)}",
+                "ltr": ".xtrg13t{float:var(--stylex-logical-end)}",
+                "rtl": ".xtrg13t{float:var(--stylex-logical-end)}",
               },
               3000,
             ],
@@ -1082,10 +1082,10 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "xtrg13t",
+              "xj87blo",
               {
-                "ltr": ".xtrg13t{float:var(--stylex-logical-end)}",
-                "rtl": ".xtrg13t{float:var(--stylex-logical-end)}",
+                "ltr": ".xj87blo{float:var(--stylex-logical-start)}",
+                "rtl": ".xj87blo{float:var(--stylex-logical-start)}",
               },
               3000,
             ],
