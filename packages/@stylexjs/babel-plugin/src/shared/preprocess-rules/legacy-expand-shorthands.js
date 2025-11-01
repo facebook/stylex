@@ -11,6 +11,9 @@ import type { TStyleValue } from '../common-types';
 
 import splitValue from '../utils/split-css-value';
 
+export const LOGICAL_FLOAT_START_VAR = '--stylex-logical-start';
+export const LOGICAL_FLOAT_END_VAR = '--stylex-logical-end';
+
 // TODO: to be added later.
 // const aliases = {
 //   marginInlineStart: (rawValue) => [['marginStart', rawValue]],
@@ -515,6 +518,23 @@ const aliases = {
   scrollMarginBlockEnd: (value: TStyleValue): TReturn => [
     ['scrollMarginBottom', value],
   ],
+  float: (value: TStyleValue): TReturn => {
+    if (value === 'inline-start' || value === 'start') {
+      return [['float', `var(${LOGICAL_FLOAT_START_VAR})`]];
+    } else if (value === 'inline-end' || value === 'end') {
+      return [['float', `var(${LOGICAL_FLOAT_END_VAR})`]];
+    }
+    return [['float', value]];
+  },
+
+  clear: (value: TStyleValue): TReturn => {
+    if (value === 'inline-start' || value === 'start') {
+      return [['clear', `var(${LOGICAL_FLOAT_START_VAR})`]];
+    } else if (value === 'inline-end' || value === 'end') {
+      return [['clear', `var(${LOGICAL_FLOAT_END_VAR})`]];
+    }
+    return [['clear', value]];
+  },
 };
 
 const expansions = {
