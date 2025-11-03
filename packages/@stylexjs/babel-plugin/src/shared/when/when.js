@@ -32,7 +32,6 @@ function validatePseudoSelector(pseudo: string): void {
     );
   }
 }
-
 /**
  * Creates selector that observes if the given pseudo-class is
  * active on an ancestor with the "defaultMarker"
@@ -42,12 +41,13 @@ function validatePseudoSelector(pseudo: string): void {
  * @returns A :where() clause for the ancestor observer
  */
 export function ancestor(
-  pseudo: string,
+  pseudo: StringPrefix<':'>,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+
   return `:where(.${defaultMarker}${pseudo} *)`;
 }
 
@@ -59,12 +59,13 @@ export function ancestor(
  * @returns A :has() clause for the descendant observer
  */
 export function descendant(
-  pseudo: string,
+  pseudo: StringPrefix<':'>,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+
   return `:where(:has(.${defaultMarker}${pseudo}))`;
 }
 
@@ -76,12 +77,13 @@ export function descendant(
  * @returns A :where() clause for the previous sibling observer
  */
 export function siblingBefore(
-  pseudo: string,
+  pseudo: StringPrefix<':'>,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+
   return `:where(.${defaultMarker}${pseudo} ~ *)`;
 }
 
@@ -93,12 +95,13 @@ export function siblingBefore(
  * @returns A :has() clause for the next sibling observer
  */
 export function siblingAfter(
-  pseudo: string,
+  pseudo: StringPrefix<':'>,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+
   return `:where(:has(~ .${defaultMarker}${pseudo}))`;
 }
 
@@ -110,11 +113,12 @@ export function siblingAfter(
  * @returns A :where() clause for the any sibling observer
  */
 export function anySibling(
-  pseudo: string,
+  pseudo: StringPrefix<':'>,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
   const defaultMarker =
     typeof options === 'string' ? options : getDefaultMarkerClassName(options);
+
   return `:where(.${defaultMarker}${pseudo} ~ *, :has(~ .${defaultMarker}${pseudo}))`;
 }

@@ -29,6 +29,7 @@ import type {
   VarGroup,
   PositionTry,
   ViewTransitionClass,
+  StyleX$When,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -60,7 +61,7 @@ const errorForFn = (name: string) =>
 const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  S: { +[string]: mixed },
+  const S: { +[string]: mixed },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -70,7 +71,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  T: { +[string]: number | string },
+  const T: { +[string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -131,24 +132,27 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
-export const defaultMarker = (): StaticStyles<> => {
+export const defaultMarker = (): $ReadOnly<{
+  marker: 'default-marker',
+  $$css: true,
+}> => {
   throw errorForFn('defaultMarker');
 };
 
-export const when = {
-  ancestor: (_pseudo?: string): string => {
+export const when: StyleX$When = {
+  ancestor: (_p) => {
     throw errorForFn('when.ancestor');
   },
-  descendant: (_pseudo?: string): string => {
+  descendant: (_p) => {
     throw errorForFn('when.descendant');
   },
-  siblingBefore: (_pseudo?: string): string => {
+  siblingBefore: (_p) => {
     throw errorForFn('when.siblingBefore');
   },
-  siblingAfter: (_pseudo?: string): string => {
+  siblingAfter: (_p) => {
     throw errorForFn('when.siblingAfter');
   },
-  anySibling: (_pseudo?: string): string => {
+  anySibling: (_p) => {
     throw errorForFn('when.anySibling');
   },
 };
@@ -221,7 +225,10 @@ type IStyleX = {
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
-  defaultMarker: () => StaticStyles<>,
+  defaultMarker: () => $ReadOnly<{
+    marker: 'default-marker',
+    $$css: true,
+  }>,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
