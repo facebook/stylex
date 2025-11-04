@@ -60,7 +60,7 @@ const styles = stylex.create({
     fontSize: '1em',
     fontWeight: 500,
     fontFamily: 'inherit',
-    backgroundColor: 'blue',
+    backgroundColor: 'hotpink',
     color: 'white',
     cursor: 'pointer',
     transitionProperty: 'border-color',

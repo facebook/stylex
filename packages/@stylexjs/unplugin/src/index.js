@@ -146,6 +146,9 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
 
     // Core code transform
     async transform(code, id) {
+      // Only handle JS-like files; avoid parsing CSS/JSON/etc
+      const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
+      if (!JS_LIKE_RE.test(id)) return null;
       if (!shouldHandle(code)) return null;
       const result = await runBabelTransform(code, id, '@stylexjs/unplugin');
       const { metadata } = result;
