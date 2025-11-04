@@ -14,12 +14,12 @@ import createImportTracker from './utils/createImportTracker';
 import { lastMediaQueryWinsTransform } from 'style-value-parser';
 /*:: import { Rule } from 'eslint'; */
 
-const stylexValidateMediaQueries = {
+const stylexTransformMediaQueries = {
   meta: {
     type: 'problem',
     docs: {
       description:
-        'Warn when media query syntax may not be correctly ordered due to parser limitations',
+        'Warn when media query syntax order is not properly enforced due to invalid media query syntax or parser limitations',
       recommended: false,
       url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
     },
@@ -224,4 +224,4 @@ const stylexValidateMediaQueries = {
   },
 };
 
-export default stylexValidateMediaQueries;
+export default stylexTransformMediaQueries;

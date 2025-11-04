@@ -10,7 +10,7 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-validate-media-queries');
+const rule = require('../src/stylex-transform-media-queries');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -20,7 +20,7 @@ const eslintTester = new ESLintTester({
   },
 });
 
-eslintTester.run('stylex-validate-media-queries', rule.default, {
+eslintTester.run('stylex-transform-media-queries', rule.default, {
   valid: [
     {
       code: `
@@ -38,6 +38,7 @@ eslintTester.run('stylex-validate-media-queries', rule.default, {
       const styles = stylex.create({
         main: {
           color: {
+            default: 'yellow',
             '@media (min-width: 768px)': 'blue',
             '@media (min-width: 1024px)': 'green',
           },
@@ -73,7 +74,8 @@ eslintTester.run('stylex-validate-media-queries', rule.default, {
     `,
       errors: [
         {
-          message: /Media query order may not be respected/,
+          message:
+            /Media query order may not be respected\. Invalid media query syntax or unsupported edge cases in style-value-parser\. Error:/,
         },
       ],
     },
