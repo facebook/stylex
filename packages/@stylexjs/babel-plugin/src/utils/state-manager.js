@@ -97,6 +97,7 @@ export type StyleXOptions = $ReadOnly<{
   enableDevClassNames?: boolean,
   enableInlinedConditionalMerge?: boolean,
   enableMediaQueryOrder?: boolean,
+  softMediaQueryValidation?: boolean,
   enableLegacyValueFlipping?: boolean,
   enableLogicalStylesPolyfill?: boolean,
   enableLTRRTLComments?: boolean,
@@ -254,6 +255,14 @@ export default class StateManager {
         'options.enableMediaQueryOrder',
       );
 
+    const softMediaQueryValidation: StyleXStateOptions['softMediaQueryValidation'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.softMediaQueryValidation ?? false,
+        false,
+        'options.softMediaQueryValidation',
+      );
+
     const enableLegacyValueFlipping: StyleXStateOptions['enableLegacyValueFlipping'] =
       z.logAndDefault(
         z.boolean(),
@@ -388,6 +397,7 @@ export default class StateManager {
       enableInlinedConditionalMerge,
       enableMinifiedKeys,
       enableMediaQueryOrder,
+      softMediaQueryValidation,
       enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
       enableLTRRTLComments,

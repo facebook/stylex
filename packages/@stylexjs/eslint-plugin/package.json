@@ -18,7 +18,8 @@
   "dependencies": {
     "css-shorthand-expand": "^1.2.0",
     "micromatch": "^4.0.5",
-    "postcss-value-parser": "^4.2.0"
+    "postcss-value-parser": "^4.2.0",
+    "style-value-parser": "*"
   },
   "files": [
     "flow_modules/*",

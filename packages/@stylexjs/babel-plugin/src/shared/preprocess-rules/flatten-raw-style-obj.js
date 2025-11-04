@@ -31,7 +31,17 @@ export function flattenRawStyleObject(
       ? lastMediaQueryWinsTransform(style)
       : style;
   } catch (error) {
-    throw new Error(messages.INVALID_MEDIA_QUERY_SYNTAX);
+    if (options.softMediaQueryValidation) {
+      console.warn(
+        `StyleX: ${messages.INVALID_MEDIA_QUERY_SYNTAX}\n` +
+          'Media query order will not be respected. ' +
+          'This could be due to invalid media query syntax or unsupported edge cases in style-value-parser.\n' +
+          `Error: ${error.message || error}`,
+      );
+      processedStyle = style;
+    } else {
+      throw new Error(messages.INVALID_MEDIA_QUERY_SYNTAX);
+    }
   }
   return _flattenRawStyleObject(processedStyle, [], options);
 }
