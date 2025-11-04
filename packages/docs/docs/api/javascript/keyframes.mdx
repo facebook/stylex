@@ -38,6 +38,35 @@ const styles = stylex.create({
 });
 ```
 
+To chain multiple keyframes, provide a comma-separated value to animation properties: 
+```tsx
+const expand = stylex.keyframes({
+  from: {
+    maxHeight: '0px'; 
+  }, 
+  to: {
+    maxHeight: '1000px'; 
+  }
+});
+
+const fadeIn = stylex.keyframes({
+  from: {
+    opacity: 0; 
+  }, 
+  to: {
+    opacity: 1; 
+  }
+})
+
+const styles = stylex.create({
+  open: {
+    animationName: `${fadeIn}, ${expand}`,
+    animationDuration: '1s, 1s',
+  },
+});
+
+```
+
 To use `keyframes` return values in a separate file, you can use `defineVars` to hold animation names:
 
 ```tsx title="animations.stylex.js"
