@@ -41,21 +41,13 @@ const styles = stylex.create({
 To chain multiple keyframes, provide comma-separated values to animation properties: 
 ```tsx
 const expand = stylex.keyframes({
-  from: {
-    maxHeight: '0px'; 
-  }, 
-  to: {
-    maxHeight: '1000px'; 
-  }
+  from: {maxHeight: '0px'}, 
+  to: {maxHeight: '1000px'},
 });
 
 const fadeIn = stylex.keyframes({
-  from: {
-    opacity: 0; 
-  }, 
-  to: {
-    opacity: 1; 
-  }
+  from: {opacity: 0}, 
+  to: {opacity: 1}, 
 })
 
 const styles = stylex.create({
