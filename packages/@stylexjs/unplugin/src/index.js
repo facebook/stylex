@@ -72,6 +72,8 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
 
   // Shared state across a single compilation
   const stylexRulesById = new Map(); // id -> Rule[]
+  const DEV_CSS_PATH = '/virtual:stylex.css';
+  let viteServer = null;
 
   async function runBabelTransform(inputCode, id, callerName) {
     const result = await transformAsync(inputCode, {
@@ -127,6 +129,8 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     });
   }
 
+  // No rollup-style virtual module normalize for webpack/rspack stability
+
   return {
     name: '@stylexjs/unplugin',
 
@@ -138,18 +142,38 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
       // No-op; generateBundle handles injection for rollup-like bundlers.
     },
 
+    // No generic resolve/load; Vite dev uses middleware link, build uses generateBundle
+
     // Core code transform
     async transform(code, id) {
       if (!shouldHandle(code)) return null;
       const result = await runBabelTransform(code, id, '@stylexjs/unplugin');
       const { metadata } = result;
-      if (
-        !stylexOptions.runtimeInjection &&
-        metadata &&
-        Array.isArray(metadata.stylex) &&
-        metadata.stylex.length > 0
-      ) {
-        stylexRulesById.set(id, metadata.stylex);
+      if (!stylexOptions.runtimeInjection) {
+        const hasRules =
+          metadata &&
+          Array.isArray(metadata.stylex) &&
+          metadata.stylex.length > 0;
+        if (hasRules) {
+          stylexRulesById.set(id, metadata.stylex);
+        } else {
+          stylexRulesById.delete(id);
+        }
+        // Notify Vite dev server to update the linked CSS
+        if (viteServer) {
+          try {
+            viteServer.ws.send({
+              type: 'update',
+              updates: [
+                {
+                  type: 'css-update',
+                  path: DEV_CSS_PATH,
+                  timestamp: Date.now(),
+                },
+              ],
+            });
+          } catch {}
+        }
       }
 
       // Rollup/Vite watch-mode support: collect stylex metadata from cached deps
@@ -206,6 +230,47 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
           ? target.source
           : target.source?.toString() || '';
       target.source = current ? current + '\n' + css : css;
+    },
+
+    // Vite: dev server hooks to inject CSS and enable HMR
+    vite: {
+      configureServer(server) {
+        viteServer = server;
+        server.middlewares.use((req, res, next) => {
+          if (!req.url) return next();
+          if (req.url.startsWith(DEV_CSS_PATH)) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'text/css');
+            const css = collectCss();
+            res.end(css || '');
+            return;
+          }
+          next();
+        });
+      },
+      transformIndexHtml() {
+        if (!viteServer) return null;
+        // Inject a stylesheet link to the served virtual CSS path for dev
+        return [
+          {
+            tag: 'link',
+            attrs: { rel: 'stylesheet', href: DEV_CSS_PATH },
+            injectTo: 'head',
+          },
+        ];
+      },
+      handleHotUpdate(ctx) {
+        // Send a CSS update event; return original modules to preserve JS HMR
+        try {
+          ctx.server.ws.send({
+            type: 'update',
+            updates: [
+              { type: 'css-update', path: DEV_CSS_PATH, timestamp: Date.now() },
+            ],
+          });
+        } catch {}
+        return ctx.modules;
+      },
     },
 
     // webpack/rspack integration

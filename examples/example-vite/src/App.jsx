@@ -22,8 +22,8 @@ const styles = stylex.create({
 
 export default function App() {
   return (
-    <main className={stylex(styles.app)}>
-      <h1 className={stylex(styles.title)}>StyleX + Vite + unplugin</h1>
+    <main {...stylex.props(styles.app)}>
+      <h1 {...stylex.props(styles.title)}>StyleX + Vite + unplugin</h1>
     </main>
   );
 }
