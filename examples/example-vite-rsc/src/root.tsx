@@ -1,0 +1,128 @@
+import './index.css'; // keep minimal to ensure CSS asset exists in build
+import viteLogo from '/vite.svg';
+import { getServerCounter, updateServerCounter } from './action.tsx';
+import reactLogo from './assets/react.svg';
+import { ClientCounter } from './client.tsx';
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  root: {
+    margin: 0,
+    minHeight: '100vh',
+    display: 'grid',
+    placeItems: 'center',
+    textAlign: 'center',
+  },
+  logo: {
+    height: '6em',
+    padding: '1.5em',
+    willChange: 'filter',
+    transitionProperty: 'filter',
+    transitionDuration: '300ms',
+    filter_hover: { ':hover': 'drop-shadow(0 0 2em #646cffaa)' },
+  },
+  reactLogo: { filter_hover: { ':hover': 'drop-shadow(0 0 2em #61dafbaa)' } },
+  card: { padding: '2em' },
+  readTheDocs: { color: '#888' },
+  h1: { fontSize: '3.2em', lineHeight: '1.1' },
+  link: { fontWeight: 500, color: '#646cff', textDecoration: 'none' },
+  linkHover: { color: { ':hover': '#535bf2' } },
+  button: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    padding: '0.6em 1.2em',
+    fontSize: '1em',
+    fontWeight: 500,
+    fontFamily: 'inherit',
+    backgroundColor: 'hotpink',
+    color: 'white',
+    cursor: 'pointer',
+    transitionProperty: 'border-color',
+    transitionDuration: '250ms',
+  },
+});
+
+export function Root(props: { url: URL }) {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite + RSC + StyleX</title>
+        {import.meta.env.DEV ? (
+          <>
+            <script type="module" src="/virtual:stylex.js" />
+            <link rel="stylesheet" href="/virtual:stylex.css" />
+          </>
+        ) : null}
+      </head>
+      <body>
+        <App {...props} />
+      </body>
+    </html>
+  );
+}
+
+function App(props: { url: URL }) {
+  return (
+    <div id="root" {...stylex.props(styles.root)}>
+      <div>
+        <a
+          href="https://vite.dev"
+          target="_blank"
+          {...stylex.props(styles.link, styles.linkHover)}
+        >
+          <img src={viteLogo} alt="Vite logo" {...stylex.props(styles.logo)} />
+        </a>
+        <a
+          href="https://react.dev/reference/rsc/server-components"
+          target="_blank"
+          {...stylex.props(styles.link, styles.linkHover)}
+        >
+          <img
+            src={reactLogo}
+            alt="React logo"
+            {...stylex.props(styles.logo, styles.reactLogo)}
+          />
+        </a>
+      </div>
+      <h1 {...stylex.props(styles.h1)}>Vite + RSC</h1>
+      <div {...stylex.props(styles.card)}>
+        <ClientCounter />
+      </div>
+      <div {...stylex.props(styles.card)}>
+        <form action={updateServerCounter.bind(null, 1)}>
+          <button {...stylex.props(styles.button)}>
+            Server Counter: {getServerCounter()}
+          </button>
+        </form>
+      </div>
+      <div {...stylex.props(styles.card)}>Request URL: {props.url?.href}</div>
+      <ul {...stylex.props(styles.readTheDocs)}>
+        <li>
+          Edit <code>src/client.tsx</code> to test client HMR.
+        </li>
+        <li>
+          Edit <code>src/root.tsx</code> to test server HMR.
+        </li>
+        <li>
+          Visit{' '}
+          <a href="?__rsc" target="_blank">
+            <code>?__rsc</code>
+          </a>{' '}
+          to view RSC stream payload.
+        </li>
+        <li>
+          Visit{' '}
+          <a href="?__nojs" target="_blank">
+            <code>?__nojs</code>
+          </a>{' '}
+          to test server action without js enabled.
+        </li>
+      </ul>
+    </div>
+  );
+}
