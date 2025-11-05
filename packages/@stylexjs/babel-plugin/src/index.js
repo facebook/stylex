@@ -33,6 +33,10 @@ import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
 import transformStyleXDefaultMarker from './visitors/stylex-default-marker';
+import {
+  LOGICAL_FLOAT_START_VAR,
+  LOGICAL_FLOAT_END_VAR,
+} from './shared/preprocess-rules/legacy-expand-shorthands';
 
 const NAME = 'stylex';
 
@@ -357,6 +361,32 @@ export type Rule = [
   },
   number,
 ];
+
+function getLogicalFloatVars(rules: Array<Rule>): string {
+  const hasLogicalFloat = rules.some(([, { ltr, rtl }]) => {
+    const ltrStr = String(ltr);
+    const rtlStr = rtl ? String(rtl) : '';
+    return (
+      ltrStr.includes(LOGICAL_FLOAT_START_VAR) ||
+      ltrStr.includes(LOGICAL_FLOAT_END_VAR) ||
+      rtlStr.includes(LOGICAL_FLOAT_START_VAR) ||
+      rtlStr.includes(LOGICAL_FLOAT_END_VAR)
+    );
+  });
+
+  return hasLogicalFloat
+    ? `:root, [dir="ltr"] {
+  ${LOGICAL_FLOAT_START_VAR}: left;
+  ${LOGICAL_FLOAT_END_VAR}: right;
+}
+[dir="rtl"] {
+  ${LOGICAL_FLOAT_START_VAR}: right;
+  ${LOGICAL_FLOAT_END_VAR}: left;
+}
+`
+    : '';
+}
+
 function processStylexRules(
   rules: Array<Rule>,
   config?:
@@ -491,6 +521,8 @@ function processStylexRules(
     return acc;
   }, []);
 
+  const logicalFloatVars = getLogicalFloatVars(nonConstantRules);
+
   const header = useLayers
     ? '\n@layer ' +
       grouped.map((_, index) => `priority${index + 1}`).join(', ') +
@@ -549,7 +581,7 @@ function processStylexRules(
     })
     .join('\n');
 
-  return header + collectedCSS;
+  return logicalFloatVars + header + collectedCSS;
 }
 
 styleXTransform.processStylexRules = processStylexRules;
