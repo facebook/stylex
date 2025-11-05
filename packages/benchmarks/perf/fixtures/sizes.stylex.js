@@ -70,34 +70,6 @@ const SpacingTokens = {
     medium: '1rem',
     large: '1.5rem',
   },
-  icon: {
-    size: {
-      small: '1rem',
-      medium: '1.5rem',
-      large: '2rem',
-    },
-  },
-  button: {
-    height: {
-      small: '2rem',
-      medium: '2.5rem',
-      large: '3rem',
-    },
-  },
-  input: {
-    height: {
-      small: '2rem',
-      medium: '2.5rem',
-      large: '3rem',
-    },
-  },
-  container: {
-    width: {
-      small: '20rem',
-      medium: '40rem',
-      large: '60rem',
-    },
-  },
 };
 
 export const spacing = stylex.defineConsts(SpacingTokens);
