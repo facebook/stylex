@@ -2,7 +2,7 @@
   "private": true,
   "name": "example-esbuild",
   "version": "0.16.3",
-  "description": "Simple esbuild example for @stylexjs/esbuild-plugin",
+  "description": "Simple esbuild example for @stylexjs/unplugin",
   "main": "src/App.jsx",
   "scripts": {
     "example:build": "node scripts/build.mjs",
@@ -15,7 +15,7 @@
     "react-dom": "^18.3.0"
   },
   "devDependencies": {
-    "@stylexjs/esbuild-plugin": "0.11.1",
+    "@stylexjs/unplugin": "0.16.2",
     "@stylexjs/eslint-plugin": "0.16.3",
     "esbuild": "^0.25.0",
     "eslint": "^8.57.1"
