@@ -7,9 +7,10 @@
 
 import { defineConfig } from 'vite';
 import stylex from '@stylexjs/unplugin';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [stylex.vite()],
+  plugins: [stylex.vite(), react()],
   build: {
     // Ensure CSS is extracted into assets (default), we also import src/index.css
   },
