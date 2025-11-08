@@ -1,4 +1,11 @@
 import './root.css';
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  body: {
+    margin: 0,
+  },
+});
 
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -28,7 +35,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       ) : null}
       <link rel="modulepreload" href="/src/client.tsx" />
     </head>
-    <body>
+    <body {...stylex.props(styles.body)}>
       <div id="root">{children}</div>
       <script>import("/src/client.tsx")</script>
     </body>

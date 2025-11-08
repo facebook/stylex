@@ -575,10 +575,13 @@ export {};
           } catch {}
           // If still not found, emit a standalone stylex.css
           if (!outfile) {
-            const fallback = path.join(outDir, 'stylex.css');
-            if (!fs.existsSync(fallback)) {
-              await fsp.writeFile(fallback, css, 'utf8');
-            }
+            // Also write a stable asset within assets/ for static servers that serve only from assets/
+            const assetsDir = path.join(outDir, 'assets');
+            try {
+              await fsp.mkdir(assetsDir, { recursive: true });
+            } catch {}
+            const fallback = path.join(assetsDir, 'stylex.css');
+            await fsp.writeFile(fallback, css, 'utf8');
             return;
           }
         } else {
