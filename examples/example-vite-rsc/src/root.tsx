@@ -36,7 +36,7 @@ const styles = stylex.create({
     fontSize: '1em',
     fontWeight: 500,
     fontFamily: 'inherit',
-    backgroundColor: 'hotpink',
+    backgroundColor: 'green',
     color: 'white',
     cursor: 'pointer',
     transitionProperty: 'border-color',
@@ -54,7 +54,7 @@ export function Root(props: { url: URL }) {
         <title>Vite + RSC + StyleX</title>
         {import.meta.env.DEV ? (
           <>
-            <script type="module" src="/virtual:stylex.js" />
+            <script type="module" src="/@id/virtual:stylex:runtime" />
             <link rel="stylesheet" href="/virtual:stylex.css" />
           </>
         ) : null}

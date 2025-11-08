@@ -14,6 +14,8 @@ import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'node:path';
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
 import { transform as lightningTransform } from 'lightningcss';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
@@ -67,13 +69,32 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     useCSSLayers = false,
     lightningcssOptions,
     cssInjectionTarget,
+    // Persist rules to disk in dev to bridge multiple plugin containers/processes.
+    // Off by default; enable if your dev setup runs separate Node processes per environment.
+    devPersistToDisk = false,
     ...stylexOptions
   } = userOptions;
 
-  // Shared state across a single compilation
+  // Shared state across a single compilation (used for builds)
   const stylexRulesById = new Map(); // id -> Rule[]
+  // Global shared store for Vite dev to aggregate across environments (client/ssr/rsc)
+  function getSharedStore() {
+    try {
+      const g = globalThis;
+      if (!g.__stylex_unplugin_store) {
+        g.__stylex_unplugin_store = { rulesById: new Map(), version: 0 };
+      }
+      return g.__stylex_unplugin_store;
+    } catch {
+      return { rulesById: stylexRulesById, version: 0 };
+    }
+  }
   const DEV_CSS_PATH = '/virtual:stylex.css';
+  const DEV_RUNTIME_PATH = '/virtual:stylex.js';
+  const DEV_AFTER_UPDATE_DELAY = 180; // ms
   let viteServer = null;
+  let viteOutDir = null;
+  const DISK_RULES_PATH = path.join(process.cwd(), '.stylex-rules.json');
 
   async function runBabelTransform(inputCode, id, callerName) {
     const result = await transformAsync(inputCode, {
@@ -121,7 +142,21 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
   }
 
   function collectCss() {
-    const allRules = Array.from(stylexRulesById.values()).flat();
+    const merged = new Map();
+    if (devPersistToDisk) {
+      try {
+        if (fs.existsSync(DISK_RULES_PATH)) {
+          const json = JSON.parse(fs.readFileSync(DISK_RULES_PATH, 'utf8'));
+          for (const [k, v] of Object.entries(json)) merged.set(k, v);
+        }
+      } catch {}
+    }
+    try {
+      const shared = getSharedStore().rulesById;
+      for (const [k, v] of shared.entries()) merged.set(k, v);
+    } catch {}
+    for (const [k, v] of stylexRulesById.entries()) merged.set(k, v);
+    const allRules = Array.from(merged.values()).flat();
     return processCollectedRulesToCSS(allRules, {
       useCSSLayers,
       lightningcssOptions,
@@ -129,10 +164,29 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     });
   }
 
+  async function persistRulesToDisk(id, rules) {
+    if (!devPersistToDisk) return;
+    try {
+      let current = {};
+      try {
+        const txt = await fsp.readFile(DISK_RULES_PATH, 'utf8');
+        current = JSON.parse(txt);
+      } catch {}
+      if (rules && Array.isArray(rules) && rules.length > 0) {
+        current[id] = rules;
+      } else if (current[id]) {
+        delete current[id];
+      }
+      await fsp.writeFile(DISK_RULES_PATH, JSON.stringify(current), 'utf8');
+    } catch {}
+  }
+
   // No rollup-style virtual module normalize for webpack/rspack stability
 
   return {
     name: '@stylexjs/unplugin',
+    // Ensure we run before React refresh transforms so HMR stays intact
+    enforce: 'pre',
 
     // Vite/Rollup lifecycle resets
     buildStart() {
@@ -157,24 +211,24 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
           metadata &&
           Array.isArray(metadata.stylex) &&
           metadata.stylex.length > 0;
+        const shared = getSharedStore();
         if (hasRules) {
           stylexRulesById.set(id, metadata.stylex);
+          shared.rulesById.set(id, metadata.stylex);
+          shared.version++;
+          await persistRulesToDisk(id, metadata.stylex);
         } else {
           stylexRulesById.delete(id);
+          if (shared.rulesById.has(id)) {
+            shared.rulesById.delete(id);
+            shared.version++;
+          }
+          await persistRulesToDisk(id, []);
         }
-        // Notify Vite dev server to update the linked CSS
+        // Notify runtime via custom event; avoid Vite-internal 'update' messages
         if (viteServer) {
           try {
-            viteServer.ws.send({
-              type: 'update',
-              updates: [
-                {
-                  type: 'css-update',
-                  path: DEV_CSS_PATH,
-                  timestamp: Date.now(),
-                },
-              ],
-            });
+            viteServer.ws.send({ type: 'custom', event: 'stylex:css-update' });
           } catch {}
         }
       }
@@ -217,44 +271,134 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
       return false;
     },
 
-    // Rollup/Vite: append to an existing CSS asset
+    // Rollup/Vite: append to an existing CSS asset during generateBundle
+    // Note: some bundlers/plugins may mutate CSS assets later; we also guard in writeBundle.
     generateBundle(_opts, bundle) {
       const css = collectCss();
       if (!css) return;
       const target = pickCssAssetFromRollupBundle(bundle, cssInjectionTarget);
-      if (!target) {
-        this.warn(
-          '[stylex] No existing CSS asset found to inject into. Skipping.',
-        );
-        return;
+      if (target) {
+        const current =
+          typeof target.source === 'string'
+            ? target.source
+            : target.source?.toString() || '';
+        target.source = current ? current + '\n' + css : css;
+      } else {
+        // Defer to writeBundle to append or emit fallback file
       }
-      const current =
-        typeof target.source === 'string'
-          ? target.source
-          : target.source?.toString() || '';
-      target.source = current ? current + '\n' + css : css;
     },
 
-    // Vite: dev server hooks to inject CSS and enable HMR
+    // Vite: dev virtual modules + HMR
     vite: {
+      configResolved(config) {
+        try {
+          viteOutDir = config.build?.outDir || viteOutDir;
+        } catch {}
+      },
       configureServer(server) {
         viteServer = server;
+        // Serve dev runtime script
+        server.middlewares.use((req, res, next) => {
+          if (!req.url) return next();
+          if (req.url.startsWith(DEV_RUNTIME_PATH)) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/javascript');
+            res.end(`
+const STYLE_ID='__stylex_virtual__';
+const DEV_CSS_PATH='${DEV_CSS_PATH}';
+const AFTER_UPDATE_DELAY=180; // ms
+const POLL_INTERVAL=800; // ms
+let lastCSS='';
+function ensure(){let el=document.getElementById(STYLE_ID);if(!el){el=document.createElement('style');el.id=STYLE_ID;document.head.appendChild(el);}return el;}
+function disableLink(){try{const links=[...document.querySelectorAll('link[rel=\\"stylesheet\\"]')];for(const l of links){if(typeof l.href==='string'&&l.href.includes(DEV_CSS_PATH)){l.disabled=true;}}}catch{}}
+async function fetchCSS(){
+  const t=Date.now();
+  const r=await fetch(DEV_CSS_PATH+'?t='+t,{cache:'no-store'});
+  return r.text();
+}
+async function update(){
+  try{
+    const css=await fetchCSS();
+    if(css!==lastCSS){
+      ensure().textContent=css;
+      disableLink();
+      lastCSS=css;
+    }
+  }catch{}
+}
+update();
+// const __stylex_poll = setInterval(()=>update(), POLL_INTERVAL);
+if(import.meta.hot){
+  import.meta.hot.on('stylex:css-update',()=>update());
+  import.meta.hot.on('vite:afterUpdate',()=>setTimeout(()=>update(),AFTER_UPDATE_DELAY));
+  // import.meta.hot.dispose(()=>{ clearInterval(__stylex_poll); const el=document.getElementById(STYLE_ID); if(el&&el.parentNode)el.parentNode.removeChild(el); });
+}
+export {};
+`);
+            return;
+          }
+          next();
+        });
+        // Serve dev CSS payload
         server.middlewares.use((req, res, next) => {
           if (!req.url) return next();
           if (req.url.startsWith(DEV_CSS_PATH)) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/css');
+            res.setHeader('Cache-Control', 'no-store');
             const css = collectCss();
             res.end(css || '');
             return;
           }
           next();
         });
+        // Poll shared store to emit HMR custom event
+        const shared = getSharedStore();
+        let lastVersion = shared.version;
+        const interval = setInterval(() => {
+          const curr = shared.version;
+          if (curr !== lastVersion) {
+            lastVersion = curr;
+            try {
+              server.ws.send({ type: 'custom', event: 'stylex:css-update' });
+            } catch {}
+          }
+        }, 150);
+        server.httpServer?.once('close', () => clearInterval(interval));
       },
+      resolveId(id) {
+        if (id === 'virtual:stylex:runtime') return id;
+        return null;
+      },
+      load(id) {
+        if (id === 'virtual:stylex:runtime') {
+          return `
+const STYLE_ID='__stylex_virtual__';
+const DEV_CSS_PATH='${DEV_CSS_PATH}';
+const AFTER_UPDATE_DELAY=${DEV_AFTER_UPDATE_DELAY};
+let lastCSS='';
+function ensure(){let el=document.getElementById(STYLE_ID);if(!el){el=document.createElement('style');el.id=STYLE_ID;document.head.appendChild(el);}return el;}
+function disableLink(){try{const links=[...document.querySelectorAll('link[rel="stylesheet"]')];for(const l of links){if(typeof l.href==='string'&&l.href.includes(DEV_CSS_PATH)){l.disabled=true;}}}catch{}}
+async function fetchCSS(){ const t=Date.now(); const r=await fetch(DEV_CSS_PATH+'?t='+t,{cache:'no-store'}); return r.text(); }
+async function update(){ try{ const css=await fetchCSS(); if(css!==lastCSS){ ensure().textContent=css; disableLink(); lastCSS=css; } }catch{} }
+update();
+if(import.meta.hot){ import.meta.hot.on('stylex:css-update',()=>update()); import.meta.hot.on('vite:afterUpdate',()=>setTimeout(()=>update(),AFTER_UPDATE_DELAY)); import.meta.hot.dispose(()=>{ const el=document.getElementById(STYLE_ID); if(el&&el.parentNode)el.parentNode.removeChild(el); }); }
+export {};
+`;
+        }
+        return null;
+      },
+
+      // No Vite virtual module hooks are needed now
+
       transformIndexHtml() {
         if (!viteServer) return null;
-        // Inject a stylesheet link to the served virtual CSS path for dev
         return [
+          {
+            tag: 'script',
+            attrs: { type: 'module', src: '/@id/virtual:stylex:runtime' },
+            injectTo: 'head',
+          },
           {
             tag: 'link',
             attrs: { rel: 'stylesheet', href: DEV_CSS_PATH },
@@ -263,16 +407,17 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
         ];
       },
       handleHotUpdate(ctx) {
-        // Send a CSS update event; return original modules to preserve JS HMR
+        // Do not alter Vite's module list; preserve JS HMR.
+        // Invalidate CSS module and notify runtime to refetch.
+        const cssMod = ctx.server.moduleGraph.getModuleById(
+          'virtual:stylex:css-module',
+        );
+        if (cssMod) {
+          ctx.server.moduleGraph.invalidateModule(cssMod);
+        }
         try {
-          ctx.server.ws.send({
-            type: 'update',
-            updates: [
-              { type: 'css-update', path: DEV_CSS_PATH, timestamp: Date.now() },
-            ],
-          });
+          ctx.server.ws.send({ type: 'custom', event: 'stylex:css-update' });
         } catch {}
-        return ctx.modules;
       },
     },
 
@@ -332,6 +477,63 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
       // Delegate to webpack(compiler)
       this.webpack?.(compiler);
     },
+
+    async writeBundle(options, bundle) {
+      // Final safeguard to ensure CSS ends up in the written asset on disk
+      try {
+        const css = collectCss();
+        if (!css) return;
+        const target = pickCssAssetFromRollupBundle(bundle, cssInjectionTarget);
+        const outDir =
+          options?.dir ||
+          (options?.file ? path.dirname(options.file) : viteOutDir);
+        if (!outDir) return;
+        // ensure outDir exists
+        try {
+          await fsp.mkdir(outDir, { recursive: true });
+        } catch {}
+        let outfile;
+        if (!target) {
+          // If rollup bundle didn't expose CSS asset, try finding one on disk now
+          try {
+            const assetsDir = path.join(outDir, 'assets');
+            if (fs.existsSync(assetsDir)) {
+              const files = fs
+                .readdirSync(assetsDir)
+                .filter((f) => f.endsWith('.css'));
+              const pick =
+                files.find((f) => /(^|\/)index\.css$/.test(f)) ||
+                files.find((f) => /(^|\/)style\.css$/.test(f)) ||
+                files[0];
+              if (pick) outfile = path.join(assetsDir, pick);
+            }
+          } catch {}
+          // If still not found, emit a standalone stylex.css
+          if (!outfile) {
+            const fallback = path.join(outDir, 'stylex.css');
+            if (!fs.existsSync(fallback)) {
+              await fsp.writeFile(fallback, css, 'utf8');
+            }
+            return;
+          }
+        } else {
+          outfile = path.join(outDir, target.fileName);
+        }
+        // Append to chosen outfile if not already present
+        try {
+          const current = fs.readFileSync(outfile, 'utf8');
+          if (!current.includes(css)) {
+            await fsp.writeFile(
+              outfile,
+              current ? current + '\n' + css : css,
+              'utf8',
+            );
+          }
+        } catch {}
+      } catch {}
+    },
+
+    // No-op closeBundle; all file writes handled in writeBundle
   };
 });
 

@@ -8,15 +8,18 @@ export function ClientCounter() {
 
   return (
     <button
-      {...stylex.props(styles.button)}
+      {...stylex.props(styles.base, styles.button)}
       onClick={() => setCount((count) => count + 1)}
     >
-      Client Component Counter: {count}
+      Client Counter: {count}
     </button>
   );
 }
 
 const styles = stylex.create({
+  base: {
+    backgroundColor: 'orange',
+  },
   button: {
     borderRadius: 8,
     borderWidth: 1,
@@ -26,7 +29,7 @@ const styles = stylex.create({
     fontSize: '1em',
     fontWeight: 500,
     fontFamily: 'inherit',
-    backgroundColor: 'green',
+    backgroundColor: 'tomato',
     color: 'white',
     cursor: 'pointer',
     transitionProperty: 'border-color',
