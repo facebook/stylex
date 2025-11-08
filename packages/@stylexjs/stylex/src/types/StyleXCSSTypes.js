@@ -951,7 +951,6 @@ export type SupportedVendorSpecificCSSProperties = $ReadOnly<{
 export type CSSProperties = $ReadOnly<{
   // NOTE: adding a non-CSS property here for support themes in Stylex.
   theme?: all | string,
-  marker?: string,
 
   // ...$Exact<SupportedVendorSpecificCSSProperties>, for TypeScript compatibility
   MozOsxFontSmoothing?: all | 'grayscale',
