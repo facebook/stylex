@@ -395,13 +395,14 @@ export {};
               server.httpServer?.once('close', () => clearInterval(interval));
             },
             resolveId(id) {
-              if (devMode !== 'full') return null;
-              if (id === 'virtual:stylex:runtime') return id;
+              if (devMode === 'full' && id === 'virtual:stylex:runtime')
+                return id;
+              if (devMode === 'css-only' && id === 'virtual:stylex:css-only')
+                return id;
               return null;
             },
             load(id) {
-              if (devMode !== 'full') return null;
-              if (id === 'virtual:stylex:runtime') {
+              if (devMode === 'full' && id === 'virtual:stylex:runtime') {
                 return `
 const STYLE_ID='__stylex_virtual__';
 const DEV_CSS_PATH='${DEV_CSS_PATH}';
@@ -413,6 +414,16 @@ async function fetchCSS(){ const t=Date.now(); const r=await fetch(DEV_CSS_PATH+
 async function update(){ try{ const css=await fetchCSS(); if(css!==lastCSS){ ensure().textContent=css; disableLink(); lastCSS=css; } }catch{} }
 update();
 if(import.meta.hot){ import.meta.hot.on('stylex:css-update',()=>update()); import.meta.hot.on('vite:afterUpdate',()=>setTimeout(()=>update(),AFTER_UPDATE_DELAY)); import.meta.hot.dispose(()=>{ const el=document.getElementById(STYLE_ID); if(el&&el.parentNode)el.parentNode.removeChild(el); }); }
+export {};
+`;
+              }
+              if (devMode === 'css-only' && id === 'virtual:stylex:css-only') {
+                return `
+const DEV_CSS_PATH='${DEV_CSS_PATH}';
+function bust(){try{const links=[...document.querySelectorAll('link[rel="stylesheet"]')];for(const l of links){if(typeof l.href==='string'&&l.href.includes(DEV_CSS_PATH)){const u=new URL(l.href, location.origin);u.searchParams.set('t', String(Date.now()));l.href=u.pathname+u.search;}}}catch{}}
+// initial attempt to ensure we have a fresh version after client connects
+if (document.readyState !== 'loading') bust(); else document.addEventListener('DOMContentLoaded', bust);
+if (import.meta.hot){ import.meta.hot.on('stylex:css-update', () => bust()); }
 export {};
 `;
               }
