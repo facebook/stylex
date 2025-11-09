@@ -72,6 +72,8 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     // Persist rules to disk in dev to bridge multiple plugin containers/processes.
     // Off by default; enable if your dev setup runs separate Node processes per environment.
     devPersistToDisk = false,
+    // Dev integration mode: 'full' (runtime + html), 'css-only' (serve CSS endpoint only), 'off'
+    devMode = 'full',
     ...stylexOptions
   } = userOptions;
 
@@ -128,13 +130,23 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     return result;
   }
 
+  function escapeReg(src) {
+    return src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function containsStylexImport(code, source) {
+    const s = escapeReg(typeof source === 'string' ? source : source.from);
+    const re = new RegExp(
+      // import ... from 'source' | import('source') | require('source') | import 'source'
+      `(?:from\\s*['"]${s}['"]|import\\s*\\(\\s*['"]${s}['"]\\s*\\)|require\\s*\\(\\s*['"]${s}['"]\\s*\\)|^\\s*import\\s*['"]${s}['"])`,
+      'm',
+    );
+    return re.test(code);
+  }
+
   function shouldHandle(code) {
     if (!code) return false;
-    return importSources.some((importName) =>
-      typeof importName === 'string'
-        ? code.includes(importName)
-        : code.includes(importName.from),
-    );
+    return importSources.some((src) => containsStylexImport(code, src));
   }
 
   function resetState() {
@@ -185,6 +197,14 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
 
   return {
     name: '@stylexjs/unplugin',
+    apply: (config, env) => {
+      try {
+        const command =
+          env?.command || (typeof config === 'string' ? undefined : undefined);
+        if (devMode === 'off' && command === 'serve') return false;
+      } catch {}
+      return true;
+    },
     // Ensure we run before React refresh transforms so HMR stays intact
     enforce: 'pre',
 
@@ -289,21 +309,25 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     },
 
     // Vite: dev virtual modules + HMR
-    vite: {
-      configResolved(config) {
-        try {
-          viteOutDir = config.build?.outDir || viteOutDir;
-        } catch {}
-      },
-      configureServer(server) {
-        viteServer = server;
-        // Serve dev runtime script
-        server.middlewares.use((req, res, next) => {
-          if (!req.url) return next();
-          if (req.url.startsWith(DEV_RUNTIME_PATH)) {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/javascript');
-            res.end(`
+    vite:
+      devMode === 'off'
+        ? undefined
+        : {
+            configResolved(config) {
+              try {
+                viteOutDir = config.build?.outDir || viteOutDir;
+              } catch {}
+            },
+            configureServer(server) {
+              viteServer = server;
+              if (devMode === 'full') {
+                // Serve dev runtime script
+                server.middlewares.use((req, res, next) => {
+                  if (!req.url) return next();
+                  if (req.url.startsWith(DEV_RUNTIME_PATH)) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/javascript');
+                    res.end(`
 const STYLE_ID='__stylex_virtual__';
 const DEV_CSS_PATH='${DEV_CSS_PATH}';
 const AFTER_UPDATE_DELAY=180; // ms
@@ -335,44 +359,50 @@ if(import.meta.hot){
 }
 export {};
 `);
-            return;
-          }
-          next();
-        });
-        // Serve dev CSS payload
-        server.middlewares.use((req, res, next) => {
-          if (!req.url) return next();
-          if (req.url.startsWith(DEV_CSS_PATH)) {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'text/css');
-            res.setHeader('Cache-Control', 'no-store');
-            const css = collectCss();
-            res.end(css || '');
-            return;
-          }
-          next();
-        });
-        // Poll shared store to emit HMR custom event
-        const shared = getSharedStore();
-        let lastVersion = shared.version;
-        const interval = setInterval(() => {
-          const curr = shared.version;
-          if (curr !== lastVersion) {
-            lastVersion = curr;
-            try {
-              server.ws.send({ type: 'custom', event: 'stylex:css-update' });
-            } catch {}
-          }
-        }, 150);
-        server.httpServer?.once('close', () => clearInterval(interval));
-      },
-      resolveId(id) {
-        if (id === 'virtual:stylex:runtime') return id;
-        return null;
-      },
-      load(id) {
-        if (id === 'virtual:stylex:runtime') {
-          return `
+                    return;
+                  }
+                  next();
+                });
+              }
+              // Serve dev CSS payload (used by both 'full' and 'css-only' modes)
+              server.middlewares.use((req, res, next) => {
+                if (!req.url) return next();
+                if (req.url.startsWith(DEV_CSS_PATH)) {
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'text/css');
+                  res.setHeader('Cache-Control', 'no-store');
+                  const css = collectCss();
+                  res.end(css || '');
+                  return;
+                }
+                next();
+              });
+              // Poll shared store to emit HMR custom event
+              const shared = getSharedStore();
+              let lastVersion = shared.version;
+              const interval = setInterval(() => {
+                const curr = shared.version;
+                if (curr !== lastVersion) {
+                  lastVersion = curr;
+                  try {
+                    server.ws.send({
+                      type: 'custom',
+                      event: 'stylex:css-update',
+                    });
+                  } catch {}
+                }
+              }, 150);
+              server.httpServer?.once('close', () => clearInterval(interval));
+            },
+            resolveId(id) {
+              if (devMode !== 'full') return null;
+              if (id === 'virtual:stylex:runtime') return id;
+              return null;
+            },
+            load(id) {
+              if (devMode !== 'full') return null;
+              if (id === 'virtual:stylex:runtime') {
+                return `
 const STYLE_ID='__stylex_virtual__';
 const DEV_CSS_PATH='${DEV_CSS_PATH}';
 const AFTER_UPDATE_DELAY=${DEV_AFTER_UPDATE_DELAY};
@@ -385,41 +415,45 @@ update();
 if(import.meta.hot){ import.meta.hot.on('stylex:css-update',()=>update()); import.meta.hot.on('vite:afterUpdate',()=>setTimeout(()=>update(),AFTER_UPDATE_DELAY)); import.meta.hot.dispose(()=>{ const el=document.getElementById(STYLE_ID); if(el&&el.parentNode)el.parentNode.removeChild(el); }); }
 export {};
 `;
-        }
-        return null;
-      },
+              }
+              return null;
+            },
 
-      // No Vite virtual module hooks are needed now
+            // No Vite virtual module hooks are needed now
 
-      transformIndexHtml() {
-        if (!viteServer) return null;
-        return [
-          {
-            tag: 'script',
-            attrs: { type: 'module', src: '/@id/virtual:stylex:runtime' },
-            injectTo: 'head',
+            transformIndexHtml() {
+              if (devMode !== 'full') return null;
+              if (!viteServer) return null;
+              return [
+                {
+                  tag: 'script',
+                  attrs: { type: 'module', src: '/@id/virtual:stylex:runtime' },
+                  injectTo: 'head',
+                },
+                {
+                  tag: 'link',
+                  attrs: { rel: 'stylesheet', href: DEV_CSS_PATH },
+                  injectTo: 'head',
+                },
+              ];
+            },
+            handleHotUpdate(ctx) {
+              // Do not alter Vite's module list; preserve JS HMR.
+              // Invalidate CSS module and notify runtime to refetch.
+              const cssMod = ctx.server.moduleGraph.getModuleById(
+                'virtual:stylex:css-module',
+              );
+              if (cssMod) {
+                ctx.server.moduleGraph.invalidateModule(cssMod);
+              }
+              try {
+                ctx.server.ws.send({
+                  type: 'custom',
+                  event: 'stylex:css-update',
+                });
+              } catch {}
+            },
           },
-          {
-            tag: 'link',
-            attrs: { rel: 'stylesheet', href: DEV_CSS_PATH },
-            injectTo: 'head',
-          },
-        ];
-      },
-      handleHotUpdate(ctx) {
-        // Do not alter Vite's module list; preserve JS HMR.
-        // Invalidate CSS module and notify runtime to refetch.
-        const cssMod = ctx.server.moduleGraph.getModuleById(
-          'virtual:stylex:css-module',
-        );
-        if (cssMod) {
-          ctx.server.moduleGraph.invalidateModule(cssMod);
-        }
-        try {
-          ctx.server.ws.send({ type: 'custom', event: 'stylex:css-update' });
-        } catch {}
-      },
-    },
 
     // webpack/rspack integration
     webpack(compiler) {

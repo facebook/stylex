@@ -14,7 +14,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <title>@redwoodjs/starter-minimal</title>
+      <title>@redwoodjs/starter-stylex</title>
       {/* Optional: load display fonts used in the welcome page */}
       <link
         rel="preconnect"
@@ -30,6 +30,10 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
         href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap"
         rel="stylesheet"
       />
+      {/* Dev: request StyleX aggregated CSS from the dev endpoint */}
+      {import.meta.env.DEV ? (
+        <link rel="stylesheet" href="/virtual:stylex.css" />
+      ) : null}
       {import.meta.env.PROD ? (
         <link rel="stylesheet" href="/client/assets/stylex.css" />
       ) : null}

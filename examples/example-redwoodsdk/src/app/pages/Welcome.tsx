@@ -1,12 +1,12 @@
-"use client";
+'use client';
 /**
  * This is a minimal welcome page for the starter.
  *
  * _Feel free to delete this file_
  **/
 
-import { useState } from "react";
-import * as stylex from "@stylexjs/stylex";
+import { useState } from 'react';
+import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   container: {
@@ -22,7 +22,7 @@ const styles = stylex.create({
   },
   header: { marginBottom: 64 },
   title: {
-    fontFamily: "Playfair Display, serif",
+    fontFamily: 'Playfair Display, serif',
     fontSize: 64,
     fontWeight: 700,
     lineHeight: 0.9,
@@ -36,7 +36,7 @@ const styles = stylex.create({
   },
   section: { marginBottom: 64 },
   sectionTitle: {
-    fontFamily: "Playfair Display, serif",
+    fontFamily: 'Playfair Display, serif',
     fontSize: 40,
     fontWeight: 700,
     marginBottom: 16,
@@ -60,7 +60,8 @@ const styles = stylex.create({
     color: '#ffad48',
     padding: 16,
     borderRadius: 8,
-    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontFamily:
+      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     fontSize: 20,
     display: 'flex',
     alignItems: 'center',
@@ -87,7 +88,7 @@ export const Welcome = () => {
   return (
     <div {...stylex.props(styles.container)}>
       <header {...stylex.props(styles.header)}>
-        <h1 {...stylex.props(styles.title)}>Welcome to RedwoodSDK</h1>
+        <h1 {...stylex.props(styles.title)}>Welcome to RedwoodSDK x StyleX</h1>
         <p {...stylex.props(styles.subtitle)}>
           You’ve just installed the starter project. Here’s what to do next.
         </p>
@@ -98,7 +99,7 @@ export const Welcome = () => {
           <h2 {...stylex.props(styles.sectionTitle)}>Next steps</h2>
           <ol {...stylex.props(styles.list)}>
             <li {...stylex.props(styles.listItem)}>
-              Read the{" "}
+              Read the{' '}
               <a
                 href="https://docs.rwsdk.com/getting-started/quick-start/"
                 target="_blank"
@@ -106,11 +107,11 @@ export const Welcome = () => {
                 {...stylex.props(styles.link)}
               >
                 Quick Start
-              </a>{" "}
+              </a>{' '}
               to learn the basics.
             </li>
             <li {...stylex.props(styles.listItem)}>
-              Explore React Server Components and Server Functions in the{" "}
+              Explore React Server Components and Server Functions in the{' '}
               <a
                 href="https://docs.rwsdk.com/"
                 target="_blank"
@@ -140,7 +141,7 @@ export const Welcome = () => {
             <Copy textToCopy="pnpm release" />
           </div>
           <p>
-            Need more detail? Read the{" "}
+            Need more detail? Read the{' '}
             <a
               href="https://docs.rwsdk.com/core/hosting/"
               target="_blank"
@@ -169,7 +170,7 @@ const Copy = ({ textToCopy }: { textToCopy: string }) => {
 
   return (
     <button onClick={handleCopy} {...stylex.props(styles.copyButton)}>
-      {copied ? "Copied!" : "Copy"}
+      {copied ? 'Copied!' : 'Copy'}
     </button>
   );
 };
