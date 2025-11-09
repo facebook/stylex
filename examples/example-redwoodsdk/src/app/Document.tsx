@@ -2,6 +2,9 @@ import './root.css';
 import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
+  html: {
+    backgroundColor: '#f4eedf',
+  },
   body: {
     margin: 0,
   },
@@ -10,7 +13,7 @@ const styles = stylex.create({
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
-  <html lang="en">
+  <html {...stylex.props(styles.html)} lang="en">
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />

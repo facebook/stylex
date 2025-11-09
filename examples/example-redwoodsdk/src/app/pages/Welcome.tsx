@@ -16,7 +16,6 @@ const styles = stylex.create({
     paddingInline: 32,
     fontFamily:
       "Noto Sans, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'",
-    backgroundColor: '#f4eedf',
     color: '#1a1a1a',
     minHeight: '100vh',
   },
