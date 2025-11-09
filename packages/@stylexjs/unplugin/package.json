@@ -9,7 +9,8 @@
   "types": "./lib/index.d.ts",
   "exports": {
     "import": "./lib/es/index.mjs",
-    "require": "./lib/index.js"
+    "require": "./lib/index.js",
+    "types": "./lib/index.d.ts"
   },
   "keywords": [
     "stylex",
