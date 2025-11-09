@@ -101,7 +101,27 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
 
   let viteServer = null;
   let viteOutDir = null;
-  const DISK_RULES_PATH = path.join(process.cwd(), '.stylex-rules.json');
+  // Resolve nearest node_modules and cache under node_modules/.stylex/rules.json
+  function findNearestNodeModules(startDir) {
+    let dir = startDir;
+    // Walk upwards until we find a node_modules directory or hit the FS root
+    for (;;) {
+      const candidate = path.join(dir, 'node_modules');
+      if (fs.existsSync(candidate)) {
+        const stat = fs.statSync(candidate);
+        if (stat.isDirectory()) return candidate;
+      }
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+    return null;
+  }
+  const NEAREST_NODE_MODULES = findNearestNodeModules(process.cwd());
+  const DISK_RULES_DIR = NEAREST_NODE_MODULES
+    ? path.join(NEAREST_NODE_MODULES, '.stylex')
+    : path.join(process.cwd(), 'node_modules', '.stylex');
+  const DISK_RULES_PATH = path.join(DISK_RULES_DIR, 'rules.json');
 
   async function runBabelTransform(inputCode, id, callerName) {
     const result = await transformAsync(inputCode, {
@@ -156,6 +176,11 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
 
   function resetState() {
     stylexRulesById.clear();
+    if (devPersistToDisk) {
+      try {
+        fs.rmSync(DISK_RULES_PATH, { force: true });
+      } catch {}
+    }
   }
 
   function collectCss() {

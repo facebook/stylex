@@ -5,6 +5,7 @@ import './app/root.css';
 import { Document } from '@/app/Document';
 import { setCommonHeaders } from '@/app/headers';
 import { Home } from '@/app/pages/Home';
+import { Counter } from './app/pages/Counter';
 
 export type AppContext = {};
 
@@ -14,5 +15,5 @@ export default defineApp([
     // setup ctx here
     ctx;
   },
-  render(Document, [route('/', Home)]),
+  render(Document, [route('/', Home), route('/counter', Counter)]),
 ]);
