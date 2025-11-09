@@ -49,7 +49,7 @@ declare export class Image<+T: InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Integer<+T: number> implements ICSSType<T> {
+declare export class Integer<+T: InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
@@ -65,7 +65,7 @@ declare export class Percentage<+T: InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Num<+T: number> implements ICSSType<T> {
+declare export class Num<+T: InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
