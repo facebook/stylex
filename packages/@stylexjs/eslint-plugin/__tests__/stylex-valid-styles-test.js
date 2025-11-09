@@ -1841,19 +1841,9 @@ const styles = stylex.create({
           message: /^fontWeight value must be one of:\n/,
         },
         {
-          message:
-            'The key "marginStart" is not a standard CSS property. Did you mean "marginInlineStart"?',
+          message: 'This is not a key that is allowed by stylex',
         },
       ],
-      output: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          ternaryWithInvalidType: (condition) => ({
-            fontWeight: condition ? sasasa : 'bold',
-            marginInlineStart: condition ? '10px' : '20px',
-          }),
-        });
-      `,
     },
   ],
 });
