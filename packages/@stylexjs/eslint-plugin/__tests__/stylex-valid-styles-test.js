@@ -772,6 +772,108 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
+    // test for ternary and logical expressions
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          basicTernary: (condition) => ({
+            color: condition ? 'blue' : 'red',
+            display: condition ? 'block' : 'none',
+            fontSize: condition ? '10px' : '20px',
+            fontWeight: condition ? 'bold' : 'normal',
+            opacity: condition ? 0.5 : 1,
+            zIndex: condition ? 10 + 10 : Math.max(10, 20),
+          }),
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'blue';
+        const sizeSmall = '10px';
+        const sizeMedium = '20px';
+        const sizeLarge = '30px';
+        const styles = stylex.create({
+          ternaryWithVars: (condition) => ({
+            fontSize: condition ? sizeSmall : sizeMedium,
+          }),
+          nestedTernaryWithVars: (conditionA, conditionB) => ({
+            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+            fontSize: conditionA ? sizeSmall : conditionB ? sizeMedium : sizeLarge,
+          }),
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'blue';
+        const styles = stylex.create({
+          nestedTernaryWithVars: (conditionA, conditionB) => ({
+            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+            fontSize: conditionA ? 14 : conditionB ? 16 : 18,
+            opacity: conditionA ? 0.5 : conditionB ? 1 : 0.2,
+          }),
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const condition = true;
+        const styles = stylex.create({
+          default: {
+            width: condition ? '50%' : '100%',
+            '@media (max-width: 600px)': {
+              width: condition ? '100%' : '200%',
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const condition = true;
+        const styles = stylex.create({
+          default: {
+            float: condition ? 'inline-start' : 'inline-end',
+            clear: condition ? 'inline-start' : 'left',
+          }
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          emptyString: (condition) => ({
+            '::before': {
+              content: condition ? '""' : '"*"',
+            },
+          })
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const zIndexConst = 10;
+        const widthConst = 0;
+        const widthConst2 = 3;
+        const isMobile = false;
+        const styles = stylex.create({
+          container: {
+            color: "blue" || "green",
+            zIndex: zIndexConst ?? 10,
+            width: isMobile ? (widthConst || "100%") : (widthConst2 ?? "200%"),
+          }
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -1603,6 +1705,143 @@ revert`,
             'inherit\n' +
             'unset\n' +
             'revert',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'start',
+            clear: 'start',
+          },
+          bar: {
+            float: 'end',
+            clear: 'end',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+        },
+        {
+          message:
+            'The value "start" is not a standard CSS value for "clear". Did you mean "inline-start"?',
+        },
+        {
+          message:
+            'The value "end" is not a standard CSS value for "float". Did you mean "inline-end"?',
+        },
+        {
+          message:
+            'The value "end" is not a standard CSS value for "clear". Did you mean "inline-end"?',
+        },
+      ],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            float: 'inline-start',
+            clear: 'inline-start',
+          },
+          bar: {
+            float: 'inline-end',
+            clear: 'inline-end',
+          }
+        });
+      `,
+    },
+    // test for ternary and logical expressions
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          ternaryWithBasicInvalidStyles: (condition) => ({
+            color: condition ? 'red' : 123,
+            fontSize: condition ? true : '10px',
+            transition: condition ? 'transform 1s' : ' ',
+            zIndex: condition ?? 'red',
+            display: 'invalid-display' || 'block',
+          }),
+        });
+      `,
+      errors: [
+        {
+          message: /^color value must be one of:\n/,
+        },
+        {
+          message: /^fontSize value must be one of:\n/,
+        },
+        {
+          message: 'The empty string is not allowed by Stylex.',
+        },
+        {
+          message: /^zIndex value must be one of:\n/,
+        },
+        {
+          message: /^display value must be one of:\n/,
+        },
+      ],
+    },
+    {
+      code: `import * as stylex from '@stylexjs/stylex';
+const styles = stylex.create({
+  ternaryWithBasicInvalidStyles: (condition) => ({
+    float: condition ? 'start' : 'inline-end',
+  }),
+});`,
+      errors: [
+        {
+          message:
+            'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+          suggestions: [
+            {
+              desc: 'Replace "start" with "inline-start"?',
+            },
+          ],
+        },
+      ],
+      output: `import * as stylex from '@stylexjs/stylex';
+const styles = stylex.create({
+  ternaryWithBasicInvalidStyles: (condition) => ({
+    float: condition ? 'inline-start' : 'inline-end',
+  }),
+});`,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          nestedInvalidStyles: (conditionA, conditionB) => ({
+            display: conditionA ?  conditionB ? 'grid' : 'invalid-display' : 'block',
+          }),
+        });
+      `,
+      errors: [
+        {
+          message: /^display value must be one of:\n/,
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          ternaryWithInvalidType: (condition) => ({
+            fontWeight: condition ? sasasa : 'bold',
+            marginStart: condition ? '10px' : '20px',
+          }),
+        });
+      `,
+      errors: [
+        {
+          message: /^fontWeight value must be one of:\n/,
+        },
+        {
+          message: 'This is not a key that is allowed by stylex',
         },
       ],
     },
