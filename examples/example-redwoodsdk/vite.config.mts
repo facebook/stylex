@@ -9,6 +9,12 @@ export default defineConfig({
       viteEnvironment: { name: 'worker' },
     }),
     redwood(),
-    stylex.vite(),
+    stylex.vite({
+      // Keep transforms on in dev, but only expose the CSS endpoint (no runtime/HTML injection)
+      devMode: 'css-only',
+      devPersistToDisk: true,
+      dev: true,
+      runtimeInjection: false,
+    }),
   ],
 });
