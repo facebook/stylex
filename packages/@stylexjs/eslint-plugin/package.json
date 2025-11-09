@@ -16,6 +16,7 @@
     "test": "jest --detectOpenHandles --coverage"
   },
   "dependencies": {
+    "@stylexjs/shared": "0.16.3",
     "css-shorthand-expand": "^1.2.0",
     "micromatch": "^4.0.5",
     "postcss-value-parser": "^4.2.0"

@@ -55,6 +55,7 @@ function isValidOrder(
   const curr = getPropertyPriorityAndType(currName, order);
 
   if (prev.type !== 'string' || curr.type !== 'string') {
+    if (prev.priority === curr.priority) return prevName <= currName;
     return prev.priority <= curr.priority;
   }
 

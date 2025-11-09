@@ -19,6 +19,7 @@ module.use_strict=true
 munge_underscores=true
 module.name_mapper='^@stylexjs/babel-plugin$' -> '<PROJECT_ROOT>/packages/@stylexjs/babel-plugin/src/index.js'
 module.name_mapper='^@stylexjs/stylex$' -> '<PROJECT_ROOT>/packages/@stylexjs/stylex/src/stylex.js'
+module.name_mapper='^@stylexjs/shared$' -> '<PROJECT_ROOT>/packages/@stylexjs/shared/src/index.js'
 module.name_mapper='^style-value-parser$' -> '<PROJECT_ROOT>/packages/style-value-parser/src/index.js'
 ; type-stubs
 module.system.node.resolve_dirname=flow_modules
