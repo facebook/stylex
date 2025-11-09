@@ -20,6 +20,13 @@ import { transform as lightningTransform } from 'lightningcss';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
 
+import { devInjectMiddleware } from './dev-inject-middleware';
+import {
+  DEV_CSS_PATH,
+  VIRTUAL_STYLEX_RUNTIME_SCRIPT,
+  VIRTUAL_STYLEX_CSS_ONLY_SCRIPT,
+} from './consts';
+
 /**
  * Try to pick a stable CSS asset to inject into.
  * - Prefer files named like `style.css` or `index.css`
@@ -91,9 +98,7 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
       return { rulesById: stylexRulesById, version: 0 };
     }
   }
-  const DEV_CSS_PATH = '/virtual:stylex.css';
-  const DEV_RUNTIME_PATH = '/virtual:stylex.js';
-  const DEV_AFTER_UPDATE_DELAY = 180; // ms
+
   let viteServer = null;
   let viteOutDir = null;
   const DISK_RULES_PATH = path.join(process.cwd(), '.stylex-rules.json');
@@ -322,47 +327,7 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
               viteServer = server;
               if (devMode === 'full') {
                 // Serve dev runtime script
-                server.middlewares.use((req, res, next) => {
-                  if (!req.url) return next();
-                  if (req.url.startsWith(DEV_RUNTIME_PATH)) {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/javascript');
-                    res.end(`
-const STYLE_ID='__stylex_virtual__';
-const DEV_CSS_PATH='${DEV_CSS_PATH}';
-const AFTER_UPDATE_DELAY=180; // ms
-const POLL_INTERVAL=800; // ms
-let lastCSS='';
-function ensure(){let el=document.getElementById(STYLE_ID);if(!el){el=document.createElement('style');el.id=STYLE_ID;document.head.appendChild(el);}return el;}
-function disableLink(){try{const links=[...document.querySelectorAll('link[rel=\\"stylesheet\\"]')];for(const l of links){if(typeof l.href==='string'&&l.href.includes(DEV_CSS_PATH)){l.disabled=true;}}}catch{}}
-async function fetchCSS(){
-  const t=Date.now();
-  const r=await fetch(DEV_CSS_PATH+'?t='+t,{cache:'no-store'});
-  return r.text();
-}
-async function update(){
-  try{
-    const css=await fetchCSS();
-    if(css!==lastCSS){
-      ensure().textContent=css;
-      disableLink();
-      lastCSS=css;
-    }
-  }catch{}
-}
-update();
-// const __stylex_poll = setInterval(()=>update(), POLL_INTERVAL);
-if(import.meta.hot){
-  import.meta.hot.on('stylex:css-update',()=>update());
-  import.meta.hot.on('vite:afterUpdate',()=>setTimeout(()=>update(),AFTER_UPDATE_DELAY));
-  // import.meta.hot.dispose(()=>{ clearInterval(__stylex_poll); const el=document.getElementById(STYLE_ID); if(el&&el.parentNode)el.parentNode.removeChild(el); });
-}
-export {};
-`);
-                    return;
-                  }
-                  next();
-                });
+                server.middlewares.use(devInjectMiddleware);
               }
               // Serve dev CSS payload (used by both 'full' and 'css-only' modes)
               server.middlewares.use((req, res, next) => {
@@ -403,29 +368,10 @@ export {};
             },
             load(id) {
               if (devMode === 'full' && id === 'virtual:stylex:runtime') {
-                return `
-const STYLE_ID='__stylex_virtual__';
-const DEV_CSS_PATH='${DEV_CSS_PATH}';
-const AFTER_UPDATE_DELAY=${DEV_AFTER_UPDATE_DELAY};
-let lastCSS='';
-function ensure(){let el=document.getElementById(STYLE_ID);if(!el){el=document.createElement('style');el.id=STYLE_ID;document.head.appendChild(el);}return el;}
-function disableLink(){try{const links=[...document.querySelectorAll('link[rel="stylesheet"]')];for(const l of links){if(typeof l.href==='string'&&l.href.includes(DEV_CSS_PATH)){l.disabled=true;}}}catch{}}
-async function fetchCSS(){ const t=Date.now(); const r=await fetch(DEV_CSS_PATH+'?t='+t,{cache:'no-store'}); return r.text(); }
-async function update(){ try{ const css=await fetchCSS(); if(css!==lastCSS){ ensure().textContent=css; disableLink(); lastCSS=css; } }catch{} }
-update();
-if(import.meta.hot){ import.meta.hot.on('stylex:css-update',()=>update()); import.meta.hot.on('vite:afterUpdate',()=>setTimeout(()=>update(),AFTER_UPDATE_DELAY)); import.meta.hot.dispose(()=>{ const el=document.getElementById(STYLE_ID); if(el&&el.parentNode)el.parentNode.removeChild(el); }); }
-export {};
-`;
+                return VIRTUAL_STYLEX_RUNTIME_SCRIPT;
               }
               if (devMode === 'css-only' && id === 'virtual:stylex:css-only') {
-                return `
-const DEV_CSS_PATH='${DEV_CSS_PATH}';
-function bust(){try{const links=[...document.querySelectorAll('link[rel="stylesheet"]')];for(const l of links){if(typeof l.href==='string'&&l.href.includes(DEV_CSS_PATH)){const u=new URL(l.href, location.origin);u.searchParams.set('t', String(Date.now()));l.href=u.pathname+u.search;}}}catch{}}
-// initial attempt to ensure we have a fresh version after client connects
-if (document.readyState !== 'loading') bust(); else document.addEventListener('DOMContentLoaded', bust);
-if (import.meta.hot){ import.meta.hot.on('stylex:css-update', () => bust()); }
-export {};
-`;
+                return VIRTUAL_STYLEX_CSS_ONLY_SCRIPT;
               }
               return null;
             },

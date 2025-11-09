@@ -1,3 +1,5 @@
+const isESM = process.env.BABEL_ENV === 'esm';
+
 module.exports = {
   assumptions: {
     iterableIsArray: true,
@@ -16,6 +18,10 @@ module.exports = {
     ],
     '@babel/preset-flow',
   ],
-  plugins: [['babel-plugin-syntax-hermes-parser', { flow: 'detect' }]],
+  plugins: [
+    ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
+    ...(isESM
+      ? [[require.resolve('./babel-plugins/add-mjs-extension.js'), { extension: '.mjs' }]]
+      : []),
+  ],
 };
-
