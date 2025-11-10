@@ -1,40 +1,58 @@
-# Vite + RSC
+# Vite + React Server Components + StyleX
 
-This example shows how to setup a React application with [Server Component](https://react.dev/reference/rsc/server-components) features on Vite using [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc).
+This example layers [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc) on top of React, while `@stylexjs/unplugin` compiles StyleX at build time. Each RSC/SSR/client environment receives a single CSS asset with the aggregated StyleX output appended.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc/examples/starter)
+### Prerequisites
+- Node.js 18+
+- Vite plus `@vitejs/plugin-rsc` and `@vitejs/plugin-react`
+- `@stylexjs/unplugin`
 
-```sh
-# run dev server
-npm run dev
+## Install dependencies
 
-# build for production and preview
-npm run build
-npm run preview
+```bash
+npm install
 ```
 
-## API usages
+## Vite configuration (`vite.config.ts`)
 
-See [`@vitejs/plugin-rsc`](https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-rsc) for the documentation.
+```ts
+import rsc from '@vitejs/plugin-rsc';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import stylex from '@stylexjs/unplugin';
 
-- [`vite.config.ts`](./vite.config.ts)
-  - `@higoawa/vite-rsc/plugin`
-- [`./src/framework/entry.rsc.tsx`](./src/framework/entry.rsc.tsx)
-  - `@vitejs/plugin-rsc/rsc`
-  - `import.meta.viteRsc.loadModule`
-- [`./src/framework/entry.ssr.tsx`](./src/framework/entry.ssr.tsx)
-  - `@vitejs/plugin-rsc/ssr`
-  - `import.meta.viteRsc.loadBootstrapScriptContent`
-  - `rsc-html-stream/server`
-- [`./src/framework/entry.browser.tsx`](./src/framework/entry.browser.tsx)
-  - `@vitejs/plugin-rsc/browser`
-  - `rsc-html-stream/client`
+export default defineConfig({
+  plugins: [
+    rsc({ /* RSC environment inputs configured below */ }),
+    react(),
+    stylex.vite(),
+  ],
+  environments: {
+    rsc:   { build: { rollupOptions: { input: { index: './src/framework/entry.rsc.tsx' } } } },
+    ssr:   { build: { rollupOptions: { input: { index: './src/framework/entry.ssr.tsx' } } } },
+    client:{ build: { rollupOptions: { input: { index: './src/framework/entry.browser.tsx' } } } },
+  },
+});
+```
 
-## Notes
+- `stylex.vite()` automatically runs for each environment, so every output bundle gets the correct CSS appended.
+- The example keeps the default plugin options, but you can pass `useCSSLayers`, custom import sources, etc. if needed.
 
-- [`./src/framework/entry.{browser,rsc,ssr}.tsx`](./src/framework) (with inline comments) provides an overview of how low level RSC (React flight) API can be used to build RSC framework.
-- You can use [`vite-plugin-inspect`](https://github.com/antfu-collective/vite-plugin-inspect) to understand how `"use client"` and `"use server"` directives are transformed internally.
+## CSS entry point (`src/index.css`)
 
-## Deployment
+The framework root imports `src/index.css` so each RSC build emits a CSS asset. During `npm run example:build`, the StyleX plugin appends the aggregated styles from both client and server components to that file.
 
-See [vite-plugin-rsc-deploy-example](https://github.com/hi-ogawa/vite-plugin-rsc-deploy-example)
+## Commands
+
+```bash
+# RSC-aware dev server with StyleX transforms
+npm run example:dev
+
+# Build all environments with aggregated StyleX CSS
+npm run example:build
+
+# Preview the production output
+npm run example:serve
+```
+
+Run the scripts from `examples/example-vite-rsc`. The generated `dist/` folder includes per-environment bundles whose CSS already contains the StyleX output.

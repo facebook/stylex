@@ -1,75 +1,49 @@
-# React + TypeScript + Vite
+# React + Vite + StyleX
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This example is a TypeScript-ready React project that runs on Vite while compiling StyleX through `@stylexjs/unplugin`. The plugin extracts StyleX styles at build time and appends them to the CSS emitted by Vite, so the browser only downloads a single stylesheet.
 
-Currently, two official plugins are available:
+### Prerequisites
+- Node.js 18+
+- [`vite`](https://vite.dev/) with `@vitejs/plugin-react`
+- `typescript` and `tsc -b` for type-checking the build
+- `@stylexjs/unplugin`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Install dependencies
 
-## React Compiler
-
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Vite configuration (`vite.config.ts`)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import stylex from '@stylexjs/unplugin';
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+export default defineConfig({
+  plugins: [stylex.vite(), react()],
+});
 ```
+
+- `stylex.vite()` runs before the React plugin to keep Fast Refresh intact.
+- The TypeScript-aware ESLint + compiler setup already points to the correct `tsconfigRootDir`, so no extra configuration is required.
+
+## CSS entry point (`src/index.css`)
+
+The root component imports `src/index.css`, ensuring that Vite emits a CSS file in both dev and build. During `npm run example:build`, the StyleX plugin appends its aggregated output to that asset (defaulting to `style.css`/`index.css`).
+
+## Commands
+
+```bash
+# HMR-ready dev server with StyleX transforms
+npm run example:dev
+
+# Type-check + Vite build + StyleX CSS aggregation
+npm run example:build
+
+# Preview the production build
+npm run example:serve
+```
+
+Use `npm run lint` for ESLint checks (StyleX lint rules are included). Run all commands from `examples/example-vite-react`.
