@@ -1,0 +1,26 @@
+{
+  "name": "example-waku",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "example:dev": "waku dev",
+    "example:build": "waku build",
+    "example:serve": "waku start"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "0.16.2",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-server-dom-webpack": "19.2.0",
+    "waku": "0.27.0"
+  },
+  "devDependencies": {
+    "@stylexjs/unplugin": "0.16.2",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "5.1.0",
+    "babel-plugin-react-compiler": "1.0.0",
+    "typescript": "5.9.3"
+  }
+}

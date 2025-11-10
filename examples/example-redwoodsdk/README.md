@@ -1,8 +1,11 @@
 # RedwoodSDK + StyleX
 
-This starter shows how RedwoodSDK’s Vite-based toolchain works with `@stylexjs/unplugin`. StyleX is compiled during dev and build, and the resulting CSS is appended to the worker/client assets that Redwood emits.
+This starter shows how RedwoodSDK’s Vite-based toolchain works with
+`@stylexjs/unplugin`. StyleX is compiled during dev and build, and the resulting
+CSS is appended to the worker/client assets that Redwood emits.
 
 ### Prerequisites
+
 - Node.js 18+
 - RedwoodSDK CLI (`rw-scripts`) plus `@cloudflare/vite-plugin`
 - `@stylexjs/unplugin`
@@ -35,12 +38,41 @@ export default defineConfig({
 });
 ```
 
-- `devMode: 'css-only'` exposes only the CSS endpoint during dev (Redwood handles HTML/JS injection).
-- `devPersistToDisk` makes the aggregated rules available across multiple Vite environments (worker + client).
+- `devMode: 'css-only'` exposes only the CSS endpoint during dev (Redwood
+  handles HTML/JS injection).
+- `devPersistToDisk` makes the aggregated rules available across multiple Vite
+  environments (worker + client).
 
 ## CSS entry point (`src/app/root.css`)
 
-`src/app/root.css` is imported by the app shell so Vite/Workers always emit a CSS asset. The StyleX plugin appends its generated CSS to that file, keeping your own `@layer` directives intact.
+`src/app/root.css` is imported by the app shell so Vite/Workers always emit a
+CSS asset. The StyleX plugin appends its generated CSS to that file, keeping
+your own `@layer` directives intact.
+
+## Dev-only CSS injection
+
+Because Redwood owns the HTML template, the document component explicitly links
+to the StyleX dev stylesheet and the client shim imports the virtual module to
+enable hot updates:
+
+```tsx
+// src/app/Document.tsx
+{
+  import.meta.env.DEV ? (
+    <link rel="stylesheet" href="/virtual:stylex.css" />
+  ) : null;
+}
+```
+
+```ts
+// src/client.tsx
+if (import.meta.env.DEV) {
+  import('virtual:stylex:css-only');
+}
+```
+
+Keep these hooks (or equivalent ones) in place; otherwise StyleX CSS will not
+appear during `npm run example:dev`.
 
 ## Commands
 
@@ -60,4 +92,5 @@ npm run worker:run
 npm run release   # builds via npm run example:build before deploying
 ```
 
-Execute these scripts inside `examples/example-redwoodsdk`. The generated `dist/` output already contains the aggregated StyleX CSS.
+Execute these scripts inside `examples/example-redwoodsdk`. The generated
+`dist/` output already contains the aggregated StyleX CSS.
