@@ -6,10 +6,14 @@
  *
  *
  */
+const fs = require('node:fs');
 const path = require('path');
+const templatePath = path.resolve(__dirname, 'index.html');
+const templateContent = () => fs.readFileSync(templatePath, 'utf-8');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const stylex = require('@stylexjs/unplugin').default;
 
 const config = (env, argv) => {
   const isHot = argv.hot;
@@ -24,6 +28,7 @@ const config = (env, argv) => {
       static: {
         directory: path.resolve(__dirname, 'dist'),
       },
+      watchFiles: [templatePath, path.resolve(__dirname, 'src/**/*')],
     },
     module: {
       rules: [
@@ -43,7 +48,7 @@ const config = (env, argv) => {
         },
         {
           test: /\.(css)$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.svg$/i,
@@ -58,7 +63,10 @@ const config = (env, argv) => {
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
-        template: path.resolve(__dirname, 'index.html'),
+        templateContent,
+      }),
+      stylex.webpack({
+        useCSSLayers: true,
       }),
       new MiniCssExtractPlugin(),
       isHot && new ReactRefreshWebpackPlugin(),

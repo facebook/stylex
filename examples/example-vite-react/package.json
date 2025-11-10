@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "@stylexjs/stylex": "0.16.2"
+    "@stylexjs/stylex": "0.16.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
@@ -20,7 +20,7 @@
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
-    "@stylexjs/unplugin": "0.16.2",
+    "@stylexjs/unplugin": "0.16.3",
     "babel-plugin-react-compiler": "^19.1.0-rc.3",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",

@@ -22,14 +22,14 @@
     "types": "tsc"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.16.2",
+    "@stylexjs/stylex": "0.16.3",
     "react": "19.3.0-canary-561ee24d-20251101",
     "react-dom": "19.3.0-canary-561ee24d-20251101",
     "react-server-dom-webpack": "19.3.0-canary-561ee24d-20251101",
     "rwsdk": "1.0.0-beta.26"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "0.16.2",
+    "@stylexjs/unplugin": "0.16.3",
     "@cloudflare/vite-plugin": "1.13.18",
     "@cloudflare/workers-types": "4.20251014.0",
     "@types/node": "~24.5.2",

@@ -1,18 +1,24 @@
 # Webpack Example with StyleX
 
-This example demonstrates how to configure StyleX with Webpack for a React application. This example uses `@stylexjs/babel-plugin` and `@stylexjs/postcss-plugin` to process StyleX code at build time.
+This example demonstrates how to configure StyleX with Webpack for a React
+application using `@stylexjs/unplugin`. The unplugin compiles StyleX at build
+time, aggregates the CSS, and appends it to a CSS asset emitted by Webpack.
 
 ### Prerequisites
-Set up the following dependencies:
-- PostCSS: https://webpack.js.org/loaders/postcss-loader/
-- Babel: https://webpack.js.org/loaders/babel-loader/
+
+Set up the following tooling:
+
+- MiniCssExtractPlugin (or another CSS extractor) so Webpack produces a CSS
+  asset for StyleX to append to.
+- A CSS file that is imported for every route of your app which contains any
+  global styles such as a CSS reset.
 
 ## Overview
 
 This setup includes:
-- **Webpack** for bundling
-- **Babel** for JavaScript/JSX transformation with StyleX plugin
-- **PostCSS** for CSS processing with StyleX plugin
+
+- **Webpack** for bundling plus **MiniCssExtractPlugin** for CSS extraction
+- **@stylexjs/unplugin** for StyleX compilation + CSS aggregation
 - **ESLint** for StyleX-specific linting rules
 
 ## Configuration Files
@@ -20,55 +26,66 @@ This setup includes:
 ### 1. Package Dependencies (`package.json`)
 
 ```bash
-# Install runtime stylex package
+# Install runtime StyleX package
 npm install @stylexjs/stylex
 
 # Install dev dependencies
-npm install -D @stylexjs/babel-plugin @stylexjs/eslint-plugin @stylexjs/postcss-plugin
+npm install -D @stylexjs/unplugin @stylexjs/eslint-plugin
 ```
 
 ### 2. Babel Configuration (`.babelrc.js`)
 
-The Babel plugin transforms StyleX code at compile time:
+Babel now only needs to handle React/ES features. StyleX compilation is handled
+by the unplugin.
 
 ```javascript
 module.exports = {
-  plugins: [
-    /* ADD STYLEX BABEL PLUGIN */
-    [
-      '@stylexjs/babel-plugin',
-      {
-        dev: process.env.NODE_ENV === 'development',
-        test: process.env.NODE_ENV === 'test',
-        runtimeInjection: process.env.NODE_ENV === 'development',
-        genConditionalClasses: true,
-        treeshakeCompensation: true,
-        unstable_moduleResolution: {
-          type: 'commonJS',
-        },
-      },
-    ],
-  ],
+  presets: ['@babel/preset-env', '@babel/preset-react'],
 };
 ```
 
-### 3. PostCSS Configuration (`postcss.config.js`)
+### 3. Webpack Configuration (`webpack.config.js`)
 
-The PostCSS plugin processes CSS and generates StyleX stylesheets:
+Register `@stylexjs/unplugin` so it can transform StyleX imports and append CSS
+to the extracted stylesheet.
 
 ```javascript
+const fs = require('node:fs');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const stylex = require('@stylexjs/unplugin').default;
+const templatePath = path.resolve(__dirname, 'index.html');
+
 module.exports = {
-  plugins: {
-    /* ADD STYLEX POSTCSS PLUGIN */
-    '@stylexjs/postcss-plugin': {
-      include: [
-        './src/**/*.{js,jsx,ts,tsx}',
-        // Include NPM dependencies that use StyleX like './node_modules/<package-name>/**/*.{js,jsx,ts,tsx}'
-      ],
-      useCSSLayers: true
-    },
-    autoprefixer: {},
-  }
+  // ...
+  devServer: {
+    watchFiles: [templatePath, path.resolve(__dirname, 'src/**/*')],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: [{ loader: 'babel-loader' }],
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      inject: true,
+      templateContent: () => fs.readFileSync(templatePath, 'utf-8'),
+    }),
+    stylex.webpack({
+      // Recommended
+      useCSSLayers: true,
+    }),
+    new MiniCssExtractPlugin(),
+  ],
 };
 ```
 
@@ -83,32 +100,17 @@ module.exports = {
     '@stylexjs/valid-styles': 'error',
     '@stylexjs/no-unused': 'error',
     '@stylexjs/valid-shorthands': 'warn',
-    '@stylexjs/sort-keys': 'warn'
+    '@stylexjs/sort-keys': 'warn',
   },
 };
 ```
 
-### 6. CSS entry point (`src/app.css`)
+### 5. CSS entry point (`src/app.css`)
 
-The CSS file includes the StyleX injection point:
-
-```css
-/* The @stylex directive is used by the StyleX PostCSS plugin.
- * It will be replaced with generated CSS at build time.
- */
-/* @stylex-injection-point */
-@stylex;
-```
-
-**Important:** The `@stylex;` directive is replaced with generated CSS at build time.
-
-
-## Build Process
-
-1. **Babel** transforms StyleX code and extracts style definitions
-2. **PostCSS** processes CSS files and generates optimized stylesheets
-3. **Webpack** bundles everything together
-4. **ESLint** validates StyleX usage
+Ensure there is at least one CSS file bundled by Webpack so the unplugin has an
+injection target. StyleX CSS will be appended to this file automatically, and
+because the plugin is configured with `useCSSLayers: true`, the generated output
+respects CSS layer ordering alongside your existing `@layer` blocks.
 
 ## Commands
 
