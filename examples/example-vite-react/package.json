@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "example:dev": "vite",
+    "example:build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "example:serve": "vite preview"
   },
   "dependencies": {
     "react": "^19.1.1",

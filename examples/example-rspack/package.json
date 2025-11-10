@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "description": "Example: StyleX with Rspack via @stylexjs/unplugin",
   "scripts": {
-    "build": "rspack build --config ./rspack.config.js",
-    "dev": "rspack serve --config ./rspack.config.js"
+    "example:build": "rspack build --config ./rspack.config.js",
+    "example:dev": "rspack serve --config ./rspack.config.js"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -19,4 +19,3 @@
     "@stylexjs/unplugin": "0.16.3"
   }
 }
-
