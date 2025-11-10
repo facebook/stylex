@@ -15,7 +15,7 @@
     "react-dom": "^18.3.0"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "0.16.2",
+    "@stylexjs/unplugin": "0.16.3",
     "@stylexjs/eslint-plugin": "0.16.3",
     "esbuild": "^0.25.0",
     "eslint": "^8.57.1"

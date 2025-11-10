@@ -10,13 +10,13 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@stylexjs/stylex": "0.16.2"
+    "@stylexjs/stylex": "0.16.3"
   },
   "devDependencies": {
     "@rspack/cli": "^0.7.0",
     "@rspack/core": "^0.7.0",
     "css-loader": "^7.1.2",
-    "@stylexjs/unplugin": "0.16.2"
+    "@stylexjs/unplugin": "0.16.3"
   }
 }
 

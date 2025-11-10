@@ -17,8 +17,4 @@
   }
 }
 
-/* The @stylex directive is used by the StyleX PostCSS plugin.
- * It will be replaced with generated CSS at build time.
- */
-/* @stylex-injection-point */
-@stylex;
+/* StyleX CSS from @stylexjs/unplugin will be appended to this file at build time. */

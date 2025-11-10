@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "@stylexjs/stylex": "0.16.2"
+    "@stylexjs/stylex": "0.16.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.2",
@@ -21,6 +21,6 @@
     "@vitejs/plugin-rsc": "latest",
     "rsc-html-stream": "^0.0.7",
     "vite": "^7.1.12",
-    "@stylexjs/unplugin": "0.16.2"
+    "@stylexjs/unplugin": "0.16.3"
   }
 }
