@@ -18,7 +18,12 @@ const config = {
     file: './lib/index.js',
     format: 'cjs',
   },
-  external: [/@babel\/traverse/, /@babel\/types/, /@babel\/core/],
+  external: [
+    /@babel\/traverse/,
+    /@babel\/types/,
+    /@babel\/core/,
+    /node_modules\/eslint/,
+  ],
   plugins: [
     babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
     nodeResolve({
