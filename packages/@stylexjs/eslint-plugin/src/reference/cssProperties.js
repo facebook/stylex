@@ -10,7 +10,7 @@
 'use strict';
 import namedColors from '../reference/namedColors';
 import type { Expression, Node, Pattern, Property } from 'estree';
-import { Rule } from 'eslint';
+import type { Rule } from 'eslint';
 import isCSSVariable from '../rules/isCSSVariable';
 import makeLiteralRule from '../rules/makeLiteralRule';
 import makeRangeRule from '../rules/makeRangeRule';
