@@ -1,5 +1,6 @@
 {
   "name": "docs-2",
+  "version": "0.16.3",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -11,9 +12,9 @@
   },
   "dependencies": {
     "@stylexjs/stylex": "0.16.3",
-    "fumadocs-core": "16.0.9",
-    "fumadocs-mdx": "13.0.6",
-    "fumadocs-ui": "16.0.9",
+    "fumadocs-core": "16.0.10",
+    "fumadocs-mdx": "13.0.7",
+    "fumadocs-ui": "16.0.10",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-server-dom-webpack": "^19.2.0",

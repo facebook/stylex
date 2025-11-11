@@ -1,0 +1,3 @@
+{
+    "pages": ["./babel-plugin.mdx", "./eslint-plugin.mdx", "./postcss-plugin.mdx"]
+}
