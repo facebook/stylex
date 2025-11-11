@@ -1,0 +1,16 @@
+{
+    "title": "JavaScript API",
+    "pages": [
+        "./create.mdx",
+        "./props.mdx",
+        "./keyframes.mdx",
+        "./positionTry.mdx",
+        "./viewTransitionClass.mdx",
+        "./defineVars.mdx",
+        "./types.mdx",
+        "./createTheme.mdx",
+        "./defineConsts.mdx",
+        "./firstThatWorks.mdx"
+    ]
+}
+
