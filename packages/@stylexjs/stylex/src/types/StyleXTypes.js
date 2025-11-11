@@ -255,10 +255,29 @@ export type StyleX$CreateTheme = <
   overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
 ) => Theme<BaseTokens, ID>;
 
+export type StyleX$DefineMarker = () => MapNamespace<{
+  +marker: 'custom-marker',
+}>;
+
 export type StyleX$When = {
-  ancestor: (_pseudo?: StringPrefix<':'>) => ':where-ancestor',
-  descendant: (_pseudo?: StringPrefix<':'>) => ':where-descendant',
-  siblingBefore: (_pseudo?: StringPrefix<':'>) => ':where-sibling-before',
-  siblingAfter: (_pseudo?: StringPrefix<':'>) => ':where-sibling-after',
-  anySibling: (_pseudo?: StringPrefix<':'>) => ':where-any-sibling',
+  ancestor: (
+    _pseudo?: StringPrefix<':'>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-ancestor',
+  descendant: (
+    _pseudo?: StringPrefix<':'>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-descendant',
+  siblingBefore: (
+    _pseudo?: StringPrefix<':'>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-sibling-before',
+  siblingAfter: (
+    _pseudo?: StringPrefix<':'>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-sibling-after',
+  anySibling: (
+    _pseudo?: StringPrefix<':'>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-any-sibling',
 };
