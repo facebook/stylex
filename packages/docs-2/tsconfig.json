@@ -16,7 +16,7 @@
     "noEmit": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@/.source": [".source"]
+      "@/.source": ["./.source"]
     }
   },
   "exclude": ["node_modules", "dist"]

@@ -24,7 +24,9 @@ export default defineConfig({
           plugins: ['babel-plugin-react-compiler'],
         },
       }),
+      // @ts-ignore
       mdx(MdxConfig),
+      // @ts-ignore
       tsconfigPaths(),
     ],
   },
