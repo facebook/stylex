@@ -1,0 +1,14 @@
+{
+    "title": "Learn",
+    "pages": [
+        "./index.mdx",
+        "./thinking-in-stylex.mdx",
+        "./installation.mdx",
+        "./styling-ui",
+        "./theming",
+        "./recipes",
+        "./static-types.mdx",
+        "./ecosystem.mdx",
+        "./acknowledgements.mdx"
+    ]
+}
