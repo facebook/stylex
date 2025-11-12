@@ -4,3 +4,5 @@
 dist
 .source
 src/pages.gen.ts
+
+!lib

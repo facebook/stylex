@@ -1,6 +1,7 @@
 {
     "title": "Learn",
     "pages": [
+        "./index.mdx",
         "./thinking-in-stylex.mdx",
         "./installation.mdx",
         "./styling-ui",

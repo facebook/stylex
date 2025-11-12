@@ -13,7 +13,7 @@ export default defineConfig({
         debug: process.env.NODE_ENV === 'development',
         enableDebugClassNames: false,
         enableDevClassNames: false,
-        useCSSLayers: true,
+        useCSSLayers: false,
         devMode: 'css-only',
         devPersistToDisk: true,
         runtimeInjection: false,
