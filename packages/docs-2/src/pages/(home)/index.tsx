@@ -5,9 +5,14 @@ export default function Home() {
   return (
     <div {...stylex.props(styles.container)}>
       <h1 {...stylex.props(styles.heading)}>Fumadocs on Waku.</h1>
-      <Link to="/docs" {...stylex.props(styles.cta)}>
-        Open Docs
-      </Link>
+      <div {...stylex.props(styles.links)}>
+        <Link to="/docs" {...stylex.props(styles.cta)}>
+          Docs
+        </Link>
+        <Link to="/blog" {...stylex.props(styles.cta)}>
+          Blog
+        </Link>
+      </div>
     </div>
   );
 }
@@ -34,6 +39,10 @@ const styles = stylex.create({
     fontSize: '1.25rem',
     lineHeight: '1.75rem',
     marginBlockEnd: '1rem',
+  },
+  links: {
+    display: 'flex',
+    gap: '1rem',
   },
   cta: {
     alignSelf: 'center',
