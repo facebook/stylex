@@ -41,7 +41,7 @@
     "jest": "^30.0.0-alpha.7",
     "jest-environment-jsdom": "^30.0.0-alpha.7",
     "lint-staged": "^13.0.3",
-    "prettier": "^3.2.5",
+    "prettier": "3.5.3",
     "prettier-plugin-hermes-parser": "^0.26.0",
     "rimraf": "^5.0.10",
     "yargs": "17.7.2"
