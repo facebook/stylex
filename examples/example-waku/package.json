@@ -9,14 +9,14 @@
     "example:serve": "waku start"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.16.2",
+    "@stylexjs/stylex": "0.16.3",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-server-dom-webpack": "19.2.0",
     "waku": "0.27.0"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "0.16.2",
+    "@stylexjs/unplugin": "0.16.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "@vitejs/plugin-react": "5.1.0",
