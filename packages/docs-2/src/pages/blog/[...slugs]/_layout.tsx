@@ -3,6 +3,7 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { blogSource } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '../../../theming/vars.stylex';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -19,5 +20,6 @@ export default function Layout({ children }: { children: ReactNode }) {
 const styles = stylex.create({
   container: {
     '--fd-nav-height': '58px',
+    [vars['--color-fd-accent']]: 'red',
   },
 });
