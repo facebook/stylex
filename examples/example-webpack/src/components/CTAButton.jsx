@@ -34,9 +34,7 @@ const styles = stylex.create({
       default: '0 0 2px rgba(0,0,0,0.35)',
       ':hover': '0 0 10px rgba(0,0,0,0.75)',
     },
-    color: {
-      default: colors.bg1,
-    },
+    color: colors.bg1,
     display: 'flex',
     fontWeight: 'bold',
     justifyContent: 'center',
@@ -61,25 +59,17 @@ const styles = stylex.create({
   pink: {
     backgroundColor: `hsl(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL})`,
     boxShadow: {
-      default:
-        `0 0 2px hsla(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL}, 0.35)`,
-      ':hover':
-        `0 0 10px hsla(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL}, 0.75)`,
+      default: `0 0 2px hsla(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL}, 0.35)`,
+      ':hover': `0 0 10px hsla(${colors.pinkH}, ${colors.pinkS}, ${colors.pinkL}, 0.75)`,
     },
-    color: {
-      default: colors.white,
-    },
+    color: colors.white,
   },
   blue: {
     backgroundColor: `hsl(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL})`,
     boxShadow: {
-      default:
-        `0 0 2px hsla(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL}, 0.35)`,
-      ':hover':
-        `0 0 10px hsla(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL}, 0.75)`,
+      default: `0 0 2px hsla(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL}, 0.35)`,
+      ':hover': `0 0 10px hsla(${colors.cyanH}, ${colors.cyanS}, ${colors.cyanL}, 0.75)`,
     },
-    color: {
-      default: colors.white,
-    },
+    color: colors.white,
   },
 });

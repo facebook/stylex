@@ -7,19 +7,19 @@
   "types": "./lib/cjs/stylex.d.ts",
   "exports": {
     ".": {
+      "types": "./lib/es/stylex.d.ts",
       "import": "./lib/es/stylex.mjs",
-      "require": "./lib/cjs/stylex.js",
-      "types": "./lib/es/stylex.d.ts"
+      "require": "./lib/cjs/stylex.js"
     },
     "./lib/stylex-inject": {
+      "types": "./lib/es/inject.d.ts",
       "import": "./lib/es/inject.mjs",
-      "require": "./lib/cjs/inject.js",
-      "types": "./lib/es/inject.d.ts"
+      "require": "./lib/cjs/inject.js"
     },
     "./lib/types/StyleXTypes": {
+      "types": "./lib/es/types/StyleXTypes.d.ts",
       "import": "./lib/es/types/StyleXTypes.mjs",
-      "require": "./lib/cjs/types/StyleXTypes.js",
-      "types": "./lib/es/types/StyleXTypes.d.ts"
+      "require": "./lib/cjs/types/StyleXTypes.js"
     },
     "./package.json": "./package.json"
   },
