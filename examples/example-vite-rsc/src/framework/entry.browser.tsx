@@ -4,52 +4,52 @@ import {
   setServerCallback,
   createTemporaryReferenceSet,
   encodeReply,
-} from '@vitejs/plugin-rsc/browser'
-import React from 'react'
-import { hydrateRoot } from 'react-dom/client'
-import { rscStream } from 'rsc-html-stream/client'
-import type { RscPayload } from './entry.rsc'
+} from '@vitejs/plugin-rsc/browser';
+import React from 'react';
+import { hydrateRoot } from 'react-dom/client';
+import { rscStream } from 'rsc-html-stream/client';
+import type { RscPayload } from './entry.rsc';
 
 async function main() {
   // stash `setPayload` function to trigger re-rendering
   // from outside of `BrowserRoot` component (e.g. server function call, navigation, hmr)
-  let setPayload: (v: RscPayload) => void
+  let setPayload: (v: RscPayload) => void;
 
   // deserialize RSC stream back to React VDOM for CSR
   const initialPayload = await createFromReadableStream<RscPayload>(
     // initial RSC stream is injected in SSR stream as <script>...FLIGHT_DATA...</script>
     rscStream,
-  )
+  );
 
   // browser root component to (re-)render RSC payload as state
   function BrowserRoot() {
-    const [payload, setPayload_] = React.useState(initialPayload)
+    const [payload, setPayload_] = React.useState(initialPayload);
 
     React.useEffect(() => {
-      setPayload = (v) => React.startTransition(() => setPayload_(v))
-    }, [setPayload_])
+      setPayload = (v) => React.startTransition(() => setPayload_(v));
+    }, [setPayload_]);
 
     // re-fetch/render on client side navigation
     React.useEffect(() => {
-      return listenNavigation(() => fetchRscPayload())
-    }, [])
+      return listenNavigation(() => fetchRscPayload());
+    }, []);
 
-    return payload.root
+    return payload.root;
   }
 
   // re-fetch RSC and trigger re-rendering
   async function fetchRscPayload() {
     const payload = await createFromFetch<RscPayload>(
       fetch(window.location.href),
-    )
-    setPayload(payload)
+    );
+    setPayload(payload);
   }
 
   // register a handler which will be internally called by React
   // on server function request after hydration.
   setServerCallback(async (id, args) => {
-    const url = new URL(window.location.href)
-    const temporaryReferences = createTemporaryReferenceSet()
+    const url = new URL(window.location.href);
+    const temporaryReferences = createTemporaryReferenceSet();
     const payload = await createFromFetch<RscPayload>(
       fetch(url, {
         method: 'POST',
@@ -59,49 +59,49 @@ async function main() {
         },
       }),
       { temporaryReferences },
-    )
-    setPayload(payload)
-    return payload.returnValue
-  })
+    );
+    setPayload(payload);
+    return payload.returnValue;
+  });
 
   // hydration
   const browserRoot = (
     <React.StrictMode>
       <BrowserRoot />
     </React.StrictMode>
-  )
+  );
   hydrateRoot(document, browserRoot, {
     formState: initialPayload.formState,
-  })
+  });
 
-  // implement server HMR by trigering re-fetch/render of RSC upon server code change
+  // implement server HMR by triggering re-fetch/render of RSC upon server code change
   if (import.meta.hot) {
     import.meta.hot.on('rsc:update', () => {
-      fetchRscPayload()
-    })
+      fetchRscPayload();
+    });
   }
 }
 
 // a little helper to setup events interception for client side navigation
 function listenNavigation(onNavigation: () => void) {
-  window.addEventListener('popstate', onNavigation)
+  window.addEventListener('popstate', onNavigation);
 
-  const oldPushState = window.history.pushState
+  const oldPushState = window.history.pushState;
   window.history.pushState = function (...args) {
-    const res = oldPushState.apply(this, args)
-    onNavigation()
-    return res
-  }
+    const res = oldPushState.apply(this, args);
+    onNavigation();
+    return res;
+  };
 
-  const oldReplaceState = window.history.replaceState
+  const oldReplaceState = window.history.replaceState;
   window.history.replaceState = function (...args) {
-    const res = oldReplaceState.apply(this, args)
-    onNavigation()
-    return res
-  }
+    const res = oldReplaceState.apply(this, args);
+    onNavigation();
+    return res;
+  };
 
   function onClick(e: MouseEvent) {
-    let link = (e.target as Element).closest('a')
+    let link = (e.target as Element).closest('a');
     if (
       link &&
       link instanceof HTMLAnchorElement &&
@@ -116,18 +116,18 @@ function listenNavigation(onNavigation: () => void) {
       !e.shiftKey &&
       !e.defaultPrevented
     ) {
-      e.preventDefault()
-      history.pushState(null, '', link.href)
+      e.preventDefault();
+      history.pushState(null, '', link.href);
     }
   }
-  document.addEventListener('click', onClick)
+  document.addEventListener('click', onClick);
 
   return () => {
-    document.removeEventListener('click', onClick)
-    window.removeEventListener('popstate', onNavigation)
-    window.history.pushState = oldPushState
-    window.history.replaceState = oldReplaceState
-  }
+    document.removeEventListener('click', onClick);
+    window.removeEventListener('popstate', onNavigation);
+    window.history.pushState = oldPushState;
+    window.history.replaceState = oldReplaceState;
+  };
 }
 
-main()
+main();
