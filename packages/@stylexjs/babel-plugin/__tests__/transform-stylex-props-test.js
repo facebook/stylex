@@ -77,6 +77,56 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex.env resolves in inline objects', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            red: {
+              color: stylex.env.primaryColor,
+            }
+          });
+          stylex.props(styles.red);
+        `,
+          { env: { primaryColor: '#ff0000' } },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2(".xe4pkkx{color:#ff0000}", 3000);
+        ({
+          className: "xe4pkkx"
+        });"
+      `);
+    });
+
+    test('named env import resolves in inline objects', () => {
+      expect(
+        transform(
+          `
+          import { props, create, env } from 'stylex';
+          const styles = create({
+            red: {
+              color: env.primaryColor,
+            }
+          });
+          props(styles.red);
+        `,
+          { env: { primaryColor: '#00ffaa' } },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import { props, create, env } from 'stylex';
+        _inject2(".x4iekqp{color:#00ffaa}", 3000);
+        ({
+          className: "x4iekqp"
+        });"
+      `);
+    });
+
     describe('props calls with jsx', () => {
       const options = {
         debug: true,

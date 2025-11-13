@@ -109,6 +109,119 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('stylex.env resolves compile-time constants', () => {
+        const { code, metadata } = transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            root: {
+              color: stylex.env.brandPrimary,
+            }
+          });
+        `,
+          { env: { brandPrimary: '#123456' } },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kMwMTN: "x1tfn4g9",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "x1tfn4g9",
+                {
+                  "ltr": ".x1tfn4g9{color:#123456}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
+      test('named env import resolves compile-time constants', () => {
+        const { code, metadata } = transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          import { env } from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            root: {
+              color: env.brandPrimary,
+            }
+          });
+        `,
+          { env: { brandPrimary: '#654321' } },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          import { env } from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kMwMTN: "xa6cz37",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xa6cz37",
+                {
+                  "ltr": ".xa6cz37{color:#654321}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
+      test('named env import resolves compile-time constants', () => {
+        const { code, metadata } = transform(
+          `
+          import {create, env} from '@stylexjs/stylex';
+          export const styles = create({
+            root: {
+              color: env.brandPrimary,
+            }
+          });
+        `,
+          { env: { brandPrimary: '#123456' } },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import { create, env } from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kMwMTN: "x1tfn4g9",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "x1tfn4g9",
+                {
+                  "ltr": ".x1tfn4g9{color:#123456}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
       test('nested referenced style object', () => {
         const { code, metadata } = transform(`
           import * as stylex from '@stylexjs/stylex';

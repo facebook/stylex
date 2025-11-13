@@ -95,6 +95,7 @@ export default function transformStylexProps(
       },
     };
   });
+  state.applyStylexEnv(identifiers);
 
   const evaluatePathFnConfig: FunctionConfig = {
     identifiers,

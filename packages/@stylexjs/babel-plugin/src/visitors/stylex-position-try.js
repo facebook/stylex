@@ -76,6 +76,7 @@ export default function transformStyleXPositionTry(
       }
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
     });
+    state.applyStylexEnv(identifiers);
 
     const { confident, value } = evaluate(firstArgPath, state, {
       identifiers,

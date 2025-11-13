@@ -1,5 +1,9 @@
 # Changelog
 
+## master
+
+- - Add `env` compiler option to expose `stylex.env` compile-time constants.
+
 ## 0.16.3 (Oct 27, 2025)
 
 - Add configs to `sort-keys` property ordering.

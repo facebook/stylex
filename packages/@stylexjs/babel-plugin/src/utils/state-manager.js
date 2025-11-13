@@ -14,6 +14,7 @@ import type {
   StyleXOptions as RuntimeOptions,
 } from '../shared';
 import type { Check } from './validate';
+import type { FunctionConfig } from './evaluate-path';
 
 import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
@@ -113,6 +114,7 @@ export type StyleXOptions = $ReadOnly<{
 
 type StyleXStateOptions = $ReadOnly<{
   ...StyleXOptions,
+  env: $ReadOnly<{ [string]: any }>,
   runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
   aliases?: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
   rewriteAliases: boolean,
@@ -139,6 +141,20 @@ const checkRuntimeInjection: Check<StyleXOptions['runtimeInjection']> =
     }),
   );
 
+const checkEnvOption: Check<$ReadOnly<{ [string]: mixed }>> = (
+  value,
+  name = 'options.env',
+) => {
+  if (typeof value !== 'object' || value == null || Array.isArray(value)) {
+    return new Error(
+      `Expected (${name}) to be an object, but got \`${JSON.stringify(
+        value,
+      )}\`.`,
+    );
+  }
+  return value;
+};
+
 const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
 export default class StateManager {
@@ -161,6 +177,7 @@ export default class StateManager {
   +stylexViewTransitionClassImport: Set<string> = new Set();
   +stylexDefaultMarkerImport: Set<string> = new Set();
   +stylexWhenImport: Set<string> = new Set();
+  +stylexEnvImport: Set<string> = new Set();
 
   injectImportInserted: ?t.Identifier = null;
 
@@ -353,6 +370,17 @@ export default class StateManager {
         'options.treeshakeCompensation',
       );
 
+    const envInput: StyleXStateOptions['env'] = z.logAndDefault(
+      checkEnvOption,
+      options.env ?? {},
+      {},
+      'options.env',
+    );
+
+    const env: StyleXStateOptions['env'] = Object.freeze({
+      ...envInput,
+    });
+
     const aliasesOption: StyleXOptions['aliases'] = z.logAndDefault(
       z.unionOf(
         z.nullish(),
@@ -381,6 +409,7 @@ export default class StateManager {
       debug,
       definedStylexCSSVariables: {},
       dev,
+      env,
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,
@@ -429,6 +458,29 @@ export default class StateManager {
       }
     }
     return null;
+  }
+
+  applyStylexEnv(identifiers: FunctionConfig['identifiers']): void {
+    const env = this.options.env;
+    this.stylexImport.forEach((importName) => {
+      const current = identifiers[importName];
+      if (
+        current != null &&
+        typeof current === 'object' &&
+        !Array.isArray(current)
+      ) {
+        if ('fn' in current) {
+          identifiers[importName] = { env };
+        } else {
+          identifiers[importName] = { ...current, env };
+        }
+        return;
+      }
+      identifiers[importName] = { env };
+    });
+    this.stylexEnvImport.forEach((importName) => {
+      identifiers[importName] = env;
+    });
   }
 
   get canReferenceTheme(): boolean {
