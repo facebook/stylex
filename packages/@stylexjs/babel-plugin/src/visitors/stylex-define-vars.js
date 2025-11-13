@@ -127,6 +127,7 @@ export default function transformStyleXDefineVars(
       memberExpressions[name].positionTry = { fn: positionTry };
       identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
     });
+    state.applyStylexEnv(identifiers);
 
     const { confident, value } = evaluate(firstArg, state, {
       identifiers,
