@@ -153,7 +153,7 @@ type ComplexStyleValueType<T> =
     ? U extends CSSType<infer V>
       ? V
       : U
-    : T extends string | number | null
+    : T extends string | number | null | symbol
       ? T
       : T extends ReadonlyArray<infer U>
         ? ComplexStyleValueType<U>
@@ -303,20 +303,46 @@ export type StyleX$CreateTheme = <
   overrides: OverridesForTokenType<TokensFromVarGroup<TVars>>,
 ) => Theme<TVars, ThemeID>;
 
+export type StyleX$DefineMarker = () => MapNamespace<{
+  readonly marker: unique symbol;
+}>;
+
 export type StyleX$When = {
-  ancestor: <const Pseudo extends string>(
+  ancestor: <const Pseudo extends string, MarkerSymbol extends symbol = symbol>(
     _pseudo?: Pseudo,
-  ) => `:where-ancestor(${Pseudo})`;
-  descendant: <const Pseudo extends string>(
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-ancestor(${Pseudo}, ${MarkerSymbol})`;
+  descendant: <
+    const Pseudo extends string,
+    MarkerSymbol extends symbol = symbol,
+  >(
     _pseudo?: Pseudo,
-  ) => `:where-descendant(${Pseudo})`;
-  siblingBefore: <const Pseudo extends string>(
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-descendant(${Pseudo}, ${MarkerSymbol})`;
+  siblingBefore: <
+    const Pseudo extends string,
+    MarkerSymbol extends symbol = symbol,
+  >(
     _pseudo?: Pseudo,
-  ) => `:where-sibling-before(${Pseudo})`;
-  siblingAfter: <const Pseudo extends string>(
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-sibling-before(${Pseudo}, ${MarkerSymbol})`;
+  siblingAfter: <
+    const Pseudo extends string,
+    MarkerSymbol extends symbol = symbol,
+  >(
     _pseudo?: Pseudo,
-  ) => `:where-sibling-after(${Pseudo})`;
-  anySibling: <const Pseudo extends string>(
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-sibling-after(${Pseudo}, ${MarkerSymbol})`;
+  anySibling: <
+    const Pseudo extends string,
+    MarkerSymbol extends symbol = symbol,
+  >(
     _pseudo?: Pseudo,
-  ) => `:where-any-sibling(${Pseudo})`;
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-any-sibling(${Pseudo}, ${MarkerSymbol})`;
 };

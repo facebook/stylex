@@ -30,6 +30,8 @@ import type {
   PositionTry,
   ViewTransitionClass,
   StyleX$When,
+  MapNamespace,
+  StyleX$DefineMarker,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -82,6 +84,10 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
+export const defineMarker: StyleX$DefineMarker = () => {
+  throw errorForFn('defineMarker');
+};
+
 export const firstThatWorks = <T: string | number>(
   ..._styles: $ReadOnlyArray<T>
 ): $ReadOnlyArray<T> => {
@@ -132,10 +138,11 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
-export const defaultMarker = (): $ReadOnly<{
-  marker: 'default-marker',
-  $$css: true,
-}> => {
+export const defaultMarker = (): MapNamespace<
+  $ReadOnly<{
+    marker: 'default-marker',
+  }>,
+> => {
   throw errorForFn('defaultMarker');
 };
 
@@ -225,10 +232,12 @@ type IStyleX = {
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
-  defaultMarker: () => $ReadOnly<{
-    marker: 'default-marker',
-    $$css: true,
-  }>,
+  defaultMarker: () => MapNamespace<
+    $ReadOnly<{
+      marker: 'default-marker',
+    }>,
+  >,
+  defineMarker: StyleX$DefineMarker,
   firstThatWorks: <T: string | number>(
     ...v: $ReadOnlyArray<T>
   ) => $ReadOnlyArray<T>,
@@ -263,6 +272,7 @@ function _legacyMerge(
 _legacyMerge.create = create;
 _legacyMerge.createTheme = createTheme;
 _legacyMerge.defineConsts = defineConsts;
+_legacyMerge.defineMarker = defineMarker;
 _legacyMerge.defineVars = defineVars;
 _legacyMerge.defaultMarker = defaultMarker;
 _legacyMerge.firstThatWorks = firstThatWorks;

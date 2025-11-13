@@ -365,6 +365,7 @@ function parseNullableStyle(
   }
 
   const parsedObj = evaluate(path, state, evaluatePathFnConfig);
+
   if (
     parsedObj.confident &&
     parsedObj.value != null &&

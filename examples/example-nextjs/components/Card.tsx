@@ -8,8 +8,13 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
-import { globalTokens as $, spacing, text, colors } from '@/app/globalTokens.stylex';
-import { tokens } from '@/app/CardTokens.stylex';
+import {
+  globalTokens as $,
+  spacing,
+  text,
+  colors,
+} from '@/app/globalTokens.stylex';
+import { cardMarker, headingMarker } from './CardTokens.stylex';
 
 type Props = Readonly<{
   title: string;
@@ -20,12 +25,12 @@ type Props = Readonly<{
 export default function Card({ title, body, href }: Props) {
   return (
     <a
-      {...stylex.props(styles.link)}
+      {...stylex.props(styles.link, cardMarker)}
       href={href}
       rel="noopener noreferrer"
       target="_blank"
     >
-      <h2 {...stylex.props(styles.h2)}>
+      <h2 {...stylex.props(styles.h2, headingMarker)}>
         {title} <span {...stylex.props(styles.span)}>→</span>
       </h2>
       <p {...stylex.props(styles.p)}>{body}</p>
@@ -67,10 +72,6 @@ const styles = stylex.create({
     transitionDuration: '400ms',
     textAlign: 'center',
     textDecoration: 'none',
-    [tokens.arrowTransform]: {
-      default: 'translateX(0)',
-      ':hover': 'translateX(4px)',
-    },
   },
   h2: {
     color: colors.blue3,
@@ -84,7 +85,11 @@ const styles = stylex.create({
   span: {
     display: 'inline-block',
     transitionProperty: 'transform',
-    transform: tokens.arrowTransform,
+    transform: {
+      default: null,
+      [stylex.when.ancestor(':hover', cardMarker)]: 'translateX(10px)',
+      [stylex.when.ancestor(':hover', headingMarker)]: 'translateX(4px)',
+    },
     transitionDuration: {
       default: '200ms',
       [REDUCE_MOTION]: '0s',
