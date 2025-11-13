@@ -57,6 +57,7 @@ type ModuleResolution =
         aliases: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
       ) => string | void,
       getCanonicalFilePath: (filePath: string) => string,
+      createShortFilename?: (filePath: string) => string,
     }>;
 
 // eslint-disable-next-line no-unused-vars
@@ -82,6 +83,10 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf4(
         ) => string | void,
       >(),
     getCanonicalFilePath: z.func<(filePath: string) => string>(),
+    createShortFilename: z.unionOf(
+      z.nullish(),
+      z.func<(filePath: string) => string>(),
+    ),
   }),
   z.object({
     type: z.literal('experimental_crossFileParsing'),
