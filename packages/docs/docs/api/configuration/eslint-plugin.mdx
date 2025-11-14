@@ -15,7 +15,6 @@ sidebar_position: 2
 ```ts
 type Options = {
   // Possible strings where you can import stylex from
-  //
   // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 
@@ -23,16 +22,13 @@ type Options = {
   propLimits?: PropLimits,
 
   // @deprecated
-  // Allow At Rules and Pseudo Selectors outside of
-  // style values.
-  //
+  // Allow At Rules and Pseudo Selectors outside of style values.
   // Default: false
   allowOuterPseudoAndMedia: boolean,
 
   // @deprecated
   // Disallow properties that are known to break
   // in 'legacy-expand-shorthands' style resolution mode.
-  //
   // Default: false
   banPropsForLegacy: boolean,
 
@@ -97,17 +93,14 @@ type PropLimits = {
 ```ts
 type Options = {
   // Possible string where you can import stylex from
-  //
   // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 
   // Minimum number of keys required after which the rule is enforced
-  //
   // Default: 2
   minKeys: number,
 
   // Sort groups of keys that have a blank line between them separately
-  //
   // Default: false
   allowLineSeparatedGroups: boolean,
 };
@@ -135,17 +128,14 @@ type Options = {
 ```ts
 type Options = {
   // Possible string where you can import stylex from
-  //
   // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 
   // Whether `!important` is allowed
-  //
   // Default: false
   allowImportant: boolean,
 
   // Whether the expansion uses logical direction properties over physical
-  //
   // Default: false
   preferInline: boolean,
 };
@@ -153,26 +143,55 @@ type Options = {
 
 ### `@stylexjs/enforce-extension` rule
 
+Ensures that files exporting `defineVars` or `defineConsts` variables end with a configurable extension (defaults to `.stylex`). This rule helps maintain consistent file naming conventions for StyleX theme and constant files.
+
 ```ts
 type Options = {
   // Possible string where you can import stylex from
-  //
   // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 
   // The file extension to enforce for theme files
-  //
-  // Default: '.stylex.js'
+  // Default: '.stylex'
   themeFileExtension: string,
+
+  // Allow mixed exports in the same file (legacy support)
+  // Default: false
+  legacyAllowMixedExports: boolean,
+
+  // Enforce a separate `.const` suffix for defineConsts files
+  // Default: false
+  enforceDefineConstsExtension: boolean,
 };
 ```
+
+#### Example
+
+```json
+{
+  "rules": {
+    "@stylexjs/enforce-extension": [
+      "error",
+      {
+        "themeFileExtension": ".stylex",
+        "enforceDefineConstsExtension": true,
+        "legacyAllowMixedExports": false
+      }
+    ]
+  }
+}
+```
+
+When `enforceDefineConstsExtension` is enabled:
+- Files with `stylex.defineConsts()` exports must use `.stylex.const.js` extension
+- Files with `stylex.defineVars()` exports must use `.stylex.js` extension
+- Files cannot mix `defineConsts`, `defineVars`, and other exports
 
 ### `@stylexjs/no-unused` rule
 
 ```ts
 type Options = {
   // Possible string where you can import stylex from
-  //
   // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 };
@@ -183,8 +202,80 @@ type Options = {
 ```ts
 type Options = {
   // Possible string where you can import stylex from
-  //
   // Default: ['stylex', '@stylexjs/stylex']
   validImports: Array<string | { from: string, as: string }>,
 };
 ```
+
+### `@stylexjs/no-lookahead-selectors` rule
+
+Warns against usage of `stylex.when.anySibling`, `stylex.when.descendant`, and `stylex.when.siblingAfter` due to their reliance on the CSS `:has()` selector, which does not yet have widespread browser support.
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  // Default: ['stylex', '@stylexjs/stylex']
+  validImports: Array<string | { from: string, as: string }>,
+};
+```
+
+#### Limited browser support
+
+```js
+const styles = stylex.create({
+  foo: {
+    backgroundColor: {
+      default: 'blue',
+      [stylex.when.anySibling('.sibling')]: 'red',
+    },
+    color: {
+      default: 'black',
+      [stylex.when.descendant('.child')]: 'purple',
+    },
+    marginTop: {
+      default: '0px',
+      [stylex.when.siblingAfter('.next')]: '8px',
+    },
+  },
+});
+```
+
+#### Example
+
+```json
+{
+  "rules": {
+    "@stylexjs/no-lookahead-selectors": "warn"
+  }
+}
+```
+
+See [caniuse.com/css-has](https://caniuse.com/css-has) for current browser compatibility.
+
+### `@stylexjs/no-nonstandard-styles` rule
+
+Enforces that you create standard CSS values and properties for StyleX. This rule validates that all CSS properties and values conform to standard CSS specifications.
+
+```ts
+type Options = {
+  // Possible string where you can import stylex from
+  // Default: ['stylex', '@stylexjs/stylex']
+  validImports: Array<string | { from: string, as: string }>,
+};
+```
+
+#### Example
+
+```json
+{
+  "rules": {
+    "@stylexjs/no-nonstandard-styles": "error"
+  }
+}
+```
+
+This rule will:
+- Detect invalid CSS property names
+- Suggest standard property names for common mistakes
+- Validate CSS values against property specifications
+- Provide auto-fixes for common issues like non-standard `float: start` (suggesting `float: inline-start`)
