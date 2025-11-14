@@ -1,0 +1,9 @@
+{
+    "title": "Themes",
+    "pages": [
+        "./defining-variables.mdx",
+        "./using-variables.mdx",
+        "./creating-themes.mdx",
+        "./variable-types.mdx"
+    ]
+}
