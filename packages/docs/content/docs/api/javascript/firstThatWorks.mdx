@@ -1,0 +1,26 @@
+---
+title: "stylex.firstThatWorks"
+---
+
+Declare an ordered list of fallback values for a style property.
+
+All of the fallbacks are included in the generated styles so that the first
+supported style within the list takes effect within the browser.
+
+```ts
+function firstThatWorks<Values extends Array<string | number>>(
+  ...styles: Values
+): Values[number];
+```
+
+### Example use:
+
+```js
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  header: {
+    position: stylex.firstThatWorks('sticky', '-webkit-sticky', 'fixed'),
+  },
+});
+```

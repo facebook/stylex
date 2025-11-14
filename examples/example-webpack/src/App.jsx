@@ -15,26 +15,26 @@ import CtaButton from './components/CTAButton';
 
 const styles = stylex.create({
   main: {
+    padding: '2rem',
+    gap: '2rem',
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    gap: '2rem',
-    height: '100vh',
     justifyContent: 'center',
-    padding: '2rem',
+    height: '100vh',
   },
   logoContainer: {
-    display: 'flex',
     gap: '2rem',
+    display: 'flex',
   },
   logo: {
+    transition: 'filter 300ms',
     filter: {
       default: null,
       ':hover': 'drop-shadow(0 0 2em #646cffaa)',
     },
-    height: '6em' ,
-    transition: 'filter 300ms',
     willChange: 'filter',
+    height: '6em' ,
   },
   header: {
     color: colors.textPrimary,
@@ -42,8 +42,8 @@ const styles = stylex.create({
     lineHeight: 1.1,
   },
   card: {
-    display: 'flex',
     gap: '2rem',
+    display: 'flex',
   },
 });
 

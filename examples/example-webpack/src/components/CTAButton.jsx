@@ -27,9 +27,15 @@ export default function CtaButton({ children, color, to }) {
 }
 const styles = stylex.create({
   base: {
-    alignItems: 'center',
-    backgroundColor: colors.fg1,
     borderRadius: 8,
+    paddingBlock: '0.75rem',
+    paddingInline: '2rem',
+    alignItems: 'center',
+    textDecoration: {
+      default: 'none',
+      ':hover': 'none',
+    },
+    backgroundColor: colors.fg1,
     boxShadow: {
       default: '0 0 2px rgba(0,0,0,0.35)',
       ':hover': '0 0 10px rgba(0,0,0,0.75)',
@@ -38,16 +44,10 @@ const styles = stylex.create({
     display: 'flex',
     fontWeight: 'bold',
     justifyContent: 'center',
-    paddingBlock: '0.75rem',
-    paddingInline: '2rem',
     scale: {
       default: '1',
       ':hover': '1.02',
       ':active': '0.98',
-    },
-    textDecoration: {
-      default: 'none',
-      ':hover': 'none',
     },
     transitionDuration: {
       default: '0.2s',
