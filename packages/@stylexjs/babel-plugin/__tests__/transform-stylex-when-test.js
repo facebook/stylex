@@ -30,7 +30,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('when.ancestor function', () => {
       const { code, metadata } = transform(`
         import { when, create } from '@stylexjs/stylex';
-        
+
         const styles = create({
             container: {
               backgroundColor: {
@@ -67,7 +67,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "x148kuu",
             {
-              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
+              "ltr": ".x148kuu.x148kuu:where(.x-default-marker:hover *){background-color:red}",
               "rtl": null,
             },
             3011.3,
@@ -79,7 +79,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('when.siblingBefore function', () => {
       const { code, metadata } = transform(`
         import { when, create } from '@stylexjs/stylex';
-        
+
         const styles = create({
           container: {
             backgroundColor: {
@@ -116,7 +116,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "x1i6rnlt",
             {
-              "ltr": ".x1i6rnlt:where(.x-default-marker:focus ~ *){background-color:red}",
+              "ltr": ".x1i6rnlt.x1i6rnlt:where(.x-default-marker:focus ~ *){background-color:red}",
               "rtl": null,
             },
             3031.5,
@@ -128,7 +128,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('namespace imports', () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';
-        
+
         const styles = stylex.create({
           container: {
             backgroundColor: {
@@ -169,7 +169,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "x148kuu",
             {
-              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
+              "ltr": ".x148kuu.x148kuu:where(.x-default-marker:hover *){background-color:red}",
               "rtl": null,
             },
             3011.3,
@@ -177,7 +177,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "xpijypl",
             {
-              "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
+              "ltr": ".xpijypl.xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
               "rtl": null,
             },
             3031.5,
@@ -185,7 +185,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "xoev4mv",
             {
-              "ltr": ".xoev4mv:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:yellow}",
+              "ltr": ".xoev4mv.xoev4mv:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:yellow}",
               "rtl": null,
             },
             3021.7,
@@ -193,7 +193,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "x1v1vkh3",
             {
-              "ltr": ".x1v1vkh3:where(:has(~ .x-default-marker:focus)){background-color:purple}",
+              "ltr": ".x1v1vkh3.x1v1vkh3:where(:has(~ .x-default-marker:focus)){background-color:purple}",
               "rtl": null,
             },
             3041.5,
@@ -201,7 +201,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "x9zntq3",
             {
-              "ltr": ".x9zntq3:where(:has(.x-default-marker:focus)){background-color:orange}",
+              "ltr": ".x9zntq3.x9zntq3:where(:has(.x-default-marker:focus)){background-color:orange}",
               "rtl": null,
             },
             3016.5,
@@ -213,7 +213,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('aliased imports', () => {
       const { code, metadata } = transform(`
         import { when as w, create } from '@stylexjs/stylex';
-        
+
         const styles = create({
           container: {
             backgroundColor: {
@@ -251,7 +251,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "x148kuu",
             {
-              "ltr": ".x148kuu:where(.x-default-marker:hover *){background-color:red}",
+              "ltr": ".x148kuu.x148kuu:where(.x-default-marker:hover *){background-color:red}",
               "rtl": null,
             },
             3011.3,
@@ -259,7 +259,7 @@ describe('@stylexjs/babel-plugin', () => {
           [
             "xpijypl",
             {
-              "ltr": ".xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
+              "ltr": ".xpijypl.xpijypl:where(.x-default-marker:focus ~ *){background-color:green}",
               "rtl": null,
             },
             3031.5,
@@ -274,7 +274,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(() =>
         transform(`
           import { when, create } from '@stylexjs/stylex';
-          
+
           const styles = create({
             container: {
               backgroundColor: {
@@ -291,7 +291,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(() =>
         transform(`
           import { when, create } from '@stylexjs/stylex';
-          
+
           const styles = create({
             container: {
               backgroundColor: {
@@ -308,7 +308,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('named import', () => {
       const { code } = transform(`
         import { defaultMarker, props } from '@stylexjs/stylex';
-        
+
         const classNames = props(defaultMarker());
       `);
 
@@ -323,7 +323,7 @@ describe('@stylexjs/babel-plugin', () => {
     test('namespace import', () => {
       const { code } = transform(`
         import * as stylex from '@stylexjs/stylex';
-        
+
         const classNames = stylex.props(stylex.defaultMarker());
       `);
 
