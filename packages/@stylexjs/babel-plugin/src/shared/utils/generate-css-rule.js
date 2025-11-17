@@ -32,8 +32,13 @@ function buildNestedCSSRule(
   const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
   const combinedAtRules = atRules.concat(constRules);
 
+  // Bump specificity of stylex.when selectors
+  const hasWhere = pseudo.includes(':where(');
+  const extraClassForWhere = hasWhere ? `.${className}` : '';
+
   let selectorForAtRules =
     `.${className}` +
+    extraClassForWhere +
     combinedAtRules.map(() => `.${className}`).join('') +
     pseudo;
 

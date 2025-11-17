@@ -117,7 +117,16 @@ export const styles = stylex.create({
         color: constants.ORANGE
       }
     }),
-    backgroundColor: 'red',
+    backgroundColor: {
+      default: 'red',
+      ':hover': 'blue',
+      [stylex.when.ancestor(':focus')]: 'green',
+      '@media (max-width: 1000px)': {
+        default: 'yellow',
+        [stylex.when.descendant(':focus')]: 'purple',
+        [stylex.when.anySibling(':active')]: 'orange',
+      }
+    },
     margin: vars.marginTokens,
     borderColor: {
       default: 'green',
@@ -214,7 +223,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           root: {
             "animationName-kKVMdj": "animationName-x13ah0pd",
-            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc backgroundColor-xbrh7vm backgroundColor-xfy810d backgroundColor-xahc4vn backgroundColor-x1t4kl4c backgroundColor-x975j7z",
             "margin-kogj98": "margin-xymmreb",
             "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
             "outlineColor-kjBf7l": "outlineColor-x184ctg8",
@@ -225,11 +234,11 @@ describe('@stylexjs/babel-plugin', () => {
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:62"
+            $$css: "app/main.js:71"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:65"
+            $$css: "app/main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -263,7 +272,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
         .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}"
+        .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *):not(#\\#):not(#\\#):not(#\\#){background-color:green}
+        .backgroundColor-xbrh7vm:hover:not(#\\#):not(#\\#):not(#\\#){background-color:blue}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn:not(#\\#):not(#\\#):not(#\\#){background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)):not(#\\#):not(#\\#):not(#\\#){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)):not(#\\#):not(#\\#):not(#\\#){background-color:orange}}"
       `);
     });
 
@@ -302,7 +316,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           root: {
             "animationName-kKVMdj": "animationName-x13ah0pd",
-            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc backgroundColor-xbrh7vm backgroundColor-xfy810d backgroundColor-xahc4vn backgroundColor-x1t4kl4c backgroundColor-x975j7z",
             "margin-kogj98": "margin-xymmreb",
             "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
             "outlineColor-kjBf7l": "outlineColor-x184ctg8",
@@ -313,11 +327,11 @@ describe('@stylexjs/babel-plugin', () => {
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:62"
+            $$css: "app/main.js:71"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:65"
+            $$css: "app/main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -358,7 +372,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        .backgroundColor-xbrh7vm:hover{background-color:blue}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
         @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -396,7 +415,7 @@ describe('@stylexjs/babel-plugin', () => {
         export const styles = {
           root: {
             "animationName-kKVMdj": "animationName-x13ah0pd",
-            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc",
+            "backgroundColor-kWkggS": "backgroundColor-xrkmrrc backgroundColor-xbrh7vm backgroundColor-xfy810d backgroundColor-xahc4vn backgroundColor-x1t4kl4c backgroundColor-x975j7z",
             "margin-kogj98": "margin-xymmreb",
             "borderColor-kVAM5u": "borderColor-x1bg2uv5 borderColor-x5ugf7c borderColor-xqiy1ys",
             "outlineColor-kjBf7l": "outlineColor-x184ctg8",
@@ -407,11 +426,11 @@ describe('@stylexjs/babel-plugin', () => {
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:62"
+            $$css: "app/main.js:71"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:65"
+            $$css: "app/main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -446,7 +465,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}"
+        .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        .backgroundColor-xbrh7vm:hover{background-color:blue}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
       `);
     });
 
@@ -636,7 +660,12 @@ describe('@stylexjs/babel-plugin', () => {
         /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
         .x18abd1y{outline-color:var(--xkxfyv)}
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
-        @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}"
+        .xfy810d.xfy810d:where(.x-default-marker:focus *){background-color:green}
+        .xbrh7vm:hover{background-color:blue}
+        @media (max-width: 1000px){.xahc4vn.xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}
+        @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.x975j7z.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
       `);
     });
 
@@ -675,7 +704,12 @@ describe('@stylexjs/babel-plugin', () => {
         /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
         .xrkmrrc{background-color:red}
-        @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}"
+        .xfy810d.xfy810d:where(.x-default-marker:focus *){background-color:green}
+        .xbrh7vm:hover{background-color:blue}
+        @media (max-width: 1000px){.xahc4vn.xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}
+        @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.x975j7z.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
       `);
     });
   });
