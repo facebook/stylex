@@ -9,7 +9,7 @@
     "example:typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.16.3",
+    "@stylexjs/stylex": "0.17.0",
     "@remix-run/node-fetch-server": "0.8.0",
     "compression": "^1.8.0",
     "cross-env": "^7.0.3",
@@ -19,7 +19,7 @@
     "react-router": "7.9.2"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "0.16.3",
+    "@stylexjs/unplugin": "0.17.0",
     "@types/compression": "^1.8.1",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.3",
@@ -30,5 +30,6 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-devtools-json": "0.2.0"
-  }
+  },
+  "version": "0.17.0"
 }
