@@ -2,6 +2,9 @@
   "name": "@stylexjs/unplugin",
   "version": "0.17.0",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Universal bundler plugin for StyleX using unplugin",
   "license": "MIT",
   "main": "./lib/index.js",
