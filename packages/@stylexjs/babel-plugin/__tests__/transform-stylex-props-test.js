@@ -12,34 +12,16 @@ jest.autoMockOff();
 import { transformSync } from '@babel/core';
 import jsx from '@babel/plugin-syntax-jsx';
 import stylexPlugin from '../src/index';
-import path from 'path';
 
 function transform(source, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
-      sourceType: 'module',
       flow: 'all',
     },
-    babelrc: false,
-    plugins: [
-      jsx,
-      [
-        stylexPlugin,
-        {
-          unstable_moduleResolution: {
-            rootDir: __dirname,
-            type: 'commonJS',
-          },
-          ...opts,
-          runtimeInjection: true,
-        },
-      ],
-    ],
+    plugins: [jsx, [stylexPlugin, { ...opts, runtimeInjection: true }]],
   }).code;
 }
-
-const THIS_FILE = path.join(__dirname, 'transform-stylex-props-test.js');
 
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.props() call', () => {
@@ -1876,185 +1858,6 @@ describe('@stylexjs/babel-plugin', () => {
                           <Bar />
                         </>;
         }"
-      `);
-    });
-  });
-
-  describe('dealing with imports', () => {
-    test('all local styles', () => {
-      expect(
-        transform(
-          `
-          import * as stylex from '@stylexjs/stylex';
-          const styles = stylex.create({
-            default: {
-              color: 'black',
-            },
-            red: {
-              color: 'red',
-            },
-            blueBg: {
-              backgroundColor: 'blue',
-            },
-
-          });
-
-          <div {...stylex.props(styles.default, styles.red, styles.blueBg)} />
-        `,
-        ),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import * as stylex from '@stylexjs/stylex';
-        _inject2(".x1mqxbix{color:black}", 3000);
-        _inject2(".x1e2nbdu{color:red}", 3000);
-        _inject2(".x1t391ir{background-color:blue}", 3000);
-        <div className="x1e2nbdu x1t391ir" />;"
-      `);
-    });
-    test('local array styles', () => {
-      expect(
-        transform(
-          `
-          import * as stylex from '@stylexjs/stylex';
-          const styles = stylex.create({
-            default: {
-              color: 'black',
-            },
-            red: {
-              color: 'red',
-            },
-            blueBg: {
-              backgroundColor: 'blue',
-            },
-          });
-
-          const base = [styles.default, styles.red];
-
-          <div {...stylex.props(base, styles.blueBg)} />
-        `,
-          {
-            enableMinifiedKeys: false,
-          },
-        ),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import * as stylex from '@stylexjs/stylex';
-        _inject2(".x1mqxbix{color:black}", 3000);
-        _inject2(".x1e2nbdu{color:red}", 3000);
-        _inject2(".x1t391ir{background-color:blue}", 3000);
-        const styles = {
-          default: {
-            color: "x1mqxbix",
-            $$css: true
-          },
-          red: {
-            color: "x1e2nbdu",
-            $$css: true
-          }
-        };
-        const base = [styles.default, styles.red];
-        <div className="x1e2nbdu x1t391ir" />;"
-      `);
-    });
-    test('regular style import', () => {
-      expect(
-        transform(
-          `
-          import * as stylex from '@stylexjs/stylex';
-          import {someStyle} from './otherFile';
-          const styles = stylex.create({
-            default: {
-              color: 'black',
-            },
-          });
-          <div {...stylex.props(styles.default, someStyle)} />
-        `,
-        ),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import * as stylex from '@stylexjs/stylex';
-        import { someStyle } from './otherFile';
-        _inject2(".x1mqxbix{color:black}", 3000);
-        const styles = {
-          default: {
-            kMwMTN: "x1mqxbix",
-            $$css: true
-          }
-        };
-        <div {...stylex.props(styles.default, someStyle)} />;"
-      `);
-    });
-    test('default import from .stylex.js file', () => {
-      expect(
-        transform(
-          `
-          import * as stylex from '@stylexjs/stylex';
-          import {someStyle, vars} from './__fixtures__/constants.stylex.js';
-          const styles = stylex.create({
-            default: {
-              color: 'black',
-              backgroundColor: vars.foo,
-            },
-          });
-          <div {...stylex.props(styles.default, someStyle)} />
-        `,
-          {
-            filename: THIS_FILE,
-          },
-        ),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import * as stylex from '@stylexjs/stylex';
-        import { someStyle, vars } from './__fixtures__/constants.stylex.js';
-        _inject2(".x1mqxbix{color:black}", 3000);
-        _inject2(".x1ptj8da{background-color:var(--xu6xsfm)}", 3000);
-        const styles = {
-          default: {
-            kMwMTN: "x1mqxbix",
-            kWkggS: "x1ptj8da",
-            $$css: true
-          }
-        };
-        <div {...stylex.props(styles.default, someStyle)} />;"
-      `);
-    });
-    test('object import from .stylex.js file', () => {
-      expect(
-        transform(
-          `
-          import * as stylex from '@stylexjs/stylex';
-          import {someStyle} from './__fixtures__/constants.stylex.js';
-          const styles = stylex.create({
-            default: {
-              color: 'black',
-              backgroundColor: someStyle.foo,
-            },
-          });
-          <div {...stylex.props(styles.default, someStyle.foo)} />
-        `,
-          {
-            filename: THIS_FILE,
-          },
-        ),
-      ).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import * as stylex from '@stylexjs/stylex';
-        import { someStyle } from './__fixtures__/constants.stylex.js';
-        _inject2(".x1mqxbix{color:black}", 3000);
-        _inject2(".xxtkuhj{background-color:var(--x18h8e3f)}", 3000);
-        const styles = {
-          default: {
-            kMwMTN: "x1mqxbix",
-            kWkggS: "xxtkuhj",
-            $$css: true
-          }
-        };
-        <div {...stylex.props(styles.default, someStyle.foo)} />;"
       `);
     });
   });

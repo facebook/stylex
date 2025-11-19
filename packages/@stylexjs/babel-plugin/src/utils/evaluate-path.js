@@ -63,7 +63,6 @@ export type FunctionConfig = {
       },
     },
   },
-  disableImports?: boolean,
 };
 
 type State = {
@@ -420,11 +419,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       const importedName =
         imported.type === 'Identifier' ? imported.name : imported.value;
       const importPath = binding.path.parentPath;
-      if (
-        importPath &&
-        importPath.isImportDeclaration() &&
-        !state.functions.disableImports
-      ) {
+      if (importPath && importPath.isImportDeclaration()) {
         const absPath = state.traversalState.importPathResolver(
           importPath.node.source.value,
         );
@@ -921,11 +916,7 @@ const importsForState = new WeakMap<StateManager, Set<string>>();
 export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
-  functions: FunctionConfig = {
-    identifiers: {},
-    memberExpressions: {},
-    disableImports: false,
-  },
+  functions: FunctionConfig = { identifiers: {}, memberExpressions: {} },
   seen: Map<t.Node, Result> = new Map(),
 ): $ReadOnly<{
   confident: boolean,
