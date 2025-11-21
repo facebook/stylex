@@ -51,10 +51,9 @@ your own `@layer` directives intact.
 
 ## Dev-only CSS injection
 
-Because Redwood owns the HTML template, the document component explicitly links
-to the StyleX dev stylesheet and the client shim imports the virtual module to
-enable hot updates:
+Add both pieces during dev:
 
+In your root layout file:
 ```tsx
 // src/app/Document.tsx
 {
@@ -64,15 +63,16 @@ enable hot updates:
 }
 ```
 
+And in a client component that is used in your root layout:
 ```ts
 // src/client.tsx
 if (import.meta.env.DEV) {
   import('virtual:stylex:css-only');
 }
 ```
+Make sure this is in a client component.
 
-Keep these hooks (or equivalent ones) in place; otherwise StyleX CSS will not
-appear during `npm run example:dev`.
+Keep both in dev so StyleX CSS reloads without a full refresh.
 
 ## Commands
 

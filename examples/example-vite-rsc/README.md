@@ -86,6 +86,14 @@ StyleX runtime and stylesheet while `import.meta.env.DEV` is true:
 Keep these tags (or equivalents) in place; without them the aggregated StyleX
 CSS will not load in dev mode.
 
+If a script tag is blocked, load the runtime from a client shim instead:
+
+```ts
+if (import.meta.env.DEV) import('virtual:stylex:runtime');
+```
+
+Keep the CSS `<link>` pointing at `/virtual:stylex.css` in the HTML head.
+
 ## Commands
 
 ```bash

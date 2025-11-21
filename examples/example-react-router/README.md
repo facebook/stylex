@@ -57,6 +57,11 @@ export default defineConfig({
     ) : null;
   }
   ```
+- If a script tag is blocked, load the runtime from a tiny client shim:
+  ```ts
+  if (import.meta.env.DEV) import('virtual:stylex:runtime');
+  ```
+  Keep the CSS `<link>` in the HTML head for dev.
 - `@stylexjs/stylex` is used throughout the client components
   (`routes/root/client.tsx`, `routes/home/route.tsx`, etc.) instead of Tailwind
   classes.

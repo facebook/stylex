@@ -52,7 +52,7 @@ asset. The StyleX plugin appends its aggregated output to that file during
 ## Dev-only CSS injection
 
 Because Waku owns the root HTML shell, the layout manually links to the StyleX
-dev endpoint and loads a tiny helper that imports the virtual CSS module:
+dev endpoint and loads the virtual CSS-only module:
 
 ```tsx
 {
@@ -62,16 +62,16 @@ dev endpoint and loads a tiny helper that imports the virtual CSS module:
   import.meta.env.DEV ? (
     <>
       <link rel="stylesheet" href="/virtual:stylex.css" />
-      <script type="module" src="/src/stylex-dev-client.ts" />
+      <script type="module" src="virtual:stylex:css-only" />
     </>
   ) : null;
 }
 ```
 
-`src/stylex-dev-client.ts` simply `import('virtual:stylex:css-only')` to listen
-for `stylex:css-update` events and bust the stylesheet cache. Include these two
-lines whenever you embed StyleX inside a custom HTML shell; otherwise, no CSS
-appears in dev.
+If your framework blocks direct `<script src="virtual:stylex:css-only">` loads
+because of CORS/proxying, create a tiny client shim and call
+`import('virtual:stylex:css-only')` from there instead. Keep the CSS `<link>`
+and the JS import in dev so StyleX HMR works.
 
 ## Commands
 

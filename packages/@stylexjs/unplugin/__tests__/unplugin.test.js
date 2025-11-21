@@ -56,4 +56,89 @@ describe('@stylexjs/unplugin', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  test('marks StyleX deps as non-optimized in Vite', async () => {
+    const tempDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'stylex-unplugin-vite-'),
+    );
+    const originalCwd = process.cwd();
+    try {
+      const pkgJson = {
+        dependencies: {
+          'lib-using-stylex': '1.0.0',
+          'lib-no-stylex': '1.0.0',
+        },
+      };
+      fs.writeFileSync(
+        path.join(tempDir, 'package.json'),
+        JSON.stringify(pkgJson),
+        'utf8',
+      );
+      fs.mkdirSync(path.join(tempDir, 'node_modules', 'lib-using-stylex'), {
+        recursive: true,
+      });
+      fs.writeFileSync(
+        path.join(tempDir, 'node_modules', 'lib-using-stylex', 'package.json'),
+        JSON.stringify({
+          name: 'lib-using-stylex',
+          version: '1.0.0',
+          dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        }),
+        'utf8',
+      );
+      fs.mkdirSync(path.join(tempDir, 'node_modules', 'lib-no-stylex'), {
+        recursive: true,
+      });
+      fs.writeFileSync(
+        path.join(tempDir, 'node_modules', 'lib-no-stylex', 'package.json'),
+        JSON.stringify({
+          name: 'lib-no-stylex',
+          version: '1.0.0',
+        }),
+        'utf8',
+      );
+      process.chdir(tempDir);
+
+      const nestedDir = path.join(tempDir, 'nested', 'deeper');
+      fs.mkdirSync(nestedDir, { recursive: true });
+      process.chdir(nestedDir);
+
+      const plugin = unplugin.vite({});
+      const viteConfigHook = plugin.config;
+      const result =
+        typeof viteConfigHook === 'function'
+          ? await viteConfigHook.call(
+              plugin,
+              {},
+              { command: 'serve', mode: 'development' },
+            )
+          : null;
+      expect(result?.optimizeDeps?.exclude).toEqual(
+        expect.arrayContaining(['lib-using-stylex']),
+      );
+      expect(result?.optimizeDeps?.exclude || []).not.toEqual(
+        expect.arrayContaining(['lib-no-stylex']),
+      );
+      expect(result?.ssr?.optimizeDeps?.exclude).toEqual(
+        expect.arrayContaining(['lib-using-stylex']),
+      );
+
+      const pluginWithManual = unplugin.vite({
+        externalPackages: ['manual-stylex-lib'],
+      });
+      const manualResult =
+        typeof pluginWithManual.config === 'function'
+          ? await pluginWithManual.config(
+              {},
+              { command: 'serve', mode: 'development' },
+            )
+          : null;
+      expect(manualResult?.optimizeDeps?.exclude).toEqual(
+        expect.arrayContaining(['manual-stylex-lib', 'lib-using-stylex']),
+      );
+    } finally {
+      process.chdir(originalCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });

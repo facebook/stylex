@@ -16,6 +16,7 @@ import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
 import path from 'node:path';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { transform as lightningTransform } from 'lightningcss';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
@@ -66,6 +67,102 @@ function processCollectedRulesToCSS(rules, options) {
   return code.toString();
 }
 
+function readJSON(file) {
+  try {
+    const content = fs.readFileSync(file, 'utf8');
+    return JSON.parse(content);
+  } catch {
+    return null;
+  }
+}
+
+function findNearestPackageJson(startDir) {
+  let dir = startDir;
+  for (;;) {
+    const candidate = path.join(dir, 'package.json');
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
+function toPackageName(importSource) {
+  const source =
+    typeof importSource === 'string' ? importSource : importSource?.from;
+  if (!source || source.startsWith('.') || source.startsWith('/')) return null;
+  if (source.startsWith('@')) {
+    const [scope, name] = source.split('/');
+    if (scope && name) return `${scope}/${name}`;
+  }
+  const [pkg] = source.split('/');
+  return pkg || null;
+}
+
+function hasStylexDependency(manifest, targetPackages) {
+  if (!manifest || typeof manifest !== 'object') return false;
+  const depFields = [
+    'dependencies',
+    'peerDependencies',
+    'optionalDependencies',
+  ];
+  for (const field of depFields) {
+    const deps = manifest[field];
+    if (!deps || typeof deps !== 'object') continue;
+    for (const name of Object.keys(deps)) {
+      if (targetPackages.has(name)) return true;
+    }
+  }
+  return false;
+}
+
+function discoverStylexPackages({
+  importSources,
+  explicitPackages,
+  rootDir,
+  resolver,
+}) {
+  const targetPackages = new Set(
+    importSources
+      .map(toPackageName)
+      .filter(Boolean)
+      .concat(['@stylexjs/stylex']),
+  );
+  const found = new Set(explicitPackages || []);
+  const pkgJsonPath = findNearestPackageJson(rootDir);
+  if (!pkgJsonPath) return Array.from(found);
+  const pkgDir = path.dirname(pkgJsonPath);
+  const pkgJson = readJSON(pkgJsonPath);
+  if (!pkgJson) return Array.from(found);
+  const depFields = [
+    'dependencies',
+    'devDependencies',
+    'peerDependencies',
+    'optionalDependencies',
+  ];
+  const deps = new Set();
+  for (const field of depFields) {
+    const entries = pkgJson[field];
+    if (!entries || typeof entries !== 'object') continue;
+    for (const name of Object.keys(entries)) deps.add(name);
+  }
+  for (const dep of deps) {
+    let manifestPath = null;
+    try {
+      manifestPath = resolver.resolve(`${dep}/package.json`, {
+        paths: [pkgDir],
+      });
+    } catch {}
+    if (!manifestPath) continue;
+    const manifest = readJSON(manifestPath);
+    if (hasStylexDependency(manifest, targetPackages)) {
+      found.add(dep);
+    }
+  }
+  return Array.from(found);
+}
+
 const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
   // framework :: 'rollup' | 'vite' | 'rolldown' | 'farm' | 'unloader'
   const framework = metaOptions?.framework;
@@ -78,6 +175,7 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
     useCSSLayers = false,
     lightningcssOptions,
     cssInjectionTarget,
+    externalPackages = [],
     // Persist rules to disk in dev to bridge multiple plugin containers/processes.
     // Off by default; enable if your dev setup runs separate Node processes per environment.
     devPersistToDisk = false,
@@ -104,6 +202,16 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
 
   let viteServer = null;
   let viteOutDir = null;
+  const nearestPkgJson = findNearestPackageJson(process.cwd());
+  const requireFromCwd = nearestPkgJson
+    ? createRequire(nearestPkgJson)
+    : createRequire(path.join(process.cwd(), 'package.json'));
+  const stylexPackages = discoverStylexPackages({
+    importSources,
+    explicitPackages: externalPackages,
+    rootDir: nearestPkgJson ? path.dirname(nearestPkgJson) : process.cwd(),
+    resolver: requireFromCwd,
+  });
   // Resolve nearest node_modules and cache under node_modules/.stylex/rules.json
   function findNearestNodeModules(startDir) {
     let dir = startDir;
@@ -347,6 +455,26 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
       devMode === 'off'
         ? undefined
         : {
+            config(config) {
+              if (!stylexPackages || stylexPackages.length === 0) return;
+              const addExcludes = (existing = []) =>
+                Array.from(new Set([...existing, ...stylexPackages]));
+              return {
+                optimizeDeps: {
+                  ...(config?.optimizeDeps || {}),
+                  exclude: addExcludes(config?.optimizeDeps?.exclude || []),
+                },
+                ssr: {
+                  ...(config?.ssr || {}),
+                  optimizeDeps: {
+                    ...(config?.ssr?.optimizeDeps || {}),
+                    exclude: addExcludes(
+                      config?.ssr?.optimizeDeps?.exclude || [],
+                    ),
+                  },
+                },
+              };
+            },
             configResolved(config) {
               try {
                 viteOutDir = config.build?.outDir || viteOutDir;
