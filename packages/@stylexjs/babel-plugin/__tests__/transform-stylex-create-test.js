@@ -2053,6 +2053,72 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        test.skip('media queries without last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media screen and (max-width: 900px)': 'blue',
+                  '@media screen and (max-width: 500px)': 'purple',
+                  '@media screen and (max-width: 400px)': 'green',
+                }
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc xwjcz23 xu6t8s1 xduqtph",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xwjcz23",
+                  {
+                    "ltr": "@media screen and (min-width: 500.01px) and (max-width: 900px)){.xwjcz23.xwjcz23{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "xu6t8s1",
+                  {
+                    "ltr": "@media screen and (min-width: 400.01px) and (max-width: 500px){.xu6t8s1.xu6t8s1{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "xduqtph",
+                  {
+                    "ltr": "@media screen and (max-width: 400px){.xduqtph.xduqtph{background-color:green}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('media queries without last query wins', () => {
           const { code, metadata } = transform(
             `
