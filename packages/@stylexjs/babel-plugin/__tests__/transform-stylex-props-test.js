@@ -115,9 +115,9 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".color-x1e2nbdu{color:red}", 3000);
           function Foo() {
             return <>
-                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4">Hello World</div>
-                            <div className="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4" id="test">Hello World</div>
-                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4" className="test">Hello World</div>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:../../../../../../../../../js/node_modules/npm-package/dist/components/Foo.react.js:4">Hello World</div>
+                            <div className="test" className="color-x1e2nbdu" data-style-src="npm-package:../../../../../../../../../js/node_modules/npm-package/dist/components/Foo.react.js:4" id="test">Hello World</div>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:../../../../../../../../../js/node_modules/npm-package/dist/components/Foo.react.js:4" className="test">Hello World</div>
                           </>;
           }"
         `);
@@ -156,11 +156,11 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             red: {
               "color-kMwMTN": "color-x1e2nbdu",
-              $$css: "npm-package:components/Foo.react.js:4"
+              $$css: "npm-package:../../../../../../../../../js/node_modules/npm-package/dist/components/Foo.react.js:4"
             },
             opacity: opacity => [{
               "opacity-kSiTet": opacity != null ? "opacity-xb4nw82" : opacity,
-              $$css: "npm-package:components/Foo.react.js:7"
+              $$css: "npm-package:../../../../../../../../../js/node_modules/npm-package/dist/components/Foo.react.js:7"
             }, {
               "--x-opacity": opacity != null ? opacity : undefined
             }]
@@ -201,7 +201,7 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             red: {
               "color-kMwMTN": "color-x1e2nbdu",
-              $$css: "npm-package:components/Foo.react.js:4"
+              $$css: "npm-package:../../../../../../../../../js/node_modules/npm-package/dist/components/Foo.react.js:4"
             }
           };
           function Foo(props) {
@@ -1033,7 +1033,7 @@ describe('@stylexjs/babel-plugin', () => {
           _inject2(".color-x1e2nbdu{color:red}", 3000);
           ({
             className: "color-x1e2nbdu",
-            "data-style-src": "js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:4"
           });"
         `);
 
@@ -1063,14 +1063,14 @@ describe('@stylexjs/babel-plugin', () => {
           const styles = {
             default: {
               "color-kMwMTN": "color-x1e2nbdu",
-              $$css: "js/FooBar.react.js:4"
+              $$css: "../../../../../../../../../html/js/FooBar.react.js:4"
             }
           };
           _inject2(".backgroundColor-x1t391ir{background-color:blue}", 3000);
           const otherStyles = {
             default: {
               "backgroundColor-kWkggS": "backgroundColor-x1t391ir",
-              $$css: "js/FooBar.react.js:9"
+              $$css: "../../../../../../../../../html/js/FooBar.react.js:9"
             }
           };
           stylex.props([styles.default, isActive && otherStyles.default]);"
@@ -1111,11 +1111,11 @@ describe('@stylexjs/babel-plugin', () => {
           ({
             0: {
               className: "color-x1e2nbdu",
-              "data-style-src": "js/FooBar.react.js:4"
+              "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:4"
             },
             1: {
               className: "color-x1e2nbdu backgroundColor-x1t391ir",
-              "data-style-src": "js/FooBar.react.js:4; js/FooBar.react.js:9"
+              "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:9"
             }
           })[!!isActive << 0];"
         `);
@@ -1145,11 +1145,11 @@ describe('@stylexjs/babel-plugin', () => {
           ({
             0: {
               className: "color-x1e2nbdu",
-              "data-style-src": "js/FooBar.react.js:4"
+              "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:4"
             },
             1: {
               className: "color-xju2f9n",
-              "data-style-src": "js/FooBar.react.js:4; js/FooBar.react.js:7"
+              "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:7"
             }
           })[!!isActive << 0];"
         `);
@@ -1490,17 +1490,17 @@ describe('@stylexjs/babel-plugin', () => {
           sidebar: {
             "boxSizing-kB7OPa": "boxSizing-x9f619",
             "gridArea-kJuA4N": "gridArea-x1yc5d2u",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           content: {
             "gridArea-kJuA4N": "gridArea-x1fdo2jl",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::8"
           },
           root: {
             "display-k1xSpc": "display-xrvj5dj",
             "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
             "gridTemplateAreas-kC13JO": "gridTemplateAreas-x5gp9wm",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::11"
           },
           withSidebar: {
             "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1rkzygb",
@@ -1509,19 +1509,21 @@ describe('@stylexjs/babel-plugin', () => {
             "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "gridTemplateRows-xmr4b4k",
             "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "gridTemplateAreas-xesbpuc",
             "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "gridTemplateColumns-x15nfgh4",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::16"
           },
           noSidebar: {
             "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1mkdm3x",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::26"
           }
         };
         ({
           0: {
-            className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4"
+            className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4",
+            "data-style-src": "@stylexjs/babel-plugin::11; @stylexjs/babel-plugin::16"
           },
           1: {
-            className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x"
+            className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x",
+            "data-style-src": "@stylexjs/babel-plugin::11; @stylexjs/babel-plugin::26"
           }
         })[!!(sidebar == null) << 0];"
       `);
@@ -1592,35 +1594,35 @@ describe('@stylexjs/babel-plugin', () => {
         const complex = {
           0: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16"
           },
           4: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26"
           },
           2: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 boxSizing-x9f619 gridArea-x1yc5d2u",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:4"
           },
           6: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x boxSizing-x9f619 gridArea-x1yc5d2u",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:4"
           },
           1: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           5: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           3: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 boxSizing-x9f619 gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:4; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           7: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x boxSizing-x9f619 gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:4; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:8"
           }
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
@@ -1692,35 +1694,35 @@ describe('@stylexjs/babel-plugin', () => {
         const complex = {
           0: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16"
           },
           4: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26"
           },
           2: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 boxSizing-x9f619 gridArea-x1yc5d2u",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:4"
           },
           6: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x boxSizing-x9f619 gridArea-x1yc5d2u",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:4"
           },
           1: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           5: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           3: {
             className: "display-xrvj5dj gridTemplateColumns-x1rkzygb gridTemplateRows-x7k18q3 gridTemplateAreas-x17lh93j gridTemplateRows-xmr4b4k gridTemplateAreas-xesbpuc gridTemplateColumns-x15nfgh4 boxSizing-x9f619 gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:4; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           7: {
             className: "display-xrvj5dj gridTemplateRows-x7k18q3 gridTemplateAreas-x5gp9wm gridTemplateColumns-x1mkdm3x boxSizing-x9f619 gridArea-x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:4; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:8"
           }
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);
@@ -1792,35 +1794,35 @@ describe('@stylexjs/babel-plugin', () => {
         const complex = {
           0: {
             className: "xrvj5dj x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16"
           },
           4: {
             className: "xrvj5dj x7k18q3 x5gp9wm x1mkdm3x",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26"
           },
           2: {
             className: "xrvj5dj x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 x9f619 x1yc5d2u",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:4"
           },
           6: {
             className: "xrvj5dj x7k18q3 x5gp9wm x1mkdm3x x9f619 x1yc5d2u",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:4"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:4"
           },
           1: {
             className: "xrvj5dj x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           5: {
             className: "xrvj5dj x7k18q3 x5gp9wm x1mkdm3x x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           3: {
             className: "xrvj5dj x1rkzygb x7k18q3 x17lh93j xmr4b4k xesbpuc x15nfgh4 x9f619 x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:16; js/FooBar.react.js:4; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:16; ../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:8"
           },
           7: {
             className: "xrvj5dj x7k18q3 x5gp9wm x1mkdm3x x9f619 x1fdo2jl",
-            "data-style-src": "js/FooBar.react.js:11; js/FooBar.react.js:26; js/FooBar.react.js:4; js/FooBar.react.js:8"
+            "data-style-src": "../../../../../../../../../html/js/FooBar.react.js:11; ../../../../../../../../../html/js/FooBar.react.js:26; ../../../../../../../../../html/js/FooBar.react.js:4; ../../../../../../../../../html/js/FooBar.react.js:8"
           }
         }[!!(sidebar == null && !isSidebar) << 2 | !!isSidebar << 1 | !!isContent << 0];"
       `);

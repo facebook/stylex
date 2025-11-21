@@ -25,7 +25,15 @@ function getPackagePrefix(absolutePath: string): ?string {
   return undefined;
 }
 
-function getShortPath(relativePath: string): string {
+function getShortPath(relativePath: string, state: StateManager): string {
+  if (
+    state.options.unstable_moduleResolution?.type === 'commonJS' &&
+    state.options.unstable_moduleResolution?.rootDir
+  ) {
+    const appRootPath = state.options.unstable_moduleResolution?.rootDir;
+    return path.relative(appRootPath, relativePath);
+  }
+
   // Normalize slashes in the path and truncated
   return relativePath.split(path.sep).slice(-2).join('/');
 }
@@ -35,17 +43,28 @@ function createShortFilename(
   state: StateManager,
 ): string {
   const isHaste = state.options.unstable_moduleResolution?.type === 'haste';
-  const relativePath = path.relative(process.cwd(), absolutePath);
+
+  const cwdPackage = state.getPackageNameAndPath(process.cwd());
+  const packageDetails = state.getPackageNameAndPath(absolutePath);
+  if (packageDetails) {
+    const [packageName, packageRootPath] = packageDetails;
+    const relativePath = path.relative(packageRootPath, absolutePath);
+    if (cwdPackage && cwdPackage[0] === packageName) {
+      return relativePath;
+    }
+    return `${packageName}:${relativePath}`;
+  }
+
   // Construct a path based on package, moduleType, and file
   const packagePrefix = getPackagePrefix(absolutePath);
   if (packagePrefix) {
-    const shortPath = getShortPath(relativePath);
+    const shortPath = getShortPath(absolutePath, state);
     return `${packagePrefix}:${shortPath}`;
   } else {
     if (isHaste) {
       return path.basename(absolutePath);
     }
-    return getShortPath(relativePath);
+    return getShortPath(absolutePath, state);
   }
 }
 

@@ -80,7 +80,7 @@ function transform(source, opts = {}) {
   ${source.replace("import * as stylex from '@stylexjs/stylex';", '')}
   `,
     {
-      filename: '/src/app/main.js',
+      filename: opts.filename ?? '/src/app/main.js',
       parserOpts: { flow: 'all' },
       babelrc: false,
       plugins: [[stylexPlugin, pluginOpts]],
@@ -192,7 +192,9 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('all rules (useLayers:false)', () => {
-      const { code, metadata } = transform(fixture);
+      const { code, metadata } = transform(fixture, {
+        filename: '/src/app/components/main.js',
+      });
       expect(code).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
         export const constants = {
@@ -231,15 +233,15 @@ describe('@stylexjs/babel-plugin', () => {
             "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-xtj17id",
             "padding-kmVPX3": "padding-xss17vw",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:33"
+            $$css: "components/main.js:33"
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:71"
+            $$css: "components/main.js:71"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:74"
+            $$css: "components/main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -324,15 +326,15 @@ describe('@stylexjs/babel-plugin', () => {
             "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-xtj17id",
             "padding-kmVPX3": "padding-xss17vw",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:33"
+            $$css: "main.js:33"
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:71"
+            $$css: "main.js:71"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:74"
+            $$css: "main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -423,15 +425,15 @@ describe('@stylexjs/babel-plugin', () => {
             "textShadow-kKMj4B": "textShadow-x1skrh0i textShadow-xtj17id",
             "padding-kmVPX3": "padding-xss17vw",
             "float-kyUFMd": "float-x1kmio9f",
-            $$css: "app/main.js:33"
+            $$css: "main.js:33"
           },
           overrideColor: {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
-            $$css: "app/main.js:71"
+            $$css: "main.js:71"
           },
           dynamic: color => [{
             "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
-            $$css: "app/main.js:74"
+            $$css: "main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
           }]
@@ -524,7 +526,7 @@ describe('@stylexjs/babel-plugin', () => {
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-x1gx403c",
             "float-kyUFMd": "float-xj87blo",
-            $$css: "app/main.js:25"
+            $$css: "main.js:25"
           }
         };"
       `);

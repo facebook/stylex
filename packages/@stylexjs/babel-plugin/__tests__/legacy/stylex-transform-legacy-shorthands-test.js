@@ -338,7 +338,7 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             "paddingBottom-kGO01o": "paddingBottom-xs9asl8",
             "paddingInlineStart-kZCmMZ": "paddingInlineStart-xaso8d8",
             "paddingInlineEnd-kwRFfy": "paddingInlineEnd-x2vl965",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           bar: {
             "paddingTop-kLKAdn": "paddingTop-x1nn3v0j",
@@ -346,7 +346,7 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             "paddingLeft-kE3dHu": "paddingLeft-xnljgj5",
             "paddingInlineStart-kZCmMZ": null,
             "paddingInlineEnd-kwRFfy": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::9"
           }
         };
         "paddingTop-x1nn3v0j paddingBottom-x1120s5i paddingLeft-xnljgj5";
@@ -777,31 +777,31 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             "listStyleType-kH6xsr": "listStyleType-x3ct3a4",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           square: {
             "listStyleType-kH6xsr": "listStyleType-x152237o",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::7"
           },
           inside: {
             "listStyleType-kH6xsr": null,
             "listStylePosition-kpqbRz": "listStylePosition-x1cy9i3i",
             "listStyleImage-khnUzm": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::10"
           },
           custom1: {
             "listStyleType-kH6xsr": "listStyleType-x1jzm7bx",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::13"
           },
           custom2: {
             "listStyleType-kH6xsr": "listStyleType-x1tpmu87",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::16"
           }
         };"
       `);
@@ -850,25 +850,25 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             "listStyleType-kH6xsr": "listStyleType-x3ct3a4",
             "listStylePosition-kpqbRz": "listStylePosition-x1cy9i3i",
             "listStyleImage-khnUzm": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           two: {
             "listStyleType-kH6xsr": "listStyleType-x152237o",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": "listStyleImage-xnbnhf8",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::7"
           },
           three: {
             "listStyleType-kH6xsr": "listStyleType-xl2um64",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::10"
           },
           four: {
             "listStyleType-kH6xsr": "listStyleType-xqkogtj",
             "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
             "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::13"
           }
         };"
       `);
@@ -921,25 +921,25 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             "listStylePosition-kpqbRz": "listStylePosition-x1cy9i3i",
             "listStyleImage-khnUzm": null,
             "listStyleType-kH6xsr": "listStyleType-x152237o",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           two: {
             "listStyleType-kH6xsr": "listStyleType-x12kno0j",
             "listStyleImage-khnUzm": "listStyleImage-xnbnhf8",
             "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::8"
           },
           three: {
             "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
             "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
             "listStyleType-kH6xsr": "listStyleType-x152237o",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::12"
           },
           four: {
             "listStyleImage-khnUzm": "listStyleImage-x1qcowux",
             "listStylePosition-kpqbRz": "listStylePosition-x43c9pm",
             "listStyleType-kH6xsr": "listStyleType-x152237o",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::17"
           }
         };"
       `);
