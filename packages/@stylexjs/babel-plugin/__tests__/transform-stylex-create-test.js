@@ -2074,7 +2074,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: {
-                kWkggS: "xrkmrrc x1yrnpot xe2d6hj x17z8iku",
+                kWkggS: "xrkmrrc x1qc147k x9qmkci x17z8iku",
                 $$css: true
               }
             };"
@@ -2091,17 +2091,17 @@ describe('@stylexjs/babel-plugin', () => {
                   3000,
                 ],
                 [
-                  "x1yrnpot",
+                  "x1qc147k",
                   {
-                    "ltr": "@media (((screen) and (max-width: 900px) and (not ((screen))) and (not ((screen)))) or ((screen) and (max-width: 900px) and (not ((screen))) and (not ((max-width: 400px))))) or (((screen) and (max-width: 900px) and (not ((max-width: 500px))) and (not ((screen)))) or ((screen) and (max-width: 900px) and (not ((max-width: 500px))) and (not ((max-width: 400px))))){.x1yrnpot.x1yrnpot{background-color:blue}}",
+                    "ltr": "@media (((screen) and (max-width: 900px) and (not (screen)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (screen)) and (not (max-width: 400px)))) or (((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)))){.x1qc147k.x1qc147k{background-color:blue}}",
                     "rtl": null,
                   },
                   3200,
                 ],
                 [
-                  "xe2d6hj",
+                  "x9qmkci",
                   {
-                    "ltr": "@media ((screen) and (max-width: 500px) and (not ((screen)))) or ((screen) and (max-width: 500px) and (not ((max-width: 400px)))){.xe2d6hj.xe2d6hj{background-color:purple}}",
+                    "ltr": "@media ((screen) and (max-width: 500px) and (not (screen))) or ((screen) and (max-width: 500px) and (not (max-width: 400px))){.x9qmkci.x9qmkci{background-color:purple}}",
                     "rtl": null,
                   },
                   3200,

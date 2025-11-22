@@ -520,7 +520,7 @@ export class MediaQuery {
     switch (queries.type) {
       case 'media-keyword': {
         const prefix = queries.not ? 'not ' : queries.only ? 'only ' : '';
-        return prefix + queries.key;
+        return prefix + (isTopLevel ? queries.key : `(${queries.key})`);
       }
       case 'word-rule':
         return `(${queries.keyValue})`;
@@ -555,9 +555,11 @@ export class MediaQuery {
       }
       case 'not':
         return queries.rule &&
-          (queries.rule.type === 'and' || queries.rule.type === 'or')
+          (queries.rule.type === 'and' ||
+            queries.rule.type === 'or' ||
+            queries.rule.type === 'not')
           ? `(not (${this.#toString(queries.rule)}))`
-          : `(not (${this.#toString(queries.rule)}))`;
+          : `(not ${this.#toString(queries.rule)})`;
       case 'and':
         return queries.rules.map((rule) => this.#toString(rule)).join(' and ');
       case 'or': {

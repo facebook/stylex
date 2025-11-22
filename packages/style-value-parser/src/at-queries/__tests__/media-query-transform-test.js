@@ -268,7 +268,7 @@ describe('Media Query Transformer', () => {
     const expectedStyles = {
       width: {
         default: '100%',
-        '@media screen and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
+        '@media (screen) and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
           '80%',
         '@media (max-width: 500px)': '60%',
       },
