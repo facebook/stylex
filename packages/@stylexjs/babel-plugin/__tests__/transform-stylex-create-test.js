@@ -2061,6 +2061,72 @@ describe('@stylexjs/babel-plugin', () => {
               root: {
                 backgroundColor: {
                   default: 'red',
+                  '@media screen and (max-width: 900px)': 'blue',
+                  '@media screen and (max-width: 500px)': 'purple',
+                  '@media screen and (max-width: 400px)': 'green',
+                }
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc x1qc147k x9qmkci x17z8iku",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1qc147k",
+                  {
+                    "ltr": "@media (((screen) and (max-width: 900px) and (not (screen)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (screen)) and (not (max-width: 400px)))) or (((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)))){.x1qc147k.x1qc147k{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x9qmkci",
+                  {
+                    "ltr": "@media ((screen) and (max-width: 500px) and (not (screen))) or ((screen) and (max-width: 500px) and (not (max-width: 400px))){.x9qmkci.x9qmkci{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x17z8iku",
+                  {
+                    "ltr": "@media (screen) and (max-width: 400px){.x17z8iku.x17z8iku{background-color:green}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('media queries without last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
                   '@media (max-width: 900px)': 'blue',
                   '@media (max-width: 500px)': 'purple',
                   '@media (max-width: 400px)': 'green',
