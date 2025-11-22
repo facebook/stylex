@@ -406,7 +406,7 @@ function processStylexRules(
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
     useLegacyClassnamesSort = false,
-  } = typeof config === 'boolean' ? { useLayers: config } : config ?? {};
+  } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
   if (rules.length === 0) {
     return '';
   }

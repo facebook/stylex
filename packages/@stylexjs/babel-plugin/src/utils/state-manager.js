@@ -294,16 +294,12 @@ export default class StateManager {
         'options.runtimeInjection',
       );
 
-    // prettier-ignore
-    const runtimeInjection: StyleXStateOptions['runtimeInjection']
-      = configRuntimeInjection === true ?
-        DEFAULT_INJECT_PATH
-      : configRuntimeInjection === false ?
-        undefined
-      :
-        configRuntimeInjection
-      ;
-
+    const runtimeInjection: StyleXStateOptions['runtimeInjection'] =
+      configRuntimeInjection === true
+        ? DEFAULT_INJECT_PATH
+        : configRuntimeInjection === false
+          ? undefined
+          : configRuntimeInjection;
     const classNamePrefix: StyleXStateOptions['classNamePrefix'] =
       z.logAndDefault(
         z.string(),

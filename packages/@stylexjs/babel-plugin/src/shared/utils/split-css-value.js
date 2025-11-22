@@ -12,16 +12,17 @@ import type { TStyleValue } from '../common-types';
 import parser from 'postcss-value-parser';
 
 function printNode(node: PostCSSValueASTNode): string {
-  switch (node.type) {
-    case 'word':
-      return `${node.value}`;
-    case 'string':
-      return `${node.quote}${node.value}${node.quote}`;
-    case 'function':
-      return `${node.value}(${node.nodes.map(printNode).join('')})`;
-    default:
-      return node.value;
-  }
+  return match (node) {
+    {type: 'word', const value, ...} => value,
+
+    {type: 'string', const value, const quote, ...} =>
+      `${quote}${value}${quote}`,
+
+    {type: 'function', const value, const nodes, ...} =>
+      `${value}(${nodes.map(printNode).join('')})`,
+
+    _ => node.value,
+  };
 }
 
 // Using split(' ') Isn't enough because of values like calc.
