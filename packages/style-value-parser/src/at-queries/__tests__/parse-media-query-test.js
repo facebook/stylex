@@ -96,7 +96,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media only print and (color)"',
+          '"@media only (print) and (color)"',
         );
       });
 
@@ -139,7 +139,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media not all and (monochrome)"',
+          '"@media not (all) and (monochrome)"',
         );
       });
     });
@@ -940,7 +940,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media not all and (monochrome)"',
+          '"@media not (all) and (monochrome)"',
         );
       });
 
@@ -973,7 +973,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media screen and (min-width: 400px)"',
+          '"@media (screen) and (min-width: 400px)"',
         );
       });
 
@@ -1037,7 +1037,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media screen and (device-aspect-ratio: 16 / 9)"',
+          '"@media (screen) and (device-aspect-ratio: 16 / 9)"',
         );
       });
 
@@ -1970,7 +1970,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (color) and (min-width: 400px), screen and (max-width: 700px)"',
+          '"@media (color) and (min-width: 400px), (screen) and (max-width: 700px)"',
         );
       });
     });
@@ -2050,7 +2050,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media not all and (monochrome) and (min-width: 600px)"',
+          '"@media not (all) and (monochrome) and (min-width: 600px)"',
         );
       });
 
@@ -2269,7 +2269,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media screen and (min-width: 500px) and (max-width: 800px) and (color)"',
+          '"@media (screen) and (min-width: 500px) and (max-width: 800px) and (color)"',
         );
       });
     });
