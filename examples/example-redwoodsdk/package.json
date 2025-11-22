@@ -30,11 +30,11 @@
   },
   "devDependencies": {
     "@stylexjs/unplugin": "0.17.0",
-    "@cloudflare/vite-plugin": "1.13.18",
-    "@cloudflare/workers-types": "4.20251014.0",
-    "@types/node": "~24.5.2",
-    "@types/react": "19.1.2",
-    "@types/react-dom": "19.1.2",
+    "@cloudflare/vite-plugin": "^1.15.2",
+    "@cloudflare/workers-types": "4.20251121.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "19.2.3",
+    "@types/react-dom": "19.2.3",
     "typescript": "5.8.3",
     "vite": "7.1.12",
     "wrangler": "4.45.3"
