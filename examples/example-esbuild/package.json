@@ -11,8 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "@stylexjs/stylex": "0.17.0",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@stylexjs/unplugin": "0.17.0",

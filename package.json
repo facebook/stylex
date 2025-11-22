@@ -43,7 +43,7 @@
     "lint-staged": "^13.0.3",
     "prettier": "3.5.3",
     "prettier-plugin-hermes-parser": "^0.26.0",
-    "rimraf": "^5.0.10",
+    "rimraf": "^6.1.2",
     "yargs": "17.7.2"
   },
   "prettier": {
