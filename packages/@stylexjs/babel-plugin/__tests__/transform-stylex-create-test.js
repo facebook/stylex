@@ -2053,7 +2053,7 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
-        test.skip('media queries without last query wins', () => {
+        test('media queries without last query wins', () => {
           const { code, metadata } = transform(
             `
             import * as stylex from '@stylexjs/stylex';
@@ -2074,7 +2074,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: {
-                kWkggS: "xrkmrrc xwjcz23 xu6t8s1 xduqtph",
+                kWkggS: "xrkmrrc x1yrnpot xe2d6hj x17z8iku",
                 $$css: true
               }
             };"
@@ -2091,25 +2091,25 @@ describe('@stylexjs/babel-plugin', () => {
                   3000,
                 ],
                 [
-                  "xwjcz23",
+                  "x1yrnpot",
                   {
-                    "ltr": "@media screen and (min-width: 500.01px) and (max-width: 900px)){.xwjcz23.xwjcz23{background-color:blue}}",
+                    "ltr": "@media (((screen) and (max-width: 900px) and (not ((screen))) and (not ((screen)))) or ((screen) and (max-width: 900px) and (not ((screen))) and (not ((max-width: 400px))))) or (((screen) and (max-width: 900px) and (not ((max-width: 500px))) and (not ((screen)))) or ((screen) and (max-width: 900px) and (not ((max-width: 500px))) and (not ((max-width: 400px))))){.x1yrnpot.x1yrnpot{background-color:blue}}",
                     "rtl": null,
                   },
                   3200,
                 ],
                 [
-                  "xu6t8s1",
+                  "xe2d6hj",
                   {
-                    "ltr": "@media screen and (min-width: 400.01px) and (max-width: 500px){.xu6t8s1.xu6t8s1{background-color:purple}}",
+                    "ltr": "@media ((screen) and (max-width: 500px) and (not ((screen)))) or ((screen) and (max-width: 500px) and (not ((max-width: 400px)))){.xe2d6hj.xe2d6hj{background-color:purple}}",
                     "rtl": null,
                   },
                   3200,
                 ],
                 [
-                  "xduqtph",
+                  "x17z8iku",
                   {
-                    "ltr": "@media screen and (max-width: 400px){.xduqtph.xduqtph{background-color:green}}",
+                    "ltr": "@media (screen) and (max-width: 400px){.x17z8iku.x17z8iku{background-color:green}}",
                     "rtl": null,
                   },
                   3200,

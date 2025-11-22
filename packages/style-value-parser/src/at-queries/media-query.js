@@ -557,7 +557,7 @@ export class MediaQuery {
         return queries.rule &&
           (queries.rule.type === 'and' || queries.rule.type === 'or')
           ? `(not (${this.#toString(queries.rule)}))`
-          : `(not ${this.#toString(queries.rule)})`;
+          : `(not (${this.#toString(queries.rule)}))`;
       case 'and':
         return queries.rules.map((rule) => this.#toString(rule)).join(' and ');
       case 'or': {

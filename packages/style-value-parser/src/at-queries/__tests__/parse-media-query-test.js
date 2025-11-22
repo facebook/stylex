@@ -1997,7 +1997,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (not (min-width: 400px))"',
+          '"@media (not ((min-width: 400px)))"',
         );
       });
 
@@ -2315,7 +2315,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media (not (hover: hover))"',
+          '"@media (not ((hover: hover)))"',
         );
       });
 
