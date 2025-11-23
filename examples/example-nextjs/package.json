@@ -27,6 +27,7 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "14.0.1",
     "rimraf": "^6.1.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "client-only": "0.0.1"
   }
 }
