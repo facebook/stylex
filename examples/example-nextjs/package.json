@@ -26,7 +26,8 @@
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.0.1",
-    "rimraf": "^5.0.10",
-    "typescript": "^5.3.3"
+    "rimraf": "^6.1.2",
+    "typescript": "^5.9.3",
+    "client-only": "0.0.1"
   }
 }

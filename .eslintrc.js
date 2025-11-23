@@ -41,6 +41,8 @@ module.exports = {
     'next-env.d.ts',
     'next.config.js',
     '**/__mocks__/snapshot*',
+    '**/storybook-static/**',
+    '**/examples/example-cli/src/**',
   ],
   globals: {
     $Call: 'readonly',

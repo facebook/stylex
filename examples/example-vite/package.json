@@ -9,12 +9,12 @@
     "example:serve": "vite preview"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "@stylexjs/stylex": "0.17.0"
   },
   "devDependencies": {
-    "vite": "^5.4.8",
+    "vite": "^7.2.4",
     "@stylexjs/unplugin": "0.17.0",
     "@vitejs/plugin-react": "latest"
   }

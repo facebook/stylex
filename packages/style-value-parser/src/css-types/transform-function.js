@@ -91,13 +91,14 @@ export class Matrix extends TransformFunction {
 }
 
 export class Matrix3d extends TransformFunction {
-  // prettier-ignore
-  +args: $ReadOnly<[
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number,
-    number, number, number, number
-  ]>;
+  +args: $ReadOnly<
+    [
+      ...[number, number, number, number],
+      ...[number, number, number, number],
+      ...[number, number, number, number],
+      ...[number, number, number, number],
+    ],
+  >;
   constructor(args: this['args']) {
     super();
     this.args = args;

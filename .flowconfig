@@ -10,6 +10,7 @@
 [lints]
 
 [options]
+experimental.pattern_matching=true
 enums=true
 emoji=true
 casting_syntax=as
