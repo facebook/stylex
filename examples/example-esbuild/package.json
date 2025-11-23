@@ -17,7 +17,7 @@
   "devDependencies": {
     "@stylexjs/unplugin": "0.17.0",
     "@stylexjs/eslint-plugin": "0.17.0",
-    "esbuild": "^0.25.0",
+    "esbuild": "^0.27.0",
     "eslint": "^8.57.1"
   }
 }

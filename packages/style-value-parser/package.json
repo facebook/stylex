@@ -21,7 +21,6 @@
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
     "@babel/node": "^7.23.9",
-    "benchmark": "^2.1.4",
-    "prettier": "3.5.3"
+    "benchmark": "^2.1.4"
   }
 }

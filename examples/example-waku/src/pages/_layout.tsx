@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       {import.meta.env.DEV ? (
         <>
           <link rel="stylesheet" href="/virtual:stylex.css" />
-          <script type="module" src="virtual:stylex:css-only" />
+          <script type="module">import('virtual:stylex:css-only');</script>
         </>
       ) : null}
       <Header />

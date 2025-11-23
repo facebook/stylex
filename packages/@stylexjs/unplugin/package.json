@@ -28,7 +28,7 @@
     "test": "jest"
   },
   "peerDependencies": {
-    "unplugin": "^1.7.1"
+    "unplugin": "^2.3.11"
   },
   "dependencies": {
     "@babel/core": "^7.26.8",

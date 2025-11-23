@@ -24,7 +24,7 @@
     "fb-watchman": "^2.0.2",
     "json5": "^2.2.3",
     "mkdirp": "^3.0.1",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "devDependencies": {
     "scripts": "0.17.0"

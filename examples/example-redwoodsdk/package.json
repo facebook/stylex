@@ -33,11 +33,11 @@
     "@cloudflare/vite-plugin": "^1.15.2",
     "@cloudflare/workers-types": "4.20251121.0",
     "@types/node": "^24.10.1",
-    "@types/react": "19.2.3",
-    "@types/react-dom": "19.2.3",
-    "typescript": "5.8.3",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3",
     "vite": "^7.2.4",
-    "wrangler": "4.45.3"
+    "wrangler": "^4.50.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
