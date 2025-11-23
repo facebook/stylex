@@ -3,31 +3,31 @@
   "name": "docs",
   "version": "0.17.0",
   "scripts": {
-    "build": "rimraf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build",
+    "build": "rimraf ./build ./.docusaurus && cross-env NODE_ENV=production docusaurus build",
     "clear": "docusaurus clear",
     "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\"",
     "serve": "docusaurus serve",
     "start": "docusaurus start"
   },
   "dependencies": {
-    "@docusaurus/core": "2.4.1",
-    "@docusaurus/preset-classic": "2.4.1",
+    "@docusaurus/core": "^3.9.2",
+    "@docusaurus/preset-classic": "^3.9.2",
     "@fortawesome/fontawesome-free": "^6.7.1",
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@mdx-js/react": "^1.6.22",
+    "@mdx-js/react": "^3.0.1",
     "@stylexjs/stylex": "0.17.0",
     "@webcontainer/api": "^1.3.0",
-    "clsx": "^1.2.1",
+    "clsx": "^2.1.1",
     "codemirror": "^5.65.16",
-    "react": "^17.0.2",
-    "react-codemirror2": "^7.3.0",
-    "react-dom": "^17.0.2",
-    "react-syntax-highlighter": "^15.6.1"
+    "react": "^19.2.0",
+    "react-codemirror2": "^9.0.1",
+    "react-dom": "^19.2.0",
+    "react-syntax-highlighter": "^16.1.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.26.8",
+    "@babel/eslint-parser": "^7.28.5",
     "@stylexjs/unplugin": "0.17.0",
     "@stylexjs/eslint-plugin": "0.17.0",
     "@stylexjs/babel-plugin": "0.17.0",
@@ -37,7 +37,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.30.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "stylelint": "^14.9.1"
   },
   "browserslist": {

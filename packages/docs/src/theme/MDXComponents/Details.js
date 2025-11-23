@@ -26,12 +26,17 @@ export default function MDXDetails({
   };
 
   const items = React.Children.toArray(_children);
-  // Split summary item from the rest to pass it as a separate prop to the
-  // Details theme component
+  // Find a summary element regardless of whether mdxType metadata exists.
   const summary = items.find(
-    (item) => React.isValidElement(item) && item.props?.mdxType === 'summary',
+    (item) =>
+      React.isValidElement(item) &&
+      (item.props?.mdxType === 'summary' || item.type === 'summary'),
   );
-  const { mdxType: _3, originalType: _4, ...summaryProps } = summary.props;
+  const {
+    mdxType: _3,
+    originalType: _4,
+    ...summaryProps
+  } = summary?.props || {};
   const children = <>{items.filter((item) => item !== summary)}</>;
 
   return (
@@ -44,7 +49,9 @@ export default function MDXDetails({
         {...summaryProps}
         {...stylex.props(styles.summary)}
         onClick={toggleDetails}
-      />
+      >
+        {summaryProps.children}
+      </summary>
       {children}
     </details>
   );

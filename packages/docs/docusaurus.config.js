@@ -9,7 +9,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const path = require('path');
 const stylexPlugin = require('@stylexjs/unplugin').default;
+const { themes: prismThemes } = require('prism-react-renderer');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -19,7 +21,12 @@ const config = {
   baseUrl: '/',
   trailingSlash: true,
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
+
   favicon: 'img/favicon.svg',
 
   // GitHub pages deployment config.
@@ -55,9 +62,12 @@ const config = {
         disableSwitch: false,
         respectPrefersColorScheme: true,
       },
+
       prism: {
-        theme: require('prism-react-renderer/themes/dracula'),
+        theme: prismThemes.dracula,
+        darkTheme: prismThemes.dracula,
       },
+
       algolia: {
         // The application ID provided by Algolia
         // eslint-disable-next-line no-useless-concat
@@ -208,28 +218,36 @@ const config = {
     },
 };
 
-const rootDir = __dirname;
+const rootDir = path.join(__dirname, '../..');
 
 config.plugins = [
   function stylexUnplugin() {
     return {
       name: 'stylex-unplugin',
-      configureWebpack(_config) {
+      configureWebpack(_config, isServer) {
         const isProd = process.env.NODE_ENV === 'production';
+        if (isServer || !isProd) return {};
         return {
-          plugins: isProd
-            ? [
-                stylexPlugin.webpack({
-                  dev: !isProd,
-                  runtimeInjection: false,
-                  stylexSheetName: '<>',
-                  unstable_moduleResolution: {
-                    type: 'commonJS',
-                    rootDir,
-                  },
-                }),
-              ]
-            : [],
+          plugins: [
+            stylexPlugin.webpack({
+              enforce: 'post',
+              dev: !isProd,
+              runtimeInjection: !isProd,
+              stylexSheetName: '<>',
+              cssInjectionTarget: (fileName) =>
+                /assets\/css\/styles/i.test(fileName),
+              transformInclude: (id) =>
+                /\.(c|m)?(j|t)sx?($|\?)/i.test(id) || /\.mdx($|\?)/i.test(id),
+              devPersistToDisk: true,
+              unstable_moduleResolution: {
+                type: 'commonJS',
+                rootDir,
+              },
+              babelConfig: {
+                presets: [require.resolve('@docusaurus/core/lib/babel/preset')],
+              },
+            }),
+          ],
         };
       },
     };

@@ -32,6 +32,8 @@ applications, reusable component libraries, and statically typed codebases.
 4. StyleX is fully typed and provides type utilities to allow fine-grained
    control over what properties and values can be accepted by a component.
 
+{/* truncate */}
+
 ## What are the advantages of StyleX?
 
 ### Fast
