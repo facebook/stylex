@@ -79,6 +79,8 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     // Persist rules to disk in dev to bridge multiple plugin containers/processes.
     // Off by default; enable if your dev setup runs separate Node processes per environment.
     devPersistToDisk = false,
+    // Skip import-source detection and always run the transform
+    skipImportCheck = false,
     // Dev integration mode: 'full' (runtime + html), 'css-only' (serve CSS endpoint only), 'off'
     devMode = 'full',
     ...stylexOptions
@@ -253,7 +255,7 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
       // Only handle JS-like files; avoid parsing CSS/JSON/etc
       const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
       if (!JS_LIKE_RE.test(id)) return null;
-      if (!shouldHandle(code)) return null;
+      if (!skipImportCheck && !shouldHandle(code)) return null;
       const result = await runBabelTransform(code, id, '@stylexjs/unplugin');
       const { metadata } = result;
       if (!stylexOptions.runtimeInjection) {
