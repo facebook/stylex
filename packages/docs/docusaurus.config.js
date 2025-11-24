@@ -9,6 +9,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const stylexPlugin = require('@stylexjs/unplugin').default;
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'StyleX',
@@ -205,5 +207,33 @@ const config = {
       ],
     },
 };
+
+const rootDir = __dirname;
+
+config.plugins = [
+  function stylexUnplugin() {
+    return {
+      name: 'stylex-unplugin',
+      configureWebpack(_config) {
+        const isProd = process.env.NODE_ENV === 'production';
+        return {
+          plugins: isProd
+            ? [
+                stylexPlugin.webpack({
+                  dev: !isProd,
+                  runtimeInjection: false,
+                  stylexSheetName: '<>',
+                  unstable_moduleResolution: {
+                    type: 'commonJS',
+                    rootDir,
+                  },
+                }),
+              ]
+            : [],
+        };
+      },
+    };
+  },
+];
 
 module.exports = config;
