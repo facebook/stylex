@@ -60,6 +60,15 @@ export const nullish: PrimitiveChecker<null | void> =
   (value, name) =>
     value == null ? value : new Error(message(value, name));
 
+export const optional: <T>(Check<T>) => Check<void | T> =
+  <T>(check: Check<T>): Check<void | T> =>
+  (value, name) => {
+    if (value === undefined) {
+      return undefined;
+    }
+    return check(value, name);
+  };
+
 export const boolean: PrimitiveChecker<boolean> =
   (message = defaultMessage('a boolean')) =>
   (value, name) => {

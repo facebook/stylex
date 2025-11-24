@@ -57,7 +57,6 @@ type ModuleResolution =
         aliases: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
       ) => string | void,
       getCanonicalFilePath: (filePath: string) => string,
-      createShortFilename?: (filePath: string) => string,
     }>;
 
 // eslint-disable-next-line no-unused-vars
@@ -83,10 +82,6 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf4(
         ) => string | void,
       >(),
     getCanonicalFilePath: z.func<(filePath: string) => string>(),
-    createShortFilename: z.unionOf(
-      z.nullish(),
-      z.func<(filePath: string) => string>(),
-    ),
   }),
   z.object({
     type: z.literal('experimental_crossFileParsing'),
@@ -114,6 +109,7 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   unstable_moduleResolution?: ?ModuleResolution,
+  createShortFilename?: (filePath: string) => string,
   ...
 }>;
 
@@ -381,6 +377,14 @@ export default class StateManager {
             }),
           );
 
+    const createShortFilename: StyleXStateOptions['createShortFilename'] =
+      z.logAndDefault(
+        z.optional(z.func<(filePath: string) => string>()),
+        options.createShortFilename,
+        undefined,
+        'options.createShortFilename',
+      );
+
     const opts: StyleXStateOptions = {
       aliases,
       classNamePrefix,
@@ -407,6 +411,7 @@ export default class StateManager {
       test,
       treeshakeCompensation,
       unstable_moduleResolution,
+      createShortFilename,
     };
     return opts;
   }
