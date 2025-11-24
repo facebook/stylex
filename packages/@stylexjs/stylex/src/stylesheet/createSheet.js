@@ -66,5 +66,10 @@ export function createSheet(root?: HTMLElement): Sheet {
         s.insert(cssText, groupValue);
       });
     },
+    update(oldCssText: string, newCssText: string, groupValue: number) {
+      sheets.forEach((s) => {
+        s.update(oldCssText, newCssText, groupValue);
+      });
+    },
   };
 }
