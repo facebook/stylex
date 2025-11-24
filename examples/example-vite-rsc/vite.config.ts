@@ -1,7 +1,7 @@
-import rsc from '@vitejs/plugin-rsc'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-import stylex from '@stylexjs/unplugin'
+import rsc from '@vitejs/plugin-rsc';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import stylex from '@stylexjs/unplugin';
 
 export default defineConfig({
   plugins: [
@@ -17,7 +17,8 @@ export default defineConfig({
     // use any of react plugins https://github.com/vitejs/vite-plugin-react
     // to enable client component HMR
     react(),
-    stylex.vite(),
+    // @ts-expect-error
+    stylex.vite({}),
 
     // use https://github.com/antfu-collective/vite-plugin-inspect
     // to understand internal transforms required for RSC.
@@ -71,4 +72,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

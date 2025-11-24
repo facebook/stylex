@@ -718,7 +718,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     describe('options `debug:true`', () => {
       test('tokens object includes debug data', () => {
-        const options = { debug: true };
+        const options = { debug: true, enableDebugClassNames: true };
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -778,7 +778,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       test('tokens object includes debug data (keys with special characters)', () => {
-        const options = { debug: true };
+        const options = { debug: true, enableDebugClassNames: true };
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -822,7 +822,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     describe('options `dev:true`', () => {
       test('tokens object', () => {
-        const options = { dev: true };
+        const options = { dev: true, enableDebugClassNames: true };
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -911,6 +911,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('processes tokens in files with configured extension', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/stylex/packages/src/vars/default.cssvars.js',
           unstable_moduleResolution: {
             rootDir: '/stylex/packages/',

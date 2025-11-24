@@ -11,7 +11,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 
-const { unplugin } = require('../lib');
+const { unplugin } = require('../src');
 
 describe('@stylexjs/unplugin', () => {
   test('ignores files without StyleX imports', async () => {

@@ -986,6 +986,8 @@ describe('@stylexjs/babel-plugin', () => {
         const options = {
           filename: '/html/js/FooBar.react.js',
           dev: true,
+          enableDevClassNames: false,
+          enableDebugClassNames: true,
           enableInlinedConditionalMerge: false,
         };
         expect(
@@ -1088,6 +1090,8 @@ describe('@stylexjs/babel-plugin', () => {
         const options = {
           filename: '/html/js/FooBar.react.js',
           dev: true,
+          enableDebugClassNames: true,
+          enableDevClassNames: false,
         };
         expect(
           transform(
@@ -1587,6 +1591,8 @@ describe('@stylexjs/babel-plugin', () => {
         `,
           {
             dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
             filename: 'src/js/components/Foo.react.js',
           },
         ),
@@ -1653,7 +1659,11 @@ describe('@stylexjs/babel-plugin', () => {
             sidebar == null ? styles.noSidebar : styles.withSidebar,
           );
         `,
-          { dev: true },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -1757,7 +1767,12 @@ describe('@stylexjs/babel-plugin', () => {
             sidebar == null ? styles.noSidebar : styles.withSidebar,
           );
         `,
-          { dev: true, enableInlinedConditionalMerge: false },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+            enableInlinedConditionalMerge: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -1860,7 +1875,11 @@ describe('@stylexjs/babel-plugin', () => {
             isContent && styles.content,
           );
         `,
-          { dev: true },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -1903,7 +1922,11 @@ describe('@stylexjs/babel-plugin', () => {
             }
           }
         `,
-          { dev: true },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import * as stylex from '@stylexjs/stylex';
@@ -1948,7 +1971,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           stylex(styles.unknown);
         `,
-          { dev: true },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -1971,7 +1998,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           stylex.props(styles.unknown);
         `,
-          { dev: true },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";

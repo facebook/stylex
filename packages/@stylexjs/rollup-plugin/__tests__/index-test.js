@@ -192,6 +192,7 @@ describe('rollup-plugin-stylex', () => {
     it('preserves stylex.inject calls and does not extract CSS', async () => {
       const { css, js } = await runStylex({
         debug: true,
+        enableDebugClassNames: true,
         runtimeInjection: true,
       });
 
