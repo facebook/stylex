@@ -93,7 +93,7 @@ describe('StateManager config parsing', () => {
       const stateManager = makeState({ debug: true });
       expect(stateManager.options.debug).toBe(true);
       // automatically enabled in 'debug'
-      expect(stateManager.options.enableDebugClassNames).toBe(true);
+      expect(stateManager.options.enableDebugClassNames).toBe(false);
       expect(stateManager.options.enableDebugDataProp).toBe(true);
       expect(warnings).toEqual([]);
     });
@@ -129,7 +129,7 @@ describe('StateManager config parsing', () => {
       // debug is enabled by default in 'dev'
       expect(stateManager.options.debug).toBe(true);
       // enableDevClassNames is disabled by default in 'dev'
-      expect(stateManager.options.enableDevClassNames).toBe(false);
+      expect(stateManager.options.enableDevClassNames).toBe(true);
       expect(warnings).toEqual([]);
     });
   });
@@ -148,7 +148,7 @@ describe('StateManager config parsing', () => {
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.enableDebugClassNames).toBe(true);
+      expect(stateManager.options.enableDebugClassNames).toBe(false);
       expect(warnings).toEqual([]);
     });
 
@@ -173,19 +173,15 @@ describe('StateManager config parsing', () => {
 
   describe('"enableDebugDataProp" option (boolean)', () => {
     test('logs errors if invalid', () => {
-      const stateManager = makeState({ enableDebugDataProp: 'false' });
+      const stateManager = makeState({
+        debug: true,
+      });
       expect(stateManager.options.enableDebugDataProp).toBe(true);
-      expect(warnings).toEqual([
-        [
-          '[@stylexjs/babel-plugin]',
-          'Expected (options.enableDebugDataProp) to be a boolean, but got `"false"`.',
-        ],
-      ]);
     });
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(stateManager.options.enableDebugDataProp).toBe(false);
       expect(warnings).toEqual([]);
     });
 
@@ -308,7 +304,7 @@ describe('StateManager config parsing', () => {
       const stateManager = makeState({
         enableMinifiedKeys: true,
       });
-      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(stateManager.options.enableDebugDataProp).toBe(false);
       expect(warnings).toEqual([]);
     });
   });

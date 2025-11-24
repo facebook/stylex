@@ -27,6 +27,7 @@ import {
   addNamedImport,
   getProgramStatement,
 } from './ast-helpers';
+import { defaultOptions } from '../shared/utils/default-options';
 
 export type ImportPathResolution =
   | false
@@ -187,7 +188,7 @@ export default class StateManager {
   setOptions(options: { +[string]: mixed }): StyleXStateOptions {
     const dev: StyleXStateOptions['dev'] = z.logAndDefault(
       z.boolean(),
-      options.dev ?? false,
+      options.dev ?? defaultOptions.dev,
       false,
       'options.dev',
     );
@@ -202,7 +203,7 @@ export default class StateManager {
     const enableDebugClassNames: StyleXStateOptions['enableDebugClassNames'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableDebugClassNames ?? true,
+        options.enableDebugClassNames ?? defaultOptions.enableDebugClassNames,
         true,
         'options.enableDebugClassNames',
       );
@@ -210,23 +211,23 @@ export default class StateManager {
     const enableDebugDataProp: StyleXStateOptions['enableDebugDataProp'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableDebugDataProp ?? true,
-        true,
+        options.enableDebugDataProp ?? debug,
+        false,
         'options.enableDebugDataProp',
       );
 
     const enableDevClassNames: StyleXStateOptions['enableDevClassNames'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableDevClassNames ?? false,
-        false,
+        options.enableDevClassNames ?? dev,
+        dev,
         'options.enableDevClassNames',
       );
 
     const enableFontSizePxToRem: StyleXStateOptions['enableFontSizePxToRem'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableFontSizePxToRem ?? false,
+        options.enableFontSizePxToRem ?? defaultOptions.enableFontSizePxToRem,
         false,
         'options.enableFontSizePxToRem',
       );
@@ -234,7 +235,8 @@ export default class StateManager {
     const enableInlinedConditionalMerge: StyleXStateOptions['enableInlinedConditionalMerge'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableInlinedConditionalMerge ?? true,
+        options.enableInlinedConditionalMerge ??
+          defaultOptions.enableInlinedConditionalMerge,
         true,
         'options.enableInlinedConditionalMerge',
       );
@@ -242,7 +244,7 @@ export default class StateManager {
     const enableMinifiedKeys: StyleXStateOptions['enableMinifiedKeys'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableMinifiedKeys ?? true,
+        options.enableMinifiedKeys ?? defaultOptions.enableMinifiedKeys,
         true,
         'options.enableMinifiedKeys',
       );
@@ -250,7 +252,7 @@ export default class StateManager {
     const enableMediaQueryOrder: StyleXStateOptions['enableMediaQueryOrder'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableMediaQueryOrder ?? true,
+        options.enableMediaQueryOrder ?? defaultOptions.enableMediaQueryOrder,
         true,
         'options.enableMediaQueryOrder',
       );
@@ -258,7 +260,8 @@ export default class StateManager {
     const enableLegacyValueFlipping: StyleXStateOptions['enableLegacyValueFlipping'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableLegacyValueFlipping ?? false,
+        options.enableLegacyValueFlipping ??
+          defaultOptions.enableLegacyValueFlipping,
         false,
         'options.enableLegacyValueFlipping',
       );
@@ -266,7 +269,8 @@ export default class StateManager {
     const enableLogicalStylesPolyfill: StyleXStateOptions['enableLogicalStylesPolyfill'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableLogicalStylesPolyfill ?? false,
+        options.enableLogicalStylesPolyfill ??
+          defaultOptions.enableLogicalStylesPolyfill,
         false,
         'options.enableLogicalStylesPolyfill',
       );
@@ -274,14 +278,14 @@ export default class StateManager {
     const enableLTRRTLComments: StyleXStateOptions['enableLTRRTLComments'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableLTRRTLComments ?? false,
+        options.enableLTRRTLComments ?? defaultOptions.enableLTRRTLComments,
         false,
         'options.enableLTRRTLComments',
       );
 
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
-      options.test ?? false,
+      options.test ?? defaultOptions.test,
       false,
       'options.test',
     );
@@ -303,7 +307,7 @@ export default class StateManager {
     const classNamePrefix: StyleXStateOptions['classNamePrefix'] =
       z.logAndDefault(
         z.string(),
-        options.classNamePrefix ?? 'x',
+        options.classNamePrefix ?? defaultOptions.classNamePrefix,
         'x',
         'options.classNamePrefix',
       );
@@ -311,7 +315,7 @@ export default class StateManager {
     const configuredImportSources: StyleXStateOptions['importSources'] =
       z.logAndDefault(
         checkImportSources,
-        options.importSources ?? [],
+        options.importSources ?? defaultOptions.importSources,
         [],
         'options.importSources',
       );
@@ -329,7 +333,7 @@ export default class StateManager {
           z.literal('property-specificity'),
           z.literal('legacy-expand-shorthands'),
         ),
-        options.styleResolution ?? 'property-specificity',
+        options.styleResolution ?? defaultOptions.styleResolution,
         'property-specificity',
         'options.styleResolution',
       );
@@ -345,7 +349,7 @@ export default class StateManager {
     const treeshakeCompensation: StyleXStateOptions['treeshakeCompensation'] =
       z.logAndDefault(
         z.boolean(),
-        options.treeshakeCompensation ?? false,
+        options.treeshakeCompensation ?? defaultOptions.treeshakeCompensation,
         false,
         'options.treeshakeCompensation',
       );

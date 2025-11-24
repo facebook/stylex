@@ -80,7 +80,9 @@ describe('@stylexjs/babel-plugin', () => {
     describe('props calls with jsx', () => {
       const options = {
         debug: true,
+        enableDebugClassNames: true,
         dev: true,
+        enableDevClassNames: false,
         filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
       };
 
@@ -1008,6 +1010,8 @@ describe('@stylexjs/babel-plugin', () => {
           filename: '/html/js/FooBar.react.js',
           dev: true,
           enableInlinedConditionalMerge: false,
+          enableDebugClassNames: true,
+          enableDevClassNames: false,
         };
         expect(
           transform(
@@ -1077,6 +1081,8 @@ describe('@stylexjs/babel-plugin', () => {
         const options = {
           filename: '/html/js/FooBar.react.js',
           dev: true,
+          enableDebugClassNames: true,
+          enableDevClassNames: false,
         };
         expect(
           transform(
@@ -1458,7 +1464,11 @@ describe('@stylexjs/babel-plugin', () => {
             sidebar == null ? styles.noSidebar : styles.withSidebar,
           ]);
         `,
-          { dev: true },
+          {
+            dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
+          },
         ),
       ).toMatchInlineSnapshot(`
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
@@ -1559,6 +1569,8 @@ describe('@stylexjs/babel-plugin', () => {
           {
             filename: '/html/js/FooBar.react.js',
             dev: true,
+            enableDebugClassNames: true,
+            enableDevClassNames: false,
           },
         ),
       ).toMatchInlineSnapshot(`
@@ -1658,6 +1670,7 @@ describe('@stylexjs/babel-plugin', () => {
             dev: true,
             debug: true,
             enableDebugClassNames: true,
+            enableDevClassNames: false,
           },
         ),
       ).toMatchInlineSnapshot(`
@@ -1757,6 +1770,7 @@ describe('@stylexjs/babel-plugin', () => {
             dev: true,
             debug: true,
             enableDebugClassNames: false,
+            enableDevClassNames: false,
           },
         ),
       ).toMatchInlineSnapshot(`

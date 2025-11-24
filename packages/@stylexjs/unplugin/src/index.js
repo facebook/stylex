@@ -66,7 +66,9 @@ function processCollectedRulesToCSS(rules, options) {
   return code.toString();
 }
 
-const unpluginInstance = createUnplugin((userOptions = {}) => {
+const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
+  // framework :: 'rollup' | 'vite' | 'rolldown' | 'farm' | 'unloader'
+  const framework = metaOptions?.framework;
   const {
     dev = process.env.NODE_ENV === 'development' ||
       process.env.BABEL_ENV === 'development',
@@ -81,6 +83,7 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
     devPersistToDisk = false,
     // Dev integration mode: 'full' (runtime + html), 'css-only' (serve CSS endpoint only), 'off'
     devMode = 'full',
+    treeshakeCompensation = ['vite', 'rollup', 'rolldown'].includes(framework),
     ...stylexOptions
   } = userOptions;
 
@@ -136,6 +139,7 @@ const unpluginInstance = createUnplugin((userOptions = {}) => {
         jsxSyntaxPlugin,
         stylexBabelPlugin.withOptions({
           ...stylexOptions,
+          treeshakeCompensation,
           dev,
           unstable_moduleResolution,
         }),

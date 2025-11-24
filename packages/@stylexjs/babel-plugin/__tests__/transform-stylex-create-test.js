@@ -4758,6 +4758,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/html/js/components/Foo.react.js',
         };
         const { code, metadata } = transform(
@@ -4829,6 +4830,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data for npm packages', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
         };
         const { code, metadata } = transform(
@@ -4900,6 +4902,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data (haste)', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/html/js/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
@@ -4972,6 +4975,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data for npm packages (haste)', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/node_modules/npm-package/dist/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };

@@ -15,6 +15,7 @@ import stylexPlugin from '../src/index';
 function transform(source, opts = {}) {
   const pluginOpts = {
     debug: true,
+    enableDebugClassNames: true,
     styleResolution: 'property-specificity',
     unstable_moduleResolution: {
       rootDir: '/src/app/',
