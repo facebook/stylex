@@ -2,6 +2,8 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import * as stylex from '@stylexjs/stylex';
+import { Button } from 'shared-ui';
+import { tokens } from 'shared-ui/tokens.stylex';
 
 const spin = stylex.keyframes({
   from: { transform: 'rotate(0deg)' },
@@ -50,7 +52,7 @@ const styles = stylex.create({
     textDecoration: 'none',
   },
   linkHover: { color: { default: null, ':hover': '#535bf2' } },
-  h1: { fontSize: '3.2em', lineHeight: '1.1' },
+  h1: { fontSize: '3.2em', lineHeight: '1.1', color: tokens.primaryColor },
   button: {
     borderRadius: 8,
     borderWidth: 1,
@@ -104,6 +106,9 @@ function App() {
         </div>
         <h1 {...stylex.props(styles.h1)}>Vite + React</h1>
         <div {...stylex.props(styles.card)}>
+          <Button onClick={() => console.log('External lib works!')}>
+            Test External Lib
+          </Button>
           <button
             {...stylex.props(styles.button, styles.buttonInteractive)}
             onClick={() => setCount((count) => count + 1)}

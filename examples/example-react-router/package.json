@@ -3,13 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "example:build": "vite build",
+    "example:build": "rimraf dist && vite build",
     "example:dev": "cross-env NODE_ENV=development vite",
     "example:start": "cross-env NODE_ENV=production node server.js",
     "example:typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@stylexjs/stylex": "0.17.0",
+    "shared-ui": "*",
     "@remix-run/node-fetch-server": "0.12.0",
     "compression": "^1.8.0",
     "express": "^5.1.0",

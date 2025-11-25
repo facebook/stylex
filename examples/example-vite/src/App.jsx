@@ -6,6 +6,8 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
+import { Button } from 'shared-ui';
+import { tokens } from 'shared-ui/tokens.stylex';
 
 const styles = stylex.create({
   app: {
@@ -14,7 +16,7 @@ const styles = stylex.create({
     placeItems: 'center',
   },
   title: {
-    color: '#0b5fff',
+    color: tokens.primaryColor,
     fontSize: 28,
     fontWeight: 700,
   },
@@ -24,6 +26,9 @@ export default function App() {
   return (
     <main {...stylex.props(styles.app)}>
       <h1 {...stylex.props(styles.title)}>StyleX + Vite + unplugin</h1>
+      <Button onClick={() => console.log('Clicked!')}>
+        Test Library Button
+      </Button>
     </main>
   );
 }

@@ -4,6 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import type { ReactNode } from 'react';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
+import { DevStyleXInject } from '../components/DevStyleXInject';
 
 type RootLayoutProps = { children: ReactNode };
 
@@ -22,12 +23,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         precedence="font"
       />
       {/* @ts-ignore */}
-      {import.meta.env.DEV ? (
-        <>
-          <link rel="stylesheet" href="/virtual:stylex.css" />
-          <script type="module">import('virtual:stylex:css-only');</script>
-        </>
-      ) : null}
+      <DevStyleXInject />
       <Header />
       <main {...stylex.props(styles.main)}>{children}</main>
       <Footer />

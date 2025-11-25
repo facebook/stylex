@@ -13,7 +13,8 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-server-dom-webpack": "19.2.0",
-    "waku": "0.27.1"
+    "waku": "0.27.1",
+    "shared-ui": "*"
   },
   "devDependencies": {
     "@stylexjs/unplugin": "0.17.0",
