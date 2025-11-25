@@ -14,8 +14,129 @@ import { addSpecificityLevel } from './stylesheet/utils';
 
 const sheet = createSheet();
 
-export default function inject(cssText: string, priority: number): string {
-  const text = addSpecificityLevel(cssText, Math.floor(priority / 1000));
+const constants: { [constKey: string]: string | number } = {};
+
+const dependencies: {
+  [constKey: string]: Map<string, { priority: number, resolvedCss: string }>,
+} = {};
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Resolve all constant references in a CSS text string
+ */
+function resolveConstants(cssText: string): string {
+  let resolved = cssText;
+
+  const varPattern = /var\(--([a-z0-9]+)\)/gi;
+  varPattern.lastIndex = 0;
+
+  const replacements: Array<[string, string]> = [];
+
+  let match = varPattern.exec(cssText);
+
+  while (match != null) {
+    const constKey = match[1];
+
+    if (constKey != null && constants[constKey] !== undefined) {
+      const constVal = constants[constKey];
+      const constValStr = String(constVal);
+
+      replacements.push([`var(--${constKey})`, constValStr]);
+    }
+    match = varPattern.exec(cssText);
+  }
+
+  for (const [search, replace] of replacements) {
+    const regex = new RegExp(escapeRegex(search), 'g');
+    resolved = resolved.replace(regex, replace);
+  }
+
+  return resolved;
+}
+
+/**
+ * Track dependencies between constants and CSS rules
+ */
+function trackDependencies(
+  originalCssText: string,
+  priority: number,
+  resolvedCss: string,
+): void {
+  const varPattern = /var\(--([a-z0-9]+)\)/gi;
+
+  let match = varPattern.exec(originalCssText);
+  while (match != null) {
+    const constKey = match[1];
+    if (constKey != null && constants[constKey] !== undefined) {
+      if (!dependencies[constKey]) {
+        dependencies[constKey] = new Map();
+      }
+      dependencies[constKey].set(originalCssText, { priority, resolvedCss });
+    }
+    match = varPattern.exec(originalCssText);
+  }
+}
+
+/**
+ * Update all CSS rules that depend on a changed constant
+ */
+function updateDependentRules(constKey: string): void {
+  const deps = dependencies[constKey];
+
+  if (!deps || deps.size === 0) {
+    return;
+  }
+
+  deps.forEach(({ priority, resolvedCss: oldResolvedCss }, cssText) => {
+    const newResolvedCss = resolveConstants(cssText);
+
+    const oldText = addSpecificityLevel(
+      oldResolvedCss,
+      Math.floor(priority / 1000),
+    );
+    const newText = addSpecificityLevel(
+      newResolvedCss,
+      Math.floor(priority / 1000),
+    );
+
+    deps.set(cssText, { priority, resolvedCss: newResolvedCss });
+
+    sheet.update(oldText, newText, priority);
+  });
+}
+
+export default function inject(
+  cssText: string,
+  priority: number,
+  constKey?: string,
+  constVal?: string | number,
+): string {
+  if (constKey !== undefined && constVal !== undefined) {
+    const hadPreviousValue = constants[constKey] !== undefined;
+    const valueChanged = hadPreviousValue && constants[constKey] !== constVal;
+
+    constants[constKey] = constVal;
+
+    if (valueChanged) {
+      updateDependentRules(constKey);
+    }
+
+    return '';
+  }
+
+  const resolved = resolveConstants(cssText);
+
+  const text = addSpecificityLevel(resolved, Math.floor(priority / 1000));
+
   sheet.insert(text, priority);
+
+  trackDependencies(cssText, priority, resolved);
+
   return text;
 }

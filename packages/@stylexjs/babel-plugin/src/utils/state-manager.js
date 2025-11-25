@@ -687,15 +687,26 @@ export default class StateManager {
 
       this.injectImportInserted = injectName;
     }
-    for (const [_key, { ltr, rtl }, priority] of styles) {
+    for (const [_key, styleObj, priority] of styles) {
+      const { ltr, rtl } = styleObj;
+      const args = [
+        t.stringLiteral(ltr),
+        t.numericLiteral(priority),
+        ...(rtl != null ? [t.stringLiteral(rtl)] : []),
+      ];
+
+      if ('constKey' in styleObj && 'constVal' in styleObj) {
+        const { constKey, constVal } = styleObj;
+        args.push(
+          t.stringLiteral(constKey),
+          typeof constVal === 'number'
+            ? t.numericLiteral(constVal)
+            : t.stringLiteral(String(constVal)),
+        );
+      }
+
       statementPath.insertBefore(
-        t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(ltr),
-            t.numericLiteral(priority),
-            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-          ]),
-        ),
+        t.expressionStatement(t.callExpression(injectName, args)),
       );
     }
   }

@@ -13,6 +13,7 @@ type SeenRules = { [key: string]: boolean };
 export type OrderedCSSStyleSheet = $ReadOnly<{
   getTextContent: () => string,
   insert: (cssText: string, groupValue: number) => void,
+  update: (oldCssText: string, newCssText: string, groupValue: number) => void,
 }>;
 
 /**
@@ -86,6 +87,80 @@ export function createOrderedCSSStyleSheet(
     return isInserted;
   }
 
+  function insert(cssText: string, groupValue: number) {
+    const group = Number(groupValue);
+
+    if (groups[group] == null) {
+      const markerRule = encodeGroupRule(group);
+      groups[group] = { start: null, rules: [markerRule] };
+      if (sheet != null) {
+        sheetInsert(sheet, group, markerRule);
+      }
+    }
+
+    const key = getSeenRuleKey(cssText);
+    if (key != null && seenRules[key] == null) {
+      seenRules[key] = true;
+      let shouldUpdate = true;
+      if (sheet != null) {
+        const isInserted = sheetInsert(sheet, group, cssText);
+        if (!isInserted) {
+          shouldUpdate = false;
+        }
+      }
+      if (shouldUpdate) {
+        groups[group].rules.push(cssText);
+      }
+    }
+  }
+
+  function update(oldCssText: string, newCssText: string, groupValue: number) {
+    const group = Number(groupValue);
+    const oldKey = getSeenRuleKey(oldCssText);
+    const newKey = getSeenRuleKey(newCssText);
+
+    if (oldKey !== newKey || oldKey == null) {
+      insert(newCssText, groupValue);
+      return;
+    }
+
+    if (seenRules[oldKey]) {
+      if (groups[group] && groups[group].rules) {
+        const rules = groups[group].rules;
+        let foundIndex = -1;
+        for (let i = 0; i < rules.length; i++) {
+          if (getSeenRuleKey(rules[i]) === oldKey) {
+            foundIndex = i;
+            break;
+          }
+        }
+        if (foundIndex !== -1) {
+          rules[foundIndex] = newCssText;
+        }
+      }
+
+      if (sheet != null) {
+        const cssRules = sheet.cssRules;
+        for (let i = cssRules.length - 1; i >= 0; i--) {
+          const rule = cssRules[i];
+          const ruleCssText = rule.cssText;
+          const ruleKey = getSeenRuleKey(ruleCssText);
+          if (ruleKey === oldKey) {
+            try {
+              sheet.deleteRule(i);
+              sheetInsert(sheet, group, newCssText);
+              break;
+            } catch (e) {
+              // Ignore errors
+            }
+          }
+        }
+      }
+    } else {
+      insert(newCssText, groupValue);
+    }
+  }
+
   const OrderedCSSStyleSheet = {
     /**
      * The textContent of the style sheet.
@@ -109,38 +184,12 @@ export function createOrderedCSSStyleSheet(
     /**
      * Insert a rule into the style sheet
      */
-    insert(cssText: string, groupValue: number) {
-      const group = Number(groupValue);
+    insert,
 
-      // Create a new group if needed
-      if (groups[group] == null) {
-        const markerRule = encodeGroupRule(group);
-        // Create the internal record.
-        groups[group] = { start: null, rules: [markerRule] };
-        // Update CSSOM.
-        if (sheet != null) {
-          sheetInsert(sheet, group, markerRule);
-        }
-      }
-
-      // Insert the rule if needed
-      const key = getSeenRuleKey(cssText);
-      if (key != null && seenRules[key] == null) {
-        // Update the internal records.
-        seenRules[key] = true;
-        let shouldUpdate = true;
-        // Update CSSOM.
-        if (sheet != null) {
-          const isInserted = sheetInsert(sheet, group, cssText);
-          if (!isInserted) {
-            shouldUpdate = false;
-          }
-        }
-        if (shouldUpdate) {
-          groups[group].rules.push(cssText);
-        }
-      }
-    },
+    /**
+     * Update an existing rule with new cssText
+     */
+    update,
   } as const;
 
   return OrderedCSSStyleSheet;
