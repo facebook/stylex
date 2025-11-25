@@ -2,6 +2,8 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
+import { Button } from 'shared-ui';
+import { tokens } from 'shared-ui/tokens.stylex';
 
 export const Counter = () => {
   const [count, setCount] = useState(0);
@@ -11,12 +13,15 @@ export const Counter = () => {
   return (
     <section {...stylex.props(styles.wrapper)}>
       <div>Count: {count}</div>
-      <button onClick={handleIncrement} {...stylex.props(styles.button)}>
+      <Button onClick={handleIncrement} xstyle={styles.button}>
         Increment
-      </button>
+      </Button>
     </section>
   );
 };
+
+const opacity = (color: string, percentage: number) =>
+  `color-mix(in oklab, ${color} ${percentage}%, transparent)`;
 
 const styles = stylex.create({
   wrapper: {
@@ -25,18 +30,12 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: '#60a5fa',
+    backgroundColor: opacity(tokens.primaryColor, 5),
     borderRadius: 6,
     padding: '1rem',
   },
   button: {
     marginBlockStart: '0.5rem',
     borderWidth: 0,
-    borderRadius: 4,
-    backgroundColor: '#111827',
-    color: '#fff',
-    fontSize: '0.875rem',
-    paddingInline: '0.75rem',
-    paddingBlock: '0.25rem',
-    cursor: 'pointer',
   },
 });

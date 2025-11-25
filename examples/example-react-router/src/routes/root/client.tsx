@@ -1,6 +1,8 @@
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
+import { Button } from 'shared-ui';
+import { tokens } from 'shared-ui/tokens.stylex';
 import {
   isRouteErrorResponse,
   Link,
@@ -33,6 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Link to="/" {...stylex.props(layoutStyles.brand)}>
               React Router 🚀
             </Link>
+            <Button onClick={() => console.log('Router Test')}>Ext</Button>
             <nav>
               <ul {...stylex.props(layoutStyles.navList)}>
                 <li>
@@ -117,7 +120,7 @@ const layoutStyles = stylex.create({
   brand: {
     fontSize: '1rem',
     fontWeight: 600,
-    color: '#0f172a',
+    color: tokens.primaryColor,
     textDecoration: 'none',
   },
   navList: {

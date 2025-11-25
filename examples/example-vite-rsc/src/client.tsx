@@ -2,23 +2,31 @@
 
 import React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { Button } from 'shared-ui';
+import { tokens } from 'shared-ui/tokens.stylex';
 
 export function ClientCounter() {
   const [count, setCount] = React.useState(0);
 
   return (
-    <button
-      {...stylex.props(styles.base, styles.button)}
-      onClick={() => setCount((count) => count + 1)}
-    >
-      Client Counter: {count}
-    </button>
+    <>
+      <button
+        {...stylex.props(styles.base, styles.button)}
+        onClick={() => setCount((count) => count + 1)}
+      >
+        Client Counter: {count}
+      </button>
+      <div style={{ marginTop: 10 }}>
+        <Button onClick={() => console.log('RSC works')}>External Lib</Button>
+      </div>
+    </>
   );
 }
 
 const styles = stylex.create({
   base: {
     backgroundColor: 'orange',
+    color: tokens.secondaryColor,
   },
   button: {
     borderRadius: 8,

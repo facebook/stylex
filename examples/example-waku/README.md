@@ -49,29 +49,30 @@ export default defineConfig({
 asset. The StyleX plugin appends its aggregated output to that file during
 `npm run example:build`.
 
-## Dev-only CSS injection
+## Dev-only CSS injection & HMR
 
-Because Waku owns the root HTML shell, the layout manually links to the StyleX
-dev endpoint and loads a tiny helper that imports the virtual CSS module:
+Because Waku owns the root HTML shell, the layout mounts a tiny client component
+that adds the dev stylesheet link _and_ triggers a JS import so Vite registers
+StyleX for HMR:
 
 ```tsx
-{
-  /* src/pages/_layout.tsx */
+// src/components/DevStyleXInject.tsx
+function DevStyleXInjectImpl() {
+  useEffect(() => {
+    import('virtual:stylex:css-only');
+  }, []);
+  return <link rel="stylesheet" href="/virtual:stylex.css" />;
 }
-{
-  import.meta.env.DEV ? (
-    <>
-      <link rel="stylesheet" href="/virtual:stylex.css" />
-      <script type="module" src="/src/stylex-dev-client.ts" />
-    </>
-  ) : null;
-}
+
+export const DevStyleXInject = import.meta.env.DEV
+  ? DevStyleXInjectImpl
+  : () => null;
 ```
 
-`src/stylex-dev-client.ts` simply `import('virtual:stylex:css-only')` to listen
-for `stylex:css-update` events and bust the stylesheet cache. Include these two
-lines whenever you embed StyleX inside a custom HTML shell; otherwise, no CSS
-appears in dev.
+Add `<DevStyleXInject />` near the top of `src/pages/_layout.tsx`. The `link`
+ensures the aggregated StyleX CSS loads in dev, and the `useEffect` import
+keeps CSS hot reload working even though the root HTML is owned by Waku instead
+of Vite.
 
 ## Commands
 

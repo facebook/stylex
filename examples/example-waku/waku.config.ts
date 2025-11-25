@@ -20,7 +20,8 @@ export default defineConfig({
       // @ts-ignore
       react({
         babel: {
-          plugins: ['babel-plugin-react-compiler'],
+          // There is a bug with react compiler at the moment.
+          // plugins: ['babel-plugin-react-compiler'],
         },
       }),
     ],

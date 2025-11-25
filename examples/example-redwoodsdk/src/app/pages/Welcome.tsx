@@ -7,6 +7,105 @@
 
 import { useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { Button } from 'shared-ui';
+import { tokens } from 'shared-ui/tokens.stylex';
+
+export const Welcome = () => {
+  return (
+    <div {...stylex.props(styles.container)}>
+      <header {...stylex.props(styles.header)}>
+        <h1 {...stylex.props(styles.title)}>Welcome to RedwoodSDK x StyleX</h1>
+        <p {...stylex.props(styles.subtitle)}>
+          You’ve just installed the starter project. Here’s what to do next.
+        </p>
+      </header>
+
+      <main>
+        <section {...stylex.props(styles.section)}>
+          <h2 {...stylex.props(styles.sectionTitle)}>Next steps</h2>
+          <ol {...stylex.props(styles.list)}>
+            <li {...stylex.props(styles.listItem)}>
+              Read the{' '}
+              <a
+                href="https://docs.rwsdk.com/getting-started/quick-start/"
+                target="_blank"
+                rel="noreferrer"
+                {...stylex.props(styles.link)}
+              >
+                Quick Start
+              </a>{' '}
+              to learn the basics.
+            </li>
+            <li {...stylex.props(styles.listItem)}>
+              Explore React Server Components and Server Functions in the{' '}
+              <a
+                href="https://docs.rwsdk.com/"
+                target="_blank"
+                rel="noreferrer"
+                {...stylex.props(styles.link)}
+              >
+                Docs
+              </a>
+              .
+            </li>
+            <li {...stylex.props(styles.listItem)}>
+              Join the community to ask questions and share what you’re
+              building.
+            </li>
+          </ol>
+        </section>
+
+        <section {...stylex.props(styles.section)}>
+          <h2 {...stylex.props(styles.sectionTitle)}>Deploy to Cloudflare</h2>
+          <p>
+            RedwoodSDK runs on Cloudflare Workers. Here’s the quickest way to
+            deploy.
+          </p>
+          <div {...stylex.props(styles.codeBlock)}>
+            <span {...stylex.props(styles.codePrompt)}>$</span>
+            <code {...stylex.props(styles.code)}>pnpm release</code>
+            <Copy textToCopy="pnpm release" />
+          </div>
+          <p>
+            Need more detail? Read the{' '}
+            <a
+              href="https://docs.rwsdk.com/core/hosting/"
+              target="_blank"
+              rel="noreferrer"
+              {...stylex.props(styles.link)}
+            >
+              Cloudflare deployment guide
+            </a>
+            .
+          </p>
+        </section>
+        <section>
+          <Button xstyle={styles.btn}>button from shared-ui</Button>
+        </section>
+      </main>
+    </div>
+  );
+};
+
+const Copy = ({ textToCopy }: { textToCopy: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <button onClick={handleCopy} {...stylex.props(styles.copyButton)}>
+      {copied ? 'Copied!' : 'Copy'}
+    </button>
+  );
+};
+
+const opacity = (color: string, percentage: number) =>
+  `color-mix(in oklab, ${color} ${percentage}%, transparent)`;
 
 const styles = stylex.create({
   container: {
@@ -81,95 +180,19 @@ const styles = stylex.create({
     fontWeight: 700,
     ':hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
   },
+  btn: {
+    backgroundColor: {
+      default: opacity(tokens.primaryColor, 50),
+      ':hover': opacity(tokens.primaryColor, 95),
+    },
+    transform: {
+      default: null,
+      ':active': 'scale(0.97)',
+    },
+    transitionProperty: 'transform',
+    transitionDuration: {
+      default: '0.3s',
+      ':active': '0.05s',
+    },
+  },
 });
-
-export const Welcome = () => {
-  return (
-    <div {...stylex.props(styles.container)}>
-      <header {...stylex.props(styles.header)}>
-        <h1 {...stylex.props(styles.title)}>Welcome to RedwoodSDK x StyleX</h1>
-        <p {...stylex.props(styles.subtitle)}>
-          You’ve just installed the starter project. Here’s what to do next.
-        </p>
-      </header>
-
-      <main>
-        <section {...stylex.props(styles.section)}>
-          <h2 {...stylex.props(styles.sectionTitle)}>Next steps</h2>
-          <ol {...stylex.props(styles.list)}>
-            <li {...stylex.props(styles.listItem)}>
-              Read the{' '}
-              <a
-                href="https://docs.rwsdk.com/getting-started/quick-start/"
-                target="_blank"
-                rel="noreferrer"
-                {...stylex.props(styles.link)}
-              >
-                Quick Start
-              </a>{' '}
-              to learn the basics.
-            </li>
-            <li {...stylex.props(styles.listItem)}>
-              Explore React Server Components and Server Functions in the{' '}
-              <a
-                href="https://docs.rwsdk.com/"
-                target="_blank"
-                rel="noreferrer"
-                {...stylex.props(styles.link)}
-              >
-                Docs
-              </a>
-              .
-            </li>
-            <li {...stylex.props(styles.listItem)}>
-              Join the community to ask questions and share what you’re
-              building.
-            </li>
-          </ol>
-        </section>
-
-        <section {...stylex.props(styles.section)}>
-          <h2 {...stylex.props(styles.sectionTitle)}>Deploy to Cloudflare</h2>
-          <p>
-            RedwoodSDK runs on Cloudflare Workers. Here’s the quickest way to
-            deploy.
-          </p>
-          <div {...stylex.props(styles.codeBlock)}>
-            <span {...stylex.props(styles.codePrompt)}>$</span>
-            <code {...stylex.props(styles.code)}>pnpm release</code>
-            <Copy textToCopy="pnpm release" />
-          </div>
-          <p>
-            Need more detail? Read the{' '}
-            <a
-              href="https://docs.rwsdk.com/core/hosting/"
-              target="_blank"
-              rel="noreferrer"
-              {...stylex.props(styles.link)}
-            >
-              Cloudflare deployment guide
-            </a>
-            .
-          </p>
-        </section>
-      </main>
-    </div>
-  );
-};
-
-const Copy = ({ textToCopy }: { textToCopy: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <button onClick={handleCopy} {...stylex.props(styles.copyButton)}>
-      {copied ? 'Copied!' : 'Copy'}
-    </button>
-  );
-};
