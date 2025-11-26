@@ -42,7 +42,9 @@ function createShortFilename(
   absolutePath: string,
   state: StateManager,
 ): string {
-  const isHaste = state.options.unstable_moduleResolution?.type === 'haste';
+  if (typeof state.options.debugFilePath === 'function') {
+    return state.options.debugFilePath(absolutePath);
+  }
 
   const cwdPackage = state.getPackageNameAndPath(process.cwd());
   const packageDetails = state.getPackageNameAndPath(absolutePath);
@@ -61,6 +63,7 @@ function createShortFilename(
     const shortPath = getShortPath(absolutePath, state);
     return `${packagePrefix}:${shortPath}`;
   } else {
+    const isHaste = state.options.unstable_moduleResolution?.type === 'haste';
     if (isHaste) {
       return path.basename(absolutePath);
     }
