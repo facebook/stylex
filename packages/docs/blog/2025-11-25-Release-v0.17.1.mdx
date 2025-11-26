@@ -1,0 +1,151 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+slug: v0.17.1
+title: Release 0.17.1
+authors: [mellyeliu, nmn]
+tags:
+  - release
+---
+
+# Release 0.17.0 and 0.17.1
+
+StyleX v0.17 introduces a safe and composable solution to descendent and sibling selectors with `stylex.when.*`,
+an all new unplugin package for improved integration with various modern bundlers and a slew of fixes and improvements.
+
+## Custom Markers for `stylex.when.*` APIs
+
+StyleX 0.16 introduced new set of APIs to observe the state of other elements:
+
+- `stylex.when.ancestor(pseudo, marker?)`
+- `stylex.when.descendant(pseudo, marker?)`
+- `stylex.when.siblingBefore(pseudo, marker?)`
+- `stylex.when.siblingAfter(pseudo, marker?)`
+- `stylex.when.anySibling(pseudo, marker?)`
+- `stylex.defaultMarker()`
+
+StyleX 0.17 introduces one new API to create custom named markers, `stylex.defineMarker()`.
+
+Using these APIs, a typical CSS selector such as `.parent:hover .child` can be implemented as:
+
+```tsx
+// markers.stylex.js
+import * as stylex from '@stylexjs/stylex';
+
+export const cardMarker = stylex.defineMarker();
+export const buttonMarker = stylex.defineMarker();
+
+// Card.tsx
+import * as stylex from '@stylexjs/stylex';
+import { cardMarker, buttonMarker } from './markers.stylex';
+import {tokens} from './tokens.stylex';
+
+const styles = stylex.create({
+  card: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: tokens.borderColor,
+  },
+  cta: {
+    backgroundColor: {
+      default: 'black',
+      [stylex.when.ancestor(':focus-visible', cardMarker)]: tokens.accent,
+    },
+    color: 'white',
+  },
+  icon: {
+    opacity: {
+      default: 0,
+      [stylex.when.ancestor(':focus-visible', cardMarker)]: 1,
+    },
+    transform: {
+      default: 'translateX(0)',
+      [stylex.when.ancestor(':focus-visible', buttonMarker)]: 'translateX(4px)',
+    }
+  }
+});
+
+export function Card() {
+  return (
+    <article {...stylex.props(styles.card, cardMarker)}>
+      <p>Markers let siblings and ancestors opt into the same state.</p>
+      <button {...stylex.props(buttonMarker, styles.cta)}>
+        Action
+        <ArrowIcon style={styles.icon} />
+      </button>
+    </article>
+  );
+}
+```
+
+Icon in the button appears when card is hovered, but it moves to the right when the button itself is hovered.
+
+
+## New `@stylexjs/unplugin` package
+
+The new `@stylexjs/unplugin` package is now the recommended way to use StyleX with modern bundlers like Vite, Webpack, RSpack, and Rollup.
+
+Unlike the StyleX PostCSS plugin, the unplugin instance integrates directly into the module graph of your bundler and doesn't need to 
+transform your JS files twice. This should give you better build times, more reliable hot module replacement (HMR), and an easier setup.
+
+The unplugin integrates directly into the module graph of your bundler. This means StyleX files are transformed once as part of the standard
+build process, eliminating the need for a separate PostCSS step. This approach is faster, supports more reliable hot module replacement (HMR),
+and correctly handles StyleX code within `node_modules` without additional configuration.
+
+If you are currently using the PostCSS plugin, we recommend switching to the unplugin for a smoother experience.
+
+Please see the examples in the `examples/` directory for more examples and documentation on how to use StyleX within
+various common React frameworks and bundler setups.
+
+## Other Improvements
+
+- Runtime injection now understands `defineConsts`, so constants stay consistent when styles are injected on the client.
+- Default config options are aligned across bundlers and the compiler.
+- Media queries that start with `screen and` now order correctly, and complex media query keywords print as expected.
+- Debug builds show full file paths instead of abbreviated ones.
+- Dependency updates, including Jest, to pick up the latest fixes.
+
+
+## ESLint improvements
+
+- [eslint-plugin] add `legacyAllowMixedExports` config to `enforce-extension` by @mellyeliu in #1305
+- [eslint-plugin] enforce `defineConsts` only extension by @mellyeliu in #1311
+- [eslint-plugin] disallow default exports from `defineVars` and `defineConsts` in `enforce-extension` by @mellyeliu in #1313
+- [eslint-plugin] enhance validation for ternary and logical expressions in style properties by @hiteshshetty-dev in #1266
+- [eslint-plugin] order pseudo-classes and `stylex.when` selectors according to the priorities by @yjoer in #1287
+
+### Improvements and bug fixes
+- [babel-plugin] Bump specificity of `stylex.when` selectors over defaults by @mellyeliu in #1326
+- Enhance `stylex.props` to precompile more often by @nmn in #1242
+- [babel-plugin] additional externals for rollup build by @henryqdineen in #1307
+- [babel-plugin] Remove confusing `removeObjectsWithSpreads()` utility by @henryqdineen in #1291
+
+### Documentation
+- [docs] Add docs for `stylex.when` by @mellyeliu in #1327
+- [docs] add documentation for new ESLint rules by @mellyeliu in #1325
+- [docs] fix broken link, incorrect rule names by @henryqdineen in #1310
+- [docs] add team members by @mellyeliu in #1321
+- Add example on chaining keyframes by @Joha99 in #1316
+
+### Type improvements
+- [types] Restructure `GenStylePropType` Typescript type for more readable error messages by @j-malt in #1308
+- [types] Fix TypeScript constraint error in `CSSType` union by @henryqdineen in #1306
+- [types] Remove duplicate property declaration by @henryqdineen in #1315
+- [types] Flow types fix for `stylex.when.*` by @nmn in #1276
+- [babel-plugin][legacy] Polyfill logical float values by @abhakat in #1237
+
+### Internal tooling & infrastructure
+- chore: format mjs files with prettier by @henryqdineen in #1309
+- Add `defineConsts` usage to benchmark by @j-malt in #1312
+- Fix internal meta sync by @vincentriemer in #1319
+
+### Release
+- [release] v0.17.0 by @mellyeliu in #1328
+
+### New contributors
+- @j-malt made their first contribution in #1308
+- @Joha99 made their first contribution in #1316
+
+Full Changelog: 0.16.3...0.17.0
