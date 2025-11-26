@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "example-nextjs",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "scripts": {
     "clean": "rimraf .next",
     "example:build": "next build",
@@ -10,15 +10,15 @@
     "example:start": "next start"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.17.0",
+    "@stylexjs/stylex": "0.17.1",
     "next": "14.2.21",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "styled-jsx": "^5.1.1"
   },
   "devDependencies": {
-    "@stylexjs/eslint-plugin": "0.17.0",
-    "@stylexjs/postcss-plugin": "0.17.0",
+    "@stylexjs/eslint-plugin": "0.17.1",
+    "@stylexjs/postcss-plugin": "0.17.1",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^22.7.6",
     "@types/react": "^18.3.0",

@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/eslint-plugin",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "StyleX eslint plugin.",
   "main": "lib/index.js",
   "repository": {
@@ -16,7 +16,7 @@
     "test": "jest --detectOpenHandles --coverage"
   },
   "dependencies": {
-    "@stylexjs/shared": "0.17.0",
+    "@stylexjs/shared": "0.17.1",
     "css-shorthand-expand": "^1.2.0",
     "micromatch": "^4.0.5",
     "postcss-value-parser": "^4.2.0"
