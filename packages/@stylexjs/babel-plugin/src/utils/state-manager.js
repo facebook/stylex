@@ -109,7 +109,7 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   unstable_moduleResolution?: ?ModuleResolution,
-  createShortFilename?: (filePath: string) => string,
+  debugFilePath?: (filePath: string) => string,
   ...
 }>;
 
@@ -377,13 +377,12 @@ export default class StateManager {
             }),
           );
 
-    const createShortFilename: StyleXStateOptions['createShortFilename'] =
-      z.logAndDefault(
-        z.optional(z.func<(filePath: string) => string>()),
-        options.createShortFilename,
-        undefined,
-        'options.createShortFilename',
-      );
+    const debugFilePath: StyleXStateOptions['debugFilePath'] = z.logAndDefault(
+      z.optional(z.func<(filePath: string) => string>()),
+      options.debugFilePath,
+      undefined,
+      'options.debugFilePath',
+    );
 
     const opts: StyleXStateOptions = {
       aliases,
@@ -411,7 +410,7 @@ export default class StateManager {
       test,
       treeshakeCompensation,
       unstable_moduleResolution,
-      createShortFilename,
+      debugFilePath,
     };
     return opts;
   }
