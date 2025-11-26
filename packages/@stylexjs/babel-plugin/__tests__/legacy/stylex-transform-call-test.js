@@ -1691,7 +1691,7 @@ describe('@stylexjs/babel-plugin', () => {
             "gridColumn-kBCFzs": null,
             "gridColumnStart-kEXP64": null,
             "gridColumnEnd-kWZpDQ": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           content: {
             "gridArea-kJuA4N": "gridArea-x1fdo2jl",
@@ -1701,13 +1701,13 @@ describe('@stylexjs/babel-plugin', () => {
             "gridColumn-kBCFzs": null,
             "gridColumnStart-kEXP64": null,
             "gridColumnEnd-kWZpDQ": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::8"
           },
           root: {
             "display-k1xSpc": "display-xrvj5dj",
             "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
             "gridTemplateAreas-kC13JO": "gridTemplateAreas-x5gp9wm",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::11"
           },
           withSidebar: {
             "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1rkzygb",
@@ -1716,11 +1716,11 @@ describe('@stylexjs/babel-plugin', () => {
             "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "gridTemplateRows-xmr4b4k",
             "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "gridTemplateAreas-xesbpuc",
             "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "gridTemplateColumns-x15nfgh4",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::16"
           },
           noSidebar: {
             "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1mkdm3x",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::26"
           }
         };
         ({
@@ -1800,7 +1800,7 @@ describe('@stylexjs/babel-plugin', () => {
             "gridColumn-kBCFzs": null,
             "gridColumnStart-kEXP64": null,
             "gridColumnEnd-kWZpDQ": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::4"
           },
           content: {
             "gridArea-kJuA4N": "gridArea-x1fdo2jl",
@@ -1810,13 +1810,13 @@ describe('@stylexjs/babel-plugin', () => {
             "gridColumn-kBCFzs": null,
             "gridColumnStart-kEXP64": null,
             "gridColumnEnd-kWZpDQ": null,
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::8"
           },
           root: {
             "display-k1xSpc": "display-xrvj5dj",
             "gridTemplateRows-k9llMU": "gridTemplateRows-x7k18q3",
             "gridTemplateAreas-kC13JO": "gridTemplateAreas-x5gp9wm",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::11"
           },
           withSidebar: {
             "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1rkzygb",
@@ -1825,11 +1825,11 @@ describe('@stylexjs/babel-plugin', () => {
             "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "gridTemplateRows-xmr4b4k",
             "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "gridTemplateAreas-xesbpuc",
             "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "gridTemplateColumns-x15nfgh4",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::16"
           },
           noSidebar: {
             "gridTemplateColumns-kumcoG": "gridTemplateColumns-x1mkdm3x",
-            $$css: true
+            $$css: "@stylexjs/babel-plugin::26"
           }
         };
         stylex(styles.root, sidebar == null ? styles.noSidebar : styles.withSidebar);"
