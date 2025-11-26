@@ -10,7 +10,7 @@ tags:
   - release
 ---
 
-# Release 0.17.0 and 0.17.1
+# Release 0.17.1
 
 StyleX v0.17 introduces a safe and composable solution to descendent and sibling selectors with `stylex.when.*`,
 an all new unplugin package for improved integration with various modern bundlers and a slew of fixes and improvements.
@@ -101,7 +101,7 @@ various common React frameworks and bundler setups.
 
 ## Other Improvements
 
-- Runtime injection now understands `defineConsts`, so constants stay consistent when styles are injected on the client.
+- Added runtime injection support for `defineConsts`, so HMR works with changes to constants.
 - Default config options are aligned across bundlers and the compiler.
 - Media queries that start with `screen and` now order correctly, and complex media query keywords print as expected.
 - Debug builds show full file paths instead of abbreviated ones.
