@@ -5,15 +5,31 @@
 # LICENSE file in the root directory of this source tree.
 slug: v0.17.1
 title: Release 0.17.1
-authors: [mellyeliu, nmn]
+authors: [nmn, mellyeliu]
 tags:
   - release
 ---
 
 # Release 0.17.1
 
-StyleX v0.17 introduces a safe and composable solution to descendent and sibling selectors with `stylex.when.*`,
-an all new unplugin package for improved integration with various modern bundlers and a slew of fixes and improvements.
+StyleX v0.17 introduces an all new unplugin package for improved integration with various modern bundlers,
+the ability to define custom markers to be be used alongside the `stylex.when.*` APIs, and a slew of bug-fixes
+and improvements.
+
+## New `@stylexjs/unplugin` package
+
+Stylex 0.17 comes with a new `@stylexjs/unplugin` package that use the excellent `unplugin` library to create a near-universal bundler
+plugin that works with Vite, Rollup, Webpack, Rspack, Esbuild, and more. In supported project setups, this new package should offer
+the best developer experience and performance for StyleX integration. We have introduced new 
+[examples](https://github.com/facebook/stylex/tree/main/examples) in the github repository for using
+Webpack, RSPack and various Vite setups, (including RSCs, React-Router, Waky and RedwoodSDK). 
+When applicable we are testing both production builds and HMR in development builds.
+
+We look forward to expanding this set of examples with more common frameworks and bundler setups.
+
+For frameworks that are not yet supported by our unplugin package, we continue to maintain the `@stylexjs/postcss-plugin` and 
+and `@stylexjs/cli` packages for maximum compatibitiy.
+
 
 ## Custom Markers for `stylex.when.*` APIs
 
@@ -30,17 +46,35 @@ StyleX 0.17 introduces one new API to create custom named markers, `stylex.defin
 
 Using these APIs, a typical CSS selector such as `.parent:hover .child` can be implemented as:
 
+import { Card } from '../components/StyleXWhenDemo/Card';
+
+<Card />
+
 ```tsx
-// markers.stylex.js
+// markers.stylex.ts
 import * as stylex from '@stylexjs/stylex';
 
 export const cardMarker = stylex.defineMarker();
-export const buttonMarker = stylex.defineMarker();
+export const btn = stylex.defineMarker();
+```
 
+```tsx
 // Card.tsx
 import * as stylex from '@stylexjs/stylex';
-import { cardMarker, buttonMarker } from './markers.stylex';
+import { cardMarker, btnMarker } from './markers.stylex';
 import {tokens} from './tokens.stylex';
+
+export function Card() {
+  return (
+    <article {...stylex.props(styles.card, cardMarker)}>
+      <p>Markers let siblings and ancestors opt into the same state.</p>
+      <button {...stylex.props(btnMarker, styles.cta)}>
+        Action
+        <ArrowIcon style={styles.icon} />
+      </button>
+    </article>
+  );
+}
 
 const styles = stylex.create({
   card: {
@@ -51,101 +85,60 @@ const styles = stylex.create({
   cta: {
     backgroundColor: {
       default: 'black',
-      [stylex.when.ancestor(':focus-visible', cardMarker)]: tokens.accent,
+      [stylex.when.ancestor(':hover', cardMarker)]: tokens.accent,
     },
     color: 'white',
   },
   icon: {
     opacity: {
       default: 0,
-      [stylex.when.ancestor(':focus-visible', cardMarker)]: 1,
+      [stylex.when.ancestor(':hover', cardMarker)]: 1,
     },
     transform: {
       default: 'translateX(0)',
-      [stylex.when.ancestor(':focus-visible', buttonMarker)]: 'translateX(4px)',
+      [stylex.when.ancestor(':hover', btnMarker)]: 'translateX(4px)',
     }
   }
 });
-
-export function Card() {
-  return (
-    <article {...stylex.props(styles.card, cardMarker)}>
-      <p>Markers let siblings and ancestors opt into the same state.</p>
-      <button {...stylex.props(buttonMarker, styles.cta)}>
-        Action
-        <ArrowIcon style={styles.icon} />
-      </button>
-    </article>
-  );
-}
 ```
 
 Icon in the button appears when card is hovered, but it moves to the right when the button itself is hovered.
 
+## Updating default configuration options
 
-## New `@stylexjs/unplugin` package
+We are updating some of the default StyleX configuration options to help make the builds more consistent across development
+and production and improve the developer experience in many scenarios.
 
-The new `@stylexjs/unplugin` package is now the recommended way to use StyleX with modern bundlers like Vite, Webpack, RSpack, and Rollup.
+### `enableDebugClassNames` is now disabled by default
 
-Unlike the StyleX PostCSS plugin, the unplugin instance integrates directly into the module graph of your bundler and doesn't need to 
-transform your JS files twice. This should give you better build times, more reliable hot module replacement (HMR), and an easier setup.
+Enabling this option will emit classNames that reference the CSS property being applied, and CSS variable names 
+that are prefixed with the name used in source. However, generating incompatible CSS in development and production
+can cause caching-related bugs in some setups and so we are disabling this option by default.
 
-The unplugin integrates directly into the module graph of your bundler. This means StyleX files are transformed once as part of the standard
-build process, eliminating the need for a separate PostCSS step. This approach is faster, supports more reliable hot module replacement (HMR),
-and correctly handles StyleX code within `node_modules` without additional configuration.
+### `data-style-src` prop now shows full file paths
 
-If you are currently using the PostCSS plugin, we recommend switching to the unplugin for a smoother experience.
+The `data-style-src` prop is injected in addition to `className` and `style` during development to help identify the
+list of style objects applied to to the element in order or application. Previously, it showed only the last two segments
+of the file path which can be confusing.
 
-Please see the examples in the `examples/` directory for more examples and documentation on how to use StyleX within
-various common React frameworks and bundler setups.
+Now, the it will include the full path relative to the nearest `package.json` file. For third-party package, we will also
+include the package name itself.
+
+### `enableDevClassNames` will now be enabled when `dev` is enabled
+
+The `dev` option inserts additional classNames that help identify where various classNames are coming from.
+
 
 ## Other Improvements
 
-- Added runtime injection support for `defineConsts`, so HMR works with changes to constants.
-- Default config options are aligned across bundlers and the compiler.
-- Media queries that start with `screen and` now order correctly, and complex media query keywords print as expected.
-- Debug builds show full file paths instead of abbreviated ones.
+- Added support for handling `defineConsts` correctly when runtime injection is enabled.
+- Fixed a bug sometimes that caused invalid CSS output when Media Queries use `screen and` conditionals
 - Dependency updates, including Jest, to pick up the latest fixes.
+- Specificity improvements when using `stylex.when.*` selectors alongside regular pseudo-classes.
+- Expand how often `stylex.props` is precompiled to improve performance.
+- Various improvements to Flow and Typescript types (thanks, @j-malt, @henryqdineen)
+- Various improvements and fixes to the ESlint plugin (thanks, @hiteshshetty-dev, @yjoer)
 
 
-## ESLint improvements
 
-- [eslint-plugin] add `legacyAllowMixedExports` config to `enforce-extension` by @mellyeliu in #1305
-- [eslint-plugin] enforce `defineConsts` only extension by @mellyeliu in #1311
-- [eslint-plugin] disallow default exports from `defineVars` and `defineConsts` in `enforce-extension` by @mellyeliu in #1313
-- [eslint-plugin] enhance validation for ternary and logical expressions in style properties by @hiteshshetty-dev in #1266
-- [eslint-plugin] order pseudo-classes and `stylex.when` selectors according to the priorities by @yjoer in #1287
 
-### Improvements and bug fixes
-- [babel-plugin] Bump specificity of `stylex.when` selectors over defaults by @mellyeliu in #1326
-- Enhance `stylex.props` to precompile more often by @nmn in #1242
-- [babel-plugin] additional externals for rollup build by @henryqdineen in #1307
-- [babel-plugin] Remove confusing `removeObjectsWithSpreads()` utility by @henryqdineen in #1291
-
-### Documentation
-- [docs] Add docs for `stylex.when` by @mellyeliu in #1327
-- [docs] add documentation for new ESLint rules by @mellyeliu in #1325
-- [docs] fix broken link, incorrect rule names by @henryqdineen in #1310
-- [docs] add team members by @mellyeliu in #1321
-- Add example on chaining keyframes by @Joha99 in #1316
-
-### Type improvements
-- [types] Restructure `GenStylePropType` Typescript type for more readable error messages by @j-malt in #1308
-- [types] Fix TypeScript constraint error in `CSSType` union by @henryqdineen in #1306
-- [types] Remove duplicate property declaration by @henryqdineen in #1315
-- [types] Flow types fix for `stylex.when.*` by @nmn in #1276
-- [babel-plugin][legacy] Polyfill logical float values by @abhakat in #1237
-
-### Internal tooling & infrastructure
-- chore: format mjs files with prettier by @henryqdineen in #1309
-- Add `defineConsts` usage to benchmark by @j-malt in #1312
-- Fix internal meta sync by @vincentriemer in #1319
-
-### Release
-- [release] v0.17.0 by @mellyeliu in #1328
-
-### New contributors
-- @j-malt made their first contribution in #1308
-- @Joha99 made their first contribution in #1316
-
-Full Changelog: 0.16.3...0.17.0
