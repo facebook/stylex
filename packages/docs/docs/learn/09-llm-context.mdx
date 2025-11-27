@@ -1,0 +1,317 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 9
+---
+
+# LLM Context for StyleX
+
+When working with AI assistants or Large Language Models (LLMs) on StyleX projects, you can provide them with this context file to help them understand StyleX's patterns and conventions.
+
+## Copyable Context File
+
+Copy the section below and add it to a `stylex.md` file or similar for styling best practices:
+
+---
+
+```markdown
+# stylex.md
+
+## Overview
+StyleX is a CSS-in-JS library that compiles styles to atomic CSS at build time. It ensures deterministic style resolution, type safety, and optimal performance.
+
+## Style Authoring Rules
+
+### Imports
+```javascript
+import * as stylex from '@stylexjs/stylex';
+```
+
+### Defining styles with `stylex.create()`
+
+**Basic syntax:**
+```javascript
+const styles = stylex.create({
+  base: {
+    display: 'flex',
+    padding: 16,
+    backgroundColor: 'blue',
+  },
+  primary: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+});
+```
+
+**Key rules:**
+- Use `stylex.create()` to define style objects
+- Each top-level key in the object is a "namespace" (e.g., `base`, `primary`)
+- Style values must be static literals (no dynamic values at definition time)
+- Use standard CSS property names in camelCase (e.g., `backgroundColor`, `fontSize`)
+- Properties are typed - only valid CSS properties and values are allowed
+
+### Applying styles with `stylex.props()`
+
+**Basic usage:**
+```jsx
+<div {...stylex.props(styles.base)} />
+```
+
+**Merging multiple styles:**
+```jsx
+<div {...stylex.props(styles.base, styles.primary)} />
+```
+
+**Conditional styles:**
+```jsx
+<div {...stylex.props(
+  styles.base,
+  isActive && styles.active,
+  isDisabled && styles.disabled
+)} />
+```
+
+**Key rules:**
+- Always use spread operator `{...stylex.props(...)}` to apply styles
+- Later styles override earlier ones
+- `false`, `null`, and `undefined` are ignored in merging
+- Never apply `className` and `style` properties alongside a `{...stylex.props(...)}` spread
+
+### Dynamic styles
+
+**For runtime dynamic values, use dynamic styles:**
+```javascript
+const styles = stylex.create({
+  dynamic: (color) => ({
+    color: color,
+  }),
+});
+
+
+### Contextual styles
+- **IMPORTANT**: Apply pseudo-classes and media queries as conditions **within** a style property.
+- A default must be set. Use `null` as default if you don't want any style applied in that case.
+
+#### Pseudo-classes and pseudo-elements
+
+```javascript
+const styles = stylex.create({
+  button: {
+    backgroundColor: {
+      default: 'blue',
+      ':hover': 'red',
+      ':focus': 'yellow',
+    }
+  },
+});
+```
+
+#### Media queries
+
+```javascript
+const styles = stylex.create({
+  container: {
+    padding: {
+      default: 16,
+      '@media (min-width: 768px)': 32
+      '@media (min-width: 1024px)': 48
+    }
+  },
+});
+```
+
+### Defining CSS Variables with `stylex.defineVars()`
+- Tokens must be defined in a `.stylex.js` or equivalent file extension
+
+```javascript
+export const colors = stylex.defineVars({
+  primaryColor: 'blue',
+  secondaryColor: 'green',
+  spacing: '16px',
+});
+```
+
+**Using variables in styles:**
+```javascript
+import { colors } from './tokens.stylex';
+
+const styles = stylex.create({
+  button: {
+    backgroundColor: colors.primaryColor,
+    padding: colors.spacing,
+  },
+});
+```
+
+### Creating Themes with `stylex.createTheme()`
+- Override a group of variables `stylex.createTheme()`. 
+- To reset variables to their original values, pass in an empty object.
+
+```javascript
+import { colors } from './tokens.stylex';
+
+export const darkTheme = stylex.createTheme(colors, {
+  primaryColor: 'lightblue',
+  secondaryColor: 'lightgreen',
+  spacing: '16px',
+});
+```
+
+**Applying themes:**
+```jsx
+<div {...stylex.props(darkTheme)}>
+  <Button /> {/* Inherits theme variables */}
+</div>
+```
+
+### Defining Constants with `stylex.defineConsts()`
+- Prefer `defineConsts` over `defineVars` for values you don't need to override.
+- Tokens must be defined in a `.stylex.js` or equivalent file extension
+
+```javascript
+const consts = stylex.defineConsts({
+  MAX_WIDTH: '1200px',
+  BREAKPOINT_MOBILE: '@media (max-width: 768px)',
+});
+```
+
+### Keyframe animations with `stylex.keyframes()`
+
+```javascript
+const fadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+const styles = stylex.create({
+  animated: {
+    animationName: fadeIn,
+    animationDuration: '1s',
+  },
+});
+```
+
+## Common Patterns
+
+### Variants Pattern
+```javascript
+const styles = stylex.create({
+  base: {
+    padding: 16,
+    borderRadius: 4,
+  },
+  sizeSmall: {
+    padding: 8,
+    fontSize: 14,
+  },
+  sizeMedium: {
+    padding: 16,
+    fontSize: 16,
+  },
+  sizeLarge: {
+    padding: 24,
+    fontSize: 18,
+  },
+});
+
+// Usage
+function Button({ size = 'medium', children }) {
+  return (
+    <button {...stylex.props(
+      styles.base,
+      size === 'small' && styles.sizeSmall,
+      size === 'medium' && styles.sizeMedium,
+      size === 'large' && styles.sizeLarge
+    )}>
+      {children}
+    </button>
+  );
+}
+```
+
+### Composing styles across components
+```javascript
+// Button.js
+export const buttonStyles = stylex.create({
+  base: { /* ... */ },
+});
+
+// App.js
+import { buttonStyles } from './Button';
+
+const appStyles = stylex.create({
+  customButton: {
+    marginTop: 20,
+  },
+});
+
+<button {...stylex.props(buttonStyles.base, appStyles.customButton)} />
+```
+
+### Responsive design
+```javascript
+const styles = stylex.create({
+  container: {
+    display: 'block',
+    padding: 8,
+    '@media (min-width: 768px)': {
+      display: 'flex',
+      padding: 16,
+    },
+    '@media (min-width: 1024px)': {
+      padding: 24,
+    },
+  },
+});
+```
+
+## Best practices
+
+**Don't apply classNames or styles directly:**
+```javascript
+// WRONG
+<div className="my-class" styles={style} {...stylex.props(styles.foo)} />
+```
+
+**Don't mutate, access, or modify styles**
+```javascript
+// WRONG
+const styles = stylex.create(...)
+styles.base.color = 'red';
+```
+
+## Type support
+
+StyleX provides full type support:
+
+```typescript
+import * as stylex from '@stylexjs/stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
+
+// Typed style props
+interface Props {
+  style?: StyleXStyles;
+}
+
+function Component({ style }: Props) {
+  const styles = stylex.create({
+    base: {
+      padding: 16,
+    },
+  });
+
+  return <div {...stylex.props(styles.base, style)} />;
+}
+```
+
+## Additional Resources
+
+For more detailed information:
+- [StyleX API Documentation](/docs/api/)
+- [Styling UI Guide](/docs/learn/styling-ui/)
+- [Theming Guide](/docs/learn/theming/)
+- [Common Recipes](/docs/learn/recipes/)
+
