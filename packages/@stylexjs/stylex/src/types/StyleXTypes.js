@@ -225,9 +225,9 @@ export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-export type StyleX$DefineConsts = <
-  const DefaultTokens: { +[string]: number | string },
->(
+type DefineConstTokens = string | number | { +[string]: DefineConstTokens };
+
+export type StyleX$DefineConsts = <DefaultTokens: DefineConstTokens>(
   tokens: DefaultTokens,
 ) => DefaultTokens;
 

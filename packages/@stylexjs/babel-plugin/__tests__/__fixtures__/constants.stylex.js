@@ -21,3 +21,12 @@ export const colors = stylex.defineConsts({
   background: 'white',
   foreground: 'black',
 });
+
+export const nestedTokens = stylex.defineConsts({
+  button: {
+    fill: {
+      primary: 'blue',
+    },
+  },
+  'button.fill.primary': 'red',
+});
