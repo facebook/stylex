@@ -136,6 +136,7 @@ const unitlessNumberProperties = new Set([
   'strokeWidth',
   'scale',
   'mathDepth',
+  'zoom',
 ]);
 
 // List of properties that have custom suffixes for numbers

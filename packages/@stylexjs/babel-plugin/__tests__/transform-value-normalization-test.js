@@ -194,7 +194,8 @@ describe('@stylexjs/babel-plugin', () => {
             unitless: {
               fontWeight: 500,
               lineHeight: 1.5,
-              opacity: 0.5
+              opacity: 0.5,
+              zoom: 2,
             },
           });
         `),
@@ -208,6 +209,7 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xk50ysn{font-weight:500}", 3000);
         _inject2(".x1evy7pa{line-height:1.5}", 3000);
         _inject2(".xbyyjgo{opacity:.5}", 3000);"
+        _inject2(".xbyyjgo{zoom:2}", 3000);"
       `);
     });
 
