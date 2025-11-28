@@ -47,7 +47,10 @@ const styles = stylex.create({
       default: 'var(--ifm-navbar-background-color)',
       [stylex.when.ancestor(':hover', cardMarker)]: 'var(--ifm-link-color)',
     },
-    color: 'white',
+    color: {
+      default: 'inherit',
+      [stylex.when.ancestor(':hover', cardMarker)]: 'white',
+    },
     transitionProperty: 'background-color',
     transitionDuration: '0.2s',
     transitionTimingFunction: 'ease-in-out',
