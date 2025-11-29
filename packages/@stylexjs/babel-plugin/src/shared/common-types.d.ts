@@ -55,7 +55,6 @@ export type StyleXOptions = Readonly<{
     | 'property-specificity'
     | 'legacy-expand-shorthands';
   test: boolean;
-  ...
 }>;
 export type MutableCompiledNamespaces = { [key: string]: FlatCompiledStyles };
 export type CompiledNamespaces = Readonly<MutableCompiledNamespaces>;
