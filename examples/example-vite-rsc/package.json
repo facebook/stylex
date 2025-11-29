@@ -13,7 +13,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "@stylexjs/stylex": "0.17.0",
-    "shared-ui": "*"
+    "@stylexjs/shared-ui": "*"
   },
   "devDependencies": {
     "@types/react": "^19.2.6",

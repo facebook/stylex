@@ -51,6 +51,76 @@ function isInvalidMethod(val: string): boolean {
   return INVALID_METHODS.includes(val);
 }
 
+const MUTATING_ARRAY_METHODS = new Set([
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse',
+  'fill',
+  'copyWithin',
+]);
+
+function isMutated(binding: Binding): boolean {
+  for (const path of binding.referencePaths) {
+    const parentPath = path.parentPath;
+    if (!parentPath) continue;
+
+    if (
+      parentPath.isMemberExpression() &&
+      parentPath.node.object === path.node
+    ) {
+      const memberExpr = parentPath;
+      const parent = memberExpr.parentPath;
+      if (!parent) continue;
+
+      if (
+        parent.isAssignmentExpression() &&
+        parent.node.left === memberExpr.node
+      ) {
+        return true;
+      }
+      if (parent.isUpdateExpression()) {
+        return true;
+      }
+      if (parent.isUnaryExpression({ operator: 'delete' })) {
+        return true;
+      }
+      if (parent.isCallExpression() && parent.node.callee === memberExpr.node) {
+        // $FlowFixMe[prop-missing]
+        const property = memberExpr.node.property;
+        if (
+          t.isIdentifier(property) &&
+          MUTATING_ARRAY_METHODS.has(property.name)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    if (
+      parentPath?.isCallExpression() &&
+      path.listKey === 'arguments' &&
+      path.key === 0
+    ) {
+      // TODO: There seems to be a Flow bug with `parentPath` here.
+      const callExpr: NodePath<t.CallExpression> = parentPath as $FlowFixMe;
+      const callee = callExpr.get('callee');
+      if (
+        callee.matchesPattern('Object.assign') ||
+        callee.matchesPattern('Object.defineProperty') ||
+        callee.matchesPattern('Object.defineProperties') ||
+        callee.matchesPattern('Object.setPrototypeOf')
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 export type FunctionConfig = {
   identifiers: {
     [fnName: string]: $FlowFixMe,
@@ -463,6 +533,10 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
 
     if (binding && binding.constantViolations.length > 0) {
+      return deopt(binding.path, state, errMsgs.NON_CONSTANT);
+    }
+
+    if (binding && isMutated(binding)) {
       return deopt(binding.path, state, errMsgs.NON_CONSTANT);
     }
 

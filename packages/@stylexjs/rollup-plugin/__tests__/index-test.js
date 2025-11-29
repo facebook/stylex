@@ -216,7 +216,7 @@ describe('rollup-plugin-stylex', () => {
           bar: {
             "display-k1xSpc": "display-x1lliihq",
             "width-kzqmXN": "width-xh8yej3",
-            $$css: "__fixtures__/otherStyles.js:14"
+            $$css: "@stylexjs/rollup-plugin:__tests__/__fixtures__/otherStyles.js:14"
           }
         };
 
@@ -236,7 +236,7 @@ describe('rollup-plugin-stylex', () => {
             "display-k1xSpc": "display-xt0psk2",
             "height-kZKoxP": "height-x1egiwwb",
             "width-kzqmXN": "width-x3hqpx7",
-            $$css: "__fixtures__/npmStyles.js:15"
+            $$css: "@stylexjs/rollup-plugin:__tests__/__fixtures__/npmStyles.js:15"
           }
         };
 
@@ -265,7 +265,7 @@ describe('rollup-plugin-stylex', () => {
             "height-kZKoxP": "height-x1egiwwb",
             "marginInlineStart-keTefX": "marginInlineStart-x1hm9lzh",
             "marginTop-keoZOQ": "marginTop-xlrshdv",
-            $$css: "__fixtures__/index.js:24"
+            $$css: "@stylexjs/rollup-plugin:__tests__/__fixtures__/index.js:24"
           }
         };
         function App() {

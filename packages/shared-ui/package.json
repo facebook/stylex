@@ -1,16 +1,14 @@
 {
-  "name": "shared-ui",
+  "name": "@stylexjs/shared-ui",
+  "private": true,
   "version": "0.0.1",
   "main": "src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
     "./tokens.stylex": "./src/tokens.stylex.ts"
   },
-  "dependencies": {
-    "@stylexjs/stylex": "*",
-    "react": "^19.0.0"
-  },
   "peerDependencies": {
+    "@stylexjs/stylex": "*",
     "react": ">=18"
   }
 }

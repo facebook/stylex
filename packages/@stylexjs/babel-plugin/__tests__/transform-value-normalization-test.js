@@ -208,8 +208,8 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2(".xvue9z{width:500px}", 4000);
         _inject2(".xk50ysn{font-weight:500}", 3000);
         _inject2(".x1evy7pa{line-height:1.5}", 3000);
-        _inject2(".xbyyjgo{opacity:.5}", 3000);"
-        _inject2(".xbyyjgo{zoom:2}", 3000);"
+        _inject2(".xbyyjgo{opacity:.5}", 3000);
+        _inject2(".xy2o3ld{zoom:2}", 3000);"
       `);
     });
 
