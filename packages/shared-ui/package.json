@@ -1,7 +1,7 @@
 {
   "name": "@stylexjs/shared-ui",
+  "version": "0.17.1",
   "private": true,
-  "version": "0.0.1",
   "main": "src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
@@ -12,4 +12,3 @@
     "react": ">=18"
   }
 }
-

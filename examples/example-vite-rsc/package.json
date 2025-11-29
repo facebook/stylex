@@ -1,6 +1,6 @@
 {
   "name": "@vitejs/plugin-rsc-examples-starter",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -12,8 +12,8 @@
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "@stylexjs/stylex": "0.17.0",
-    "@stylexjs/shared-ui": "*"
+    "@stylexjs/stylex": "0.17.1",
+    "@stylexjs/shared-ui": "0.17.1"
   },
   "devDependencies": {
     "@types/react": "^19.2.6",
@@ -22,6 +22,6 @@
     "@vitejs/plugin-rsc": "latest",
     "rsc-html-stream": "^0.0.7",
     "vite": "^7.1.12",
-    "@stylexjs/unplugin": "0.17.0"
+    "@stylexjs/unplugin": "0.17.1"
   }
 }
