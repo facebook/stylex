@@ -7,8 +7,8 @@
 
 import { useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
-import { Button } from 'shared-ui';
-import { tokens } from 'shared-ui/tokens.stylex';
+import { Button } from '@stylexjs/shared-ui';
+import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
 
 export const Welcome = () => {
   return (
@@ -80,7 +80,7 @@ export const Welcome = () => {
           </p>
         </section>
         <section>
-          <Button xstyle={styles.btn}>button from shared-ui</Button>
+          <Button xstyle={styles.btn}>button from @stylexjs/shared-ui</Button>
         </section>
       </main>
     </div>
