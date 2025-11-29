@@ -517,17 +517,23 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
               server.httpServer?.once('close', () => clearInterval(interval));
             },
             resolveId(id) {
-              if (devMode === 'full' && id === 'virtual:stylex:runtime')
+              if (devMode === 'full' && id.includes('virtual:stylex:runtime'))
                 return id;
-              if (devMode === 'css-only' && id === 'virtual:stylex:css-only')
+              if (
+                devMode === 'css-only' &&
+                id.includes('virtual:stylex:css-only')
+              )
                 return id;
               return null;
             },
             load(id) {
-              if (devMode === 'full' && id === 'virtual:stylex:runtime') {
+              if (devMode === 'full' && id.includes('virtual:stylex:runtime')) {
                 return VIRTUAL_STYLEX_RUNTIME_SCRIPT;
               }
-              if (devMode === 'css-only' && id === 'virtual:stylex:css-only') {
+              if (
+                devMode === 'css-only' &&
+                id.includes('virtual:stylex:css-only')
+              ) {
                 return VIRTUAL_STYLEX_CSS_ONLY_SCRIPT;
               }
               return null;
@@ -538,24 +544,33 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
             transformIndexHtml() {
               if (devMode !== 'full') return null;
               if (!viteServer) return null;
+              // get the `base` from the config
+              const base = viteServer.config.base ?? '';
               return [
                 {
                   tag: 'script',
-                  attrs: { type: 'module', src: '/@id/virtual:stylex:runtime' },
+                  attrs: {
+                    type: 'module',
+                    src: path.join(base, '/@id/virtual:stylex:runtime'),
+                  },
                   injectTo: 'head',
                 },
                 {
                   tag: 'link',
-                  attrs: { rel: 'stylesheet', href: DEV_CSS_PATH },
+                  attrs: {
+                    rel: 'stylesheet',
+                    href: path.join(base, DEV_CSS_PATH),
+                  },
                   injectTo: 'head',
                 },
               ];
             },
             handleHotUpdate(ctx) {
+              const base = ctx.server.config.base ?? '';
               // Do not alter Vite's module list; preserve JS HMR.
               // Invalidate CSS module and notify runtime to refetch.
               const cssMod = ctx.server.moduleGraph.getModuleById(
-                'virtual:stylex:css-module',
+                path.join(base, 'virtual:stylex:css-module'),
               );
               if (cssMod) {
                 ctx.server.moduleGraph.invalidateModule(cssMod);
