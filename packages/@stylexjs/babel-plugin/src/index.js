@@ -389,6 +389,137 @@ function getLogicalFloatVars(rules: Array<Rule>): string {
     : '';
 }
 
+function optimizeDefineVarsRules(rules: Array<Rule>): {
+  optimizedRules: Array<Rule>,
+  varsToInline: Map<string, string>,
+} {
+  const defineVarsVariables: Map<string, string> = new Map();
+  const varUsageCount: Map<string, number> = new Map();
+
+  for (const [, ruleObj] of rules) {
+    const { ltr, rtl } = ruleObj;
+    const isDefineVarsRule = /^(?:@[^{]*\{)?:root,\s*\.[\w-]+\{/.test(ltr);
+
+    if (isDefineVarsRule) {
+      const varMatches = ltr.matchAll(/--([A-Za-z0-9_-]+):([^;}]+);?/g);
+      for (const match of varMatches) {
+        const varName = `--${match[1]}`;
+        const varValue = match[2].trim();
+        defineVarsVariables.set(varName, varValue);
+        varUsageCount.set(varName, 0);
+      }
+
+      if (rtl) {
+        const rtlVarMatches = rtl.matchAll(/--([A-Za-z0-9_-]+):([^;}]+);?/g);
+        for (const match of rtlVarMatches) {
+          const varName = `--${match[1]}`;
+          const varValue = match[2].trim();
+          if (!defineVarsVariables.has(varName)) {
+            defineVarsVariables.set(varName, varValue);
+            varUsageCount.set(varName, 0);
+          }
+        }
+      }
+    }
+  }
+
+  for (const [, ruleObj] of rules) {
+    const { ltr, rtl } = ruleObj;
+    const isDefineVarsRule = /^(?:@[^{]*\{)?:root,\s*\.[\w-]+\{/.test(ltr);
+
+    if (!isDefineVarsRule) {
+      const ltrVarRefs = ltr.matchAll(/var\((--[A-Za-z0-9_-]+)(?:,|,\s|\))/g);
+      for (const match of ltrVarRefs) {
+        const varName = match[1];
+        if (defineVarsVariables.has(varName)) {
+          varUsageCount.set(varName, (varUsageCount.get(varName) || 0) + 1);
+        }
+      }
+
+      if (rtl) {
+        const rtlVarRefs = rtl.matchAll(/var\((--[A-Za-z0-9_-]+)(?:,|,\s|\))/g);
+        for (const match of rtlVarRefs) {
+          const varName = match[1];
+          if (defineVarsVariables.has(varName)) {
+            varUsageCount.set(varName, (varUsageCount.get(varName) || 0) + 1);
+          }
+        }
+      }
+    }
+  }
+
+  const varsToInline: Map<string, string> = new Map();
+  for (const [varName, count] of varUsageCount.entries()) {
+    if (count === 1) {
+      const value = defineVarsVariables.get(varName);
+      if (value && !value.includes('var(')) {
+        varsToInline.set(varName, value);
+      }
+    }
+  }
+
+  const varsToRemove: Set<string> = new Set();
+  for (const [varName, count] of varUsageCount.entries()) {
+    if (count === 0) {
+      varsToRemove.add(varName);
+    }
+  }
+
+  const optimizedRules: Array<Rule> = rules
+    .map(([key, ruleObj, priority]) => {
+      const { ltr: initialLtr, rtl: initialRtl, ...rest } = ruleObj;
+      let ltr = initialLtr;
+      let rtl = initialRtl;
+      const isDefineVarsRule = /^(?:@[^{]*\{)?:root,\s*\.[\w-]+\{/.test(ltr);
+
+      if (isDefineVarsRule) {
+        const allVarsToRemove = new Set([
+          ...varsToRemove,
+          ...varsToInline.keys(),
+        ]);
+
+        for (const varName of allVarsToRemove) {
+          const regex = new RegExp(
+            `${varName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}:[^;}]+;?`,
+            'g',
+          );
+          ltr = ltr.replace(regex, '');
+          if (rtl) {
+            rtl = rtl.replace(regex, '');
+          }
+        }
+
+        ltr = ltr
+          .replace(/;\s*;/g, ';')
+          .replace(/\{\s*;/g, '{')
+          .replace(/;\s*\}/g, '}');
+        if (rtl) {
+          rtl = rtl
+            .replace(/;\s*;/g, ';')
+            .replace(/\{\s*;/g, '{')
+            .replace(/;\s*\}/g, '}');
+        }
+
+        if (/\{\s*\}/.test(ltr)) {
+          return null;
+        }
+      } else {
+        for (const [varName, value] of varsToInline.entries()) {
+          const varRef = `var(${varName})`;
+          ltr = ltr.replaceAll(varRef, value);
+          if (rtl) {
+            rtl = rtl.replaceAll(varRef, value);
+          }
+        }
+      }
+
+      return [key, { ltr, rtl, ...rest }, priority];
+    })
+    .filter(Boolean);
+
+  return { optimizedRules, varsToInline };
+}
+
 function processStylexRules(
   rules: Array<Rule>,
   config?:
@@ -398,6 +529,7 @@ function processStylexRules(
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
         useLegacyClassnamesSort?: boolean,
+        optimizeDefineVars?: boolean,
         ...
       },
 ): string {
@@ -406,15 +538,23 @@ function processStylexRules(
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
     useLegacyClassnamesSort = false,
+    optimizeDefineVars = true,
   } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
   if (rules.length === 0) {
     return '';
   }
 
-  const constantRules = rules.filter(
+  // Optimize defineVars if requested
+  let processedRules = rules;
+  if (optimizeDefineVars) {
+    const optimizeResult = optimizeDefineVarsRules(rules);
+    processedRules = optimizeResult.optimizedRules;
+  }
+
+  const constantRules = processedRules.filter(
     ([, ruleObj]) => ruleObj?.constKey != null && ruleObj?.constVal != null,
   );
-  const nonConstantRules = rules.filter(
+  const nonConstantRules = processedRules.filter(
     ([, ruleObj]) => !(ruleObj?.constKey != null && ruleObj?.constVal != null),
   );
 

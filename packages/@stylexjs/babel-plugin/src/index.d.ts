@@ -42,6 +42,7 @@ declare function processStylexRules(
         useLayers?: boolean;
         enableLTRRTLComments?: boolean;
         legacyDisableLayers?: boolean;
+        optimizeDefineVars?: boolean;
       },
 ): string;
 export type StyleXTransformObj = Readonly<{
