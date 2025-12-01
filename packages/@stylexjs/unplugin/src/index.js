@@ -247,6 +247,7 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
         jsxSyntaxPlugin,
         stylexBabelPlugin.withOptions({
           ...stylexOptions,
+          importSources,
           treeshakeCompensation,
           dev,
           unstable_moduleResolution,
