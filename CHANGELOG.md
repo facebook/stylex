@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.17.2 (Dec 1, 2025)
+
+- Pass importSources to babel plugin in `unplugin` plugin.
+- Fix custom typescript typedef mistake.
+
+## 0.17.1 (Nov 26, 2025)
+
+- Add support for compiling stylex from imported packages.
+- Add runtime injection support for `defineConsts` constants.
+- Show full debug file paths.
+- Fix media query ordering for queries with 'screen and'.
+- Add `debugFilePath` config option.
+- Fix unitless zoom bug for float values.
+- Fix props compilation for array mutations.
+
 ## 0.17.0 (Nov 18, 2025)
 
 - Add docs for ESLint rules and `stylex.when` API.
