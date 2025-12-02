@@ -13,23 +13,19 @@ tags:
 # Release 0.17.1
 
 StyleX v0.17 introduces an all new unplugin package for improved integration with various modern bundlers,
-the ability to define custom markers to be be used alongside the `stylex.when.*` APIs, and a slew of bug-fixes
+the ability to define custom markers for use with `stylex.when.*` APIs, and a slew of bug-fixes
 and improvements.
 
 ## New `@stylexjs/unplugin` package
 
 Stylex 0.17 comes with a new `@stylexjs/unplugin` package that use the excellent `unplugin` library to create a near-universal bundler
 plugin that works with Vite, Rollup, Webpack, Rspack, Esbuild, and more. In supported project setups, this new package should offer
-the best developer experience and performance for StyleX integration. We have introduced new 
-[examples](https://github.com/facebook/stylex/tree/main/examples) in the github repository for using
-Webpack, RSPack and various Vite setups, (including RSCs, React-Router, Waky and RedwoodSDK). 
-When applicable we are testing both production builds and HMR in development builds.
-
-We look forward to expanding this set of examples with more common frameworks and bundler setups.
-
-For frameworks that are not yet supported by our unplugin package, we continue to maintain the `@stylexjs/postcss-plugin` and 
+the best developer experience and performance for StyleX integration. We've introduced new
+[examples](https://github.com/facebook/stylex/tree/main/examples) for
+Webpack, RSPack, and various Vite setups (RSCs, React-Router, Waky and RedwoodSDK) with testing for both production builds and HMR in development builds when applicable. For frameworks that are not yet supported by our unplugin package, we continue to maintain the `@stylexjs/postcss-plugin` and
 and `@stylexjs/cli` packages for maximum compatibitiy.
 
+We look forward to expanding this set of examples with more common frameworks and bundler setups.
 
 ## Custom Markers for `stylex.when.*` APIs
 
@@ -111,7 +107,7 @@ and production and improve the developer experience in many scenarios.
 
 ### `enableDebugClassNames` is now disabled by default
 
-Enabling this option will emit classNames that reference the CSS property being applied, and CSS variable names 
+Enabling this option will emit classNames that reference the CSS property being applied, and CSS variable names
 that are prefixed with the name used in source. However, generating incompatible CSS in development and production
 can cause caching-related bugs in some setups and so we are disabling this option by default.
 
@@ -128,17 +124,17 @@ include the package name itself.
 
 The `dev` option inserts additional classNames that help identify where various classNames are coming from.
 
+### `enableMediaQueryOrder` is now enabled by default
+
+This config ensures that authored media query order is respected, with later queries taking precedence over earlier ones.
+
 
 ## Other Improvements
 
 - Added support for handling `defineConsts` correctly when runtime injection is enabled.
-- Fixed a bug sometimes that caused invalid CSS output when Media Queries use `screen and` conditionals
-- Dependency updates, including Jest, to pick up the latest fixes.
+- Fixed a bug sometimes that caused invalid CSS output when media queries use `screen and` conditionals
+- Dependency updates, including Jest, to pick up the latest fixes. (Thanks [@vincentriemer](https://github.com/vincentriemer), [@jcperez-ch](https://github.com/jcperez-ch)!)
 - Specificity improvements when using `stylex.when.*` selectors alongside regular pseudo-classes.
 - Expand how often `stylex.props` is precompiled to improve performance.
-- Various improvements to Flow and Typescript types (thanks, @j-malt, @henryqdineen)
-- Various improvements and fixes to the ESlint plugin (thanks, @hiteshshetty-dev, @yjoer)
-
-
-
-
+- Various improvements to Flow and Typescript types. (Thanks [@j-malt](https://github.com/j-malt), [@henryqdineen](https://github.com/henryqdineen)!)
+- Various improvements and fixes to the ESlint plugin, including support for `defineConsts` in `enforce-extension`, and improvements to `sort-key` ordering. (Thanks [@hiteshshetty-dev](https://github.com/hiteshshetty-dev), [@yjoer](https://github.com/yjoer), [@dwei-figma](https://github.com/dwei-figma)!)
