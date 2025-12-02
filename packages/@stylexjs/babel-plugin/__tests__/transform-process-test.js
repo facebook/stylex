@@ -182,13 +182,9 @@ describe('@stylexjs/babel-plugin', () => {
           useLayers: false,
           enableLTRRTLComments: false,
         }),
-      ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
-        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}"
-      `);
+      ).toMatchInlineSnapshot(
+        '"@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}"',
+      );
     });
 
     test('all rules (useLayers:false)', () => {
@@ -255,25 +251,21 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
         .margin-xymmreb:not(#\\#){margin:10px 20px}
-        .padding-xss17vw:not(#\\#){padding:var(--large-x1ec7iuc)}
+        .padding-xss17vw:not(#\\#){padding:8px}
         .borderColor-x1bg2uv5:not(#\\#):not(#\\#){border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:blue}}
         @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
         .animationName-x13ah0pd:not(#\\#):not(#\\#):not(#\\#){animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:left}
         html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
-        .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
+        .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:lightblue}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *):not(#\\#):not(#\\#):not(#\\#){background-color:green}
         .backgroundColor-xbrh7vm:hover:not(#\\#):not(#\\#):not(#\\#){background-color:blue}
@@ -350,21 +342,17 @@ describe('@stylexjs/babel-plugin', () => {
         @layer priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
         @layer priority2{
         .margin-xymmreb{margin:10px 20px}
-        .padding-xss17vw{padding:var(--large-x1ec7iuc)}
+        .padding-xss17vw{padding:8px}
         }
         @layer priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:blue}}
         @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
@@ -373,7 +361,7 @@ describe('@stylexjs/babel-plugin', () => {
         .color-x14rh7hd{color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f{float:left}
         html[dir='rtl'] .float-x1kmio9f{float:right}
-        .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
+        .outlineColor-x184ctg8{outline-color:lightblue}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
@@ -448,25 +436,21 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
         .margin-xymmreb{margin:10px 20px}
-        .padding-xss17vw{padding:var(--large-x1ec7iuc)}
+        .padding-xss17vw{padding:8px}
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:blue}}
         @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
         .animationName-x13ah0pd{animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc{background-color:red}
         .color-x14rh7hd{color:var(--x-color)}
         html:not([dir='rtl']) .float-x1kmio9f{float:left}
         html[dir='rtl'] .float-x1kmio9f{float:right}
-        .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
+        .outlineColor-x184ctg8{outline-color:lightblue}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
@@ -545,10 +529,6 @@ describe('@stylexjs/babel-plugin', () => {
           --stylex-logical-start: right;
           --stylex-logical-end: left;
         }
-        :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .float-xj87blo:not(#\\#){float:var(--stylex-logical-start)}
         /* @ltr begin */.marginInlineStart-xqsn43r:not(#\\#){margin-left:20px}/* @ltr end */
@@ -590,11 +570,7 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
-        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}"
       `);
@@ -643,25 +619,21 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
-        :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
-        @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--xkxfyv:lightblue;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .x4hn0rr.x4hn0rr, .x4hn0rr.x4hn0rr:root{--x1ec7iuc:20px;--xypjos2:10px;--x19twipt:5px;}
         .x1coplze.x1coplze, .x1coplze.x1coplze:root{--xpqh4lw:lightblue;}
         .xufgesz{--orange-theme-color:red}
         .xymmreb{margin:10px 20px}
-        .x1s2izit{padding:var(--x1ec7iuc)}
+        .x1s2izit{padding:8px}
         .x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.xio2edn.xio2edn{border-color:var(--xpqh4lw)}}
+        @media (max-width: 1000px){.xio2edn.xio2edn{border-color:blue}}
         @media (max-width: 500px){@media (max-width: 1000px){.xqiy1ys.xqiy1ys.xqiy1ys{border-color:yellow}}}
         .x13ah0pd{animation-name:x35atj5-B}
         .xrkmrrc{background-color:red}
         .x14rh7hd{color:var(--x-color)}
         /* @ltr begin */.x1kmio9f{float:left}/* @ltr end */
         /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
-        .x18abd1y{outline-color:var(--xkxfyv)}
+        .x18abd1y{outline-color:lightblue}
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
         .xfy810d.xfy810d:where(.x-default-marker:focus *){background-color:green}
         .xbrh7vm:hover{background-color:blue}
@@ -687,22 +659,18 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "@property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
-        :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
         @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--xkxfyv:oklab(0.7 -0.3 -0.4);}}}
         .x1coplze.x1coplze, .x1coplze.x1coplze:root{--xpqh4lw:lightblue;}
         .x4hn0rr.x4hn0rr, .x4hn0rr.x4hn0rr:root{--x1ec7iuc:20px;--xypjos2:10px;--x19twipt:5px;}
         .xufgesz{--orange-theme-color:red}
-        .x1s2izit{padding:var(--x1ec7iuc)}
+        .x1s2izit{padding:8px}
         .xymmreb{margin:10px 20px}
         .x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.xio2edn.xio2edn{border-color:var(--xpqh4lw)}}
+        @media (max-width: 1000px){.xio2edn.xio2edn{border-color:blue}}
         @media (max-width: 500px){@media (max-width: 1000px){.xqiy1ys.xqiy1ys.xqiy1ys{border-color:yellow}}}
         .x13ah0pd{animation-name:x35atj5-B}
         .x14rh7hd{color:var(--x-color)}
-        .x18abd1y{outline-color:var(--xkxfyv)}
+        .x18abd1y{outline-color:lightblue}
         /* @ltr begin */.x1kmio9f{float:left}/* @ltr end */
         /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
@@ -713,6 +681,140 @@ describe('@stylexjs/babel-plugin', () => {
         @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}
         @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
         @media (max-width: 1000px){.x975j7z.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
+      `);
+    });
+
+    test('optimizeDefineVars: removes unused variables and inlines single-use', () => {
+      // Create a scenario with unused and single-use variables
+      const testSource = `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            margin: vars.marginTokens,
+            // Note: blue and colorTokens are not used
+          },
+        });
+      `;
+
+      const { metadata } = transform(testSource);
+
+      // With optimization enabled (default) - should remove unused variables
+      expect(
+        stylexPlugin.processStylexRules(metadata, {
+          useLayers: false,
+          enableLTRRTLComments: false,
+          optimizeDefineVars: true,
+        }),
+      ).toMatchInlineSnapshot(`
+        "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        .margin-xq7al5z:not(#\\#){margin:20px}"
+      `);
+
+      // With optimization disabled - should keep all variables
+      expect(
+        stylexPlugin.processStylexRules(metadata, {
+          useLayers: false,
+          enableLTRRTLComments: false,
+          optimizeDefineVars: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
+        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        .margin-xq7al5z:not(#\\#){margin:var(--marginTokens-x8nt2k2)}"
+      `);
+    });
+
+    test('optimizeDefineVars: inlines variables used only once', () => {
+      const testSource = `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: vars.blue,
+            // blue is only used once, should be inlined
+          },
+        });
+      `;
+
+      const { metadata } = transform(testSource);
+
+      // With optimization - blue should be inlined, not defined as a variable
+      expect(
+        stylexPlugin.processStylexRules(metadata, {
+          useLayers: false,
+          enableLTRRTLComments: false,
+          optimizeDefineVars: true,
+        }),
+      ).toMatchInlineSnapshot(`
+        "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        .color-x1arqqxh:not(#\\#){color:blue}"
+      `);
+
+      // Without optimization - blue should be defined as a variable
+      expect(
+        stylexPlugin.processStylexRules(metadata, {
+          useLayers: false,
+          enableLTRRTLComments: false,
+          optimizeDefineVars: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
+        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        .color-x1arqqxh:not(#\\#){color:var(--blue-xpqh4lw)}"
+      `);
+    });
+
+    test('optimizeDefineVars: preserves multi-use variables', () => {
+      const testSource = `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            margin: vars.marginTokens,
+            padding: vars.marginTokens,
+            // marginTokens is used twice, should not be inlined
+          },
+        });
+      `;
+
+      const { metadata } = transform(testSource);
+
+      // With optimization - marginTokens should remain as a variable since used multiple times
+      expect(
+        stylexPlugin.processStylexRules(metadata, {
+          useLayers: false,
+          enableLTRRTLComments: false,
+          optimizeDefineVars: true,
+        }),
+      ).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--marginTokens-x8nt2k2:10px}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px}}
+        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        .margin-xq7al5z:not(#\\#){margin:var(--marginTokens-x8nt2k2)}
+        .padding-xe5wzq4:not(#\\#){padding:var(--marginTokens-x8nt2k2)}"
+      `);
+    });
+
+    test('optimizeDefineVars defaults to true', () => {
+      const testSource = `
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            margin: vars.marginTokens,
+          },
+        });
+      `;
+
+      const { metadata } = transform(testSource);
+
+      // When no config is provided, optimization should be enabled by default
+      expect(stylexPlugin.processStylexRules(metadata)).toMatchInlineSnapshot(`
+        "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        .margin-xq7al5z:not(#\\#){margin:20px}"
       `);
     });
   });
