@@ -7,9 +7,7 @@
  *
  */
 
-const path = require('path');
-
-const dev = process.env.NODE_ENV !== 'production';
+const babelConfig = require('./babel.config');
 
 module.exports = {
   plugins: {
@@ -20,22 +18,7 @@ module.exports = {
         parserOpts: {
           plugins: ['typescript', 'jsx'],
         },
-        plugins: [
-          [
-            '@stylexjs/babel-plugin',
-            {
-              dev: dev,
-              runtimeInjection: false,
-              treeshakeCompensation: true,
-              aliases: {
-                '@/*': [path.join(__dirname, '*')],
-              },
-              unstable_moduleResolution: {
-                type: 'commonJS',
-              },
-            },
-          ],
-        ],
+        plugins: babelConfig.plugins,
       },
       useCSSLayers: true,
     },
