@@ -6,7 +6,7 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
-import { sizes } from './sizes.stylex';
+import { sizes, spacing } from './sizes.stylex';
 
 export const styles = stylex.create({
   root: {
@@ -122,19 +122,32 @@ export const styles = stylex.create({
     },
   },
   panel: {
-    borderRadius: sizes.borderRadiusLarge,
-    gap: sizes.gapMedium,
-    margin: sizes.marginLarge,
-    padding: sizes.paddingLarge,
-    paddingBlock: sizes.paddingMedium,
-    paddingInline: sizes.paddingLarge,
+    borderRadius: spacing.border.radius.large,
+    gap: spacing.gap.medium,
+    margin: spacing.margin.large,
+    padding: spacing.padding.large,
+    paddingBlock: spacing.padding.medium,
+    paddingInline: spacing.padding.large,
   },
   panelHeader: {
-    borderRadius: sizes.borderRadiusMedium,
-    gap: sizes.gapSmall,
-    margin: sizes.marginSmall,
-    marginBlockEnd: sizes.marginMedium,
-    padding: sizes.paddingMedium,
+    borderRadius: spacing.border.radius.medium,
+    gap: spacing.gap.small,
+    margin: spacing.margin.small,
+    marginBlockEnd: spacing.margin.medium,
+    padding: spacing.padding.medium,
+  },
+  panelBody: {
+    borderRadius: spacing.border.radius.medium,
+    gap: spacing.gap.medium,
+    margin: spacing.margin.small,
+    padding: spacing.padding.medium,
+  },
+  panelFooter: {
+    borderRadius: spacing.border.radius.medium,
+    gap: spacing.gap.small,
+    margin: spacing.margin.small,
+    marginBlockStart: spacing.margin.medium,
+    padding: spacing.padding.medium,
   },
   dynamicHeight: (height) => ({ height }),
   dynamicPadding: (paddingTop, paddingBottom) => ({

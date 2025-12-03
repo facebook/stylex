@@ -40,3 +40,36 @@ const SemanticSizes = {
 };
 
 export const sizes = stylex.defineConsts(SemanticSizes);
+
+const SpacingTokens = {
+  border: {
+    radius: {
+      small: '0.25rem',
+      medium: '0.5rem',
+      large: '0.75rem',
+      xLarge: '1rem',
+    },
+  },
+  padding: {
+    tiny: '0.25rem',
+    small: '0.5rem',
+    medium: '1rem',
+    large: '1.5rem',
+    xLarge: '2rem',
+  },
+  margin: {
+    tiny: '0.25rem',
+    small: '0.5rem',
+    medium: '1rem',
+    large: '1.5rem',
+    xLarge: '2rem',
+  },
+  gap: {
+    tiny: '0.25rem',
+    small: '0.5rem',
+    medium: '1rem',
+    large: '1.5rem',
+  },
+};
+
+export const spacing = stylex.defineConsts(SpacingTokens);
