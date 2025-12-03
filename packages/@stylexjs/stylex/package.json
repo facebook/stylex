@@ -64,5 +64,6 @@
   },
   "files": [
     "lib/*"
-  ]
+  ],
+  "sideEffects": false
 }
