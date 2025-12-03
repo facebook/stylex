@@ -1,0 +1,62 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 12
+---
+
+# StyleX CLI
+
+Use the StyleX CLI to compile `.stylex.ts(x)` files ahead-of-time without a
+bundler. The [`examples/example-cli`](../../../../examples/example-cli) project
+shows a minimal setup that emits compiled JS plus a single CSS bundle.
+
+## Install
+
+```bash
+npm install @stylexjs/cli
+```
+
+Add any Babel presets you need (for example
+`@babel/preset-typescript`/`@babel/preset-react`) to match your source syntax.
+
+## Configure `.stylex.json5`
+
+Create a `.stylex.json5` file in the project root:
+
+```js
+{
+  input: ['./source'],           // Where your StyleX source lives
+  output: ['./src'],             // Where compiled files + CSS bundle are written
+  cssBundleName: 'stylex_bundle.css',
+  babelPresets: [
+    ['@babel/preset-typescript', { allExtensions: true, isTSX: true }],
+  ],
+  styleXConfig: {
+    aliases: {
+      '@/*': ['./source/*'],
+    },
+  },
+  // watch: true, // enable for incremental rebuilds
+}
+```
+
+- `input`/`output` define the compile roots (the example copies `source` to
+  `src`).
+- `cssBundleName` controls the emitted CSS filename that you can import from
+  your app shell.
+- `styleXConfig` mirrors the options for `@stylexjs/babel-plugin`.
+
+## Build and consume CSS
+
+Run the compiler with:
+
+```bash
+npx stylex --config .stylex.json5
+```
+
+Use `--watch` for incremental rebuilds. Import the generated CSS bundle (for
+example `src/stylex_bundle.css`) from your entry point or HTML template so your
+app loads the compiled styles. The example keeps a matching `globals.css` file
+alongside the generated bundle to apply resets.

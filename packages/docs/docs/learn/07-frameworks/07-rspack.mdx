@@ -1,0 +1,57 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 8
+---
+
+# Rspack
+
+[`examples/example-rspack`](../../../../examples/example-rspack) integrates
+StyleX into Rspack via `@stylexjs/unplugin`. The plugin compiles StyleX modules
+and appends the aggregated CSS to the stylesheet emitted by
+`CssExtractRspackPlugin`.
+
+## Install
+
+```bash
+npm install @stylexjs/unplugin
+```
+
+## Rspack configuration
+
+```js
+// rspack.config.js
+const path = require('path');
+const rspack = require('@rspack/core');
+const stylex = require('@stylexjs/unplugin').default;
+
+module.exports = {
+  entry: { app: path.resolve(__dirname, 'src/main.jsx') },
+  plugins: [
+    stylex.rspack({}),
+    new rspack.CssExtractRspackPlugin({ filename: 'index.css' }),
+  ],
+  module: {
+    rules: [
+      { test: /\.[jt]sx?$/, loader: 'builtin:swc-loader' },
+      {
+        test: /\.css$/,
+        use: [rspack.CssExtractRspackPlugin.loader, 'css-loader'],
+      },
+    ],
+  },
+};
+```
+
+- The StyleX plugin hooks into the Rspack compiler.
+- `CssExtractRspackPlugin` (or another CSS extractor) must run so there is a CSS
+  asset to append to; the example emits `dist/index.css`.
+
+## Build and dev
+
+- `npm run example:dev` — start the Rspack dev server with live StyleX
+  transforms.
+- `npm run example:build` — production build with StyleX output merged into
+  `dist/index.css`.

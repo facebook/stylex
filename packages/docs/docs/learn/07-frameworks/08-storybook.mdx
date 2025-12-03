@@ -1,0 +1,59 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 9
+---
+
+# Storybook (Vite builder)
+
+[`examples/example-storybook`](../../../../examples/example-storybook) shows
+how to document StyleX components in Storybook using the Vite builder. The
+StyleX PostCSS plugin extracts CSS from the stories and writes it into
+Storybook’s CSS asset.
+
+## Install
+
+```bash
+npm install -D @stylexjs/postcss-plugin
+```
+
+## PostCSS configuration
+
+Add the StyleX PostCSS plugin and point it at your stories:
+
+```js
+// postcss.config.mjs
+import stylex from '@stylexjs/postcss-plugin';
+import nesting from 'postcss-nesting';
+import autoprefixer from 'autoprefixer';
+
+export default {
+  plugins: [
+    nesting,
+    stylex({
+      include: ['stories/**/*.{ts,tsx}'],
+      useCSSLayers: process.env.NODE_ENV !== 'production',
+    }),
+    autoprefixer,
+  ],
+};
+```
+
+Storybook’s Vite builder picks up this config automatically. During dev the
+plugin injects generated CSS; for static builds it appends to the emitted CSS
+file.
+
+## Storybook config
+
+The example uses `@storybook/react-vite` with a custom Vite config
+(`vite-storybook.config.ts`) that already enables React and TypeScript. No
+additional StyleX-specific Vite plugins are required when using the PostCSS
+pipeline.
+
+## Run
+
+- `npm run storybook` — start Storybook with live StyleX extraction.
+- `npm run build-storybook` — produce a static Storybook that includes the
+  compiled StyleX CSS.

@@ -1,0 +1,67 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 3
+---
+
+# Vite + React Server Components
+
+[`examples/example-vite-rsc`](../../../../examples/example-vite-rsc) layers
+`@vitejs/plugin-rsc` on top of React while `@stylexjs/unplugin` compiles StyleX
+for each environment (RSC, SSR, client). Every build output receives a single
+CSS asset with aggregated StyleX styles.
+
+## Vite configuration
+
+```ts
+// vite.config.ts
+import rsc from '@vitejs/plugin-rsc';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import stylex from '@stylexjs/unplugin';
+
+export default defineConfig({
+  plugins: [rsc(), react(), stylex.vite()],
+  environments: {
+    rsc: {
+      build: { rollupOptions: { input: { index: './src/framework/entry.rsc.tsx' } } },
+    },
+    ssr: {
+      build: { rollupOptions: { input: { index: './src/framework/entry.ssr.tsx' } } },
+    },
+    client: {
+      build: { rollupOptions: { input: { index: './src/framework/entry.browser.tsx' } } },
+    },
+  },
+});
+```
+
+- `stylex.vite()` runs for every environment, so each bundle gets the correct
+  CSS appended.
+- Add options such as `useCSSLayers` if desired.
+
+## CSS entry and dev injection
+
+- Import `src/index.css` from the framework root so each environment emits a CSS
+  asset for StyleX to append to.
+- In dev, inject the virtual runtime and stylesheet from the HTML shell:
+  ```tsx
+  {
+    import.meta.env.DEV ? (
+      <>
+        <script type="module" src="/@id/virtual:stylex:runtime" />
+        <link rel="stylesheet" href="/virtual:stylex.css" />
+      </>
+    ) : null;
+  }
+  ```
+  If script tags are blocked, call `import('virtual:stylex:runtime')` from a
+  client shim and keep the CSS `<link>` in the document head.
+
+## Commands
+
+- `npm run example:dev` — RSC-aware dev server with live StyleX transforms.
+- `npm run example:build` — builds all environments and appends aggregated CSS.
+- `npm run example:serve` — preview the production output.

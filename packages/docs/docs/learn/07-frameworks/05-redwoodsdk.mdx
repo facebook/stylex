@@ -1,0 +1,66 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 5
+---
+
+# RedwoodSDK
+
+[`examples/example-redwoodsdk`](../../../../examples/example-redwoodsdk) shows
+how RedwoodSDK’s Vite-based toolchain works with `@stylexjs/unplugin`. StyleX
+is compiled during both dev and build, and the aggregated CSS is appended to
+the worker/client assets that Redwood emits.
+
+## Vite configuration
+
+```ts
+// vite.config.mts
+import { defineConfig } from 'vite';
+import { redwood } from 'rwsdk/vite';
+import { cloudflare } from '@cloudflare/vite-plugin';
+import stylex from '@stylexjs/unplugin';
+
+export default defineConfig({
+  plugins: [
+    cloudflare({ viteEnvironment: { name: 'worker' } }),
+    redwood(),
+    stylex.vite({
+      devMode: 'css-only',
+      devPersistToDisk: true,
+      dev: true,
+      runtimeInjection: false,
+    }),
+  ],
+});
+```
+
+- `devMode: 'css-only'` exposes the `/virtual:stylex.css` endpoint without the
+  JS runtime (Redwood owns HTML injection).
+- `devPersistToDisk` shares collected rules across multiple Vite environments
+  (worker + client).
+
+## CSS entry and dev hooks
+
+- Import `src/app/root.css` from the app shell so Vite always emits a CSS asset
+  for StyleX to append to.
+- In `src/app/Document.tsx`, add
+  `<link rel="stylesheet" href="/virtual:stylex.css" />` in dev.
+- In a client component used by the root layout (see `src/client.tsx`), trigger
+  a dev-only import:
+  ```ts
+  if (import.meta.env.DEV) {
+    import('virtual:stylex:css-only');
+  }
+  ```
+
+Keeping both pieces ensures CSS HMR works even though Redwood controls the HTML
+shell.
+
+## Commands
+
+- `npm run example:dev` — Redwood dev server with live StyleX transforms.
+- `npm run example:build` — production build (client + worker) with aggregated
+  CSS appended to emitted assets.
+- `npm run example:serve` — preview the production build locally.

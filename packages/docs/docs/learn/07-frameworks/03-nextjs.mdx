@@ -1,0 +1,91 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 1
+---
+
+# Next.js
+
+[`examples/example-nextjs`](../../../../examples/example-nextjs) configures
+StyleX for the Next.js App Router using the Babel and PostCSS plugins. Babel
+compiles StyleX in JS/TS, and the PostCSS plugin replaces the `@stylex`
+directive with the generated CSS.
+
+## Install
+
+```bash
+npm install @stylexjs/babel-plugin @stylexjs/postcss-plugin
+```
+
+## Babel (`babel.config.js`)
+
+```js
+const path = require('path');
+const dev = process.env.NODE_ENV !== 'production';
+
+module.exports = {
+  presets: ['next/babel'],
+  plugins: [
+    [
+      '@stylexjs/babel-plugin',
+      {
+        dev,
+        runtimeInjection: false,
+        genConditionalClasses: true,
+        treeshakeCompensation: true,
+        aliases: { '@/*': [path.join(__dirname, '*')] },
+        unstable_moduleResolution: { type: 'commonJS' },
+      },
+    ],
+  ],
+};
+```
+
+Ensure `next/babel` runs alongside the StyleX plugin so both app and component
+code are transformed.
+
+## PostCSS (`postcss.config.js`)
+
+```js
+const babelConfig = require('./babel.config');
+
+module.exports = {
+  plugins: {
+    '@stylexjs/postcss-plugin': {
+      include: ['app/**/*.{js,jsx,ts,tsx}', 'components/**/*.{js,jsx,ts,tsx}'],
+      babelConfig: {
+        babelrc: false,
+        parserOpts: { plugins: ['typescript', 'jsx'] },
+        plugins: babelConfig.plugins,
+      },
+      useCSSLayers: true,
+    },
+    autoprefixer: {},
+  },
+};
+```
+
+Point `include` at every folder where StyleX is used, and share the Babel config
+with the PostCSS plugin so both use the same options.
+
+## Add a global CSS entry
+
+Import a CSS file in your root layout and include the `@stylex` directive:
+
+```css
+/* app/globals.css */
+@layer resets {
+  * { box-sizing: border-box; padding: 0; margin: 0; }
+}
+
+@stylex;
+```
+
+Every route must import this CSS so the generated StyleX output is bundled.
+
+## Run
+
+Use `npm run example:dev` for local development or `npm run example:build` to
+produce the production build with extracted CSS.

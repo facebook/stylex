@@ -1,0 +1,71 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+sidebar_position: 6
+---
+
+# Waku
+
+[`examples/example-waku`](../../../../examples/example-waku) integrates StyleX
+into a Waku app through the Vite layer using `@stylexjs/unplugin`. The plugin
+compiles StyleX modules, aggregates the generated CSS, and appends it to the
+emitted CSS assets so the browser only downloads one stylesheet.
+
+## Waku/Vite configuration
+
+```ts
+// waku.config.ts
+import react from '@vitejs/plugin-react';
+import stylex from '@stylexjs/unplugin';
+import { defineConfig } from 'waku/config';
+
+export default defineConfig({
+  vite: {
+    plugins: [
+      stylex.vite({
+        useCSSLayers: true,
+        devMode: 'css-only',
+        devPersistToDisk: true,
+        runtimeInjection: false,
+      }),
+      react({ babel: { plugins: ['babel-plugin-react-compiler'] } }),
+    ],
+  },
+});
+```
+
+- `devMode: 'css-only'` serves `/virtual:stylex.css` in dev without injecting
+  the JS runtime.
+- `devPersistToDisk` lets multiple Waku environments share collected rules while
+  developing.
+
+## CSS entry and dev injection
+
+- Import `src/global.css` so Vite always emits a CSS asset. StyleX output is
+  appended to that file during builds.
+- Because Waku owns the HTML shell, mount a dev-only helper component that
+  injects the stylesheet link _and_ triggers a JS import for HMR:
+  ```tsx
+  // src/components/DevStyleXInject.tsx
+  function DevStyleXInjectImpl() {
+    useEffect(() => {
+      import('virtual:stylex:css-only');
+    }, []);
+    return <link rel="stylesheet" href="/virtual:stylex.css" />;
+  }
+
+  export const DevStyleXInject = import.meta.env.DEV
+    ? DevStyleXInjectImpl
+    : () => null;
+  ```
+  Render `<DevStyleXInject />` near the top of `src/pages/_layout.tsx` so the
+  aggregated CSS loads in dev and hot reload works.
+
+## Commands
+
+- `npm run example:dev` — Waku dev server with live StyleX transforms.
+- `npm run example:build` — production build with StyleX CSS appended to client
+  assets.
+- `npm run example:serve` — preview the production build.
