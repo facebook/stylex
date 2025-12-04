@@ -13,116 +13,63 @@ import { clearInputModuleDir } from './modules';
 import { compileDirectory } from './transform';
 
 import ansis from 'ansis';
-import watchman from 'fb-watchman';
-
-type Subscription = {
-  fields: Array<string>,
-  relative_root?: string,
-};
-type Watcher = {};
-
-type Response = {
-  watch: Watcher,
-  relative_path: string,
-  warning: string,
-  subscribe: string,
-};
-
-type OnEvent = {
-  subscription: string,
-  files: Array<$ReadOnly<Object>>,
-};
-
-declare class WatchmanClient {
-  capabilityCheck(config: Object, callback: (error: any) => void): void;
-  command(
-    config:
-      | ['watch-project', string]
-      | ['subscribe', Watcher, 'jsFileChanged', Subscription],
-    callback: (error: any, response: Response) => void,
-  ): void;
-
-  on(eventName: string, callback: (event: OnEvent) => void): void;
-  end(): void;
-}
+import chokidar from 'chokidar';
 
 export function startWatcher(config: TransformConfig) {
-  const watchmanClient: WatchmanClient = new watchman.Client();
-
-  watchmanClient.capabilityCheck(
-    { optional: [], required: ['relative_root'] },
-    function (error, _resp) {
-      if (error) {
-        console.log(error);
-        watchmanClient.end();
-        return;
-      }
-
-      // Initiate the watch
-      watchmanClient.command(
-        ['watch-project', config.input],
-        function (error, resp) {
-          if (error) {
-            console.error('[stylex] error initiating watch:', error);
-            return;
-          }
-          if ('warning' in resp) {
-            console.log('warning: ', resp.warning);
-          }
-          subscribe(watchmanClient, resp.watch, resp.relative_path, config);
-          console.log(
-            'Watching for style changes in',
-            ansis.green(resp.relative_path),
-          );
-        },
-      );
+  const watchPath = config.input;
+  const watcher = chokidar.watch(watchPath, {
+    ignoreInitial: true,
+    awaitWriteFinish: {
+      stabilityThreshold: 100,
+      pollInterval: 50,
     },
-  );
+  });
+
+  console.log('Watching for style changes in', ansis.green(watchPath));
+
+  subscribeChokidar(watcher, config);
 }
 
-function subscribe(
-  client: WatchmanClient,
-  watcher: Watcher,
-  relative_path: string,
-  config: TransformConfig,
-) {
-  const subscription: Subscription = {
-    fields: ['name', 'size', 'mtime_ms', 'exists', 'type'],
+function subscribeChokidar(watcher: any, config: TransformConfig) {
+  let changed: Array<string> = [];
+  let removed: Array<string> = [];
+  let timer: null | TimeoutID = null;
+
+  const scheduleCompile = () => {
+    if (timer != null) return;
+    timer = setTimeout(() => {
+      const toAdd = changed;
+      const toRemove = removed.filter(
+        (name) => !name.startsWith('stylex_compiled_modules'),
+      );
+      changed = [];
+      removed = [];
+      timer = null;
+      compileDirectory(config, toAdd, toRemove)
+        .then(() => {
+          clearInputModuleDir(config);
+        })
+        .catch((transformError) => {
+          clearInputModuleDir(config);
+          console.error(transformError);
+        });
+    }, 100);
   };
-  if (relative_path) {
-    subscription.relative_root = relative_path;
-  }
 
-  client.command(
-    ['subscribe', watcher, 'jsFileChanged', subscription],
-    function (error: string, _resp: Response) {
-      if (error) {
-        console.error('[stylex] failed to subscribe with watch mode: ', error);
-        return;
-      }
-    },
-  );
-
-  client.on('subscription', function (resp: OnEvent) {
-    if (resp.subscription !== 'jsFileChanged') return;
-    // on file change, recompile the whole directory for now
-    compileDirectory(
-      config,
-      resp.files.filter((file) => file.exists).map((file) => file.name),
-      resp.files
-        .filter(
-          (file) =>
-            // don't trigger recompile when the cli deletes the compiled modules folder
-            !file.exists && !file.name.startsWith('stylex_compiled_modules'),
-        )
-        .map((file) => file.name),
-    )
-      .then(() => {
-        clearInputModuleDir(config);
-      })
-      .catch((transformError) => {
-        clearInputModuleDir(config);
-        console.error(transformError);
-      });
-  });
+  watcher
+    .on('add', (filePath: string) => {
+      changed.push(filePath);
+      scheduleCompile();
+    })
+    .on('change', (filePath: string) => {
+      changed.push(filePath);
+      scheduleCompile();
+    })
+    .on('unlink', (filePath: string) => {
+      removed.push(filePath);
+      scheduleCompile();
+    })
+    .on('error', (error: any) => {
+      console.error('[stylex] watcher error:', error);
+    });
 }

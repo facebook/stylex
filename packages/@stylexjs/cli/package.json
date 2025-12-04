@@ -21,7 +21,7 @@
     "@babel/types": "^7.26.8",
     "@stylexjs/babel-plugin": "0.17.2",
     "ansis": "^3.3.2",
-    "fb-watchman": "^2.0.2",
+    "chokidar": "^3.6.0",
     "json5": "^2.2.3",
     "mkdirp": "^3.0.1",
     "yargs": "^18.0.0"
