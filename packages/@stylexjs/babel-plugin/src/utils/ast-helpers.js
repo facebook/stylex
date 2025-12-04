@@ -64,7 +64,7 @@ export function pathReplaceHoisted(
   path.replaceWith(nameIdent);
 }
 
-function getProgramPath(path: NodePath<>): null | NodePath<t.Program> {
+function getProgramPath(path: NodePath<>): ?NodePath<t.Program> {
   let programPath = path;
   while (programPath != null && !programPath.isProgram()) {
     if (programPath.parentPath) {
@@ -203,4 +203,70 @@ export function getProgramStatement(path: NodePath<>): NodePath<> {
     programPath = programPath.parentPath;
   }
   return programPath;
+}
+
+/**
+ * Checks if a variable with the given name is named exported in the program.
+ * This handles both:
+ * - Direct named exports: `export const x = ...`
+ * - Locally declared named exports: `const x = ...; export { x }`
+ *
+ * Default exports and re-exports from other files (e.g., `export { x } from './other'`) are NOT allowed.
+ */
+export function isVariableNamedExported(
+  path: NodePath<t.VariableDeclarator>,
+): boolean {
+  const declaration = path.parentPath;
+  const idPath = path.get('id');
+  if (
+    !declaration ||
+    !declaration.isVariableDeclaration() ||
+    declaration.node.kind !== 'const' ||
+    !idPath.isIdentifier()
+  ) {
+    return false;
+  }
+
+  const variableName = idPath.node.name;
+
+  if (
+    declaration.parentPath?.isExportNamedDeclaration() &&
+    declaration.parentPath.node.source == null
+  ) {
+    return true;
+  }
+
+  const programPath = getProgramPath(path);
+  if (programPath == null) {
+    return false;
+  }
+
+  let result = false;
+
+  programPath.traverse({
+    ExportNamedDeclaration(p) {
+      const node = p.node;
+      if (node.source != null) {
+        return;
+      }
+      if (node.declaration != null) {
+        return;
+      }
+      if (node.specifiers == null || node.specifiers.length === 0) {
+        return;
+      }
+      result =
+        result ||
+        node.specifiers.some(
+          (s) =>
+            s.type === 'ExportSpecifier' &&
+            s.local.type === 'Identifier' &&
+            s.exported.type === 'Identifier' &&
+            s.local.name === variableName &&
+            s.exported.name === variableName,
+        );
+    },
+  });
+
+  return result;
 }
