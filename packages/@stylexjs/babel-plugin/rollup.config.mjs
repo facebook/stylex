@@ -58,4 +58,58 @@ const config = {
   ],
 };
 
-export default config;
+const browserConfig = {
+  input: './src/index.js',
+  output: {
+    file: './lib/index.browser.js',
+    format: 'cjs',
+  },
+  external: [
+    '@babel/traverse',
+    '@babel/types',
+    '@babel/core',
+    '@babel/helper-module-imports',
+    '@stylexjs/stylex',
+    'postcss-value-parser',
+  ],
+  plugins: [
+    {
+      name: 'stub-node-dependent-modules',
+      resolveId(source, importer) {
+        switch (source) {
+          case 'node:path':
+            return this.resolve('path-browserify', importer);
+          case 'node:fs':
+          case 'node:url':
+          case '@dual-bundle/import-meta-resolve':
+            return source;
+          default:
+            return null;
+        }
+      },
+      load(id) {
+        switch (id) {
+          case 'node:fs':
+          case 'node:url':
+            return 'export default {};';
+          case '@dual-bundle/import-meta-resolve':
+            return 'export function moduleResolve() {}';
+          default:
+            return null;
+        }
+      },
+    },
+    babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
+    nodeResolve({
+      preferBuiltins: false,
+      extensions,
+      allowExportsFolderMapping: true,
+      rootDir,
+      browser: true,
+    }),
+    commonjs(),
+    json(),
+  ],
+};
+
+export default [config, browserConfig];

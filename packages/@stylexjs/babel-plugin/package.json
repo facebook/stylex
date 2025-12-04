@@ -3,6 +3,8 @@
   "version": "0.17.2",
   "description": "StyleX babel plugin.",
   "main": "lib/index.js",
+  "browser": "lib/index.browser.js",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/facebook/stylex.git"
@@ -33,6 +35,7 @@
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-replace": "^6.0.1",
     "babel-plugin-syntax-hermes-parser": "^0.32.1",
+    "path-browserify": "^1.0.1",
     "rollup": "^4.24.0",
     "scripts": "0.17.2"
   },
