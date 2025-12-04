@@ -204,3 +204,59 @@ export function getProgramStatement(path: NodePath<>): NodePath<> {
   }
   return programPath;
 }
+
+/**
+ * Checks if a variable with the given name is named exported in the program.
+ * This handles both:
+ * - Direct named exports: `export const x = ...`
+ * - Locally declared named exports: `const x = ...; export { x }`
+ *
+ * Default exports and re-exports from other files (e.g., `export { x } from './other'`) are NOT allowed.
+ */
+export function isVariableNamedExported(
+  path: NodePath<>,
+  variableName: string,
+): boolean {
+  const programPath = getProgramPath(path);
+  if (programPath == null) {
+    return false;
+  }
+
+  const bodyPath: $ReadOnlyArray<NodePath<t.Statement>> =
+    programPath.get('body');
+
+  for (const statementPath of bodyPath) {
+    if (!statementPath.isExportNamedDeclaration()) {
+      continue;
+    }
+
+    const exportNode = statementPath.node;
+
+    if (exportNode.source != null) {
+      continue;
+    }
+
+    if (
+      exportNode.declaration &&
+      exportNode.declaration.type === 'VariableDeclaration'
+    ) {
+      for (const decl of exportNode.declaration.declarations) {
+        if (decl.id.type === 'Identifier' && decl.id.name === variableName) {
+          return true;
+        }
+      }
+    }
+
+    for (const spec of exportNode.specifiers) {
+      if (
+        spec.type === 'ExportSpecifier' &&
+        spec.local.type === 'Identifier' &&
+        spec.local.name === variableName
+      ) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
