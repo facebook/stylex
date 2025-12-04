@@ -823,11 +823,15 @@ const addFileExtension = (
   return importedFilePath + fileExtension;
 };
 
-export const matchesFileSuffix: (string) => (string) => boolean =
-  (allowedSuffix) => (filename) =>
-    ['', ...EXTENSIONS].some((extension) =>
-      filename.endsWith(`${allowedSuffix}${extension}`),
+export const matchesFileSuffix: (allowedSuffix: string) => (filename: string) => boolean =
+  (allowedSuffix) => (filename) => {
+    // Extract the pure filename by removing everything after '?' or '#' (e.g., handling Vite's '?v=' cache busting).
+    const cleanFilename = filename.split(/[?#]/)[0];
+
+    return ['', ...EXTENSIONS].some((extension) =>
+      cleanFilename.endsWith(`${allowedSuffix}${extension}`),
     );
+  };
 
 export function getRelativePath(from: string, to: string): string {
   const relativePath = path.relative(path.parse(from).dir, to);
