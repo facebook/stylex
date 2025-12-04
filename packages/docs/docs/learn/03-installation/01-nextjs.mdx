@@ -8,16 +8,16 @@ sidebar_position: 1
 
 # Next.js
 
-[`examples/example-nextjs`](../../../../examples/example-nextjs) configures
+[`examples/example-nextjs`](https://github.com/facebook/stylex/tree/main/examples/example-nextjs) configures
 StyleX for the Next.js App Router using the Babel and PostCSS plugins. Babel
 compiles StyleX in JS/TS, and the PostCSS plugin replaces the `@stylex`
 directive with the generated CSS.
 
 ## Install
 
-```bash
-npm install @stylexjs/babel-plugin @stylexjs/postcss-plugin
-```
+import {DevInstallExample} from '../../../components/examples/dev-install';
+
+<DevInstallExample dev={[`@stylexjs/babel-plugin`, `@stylexjs/postcss-plugin`]} />
 
 ## Babel (`babel.config.js`)
 
@@ -84,8 +84,3 @@ Import a CSS file in your root layout and include the `@stylex` directive:
 ```
 
 Every route must import this CSS so the generated StyleX output is bundled.
-
-## Run
-
-Use `npm run example:dev` for local development or `npm run example:build` to
-produce the production build with extracted CSS.

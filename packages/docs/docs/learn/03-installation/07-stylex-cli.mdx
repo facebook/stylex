@@ -3,27 +3,35 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-sidebar_position: 12
+sidebar_position: 7
 ---
 
 # StyleX CLI
 
 Use the StyleX CLI to compile `.stylex.ts(x)` files ahead-of-time without a
-bundler. The [`examples/example-cli`](../../../../examples/example-cli) project
-shows a minimal setup that emits compiled JS plus a single CSS bundle.
+bundler. When the other integrations don't work, you can use the CLI to transform
+a folder of files into a folder where the StyleX APIs have been compiled away and
+a single CSS bundle has been generated.
+
+The CLI does insert an import for the generated CSS file into every file that was transformed,
+so it assumed your bundler is able to handle CSS imports.
+
+[`example-cli`](https://github.com/facebook/stylex/tree/main/examples/example-cli) in
+the StyleX repository shows a minimal setup example.
 
 ## Install
 
-```bash
-npm install @stylexjs/cli
-```
+import {DevInstallExample} from '../../../components/examples/dev-install';
+
+<DevInstallExample dev={[`@stylexjs/cli`]} />
 
 Add any Babel presets you need (for example
 `@babel/preset-typescript`/`@babel/preset-react`) to match your source syntax.
 
 ## Configure `.stylex.json5`
 
-Create a `.stylex.json5` file in the project root:
+Create a `.stylex.json` or `.stylex.json5` file in the project root. (JSON5 is
+a more flexible and readable configuration format that allows comments, trailing commas etc.)
 
 ```js
 {
@@ -56,7 +64,4 @@ Run the compiler with:
 npx stylex --config .stylex.json5
 ```
 
-Use `--watch` for incremental rebuilds. Import the generated CSS bundle (for
-example `src/stylex_bundle.css`) from your entry point or HTML template so your
-app loads the compiled styles. The example keeps a matching `globals.css` file
-alongside the generated bundle to apply resets.
+Use `--watch` for incremental rebuilds.

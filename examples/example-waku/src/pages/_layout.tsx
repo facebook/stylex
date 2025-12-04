@@ -22,8 +22,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         precedence="font"
       />
-      {/* @ts-ignore */}
-      <DevStyleXInject />
+      <DevStyleXInject cssHref="/stylex.css" />
       <Header />
       <main {...stylex.props(styles.main)}>{children}</main>
       <Footer />

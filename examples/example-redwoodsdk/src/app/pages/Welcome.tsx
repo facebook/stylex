@@ -1,14 +1,13 @@
-'use client';
 /**
  * This is a minimal welcome page for the starter.
  *
  * _Feel free to delete this file_
  **/
 
-import { useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Button } from '@stylexjs/shared-ui';
 import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
+import { Copy } from '../components/Copy';
 
 export const Welcome = () => {
   return (
@@ -87,23 +86,6 @@ export const Welcome = () => {
   );
 };
 
-const Copy = ({ textToCopy }: { textToCopy: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <button onClick={handleCopy} {...stylex.props(styles.copyButton)}>
-      {copied ? 'Copied!' : 'Copy'}
-    </button>
-  );
-};
-
 const opacity = (color: string, percentage: number) =>
   `color-mix(in oklab, ${color} ${percentage}%, transparent)`;
 
@@ -168,18 +150,6 @@ const styles = stylex.create({
   },
   codePrompt: { color: '#f47238' },
   code: { flexGrow: 1 },
-  copyButton: {
-    backgroundColor: 'transparent',
-    color: '#ffad48',
-    borderWidth: 0,
-    borderRadius: 4,
-    paddingBlock: 4,
-    paddingInline: 12,
-    cursor: 'pointer',
-    fontSize: 16,
-    fontWeight: 700,
-    ':hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
-  },
   btn: {
     backgroundColor: {
       default: opacity(tokens.primaryColor, 50),

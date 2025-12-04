@@ -3,22 +3,21 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-sidebar_position: 7
+sidebar_position: 3
 ---
 
 # Webpack
 
-[`examples/example-webpack`](../../../../examples/example-webpack) demonstrates
+[`examples/example-webpack`](https://github.com/facebook/stylex/tree/main/examples/example-webpack) demonstrates
 using `@stylexjs/unplugin` with Webpack and `MiniCssExtractPlugin`. StyleX is
 compiled at build time and the aggregated CSS is appended to the extracted
 stylesheet.
 
 ## Install
 
-```bash
-npm install @stylexjs/stylex
-npm install -D @stylexjs/unplugin @stylexjs/eslint-plugin
-```
+import {DevInstallExample} from '../../../components/examples/dev-install';
+
+<DevInstallExample dev={[`@stylexjs/unplugin`]} />
 
 ## Webpack configuration
 
@@ -74,9 +73,3 @@ module.exports = {
   },
 };
 ```
-
-## Commands
-
-- `npm run example:dev` — start the dev server.
-- `npm run example:build` — production build with StyleX CSS appended.
-- `npm run example:serve` — serve the built files.

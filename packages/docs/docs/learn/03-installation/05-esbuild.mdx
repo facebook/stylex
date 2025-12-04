@@ -3,21 +3,21 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-sidebar_position: 11
+sidebar_position: 6
 ---
 
 # esbuild
 
-[`examples/example-esbuild`](../../../../examples/example-esbuild) bundles a
+[`examples/example-esbuild`](https://github.com/facebook/stylex/tree/main/examples/example-esbuild) bundles a
 React app with esbuild and compiles StyleX via `@stylexjs/unplugin`. The
 unplugin extracts StyleX styles, aggregates them, and appends the output to the
 CSS asset produced by esbuild.
 
 ## Install
 
-```bash
-npm install esbuild @stylexjs/unplugin
-```
+import {DevInstallExample} from '../../../components/examples/dev-install';
+
+<DevInstallExample dev={[`@stylexjs/unplugin`]} />
 
 ## Configure the build
 
