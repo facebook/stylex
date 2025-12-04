@@ -12,7 +12,7 @@
     "@stylexjs/stylex": "0.17.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-server-dom-webpack": "19.2.0",
+    "react-server-dom-webpack": "19.2.1",
     "waku": "0.27.1",
     "@stylexjs/shared-ui": "0.17.2"
   },
