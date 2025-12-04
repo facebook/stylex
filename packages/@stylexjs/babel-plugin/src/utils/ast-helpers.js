@@ -64,7 +64,7 @@ export function pathReplaceHoisted(
   path.replaceWith(nameIdent);
 }
 
-function getProgramPath(path: NodePath<>): null | NodePath<t.Program> {
+function getProgramPath(path: NodePath<>): ?NodePath<t.Program> {
   let programPath = path;
   while (programPath != null && !programPath.isProgram()) {
     if (programPath.parentPath) {
@@ -214,49 +214,59 @@ export function getProgramStatement(path: NodePath<>): NodePath<> {
  * Default exports and re-exports from other files (e.g., `export { x } from './other'`) are NOT allowed.
  */
 export function isVariableNamedExported(
-  path: NodePath<>,
-  variableName: string,
+  path: NodePath<t.VariableDeclarator>,
 ): boolean {
+  const declaration = path.parentPath;
+  const idPath = path.get('id');
+  if (
+    !declaration ||
+    !declaration.isVariableDeclaration() ||
+    declaration.node.kind !== 'const' ||
+    !idPath.isIdentifier()
+  ) {
+    return false;
+  }
+
+  const variableName = idPath.node.name;
+
+  if (
+    declaration.parentPath?.isExportNamedDeclaration() &&
+    declaration.parentPath.node.source == null
+  ) {
+    return true;
+  }
+
   const programPath = getProgramPath(path);
   if (programPath == null) {
     return false;
   }
 
-  const bodyPath: $ReadOnlyArray<NodePath<t.Statement>> =
-    programPath.get('body');
+  let result = false;
 
-  for (const statementPath of bodyPath) {
-    if (!statementPath.isExportNamedDeclaration()) {
-      continue;
-    }
-
-    const exportNode = statementPath.node;
-
-    if (exportNode.source != null) {
-      continue;
-    }
-
-    if (
-      exportNode.declaration &&
-      exportNode.declaration.type === 'VariableDeclaration'
-    ) {
-      for (const decl of exportNode.declaration.declarations) {
-        if (decl.id.type === 'Identifier' && decl.id.name === variableName) {
-          return true;
-        }
+  programPath.traverse({
+    ExportNamedDeclaration(p) {
+      const node = p.node;
+      if (node.source != null) {
+        return;
       }
-    }
-
-    for (const spec of exportNode.specifiers) {
-      if (
-        spec.type === 'ExportSpecifier' &&
-        spec.local.type === 'Identifier' &&
-        spec.local.name === variableName
-      ) {
-        return true;
+      if (node.declaration != null) {
+        return;
       }
-    }
-  }
+      if (node.specifiers == null || node.specifiers.length === 0) {
+        return;
+      }
+      result =
+        result ||
+        node.specifiers.some(
+          (s) =>
+            s.type === 'ExportSpecifier' &&
+            s.local.type === 'Identifier' &&
+            s.exported.type === 'Identifier' &&
+            s.local.name === variableName &&
+            s.exported.name === variableName,
+        );
+    },
+  });
 
-  return false;
+  return result;
 }

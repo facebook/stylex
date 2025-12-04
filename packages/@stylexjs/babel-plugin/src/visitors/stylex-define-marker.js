@@ -97,9 +97,7 @@ function validateStyleXDefineMarker(path: NodePath<t.CallExpression>) {
     );
   }
 
-  const variableName = variableDeclaratorPath.node.id.name;
-
-  if (!isVariableNamedExported(path, variableName)) {
+  if (!isVariableNamedExported(variableDeclaratorPath)) {
     throw path.buildCodeFrameError(
       messages.nonExportNamedDeclaration('defineMarker'),
       SyntaxError,

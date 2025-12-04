@@ -123,12 +123,32 @@ describe('@stylexjs/babel-plugin', () => {
       }).toThrow(messages.nonExportNamedDeclaration('defineVars'));
     });
 
+    test('invalid export: renamed re-export from another file does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const vars = stylex.defineVars({});
+          export { vars as otherVars } from './other.stylex.js';
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineVars'));
+    });
+
     test('invalid export: default export does not count', () => {
       expect(() => {
         transform(`
           import * as stylex from '@stylexjs/stylex';
           const vars = stylex.defineVars({});
           export default vars;
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineVars'));
+    });
+
+    test('invalid export: renamed export with as syntax', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const vars = stylex.defineVars({});
+          export { vars as themeVars };
         `);
       }).toThrow(messages.nonExportNamedDeclaration('defineVars'));
     });

@@ -110,9 +110,7 @@ function validateStyleXDefineConsts(
     );
   }
 
-  const variableName = variableDeclaratorPath.node.id.name;
-
-  if (!isVariableNamedExported(callExpressionPath, variableName)) {
+  if (!isVariableNamedExported(variableDeclaratorPath)) {
     throw callExpressionPath.buildCodeFrameError(
       messages.nonExportNamedDeclaration('defineConsts'),
       SyntaxError,
