@@ -23,13 +23,17 @@ import react from '@vitejs/plugin-react';
 import stylex from '@stylexjs/unplugin';
 
 export default defineConfig({
-  plugins: [stylex.vite(), react()],
+  plugins: [
+    stylex.vite({
+      useCSSLayers: true,
+      // ... other StyleX configuration options
+    }),
+    react()
+  ],
 });
 ```
 
-- Keep the StyleX plugin before `@vitejs/plugin-react` to preserve Fast Refresh.
-- Pass `useCSSLayers: true` or other options if you need layered output or
-  custom import sources.
+Keep the StyleX plugin before `@vitejs/plugin-react` to preserve Fast Refresh.
 
 ## CSS entry point
 

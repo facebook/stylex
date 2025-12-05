@@ -23,7 +23,9 @@ import { defineConfig } from 'vite';
 import stylex from '@stylexjs/unplugin';
 
 export default defineConfig({
-  plugins: [rsc(), react(), stylex.vite()],
+  plugins: [rsc(), react(), stylex.vite({
+    // ... StyleX configuration options
+  })],
   environments: {
     rsc: {
       build: { rollupOptions: { input: { index: './src/framework/entry.rsc.tsx' } } },
@@ -42,55 +44,57 @@ export default defineConfig({
   CSS appended.
 - Add options such as `useCSSLayers` if desired.
 
-## CSS entry and dev injection
+## CSS entry point
 
-- Import `src/index.css` from the framework root so each environment emits a CSS
-  asset for StyleX to append to.
+Ensure that there is one CSS file that is imported from your root layout component or JS entry point.
 
-- Add a shared helper that renders the StyleX stylesheet link and triggers HMR
-  from a component:
+## CSS Link and Hot Reloading during development
 
-  ```tsx
-  // src/DevStyleXInject.tsx
-  'use client';
-  import { useEffect } from 'react';
+Ensure that the virtual CSS file and script for hot reloading styles are part of your bundle
+to enable hot reloading during development.
 
-  function DevStyleXInjectImpl() {
-    useEffect(() => {
-      if (import.meta.env.DEV) {
-        import('virtual:stylex:runtime');
-      }
-    }, []);
-    return <link rel="stylesheet" href="/virtual:stylex.css" />;
-  }
+The easiest way to do this is by using an encapsulated helper that can also be used to insert
+a link tag for your production CSS.
 
-  export function DevStyleXInject({ cssHref }: { cssHref: string }) {
-    return import.meta.env.DEV ? (
-      <DevStyleXInjectImpl />
-    ) : (
-      <link rel="stylesheet" href={cssHref} />
-    );
-  }
-  ```
+```tsx
+// src/DevStyleXInject.tsx
+'use client';
+import { useEffect } from 'react';
 
-  Render `<DevStyleXInject cssHref="/stylex.css" />` in your HTML shell (for
-  example inside `src/root.tsx`). Set `cssHref` to the built CSS path (use the
-  `stylex.css` fallback or look it up from Vite’s manifest).
+function DevStyleXInjectImpl() {
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      import('virtual:stylex:runtime');
+    }
+  }, []);
+  return <link rel="stylesheet" href="/virtual:stylex.css" />;
+}
 
-  ```tsx
-  // src/root.tsx (excerpt)
-  import { DevStyleXInject } from './DevStyleXInject';
+export function DevStyleXInject({ cssHref }: { cssHref: string }) {
+  return import.meta.env.DEV ? (
+    <DevStyleXInjectImpl />
+  ) : (
+    cssHref && <link rel="stylesheet" href={cssHref} />
+  );
+}
+```
 
-  export function Root(props: { url: URL }) {
-    return (
-      <html lang="en">
-        <head>
-          <DevStyleXInject cssHref="/stylex.css" />
-        </head>
-        <body>
-          <App {...props} />
-        </body>
-      </html>
-    );
-  }
-  ```
+Render `<DevStyleXInject cssHref="/stylex.css" />` in your HTML shell component.
+
+```tsx
+// src/root.tsx (excerpt)
+import { DevStyleXInject } from './DevStyleXInject';
+
+export function Root(props: { url: URL }) {
+  return (
+    <html lang="en">
+      <head>
+        <DevStyleXInject cssHref="/stylex.css" />
+      </head>
+      <body>
+        <App {...props} />
+      </body>
+    </html>
+  );
+}
+```

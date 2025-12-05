@@ -19,7 +19,9 @@ import {DevInstallExample} from '../../../components/examples/dev-install';
 
 <DevInstallExample dev={[`@stylexjs/babel-plugin`, `@stylexjs/postcss-plugin`]} />
 
-## Babel (`babel.config.js`)
+## Babel Configuration
+
+Create a `babel.config.js` file in your project root and add the StyleX Babel plugin to it.
 
 ```js
 const path = require('path');
@@ -46,7 +48,32 @@ module.exports = {
 Ensure `next/babel` runs alongside the StyleX plugin so both app and component
 code are transformed.
 
-## PostCSS (`postcss.config.js`)
+## CSS entry point
+
+Import a CSS file in your root layout component file, so that your entire application
+can have a single atomic CSS file.
+
+Include the `@stylex` directive within this CSS file.
+
+```css
+/* app/globals.css */
+@layer resets {
+  * { 
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+@stylex;
+```
+
+## PostCSS Configuration
+
+Next, create a `postcss.config.js` that imports the Babel configuration to ensure that both the Babel and PostCSS plugins
+use the same configuration for StyleX.
+
+Configure the `include` option with glob patterns to look for all source files that may contain StyleX styles.
 
 ```js
 const babelConfig = require('./babel.config');
@@ -54,7 +81,16 @@ const babelConfig = require('./babel.config');
 module.exports = {
   plugins: {
     '@stylexjs/postcss-plugin': {
-      include: ['app/**/*.{js,jsx,ts,tsx}', 'components/**/*.{js,jsx,ts,tsx}'],
+      include: [
+        // when using a src folder:
+        'src/**/*.{js,jsx,ts,tsx}',
+        // app router:
+        'app/**/*.{js,jsx,ts,tsx}',
+        // pages router:
+        'pages/**/*.{js,jsx,ts,tsx}',
+        // other top-level folders:
+        'components/**/*.{js,jsx,ts,tsx}',
+      ],
       babelConfig: {
         babelrc: false,
         parserOpts: { plugins: ['typescript', 'jsx'] },
@@ -67,20 +103,9 @@ module.exports = {
 };
 ```
 
-Point `include` at every folder where StyleX is used, and share the Babel config
-with the PostCSS plugin so both use the same options.
+You can skip Babel transforms for anything other than StyleX in your PostCSS configuration to speed up CSS generation.
 
-## Add a global CSS entry
+## Using the configurations
 
-Import a CSS file in your root layout and include the `@stylex` directive:
-
-```css
-/* app/globals.css */
-@layer resets {
-  * { box-sizing: border-box; padding: 0; margin: 0; }
-}
-
-@stylex;
-```
-
-Every route must import this CSS so the generated StyleX output is bundled.
+Once you define these configuration files, Next.js will automatically use Babel and PostCSS without any changes to your
+`next.config.js` file. Since Next.js 16.0.3, this works with both Webpack and Turbopack.

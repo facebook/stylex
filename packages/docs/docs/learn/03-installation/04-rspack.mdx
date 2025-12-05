@@ -45,13 +45,6 @@ module.exports = {
 };
 ```
 
-- The StyleX plugin hooks into the Rspack compiler.
-- `CssExtractRspackPlugin` (or another CSS extractor) must run so there is a CSS
-  asset to append to; the example emits `dist/index.css`.
+## CSS entry point
 
-## Build and dev
-
-- `npm run example:dev` — start the Rspack dev server with live StyleX
-  transforms.
-- `npm run example:build` — production build with StyleX output merged into
-  `dist/index.css`.
+Ensure that there is one CSS file that is imported from your root layout component or JS entry point.

@@ -41,16 +41,9 @@ esbuild.build({
 });
 ```
 
-Notes:
+Ensure `metafile: true` so the plugin can locate the CSS output.
 
-- Keep `metafile: true` so the plugin can locate the CSS output.
-- `useCSSLayers` wraps the generated rules in `@layer` blocks for predictable
-  specificity. Remove it to use the ID-based fallback.
-- Provide a CSS entry point such as `src/global.css` so esbuild emits a concrete
-  CSS asset that the plugin can append to. If no CSS is emitted, the plugin
-  creates `stylex.css` as a fallback.
+## CSS entry point
 
-## Build
+Ensure that there is one CSS file that is imported from your root layout component or JS entry point.
 
-Run your build command (for example `npm run example:build` in the example
-folder) to emit a JS bundle and a StyleX-enriched CSS file in `public/dist`.
