@@ -3,7 +3,7 @@
   "name": "docs",
   "version": "0.17.2",
   "scripts": {
-    "build": "rimraf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build",
+    "build": "rimraf ./build ./docusaurus && npm run clear && cross-env NODE_ENV=production docusaurus build",
     "clear": "docusaurus clear",
     "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\"",
     "serve": "docusaurus serve",

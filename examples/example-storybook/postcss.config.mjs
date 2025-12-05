@@ -10,6 +10,8 @@ import autoprefixer from 'autoprefixer';
 import nesting from 'postcss-nesting';
 import stylex from '@stylexjs/postcss-plugin';
 
+import babelConfig from './.babelrc.cjs';
+
 /** @type {import('postcss-load-config').Config} */
 const config = {
   plugins: [
@@ -17,6 +19,13 @@ const config = {
     stylex({
       include: ['stories/**/*.{ts,tsx}'],
       useCSSLayers: process.env.NODE_ENV !== 'production',
+      babelConfig: {
+        babelrc: false,
+        parserOpts: {
+          plugins: ['typescript', 'jsx'],
+        },
+        plugins: babelConfig.plugins,
+      },
     }),
     autoprefixer,
   ],
