@@ -234,14 +234,14 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
     : path.join(process.cwd(), 'node_modules', '.stylex');
   const DISK_RULES_PATH = path.join(DISK_RULES_DIR, 'rules.json');
 
-  async function runBabelTransform(inputCode, id, callerName) {
+  async function runBabelTransform(inputCode, filename, callerName) {
     const result = await transformAsync(inputCode, {
       babelrc: false,
-      filename: id,
+      filename,
       presets,
       plugins: [
         ...plugins,
-        /\.jsx?/.test(path.extname(id))
+        /\.jsx?/.test(path.extname(filename))
           ? flowSyntaxPlugin
           : [typescriptSyntaxPlugin, { isTSX: true }],
         jsxSyntaxPlugin,
@@ -367,7 +367,13 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
       const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
       if (!JS_LIKE_RE.test(id)) return null;
       if (!shouldHandle(code)) return null;
-      const result = await runBabelTransform(code, id, '@stylexjs/unplugin');
+
+      // Extract the pure filename by removing everything after '?' (e.g., handling Vite's '?v=' cache busting).
+      const dir = path.dirname(id);
+      const basename = path.basename(id);
+      const file = path.join(dir, basename.split('?')[0] || basename);
+
+      const result = await runBabelTransform(code, file, '@stylexjs/unplugin');
       const { metadata } = result;
       if (!stylexOptions.runtimeInjection) {
         const hasRules =
