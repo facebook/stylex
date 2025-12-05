@@ -32,8 +32,10 @@ export default defineConfig({
 ```
 
 - Keep `stylex.vite()` first to preserve Fast Refresh.
-- The root route imports `src/stylex.css` so Vite emits a CSS asset for the
-  plugin to append to.
+
+## CSS entrypoint
+
+Ensure that there is one CSS file that is imported from your root layout component or JS entry point.
 
 ## CSS Link and Hot Reloading during development
 

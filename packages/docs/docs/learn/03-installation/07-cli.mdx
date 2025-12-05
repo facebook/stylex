@@ -8,30 +8,26 @@ sidebar_position: 7
 
 # CLI
 
-Use the StyleX CLI to compile `.stylex.ts(x)` files ahead-of-time without a
-bundler. When the other integrations don't work, you can use the CLI to transform
-a folder of files into a folder where the StyleX APIs have been compiled away and
-a single CSS bundle has been generated.
+When none of the other integrations work, the StyleX CLI can be used to pre-transform
+an entire directory of files to compile away StyleX and generate a static CSS file which
+runs *before* the rest of your build pipeline.
 
-The CLI does insert an import for the generated CSS file into every file that was transformed,
-so it assumed your bundler is able to handle CSS imports.
-
-[`example-cli`](https://github.com/facebook/stylex/tree/main/examples/example-cli) in
-the StyleX repository shows a minimal setup example.
+The only requirement for using the CLI is that your bundler is able to handle CSS imports,
+as the CLI inserts an import for the generated CSS file into every file that was transformed.
 
 ## Install
+
+Start by installing the StyleX CLI:
 
 import {DevInstallExample} from '../../../components/examples/dev-install';
 
 <DevInstallExample dev={[`@stylexjs/cli`]} />
 
-Add any Babel presets you need (for example
-`@babel/preset-typescript`/`@babel/preset-react`) to match your source syntax.
+## Configuration
 
-## Configure `.stylex.json5`
-
-Create a `.stylex.json` or `.stylex.json5` file in the project root. (JSON5 is
-a more flexible and readable configuration format that allows comments, trailing commas etc.)
+Although all options for the CLI are available as command line arguments, using a configuration file is
+recommended. The configuration file can be in either JSON or JSON5 format. Using JSON5 lets you
+skip quotes around object keys, and use comments and trailing commas.
 
 ```js
 {
@@ -50,18 +46,22 @@ a more flexible and readable configuration format that allows comments, trailing
 }
 ```
 
-- `input`/`output` define the compile roots (the example copies `source` to
-  `src`).
-- `cssBundleName` controls the emitted CSS filename that you can import from
-  your app shell.
-- `styleXConfig` mirrors the options for `@stylexjs/babel-plugin`.
+The configuration file can be named anything, as it is always passed explicitly to the CLI
+using the `--config` flag.
 
-## Build and consume CSS
+## Using the CLI
 
 Run the compiler with:
 
-```bash
-npx stylex --config .stylex.json5
+```json
+{
+  "scripts": {
+    "build": "stylex --config .stylex.json5",
+    "watch": "stylex --config .stylex.json5 --watch",
+  }
+}
 ```
 
-Use `--watch` for incremental rebuilds.
+You can add additional command line arguments, such as `--watch` for incremental rebuilds.
+
+You can also define multiple configuration files for different environments.
