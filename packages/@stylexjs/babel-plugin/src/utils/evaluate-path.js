@@ -29,6 +29,7 @@ import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
+import fs from 'node:fs';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -171,7 +172,6 @@ function evaluateImportedFile(
   state: State,
   bindingPath: NodePath<>,
 ): any {
-  const fs = require('node:fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   // It's safe to use `.babelrc` here because we're only
   // interested in the JS runtime, and not the CSS.

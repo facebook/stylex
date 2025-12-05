@@ -14,6 +14,7 @@ import StateManager from '../utils/state-manager';
 import * as messages from '../shared/messages';
 import { utils } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
+import { isVariableNamedExported } from '../utils/ast-helpers';
 
 /**
  * Transforms calls to `stylex.defineMarker()` (or imported `defineMarker()`)
@@ -83,8 +84,6 @@ export default function transformStyleXDefineMarker(
 
 function validateStyleXDefineMarker(path: NodePath<t.CallExpression>) {
   const variableDeclaratorPath: any = path.parentPath;
-  const exportNamedDeclarationPath =
-    variableDeclaratorPath.parentPath?.parentPath;
 
   if (
     variableDeclaratorPath == null ||
@@ -98,10 +97,7 @@ function validateStyleXDefineMarker(path: NodePath<t.CallExpression>) {
     );
   }
 
-  if (
-    exportNamedDeclarationPath == null ||
-    !exportNamedDeclarationPath.isExportNamedDeclaration()
-  ) {
+  if (!isVariableNamedExported(variableDeclaratorPath)) {
     throw path.buildCodeFrameError(
       messages.nonExportNamedDeclaration('defineMarker'),
       SyntaxError,

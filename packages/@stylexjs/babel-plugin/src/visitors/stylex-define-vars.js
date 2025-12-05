@@ -23,6 +23,7 @@ import {
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
+import { isVariableNamedExported } from '../utils/ast-helpers';
 
 /// This function looks for `stylex.defineVars` calls and transforms them.
 /// 1. It finds the first argument to `stylex.defineVars` and validates it.
@@ -180,8 +181,6 @@ function validateStyleXDefineVars(
   callExpressionPath: NodePath<t.CallExpression>,
 ) {
   const variableDeclaratorPath: any = callExpressionPath.parentPath;
-  const exportNamedDeclarationPath =
-    variableDeclaratorPath.parentPath?.parentPath;
 
   if (
     variableDeclaratorPath == null ||
@@ -195,10 +194,7 @@ function validateStyleXDefineVars(
     );
   }
 
-  if (
-    exportNamedDeclarationPath == null ||
-    !exportNamedDeclarationPath.isExportNamedDeclaration()
-  ) {
+  if (!isVariableNamedExported(variableDeclaratorPath)) {
     throw callExpressionPath.buildCodeFrameError(
       messages.nonExportNamedDeclaration('defineVars'),
       SyntaxError,
