@@ -30,7 +30,10 @@ const stylex = require('@stylexjs/unplugin').default;
 module.exports = {
   entry: { app: path.resolve(__dirname, 'src/main.jsx') },
   plugins: [
-    stylex.rspack({}),
+    stylex.rspack({
+      useCSSLayers: true,
+      // ... StyleX configuration
+    }),
     new rspack.CssExtractRspackPlugin({ filename: 'index.css' }),
   ],
   module: {
