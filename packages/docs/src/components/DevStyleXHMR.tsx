@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 function DevStyleXHMR() {
   useEffect(() => {
     // @ts-ignore
-    import("virtual:stylex:css-only");
+    import('virtual:stylex:css-only');
   }, []);
   return <link rel="stylesheet" href="/virtual:stylex.css" />;
 }

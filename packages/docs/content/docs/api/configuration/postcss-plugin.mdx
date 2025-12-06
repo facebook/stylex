@@ -3,7 +3,7 @@
 #
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
-title: "@stylexjs/postcss-plugin"
+title: '@stylexjs/postcss-plugin'
 ---
 
 ## Configuration options
@@ -14,8 +14,10 @@ title: "@stylexjs/postcss-plugin"
 babelConfig: object; // Default: {}
 ```
 
-Options for Babel configuration. By default, the plugin reads the `babel.config.js` in your project. For custom configurations, set `babelrc: false`
-and specify desired options. Refer to [Babel Config Options](https://babeljs.io/docs/options) for available options.
+Options for Babel configuration. By default, the plugin reads the
+`babel.config.js` in your project. For custom configurations, set
+`babelrc: false` and specify desired options. Refer to
+[Babel Config Options](https://babeljs.io/docs/options) for available options.
 
 ---
 
@@ -35,7 +37,8 @@ Working directory for the plugin; defaults to `process.cwd()`.
 exclude: string[] // Default: []
 ```
 
-Array of paths or glob patterns to exclude from compilation. Paths in `exclude` take precedence over `include`.
+Array of paths or glob patterns to exclude from compilation. Paths in `exclude`
+take precedence over `include`.
 
 ---
 
@@ -66,4 +69,5 @@ Array of paths or glob patterns to compile.
 useCSSLayers: boolean; // Default: false
 ```
 
-Enabling this option switches Stylex from using `:not(#\#)` to using `@layers` for handling CSS specificity.
+Enabling this option switches Stylex from using `:not(#\#)` to using `@layers`
+for handling CSS specificity.

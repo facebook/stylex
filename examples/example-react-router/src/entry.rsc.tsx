@@ -5,10 +5,10 @@ import {
   decodeReply,
   loadServerAction,
   renderToReadableStream,
-} from "@vitejs/plugin-rsc/rsc";
-import { unstable_matchRSCServerRequest as matchRSCServerRequest } from "react-router";
+} from '@vitejs/plugin-rsc/rsc';
+import { unstable_matchRSCServerRequest as matchRSCServerRequest } from 'react-router';
 
-import { routes } from "./routes/config";
+import { routes } from './routes/config';
 
 function fetchServer(request: Request) {
   return matchRSCServerRequest({
@@ -35,8 +35,8 @@ function fetchServer(request: Request) {
 export default async function handler(request: Request) {
   // Import the generateHTML function from the client environment
   const ssr = await import.meta.viteRsc.loadModule<
-    typeof import("./entry.ssr")
-  >("ssr", "index");
+    typeof import('./entry.ssr')
+  >('ssr', 'index');
 
   return ssr.generateHTML(request, fetchServer);
 }

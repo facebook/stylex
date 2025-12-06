@@ -1,17 +1,18 @@
 ---
-title: "Using variables"
+title: 'Using variables'
 ---
-
 
 <Callout type="info" title="Note">
 
-The [`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
-option needs to be enabled in the StyleX Babel configuration to enable theming APIs.
+The
+[`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
+option needs to be enabled in the StyleX Babel configuration to enable theming
+APIs.
 
 </Callout>
 
-Once [variables have been defined](/docs/learn/theming/defining-variables), they can be imported
-and used to declare styles with `create`.
+Once [variables have been defined](/docs/learn/theming/defining-variables), they
+can be imported and used to declare styles with `create`.
 
 Assume the following variables have been defined in a file called
 `tokens.stylex.js`:
@@ -23,11 +24,11 @@ import * as stylex from '@stylexjs/stylex';
 const DARK = '@media (prefers-color-scheme: dark)';
 
 export const colors = stylex.defineVars({
-  primaryText: {default: 'black', [DARK]: 'white'},
-  secondaryText: {default: '#333', [DARK]: '#ccc'},
-  accent: {default: 'blue', [DARK]: 'lightblue'},
-  background: {default: 'white', [DARK]: 'black'},
-  lineColor: {default: 'gray', [DARK]: 'lightgray'},
+  primaryText: { default: 'black', [DARK]: 'white' },
+  secondaryText: { default: '#333', [DARK]: '#ccc' },
+  accent: { default: 'blue', [DARK]: 'lightblue' },
+  background: { default: 'white', [DARK]: 'black' },
+  lineColor: { default: 'gray', [DARK]: 'lightgray' },
 });
 
 export const spacing = stylex.defineVars({
@@ -46,7 +47,7 @@ These styles can then be imported and used like so:
 
 ```tsx title="components/MyComponent.js"
 import * as stylex from '@stylexjs/stylex';
-import {colors, spacing} from '../tokens.stylex';
+import { colors, spacing } from '../tokens.stylex';
 
 const styles = stylex.create({
   container: {

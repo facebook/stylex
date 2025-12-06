@@ -1,20 +1,20 @@
 ---
-title: "Theme<>"
+title: 'Theme<>'
 ---
 
 ```tsx
 type Theme<T extends VarGroup<unknown, symbol>>
 ```
 
-A `Theme` is a type that represents a style that *themes* a set of variables in a given
-`VarGroup`. It's the result of calling [`createTheme`](/docs/api/javascript/createTheme).
-
+A `Theme` is a type that represents a style that _themes_ a set of variables in
+a given `VarGroup`. It's the result of calling
+[`createTheme`](/docs/api/javascript/createTheme).
 
 ```tsx
-import type {VarGroup} from '@stylexjs/stylex';
+import type { VarGroup } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 
-import {vars} from './vars.stylex';
+import { vars } from './vars.stylex';
 
 export const theme: Theme<typeof vars> = stylex.createTheme(vars, {
   color: 'red', // OK
@@ -22,9 +22,11 @@ export const theme: Theme<typeof vars> = stylex.createTheme(vars, {
 });
 ```
 
-The most common use-case for `Theme` is to accept a theme for a particular set of variables.
+The most common use-case for `Theme` is to accept a theme for a particular set
+of variables.
 
-While, it's not needed in most cases, `Theme` also accepts an optional second type type argument.
+While, it's not needed in most cases, `Theme` also accepts an optional second
+type type argument.
 
 <Accordions type="single">
 <Accordion title="Advanced use-case: unique type identity for a Theme">
@@ -36,8 +38,8 @@ particular component.
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
-import type {Theme} from '@stylexjs/stylex';
-import {vars} from './vars.stylex';
+import type { Theme } from '@stylexjs/stylex';
+import { vars } from './vars.stylex';
 
 declare const Tag: unique symbol;
 export const theme1: Theme<typeof vars, Tag> = stylex.createTheme(vars, {

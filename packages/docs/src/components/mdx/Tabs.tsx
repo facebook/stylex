@@ -18,8 +18,8 @@ type BaseTabsProps = ComponentProps<typeof BaseTabs>;
 type TabsProps = {
   children: ReactNode;
 } & Omit<BaseTabsProps, 'children' | 'defaultValue'> & {
-  defaultValue?: string;
-};
+    defaultValue?: string;
+  };
 
 const getItemsFromChildren = (children: ReactNode) => {
   const items: TabItemProps[] = [];
@@ -28,7 +28,10 @@ const getItemsFromChildren = (children: ReactNode) => {
       return;
     }
     const element = child as ReactElement<TabItemProps>;
-    if ((element.type as { displayName?: string }).displayName !== TAB_ITEM_DISPLAY_NAME) {
+    if (
+      (element.type as { displayName?: string }).displayName !==
+      TAB_ITEM_DISPLAY_NAME
+    ) {
       return;
     }
     items.push(element.props);
@@ -36,11 +39,7 @@ const getItemsFromChildren = (children: ReactNode) => {
   return items;
 };
 
-export default function Tabs({
-  children,
-  defaultValue,
-  ...rest
-}: TabsProps) {
+export default function Tabs({ children, defaultValue, ...rest }: TabsProps) {
   const items = getItemsFromChildren(children);
   if (items.length === 0) {
     return null;

@@ -1,13 +1,13 @@
 ---
-title: "Merge Themes"
+title: 'Merge Themes'
 ---
 
-`Theme`s for the *same* `VarGroup` are mutually exclusive and do not merge.
-Any variable in a `VarGroup` that is not explicitly overridden in a `Theme` for that `VarGroup`
-is set to its default value.
+`Theme`s for the _same_ `VarGroup` are mutually exclusive and do not merge. Any
+variable in a `VarGroup` that is not explicitly overridden in a `Theme` for that
+`VarGroup` is set to its default value.
 
-However, you can reuse common constants when defining multiple themes for a particular
-`VarGroup` and avoid excessive repetition.
+However, you can reuse common constants when defining multiple themes for a
+particular `VarGroup` and avoid excessive repetition.
 
 ## Example
 
@@ -25,12 +25,10 @@ const themeBigVars = {
 };
 const themeBig = stylex.createTheme(vars, themeBigVars);
 
-const themeBigBlueVars = {...themeBlueVars, ...themeBigVars};
+const themeBigBlueVars = { ...themeBlueVars, ...themeBigVars };
 const themeBigBlue = stylex.createTheme(vars, themeBigBlueVars);
 ```
 
 The StyleX compiler is able to resolve local object constants and merge them.
-This is useful to be able to define a `Theme` that merges the values of two or more
-other `Theme`s without repetition.
-
-
+This is useful to be able to define a `Theme` that merges the values of two or
+more other `Theme`s without repetition.

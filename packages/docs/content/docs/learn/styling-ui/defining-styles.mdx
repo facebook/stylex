@@ -1,5 +1,5 @@
 ---
-title: "Defining styles"
+title: 'Defining styles'
 ---
 
 StyleX uses an expressive JavaScript API that is similar to working with inline
@@ -7,9 +7,9 @@ styles in React DOM, or styles in React Native.
 
 ## Constraints
 
-Since StyleX depends on ahead-of-time compilation, it is important for all
-your styles to be statically analyzable. This means that every "Raw Style
-Object" must only contain:
+Since StyleX depends on ahead-of-time compilation, it is important for all your
+styles to be statically analyzable. This means that every "Raw Style Object"
+must only contain:
 
 - Plain Object Literals
 - String Literals
@@ -29,8 +29,8 @@ The following are **not** allowed:
 
 ## Creating styles
 
-Styles must be created with the `create` function. You can define one or
-more "namespaces", or objects of styles. In the example below, there are 2
+Styles must be created with the `create` function. You can define one or more
+"namespaces", or objects of styles. In the example below, there are 2
 "namespaces" - one called `base` and the other `highlighted`. The names are
 arbitrary and represent the constant used to capture the result of the
 `create()` function call.
@@ -205,8 +205,8 @@ You can use the `keyframes` function to define keyframe animations.
 import * as stylex from '@stylexjs/stylex';
 
 const fadeIn = stylex.keyframes({
-  from: {opacity: 0},
-  to: {opacity: 1},
+  from: { opacity: 0 },
+  to: { opacity: 1 },
 });
 
 const styles = stylex.create({
@@ -223,8 +223,8 @@ const styles = stylex.create({
 
 Dynamic styles are an advanced feature and should be used sparingly. For the
 majority of use-cases,
-[conditional styles](/docs/learn/styling-ui/using-styles#conditional-styles) should be
-sufficient.
+[conditional styles](/docs/learn/styling-ui/using-styles#conditional-styles)
+should be sufficient.
 
 </Callout>
 
@@ -232,12 +232,11 @@ StyleX generates all styles at compile-time which means you need to _know_ all
 those styles ahead of time as well. But sometimes you just don't know what you
 will need until runtime.
 
-For such situations, you can define your styles as a function instead of an object
-and pass in the dynamic components of the needed styles as parameters.
+For such situations, you can define your styles as a function instead of an
+object and pass in the dynamic components of the needed styles as parameters.
 
 **NOTE**: The function body _must_ be an object literal. You cannot use a
 function body with multiple statements.
-
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -260,6 +259,7 @@ function MyComponent() {
 }
 ```
 
-Behind the scenes, StyleX will generate static styles that depend on a CSS variable
-and set the value of that variable at runtime. This means, that any part of your
-styles can be dynamic, including within Media Queries and pseudo-classes.
+Behind the scenes, StyleX will generate static styles that depend on a CSS
+variable and set the value of that variable at runtime. This means, that any
+part of your styles can be dynamic, including within Media Queries and
+pseudo-classes.

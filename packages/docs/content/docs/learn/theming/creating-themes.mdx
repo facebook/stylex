@@ -1,11 +1,13 @@
 ---
-title: "Creating themes"
+title: 'Creating themes'
 ---
 
 <Callout type="info" title="Note">
 
-The [`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
-option needs to be enabled in the StyleX Babel configuration to enable theming APIs.
+The
+[`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
+option needs to be enabled in the StyleX Babel configuration to enable theming
+APIs.
 
 </Callout>
 
@@ -18,31 +20,31 @@ Any variable group can be imported to create a theme like so:
 
 ```tsx title="themes.js"
 import * as stylex from '@stylexjs/stylex';
-import {colors, spacing} from './tokens.stylex';
+import { colors, spacing } from './tokens.stylex';
 
 // A constant can be used to avoid repeating the media query
 const DARK = '@media (prefers-color-scheme: dark)';
 
 // Dracula theme
 export const dracula = stylex.createTheme(colors, {
-  primaryText: {default: 'purple', [DARK]: 'lightpurple'},
-  secondaryText: {default: 'pink', [DARK]: 'hotpink'},
+  primaryText: { default: 'purple', [DARK]: 'lightpurple' },
+  secondaryText: { default: 'pink', [DARK]: 'hotpink' },
   accent: 'red',
-  background: {default: '#555', [DARK]: 'black'},
+  background: { default: '#555', [DARK]: 'black' },
   lineColor: 'red',
 });
 ```
 
 ## Applying Themes
 
-A “theme” is a style object similar to the ones created with `create()`.
-They can be applied to an element using `props()` to override variables
-for that element and all its descendants.
+A “theme” is a style object similar to the ones created with `create()`. They
+can be applied to an element using `props()` to override variables for that
+element and all its descendants.
 
 ```tsx title="components/MyComponent.js"
 import * as stylex from '@stylexjs/stylex';
-import {colors, spacing} from '../tokens.stylex';
-import {dracula} from '../themes';
+import { colors, spacing } from '../tokens.stylex';
+import { dracula } from '../themes';
 
 const styles = stylex.create({
   container: {
@@ -55,7 +57,7 @@ const styles = stylex.create({
 <div {...stylex.props(dracula, styles.container)}>{children}</div>;
 ```
 
-**NOTE:** Any variables that are not overridden will revert back to their 
+**NOTE:** Any variables that are not overridden will revert back to their
 default value that was set in the `defineVars` declaration.
 
 Unlike when defining and using variables, themes can be created with

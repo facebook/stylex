@@ -1,11 +1,13 @@
 ---
-title: "Defining variables"
+title: 'Defining variables'
 ---
 
 <Callout type="info" title="Note">
 
-The [`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
-option needs to be enabled in the StyleX Babel configuration to enable theming APIs.
+The
+[`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
+option needs to be enabled in the StyleX Babel configuration to enable theming
+APIs.
 
 </Callout>
 
@@ -39,11 +41,13 @@ export const tokens = stylex.defineVars({
 });
 ```
 
-This function, too, is processed at compile-time and unique CSS variable names are automatically generated. 
-These values can then be imported and used within `create` calls.
+This function, too, is processed at compile-time and unique CSS variable names
+are automatically generated. These values can then be imported and used within
+`create` calls.
 
-To create variables with custom stable names that match the exact strings provided, use a key that starts with `--`.
-Doing so will mean that StyleX cannot guarantee that those variables names are unique to a given `defineVars` call.
+To create variables with custom stable names that match the exact strings
+provided, use a key that starts with `--`. Doing so will mean that StyleX cannot
+guarantee that those variables names are unique to a given `defineVars` call.
 
 ### Using Media Queries
 
@@ -56,11 +60,11 @@ import * as stylex from '@stylexjs/stylex';
 const DARK = '@media (prefers-color-scheme: dark)';
 
 export const colors = stylex.defineVars({
-  primaryText: {default: 'black', [DARK]: 'white'},
-  secondaryText: {default: '#333', [DARK]: '#ccc'},
-  accent: {default: 'blue', [DARK]: 'lightblue'},
-  background: {default: 'white', [DARK]: 'black'},
-  lineColor: {default: 'gray', [DARK]: 'lightgray'},
+  primaryText: { default: 'black', [DARK]: 'white' },
+  secondaryText: { default: '#333', [DARK]: '#ccc' },
+  accent: { default: 'blue', [DARK]: 'lightblue' },
+  background: { default: 'white', [DARK]: 'black' },
+  lineColor: { default: 'gray', [DARK]: 'lightgray' },
 });
 ```
 
