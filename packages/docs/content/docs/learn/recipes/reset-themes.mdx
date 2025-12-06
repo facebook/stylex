@@ -1,18 +1,18 @@
 ---
-title: "Reset Theme"
+title: 'Reset Theme'
 ---
 
-The `defineVars` function is used to create a set of CSS variables,
-called `VarGroup`s. Further, the `createTheme` function can be used to create
-`Theme`s, that override the values of the variables defined within `VarGroup`s.
+The `defineVars` function is used to create a set of CSS variables, called
+`VarGroup`s. Further, the `createTheme` function can be used to create `Theme`s,
+that override the values of the variables defined within `VarGroup`s.
 
-Many `VarGroup`s can be defined which can then be independently overridden with `Theme`s.
-However, `Theme`s for the *same* `VarGroup` are mutually exclusive and do not merge.
-Any variable in a `VarGroup` that is not explicitly overridden in a `Theme` for that `VarGroup`
-is set to its default value.
+Many `VarGroup`s can be defined which can then be independently overridden with
+`Theme`s. However, `Theme`s for the _same_ `VarGroup` are mutually exclusive and
+do not merge. Any variable in a `VarGroup` that is not explicitly overridden in
+a `Theme` for that `VarGroup` is set to its default value.
 
-This characteristic of `Theme`s can be used to define a "empty" theme that resets all variables
-to their default values.
+This characteristic of `Theme`s can be used to define a "empty" theme that
+resets all variables to their default values.
 
 ## Example
 

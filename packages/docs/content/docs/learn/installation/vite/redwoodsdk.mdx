@@ -1,11 +1,11 @@
 ---
-title: "RedwoodSDK"
+title: 'RedwoodSDK'
 ---
 
-[`examples/example-redwoodsdk`](https://github.com/facebook/stylex/tree/main/examples/example-redwoodsdk) shows
-how RedwoodSDK’s Vite-based toolchain works with `@stylexjs/unplugin`. StyleX
-is compiled during both dev and build, and the aggregated CSS is appended to
-the worker/client assets that Redwood emits.
+[`examples/example-redwoodsdk`](https://github.com/facebook/stylex/tree/main/examples/example-redwoodsdk)
+shows how RedwoodSDK’s Vite-based toolchain works with `@stylexjs/unplugin`.
+StyleX is compiled during both dev and build, and the aggregated CSS is appended
+to the worker/client assets that Redwood emits.
 
 ## Vite configuration
 
@@ -37,15 +37,16 @@ export default defineConfig({
 
 ## CSS entrypoint
 
-Ensure that there is one CSS file that is imported from your root layout component or JS entry point.
+Ensure that there is one CSS file that is imported from your root layout
+component or JS entry point.
 
 ## CSS Link and Hot Reloading during development
 
-Ensure that the virtual CSS file and script for hot reloading styles are part of your bundle
-to enable hot reloading during development.
+Ensure that the virtual CSS file and script for hot reloading styles are part of
+your bundle to enable hot reloading during development.
 
-The easiest way to do this is by using an encapsulated helper that can also be used to insert
-a link tag for your production CSS.
+The easiest way to do this is by using an encapsulated helper that can also be
+used to insert a link tag for your production CSS.
 
 ```tsx
 // src/app/DevStyleXInject.tsx

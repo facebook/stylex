@@ -15,7 +15,8 @@ const commonStyles = stylex.create({
   accent50: {
     backgroundColor: {
       default: null,
-      ':where([data-state=open])': 'color-mix(in oklab, var(--bg-fd-accent) 50%, transparent)',
+      ':where([data-state=open])':
+        'color-mix(in oklab, var(--bg-fd-accent) 50%, transparent)',
     },
   },
   menuContent: {
@@ -24,8 +25,11 @@ const commonStyles = stylex.create({
     top: 0,
     overflow: 'auto',
     maxHeight: '80svh',
-    '::-webkit-scrollbar': { width: 5, height: 5, },
-    '::-webkit-scrollbar-thumb': { borderRadius: 5, backgroundColor: 'var(--color-fd-border)' },
+    '::-webkit-scrollbar': { width: 5, height: 5 },
+    '::-webkit-scrollbar-thumb': {
+      borderRadius: 5,
+      backgroundColor: 'var(--color-fd-border)',
+    },
     '::-webkit-scrollbar-track': { backgroundColor: 'transparent' },
     '::-webkit-scrollbar-corner': { display: 'none' },
     // animation: {
@@ -73,7 +77,12 @@ const NavigationMenuItem = ({
   </Primitive.NavigationMenuItem>
 );
 
-const NavigationMenuTrigger = ({ xstyle, children, ref, ...props }: StyleXComponentProps<typeof Primitive.Trigger>) => (
+const NavigationMenuTrigger = ({
+  xstyle,
+  children,
+  ref,
+  ...props
+}: StyleXComponentProps<typeof Primitive.Trigger>) => (
   <Primitive.Trigger
     ref={ref}
     {...stylex.props(commonStyles.accent50, xstyle)}
@@ -98,7 +107,11 @@ NavigationMenuContent.displayName = Primitive.Content.displayName;
 
 const NavigationMenuLink = Primitive.Link;
 
-const NavigationMenuViewport = ({ xstyle, ref, ...props }: StyleXComponentProps<typeof Primitive.Viewport>) => (
+const NavigationMenuViewport = ({
+  xstyle,
+  ref,
+  ...props
+}: StyleXComponentProps<typeof Primitive.Viewport>) => (
   <div ref={ref} {...stylex.props(commonStyles.menuViewportContainer)}>
     <Primitive.Viewport
       {...props}

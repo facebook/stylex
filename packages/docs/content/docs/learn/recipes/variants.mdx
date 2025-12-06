@@ -1,16 +1,19 @@
 ---
-title: "Variants"
+title: 'Variants'
 ---
 
-The "variants" pattern allows you to conditionally apply one of several predefined styles based on a value. 
-This is especially useful for theming or dynamic component behavior.
+The "variants" pattern allows you to conditionally apply one of several
+predefined styles based on a value. This is especially useful for theming or
+dynamic component behavior.
 
-It is common to have different styles for different "variants" of a component. Some other styling solutions provide
-an explicit API for defining variants. In StyleX, you can define variants with a simple pattern instead.
+It is common to have different styles for different "variants" of a component.
+Some other styling solutions provide an explicit API for defining variants. In
+StyleX, you can define variants with a simple pattern instead.
 
 ## Example: Button Variants
 
-Here’s how you can create a button component with different visual styles based on `variant` props:
+Here’s how you can create a button component with different visual styles based
+on `variant` props:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -56,13 +59,13 @@ type Props = {
   ...
 };
 
-function Button({ 
+function Button({
   color = 'primary',
   size = 'small',
   ...props
 }: Props) {
   return (
-    <button 
+    <button
       {...props}
       {...stylex.props(
         styles.base,
@@ -78,12 +81,13 @@ function Button({
 <Button color="primary" size="medium">Primary</Button>
 <Button color="secondary">Secondary</Button>
 ```
+
 ## Compound Variants
 
 Sometimes variants are dependent on a combination of variants props.
 
-In most cases, it's simpler to leverage StyleX’s deterministic style merging to simplify this
-behaviour.
+In most cases, it's simpler to leverage StyleX’s deterministic style merging to
+simplify this behaviour.
 
 ### Example: A `disabled` prop
 
@@ -123,14 +127,14 @@ type Props = {
   ...
 };
 
-function Button({ 
+function Button({
   color = 'primary',
   size = 'small',
   disabled = false,
   ...props,
 }: Props) {
   return (
-    <button 
+    <button
       {...props}
       {...stylex.props(
         styles.base,
@@ -149,8 +153,8 @@ function Button({
 ```
 
 There may be other scenarios where you need to be more explicit about the styles
-that should applied under various condition. You can do this by declaring multiple
-style definitions for a particular variant.
+that should applied under various condition. You can do this by declaring
+multiple style definitions for a particular variant.
 
 ### Example: Two definitions for `color` variant styles
 
@@ -195,18 +199,18 @@ type Props = {
   ...
 };
 
-function Button({ 
+function Button({
   color = 'primary',
   size = 'small',
   disabled = false,
   ...props,
 }: Props) {
-  const colorVariants = disabled 
+  const colorVariants = disabled
     ? colorVariantsDisabled
     : colorVariantsEnabled;
 
   return (
-    <button 
+    <button
       {...props}
       {...stylex.props(
         styles.base,

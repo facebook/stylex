@@ -1,9 +1,9 @@
-import { createFromReadableStream } from "@vitejs/plugin-rsc/ssr";
-import { renderToReadableStream as renderHTMLToReadableStream } from "react-dom/server.edge";
+import { createFromReadableStream } from '@vitejs/plugin-rsc/ssr';
+import { renderToReadableStream as renderHTMLToReadableStream } from 'react-dom/server.edge';
 import {
   unstable_routeRSCServerRequest as routeRSCServerRequest,
   unstable_RSCStaticRouter as RSCStaticRouter,
-} from "react-router";
+} from 'react-router';
 
 export async function generateHTML(
   request: Request,
@@ -20,10 +20,10 @@ export async function generateHTML(
     async renderHTML(getPayload) {
       const payload = await getPayload();
       const formState =
-        payload.type === "render" ? await payload.formState : undefined;
+        payload.type === 'render' ? await payload.formState : undefined;
 
       const bootstrapScriptContent =
-        await import.meta.viteRsc.loadBootstrapScriptContent("index");
+        await import.meta.viteRsc.loadBootstrapScriptContent('index');
 
       return await renderHTMLToReadableStream(
         <RSCStaticRouter getPayload={getPayload} />,

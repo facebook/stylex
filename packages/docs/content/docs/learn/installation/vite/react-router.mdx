@@ -1,5 +1,5 @@
 ---
-title: "React Router (RSC)"
+title: 'React Router (RSC)'
 ---
 
 [`examples/example-react-router`](https://github.com/facebook/stylex/tree/main/examples/example-react-router)
@@ -17,11 +17,7 @@ import rsc from '@react-router/dev/vite';
 import stylex from '@stylexjs/unplugin';
 
 export default defineConfig({
-  plugins: [
-    stylex.vite({ useCSSLayers: true }),
-    react(),
-    rsc(),
-  ],
+  plugins: [stylex.vite({ useCSSLayers: true }), react(), rsc()],
 });
 ```
 
@@ -29,15 +25,16 @@ export default defineConfig({
 
 ## CSS entrypoint
 
-Ensure that there is one CSS file that is imported from your root layout component or JS entry point.
+Ensure that there is one CSS file that is imported from your root layout
+component or JS entry point.
 
 ## CSS Link and Hot Reloading during development
 
-Ensure that the virtual CSS file and script for hot reloading styles are part of your bundle
-to enable hot reloading during development.
+Ensure that the virtual CSS file and script for hot reloading styles are part of
+your bundle to enable hot reloading during development.
 
-The easiest way to do this is by using an encapsulated helper that can also be used to insert
-a link tag for your production CSS.
+The easiest way to do this is by using an encapsulated helper that can also be
+used to insert a link tag for your production CSS.
 
 ```tsx
 // src/DevStyleXInject.tsx

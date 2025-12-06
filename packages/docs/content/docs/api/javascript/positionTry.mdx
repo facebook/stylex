@@ -1,16 +1,25 @@
 ---
-title: "stylex.positionTry"
+title: 'stylex.positionTry'
 ---
 
-Creates a [`@position-try`](https://developer.mozilla.org/en-US/docs/Web/CSS/@position-try) rule used to define a custom position-try fallback option, which can be used to define positioning and alignment for anchor-positioned elements. One or more sets of position-try fallback options can be applied to the anchored element via the `positionTryFallbacks` property.
+Creates a
+[`@position-try`](https://developer.mozilla.org/en-US/docs/Web/CSS/@position-try)
+rule used to define a custom position-try fallback option, which can be used to
+define positioning and alignment for anchor-positioned elements. One or more
+sets of position-try fallback options can be applied to the anchored element via
+the `positionTryFallbacks` property.
 
 ```ts
-function positionTry(descriptors: {[key: string]: RawStyles}): string;
+function positionTry(descriptors: { [key: string]: RawStyles }): string;
 ```
 
-The only properties allowed in a `positionTry` call are `positionAnchor`, `positionArea`, inset properties (`top`, `left`, `insetInline`, etc.), margin properties, size properties (`height`, `inlineSize`, etc.), and self-alignment properties (`alignSelf`, `justifySelf`, `placeSelf`).
+The only properties allowed in a `positionTry` call are `positionAnchor`,
+`positionArea`, inset properties (`top`, `left`, `insetInline`, etc.), margin
+properties, size properties (`height`, `inlineSize`, etc.), and self-alignment
+properties (`alignSelf`, `justifySelf`, `placeSelf`).
 
-You must declare your position-try rules in the same file as where you use them. Duplicate declarations will be deduplicated in the generated CSS output.
+You must declare your position-try rules in the same file as where you use them.
+Duplicate declarations will be deduplicated in the generated CSS output.
 
 ### Example use:
 
@@ -22,7 +31,7 @@ const fallback = stylex.positionTry({
   top: '0',
   left: '0',
   width: '100px',
-  height: '100px'
+  height: '100px',
 });
 
 const styles = stylex.create({
@@ -32,7 +41,8 @@ const styles = stylex.create({
 });
 ```
 
-To use `positionTry` return values in a separate file, you can use `defineVars` to hold position fallback values:
+To use `positionTry` return values in a separate file, you can use `defineVars`
+to hold position fallback values:
 
 ```tsx title="positionFallbacks.stylex.js"
 import * as stylex from '@stylexjs/stylex';
@@ -42,11 +52,11 @@ const topLeftCorner = stylex.positionTry({
   top: '0',
   left: '0',
   width: '100px',
-  height: '100px'
+  height: '100px',
 });
 
 export const positionFallbacks = stylex.defineVars({
-  topLeftCorner
+  topLeftCorner,
 });
 ```
 

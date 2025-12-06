@@ -10,13 +10,17 @@ tags:
   - release
 ---
 
-StyleX v0.13.0 introduces two new APIs and several breaking changes to compiler defaults, alongside various bug fixes.
+StyleX v0.13.0 introduces two new APIs and several breaking changes to compiler
+defaults, alongside various bug fixes.
 
 ## New APIs
 
 ### `defineConsts`
 
-We've added a new `defineConsts` API to allow for declaration and use of constant values. Unlike `defineVars`, these are inlined at build-time and do not generate CSS variables. This is a long requested feature that allows for shareable media queries.
+We've added a new `defineConsts` API to allow for declaration and use of
+constant values. Unlike `defineVars`, these are inlined at build-time and do not
+generate CSS variables. This is a long requested feature that allows for
+shareable media queries.
 
 ```tsx title="constants.stylex.js"
 export const breakpoints = stylex.defineConsts({
@@ -55,7 +59,9 @@ const styles = stylex.create({
 
 ### `positionTry`
 
-`positionTry` enables graceful fallback positioning via the `@property-try` at-rule. This makes it easier to handle layout edge cases across varying browser support and runtime constraints.  (Thanks [nmn](https://github.com/nmn)!)
+`positionTry` enables graceful fallback positioning via the `@property-try`
+at-rule. This makes it easier to handle layout edge cases across varying browser
+support and runtime constraints. (Thanks [nmn](https://github.com/nmn)!)
 
 ```tsx
 const fallback = stylex.positionTry({
@@ -75,26 +81,41 @@ const styles = stylex.create({
 
 ## Breaking changes
 
-* The `attrs` API is removed due to low usage and redundant functionality; non-React users can replace it with a wrapper around `props` as documented [here](https://stylexjs.com/docs/api/javascript/props/#not-using-react).
-* The `runtimeInjection` compiler option is now disabled by default in development mode (`dev:true`) to better match production behavior.
-* ESLint rule `no-legacy-conditional-styles` is renamed to `no-legacy-contextual-styles`.
-* The config option `useRemForFontSize` is renamed to `enableFontSizePxToRem`; now disabled by default and not intended for external use.
-* The config option `genConditionalClasses` is renamed to `enableInlinedConditionalMerge`; now enabled by default and not intended for external use.
+- The `attrs` API is removed due to low usage and redundant functionality;
+  non-React users can replace it with a wrapper around `props` as documented
+  [here](https://stylexjs.com/docs/api/javascript/props/#not-using-react).
+- The `runtimeInjection` compiler option is now disabled by default in
+  development mode (`dev:true`) to better match production behavior.
+- ESLint rule `no-legacy-conditional-styles` is renamed to
+  `no-legacy-contextual-styles`.
+- The config option `useRemForFontSize` is renamed to `enableFontSizePxToRem`;
+  now disabled by default and not intended for external use.
+- The config option `genConditionalClasses` is renamed to
+  `enableInlinedConditionalMerge`; now enabled by default and not intended for
+  external use.
 
 ## Fixes
 
-* Fixed duplicate classNames in styles with nested pseudo-classes (Thanks [jeongminsang](https://github.com/jeongminsang)!)
-* ESLint plugin now correctly supports `importSources` object syntax in `validImports` (Thanks [javascripter](https://github.com/javascripter)!)
-* Fixed a bug where CSS variables would be wrapped in quotes when used with the `content` property.
-* Fixed evaluation bug in `firstThatWorks` when the final value was a CSS variable.
-* Fixed TypeScript types for themes and types functions.
+- Fixed duplicate classNames in styles with nested pseudo-classes (Thanks
+  [jeongminsang](https://github.com/jeongminsang)!)
+- ESLint plugin now correctly supports `importSources` object syntax in
+  `validImports` (Thanks [javascripter](https://github.com/javascripter)!)
+- Fixed a bug where CSS variables would be wrapped in quotes when used with the
+  `content` property.
+- Fixed evaluation bug in `firstThatWorks` when the final value was a CSS
+  variable.
+- Fixed TypeScript types for themes and types functions.
 
 ## Miscellaneous
 
-* Rewrote the runtime style injection system to be more robust in dev. This resolves issues with hot reloading and duplicate style tags.
-* Added Flow types for anchor positioning. (Thanks [Jta26](https://github.com/Jta26)!)
-* Added support for custom `importSources` in the PostCSS plugin for [React Strict DOM](https://github.com/facebook/react-strict-dom) compatibility. (Thanks [javascripter](https://github.com/javascripter)!)
-* Improved compiler error messages.
+- Rewrote the runtime style injection system to be more robust in dev. This
+  resolves issues with hot reloading and duplicate style tags.
+- Added Flow types for anchor positioning. (Thanks
+  [Jta26](https://github.com/Jta26)!)
+- Added support for custom `importSources` in the PostCSS plugin for
+  [React Strict DOM](https://github.com/facebook/react-strict-dom)
+  compatibility. (Thanks [javascripter](https://github.com/javascripter)!)
+- Improved compiler error messages.
 
 ## Deprecations
 

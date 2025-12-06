@@ -1,5 +1,5 @@
 ---
-title: "Using styles"
+title: 'Using styles'
 ---
 
 Once styles have been defined, they must be converted to `className` and
@@ -15,13 +15,13 @@ use them conditionally, or even compose styles across module boundaries.
 
 ## Merging styles
 
-The `props` function can take a list of styles and merge them in a
-deterministic way, where the last style applied always wins. The order in which
-the styles are defined does not affect the resulting styles, only the order in
-which they are applied to the HTML element.
+The `props` function can take a list of styles and merge them in a deterministic
+way, where the last style applied always wins. The order in which the styles are
+defined does not affect the resulting styles, only the order in which they are
+applied to the HTML element.
 
-Using `props` is only required when styles are set on React
-DOM host elements like `<div>`.
+Using `props` is only required when styles are set on React DOM host elements
+like `<div>`.
 
 Consider styles that are defined as follows:
 
@@ -49,11 +49,11 @@ last. If instead the order of the styles were reversed, the text would be gray.
 <div {...stylex.props(styles.highlighted, styles.base)} />
 ```
 
-A simple way to think about the `props` function is that merges many
-objects and the later objects have precedence over previous objects.
+A simple way to think about the `props` function is that merges many objects and
+the later objects have precedence over previous objects.
 
-Each individual style object can be passed to `props` as a separate
-argument, or passed in as an array of styles.
+Each individual style object can be passed to `props` as a separate argument, or
+passed in as an array of styles.
 
 ```tsx
 <div {...stylex.props([styles.base, styles.highlighted])} />
@@ -61,9 +61,9 @@ argument, or passed in as an array of styles.
 
 ## Conditional styles
 
-Styles can be applied conditionally at runtime using common JavaScript
-patterns such as ternary expressions and the `&&` operator. `props`
-ignores falsy values such as `null`, `undefined`, or `false`.
+Styles can be applied conditionally at runtime using common JavaScript patterns
+such as ternary expressions and the `&&` operator. `props` ignores falsy values
+such as `null`, `undefined`, or `false`.
 
 ```tsx
 <div
@@ -79,8 +79,8 @@ ignores falsy values such as `null`, `undefined`, or `false`.
 
 A common styling pattern called "variants" lets you apply styles based on the
 value of a specific prop, e.g., `variant`. StyleX supports this pattern without
-an additional API. Instead, an object property lookup can be used to achieve
-the same result.
+an additional API. Instead, an object property lookup can be used to achieve the
+same result.
 
 First, each variant can be defined with the appropriate variant name for the
 style object.
@@ -110,7 +110,7 @@ The appropriate styles can then be applied by using the `variant` prop as a key
 on the `styles` object.
 
 ```tsx
-function Button({variant, ...props}) {
+function Button({ variant, ...props }) {
   return <button {...props} {...stylex.props(styles[variant])} />;
 }
 ```
@@ -122,22 +122,22 @@ styles across file and component boundaries using component props.
 
 ### Passing style props to components
 
-When using custom components, styles created with StyleX can be passed down
-as props.
+When using custom components, styles created with StyleX can be passed down as
+props.
 
 ```tsx
 <CustomComponent style={styles.base} />
 ```
 
-StyleX will correctly merge nested arrays of styles, which means you can use
-the same patterns described above to combine or conditionally apply styles.
+StyleX will correctly merge nested arrays of styles, which means you can use the
+same patterns described above to combine or conditionally apply styles.
 
 ```tsx
 <CustomComponent style={[styles.base, isHighlighted && styles.highlighted]} />
 ```
 
 When combining local styles with styles passed in as props, it's idiomatic to
-apply the styles passed in as props *after* the local styles. Although, there's
+apply the styles passed in as props _after_ the local styles. Although, there's
 nothing wrong with applying certain local styles last, if you require them to
 always take priority over prop styles.
 
@@ -145,16 +145,18 @@ always take priority over prop styles.
 import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
-  base: { /*...*/ }
+  base: {
+    /*...*/
+  },
 });
 
-function CustomComponent({style}) {
+function CustomComponent({ style }) {
   return <div {...stylex.props(styles.base, style)} />;
 }
 ```
 
-In these examples the `style` prop name is arbitrary. You can use any prop
-name, just like when passing any other types of data to React components.
+In these examples the `style` prop name is arbitrary. You can use any prop name,
+just like when passing any other types of data to React components.
 
 ## “Unsetting” styles
 
@@ -167,7 +169,7 @@ import * as stylex from '@stylexjs/stylex';
 
 const styles = stylex.create({
   base: {
-    color: null
+    color: null,
   },
 });
 ```

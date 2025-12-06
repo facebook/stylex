@@ -1,5 +1,5 @@
 ---
-title: "stylex.props"
+title: 'stylex.props'
 ---
 
 Takes an StyleX style or array of StyleX styles, and returns a props object.
@@ -10,7 +10,7 @@ The return value should be onto an element to apply the styles directly.
 ```ts
 function props(styles: StyleXStyles | StyleXStyles[]): {
   className: string;
-  style: {[key: string]: string};
+  style: { [key: string]: string };
 };
 ```
 
@@ -47,7 +47,9 @@ const styles = stylex.create({
 
 <Callout type="tip" title="For Solid, Svelte, Qwik, Vue">
 
-For frameworks that expect `class` instead of `className`, and expect `style` to be a string instead of an object, you can wrap use of the `props` API with the function below.
+For frameworks that expect `class` instead of `className`, and expect `style` to
+be a string instead of an object, you can wrap use of the `props` API with the
+function below.
 
 ```js
 export function attrs({ className, 'data-style-src': dataStyleSrc, style }) {

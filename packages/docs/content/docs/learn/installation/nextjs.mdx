@@ -1,19 +1,22 @@
 ---
-title: "Next.js"
+title: 'Next.js'
 ---
 
-[`examples/example-nextjs`](https://github.com/facebook/stylex/tree/main/examples/example-nextjs) configures
-StyleX for the Next.js App Router using the Babel and PostCSS plugins. Babel
-compiles StyleX in JS/TS, and the PostCSS plugin replaces the `@stylex`
-directive with the generated CSS.
+[`examples/example-nextjs`](https://github.com/facebook/stylex/tree/main/examples/example-nextjs)
+configures StyleX for the Next.js App Router using the Babel and PostCSS
+plugins. Babel compiles StyleX in JS/TS, and the PostCSS plugin replaces the
+`@stylex` directive with the generated CSS.
 
 ## Install
 
-<DevInstallExample dev={[`@stylexjs/babel-plugin`, `@stylexjs/postcss-plugin`]} />
+<DevInstallExample
+  dev={[`@stylexjs/babel-plugin`, `@stylexjs/postcss-plugin`]}
+/>
 
 ## Babel Configuration
 
-Create a `babel.config.js` file in your project root and add the StyleX Babel plugin to it.
+Create a `babel.config.js` file in your project root and add the StyleX Babel
+plugin to it.
 
 ```js
 const path = require('path');
@@ -43,15 +46,15 @@ code are transformed.
 
 ## CSS entrypoint
 
-Import a CSS file in your root layout component file, so that your entire application
-can have a single atomic CSS file.
+Import a CSS file in your root layout component file, so that your entire
+application can have a single atomic CSS file.
 
 Include the `@stylex` directive within this CSS file.
 
 ```css
 /* app/globals.css */
 @layer resets {
-  * { 
+  * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -63,10 +66,12 @@ Include the `@stylex` directive within this CSS file.
 
 ## PostCSS Configuration
 
-Next, create a `postcss.config.js` that imports the Babel configuration to ensure that both the Babel and PostCSS plugins
-use the same configuration for StyleX.
+Next, create a `postcss.config.js` that imports the Babel configuration to
+ensure that both the Babel and PostCSS plugins use the same configuration for
+StyleX.
 
-Configure the `include` option with glob patterns to look for all source files that may contain StyleX styles.
+Configure the `include` option with glob patterns to look for all source files
+that may contain StyleX styles.
 
 ```js
 const babelConfig = require('./babel.config');
@@ -96,9 +101,11 @@ module.exports = {
 };
 ```
 
-You can skip Babel transforms for anything other than StyleX in your PostCSS configuration to speed up CSS generation.
+You can skip Babel transforms for anything other than StyleX in your PostCSS
+configuration to speed up CSS generation.
 
 ## Using the configurations
 
-Once you define these configuration files, Next.js will automatically use Babel and PostCSS without any changes to your
-`next.config.js` file. Since Next.js 16.0.3, this works with both Webpack and Turbopack.
+Once you define these configuration files, Next.js will automatically use Babel
+and PostCSS without any changes to your `next.config.js` file. Since Next.js
+16.0.3, this works with both Webpack and Turbopack.

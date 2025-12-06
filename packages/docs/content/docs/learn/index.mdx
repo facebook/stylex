@@ -1,6 +1,8 @@
 ---
 title: Introduction
-description: StyleX is a simple, easy-to-use JavaScript syntax and compiler for styling web apps.
+description:
+  StyleX is a simple, easy-to-use JavaScript syntax and compiler for styling web
+  apps.
 ---
 
 StyleX combines the strengths and avoids the weaknesses of both inline styles
@@ -27,7 +29,8 @@ superior to what could be authored and maintained by hand.
 
 - Apply styles conditionally.
 - Merge and compose arbitrary styles across component and file boundaries.
-- Use local constants and expressions to keep styles DRY. Or repeat styles without worrying about performance.
+- Use local constants and expressions to keep styles DRY. Or repeat styles
+  without worrying about performance.
 
 ### Fast
 
@@ -63,8 +66,8 @@ const styles = stylex.create({
 });
 ```
 
-Any number of rules can be created by using additional keys and additional
-calls to `create()`:
+Any number of rules can be created by using additional keys and additional calls
+to `create()`:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -92,7 +95,9 @@ const colorStyles = stylex.create({
   },
 });
 
-function ReactDiv({ color, isActive, style }) { /* ... */ }
+function ReactDiv({ color, isActive, style }) {
+  /* ... */
+}
 ```
 
 ### Use styles
@@ -126,14 +131,14 @@ such as `SolidJS`, `Preact` or `Qwik`.
 
 ## Ideal use cases
 
-StyleX works well in a wide variety of projects. However, it was designed to meet the
-challenges of particular use cases.
+StyleX works well in a wide variety of projects. However, it was designed to
+meet the challenges of particular use cases.
 
 ### Authoring UI in JavaScript
 
-StyleX is a CSS-in-JS library, which means that it is most useful when an app's UI is
-authored in JavaScript. If an application uses a framework like React, Preact, Solid,
-lit-html, or Angular, using StyleX should be a good fit.
+StyleX is a CSS-in-JS library, which means that it is most useful when an app's
+UI is authored in JavaScript. If an application uses a framework like React,
+Preact, Solid, lit-html, or Angular, using StyleX should be a good fit.
 
 Some frameworks, such as Svelte and Vue use custom file formats that are
 compiled to JavaScript at build time. StyleX can still be used in these
@@ -155,8 +160,8 @@ For years, we have had to choose between "Design System" components that come
 with styles baked in but can be difficult to customize or "Headless" components
 that are completely unstyled.
 
-StyleX empowers developers to build UI components that can have default styles _and_
-still be customizable.
+StyleX empowers developers to build UI components that can have default styles
+_and_ still be customizable.
 
 Further, the consistency enables sharing these components by publishing them to
 NPM. As long as the consumer of a component is also using StyleX, the styles

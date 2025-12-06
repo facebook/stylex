@@ -5,4 +5,3 @@ export const tokens = stylex.defineVars({
   secondaryColor: 'green',
   padding: '10px',
 });
-

@@ -13,7 +13,7 @@ import TabItem from './TabItem';
 import mdx from 'fumadocs-ui/mdx';
 import { versionTag } from './VersionTag';
 
-const codeForCLI = ({ prod, dev }: { prod: string[], dev: string[] }) => ({
+const codeForCLI = ({ prod, dev }: { prod: string[]; dev: string[] }) => ({
   npm: [
     prod?.length > 0 ? `npm install --save ${prod.join(' ')}` : null,
     dev?.length > 0 ? `npm install --save-dev ${dev.join(' ')}` : null,
@@ -50,7 +50,7 @@ export function DevInstallExample({ prod = [], dev = [] }) {
     <mdx.CodeBlockTabs>
       {Object.keys(codeExamples).map((key) => (
         <mdx.CodeBlockTab key={key} value={key}>
-        <mdx.pre>{codeExamples[key]}</mdx.pre>
+          <mdx.pre>{codeExamples[key]}</mdx.pre>
         </mdx.CodeBlockTab>
       ))}
     </mdx.CodeBlockTabs>

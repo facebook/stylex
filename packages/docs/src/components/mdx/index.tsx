@@ -16,5 +16,5 @@ export const mdxComponents = {
   Tabs,
   Dial,
   DevInstallExample,
-  WhenDemo: Card
+  WhenDemo: Card,
 };

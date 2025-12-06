@@ -32,7 +32,7 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
         {...stylex.props(
           navbarStyles.header,
           // value.length > 0 && navbarStyles.headerWithVals,
-          (value.length > 0) && navbarStyles.headerOpaque,
+          value.length > 0 && navbarStyles.headerOpaque,
           xstyle,
         )}
       >

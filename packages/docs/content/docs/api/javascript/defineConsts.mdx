@@ -1,12 +1,16 @@
 ---
-title: "stylex.defineConsts"
+title: 'stylex.defineConsts'
 ---
 
-Defines static style constants that can be used directly in `create` calls anywhere in the codebase. Unlike `defineVars`, these values are inlined at build time and do not generate actual CSS variables.
+Defines static style constants that can be used directly in `create` calls
+anywhere in the codebase. Unlike `defineVars`, these values are inlined at build
+time and do not generate actual CSS variables.
 
-*Note: `defineConsts` does not currently have `runtimeInjection` or `enableMediaQueryOrder` config support.*
+_Note: `defineConsts` does not currently have `runtimeInjection` or
+`enableMediaQueryOrder` config support._
 
 Common use cases include:
+
 - Media queries
 - Fixed z-index layers
 - Animation durations or easing curves
@@ -20,7 +24,9 @@ function defineConsts<Consts extends { [key: string]: string }>(
 
 ### Example use
 
-Like `defineVars`, you must define your constants as named exports in a `.stylex.js` (or `.stylex.ts`) file. You can mix constants and variables in the same file.
+Like `defineVars`, you must define your constants as named exports in a
+`.stylex.js` (or `.stylex.ts`) file. You can mix constants and variables in the
+same file.
 
 ```tsx title="constants.stylex.js"
 import * as stylex from '@stylexjs/stylex';

@@ -1,11 +1,13 @@
 ---
-title: "Types for Variables"
+title: 'Types for Variables'
 ---
 
 <Callout type="info" title="Note">
 
-The [`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
-option needs to be enabled in the StyleX Babel configuration to enable theming APIs.
+The
+[`unstable_moduleResolution`](/docs/api/configuration/babel-plugin/#unstable_moduleresolution)
+option needs to be enabled in the StyleX Babel configuration to enable theming
+APIs.
 
 </Callout>
 
@@ -21,8 +23,9 @@ majority of use-cases. However, modern browsers support defining types for CSS
 variables. A variable can be declared with an `@property` rule that specifies
 the `<syntax>` type of the variable.
 
-Doing so can enable some interesting use-cases that would otherwise not be possible
-with CSS. Some examples include:
+Doing so can enable some interesting use-cases that would otherwise not be
+possible with CSS. Some examples include:
+
 - Animating gradients by animating an angle or color variables
 - Capturing the value of `1em` on an element and using it on a descendant
 - Converting a floating point number to an integer
@@ -32,12 +35,13 @@ with CSS. Some examples include:
 To assign types to variables in StyleX, you can use the various functions, such
 as `stylex.types.color` or `stylex.types.length`.
 
-Reference the [API documentation](/docs/api/javascript/types) for a full list of available functions.
+Reference the [API documentation](/docs/api/javascript/types) for a full list of
+available functions.
 
 ## Usage
 
-To assign types to variables, the value of the variable can be wrapped in
-with the appropriate type function.
+To assign types to variables, the value of the variable can be wrapped in with
+the appropriate type function.
 
 For example, consider the following set of variables:
 
@@ -70,31 +74,30 @@ export const tokens = stylex.defineVars({
 
 ### Conditional Values
 
-The usage remains unchanged even when at-rules are used within the values.
-The following is completely valid:
+The usage remains unchanged even when at-rules are used within the values. The
+following is completely valid:
 
 ```tsx title="tokens.stylex.js"
 import * as stylex from '@stylexjs/stylex';
 
 export const colors = stylex.defineVars({
-  primaryText: stylex.types.color({default: 'black', [DARK]: 'white'}),
+  primaryText: stylex.types.color({ default: 'black', [DARK]: 'white' }),
 });
 ```
 
 ## Type-safety in your source code
 
-The primary utility of `stylex.types.*` functions is to enable functionality
-by declaring types for variables in the generated CSS. However, the StyleX API
-also enhances the type-safety within your own codebase.
+The primary utility of `stylex.types.*` functions is to enable functionality by
+declaring types for variables in the generated CSS. However, the StyleX API also
+enhances the type-safety within your own codebase.
 
-When a variable is declared with a certain type within `defineVars`, the
-static types will enforce that the same type function is used when the variable
-is themed within a `createTheme` call.
-
+When a variable is declared with a certain type within `defineVars`, the static
+types will enforce that the same type function is used when the variable is
+themed within a `createTheme` call.
 
 ```tsx title="theme.js"
 import * as stylex from '@stylexjs/stylex';
-import {tokens} from './tokens.stylex.js';
+import { tokens } from './tokens.stylex.js';
 
 export const highContrast = stylex.createTheme(tokens, {
   primaryText: stylex.types.color('black'),
@@ -113,9 +116,10 @@ is required by the static types for type-safety.
 
 ### Simulating [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round)
 
-Modern browsers are starting to support
-the [`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round) function in CSS.
-However, the feature can be simulated with a variable with an `integer` type:
+Modern browsers are starting to support the
+[`round()`](https://developer.mozilla.org/en-US/docs/Web/CSS/round) function in
+CSS. However, the feature can be simulated with a variable with an `integer`
+type:
 
 ```tsx
 const styles = stylex.create({
@@ -129,13 +133,12 @@ const styles = stylex.create({
     // Now, the "integer" value can be used for styling:
     width: `calc(${tokens.int} * 1px)`,
   },
-})
+});
 ```
 
-Since `tokens.int` is declared with an `integer` type, any fractional
-value is discarded and the value is cast into an integer type whenever
-a value is assigned.
-
+Since `tokens.int` is declared with an `integer` type, any fractional value is
+discarded and the value is cast into an integer type whenever a value is
+assigned.
 
 ### Animating gradients
 
@@ -143,19 +146,28 @@ It is usually not possible to animate gradients. However, by using a typed
 `angle` variable, the gradient can be animated by animating the angle used
 within it.
 
-Instead of animating a *normal* CSS property, the `angle` variable can be
+Instead of animating a _normal_ CSS property, the `angle` variable can be
 animated with `keyframes`:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
-import {tokens} from './tokens.stylex';
+import { tokens } from './tokens.stylex';
 
 const rotate = stylex.keyframes({
   from: { [tokens.angle]: '0deg' },
   to: { [tokens.angle]: '360deg' },
 });
 
-const colors = ['#ffadad', '#ffd6a5', '#fdffb6', '#caffbf', '#9bf6ff', '#a0c4ff', '#bdb2ff', '#ffc6ff'].join(', ');
+const colors = [
+  '#ffadad',
+  '#ffd6a5',
+  '#fdffb6',
+  '#caffbf',
+  '#9bf6ff',
+  '#a0c4ff',
+  '#bdb2ff',
+  '#ffc6ff',
+].join(', ');
 
 const styles = stylex.create({
   gradient: {
@@ -165,7 +177,7 @@ const styles = stylex.create({
     animationTimingFunction: 'linear',
     animationIterationCount: 'infinite',
   },
-})
+});
 ```
 
 This can be used to create rotating conic gradients:

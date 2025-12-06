@@ -1,5 +1,5 @@
 ---
-title: "@stylexjs/eslint-plugin"
+title: '@stylexjs/eslint-plugin'
 ---
 
 ## Configuration options
@@ -11,33 +11,31 @@ type Options = {
   // Possible strings where you can import stylex from
   //
   // Default: ['stylex', '@stylexjs/stylex']
-  validImports: Array<string | { from: string, as: string }>,
+  validImports: Array<string | { from: string; as: string }>;
 
   // Custom limits for values of various properties
-  propLimits?: PropLimits,
+  propLimits?: PropLimits;
 
   // @deprecated
   // Allow At Rules and Pseudo Selectors outside of
   // style values.
   //
   // Default: false
-  allowOuterPseudoAndMedia: boolean,
+  allowOuterPseudoAndMedia: boolean;
 
   // @deprecated
   // Disallow properties that are known to break
   // in 'legacy-expand-shorthands' style resolution mode.
   //
   // Default: false
-  banPropsForLegacy: boolean,
-
+  banPropsForLegacy: boolean;
 };
 
 type PropLimits = {
   // The property name as a string or a glob pattern
   [propertyName: string]: {
-    limit:
-      // Disallow the property
-      | null
+    limit: // Disallow the property
+    | null
       // Allow any string value
       | 'string'
       // Allow any number value
@@ -51,13 +49,14 @@ type PropLimits = {
       | number
       // You can also provide an array of valid
       // number or string constant values.
-      | Array<string | number>,
+      | Array<string | number>;
     // The error message to show when a value doesn't
     // conform to the provided restriction.
-    reason: string,
-  },
+    reason: string;
+  };
 };
 ```
+
 #### Example
 
 ```json
@@ -93,17 +92,17 @@ type Options = {
   // Possible string where you can import stylex from
   //
   // Default: ['stylex', '@stylexjs/stylex']
-  validImports: Array<string | { from: string, as: string }>,
+  validImports: Array<string | { from: string; as: string }>;
 
   // Minimum number of keys required after which the rule is enforced
   //
   // Default: 2
-  minKeys: number,
+  minKeys: number;
 
   // Sort groups of keys that have a blank line between them separately
   //
   // Default: false
-  allowLineSeparatedGroups: boolean,
+  allowLineSeparatedGroups: boolean;
 };
 ```
 
@@ -131,17 +130,17 @@ type Options = {
   // Possible string where you can import stylex from
   //
   // Default: ['stylex', '@stylexjs/stylex']
-  validImports: Array<string | { from: string, as: string }>,
+  validImports: Array<string | { from: string; as: string }>;
 
   // Whether `!important` is allowed
   //
   // Default: false
-  allowImportant: boolean,
+  allowImportant: boolean;
 
   // Whether the expansion uses logical direction properties over physical
   //
   // Default: false
-  preferInline: boolean,
+  preferInline: boolean;
 };
 ```
 
@@ -152,12 +151,12 @@ type Options = {
   // Possible string where you can import stylex from
   //
   // Default: ['stylex', '@stylexjs/stylex']
-  validImports: Array<string | { from: string, as: string }>,
+  validImports: Array<string | { from: string; as: string }>;
 
   // The file extension to enforce for theme files
   //
   // Default: '.stylex.js'
-  themeFileExtension: string,
+  themeFileExtension: string;
 };
 ```
 
@@ -168,7 +167,7 @@ type Options = {
   // Possible string where you can import stylex from
   //
   // Default: ['stylex', '@stylexjs/stylex']
-  validImports: Array<string | { from: string, as: string }>,
+  validImports: Array<string | { from: string; as: string }>;
 };
 ```
 
@@ -179,6 +178,6 @@ type Options = {
   // Possible string where you can import stylex from
   //
   // Default: ['stylex', '@stylexjs/stylex']
-  validImports: Array<string | { from: string, as: string }>,
+  validImports: Array<string | { from: string; as: string }>;
 };
 ```

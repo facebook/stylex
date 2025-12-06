@@ -1,22 +1,26 @@
 ---
-title: "PostCSS"
+title: 'PostCSS'
 ---
 
-With certain build pipelines, the StyleX unplugin package may not be feasible. In such scenarios,
-the StyleX PostCSS plugin offers an easier and more compatible alternative.
+With certain build pipelines, the StyleX unplugin package may not be feasible.
+In such scenarios, the StyleX PostCSS plugin offers an easier and more
+compatible alternative.
 
-The PostCSS plugin lets you decouple the transformation of your JS files with Babel and the generation
-of your CSS file.
+The PostCSS plugin lets you decouple the transformation of your JS files with
+Babel and the generation of your CSS file.
 
 ## Install
 
 Start by installing the StyleX babel and postcss plugins:
 
-<DevInstallExample dev={[`@stylexjs/babel-plugin`, `@stylexjs/postcss-plugin`]} />
+<DevInstallExample
+  dev={[`@stylexjs/babel-plugin`, `@stylexjs/postcss-plugin`]}
+/>
 
 ## Babel configuration
 
-Create a `babel.config.js` file in your project root and add the StyleX Babel plugin to it.
+Create a `babel.config.js` file in your project root and add the StyleX Babel
+plugin to it.
 
 ```js
 const path = require('path');
@@ -37,11 +41,13 @@ module.exports = {
 };
 ```
 
-Ensure that your JS source files are being transpiled by Babel using this configuration.
+Ensure that your JS source files are being transpiled by Babel using this
+configuration.
 
 ## CSS entrypoint
 
-Next, ensure that your application contains a single global CSS file that includes the `@stylex` directive:
+Next, ensure that your application contains a single global CSS file that
+includes the `@stylex` directive:
 
 ```css
 @layer base {
@@ -56,17 +62,18 @@ Next, ensure that your application contains a single global CSS file that includ
 @stylex;
 ```
 
-If your build pipeline supports CSS imports, we recommend importing this in your root layout component,
-so that it is included for all routes of your app.
+If your build pipeline supports CSS imports, we recommend importing this in your
+root layout component, so that it is included for all routes of your app.
 
 ## PostCSS configuration
 
-Next, create a `postcss.config.js` that imports the Babel configuration to ensure that both the Babel and PostCSS plugins
-use the same configuration. Ensure that your build pipeline postprocesses your CSS with PostCSS using this config file.
+Next, create a `postcss.config.js` that imports the Babel configuration to
+ensure that both the Babel and PostCSS plugins use the same configuration.
+Ensure that your build pipeline postprocesses your CSS with PostCSS using this
+config file.
 
-Other than the `babelConfig` option, define one or more glob patterns for the `include` option to define all the files
-that may contain StyleX styles.
-
+Other than the `babelConfig` option, define one or more glob patterns for the
+`include` option to define all the files that may contain StyleX styles.
 
 ```js
 // postcss.config.mjs
@@ -87,14 +94,18 @@ export default {
 };
 ```
 
-The PostCSS plugin will find all files that match the `include` glob patterns and transform them with the Babel plugin,
-collect the styles from them all, and replace the `@stylex` directive with the generated CSS. The PostCSS plugin uses
+The PostCSS plugin will find all files that match the `include` glob patterns
+and transform them with the Babel plugin, collect the styles from them all, and
+replace the `@stylex` directive with the generated CSS. The PostCSS plugin uses
 per-file caching to speed up subsequent builds.
 
 ## Examples
 
-The [storybook example](https://github.com/facebook/stylex/tree/main/examples/example-storybook) in the StyleX repository
-shows one such usage of the PostCSS plugin.
+The
+[storybook example](https://github.com/facebook/stylex/tree/main/examples/example-storybook)
+in the StyleX repository shows one such usage of the PostCSS plugin.
 
-The [next.js example](https://github.com/facebook/stylex/tree/main/examples/example-nextjs) uses the same setup to integrate
-StyleX with Turbopack, which doesn't yet have a plugin API.
+The
+[next.js example](https://github.com/facebook/stylex/tree/main/examples/example-nextjs)
+uses the same setup to integrate StyleX with Turbopack, which doesn't yet have a
+plugin API.
