@@ -1,0 +1,10 @@
+{
+    "pages": [
+        "./variants.mdx",
+        "./context-driven-styles.mdx",
+        "./descendant-styles.mdx",
+        "./reset-themes.mdx",
+        "./merge-themes.mdx",
+        "./light-dark-themes.mdx"
+    ]
+}
