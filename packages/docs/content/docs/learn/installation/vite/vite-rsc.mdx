@@ -1,37 +1,42 @@
 ---
-# Copyright (c) Meta Platforms, Inc. and affiliates.
-#
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
-sidebar_position: 3
+title: "Vite + React Server Components"
 ---
 
-# React Router (RSC)
-
-[`examples/example-react-router`](https://github.com/facebook/stylex/tree/main/examples/example-react-router)
-uses Vite’s experimental React Server Components plugin with StyleX compiled by
-`@stylexjs/unplugin`. The StyleX plugin runs before the RSC plugin so both
-client and server bundles share the same aggregated CSS.
+[`examples/example-vite-rsc`](https://github.com/facebook/stylex/tree/main/examples/example-vite-rsc) layers
+`@vitejs/plugin-rsc` on top of React while `@stylexjs/unplugin` compiles StyleX
+for each environment (RSC, SSR, client). Every build output receives a single
+CSS asset with aggregated StyleX styles.
 
 ## Vite configuration
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite';
+import rsc from '@vitejs/plugin-rsc';
 import react from '@vitejs/plugin-react';
-import rsc from '@react-router/dev/vite';
+import { defineConfig } from 'vite';
 import stylex from '@stylexjs/unplugin';
 
 export default defineConfig({
-  plugins: [
-    stylex.vite({ useCSSLayers: true }),
-    react(),
-    rsc(),
-  ],
+  plugins: [rsc(), react(), stylex.vite({
+    // ... StyleX configuration options
+  })],
+  environments: {
+    rsc: {
+      build: { rollupOptions: { input: { index: './src/framework/entry.rsc.tsx' } } },
+    },
+    ssr: {
+      build: { rollupOptions: { input: { index: './src/framework/entry.ssr.tsx' } } },
+    },
+    client: {
+      build: { rollupOptions: { input: { index: './src/framework/entry.browser.tsx' } } },
+    },
+  },
 });
 ```
 
-- Keep `stylex.vite()` first to preserve Fast Refresh.
+- `stylex.vite()` runs for every environment, so each bundle gets the correct
+  CSS appended.
+- Add options such as `useCSSLayers` if desired.
 
 ## CSS entrypoint
 
@@ -68,19 +73,21 @@ export function DevStyleXInject({ cssHref }: { cssHref: string }) {
 }
 ```
 
-Render `<DevStyleXInject />` in your HTML shell component.
+Render `<DevStyleXInject cssHref="/stylex.css" />` in your HTML shell component.
 
 ```tsx
-// src/routes/root/client.tsx (excerpt)
+// src/root.tsx (excerpt)
 import { DevStyleXInject } from './DevStyleXInject';
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Root(props: { url: URL }) {
   return (
     <html lang="en">
       <head>
-        <DevStyleXInject />
+        <DevStyleXInject cssHref="/stylex.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <App {...props} />
+      </body>
     </html>
   );
 }

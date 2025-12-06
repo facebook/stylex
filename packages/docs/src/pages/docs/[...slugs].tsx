@@ -1,6 +1,5 @@
 import { source } from '@/lib/source';
 import { PageProps } from 'waku/router';
-import defaultMdxComponents from 'fumadocs-ui/mdx';
 import {
   DocsBody,
   DocsDescription,
@@ -39,7 +38,6 @@ export default function DocPage({ slugs }: PageProps<'/docs/[...slugs]'>) {
       <DocsBody>
         <MDX
           components={{
-            ...defaultMdxComponents,
             ...mdxComponents,
           }}
         />

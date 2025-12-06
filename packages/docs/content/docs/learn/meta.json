@@ -3,7 +3,7 @@
     "pages": [
         "./index.mdx",
         "./thinking-in-stylex.mdx",
-        "./installation.mdx",
+        "./installation",
         "./styling-ui",
         "./theming",
         "./recipes",

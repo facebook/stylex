@@ -4,7 +4,7 @@ import { type ComponentProps, type ReactNode, useMemo } from 'react';
 import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
 import Link from 'fumadocs-core/link';
 import { useSearchContext } from 'fumadocs-ui/contexts/search';
-import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
+// import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
 import { usePathname } from 'fumadocs-core/framework';
 import * as stylex from '@stylexjs/stylex';
 import { BaseLayoutProps, StyleXComponentProps } from './shared';
@@ -96,7 +96,9 @@ function NavbarSidebarTrigger({
   xstyle,
   ...props
 }: StyleXComponentProps<'button'>) {
-  const { open, setOpen } = useSidebar();
+  // const { open, setOpen } = useSidebar();
+  const open = true;
+  const setOpen = (open: any) => {};
 
   return (
     <button
@@ -114,8 +116,8 @@ const commonStyles = stylex.create({
 
 function Sidebar() {
   const { root } = useTreeContext();
-  const { open } = useSidebar();
-
+  // const { open } = useSidebar();
+  const open = true;
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
       return items.map((item) => (

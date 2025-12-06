@@ -1,4 +1,5 @@
 'use client';
+
 import { ChevronDown, ExternalLink } from 'lucide-react';
 import { usePathname } from 'fumadocs-core/framework';
 import {
@@ -141,7 +142,8 @@ export function SidebarContent({
   xstyle,
   ...props
 }: StyleXComponentProps<'aside'>) {
-  const { collapsed } = useSidebar();
+  // const { collapsed } = useSidebar();
+  const collapsed = false;
   const [hover, setHover] = useState(false);
   const timerRef = useRef(0);
   const closeTimeRef = useRef(0);
@@ -253,34 +255,30 @@ export function SidebarContentMobile({
   children,
   ...props
 }: StyleXComponentProps<'aside'>) {
-  const { open, setOpen } = useSidebar();
+  // const { open, setOpen } = useSidebar();
+  const open = true;
+  const setOpen = (open: any) => {};
   const state = open ? 'open' : 'closed';
 
   return (
     <>
-      <Presence present={open}>
-        <div
-          {...stylex.props(mobContentStyles.top)}
-          data-state={state}
-          onClick={() => setOpen(false)}
-        />
-      </Presence>
-      <Presence present={open}>
-        {({ present }) => (
-          <aside
-            {...props}
-            {...stylex.props(
-              mobContentStyles.bottom,
-              !present && mobContentStyles.hidden,
-              xstyle,
-            )}
-            id="nd-sidebar-mobile"
-            data-state={state}
-          >
-            {children}
-          </aside>
+      <div
+        {...stylex.props(mobContentStyles.top)}
+        data-state={state}
+        onClick={() => setOpen(false)}
+      />
+      <aside
+        {...props}
+        {...stylex.props(
+          mobContentStyles.bottom,
+          // !present && mobContentStyles.hidden,
+          xstyle,
         )}
-      </Presence>
+        id="nd-sidebar-mobile"
+        data-state={state}
+      >
+        {children}
+      </aside>
     </>
   );
 }
@@ -630,14 +628,15 @@ export function SidebarTrigger({
   xstyle,
   ...props
 }: StyleXComponentProps<'button'>) {
-  const { setOpen } = useSidebar();
+  // const { setOpen } = useSidebar();
+  const setOpen = (open: any) => {};
 
   return (
     <button
       {...props}
       {...stylex.props(xstyle)}
       aria-label="Open Sidebar"
-      onClick={() => setOpen((prev) => !prev)}
+      onClick={() => setOpen((prev: any) => !prev)}
     >
       {children}
     </button>
