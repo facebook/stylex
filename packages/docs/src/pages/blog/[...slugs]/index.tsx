@@ -82,8 +82,8 @@ export async function getConfig() {
   console.log('slugs', slugs);
 
   return {
-    render: 'dynamic' as const,
-    // staticPaths: slugs,
+    render: 'static' as const,
+    staticPaths: slugs,
   } as const;
 }
 
