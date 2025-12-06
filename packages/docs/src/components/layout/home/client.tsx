@@ -15,7 +15,6 @@ import {
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from '../../navigation-menu';
-import { useNav } from 'fumadocs-ui/contexts/layout';
 import {
   buttonVariantStyles,
   buttonSizeVariants,
@@ -25,8 +24,6 @@ import * as stylex from '@stylexjs/stylex';
 
 export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
   const [value, setValue] = useState('');
-  const { isTransparent } = useNav();
-
   return (
     <NavigationMenu value={value} onValueChange={setValue} asChild>
       <header
@@ -34,8 +31,8 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
         {...props}
         {...stylex.props(
           navbarStyles.header,
-          value.length > 0 && navbarStyles.headerWithVals,
-          (!isTransparent || value.length > 0) && navbarStyles.headerOpaque,
+          // value.length > 0 && navbarStyles.headerWithVals,
+          (value.length > 0) && navbarStyles.headerOpaque,
           xstyle,
         )}
       >

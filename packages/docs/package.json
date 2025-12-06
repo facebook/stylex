@@ -13,7 +13,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
-    "@stylexjs/stylex": "^0.16.3",
+    "@stylexjs/stylex": "^0.17.2",
     "fumadocs-core": "16.0.11",
     "fumadocs-mdx": "13.0.8",
     "fumadocs-ui": "16.0.11",
@@ -31,7 +31,7 @@
     "lucide-react": "^0.553.0"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "^0.16.3",
+    "@stylexjs/unplugin": "^0.17.2",
     "@tailwindcss/vite": "^4.1.16",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.0",

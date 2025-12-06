@@ -1,7 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { blogSource } from '@/lib/source';
 import { PageProps } from 'waku/router';
-import defaultMdxComponents from 'fumadocs-ui/mdx';
 import {
   DocsBody,
   DocsDescription,
@@ -68,7 +67,6 @@ export default function BlogPage({ slugs }: PageProps<'/blog/[...slugs]'>) {
       <DocsBody>
         <MDX
           components={{
-            ...defaultMdxComponents,
             ...mdxComponents,
           }}
         />
