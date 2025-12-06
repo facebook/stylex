@@ -113,6 +113,7 @@ export function Header({
             />
           ))}
       </ul>
+      <div {...stylex.props(styles.grow)} />
       <div {...stylex.props(styles.searchContainer)}>
         {searchToggle.enabled !== false &&
           (searchToggle.components?.lg ?? (
@@ -121,32 +122,34 @@ export function Header({
               hideIfDisabled
             />
           ))}
-        {themeSwitch.enabled !== false &&
-          (themeSwitch.component ?? <ThemeToggle mode={themeSwitch?.mode} />)}
-        {i18n && (
-          <LanguageToggle>
-            <Languages {...stylex.props(styles.languageToggle)} />
-          </LanguageToggle>
-        )}
-        <ul {...stylex.props(styles.endLinkList)}>
-          {navItems.filter(isSecondary).map((item, i) => (
-            <NavbarLinkItem
-              key={i}
-              item={item}
-              xstyle={
-                item.type === 'icon'
-                  ? [
-                      styles.endIconLink,
-                      i === 0 && styles.firstEndIconLink,
-                      i === navItems.length - 1 && styles.lastEndIconLink,
-                    ]
-                  : []
-              }
-            />
-          ))}
-        </ul>
       </div>
-      <ul {...stylex.props(styles.mobileSearchContainer)}>
+      <div {...stylex.props(styles.grow)} />
+      <ul {...stylex.props(styles.endLinkList)}>
+        {navItems.filter(isSecondary).map((item, i) => (
+          <NavbarLinkItem
+            key={i}
+            item={item}
+            xstyle={
+              item.type === 'icon'
+                ? [
+                    styles.endIconLink,
+                    i === 0 && styles.firstEndIconLink,
+                    i === navItems.length - 1 && styles.lastEndIconLink,
+                  ]
+                : []
+            }
+          />
+        ))}
+      </ul>
+      {i18n && (
+        <LanguageToggle>
+          <Languages {...stylex.props(styles.languageToggle)} />
+        </LanguageToggle>
+      )}
+      {themeSwitch.enabled !== false &&
+        (themeSwitch.component ?? <ThemeToggle mode={themeSwitch?.mode} />)}
+
+      {/* <ul {...stylex.props(styles.mobileSearchContainer)}>
         {searchToggle.enabled !== false &&
           (searchToggle.components?.sm ?? (
             <SearchToggle xstyle={styles.mobileSearchToggle} hideIfDisabled />
@@ -197,7 +200,7 @@ export function Header({
             </div>
           </MenuContent>
         </Menu>
-      </ul>
+      </ul> */}
     </Navbar>
   );
 }
@@ -213,7 +216,6 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    paddingTop: 14 * 4,
   },
   navTitleLink: {
     display: 'inline-flex',
@@ -254,6 +256,9 @@ const styles = stylex.create({
     height: 20,
     width: 20,
   },
+  grow: {
+    flexGrow: 1,
+  },
   endLinkList: {
     display: { default: 'flex', ':empty': 'none' },
     flexDirection: 'row',
@@ -288,7 +293,7 @@ const styles = stylex.create({
   },
   primaryMenuLink: {
     display: {
-      default: 'var(--display)',
+      default: 'var(--display)' as any,
       '@media (min-width: 640px)': 'none',
     },
   },
