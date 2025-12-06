@@ -29,12 +29,7 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
       <header
         id="nd-nav"
         {...props}
-        {...stylex.props(
-          navbarStyles.header,
-          // value.length > 0 && navbarStyles.headerWithVals,
-          value.length > 0 && navbarStyles.headerOpaque,
-          xstyle,
-        )}
+        {...stylex.props(navbarStyles.header, xstyle)}
       >
         <NavigationMenuList
           {...stylex.props(navbarStyles.menuList, xstyle)}
@@ -52,8 +47,8 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
 const navbarStyles = stylex.create({
   header: {
     // 'fixed top-(--fd-banner-height) z-40 left-0 right-(--removed-body-scroll-bar-size,0) backdrop-blur-lg border-b transition-colors *:mx-auto *:max-w-fd-container',
-    position: 'fixed',
-    top: 'var(--fd-banner-height)',
+    position: 'sticky',
+    top: 0,
     zIndex: 40,
     insetInlineStart: 0,
     insetInlineEnd: 'var(--removed-body-scroll-bar-size, 0)',

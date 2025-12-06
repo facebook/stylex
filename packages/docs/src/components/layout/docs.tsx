@@ -9,6 +9,7 @@ import { usePathname } from 'fumadocs-core/framework';
 import * as stylex from '@stylexjs/stylex';
 import { BaseLayoutProps, StyleXComponentProps } from './shared';
 import { activeLinkMarker } from '../../theming/vars.stylex';
+import { Header } from './home';
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root;
@@ -18,19 +19,15 @@ export interface DocsLayoutProps extends BaseLayoutProps {
 export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
   return (
     <TreeContextProvider tree={tree}>
-      <header {...stylex.props(layoutStyles.header)}>
-        <nav {...stylex.props(layoutStyles.nav)}>
-          <NavbarSidebarTrigger
-            {...stylex.props(layoutStyles.sidebarTrigger)}
-          />
-          <Link href="/" {...stylex.props(layoutStyles.title)}>
-            {props.nav?.title ?? 'My Docs'}
-          </Link>
+      <Header
+        links={props.links}
+        nav={props.nav}
+        themeSwitch={props.themeSwitch}
+        searchToggle={props.searchToggle}
+        i18n={props.i18n}
+        githubUrl={props.githubUrl}
+      />
 
-          <div {...stylex.props(layoutStyles.gap)} />
-          <SearchToggle />
-        </nav>
-      </header>
       <main id="nd-docs-layout" {...stylex.props(layoutStyles.main)}>
         <Sidebar />
         {children}
