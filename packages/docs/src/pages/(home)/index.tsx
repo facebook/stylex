@@ -7,11 +7,9 @@
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import { Link } from 'waku';
 import StylexAnimatedLogo from '@/components/StylexAnimatedLogo';
 import { ZStack, ZStackItem } from '@/components/ZStack';
 import CtaButton from '@/components/CtaButton';
-import { vars } from '../../theming/vars.stylex';
 
 export default function Home() {
   return (

@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import type { BaseLayoutProps } from '@/components/layout/shared';
 import * as stylex from '@stylexjs/stylex';
 import LogoBold from '@/components/LogoBold';
 import { vars } from '../theming/vars.stylex';

@@ -7,24 +7,11 @@ import {
   StyleXAttributes,
 } from '../shared/index';
 import { NavProvider } from 'fumadocs-ui/contexts/layout';
-import { LargeSearchToggle, SearchToggle } from '../../search-toggle';
+import { LargeSearchToggle } from '../../search-toggle';
 import { ThemeToggle } from '../../theme-toggle';
-import { LanguageToggle, LanguageToggleText } from '../../language-toggle';
-import { ChevronDown, Languages } from 'lucide-react';
+import { Languages } from 'lucide-react';
 import Link from 'fumadocs-core/link';
-import {
-  Navbar,
-  NavbarLinkItem,
-  Menu,
-  MenuContent,
-  MenuLinkItem,
-  MenuTrigger,
-} from './client';
-import {
-  buttonStyles,
-  buttonSizeVariants,
-  buttonVariantStyles,
-} from '../../ui/button';
+import { Navbar, NavbarLinkItem } from './client';
 import * as stylex from '@stylexjs/stylex';
 
 export interface HomeLayoutProps extends BaseLayoutProps {
@@ -78,7 +65,6 @@ export function HomeLayout(
 
 export function Header({
   nav = {},
-  i18n = false,
   links,
   githubUrl,
   themeSwitch = {},
@@ -91,9 +77,6 @@ export function Header({
 
   const navItems = finalLinks.filter((item) =>
     ['nav', 'all'].includes(item.on ?? 'all'),
-  );
-  const menuItems = finalLinks.filter((item) =>
-    ['menu', 'all'].includes(item.on ?? 'all'),
   );
 
   return (
@@ -141,66 +124,8 @@ export function Header({
           />
         ))}
       </ul>
-      {i18n && (
-        <LanguageToggle>
-          <Languages {...stylex.props(styles.languageToggle)} />
-        </LanguageToggle>
-      )}
       {themeSwitch.enabled !== false &&
         (themeSwitch.component ?? <ThemeToggle mode={themeSwitch?.mode} />)}
-
-      {/* <ul {...stylex.props(styles.mobileSearchContainer)}>
-        {searchToggle.enabled !== false &&
-          (searchToggle.components?.sm ?? (
-            <SearchToggle xstyle={styles.mobileSearchToggle} hideIfDisabled />
-          ))}
-        <Menu>
-          <MenuTrigger
-            {...stylex.props(
-              buttonStyles.base,
-              buttonSizeVariants.icon,
-              buttonVariantStyles.ghost,
-              stylex.defaultMarker(),
-            )}
-            aria-label="Toggle Menu"
-            enableHover={nav.enableHoverToOpen}
-          >
-            <ChevronDown {...stylex.props(styles.menuTriggerIcon)} />
-          </MenuTrigger>
-          <MenuContent xstyle={styles.mobileMenuContent}>
-            {menuItems
-              .filter((item) => !isSecondary(item))
-              .map((item, i) => (
-                <MenuLinkItem
-                  key={i}
-                  item={item}
-                  xstyle={styles.primaryMenuLink}
-                />
-              ))}
-            <div {...stylex.props(styles.themeSwitchContainer)}>
-              {menuItems.filter(isSecondary).map((item, i) => (
-                <MenuLinkItem
-                  key={i}
-                  item={item}
-                  xstyle={styles.secondaryMenuLink}
-                />
-              ))}
-              <div role="separator" {...stylex.props(styles.separator)} />
-              {i18n ? (
-                <LanguageToggle>
-                  <Languages {...stylex.props(styles.mobileLanguageToggle)} />
-                  <LanguageToggleText />
-                  <ChevronDown {...stylex.props(styles.languageChevron)} />
-                </LanguageToggle>
-              ) : null}
-              {themeSwitch.enabled !== false &&
-                (themeSwitch.component ?? (
-                  <ThemeToggle mode={themeSwitch?.mode} />
-                ))}
-            </div>
-          </MenuContent>
-        </Menu>
-      </ul> */}
     </Navbar>
   );
 }

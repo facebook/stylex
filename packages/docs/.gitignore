@@ -6,3 +6,5 @@ dist
 src/pages.gen.ts
 
 !lib/
+
+.vercel

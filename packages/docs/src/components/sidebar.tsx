@@ -15,7 +15,6 @@ import {
 } from 'react';
 import Link, { type LinkProps } from 'fumadocs-core/link';
 import { useOnChange } from 'fumadocs-core/utils/use-on-change';
-import { cn } from '../lib/cn';
 import { ScrollArea, ScrollViewport } from './ui/scroll-area';
 import { isActive } from '../lib/is-active';
 import {
@@ -23,9 +22,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from './ui/collapsible';
-import { type ScrollAreaProps } from '@radix-ui/react-scroll-area';
-import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
-import { cva } from 'class-variance-authority';
 import type {
   CollapsibleContentProps,
   CollapsibleTriggerProps,
@@ -33,7 +29,6 @@ import type {
 import type * as PageTree from 'fumadocs-core/page-tree';
 import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
 import { useMediaQuery } from 'fumadocs-core/utils/use-media-query';
-import { Presence } from '@radix-ui/react-presence';
 import { StyleXComponentProps } from './layout/shared';
 import * as stylex from '@stylexjs/stylex';
 
@@ -647,18 +642,13 @@ export function SidebarCollapseTrigger({
   xstyle,
   ...props
 }: StyleXComponentProps<'button'>) {
-  const { collapsed, setCollapsed } = useSidebar();
-
   return (
     <button
       type="button"
       aria-label="Collapse Sidebar"
-      data-collapsed={collapsed}
+      data-collapsed={false}
       {...props}
       {...stylex.props(xstyle)}
-      onClick={() => {
-        setCollapsed((prev) => !prev);
-      }}
     >
       {props.children}
     </button>
