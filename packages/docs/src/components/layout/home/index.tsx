@@ -9,10 +9,12 @@ import {
 import { NavProvider } from 'fumadocs-ui/contexts/layout';
 import { LargeSearchToggle } from '../../search-toggle';
 import { ThemeToggle } from '../../theme-toggle';
-import { Languages } from 'lucide-react';
+import { Languages, SidebarIcon } from 'lucide-react';
 import Link from 'fumadocs-core/link';
 import { Navbar, NavbarLinkItem } from './client';
 import * as stylex from '@stylexjs/stylex';
+import SidebarToggle from './SidebarToggle';
+import { SidebarProvider } from '@/contexts/SidebarContext';
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -81,6 +83,7 @@ export function Header({
 
   return (
     <Navbar>
+      <SidebarToggle />
       <Link {...stylex.props(styles.navTitleLink)} href={nav.url ?? '/'}>
         {nav.title}
       </Link>

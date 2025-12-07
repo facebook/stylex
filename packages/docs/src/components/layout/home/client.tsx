@@ -35,7 +35,7 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
           {...stylex.props(navbarStyles.menuList, xstyle)}
           asChild
         >
-          <nav>{props.children}</nav>
+          <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
         </NavigationMenuList>
 
         <NavigationMenuViewport />
@@ -45,6 +45,13 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
 }
 
 const navbarStyles = stylex.create({
+  nav: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingInline: 4 * 4,
+    gap: 4 * 4,
+  },
   header: {
     // 'fixed top-(--fd-banner-height) z-40 left-0 right-(--removed-body-scroll-bar-size,0) backdrop-blur-lg border-b transition-colors *:mx-auto *:max-w-fd-container',
     position: 'sticky',

@@ -3,6 +3,7 @@ import type * as PageTree from 'fumadocs-core/page-tree';
 import {
   type ReactNode,
   TouchEventHandler,
+  use,
   useEffect,
   useMemo,
   useRef,
@@ -14,6 +15,8 @@ import * as stylex from '@stylexjs/stylex';
 import { BaseLayoutProps } from './shared';
 import { activeLinkMarker } from '../../theming/vars.stylex';
 import { Header } from './home';
+import { ChevronDown } from 'lucide-react';
+import { SidebarContext } from '@/contexts/SidebarContext';
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root;
@@ -74,11 +77,16 @@ const layoutStyles = stylex.create({
     flexGrow: 1,
     flexDirection: 'row',
     ['--fd-nav-height' as any]: '56px',
+    paddingInlineStart: {
+      default: 292,
+      '@media (max-width: 767.9px)': 0,
+    },
   },
 });
 
 function Sidebar() {
   const { root } = useTreeContext();
+  const [open] = use(SidebarContext);
 
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
@@ -92,216 +100,88 @@ function Sidebar() {
     return renderItems(root.children);
   }, [root]);
 
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const baseRef = useRef<HTMLDivElement>(null);
-  const isPointerEnabledRef = useRef(false);
-
-  useEffect(() => {
-    const sidebar = sidebarRef.current;
-    if (sidebar) {
-      sidebar.scrollLeft = 9999;
-    }
-  }, []);
-
-  useEffect(() => {
-    const sidebar = sidebarRef.current;
-    const base = baseRef.current;
-    if (!sidebar || !base) {
-      return;
-    }
-    let initialScrollLeft = sidebar.scrollLeft;
-    let initialPageY: number | null = null;
-    let initialPageX: number | null = null;
-    let lastPageX: number | null = null;
-    let lastDeltaX: number | null = null;
-    let translate: number | null = null;
-    const handleTouchEnd = () => {
-      if (lastDeltaX == null || lastPageX == null || translate == null) {
-        return;
-      }
-
-      const ddx = lastDeltaX;
-      const lastTranslate = translate;
-
-      const frames = [
-        { transform: `translateX(${lastTranslate}px)` },
-        { transform: `translateX(${ddx > 0 ? 300 : 0}px)` },
-      ];
-      const animation = base.animate(frames, {
-        duration: 200,
-        easing: 'ease-in-out',
-      });
-      animation.onfinish = () => {
-        setTimeout(() => {
-          base.style.transform = `translateX(0)`;
-          if (ddx > 0) {
-            sidebar.scrollTo({ left: 0, behavior: 'instant' });
-          } else {
-            sidebar.scrollTo({ left: 9999, behavior: 'instant' });
-          }
-        }, 300);
-      };
-
-      reset();
-    };
-    const reset = () => {
-      translate = null;
-      initialPageX = null;
-      initialPageY = null;
-      lastPageX = null;
-      document.body.removeEventListener('touchend', handleTouchEnd);
-    };
-    const handleTouchStart = (e: TouchEvent) => {
-      const target = e.target as HTMLElement;
-      // if in a scrollable container
-      if (
-        target.matches(
-          'pre, pre *, [data-sidebar="sidebar"], [data-sidebar="sidebar"] *',
-        )
-      ) {
-        return;
-      }
-      const touch = e.touches[0];
-      if (
-        !touch ||
-        sidebar.scrollLeft < 20 ||
-        window.matchMedia('(min-width: 768px)').matches
-      ) {
-        return;
-      }
-      initialPageX = touch.pageX;
-      initialPageY = touch.pageY;
-      lastPageX = touch.pageX;
-      document.body.addEventListener('touchend', handleTouchEnd);
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      if (
-        isPointerEnabledRef.current ||
-        !touch ||
-        initialPageX == null ||
-        lastPageX == null ||
-        initialPageY == null
-      ) {
-        return;
-      }
-
-      lastDeltaX = touch.pageX - lastPageX;
-      lastPageX = touch.pageX;
-
-      translate = touch.pageX - initialPageX;
-      base.style.transform = `translateX(${translate}px)`;
-
-      if (Math.abs(touch.pageY - initialPageY) > 20) {
-        lastDeltaX = -1;
-        handleTouchEnd();
-      }
-    };
-
-    document.body.addEventListener('touchstart', handleTouchStart);
-    document.body.addEventListener('touchmove', handleTouchMove);
-    return () => {
-      document.body.removeEventListener('touchstart', handleTouchStart);
-      document.body.removeEventListener('touchmove', handleTouchMove);
-    };
-  }, []);
+  const sidebarRef = useRef<HTMLElement>(null);
 
   return (
     <div
-      {...stylex.props(sidebarStyles.container)}
-      data-sidebar="sidebar"
-      ref={sidebarRef}
-      onScroll={() => {
-        const sidebar = sidebarRef.current;
-        if (sidebar) {
-          if (sidebar.scrollLeft > 20) {
-            sidebar.style.pointerEvents = 'none';
-            isPointerEnabledRef.current = false;
-          } else {
-            sidebar.style.pointerEvents = 'auto';
-            isPointerEnabledRef.current = true;
-          }
-        }
-      }}
+      {...stylex.props(
+        sidebarStyles.container,
+        open === true && sidebarStyles.openContainer,
+        open === false && sidebarStyles.closedContainer,
+      )}
     >
-      <aside {...stylex.props(sidebarStyles.base)} ref={baseRef}>
+      <div {...stylex.props(sidebarStyles.blurContainer)}>
+        <div {...stylex.props(sidebarStyles.blur)} />
+      </div>
+      <aside {...stylex.props(sidebarStyles.base)} ref={sidebarRef}>
         {children}
       </aside>
-      <div {...stylex.props(sidebarStyles.overlay)}>
-        {/* <div {...stylex.props(sidebarStyles.edge)} /> */}
-      </div>
     </div>
   );
 }
-const fadeInOut = stylex.keyframes({
-  from: { opacity: 1, backdropFilter: 'blur(4px)' },
-  to: { opacity: 0, backdropFilter: 'none' },
-});
 const sidebarStyles = stylex.create({
   container: {
     position: 'fixed',
-    top: 14 * 4,
+    top: 56,
     left: 0,
     display: 'flex',
-    flexDirection: 'row',
-    height: 'calc(120dvh)',
-    width: {
-      default: '100vw',
-      '@media (min-width: 768px)': 300,
+    pointerEvents: 'auto',
+    flexDirection: 'column',
+    flexShrink: 0,
+    padding: 8,
+    zIndex: 1,
+    height: 'calc(100dvh - 56px)',
+    transform: {
+      default: 'translateX(0px)',
+      '@media (max-width: 767.9px)': 'translateX(-100%)',
     },
-    zIndex: 20,
-    pointerEvents: 'none',
-    overflowX: 'auto',
-    scrollSnapType: 'x mandatory',
-    overscrollBehavior: 'contain',
+    transitionProperty: 'transform',
+    transitionDuration: '0.15s',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  },
+  openContainer: {
+    transform: 'translateX(0)',
+  },
+  closedContainer: {
+    transform: 'translateX(-100%)',
+  },
+  blurContainer: {
+    position: 'absolute',
+    inset: 8,
+    overflow: 'hidden',
+    borderRadius: 20,
+    cornerShape: 'squircle',
+    zIndex: 1,
+  },
+  blur: {
+    position: 'absolute',
+    inset: -64,
+    backdropFilter: 'blur(32px) saturate(400%)',
   },
   base: {
-    scrollSnapAlign: 'start',
+    position: 'relative',
     display: 'flex',
     pointerEvents: 'auto',
     flexDirection: 'column',
     flexShrink: 0,
     padding: 4 * 4,
-    zIndex: 20,
     fontSize: `${12 / 16}rem`,
     overflowY: 'auto',
     overscrollBehavior: 'contain',
-    height: 'calc(100dvh - 56px)',
+    height: '100%',
     width: '100vw',
     maxWidth: 300,
-
-    insetInlineStart: {
-      default: null,
-      '@media (max-width: 767px)': 0,
-    },
+    insetInlineStart: 0,
     bottom: 0,
-    backgroundColor: 'black',
-  },
-  overlay: {
-    scrollSnapAlign: 'start',
-    position: 'relative',
-    pointerEvents: 'none',
-    flexShrink: 0,
-    height: '100%',
-    width: '100%',
-    display: {
-      default: 'none',
-      '@media (max-width: 767px)': 'block',
-    },
-    backdropFilter: 'blur(4px)',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    animationName: fadeInOut,
-    animationTimingFunction: 'linear',
-    animationFillMode: 'forwards',
-    animationTimeline: 'scroll(nearest inline)',
-  },
-  edge: {
-    pointerEvents: 'auto',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: 48,
+    // backgroundColor:
+    //   'color-mix(in oklab, var(--color-fd-secondary) 10%, transparent)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--color-fd-border)',
+    cornerShape: 'squircle',
+    overflow: 'clip',
+    zIndex: 1,
   },
 });
 
@@ -340,9 +220,46 @@ function SidebarItem({
   }
 
   // type "folder"
+  return <SidebarItemFolder item={item}>{children}</SidebarItemFolder>;
+}
+
+function SidebarItemFolder({
+  item,
+  children,
+}: {
+  item: PageTree.Folder;
+  children: ReactNode;
+}) {
+  const pathname = usePathname();
+  const isDescendantActive = useMemo(() => {
+    const check = (item: PageTree.Node) => {
+      if (item.type === 'page') {
+        return pathname === item.url;
+      }
+      if (item.type === 'folder') {
+        if (item.index && pathname.startsWith(item.index.url)) {
+          return true;
+        }
+        return item.children.some(check);
+      }
+      return false;
+    };
+    return check(item);
+  }, [pathname, item]);
+  const ref = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    if (isDescendantActive) {
+      if (ref.current) {
+        ref.current.open = true;
+      }
+    }
+  }, [isDescendantActive]);
+
+  // type "folder"
   return (
-    <details {...stylex.props(sidebarItemStyles.details)}>
-      <summary>
+    <details {...stylex.props(sidebarItemStyles.details)} ref={ref}>
+      <summary {...stylex.props(sidebarItemStyles.summary)}>
         {item.index ? (
           <Link
             {...stylex.props(
@@ -369,11 +286,13 @@ function SidebarItem({
             {item.name}
           </p>
         )}
+        <ChevronDown {...stylex.props(sidebarItemStyles.chevron)} />
       </summary>
       <div {...stylex.props(sidebarItemStyles.childContainer)}>{children}</div>
     </details>
   );
 }
+
 const sidebarItemStyles = stylex.create({
   separator: {
     // text-fd-muted-foreground mt-6 mb-2 first:mt-0
@@ -382,10 +301,34 @@ const sidebarItemStyles = stylex.create({
     marginBottom: 2 * 4,
   },
   details: {
-    ['--summary-color' as any]: {
-      default: null,
-      [stylex.when.descendant(':is(*)', activeLinkMarker)]: 'hotpink',
+    '--rotation': {
+      default: '-90deg',
+      ':is([open])': '0deg',
     },
+    ['--summary-color']: {
+      default: null,
+      [stylex.when.descendant(':is(*)', activeLinkMarker)]:
+        'color-mix(in oklab, var(--color-fd-primary) 50%, var(--color-fd-foreground))',
+    },
+    // '--details-child-height': {
+    //   default: '0px',
+    //   ':is([open])': 'auto',
+    // },
+  },
+  summary: {
+    listStyle: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  chevron: {
+    width: 16,
+    height: 16,
+    flexShrink: 0,
+    transform: 'rotate(var(--rotation))',
+    transitionProperty: 'transform',
+    transitionDuration: '0.15s',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
   },
   summaryLink: {
     color:
@@ -393,7 +336,8 @@ const sidebarItemStyles = stylex.create({
   },
   textStart: { textAlign: 'start' },
   childContainer: {
-    paddingInlineStart: 4 * 4,
+    marginInlineStart: 1,
+    paddingInlineStart: 15,
     borderInlineStartWidth: 1,
     borderInlineStartStyle: 'solid',
     borderInlineStartColor: 'var(--color-fd-border)',
@@ -405,22 +349,24 @@ const sidebarItemStyles = stylex.create({
 
 const linkVariants = stylex.create({
   base: {
+    position: 'relative',
     display: 'inline-flex',
     alignItems: 'center',
+    fontSize: `1rem`,
     gap: 2 * 4,
-    // width: '100%',
-    padding: 1.5 * 4,
+    paddingBlock: 1.5 * 4,
     borderRadius: '8px',
-    color: 'color-mix(in oklab, var(--text-fd-foreground) 80%, transparent)',
+    color:
+      'var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))',
   },
   active: {
     fontWeight: 500,
-    color: 'hotpink',
+    color: 'var(--color-fd-primary)',
   },
   inactive: {
     color: {
       default:
-        'color-mix(in oklab, var(--text-fd-foreground) 80%, transparent)',
+        'var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))',
       ':hover': 'var(--text-fd-accent-foreground)',
     },
   },
