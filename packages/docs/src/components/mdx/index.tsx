@@ -1,5 +1,3 @@
-import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
-import { TypeTable } from 'fumadocs-ui/components/type-table';
 import TabItem from './TabItem';
 import Tabs from './Tabs';
 import Dial from '../Dial';
@@ -9,7 +7,7 @@ import { Card } from './Card';
 import Heading from './Heading';
 import { HTMLAttributes } from 'react';
 import { StyleXStyles } from '@stylexjs/stylex';
-import Link from 'fumadocs-core/link';
+import MDXLink from './Link';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -20,7 +18,7 @@ type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
 
 export const mdxComponents = {
   ...defaultMdxComponents,
-  a: Link,
+  a: MDXLink,
   h1: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
     <Heading as="h1" {...props} />
   ),
@@ -39,9 +37,6 @@ export const mdxComponents = {
   h6: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
     <Heading as="h6" {...props} />
   ),
-  TypeTable,
-  Accordion,
-  Accordions,
   TabItem,
   Tabs,
   Dial,

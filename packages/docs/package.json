@@ -5,7 +5,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "waku dev",
+    "dev": "waku dev --host 0.0.0.0",
     "build": "waku build",
     "postbuild": "rm -rf build && cp -r dist build",
     "start": "waku start",

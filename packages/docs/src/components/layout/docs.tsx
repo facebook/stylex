@@ -1,13 +1,17 @@
 'use client';
 import type * as PageTree from 'fumadocs-core/page-tree';
-import { type ComponentProps, type ReactNode, useMemo } from 'react';
+import {
+  type ReactNode,
+  TouchEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
 import Link from 'fumadocs-core/link';
-import { useSearchContext } from 'fumadocs-ui/contexts/search';
-// import { useSidebar } from 'fumadocs-ui/contexts/sidebar';
 import { usePathname } from 'fumadocs-core/framework';
 import * as stylex from '@stylexjs/stylex';
-import { BaseLayoutProps, StyleXComponentProps } from './shared';
+import { BaseLayoutProps } from './shared';
 import { activeLinkMarker } from '../../theming/vars.stylex';
 import { Header } from './home';
 
@@ -57,7 +61,6 @@ const layoutStyles = stylex.create({
     width: '100%',
     paddingInline: 4 * 4,
   },
-  title: {},
   gap: {
     flexGrow: 1,
   },
@@ -74,14 +77,9 @@ const layoutStyles = stylex.create({
   },
 });
 
-const commonStyles = stylex.create({
-  base: { fontSize: `${12 / 16}rem` },
-});
-
 function Sidebar() {
   const { root } = useTreeContext();
 
-  const open = true;
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
       return items.map((item) => (
@@ -94,54 +92,216 @@ function Sidebar() {
     return renderItems(root.children);
   }, [root]);
 
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const baseRef = useRef<HTMLDivElement>(null);
+  const isPointerEnabledRef = useRef(false);
+
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (sidebar) {
+      sidebar.scrollLeft = 9999;
+    }
+  }, []);
+
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    const base = baseRef.current;
+    if (!sidebar || !base) {
+      return;
+    }
+    let initialScrollLeft = sidebar.scrollLeft;
+    let initialPageY: number | null = null;
+    let initialPageX: number | null = null;
+    let lastPageX: number | null = null;
+    let lastDeltaX: number | null = null;
+    let translate: number | null = null;
+    const handleTouchEnd = () => {
+      if (lastDeltaX == null || lastPageX == null || translate == null) {
+        return;
+      }
+
+      const ddx = lastDeltaX;
+      const lastTranslate = translate;
+
+      const frames = [
+        { transform: `translateX(${lastTranslate}px)` },
+        { transform: `translateX(${ddx > 0 ? 300 : 0}px)` },
+      ];
+      const animation = base.animate(frames, {
+        duration: 200,
+        easing: 'ease-in-out',
+      });
+      animation.onfinish = () => {
+        setTimeout(() => {
+          base.style.transform = `translateX(0)`;
+          if (ddx > 0) {
+            sidebar.scrollTo({ left: 0, behavior: 'instant' });
+          } else {
+            sidebar.scrollTo({ left: 9999, behavior: 'instant' });
+          }
+        }, 300);
+      };
+
+      reset();
+    };
+    const reset = () => {
+      translate = null;
+      initialPageX = null;
+      initialPageY = null;
+      lastPageX = null;
+      document.body.removeEventListener('touchend', handleTouchEnd);
+    };
+    const handleTouchStart = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      // if in a scrollable container
+      if (
+        target.matches(
+          'pre, pre *, [data-sidebar="sidebar"], [data-sidebar="sidebar"] *',
+        )
+      ) {
+        return;
+      }
+      const touch = e.touches[0];
+      if (
+        !touch ||
+        sidebar.scrollLeft < 20 ||
+        window.matchMedia('(min-width: 768px)').matches
+      ) {
+        return;
+      }
+      initialPageX = touch.pageX;
+      initialPageY = touch.pageY;
+      lastPageX = touch.pageX;
+      document.body.addEventListener('touchend', handleTouchEnd);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (
+        isPointerEnabledRef.current ||
+        !touch ||
+        initialPageX == null ||
+        lastPageX == null ||
+        initialPageY == null
+      ) {
+        return;
+      }
+
+      lastDeltaX = touch.pageX - lastPageX;
+      lastPageX = touch.pageX;
+
+      translate = touch.pageX - initialPageX;
+      base.style.transform = `translateX(${translate}px)`;
+
+      if (Math.abs(touch.pageY - initialPageY) > 20) {
+        lastDeltaX = -1;
+        handleTouchEnd();
+      }
+    };
+
+    document.body.addEventListener('touchstart', handleTouchStart);
+    document.body.addEventListener('touchmove', handleTouchMove);
+    return () => {
+      document.body.removeEventListener('touchstart', handleTouchStart);
+      document.body.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, []);
+
   return (
-    <aside
-      {...stylex.props(sidebarStyles.base, !open && sidebarStyles.notOpen)}
+    <div
+      {...stylex.props(sidebarStyles.container)}
+      data-sidebar="sidebar"
+      ref={sidebarRef}
+      onScroll={() => {
+        const sidebar = sidebarRef.current;
+        if (sidebar) {
+          if (sidebar.scrollLeft > 20) {
+            sidebar.style.pointerEvents = 'none';
+            isPointerEnabledRef.current = false;
+          } else {
+            sidebar.style.pointerEvents = 'auto';
+            isPointerEnabledRef.current = true;
+          }
+        }
+      }}
     >
-      {children}
-    </aside>
+      <aside {...stylex.props(sidebarStyles.base)} ref={baseRef}>
+        {children}
+      </aside>
+      <div {...stylex.props(sidebarStyles.overlay)}>
+        {/* <div {...stylex.props(sidebarStyles.edge)} /> */}
+      </div>
+    </div>
   );
 }
+const fadeInOut = stylex.keyframes({
+  from: { opacity: 1, backdropFilter: 'blur(4px)' },
+  to: { opacity: 0, backdropFilter: 'none' },
+});
 const sidebarStyles = stylex.create({
-  base: {
-    // 'fixed flex flex-col shrink-0 p-4 top-14 z-20 text-sm overflow-auto md:sticky md:h-[calc(100dvh-56px)] md:w-[300px]',
-    position: {
-      default: 'fixed',
-      '@media (min-width: 768px)': 'sticky',
-    },
+  container: {
+    position: 'fixed',
+    top: 14 * 4,
+    left: 0,
     display: 'flex',
+    flexDirection: 'row',
+    height: 'calc(120dvh)',
+    width: {
+      default: '100vw',
+      '@media (min-width: 768px)': 300,
+    },
+    zIndex: 20,
+    pointerEvents: 'none',
+    overflowX: 'auto',
+    scrollSnapType: 'x mandatory',
+    overscrollBehavior: 'contain',
+  },
+  base: {
+    scrollSnapAlign: 'start',
+    display: 'flex',
+    pointerEvents: 'auto',
     flexDirection: 'column',
     flexShrink: 0,
     padding: 4 * 4,
-    top: 14 * 4,
     zIndex: 20,
     fontSize: `${12 / 16}rem`,
-    overflow: 'auto',
-    height: {
-      default: null,
-      '@media (min-width: 768px)': 'calc(100dvh - 56px)',
-    },
-    width: {
-      default: null,
-      '@media (min-width: 768px)': '300px',
-    },
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
+    height: 'calc(100dvh - 56px)',
+    width: '100vw',
+    maxWidth: 300,
 
-    // 'max-md:inset-x-0 max-md:bottom-0 max-md:bg-fd-background',
     insetInlineStart: {
       default: null,
       '@media (max-width: 767px)': 0,
     },
-    bottom: {
-      default: null,
-      '@media (max-width: 767px)': 0,
-    },
-    backgroundColor: {
-      default: null,
-      '@media (max-width: 767px)': 'var(--bg-fd-background)',
-    },
+    bottom: 0,
+    backgroundColor: 'black',
   },
-  notOpen: {
-    display: 'none',
+  overlay: {
+    scrollSnapAlign: 'start',
+    position: 'relative',
+    pointerEvents: 'none',
+    flexShrink: 0,
+    height: '100%',
+    width: '100%',
+    display: {
+      default: 'none',
+      '@media (max-width: 767px)': 'block',
+    },
+    backdropFilter: 'blur(4px)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    animationName: fadeInOut,
+    animationTimingFunction: 'linear',
+    animationFillMode: 'forwards',
+    animationTimeline: 'scroll(nearest inline)',
+  },
+  edge: {
+    pointerEvents: 'auto',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 48,
   },
 });
 

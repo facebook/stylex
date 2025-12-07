@@ -7,16 +7,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const base = baseOptions();
 
   return (
-    <DocsLayout
-      {...base}
-      links={[base.links![2]!]}
-      nav={{
-        ...base.nav,
-        enabled: true,
-        transparentMode: 'top',
-      }}
-      tree={source.pageTree}
-    >
+    <DocsLayout key="docs-layout" {...base} tree={source.pageTree}>
       {children}
     </DocsLayout>
   );

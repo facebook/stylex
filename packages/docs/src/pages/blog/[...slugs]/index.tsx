@@ -79,8 +79,6 @@ export async function getConfig() {
   const pages = blogSource.getPages();
   const slugs = pages.map((page) => [page.data.slug]);
 
-  console.log('slugs', slugs);
-
   return {
     render: 'static' as const,
     staticPaths: slugs,

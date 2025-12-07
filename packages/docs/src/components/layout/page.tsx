@@ -189,8 +189,22 @@ function Footer() {
 
   return (
     <div {...stylex.props(footerStyles.div)}>
-      {previous ? <Link href={previous.url}>{previous.name}</Link> : null}
-      {next ? <Link href={next.url}>{next.name}</Link> : null}
+      {previous ? (
+        <Link
+          {...stylex.props(footerStyles.link, footerStyles.prev)}
+          href={previous.url}
+        >
+          {previous.name}
+        </Link>
+      ) : null}
+      {next ? (
+        <Link
+          {...stylex.props(footerStyles.link, footerStyles.next)}
+          href={next.url}
+        >
+          {next.name}
+        </Link>
+      ) : null}
     </div>
   );
 }
@@ -202,5 +216,40 @@ const footerStyles = stylex.create({
     gap: 2 * 4,
     alignItems: 'center',
     fontWeight: 500,
+  },
+  link: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexGrow: 1,
+    borderRadius: 8,
+    padding: 16,
+    cornerShape: 'squircle',
+    color: 'var(--color-fd-primary)',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--color-fd-border)',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'var(--color-fd-muted)',
+    },
+    gap: 8,
+  },
+  prev: {
+    justifyContent: 'flex-start',
+    textAlign: 'left',
+    '::before': {
+      content: '←',
+      color: 'var(--color-fd-foreground)',
+      fontWeight: 300,
+    },
+  },
+  next: {
+    justifyContent: 'flex-end',
+    textAlign: 'right',
+    '::after': {
+      content: '→',
+      color: 'var(--color-fd-foreground)',
+      fontWeight: 300,
+    },
   },
 });
