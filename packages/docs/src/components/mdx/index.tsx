@@ -6,9 +6,39 @@ import Dial from '../Dial';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { DevInstallExample } from './PackageInstall';
 import { Card } from './Card';
+import Heading from './Heading';
+import { HTMLAttributes } from 'react';
+import { StyleXStyles } from '@stylexjs/stylex';
+import Link from 'fumadocs-core/link';
+
+type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
+  HTMLAttributes<T>,
+  'className' | 'style'
+> & {
+  xstyle?: StyleXStyles;
+};
 
 export const mdxComponents = {
   ...defaultMdxComponents,
+  a: Link,
+  h1: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
+    <Heading as="h1" {...props} />
+  ),
+  h2: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
+    <Heading as="h2" {...props} />
+  ),
+  h3: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
+    <Heading as="h3" {...props} />
+  ),
+  h4: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
+    <Heading as="h4" {...props} />
+  ),
+  h5: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
+    <Heading as="h5" {...props} />
+  ),
+  h6: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
+    <Heading as="h6" {...props} />
+  ),
   TypeTable,
   Accordion,
   Accordions,

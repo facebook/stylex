@@ -7,11 +7,16 @@
  * @format
  */
 
-import React from 'react';
+'use client';
+
 import Tabs from './Tabs';
 import TabItem from './TabItem';
 import mdx from 'fumadocs-ui/mdx';
 import { versionTag } from './VersionTag';
+import * as stylex from '@stylexjs/stylex';
+import { Pre } from 'fumadocs-ui/components/codeblock';
+
+const Codeblock = mdx.pre;
 
 const codeForCLI = ({ prod, dev }: { prod: string[]; dev: string[] }) => ({
   npm: [
@@ -45,14 +50,26 @@ export function DevInstallExample({ prod = [], dev = [] }) {
   const d = dev.map((d) => d + versionTag);
 
   const codeExamples: Record<string, string> = codeForCLI({ prod: p, dev: d });
+  const entries = Object.entries(codeExamples).filter(([, code]) => code);
+
+  if (entries.length === 0) return null;
 
   return (
-    <mdx.CodeBlockTabs>
-      {Object.keys(codeExamples).map((key) => (
-        <mdx.CodeBlockTab key={key} value={key}>
-          <mdx.pre>{codeExamples[key]}</mdx.pre>
-        </mdx.CodeBlockTab>
+    <Tabs defaultValue={entries[0]?.[0]}>
+      {entries.map(([key, code]) => (
+        <TabItem key={key} label={key} value={key}>
+          <Codeblock {...stylex.props(styles.codeblock)}>
+            <Pre>{code}</Pre>
+          </Codeblock>
+        </TabItem>
       ))}
-    </mdx.CodeBlockTabs>
+    </Tabs>
   );
 }
+
+const styles = stylex.create({
+  codeblock: {
+    marginTop: 0,
+    paddingInline: 16,
+  },
+});

@@ -74,46 +74,13 @@ const layoutStyles = stylex.create({
   },
 });
 
-function SearchToggle({ xstyle, ...props }: StyleXComponentProps<'button'>) {
-  const { enabled, setOpenSearch } = useSearchContext();
-  if (!enabled) return;
-
-  return (
-    <button
-      {...props}
-      {...stylex.props(commonStyles.base, xstyle)}
-      onClick={() => setOpenSearch(true)}
-    >
-      Search
-    </button>
-  );
-}
-
-function NavbarSidebarTrigger({
-  xstyle,
-  ...props
-}: StyleXComponentProps<'button'>) {
-  // const { open, setOpen } = useSidebar();
-  const open = true;
-  const setOpen = (open: any) => {};
-
-  return (
-    <button
-      {...props}
-      {...stylex.props(commonStyles.base, xstyle)}
-      onClick={() => setOpen(!open)}
-    >
-      {props.children ?? 'Sidebar'}
-    </button>
-  );
-}
 const commonStyles = stylex.create({
   base: { fontSize: `${12 / 16}rem` },
 });
 
 function Sidebar() {
   const { root } = useTreeContext();
-  // const { open } = useSidebar();
+
   const open = true;
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
