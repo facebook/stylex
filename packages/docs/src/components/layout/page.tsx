@@ -217,6 +217,10 @@ const footerStyles = stylex.create({
     gap: 2 * 4,
     alignItems: 'center',
     fontWeight: 500,
+    borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'var(--color-fd-border)',
+    paddingBottom: 12,
   },
   link: {
     display: 'flex',

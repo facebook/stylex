@@ -41,8 +41,8 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
         >
           <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
         </NavigationMenuList>
-
-        {/* <NavigationMenuViewport /> */}
+        {/* Border line - rendered above backdrops */}
+        <div {...stylex.props(navbarStyles.borderLine)} />
       </header>
     </NavigationMenu>
   );
@@ -57,7 +57,6 @@ const navbarStyles = stylex.create({
     gap: 4 * 4,
   },
   header: {
-    // 'fixed top-(--fd-banner-height) z-40 left-0 right-(--removed-body-scroll-bar-size,0) backdrop-blur-lg border-b transition-colors *:mx-auto *:max-w-fd-container',
     position: 'sticky',
     top: 0,
     zIndex: 1,
@@ -69,14 +68,23 @@ const navbarStyles = stylex.create({
     insetInline: 0,
     top: 0,
     height: '240%',
+    pointerEvents: 'none',
   },
   background: {
     backgroundImage:
-      'linear-gradient(to bottom, var(--color-fd-background) 20%, transparent)',
+      'linear-gradient(to bottom, var(--color-fd-background) 50%, transparent)',
   },
   blur: {
     backdropFilter: 'blur(32px)',
     maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
+  },
+  borderLine: {
+    position: 'absolute',
+    insetInline: 0,
+    bottom: 0,
+    height: 1,
+    backgroundColor: 'var(--color-fd-border)',
+    zIndex: 10,
   },
   headerWithVals: {
     // 'max-lg:shadow-lg max-lg:rounded-b-2xl'

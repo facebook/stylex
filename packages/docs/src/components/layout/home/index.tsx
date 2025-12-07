@@ -109,7 +109,6 @@ export function Header({
             />
           ))}
       </div>
-      <div {...stylex.props(styles.grow)} />
       <ul {...stylex.props(styles.endLinkList)}>
         {navItems.filter(isSecondary).map((item, i) => (
           <NavbarLinkItem
@@ -171,14 +170,16 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'end',
     gap: 1.5 * 4,
-    flexGrow: 1,
+    flexGrow: 0,
+    flexShrink: 0,
   },
   largeSearchToggle: {
     // "w-full rounded-full ps-2.5 max-w-[240px]"
     width: '100%',
     borderRadius: '9999px',
     paddingInlineStart: 2.5 * 4,
-    maxWidth: 240 * 4,
+    maxWidth: 240,
+    minWidth: 180,
   },
   languageToggle: {
     height: 20,

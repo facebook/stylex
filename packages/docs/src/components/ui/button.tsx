@@ -52,14 +52,8 @@ export const buttonVariantStyles = stylex.create({
     borderColor: 'var(--color-fd-accent)',
   },
   ghost: {
-    backgroundColor: {
-      default: null,
-      ':hover': `var(--color-fd-accent)`,
-    },
-    color: {
-      default: null,
-      ':hover': 'var(--color-fd-accent-foreground)',
-    },
+    backgroundColor: 'transparent',
+    color: 'var(--color-fd-foreground)',
   },
   secondary: {
     borderWidth: 1,

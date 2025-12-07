@@ -27,6 +27,11 @@ export function baseOptions(): BaseLayoutProps {
         text: 'Blog',
         url: '/blog',
       },
+      {
+        type: 'main',
+        text: 'Playground',
+        url: '/playground',
+      },
     ],
   };
 }

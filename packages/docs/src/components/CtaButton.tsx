@@ -38,7 +38,7 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,
-    fontWeight: 'bold',
+    fontWeight: 400,
     color: {
       default: legacyColors['--bg1'],
       ':hover': legacyColors['--bg1'],
