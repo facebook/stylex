@@ -31,6 +31,10 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
         {...props}
         {...stylex.props(navbarStyles.header, xstyle)}
       >
+        <div {...stylex.props(navbarStyles.backdrop, navbarStyles.blur)} />
+        <div
+          {...stylex.props(navbarStyles.backdrop, navbarStyles.background)}
+        />
         <NavigationMenuList
           {...stylex.props(navbarStyles.menuList, xstyle)}
           asChild
@@ -38,7 +42,7 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
           <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
         </NavigationMenuList>
 
-        <NavigationMenuViewport />
+        {/* <NavigationMenuViewport /> */}
       </header>
     </NavigationMenu>
   );
@@ -56,14 +60,23 @@ const navbarStyles = stylex.create({
     // 'fixed top-(--fd-banner-height) z-40 left-0 right-(--removed-body-scroll-bar-size,0) backdrop-blur-lg border-b transition-colors *:mx-auto *:max-w-fd-container',
     position: 'sticky',
     top: 0,
-    zIndex: 40,
+    zIndex: 1,
     insetInlineStart: 0,
     insetInlineEnd: 'var(--removed-body-scroll-bar-size, 0)',
-    backdropFilter: 'blur(16px)',
-    borderBottomWidth: 1,
-    borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--color-fd-border)',
-    transitionProperty: 'color, background-color',
+  },
+  backdrop: {
+    position: 'absolute',
+    insetInline: 0,
+    top: 0,
+    height: '240%',
+  },
+  background: {
+    backgroundImage:
+      'linear-gradient(to bottom, var(--color-fd-background) 20%, transparent)',
+  },
+  blur: {
+    backdropFilter: 'blur(32px)',
+    maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
   },
   headerWithVals: {
     // 'max-lg:shadow-lg max-lg:rounded-b-2xl'

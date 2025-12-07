@@ -73,6 +73,7 @@ const pageStyles = stylex.create({
     height: 'calc(100dvh - var(--fd-nav-height))',
     padding: 4 * 4,
     overflow: 'auto',
+    zIndex: 1,
   },
   tocPara: {
     fontSize: `${14 / 16}rem`,
