@@ -85,12 +85,14 @@ const navbarStyles = stylex.create({
   },
   blur: {
     position: 'absolute',
+    pointerEvents: 'none',
     inset: -8,
     bottom: -32,
-    backdropFilter: 'blur(16px) saturate(400%)',
+    backdropFilter: 'blur(16px) saturate(600%)',
   },
   gradientBlur: {
     position: 'absolute',
+    pointerEvents: 'none',
     inset: -8,
     bottom: -32,
     backdropFilter: 'blur(32px)',
@@ -98,6 +100,7 @@ const navbarStyles = stylex.create({
   },
   gradientFade: {
     position: 'absolute',
+    pointerEvents: 'none',
     inset: -8,
     bottom: -32,
     backgroundColor: 'var(--color-fd-background)',
@@ -114,7 +117,7 @@ const navbarStyles = stylex.create({
     backdropFilter: 'blur(20px) saturate(1000%)',
     backgroundColor: 'transparent',
     maskImage:
-      'linear-gradient(to bottom, white, transparent 8%, transparent 92%, white)',
+      'linear-gradient(to bottom, white, transparent 16%, transparent 84%, white)',
     zIndex: 10,
   },
   headerWithVals: {

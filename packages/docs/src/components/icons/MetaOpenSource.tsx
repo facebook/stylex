@@ -15,9 +15,9 @@ export default function MetaOpenSource({
         y1="604.6622"
         y2="427.9775"
       >
-        <stop offset=".0006" stop-color="#0867df" />
-        <stop offset=".4539" stop-color="#0668e1" />
-        <stop offset=".8591" stop-color="#0064e0" />
+        <stop offset=".0006" stopColor="#0867df" />
+        <stop offset=".4539" stopColor="#0668e1" />
+        <stop offset=".8591" stopColor="#0064e0" />
       </linearGradient>
       <linearGradient
         id="b"
@@ -27,8 +27,8 @@ export default function MetaOpenSource({
         y1="490.2073"
         y2="420.0277"
       >
-        <stop offset=".1323" stop-color="#0064df" />
-        <stop offset=".9988" stop-color="#0064e0" />
+        <stop offset=".1323" stopColor="#0064df" />
+        <stop offset=".9988" stopColor="#0064e0" />
       </linearGradient>
       <linearGradient
         id="c"
@@ -38,8 +38,8 @@ export default function MetaOpenSource({
         y1="593.1932"
         y2="499.849"
       >
-        <stop offset=".0147" stop-color="#0072ec" />
-        <stop offset=".6881" stop-color="#0064df" />
+        <stop offset=".0147" stopColor="#0072ec" />
+        <stop offset=".6881" stopColor="#0064df" />
       </linearGradient>
       <linearGradient
         id="d"
@@ -49,8 +49,8 @@ export default function MetaOpenSource({
         y1="660.6261"
         y2="603.6183"
       >
-        <stop offset=".0731" stop-color="#007cf6" />
-        <stop offset=".9943" stop-color="#0072ec" />
+        <stop offset=".0731" stopColor="#007cf6" />
+        <stop offset=".9943" stopColor="#0072ec" />
       </linearGradient>
       <linearGradient
         id="e"
@@ -60,8 +60,8 @@ export default function MetaOpenSource({
         y1="691.5921"
         y2="668.7519"
       >
-        <stop offset=".0731" stop-color="#007ff9" />
-        <stop offset="1" stop-color="#007cf6" />
+        <stop offset=".0731" stopColor="#007ff9" />
+        <stop offset="1" stopColor="#007cf6" />
       </linearGradient>
       <linearGradient
         id="f"
@@ -71,8 +71,8 @@ export default function MetaOpenSource({
         y1="697.5917"
         y2="738.159"
       >
-        <stop offset=".0731" stop-color="#007ff9" />
-        <stop offset="1" stop-color="#0082fb" />
+        <stop offset=".0731" stopColor="#007ff9" />
+        <stop offset="1" stopColor="#0082fb" />
       </linearGradient>
       <linearGradient
         id="g"
@@ -82,8 +82,8 @@ export default function MetaOpenSource({
         y1="501.3039"
         y2="466.3321"
       >
-        <stop offset=".2799" stop-color="#007ff8" />
-        <stop offset=".9141" stop-color="#0082fb" />
+        <stop offset=".2799" stopColor="#007ff8" />
+        <stop offset=".9141" stopColor="#0082fb" />
       </linearGradient>
       <linearGradient
         id="h"
@@ -93,8 +93,8 @@ export default function MetaOpenSource({
         y1="455.9788"
         y2="650.5693"
       >
-        <stop offset="0" stop-color="#0082fb" />
-        <stop offset=".9995" stop-color="#0081fa" />
+        <stop offset="0" stopColor="#0082fb" />
+        <stop offset=".9995" stopColor="#0081fa" />
       </linearGradient>
       <linearGradient
         id="i"
@@ -104,8 +104,8 @@ export default function MetaOpenSource({
         y1="658.0135"
         y2="725.6651"
       >
-        <stop offset=".0619" stop-color="#0081fa" />
-        <stop offset="1" stop-color="#0080f9" />
+        <stop offset=".0619" stopColor="#0081fa" />
+        <stop offset="1" stopColor="#0080f9" />
       </linearGradient>
       <linearGradient
         id="j"
@@ -115,8 +115,8 @@ export default function MetaOpenSource({
         y1="761.5316"
         y2="740.2173"
       >
-        <stop offset="0" stop-color="#027af3" />
-        <stop offset="1" stop-color="#0080f9" />
+        <stop offset="0" stopColor="#027af3" />
+        <stop offset="1" stopColor="#0080f9" />
       </linearGradient>
       <linearGradient
         id="k"
@@ -126,8 +126,8 @@ export default function MetaOpenSource({
         y1="765.6962"
         y2="765.6962"
       >
-        <stop offset="0" stop-color="#0377ef" />
-        <stop offset=".9994" stop-color="#0279f1" />
+        <stop offset="0" stopColor="#0377ef" />
+        <stop offset=".9994" stopColor="#0279f1" />
       </linearGradient>
       <linearGradient
         id="l"
@@ -137,8 +137,8 @@ export default function MetaOpenSource({
         y1="741.7469"
         y2="760.1399"
       >
-        <stop offset=".0019" stop-color="#0471e9" />
-        <stop offset="1" stop-color="#0377ef" />
+        <stop offset=".0019" stopColor="#0471e9" />
+        <stop offset="1" stopColor="#0377ef" />
       </linearGradient>
       <linearGradient
         id="m"
@@ -148,8 +148,8 @@ export default function MetaOpenSource({
         y1="606.1226"
         y2="732.0393"
       >
-        <stop offset=".2765" stop-color="#0867df" />
-        <stop offset="1" stop-color="#0471e9" />
+        <stop offset=".2765" stopColor="#0867df" />
+        <stop offset="1" stopColor="#0471e9" />
       </linearGradient>
       <path d="m0 0h6090.9521v1307.1739h-6090.9521z" fill="none" />
       <g fill="currentColor">
