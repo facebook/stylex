@@ -64,24 +64,21 @@ const browserConfig = {
     file: './lib/index.browser.js',
     format: 'cjs',
   },
-  external: [
-    '@babel/traverse',
-    '@babel/types',
-    '@babel/core',
-    '@babel/helper-module-imports',
-    '@stylexjs/stylex',
-    'postcss-value-parser',
-  ],
+  external: ['@babel/standalone', '@stylexjs/stylex', 'postcss-value-parser'],
   plugins: [
     {
-      name: 'stub-node-dependent-modules',
+      name: 'stub-modules',
       resolveId(source, importer) {
         switch (source) {
           case 'node:path':
             return this.resolve('path-browserify', importer);
           case 'node:fs':
           case 'node:url':
+          case 'assert':
           case '@dual-bundle/import-meta-resolve':
+          case '@babel/core':
+          case '@babel/traverse':
+          case '@babel/types':
             return source;
           default:
             return null;
@@ -92,8 +89,29 @@ const browserConfig = {
           case 'node:fs':
           case 'node:url':
             return 'export default {};';
+          case 'assert':
+            return 'export default function assert(condition, message) { if (!condition) throw new Error(message || "Assertion failed"); }';
           case '@dual-bundle/import-meta-resolve':
             return 'export function moduleResolve() {}';
+          case '@babel/core':
+            return "import standalone from '@babel/standalone'; export const parseSync = standalone.packages.parser.parse;";
+          case '@babel/traverse':
+            return "import standalone from '@babel/standalone'; export default standalone.packages.traverse.default;";
+          case '@babel/types':
+            return `import standalone from '@babel/standalone';
+export const {
+  arrayExpression, arrowFunctionExpression, binaryExpression, booleanLiteral,
+  callExpression, conditionalExpression, expressionStatement, identifier,
+  importDeclaration, isAssignmentExpression, isBinaryExpression, isBooleanLiteral,
+  isCallExpression, isClass, isConditionalExpression, isExpression,
+  isExpressionStatement, isFunction, isIdentifier, isImportDeclaration,
+  isLogicalExpression, isMemberExpression, isNode, isNullLiteral,
+  isNumericLiteral, isObjectExpression, isObjectProperty, isPrivateName,
+  isSpreadElement, isStringLiteral, isTemplateLiteral, isUnaryExpression,
+  isUpdateExpression, isValidIdentifier, isVariableDeclaration, jsxAttribute,
+  jsxIdentifier, memberExpression, nullLiteral, numericLiteral, objectExpression,
+  objectProperty, stringLiteral, unaryExpression, variableDeclaration, variableDeclarator
+} = standalone.packages.types;`;
           default:
             return null;
         }
