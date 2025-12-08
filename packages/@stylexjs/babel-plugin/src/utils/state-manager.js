@@ -699,24 +699,41 @@ export default class StateManager {
     }
     for (const [_key, styleObj, priority] of styles) {
       const { ltr, rtl } = styleObj;
-      const args = [
-        t.stringLiteral(ltr),
-        t.numericLiteral(priority),
-        ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-      ];
 
-      if ('constKey' in styleObj && 'constVal' in styleObj) {
-        const { constKey, constVal } = styleObj;
-        args.push(
-          t.stringLiteral(constKey),
-          typeof constVal === 'number'
-            ? t.numericLiteral(constVal)
-            : t.stringLiteral(String(constVal)),
-        );
+      let constKey = null;
+      let constVal = null;
+
+      if (styleObj.constKey != null && styleObj.constVal != null) {
+        constKey = styleObj.constKey;
+        constVal = styleObj.constVal;
       }
 
+      const properties: Array<t.ObjectProperty> = [
+        t.objectProperty(t.identifier('ltr'), t.stringLiteral(ltr)),
+        ...(rtl != null
+          ? [t.objectProperty(t.identifier('rtl'), t.stringLiteral(rtl))]
+          : []),
+        t.objectProperty(t.identifier('priority'), t.numericLiteral(priority)),
+        ...(constKey != null
+          ? [
+              t.objectProperty(
+                t.identifier('constKey'),
+                t.stringLiteral(constKey),
+              ),
+              t.objectProperty(
+                t.identifier('constVal'),
+                typeof constVal === 'number'
+                  ? t.numericLiteral(constVal)
+                  : t.stringLiteral(String(constVal)),
+              ),
+            ]
+          : []),
+      ];
+
       statementPath.insertBefore(
-        t.expressionStatement(t.callExpression(injectName, args)),
+        t.expressionStatement(
+          t.callExpression(injectName, [t.objectExpression(properties)]),
+        ),
       );
     }
   }
