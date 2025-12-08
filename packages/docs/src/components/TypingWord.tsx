@@ -28,7 +28,7 @@ export default function TypingWord() {
 
     if (!isDeleting && displayed === word) {
       // Pause before deleting
-      const timeout = setTimeout(() => setIsDeleting(true), 2000);
+      const timeout = setTimeout(() => setIsDeleting(true), 5000);
       return () => clearTimeout(timeout);
     }
 
@@ -59,6 +59,6 @@ export default function TypingWord() {
 const styles = stylex.create({
   typingWord: {
     color: 'var(--color-fd-primary)',
-    fontWeight: 700,
+    fontWeight: 600,
   },
 });

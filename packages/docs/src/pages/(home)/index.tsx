@@ -81,8 +81,8 @@ const styles = stylex.create({
     paddingInline: 24,
     fontWeight: 200,
     textAlign: 'center',
-    color: 'var(--color-fd-muted-foreground)',
-    fontSize: 'clamp(1rem, 1.5rem + 0.75vw, 2.5rem)',
+    color: 'var(--color-fd-secondary-text)',
+    fontSize: 'clamp(1rem, 1rem + 0.5vw, 1.5rem)',
   },
   ctaSection: {
     alignItems: 'stretch',

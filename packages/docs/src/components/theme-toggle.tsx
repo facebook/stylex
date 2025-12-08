@@ -159,11 +159,16 @@ const styles = stylex.create({
     color: 'var(--color-fd-muted-foreground)',
     borderRadius: 999,
     borderWidth: 0,
-    backgroundColor: 'transparent',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover':
+        'color-mix(in oklab, var(--color-fd-background) 50%, transparent)',
+    },
     transitionProperty: 'background-color, color, box-shadow',
     transitionDuration: '150ms',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     outline: 'none',
+    cursor: 'pointer',
     boxShadow: {
       default: 'none',
       ':focus-visible': '0 0 0 2px var(--color-fd-primary)',

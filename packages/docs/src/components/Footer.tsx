@@ -160,7 +160,7 @@ export default function Footer() {
               <GithubIcon {...stylex.props(styles.socialIcon)} />
             </a>
             <a
-              href="https://twitter.com/styaborzhemskiy"
+              href="https://x.com/stylexjs"
               target="_blank"
               rel="noopener noreferrer"
               {...stylex.props(styles.socialLink)}

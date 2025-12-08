@@ -240,7 +240,7 @@ const navItemVariants = stylex.create({
     gap: 1 * 4,
     padding: 2 * 4,
     color: {
-      default: 'var(--color-fd-muted-foreground)',
+      default: 'var(--color-fd-secondary-text)',
       ':hover': 'var(--color-fd-foreground)',
       ':where([data-active=true])': 'var(--color-fd-primary)',
     },
