@@ -35,27 +35,7 @@ const config = {
         name: 'playground-webpack-config',
         configureWebpack() {
           return {
-            resolve: {
-              fallback: {
-                fs: false,
-                path: false,
-                url: false,
-                assert: false,
-              },
-              alias: {
-                '@dual-bundle/import-meta-resolve': false,
-              },
-            },
             plugins: [
-              new webpack.NormalModuleReplacementPlugin(
-                /^node:/,
-                (resource) => {
-                  resource.request = resource.request.replace(/^node:/, '');
-                },
-              ),
-              new webpack.ProvidePlugin({
-                process: 'process/browser',
-              }),
               new webpack.DefinePlugin({
                 STYLEX_SOURCE: JSON.stringify(
                   fs.readFileSync(require.resolve('@stylexjs/stylex'), 'utf8'),
@@ -252,30 +232,28 @@ const config = {
 
 const rootDir = __dirname;
 
-config.plugins = [
-  function stylexUnplugin() {
-    return {
-      name: 'stylex-unplugin',
-      configureWebpack(_config) {
-        const isProd = process.env.NODE_ENV === 'production';
-        return {
-          plugins: isProd
-            ? [
-                stylexPlugin.webpack({
-                  dev: !isProd,
-                  runtimeInjection: false,
-                  stylexSheetName: '<>',
-                  unstable_moduleResolution: {
-                    type: 'commonJS',
-                    rootDir,
-                  },
-                }),
-              ]
-            : [],
-        };
-      },
-    };
-  },
-];
+config.plugins.push(function stylexUnplugin() {
+  return {
+    name: 'stylex-unplugin',
+    configureWebpack(_config) {
+      const isProd = process.env.NODE_ENV === 'production';
+      return {
+        plugins: isProd
+          ? [
+              stylexPlugin.webpack({
+                dev: !isProd,
+                runtimeInjection: false,
+                stylexSheetName: '<>',
+                unstable_moduleResolution: {
+                  type: 'commonJS',
+                  rootDir,
+                },
+              }),
+            ]
+          : [],
+      };
+    },
+  };
+});
 
 module.exports = config;

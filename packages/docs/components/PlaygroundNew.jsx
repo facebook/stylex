@@ -10,7 +10,6 @@ import { useEffect, useState, useRef } from 'react';
 import stylexPlugin from '@stylexjs/babel-plugin';
 import * as stylex from '@stylexjs/stylex';
 import { transform } from '@babel/standalone';
-import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import { loadSandpackClient } from '@codesandbox/sandpack-client';
 import Editor from '@monaco-editor/react';
 
@@ -89,7 +88,7 @@ function transformSourceFiles(sourceFiles) {
     const result = transform(code, {
       filename,
       plugins: [
-        jsxSyntaxPlugin,
+        'syntax-jsx',
         [
           stylexPlugin,
           {
