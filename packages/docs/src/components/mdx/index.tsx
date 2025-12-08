@@ -8,6 +8,7 @@ import Heading from './Heading';
 import { HTMLAttributes } from 'react';
 import { StyleXStyles } from '@stylexjs/stylex';
 import MDXLink from './Link';
+import * as stylex from '@stylexjs/stylex';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -37,9 +38,19 @@ export const mdxComponents = {
   h6: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
     <Heading as="h6" {...props} />
   ),
+  code: (props: StyleXHTMLProps<HTMLElement>) => (
+    <code {...props} {...stylex.props(styles.code)} />
+  ),
   TabItem,
   Tabs,
   Dial,
   DevInstallExample,
   WhenDemo: Card,
 };
+
+const styles = stylex.create({
+  code: {
+    // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
+    color: 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
+  },
+});

@@ -45,6 +45,7 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
           >
             <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
           </NavigationMenuList>
+          <div {...stylex.props(navbarStyles.overlayBlur)} />
         </header>
       </>
     </NavigationMenu>
@@ -86,13 +87,12 @@ const navbarStyles = stylex.create({
     position: 'absolute',
     inset: -8,
     bottom: -32,
-    backdropFilter: 'blur(16px) saturate(800%)',
+    backdropFilter: 'blur(16px) saturate(400%)',
   },
   gradientBlur: {
     position: 'absolute',
     inset: -8,
     bottom: -32,
-    // backgroundColor: 'var(--color-fd-background)',
     backdropFilter: 'blur(32px)',
     maskImage: 'linear-gradient(to bottom, white 30%, transparent)',
   },
@@ -101,7 +101,21 @@ const navbarStyles = stylex.create({
     inset: -8,
     bottom: -32,
     backgroundColor: 'var(--color-fd-background)',
-    maskImage: 'linear-gradient(to bottom, white 50%, transparent)',
+    maskImage:
+      'linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 50%, transparent)',
+  },
+  overlayBlur: {
+    position: 'absolute',
+    pointerEvents: 'none',
+    inset: 9,
+    borderRadius: 19,
+    cornerShape: 'squircle',
+    overflow: 'hidden',
+    backdropFilter: 'blur(20px) saturate(1000%)',
+    backgroundColor: 'transparent',
+    maskImage:
+      'linear-gradient(to bottom, white, transparent 8%, transparent 92%, white)',
+    zIndex: 10,
   },
   headerWithVals: {
     // 'max-lg:shadow-lg max-lg:rounded-b-2xl'

@@ -82,10 +82,6 @@ const layoutStyles = stylex.create({
   gap: {
     flexGrow: 1,
   },
-  sidebarTrigger: {
-    // md:hidden
-    // display: { default: 'none', '@media (min-width: 768px)': 'block' },
-  },
   main: {
     // flex flex-1 flex-row [--fd-nav-height:56px]
     display: 'flex',
@@ -143,6 +139,8 @@ function Sidebar() {
       <aside {...stylex.props(sidebarStyles.base)} ref={sidebarRef}>
         {children}
       </aside>
+
+      <div {...stylex.props(sidebarStyles.overlayBlur)} />
     </div>
   );
 }
@@ -186,6 +184,18 @@ const sidebarStyles = stylex.create({
     bottom: 0,
     backdropFilter: 'blur(32px) saturate(800%)',
   },
+  overlayBlur: {
+    position: 'absolute',
+    inset: 9,
+    pointerEvents: 'none',
+    overflow: 'hidden',
+    borderRadius: 19,
+    cornerShape: 'squircle',
+    zIndex: 1,
+    backdropFilter: 'blur(32px) saturate(600%)',
+    maskImage:
+      'linear-gradient(to right, white, transparent 8%, transparent 92%, white)',
+  },
   base: {
     display: 'flex',
     flexDirection: 'column',
@@ -202,7 +212,7 @@ const sidebarStyles = stylex.create({
     borderStyle: 'solid',
     borderColor: 'var(--color-fd-border)',
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
-    zIndex: 10,
+    zIndex: 1,
   },
 });
 
