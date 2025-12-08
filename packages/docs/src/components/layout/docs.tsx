@@ -139,10 +139,7 @@ const sidebarStyles = stylex.create({
     position: 'fixed',
     top: 64,
     left: 0,
-    display: {
-      default: 'flex',
-      '@media (max-width: 767.9px)': 'none',
-    },
+    display: 'flex',
     alignSelf: 'flex-start',
     flexShrink: 0,
     padding: 8,
@@ -174,6 +171,7 @@ const sidebarStyles = stylex.create({
     position: 'absolute',
     inset: -64,
     insetInlineStart: -8,
+    bottom: 0,
     backdropFilter: 'blur(32px) saturate(800%)',
   },
   base: {

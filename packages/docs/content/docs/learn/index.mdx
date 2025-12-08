@@ -13,36 +13,63 @@ superior to what could be authored and maintained by hand.
 
 ## Features at a glance
 
-### Scalable
+<Cards>
+  <Card
+    title="Scalable"
+    description={
+      <ul>
+        <li>Minimize CSS output with atomic CSS</li>
+        <li>The CSS size plateaus as the codebase grows</li>
+        <li>Styles remain maintainable within growing codebases</li>
+      </ul>
+    }
+  />
 
-- Minimize CSS output with atomic CSS.
-- The CSS size plateaus even as the number of components grows.
-- Styles remain readable and maintainable within growing codebases.
+<Card
+  title="Predictable"
+  description={
+    <ul>
+      <li>No "style at a distance"</li>
+      <li>No specificity issues</li>
+      <li>“The last style applied always wins!”</li>
+    </ul>
+  }
+/>
 
-### Predictable
+<Card
+  title="Composable"
+  description={
+    <ul>
+      <li>Apply styles conditionally</li>
+      <li>Merge and compose arbitrary styles</li>
+      <li>Pass around styles as props</li>
+    </ul>
+  }
+/>
 
-- Class names on an element can only directly style that same element.
-- No specificity issues.
-- “The last style applied always wins!”
+<Card
+  title="Fast"
+  description={
+    <ul>
+      <li>No runtime style injection</li>
+      <li>Generate a static CSS file at compile-time</li>
+      <li>Tiny and fast runtime for merging class names</li>
+    </ul>
+  }
+/>
 
-### Composable
+<Card
+  title="Type-Safe"
+  description={
+    <ul>
+      <li>Type-safe APIs</li>
+      <li>Type-safe styles</li>
+      <li>Type-safe themes</li>
+    </ul>
+  }
+/>
 
-- Apply styles conditionally.
-- Merge and compose arbitrary styles across component and file boundaries.
-- Use local constants and expressions to keep styles DRY. Or repeat styles
-  without worrying about performance.
-
-### Fast
-
-- No runtime style injection.
-- All styles are bundled in a static CSS file at compile-time.
-- Optimized runtime for merging class names.
-
-### Type-Safe
-
-- Type-safe APIs.
-- Type-safe styles.
-- Type-safe themes.
+</Cards>
 
 ## Using StyleX
 
