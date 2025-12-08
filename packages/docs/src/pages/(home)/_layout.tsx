@@ -3,5 +3,9 @@ import { baseOptions } from '@/lib/layout.shared';
 import { HomeLayout } from '@/components/layout/home';
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return <HomeLayout {...baseOptions()}>{children}</HomeLayout>;
+  return (
+    <HomeLayout {...baseOptions()} showSidebarToggle={false}>
+      {children}
+    </HomeLayout>
+  );
 }

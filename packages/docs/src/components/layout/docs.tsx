@@ -30,8 +30,6 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
       <Header
         links={props.links}
         nav={props.nav}
-        themeSwitch={props.themeSwitch}
-        searchToggle={props.searchToggle}
         i18n={props.i18n}
         githubUrl={props.githubUrl}
       />
@@ -39,11 +37,9 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
       <div {...stylex.props(layoutStyles.wrapper)}>
         <main id="nd-docs-layout" {...stylex.props(layoutStyles.main)}>
           <Sidebar />
-          <div {...stylex.props(layoutStyles.content)}>
-            {children}
-          </div>
+          <div {...stylex.props(layoutStyles.content)}>{children}</div>
+          <Footer />
         </main>
-        <Footer />
       </div>
     </TreeContextProvider>
   );
@@ -85,21 +81,26 @@ const layoutStyles = stylex.create({
   main: {
     // flex flex-1 flex-row [--fd-nav-height:56px]
     display: 'flex',
-    flexGrow: 1,
-    flexDirection: 'row',
-    ['--fd-nav-height' as any]: '56px',
-  },
-  content: {
-    display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    minWidth: 0,
+    // flexDirection: 'row',
+    ['--fd-nav-height' as any]: '64px',
+    paddingInlineStart: {
+      default: 292,
+      '@media (max-width: 767.9px)': 0,
+    },
+  },
+  content: {
+    // flexGrow: 1,
+    // minWidth: 0,
   },
 });
 
 function Sidebar() {
   const { root } = useTreeContext();
   const [open] = use(SidebarContext);
+
+  console.log('open', open);
 
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
@@ -123,6 +124,10 @@ function Sidebar() {
         open === false && sidebarStyles.closed,
       )}
     >
+      <div {...stylex.props(sidebarStyles.blurContainer)}>
+        <div {...stylex.props(sidebarStyles.blur)} />
+      </div>
+
       <aside {...stylex.props(sidebarStyles.base)} ref={sidebarRef}>
         {children}
       </aside>
@@ -131,8 +136,9 @@ function Sidebar() {
 }
 const sidebarStyles = stylex.create({
   container: {
-    position: 'sticky',
-    top: 56,
+    position: 'fixed',
+    top: 64,
+    left: 0,
     display: {
       default: 'flex',
       '@media (max-width: 767.9px)': 'none',
@@ -140,28 +146,54 @@ const sidebarStyles = stylex.create({
     alignSelf: 'flex-start',
     flexShrink: 0,
     padding: 8,
-    height: 'calc(100dvh - 56px)',
+    height: 'calc(100dvh - 64px)',
+    transform: {
+      default: 'translateX(0px)',
+      '@media (max-width: 767.9px)': 'translateX(-100%)',
+    },
+    transitionProperty: 'transform',
+    transitionDuration: '0.15s',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     zIndex: 10,
+  },
+  open: {
+    transform: 'translateX(0)',
+  },
+  closed: {
+    transform: 'translateX(-100%)',
+  },
+  blurContainer: {
+    position: 'absolute',
+    inset: 8,
+    overflow: 'hidden',
+    borderRadius: 20,
+    cornerShape: 'squircle',
+    zIndex: 1,
+  },
+  blur: {
+    position: 'absolute',
+    inset: -64,
+    insetInlineStart: -8,
+    backdropFilter: 'blur(32px) saturate(800%)',
   },
   base: {
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
     padding: 4 * 4,
-    fontSize: `${14 / 16}rem`,
+    fontSize: `1rem`,
     overflowY: 'auto',
     overscrollBehavior: 'contain',
     width: 280,
     height: '100%',
-    backgroundColor: 'var(--color-fd-background)',
     borderRadius: 20,
+    cornerShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'var(--color-fd-border)',
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
+    zIndex: 10,
   },
-  open: {},
-  closed: {},
 });
 
 function SidebarItem({
@@ -333,7 +365,7 @@ const linkVariants = stylex.create({
     position: 'relative',
     display: 'inline-flex',
     alignItems: 'center',
-    fontSize: `${14 / 16}rem`,
+    fontSize: `1rem`,
     lineHeight: 1.42,
     gap: 2 * 4,
     paddingBlock: 1.5 * 4,

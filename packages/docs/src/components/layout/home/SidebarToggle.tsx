@@ -5,7 +5,8 @@ import { SidebarIcon } from 'lucide-react';
 import { use } from 'react';
 
 export default function SidebarToggle() {
-  const [open, setOpen] = use(SidebarContext);
+  const [_open, setOpen] = use(SidebarContext);
+
   return (
     <button
       type="button"

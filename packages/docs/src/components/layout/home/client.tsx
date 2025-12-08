@@ -26,29 +26,35 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
   const [value, setValue] = useState('');
   return (
     <NavigationMenu value={value} onValueChange={setValue} asChild>
-      <header
-        id="nd-nav"
-        {...props}
-        {...stylex.props(navbarStyles.header, xstyle)}
-      >
-        <div {...stylex.props(navbarStyles.backdrop, navbarStyles.blur)} />
-        <div
-          {...stylex.props(navbarStyles.backdrop, navbarStyles.background)}
-        />
-        <NavigationMenuList
-          {...stylex.props(navbarStyles.menuList, xstyle)}
-          asChild
+      <>
+        <div {...stylex.props(navbarStyles.gap)} />
+        <header
+          id="nd-nav"
+          {...props}
+          {...stylex.props(navbarStyles.header, xstyle)}
         >
-          <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
-        </NavigationMenuList>
-        {/* Border line - rendered above backdrops */}
-        <div {...stylex.props(navbarStyles.borderLine)} />
-      </header>
+          <div {...stylex.props(navbarStyles.gradientBlur)} />
+          <div {...stylex.props(navbarStyles.gradientFade)} />
+          <div {...stylex.props(navbarStyles.backdrop)}>
+            <div {...stylex.props(navbarStyles.blur)} />
+          </div>
+
+          <NavigationMenuList
+            {...stylex.props(navbarStyles.menuList, xstyle)}
+            asChild
+          >
+            <nav {...stylex.props(navbarStyles.nav)}>{props.children}</nav>
+          </NavigationMenuList>
+        </header>
+      </>
     </NavigationMenu>
   );
 }
 
 const navbarStyles = stylex.create({
+  gap: {
+    height: 56,
+  },
   nav: {
     display: 'flex',
     flexDirection: 'row',
@@ -57,29 +63,45 @@ const navbarStyles = stylex.create({
     gap: 4 * 4,
   },
   header: {
-    position: 'sticky',
+    position: 'fixed',
     top: 0,
-    zIndex: 50,
-    insetInlineStart: 0,
-    insetInlineEnd: 'var(--removed-body-scroll-bar-size, 0)',
-    backgroundColor: 'var(--color-fd-background)',
+    zIndex: 10,
+    insetInline: 0,
+    padding: 8,
+    height: 56 + 16,
   },
   backdrop: {
-    display: 'none',
-  },
-  background: {
-    display: 'none',
+    position: 'absolute',
+    inset: 8,
+    pointerEvents: 'none',
+    borderRadius: 20,
+    cornerShape: 'squircle',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'var(--color-fd-border)',
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
   blur: {
-    display: 'none',
-  },
-  borderLine: {
     position: 'absolute',
-    insetInline: 0,
-    bottom: 0,
-    height: 1,
-    backgroundColor: 'var(--color-fd-border)',
-    zIndex: 10,
+    inset: -8,
+    bottom: -32,
+    backdropFilter: 'blur(16px) saturate(800%)',
+  },
+  gradientBlur: {
+    position: 'absolute',
+    inset: -8,
+    bottom: -32,
+    // backgroundColor: 'var(--color-fd-background)',
+    backdropFilter: 'blur(32px)',
+    maskImage: 'linear-gradient(to bottom, white 30%, transparent)',
+  },
+  gradientFade: {
+    position: 'absolute',
+    inset: -8,
+    bottom: -32,
+    backgroundColor: 'var(--color-fd-background)',
+    maskImage: 'linear-gradient(to bottom, white 50%, transparent)',
   },
   headerWithVals: {
     // 'max-lg:shadow-lg max-lg:rounded-b-2xl'
@@ -218,11 +240,12 @@ const navItemVariants = stylex.create({
     gap: 1 * 4,
     padding: 2 * 4,
     color: {
-      default: 'var(--text-fd-muted-foreground)',
-      ':hover': 'var(--text-fd-accent-foreground)',
-      ':where([data-active=true])': 'var(--text-fd-primary)',
+      default: 'var(--color-fd-muted-foreground)',
+      ':hover': 'var(--color-fd-foreground)',
+      ':where([data-active=true])': 'var(--color-fd-primary)',
     },
-    transitionProperty: 'color, background-color, border-color',
+    borderRadius: 8,
+    cornerShape: 'squircle',
   },
   button: { gap: 1.5 * 4 },
 });

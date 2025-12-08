@@ -23,7 +23,7 @@ export default function Home() {
             <StylexAnimatedLogo style={styles.logo} />
           </h1>
           <p {...stylex.props(styles.subtitle)}>
-            The <TypingWord /> styling system for the modern web.
+            The <TypingWord /> styling system for ambitious interfaces
           </p>
           <section {...stylex.props(styles.ctaSection)}>
             <CtaButton color="pink" to="/docs/learn/">
@@ -79,10 +79,10 @@ const styles = stylex.create({
   subtitle: {
     margin: 0,
     paddingInline: 24,
-    fontWeight: 400,
+    fontWeight: 200,
     textAlign: 'center',
-    color: 'var(--color-fd-foreground)',
-    fontSize: 'clamp(0.875rem, 0.75rem + 0.75vw, 1.125rem)',
+    color: 'var(--color-fd-muted-foreground)',
+    fontSize: 'clamp(1rem, 1.5rem + 0.75vw, 2.5rem)',
   },
   ctaSection: {
     alignItems: 'stretch',

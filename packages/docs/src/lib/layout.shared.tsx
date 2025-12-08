@@ -16,21 +16,25 @@ export function baseOptions(): BaseLayoutProps {
         type: 'main',
         text: 'Docs',
         url: '/docs/learn',
+        active: 'nested-url'
       },
       {
         type: 'main',
         text: 'API',
         url: '/docs/api',
+        active: 'nested-url'
       },
       {
         type: 'main',
         text: 'Blog',
         url: '/blog',
+        active: 'nested-url'
       },
       {
         type: 'main',
         text: 'Playground',
         url: '/playground',
+        active: 'nested-url'
       },
     ],
   };
@@ -39,7 +43,7 @@ export function baseOptions(): BaseLayoutProps {
 const styles = stylex.create({
   logo: {
     '--fg1': vars['--color-fd-card-foreground'],
-    width: 48,
-    height: 32,
+    // width: 48,
+    height: 36,
   },
 });

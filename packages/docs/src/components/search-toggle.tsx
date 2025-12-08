@@ -92,8 +92,12 @@ const styles = stylex.create({
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
-
+    borderColor: {
+      default: 'var(--color-fd-border)',
+      ':hover': 'var(--color-fd-primary)',
+      ':focus-visible': 'var(--color-fd-primary)',
+    },
+    outline: 'none',
     backgroundColor:
       'color-mix(in oklab, var(--bg-fd-secondary) 50%, transparent)',
     padding: 1.5 * 4,

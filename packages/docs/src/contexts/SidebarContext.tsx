@@ -9,5 +9,6 @@ export const SidebarContext = createContext<
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(null);
   const value = useMemo(() => [open, setOpen], [open]);
+
   return <SidebarContext value={value as any}>{children}</SidebarContext>;
 }

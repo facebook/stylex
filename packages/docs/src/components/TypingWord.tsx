@@ -7,8 +7,8 @@
 
 'use client';
 
-import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { useEffect, useState } from 'react';
 
 const words = [
   'expressive',
@@ -19,11 +19,11 @@ const words = [
 ];
 
 export default function TypingWord() {
-  const [index, setIndex] = React.useState(0);
-  const [displayed, setDisplayed] = React.useState('');
-  const [isDeleting, setIsDeleting] = React.useState(false);
+  const [index, setIndex] = useState(0);
+  const [displayed, setDisplayed] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const word = words[index] ?? '';
 
     if (!isDeleting && displayed === word) {
@@ -58,7 +58,7 @@ export default function TypingWord() {
 
 const styles = stylex.create({
   typingWord: {
+    color: 'var(--color-fd-primary)',
     fontWeight: 700,
   },
 });
-

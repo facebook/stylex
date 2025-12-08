@@ -38,19 +38,7 @@ export interface NavOptions extends NavProviderProps {
 }
 
 export interface BaseLayoutProps {
-  themeSwitch?: {
-    enabled?: boolean;
-    component?: ReactNode;
-    mode?: 'light-dark' | 'light-dark-system';
-  };
-
-  searchToggle?: Partial<{
-    enabled: boolean;
-    components: Partial<{
-      sm: ReactNode;
-      lg: ReactNode;
-    }>;
-  }>;
+  showSidebarToggle?: boolean;
 
   /**
    * I18n options

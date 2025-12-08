@@ -35,8 +35,7 @@ export function HomeLayout(
     links,
     githubUrl,
     i18n,
-    themeSwitch = {},
-    searchToggle,
+    showSidebarToggle = true,
     xstyle,
     ...rest
   } = props;
@@ -53,8 +52,7 @@ export function HomeLayout(
             <Header
               links={links}
               nav={nav}
-              themeSwitch={themeSwitch}
-              searchToggle={searchToggle}
+              showSidebarToggle={showSidebarToggle}
               i18n={i18n}
               githubUrl={githubUrl}
             />
@@ -69,8 +67,7 @@ export function Header({
   nav = {},
   links,
   githubUrl,
-  themeSwitch = {},
-  searchToggle = {},
+  showSidebarToggle = true,
 }: HomeLayoutProps) {
   const finalLinks = useMemo(
     () => getLinks(links, githubUrl),
@@ -83,7 +80,7 @@ export function Header({
 
   return (
     <Navbar>
-      <SidebarToggle />
+      {showSidebarToggle && <SidebarToggle />}
       <Link {...stylex.props(styles.navTitleLink)} href={nav.url ?? '/'}>
         {nav.title}
       </Link>
@@ -101,13 +98,7 @@ export function Header({
       </ul>
       <div {...stylex.props(styles.grow)} />
       <div {...stylex.props(styles.searchContainer)}>
-        {searchToggle.enabled !== false &&
-          (searchToggle.components?.lg ?? (
-            <LargeSearchToggle
-              xstyle={styles.largeSearchToggle}
-              hideIfDisabled
-            />
-          ))}
+        <LargeSearchToggle xstyle={styles.largeSearchToggle} hideIfDisabled />
       </div>
       <ul {...stylex.props(styles.endLinkList)}>
         {navItems.filter(isSecondary).map((item, i) => (
@@ -126,8 +117,7 @@ export function Header({
           />
         ))}
       </ul>
-      {themeSwitch.enabled !== false &&
-        (themeSwitch.component ?? <ThemeToggle mode={themeSwitch?.mode} />)}
+      <ThemeToggle />
     </Navbar>
   );
 }
@@ -156,12 +146,16 @@ const styles = stylex.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 2 * 4,
-    paddingInline: 6 * 4,
   },
   navbarLinkItem: {
     // "text-sm"
-    fontSize: `${14 / 16}rem`,
+    fontSize: `1rem`,
     lineHeight: 1.4,
+    outline: 'none',
+    boxShadow: {
+      default: 'none',
+      ':focus-visible': '0 0 0 2px var(--color-fd-primary)',
+    },
   },
   searchContainer: {
     // flex flex-row items-center justify-end gap-1.5 flex-1 max-lg:hidden
@@ -180,6 +174,12 @@ const styles = stylex.create({
     paddingInlineStart: 2.5 * 4,
     maxWidth: 240,
     minWidth: 180,
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'color-mix(in oklab, var(--color-fd-primary) 5%, transparent)',
+      ':focus-visible':
+        'color-mix(in oklab, var(--color-fd-primary) 5%, transparent)',
+    },
   },
   languageToggle: {
     height: 20,

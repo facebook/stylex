@@ -10,22 +10,13 @@ export const buttonStyles = stylex.create({
     padding: 8,
     fontSize: `${14 / 16}rem`,
     fontWeight: 500,
-    transitionProperty:
-      'color, background-color, border-color, text-decoration-color',
+    transitionProperty: 'background-color',
     transitionDuration: '0.1s',
     transitionTimingFunction: 'ease-in-out',
-    pointerEvents: {
-      default: null,
-      ':disabled': 'none',
-    },
-    opacity: {
-      default: null,
-      ':disabled': 0.5,
-    },
     outline: 'none',
     boxShadow: {
       default: 'none',
-      ':focus-visible': '0 0 0 2px var(--color-fd-ring)',
+      ':focus-visible': '0 0 0 2px var(--color-fd-primary)',
     },
   },
 });

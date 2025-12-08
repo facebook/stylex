@@ -31,7 +31,7 @@ export function ThemeToggle({
   const current =
     mode === 'light-dark'
       ? mounted
-        ? resolvedTheme ?? null
+        ? (resolvedTheme ?? null)
         : null
       : mounted
         ? (theme as ThemeKey | null)
@@ -41,14 +41,16 @@ export function ThemeToggle({
     mode === 'light-dark' ? items.filter((i) => i.key !== 'system') : items;
 
   return (
-    <div data-theme-toggle="" {...props} {...stylex.props(styles.container, xstyle)}>
+    <div
+      data-theme-toggle=""
+      {...props}
+      {...stylex.props(styles.container, xstyle)}
+    >
       {visibleItems.map(({ key, Icon, label }) => {
         const isActive = current === key;
 
         const nextTheme =
-          mode === 'light-dark' && key === 'system'
-            ? 'system'
-            : key;
+          mode === 'light-dark' && key === 'system' ? 'system' : key;
 
         return (
           <button
@@ -139,11 +141,12 @@ const styles = stylex.create({
     display: 'inline-flex',
     alignItems: 'center',
     gap: 2,
-    borderRadius: 14,
+    borderRadius: 999,
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'var(--color-fd-border)',
-    backgroundColor: 'color-mix(in oklab, var(--color-fd-foreground) 12%, var(--color-fd-background))',
+    backgroundColor:
+      'color-mix(in oklab, var(--color-fd-foreground) 12%, var(--color-fd-background))',
     padding: 0.5 * 4,
     overflow: 'hidden',
   },
@@ -154,13 +157,17 @@ const styles = stylex.create({
     minHeight: 7 * 4,
     minWidth: 7 * 4,
     color: 'var(--color-fd-muted-foreground)',
-    borderRadius: 10,
+    borderRadius: 999,
     borderWidth: 0,
     backgroundColor: 'transparent',
-    cursor: 'pointer',
     transitionProperty: 'background-color, color, box-shadow',
     transitionDuration: '150ms',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    outline: 'none',
+    boxShadow: {
+      default: 'none',
+      ':focus-visible': '0 0 0 2px var(--color-fd-primary)',
+    },
   },
   itemGrow: {
     width: 'auto',
@@ -169,15 +176,14 @@ const styles = stylex.create({
   itemActive: {
     backgroundColor: 'var(--color-fd-background)',
     color: 'var(--color-fd-foreground)',
-    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.06)',
   },
   first: {
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
+    // borderTopLeftRadius: 12,
+    // borderBottomLeftRadius: 12,
   },
   last: {
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
+    // borderTopRightRadius: 12,
+    // borderBottomRightRadius: 12,
   },
   icon: {
     width: 16,
