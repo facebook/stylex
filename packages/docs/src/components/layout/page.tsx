@@ -127,6 +127,7 @@ const titleStyles = stylex.create({
     fontSize: `${30 / 16}rem`,
     lineHeight: 1.2,
     fontWeight: 600,
+    color: 'var(--color-fd-foreground)',
   },
 });
 

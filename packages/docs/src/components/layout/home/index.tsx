@@ -160,7 +160,7 @@ const styles = stylex.create({
   },
   navbarLinkItem: {
     // "text-sm"
-    fontSize: `${12 / 16}rem`,
+    fontSize: `${14 / 16}rem`,
     lineHeight: 1.4,
   },
   searchContainer: {

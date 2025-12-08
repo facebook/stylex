@@ -17,6 +17,7 @@ import { activeLinkMarker } from '../../theming/vars.stylex';
 import { Header } from './home';
 import { ChevronDown } from 'lucide-react';
 import { SidebarContext } from '@/contexts/SidebarContext';
+import Footer from '@/components/Footer';
 
 export interface DocsLayoutProps extends BaseLayoutProps {
   tree: PageTree.Root;
@@ -35,14 +36,24 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
         githubUrl={props.githubUrl}
       />
 
-      <main id="nd-docs-layout" {...stylex.props(layoutStyles.main)}>
-        <Sidebar />
-        {children}
-      </main>
+      <div {...stylex.props(layoutStyles.wrapper)}>
+        <main id="nd-docs-layout" {...stylex.props(layoutStyles.main)}>
+          <Sidebar />
+          <div {...stylex.props(layoutStyles.content)}>
+            {children}
+          </div>
+        </main>
+        <Footer />
+      </div>
     </TreeContextProvider>
   );
 }
 const layoutStyles = stylex.create({
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 'calc(100dvh - 56px)',
+  },
   header: {
     // sticky top-0 bg-fd-background h-14 z-20
     position: 'sticky',
@@ -77,10 +88,12 @@ const layoutStyles = stylex.create({
     flexGrow: 1,
     flexDirection: 'row',
     ['--fd-nav-height' as any]: '56px',
-    paddingInlineStart: {
-      default: 292,
-      '@media (max-width: 767.9px)': 0,
-    },
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexGrow: 1,
+    minWidth: 0,
   },
 });
 
@@ -106,13 +119,10 @@ function Sidebar() {
     <div
       {...stylex.props(
         sidebarStyles.container,
-        open === true && sidebarStyles.openContainer,
-        open === false && sidebarStyles.closedContainer,
+        open === true && sidebarStyles.open,
+        open === false && sidebarStyles.closed,
       )}
     >
-      <div {...stylex.props(sidebarStyles.blurContainer)}>
-        <div {...stylex.props(sidebarStyles.blur)} />
-      </div>
       <aside {...stylex.props(sidebarStyles.base)} ref={sidebarRef}>
         {children}
       </aside>
@@ -121,68 +131,37 @@ function Sidebar() {
 }
 const sidebarStyles = stylex.create({
   container: {
-    position: 'fixed',
+    position: 'sticky',
     top: 56,
-    left: 0,
-    display: 'flex',
-    pointerEvents: 'auto',
-    flexDirection: 'column',
+    display: {
+      default: 'flex',
+      '@media (max-width: 767.9px)': 'none',
+    },
+    alignSelf: 'flex-start',
     flexShrink: 0,
     padding: 8,
-    zIndex: 1,
     height: 'calc(100dvh - 56px)',
-    transform: {
-      default: 'translateX(0px)',
-      '@media (max-width: 767.9px)': 'translateX(-100%)',
-    },
-    transitionProperty: 'transform',
-    transitionDuration: '0.15s',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-  },
-  openContainer: {
-    transform: 'translateX(0)',
-  },
-  closedContainer: {
-    transform: 'translateX(-100%)',
-  },
-  blurContainer: {
-    position: 'absolute',
-    inset: 8,
-    overflow: 'hidden',
-    borderRadius: 20,
-    cornerShape: 'squircle',
-    zIndex: 1,
-  },
-  blur: {
-    position: 'absolute',
-    inset: -64,
-    backdropFilter: 'blur(32px) saturate(400%)',
+    zIndex: 10,
   },
   base: {
-    position: 'relative',
     display: 'flex',
-    pointerEvents: 'auto',
     flexDirection: 'column',
-    flexShrink: 0,
+    gap: 2,
     padding: 4 * 4,
-    fontSize: `${12 / 16}rem`,
+    fontSize: `${14 / 16}rem`,
     overflowY: 'auto',
     overscrollBehavior: 'contain',
+    width: 280,
     height: '100%',
-    width: '100vw',
-    maxWidth: 300,
-    insetInlineStart: 0,
-    bottom: 0,
-    // backgroundColor:
-    //   'color-mix(in oklab, var(--color-fd-secondary) 10%, transparent)',
+    backgroundColor: 'var(--color-fd-background)',
     borderRadius: 20,
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'var(--color-fd-border)',
-    cornerShape: 'squircle',
-    overflow: 'clip',
-    zIndex: 1,
+    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
+  open: {},
+  closed: {},
 });
 
 function SidebarItem({
@@ -296,9 +275,10 @@ function SidebarItemFolder({
 const sidebarItemStyles = stylex.create({
   separator: {
     // text-fd-muted-foreground mt-6 mb-2 first:mt-0
+    fontSize: `${14 / 16}rem`,
     color: 'var(--text-fd-muted-foreground)',
-    marginTop: { default: 6 * 4, ':first-child': 0 },
-    marginBottom: 2 * 4,
+    marginTop: { default: 5 * 4, ':first-child': 0 },
+    marginBottom: 1.5 * 4,
   },
   details: {
     '--rotation': {
@@ -322,8 +302,8 @@ const sidebarItemStyles = stylex.create({
     justifyContent: 'space-between',
   },
   chevron: {
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
     flexShrink: 0,
     transform: 'rotate(var(--rotation))',
     transitionProperty: 'transform',
@@ -343,6 +323,7 @@ const sidebarItemStyles = stylex.create({
     borderInlineStartColor: 'var(--color-fd-border)',
     display: 'flex',
     flexDirection: 'column',
+    gap: 2,
     ['--summary-color' as any]: 'initial',
   },
 });
@@ -352,7 +333,8 @@ const linkVariants = stylex.create({
     position: 'relative',
     display: 'inline-flex',
     alignItems: 'center',
-    fontSize: `1rem`,
+    fontSize: `${14 / 16}rem`,
+    lineHeight: 1.42,
     gap: 2 * 4,
     paddingBlock: 1.5 * 4,
     borderRadius: '8px',

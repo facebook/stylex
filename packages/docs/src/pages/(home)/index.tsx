@@ -15,6 +15,8 @@ import Footer from '@/components/Footer';
 export default function Home() {
   return (
     <>
+      <title>StyleX</title>
+      <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
       <main {...stylex.props(styles.main)}>
         <section {...stylex.props(styles.hero)}>
           <h1 {...stylex.props(styles.title)}>
@@ -79,7 +81,7 @@ const styles = stylex.create({
     paddingInline: 24,
     fontWeight: 400,
     textAlign: 'center',
-    color: 'var(--color-fd-muted-foreground)',
+    color: 'var(--color-fd-foreground)',
     fontSize: 'clamp(0.875rem, 0.75rem + 0.75vw, 1.125rem)',
   },
   ctaSection: {

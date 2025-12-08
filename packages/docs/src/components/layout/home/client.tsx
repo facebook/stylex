@@ -59,24 +59,19 @@ const navbarStyles = stylex.create({
   header: {
     position: 'sticky',
     top: 0,
-    zIndex: 1,
+    zIndex: 50,
     insetInlineStart: 0,
     insetInlineEnd: 'var(--removed-body-scroll-bar-size, 0)',
+    backgroundColor: 'var(--color-fd-background)',
   },
   backdrop: {
-    position: 'absolute',
-    insetInline: 0,
-    top: 0,
-    height: '240%',
-    pointerEvents: 'none',
+    display: 'none',
   },
   background: {
-    backgroundImage:
-      'linear-gradient(to bottom, var(--color-fd-background) 50%, transparent)',
+    display: 'none',
   },
   blur: {
-    backdropFilter: 'blur(32px)',
-    maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)',
+    display: 'none',
   },
   borderLine: {
     position: 'absolute',

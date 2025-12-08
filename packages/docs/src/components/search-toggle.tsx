@@ -99,7 +99,7 @@ const styles = stylex.create({
     padding: 1.5 * 4,
     paddingInlineStart: 2 * 4,
 
-    fontSize: `${12 / 16}rem`,
+    fontSize: `${14 / 16}rem`,
     color: {
       default: 'var(--text-fd-muted-foreground)',
       ':hover': 'var(--text-fd-accent-foreground)',
