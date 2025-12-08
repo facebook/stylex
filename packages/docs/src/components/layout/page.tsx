@@ -21,32 +21,39 @@ export interface DocsPageProps {
 export function DocsPage({ toc = [], ...props }: DocsPageProps) {
   return (
     <AnchorProvider toc={toc}>
-      <main {...stylex.props(pageStyles.flexCol, pageStyles.main)}>
-        <article {...stylex.props(pageStyles.flexCol, pageStyles.article)}>
-          {props.children}
-          <Footer />
-        </article>
-      </main>
-      {toc.length > 0 && (
-        <div {...stylex.props(pageStyles.sticky)}>
-          <p {...stylex.props(pageStyles.tocPara)}>On this page</p>
-          <div {...stylex.props(pageStyles.flexCol)}>
-            {toc.map((item) => (
-              <TocItem key={item.url} item={item} />
-            ))}
+      <div {...stylex.props(pageStyles.wrapper)}>
+        <main {...stylex.props(pageStyles.flexCol, pageStyles.main)}>
+          <article {...stylex.props(pageStyles.flexCol, pageStyles.article)}>
+            {props.children}
+            <Footer />
+          </article>
+        </main>
+        {toc.length > 0 && (
+          <div {...stylex.props(pageStyles.sticky)}>
+            <p {...stylex.props(pageStyles.tocPara)}>On this page</p>
+            <div {...stylex.props(pageStyles.flexCol)}>
+              {toc.map((item) => (
+                <TocItem key={item.url} item={item} />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </AnchorProvider>
   );
 }
 const pageStyles = stylex.create({
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+  },
   flexCol: {
     display: 'flex',
     flexDirection: 'column',
   },
   main: {
-    width: '100%',
+    flex: 1,
     minWidth: 0,
   },
   article: {
@@ -74,6 +81,9 @@ const pageStyles = stylex.create({
     padding: 4 * 4,
     overflow: 'auto',
     zIndex: 1,
+    borderInlineStartWidth: 1,
+    borderInlineStartStyle: 'solid',
+    borderInlineStartColor: 'var(--color-fd-border)',
   },
   tocPara: {
     fontSize: `${14 / 16}rem`,
