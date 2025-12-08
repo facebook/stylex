@@ -168,7 +168,6 @@ const styles = stylex.create({
     transitionDuration: '150ms',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     outline: 'none',
-    cursor: 'pointer',
     boxShadow: {
       default: 'none',
       ':focus-visible': '0 0 0 2px var(--color-fd-primary)',

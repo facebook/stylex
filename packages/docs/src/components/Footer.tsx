@@ -8,6 +8,9 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { GithubIcon, TwitterIcon } from 'lucide-react';
+import Bluesky from './icons/Bluesky';
+import MetaOpenSource from './icons/MetaOpenSource';
+import Link from 'fumadocs-core/link';
 
 function ExternalLinkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -69,9 +72,9 @@ export default function Footer() {
             <ul {...stylex.props(styles.list)}>
               {footerLinks.develop.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} {...stylex.props(styles.link)}>
+                  <Link href={link.href} {...stylex.props(styles.link)}>
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -82,9 +85,9 @@ export default function Footer() {
             <ul {...stylex.props(styles.list)}>
               {footerLinks.explore.map((link) => (
                 <li key={link.label}>
-                  <a href={link.href} {...stylex.props(styles.link)}>
+                  <Link href={link.href} {...stylex.props(styles.link)}>
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -95,7 +98,7 @@ export default function Footer() {
             <ul {...stylex.props(styles.list)}>
               {footerLinks.participate.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     {...stylex.props(
                       styles.link,
@@ -111,7 +114,7 @@ export default function Footer() {
                         {...stylex.props(styles.externalIcon)}
                       />
                     )}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -122,7 +125,7 @@ export default function Footer() {
             <ul {...stylex.props(styles.list)}>
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
-                  <a
+                  <Link
                     href={link.href}
                     {...stylex.props(
                       styles.link,
@@ -138,43 +141,54 @@ export default function Footer() {
                         {...stylex.props(styles.externalIcon)}
                       />
                     )}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
         </div>
 
+        <Link
+          href="https://opensource.fb.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          {...stylex.props(styles.metaOpenSourceLink)}
+        >
+          <MetaOpenSource xstyle={styles.metaOpenSource} />
+        </Link>
+
         <div {...stylex.props(styles.bottom)}>
           <span {...stylex.props(styles.copyright)}>
             Copyright © 2025 Meta Platforms, Inc.
           </span>
 
+          <div {...stylex.props(styles.bottomSpacer)} />
+
           <div {...stylex.props(styles.socialLinks)}>
-            <a
+            <Link
               href="https://github.com/facebook/stylex"
               target="_blank"
               rel="noopener noreferrer"
               {...stylex.props(styles.socialLink)}
             >
               <GithubIcon {...stylex.props(styles.socialIcon)} />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://x.com/stylexjs"
               target="_blank"
               rel="noopener noreferrer"
               {...stylex.props(styles.socialLink)}
             >
               <TwitterIcon {...stylex.props(styles.socialIcon)} />
-            </a>
-            {/* <a
-              href="https://bsky.app/profile/stylex.dev"
+            </Link>
+            <Link
+              href="https://bsky.app/profile/stylexjs.bsky.social"
               target="_blank"
               rel="noopener noreferrer"
               {...stylex.props(styles.socialLink)}
             >
-              <BlueskyIcon {...stylex.props(styles.socialIcon)} />
-            </a> */}
+              <Bluesky xstyle={styles.socialIcon} />
+            </Link>
           </div>
         </div>
       </div>
@@ -192,24 +206,24 @@ const styles = stylex.create({
     transitionDuration: '300ms',
   },
   container: {
-    maxWidth: 1280,
-    marginInline: 'auto',
-    paddingInline: {
-      default: 32,
-      '@media (min-width: 640px)': 24,
-      '@media (min-width: 1024px)': 32,
-    },
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 32,
     paddingTop: 48,
-    paddingBottom: 32,
+    width: '100%',
+    gap: 32,
   },
   grid: {
     display: 'grid',
+    width: '100%',
+    maxWidth: 1280,
     gridTemplateColumns: {
       default: 'repeat(2, 1fr)',
       '@media (min-width: 768px)': 'repeat(4, 1fr)',
     },
     gap: 32,
-    marginBottom: 32,
   },
   heading: {
     marginBottom: 16,
@@ -247,15 +261,32 @@ const styles = stylex.create({
     height: 12,
   },
   bottom: {
-    paddingTop: 32,
     display: 'flex',
-    flexDirection: {
-      default: 'column',
-      '@media (min-width: 640px)': 'row',
-    },
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 16,
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    // justifyContent: 'space-between',
+    width: '100%',
+    maxWidth: 1080,
+    gap: 8,
+  },
+  bottomSpacer: {
+    minWidth: 32,
+    flexGrow: 1,
+  },
+  metaOpenSourceLink: {
+    marginTop: 16,
+    opacity: {
+      default: 0.5,
+      ':hover': 1,
+      ':focus-visible': 1,
+    },
+    transitionProperty: 'opacity',
+    transitionDuration: '150ms',
+    transitionTimingFunction: 'ease-in-out',
+  },
+  metaOpenSource: {
+    height: 68,
   },
   copyright: {
     color: 'var(--color-fd-muted-foreground)',

@@ -25,6 +25,8 @@ export interface DocsLayoutProps extends BaseLayoutProps {
 }
 
 export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
+  const [sidebarOpen] = use(SidebarContext);
+
   return (
     <TreeContextProvider tree={tree}>
       <Header
@@ -35,7 +37,13 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
       />
 
       <div {...stylex.props(layoutStyles.wrapper)}>
-        <main id="nd-docs-layout" {...stylex.props(layoutStyles.main)}>
+        <main
+          id="nd-docs-layout"
+          {...stylex.props(
+            layoutStyles.main,
+            sidebarOpen === false && layoutStyles.mainWithSidebarClosed,
+          )}
+        >
           <Sidebar />
           <div {...stylex.props(layoutStyles.content)}>{children}</div>
           <Footer />
@@ -89,6 +97,12 @@ const layoutStyles = stylex.create({
       default: 292,
       '@media (max-width: 767.9px)': 0,
     },
+    transitionProperty: 'padding-inline-start',
+    transitionDuration: '0.15s',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  },
+  mainWithSidebarClosed: {
+    paddingInlineStart: 0,
   },
   content: {
     // flexGrow: 1,
@@ -99,8 +113,6 @@ const layoutStyles = stylex.create({
 function Sidebar() {
   const { root } = useTreeContext();
   const [open] = use(SidebarContext);
-
-  console.log('open', open);
 
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
