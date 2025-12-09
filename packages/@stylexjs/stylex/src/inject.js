@@ -111,12 +111,17 @@ function updateDependentRules(constKey: string): void {
   });
 }
 
-export default function inject(
-  cssText: string,
+type InjectArgs = $ReadOnly<{
+  ltr: string,
+  rtl?: ?string,
   priority: number,
   constKey?: string,
   constVal?: string | number,
-): string {
+}>;
+
+export default function inject(args: InjectArgs): string {
+  const { ltr: cssText, priority, constKey, constVal } = args;
+
   if (constKey !== undefined && constVal !== undefined) {
     const hadPreviousValue = constants[constKey] !== undefined;
     const valueChanged = hadPreviousValue && constants[constKey] !== constVal;

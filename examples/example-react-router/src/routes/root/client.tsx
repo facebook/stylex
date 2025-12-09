@@ -12,6 +12,7 @@ import {
 } from 'react-router';
 
 import MainArticle from '../../components/MainArticle';
+import { DevStyleXInject } from './DevStyleXInject';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const navigation = useNavigation();
@@ -21,12 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        {import.meta.env.DEV ? (
-          <>
-            <script type="module" src="/@id/virtual:stylex:runtime" />
-            <link rel="stylesheet" href="/virtual:stylex.css" />
-          </>
-        ) : null}
+        {import.meta.env.DEV ? <DevStyleXInject /> : null}
         <meta charSet="utf-8"></meta>
       </head>
       <body {...stylex.props(layoutStyles.body)}>

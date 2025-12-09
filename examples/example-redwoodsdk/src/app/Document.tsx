@@ -1,5 +1,6 @@
 import './root.css';
 import * as stylex from '@stylexjs/stylex';
+import { DevStyleXInject } from './DevStyleXInject';
 
 const styles = stylex.create({
   html: {
@@ -30,16 +31,10 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
         crossOrigin="anonymous"
       />
       <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&family=Playfair+Display:wght@700&display=block"
         rel="stylesheet"
       />
-      {/* Dev: request StyleX aggregated CSS from the dev endpoint */}
-      {import.meta.env.DEV ? (
-        <link rel="stylesheet" href="/virtual:stylex.css" />
-      ) : null}
-      {import.meta.env.PROD ? (
-        <link rel="stylesheet" href="/client/assets/stylex.css" />
-      ) : null}
+      <DevStyleXInject cssHref="/client/assets/stylex.css" />
       <link rel="modulepreload" href="/src/client.tsx" />
     </head>
     <body {...stylex.props(styles.body)}>

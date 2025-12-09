@@ -10,6 +10,7 @@ export default defineConfig({
     stylex.vite({
       useCSSLayers: true,
       enableDebugClassNames: false,
+      runtimeInjection: false,
     }),
     react(),
     rsc({
