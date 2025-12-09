@@ -210,8 +210,14 @@ describe('rollup-plugin-stylex', () => {
          */
 
         var _inject2$2 = _inject;
-        _inject2$2(".display-x1lliihq{display:block}", 3000);
-        _inject2$2(".width-xh8yej3{width:100%}", 4000);
+        _inject2$2({
+          ltr: ".display-x1lliihq{display:block}",
+          priority: 3000
+        });
+        _inject2$2({
+          ltr: ".width-xh8yej3{width:100%}",
+          priority: 4000
+        });
         var styles$2 = {
           bar: {
             "display-k1xSpc": "display-x1lliihq",
@@ -228,9 +234,18 @@ describe('rollup-plugin-stylex', () => {
          */
 
         var _inject2$1 = _inject;
-        _inject2$1(".display-xt0psk2{display:inline}", 3000);
-        _inject2$1(".height-x1egiwwb{height:500px}", 4000);
-        _inject2$1(".width-x3hqpx7{width:50%}", 4000);
+        _inject2$1({
+          ltr: ".display-xt0psk2{display:inline}",
+          priority: 3000
+        });
+        _inject2$1({
+          ltr: ".height-x1egiwwb{height:500px}",
+          priority: 4000
+        });
+        _inject2$1({
+          ltr: ".width-x3hqpx7{width:50%}",
+          priority: 4000
+        });
         const styles$1 = {
           baz: {
             "display-k1xSpc": "display-xt0psk2",
@@ -248,14 +263,38 @@ describe('rollup-plugin-stylex', () => {
          */
 
         var _inject2 = _inject;
-        _inject2("@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}", 0);
-        _inject2(".animationName-xeuoslp{animation-name:xgnty7z-B}", 3000);
-        _inject2(".backgroundColor-x1gykpug:hover{background-color:red}", 3130);
-        _inject2(".borderStartStartRadius-xu4yf9m{border-start-start-radius:7.5px}", 3000);
-        _inject2(".display-x78zum5{display:flex}", 3000);
-        _inject2(".height-x1egiwwb{height:500px}", 4000);
-        _inject2(".marginInlineStart-x1hm9lzh{margin-inline-start:10px}", 3000);
-        _inject2(".marginTop-xlrshdv{margin-top:99px}", 4000);
+        _inject2({
+          ltr: "@keyframes xgnty7z-B{0%{opacity:.25;}100%{opacity:1;}}",
+          priority: 0
+        });
+        _inject2({
+          ltr: ".animationName-xeuoslp{animation-name:xgnty7z-B}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".backgroundColor-x1gykpug:hover{background-color:red}",
+          priority: 3130
+        });
+        _inject2({
+          ltr: ".borderStartStartRadius-xu4yf9m{border-start-start-radius:7.5px}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".display-x78zum5{display:flex}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".height-x1egiwwb{height:500px}",
+          priority: 4000
+        });
+        _inject2({
+          ltr: ".marginInlineStart-x1hm9lzh{margin-inline-start:10px}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".marginTop-xlrshdv{margin-top:99px}",
+          priority: 4000
+        });
         var styles = {
           foo: {
             "animationName-kKVMdj": "animationName-xeuoslp",
