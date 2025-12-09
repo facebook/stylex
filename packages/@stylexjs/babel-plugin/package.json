@@ -4,7 +4,7 @@
   "description": "StyleX babel plugin.",
   "main": "lib/index.js",
   "browser": "lib/index.browser.js",
-  "types": "./dist/index.d.ts",
+  "types": "./lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/facebook/stylex.git"
