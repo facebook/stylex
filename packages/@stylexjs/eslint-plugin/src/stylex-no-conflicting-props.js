@@ -38,7 +38,7 @@ const stylexNoConflictingProps = {
     type: 'problem',
     docs: {
       description:
-        'Disallow using `className` or `style` props on elements that use `stylex.props()`',
+        'Disallow using `className` or `style` props on elements that spread `stylex.props()`',
       category: 'Best Practices',
       recommended: true,
     },
