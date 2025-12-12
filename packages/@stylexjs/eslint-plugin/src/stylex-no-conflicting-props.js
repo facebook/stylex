@@ -42,6 +42,10 @@ const stylexNoConflictingProps = {
       category: 'Best Practices',
       recommended: true,
     },
+    messages: {
+      conflictingProp:
+        'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
+    },
     schema: [
       {
         type: 'object',
@@ -109,8 +113,28 @@ const stylexNoConflictingProps = {
             context.report({
               // $FlowFixMe[incompatible-type]
               node: attr,
-              message: `The \`${attr.name.name}\` prop should not be used when spreading \`stylex.props()\` to avoid conflicts.`,
+              messageId: 'conflictingProp',
+              data: { propName: attr.name.name },
             });
+          } else if (
+            attr.type === 'JSXSpreadAttribute' &&
+            attr.argument.type === 'ObjectExpression'
+          ) {
+            for (const prop of attr.argument.properties) {
+              if (
+                prop.type === 'Property' &&
+                !prop.computed &&
+                prop.key.type === 'Identifier' &&
+                (prop.key.name === 'className' || prop.key.name === 'style')
+              ) {
+                context.report({
+                  // $FlowFixMe[incompatible-type]
+                  node: prop,
+                  messageId: 'conflictingProp',
+                  data: { propName: prop.key.name },
+                });
+              }
+            }
           }
         }
       },

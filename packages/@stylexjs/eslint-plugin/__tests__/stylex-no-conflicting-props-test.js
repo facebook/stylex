@@ -270,5 +270,39 @@ eslintTester.run('stylex-no-conflicting-props', rule.default, {
         },
       ],
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: { color: 'red' },
+        });
+        function Component() {
+          return <div {...stylex.props(styles.main)} {...{ className: 'foo' }} />;
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `className` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: { color: 'red' },
+        });
+        function Component() {
+          return <div {...stylex.props(styles.main)} {...{ style: { margin: 10 } }} />;
+        }
+      `,
+      errors: [
+        {
+          message:
+            'The `style` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
+        },
+      ],
+    },
   ],
 });
