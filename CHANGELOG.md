@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.17.3 (Dec 1, 2025)
+
+- Add docs for setup instructions.
+- Improve AST detection for `.stylex` named exports
+- Add browser rollup bundle.
+- Fix unplugin file suffix parsing.
+
 ## 0.17.2 (Dec 1, 2025)
 
 - Pass importSources to babel plugin in `unplugin` plugin.
@@ -19,9 +26,11 @@
 
 - Add docs for ESLint rules and `stylex.when` API.
 - Add `defineMarker()` for custom markers for selector combinators.
-- New unplugin bundler plugin implementation for various bundlers (Vite, Webpack, Rspack, Rollup, etc.).
+- New unplugin bundler plugin implementation for various bundlers (Vite,
+  Webpack, Rspack, Rollup, etc.).
 - Enhance `stylex.props` to precompile more often for better performance.
-- Order pseudo-classes and `stylex.when` selectors according to priorities in `sort-keys.
+- Order pseudo-classes and `stylex.when` selectors according to priorities in
+  `sort-keys.
 - Add support for ternary and logical expressions in `valid-styles`.
 - Bump specificity of `stylex.when` selectors over defaults.
 - Add polyfill for logical float values in legacy mode.
