@@ -33,7 +33,7 @@ const styles = stylex.create({
   container: {
     backgroundColor: {
       default: colors.primary,
-      ':hover': 'mediumorchid',
+      ':hover': colors.secondary,
     },
     padding: '32px',
     margin: '16px',
@@ -63,7 +63,7 @@ export default function App() {
 
 export const colors = stylex.defineVars({
   primary: 'rebeccapurple',
-  secondary: 'sunflower',
+  secondary: 'mediumorchid',
 });`,
 };
 
