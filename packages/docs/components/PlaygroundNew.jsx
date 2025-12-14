@@ -20,6 +20,9 @@ import {
   ObjectParam,
   withDefault,
 } from 'use-query-params';
+import prettier from 'prettier';
+import * as babelPlugin from 'prettier/plugins/babel.js';
+import * as estreePlugin from 'prettier/plugins/estree.js';
 
 const INITIAL_INPUT_FILES = {
   'App.js': `import * as stylex from '@stylexjs/stylex';
@@ -185,6 +188,7 @@ const styles = stylex.create({
     resize: 'vertical',
   },
   panel: {
+    position: 'relative',
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: '0%',
@@ -346,6 +350,21 @@ const styles = stylex.create({
     backgroundColor: 'var(--bg1)',
     color: 'var(--fg1)',
   },
+  spacer: {
+    flexGrow: 1,
+  },
+  error: {
+    backgroundColor: 'red',
+    color: 'white',
+    padding: 8,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    maxHeight: 'min(160px, 20vh)',
+    overflow: 'auto',
+  },
 });
 
 const encodeObjKeys = (obj) => {
@@ -374,6 +393,8 @@ export default function PlaygroundNew() {
   const [sandpackInitialized, setSandpackInitialized] = useState(false);
   const iframeRef = useRef(null);
   const sandpackClientRef = useRef(null);
+  const [error, setError] = useState(null);
+
   const addMenuRef = useRef(null);
   const tabMenuRef = useRef(null);
   const [showAddMenu, setShowAddMenu] = useState(false);
@@ -384,8 +405,11 @@ export default function PlaygroundNew() {
     filename: null,
   });
 
-  const setInputFiles = useCallback((updatedInputFiles) => {
-    _setInputFiles(encodeObjKeys(updatedInputFiles));
+  const setInputFiles = useCallback((updatedInputFiles, replace = true) => {
+    _setInputFiles(
+      encodeObjKeys(updatedInputFiles),
+      replace ? 'replaceIn' : 'push',
+    );
   }, []);
 
   const inputFiles = useMemo(() => decodeObjKeys(_inputFiles), [_inputFiles]);
@@ -472,6 +496,7 @@ export const vars = stylex.defineVars({
 
       setTransformedFiles(transformedFiles);
       setCssOutput(generatedCSS);
+      setError(null);
 
       if (sandpackClientRef.current) {
         const dynamicFiles = Object.keys(transformedFiles).reduce(
@@ -491,11 +516,10 @@ export const vars = stylex.defineVars({
           },
         });
       }
+      return true;
     } catch (error) {
-      setTransformedFiles({
-        [Object.keys(updatedInputFiles)[0]]: error.stack || '',
-      });
-      setCssOutput('');
+      setError(error);
+      return false;
     }
   }
 
@@ -505,8 +529,11 @@ export const vars = stylex.defineVars({
       [activeInputFile]: value || '',
     };
 
-    setInputFiles(updatedInputFiles);
-    updateSandpack(updatedInputFiles);
+    if (updateSandpack(updatedInputFiles)) {
+      setInputFiles(updatedInputFiles, true);
+    } else {
+      setInputFiles(updatedInputFiles, false);
+    }
   }
 
   const handleCreateFile = (type) => {
@@ -537,7 +564,7 @@ export const vars = stylex.defineVars({
       ...inputFiles,
       [trimmedName]: template,
     };
-    setInputFiles(updatedInputFiles);
+    setInputFiles(updatedInputFiles, false);
     setActiveInputFile(trimmedName);
     updateSandpack(updatedInputFiles);
     setShowAddMenu(false);
@@ -558,7 +585,7 @@ export const vars = stylex.defineVars({
         key === filename ? [trimmedName, value] : [key, value],
       ),
     );
-    setInputFiles(updatedInputFiles);
+    setInputFiles(updatedInputFiles, false);
     if (activeInputFile === filename) {
       setActiveInputFile(trimmedName);
     }
@@ -576,7 +603,7 @@ export const vars = stylex.defineVars({
     }
     const updatedInputFiles = { ...inputFiles };
     delete updatedInputFiles[filename];
-    setInputFiles(updatedInputFiles);
+    setInputFiles(updatedInputFiles, false, false);
     if (activeInputFile === filename) {
       const nextActive = Object.keys(updatedInputFiles)[0];
       if (nextActive) {
@@ -674,12 +701,21 @@ export const vars = stylex.defineVars({
     };
   }, []);
 
+  const handleFormat = useCallback(async () => {
+    const formatted = await prettier.format(inputFiles[activeInputFile], {
+      parser: 'babel',
+      plugins: [estreePlugin, babelPlugin],
+    });
+    setInputFiles({ ...inputFiles, [activeInputFile]: formatted }, false);
+  }, [inputFiles, activeInputFile]);
+
   return (
     <div {...stylex.props(styles.container)}>
       <div {...stylex.props(styles.column, styles.resizeH)}>
         <Panel header="Source JS">
           <Tabs
             addMenuRef={addMenuRef}
+            handleFormat={handleFormat}
             onAddComponentFile={() => handleCreateFile('component')}
             onAddStylexFile={() => handleCreateFile('stylex')}
             onToggleAddMenu={() => setShowAddMenu((v) => !v)}
@@ -749,6 +785,9 @@ export const vars = stylex.defineVars({
             theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
             value={inputFiles[activeInputFile]}
           />
+          {error != null && (
+            <div {...stylex.props(styles.error)}>{error.message}</div>
+          )}
         </Panel>
       </div>
       <div {...stylex.props(styles.column)}>
@@ -851,6 +890,7 @@ function Tabs({
   onAddStylexFile,
   showAddMenu,
   addMenuRef,
+  handleFormat,
 }) {
   return (
     <div role="tablist" {...stylex.props(styles.tabs)}>
@@ -883,6 +923,15 @@ function Tabs({
           </div>
         ) : null}
       </div>
+      <div {...stylex.props(styles.spacer)} />
+      <button
+        {...stylex.props(styles.tabIconButton)}
+        onClick={handleFormat}
+        title="Format"
+        type="button"
+      >
+        ✨
+      </button>
     </div>
   );
 }
