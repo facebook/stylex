@@ -8,6 +8,8 @@
 import * as React from 'react';
 import Layout from '@theme/Layout';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import { QueryParamProvider } from 'use-query-params';
+import { WindowHistoryAdapter } from 'use-query-params/adapters/window';
 
 export default function PlaygroundNewPage() {
   return (
@@ -16,7 +18,11 @@ export default function PlaygroundNewPage() {
         {() => {
           const PlaygroundNew =
             require('../../components/PlaygroundNew').default;
-          return <PlaygroundNew />;
+          return (
+            <QueryParamProvider adapter={WindowHistoryAdapter}>
+              <PlaygroundNew />
+            </QueryParamProvider>
+          );
         }}
       </BrowserOnly>
     </Layout>

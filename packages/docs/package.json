@@ -20,16 +20,17 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@mdx-js/react": "^1.6.22",
-    "@stylexjs/stylex": "0.17.3",
     "@monaco-editor/react": "^4.7.0",
+    "@stylexjs/stylex": "0.17.3",
     "@webcontainer/api": "^1.3.0",
     "clsx": "^1.2.1",
     "codemirror": "^5.65.16",
-    "react": "^17.0.2",
+    "path-browserify": "^1.0.1",
     "react-codemirror2": "^7.3.0",
     "react-dom": "^17.0.2",
     "react-syntax-highlighter": "^15.6.1",
-    "path-browserify": "^1.0.1"
+    "react": "^17.0.2",
+    "use-query-params": "^2.2.2"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.26.8",
