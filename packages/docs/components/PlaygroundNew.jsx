@@ -12,6 +12,8 @@ import * as stylex from '@stylexjs/stylex';
 import { transform } from '@babel/standalone';
 import { loadSandpackClient } from '@codesandbox/sandpack-client';
 import Editor from '@monaco-editor/react';
+import path from 'path-browserify';
+import { useColorMode } from '@docusaurus/theme-common';
 
 const INITIAL_INPUT_FILES = {
   'App.js': `import * as stylex from '@stylexjs/stylex';
@@ -19,8 +21,10 @@ import { colors } from './tokens.stylex';
 
 const styles = stylex.create({
   container: {
-    padding: '16px',
+    padding: 16,
     backgroundColor: colors.primary,
+    color: colors.secondary,
+    fontSize: '2rem',
   },
 });
 
@@ -31,9 +35,9 @@ function App() {
 export default App;`,
   'tokens.stylex.js': `import * as stylex from '@stylexjs/stylex';
 
-export const colors = stylex.defineConsts({
-  primary: 'lightblue',
-  secondary: 'coral',
+export const colors = stylex.defineVars({
+  primary: 'rebeccapurple',
+  secondary: 'cyan',
 });`,
 };
 
@@ -80,9 +84,27 @@ createRoot(document.getElementById('root')).render(<App />);`,
   },
 };
 
+const CSS_PRELUDE = `@layer resets {
+:root {
+  color-scheme: light dark;
+}
+* {
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+}
+`;
+
 function transformSourceFiles(sourceFiles) {
   const stylexRules = [];
   const transformedFiles = {};
+
+  const sourceFilePaths = Object.keys(sourceFiles).map(
+    (filename) => `/${filename}`,
+  );
 
   for (const [filename, code] of Object.entries(sourceFiles)) {
     const result = transform(code, {
@@ -96,11 +118,20 @@ function transformSourceFiles(sourceFiles) {
             unstable_moduleResolution: {
               type: 'custom',
               filePathResolver(importPath, sourceFilePath) {
-                if (
-                  sourceFilePath === '/App.js' &&
-                  importPath === './tokens.stylex'
-                ) {
-                  return '/tokens.stylex.js';
+                if (importPath.startsWith('.')) {
+                  const result = path.resolve(
+                    path.dirname(sourceFilePath),
+                    importPath,
+                  );
+                  if (sourceFilePaths.includes(result)) {
+                    return result;
+                  }
+                  const matchingPrefix = sourceFilePaths.find((fullPath) =>
+                    fullPath.startsWith(result),
+                  );
+                  if (matchingPrefix) {
+                    return matchingPrefix;
+                  }
                 }
                 return undefined;
               },
@@ -118,7 +149,9 @@ function transformSourceFiles(sourceFiles) {
     }
   }
 
-  const generatedCSS = stylexPlugin.processStylexRules(stylexRules);
+  const generatedCSS = stylexPlugin.processStylexRules(stylexRules, {
+    useLayers: true,
+  });
 
   return { transformedFiles, generatedCSS };
 }
@@ -131,39 +164,50 @@ const styles = stylex.create({
     padding: '8px',
   },
   column: {
-    flex: '1 1 0',
+    flexGrow: 1,
+    flexShrink: 1,
+    width: '50%',
     display: 'flex',
     flexDirection: 'column',
     gap: '8px',
     minWidth: 0,
   },
+  resizeH: {
+    resize: 'horizontal',
+  },
+  resizeV: {
+    resize: 'vertical',
+  },
   panel: {
-    flex: '1',
-    backgroundColor: '#ffffff',
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '0%',
+    backgroundColor: 'var(--bg1)',
     borderRadius: '8px',
     borderWidth: '1px',
     borderStyle: 'solid',
-    borderColor: '#e0e0e0',
+    borderColor: 'var(--fg2)',
     overflow: 'hidden',
   },
   panelHeader: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'var(--bg2)',
     padding: '8px',
     fontSize: '13px',
     fontWeight: 500,
-    color: '#333',
+    color: 'var(--fg1)',
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: 'var(--fg2)',
   },
   tabs: {
     display: 'flex',
+    backgroundColor: 'var(--bg1)',
     gap: '4px',
     paddingLeft: '2px',
     paddingTop: '4px',
     borderBottomWidth: '1px',
     borderBottomStyle: 'solid',
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: 'var(--fg2)',
   },
   tab: {
     paddingTop: '4px',
@@ -171,20 +215,21 @@ const styles = stylex.create({
     paddingLeft: '10px',
     paddingRight: '10px',
     fontSize: '12px',
-    color: '#666666',
+    color: 'var(--fg1)',
     cursor: 'pointer',
     backgroundColor: 'transparent',
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
-    borderBottomWidth: '1px',
+    borderBottomWidth: 4,
     borderBottomStyle: 'solid',
     borderBottomColor: 'transparent',
     borderStyle: 'none',
   },
   tabActive: {
-    color: '#33333',
-    borderBottomColor: '#33333',
+    color: 'var(--pink)',
+    fontWeight: 600,
+    borderBottomColor: 'currentColor',
   },
   iframe: {
     flex: '1',
@@ -192,6 +237,8 @@ const styles = stylex.create({
     height: '100%',
     borderWidth: '0',
     outline: 'none',
+    backgroundColor: 'var(--bg1)',
+    color: 'var(--fg1)',
   },
 });
 
@@ -204,14 +251,9 @@ export default function PlaygroundNew() {
   const iframeRef = useRef(null);
   const sandpackClientRef = useRef(null);
 
-  function handleEditorChange(value) {
-    const updatedInputFiles = {
-      ...inputFiles,
-      [activeInputFile]: value || '',
-    };
+  const { colorMode } = useColorMode();
 
-    setInputFiles(updatedInputFiles);
-    
+  function updateSandpack(updatedInputFiles) {
     try {
       const { transformedFiles, generatedCSS } =
         transformSourceFiles(updatedInputFiles);
@@ -230,7 +272,7 @@ export default function PlaygroundNew() {
               code: transformedFiles['tokens.stylex.js'],
             },
             '/styles.css': {
-              code: generatedCSS,
+              code: CSS_PRELUDE + generatedCSS,
             },
           },
         });
@@ -241,6 +283,16 @@ export default function PlaygroundNew() {
       });
       setCssOutput('');
     }
+  }
+
+  function handleEditorChange(value) {
+    const updatedInputFiles = {
+      ...inputFiles,
+      [activeInputFile]: value || '',
+    };
+
+    setInputFiles(updatedInputFiles);
+    updateSandpack(updatedInputFiles);
   }
 
   useEffect(() => {
@@ -262,7 +314,7 @@ export default function PlaygroundNew() {
             code: transformedFiles['tokens.stylex.js'],
           },
           '/styles.css': {
-            code: generatedCSS,
+            code: CSS_PRELUDE + generatedCSS,
           },
         },
         template: 'react',
@@ -289,12 +341,11 @@ export default function PlaygroundNew() {
 
   return (
     <div {...stylex.props(styles.container)}>
-      <div {...stylex.props(styles.column)}>
+      <div {...stylex.props(styles.column, styles.resizeH)}>
         <Panel header="Source JS">
           <Tabs>
             {Object.keys(inputFiles).map((filename) => (
               <Tab
-                icon="📄"
                 isActive={activeInputFile === filename}
                 key={filename}
                 label={filename}
@@ -316,36 +367,39 @@ export default function PlaygroundNew() {
             }}
             options={{
               minimap: { enabled: false },
-              scrollBeyondLastLine: false,
+              scrollBeyondLastLine: true,
               contextmenu: false,
               readOnly: !sandpackInitialized,
             }}
+            theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
             value={inputFiles[activeInputFile]}
           />
         </Panel>
       </div>
       <div {...stylex.props(styles.column)}>
-        <Panel header="Transformed JS">
+        <Panel header="Transformed JS" style={styles.resizeV}>
           <Editor
             defaultLanguage="javascript"
             options={{
               minimap: { enabled: false },
-              scrollBeyondLastLine: false,
+              scrollBeyondLastLine: true,
               contextmenu: false,
               readOnly: true,
             }}
+            theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
             value={transformedFiles[activeInputFile] || ''}
           />
         </Panel>
-        <Panel header="CSS">
+        <Panel header="CSS" style={styles.resizeV}>
           <Editor
             defaultLanguage="css"
             options={{
               minimap: { enabled: false },
-              scrollBeyondLastLine: false,
+              scrollBeyondLastLine: true,
               contextmenu: false,
               readOnly: true,
             }}
+            theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
             value={cssOutput}
           />
         </Panel>
@@ -361,7 +415,7 @@ export default function PlaygroundNew() {
   );
 }
 
-function Tab({ icon, label, isActive, onClick }) {
+function Tab({ label, isActive, onClick }) {
   return (
     <button
       aria-selected={isActive}
@@ -369,7 +423,6 @@ function Tab({ icon, label, isActive, onClick }) {
       role="tab"
       {...stylex.props(styles.tab, isActive && styles.tabActive)}
     >
-      {icon && <span aria-hidden="true">{icon}</span>}
       {label}
     </button>
   );
@@ -383,9 +436,9 @@ function Tabs({ children }) {
   );
 }
 
-function Panel({ header, children }) {
+function Panel({ header, children, style }) {
   return (
-    <div {...stylex.props(styles.panel)}>
+    <div {...stylex.props(styles.panel, style)}>
       <div {...stylex.props(styles.panelHeader)}>
         <span>{header}</span>
       </div>
