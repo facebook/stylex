@@ -31,23 +31,39 @@ import { colors } from './tokens.stylex';
 
 const styles = stylex.create({
   container: {
-    padding: 16,
-    backgroundColor: colors.primary,
-    color: colors.secondary,
-    fontSize: '2rem',
+    backgroundColor: {
+      default: colors.primary,
+      ':hover': 'mediumorchid',
+    },
+    padding: '32px',
+    margin: '16px',
+    borderRadius: '12px',
+    boxShadow: '0 8px 24px -4px rgba(99, 102, 241, 0.25)',
+    transition: 'transform 0.2s ease',
   },
+  text: {
+    color: 'white',
+    fontSize: '32px',
+    fontWeight: '600',
+    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+    margin: 0,
+  }
 });
 
-function App() {
-  return <div {...stylex.props(styles.container)}>Hello World!</div>;
-}
-
-export default App;`,
+export default function App() {
+  return (
+    <div {...stylex.props(styles.container)}>
+      <h1 {...stylex.props(styles.text)}>
+        Hello StyleX!
+      </h1>
+    </div>
+  );
+}`,
   'tokens.stylex.js': `import * as stylex from '@stylexjs/stylex';
 
 export const colors = stylex.defineVars({
   primary: 'rebeccapurple',
-  secondary: 'cyan',
+  secondary: 'sunflower',
 });`,
 };
 
@@ -108,6 +124,74 @@ html, body {
 }
 `;
 
+const styles = stylex.create({
+  container: {
+    display: 'flex',
+    height: 'calc(100vh - 60px)',
+    gap: '8px',
+    padding: '8px',
+  },
+  column: {
+    flexGrow: 1,
+    flexShrink: 1,
+    width: '50%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    minWidth: 0,
+  },
+  resizeH: {
+    resize: 'horizontal',
+  },
+  resizeV: {
+    resize: 'vertical',
+  },
+  panel: {
+    position: 'relative',
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '0%',
+    backgroundColor: 'var(--bg1)',
+    borderRadius: '8px',
+    borderWidth: '2px',
+    borderStyle: 'solid',
+    borderColor: 'var(--fg3)',
+    overflow: 'hidden',
+  },
+  panelHeader: {
+    backgroundColor: 'var(--bg2)',
+    paddingBlock: '8px',
+    paddingInline: '16px',
+    fontSize: '14px',
+    fontWeight: 500,
+    color: 'var(--fg1)',
+    borderBottomWidth: '2px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'var(--fg3)',
+  },
+  iframe: {
+    flex: '1',
+    width: '100%',
+    height: '100%',
+    borderWidth: '0',
+    outline: 'none',
+    backgroundColor: 'var(--bg1)',
+    color: 'var(--fg1)',
+  },
+  error: {
+    backgroundColor: 'red',
+    color: 'white',
+    padding: 8,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    maxHeight: 'min(160px, 20vh)',
+    overflow: 'auto',
+  },
+});
+
 function transformSourceFiles(sourceFiles) {
   const stylexRules = [];
   const transformedFiles = {};
@@ -165,73 +249,6 @@ function transformSourceFiles(sourceFiles) {
 
   return { transformedFiles, generatedCSS };
 }
-
-const styles = stylex.create({
-  container: {
-    display: 'flex',
-    height: 'calc(100vh - 60px)',
-    gap: '8px',
-    padding: '8px',
-  },
-  column: {
-    flexGrow: 1,
-    flexShrink: 1,
-    width: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    minWidth: 0,
-  },
-  resizeH: {
-    resize: 'horizontal',
-  },
-  resizeV: {
-    resize: 'vertical',
-  },
-  panel: {
-    position: 'relative',
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: '0%',
-    backgroundColor: 'var(--bg1)',
-    borderRadius: '8px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
-    overflow: 'hidden',
-  },
-  panelHeader: {
-    backgroundColor: 'var(--bg2)',
-    padding: '8px',
-    fontSize: '13px',
-    fontWeight: 500,
-    color: 'var(--fg1)',
-    borderBottomWidth: '1px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--fg2)',
-  },
-  iframe: {
-    flex: '1',
-    width: '100%',
-    height: '100%',
-    borderWidth: '0',
-    outline: 'none',
-    backgroundColor: 'var(--bg1)',
-    color: 'var(--fg1)',
-  },
-  error: {
-    backgroundColor: 'red',
-    color: 'white',
-    padding: 8,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    maxHeight: 'min(160px, 20vh)',
-    overflow: 'auto',
-  },
-});
 
 const encodeObjKeys = (obj) => {
   return Object.fromEntries(
@@ -513,7 +530,7 @@ export const vars = stylex.defineVars({
     <>
       <div {...stylex.props(styles.container)}>
         <div {...stylex.props(styles.column, styles.resizeH)}>
-          <Panel header="Source JS">
+          <Panel header="Source">
             <Tabs
               activeFile={activeInputFile}
               disableDelete={Object.keys(inputFiles).length <= 1}
@@ -552,7 +569,14 @@ export const vars = stylex.defineVars({
           </Panel>
         </div>
         <div {...stylex.props(styles.column)}>
-          <Panel header="Transformed JS" style={styles.resizeV}>
+          <Panel header="Preview">
+            <iframe
+              ref={iframeRef}
+              title="StyleX Playground Preview"
+              {...stylex.props(styles.iframe)}
+            />
+          </Panel>
+          <Panel header="Generated JS" style={styles.resizeV}>
             <Editor
               defaultLanguage="javascript"
               options={{
@@ -565,7 +589,7 @@ export const vars = stylex.defineVars({
               value={transformedFiles[activeInputFile] || ''}
             />
           </Panel>
-          <Panel header="CSS" style={styles.resizeV}>
+          <Panel header="Generated CSS" style={styles.resizeV}>
             <Editor
               defaultLanguage="css"
               options={{
@@ -576,13 +600,6 @@ export const vars = stylex.defineVars({
               }}
               theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
               value={cssOutput}
-            />
-          </Panel>
-          <Panel header="Preview">
-            <iframe
-              ref={iframeRef}
-              title="StyleX Playground Preview"
-              {...stylex.props(styles.iframe)}
             />
           </Panel>
         </div>

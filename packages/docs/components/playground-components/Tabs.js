@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Menu, Item } from './Menu';
-import { FileNameDialog, ConfirmDialog } from './Dialogs';
+import { FileNameDialog } from './Dialogs';
 
 export function Tabs({
   files,
@@ -18,7 +18,6 @@ export function Tabs({
   getDefaultFilename,
   onSelectFile,
   onCreateFile,
-  onRenameFile,
   onDeleteFile,
   onFormat,
 }) {
@@ -31,7 +30,6 @@ export function Tabs({
           isActive={activeFile === filename}
           key={filename}
           onDelete={onDeleteFile}
-          onRename={onRenameFile}
           onSelect={() => onSelectFile(filename)}
         />
       ))}
@@ -55,9 +53,8 @@ export function Tabs({
   );
 }
 
-function Tab({ filename, isActive, onSelect, onRename, onDelete }) {
+function Tab({ filename, isActive, onSelect }) {
   const menuRef = useRef(null);
-  const renameDialogRef = useRef(null);
   const deleteDialogRef = useRef(null);
   const id = filename.split('.').join('-');
 
@@ -79,33 +76,9 @@ function Tab({ filename, isActive, onSelect, onRename, onDelete }) {
       >
         {filename}
       </button>
-      <button
-        {...stylex.props(styles.tabIconButton)}
-        popovertarget={`${id}-menu`}
-        title="Add file"
-        type="button"
-      >
-        ...
-      </button>
-      <Menu id={`${id}-menu`}>
-        <Item onClick={() => renameDialogRef.current?.showModal()}>Rename</Item>
+      <Menu id={`${id}-menu`} ref={menuRef}>
         <Item onClick={() => deleteDialogRef.current?.showModal()}>Delete</Item>
       </Menu>
-      <FileNameDialog
-        defaultValue={filename}
-        description="Rename the file to a new name."
-        onCancel={() => renameDialogRef.current?.close()}
-        onConfirm={(newName) => onRename(filename, newName)}
-        ref={renameDialogRef}
-        title="Rename file"
-      />
-      <ConfirmDialog
-        description="Delete the file from the playground."
-        onCancel={() => dialogRef.current?.close()}
-        onConfirm={() => onDelete(filename)}
-        ref={deleteDialogRef}
-        title="Delete file"
-      />
     </div>
   );
 }
@@ -161,11 +134,11 @@ const styles = stylex.create({
     display: 'flex',
     backgroundColor: 'var(--bg1)',
     gap: 4,
-    paddingLeft: '2px',
+    paddingLeft: '10px',
     paddingTop: 4,
-    borderBottomWidth: '1px',
+    borderBottomWidth: '2px',
     borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--fg2)',
+    borderBottomColor: 'var(--fg3)',
     alignItems: 'center',
   },
   tab: {
@@ -186,7 +159,7 @@ const styles = stylex.create({
     borderStyle: 'none',
   },
   tabActive: {
-    color: 'var(--pink)',
+    color: 'var(--ifm-navbar-link-hover-color)',
     fontWeight: 600,
     borderBottomColor: 'currentColor',
   },
