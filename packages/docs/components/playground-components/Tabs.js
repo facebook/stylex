@@ -9,30 +9,35 @@ import * as React from 'react';
 import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Menu, Item } from './Menu';
-import { FileNameDialog } from './Dialogs';
+import { FileNameDialog, ConfirmDialog } from './Dialogs';
 
 export function Tabs({
   files,
   activeFile,
-  disableDelete,
   getDefaultFilename,
   onSelectFile,
   onCreateFile,
   onDeleteFile,
+  onRenameFile,
   onFormat,
 }) {
   return (
     <div role="tablist" {...stylex.props(styles.tabs)}>
-      {files.map((filename) => (
+      {files.map((filename, i) => (
         <Tab
-          disableDelete={disableDelete}
           filename={filename}
+          immutable={i === 0}
           isActive={activeFile === filename}
           key={filename}
           onDelete={onDeleteFile}
+          onRename={onRenameFile}
           onSelect={() => onSelectFile(filename)}
         />
       ))}
+      <NewFileButton
+        getDefaultFilename={getDefaultFilename}
+        onCreateFile={onCreateFile}
+      />
       <div {...stylex.props(styles.addWrapper)}>
         {onFormat ? (
           <button
@@ -44,41 +49,69 @@ export function Tabs({
             ✨
           </button>
         ) : null}
-        <NewFileButton
-          getDefaultFilename={getDefaultFilename}
-          onCreateFile={onCreateFile}
-        />
       </div>
     </div>
   );
 }
 
-function Tab({ filename, isActive, onSelect }) {
+function Tab({
+  filename,
+  isActive,
+  onSelect,
+  onRename,
+  onDelete,
+  immutable = false,
+}) {
   const menuRef = useRef(null);
   const deleteDialogRef = useRef(null);
+  const renameDialogRef = useRef(null);
   const id = filename.split('.').join('-');
-
-  const handleContextMenu = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    menuRef.current?.showPopover();
-  };
 
   return (
     <div {...stylex.props(styles.tab, isActive && styles.tabActive)}>
       <button
         aria-selected={isActive}
         onClick={onSelect}
-        onContextMenu={handleContextMenu}
         {...stylex.props(styles.tabLabelButton)}
         role="tab"
         title={filename}
       >
         {filename}
       </button>
-      <Menu id={`${id}-menu`} ref={menuRef}>
-        <Item onClick={() => deleteDialogRef.current?.showModal()}>Delete</Item>
-      </Menu>
+      {!immutable && (
+        <>
+          <button
+            {...stylex.props(styles.tabIconButton)}
+            popovertarget={`${id}-menu`}
+            type="button"
+          >
+            ⋯
+          </button>
+          <Menu id={`${id}-menu`} ref={menuRef}>
+            <Item onClick={() => renameDialogRef.current?.showModal()}>
+              Rename
+            </Item>
+            <Item onClick={() => deleteDialogRef.current?.showModal()}>
+              Delete
+            </Item>
+          </Menu>
+          <FileNameDialog
+            defaultValue={filename}
+            description="Rename the file to a new name."
+            onCancel={() => renameDialogRef.current?.close()}
+            onConfirm={(newName) => onRename(filename, newName)}
+            ref={renameDialogRef}
+            title="Rename file"
+          />
+          <ConfirmDialog
+            description="Delete the file from the playground."
+            onCancel={() => deleteDialogRef.current?.close()}
+            onConfirm={() => onDelete(filename)}
+            ref={deleteDialogRef}
+            title="Delete file"
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -134,40 +167,32 @@ const styles = stylex.create({
     display: 'flex',
     backgroundColor: 'var(--bg1)',
     gap: 4,
-    paddingLeft: '10px',
-    paddingTop: 4,
     borderBottomWidth: '2px',
     borderBottomStyle: 'solid',
     borderBottomColor: 'var(--fg3)',
-    alignItems: 'center',
   },
   tab: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: '10px',
-    paddingRight: '10px',
+    display: 'flex',
     fontSize: 12,
     color: 'var(--fg1)',
     cursor: 'pointer',
     backgroundColor: 'transparent',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    borderBottomWidth: 4,
-    borderBottomStyle: 'solid',
-    borderBottomColor: 'transparent',
+    // borderBottomWidth: 4,
+    // borderBottomStyle: 'solid',
+    // borderBottomColor: 'transparent',
     borderStyle: 'none',
   },
   tabActive: {
     color: 'var(--ifm-navbar-link-hover-color)',
     fontWeight: 600,
-    borderBottomColor: 'currentColor',
+    boxShadow: '0 -4px 0 0 currentColor inset',
   },
   tabLabelButton: {
     backgroundColor: 'transparent',
     color: 'inherit',
     borderStyle: 'none',
-    padding: 0,
+    paddingBlock: 8,
+    paddingInline: 8,
     fontSize: 12,
     cursor: 'pointer',
   },
@@ -175,10 +200,8 @@ const styles = stylex.create({
     backgroundColor: { default: 'transparent', ':hover': 'var(--pink)' },
     color: { default: 'inherit', ':hover': '#fff', ':focus-visible': '#fff' },
     borderRadius: 4,
-    paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: 8,
-    paddingRight: 8,
+    height: 30,
+    width: 30,
     fontSize: 12,
     cursor: 'pointer',
     borderStyle: 'none',
@@ -190,67 +213,5 @@ const styles = stylex.create({
     alignItems: 'center',
     marginLeft: 'auto',
     gap: '6px',
-  },
-  dialog: {
-    borderRadius: 8,
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
-    padding: '20px',
-    minWidth: '320px',
-    backgroundColor: 'var(--bg1)',
-    color: 'var(--fg1)',
-  },
-  heading: {
-    marginTop: 0,
-    marginBottom: 8,
-    fontSize: '16px',
-  },
-  description: {
-    marginTop: 0,
-    marginBottom: 12,
-    fontSize: '13px',
-    lineHeight: 1.5,
-  },
-  error: {
-    marginTop: 0,
-    marginBottom: 12,
-    fontSize: '13px',
-    color: 'var(--pink)',
-  },
-  field: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '6px',
-    marginBottom: '16px',
-  },
-  input: {
-    padding: 8,
-    borderRadius: '6px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
-    backgroundColor: 'var(--bg2)',
-    color: 'var(--fg1)',
-  },
-  actions: {
-    display: 'flex',
-    gap: 8,
-    justifyContent: 'flex-end',
-  },
-  button: {
-    padding: '8px 12px',
-    borderRadius: '6px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
-    backgroundColor: 'var(--bg2)',
-    color: 'var(--fg1)',
-    cursor: 'pointer',
-  },
-  primary: {
-    backgroundColor: 'var(--pink)',
-    color: 'var(--bg1)',
-    borderColor: 'transparent',
   },
 });

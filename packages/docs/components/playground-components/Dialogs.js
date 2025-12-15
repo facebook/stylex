@@ -123,12 +123,6 @@ const styles = stylex.create({
     fontSize: '13px',
     lineHeight: 1.5,
   },
-  error: {
-    marginTop: 0,
-    marginBottom: '12px',
-    fontSize: '13px',
-    color: 'var(--pink)',
-  },
   field: {
     display: 'flex',
     flexDirection: 'column',

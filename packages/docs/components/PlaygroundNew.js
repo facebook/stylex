@@ -24,173 +24,11 @@ import { Tabs } from './playground-components/Tabs';
 import prettier from 'prettier';
 import * as babelPlugin from 'prettier/plugins/babel.js';
 import * as estreePlugin from 'prettier/plugins/estree.js';
-
-const INITIAL_INPUT_FILES = {
-  'App.js': `import * as stylex from '@stylexjs/stylex';
-import { colors } from './tokens.stylex';
-
-const styles = stylex.create({
-  container: {
-    backgroundColor: {
-      default: colors.primary,
-      ':hover': colors.secondary,
-    },
-    padding: '32px',
-    margin: '16px',
-    borderRadius: '12px',
-    boxShadow: '0 8px 24px -4px rgba(99, 102, 241, 0.25)',
-    transition: 'transform 0.2s ease',
-  },
-  text: {
-    color: 'white',
-    fontSize: '32px',
-    fontWeight: '600',
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-    margin: 0,
-  }
-});
-
-export default function App() {
-  return (
-    <div {...stylex.props(styles.container)}>
-      <h1 {...stylex.props(styles.text)}>
-        Hello StyleX!
-      </h1>
-    </div>
-  );
-}`,
-  'tokens.stylex.js': `import * as stylex from '@stylexjs/stylex';
-
-export const colors = stylex.defineVars({
-  primary: 'rebeccapurple',
-  secondary: 'mediumorchid',
-});`,
-};
-
-const INITIAL_BUNDLER_FILES = {
-  '/index.js': {
-    code: `import './styles.css';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-createRoot(document.getElementById('root')).render(<App />);`,
-  },
-  '/public/index.html': {
-    code: `<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"></head>
-<body><div id="root"></div></body>
-</html>`,
-  },
-  '/package.json': {
-    code: JSON.stringify(
-      {
-        main: '/index.js',
-        dependencies: {
-          react: 'latest',
-          'react-dom': 'latest',
-        },
-      },
-      null,
-      2,
-    ),
-  },
-  '/node_modules/@stylexjs/stylex/package.json': {
-    code: JSON.stringify(
-      {
-        name: '@stylexjs/stylex',
-        main: './index.js',
-      },
-      null,
-      2,
-    ),
-  },
-  '/node_modules/@stylexjs/stylex/index.js': {
-    code: STYLEX_SOURCE, // global variable from DefinePlugin()
-  },
-};
-
-const CSS_PRELUDE = `@layer resets {
-:root {
-  color-scheme: light dark;
-}
-* {
-  box-sizing: border-box;
-}
-html, body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-}
-}
-`;
-
-const styles = stylex.create({
-  container: {
-    display: 'flex',
-    height: 'calc(100vh - 60px)',
-    gap: '8px',
-    padding: '8px',
-  },
-  column: {
-    flexGrow: 1,
-    flexShrink: 1,
-    width: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    minWidth: 0,
-  },
-  resizeH: {
-    resize: 'horizontal',
-  },
-  resizeV: {
-    resize: 'vertical',
-  },
-  panel: {
-    position: 'relative',
-    flexGrow: 1,
-    flexShrink: 1,
-    flexBasis: '0%',
-    backgroundColor: 'var(--bg1)',
-    borderRadius: '8px',
-    borderWidth: '2px',
-    borderStyle: 'solid',
-    borderColor: 'var(--fg3)',
-    overflow: 'hidden',
-  },
-  panelHeader: {
-    backgroundColor: 'var(--bg2)',
-    paddingBlock: '8px',
-    paddingInline: '16px',
-    fontSize: '14px',
-    fontWeight: 500,
-    color: 'var(--fg1)',
-    borderBottomWidth: '2px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--fg3)',
-  },
-  iframe: {
-    flex: '1',
-    width: '100%',
-    height: '100%',
-    borderWidth: '0',
-    outline: 'none',
-    backgroundColor: 'var(--bg1)',
-    color: 'var(--fg1)',
-  },
-  error: {
-    backgroundColor: 'red',
-    color: 'white',
-    padding: 8,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-    maxHeight: 'min(160px, 20vh)',
-    overflow: 'auto',
-  },
-});
+import {
+  INITIAL_INPUT_FILES,
+  INITIAL_BUNDLER_FILES,
+  CSS_PRELUDE,
+} from './playground-components/demoConstants';
 
 function transformSourceFiles(sourceFiles) {
   const stylexRules = [];
@@ -529,79 +367,81 @@ export const vars = stylex.defineVars({
   return (
     <>
       <div {...stylex.props(styles.container)}>
-        <div {...stylex.props(styles.column, styles.resizeH)}>
-          <Panel header="Source">
-            <Tabs
-              activeFile={activeInputFile}
-              disableDelete={Object.keys(inputFiles).length <= 1}
-              files={Object.keys(inputFiles)}
-              getDefaultFilename={getDefaultFilename}
-              onCreateFile={createFile}
-              onDeleteFile={deleteFile}
-              onFormat={handleFormat}
-              onRenameFile={renameFile}
-              onSelectFile={(filename) => setActiveInputFile(filename)}
-            />
-            <Editor
-              defaultLanguage="javascript"
-              key={activeInputFile}
-              onChange={handleEditorChange}
-              onMount={(editor) => {
-                editor.getDomNode()?.addEventListener('keydown', (e) => {
-                  if (e.key === '/') {
-                    // prevent docusaurus's search from opening
-                    e.stopPropagation();
-                  }
-                });
-              }}
-              options={{
-                minimap: { enabled: false },
-                scrollBeyondLastLine: true,
-                contextmenu: false,
-                readOnly: !sandpackInitialized,
-              }}
-              theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
-              value={inputFiles[activeInputFile]}
-            />
-            {error != null && (
-              <div {...stylex.props(styles.error)}>{error.message}</div>
-            )}
-          </Panel>
-        </div>
-        <div {...stylex.props(styles.column)}>
-          <Panel header="Preview">
-            <iframe
-              ref={iframeRef}
-              title="StyleX Playground Preview"
-              {...stylex.props(styles.iframe)}
-            />
-          </Panel>
-          <Panel header="Generated JS" style={styles.resizeV}>
-            <Editor
-              defaultLanguage="javascript"
-              options={{
-                minimap: { enabled: false },
-                scrollBeyondLastLine: true,
-                contextmenu: false,
-                readOnly: true,
-              }}
-              theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
-              value={transformedFiles[activeInputFile] || ''}
-            />
-          </Panel>
-          <Panel header="Generated CSS" style={styles.resizeV}>
-            <Editor
-              defaultLanguage="css"
-              options={{
-                minimap: { enabled: false },
-                scrollBeyondLastLine: true,
-                contextmenu: false,
-                readOnly: true,
-              }}
-              theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
-              value={cssOutput}
-            />
-          </Panel>
+        <div {...stylex.props(styles.row)}>
+          <div {...stylex.props(styles.column)}>
+            <Panel header="Source">
+              <Tabs
+                activeFile={activeInputFile}
+                disableDelete={Object.keys(inputFiles).length <= 1}
+                files={Object.keys(inputFiles)}
+                getDefaultFilename={getDefaultFilename}
+                onCreateFile={createFile}
+                onDeleteFile={deleteFile}
+                onFormat={handleFormat}
+                onRenameFile={renameFile}
+                onSelectFile={(filename) => setActiveInputFile(filename)}
+              />
+              <Editor
+                defaultLanguage="javascript"
+                key={activeInputFile}
+                onChange={handleEditorChange}
+                onMount={(editor) => {
+                  editor.getDomNode()?.addEventListener('keydown', (e) => {
+                    if (e.key === '/') {
+                      // prevent docusaurus's search from opening
+                      e.stopPropagation();
+                    }
+                  });
+                }}
+                options={{
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: true,
+                  contextmenu: false,
+                  readOnly: !sandpackInitialized,
+                }}
+                theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
+                value={inputFiles[activeInputFile]}
+              />
+              {error != null && (
+                <div {...stylex.props(styles.error)}>{error.message}</div>
+              )}
+            </Panel>
+            <CollapsiblePanel header="Generated JS">
+              <Editor
+                defaultLanguage="javascript"
+                options={{
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: true,
+                  contextmenu: false,
+                  readOnly: true,
+                }}
+                theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
+                value={transformedFiles[activeInputFile] || ''}
+              />
+            </CollapsiblePanel>
+            <CollapsiblePanel header="Generated CSS">
+              <Editor
+                defaultLanguage="css"
+                options={{
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: true,
+                  contextmenu: false,
+                  readOnly: true,
+                }}
+                theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
+                value={cssOutput}
+              />
+            </CollapsiblePanel>
+          </div>
+          <div {...stylex.props(styles.column)}>
+            <CollapsiblePanel alwaysOpen={true} header="Preview">
+              <iframe
+                ref={iframeRef}
+                title="StyleX Playground Preview"
+                {...stylex.props(styles.iframe)}
+              />
+            </CollapsiblePanel>
+          </div>
         </div>
       </div>
     </>
@@ -611,10 +451,172 @@ export const vars = stylex.defineVars({
 function Panel({ header, children, style }) {
   return (
     <div {...stylex.props(styles.panel, style)}>
-      <div {...stylex.props(styles.panelHeader)}>
-        <span>{header}</span>
-      </div>
+      {header && (
+        <div {...stylex.props(styles.panelHeader)}>
+          <span>{header}</span>
+        </div>
+      )}
       {children}
     </div>
   );
 }
+
+function CollapsiblePanel({ header, children, style, alwaysOpen = false }) {
+  const [open, setOpen] = useState(alwaysOpen);
+
+  return (
+    <div
+      {...stylex.props(
+        styles.panel,
+        !open && styles.panelClosed,
+        alwaysOpen && !open && styles.panelClosedAlwaysOpen,
+        style,
+      )}
+    >
+      <button
+        {...stylex.props(
+          styles.panelHeader,
+          styles.panelHeaderButton,
+          open && styles.panelHeaderButtonOpen,
+          alwaysOpen && styles.panelHeaderButtonAlwaysOpen,
+        )}
+        onClick={() => setOpen((open) => !open)}
+      >
+        {header}
+      </button>
+      <div
+        {...stylex.props(
+          styles.panelContent,
+          !open && styles.hidden,
+          alwaysOpen && !open && styles.panelContentAlwaysOpen,
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+const styles = stylex.create({
+  container: {
+    width: '100%',
+    height: 'calc(100dvh - 60px)',
+    padding: 8,
+    containerType: 'inline-size',
+  },
+  row: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: { default: 'row', '@container (width < 768px)': 'column' },
+    gap: 8,
+  },
+  column: {
+    flexGrow: 1,
+    flexShrink: 1,
+    width: '50%',
+    display: { default: 'flex', '@container (width < 768px)': 'contents' },
+    flexDirection: 'column',
+    gap: '8px',
+    minWidth: 0,
+  },
+  panel: {
+    position: 'relative',
+    flexGrow: 1,
+    flexShrink: 0,
+    flexBasis: '32px',
+    backgroundColor: 'var(--bg1)',
+    borderRadius: '8px',
+    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.05)',
+    overflow: 'hidden',
+  },
+  panelClosed: {
+    flexGrow: 0,
+  },
+  panelClosedAlwaysOpen: {
+    flexGrow: {
+      default: 1,
+      '@container (width < 768px)': 0,
+    },
+  },
+  panelHeader: {
+    position: 'relative',
+    appearance: 'none',
+    borderStyle: 'none',
+    textAlign: 'start',
+    display: 'block',
+    width: '100%',
+    backgroundColor: 'var(--bg2)',
+    paddingBlock: '8px',
+    paddingInline: '16px',
+    fontSize: '14px',
+    fontWeight: 500,
+    color: 'var(--fg1)',
+    borderBottomWidth: '2px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: 'var(--fg3)',
+  },
+  panelHeaderButtonAlwaysOpen: {
+    display: {
+      default: 'none',
+      '@container (width < 768px)': 'block',
+    },
+  },
+  panelHeaderButton: {
+    '::after': {
+      content: '›',
+      boxSizing: 'border-box',
+      position: 'absolute',
+      insetInlineEnd: 0,
+      top: 0,
+      height: '100%',
+      aspectRatio: 1,
+      paddingBottom: 4,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '1.5em',
+      transitionProperty: 'transform',
+      transitionDuration: '200ms',
+      transitionTimingFunction: 'ease-in-out',
+    },
+  },
+  panelHeaderButtonOpen: {
+    '::after': {
+      transform: 'rotate(90deg)',
+    },
+  },
+  panelContent: {
+    height: '100%',
+  },
+  panelContentAlwaysOpen: {
+    display: {
+      default: 'block',
+      '@container (width < 768px)': 'none',
+    },
+  },
+  hidden: {
+    display: 'none',
+  },
+  iframe: {
+    flex: '1',
+    width: '100%',
+    height: '100%',
+    borderWidth: '0',
+    outline: 'none',
+    backgroundColor: 'var(--bg1)',
+    color: 'var(--fg1)',
+  },
+  error: {
+    backgroundColor: 'red',
+    color: 'white',
+    padding: 8,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    maxHeight: 'min(160px, 20vh)',
+    overflow: 'auto',
+  },
+});
