@@ -14,7 +14,7 @@ import { loadSandpackClient } from '@codesandbox/sandpack-client';
 import Editor from '@monaco-editor/react';
 import path from 'path-browserify';
 import { useColorMode } from '@docusaurus/theme-common';
-import { useQueryParam, ObjectParam, withDefault } from 'use-query-params';
+import { useQueryParam, JsonParam, withDefault } from 'use-query-params';
 import { Tabs } from './playground-components/Tabs';
 import prettier from 'prettier';
 import * as babelPlugin from 'prettier/plugins/babel.js';
@@ -98,7 +98,7 @@ const decodeObjKeys = (obj) => {
 export default function PlaygroundNew() {
   const [_inputFiles, _setInputFiles] = useQueryParam(
     'inputFiles',
-    withDefault(ObjectParam, encodeObjKeys(INITIAL_INPUT_FILES)),
+    withDefault(JsonParam, encodeObjKeys(INITIAL_INPUT_FILES)),
   );
   const [activeInputFile, setActiveInputFile] = useState('App.js');
   const [transformedFiles, setTransformedFiles] = useState([]);
@@ -154,7 +154,7 @@ export default function PlaygroundNew() {
 
 const styles = stylex.create({
   root: {
-   
+
   },
 });
 
