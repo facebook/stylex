@@ -26,6 +26,28 @@ const config = {
   organizationName: 'facebook',
   projectName: 'stylex',
 
+  plugins: [
+    function () {
+      const webpack = require('webpack');
+      const fs = require('fs');
+
+      return {
+        name: 'playground-webpack-config',
+        configureWebpack() {
+          return {
+            plugins: [
+              new webpack.DefinePlugin({
+                STYLEX_SOURCE: JSON.stringify(
+                  fs.readFileSync(require.resolve('@stylexjs/stylex'), 'utf8'),
+                ),
+              }),
+            ],
+          };
+        },
+      };
+    },
+  ],
+
   presets: [
     [
       'classic',
@@ -210,30 +232,28 @@ const config = {
 
 const rootDir = __dirname;
 
-config.plugins = [
-  function stylexUnplugin() {
-    return {
-      name: 'stylex-unplugin',
-      configureWebpack(_config) {
-        const isProd = process.env.NODE_ENV === 'production';
-        return {
-          plugins: isProd
-            ? [
-                stylexPlugin.webpack({
-                  dev: !isProd,
-                  runtimeInjection: false,
-                  stylexSheetName: '<>',
-                  unstable_moduleResolution: {
-                    type: 'commonJS',
-                    rootDir,
-                  },
-                }),
-              ]
-            : [],
-        };
-      },
-    };
-  },
-];
+config.plugins.push(function stylexUnplugin() {
+  return {
+    name: 'stylex-unplugin',
+    configureWebpack(_config) {
+      const isProd = process.env.NODE_ENV === 'production';
+      return {
+        plugins: isProd
+          ? [
+              stylexPlugin.webpack({
+                dev: !isProd,
+                runtimeInjection: false,
+                stylexSheetName: '<>',
+                unstable_moduleResolution: {
+                  type: 'commonJS',
+                  rootDir,
+                },
+              }),
+            ]
+          : [],
+      };
+    },
+  };
+});
 
 module.exports = config;
