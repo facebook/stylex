@@ -1,19 +1,4 @@
 {
   "buildCommand": "echo 'No build needed'",
-  "outputDirectory": "packages/docs/build",
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cross-Origin-Embedder-Policy",
-          "value": "require-corp"
-        },
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin"
-        }
-      ]
-    }
-  ]
+  "outputDirectory": "packages/docs/build"
 }
