@@ -14,12 +14,7 @@ import { loadSandpackClient } from '@codesandbox/sandpack-client';
 import Editor from '@monaco-editor/react';
 import path from 'path-browserify';
 import { useColorMode } from '@docusaurus/theme-common';
-import {
-  useQueryParam,
-  StringParam,
-  ObjectParam,
-  withDefault,
-} from 'use-query-params';
+import { useQueryParam, ObjectParam, withDefault } from 'use-query-params';
 import { Tabs } from './playground-components/Tabs';
 import prettier from 'prettier';
 import * as babelPlugin from 'prettier/plugins/babel.js';
@@ -105,10 +100,7 @@ export default function PlaygroundNew() {
     'inputFiles',
     withDefault(ObjectParam, encodeObjKeys(INITIAL_INPUT_FILES)),
   );
-  const [activeInputFile, setActiveInputFile] = useQueryParam(
-    'activeInputFile',
-    withDefault(StringParam, 'App.js'),
-  );
+  const [activeInputFile, setActiveInputFile] = useState('App.js');
   const [transformedFiles, setTransformedFiles] = useState([]);
   const [cssOutput, setCssOutput] = useState('');
   const [sandpackInitialized, setSandpackInitialized] = useState(false);
@@ -233,11 +225,8 @@ export const vars = stylex.defineVars({
       [activeInputFile]: value || '',
     };
 
-    if (updateSandpack(updatedInputFiles)) {
-      setInputFiles(updatedInputFiles, true);
-    } else {
-      setInputFiles(updatedInputFiles, false);
-    }
+    const success = updateSandpack(updatedInputFiles);
+    setInputFiles(updatedInputFiles, success);
   }
 
   const createFile = (fileKind, name) => {
@@ -253,9 +242,10 @@ export const vars = stylex.defineVars({
       ...inputFiles,
       [trimmedName]: template,
     };
-    setInputFiles(updatedInputFiles, false);
-    setActiveInputFile(trimmedName);
-    updateSandpack(updatedInputFiles);
+
+    const success = updateSandpack(updatedInputFiles);
+    setInputFiles(updatedInputFiles, success);
+
     return true;
   };
 
@@ -269,11 +259,9 @@ export const vars = stylex.defineVars({
         key === oldName ? [trimmedName, value] : [key, value],
       ),
     );
-    setInputFiles(updatedInputFiles, false);
-    if (activeInputFile === oldName) {
-      setActiveInputFile(trimmedName);
-    }
-    updateSandpack(updatedInputFiles);
+    const success = updateSandpack(updatedInputFiles);
+    setInputFiles(updatedInputFiles, success);
+
     return true;
   };
 
@@ -293,16 +281,6 @@ export const vars = stylex.defineVars({
     updateSandpack(updatedInputFiles);
     return true;
   };
-
-  useEffect(() => {
-    if (inputFiles[activeInputFile]) {
-      return;
-    }
-    const nextActive = Object.keys(inputFiles)[0];
-    if (nextActive) {
-      setActiveInputFile(nextActive);
-    }
-  }, [activeInputFile, inputFiles, setActiveInputFile]);
 
   useEffect(() => {
     let mounted = true;
@@ -357,11 +335,7 @@ export const vars = stylex.defineVars({
       ...inputFiles,
       [activeInputFile]: formatted,
     };
-    if (updateSandpack(updatedInputFiles)) {
-      setInputFiles(updatedInputFiles, true);
-    } else {
-      setInputFiles(updatedInputFiles, false);
-    }
+    setInputFiles(updatedInputFiles, updateSandpack(updatedInputFiles));
   }, [inputFiles, activeInputFile, setInputFiles]);
 
   return (

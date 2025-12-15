@@ -100,13 +100,6 @@ const styles = stylex.create({
     color: 'var(--fg1)',
     fontSize: 'clamp(1rem, 1rem + 2vw, 3rem)',
   },
-  h3: {
-    width: '100%',
-    fontWeight: 400,
-    fontSize: 'clamp(1rem, 0.8rem + 5vw, 2rem)',
-    textAlign: 'center',
-    opacity: 0.7,
-  },
   ctaSection: {
     alignItems: 'stretch',
     display: 'flex',
@@ -139,5 +132,4 @@ const styles = stylex.create({
     backgroundClip: 'text',
     textFillColor: 'transparent',
   },
-  threads: {},
 });

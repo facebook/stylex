@@ -7,28 +7,28 @@
 
 export const INITIAL_INPUT_FILES = {
   'App.js': `import * as stylex from "@stylexjs/stylex";
+import Counter from "./Counter";
 import { colors } from "./tokens.stylex";
 
 export default function App() {
   return (
     <div {...stylex.props(styles.container)}>
-      <h1 {...stylex.props(styles.text)}>Hello StyleX!</h1>
+      <h1 {...stylex.props(styles.h1)}>Welcome to the StyleX Playground!</h1>
+      <Counter />
     </div>
   );
 }
 
 const styles = stylex.create({
   container: {
-    backgroundColor: {
-      default: colors.primary,
-      ":hover": colors.secondary,
-    },
+    backgroundColor: colors.bg,
     padding: 32,
     margin: 16,
     borderRadius: 12,
   },
-  text: {
-    color: "white",
+  h1: {
+    color: colors.text,
+    textAlign: "center",
     fontSize: 32,
     fontWeight: 600,
     textShadow: "0 1px 2px rgb(0 0 0 / 10%)",
@@ -39,8 +39,66 @@ const styles = stylex.create({
   'tokens.stylex.js': `import * as stylex from "@stylexjs/stylex";
 
 export const colors = stylex.defineVars({
-  primary: "rebeccapurple",
-  secondary: "mediumorchid",
+  bg: "light-dark(#fff, #000)",
+  text: "light-dark(#222, #bbb)",
+});
+`,
+  'Counter.js': `import * as stylex from "@stylexjs/stylex";
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div {...stylex.props(styles.container)}>
+      <button
+        {...stylex.props(styles.btn)}
+        onClick={() => setCount((x) => x - 1)}
+      >
+        -
+      </button>
+      <span {...stylex.props(styles.output)}>{count}</span>
+      <button
+        {...stylex.props(styles.btn)}
+        onClick={() => setCount((x) => x + 1)}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+const styles = stylex.create({
+  container: {
+    display: "flex",
+    padding: 32,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btn: {
+    padding: 8,
+    paddingInline: 16,
+    cursor: "pointer",
+    borderStyle: "none",
+    appearance: "none",
+    borderRadius: 4,
+    color: "white",
+    backgroundColor: {
+      default: "#279",
+      ":hover": "#39b",
+      ":focus-visible": "#39b",
+    },
+    transform: {
+      default: null,
+      ":active": "scale(0.95)",
+    },
+    transitionProperty: 'transform',
+    transitionDuration: '0.1s',
+  },
+  output: {
+    padding: 8,
+    minWidth: 54,
+    textAlign: "center",
+  },
 });
 `,
 };

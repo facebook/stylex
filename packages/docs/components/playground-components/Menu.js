@@ -33,7 +33,7 @@ const styles = stylex.create({
     positionAnchor: 'auto',
     // eslint-disable-next-line @stylexjs/valid-styles
     positionArea: 'bottom right',
-    transform: 'translate(-28px, 8px)',
+    transform: 'translate(-30px, 0)',
     position: 'fixed',
     backgroundColor: 'var(--bg1)',
     borderRadius: '6px',

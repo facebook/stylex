@@ -192,7 +192,6 @@ const styles = stylex.create({
     color: 'inherit',
     borderStyle: 'none',
     paddingBlock: 8,
-    paddingInline: 8,
     fontSize: 12,
     cursor: 'pointer',
   },
