@@ -211,62 +211,63 @@ export function getProgramStatement(path: NodePath<>): NodePath<> {
  * - Direct named exports: `export const x = ...`
  * - Locally declared named exports: `const x = ...; export { x }`
  *
- * Default exports and re-exports from other files (e.g., `export { x } from './other'`) are NOT allowed.
+ * Default exports, aliasing and re-exports from other files (e.g., `export { x } from './other'`) are NOT allowed.
  */
 export function isVariableNamedExported(
   path: NodePath<t.VariableDeclarator>,
 ): boolean {
-  const declaration = path.parentPath;
   const idPath = path.get('id');
-  if (
-    !declaration ||
-    !declaration.isVariableDeclaration() ||
-    declaration.node.kind !== 'const' ||
-    !idPath.isIdentifier()
-  ) {
-    return false;
-  }
+  if (!idPath.isIdentifier()) return false;
 
   const variableName = idPath.node.name;
 
-  if (
-    declaration.parentPath?.isExportNamedDeclaration() &&
-    declaration.parentPath.node.source == null
-  ) {
-    return true;
-  }
+  const binding = path.scope.getBinding(variableName);
+  if (!binding) return false;
 
   const programPath = getProgramPath(path);
   if (programPath == null) {
     return false;
   }
 
-  let result = false;
+  let exported = false;
 
   programPath.traverse({
     ExportNamedDeclaration(p) {
       const node = p.node;
-      if (node.source != null) {
+
+      if (node.source != null) return;
+
+      if (node.declaration) {
+        if (
+          node.declaration.type === 'VariableDeclaration' &&
+          node.declaration.declarations.some(
+            (d) =>
+              d.id.type === 'Identifier' &&
+              p.scope.getBinding(d.id.name) === binding,
+          )
+        ) {
+          exported = true;
+          p.stop();
+        }
         return;
       }
-      if (node.declaration != null) {
-        return;
+
+      for (const s of node.specifiers ?? []) {
+        if (s.type !== 'ExportSpecifier') continue;
+        if (s.local.type !== 'Identifier') continue;
+        if (s.exported.type !== 'Identifier') continue;
+        if (s.exportKind === 'type') continue;
+        if (s.local.name !== s.exported.name) continue;
+
+        const localBinding = p.scope.getBinding(s.local.name);
+        if (localBinding === binding) {
+          exported = true;
+          p.stop();
+          return;
+        }
       }
-      if (node.specifiers == null || node.specifiers.length === 0) {
-        return;
-      }
-      result =
-        result ||
-        node.specifiers.some(
-          (s) =>
-            s.type === 'ExportSpecifier' &&
-            s.local.type === 'Identifier' &&
-            s.exported.type === 'Identifier' &&
-            s.local.name === variableName &&
-            s.exported.name === variableName,
-        );
     },
   });
 
-  return result;
+  return exported;
 }
