@@ -13,7 +13,7 @@ import { WindowHistoryAdapter } from 'use-query-params/adapters/window';
 
 export default function PlaygroundNewPage() {
   return (
-    <Layout>
+    <Layout title="Playground">
       <BrowserOnly>
         {() => {
           const PlaygroundNew =
