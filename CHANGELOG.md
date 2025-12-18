@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.17.3 (Dec 1, 2025)
+## 0.17.4 (Dec 18. 2025)
+- New playground within the docs website.
+- Fix named exports detection on Turbopack.
+
+## 0.17.3 (Dec 12, 2025)
 
 - Add docs for setup instructions.
 - Improve AST detection for `.stylex` named exports
