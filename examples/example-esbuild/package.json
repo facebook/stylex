@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "example-esbuild",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "description": "Simple esbuild example for @stylexjs/unplugin",
   "main": "src/App.jsx",
   "scripts": {
@@ -10,13 +10,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/stylex": "0.17.3",
+    "@stylexjs/stylex": "0.17.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@stylexjs/unplugin": "0.17.3",
-    "@stylexjs/eslint-plugin": "0.17.3",
+    "@stylexjs/unplugin": "0.17.4",
+    "@stylexjs/eslint-plugin": "0.17.4",
     "esbuild": "^0.27.0",
     "eslint": "^8.57.1"
   }
