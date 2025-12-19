@@ -42,10 +42,6 @@ const stylexNoConflictingProps = {
       category: 'Best Practices',
       recommended: true,
     },
-    messages: {
-      conflictingProp:
-        'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
-    },
     schema: [
       {
         type: 'object',
@@ -113,7 +109,8 @@ const stylexNoConflictingProps = {
             context.report({
               // $FlowFixMe[incompatible-type]
               node: attr,
-              messageId: 'conflictingProp',
+              message:
+                'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
               data: { propName: attr.name.name },
             });
           } else if (
@@ -130,7 +127,8 @@ const stylexNoConflictingProps = {
                 context.report({
                   // $FlowFixMe[incompatible-type]
                   node: prop,
-                  messageId: 'conflictingProp',
+                  message:
+                    'The `{{propName}}` prop should not be used when spreading `stylex.props()` to avoid conflicts.',
                   data: { propName: prop.key.name },
                 });
               }
