@@ -43,6 +43,7 @@ module.exports = {
     '**/__mocks__/snapshot*',
     '**/storybook-static/**',
     '**/examples/example-cli/src/**',
+    '**/devtools-extension/extension/**',
   ],
   globals: {
     $Call: 'readonly',
