@@ -14,6 +14,7 @@ import type { StylexDebugData } from '../types.js';
 type RuleData = $ReadOnly<{
   selectorText: string,
   classNames: Array<string>,
+  conditions: Array<string>,
   cssText: string,
   order: number,
 }>;
@@ -31,16 +32,6 @@ export function collectStylexDebugData(): StylexDebugData {
   function isCSSStyleRule(rule: CSSRule): implies rule is CSSStyleRule {
     // $FlowExpectedError[incompatible-type-guard]
     return rule.type === 1;
-  }
-
-  function isCSSMediaRule(rule: CSSRule): implies rule is CSSMediaRule {
-    // $FlowExpectedError[incompatible-type-guard]
-    return rule.type === 4;
-  }
-
-  function isCSSSupportsRule(rule: CSSRule): implies rule is CSSSupportsRule {
-    // $FlowExpectedError[incompatible-type-guard]
-    return rule.type === 12;
   }
 
   function parseDataStyleSrc(raw: string): Array<string> {
@@ -73,6 +64,65 @@ export function collectStylexDebugData(): StylexDebugData {
       .filter(Boolean);
   }
 
+  const LAYER_POLYFILL_RE = /:not\(#\\#\)/g;
+
+  function stripLayerPolyfill(selectorText: string): {
+    cleaned: string,
+    hasLayerPolyfill: boolean,
+  } {
+    if (!selectorText) {
+      return { cleaned: selectorText, hasLayerPolyfill: false };
+    }
+    const cleaned = selectorText.replaceAll(LAYER_POLYFILL_RE, '');
+    return {
+      cleaned,
+      hasLayerPolyfill: cleaned !== selectorText,
+    };
+  }
+
+  function getAtRuleCondition(rule: CSSRule): string | null {
+    if (!rule || typeof rule.cssText !== 'string') return null;
+    const braceIndex = rule.cssText.indexOf('{');
+    if (braceIndex === -1) return null;
+    const prelude = rule.cssText.slice(0, braceIndex).trim();
+    if (!prelude.startsWith('@')) return null;
+    if (prelude.startsWith('@layer')) return null;
+    return prelude;
+  }
+
+  function parseSelectorCondition(selectorText: string): null | {
+    baseSelector: string,
+    pseudoCondition: string | null,
+    pseudoElementKey: string | null,
+  } {
+    const trimmed = selectorText.trim();
+    if (!trimmed || trimmed[0] !== '.') return null;
+    const { cleaned } = stripLayerPolyfill(trimmed);
+    const firstColonIndex = cleaned.indexOf(':');
+    if (firstColonIndex === -1) {
+      return {
+        baseSelector: cleaned,
+        pseudoCondition: null,
+        pseudoElementKey: null,
+      };
+    }
+    const baseSelector = cleaned.slice(0, firstColonIndex).trim();
+    const suffix = cleaned.slice(firstColonIndex).trim();
+    const pseudoElementIndex = suffix.indexOf('::');
+    if (pseudoElementIndex !== -1) {
+      return {
+        baseSelector,
+        pseudoCondition: null,
+        pseudoElementKey: suffix,
+      };
+    }
+    return {
+      baseSelector,
+      pseudoCondition: suffix || null,
+      pseudoElementKey: null,
+    };
+  }
+
   function extractClassNames(selectorText: string): Array<string> {
     const out = [];
     const re = /\.([_a-zA-Z0-9-]+)/g;
@@ -99,7 +149,7 @@ export function collectStylexDebugData(): StylexDebugData {
     }
     if (!rules) return;
 
-    function walkRules(ruleList: CSSRuleList) {
+    function walkRules(ruleList: CSSRuleList, conditions: Array<string>) {
       for (let i = 0; i < ruleList.length; i += 1) {
         const rule = ruleList[i];
         if (!rule) continue;
@@ -122,61 +172,34 @@ export function collectStylexDebugData(): StylexDebugData {
           out.push({
             selectorText,
             classNames,
+            conditions,
             cssText: rule.cssText,
             order: state.ruleOrder++,
           });
           continue;
         }
 
-        // CSSRule.MEDIA_RULE === 4
-        if (isCSSMediaRule(rule) && rule.conditionText && rule.cssRules) {
-          let matches = false;
-          try {
-            matches = window.matchMedia(rule.conditionText).matches;
-          } catch {
-            matches = false;
-          }
-          if (matches) {
-            walkRules(rule.cssRules);
-          }
-          continue;
-        }
-
-        // CSSRule.SUPPORTS_RULE === 12
-        if (isCSSSupportsRule(rule) && rule.conditionText && rule.cssRules) {
-          let matches = false;
-          try {
-            // $FlowFixMe[cannot-resolve-name]
-            matches = CSS.supports(rule.conditionText);
-          } catch {
-            matches = false;
-          }
-          if (matches) {
-            walkRules(rule.cssRules);
-          }
-          continue;
-        }
-
         if ('cssRules' in rule) {
+          const atCondition = getAtRuleCondition(rule);
+          const nextConditions = atCondition
+            ? [...conditions, atCondition]
+            : conditions;
           // $FlowFixMe[prop-missing]
-          walkRules(rule.cssRules);
+          walkRules(rule.cssRules, nextConditions);
         }
       }
     }
 
-    walkRules(rules);
+    walkRules(rules, []);
   }
 
-  function tryMatchSelector(element: HTMLElement, selectorText: string) {
-    const selectors = splitSelectors(selectorText);
-    for (const selector of selectors) {
-      try {
-        if (element.matches(selector)) return selector;
-      } catch {
-        // ignore invalid selectors (e.g. some pseudo-elements)
-      }
+  function matchesSelector(element: HTMLElement, selectorText: string) {
+    try {
+      return element.matches(selectorText);
+    } catch {
+      // ignore invalid selectors (e.g. some pseudo-elements)
+      return false;
     }
-    return null;
   }
 
   function stripCssComments(cssText: string) {
@@ -334,24 +357,48 @@ export function collectStylexDebugData(): StylexDebugData {
 
   const classToDecls = new Map<string, Array<$FlowFixMe>>();
   for (const rule of rules) {
-    const matchedSelector = tryMatchSelector(element, rule.selectorText);
-    if (!matchedSelector) continue;
-
-    const matchedClasses = rule.classNames.filter((cls: string) =>
-      elementClassSet.has(cls),
-    );
-    const uniqueMatchedClasses = Array.from(new Set<string>(matchedClasses));
-    if (uniqueMatchedClasses.length === 0) continue;
-
     const decls = parseDeclarationsFromRuleCssText(rule.cssText);
     if (decls.length === 0) continue;
 
-    for (const cls of uniqueMatchedClasses) {
-      const declList = classToDecls.get(cls);
-      if (declList == null) {
-        classToDecls.set(cls, [...decls]);
-      } else {
-        declList.push(...decls);
+    const selectors = splitSelectors(rule.selectorText);
+    for (const selector of selectors) {
+      const selectorInfo = parseSelectorCondition(selector);
+      if (!selectorInfo) continue;
+      const { baseSelector, pseudoCondition, pseudoElementKey } = selectorInfo;
+
+      const matchedClasses = extractClassNames(baseSelector).filter(
+        (cls: string) => elementClassSet.has(cls),
+      );
+      const uniqueMatchedClasses = Array.from(new Set<string>(matchedClasses));
+      if (uniqueMatchedClasses.length === 0) continue;
+
+      if (!baseSelector || !matchesSelector(element, baseSelector)) continue;
+
+      const conditionParts: Array<string> = [];
+      for (const entry of rule.conditions) {
+        if (!conditionParts.includes(entry)) conditionParts.push(entry);
+      }
+
+      if (pseudoCondition && !conditionParts.includes(pseudoCondition)) {
+        conditionParts.push(pseudoCondition);
+      }
+      const condition =
+        conditionParts.length > 0 ? conditionParts.join(', ') : 'default';
+
+      for (const cls of uniqueMatchedClasses) {
+        const pseudoElementValue = pseudoElementKey || undefined;
+        const declsWithCondition = decls.map((decl) => ({
+          ...decl,
+          condition,
+          className: cls,
+          ...(pseudoElementValue ? { pseudoElement: pseudoElementValue } : {}),
+        }));
+        const declList = classToDecls.get(cls);
+        if (declList == null) {
+          classToDecls.set(cls, [...declsWithCondition]);
+        } else {
+          declList.push(...declsWithCondition);
+        }
       }
     }
   }
