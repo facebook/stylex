@@ -45,6 +45,7 @@ module.exports = {
     '**/examples/example-cli/src/**',
     '**/*.d.ts',
     '**/pages.gen.ts',
+    '**/devtools-extension/extension/**',
   ],
   overrides: [
     {
