@@ -25,6 +25,7 @@ type TDeclaration = $ReadOnly<{
 
 export function DeclarationsList({
   classes,
+  computed,
 }: {
   classes: $ReadOnlyArray<
     $ReadOnly<{
@@ -33,6 +34,7 @@ export function DeclarationsList({
       ...
     }>,
   >,
+  computed: { [string]: string, ... },
 }): React.Node {
   if (classes.length === 0) {
     return (
@@ -90,6 +92,8 @@ export function DeclarationsList({
     const { propertyOrder, propertyToEntries } = section;
     return propertyOrder.map((property) => {
       const entries = propertyToEntries.get(property) ?? [];
+      const computedValue = computed[property];
+      const computedTitle = computedValue ? computedValue.trim() : '';
       if (entries.length === 1) {
         const entry = entries[0];
         const value = entry.value + (entry.important ? ' !important' : '');
@@ -99,8 +103,13 @@ export function DeclarationsList({
             {...stylex.props(styles.declRow)}
           >
             <div {...stylex.props(styles.declLine, styles.declText)}>
-              <span {...stylex.props(styles.declProperty)}>{property}</span>:{' '}
-              {value}
+              <span
+                {...stylex.props(styles.declProperty)}
+                title={computedTitle || undefined}
+              >
+                {property}
+              </span>
+              : {value}
             </div>
             {entry.className ? (
               <span {...stylex.props(styles.className)}>{entry.className}</span>
@@ -133,7 +142,13 @@ export function DeclarationsList({
           {...stylex.props(styles.declGroup)}
         >
           <div {...stylex.props(styles.declLine, styles.declText)}>
-            <span {...stylex.props(styles.declProperty)}>{property}</span>:
+            <span
+              {...stylex.props(styles.declProperty)}
+              title={computedTitle || undefined}
+            >
+              {property}
+            </span>
+            :
           </div>
           <div {...stylex.props(styles.declSubList)}>
             {conditionOrder.map((condition) => {

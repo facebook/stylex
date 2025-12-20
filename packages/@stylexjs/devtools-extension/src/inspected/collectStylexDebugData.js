@@ -323,11 +323,20 @@ export function collectStylexDebugData(): StylexDebugData {
     return {
       element: { tagName: '—' },
       sources: [],
+      computed: {},
       applied: { classes: [] },
     };
   }
 
   const tagName = safeString(element.tagName).toLowerCase();
+  const computedStyle = window.getComputedStyle(element);
+  const computed: { [string]: string } = {};
+  for (let i = 0; i < computedStyle.length; i += 1) {
+    const prop = computedStyle[i];
+    if (!prop) continue;
+    const value = computedStyle.getPropertyValue(prop);
+    computed[prop] = value ? value.trim() : '';
+  }
   const classAttr: string = safeString(element.getAttribute('class'));
   const classesOrdered = classAttr.trim() ? classAttr.trim().split(/\s+/) : [];
   const elementClassSet = new Set<string>(classesOrdered);
@@ -391,6 +400,12 @@ export function collectStylexDebugData(): StylexDebugData {
         } else {
           declList.push(...declsWithCondition);
         }
+        for (const decl of decls) {
+          if (computed[decl.property] == null) {
+            const value = computedStyle.getPropertyValue(decl.property);
+            computed[decl.property] = value ? value.trim() : '';
+          }
+        }
       }
     }
   }
@@ -405,6 +420,7 @@ export function collectStylexDebugData(): StylexDebugData {
   return {
     element: { tagName },
     sources,
+    computed,
     applied: { classes },
   };
 }
