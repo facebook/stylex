@@ -22,7 +22,16 @@ export function Copy({ textToCopy }: { textToCopy: string }) {
 
 const styles = stylex.create({
   copyButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': 'rgba(255,255,255,0.1)',
+      ':focus-visible': 'rgba(255,255,255,0.1)',
+      '@media not (hover: hover)': {
+        default: 'rgba(255,255,255,0.1)',
+        ':hover': 'rgba(255,255,255,0.3)',
+        ':focus-visible': 'rgba(255,255,255,0.3)',
+      },
+    },
     color: '#ffad48',
     borderWidth: 0,
     borderRadius: 4,
@@ -31,6 +40,5 @@ const styles = stylex.create({
     cursor: 'pointer',
     fontSize: 16,
     fontWeight: 700,
-    ':hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
   },
 });

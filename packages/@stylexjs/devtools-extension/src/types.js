@@ -26,6 +26,9 @@ export type StylexDeclaration = {
   property: string,
   value: string,
   important: boolean,
+  condition?: string,
+  pseudoElement?: string,
+  className?: string,
   ...
 };
 
