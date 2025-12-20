@@ -11,12 +11,6 @@
 
 import type { StylexDebugData } from '../types.js';
 
-import {
-  isCSSMediaRule,
-  isCSSStyleRule,
-  isCSSSupportsRule,
-} from '../utils/cssRuleType';
-
 type RuleData = $ReadOnly<{
   selectorText: string,
   classNames: Array<string>,
@@ -29,6 +23,21 @@ export function collectStylexDebugData(): StylexDebugData {
     if (typeof value === 'string') return value;
     if (value == null) return '';
     return String(value);
+  }
+
+  function isCSSStyleRule(rule: CSSRule): implies rule is CSSStyleRule {
+    // $FlowExpectedError[incompatible-type-guard]
+    return rule.type === 1;
+  }
+
+  function isCSSMediaRule(rule: CSSRule): implies rule is CSSMediaRule {
+    // $FlowExpectedError[incompatible-type-guard]
+    return rule.type === 4;
+  }
+
+  function isCSSSupportsRule(rule: CSSRule): implies rule is CSSSupportsRule {
+    // $FlowExpectedError[incompatible-type-guard]
+    return rule.type === 12;
   }
 
   function parseDataStyleSrc(raw: string): Array<string> {

@@ -44,6 +44,7 @@ export function App(): React.Node {
         setStatus({ message: 'Ready', kind: 'info' });
       })
       .catch((e) => {
+        console.error('RAN INTO ERROR', e);
         if (requestId !== requestIdRef.current) return;
         setStatus({
           message: e instanceof Error ? e.message : 'Unknown error.',
