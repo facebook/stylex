@@ -13,6 +13,8 @@ import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
+import { browserslistToTargets } from 'lightningcss';
+import browserslist from 'browserslist';
 import stylex from '@stylexjs/unplugin';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
@@ -103,7 +105,13 @@ export default {
         ),
       },
     }),
-    stylex.rollup({ devMode: 'off', useCSSLayers: true }),
+    stylex.rollup({
+      devMode: 'off',
+      useCSSLayers: true,
+      lightningcssOptions: {
+        targets: browserslistToTargets(browserslist('>= 2%')),
+      },
+    }),
     babel({
       babelHelpers: 'bundled',
       extensions,

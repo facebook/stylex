@@ -18,6 +18,9 @@ type RuleData = $ReadOnly<{
   order: number,
 }>;
 
+// NOTE:
+// This function is stringified and used using `evalInInspectedWindow` in the panel.
+// So it must be a completely self-contained function that doesn't rely on any external variables or functions.
 export function collectStylexDebugData(): StylexDebugData {
   function safeString(value: mixed): string {
     if (typeof value === 'string') return value;
@@ -314,7 +317,7 @@ export function collectStylexDebugData(): StylexDebugData {
   const rules: Array<RuleData> = [];
 
   const stylexStyleEls: Array<HTMLStyleElement> = Array.from(
-    document.querySelectorAll('style[data-stylex]'),
+    document.querySelectorAll('style'),
   ) as $FlowFixMe;
   const preferredSheets = stylexStyleEls
     .map((el: HTMLStyleElement) => el.sheet)

@@ -3,6 +3,7 @@
   body,
   #root {
     height: 100%;
+    color-scheme: light dark;
   }
 
   body {

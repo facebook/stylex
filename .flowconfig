@@ -11,6 +11,7 @@
 
 [options]
 experimental.pattern_matching=true
+component_syntax=true
 enums=true
 emoji=true
 casting_syntax=as
