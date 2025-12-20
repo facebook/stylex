@@ -339,17 +339,9 @@ export function collectStylexDebugData(): StylexDebugData {
   const state = { ruleOrder: 0, skippedSheets: 0 };
   const rules: Array<RuleData> = [];
 
-  const stylexStyleEls: Array<HTMLStyleElement> = Array.from(
-    document.querySelectorAll('style'),
+  const sheets: Array<CSSStyleSheet> = Array.from(
+    document.styleSheets,
   ) as $FlowFixMe;
-  const preferredSheets = stylexStyleEls
-    .map((el: HTMLStyleElement) => el.sheet)
-    .filter(Boolean);
-
-  const sheets: Array<CSSStyleSheet> =
-    preferredSheets.length > 0
-      ? preferredSheets
-      : (Array.from(document.styleSheets) as $FlowFixMe);
 
   for (const sheet of sheets) {
     collectStyleRulesFromSheet(sheet, elementClassSet, rules, state);

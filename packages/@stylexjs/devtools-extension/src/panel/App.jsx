@@ -32,14 +32,11 @@ import { colors } from './theme.stylex';
 import Logo from './components/Logo';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export function App(): React.Node {
   const [count, setCount] = useState(0);
 
   const refresh = useCallback(() => {
     startTransition(async () => {
-      await sleep(2000);
       setCount((x) => x + 1);
     });
   }, []);
