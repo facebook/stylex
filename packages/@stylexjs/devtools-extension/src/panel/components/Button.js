@@ -1,0 +1,46 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+'use strict';
+
+import * as React from 'react';
+import * as stylex from '@stylexjs/stylex';
+import { colors } from '../theme.stylex';
+
+export function Button({
+  onClick,
+  children,
+  title,
+}: {
+  onClick: (e: MouseEvent) => mixed,
+  children: React.Node,
+  title?: string,
+}): React.Node {
+  return (
+    <button
+      type="button"
+      {...stylex.props(styles.button)}
+      onClick={onClick}
+      title={title}
+    >
+      {children}
+    </button>
+  );
+}
+
+const styles = stylex.create({
+  button: {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: colors.border,
+    backgroundColor: { default: colors.bgRaised, ':active': colors.bg },
+    paddingBlock: 4,
+    paddingInline: 8,
+    borderRadius: 8,
+  },
+});
