@@ -42,6 +42,7 @@ export type StylexDebugData = $ReadOnly<{
     tagName: string,
   },
   sources: Array<StylexSource>,
+  computed: { [string]: string, ... },
   applied: {
     classes: Array<AppliedStylexClass>,
   },

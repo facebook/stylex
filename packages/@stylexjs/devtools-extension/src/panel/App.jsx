@@ -74,6 +74,7 @@ function Panel({
   const tagName = data?.element?.tagName ?? '—';
 
   const classes = data?.applied?.classes ?? [];
+  const computed = data?.computed ?? {};
 
   return (
     <div {...stylex.props(styles.root)}>
@@ -101,7 +102,7 @@ function Panel({
       </Section>
 
       <Section title="Applied Styles">
-        <DeclarationsList classes={classes} />
+        <DeclarationsList classes={classes} computed={computed} />
       </Section>
     </div>
   );
