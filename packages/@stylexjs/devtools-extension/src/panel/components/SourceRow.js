@@ -13,11 +13,13 @@ import * as React from 'react';
 import { useState, useCallback } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import type { SourcePreview } from '../../types';
-import { openInVsCodeFromStylexSource } from '../../utils/vscode';
+// import { openInVsCodeFromStylexSource } from '../../utils/vscode';
 import {
   getSourcePreview,
   openSourceBestEffort,
 } from '../../devtools/resources';
+import { Button } from './Button';
+import { colors } from '../theme.stylex';
 
 export function SourceRow({
   src,
@@ -69,11 +71,8 @@ export function SourceRow({
         <span {...stylex.props(styles.pill)} title="Order in data-style-src">
           {index + 1}
         </span>
-        <span {...stylex.props(styles.sourcePath)} title={src.raw}>
-          {src.raw}
-        </span>
         <button
-          {...stylex.props(styles.button)}
+          {...stylex.props(styles.sourcePath)}
           onClick={() =>
             openSourceBestEffort(src.file, src.line).catch((e) =>
               onError(
@@ -81,27 +80,22 @@ export function SourceRow({
               ),
             )
           }
-          title="Best-effort: opens the closest matching loaded resource"
-          type="button"
+          title={src.raw}
         >
-          Open
+          {src.raw}
         </button>
-        <button
-          {...stylex.props(styles.button)}
+        {/* <Button
           onClick={() => openInVsCodeFromStylexSource(src.file, src.line)}
           title="Opens the StyleX source location in VS Code (requires setting a local root path once)."
-          type="button"
         >
           VS Code
-        </button>
-        <button
-          {...stylex.props(styles.button)}
+        </Button> */}
+        <Button
           onClick={togglePreview}
           title="Shows file contents (best-effort via DevTools resources)"
-          type="button"
         >
           {isPreviewOpen ? 'Hide' : 'Preview'}
-        </button>
+        </Button>
       </div>
 
       {isPreviewOpen ? (
@@ -110,13 +104,7 @@ export function SourceRow({
             <div {...stylex.props(styles.sourcePreviewUrl)}>
               {preview?.url ? preview.url : src.file}
             </div>
-            <button
-              type="button"
-              {...stylex.props(styles.button)}
-              onClick={() => setIsPreviewOpen(false)}
-            >
-              Hide
-            </button>
+            <Button onClick={() => setIsPreviewOpen(false)}>Hide</Button>
           </div>
           <pre {...stylex.props(styles.sourcePreviewCode)}>
             {isLoadingPreview ? 'Loading…' : (preview?.snippet ?? '')}
@@ -128,18 +116,6 @@ export function SourceRow({
 }
 
 const styles = stylex.create({
-  button: {
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: {
-      default: '#d1d9e0',
-      ':hover': '#0969da',
-    },
-    backgroundColor: '#f6f8fa',
-    padding: '4px 8px',
-    borderRadius: 6,
-    cursor: 'pointer',
-  },
   pill: {
     display: 'inline-block',
     paddingTop: 1,
@@ -149,9 +125,7 @@ const styles = stylex.create({
     borderRadius: 999,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#d1d9e0',
-    backgroundColor: '#f6f8fa',
-    color: '#5e636a',
+    borderColor: colors.border,
     fontSize: 11,
   },
 
@@ -165,18 +139,33 @@ const styles = stylex.create({
     gap: 8,
   },
   sourcePath: {
-    flex: 1,
+    appearance: 'none',
+    textAlign: 'start',
+    backgroundColor: 'transparent',
+    display: 'inline',
+    borderStyle: 'none',
+    cursor: 'pointer',
+    flexGrow: 1,
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
-    color: '#1f2328',
+    color: {
+      default: colors.textPrimary,
+      ':hover': colors.textAccent,
+      ':focus-visible': colors.textAccent,
+    },
+    textDecoration: {
+      default: 'none',
+      ':hover': 'underline',
+      ':focus-visible': 'underline',
+    },
     wordBreak: 'break-word',
   },
   sourcePreview: {
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#d1d9e0',
+    borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.bgRaised,
     padding: 8,
     marginLeft: 28,
   },
@@ -191,7 +180,7 @@ const styles = stylex.create({
     flex: 1,
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
-    color: '#5e636a',
+    color: colors.textMuted,
     wordBreak: 'break-word',
   },
   sourcePreviewCode: {
@@ -200,10 +189,10 @@ const styles = stylex.create({
     whiteSpace: 'pre',
     overflow: 'auto',
     maxHeight: 220,
-    backgroundColor: '#f6f8fa',
+    backgroundColor: colors.bgRaised,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: '#d1d9e0',
+    borderColor: colors.border,
     borderRadius: 6,
     padding: 8,
   },
