@@ -10,10 +10,17 @@
 'use strict';
 
 import * as React from 'react';
-import { useState, useCallback, useEffect, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  use,
+  startTransition,
+  Suspense,
+} from 'react';
 import * as stylex from '@stylexjs/stylex';
 
-import type { StatusState, StylexDebugData } from '../types.js';
+import type { StylexDebugData } from '../types.js';
 import { subscribeToSelectionAndNavigation } from '../devtools/events.js';
 import { evalInInspectedWindow } from '../devtools/api.js';
 import { collectStylexDebugData } from '../inspected/collectStylexDebugData.js';
@@ -23,42 +30,46 @@ import { SourcesList } from './components/SourcesList';
 import { Section } from './components/Section';
 import { colors } from './theme.stylex';
 import Logo from './components/Logo';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export function App(): React.Node {
-  const [data, setData] = useState<StylexDebugData | null>(null);
-  const [_status, setStatus] = useState<StatusState>({
-    message: 'Loading…',
-    kind: 'info',
-  });
-
-  const requestIdRef = useRef<number>(0);
+  const [count, setCount] = useState(0);
 
   const refresh = useCallback(() => {
-    const requestId = requestIdRef.current + 1;
-    requestIdRef.current = requestId;
-
-    setStatus({ message: 'Loading…', kind: 'info' });
-    evalInInspectedWindow(collectStylexDebugData)
-      .then((result) => {
-        if (requestId !== requestIdRef.current) return;
-        setData(result);
-        setStatus({ message: 'Ready', kind: 'info' });
-      })
-      .catch((e) => {
-        console.error('RAN INTO ERROR', e);
-        if (requestId !== requestIdRef.current) return;
-        setStatus({
-          message: e instanceof Error ? e.message : 'Unknown error.',
-          kind: 'error',
-        });
-      });
+    startTransition(() => {
+      setCount((x) => x + 1);
+    });
   }, []);
 
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
-
   useEffect(() => subscribeToSelectionAndNavigation(refresh), [refresh]);
+
+  return (
+    <Suspense fallback={<div>Loading…</div>}>
+      <ErrorBoundary fallback={(error) => <div>Error: {error.message}</div>}>
+        <Panel id={count} refresh={refresh} />
+      </ErrorBoundary>
+    </Suspense>
+  );
+}
+
+let cache: ?[number, Promise<StylexDebugData>] = null;
+const debugDataPromise = (id: number): Promise<StylexDebugData> => {
+  if (cache != null && cache[0] === id) {
+    return cache[1];
+  }
+  const promise = evalInInspectedWindow(collectStylexDebugData);
+  cache = [id, promise];
+  return promise;
+};
+
+function Panel({
+  id,
+  refresh,
+}: {
+  id: number,
+  refresh: () => void,
+}): React.Node {
+  const data = use(debugDataPromise(id));
 
   const tagName = data?.element?.tagName ?? '—';
 
@@ -86,10 +97,7 @@ export function App(): React.Node {
       </div> */}
 
       <Section title="Sources">
-        <SourcesList
-          onError={(msg) => setStatus({ message: msg, kind: 'error' })}
-          sources={data?.sources ?? []}
-        />
+        <SourcesList onError={(_msg) => {}} sources={data?.sources ?? []} />
       </Section>
 
       <Section title="Applied Styles">
