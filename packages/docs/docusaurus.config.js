@@ -47,6 +47,21 @@ const config = {
         }
       }
 
+      const reactTypes = fs.readFileSync(
+        path.join(
+          path.dirname(require.resolve('@types/react/package.json')),
+          'index.d.ts',
+        ),
+        'utf8',
+      );
+      const reactJsxRuntimeTypes = fs.readFileSync(
+        path.join(
+          path.dirname(require.resolve('@types/react/package.json')),
+          'jsx-runtime.d.ts',
+        ),
+        'utf8',
+      );
+
       return {
         name: 'playground-webpack-config',
         configureWebpack() {
@@ -55,6 +70,8 @@ const config = {
               new webpack.DefinePlugin({
                 STYLEX_SOURCE: JSON.stringify(stylexSource),
                 STYLEX_TYPES: JSON.stringify(stylexTypes),
+                REACT_TYPES: JSON.stringify(reactTypes),
+                REACT_JSX_RUNTIME_TYPES: JSON.stringify(reactJsxRuntimeTypes),
               }),
             ],
           };

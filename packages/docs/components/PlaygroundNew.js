@@ -11,7 +11,7 @@ import stylexPlugin from '@stylexjs/babel-plugin';
 import * as stylex from '@stylexjs/stylex';
 import { transform } from '@babel/standalone';
 import { loadSandpackClient } from '@codesandbox/sandpack-client';
-import Editor from '@monaco-editor/react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 import path from 'path-browserify';
 import { useColorMode } from '@docusaurus/theme-common';
 import {
@@ -43,10 +43,12 @@ function transformSourceFiles(sourceFiles) {
   );
 
   for (const [filename, code] of Object.entries(sourceFiles)) {
+    const isTSX = filename.endsWith('.tsx');
     const result = transform(code, {
       filename,
       plugins: [
-        'syntax-jsx',
+        ['transform-typescript', { isTSX }],
+        isTSX && 'syntax-jsx',
         [
           stylexPlugin,
           {
@@ -77,7 +79,7 @@ function transformSourceFiles(sourceFiles) {
             },
           },
         ],
-      ],
+      ].filter(Boolean),
     });
     transformedFiles[filename] = result.code;
     if (result.metadata.stylex) {
@@ -121,13 +123,14 @@ export default function PlaygroundNew() {
     'input',
     withDefault(StringParam, encodeObjKeys(initialValue)),
   );
-  const [activeInputFile, setActiveInputFile] = useState('App.js');
+  const [activeInputFile, setActiveInputFile] = useState('App.tsx');
   const [transformedFiles, setTransformedFiles] = useState([]);
   const [cssOutput, setCssOutput] = useState('');
   const [sandpackInitialized, setSandpackInitialized] = useState(false);
   const iframeRef = useRef(null);
   const sandpackClientRef = useRef(null);
   const [error, setError] = useState(null);
+  const monaco = useMonaco();
 
   const setInputFiles = useCallback((updatedInputFiles, replace = true) => {
     _setInputFiles(
@@ -209,8 +212,8 @@ export const vars = stylex.defineVars({
   const getDefaultFilename = useCallback(
     (fileKind) =>
       fileKind === 'component'
-        ? getUniqueFilename('Component.js')
-        : getUniqueFilename('tokens.stylex.js'),
+        ? getUniqueFilename('Component.tsx')
+        : getUniqueFilename('tokens.stylex.ts'),
     [getUniqueFilename],
   );
 
@@ -227,7 +230,9 @@ export const vars = stylex.defineVars({
         const dynamicFiles = Object.keys(transformedFiles).reduce(
           (acc, filename) => ({
             ...acc,
-            [`/${filename}`]: { code: transformedFiles[filename] },
+            [`/${filename.replace(/\.tsx?$/, '.js')}`]: {
+              code: transformedFiles[filename],
+            },
           }),
           {},
         );
@@ -275,6 +280,12 @@ export const vars = stylex.defineVars({
     const success = updateSandpack(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
 
+    monaco.editor.createModel(
+      template,
+      'typescript',
+      monaco.Uri.file(`/${trimmedName}`),
+    );
+
     return true;
   };
 
@@ -290,6 +301,21 @@ export const vars = stylex.defineVars({
     );
     const success = updateSandpack(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
+
+    monaco.editor.createModel(
+      updatedInputFiles[trimmedName],
+      'typescript',
+      monaco.Uri.file(`/${trimmedName}`),
+    );
+
+    if (activeInputFile === oldName) {
+      setActiveInputFile(trimmedName);
+    }
+
+    const oldModel = monaco.editor.getModel(
+      monaco.Uri.parse(monaco.Uri.file(`/${oldName}`)),
+    );
+    oldModel.dispose();
 
     return true;
   };
@@ -308,6 +334,12 @@ export const vars = stylex.defineVars({
       }
     }
     updateSandpack(updatedInputFiles);
+
+    const oldModel = monaco.editor.getModel(
+      monaco.Uri.parse(monaco.Uri.file(`/${filename}`)),
+    );
+    oldModel.dispose();
+
     return true;
   };
 
@@ -325,7 +357,9 @@ export const vars = stylex.defineVars({
           ...Object.keys(transformedFiles).reduce(
             (acc, filename) => ({
               ...acc,
-              [`/${filename}`]: { code: transformedFiles[filename] },
+              [`/${filename.replace(/\.tsx?$/, '.js')}`]: {
+                code: transformedFiles[filename],
+              },
             }),
             {},
           ),
@@ -385,13 +419,27 @@ export const vars = stylex.defineVars({
                 onSelectFile={(filename) => setActiveInputFile(filename)}
               />
               <Editor
-                defaultLanguage="javascript"
-                key={activeInputFile}
-                onChange={handleEditorChange}
-                onMount={(editor) => {
-                  monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+                beforeMount={(monaco) => {
+                  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(
+                    true,
+                  );
+
+                  for (const [filename, content] of Object.entries(
+                    inputFiles,
+                  )) {
+                    monaco.editor.createModel(
+                      content,
+                      'typescript',
+                      monaco.Uri.file(`/${filename}`),
+                    );
+                  }
+
+                  monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
                     {
-                      ...monaco.languages.typescript.javascriptDefaults.getCompilerOptions(),
+                      ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+                      jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
+                      moduleResolution:
+                        monaco.languages.typescript.ModuleResolutionKind.NodeJs,
                       paths: {
                         '@stylexjs/stylex': [
                           'file:///node_modules/@stylexjs/stylex/stylex.d.ts',
@@ -401,16 +449,26 @@ export const vars = stylex.defineVars({
                   );
 
                   for (const [file, content] of Object.entries(STYLEX_TYPES)) {
-                    monaco.languages.typescript.javascriptDefaults.addExtraLib(
+                    monaco.languages.typescript.typescriptDefaults.addExtraLib(
                       content,
                       file,
                     );
                   }
-
-                  editor.getDomNode()?.addEventListener('keydown', (e) => {
-                    if (e.key === '/') {
-                      // prevent docusaurus's search from opening
-                      e.stopPropagation();
+                  monaco.languages.typescript.typescriptDefaults.addExtraLib(
+                    REACT_TYPES,
+                    'file:///node_modules/@types/react/index.d.ts',
+                  );
+                  monaco.languages.typescript.typescriptDefaults.addExtraLib(
+                    REACT_JSX_RUNTIME_TYPES,
+                    'file:///node_modules/@types/react/jsx-runtime.d.ts',
+                  );
+                }}
+                defaultLanguage="typescript"
+                onChange={handleEditorChange}
+                onMount={(editor) => {
+                  editor.onKeyDown((e) => {
+                    if (e.browserEvent.key === '/') {
+                      e.browserEvent.stopPropagation();
                     }
                   });
                 }}
@@ -420,8 +478,8 @@ export const vars = stylex.defineVars({
                   contextmenu: false,
                   readOnly: !sandpackInitialized,
                 }}
+                path={`/${activeInputFile}`}
                 theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
-                value={inputFiles[activeInputFile]}
               />
               {error != null && (
                 <div {...stylex.props(styles.error)}>{error.message}</div>
