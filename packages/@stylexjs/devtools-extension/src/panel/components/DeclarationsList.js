@@ -18,6 +18,7 @@ type TDeclaration = $ReadOnly<{
   value: string,
   important: boolean,
   condition?: string,
+  conditions?: $ReadOnlyArray<string>,
   pseudoElement?: string,
   className?: string,
   ...
@@ -47,6 +48,10 @@ export function DeclarationsList({
   type TSection = $ReadOnly<{
     propertyOrder: Array<string>,
     propertyToEntries: Map<string, Array<TDeclaration>>,
+  }>;
+  type TAtRuleGroup = $ReadOnly<{
+    conditionOrder: Array<string>,
+    conditionMap: Map<string, Array<TDeclaration>>,
   }>;
 
   const sectionOrder: Array<string> = [];
@@ -88,6 +93,51 @@ export function DeclarationsList({
     sectionOrder.unshift('');
   }
 
+  function getConditionParts(entry: TDeclaration): Array<string> {
+    if (entry.conditions && entry.conditions.length > 0) {
+      return [...entry.conditions];
+    }
+    if (!entry.condition || entry.condition === 'default') return [];
+    return entry.condition
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  function renderConditionRows(
+    keyPrefix: string,
+    group: TAtRuleGroup,
+  ): React.Node {
+    const { conditionOrder, conditionMap } = group;
+    const ordered = conditionOrder.slice();
+    const defaultIndex = ordered.indexOf('default');
+    if (defaultIndex > 0) {
+      ordered.splice(defaultIndex, 1);
+      ordered.unshift('default');
+    }
+    return ordered.map((condition) => {
+      const bucket = conditionMap.get(condition) ?? [];
+      const label = condition === 'default' ? 'default' : `'${condition}'`;
+      return bucket.map((entry, index) => {
+        const value = entry.value + (entry.important ? ' !important' : '');
+        return (
+          <div
+            key={`${keyPrefix}:${condition}:${index}`}
+            {...stylex.props(styles.declRow)}
+          >
+            <div {...stylex.props(styles.declSubLine, styles.declText)}>
+              <span {...stylex.props(styles.declCondition)}>{label}</span>:{' '}
+              {value}
+            </div>
+            {entry.className ? (
+              <span {...stylex.props(styles.className)}>{entry.className}</span>
+            ) : null}
+          </div>
+        );
+      });
+    });
+  }
+
   function renderProperties(sectionKey: string, section: TSection): React.Node {
     const { propertyOrder, propertyToEntries } = section;
     return propertyOrder.map((property) => {
@@ -118,22 +168,40 @@ export function DeclarationsList({
         );
       }
 
-      const conditionOrder = [];
-      const conditionMap = new Map<string, Array<TDeclaration>>();
+      const atRuleOrder: Array<string> = [];
+      const atRuleMap = new Map<string, TAtRuleGroup>();
       for (const entry of entries) {
-        const condition = entry.condition ?? 'default';
-        const bucket = conditionMap.get(condition);
+        const parts = getConditionParts(entry);
+        const atRules = [];
+        const otherParts = [];
+        for (const part of parts) {
+          if (part.startsWith('@')) {
+            atRules.push(part);
+          } else if (part) {
+            otherParts.push(part);
+          }
+        }
+        const atRuleKey = atRules.join(', ');
+        const conditionKey =
+          otherParts.length > 0 ? otherParts.join(', ') : 'default';
+        let group = atRuleMap.get(atRuleKey);
+        if (group == null) {
+          group = { conditionOrder: [], conditionMap: new Map() };
+          atRuleMap.set(atRuleKey, group);
+          atRuleOrder.push(atRuleKey);
+        }
+        const bucket = group.conditionMap.get(conditionKey);
         if (bucket == null) {
-          conditionOrder.push(condition);
-          conditionMap.set(condition, [entry]);
+          group.conditionOrder.push(conditionKey);
+          group.conditionMap.set(conditionKey, [entry]);
         } else {
           bucket.push(entry);
         }
       }
-      const defaultIndex = conditionOrder.indexOf('default');
-      if (defaultIndex > 0) {
-        conditionOrder.splice(defaultIndex, 1);
-        conditionOrder.unshift('default');
+      const baseAtRuleIndex = atRuleOrder.indexOf('');
+      if (baseAtRuleIndex > 0) {
+        atRuleOrder.splice(baseAtRuleIndex, 1);
+        atRuleOrder.unshift('');
       }
 
       return (
@@ -151,32 +219,37 @@ export function DeclarationsList({
             :
           </div>
           <div {...stylex.props(styles.declSubList)}>
-            {conditionOrder.map((condition) => {
-              const bucket = conditionMap.get(condition) ?? [];
-              return bucket.map((entry, index) => {
-                const value =
-                  entry.value + (entry.important ? ' !important' : '');
-                const label =
-                  condition === 'default' ? 'default' : `'${condition}'`;
+            {atRuleOrder.map((atRuleKey) => {
+              const group = atRuleMap.get(atRuleKey);
+              if (!group) return null;
+              if (atRuleKey === '') {
                 return (
-                  <div
-                    key={`${sectionKey}:${condition}:${index}`}
-                    {...stylex.props(styles.declRow)}
-                  >
-                    <div {...stylex.props(styles.declSubLine, styles.declText)}>
-                      <span {...stylex.props(styles.declCondition)}>
-                        {label}
-                      </span>
-                      : {value}
-                    </div>
-                    {entry.className ? (
-                      <span {...stylex.props(styles.className)}>
-                        {entry.className}
-                      </span>
-                    ) : null}
-                  </div>
+                  <React.Fragment key={`${sectionKey}:${property}:base`}>
+                    {renderConditionRows(
+                      `${sectionKey}:${property}:base`,
+                      group,
+                    )}
+                  </React.Fragment>
                 );
-              });
+              }
+              return (
+                <div
+                  key={`${sectionKey}:${property}:${atRuleKey}`}
+                  {...stylex.props(styles.atRuleGroup)}
+                >
+                  <div {...stylex.props(styles.atRuleTitle)}>
+                    <span {...stylex.props(styles.declCondition)}>
+                      {`'${atRuleKey}'`}
+                    </span>
+                  </div>
+                  <div {...stylex.props(styles.atRuleList)}>
+                    {renderConditionRows(
+                      `${sectionKey}:${property}:${atRuleKey}`,
+                      group,
+                    )}
+                  </div>
+                </div>
+              );
             })}
           </div>
         </div>
@@ -270,12 +343,25 @@ const styles = stylex.create({
     flexDirection: 'column',
     gap: 8,
   },
+  atRuleGroup: {
+    display: 'grid',
+    gap: 2,
+  },
+  atRuleTitle: {
+    fontFamily:
+      'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
+  },
+  atRuleList: {
+    display: 'grid',
+    gap: 2,
+    paddingLeft: 12,
+  },
   className: {
+    color: colors.textMuted,
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
     '::before': {
       content: '.',
     },
-    color: colors.textMuted,
   },
 });

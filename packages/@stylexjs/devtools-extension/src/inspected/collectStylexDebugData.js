@@ -68,15 +68,13 @@ export function collectStylexDebugData(): StylexDebugData {
 
   function stripLayerPolyfill(selectorText: string): {
     cleaned: string,
-    hasLayerPolyfill: boolean,
   } {
     if (!selectorText) {
-      return { cleaned: selectorText, hasLayerPolyfill: false };
+      return { cleaned: selectorText };
     }
-    const cleaned = selectorText.replaceAll(LAYER_POLYFILL_RE, '');
+    const cleaned = selectorText.replace(LAYER_POLYFILL_RE, '');
     return {
       cleaned,
-      hasLayerPolyfill: cleaned !== selectorText,
     };
   }
 
@@ -379,7 +377,6 @@ export function collectStylexDebugData(): StylexDebugData {
       for (const entry of rule.conditions) {
         if (!conditionParts.includes(entry)) conditionParts.push(entry);
       }
-
       if (pseudoCondition && !conditionParts.includes(pseudoCondition)) {
         conditionParts.push(pseudoCondition);
       }
@@ -392,6 +389,7 @@ export function collectStylexDebugData(): StylexDebugData {
           ...decl,
           condition,
           className: cls,
+          ...(conditionParts.length > 0 ? { conditions: conditionParts } : {}),
           ...(pseudoElementValue ? { pseudoElement: pseudoElementValue } : {}),
         }));
         const declList = classToDecls.get(cls);

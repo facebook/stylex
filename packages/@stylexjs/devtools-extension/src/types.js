@@ -27,6 +27,7 @@ export type StylexDeclaration = {
   value: string,
   important: boolean,
   condition?: string,
+  conditions?: $ReadOnlyArray<string>,
   pseudoElement?: string,
   className?: string,
   ...
