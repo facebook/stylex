@@ -38,7 +38,12 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: colors.border,
-    backgroundColor: { default: colors.bgRaised, ':active': colors.bg },
+    backgroundColor: {
+      default: colors.bgRaised,
+      ':hover': colors.bg,
+      ':active': colors.bg,
+    },
+    transform: { default: null, ':active': 'scale(0.95)' },
     paddingBlock: 4,
     paddingInline: 8,
     borderRadius: 8,
