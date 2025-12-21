@@ -44,11 +44,39 @@ export function App(): React.Node {
   useEffect(() => subscribeToSelectionAndNavigation(refresh), [refresh]);
 
   return (
-    <Suspense fallback={<div>Loading…</div>}>
-      <ErrorBoundary fallback={(error) => <div>Error: {error.message}</div>}>
-        <Panel id={count} refresh={refresh} />
+    <Suspense fallback={<Loading />}>
+      <ErrorBoundary
+        fallback={(error) => (
+          <ErrorFallback errorMessage={error.message} retry={refresh} />
+        )}
+        key={count}
+      >
+        <Panel id={count} key={count} refresh={refresh} />
       </ErrorBoundary>
     </Suspense>
+  );
+}
+
+function Loading() {
+  return (
+    <div {...stylex.props(styles.fallbackContainer)}>
+      <Logo xstyle={styles.logo} />
+    </div>
+  );
+}
+
+function ErrorFallback({
+  errorMessage,
+  retry,
+}: {
+  errorMessage: string,
+  retry: () => void,
+}) {
+  return (
+    <div {...stylex.props(styles.fallbackContainer)}>
+      <div {...stylex.props(styles.errorMessage)}>{errorMessage}</div>
+      <Button onClick={retry}>Retry</Button>
+    </div>
   );
 }
 
@@ -76,6 +104,10 @@ function Panel({
   const classes = data?.applied?.classes ?? [];
   const computed = data?.computed ?? {};
 
+  const hasSources = data?.sources?.length > 0;
+  const hasClasses = classes.length > 0;
+  const showEmptyState = !hasSources && !hasClasses;
+
   return (
     <div {...stylex.props(styles.root)}>
       <header {...stylex.props(styles.header)}>
@@ -97,25 +129,58 @@ function Panel({
         {status.message}
       </div> */}
 
-      <Section title="Sources">
-        <SourcesList onError={(_msg) => {}} sources={data?.sources ?? []} />
-      </Section>
+      {hasSources && (
+        <Section title="Sources">
+          <SourcesList onError={(_msg) => {}} sources={data.sources} />
+        </Section>
+      )}
 
-      <Section title="Applied Styles">
-        <DeclarationsList classes={classes} computed={computed} />
-      </Section>
+      {hasClasses && (
+        <Section title="Applied Styles">
+          <DeclarationsList classes={classes} computed={computed} />
+        </Section>
+      )}
+
+      {showEmptyState && (
+        <div {...stylex.props(styles.emptyState)}>No styles found</div>
+      )}
     </div>
   );
 }
 
 const styles = stylex.create({
+  fallbackContainer: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  errorMessage: {
+    boxSizing: 'border-box',
+    color: 'tomato',
+    fontSize: '0.8rem',
+    fontWeight: 400,
+    padding: 16,
+    width: '100%',
+    whiteSpace: 'pre-wrap',
+  },
+  emptyState: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: colors.textMuted,
+    padding: 16,
+  },
   root: {
     backgroundColor: colors.bg,
     color: colors.textPrimary,
     fontFamily:
       'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
     fontSize: 12,
-    height: '100%',
+    minHeight: '100%',
     boxSizing: 'border-box',
     display: 'flex',
     flexDirection: 'column',

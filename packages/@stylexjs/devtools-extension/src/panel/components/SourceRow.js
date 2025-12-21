@@ -100,12 +100,6 @@ export function SourceRow({
 
       {isPreviewOpen ? (
         <div {...stylex.props(styles.sourcePreview)}>
-          <div {...stylex.props(styles.sourcePreviewHeader)}>
-            <div {...stylex.props(styles.sourcePreviewUrl)}>
-              {preview?.url ? preview.url : src.file}
-            </div>
-            <Button onClick={() => setIsPreviewOpen(false)}>Hide</Button>
-          </div>
           <pre {...stylex.props(styles.sourcePreviewCode)}>
             {isLoadingPreview ? 'Loading…' : (preview?.snippet ?? '')}
           </pre>
@@ -161,12 +155,11 @@ const styles = stylex.create({
     wordBreak: 'break-word',
   },
   sourcePreview: {
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.border,
-    borderRadius: 8,
-    backgroundColor: colors.bgRaised,
-    padding: 8,
+    // borderWidth: 1,
+    // borderStyle: 'solid',
+    // borderColor: colors.border,
+    // borderRadius: 8,
+    // backgroundColor: colors.bgRaised,
     marginLeft: 28,
   },
   sourcePreviewHeader: {

@@ -385,12 +385,16 @@ export function collectStylexDebugData(): StylexDebugData {
 
       for (const cls of uniqueMatchedClasses) {
         const pseudoElementValue = pseudoElementKey || undefined;
-        const declsWithCondition = decls.map((decl) => ({
+        const declsWithCondition = decls.map((decl): $FlowFixMe => ({
           ...decl,
           condition,
           className: cls,
-          ...(conditionParts.length > 0 ? { conditions: conditionParts } : {}),
-          ...(pseudoElementValue ? { pseudoElement: pseudoElementValue } : {}),
+          ...((conditionParts.length > 0
+            ? { conditions: conditionParts }
+            : {}) as $FlowFixMe),
+          ...((pseudoElementValue
+            ? { pseudoElement: pseudoElementValue }
+            : {}) as $FlowFixMe),
         }));
         const declList = classToDecls.get(cls);
         if (declList == null) {
