@@ -327,7 +327,7 @@ const styles = stylex.create({
     wordBreak: 'break-word',
   },
   declCondition: {
-    color: colors.textMuted,
+    color: colors.secondaryAccent,
   },
   pseudoSection: {
     display: 'grid',

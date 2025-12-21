@@ -16,7 +16,8 @@ const colorsValue = {
   bgRaised: 'light-dark(#f6f8fa, #282828)',
   textPrimary: 'light-dark(#000000, #ffffff)',
   textMuted: 'light-dark(#757575, #999999)',
-  textAccent: 'light-dark(#dc362e, rgb(92 213 251 / 100%))',
+  textAccent: 'light-dark(#dc362e, rgb(92 213 251))',
+  secondaryAccent: 'light-dark(#0F7913, #73C89C)',
   border: 'light-dark(#d3e3fd, #5e5e5eff)',
 };
 
