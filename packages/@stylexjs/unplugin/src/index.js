@@ -181,6 +181,8 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
     devPersistToDisk = false,
     // Dev integration mode: 'full' (runtime + html), 'css-only' (serve CSS endpoint only), 'off'
     devMode = 'full',
+    // Enable test mode optimizations (e.g., Vitest deps.inline configuration)
+    test = false,
     treeshakeCompensation = ['vite', 'rollup', 'rolldown'].includes(framework),
     ...stylexOptions
   } = userOptions;
@@ -501,10 +503,12 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
                   },
                 },
               };
-              // Configure Vitest's deps.inline for external packages
+              // Configure Vitest's deps.inline for external packages when in test mode
               // This prevents Vitest from pre-bundling these packages,
-              // allowing the StyleX plugin to transform them during the test run
-              if (config?.test) {
+              // allowing the StyleX plugin to transform them during the test run.
+              // Vitest skips Babel transforms for external dependencies by default,
+              // but StyleX requires Babel compilation, so we inline them during tests.
+              if (test && config?.test && stylexPackages.length > 0) {
                 const addInline = (existing = []) =>
                   Array.from(new Set([...existing, ...stylexPackages]));
                 result.test = {

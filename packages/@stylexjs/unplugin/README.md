@@ -122,7 +122,10 @@ esbuild.build({
 - `unstable_moduleResolution`: forwarded to the StyleX Babel plugin.
 - `lightningcssOptions`: pass-through options for `lightningcss`.
 - `cssInjectionTarget`: `(fileName: string) => boolean` to pick a CSS asset to append to. Defaults to `index.css`, `style.css`, or the first `.css` asset.
-- `externalPackages`: package names inside `node_modules` that should be treated like app code (useful if they ship StyleX). They are excluded from Vite dependency optimization.
+- `externalPackages`: array of package names that use StyleX. The plugin auto-discovers packages with StyleX dependencies, but you can manually specify additional packages here. When `test: true` is set, these packages are automatically added to Vitest's `test.deps.inline` to ensure they are transformed during test runs.
+- `test`: boolean, enables test mode optimizations. When `true` and Vitest is detected, automatically configures `test.deps.inline` for external packages to prevent pre-bundling and ensure StyleX code is compiled.
+- `externalPackages`: array of package names that use StyleX. The plugin auto-discovers packages with StyleX dependencies, but you can manually specify additional packages here. These packages are excluded from Vite dependency optimization. When `test: true` is set, they are automatically added to Vitest's `test.deps.inline` to ensure they are transformed during test runs.
+- `test`: boolean, enables test mode optimizations. When `true` and Vitest is detected, automatically configures `test.deps.inline` for external packages to prevent pre-bundling and ensure StyleX code is compiled. This fixes the issue where external packages using StyleX fail in Vitest with "Unexpected 'stylex.defineVars' call at runtime" errors.
 - `devMode`: `'full' | 'css-only' | 'off'` (Vite only).
 - `devPersistToDisk`: persist collected rules to `node_modules/.stylex/rules.json` in dev so multiple Vite environments can share CSS.
 

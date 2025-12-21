@@ -186,6 +186,7 @@ export const tokens = stylex.defineVars({
 
       process.chdir(tempDir);
 
+      // Test with test: true option (required for Vitest deps.inline configuration)
       const plugin = unplugin.vite({
         test: true,
         useCSSLayers: true,
