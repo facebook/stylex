@@ -24,7 +24,10 @@ export function evalInInspectedWindow<T>(
   options?: InspectedWindowEvalOptions,
 ): Promise<T> {
   const expression = `(${fn.toString()})()`;
-  const mergedOptions = { includeCommandLineAPI: true, ...options };
+  const mergedOptions = {
+    // includeCommandLineAPI: true,
+    ...options,
+  };
 
   return new Promise((resolve, reject) => {
     devtools.inspectedWindow.eval(
