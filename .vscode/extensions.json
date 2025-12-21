@@ -1,5 +1,7 @@
 {
-    "recommendations": [
-        "flowtype.flow-for-vscode"
-    ]
+  "recommendations": [
+    "flowtype.flow-for-vscode",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
 }

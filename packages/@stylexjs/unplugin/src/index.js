@@ -287,6 +287,25 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
     return importSources.some((src) => containsStylexImport(code, src));
   }
 
+  function isFromStylexPackage(id) {
+    if (!id || !stylexPackages || stylexPackages.length === 0) return false;
+    // Normalize path separators for cross-platform compatibility
+    const normalizedId = id.replace(/\\/g, '/');
+    // Check if the file path contains any of the stylex package names
+    // Match patterns like:
+    // - /node_modules/@stark-bp/stylex/...
+    // - /node_modules/@stark-bp/react/...
+    // - /path/to/@stark-bp/stylex/... (for pnpm or symlinked packages)
+    return stylexPackages.some((pkg) => {
+      // Escape special regex characters in package name
+      const escapedPkg = pkg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Match package name as a directory segment (preceded by / and followed by / or end of string)
+      // This handles both standard npm/yarn (in node_modules) and pnpm/symlinked structures
+      const regex = new RegExp(`[/\\\\]${escapedPkg}(?:[/\\\\]|$)`);
+      return regex.test(normalizedId);
+    });
+  }
+
   function resetState() {
     stylexRulesById.clear();
     if (devPersistToDisk) {
@@ -366,7 +385,8 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
       // Only handle JS-like files; avoid parsing CSS/JSON/etc
       const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
       if (!JS_LIKE_RE.test(id)) return null;
-      if (!shouldHandle(code)) return null;
+      // Handle files that either contain StyleX imports OR are from external packages that use StyleX
+      if (!shouldHandle(code) && !isFromStylexPackage(id)) return null;
 
       // Extract the pure filename by removing everything after '?' (e.g., handling Vite's '?v=' cache busting).
       const dir = path.dirname(id);
@@ -466,7 +486,7 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
               if (!stylexPackages || stylexPackages.length === 0) return;
               const addExcludes = (existing = []) =>
                 Array.from(new Set([...existing, ...stylexPackages]));
-              return {
+              const result = {
                 optimizeDeps: {
                   ...(config?.optimizeDeps || {}),
                   exclude: addExcludes(config?.optimizeDeps?.exclude || []),
@@ -481,6 +501,21 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
                   },
                 },
               };
+              // Configure Vitest's deps.inline for external packages
+              // This prevents Vitest from pre-bundling these packages,
+              // allowing the StyleX plugin to transform them during the test run
+              if (config?.test) {
+                const addInline = (existing = []) =>
+                  Array.from(new Set([...existing, ...stylexPackages]));
+                result.test = {
+                  ...(config.test || {}),
+                  deps: {
+                    ...(config.test?.deps || {}),
+                    inline: addInline(config.test?.deps?.inline || []),
+                  },
+                };
+              }
+              return result;
             },
             configResolved(config) {
               try {
