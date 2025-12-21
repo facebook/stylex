@@ -16,15 +16,17 @@ export function Button({
   onClick,
   children,
   title,
+  xstyle,
 }: {
   onClick: (e: MouseEvent) => mixed,
   children: React.Node,
   title?: string,
+  xstyle?: stylex.StyleXStyles<>,
 }): React.Node {
   return (
     <button
       type="button"
-      {...stylex.props(styles.button)}
+      {...stylex.props(styles.button, xstyle)}
       onClick={onClick}
       title={title}
     >
