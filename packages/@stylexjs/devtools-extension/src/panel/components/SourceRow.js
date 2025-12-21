@@ -10,67 +10,49 @@
 'use strict';
 
 import * as React from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, use, Suspense, useTransition } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import type { SourcePreview } from '../../types';
 // import { openInVsCodeFromStylexSource } from '../../utils/vscode';
+
 import {
   getSourcePreview,
   openSourceBestEffort,
 } from '../../devtools/resources';
-import { Button } from './Button';
+// import { Button } from './Button';
 import { colors } from '../theme.stylex';
+import { EyeIcon } from './EyeIcon';
 
 export function SourceRow({
   src,
-  index,
-  previewCache,
   onError,
 }: {
   src: { raw: string, file: string, line: number | null, ... },
-  index: number,
-  previewCache: Map<string, SourcePreview>,
   onError: (message: string) => void,
 }): React.Node {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [preview, setPreview] = useState<SourcePreview | null>(null);
-  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
-
-  const key = src.raw ?? `${src.file}:${String(src.line ?? '')}`;
-
-  const openPreview = useCallback(() => {
-    setIsPreviewOpen(true);
-    const cached = previewCache.get(key);
-    if (cached) {
-      setPreview(cached);
-      return;
-    }
-    setIsLoadingPreview(true);
-    getSourcePreview(src.file, src.line)
-      .then((value) => {
-        previewCache.set(key, value);
-        setPreview(value);
-      })
-      .catch((e) => {
-        onError(e instanceof Error ? e.message : 'Failed to load preview.');
-      })
-      .finally(() => setIsLoadingPreview(false));
-  }, [key, onError, previewCache, src.file, src.line]);
+  const [isPending, startTransition] = useTransition();
 
   const togglePreview = useCallback(() => {
-    if (isPreviewOpen) {
-      setIsPreviewOpen(false);
-      return;
-    }
-    openPreview();
-  }, [isPreviewOpen, openPreview]);
+    startTransition(() => {
+      setIsPreviewOpen((open) => !open);
+    });
+  }, []);
 
   return (
     <div {...stylex.props(styles.sourceEntry)}>
       <div {...stylex.props(styles.sourceRow)}>
-        <span {...stylex.props(styles.pill)} title="Order in data-style-src">
-          {index + 1}
-        </span>
+        <button
+          {...stylex.props(
+            styles.pill,
+            isPreviewOpen && styles.pillActive,
+            isPending && styles.buttonPending,
+          )}
+          onClick={togglePreview}
+          title="Order in data-style-src"
+        >
+          <EyeIcon xstyle={styles.icon} />
+        </button>
         <button
           {...stylex.props(styles.sourcePath)}
           onClick={() =>
@@ -90,47 +72,105 @@ export function SourceRow({
         >
           VS Code
         </Button> */}
-        <Button
+        {/* <Button
           onClick={togglePreview}
           title="Shows file contents (best-effort via DevTools resources)"
+          xstyle={isPending ? styles.buttonPending : undefined}
         >
           {isPreviewOpen ? 'Hide' : 'Preview'}
-        </Button>
+        </Button> */}
       </div>
 
       {isPreviewOpen ? (
         <div {...stylex.props(styles.sourcePreview)}>
-          <pre {...stylex.props(styles.sourcePreviewCode)}>
-            {isLoadingPreview ? 'Loading…' : (preview?.snippet ?? '')}
-          </pre>
+          <SourceSnippetSuspense file={src.file} line={src.line ?? 0} />
         </div>
       ) : null}
     </div>
   );
 }
 
-const styles = stylex.create({
-  pill: {
-    display: 'inline-block',
-    paddingTop: 1,
-    paddingRight: 6,
-    paddingBottom: 1,
-    paddingLeft: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: colors.border,
-    fontSize: 11,
-  },
+const cache: { [string]: Promise<SourcePreview> } = {};
+function getSourcePreviewPromise(file: string, line: number) {
+  const cacheKey = `${file}:${line}`;
+  if (cache[cacheKey]) {
+    return cache[cacheKey];
+  }
+  const promise = getSourcePreview(file, line);
+  cache[cacheKey] = promise;
+  return promise;
+}
 
-  sourceEntry: {
-    display: 'grid',
-    gap: 6,
+function SourceSnippet({ file, line }: { file: string, line: number }) {
+  const preview = use(getSourcePreviewPromise(file, line));
+
+  return (
+    <pre {...stylex.props(styles.sourcePreviewCode)}>
+      {preview?.snippet ?? 'no source found'}
+    </pre>
+  );
+}
+
+function SourceSnippetSuspense({ file, line }: { file: string, line: number }) {
+  return (
+    <Suspense fallback={<SourceSnippetFallback />}>
+      <SourceSnippet file={file} line={line} />
+    </Suspense>
+  );
+}
+
+function SourceSnippetFallback() {
+  return (
+    <div {...stylex.props(styles.sourcePreviewCode, styles.loading)}>
+      Loading…
+    </div>
+  );
+}
+
+const styles = stylex.create({
+  icon: {
+    width: 16,
+    height: 16,
   },
-  sourceRow: {
+  pill: {
+    appearance: 'none',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': colors.bgRaised,
+      ':focus-visible': colors.bgRaised,
+    },
+    transform: {
+      default: null,
+      ':active': 'scale(0.95)',
+    },
+    display: 'inline-block',
+    paddingTop: 8,
+    paddingBottom: 2,
+    paddingInline: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderStyle: 'none',
+  },
+  pillActive: {
+    color: colors.textAccent,
+  },
+  loading: {
     display: 'flex',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    color: colors.textMuted,
+  },
+  sourceEntry: {
+    width: '100%',
+    maxWidth: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 4,
+  },
+  sourceRow: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
   },
   sourcePath: {
     appearance: 'none',
@@ -154,39 +194,22 @@ const styles = stylex.create({
     },
     wordBreak: 'break-word',
   },
-  sourcePreview: {
-    // borderWidth: 1,
-    // borderStyle: 'solid',
-    // borderColor: colors.border,
-    // borderRadius: 8,
-    // backgroundColor: colors.bgRaised,
-    marginLeft: 28,
+  buttonPending: {
+    opacity: 0.5,
   },
-  sourcePreviewHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 8,
-    marginBottom: 6,
-  },
-  sourcePreviewUrl: {
-    flex: 1,
-    fontFamily:
-      'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
-    color: colors.textMuted,
-    wordBreak: 'break-word',
-  },
+  sourcePreview: {},
   sourcePreviewCode: {
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
     whiteSpace: 'pre',
+    width: '100%',
     overflow: 'auto',
-    maxHeight: 220,
     backgroundColor: colors.bgRaised,
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: colors.border,
     borderRadius: 6,
+    margin: 0,
     padding: 8,
   },
 });
