@@ -165,12 +165,16 @@ export default class StateManager {
   +stylexViewTransitionClassImport: Set<string> = new Set();
   +stylexDefaultMarkerImport: Set<string> = new Set();
   +stylexWhenImport: Set<string> = new Set();
+  +inlineCSSNamespaceImports: Set<string> = new Set();
+  +inlineCSSNamedImports: Map<string, string> = new Map();
 
   injectImportInserted: ?t.Identifier = null;
 
   // `stylex.create` calls
   +styleMap: Map<string, CompiledNamespaces> = new Map();
   +styleVars: Map<string, NodePath<>> = new Map();
+  +inlineStylesCache: Map<string, { [string]: string, $$css: true }> =
+    new Map();
 
   // results of `stylex.create` calls that should be kept
   +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =

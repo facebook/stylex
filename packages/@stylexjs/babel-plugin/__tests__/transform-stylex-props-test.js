@@ -55,6 +55,87 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('inline-css uses same classnames as stylex.create', () => {
+      const inline = transform(`
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        stylex.props(css.display.flex);
+      `);
+      expect(inline).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        _inject2({
+          ltr: ".x78zum5{display:flex}",
+          priority: 3000
+        });
+        ({
+          className: "x78zum5"
+        });"
+      `);
+      const local = transform(`
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          flex: { display: 'flex' },
+        });
+        stylex.props(styles.flex);
+      `);
+      expect(local).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".x78zum5{display:flex}",
+          priority: 3000
+        });
+        ({
+          className: "x78zum5"
+        });"
+      `);
+      expect(inline).toBe(local);
+    });
+
+    test('inline-css supports leading underscore value', () => {
+      const inline = transform(`
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        stylex.props(css.padding._16px);
+      `);
+      expect(inline).toMatchInlineSnapshot(`
+        "import _inject from \\"@stylexjs/stylex/lib/stylex-inject\\";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: \\".x1tamke2{padding:16px}\\",
+          priority: 1000
+        });
+        ({
+          className: \\"x1tamke2\\"
+        });"
+      `);
+      const local = transform(`
+        import stylex from 'stylex';
+        const styles = stylex.create({
+          pad: { padding: '16px' },
+        });
+        stylex.props(styles.pad);
+      `);
+      expect(local).toMatchInlineSnapshot(`
+        "import _inject from \\"@stylexjs/stylex/lib/stylex-inject\\";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: \\".x1tamke2{padding:16px}\\",
+          priority: 1000
+        });
+        ({
+          className: \\"x1tamke2\\"
+        });"
+      `);
+      expect(inline).toBe(local);
+    });
+
     test('basic stylex call', () => {
       expect(
         transform(`

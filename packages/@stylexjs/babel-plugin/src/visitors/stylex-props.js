@@ -16,6 +16,11 @@ import { props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
+import styleXCreateSet from '../shared/stylex-create';
+import {
+  injectDevClassNames,
+  convertToTestStyles,
+} from '../utils/dev-classname';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -41,6 +46,11 @@ class ConditionalStyle {
 
 type ResolvedArg = ?StyleObject | ConditionalStyle;
 type ResolvedArgs = Array<ResolvedArg>;
+
+type InlineStyle = $ReadOnly<{
+  property: string,
+  value: string | number,
+}>;
 
 export function skipStylexPropsChildren(
   path: NodePath<t.CallExpression>,
@@ -331,6 +341,11 @@ function parseNullableStyle(
     return null;
   }
 
+  const inlineStyle = getInlineStyle(path, state);
+  if (inlineStyle != null) {
+    return compileInlineStyle(inlineStyle, state, path);
+  }
+
   if (t.isMemberExpression(node)) {
     const { object, property, computed: computed } = node;
     let objName = null;
@@ -378,6 +393,113 @@ function parseNullableStyle(
   }
 
   return 'other';
+}
+
+function getInlineStyle(
+  path: NodePath<t.Expression>,
+  state: StateManager,
+): null | InlineStyle {
+  const node = path.node;
+  if (!t.isMemberExpression(node)) {
+    return null;
+  }
+
+  const valueKey = getPropKey(node.property, node.computed);
+  if (valueKey == null) {
+    return null;
+  }
+
+  const parent = node.object;
+
+  if (t.isIdentifier(parent) && state.inlineCSSNamedImports.has(parent.name)) {
+    const propName = state.inlineCSSNamedImports.get(parent.name);
+    if (propName != null) {
+      return { property: propName, value: normalizeInlineValue(valueKey) };
+    }
+  }
+
+  if (t.isMemberExpression(parent)) {
+    const propName = getPropKey(parent.property, parent.computed);
+    const base = parent.object;
+    if (
+      propName != null &&
+      t.isIdentifier(base) &&
+      state.inlineCSSNamespaceImports.has(base.name)
+    ) {
+      return { property: propName, value: normalizeInlineValue(valueKey) };
+    }
+  }
+
+  return null;
+}
+
+function normalizeInlineValue(value: string | number): string | number {
+  if (typeof value === 'string' && value.startsWith('_')) {
+    return value.slice(1);
+  }
+  return value;
+}
+
+function getPropKey(
+  prop: t.Expression | t.PrivateName | t.Identifier,
+  computed: boolean,
+): null | string | number {
+  if (!computed && t.isIdentifier(prop)) {
+    return prop.name;
+  }
+  if (computed && t.isStringLiteral(prop)) {
+    return prop.value;
+  }
+  if (computed && t.isNumericLiteral(prop)) {
+    return prop.value;
+  }
+  return null;
+}
+
+function compileInlineStyle(
+  inlineStyle: InlineStyle,
+  state: StateManager,
+  path: NodePath<t.Expression>,
+): StyleObject {
+  const { property, value } = inlineStyle;
+  const cacheKey = `${property}|${typeof value}:${String(value)}`;
+  const cached = state.inlineStylesCache.get(cacheKey);
+  if (cached != null) {
+    return cached;
+  }
+
+  const [compiledNamespaces, injectedStyles] = styleXCreateSet(
+    {
+      __inline__: {
+        [property]: value,
+      },
+    },
+    state.options,
+  );
+
+  let compiled = compiledNamespaces.__inline__;
+  if (state.isDev && state.options.enableDevClassNames) {
+    compiled = injectDevClassNames(
+      { __inline__: compiled },
+      null,
+      state,
+    ).__inline__;
+  }
+  if (state.isTest) {
+    compiled = convertToTestStyles(
+      { __inline__: compiled },
+      null,
+      state,
+    ).__inline__;
+  }
+
+  const listOfStyles = Object.entries(injectedStyles).map(
+    ([key, { priority, ...rest }]) => [key, rest, priority],
+  );
+  state.registerStyles(listOfStyles, path);
+
+  state.inlineStylesCache.set(cacheKey, compiled);
+  return compiled;
 }
 
 function makeStringExpression(values: ResolvedArgs): t.Expression {
