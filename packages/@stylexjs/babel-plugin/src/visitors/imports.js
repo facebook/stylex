@@ -12,6 +12,8 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 
+const INLINE_CSS_SOURCES = new Set(['@stylexjs/inline-css']);
+
 // Read imports of react and remember the name of the local variables for later
 export function readImportDeclarations(
   path: NodePath<t.ImportDeclaration>,
@@ -22,6 +24,28 @@ export function readImportDeclarations(
     return;
   }
   const sourcePath = node.source.value;
+
+  if (INLINE_CSS_SOURCES.has(sourcePath)) {
+    for (const specifier of node.specifiers) {
+      if (specifier.type === 'ImportNamespaceSpecifier') {
+        state.inlineCSSNamespaceImports.add(specifier.local.name);
+      } else if (specifier.type === 'ImportDefaultSpecifier') {
+        state.inlineCSSNamespaceImports.add(specifier.local.name);
+      } else if (
+        specifier.type === 'ImportSpecifier' &&
+        (specifier.imported.type === 'Identifier' ||
+          specifier.imported.type === 'StringLiteral')
+      ) {
+        const importedName =
+          specifier.imported.type === 'Identifier'
+            ? specifier.imported.name
+            : specifier.imported.value;
+        state.inlineCSSNamedImports.set(specifier.local.name, importedName);
+      }
+    }
+    return;
+  }
+
   if (state.importSources.includes(sourcePath)) {
     for (const specifier of node.specifiers) {
       if (
@@ -179,6 +203,33 @@ export function readRequires(
           if (prop.key.name === 'defaultMarker') {
             state.stylexDefaultMarkerImport.add(value.name);
           }
+        }
+      }
+    }
+  }
+
+  if (
+    init != null &&
+    init.type === 'CallExpression' &&
+    init.callee?.type === 'Identifier' &&
+    init.callee?.name === 'require' &&
+    init.arguments?.length === 1 &&
+    init.arguments?.[0].type === 'StringLiteral' &&
+    INLINE_CSS_SOURCES.has(init.arguments[0].value)
+  ) {
+    if (node.id.type === 'Identifier') {
+      state.inlineCSSNamespaceImports.add(node.id.name);
+    }
+    if (node.id.type === 'ObjectPattern') {
+      for (const prop of node.id.properties) {
+        if (
+          prop.type === 'ObjectProperty' &&
+          prop.key.type === 'Identifier' &&
+          prop.value.type === 'Identifier'
+        ) {
+          const importedName = prop.key.name;
+          const localName = prop.value.name;
+          state.inlineCSSNamedImports.set(localName, importedName);
         }
       }
     }
