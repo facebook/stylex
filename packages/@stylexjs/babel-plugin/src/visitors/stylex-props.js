@@ -136,7 +136,9 @@ export default function transformStylexProps(
     ) {
       const resolved = parseNullableStyle(argPath, state, evaluatePathFnConfig);
       if (resolved === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(resolved);
@@ -158,7 +160,9 @@ export default function transformStylexProps(
         evaluatePathFnConfig,
       );
       if (primary === 'other' || fallback === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(new ConditionalStyle(test, primary, fallback));
@@ -185,7 +189,9 @@ export default function transformStylexProps(
         evaluatePathFnConfig,
       );
       if (leftResolved !== 'other' || rightResolved === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(
@@ -194,7 +200,9 @@ export default function transformStylexProps(
         conditional++;
       }
     } else {
-      bailOutIndex = currentIndex;
+      if (bailOutIndex == null) {
+        bailOutIndex = currentIndex;
+      }
       bailOut = true;
     }
     if (conditional > 4) {
@@ -389,6 +397,19 @@ function parseNullableStyle(
     return staticCSS;
   }
 
+  // Local dynamic style functions (e.g., styles.opacity(1)) should bail out
+  // so runtime props merging keeps the conditional class/inline var semantics.
+  if (path.isCallExpression()) {
+    const callee = path.get('callee');
+    if (callee.isMemberExpression()) {
+      const obj = callee.get('object');
+      if (obj.isIdentifier() && state.styleMap.has(obj.node.name)) {
+        return 'other';
+      }
+    }
+    return 'other';
+  }
+
   if (t.isMemberExpression(node)) {
     const { object, property, computed: computed } = node;
     let objName = null;
@@ -416,8 +437,14 @@ function parseNullableStyle(
     if (objName != null && propName != null) {
       const style = state.styleMap.get(objName);
       if (style != null && style[String(propName)] != null) {
+        const memberVal = style[String(propName)];
+        // Dynamic style functions (arrow/function expressions) should bail out
+        // so runtime props handling remains intact.
+        if (typeof memberVal === 'function') {
+          return 'other';
+        }
         // $FlowFixMe[incompatible-type]
-        return style[String(propName)];
+        return memberVal;
       }
     }
   }
@@ -474,7 +501,9 @@ function getInlineStaticCSS(
   const parent = node.object;
 
   if (t.isIdentifier(parent) && isInlineCSSIdentifier(parent, state, path)) {
-    return { property: valueKey, value: normalizeInlineValue(valueKey) };
+    const importedName = state.inlineCSSImports.get(parent.name) ?? 'color';
+    const property = importedName === '*' ? valueKey : importedName;
+    return { property, value: normalizeInlineValue(valueKey) };
   }
 
   if (t.isMemberExpression(parent)) {
@@ -574,10 +603,7 @@ function isInlineCSSIdentifier(
   state: StateManager,
   path: NodePath<>,
 ): boolean {
-  if (
-    state.inlineCSSNamedImports.has(ident.name) ||
-    state.inlineCSSNamespaceImports.has(ident.name)
-  ) {
+  if (state.inlineCSSImports.has(ident.name)) {
     return true;
   }
   const binding = path.scope?.getBinding(ident.name);

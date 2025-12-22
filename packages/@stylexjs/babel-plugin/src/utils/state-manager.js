@@ -166,8 +166,9 @@ export default class StateManager {
   +stylexViewTransitionClassImport: Set<string> = new Set();
   +stylexDefaultMarkerImport: Set<string> = new Set();
   +stylexWhenImport: Set<string> = new Set();
-  +inlineCSSNamespaceImports: Set<string> = new Set();
-  +inlineCSSNamedImports: Map<string, string> = new Map();
+  // Map of local identifier -> imported name.
+  // For namespace/default imports we store '*'.
+  +inlineCSSImports: Map<string, string> = new Map();
 
   injectImportInserted: ?t.Identifier = null;
 
