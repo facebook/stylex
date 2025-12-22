@@ -175,6 +175,8 @@ export default class StateManager {
   +styleVars: Map<string, NodePath<>> = new Map();
   +inlineStylesCache: Map<string, { [string]: string, $$css: true }> =
     new Map();
+  +inlineDynamicCache: Map<string, { className: string, varName: string }> =
+    new Map();
 
   // results of `stylex.create` calls that should be kept
   +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =
