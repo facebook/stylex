@@ -7,29 +7,29 @@
 
 'use strict';
 
-const valueProxy = (propName) =>
-  new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(
-          `@stylexjs/inline-css is a compile-time helper. Attempted to read the value '${propName}', but the StyleX compiler did not run.`,
-        );
-      },
+const valueProxy = (_propName) =>
+  new Proxy(function () {}, {
+    get() {
+      return valueProxy('');
     },
-  );
-
-const inlineCSS = new Proxy(
-  {},
-  {
-    get(_target, prop) {
-      if (typeof prop === 'string') {
-        return valueProxy(prop);
-      }
+    apply() {
       return undefined;
     },
+  });
+
+const inlineCSS = new Proxy(function () {}, {
+  get(_target, prop) {
+    if (typeof prop === 'string') {
+      return valueProxy(prop);
+    }
+    return undefined;
   },
-);
+  apply() {
+    throw new Error(
+      '@stylexjs/inline-css is a compile-time helper. Attempted to call it as a function, but the StyleX compiler did not run.',
+    );
+  },
+});
 
 module.exports = inlineCSS;
 module.exports.default = inlineCSS;

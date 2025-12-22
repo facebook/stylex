@@ -55,87 +55,6 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('inline-css uses same classnames as stylex.create', () => {
-      const inline = transform(`
-        import stylex from 'stylex';
-        import * as css from '@stylexjs/inline-css';
-        stylex.props(css.display.flex);
-      `);
-      expect(inline).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        import * as css from '@stylexjs/inline-css';
-        _inject2({
-          ltr: ".x78zum5{display:flex}",
-          priority: 3000
-        });
-        ({
-          className: "x78zum5"
-        });"
-      `);
-      const local = transform(`
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          flex: { display: 'flex' },
-        });
-        stylex.props(styles.flex);
-      `);
-      expect(local).toMatchInlineSnapshot(`
-        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2({
-          ltr: ".x78zum5{display:flex}",
-          priority: 3000
-        });
-        ({
-          className: "x78zum5"
-        });"
-      `);
-      expect(inline).toBe(local);
-    });
-
-    test('inline-css supports leading underscore value', () => {
-      const inline = transform(`
-        import stylex from 'stylex';
-        import * as css from '@stylexjs/inline-css';
-        stylex.props(css.padding._16px);
-      `);
-      expect(inline).toMatchInlineSnapshot(`
-        "import _inject from \\"@stylexjs/stylex/lib/stylex-inject\\";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2({
-          ltr: \\".x1tamke2{padding:16px}\\",
-          priority: 1000
-        });
-        ({
-          className: \\"x1tamke2\\"
-        });"
-      `);
-      const local = transform(`
-        import stylex from 'stylex';
-        const styles = stylex.create({
-          pad: { padding: '16px' },
-        });
-        stylex.props(styles.pad);
-      `);
-      expect(local).toMatchInlineSnapshot(`
-        "import _inject from \\"@stylexjs/stylex/lib/stylex-inject\\";
-        var _inject2 = _inject;
-        import stylex from 'stylex';
-        _inject2({
-          ltr: \\".x1tamke2{padding:16px}\\",
-          priority: 1000
-        });
-        ({
-          className: \\"x1tamke2\\"
-        });"
-      `);
-      expect(inline).toBe(local);
-    });
-
     test('basic stylex call', () => {
       expect(
         transform(`
@@ -310,6 +229,392 @@ describe('@stylexjs/babel-plugin', () => {
           }"
         `);
       });
+    });
+
+    describe('props calls with inline-css', () => {
+      test('uses same classnames as stylex.create', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          stylex.props(css.display.flex);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          _inject2({
+            ltr: ".x78zum5{display:flex}",
+            priority: 3000
+          });
+          ({
+            className: "x78zum5"
+          });"
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            flex: { display: 'flex' },
+          });
+          stylex.props(styles.flex);
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".x78zum5{display:flex}",
+            priority: 3000
+          });
+          ({
+            className: "x78zum5"
+          });"
+        `);
+      });
+
+      test('supports leading underscore value', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          stylex.props(css.padding._16px);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          _inject2({
+            ltr: ".x1tamke2{padding:16px}",
+            priority: 1000
+          });
+          ({
+            className: "x1tamke2"
+          });"
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            pad: { padding: '16px' },
+          });
+          stylex.props(styles.pad);
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".x1tamke2{padding:16px}",
+            priority: 1000
+          });
+          ({
+            className: "x1tamke2"
+          });"
+        `);
+      });
+
+      test('supports key syntax', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          stylex.props(css.width['calc(100% - 20px)']);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          _inject2({
+            ltr: ".xnlsq7q{width:calc(100% - 20px)}",
+            priority: 4000
+          });
+          ({
+            className: "xnlsq7q"
+          });"
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            w: { width: 'calc(100% - 20px)' },
+          });
+          stylex.props(styles.w);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          _inject2({
+            ltr: ".xnlsq7q{width:calc(100% - 20px)}",
+            priority: 4000
+          });
+          ({
+            className: "xnlsq7q"
+          });"
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".xnlsq7q{width:calc(100% - 20px)}",
+            priority: 4000
+          });
+          ({
+            className: "xnlsq7q"
+          });"
+        `);
+      });
+
+      test('dynamic style', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          stylex.props(css.color(color));
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            color: (c) => ({ color: c }),
+          });
+          stylex.props(styles.color(color));
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const styles = {
+            color: c => [{
+              kMwMTN: c != null ? "x14rh7hd" : c,
+              $$css: true
+            }, {
+              "--x-color": c != null ? c : undefined
+            }]
+          };
+          stylex.props(styles.color(color));"
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          stylex.props([{
+            "color": color != null ? "x14rh7hd" : color,
+            "$$css": true
+          }, {
+            "--x-color": color != null ? color : undefined
+          }]);"
+        `);
+      });
+
+      test('inline static with inline dynamic', () => {
+        const output = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          stylex.props(css.display.flex, css.color(color));
+        `);
+        expect(output).toContain('.x78zum5{display:flex}');
+        expect(output).toContain('.x14rh7hd{color:var(--x-color)}');
+        expect(output).toContain('--x-color');
+        expect(output).toContain('color != null ? "x14rh7hd" : color');
+      });
+
+      test('inline static with create dynamic', () => {
+        const output = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          const styles = stylex.create({
+            opacity: (o) => ({ opacity: o }),
+          });
+          stylex.props(css.display.flex, styles.opacity(0.5));
+        `);
+        expect(output).toContain('.x78zum5{display:flex}');
+        expect(output).toContain('.xb4nw82{opacity:var(--x-opacity)}');
+        expect(output).toContain('--x-opacity');
+      });
+
+      test('inline dynamic with create dynamic', () => {
+        const output = transform(`
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/inline-css';
+          const styles = stylex.create({
+            opacity: (o) => ({ opacity: o }),
+          });
+          stylex.props(css.color(color), styles.opacity(0.5));
+        `);
+        expect(output).toContain('.x14rh7hd{color:var(--x-color)}');
+        expect(output).toContain('.xb4nw82{opacity:var(--x-opacity)}');
+        expect(output).toContain('--x-color');
+        expect(output).toContain('--x-opacity');
+      });
+
+      describe('with options', () => {
+        test('dev/debug classnames for inline-css', () => {
+          const inline = transform(
+            `
+              import stylex from 'stylex';
+              import * as css from '@stylexjs/inline-css';
+              stylex.props(css.display.flex);
+            `,
+            {
+              dev: true,
+              debug: true,
+              enableDevClassNames: true,
+              enableDebugClassNames: true,
+              filename: '/tmp/Foo.js',
+            },
+          );
+          expect(inline).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import * as css from '@stylexjs/inline-css';
+            _inject2({
+              ltr: ".display-x78zum5{display:flex}",
+              priority: 3000
+            });
+            ({
+              className: "Foo____inline__ display-x78zum5"
+            });"
+          `);
+        });
+      });
+    });
+
+    test('inline static + inline dynamic coexist', () => {
+      const inline = transform(`
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        stylex.props(css.display.flex, css.color(color));
+      `);
+      expect(inline).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        _inject2({
+          ltr: ".x78zum5{display:flex}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x14rh7hd{color:var(--x-color)}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+          priority: 0
+        });
+        stylex.props([{
+          display: "x78zum5",
+          color: color != null ? "x14rh7hd" : color,
+          $$css: true
+        }, {
+          "--x-color": color != null ? color : undefined
+        }]);"
+      `);
+    });
+
+    test('inline static + create dynamic', () => {
+      const output = transform(`
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        const styles = stylex.create({
+          opacity: (o) => ({ opacity: o }),
+        });
+        stylex.props(css.display.flex, styles.opacity(0.5));
+      `);
+      expect(output).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        _inject2({
+          ltr: ".x78zum5{display:flex}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".xb4nw82{opacity:var(--x-opacity)}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: "@property --x-opacity { syntax: \\"*\\"; inherits: false;}",
+          priority: 0
+        });
+        const styles = {
+          opacity: o => [{
+            kSiTet: o != null ? "xb4nw82" : o,
+            $$css: true
+          }, {
+            "--x-opacity": o != null ? o : undefined
+          }]
+        };
+        stylex.props([{
+          display: "x78zum5",
+          $$css: true
+        }, styles.opacity(0.5)]);"
+      `);
+    });
+
+    test('inline dynamic + create dynamic', () => {
+      const output = transform(`
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        const styles = stylex.create({
+          opacity: (o) => ({ opacity: o }),
+        });
+        stylex.props(css.color(color), styles.opacity(0.5));
+      `);
+      expect(output).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        import * as css from '@stylexjs/inline-css';
+        _inject2({
+          ltr: ".x14rh7hd{color:var(--x-color)}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".xb4nw82{opacity:var(--x-opacity)}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+          priority: 0
+        });
+        _inject2({
+          ltr: "@property --x-opacity { syntax: \\"*\\"; inherits: false;}",
+          priority: 0
+        });
+        const styles = {
+          opacity: o => [{
+            kSiTet: o != null ? "xb4nw82" : o,
+            $$css: true
+          }, {
+            "--x-opacity": o != null ? o : undefined
+          }]
+        };
+        stylex.props([{
+          color: color != null ? "x14rh7hd" : color,
+          $$css: true
+        }, {
+          "--x-color": color != null ? color : undefined
+        }, styles.opacity(0.5)]);"
+      `);
     });
 
     test('stylex call with number', () => {
