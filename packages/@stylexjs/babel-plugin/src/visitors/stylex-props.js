@@ -17,10 +17,13 @@ import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
 import styleXCreateSet from '../shared/stylex-create';
+import { convertStyleToClassName } from '../shared/utils/convert-to-className';
 import {
   injectDevClassNames,
   convertToTestStyles,
 } from '../utils/dev-classname';
+
+const INLINE_CSS_SOURCE = '@stylexjs/inline-css';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -28,6 +31,13 @@ type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 type StyleObject = {
   [key: string]: string | null | boolean,
 };
+
+type InlineCSSTuple = [
+  StyleObject,
+  $ReadOnly<{
+    [string]: mixed,
+  }>,
+];
 
 class ConditionalStyle {
   test: t.Expression;
@@ -44,12 +54,21 @@ class ConditionalStyle {
   }
 }
 
-type ResolvedArg = ?StyleObject | ConditionalStyle;
+type ResolvedArg =
+  | ?(StyleObject | InlineCSSTuple | InlineCSSDynamic)
+  | ConditionalStyle;
 type ResolvedArgs = Array<ResolvedArg>;
 
-type InlineStyle = $ReadOnly<{
+type InlineCSS = $ReadOnly<{
   property: string,
   value: string | number,
+}>;
+
+type InlineCSSDynamic = $ReadOnly<{
+  className: string,
+  classKey: string,
+  varName: string,
+  value: t.Expression,
 }>;
 
 export function skipStylexPropsChildren(
@@ -119,7 +138,8 @@ export default function transformStylexProps(
     if (
       argPath.isObjectExpression() ||
       argPath.isIdentifier() ||
-      argPath.isMemberExpression()
+      argPath.isMemberExpression() ||
+      argPath.isCallExpression()
     ) {
       const resolved = parseNullableStyle(argPath, state, evaluatePathFnConfig);
       if (resolved === 'other') {
@@ -188,7 +208,7 @@ export default function transformStylexProps(
       bailOut = true;
     }
     if (bailOut) {
-      break;
+      continue;
     }
   }
   if (!state.options.enableInlinedConditionalMerge && conditional) {
@@ -332,7 +352,7 @@ function parseNullableStyle(
   path: NodePath<t.Expression>,
   state: StateManager,
   evaluatePathFnConfig: FunctionConfig,
-): null | StyleObject | 'other' {
+): null | StyleObject | InlineCSSTuple | InlineCSSDynamic | 'other' {
   const node = path.node;
   if (
     t.isNullLiteral(node) ||
@@ -341,9 +361,58 @@ function parseNullableStyle(
     return null;
   }
 
-  const inlineStyle = getInlineStyle(path, state);
-  if (inlineStyle != null) {
-    return compileInlineStyle(inlineStyle, state, path);
+  const inlineCSS = resolveInlineCSS(path, state);
+  if (inlineCSS != null) {
+    if (!Array.isArray(inlineCSS) && path.isCallExpression()) {
+      const { className, classKey, varName, value } = inlineCSS;
+      const compiledObj = t.objectExpression([
+        t.objectProperty(
+          t.stringLiteral(classKey),
+          t.conditionalExpression(
+            t.binaryExpression('!=', value, t.nullLiteral()),
+            t.stringLiteral(className),
+            value,
+          ),
+        ),
+        t.objectProperty(t.stringLiteral('$$css'), t.booleanLiteral(true)),
+      ]);
+      const inlineObj = t.objectExpression([
+        t.objectProperty(
+          t.stringLiteral(varName),
+          t.conditionalExpression(
+            t.binaryExpression('!=', value, t.nullLiteral()),
+            value,
+            t.identifier('undefined'),
+          ),
+        ),
+      ]);
+      path.replaceWith(t.arrayExpression([compiledObj, inlineObj]));
+      return 'other';
+    }
+    if (!Array.isArray(inlineCSS) && !path.isCallExpression()) {
+      // Inline static CSS should be inlined immediately so it survives later bailouts.
+      path.replaceWith(convertObjectToAST(inlineCSS));
+      return inlineCSS;
+    }
+    if (Array.isArray(inlineCSS) && path.isCallExpression()) {
+      // Dynamic inline-css cannot be reduced to plain objects for the build-time
+      // props optimization. Replace the argument with the compiled tuple so
+      // runtime stylex.props receives the correct value, then bail out.
+      const [compiled, inlineVars] = inlineCSS;
+      path.replaceWith(
+        t.arrayExpression([
+          convertObjectToAST(compiled),
+          convertObjectToAST(inlineVars),
+        ]),
+      );
+      return 'other';
+    }
+    // Static inline-css: inline it immediately so it survives any later bailouts.
+    if (!Array.isArray(inlineCSS)) {
+      path.replaceWith(convertObjectToAST(inlineCSS));
+      return inlineCSS;
+    }
+    return inlineCSS;
   }
 
   if (t.isMemberExpression(node)) {
@@ -395,10 +464,29 @@ function parseNullableStyle(
   return 'other';
 }
 
-function getInlineStyle(
+function resolveInlineCSS(
   path: NodePath<t.Expression>,
   state: StateManager,
-): null | InlineStyle {
+): null | StyleObject | InlineCSSTuple | InlineCSSDynamic {
+  if (path.isCallExpression()) {
+    const dynamic = getInlineDynamicStyle(path, state);
+    if (dynamic != null) {
+      return compileInlineDynamicStyle(dynamic, state, path);
+    }
+  }
+
+  const inlineStyle = getInlineStaticCSS(path, state);
+  if (inlineStyle != null) {
+    return compileInlineStaticCSS(inlineStyle, state, path);
+  }
+
+  return null;
+}
+
+function getInlineStaticCSS(
+  path: NodePath<t.Expression>,
+  state: StateManager,
+): null | InlineCSS {
   const node = path.node;
   if (!t.isMemberExpression(node)) {
     return null;
@@ -411,11 +499,8 @@ function getInlineStyle(
 
   const parent = node.object;
 
-  if (t.isIdentifier(parent) && state.inlineCSSNamedImports.has(parent.name)) {
-    const propName = state.inlineCSSNamedImports.get(parent.name);
-    if (propName != null) {
-      return { property: propName, value: normalizeInlineValue(valueKey) };
-    }
+  if (t.isIdentifier(parent) && isInlineCSSIdentifier(parent, state, path)) {
+    return { property: valueKey, value: normalizeInlineValue(valueKey) };
   }
 
   if (t.isMemberExpression(parent)) {
@@ -424,9 +509,53 @@ function getInlineStyle(
     if (
       propName != null &&
       t.isIdentifier(base) &&
-      state.inlineCSSNamespaceImports.has(base.name)
+      isInlineCSSIdentifier(base, state, path)
     ) {
       return { property: propName, value: normalizeInlineValue(valueKey) };
+    }
+  }
+
+  return null;
+}
+
+function getInlineDynamicStyle(
+  path: NodePath<t.CallExpression>,
+  state: StateManager,
+): null | { property: string, value: t.Expression } {
+  const callee = path.get('callee');
+  if (!callee.isMemberExpression()) {
+    return null;
+  }
+  const valueKey = getPropKey(callee.node.property, callee.node.computed);
+  if (valueKey == null) {
+    return null;
+  }
+  const parent = callee.node.object;
+
+  if (
+    t.isIdentifier(parent) &&
+    path.node.arguments.length === 1 &&
+    isInlineCSSIdentifier(parent, state, path)
+  ) {
+    return {
+      property: valueKey,
+      value: path.get('arguments')[0].node,
+    };
+  }
+
+  if (t.isMemberExpression(parent)) {
+    const propName = getPropKey(parent.property, parent.computed);
+    const base = parent.object;
+    if (
+      propName != null &&
+      t.isIdentifier(base) &&
+      isInlineCSSIdentifier(base, state, path) &&
+      path.node.arguments.length === 1
+    ) {
+      return {
+        property: propName,
+        value: path.get('arguments')[0].node,
+      };
     }
   }
 
@@ -456,8 +585,47 @@ function getPropKey(
   return null;
 }
 
-function compileInlineStyle(
-  inlineStyle: InlineStyle,
+function isInlineCSSIdentifier(
+  ident: t.Identifier,
+  state: StateManager,
+  path: NodePath<>,
+): boolean {
+  if (
+    state.inlineCSSNamedImports.has(ident.name) ||
+    state.inlineCSSNamespaceImports.has(ident.name)
+  ) {
+    return true;
+  }
+  const binding = path.scope?.getBinding(ident.name);
+  if (
+    binding &&
+    binding.path.isImportSpecifier() &&
+    binding.path.parent.type === 'ImportDeclaration' &&
+    binding.path.parent.source.value === INLINE_CSS_SOURCE
+  ) {
+    return true;
+  }
+  if (
+    binding &&
+    binding.path.isImportNamespaceSpecifier() &&
+    binding.path.parent.type === 'ImportDeclaration' &&
+    binding.path.parent.source.value === INLINE_CSS_SOURCE
+  ) {
+    return true;
+  }
+  if (
+    binding &&
+    binding.path.isImportDefaultSpecifier() &&
+    binding.path.parent.type === 'ImportDeclaration' &&
+    binding.path.parent.source.value === INLINE_CSS_SOURCE
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function compileInlineStaticCSS(
+  inlineStyle: InlineCSS,
   state: StateManager,
   path: NodePath<t.Expression>,
 ): StyleObject {
@@ -477,21 +645,7 @@ function compileInlineStyle(
     state.options,
   );
 
-  let compiled = compiledNamespaces.__inline__;
-  if (state.isDev && state.options.enableDevClassNames) {
-    compiled = injectDevClassNames(
-      { __inline__: compiled },
-      null,
-      state,
-    ).__inline__;
-  }
-  if (state.isTest) {
-    compiled = convertToTestStyles(
-      { __inline__: compiled },
-      null,
-      state,
-    ).__inline__;
-  }
+  const compiled = applyDevTest(compiledNamespaces.__inline__, state);
 
   const listOfStyles = Object.entries(injectedStyles).map(
     ([key, { priority, ...rest }]) => [key, rest, priority],
@@ -500,6 +654,76 @@ function compileInlineStyle(
 
   state.inlineStylesCache.set(cacheKey, compiled);
   return compiled;
+}
+
+function compileInlineDynamicStyle(
+  inlineStyle: { property: string, value: t.Expression },
+  state: StateManager,
+  path: NodePath<t.Expression>,
+): InlineCSSDynamic {
+  const { property, value } = inlineStyle;
+  const cacheKey = property;
+  let cached = state.inlineDynamicCache.get(cacheKey);
+
+  if (cached == null) {
+    const varName = `--x-${property}`;
+    const [classKey, className, styleObj] = convertStyleToClassName(
+      [property, `var(${varName})`],
+      [],
+      [],
+      [],
+      state.options,
+    );
+    const { priority, ...rest } = styleObj;
+
+    const propertyInjection = {
+      priority: 0,
+      ltr: `@property ${varName} { syntax: "*"; inherits: false;}`,
+      rtl: null,
+    };
+
+    state.registerStyles(
+      [
+        [classKey, rest, priority],
+        [`${classKey}-var`, propertyInjection, 0],
+      ],
+      path,
+    );
+
+    cached = { className, varName, classKey };
+    state.inlineDynamicCache.set(cacheKey, cached);
+  }
+
+  const { className, varName, classKey } = cached;
+
+  return {
+    className,
+    classKey,
+    varName,
+    value,
+  };
+}
+
+function applyDevTest(
+  compiled: { [string]: string | null, $$css: true },
+  state: StateManager,
+): { [string]: string | null, $$css: true } {
+  let result = compiled;
+  if (state.isDev && state.options.enableDevClassNames) {
+    result = injectDevClassNames(
+      { __inline__: result },
+      null,
+      state,
+    ).__inline__;
+  }
+  if (state.isTest) {
+    result = convertToTestStyles(
+      { __inline__: result },
+      null,
+      state,
+    ).__inline__;
+  }
+  return result;
 }
 
 function makeStringExpression(values: ResolvedArgs): t.Expression {
