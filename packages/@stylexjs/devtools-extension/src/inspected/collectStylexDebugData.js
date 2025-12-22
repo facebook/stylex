@@ -9,7 +9,7 @@
 
 'use strict';
 
-import type { StylexDebugData } from '../types.js';
+import type { AtomicStyleRule, StylexDebugData } from '../types.js';
 
 type RuleData = $ReadOnly<{
   selectorText: string,
@@ -40,6 +40,29 @@ export function collectStylexDebugData(): StylexDebugData {
       .split(';')
       .map((s) => s.trim())
       .filter(Boolean);
+  }
+
+  const OVERRIDE_STORE_KEY = '__stylexDevtoolsOverrides__';
+  const OVERRIDE_ELEMENT_KEY = '__stylexDevtoolsOverrideElement__';
+
+  function getOverridesForElement(element: ?HTMLElement): Array<any> {
+    if (!element) return [];
+    const store = (window: any)[OVERRIDE_STORE_KEY];
+    if (!store || typeof store.get !== 'function') {
+      return [];
+    }
+    const stored = (window: any)[OVERRIDE_ELEMENT_KEY];
+    const hasStored = stored && typeof stored.isSameNode === 'function';
+    const sameNode = hasStored && stored.isSameNode(element);
+    const elementKey = sameNode ? stored : element;
+    if (!sameNode) {
+      (window: any)[OVERRIDE_ELEMENT_KEY] = element;
+    }
+    const value = store.get(elementKey);
+    if (!Array.isArray(value)) return [];
+    return value.map((item) =>
+      item && typeof item === 'object' ? { ...item } : item,
+    );
   }
 
   function parseSourceEntry(raw: mixed): {
@@ -77,6 +100,8 @@ export function collectStylexDebugData(): StylexDebugData {
       cleaned,
     };
   }
+
+  const SIMPLE_CLASS_SELECTOR = /^\.[_a-zA-Z0-9-]+$/;
 
   function getAtRuleCondition(rule: CSSRule): string | null {
     if (!rule || typeof rule.cssText !== 'string') return null;
@@ -119,6 +144,10 @@ export function collectStylexDebugData(): StylexDebugData {
       pseudoCondition: suffix || null,
       pseudoElementKey: null,
     };
+  }
+
+  function isSimpleClassSelector(baseSelector: string): boolean {
+    return SIMPLE_CLASS_SELECTOR.test(baseSelector);
   }
 
   function extractClassNames(selectorText: string): Array<string> {
@@ -174,6 +203,72 @@ export function collectStylexDebugData(): StylexDebugData {
             cssText: rule.cssText,
             order: state.ruleOrder++,
           });
+          continue;
+        }
+
+        if ('cssRules' in rule) {
+          const atCondition = getAtRuleCondition(rule);
+          const nextConditions = atCondition
+            ? [...conditions, atCondition]
+            : conditions;
+          // $FlowFixMe[prop-missing]
+          walkRules(rule.cssRules, nextConditions);
+        }
+      }
+    }
+
+    walkRules(rules, []);
+  }
+
+  function collectAtomicRulesFromSheet(
+    sheet: CSSStyleSheet,
+    out: Array<AtomicStyleRule>,
+    state: { skippedSheets: number },
+  ) {
+    let rules: ?CSSRuleList;
+    try {
+      rules = sheet.cssRules;
+    } catch {
+      state.skippedSheets += 1;
+      return;
+    }
+    if (!rules) return;
+
+    function walkRules(ruleList: CSSRuleList, conditions: Array<string>) {
+      for (let i = 0; i < ruleList.length; i += 1) {
+        const rule = ruleList[i];
+        if (!rule) continue;
+
+        if (isCSSStyleRule(rule) && rule.selectorText && rule.cssText) {
+          const decls = parseDeclarationsFromRuleCssText(rule.cssText);
+          if (decls.length !== 1) continue;
+          const [decl] = decls;
+          const selectors = splitSelectors(rule.selectorText);
+          for (const selector of selectors) {
+            const selectorInfo = parseSelectorCondition(selector);
+            if (!selectorInfo) continue;
+            const { baseSelector, pseudoCondition, pseudoElementKey } =
+              selectorInfo;
+            if (!isSimpleClassSelector(baseSelector)) continue;
+            const className = baseSelector.slice(1);
+
+            const conditionParts: Array<string> = [];
+            for (const entry of conditions) {
+              if (!conditionParts.includes(entry)) conditionParts.push(entry);
+            }
+            if (pseudoCondition && !conditionParts.includes(pseudoCondition)) {
+              conditionParts.push(pseudoCondition);
+            }
+
+            out.push({
+              className,
+              property: decl.property,
+              value: decl.value,
+              important: decl.important,
+              conditions: conditionParts,
+              ...(pseudoElementKey ? { pseudoElement: pseudoElementKey } : {}),
+            });
+          }
           continue;
         }
 
@@ -322,6 +417,8 @@ export function collectStylexDebugData(): StylexDebugData {
       element: { tagName: '—' },
       sources: [],
       computed: {},
+      atomicRules: [],
+      overrides: [],
       applied: { classes: [] },
     };
   }
@@ -342,9 +439,12 @@ export function collectStylexDebugData(): StylexDebugData {
   const dataStyleSrcRaw = safeString(element.getAttribute('data-style-src'));
   const sourcesRaw = parseDataStyleSrc(dataStyleSrcRaw);
   const sources = sourcesRaw.map(parseSourceEntry);
+  const overrides = getOverridesForElement(element);
 
   const state = { ruleOrder: 0, skippedSheets: 0 };
   const rules: Array<RuleData> = [];
+  const atomicRules: Array<AtomicStyleRule> = [];
+  const atomicState = { skippedSheets: 0 };
 
   const sheets: Array<CSSStyleSheet> = Array.from(
     document.styleSheets,
@@ -352,6 +452,7 @@ export function collectStylexDebugData(): StylexDebugData {
 
   for (const sheet of sheets) {
     collectStyleRulesFromSheet(sheet, elementClassSet, rules, state);
+    collectAtomicRulesFromSheet(sheet, atomicRules, atomicState);
   }
 
   const classToDecls = new Map<string, Array<$FlowFixMe>>();
@@ -423,6 +524,8 @@ export function collectStylexDebugData(): StylexDebugData {
     element: { tagName },
     sources,
     computed,
+    atomicRules,
+    overrides,
     applied: { classes },
   };
 }

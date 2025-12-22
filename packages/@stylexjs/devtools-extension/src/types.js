@@ -38,12 +38,23 @@ export type AppliedStylexClass = {
   declarations: Array<StylexDeclaration>,
 };
 
+export type AtomicStyleRule = {
+  className: string,
+  property: string,
+  value: string,
+  important: boolean,
+  conditions: Array<string>,
+  pseudoElement?: string,
+};
+
 export type StylexDebugData = $ReadOnly<{
   element: {
     tagName: string,
   },
   sources: Array<StylexSource>,
   computed: { [string]: string, ... },
+  atomicRules: Array<AtomicStyleRule>,
+  overrides: Array<StylexOverride>,
   applied: {
     classes: Array<AppliedStylexClass>,
   },
@@ -52,4 +63,17 @@ export type StylexDebugData = $ReadOnly<{
 export type SourcePreview = {
   url: string,
   snippet: string,
+};
+
+export type StylexOverride = {
+  id: string,
+  kind: 'inline' | 'class',
+  property: string,
+  value: string,
+  important: boolean,
+  conditions: Array<string>,
+  pseudoElement?: string,
+  className?: string,
+  originalClassName?: string,
+  sourceEntryKey?: string,
 };
