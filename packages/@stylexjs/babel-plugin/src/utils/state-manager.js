@@ -13,6 +13,7 @@ import type {
   CompiledNamespaces,
   StyleXOptions as RuntimeOptions,
 } from '../shared';
+import type { FlatCompiledStyles } from '../shared/common-types';
 import type { Check } from './validate';
 
 import * as t from '@babel/types';
@@ -173,10 +174,11 @@ export default class StateManager {
   // `stylex.create` calls
   +styleMap: Map<string, CompiledNamespaces> = new Map();
   +styleVars: Map<string, NodePath<>> = new Map();
-  +inlineStylesCache: Map<string, { [string]: string, $$css: true }> =
-    new Map();
-  +inlineDynamicCache: Map<string, { className: string, varName: string }> =
-    new Map();
+  +inlineStylesCache: Map<string, FlatCompiledStyles> = new Map();
+  +inlineDynamicCache: Map<
+    string,
+    { className: string, varName: string, classKey: string },
+  > = new Map();
 
   // results of `stylex.create` calls that should be kept
   +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =
