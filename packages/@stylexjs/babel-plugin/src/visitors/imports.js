@@ -28,9 +28,9 @@ export function readImportDeclarations(
   if (INLINE_CSS_SOURCES.has(sourcePath)) {
     for (const specifier of node.specifiers) {
       if (specifier.type === 'ImportNamespaceSpecifier') {
-        state.inlineCSSNamespaceImports.add(specifier.local.name);
+        state.inlineCSSImports.set(specifier.local.name, '*');
       } else if (specifier.type === 'ImportDefaultSpecifier') {
-        state.inlineCSSNamespaceImports.add(specifier.local.name);
+        state.inlineCSSImports.set(specifier.local.name, '*');
       } else if (
         specifier.type === 'ImportSpecifier' &&
         (specifier.imported.type === 'Identifier' ||
@@ -40,7 +40,7 @@ export function readImportDeclarations(
           specifier.imported.type === 'Identifier'
             ? specifier.imported.name
             : specifier.imported.value;
-        state.inlineCSSNamedImports.set(specifier.local.name, importedName);
+        state.inlineCSSImports.set(specifier.local.name, importedName);
       }
     }
     return;
@@ -150,6 +150,24 @@ export function readRequires(
       return;
     }
     state.importPaths.add(importPath);
+    if (INLINE_CSS_SOURCES.has(importPath)) {
+      if (node.id.type === 'Identifier') {
+        state.inlineCSSImports.set(node.id.name, '*');
+        return;
+      }
+      if (node.id.type === 'ObjectPattern') {
+        for (const prop of node.id.properties) {
+          if (
+            prop.type === 'ObjectProperty' &&
+            prop.key.type === 'Identifier' &&
+            prop.value.type === 'Identifier'
+          ) {
+            state.inlineCSSImports.set(prop.value.name, prop.key.name);
+          }
+        }
+        return;
+      }
+    }
     if (node.id.type === 'Identifier') {
       state.stylexImport.add(node.id.name);
     }
@@ -218,7 +236,7 @@ export function readRequires(
     INLINE_CSS_SOURCES.has(init.arguments[0].value)
   ) {
     if (node.id.type === 'Identifier') {
-      state.inlineCSSNamespaceImports.add(node.id.name);
+      state.inlineCSSImports.set(node.id.name, '*');
     }
     if (node.id.type === 'ObjectPattern') {
       for (const prop of node.id.properties) {
@@ -227,9 +245,7 @@ export function readRequires(
           prop.key.type === 'Identifier' &&
           prop.value.type === 'Identifier'
         ) {
-          const importedName = prop.key.name;
-          const localName = prop.value.name;
-          state.inlineCSSNamedImports.set(localName, importedName);
+          state.inlineCSSImports.set(prop.value.name, prop.key.name);
         }
       }
     }

@@ -365,6 +365,27 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('inline css supports named imports', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import { color } from '@stylexjs/inline-css';
+          stylex.props(color.blue);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import { color } from '@stylexjs/inline-css';
+          _inject2({
+            ltr: ".xju2f9n{color:blue}",
+            priority: 3000
+          });
+          ({
+            className: "xju2f9n"
+          });"
+        `);
+      });
+
       test('dedupes duplicate properties across create and inline-css', () => {
         const output = transform(`
           import stylex from 'stylex';
@@ -556,16 +577,22 @@ describe('@stylexjs/babel-plugin', () => {
             ltr: "@property --x-opacity { syntax: \\"*\\"; inherits: false;}",
             priority: 0
           });
+          const styles = {
+            opacity: o => [{
+              kSiTet: o != null ? "xb4nw82" : o,
+              $$css: true
+            }, {
+              "--x-opacity": o != null ? o : undefined
+            }]
+          };
           _inject2({
             ltr: ".x78zum5{display:flex}",
             priority: 3000
           });
-          ({
-            className: "x78zum5 xb4nw82",
-            style: {
-              "--x-opacity": 0.5
-            }
-          });"
+          stylex.props({
+            k1xSpc: "x78zum5",
+            $$css: true
+          }, styles.opacity(0.5));"
         `);
       });
 
