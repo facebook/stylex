@@ -41,7 +41,14 @@ export function App(): React.Node {
     });
   }, []);
 
-  useEffect(() => subscribeToSelectionAndNavigation(refresh), [refresh]);
+  const handleSelectionChange = useCallback(() => {
+    refresh();
+  }, [refresh]);
+
+  useEffect(
+    () => subscribeToSelectionAndNavigation(handleSelectionChange),
+    [handleSelectionChange],
+  );
 
   return (
     <Suspense fallback={<Loading />}>
@@ -51,7 +58,11 @@ export function App(): React.Node {
         )}
         key={count}
       >
-        <Panel id={count} key={count} refresh={refresh} />
+        <Panel
+          id={count}
+          key={count}
+          refresh={refresh}
+        />
       </ErrorBoundary>
     </Suspense>
   );
@@ -103,10 +114,14 @@ function Panel({
 
   const classes = data?.applied?.classes ?? [];
   const computed = data?.computed ?? {};
+  const atomicRules = data?.atomicRules ?? [];
+  const overrides = data?.overrides ?? [];
 
   const hasSources = data?.sources?.length > 0;
   const hasClasses = classes.length > 0;
-  const showEmptyState = !hasSources && !hasClasses;
+  const hasOverrides = overrides.length > 0;
+  const showAppliedSection = hasClasses || hasOverrides;
+  const showEmptyState = !hasSources && !hasClasses && !hasOverrides;
 
   return (
     <div {...stylex.props(styles.root)}>
@@ -135,9 +150,15 @@ function Panel({
         </Section>
       )}
 
-      {hasClasses && (
+      {showAppliedSection && (
         <Section title="Applied Styles">
-          <DeclarationsList classes={classes} computed={computed} />
+          <DeclarationsList
+            atomicRules={atomicRules}
+            classes={classes}
+            computed={computed}
+            onRefresh={refresh}
+            overrides={overrides}
+          />
         </Section>
       )}
 
