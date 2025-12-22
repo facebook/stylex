@@ -48,6 +48,37 @@ export function evalInInspectedWindow<T>(
   });
 }
 
+export function evalInInspectedWindowWithArgs<T>(
+  fn: (args: any) => T,
+  args: mixed,
+  options?: InspectedWindowEvalOptions,
+): Promise<T> {
+  const serializedArgs = JSON.stringify(args);
+  const expression = `(${fn.toString()})(${serializedArgs})`;
+  const mergedOptions = {
+    // includeCommandLineAPI: true,
+    ...options,
+  };
+
+  return new Promise((resolve, reject) => {
+    devtools.inspectedWindow.eval(
+      expression,
+      mergedOptions as any,
+      (result, exceptionInfo) => {
+        if (exceptionInfo && exceptionInfo.isException) {
+          const msg =
+            exceptionInfo.value != null
+              ? `Error: ${String(exceptionInfo.value)}`
+              : 'Error evaluating in inspected window.';
+          reject(new Error(msg));
+          return;
+        }
+        resolve(result as any as T);
+      },
+    );
+  });
+}
+
 export function getResources(): Promise<Array<Resource>> {
   return new Promise((resolve) => {
     devtools.inspectedWindow.getResources((resources) => resolve(resources));
