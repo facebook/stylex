@@ -31,18 +31,20 @@ type SetOverridesArgs = {
   overrides: Array<StylexOverride>,
 };
 
+declare const window: any;
+
 function swapClassNameInInspectedWindow({ from, to }: SwapClassArgs): boolean {
   const overrideElementKey = '__stylexDevtoolsOverrideElement__';
   // $FlowExpectedError[cannot-resolve-name]
   const current = typeof $0 !== 'undefined' ? $0 : null;
-  const stored = (window: any)[overrideElementKey];
+  const stored = window[overrideElementKey];
   const sameNode =
     stored &&
     current &&
     typeof stored.isSameNode === 'function' &&
     stored.isSameNode(current);
   if (!sameNode && current) {
-    (window: any)[overrideElementKey] = current;
+    window[overrideElementKey] = current;
   }
   const element = sameNode
     ? stored
@@ -62,14 +64,14 @@ function setInlineStyleInInspectedWindow({
   const overrideElementKey = '__stylexDevtoolsOverrideElement__';
   // $FlowExpectedError[cannot-resolve-name]
   const current = typeof $0 !== 'undefined' ? $0 : null;
-  const stored = (window: any)[overrideElementKey];
+  const stored = window[overrideElementKey];
   const sameNode =
     stored &&
     current &&
     typeof stored.isSameNode === 'function' &&
     stored.isSameNode(current);
   if (!sameNode && current) {
-    (window: any)[overrideElementKey] = current;
+    window[overrideElementKey] = current;
   }
   const element = sameNode
     ? stored
@@ -86,14 +88,14 @@ function clearInlineStyleInInspectedWindow({
   const overrideElementKey = '__stylexDevtoolsOverrideElement__';
   // $FlowExpectedError[cannot-resolve-name]
   const current = typeof $0 !== 'undefined' ? $0 : null;
-  const stored = (window: any)[overrideElementKey];
+  const stored = window[overrideElementKey];
   const sameNode =
     stored &&
     current &&
     typeof stored.isSameNode === 'function' &&
     stored.isSameNode(current);
   if (!sameNode && current) {
-    (window: any)[overrideElementKey] = current;
+    window[overrideElementKey] = current;
   }
   const element = sameNode
     ? stored
@@ -112,25 +114,25 @@ function setStylexOverridesInInspectedWindow({
     const overrideStoreKey = '__stylexDevtoolsOverrides__';
     // $FlowExpectedError[cannot-resolve-name]
     const current = typeof $0 !== 'undefined' ? $0 : null;
-    const stored = (window: any)[overrideElementKey];
+    const stored = window[overrideElementKey];
     const sameNode =
       stored &&
       current &&
       typeof stored.isSameNode === 'function' &&
       stored.isSameNode(current);
     if (!sameNode && current) {
-      (window: any)[overrideElementKey] = current;
+      window[overrideElementKey] = current;
     }
     const element = sameNode
       ? stored
       : current ||
         (stored && typeof stored.isSameNode === 'function' ? stored : null);
     if (!element) return false;
-    const existing = (window: any)[overrideStoreKey];
+    const existing = window[overrideStoreKey];
     const store: WeakMap<any, any> =
       existing && typeof existing.get === 'function' ? existing : new WeakMap();
     if (existing == null || existing !== store) {
-      (window: any)[overrideStoreKey] = store;
+      window[overrideStoreKey] = store;
     }
     if (!Array.isArray(overrides) || overrides.length === 0) {
       store.delete(element);

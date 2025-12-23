@@ -10,6 +10,14 @@
 'use strict';
 
 import * as React from 'react';
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+  useId,
+} from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { colors } from '../theme.stylex';
 import type { AtomicStyleRule, StylexOverride } from '../../types.js';
@@ -207,7 +215,7 @@ function removeOverride(
 function overridesToEntryMap(
   overrides: $ReadOnlyArray<StylexOverride>,
 ): TOverridesByEntry {
-  return overrides.reduce(
+  return overrides.reduce<TOverridesByEntry>(
     (acc, override) =>
       override.kind === 'inline' && override.sourceEntryKey
         ? {
@@ -225,7 +233,7 @@ function overridesToEntryMap(
 function buildClassOverrideMap(
   overrides: $ReadOnlyArray<StylexOverride>,
 ): TClassOverrideMap {
-  return overrides.reduce(
+  return overrides.reduce<TClassOverrideMap>(
     (acc, override) =>
       override.kind === 'class' && override.className
         ? { ...acc, [override.className]: override }
@@ -238,7 +246,7 @@ function buildPropertyValues(rules: $ReadOnlyArray<AtomicStyleRule>): {
   [string]: Array<string>,
   ...
 } {
-  return rules.reduce((acc, rule) => {
+  return rules.reduce<{ [string]: Array<string>, ... }>((acc, rule) => {
     const displayValue = formatValue(rule.value, rule.important);
     const key = rule.property.toLowerCase();
     const existing = acc[key] ?? [];
@@ -556,26 +564,26 @@ export function DeclarationsList({
   onRefresh: () => void,
   overrides: $ReadOnlyArray<StylexOverride>,
 }): React.Node {
-  const atomicIndex = React.useMemo(
+  const atomicIndex = useMemo(
     () => buildAtomicIndex(atomicRules),
     [atomicRules],
   );
-  const propertyValues = React.useMemo(
+  const propertyValues = useMemo(
     () => buildPropertyValues(atomicRules),
     [atomicRules],
   );
-  const overrideValues = React.useMemo(
+  const overrideValues = useMemo(
     () => overridesToEntryMap(overrides),
     [overrides],
   );
-  const classOverrides = React.useMemo(
+  const classOverrides = useMemo(
     () => buildClassOverrideMap(overrides),
     [overrides],
   );
-  const overridesRef = React.useRef(overrides);
+  const overridesRef = useRef(overrides);
   overridesRef.current = overrides;
 
-  const persistOverrides = React.useCallback(
+  const persistOverrides = useCallback(
     async (nextOverrides: Array<StylexOverride>) => {
       overridesRef.current = nextOverrides;
       await setStylexOverrides(nextOverrides);
@@ -583,21 +591,21 @@ export function DeclarationsList({
     [],
   );
 
-  const upsertOverrideEntry = React.useCallback(
+  const upsertOverrideEntry = useCallback(
     async (override: StylexOverride) => {
       const nextOverrides = upsertOverride(overridesRef.current, override);
       await persistOverrides(nextOverrides);
     },
     [persistOverrides],
   );
-  const removeOverrideEntry = React.useCallback(
+  const removeOverrideEntry = useCallback(
     async (id: string) => {
       const nextOverrides = removeOverride(overridesRef.current, id);
       await persistOverrides(nextOverrides);
     },
     [persistOverrides],
   );
-  const handleAddOverride = React.useCallback(
+  const handleAddOverride = useCallback(
     async (property: string, rawValue: string) => {
       const normalizedProperty = property.trim();
       if (!normalizedProperty) return;
@@ -630,7 +638,7 @@ export function DeclarationsList({
     },
     [onRefresh, upsertOverrideEntry],
   );
-  const handleRemoveOverride = React.useCallback(
+  const handleRemoveOverride = useCallback(
     async (override: StylexOverride) => {
       let didMutate = false;
       try {
@@ -1131,24 +1139,24 @@ function DeclarationEntryRow({
   const suggestions = group?.values ?? [];
   const valueToClassName = group?.valueToClassName ?? {};
 
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [draftValue, setDraftValue] = React.useState(displayValue);
-  const [isPending, setIsPending] = React.useState(false);
-  const [activeIndex, setActiveIndex] = React.useState(-1);
-  const listId = React.useId();
+  const [isEditing, setIsEditing] = useState(false);
+  const [draftValue, setDraftValue] = useState('');
+  const [isPending, setIsPending] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const listId = useId();
 
-  React.useEffect(() => {
-    if (!isEditing) {
-      setDraftValue(displayValue);
-    }
-  }, [displayValue, isEditing]);
+  // useEffect(() => {
+  //   if (!isEditing) {
+  //     setDraftValue(displayValue);
+  //   }
+  // }, [displayValue, isEditing]);
 
-  const filteredSuggestions = React.useMemo(
+  const filteredSuggestions = useMemo(
     () => filterSuggestions(suggestions, draftValue),
     [draftValue, suggestions],
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isEditing || filteredSuggestions.length === 0) {
       setActiveIndex(-1);
       return;
@@ -1160,12 +1168,13 @@ function DeclarationEntryRow({
     );
   }, [filteredSuggestions, isEditing]);
 
-  const commitChange = React.useCallback(
+  const commitChange = useCallback(
     async (nextValue?: string) => {
-      if (isPending) {
+      const rawValue = nextValue ?? draftValue;
+      if (isPending || rawValue === '') {
         return;
       }
-      const rawValue = nextValue ?? draftValue;
+
       const trimmed = rawValue.trim();
       const current = displayValue.trim();
       setIsEditing(false);
@@ -1206,7 +1215,7 @@ function DeclarationEntryRow({
           await onOverrideRemove(
             buildInlineOverrideId(entry.property, entry.pseudoElement),
           );
-          if (shouldRemoveClassOverride) {
+          if (shouldRemoveClassOverride && existingClassOverride) {
             await onOverrideRemove(existingClassOverride.id);
             return;
           }
@@ -1253,7 +1262,7 @@ function DeclarationEntryRow({
     ],
   );
 
-  const handleKeyDown = React.useCallback(
+  const handleKeyDown = useCallback(
     (
       event: KeyboardEvent & {
         currentTarget: HTMLInputElement | HTMLButtonElement,
@@ -1289,7 +1298,6 @@ function DeclarationEntryRow({
     [activeIndex, commitChange, displayValue, filteredSuggestions],
   );
 
-  const lineStyle = isSubLine ? styles.declSubLine : styles.declLine;
   const prefixContent =
     prefix && showColon ? (
       <>
@@ -1307,7 +1315,12 @@ function DeclarationEntryRow({
 
   return (
     <div {...stylex.props(styles.declRow)}>
-      <div {...stylex.props(lineStyle, styles.declText)}>
+      <div
+        {...stylex.props(
+          isSubLine ? styles.declSubLine : styles.declLine,
+          styles.declText,
+        )}
+      >
         {prefixContent}
         {isEditing ? (
           <div {...stylex.props(styles.suggestionWrap)}>
@@ -1326,15 +1339,17 @@ function DeclarationEntryRow({
               onBlur={() => commitChange()}
               onChange={(event) => setDraftValue(event.currentTarget.value)}
               onKeyDown={handleKeyDown}
+              placeholder={draftValue}
               role="combobox"
               spellCheck={false}
-              value={draftValue}
             />
             <SuggestionsList
               activeIndex={activeIndex}
               listId={listId}
               onActiveIndexChange={setActiveIndex}
-              onSelect={(value) => commitChange(value)}
+              onSelect={(value) => {
+                commitChange(value);
+              }}
               suggestions={filteredSuggestions}
             />
           </div>
@@ -1397,9 +1412,9 @@ function OverrideRow({
   onRemove: (override: StylexOverride) => Promise<void> | void,
   override: StylexOverride,
 }): React.Node {
-  const [isPending, setIsPending] = React.useState(false);
+  const [isPending, setIsPending] = useState(false);
 
-  const handleRemove = React.useCallback(async () => {
+  const handleRemove = useCallback(async () => {
     if (isPending) return;
     setIsPending(true);
     try {
@@ -1450,24 +1465,24 @@ function OverrideComposer({
   onAddOverride: (property: string, rawValue: string) => Promise<void> | void,
   propertyValues: { [string]: Array<string>, ... },
 }): React.Node {
-  const [property, setProperty] = React.useState('');
-  const [value, setValue] = React.useState('');
-  const [isPending, setIsPending] = React.useState(false);
-  const [isValueFocused, setIsValueFocused] = React.useState(false);
-  const [activeIndex, setActiveIndex] = React.useState(-1);
-  const listId = React.useId();
+  const [property, setProperty] = useState('');
+  const [value, setValue] = useState('');
+  const [isPending, setIsPending] = useState(false);
+  const [isValueFocused, setIsValueFocused] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const listId = useId();
 
   const normalizedProperty = property.trim().toLowerCase();
   const suggestions = normalizedProperty
     ? (propertyValues[normalizedProperty] ?? [])
     : [];
-  const filteredSuggestions = React.useMemo(
+  const filteredSuggestions = useMemo(
     () => filterSuggestions(suggestions, value),
     [suggestions, value],
   );
   const showSuggestions = isValueFocused && filteredSuggestions.length > 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!showSuggestions) {
       setActiveIndex(-1);
       return;
@@ -1479,7 +1494,7 @@ function OverrideComposer({
     );
   }, [filteredSuggestions, showSuggestions]);
 
-  const commitAdd = React.useCallback(
+  const commitAdd = useCallback(
     async (nextValue?: string) => {
       if (isPending) return;
       const prop = property.trim();
@@ -1496,7 +1511,7 @@ function OverrideComposer({
     [isPending, onAddOverride, property, value],
   );
 
-  const handleKeyDown = React.useCallback(
+  const handleKeyDown = useCallback(
     (
       event: KeyboardEvent & {
         currentTarget: HTMLInputElement | HTMLButtonElement,
@@ -1559,7 +1574,9 @@ function OverrideComposer({
           activeIndex={activeIndex}
           listId={listId}
           onActiveIndexChange={setActiveIndex}
-          onSelect={(nextValue) => commitAdd(nextValue)}
+          onSelect={(nextValue) => {
+            commitAdd(nextValue);
+          }}
           suggestions={showSuggestions ? filteredSuggestions : []}
         />
       </div>
@@ -1641,6 +1658,7 @@ const styles = stylex.create({
     gap: 12,
   },
   declText: {
+    display: 'flex',
     flex: 1,
     minWidth: 0,
   },
@@ -1719,6 +1737,7 @@ const styles = stylex.create({
     alignItems: 'center',
     gap: 8,
     flexWrap: 'wrap',
+    flexGrow: 1,
   },
   overrideInput: {
     fontFamily:
@@ -1734,9 +1753,7 @@ const styles = stylex.create({
     paddingInline: 6,
     paddingBlock: 2,
     minWidth: 0,
-    width: '100%',
-    boxSizing: 'border-box',
-    flex: 1,
+    flexGrow: 1,
   },
   overrideValueWrap: {
     position: 'relative',
@@ -1767,21 +1784,23 @@ const styles = stylex.create({
     color: 'inherit',
     backgroundColor: colors.bgRaised,
     borderWidth: 1,
+    marginBlock: -2,
     borderStyle: 'solid',
     borderColor: colors.border,
     borderRadius: 4,
     paddingInline: 4,
     paddingBlock: 1,
     minWidth: 0,
-    width: '100%',
+    flexGrow: 1,
     boxSizing: 'border-box',
   },
   valuePending: {
     opacity: 0.6,
   },
   suggestionWrap: {
+    display: 'flex',
     position: 'relative',
-    width: '100%',
+    flexGrow: 1,
   },
   suggestionList: {
     position: 'absolute',
