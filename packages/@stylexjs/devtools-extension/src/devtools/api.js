@@ -54,7 +54,7 @@ export function evalInInspectedWindowWithArgs<T>(
   options?: InspectedWindowEvalOptions,
 ): Promise<T> {
   const serializedArgs = JSON.stringify(args);
-  const expression = `(${fn.toString()})(${serializedArgs})`;
+  const expression = `(${fn.toString()})(${serializedArgs ?? ''})`;
   const mergedOptions = {
     // includeCommandLineAPI: true,
     ...options,

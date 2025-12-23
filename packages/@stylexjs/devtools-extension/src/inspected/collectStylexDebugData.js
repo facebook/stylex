@@ -19,6 +19,8 @@ type RuleData = $ReadOnly<{
   order: number,
 }>;
 
+declare const window: any;
+
 // NOTE:
 // This function is stringified and used using `evalInInspectedWindow` in the panel.
 // So it must be a completely self-contained function that doesn't rely on any external variables or functions.
@@ -47,16 +49,16 @@ export function collectStylexDebugData(): StylexDebugData {
 
   function getOverridesForElement(element: ?HTMLElement): Array<any> {
     if (!element) return [];
-    const store = (window: any)[OVERRIDE_STORE_KEY];
+    const store = window[OVERRIDE_STORE_KEY];
     if (!store || typeof store.get !== 'function') {
       return [];
     }
-    const stored = (window: any)[OVERRIDE_ELEMENT_KEY];
+    const stored = window[OVERRIDE_ELEMENT_KEY];
     const hasStored = stored && typeof stored.isSameNode === 'function';
     const sameNode = hasStored && stored.isSameNode(element);
     const elementKey = sameNode ? stored : element;
     if (!sameNode) {
-      (window: any)[OVERRIDE_ELEMENT_KEY] = element;
+      window[OVERRIDE_ELEMENT_KEY] = element;
     }
     const value = store.get(elementKey);
     if (!Array.isArray(value)) return [];
