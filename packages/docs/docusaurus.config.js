@@ -30,6 +30,22 @@ const config = {
     function () {
       const webpack = require('webpack');
       const fs = require('fs');
+      const path = require('path');
+
+      const stylexFilename = require.resolve('@stylexjs/stylex');
+      const stylexSource = fs.readFileSync(stylexFilename, 'utf8');
+      const stylexTypes = {};
+      for (const file of fs.readdirSync(path.dirname(stylexFilename), {
+        recursive: true,
+      })) {
+        if (file.endsWith('.d.ts')) {
+          stylexTypes[`file:///node_modules/@stylexjs/stylex/${file}`] =
+            fs.readFileSync(
+              path.join(path.dirname(stylexFilename), file),
+              'utf8',
+            );
+        }
+      }
 
       return {
         name: 'playground-webpack-config',
@@ -37,9 +53,8 @@ const config = {
           return {
             plugins: [
               new webpack.DefinePlugin({
-                STYLEX_SOURCE: JSON.stringify(
-                  fs.readFileSync(require.resolve('@stylexjs/stylex'), 'utf8'),
-                ),
+                STYLEX_SOURCE: JSON.stringify(stylexSource),
+                STYLEX_TYPES: JSON.stringify(stylexTypes),
               }),
             ],
           };

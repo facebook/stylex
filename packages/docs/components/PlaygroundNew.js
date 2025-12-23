@@ -360,6 +360,24 @@ export const vars = stylex.defineVars({
                 key={activeInputFile}
                 onChange={handleEditorChange}
                 onMount={(editor) => {
+                  monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+                    {
+                      ...monaco.languages.typescript.javascriptDefaults.getCompilerOptions(),
+                      paths: {
+                        '@stylexjs/stylex': [
+                          'file:///node_modules/@stylexjs/stylex/stylex.d.ts',
+                        ],
+                      },
+                    },
+                  );
+
+                  for (const [file, content] of Object.entries(STYLEX_TYPES)) {
+                    monaco.languages.typescript.javascriptDefaults.addExtraLib(
+                      content,
+                      file,
+                    );
+                  }
+
                   editor.getDomNode()?.addEventListener('keydown', (e) => {
                     if (e.key === '/') {
                       // prevent docusaurus's search from opening
