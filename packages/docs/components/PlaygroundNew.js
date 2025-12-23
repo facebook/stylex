@@ -14,7 +14,12 @@ import { loadSandpackClient } from '@codesandbox/sandpack-client';
 import Editor from '@monaco-editor/react';
 import path from 'path-browserify';
 import { useColorMode } from '@docusaurus/theme-common';
-import { useQueryParam, JsonParam, withDefault } from 'use-query-params';
+import {
+  useQueryParam,
+  JsonParam,
+  withDefault,
+  StringParam,
+} from 'use-query-params';
 import { Tabs } from './playground-components/Tabs';
 import prettier from 'prettier';
 import * as babelPlugin from 'prettier/plugins/babel.js';
@@ -24,6 +29,10 @@ import {
   INITIAL_BUNDLER_FILES,
   CSS_PRELUDE,
 } from './playground-components/demoConstants';
+import {
+  compressToEncodedURIComponent,
+  decompressFromEncodedURIComponent,
+} from 'lz-string';
 
 function transformSourceFiles(sourceFiles) {
   const stylexRules = [];
@@ -83,22 +92,40 @@ function transformSourceFiles(sourceFiles) {
   return { transformedFiles, generatedCSS };
 }
 
-const encodeObjKeys = (obj) => {
-  return Object.fromEntries(
-    Object.entries(obj).map(([key, value]) => [key, encodeURIComponent(value)]),
-  );
-};
+// const encodeObjKeys = (obj) => {
+//   return Object.fromEntries(
+//     Object.entries(obj).map(([key, value]) => [key, encodeURIComponent(value)]),
+//   );
+// };
 
-const decodeObjKeys = (obj) => {
+const decodeObjKeysOld = (obj) => {
   return Object.fromEntries(
     Object.entries(obj).map(([key, value]) => [key, decodeURIComponent(value)]),
   );
 };
 
+const encodeObjKeys = (obj) => {
+  return compressToEncodedURIComponent(JSON.stringify(obj));
+};
+
+const decodeObjKeys = (string) => {
+  return JSON.parse(decompressFromEncodedURIComponent(string));
+};
+
 export default function PlaygroundNew() {
-  const [_inputFiles, _setInputFiles] = useQueryParam(
+  const [_inputFilesOld, _setInputFilesOld] = useQueryParam(
     'inputFiles',
-    withDefault(JsonParam, encodeObjKeys(INITIAL_INPUT_FILES)),
+    JsonParam,
+  );
+
+  let initialValue = INITIAL_INPUT_FILES;
+  if (_inputFilesOld != null && Object.keys(_inputFilesOld).length > 0) {
+    initialValue = decodeObjKeysOld(_inputFilesOld);
+  }
+
+  const [_inputFiles, _setInputFiles] = useQueryParam(
+    'input',
+    withDefault(StringParam, encodeObjKeys(initialValue)),
   );
   const [activeInputFile, setActiveInputFile] = useState('App.js');
   const [transformedFiles, setTransformedFiles] = useState([]);
@@ -113,6 +140,14 @@ export default function PlaygroundNew() {
       encodeObjKeys(updatedInputFiles),
       replace ? 'replaceIn' : 'push',
     );
+  }, []);
+
+  useEffect(() => {
+    if (_inputFilesOld == null || Object.keys(_inputFilesOld).length === 0) {
+      return;
+    }
+    _setInputFilesOld(null);
+    setInputFiles(initialValue);
   }, []);
 
   const inputFiles = useMemo(() => decodeObjKeys(_inputFiles), [_inputFiles]);
@@ -509,16 +544,16 @@ const styles = stylex.create({
     width: '50%',
     display: { default: 'flex', '@container (width < 768px)': 'contents' },
     flexDirection: 'column',
-    gap: '8px',
+    gap: 8,
     minWidth: 0,
   },
   panel: {
     position: 'relative',
     flexGrow: 1,
     flexShrink: 0,
-    flexBasis: '32px',
+    flexBasis: 32,
     backgroundColor: 'var(--bg1)',
-    borderRadius: '8px',
+    borderRadius: 8,
     boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.05)',
     overflow: 'hidden',
   },
@@ -539,12 +574,12 @@ const styles = stylex.create({
     display: 'block',
     width: '100%',
     backgroundColor: 'var(--bg2)',
-    paddingBlock: '8px',
-    paddingInline: '16px',
-    fontSize: '14px',
+    paddingBlock: 8,
+    paddingInline: 16,
+    fontSize: 14,
     fontWeight: 500,
     color: 'var(--fg1)',
-    borderBottomWidth: '2px',
+    borderBottomWidth: 2,
     borderBottomStyle: 'solid',
     borderBottomColor: 'var(--fg3)',
   },
