@@ -124,7 +124,12 @@ export default function PlaygroundNew() {
     'input',
     withDefault(StringParam, encodeObjKeys(initialValue)),
   );
-  const [activeInputFile, setActiveInputFile] = useState('App.tsx');
+  const inputFiles = useMemo(() => decodeObjKeys(_inputFiles), [_inputFiles]);
+
+  const [activeInputFile, setActiveInputFile] = useState(() => {
+    const keys = Object.keys(inputFiles);
+    return keys.includes('App.tsx') ? 'App.tsx' : keys[0];
+  });
   const [transformedFiles, setTransformedFiles] = useState([]);
   const [cssOutput, setCssOutput] = useState('');
   const [sandpackInitialized, setSandpackInitialized] = useState(false);
@@ -147,8 +152,6 @@ export default function PlaygroundNew() {
     _setInputFilesOld(null);
     setInputFiles(initialValue);
   }, []);
-
-  const inputFiles = useMemo(() => decodeObjKeys(_inputFiles), [_inputFiles]);
 
   const { colorMode } = useColorMode();
 
