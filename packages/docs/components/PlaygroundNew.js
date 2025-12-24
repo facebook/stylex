@@ -44,11 +44,12 @@ function transformSourceFiles(sourceFiles) {
 
   for (const [filename, code] of Object.entries(sourceFiles)) {
     const isTSX = filename.endsWith('.tsx');
+    const isTS = isTSX || filename.endsWith('.ts');
     const result = transform(code, {
       filename,
       plugins: [
-        ['transform-typescript', { isTSX }],
-        isTSX && 'syntax-jsx',
+        isTS && ['transform-typescript', { isTSX }],
+        'syntax-jsx',
         [
           stylexPlugin,
           {
