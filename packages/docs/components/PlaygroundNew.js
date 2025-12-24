@@ -92,12 +92,6 @@ function transformSourceFiles(sourceFiles) {
   return { transformedFiles, generatedCSS };
 }
 
-// const encodeObjKeys = (obj) => {
-//   return Object.fromEntries(
-//     Object.entries(obj).map(([key, value]) => [key, encodeURIComponent(value)]),
-//   );
-// };
-
 const decodeObjKeysOld = (obj) => {
   return Object.fromEntries(
     Object.entries(obj).map(([key, value]) => [key, decodeURIComponent(value)]),
