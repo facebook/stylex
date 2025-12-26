@@ -192,9 +192,9 @@ const sidebarStyles = stylex.create({
     borderRadius: 19,
     cornerShape: 'squircle',
     zIndex: 1,
-    backdropFilter: 'blur(32px) saturate(600%)',
+    backdropFilter: 'blur(32px) saturate(800%)',
     maskImage:
-      'linear-gradient(to right, white, transparent 8%, transparent 92%, white)',
+      'linear-gradient(to right, white, transparent 12%, transparent 88%, white)',
   },
   base: {
     display: 'flex',

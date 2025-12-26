@@ -70,13 +70,9 @@ export const theme2 = stylex.createTheme(vars, {
 While, it's not needed in most cases, `VarGroup` also accepts an optional second
 type type argument.
 
-<details>
+<Details>
 
-<summary>
-  <p style={{ margin: 0 }}>
-    <strong>Advanced use-case: unique type identity for a `VarGroup`</strong>
-  </p>
-</summary>
+<Summary>Advanced use-case: unique type identity for a `VarGroup`</Summary>
 
 TypeScript (and Flow) use structural typing, which means that two objects with
 the same shape are considered to be the same type. However, each usage of
@@ -129,4 +125,4 @@ It should be rare that two separate `VarGroup` objects are defined with the same
 shape and so this feature is not needed in most cases. In the rare cases where
 it _is_ needed, it is available.
 
-</details>
+</Details>

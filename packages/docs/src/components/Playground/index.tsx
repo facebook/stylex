@@ -9,15 +9,12 @@ import * as React from 'react';
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 
 import * as stylex from '@stylexjs/stylex';
-// @ts-ignore
+// @ts-ignore - CJS module
 import { transform } from '@babel/standalone';
-// @ts-ignore
 import { loadSandpackClient } from '@codesandbox/sandpack-client';
-// @ts-ignore
 import Editor, { useMonaco } from '@monaco-editor/react';
-// @ts-ignore
+// @ts-ignore - CJS module
 import path from 'path-browserify';
-// @ts-ignore
 // import { useColorMode } from '@docusaurus/theme-common';
 import {
   useQueryParam,
@@ -154,7 +151,7 @@ export default function PlaygroundNew() {
   >({});
   const [cssOutput, setCssOutput] = useState('');
   const [sandpackInitialized, setSandpackInitialized] = useState(false);
-  const iframeRef = useRef(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const sandpackClientRef = useRef<any>(null);
   const [error, setError] = useState<Error | null>(null);
   const monaco = useMonaco();
@@ -286,7 +283,7 @@ export const vars = stylex.defineVars({
     }
   }
 
-  function handleEditorChange(value: string) {
+  function handleEditorChange(value: string | undefined) {
     const updatedInputFiles = {
       ...inputFiles,
       [activeInputFile as string]: value || '',
@@ -382,7 +379,7 @@ export const vars = stylex.defineVars({
     setTransformedFiles(transformedFiles);
     setCssOutput(generatedCSS);
     loadSandpackClient(
-      iframeRef.current,
+      iframeRef.current!,
       {
         files: {
           ...INITIAL_BUNDLER_FILES,
@@ -399,7 +396,7 @@ export const vars = stylex.defineVars({
             code: CSS_PRELUDE + generatedCSS,
           },
         },
-        template: 'react',
+        template: 'react' as any,
       },
       {
         showOpenInCodeSandbox: false,
