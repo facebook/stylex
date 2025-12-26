@@ -26,6 +26,9 @@ export const FileNameDialog = forwardRef(function FileNameDialog(
 
   return (
     <dialog
+      onClose={() => {
+        inputRef.current.value = defaultValue;
+      }}
       ref={ref}
       style={{ backdropFilter: 'blur(2px)' }}
       {...stylex.props(styles.dialog)}
