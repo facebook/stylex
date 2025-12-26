@@ -141,4 +141,120 @@ describe('@stylexjs/unplugin', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  test('configures Vitest deps.inline for external packages to prevent pre-bundling', async () => {
+    const tempDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'stylex-unplugin-vitest-'),
+    );
+    const originalCwd = process.cwd();
+    try {
+      const pkgJson = {
+        dependencies: {
+          '@stark-bp/stylex': '1.0.0',
+          '@stark-bp/react': '1.0.0',
+        },
+      };
+      fs.writeFileSync(
+        path.join(tempDir, 'package.json'),
+        JSON.stringify(pkgJson),
+        'utf8',
+      );
+
+      // Create mock external package with StyleX
+      fs.mkdirSync(
+        path.join(tempDir, 'node_modules', '@stark-bp', 'stylex', 'dist'),
+        { recursive: true },
+      );
+      fs.writeFileSync(
+        path.join(tempDir, 'node_modules', '@stark-bp', 'stylex', 'package.json'),
+        JSON.stringify({
+          name: '@stark-bp/stylex',
+          version: '1.0.0',
+          dependencies: { '@stylexjs/stylex': '^0.17.4' },
+        }),
+        'utf8',
+      );
+      // Create a file that uses stylex.defineVars (the error case)
+      fs.writeFileSync(
+        path.join(tempDir, 'node_modules', '@stark-bp', 'stylex', 'dist', 'tokens.stylex.js'),
+        `import stylex from '@stylexjs/stylex';
+export const tokens = stylex.defineVars({
+  color: 'red',
+});`,
+        'utf8',
+      );
+
+      process.chdir(tempDir);
+
+      // Test with test: true option (required for Vitest deps.inline configuration)
+      const plugin = unplugin.vite({
+        test: true,
+        useCSSLayers: true,
+        externalPackages: ['@stark-bp/stylex', '@stark-bp/react'],
+      });
+      const viteConfigHook = plugin.config;
+
+      // Test with Vitest config
+      const vitestConfig = {
+        test: {
+          include: ['./src/*.spec.tsx'],
+          watch: false,
+          globals: true,
+          environment: 'happy-dom',
+        },
+      };
+
+      const result =
+        typeof viteConfigHook === 'function'
+          ? await viteConfigHook.call(plugin, vitestConfig, {
+              command: 'serve',
+              mode: 'development',
+            })
+          : null;
+
+      // Should configure optimizeDeps.exclude
+      expect(result?.optimizeDeps?.exclude).toEqual(
+        expect.arrayContaining(['@stark-bp/stylex', '@stark-bp/react']),
+      );
+
+      // Should configure test.deps.inline for Vitest (this is the fix!)
+      expect(result?.test).toBeDefined();
+      expect(result?.test?.deps?.inline).toEqual(
+        expect.arrayContaining(['@stark-bp/stylex', '@stark-bp/react']),
+      );
+
+      // Test that external package files are transformed
+      // This simulates what happens when Vitest processes external packages
+      const externalPackageCode = `import stylex from '@stylexjs/stylex';
+export const tokens = stylex.defineVars({
+  color: 'red',
+});`;
+      const externalPackagePath = path.join(
+        tempDir,
+        'node_modules',
+        '@stark-bp',
+        'stylex',
+        'dist',
+        'tokens.stylex.js',
+      );
+
+      // Initialize the plugin
+      if (typeof plugin.buildStart === 'function') {
+        plugin.buildStart();
+      }
+
+      const transformResult = await plugin.transform(
+        externalPackageCode,
+        externalPackagePath,
+      );
+      // Should transform the file (not return null) because it's from an external package
+      expect(transformResult).not.toBeNull();
+      expect(transformResult?.code).toBeDefined();
+      // The stylex.defineVars should be compiled, not left as runtime call
+      expect(transformResult?.code).not.toContain('stylex.defineVars');
+    } finally {
+      process.chdir(originalCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });

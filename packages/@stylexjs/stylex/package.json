@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "prebuild": "rimraf lib && gen-types -i src/ -o lib/cjs && cp -r lib/cjs lib/es",
+    "prebuild": "rimraf lib && gen-types -i src/ -o lib/cjs && node -e \"require('fs').cpSync('lib/cjs', 'lib/es', {recursive: true, force: true})\"",
     "build:cjs": "cross-env BABEL_ENV=cjs rollup -c ./rollup.config.mjs",
     "build:esm": "cross-env BABEL_ENV=esm rollup -c ./rollup.config.mjs",
     "build": "npm run build:cjs && npm run build:esm",
