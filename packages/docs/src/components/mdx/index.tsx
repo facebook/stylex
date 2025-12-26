@@ -18,6 +18,7 @@ import {
   CalloutDescription,
 } from './Callout';
 import P from './P';
+import Image from './Image';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -33,7 +34,6 @@ type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
 // CodeBlockTabsList
 // CodeBlockTabsTrigger
 // pre
-// img
 // table
 
 export const mdxComponents = {
@@ -78,6 +78,7 @@ export const mdxComponents = {
   CalloutContainer,
   CalloutTitle,
   CalloutDescription,
+  img: Image,
 };
 
 const styles = stylex.create({
