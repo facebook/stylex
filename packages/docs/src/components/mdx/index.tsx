@@ -9,6 +9,7 @@ import { HTMLAttributes } from 'react';
 import { StyleXStyles } from '@stylexjs/stylex';
 import MDXLink from './Link';
 import * as stylex from '@stylexjs/stylex';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -46,6 +47,8 @@ export const mdxComponents = {
   Dial,
   DevInstallExample,
   WhenDemo: Card,
+  Accordion,
+  Accordions,
 };
 
 const styles = stylex.create({

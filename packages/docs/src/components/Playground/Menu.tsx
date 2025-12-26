@@ -6,10 +6,17 @@
  */
 
 import * as React from 'react';
-import { forwardRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 
-export const Menu = forwardRef(function DropdownMenu({ id, children }, ref) {
+export function Menu({
+  id,
+  children,
+  ref,
+}: {
+  id: string;
+  children: React.ReactNode;
+  ref?: React.RefObject<HTMLDivElement | null>;
+}) {
   return (
     <>
       <div id={id} popover="auto" ref={ref} {...stylex.props(styles.menu)}>
@@ -17,9 +24,15 @@ export const Menu = forwardRef(function DropdownMenu({ id, children }, ref) {
       </div>
     </>
   );
-});
+}
 
-export function Item({ children, onClick }) {
+export function Item({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
   return (
     <button {...stylex.props(styles.menuItem)} onClick={onClick} type="button">
       {children}

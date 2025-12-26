@@ -6,17 +6,28 @@
  */
 
 import * as React from 'react';
-import { useRef, forwardRef } from 'react';
+import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 
-export const FileNameDialog = forwardRef(function FileNameDialog(
-  { title, description, defaultValue, onConfirm, onCancel, label },
+export function FileNameDialog({
+  title,
+  description,
+  defaultValue,
+  onConfirm,
+  onCancel,
   ref,
-) {
-  const inputRef = useRef(null);
+}: {
+  title: string;
+  description: string;
+  defaultValue: string;
+  onConfirm: (name: string) => void;
+  onCancel: () => void;
+  ref: React.RefObject<HTMLDialogElement | null>;
+}) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleSubmit = (event) => {
-    const trimmed = inputRef.current?.value.trim();
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const trimmed = inputRef.current?.value?.trim();
     if (!trimmed) {
       event.preventDefault();
       return;
@@ -27,7 +38,9 @@ export const FileNameDialog = forwardRef(function FileNameDialog(
   return (
     <dialog
       onClose={() => {
-        inputRef.current.value = defaultValue;
+        if (inputRef.current) {
+          inputRef.current.value = defaultValue;
+        }
       }}
       ref={ref}
       style={{ backdropFilter: 'blur(2px)' }}
@@ -41,7 +54,7 @@ export const FileNameDialog = forwardRef(function FileNameDialog(
 
         <div {...stylex.props(styles.field)}>
           <label>
-            <span style={{ display: 'none' }}>{label}</span>
+            <span style={{ display: 'none' }}>New filename</span>
             <input
               autoFocus
               defaultValue={defaultValue}
@@ -68,12 +81,21 @@ export const FileNameDialog = forwardRef(function FileNameDialog(
       </form>
     </dialog>
   );
-});
+}
 
-export const ConfirmDialog = forwardRef(function ConfirmDialog(
-  { title, description, onConfirm, onCancel },
+export function ConfirmDialog({
+  title,
+  description,
+  onConfirm,
+  onCancel,
   ref,
-) {
+}: {
+  title: string;
+  description: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  ref: React.RefObject<HTMLDialogElement | null>;
+}) {
   return (
     <dialog
       ref={ref}
@@ -102,7 +124,7 @@ export const ConfirmDialog = forwardRef(function ConfirmDialog(
       </div>
     </dialog>
   );
-});
+}
 
 const styles = stylex.create({
   dialog: {

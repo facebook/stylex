@@ -20,6 +20,15 @@ export function Tabs({
   onDeleteFile,
   onRenameFile,
   onFormat,
+}: {
+  files: string[];
+  activeFile: string;
+  getDefaultFilename: (fileKind: string) => string;
+  onSelectFile: (filename: string) => void;
+  onCreateFile: (fileKind: 'component' | 'stylex', name: string) => void;
+  onDeleteFile: (filename: string) => void;
+  onRenameFile: (filename: string, newName: string) => void;
+  onFormat: () => void;
 }) {
   return (
     <div role="tablist" {...stylex.props(styles.tabs)}>
@@ -61,10 +70,17 @@ function Tab({
   onRename,
   onDelete,
   immutable = false,
+}: {
+  filename: string;
+  isActive: boolean;
+  onSelect: () => void;
+  onRename: (filename: string, newName: string) => void;
+  onDelete: (filename: string) => void;
+  immutable: boolean;
 }) {
-  const menuRef = useRef(null);
-  const deleteDialogRef = useRef(null);
-  const renameDialogRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const deleteDialogRef = useRef<HTMLDialogElement | null>(null);
+  const renameDialogRef = useRef<HTMLDialogElement | null>(null);
   const id = filename.split('.').join('-');
 
   return (
@@ -82,7 +98,7 @@ function Tab({
         <>
           <button
             {...stylex.props(styles.tabIconButton)}
-            popovertarget={`${id}-menu`}
+            popoverTarget={`${id}-menu`}
             type="button"
           >
             ⋯
@@ -116,10 +132,16 @@ function Tab({
   );
 }
 
-function NewFileButton({ getDefaultFilename, onCreateFile }) {
+function NewFileButton({
+  getDefaultFilename,
+  onCreateFile,
+}: {
+  getDefaultFilename: (fileKind: 'component' | 'stylex') => string;
+  onCreateFile: (fileKind: 'component' | 'stylex', name: string) => void;
+}) {
   const addButtonRef = useRef(null);
-  const componentDialogRef = useRef(null);
-  const stylexDialogRef = useRef(null);
+  const componentDialogRef = useRef<HTMLDialogElement | null>(null);
+  const stylexDialogRef = useRef<HTMLDialogElement | null>(null);
 
   const id = 'new-file';
 
@@ -128,7 +150,7 @@ function NewFileButton({ getDefaultFilename, onCreateFile }) {
       <button
         ref={addButtonRef}
         {...stylex.props(styles.tabIconButton)}
-        popovertarget={id}
+        popoverTarget={id}
         title="Add file"
         type="button"
       >

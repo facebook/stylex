@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export const INITIAL_INPUT_FILES = {
+declare const STYLEX_SOURCE: string;
+
+export const INITIAL_INPUT_FILES: Record<string, string> = {
   'App.tsx': `import * as stylex from "@stylexjs/stylex";
 import Counter from "./Counter";
 import { colors } from "./tokens.stylex";
@@ -142,7 +144,7 @@ createRoot(document.getElementById('root')).render(<App />);`,
     ),
   },
   '/node_modules/@stylexjs/stylex/index.js': {
-    code: STYLEX_SOURCE, // global variable from DefinePlugin()
+    code: STYLEX_SOURCE, // inlined via waku.config.ts
   },
 };
 

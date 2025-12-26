@@ -7,20 +7,26 @@
 
 import * as React from 'react';
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import stylexPlugin from '@stylexjs/babel-plugin';
+
 import * as stylex from '@stylexjs/stylex';
+// @ts-ignore
 import { transform } from '@babel/standalone';
+// @ts-ignore
 import { loadSandpackClient } from '@codesandbox/sandpack-client';
+// @ts-ignore
 import Editor, { useMonaco } from '@monaco-editor/react';
+// @ts-ignore
 import path from 'path-browserify';
-import { useColorMode } from '@docusaurus/theme-common';
+// @ts-ignore
+// import { useColorMode } from '@docusaurus/theme-common';
 import {
   useQueryParam,
   JsonParam,
   withDefault,
   StringParam,
+  // @ts-ignore
 } from 'use-query-params';
-import { Tabs } from './playground-components/Tabs';
+import { Tabs } from './Tabs';
 import prettier from 'prettier';
 import * as babelPlugin from 'prettier/plugins/babel.js';
 import * as estreePlugin from 'prettier/plugins/estree.js';
@@ -28,15 +34,25 @@ import {
   INITIAL_INPUT_FILES,
   INITIAL_BUNDLER_FILES,
   CSS_PRELUDE,
-} from './playground-components/demoConstants';
+} from './demoConstants';
 import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,
 } from 'lz-string';
 
-function transformSourceFiles(sourceFiles) {
+// @ts-ignore - CJS module
+import * as stylexPluginModule from '@stylexjs/babel-plugin';
+const stylexPlugin: typeof import('@stylexjs/babel-plugin').default =
+  // @ts-ignore - handle CJS default export
+  stylexPluginModule.default ?? stylexPluginModule;
+
+declare const STYLEX_TYPES: Record<string, string>;
+declare const REACT_TYPES: string;
+declare const REACT_JSX_RUNTIME_TYPES: string;
+
+function transformSourceFiles(sourceFiles: Record<string, string>) {
   const stylexRules = [];
-  const transformedFiles = {};
+  const transformedFiles: Record<string, string> = {};
 
   const sourceFilePaths = Object.keys(sourceFiles).map(
     (filename) => `/${filename}`,
@@ -56,7 +72,7 @@ function transformSourceFiles(sourceFiles) {
             dev: false,
             unstable_moduleResolution: {
               type: 'custom',
-              filePathResolver(importPath, sourceFilePath) {
+              filePathResolver(importPath: string, sourceFilePath: string) {
                 if (importPath.startsWith('.')) {
                   const result = path.resolve(
                     path.dirname(sourceFilePath),
@@ -74,7 +90,7 @@ function transformSourceFiles(sourceFiles) {
                 }
                 return undefined;
               },
-              getCanonicalFilePath(filePath) {
+              getCanonicalFilePath(filePath: string) {
                 return filePath;
               },
             },
@@ -95,17 +111,17 @@ function transformSourceFiles(sourceFiles) {
   return { transformedFiles, generatedCSS };
 }
 
-const decodeObjKeysOld = (obj) => {
+const decodeObjKeysOld = (obj: Record<string, string>) => {
   return Object.fromEntries(
     Object.entries(obj).map(([key, value]) => [key, decodeURIComponent(value)]),
   );
 };
 
-const encodeObjKeys = (obj) => {
+const encodeObjKeys = (obj: Record<string, string>) => {
   return compressToEncodedURIComponent(JSON.stringify(obj));
 };
 
-const decodeObjKeys = (string) => {
+const decodeObjKeys = (string: string) => {
   return JSON.parse(decompressFromEncodedURIComponent(string));
 };
 
@@ -115,7 +131,7 @@ export default function PlaygroundNew() {
     JsonParam,
   );
 
-  let initialValue = INITIAL_INPUT_FILES;
+  let initialValue: Record<string, string> = INITIAL_INPUT_FILES;
   if (_inputFilesOld != null && Object.keys(_inputFilesOld).length > 0) {
     initialValue = decodeObjKeysOld(_inputFilesOld);
   }
@@ -124,26 +140,34 @@ export default function PlaygroundNew() {
     'input',
     withDefault(StringParam, encodeObjKeys(initialValue)),
   );
-  const inputFiles = useMemo(() => decodeObjKeys(_inputFiles), [_inputFiles]);
+  const inputFiles: Record<string, string> = useMemo(
+    () => decodeObjKeys(_inputFiles),
+    [_inputFiles],
+  );
 
-  const [activeInputFile, setActiveInputFile] = useState(() => {
-    const keys = Object.keys(inputFiles);
-    return keys.includes('App.tsx') ? 'App.tsx' : keys[0];
+  const [activeInputFile, setActiveInputFile] = useState<string>((): string => {
+    const keys: string[] = Object.keys(inputFiles);
+    return keys.includes('App.tsx') ? 'App.tsx' : keys[0]!;
   });
-  const [transformedFiles, setTransformedFiles] = useState([]);
+  const [transformedFiles, setTransformedFiles] = useState<
+    Record<string, string>
+  >({});
   const [cssOutput, setCssOutput] = useState('');
   const [sandpackInitialized, setSandpackInitialized] = useState(false);
   const iframeRef = useRef(null);
-  const sandpackClientRef = useRef(null);
-  const [error, setError] = useState(null);
+  const sandpackClientRef = useRef<any>(null);
+  const [error, setError] = useState<Error | null>(null);
   const monaco = useMonaco();
 
-  const setInputFiles = useCallback((updatedInputFiles, replace = true) => {
-    _setInputFiles(
-      encodeObjKeys(updatedInputFiles),
-      replace ? 'replaceIn' : 'push',
-    );
-  }, []);
+  const setInputFiles = useCallback(
+    (updatedInputFiles: Record<string, string>, replace: boolean = true) => {
+      _setInputFiles(
+        encodeObjKeys(updatedInputFiles),
+        replace ? 'replaceIn' : 'push',
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
     if (_inputFilesOld == null || Object.keys(_inputFilesOld).length === 0) {
@@ -153,10 +177,11 @@ export default function PlaygroundNew() {
     setInputFiles(initialValue);
   }, []);
 
-  const { colorMode } = useColorMode();
+  // const { colorMode } = useColorMode();
+  const colorMode = 'dark';
 
   const getUniqueFilename = useCallback(
-    (baseName) => {
+    (baseName: string) => {
       if (!inputFiles[baseName]) {
         return baseName;
       }
@@ -172,19 +197,19 @@ export default function PlaygroundNew() {
     [inputFiles],
   );
 
-  const toComponentName = useCallback((filename) => {
+  const toComponentName = useCallback((filename: string) => {
     return (
       filename
         .replace(/\.[^/.]+$/, '')
         .split(/[^a-zA-Z0-9]+/)
         .filter(Boolean)
-        .map((chunk) => chunk[0].toUpperCase() + chunk.slice(1))
+        .map((chunk: string) => chunk?.[0]?.toUpperCase() + chunk?.slice(1))
         .join('') || 'Component'
     );
   }, []);
 
   const createComponentTemplate = useCallback(
-    (filename) => {
+    (filename: string) => {
       const componentName = toComponentName(filename);
       return `import * as stylex from '@stylexjs/stylex';
 
@@ -214,19 +239,19 @@ export const vars = stylex.defineVars({
   }, []);
 
   const getDefaultFilename = useCallback(
-    (fileKind) =>
+    (fileKind: string) =>
       fileKind === 'component'
         ? getUniqueFilename('Component.tsx')
         : getUniqueFilename('tokens.stylex.ts'),
     [getUniqueFilename],
   );
 
-  function updateSandpack(updatedInputFiles) {
+  function updateSandpack(updatedInputFiles: Record<string, string>) {
     try {
       const { transformedFiles, generatedCSS } =
         transformSourceFiles(updatedInputFiles);
 
-      setTransformedFiles(transformedFiles);
+      setTransformedFiles(transformedFiles as Record<string, string>);
       setCssOutput(generatedCSS);
       setError(null);
 
@@ -251,31 +276,35 @@ export const vars = stylex.defineVars({
         });
       }
       return true;
-    } catch (error) {
-      setError(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error);
+      } else {
+        setError(new Error(String(error)));
+      }
       return false;
     }
   }
 
-  function handleEditorChange(value) {
+  function handleEditorChange(value: string) {
     const updatedInputFiles = {
       ...inputFiles,
-      [activeInputFile]: value || '',
+      [activeInputFile as string]: value || '',
     };
 
     const success = updateSandpack(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
   }
 
-  const createFile = (fileKind, name) => {
+  const createFile = (fileKind: 'component' | 'stylex', name: string) => {
     const trimmedName = name.trim();
     if (!trimmedName || inputFiles[trimmedName]) {
-      return false;
+      return;
     }
     const template =
       fileKind === 'component'
         ? createComponentTemplate(trimmedName)
-        : createStylexVarsTemplate(trimmedName);
+        : createStylexVarsTemplate();
     const updatedInputFiles = {
       ...inputFiles,
       [trimmedName]: template,
@@ -289,18 +318,17 @@ export const vars = stylex.defineVars({
       'typescript',
       monaco.Uri.file(`/${trimmedName}`),
     );
-
-    return true;
   };
 
-  const renameFile = (oldName, newName) => {
+  const renameFile = (oldName: string, newName: string) => {
     const trimmedName = newName.trim();
     if (!trimmedName || trimmedName === oldName || inputFiles[trimmedName]) {
       return false;
     }
     const updatedInputFiles = Object.fromEntries(
-      Object.entries(inputFiles).map(([key, value]) =>
-        key === oldName ? [trimmedName, value] : [key, value],
+      Object.entries(inputFiles as Record<string, string>).map(
+        ([key, value]) =>
+          key === oldName ? [trimmedName, value] : [key, value],
       ),
     );
     const success = updateSandpack(updatedInputFiles);
@@ -324,7 +352,7 @@ export const vars = stylex.defineVars({
     return true;
   };
 
-  const deleteFile = (filename) => {
+  const deleteFile = (filename: string) => {
     if (Object.keys(inputFiles).length <= 1) {
       return false;
     }
@@ -376,7 +404,7 @@ export const vars = stylex.defineVars({
       {
         showOpenInCodeSandbox: false,
       },
-    ).then((sandpackClient) => {
+    ).then((sandpackClient: any) => {
       if (!mounted) {
         sandpackClient.destroy();
         return;
@@ -394,9 +422,9 @@ export const vars = stylex.defineVars({
   }, []);
 
   const handleFormat = useCallback(async () => {
-    const formatted = await prettier.format(inputFiles[activeInputFile], {
+    const formatted = await prettier.format(inputFiles[activeInputFile]!, {
       parser: 'babel',
-      plugins: [estreePlugin, babelPlugin],
+      plugins: [estreePlugin as any, babelPlugin],
     });
     const updatedInputFiles = {
       ...inputFiles,
@@ -412,8 +440,7 @@ export const vars = stylex.defineVars({
           <div {...stylex.props(styles.column)}>
             <Panel header="Source">
               <Tabs
-                activeFile={activeInputFile}
-                disableDelete={Object.keys(inputFiles).length <= 1}
+                activeFile={activeInputFile as string}
                 files={Object.keys(inputFiles)}
                 getDefaultFilename={getDefaultFilename}
                 onCreateFile={createFile}
@@ -423,7 +450,7 @@ export const vars = stylex.defineVars({
                 onSelectFile={(filename) => setActiveInputFile(filename)}
               />
               <Editor
-                beforeMount={(monaco) => {
+                beforeMount={(monaco: any) => {
                   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(
                     true,
                   );
@@ -469,8 +496,8 @@ export const vars = stylex.defineVars({
                 }}
                 defaultLanguage="typescript"
                 onChange={handleEditorChange}
-                onMount={(editor) => {
-                  editor.onKeyDown((e) => {
+                onMount={(editor: any) => {
+                  editor.onKeyDown((e: any) => {
                     if (e.browserEvent.key === '/') {
                       e.browserEvent.stopPropagation();
                     }
@@ -531,7 +558,15 @@ export const vars = stylex.defineVars({
   );
 }
 
-function Panel({ header, children, style }) {
+function Panel({
+  header,
+  children,
+  style,
+}: {
+  header: string;
+  children: React.ReactNode;
+  style?: stylex.StyleXStyles;
+}) {
   return (
     <div {...stylex.props(styles.panel, style)}>
       {header && (
@@ -544,7 +579,17 @@ function Panel({ header, children, style }) {
   );
 }
 
-function CollapsiblePanel({ header, children, style, alwaysOpen = false }) {
+function CollapsiblePanel({
+  header,
+  children,
+  style,
+  alwaysOpen = false,
+}: {
+  header: string;
+  children: React.ReactNode;
+  style?: stylex.StyleXStyles;
+  alwaysOpen?: boolean;
+}) {
   const [open, setOpen] = useState(alwaysOpen);
 
   return (

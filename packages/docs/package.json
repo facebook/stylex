@@ -14,8 +14,16 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@babel/standalone": "^7.28.5",
+    "@codesandbox/sandpack-client": "^2.19.8",
+    "@codesandbox/sandpack-react": "^2.20.0",
     "@stylexjs/stylex": "^0.17.4",
+    "@stylexjs/babel-plugin": "^0.17.4",
+    "@monaco-editor/react": "^4.7.0",
+    "lz-string": "^1.5.0",
     "fumadocs-core": "16.0.11",
+    "prettier": "^3.7.4",
+    "path-browserify": "^1.0.1",
     "fumadocs-mdx": "13.0.8",
     "fumadocs-ui": "16.0.11",
     "react": "^19.2.1",
@@ -29,7 +37,8 @@
     "@radix-ui/react-presence":"^1.1.5",
     "@radix-ui/react-popover":"^1.1.15",
     "@radix-ui/react-navigation-menu":"^1.2.14",
-    "lucide-react": "^0.553.0"
+    "lucide-react": "^0.553.0",
+    "use-query-params": "^2.2.2"
   },
   "devDependencies": {
     "@stylexjs/unplugin": "^0.17.4",
