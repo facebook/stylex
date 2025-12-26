@@ -1,0 +1,33 @@
+{
+  "name": "@stylexjs/devtools-extension",
+  "version": "0.17.3",
+  "private": true,
+  "description": "Chrome DevTools extension for debugging StyleX.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "rollup -c --watch",
+    "build": "rollup -c"
+  },
+  "files": [
+    "extension/**"
+  ],
+  "dependencies": {
+    "@stylexjs/stylex": "0.17.3",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-flow-strip-types": "^7.27.1",
+    "@stylexjs/unplugin": "0.17.3",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-replace": "^6.0.1",
+    "rollup": "^4.24.0"
+  }
+}

@@ -13,3 +13,4 @@ packages/benchmarks/size/fixtures/lotsOfStyles.js
 flow-typed
 examples/example-storybook/storybook-static
 examples/example-cli/src
+devtools-extension/extension
