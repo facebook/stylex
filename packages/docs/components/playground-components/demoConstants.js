@@ -6,7 +6,7 @@
  */
 
 export const INITIAL_INPUT_FILES = {
-  'App.js': `import * as stylex from "@stylexjs/stylex";
+  'App.tsx': `import * as stylex from "@stylexjs/stylex";
 import Counter from "./Counter";
 import { colors } from "./tokens.stylex";
 
@@ -36,14 +36,14 @@ const styles = stylex.create({
   },
 });
 `,
-  'tokens.stylex.js': `import * as stylex from "@stylexjs/stylex";
+  'tokens.stylex.ts': `import * as stylex from "@stylexjs/stylex";
 
 export const colors = stylex.defineVars({
   bg: "light-dark(#fff, #000)",
   text: "light-dark(#222, #bbb)",
 });
 `,
-  'Counter.js': `import * as stylex from "@stylexjs/stylex";
+  'Counter.tsx': `import * as stylex from "@stylexjs/stylex";
 import { useState } from "react";
 
 export default function Counter() {
@@ -123,8 +123,8 @@ createRoot(document.getElementById('root')).render(<App />);`,
       {
         main: '/index.js',
         dependencies: {
-          react: 'latest',
-          'react-dom': 'latest',
+          react: '19.2.3',
+          'react-dom': '19.2.3',
         },
       },
       null,
