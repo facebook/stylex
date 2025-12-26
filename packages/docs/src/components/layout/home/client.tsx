@@ -22,7 +22,11 @@ import {
 } from '../../ui/button';
 import * as stylex from '@stylexjs/stylex';
 
-export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
+export function Navbar({
+  xstyle,
+  disableShadowBlur,
+  ...props
+}: StyleXComponentProps<'div'> & { disableShadowBlur?: boolean }) {
   const [value, setValue] = useState('');
   return (
     <NavigationMenu value={value} onValueChange={setValue} asChild>
@@ -33,8 +37,18 @@ export function Navbar({ xstyle, ...props }: StyleXComponentProps<'div'>) {
           {...props}
           {...stylex.props(navbarStyles.header, xstyle)}
         >
-          <div {...stylex.props(navbarStyles.gradientBlur)} />
-          <div {...stylex.props(navbarStyles.gradientFade)} />
+          <div
+            {...stylex.props(
+              navbarStyles.gradientBlur,
+              disableShadowBlur && navbarStyles.disableShadowBlur,
+            )}
+          />
+          <div
+            {...stylex.props(
+              navbarStyles.gradientFade,
+              disableShadowBlur && navbarStyles.disableShadowBlur,
+            )}
+          />
           <div {...stylex.props(navbarStyles.backdrop)}>
             <div {...stylex.props(navbarStyles.blur)} />
           </div>
@@ -106,6 +120,9 @@ const navbarStyles = stylex.create({
     backgroundColor: 'var(--color-fd-background)',
     maskImage:
       'linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 50%, transparent)',
+  },
+  disableShadowBlur: {
+    bottom: -8,
   },
   overlayBlur: {
     position: 'absolute',

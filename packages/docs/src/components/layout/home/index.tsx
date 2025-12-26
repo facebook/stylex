@@ -6,15 +6,12 @@ import {
   type NavOptions,
   StyleXAttributes,
 } from '../shared/index';
-import { NavProvider } from 'fumadocs-ui/contexts/layout';
 import { LargeSearchToggle } from '../../search-toggle';
 import { ThemeToggle } from '../../theme-toggle';
-import { Languages, SidebarIcon } from 'lucide-react';
 import Link from 'fumadocs-core/link';
 import { Navbar, NavbarLinkItem } from './client';
 import * as stylex from '@stylexjs/stylex';
 import SidebarToggle from './SidebarToggle';
-import { SidebarProvider } from '@/contexts/SidebarContext';
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -25,41 +22,35 @@ export interface HomeLayoutProps extends BaseLayoutProps {
       enableHoverToOpen?: boolean;
     }
   >;
+  disableShadowBlur?: true;
 }
 
-export function HomeLayout(
-  props: HomeLayoutProps & StyleXAttributes<HTMLElement>,
-) {
-  const {
-    nav = {},
-    links,
-    githubUrl,
-    i18n,
-    showSidebarToggle = true,
-    xstyle,
-    ...rest
-  } = props;
-
+export function HomeLayout({
+  nav = {},
+  links,
+  githubUrl,
+  i18n,
+  showSidebarToggle = true,
+  xstyle,
+  children,
+  disableShadowBlur,
+  ...rest
+}: HomeLayoutProps & StyleXAttributes<HTMLElement>) {
   return (
-    <NavProvider transparentMode={nav?.transparentMode}>
-      <main
-        id="nd-home-layout"
-        {...rest}
-        {...stylex.props(styles.main, xstyle)}
-      >
-        {nav.enabled !== false &&
-          (nav.component ?? (
-            <Header
-              links={links}
-              nav={nav}
-              showSidebarToggle={showSidebarToggle}
-              i18n={i18n}
-              githubUrl={githubUrl}
-            />
-          ))}
-        {props.children}
-      </main>
-    </NavProvider>
+    <main id="nd-home-layout" {...rest} {...stylex.props(styles.main, xstyle)}>
+      {nav.enabled !== false &&
+        (nav.component ?? (
+          <Header
+            links={links}
+            nav={nav}
+            showSidebarToggle={showSidebarToggle}
+            i18n={i18n}
+            githubUrl={githubUrl}
+            disableShadowBlur={disableShadowBlur}
+          />
+        ))}
+      {children}
+    </main>
   );
 }
 
@@ -68,6 +59,7 @@ export function Header({
   links,
   githubUrl,
   showSidebarToggle = true,
+  disableShadowBlur,
 }: HomeLayoutProps) {
   const finalLinks = useMemo(
     () => getLinks(links, githubUrl),
@@ -79,7 +71,7 @@ export function Header({
   );
 
   return (
-    <Navbar>
+    <Navbar disableShadowBlur={disableShadowBlur}>
       {showSidebarToggle && <SidebarToggle />}
       <Link {...stylex.props(styles.navTitleLink)} href={nav.url ?? '/'}>
         {nav.title}

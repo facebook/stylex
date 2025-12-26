@@ -2,7 +2,7 @@ import TabItem from './TabItem';
 import Tabs from './Tabs';
 import Dial from '../Dial';
 import { DevInstallExample } from './PackageInstall';
-import { Card as WhenDemo } from './Card';
+import { Card as WhenDemo } from './WhenDemo';
 import { Card, Cards } from './Cards';
 import Heading from './Heading';
 import type { HTMLAttributes, ComponentProps } from 'react';

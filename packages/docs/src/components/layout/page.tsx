@@ -11,6 +11,7 @@ import { Link, usePathname } from 'fumadocs-core/framework';
 import type * as PageTree from 'fumadocs-core/page-tree';
 import * as stylex from '@stylexjs/stylex';
 import { StyleXComponentProps } from './shared';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export interface DocsPageProps {
   toc?: TOCItemType[];
@@ -208,6 +209,7 @@ function Footer() {
           {...stylex.props(footerStyles.link, footerStyles.prev)}
           href={previous.url}
         >
+          <ChevronLeft {...stylex.props(footerStyles.chevron)} />
           {previous.name}
         </Link>
       ) : null}
@@ -217,6 +219,7 @@ function Footer() {
           href={next.url}
         >
           {next.name}
+          <ChevronRight {...stylex.props(footerStyles.chevron)} />
         </Link>
       ) : null}
     </div>
@@ -250,19 +253,14 @@ const footerStyles = stylex.create({
   prev: {
     justifyContent: 'flex-start',
     textAlign: 'left',
-    '::before': {
-      content: '←',
-      color: 'var(--color-fd-foreground)',
-      fontWeight: 300,
-    },
   },
   next: {
     justifyContent: 'flex-end',
     textAlign: 'right',
-    '::after': {
-      content: '→',
-      color: 'var(--color-fd-foreground)',
-      fontWeight: 300,
-    },
+  },
+  chevron: {
+    width: '1em',
+    height: '1em',
+    marginTop: 5,
   },
 });

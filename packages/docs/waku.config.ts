@@ -12,6 +12,7 @@ import { browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 
 const require = createRequire(import.meta.url);
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 // Inline playground sources/types so Monaco and Sandpack can resolve them.
 const playgroundDefines = (() => {
@@ -74,9 +75,11 @@ export default defineConfig({
         devMode: 'css-only',
         devPersistToDisk: true,
         runtimeInjection: false,
+        aliases: {
+          '@/*': [path.join(__dirname, 'src/*')],
+        },
         lightningcssOptions: {
           minify: process.env.NODE_ENV !== 'development',
-
           targets: browserslistToTargets(browserslist('>= 5%')),
         },
       }),

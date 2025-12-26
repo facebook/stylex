@@ -10,6 +10,7 @@ import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Menu, Item } from './Menu';
 import { FileNameDialog, ConfirmDialog } from './Dialogs';
+import { vars } from '@/theming/vars.stylex';
 
 export function Tabs({
   files,
@@ -187,16 +188,17 @@ function NewFileButton({
 const styles = stylex.create({
   tabs: {
     display: 'flex',
-    backgroundColor: 'var(--bg1)',
-    gap: 4,
-    borderBottomWidth: '2px',
+    paddingInlineStart: 8,
+    backgroundColor: vars['--color-fd-card'],
+    gap: 8,
+    borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--fg3)',
+    borderBottomColor: vars['--color-fd-border'],
   },
   tab: {
     display: 'flex',
     fontSize: 12,
-    color: 'var(--fg1)',
+    color: vars['--color-fd-muted-foreground'],
     cursor: 'pointer',
     backgroundColor: 'transparent',
     // borderBottomWidth: 4,
@@ -205,8 +207,7 @@ const styles = stylex.create({
     borderStyle: 'none',
   },
   tabActive: {
-    color: 'var(--ifm-navbar-link-hover-color)',
-    fontWeight: 600,
+    color: vars['--color-fd-accent-foreground'],
     boxShadow: '0 -4px 0 0 currentColor inset',
   },
   tabLabelButton: {
@@ -221,8 +222,8 @@ const styles = stylex.create({
     backgroundColor: { default: 'transparent', ':hover': 'var(--pink)' },
     color: { default: 'inherit', ':hover': '#fff', ':focus-visible': '#fff' },
     borderRadius: 4,
-    height: 30,
-    width: 30,
+    height: 32,
+    width: 32,
     fontSize: 12,
     cursor: 'pointer',
     borderStyle: 'none',

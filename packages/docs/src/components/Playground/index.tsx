@@ -39,6 +39,8 @@ import {
 
 // @ts-ignore - CJS module
 import * as stylexPluginModule from '@stylexjs/babel-plugin';
+import { vars } from '@/theming/vars.stylex';
+import { ChevronDown } from 'lucide-react';
 const stylexPlugin: typeof import('@stylexjs/babel-plugin').default =
   // @ts-ignore - handle CJS default export
   stylexPluginModule.default ?? stylexPluginModule;
@@ -601,13 +603,17 @@ function CollapsiblePanel({
       <button
         {...stylex.props(
           styles.panelHeader,
-          styles.panelHeaderButton,
-          open && styles.panelHeaderButtonOpen,
           alwaysOpen && styles.panelHeaderButtonAlwaysOpen,
         )}
         onClick={() => setOpen((open) => !open)}
       >
         {header}
+        <ChevronDown
+          {...stylex.props(
+            styles.panelChevron,
+            open && styles.panelChevronOpen,
+          )}
+        />
       </button>
       <div
         {...stylex.props(
@@ -616,7 +622,7 @@ function CollapsiblePanel({
           alwaysOpen && !open && styles.panelContentAlwaysOpen,
         )}
       >
-        {children}
+        <div {...stylex.props(styles.panelContentInner)}>{children}</div>
       </div>
     </div>
   );
@@ -649,7 +655,7 @@ const styles = stylex.create({
     position: 'relative',
     flexGrow: 1,
     flexShrink: 0,
-    flexBasis: 32,
+    flexBasis: 38,
     backgroundColor: 'var(--bg1)',
     borderRadius: 8,
     boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.05)',
@@ -671,15 +677,15 @@ const styles = stylex.create({
     textAlign: 'start',
     display: 'block',
     width: '100%',
-    backgroundColor: 'var(--bg2)',
+    backgroundColor: vars['--color-fd-card'],
     paddingBlock: 8,
     paddingInline: 16,
     fontSize: 14,
     fontWeight: 500,
     color: 'var(--fg1)',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--fg3)',
+    borderBottomColor: vars['--color-fd-border'],
   },
   panelHeaderButtonAlwaysOpen: {
     display: {
@@ -687,32 +693,57 @@ const styles = stylex.create({
       '@container (width < 768px)': 'block',
     },
   },
-  panelHeaderButton: {
-    '::after': {
-      content: '›',
-      boxSizing: 'border-box',
-      position: 'absolute',
-      insetInlineEnd: 0,
-      top: 0,
-      height: '100%',
-      aspectRatio: 1,
-      paddingBottom: 4,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '1.5em',
-      transitionProperty: 'transform',
-      transitionDuration: '200ms',
-      transitionTimingFunction: 'ease-in-out',
-    },
+  panelChevron: {
+    position: 'absolute',
+    insetInlineEnd: 4,
+    top: 0,
+    height: '100%',
+    aspectRatio: 1,
+    paddingBottom: 4,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transformOrigin: 'center',
+    rotate: '-90deg',
+    transitionProperty: 'rotate',
+    transitionDuration: '0.3s',
+    transitionTimingFunction: 'ease-in-out',
   },
-  panelHeaderButtonOpen: {
-    '::after': {
-      transform: 'rotate(90deg)',
-    },
+  panelChevronOpen: {
+    rotate: '0deg',
   },
+  // panelHeaderButton: {
+  //   '::after': {
+  //     content: '›',
+  //     boxSizing: 'border-box',
+  //     position: 'absolute',
+  //     insetInlineEnd: 0,
+  //     top: 0,
+  //     height: '100%',
+  //     aspectRatio: 1,
+  //     paddingBottom: 4,
+  //     display: 'flex',
+  //     alignItems: 'center',
+  //     justifyContent: 'center',
+  //     fontSize: '1.5em',
+  //     transitionProperty: 'transform',
+  //     transitionDuration: '200ms',
+  //     transitionTimingFunction: 'ease-in-out',
+  //   },
+  // },
+  // panelHeaderButtonOpen: {
+  //   '::after': {
+  //     transform: 'rotate(90deg)',
+  //   },
+  // },
   panelContent: {
     height: '100%',
+    display: 'grid',
+    gridTemplateRows: '1fr',
+  },
+  panelContentInner: {
+    height: '100%',
+    overflow: 'hidden',
   },
   panelContentAlwaysOpen: {
     display: {
@@ -721,7 +752,7 @@ const styles = stylex.create({
     },
   },
   hidden: {
-    display: 'none',
+    gridTemplateRows: '0fr',
   },
   iframe: {
     flex: '1',

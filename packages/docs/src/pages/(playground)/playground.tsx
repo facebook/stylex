@@ -33,6 +33,7 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: 'var(--color-fd-background)',
     color: 'var(--color-fd-foreground)',
+    paddingTop: 8,
   },
   hero: {
     paddingBlock: 80,

@@ -4,6 +4,7 @@ import * as stylex from '@stylexjs/stylex';
 import { Info, TriangleAlert, CircleX, CircleCheck } from 'lucide-react';
 import type { HTMLAttributes, ReactNode, CSSProperties } from 'react';
 import { calloutMarker } from './mdx.stylex';
+import { vars } from '../../theming/vars.stylex';
 
 export type CalloutType =
   | 'info'
@@ -129,13 +130,13 @@ const styles = stylex.create({
     borderShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
-    backgroundColor: 'var(--color-fd-card)',
+    borderColor: vars['--color-fd-border'],
+    backgroundColor: vars['--color-fd-card'],
     padding: 12,
     paddingInlineStart: 4,
     fontSize: 14,
     lineHeight: 1.5,
-    color: 'var(--color-fd-card-foreground)',
+    color: vars['--color-fd-card-foreground'],
     boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   },
   indicator: {
@@ -166,6 +167,6 @@ const styles = stylex.create({
     marginBottom: 0,
   },
   description: {
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
   },
 });
