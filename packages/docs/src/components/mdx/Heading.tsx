@@ -1,6 +1,7 @@
 import * as stylex from '@stylexjs/stylex';
 import { Link } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactElement } from 'react';
+import { headingMarker } from './mdx.stylex';
 
 type Types = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 type HeadingProps<T extends Types> = Omit<
@@ -21,10 +22,7 @@ export default function Heading<T extends Types = 'h1'>({
   if (!props.id) return <As {...stylex.props(xstyle)} {...props} />;
 
   return (
-    <As
-      {...stylex.props(styles.heading, stylex.defaultMarker(), xstyle)}
-      {...props}
-    >
+    <As {...stylex.props(styles.heading, headingMarker, xstyle)} {...props}>
       <a data-card="" href={`#${props.id}`} {...stylex.props(styles.anchor)}>
         {props.children}
       </a>
@@ -54,7 +52,7 @@ const styles = stylex.create({
     color: 'var(--color-fd-muted-foreground)',
     opacity: {
       default: 0,
-      [stylex.when.ancestor(':hover')]: 1,
+      [stylex.when.ancestor(':hover', headingMarker)]: 1,
     },
     transitionProperty: 'opacity',
     transitionDuration: '0.15s',

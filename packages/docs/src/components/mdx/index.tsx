@@ -3,13 +3,21 @@ import Tabs from './Tabs';
 import Dial from '../Dial';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { DevInstallExample } from './PackageInstall';
-import { Card } from './Card';
+import { Card as WhenDemo } from './Card';
+import { Card, Cards } from './Cards';
 import Heading from './Heading';
 import { HTMLAttributes } from 'react';
 import { StyleXStyles } from '@stylexjs/stylex';
 import MDXLink from './Link';
 import * as stylex from '@stylexjs/stylex';
 import { Accordion, Accordions, Details, Summary } from './Details';
+import {
+  Callout,
+  CalloutContainer,
+  CalloutTitle,
+  CalloutDescription,
+} from './Callout';
+import P from './P';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -17,6 +25,16 @@ type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
 > & {
   xstyle?: StyleXStyles;
 };
+
+// PENDING ELEMENTS:
+//
+// CodeBlockTab
+// CodeBlockTabs
+// CodeBlockTabsList
+// CodeBlockTabsTrigger
+// pre
+// img
+// table
 
 export const mdxComponents = {
   ...defaultMdxComponents,
@@ -42,17 +60,24 @@ export const mdxComponents = {
   code: (props: StyleXHTMLProps<HTMLElement>) => (
     <code {...props} {...stylex.props(styles.code)} />
   ),
+  p: P,
   TabItem,
   Tabs,
   Dial,
   DevInstallExample,
-  WhenDemo: Card,
+  WhenDemo,
+  Card,
+  Cards,
   details: Details,
   summary: Summary,
   Accordion,
   Accordions,
   Details,
   Summary,
+  Callout,
+  CalloutContainer,
+  CalloutTitle,
+  CalloutDescription,
 };
 
 const styles = stylex.create({
