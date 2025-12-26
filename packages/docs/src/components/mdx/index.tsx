@@ -1,12 +1,11 @@
 import TabItem from './TabItem';
 import Tabs from './Tabs';
 import Dial from '../Dial';
-import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { DevInstallExample } from './PackageInstall';
 import { Card as WhenDemo } from './Card';
 import { Card, Cards } from './Cards';
 import Heading from './Heading';
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ComponentProps } from 'react';
 import { StyleXStyles } from '@stylexjs/stylex';
 import MDXLink from './Link';
 import * as stylex from '@stylexjs/stylex';
@@ -19,6 +18,15 @@ import {
 } from './Callout';
 import P from './P';
 import Image from './Image';
+import {
+  CodeBlock,
+  CodeBlockTab,
+  CodeBlockTabs,
+  CodeBlockTabsList,
+  CodeBlockTabsTrigger,
+  Pre,
+} from './CodeBlock';
+import { preMarker } from './mdx.stylex';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -29,15 +37,9 @@ type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
 
 // PENDING ELEMENTS:
 //
-// CodeBlockTab
-// CodeBlockTabs
-// CodeBlockTabsList
-// CodeBlockTabsTrigger
-// pre
 // table
 
 export const mdxComponents = {
-  ...defaultMdxComponents,
   a: MDXLink,
   h1: (props: StyleXHTMLProps<HTMLHeadingElement>) => (
     <Heading as="h1" {...props} />
@@ -79,11 +81,30 @@ export const mdxComponents = {
   CalloutTitle,
   CalloutDescription,
   img: Image,
+  pre: (props: ComponentProps<'pre'>) => (
+    <CodeBlock {...props}>
+      <Pre>{props.children}</Pre>
+    </CodeBlock>
+  ),
+  CodeBlock,
+  CodeBlockTab,
+  CodeBlockTabs,
+  CodeBlockTabsList,
+  CodeBlockTabsTrigger,
 };
 
 const styles = stylex.create({
   code: {
     // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
     color: 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
+    backgroundColor: {
+      default: null,
+      [stylex.when.ancestor(':where(*)', preMarker)]: 'transparent',
+    },
+    borderStyle: {
+      default: null,
+      [stylex.when.ancestor(':where(*)', preMarker)]: 'none',
+    },
+    lineHeight: 1.5,
   },
 });

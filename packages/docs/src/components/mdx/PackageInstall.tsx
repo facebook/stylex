@@ -11,12 +11,9 @@
 
 import Tabs from './Tabs';
 import TabItem from './TabItem';
-import mdx from 'fumadocs-ui/mdx';
 import { versionTag } from './VersionTag';
 import * as stylex from '@stylexjs/stylex';
-import { Pre } from 'fumadocs-ui/components/codeblock';
-
-const Codeblock = mdx.pre;
+import { CodeBlock, Pre } from './CodeBlock';
 
 const codeForCLI = ({ prod, dev }: { prod: string[]; dev: string[] }) => ({
   npm: [
@@ -58,9 +55,9 @@ export function DevInstallExample({ prod = [], dev = [] }) {
     <Tabs defaultValue={entries[0]?.[0]}>
       {entries.map(([key, code]) => (
         <TabItem key={key} label={key} value={key}>
-          <Codeblock {...stylex.props(styles.codeblock)}>
+          <CodeBlock xstyle={styles.codeblock}>
             <Pre>{code}</Pre>
-          </Codeblock>
+          </CodeBlock>
         </TabItem>
       ))}
     </Tabs>

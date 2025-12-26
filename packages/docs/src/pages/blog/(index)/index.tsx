@@ -1,6 +1,6 @@
 import * as stylex from '@stylexjs/stylex';
 import { blogSource } from '@/lib/source';
-import { Card } from 'fumadocs-ui/components/card';
+import { Card } from '@/components/mdx/Cards';
 
 export default function BlogPage() {
   const pages = blogSource.getPages();
