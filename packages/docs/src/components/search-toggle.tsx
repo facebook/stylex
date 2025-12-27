@@ -14,7 +14,8 @@ import * as stylex from '@stylexjs/stylex';
 import { vars } from '@/theming/vars.stylex';
 
 interface SearchToggleProps
-  extends Omit<StyleXComponentProps<'button'>, 'color'>, ButtonProps {
+  extends Omit<StyleXComponentProps<'button'>, 'color'>,
+    ButtonProps {
   hideIfDisabled?: boolean;
 }
 

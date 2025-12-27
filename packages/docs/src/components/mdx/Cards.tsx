@@ -5,10 +5,8 @@ import * as stylex from '@stylexjs/stylex';
 import BaseLink from 'fumadocs-core/link';
 import type { HTMLAttributes, ReactNode } from 'react';
 
-export interface CardsProps extends Omit<
-  HTMLAttributes<HTMLDivElement>,
-  'className' | 'style'
-> {
+export interface CardsProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
   children: ReactNode;
 }
 
@@ -20,10 +18,8 @@ export function Cards({ children, ...props }: CardsProps) {
   );
 }
 
-export interface CardProps extends Omit<
-  HTMLAttributes<HTMLElement>,
-  'className' | 'style' | 'title'
-> {
+export interface CardProps
+  extends Omit<HTMLAttributes<HTMLElement>, 'className' | 'style' | 'title'> {
   icon?: ReactNode;
   title: ReactNode;
   description?: ReactNode;

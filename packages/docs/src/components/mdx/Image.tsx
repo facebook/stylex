@@ -1,10 +1,8 @@
 import * as stylex from '@stylexjs/stylex';
 import type { ImgHTMLAttributes } from 'react';
 
-export interface ImageProps extends Omit<
-  ImgHTMLAttributes<HTMLImageElement>,
-  'className' | 'style'
-> {
+export interface ImageProps
+  extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'className' | 'style'> {
   /**
    * Responsive sizes attribute
    * @defaultValue "(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"

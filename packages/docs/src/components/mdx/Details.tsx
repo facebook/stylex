@@ -6,7 +6,7 @@ import { ChevronDown } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { useId, createContext, Children, use } from 'react';
 
-const AccordianContext = createContext<string | null>(null);
+const AccordionContext = createContext<string | null>(null);
 
 export function Accordions({
   type,
@@ -20,7 +20,7 @@ export function Accordions({
   return (
     <div>
       {type === 'single' ? (
-        <AccordianContext value={id}>{children}</AccordianContext>
+        <AccordionContext value={id}>{children}</AccordionContext>
       ) : (
         children
       )}
@@ -32,7 +32,7 @@ export function Details({
   children,
   ...props
 }: Omit<ComponentPropsWithoutRef<'details'>, 'className' | 'style'>) {
-  const id = use(AccordianContext);
+  const id = use(AccordionContext);
   const [summary, ...content] = Children.toArray(children);
 
   return (
