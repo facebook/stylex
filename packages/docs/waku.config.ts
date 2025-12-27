@@ -54,7 +54,20 @@ const playgroundDefines = (() => {
 export default defineConfig({
   vite: {
     optimizeDeps: {
-      include: ['@stylexjs/babel-plugin'],
+      include: [
+        '@stylexjs/babel-plugin',
+        'use-query-params',
+        'serialize-query-params',
+        'path-browserify',
+        'lz-string',
+      ],
+    },
+    ssr: {
+      // Force these CJS modules to be bundled during SSR so they work properly
+      noExternal: ['use-query-params', 'serialize-query-params'],
+      optimizeDeps: {
+        include: ['use-query-params', 'serialize-query-params'],
+      },
     },
     define: {
       STYLEX_SOURCE: JSON.stringify(playgroundDefines.stylexSource),
