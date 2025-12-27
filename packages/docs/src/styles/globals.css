@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
-/* @import 'fumadocs-ui/css/preset.css'; */
+@import 'fumadocs-ui/css/preset.css';
 
 @layer base {
   *,
@@ -29,6 +29,17 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: var(--color-fd-background);
+  }
+
+  /* HACK: Fix search styling */
+  .border {
+    border-color: var(--color-fd-border);
+  }
+
+  .\*\:border-b {
+    :is(& > *) {
+      border-color: var(--color-fd-border);
+    }
   }
 
   a {
