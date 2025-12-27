@@ -12,6 +12,7 @@ import {
   useCallback,
 } from 'react';
 import { preMarker } from './mdx.stylex';
+import { vars } from '@/theming/vars.stylex';
 
 // Context for tracking if we're inside CodeBlockTabs
 const TabsContext = createContext<{
@@ -283,20 +284,20 @@ const styles = stylex.create({
     position: 'relative',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
     overflow: 'hidden',
     fontSize: 13,
   },
   figureStandalone: {
     marginBlock: 16,
-    backgroundColor: 'var(--color-fd-card)',
+    backgroundColor: vars['--color-fd-card'],
     borderRadius: 12,
   },
   figureInTab: {
     marginInline: -1,
     marginBlockEnd: -1,
-    backgroundColor: 'var(--color-fd-secondary)',
+    backgroundColor: vars['--color-fd-secondary'],
     borderEndStartRadius: 12,
     borderEndEndRadius: 12,
   },
@@ -307,9 +308,9 @@ const styles = stylex.create({
     height: 38,
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--color-fd-border)',
+    borderBottomColor: vars['--color-fd-border'],
     paddingInline: 16,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
   },
   iconWrapper: {
     display: 'flex',
@@ -354,18 +355,18 @@ const styles = stylex.create({
     borderWidth: 0,
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'var(--color-fd-accent)',
+      ':hover': vars['--color-fd-accent'],
     },
     color: {
-      default: 'var(--color-fd-muted-foreground)',
-      ':hover': 'var(--color-fd-accent-foreground)',
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-accent-foreground'],
     },
     cursor: 'pointer',
     transitionProperty: 'background-color, color',
     transitionDuration: DURATION,
   },
   copyButtonChecked: {
-    color: 'var(--color-fd-accent-foreground)',
+    color: vars['--color-fd-accent-foreground'],
   },
   floatingCopyButton: {
     position: 'absolute',
@@ -381,11 +382,11 @@ const styles = stylex.create({
   },
   // Tabs styles
   tabsContainer: {
-    backgroundColor: 'var(--color-fd-card)',
+    backgroundColor: vars['--color-fd-card'],
     borderRadius: 12,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
   },
   tabsContainerOuter: {
     marginBlock: 16,
@@ -395,7 +396,7 @@ const styles = stylex.create({
     flexDirection: 'row',
     paddingInline: 8,
     overflowX: 'auto',
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
   },
   tabTrigger: {
     position: 'relative',
@@ -411,14 +412,14 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     color: {
       default: 'inherit',
-      ':hover': 'var(--color-fd-accent-foreground)',
+      ':hover': vars['--color-fd-accent-foreground'],
     },
     cursor: 'pointer',
     transitionProperty: 'color',
     transitionDuration: DURATION,
   },
   tabTriggerActive: {
-    color: 'var(--color-fd-primary)',
+    color: vars['--color-fd-primary'],
   },
   tabIndicator: {
     position: 'absolute',
@@ -428,6 +429,6 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
   },
   tabIndicatorActive: {
-    backgroundColor: 'var(--color-fd-primary)',
+    backgroundColor: vars['--color-fd-primary'],
   },
 });

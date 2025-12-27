@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { useLayoutEffect, useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { StyleXAttributes } from './layout/shared';
+import { vars } from '@/theming/vars.stylex';
 
 type ThemeKey = 'light' | 'dark' | 'system';
 
@@ -62,8 +63,6 @@ export function ThemeToggle({
               styles.item,
               isActive && styles.itemActive,
               visibleItems.length === 3 && styles.itemGrow,
-              key === 'light' && styles.first,
-              key === 'system' && styles.last,
             )}
           >
             <Icon {...stylex.props(styles.icon)} />
@@ -144,9 +143,8 @@ const styles = stylex.create({
     borderRadius: 999,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
-    backgroundColor:
-      'color-mix(in oklab, var(--color-fd-foreground) 12%, var(--color-fd-background))',
+    borderColor: vars['--color-fd-border'],
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-foreground']} 12%, ${vars['--color-fd-background']})`,
     padding: 0.5 * 4,
     overflow: 'hidden',
   },
@@ -156,13 +154,12 @@ const styles = stylex.create({
     justifyContent: 'center',
     minHeight: 7 * 4,
     minWidth: 7 * 4,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
     borderRadius: 999,
     borderWidth: 0,
     backgroundColor: {
       default: 'transparent',
-      ':hover':
-        'color-mix(in oklab, var(--color-fd-background) 50%, transparent)',
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-background']} 50%, transparent)`,
     },
     transitionProperty: 'background-color, color, box-shadow',
     transitionDuration: '150ms',
@@ -170,7 +167,7 @@ const styles = stylex.create({
     outline: 'none',
     boxShadow: {
       default: 'none',
-      ':focus-visible': '0 0 0 2px var(--color-fd-primary)',
+      ':focus-visible': `0 0 0 2px ${vars['--color-fd-primary']}`,
     },
   },
   itemGrow: {
@@ -178,16 +175,8 @@ const styles = stylex.create({
     flexGrow: 1,
   },
   itemActive: {
-    backgroundColor: 'var(--color-fd-background)',
-    color: 'var(--color-fd-foreground)',
-  },
-  first: {
-    // borderTopLeftRadius: 12,
-    // borderBottomLeftRadius: 12,
-  },
-  last: {
-    // borderTopRightRadius: 12,
-    // borderBottomRightRadius: 12,
+    backgroundColor: vars['--color-fd-background'],
+    color: vars['--color-fd-foreground'],
   },
   icon: {
     width: 16,

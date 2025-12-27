@@ -1,22 +1,161 @@
 import * as stylex from '@stylexjs/stylex';
 
+const fdFadeIn = stylex.keyframes({
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+});
+
+const fdFadeOut = stylex.keyframes({
+  from: { opacity: 1 },
+  to: { opacity: 0 },
+});
+
+const fdSidebarIn = stylex.keyframes({
+  from: {
+    transform: 'translateX(var(--fd-sidebar-mobile-offset))',
+  },
+});
+
+const fdSidebarOut = stylex.keyframes({
+  to: {
+    transform: 'translateX(var(--fd-sidebar-mobile-offset))',
+  },
+});
+
+const lightDark = (light: string, dark: string) =>
+  `light-dark(${light}, ${dark})`;
+
 export const vars = stylex.defineVars({
-  '--color-fd-background': null,
-  '--color-fd-foreground': null,
-  '--color-fd-muted': null,
-  '--color-fd-muted-foreground': null,
-  '--color-fd-popover': null,
-  '--color-fd-popover-foreground': null,
-  '--color-fd-card': null,
-  '--color-fd-card-foreground': null,
-  '--color-fd-border': null,
-  '--color-fd-primary': null,
-  '--color-fd-primary-foreground': null,
-  '--color-fd-secondary': null,
-  '--color-fd-secondary-foreground': null,
-  '--color-fd-accent': null,
-  '--color-fd-accent-foreground': null,
-  '--color-fd-ring': null,
+  '--font-sans': [
+    'ui-sans-serif',
+    'system-ui',
+    'sans-serif',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji',
+  ]
+    .map((font) => (font.includes(' ') ? `"${font}"` : font))
+    .join(', '),
+  '--font-mono': [
+    'ui-monospace',
+    'SFMono-Regular',
+    'Menlo',
+    'Monaco',
+    'Consolas',
+    'Liberation Mono',
+    'Courier New',
+  ]
+    .map((font) => (font.includes(' ') ? `"${font}"` : font))
+    .join(', '),
+
+  '--color-black': '#000',
+  '--spacing': '0.25rem',
+  '--breakpoint-sm': '40rem',
+  '--container-sm': '24rem',
+  '--text-xs': '0.75rem',
+  '--text-xs--line-height': 'calc(1 / 0.75)',
+  '--text-sm': '0.875rem',
+  '--text-sm--line-height': 'calc(1.25 / 0.875)',
+  '--text-lg': '1.125rem',
+  '--text-lg--line-height': 'calc(1.75 / 1.125)',
+  '--text-2xl': '1.5rem',
+  '--text-3xl': '1.875rem',
+  '--font-weight-medium': '500',
+  '--font-weight-semibold': '600',
+  '--radius-sm': '0.25rem',
+  '--radius-md': '0.375rem',
+  '--radius-lg': '0.5rem',
+  '--radius-xl': '0.75rem',
+  '--radius-2xl': '1rem',
+  '--ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
+  '--ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+  '--animate-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+  '--blur-xs': '4px',
+  '--blur-sm': '8px',
+  '--blur-lg': '16px',
+  '--default-transition-duration': '150ms',
+  '--default-transition-timing-function': 'cubic-bezier(0.4, 0, 0.2, 1)',
+  '--default-font-family': 'var(--font-sans)',
+  '--default-mono-font-family': 'var(--font-mono)',
+
+  '--color-fd-background': lightDark('hsl(0, 0%, 96%)', 'hsl(0, 0%, 7.04%)'),
+  '--color-fd-foreground': lightDark('hsl(0, 0%, 3.9%)', 'hsl(0, 0%, 92%)'),
+  '--color-fd-muted': lightDark('hsl(0, 0%, 96.1%)', 'hsl(0, 0%, 12.9%)'),
+  '--color-fd-muted-foreground': lightDark(
+    'hsl(0, 0%, 45.1%)',
+    'hsla(0, 0%, 70%, 0.8)',
+  ),
+  '--color-fd-popover': lightDark('hsl(0, 0%, 98%)', 'hsl(0, 0%, 11.6%)'),
+  '--color-fd-popover-foreground': lightDark(
+    'hsl(0, 0%, 15.1%)',
+    'hsl(0, 0%, 86.9%)',
+  ),
+  '--color-fd-card': lightDark('hsl(0, 0%, 94.7%)', 'hsl(0, 0%, 9.8%)'),
+  '--color-fd-card-foreground': lightDark(
+    'hsl(0, 0%, 3.9%)',
+    'hsl(0, 0%, 98%)',
+  ),
+  '--color-fd-border': lightDark(
+    'hsla(0, 0%, 80%, 50%)',
+    'hsla(0, 0%, 40%, 20%)',
+  ),
+  '--color-fd-primary': lightDark('hsl(266, 85%, 58%)', 'hsl(267, 84%, 81%)'),
+  '--color-fd-primary-foreground': lightDark(
+    'hsl(234, 16%, 35%)',
+    'hsl(240, 23%, 9%)',
+  ),
+  '--color-fd-secondary': lightDark('hsl(0, 0%, 93.1%)', 'hsl(0, 0%, 12.9%)'),
+  '--color-fd-secondary-foreground': lightDark(
+    'hsl(0, 0%, 9%)',
+    'hsl(0, 0%, 92%)',
+  ),
+  '--color-fd-accent': lightDark('hsl(223, 16%, 83%)', 'hsl(237, 16%, 23%)'),
+  '--color-fd-accent-foreground': lightDark(
+    'hsl(234, 16%, 35%)',
+    'hsl(226, 64%, 88%)',
+  ),
+  '--color-fd-ring': lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
+  '--color-fd-overlay': lightDark('transparent', 'hsla(0, 0%, 0%, 0.2)'),
+
+  '--color-fd-info': lightDark(
+    'oklch(62.3% 0.214 259.815)',
+    'oklch(62.3% 0.214 259.815)',
+  ),
+  '--color-fd-warning': lightDark(
+    'oklch(76.9% 0.188 70.08)',
+    'oklch(76.9% 0.188 70.08)',
+  ),
+  '--color-fd-error': lightDark(
+    'oklch(63.7% 0.237 25.331)',
+    'oklch(63.7% 0.237 25.331)',
+  ),
+  '--color-fd-success': lightDark(
+    'oklch(72.3% 0.219 149.579)',
+    'oklch(72.3% 0.219 149.579)',
+  ),
+  '--color-fd-diff-remove': lightDark(
+    'rgba(200, 10, 100, 0.12)',
+    'rgba(200, 10, 100, 0.12)',
+  ),
+  '--color-fd-diff-remove-symbol': 'rgb(230, 10, 100)',
+  '--color-fd-diff-add': 'rgba(14, 180, 100, 0.1)',
+  '--color-fd-diff-add-symbol': 'rgb(10, 200, 100)',
+
+  '--fd-sidebar-mobile-offset': '100%',
+  '--spacing-fd-container': '1400px',
+  '--fd-page-width': '1200px',
+  '--fd-sidebar-width': '0px',
+  '--fd-toc-width': '0px',
+  '--fd-layout-width': '1600px',
+  '--fd-banner-height': '0px',
+  '--fd-nav-height': '64px',
+  '--fd-tocnav-height': '0px',
+
+  '--animate-fd-fade-in': `${fdFadeIn} 300ms ease`,
+  '--animate-fd-fade-out': `${fdFadeOut} 300ms ease`,
+  '--animate-fd-sidebar-in': `${fdSidebarIn} 250ms ease`,
+  '--animate-fd-sidebar-out': `${fdSidebarOut} 250ms ease`,
 });
 
 export const legacyColors = stylex.defineVars({

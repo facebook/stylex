@@ -4,8 +4,16 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { QueryParamProvider } from 'use-query-params';
 import { WindowHistoryAdapter } from 'use-query-params/adapters/window';
+import * as stylex from '@stylexjs/stylex';
+import { vars } from '@/theming/vars.stylex';
 
-export function ClientOnly({ children }: { children: React.ReactNode }) {
+export function ClientOnly({
+  children,
+  fallback = null,
+}: {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}) {
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
@@ -14,7 +22,7 @@ export function ClientOnly({ children }: { children: React.ReactNode }) {
 
   if (!hasMounted) {
     // Render a fallback or null on the server and during initial client render
-    return null;
+    return fallback;
     // You can also add a loading spinner or other placeholder here
     // return <div>Loading...</div>;
   }
@@ -27,12 +35,28 @@ const LazyPlayground = lazy(() => import('./index'));
 
 export function Playground() {
   return (
-    <ClientOnly>
-      <Suspense fallback={null}>
+    <ClientOnly fallback={<PlaygroundPlaceholder />}>
+      <Suspense fallback={<PlaygroundPlaceholder />}>
         <QueryParamProvider adapter={WindowHistoryAdapter}>
+          {/* TODO: Use concurrent mode to suspend while monaco boots up */}
           <LazyPlayground />
         </QueryParamProvider>
       </Suspense>
     </ClientOnly>
   );
 }
+
+function PlaygroundPlaceholder() {
+  // TODO: Add a better placeholder with a shimmer version of the playground layout
+  return <div {...stylex.props(styles.placeholder)}>Loading...</div>;
+}
+
+const styles = stylex.create({
+  placeholder: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: `calc(100dvh - ${vars['--fd-nav-height']})`,
+    width: '100%',
+  },
+});

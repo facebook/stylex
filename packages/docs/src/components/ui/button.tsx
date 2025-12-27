@@ -6,6 +6,7 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '../../theming/vars.stylex';
 
 export const buttonStyles = stylex.create({
   base: {
@@ -23,7 +24,7 @@ export const buttonStyles = stylex.create({
     outline: 'none',
     boxShadow: {
       default: 'none',
-      ':focus-visible': '0 0 0 2px var(--color-fd-primary)',
+      ':focus-visible': `0 0 0 2px ${vars['--color-fd-primary']}`,
     },
   },
 });
@@ -31,39 +32,39 @@ export const buttonStyles = stylex.create({
 export const buttonVariantStyles = stylex.create({
   primary: {
     backgroundColor: {
-      default: 'var(--color-fd-primary)',
-      ':hover': `color-mix(in srgb, var(--color-fd-primary) 80%, transparent)`,
+      default: vars['--color-fd-primary'],
+      ':hover': `color-mix(in srgb, ${vars['--color-fd-primary']} 80%, transparent)`,
     },
-    color: 'var(--color-fd-primary-foreground)',
+    color: vars['--color-fd-primary-foreground'],
   },
   outline: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': `var(--color-fd-accent)`,
+      ':hover': `${vars['--color-fd-accent']}`,
     },
     color: {
       default: null,
-      ':hover': 'var(--color-fd-accent-foreground)',
+      ':hover': `${vars['--color-fd-accent-foreground']}`,
     },
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-accent)',
+    borderColor: `${vars['--color-fd-accent']}`,
   },
   ghost: {
     backgroundColor: 'transparent',
-    color: 'var(--color-fd-foreground)',
+    color: vars['--color-fd-foreground'],
   },
   secondary: {
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-accent)',
+    borderColor: `${vars['--color-fd-accent']}`,
     backgroundColor: {
-      default: 'var(--color-fd-secondary)',
-      ':hover': 'var(--color-fd-accent)',
+      default: `${vars['--color-fd-secondary']}`,
+      ':hover': `${vars['--color-fd-accent']}`,
     },
     color: {
-      default: 'var(--color-fd-secondary-foreground)',
-      ':hover': 'var(--color-fd-accent-foreground)',
+      default: `${vars['--color-fd-secondary-foreground']}`,
+      ':hover': `${vars['--color-fd-accent-foreground']}`,
     },
   },
 });

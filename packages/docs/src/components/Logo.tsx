@@ -9,16 +9,24 @@
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { legacyColors, vars } from '@/theming/vars.stylex';
 
 export const viewBox = '0 0 644 435';
 
 export function LogoText() {
   return (
-    <g fill="var(--color-fd-card-foreground)" fillRule="nonzero">
+    <g {...stylex.props(styles.logo)}>
       <path d="M85.547 161.625v16.563C70.964 168.395 57.839 163.5 46.172 163.5c-8.646 0-15.938 2.344-21.875 7.031-5.938 4.688-8.906 10.469-8.906 17.344 0 4.896 1.796 9.401 5.39 13.516 3.594 4.114 13.542 9.297 29.844 15.547s26.953 12.76 31.953 19.53c5 6.772 7.5 14.324 7.5 22.657 0 11.146-4.531 20.547-13.594 28.203-9.062 7.656-20.26 11.485-33.593 11.485-14.48 0-28.855-4.375-43.125-13.125v-15c16.979 8.75 32.03 13.125 45.156 13.125 8.854 0 16.12-2.344 21.797-7.032 5.677-4.687 8.515-10.677 8.515-17.969 0-5-1.849-9.609-5.546-13.828-3.698-4.218-13.698-9.557-30-16.015-16.303-6.459-26.876-12.839-31.72-19.14C3.126 203.525.704 196.52.704 188.811c0-10.937 4.505-20.234 13.516-27.89 9.01-7.656 19.974-11.484 32.89-11.484 11.771 0 24.584 4.062 38.438 12.187ZM147.89 104.594v47.656h40.313v12.5h-40.312v85.469c0 13.75 1.12 22.786 3.359 27.11 2.24 4.322 8.255 6.483 18.047 6.483 7.5 0 16.25-2.343 26.25-7.03v14.687c-10.104 4.896-20 7.344-29.688 7.344-9.479 0-17.395-2.709-23.75-8.125-6.354-5.417-9.53-12.917-9.53-22.5V164.75h-38.75v-12.5h38.75v-34.219l10.468-13.437h4.844ZM331.797 152.25l-107.5 217.344h-15.625l50.157-101.406-60.47-115.938h16.095l52.187 100.625 49.53-100.625zM367.735 77.719v218.28h-15.47V77.72zM522.422 218.813H409.14c-.313 2.5-.47 5-.47 7.5 0 16.041 5.73 29.635 17.188 40.78 11.459 11.147 25 16.72 40.625 16.72 18.23 0 36.042-7.136 53.438-21.407v17.344c-16.458 12.708-34.896 19.063-55.313 19.063-20.729 0-37.864-7.188-51.406-21.563-13.542-14.375-20.312-32.656-20.312-54.844 0-21.041 6.25-38.463 18.75-52.265s28.229-20.703 47.187-20.703c17.813 0 32.865 6.223 45.156 18.671 12.292 12.448 18.438 29.35 18.438 50.703Zm-111.25-12.344h93.125c-5.417-28.021-20.573-42.031-45.469-42.031-11.77 0-21.953 3.671-30.547 11.015-8.594 7.344-14.297 17.682-17.11 31.016Z" />
     </g>
   );
 }
+
+const styles = stylex.create({
+  logo: {
+    fill: vars['--color-fd-card-foreground'],
+    fillRule: 'nonzero',
+  },
+});
 
 export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
   const idA = 'a';
@@ -68,8 +76,8 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
           y1="31.719%"
           y2="59.893%"
         >
-          <stop offset="0%" stopColor="var(--fg1)" stopOpacity="0" />
-          <stop offset="100%" stopColor="var(--fg1)" />
+          <stop offset="0%" stopColor={legacyColors['--fg1']} stopOpacity="0" />
+          <stop offset="100%" stopColor={legacyColors['--fg1']} />
         </linearGradient>
         <linearGradient
           id={idB}
@@ -78,8 +86,8 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
           y1="56.078%"
           y2="39.384%"
         >
-          <stop offset="0%" stopColor="var(--fg1)" stopOpacity="0" />
-          <stop offset="100%" stopColor="var(--fg1)" />
+          <stop offset="0%" stopColor={legacyColors['--fg1']} stopOpacity="0" />
+          <stop offset="100%" stopColor={legacyColors['--fg1']} />
         </linearGradient>
         <filter
           filterUnits="objectBoundingBox"
@@ -162,11 +170,19 @@ export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
         />
         <g transform="translate(-.234)">
           <use fill={`url(#${idC})`} xlinkHref="#d" />
-          <use fill="var(--fg1)" filter={`url(#${idE})`} xlinkHref="#d" />
+          <use
+            fill={legacyColors['--fg1']}
+            filter={`url(#${idE})`}
+            xlinkHref="#d"
+          />
         </g>
         <g transform="translate(-.234)">
           <use fill={`url(#${idF})`} xlinkHref="#g" />
-          <use fill="var(--fg1)" filter={`url(#${idH})`} xlinkHref="#g" />
+          <use
+            fill={legacyColors['--fg1']}
+            filter={`url(#${idH})`}
+            xlinkHref="#g"
+          />
         </g>
       </g>
     </svg>

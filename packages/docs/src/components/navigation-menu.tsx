@@ -3,6 +3,7 @@
 import * as Primitive from '@radix-ui/react-navigation-menu';
 import { StyleXComponentProps } from './layout/shared';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '@/theming/vars.stylex';
 
 const NavigationMenu = Primitive.Root;
 
@@ -15,8 +16,7 @@ const commonStyles = stylex.create({
   accent50: {
     backgroundColor: {
       default: null,
-      ':where([data-state=open])':
-        'color-mix(in oklab, var(--bg-fd-accent) 50%, transparent)',
+      ':where([data-state=open])': `color-mix(in oklab, ${vars['--color-fd-accent']} 50%, transparent)`,
     },
   },
   menuContent: {
@@ -28,20 +28,12 @@ const commonStyles = stylex.create({
     '::-webkit-scrollbar': { width: 5, height: 5 },
     '::-webkit-scrollbar-thumb': {
       borderRadius: 5,
-      backgroundColor: 'var(--color-fd-border)',
+      backgroundColor: vars['--color-fd-border'],
     },
     '::-webkit-scrollbar-track': { backgroundColor: 'transparent' },
     '::-webkit-scrollbar-corner': { display: 'none' },
-    // animation: {
-    //   default: null,
-    //   ':where([data-motion=from-end])': 'var(--animate-fd-enterFromRight)',
-    //   ':where([data-motion=from-start])': 'var(--animate-fd-enterFromLeft)',
-    //   ':where([data-motion=to-end])': 'var(--animate-fd-exitToRight)',
-    //   ':where([data-motion=to-start])': 'var(--animate-fd-exitToLeft)',
-    // },
   },
   menuViewport: {
-    // 'origin-[top_center] overflow-hidden transition-[width,height] duration-300 data-[state=closed]:animate-fd-nav-menu-out data-[state=open]:animate-fd-nav-menu-in'
     position: 'relative',
     height: 'var(--radix-navigation-menu-viewport-height)',
     width: '100%',
@@ -49,11 +41,6 @@ const commonStyles = stylex.create({
     overflow: 'hidden',
     transitionProperty: 'width, height',
     transitionDuration: '300ms',
-    // animation: {
-    //   default: null,
-    //   ':where([data-state=closed])': 'var(--animate-fd-nav-menu-out)',
-    //   ':where([data-state=open])': 'var(--animate-fd-nav-menu-in)',
-    // },
   },
   menuViewportContainer: {
     display: 'flex',

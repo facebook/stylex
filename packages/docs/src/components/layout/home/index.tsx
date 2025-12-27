@@ -10,8 +10,10 @@ import { LargeSearchToggle } from '../../search-toggle';
 import { ThemeToggle } from '../../theme-toggle';
 import Link from 'fumadocs-core/link';
 import { Navbar, NavbarLinkItem } from './client';
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import SidebarToggle from './SidebarToggle';
+import { vars } from '../../../theming/vars.stylex';
 
 export interface HomeLayoutProps extends BaseLayoutProps {
   nav?: Partial<
@@ -146,7 +148,7 @@ const styles = stylex.create({
     outline: 'none',
     boxShadow: {
       default: 'none',
-      ':focus-visible': '0 0 0 2px var(--color-fd-primary)',
+      ':focus-visible': `0 0 0 2px ${vars['--color-fd-primary']}`,
     },
   },
   searchContainer: {
@@ -168,9 +170,8 @@ const styles = stylex.create({
     minWidth: 180,
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'color-mix(in oklab, var(--color-fd-primary) 5%, transparent)',
-      ':focus-visible':
-        'color-mix(in oklab, var(--color-fd-primary) 5%, transparent)',
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
+      ':focus-visible': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
     },
   },
   languageToggle: {

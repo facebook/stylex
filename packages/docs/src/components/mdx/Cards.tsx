@@ -1,5 +1,6 @@
 'use client';
 
+import { vars } from '@/theming/vars.stylex';
 import * as stylex from '@stylexjs/stylex';
 import BaseLink from 'fumadocs-core/link';
 import type { HTMLAttributes, ReactNode } from 'react';
@@ -89,13 +90,13 @@ const styles = stylex.create({
   },
   card: {
     display: 'block',
-    backgroundColor: 'var(--color-fd-card)',
-    color: 'var(--color-fd-card-foreground)',
+    backgroundColor: vars['--color-fd-card'],
+    color: vars['--color-fd-card-foreground'],
     borderRadius: 12,
     borderShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     padding: 16,
     textDecoration: 'none',
     transitionProperty: 'background-color, border-color',
@@ -105,12 +106,12 @@ const styles = stylex.create({
   cardLink: {
     cursor: 'pointer',
     backgroundColor: {
-      default: 'var(--color-fd-card)',
+      default: vars['--color-fd-card'],
       ':hover': 'light-dark(hsl(0, 0%, 97%), hsl(0, 0%, 16%))',
     },
     borderColor: {
-      default: 'var(--color-fd-border)',
-      ':hover': 'var(--color-fd-primary)',
+      default: vars['--color-fd-border'],
+      ':hover': vars['--color-fd-primary'],
     },
   },
   icon: {
@@ -120,9 +121,9 @@ const styles = stylex.create({
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
-    backgroundColor: 'var(--color-fd-muted)',
-    color: 'var(--color-fd-muted-foreground)',
+    borderColor: vars['--color-fd-border'],
+    backgroundColor: vars['--color-fd-muted'],
+    color: vars['--color-fd-muted-foreground'],
     boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   },
   title: {
@@ -137,11 +138,11 @@ const styles = stylex.create({
     marginBottom: 0,
     fontSize: 14,
     lineHeight: 1.5,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
   },
   content: {
     fontSize: 14,
     lineHeight: 1.5,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
   },
 });

@@ -663,9 +663,9 @@ const styles = stylex.create({
     flexGrow: 1,
     flexShrink: 0,
     flexBasis: 38,
-    backgroundColor: 'var(--bg1)',
+    backgroundColor: vars['--color-fd-card'],
     borderRadius: 8,
-    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.05)',
+    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.15)',
     overflow: 'hidden',
   },
   panelClosed: {
@@ -689,7 +689,7 @@ const styles = stylex.create({
     paddingInline: 16,
     fontSize: 14,
     fontWeight: 500,
-    color: 'var(--fg1)',
+    color: vars['--color-fd-foreground'],
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
     borderBottomColor: vars['--color-fd-border'],
@@ -719,30 +719,6 @@ const styles = stylex.create({
   panelChevronOpen: {
     rotate: '0deg',
   },
-  // panelHeaderButton: {
-  //   '::after': {
-  //     content: '›',
-  //     boxSizing: 'border-box',
-  //     position: 'absolute',
-  //     insetInlineEnd: 0,
-  //     top: 0,
-  //     height: '100%',
-  //     aspectRatio: 1,
-  //     paddingBottom: 4,
-  //     display: 'flex',
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     fontSize: '1.5em',
-  //     transitionProperty: 'transform',
-  //     transitionDuration: '200ms',
-  //     transitionTimingFunction: 'ease-in-out',
-  //   },
-  // },
-  // panelHeaderButtonOpen: {
-  //   '::after': {
-  //     transform: 'rotate(90deg)',
-  //   },
-  // },
   panelContent: {
     height: '100%',
     display: 'grid',

@@ -13,7 +13,7 @@ import Link from 'fumadocs-core/link';
 import { usePathname } from 'fumadocs-core/framework';
 import * as stylex from '@stylexjs/stylex';
 import { BaseLayoutProps } from './shared';
-import { activeLinkMarker } from '../../theming/vars.stylex';
+import { activeLinkMarker, vars } from '../../theming/vars.stylex';
 import { Header } from './home';
 import { ChevronDown } from 'lucide-react';
 import { SidebarContext } from '@/contexts/SidebarContext';
@@ -63,12 +63,12 @@ const layoutStyles = stylex.create({
     position: 'sticky',
     display: 'flex',
     top: 0,
-    backgroundColor: 'var(--bg-fd-background)',
+    backgroundColor: vars['--color-fd-background'],
     height: '56px',
     zIndex: 20,
     borderBottomWidth: 1,
     borderBottomStyle: 'solid',
-    borderBottomColor: 'var(--color-fd-border)',
+    borderBottomColor: vars['--color-fd-border'],
   },
   nav: {
     // flex flex-row items-center gap-2 size-full px-4
@@ -210,7 +210,7 @@ const sidebarStyles = stylex.create({
     cornerShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
     zIndex: 1,
   },
@@ -340,7 +340,7 @@ const sidebarItemStyles = stylex.create({
     ['--summary-color']: {
       default: null,
       [stylex.when.descendant(':is(*)', activeLinkMarker)]:
-        'color-mix(in oklab, var(--color-fd-primary) 50%, var(--color-fd-foreground))',
+        `color-mix(in oklab, ${vars['--color-fd-primary']} 50%, ${vars['--color-fd-foreground']})`,
     },
     // '--details-child-height': {
     //   default: '0px',
@@ -372,7 +372,7 @@ const sidebarItemStyles = stylex.create({
     paddingInlineStart: 15,
     borderInlineStartWidth: 1,
     borderInlineStartStyle: 'solid',
-    borderInlineStartColor: 'var(--color-fd-border)',
+    borderInlineStartColor: vars['--color-fd-border'],
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
@@ -395,7 +395,7 @@ const linkVariants = stylex.create({
   },
   active: {
     fontWeight: 500,
-    color: 'var(--color-fd-primary)',
+    color: vars['--color-fd-primary'],
   },
   inactive: {
     color: {

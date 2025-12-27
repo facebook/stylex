@@ -8,6 +8,7 @@
 import * as React from 'react';
 import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '@/theming/vars.stylex';
 
 export function FileNameDialog({
   title,
@@ -128,40 +129,50 @@ export function ConfirmDialog({
 
 const styles = stylex.create({
   dialog: {
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
     borderRadius: '8px',
     borderWidth: '1px',
     borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
+    borderColor: vars['--color-fd-border'],
     padding: '20px',
-    minWidth: '320px',
-    backgroundColor: 'var(--bg1)',
-    color: 'var(--fg1)',
+    width: 480,
+    maxWidth: '100%',
+    backgroundColor: vars['--color-fd-card'],
+    color: vars['--color-fd-muted-foreground'],
+    boxShadow: '0 0 4px rgba(0, 0, 0, 0.3)',
+    '::backdrop': {
+      backdropFilter: 'brightness(0.8) blur(2px)',
+    },
   },
   heading: {
     marginTop: 0,
-    marginBottom: '8px',
-    fontSize: '16px',
+    marginBottom: 8,
+    fontSize: '1rem',
+    color: vars['--color-fd-foreground'],
   },
   description: {
     marginTop: 0,
-    marginBottom: '12px',
-    fontSize: '13px',
+    marginBottom: 12,
+    fontSize: 13,
     lineHeight: 1.5,
   },
   field: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '6px',
-    marginBottom: '16px',
+    gap: 6,
+    marginBottom: 16,
   },
   input: {
-    padding: '8px',
-    borderRadius: '6px',
-    borderWidth: '1px',
+    padding: 8,
+    width: '100%',
+    borderRadius: 6,
+    borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
-    backgroundColor: 'var(--bg2)',
-    color: 'var(--fg1)',
+    borderColor: vars['--color-fd-border'],
+    backgroundColor: vars['--color-fd-background'],
+    color: vars['--color-fd-foreground'],
   },
   actions: {
     display: 'flex',
@@ -169,18 +180,18 @@ const styles = stylex.create({
     justifyContent: 'flex-end',
   },
   button: {
-    padding: '8px 12px',
-    borderRadius: '6px',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
-    backgroundColor: 'var(--bg2)',
-    color: 'var(--fg1)',
+    paddingBlock: 8,
+    paddingInline: 12,
+    borderRadius: 6,
+    boxShadow: `0 0 0 1px ${vars['--color-fd-border']}`,
+    backgroundColor: vars['--color-fd-background'],
+    color: vars['--color-fd-foreground'],
     cursor: 'pointer',
   },
   primary: {
-    backgroundColor: 'var(--pink)',
-    color: 'var(--bg1)',
+    backgroundColor: vars['--color-fd-primary'],
+    color: vars['--color-fd-primary-foreground'],
     borderColor: 'transparent',
+    boxShadow: null,
   },
 });

@@ -1,6 +1,8 @@
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import { StyleXComponentProps } from '../layout/shared';
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '../../theming/vars.stylex';
 
 export const ScrollArea = ({
   xstyle,
@@ -68,7 +70,7 @@ const styles = stylex.create({
     userSelect: 'none',
     animation: {
       default: null,
-      ':where([data-state="hidden"])': 'var(--animate-fd-fade-out)',
+      ':where([data-state="hidden"])': vars['--animate-fd-fade-out'],
     },
   },
   vertical: {
@@ -83,6 +85,6 @@ const styles = stylex.create({
     position: 'relative',
     flex: 1,
     borderRadius: 9999,
-    backgroundColor: 'var(--color-fd-border)',
+    backgroundColor: `${vars['--color-fd-border']}`,
   },
 });

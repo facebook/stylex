@@ -219,8 +219,11 @@ const styles = stylex.create({
     cursor: 'pointer',
   },
   tabIconButton: {
-    backgroundColor: { default: 'transparent', ':hover': 'var(--pink)' },
-    color: { default: 'inherit', ':hover': '#fff', ':focus-visible': '#fff' },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': `color-mix(in srgb, ${vars['--color-fd-accent-foreground']} 20%, transparent)`,
+    },
+    color: vars['--color-fd-foreground'],
     borderRadius: 4,
     height: 32,
     width: 32,

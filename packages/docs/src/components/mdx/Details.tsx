@@ -1,5 +1,6 @@
 'use client';
 
+import { vars } from '@/theming/vars.stylex';
 import * as stylex from '@stylexjs/stylex';
 import { ChevronDown } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
@@ -85,12 +86,12 @@ const DURATION = '0.3s';
 const EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const styles = stylex.create({
   container: {
-    backgroundColor: 'var(--color-fd-card)',
+    backgroundColor: vars['--color-fd-card'],
     borderRadius: 8,
     borderShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     paddingInline: 16,
     paddingBlock: 8,
     interpolateSize: 'allow-keywords',
@@ -128,7 +129,7 @@ const styles = stylex.create({
   },
   summary: {
     fontWeight: 500,
-    color: 'var(--color-fd-card-foreground)',
+    color: vars['--color-fd-card-foreground'],
     cursor: 'default',
     listStyleType: 'none',
     paddingInlineStart: 24,

@@ -2,6 +2,7 @@ import * as stylex from '@stylexjs/stylex';
 import { Link } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactElement } from 'react';
 import { headingMarker } from './mdx.stylex';
+import { vars } from '@/theming/vars.stylex';
 
 type Types = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 type HeadingProps<T extends Types> = Omit<
@@ -49,7 +50,7 @@ const styles = stylex.create({
     width: 14,
     height: 14,
     flexShrink: 0,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
     opacity: {
       default: 0,
       [stylex.when.ancestor(':hover', headingMarker)]: 1,

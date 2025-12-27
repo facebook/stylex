@@ -12,6 +12,7 @@ import type * as PageTree from 'fumadocs-core/page-tree';
 import * as stylex from '@stylexjs/stylex';
 import { StyleXComponentProps } from './shared';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { vars } from '@/theming/vars.stylex';
 
 export interface DocsPageProps {
   toc?: TOCItemType[];
@@ -86,12 +87,12 @@ const pageStyles = stylex.create({
     zIndex: 1,
     borderInlineStartWidth: 1,
     borderInlineStartStyle: 'solid',
-    borderInlineStartColor: 'var(--color-fd-border)',
+    borderInlineStartColor: vars['--color-fd-border'],
   },
   tocPara: {
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
     marginBottom: 8,
   },
 });
@@ -124,7 +125,7 @@ const descStyles = stylex.create({
     marginBottom: 8 * 4,
     fontSize: `${18 / 16}rem`,
     lineHeight: 1.555,
-    color: 'var(--color-fd-muted-background)',
+    color: vars['--color-fd-muted-foreground'],
   },
 });
 
@@ -140,7 +141,7 @@ const titleStyles = stylex.create({
     fontSize: `${30 / 16}rem`,
     lineHeight: 1.2,
     fontWeight: 600,
-    color: 'var(--color-fd-foreground)',
+    color: vars['--color-fd-primary'],
   },
 });
 
@@ -163,12 +164,12 @@ const itemStyles = stylex.create({
   link: (paddingInlineStart: number) => ({
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
-    color: 'color-mix(in oklab, var(--color-fd-foreground) 80%, transparent)',
+    color: `color-mix(in oklab, ${vars['--color-fd-foreground']} 80%, transparent)`,
     paddingBlock: 4,
     paddingInlineStart,
   }),
   active: {
-    color: 'var(--color-fd-primary)',
+    color: vars['--color-fd-primary'],
   },
 });
 
@@ -240,13 +241,13 @@ const footerStyles = stylex.create({
     borderRadius: 20,
     cornerShape: 'squircle',
     padding: 16,
-    color: 'var(--color-fd-primary)',
+    color: vars['--color-fd-primary'],
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'var(--color-fd-muted)',
+      ':hover': vars['--color-fd-muted'],
     },
     gap: 8,
   },

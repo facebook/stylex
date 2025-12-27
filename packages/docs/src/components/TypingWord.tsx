@@ -7,6 +7,7 @@
 
 'use client';
 
+import { vars } from '@/theming/vars.stylex';
 import * as stylex from '@stylexjs/stylex';
 import { useEffect, useState } from 'react';
 
@@ -58,7 +59,7 @@ export default function TypingWord() {
 
 const styles = stylex.create({
   typingWord: {
-    color: 'var(--color-fd-primary)',
+    color: vars['--color-fd-primary'],
     fontWeight: 600,
   },
 });

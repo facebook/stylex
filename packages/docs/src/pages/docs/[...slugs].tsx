@@ -8,6 +8,7 @@ import {
 } from '@/components/layout/page';
 import { mdxComponents } from '@/components/mdx';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '@/theming/vars.stylex';
 
 export default function DocPage({ slugs }: PageProps<'/docs/[...slugs]'>) {
   const page = source.getPage(slugs);
@@ -68,19 +69,19 @@ const styles = stylex.create({
     lineHeight: '2.25rem',
     fontWeight: 700,
     marginBlockEnd: '1rem',
-    color: 'var(--color-fd-foreground)',
+    color: `${vars['--color-fd-foreground']}`,
   },
   fallbackDescription: {
-    color: 'var(--color-fd-muted-foreground)',
+    color: `${vars['--color-fd-muted-foreground']}`,
   },
   codeTitle: {
     fontFamily: 'var(--default-mono-font-family)',
     padding: 3,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: `${vars['--color-fd-border']}`,
     borderRadius: 5,
     fontWeight: 400,
-    backgroundColor: 'var(--color-fd-muted)',
+    backgroundColor: `${vars['--color-fd-muted']}`,
   },
 });

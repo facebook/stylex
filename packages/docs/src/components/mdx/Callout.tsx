@@ -1,10 +1,8 @@
-'use client';
-
 import * as stylex from '@stylexjs/stylex';
 import { Info, TriangleAlert, CircleX, CircleCheck } from 'lucide-react';
 import type { HTMLAttributes, ReactNode, CSSProperties } from 'react';
 import { calloutMarker } from './mdx.stylex';
-import { vars } from '../../theming/vars.stylex';
+import { vars } from '@/theming/vars.stylex';
 
 export type CalloutType =
   | 'info'
@@ -22,13 +20,6 @@ function resolveType(
   if (type === 'tip') return 'info';
   return type;
 }
-
-const CALLOUT_COLORS = {
-  info: 'var(--color-fd-info, hsl(210, 100%, 50%))',
-  warning: 'var(--color-fd-warning, hsl(38, 92%, 50%))',
-  error: 'var(--color-fd-error, hsl(0, 84%, 60%))',
-  success: 'var(--color-fd-success, hsl(142, 71%, 45%))',
-} as const;
 
 export interface CalloutProps extends Omit<CalloutContainerProps, 'title'> {
   title?: ReactNode;
@@ -66,22 +57,24 @@ export function CalloutContainer({
   ...props
 }: CalloutContainerProps) {
   const type = resolveType(inputType);
-  const calloutColor = CALLOUT_COLORS[type];
 
   const defaultIcon = {
-    info: <Info {...stylex.props(styles.icon)} />,
-    warning: <TriangleAlert {...stylex.props(styles.icon)} />,
-    error: <CircleX {...stylex.props(styles.icon)} />,
-    success: <CircleCheck {...stylex.props(styles.icon)} />,
+    info: <Info {...stylex.props(iconStyles.base, iconStyles[type])} />,
+    warning: (
+      <TriangleAlert {...stylex.props(iconStyles.base, iconStyles[type])} />
+    ),
+    error: <CircleX {...stylex.props(iconStyles.base, iconStyles[type])} />,
+    success: (
+      <CircleCheck {...stylex.props(iconStyles.base, iconStyles[type])} />
+    ),
   }[type];
 
   return (
-    <div
-      {...stylex.props(styles.container, calloutMarker)}
-      style={{ '--callout-color': calloutColor } as CSSProperties}
-      {...props}
-    >
-      <div role="none" {...stylex.props(styles.indicator)} />
+    <div {...stylex.props(styles.container, calloutMarker)} {...props}>
+      <div
+        role="none"
+        {...stylex.props(indicatorStyles.base, indicatorStyles[type])}
+      />
       {icon ?? defaultIcon}
       <div {...stylex.props(styles.content)}>{children}</div>
     </div>
@@ -121,6 +114,42 @@ export function CalloutDescription({
   );
 }
 
+const iconStyles = stylex.create({
+  base: {
+    width: 20,
+    height: 20,
+    flexShrink: 0,
+    marginInlineEnd: -2,
+    fill: vars['--color-fd-card'],
+    color: vars['--color-fd-card'],
+  },
+  info: { fill: vars['--color-fd-info'] },
+  warning: { fill: vars['--color-fd-warning'] },
+  error: { fill: vars['--color-fd-error'] },
+  success: { fill: vars['--color-fd-success'] },
+});
+
+const indicatorStyles = stylex.create({
+  base: {
+    width: 2,
+    borderRadius: 2,
+    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-info']} 50%, transparent)`,
+    flexShrink: 0,
+  },
+  info: {
+    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-info']} 50%, transparent)`,
+  },
+  warning: {
+    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-warning']} 50%, transparent)`,
+  },
+  error: {
+    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-error']} 50%, transparent)`,
+  },
+  success: {
+    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-success']} 50%, transparent)`,
+  },
+});
+
 const styles = stylex.create({
   container: {
     display: 'flex',
@@ -139,21 +168,7 @@ const styles = stylex.create({
     color: vars['--color-fd-card-foreground'],
     boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   },
-  indicator: {
-    width: 2,
-    borderRadius: 2,
-    backgroundColor:
-      'color-mix(in srgb, var(--callout-color) 50%, transparent)',
-    flexShrink: 0,
-  },
-  icon: {
-    width: 20,
-    height: 20,
-    flexShrink: 0,
-    marginInlineEnd: -2,
-    fill: 'var(--callout-color)',
-    color: 'var(--color-fd-card)',
-  },
+
   content: {
     display: 'flex',
     flexDirection: 'column',

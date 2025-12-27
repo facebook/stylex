@@ -7,6 +7,7 @@
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '@/theming/vars.stylex';
 
 export function Menu({
   id,
@@ -48,12 +49,12 @@ const styles = stylex.create({
     positionArea: 'bottom right',
     transform: 'translate(-30px, 0)',
     position: 'fixed',
-    backgroundColor: 'var(--bg1)',
+    backgroundColor: vars['--color-fd-card'],
     borderRadius: '6px',
     boxShadow: '0 8px 16px rgba(0,0,0,0.35)',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--fg2)',
+    borderColor: vars['--color-fd-border'],
   },
   menuContent: {
     display: 'flex',
@@ -62,14 +63,10 @@ const styles = stylex.create({
   menuItem: {
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'var(--pink)',
-      ':focus-visible': 'var(--pink)',
+      ':hover': vars['--color-fd-accent'],
+      ':focus-visible': vars['--color-fd-accent'],
     },
-    color: {
-      default: 'var(--fg1)',
-      ':hover': '#fff',
-      ':focus-visible': '#fff',
-    },
+    color: vars['--color-fd-foreground'],
     textAlign: 'left',
     cursor: 'pointer',
     padding: 8,

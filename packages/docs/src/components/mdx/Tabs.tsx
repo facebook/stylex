@@ -18,6 +18,7 @@ import {
 } from 'react';
 import { TAB_ITEM_DISPLAY_NAME, type TabItemProps } from './TabItem';
 import { useStateWithCallback } from '@/hooks/useStateWithCallback';
+import { vars } from '@/theming/vars.stylex';
 
 const sanitizeValue = (value: string) =>
   value
@@ -165,11 +166,11 @@ const tabsStyles = stylex.create({
     width: '100%',
     backgroundColor: {
       default: 'transparent',
-      ':hover': 'var(--color-fd-muted)',
+      ':hover': vars['--color-fd-muted'],
     },
     color: {
-      default: 'var(--color-fd-muted-foreground)',
-      ':hover': 'var(--color-fd-foreground)',
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-foreground'],
     },
     borderWidth: 1,
     borderStyle: 'solid',
@@ -187,11 +188,11 @@ const tabsStyles = stylex.create({
     outline: 'none',
   },
   triggerActive: {
-    color: 'var(--color-fd-foreground)',
-    backgroundColor: 'var(--color-fd-card)',
+    color: vars['--color-fd-foreground'],
+    backgroundColor: vars['--color-fd-card'],
     borderColor: {
-      default: 'var(--color-fd-border)',
-      ':focus-visible': 'var(--color-fd-ring)',
+      default: vars['--color-fd-border'],
+      ':focus-visible': vars['--color-fd-ring'],
     },
   },
   panelHidden: {

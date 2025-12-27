@@ -13,6 +13,7 @@ import nmnImage from '@/static/img/nmn.jpg';
 import necolasImage from '@/static/img/necolas.jpg';
 import mellyeliuImage from '@/static/img/mellyeliu.jpg';
 import vincentriemerImage from '@/static/img/vincentriemer.png';
+import { vars } from '@/theming/vars.stylex';
 
 export default function BlogPage({ slugs }: PageProps<'/blog/[...slugs]'>) {
   const pages = blogSource.getPages();
@@ -96,20 +97,20 @@ const styles = stylex.create({
     lineHeight: '2.25rem',
     fontWeight: 700,
     marginBlockEnd: '1rem',
-    color: 'var(--color-fd-foreground)',
+    color: `${vars['--color-fd-foreground']}`,
   },
   fallbackDescription: {
-    color: 'var(--color-fd-muted-foreground)',
+    color: `${vars['--color-fd-muted-foreground']}`,
   },
   codeTitle: {
     fontFamily: 'var(--default-mono-font-family)',
     padding: 3,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: `${vars['--color-fd-border']}`,
     borderRadius: 5,
     fontWeight: 400,
-    backgroundColor: 'var(--color-fd-muted)',
+    backgroundColor: `${vars['--color-fd-muted']}`,
   },
   authors: {
     display: 'flex',
@@ -131,11 +132,11 @@ const styles = stylex.create({
   authorName: {
     fontSize: 16,
     fontWeight: 600,
-    color: 'var(--color-fd-primary)',
+    color: `${vars['--color-fd-primary']}`,
   },
   authorTitle: {
     fontSize: 14,
-    color: 'var(--color-fd-muted-foreground)',
+    color: `${vars['--color-fd-muted-foreground']}`,
   },
 });
 

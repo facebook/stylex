@@ -30,7 +30,9 @@ import type * as PageTree from 'fumadocs-core/page-tree';
 import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
 import { useMediaQuery } from 'fumadocs-core/utils/use-media-query';
 import { StyleXComponentProps } from './layout/shared';
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '../theming/vars.stylex';
 
 export interface SidebarProps {
   /**
@@ -76,15 +78,14 @@ const itemVariants = stylex.create({
     borderRadius: 8,
     backgroundColor: {
       default: null,
-      ':hover': 'color-mix(in oklab, var(--bg-fd-accent) 50%, transparent)',
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 50%, transparent)`,
     },
     padding: 2 * 4,
-    paddingInlineStart: 'calc(var(--spacing) * 2)',
+    paddingInlineStart: `calc(${vars['--spacing']} * 2)`,
     textAlign: 'start',
     color: {
-      default: 'var(--text-fd-muted-foreground)',
-      ':hover':
-        'color-mix(in oklab, var(--text-fd-accent-foreground) 80%, transparent)',
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent-foreground']} 80%, transparent)`,
     },
     overflowWrap: 'anywhere',
     '--svg-size': 4,
@@ -99,9 +100,8 @@ const itemVariants = stylex.create({
     },
   },
   active: {
-    backgroundColor:
-      'color-mix(in oklab, var(--bg-fd-primary) 10%, transparent)',
-    color: 'var(--text-fd-primary)',
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-primary']} 10%, transparent)`,
+    color: vars['--color-fd-primary'],
   },
 });
 
@@ -195,44 +195,40 @@ const contentStyles = stylex.create({
     left: { default: 0, ':dir(rtl)': 'auto' },
     right: {
       default: null,
-      ':dir(rtl)': 'var(--removed-body-scroll-bar-size, 0)',
+      ':dir(rtl)': 0,
     },
     display: { default: 'flex', '@media (max-width: 768px)': 'none' },
     flexDirection: 'column',
     alignItems: 'flex-end',
-    top: 'var(--fd-sidebar-top)',
-    bottom: 'var(--fd-sidebar-margin)',
+    top: 0,
+    bottom: 0,
     zIndex: 20,
-    backgroundColor: 'var(--color-fd-card)',
+    backgroundColor: vars['--color-fd-card'],
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
     borderInlineEndWidth: 1,
     borderInlineEndStyle: 'solid',
-    borderInlineEndColor: 'var(--color-fd-border)',
+    borderInlineEndColor: vars['--color-fd-border'],
     transitionProperty: 'top, opacity, translate, width',
     transitionDuration: '0.2s',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    width:
-      'calc(var(--spacing) + var(--fd-sidebar-width) + var(--fd-layout-offset))',
-    ':not(#foo) > *': {
-      width: 'var(--fd-sidebar-width)',
-    },
+    width: `calc(${vars['--spacing']} + ${vars['--fd-sidebar-width']} + var(--fd-layout-offset))`,
     '--fd-sidebar-margin': '0px',
-    '--fd-sidebar-top': `calc(var(--fd-banner-height) + var(--fd-nav-height) + var(--fd-sidebar-margin))`,
+    '--fd-sidebar-top': `calc(${vars['--fd-banner-height']} + ${vars['--fd-nav-height']} + var(--fd-sidebar-margin))`,
     '--fd-sidebar-offset': 'calc(16px - 100%)',
   },
   collapsed: {
     borderRadius: 12,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     transform: {
       default: 'translateX(var(--fd-sidebar-offset))',
-      ':dir(rtl)': 'translateX(calc(var(--fd-sidebar-offset) * -1))',
+      ':dir(rtl)': `translateX(calc(var(--fd-sidebar-offset) * -1))`,
     },
     opacity: 0,
     '--fd-sidebar-margin': '0.5rem',
-    width: 'var(--fd-sidebar-width)',
+    width: vars['--fd-sidebar-width'],
   },
   collapsedHovered: {
     zIndex: 50,
@@ -241,7 +237,7 @@ const contentStyles = stylex.create({
     opacity: null,
   },
   hovered: {
-    '--fd-sidebar-offset': 'calc(var(--spacing) * 2)',
+    '--fd-sidebar-offset': `calc(${vars['--spacing']} * 2)`,
   },
 });
 
@@ -285,8 +281,8 @@ const mobContentStyles = stylex.create({
     backdropFilter: 'blur(4px)',
     animation: {
       default: null,
-      ':where([data-state="open"])': 'var(--animate-fd-fade-in)',
-      ':where([data-state="closed"])': 'var(--animate-fd-fade-out)',
+      ':where([data-state="open"])': vars['--animate-fd-fade-in'],
+      ':where([data-state="closed"])': vars['--animate-fd-fade-out'],
     },
   },
   bottom: {
@@ -298,18 +294,18 @@ const mobContentStyles = stylex.create({
       '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     borderInlineStartWidth: 1,
     borderInlineStartStyle: 'solid',
-    borderInlineStartColor: 'var(--color-fd-accent)',
+    borderInlineStartColor: vars['--color-fd-accent'],
     insetInlineEnd: 0,
     insetBlock: 0,
     width: '85%',
     maxWidth: 380,
     // z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out
     zIndex: 40,
-    backgroundColor: 'var(--color-fd-background)',
+    backgroundColor: vars['--color-fd-background'],
     animation: {
       default: null,
-      ':where([data-state="open"])': 'var(--animate-fd-sidebar-in)',
-      ':where([data-state="closed"])': 'var(--animate-fd-sidebar-out)',
+      ':where([data-state="open"])': vars['--animate-fd-sidebar-in'],
+      ':where([data-state="closed"])': vars['--animate-fd-sidebar-out'],
     },
   },
   hidden: {
@@ -353,7 +349,7 @@ const footerStyles = stylex.create({
     flexDirection: 'column',
     borderTopWidth: 1,
     borderTopStyle: 'solid',
-    borderTopColor: 'var(--color-fd-accent)',
+    borderTopColor: vars['--color-fd-accent'],
     padding: 4 * 4,
     paddingTop: 2 * 4,
   },
@@ -603,13 +599,13 @@ const folderStyles = stylex.create({
       content: '',
       position: 'absolute',
       width: 1,
-      backgroundColor: 'var(--color-fd-border)',
+      backgroundColor: vars['--color-fd-border'],
       insetInlineStart: 2.5 * 4,
     },
     // HACK ALERT!
     ':not(#foo) [data-active="true"]::before': {
       content: '',
-      backgroundColor: 'var(--color-fd-primary)',
+      backgroundColor: vars['--color-fd-primary'],
       position: 'absolute',
       width: 1,
       insetBlock: 2.5 * 4,

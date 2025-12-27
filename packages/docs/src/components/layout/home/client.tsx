@@ -20,7 +20,9 @@ import {
   buttonSizeVariants,
   buttonStyles,
 } from '../../ui/button';
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '../../../theming/vars.stylex';
 
 export function Navbar({
   xstyle,
@@ -94,7 +96,7 @@ const navbarStyles = stylex.create({
     overflow: 'hidden',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
   blur: {
@@ -117,7 +119,7 @@ const navbarStyles = stylex.create({
     pointerEvents: 'none',
     inset: -8,
     bottom: -32,
-    backgroundColor: 'var(--color-fd-background)',
+    backgroundColor: vars['--color-fd-background'],
     maskImage:
       'linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 50%, transparent)',
   },
@@ -274,9 +276,9 @@ const navItemVariants = stylex.create({
     gap: 1 * 4,
     padding: 2 * 4,
     color: {
-      default: 'var(--color-fd-secondary-text)',
-      ':hover': 'var(--color-fd-foreground)',
-      ':where([data-active=true])': 'var(--color-fd-primary)',
+      default: vars['--color-fd-secondary-text'],
+      ':hover': vars['--color-fd-foreground'],
+      ':where([data-active=true])': vars['--color-fd-primary'],
     },
     borderRadius: 8,
     cornerShape: 'squircle',
@@ -290,8 +292,8 @@ const navItemStyles = stylex.create({
     borderRadius: '8px',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
-    backgroundColor: 'var(--bg-fd-muted)',
+    borderColor: vars['--color-fd-border'],
+    backgroundColor: vars['--color-fd-muted'],
     padding: 4,
     ['--svg-size' as any]: '4px',
   },
@@ -302,10 +304,10 @@ const navItemStyles = stylex.create({
     borderRadius: '8px',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
+    borderColor: vars['--color-fd-border'],
     backgroundColor: {
       default: 'var(--bg-fd-card)',
-      ':hover': 'color-mix(in oklab, var(--bg-fd-accent) 80%, transparent)',
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 80%, transparent)`,
     },
     color: { default: null, ':hover': 'var(--text-fd-accent-foreground)' },
     padding: 3 * 4,

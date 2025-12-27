@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import StylexAnimatedLogo from '@/components/StylexAnimatedLogo';
 import CtaButton from '@/components/CtaButton';
 import TypingWord from '@/components/TypingWord';
 import Footer from '@/components/Footer';
+import { vars } from '@/theming/vars.stylex';
 
 export default function Home() {
   return (
@@ -48,8 +48,8 @@ const styles = stylex.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'var(--color-fd-background)',
-    color: 'var(--color-fd-foreground)',
+    backgroundColor: `${vars['--color-fd-background']}`,
+    color: `${vars['--color-fd-foreground']}`,
   },
   hero: {
     paddingBlock: 80,
@@ -81,7 +81,7 @@ const styles = stylex.create({
     paddingInline: 24,
     fontWeight: 200,
     textAlign: 'center',
-    color: 'var(--color-fd-secondary-text)',
+    color: `${vars['--color-fd-secondary']}`,
     fontSize: 'clamp(1rem, 1rem + 0.5vw, 1.5rem)',
   },
   ctaSection: {

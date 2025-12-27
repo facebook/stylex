@@ -11,10 +11,10 @@ import {
 } from './ui/button';
 import { type StyleXComponentProps } from './layout/shared';
 import * as stylex from '@stylexjs/stylex';
+import { vars } from '@/theming/vars.stylex';
 
 interface SearchToggleProps
-  extends Omit<StyleXComponentProps<'button'>, 'color'>,
-    ButtonProps {
+  extends Omit<StyleXComponentProps<'button'>, 'color'>, ButtonProps {
   hideIfDisabled?: boolean;
 }
 
@@ -93,20 +93,19 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: {
-      default: 'var(--color-fd-border)',
-      ':hover': 'var(--color-fd-primary)',
-      ':focus-visible': 'var(--color-fd-primary)',
+      default: vars['--color-fd-border'],
+      ':hover': vars['--color-fd-primary'],
+      ':focus-visible': vars['--color-fd-primary'],
     },
     outline: 'none',
-    backgroundColor:
-      'color-mix(in oklab, var(--bg-fd-secondary) 50%, transparent)',
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-secondary']} 50%, transparent)`,
     padding: 1.5 * 4,
     paddingInlineStart: 2 * 4,
 
     fontSize: `${14 / 16}rem`,
     color: {
-      default: 'var(--text-fd-muted-foreground)',
-      ':hover': 'var(--text-fd-accent-foreground)',
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-accent-foreground'],
     },
     transitionProperty: 'color, background-color, border-color',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -114,18 +113,16 @@ const styles = stylex.create({
   },
   size4: { width: 16, height: 16 },
   hotkeyContainer: {
-    // ms-auto inline-flex gap-0.5
     marginInlineStart: 'auto',
     display: 'inline-flex',
     gap: 0.5 * 4,
   },
   hotkey: {
-    // rounded-md border bg-fd-background px-1.5
     borderRadius: 8,
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-border)',
-    backgroundColor: 'var(--bg-fd-background)',
+    borderColor: vars['--color-fd-border'],
+    backgroundColor: vars['--color-fd-background'],
     paddingInline: 1.5 * 4,
   },
 });

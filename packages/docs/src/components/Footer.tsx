@@ -11,6 +11,7 @@ import { GithubIcon, TwitterIcon } from 'lucide-react';
 import Bluesky from './icons/Bluesky';
 import MetaOpenSource from './icons/MetaOpenSource';
 import Link from 'fumadocs-core/link';
+import { vars } from '@/theming/vars.stylex';
 
 function ExternalLinkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -200,8 +201,8 @@ const styles = stylex.create({
   footer: {
     borderTopWidth: 1,
     borderTopStyle: 'solid',
-    borderTopColor: 'var(--color-fd-border)',
-    backgroundColor: 'var(--color-fd-background)',
+    borderTopColor: vars['--color-fd-border'],
+    backgroundColor: vars['--color-fd-background'],
     transitionProperty: 'background-color, border-color',
     transitionDuration: '300ms',
   },
@@ -229,7 +230,7 @@ const styles = stylex.create({
     marginBottom: 16,
     fontWeight: 600,
     fontSize: '0.875rem',
-    color: 'var(--color-fd-foreground)',
+    color: vars['--color-fd-foreground'],
     textAlign: 'center',
   },
   list: {
@@ -242,13 +243,13 @@ const styles = stylex.create({
     gap: 8,
   },
   link: {
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
     textDecoration: 'none',
     fontSize: '0.875rem',
     transitionProperty: 'color',
     transitionDuration: '150ms',
     ':hover': {
-      color: 'var(--color-fd-foreground)',
+      color: vars['--color-fd-foreground'],
     },
   },
   externalLink: {
@@ -289,7 +290,7 @@ const styles = stylex.create({
     height: 68,
   },
   copyright: {
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
     fontSize: '0.875rem',
   },
   socialLinks: {
@@ -299,11 +300,11 @@ const styles = stylex.create({
   },
   socialLink: {
     padding: 8,
-    color: 'var(--color-fd-muted-foreground)',
+    color: vars['--color-fd-muted-foreground'],
     transitionProperty: 'color',
     transitionDuration: '150ms',
     ':hover': {
-      color: 'var(--color-fd-foreground)',
+      color: vars['--color-fd-foreground'],
     },
   },
   socialIcon: {

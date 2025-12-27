@@ -10,6 +10,7 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { LogoText, viewBox } from './Logo';
+import { vars } from '@/theming/vars.stylex';
 
 const ANIM_DURATION = '6s';
 const STAGGER = '-2.5s';
@@ -64,9 +65,9 @@ const styles = stylex.create({
     borderLeftWidth: 8,
     borderTopWidth: 8,
     borderStyle: 'solid',
-    borderColor: 'var(--color-fd-card-foreground)',
-    borderTopColor: 'var(--color-fd-card-foreground)',
-    borderLeftColor: 'var(--color-fd-card-foreground)',
+    borderColor: vars['--color-fd-card-foreground'],
+    borderTopColor: vars['--color-fd-card-foreground'],
+    borderLeftColor: vars['--color-fd-card-foreground'],
   },
   mask1: {
     maskImage: 'linear-gradient(125deg, white 30%, transparent 65%)',
