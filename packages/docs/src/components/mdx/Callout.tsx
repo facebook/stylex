@@ -70,7 +70,10 @@ export function CalloutContainer({
   }[type];
 
   return (
-    <div {...stylex.props(styles.container, calloutMarker)} {...props}>
+    <div
+      {...stylex.props(styles.container, containerStyles[type], calloutMarker)}
+      {...props}
+    >
       <div
         role="none"
         {...stylex.props(indicatorStyles.base, indicatorStyles[type])}
@@ -133,20 +136,28 @@ const indicatorStyles = stylex.create({
   base: {
     width: 2,
     borderRadius: 2,
-    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-info']} 50%, transparent)`,
+    backgroundColor: `color-mix(in srgb, currentColor 50%, transparent)`,
+    // boxShadow: '0 0 16px color-mix(in srgb, currentColor 50%, transparent)',
     flexShrink: 0,
   },
+  info: { color: vars['--color-fd-info'] },
+  warning: { color: vars['--color-fd-warning'] },
+  error: { color: vars['--color-fd-error'] },
+  success: { color: vars['--color-fd-success'] },
+});
+
+const containerStyles = stylex.create({
   info: {
-    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-info']} 50%, transparent)`,
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-info']} 10%, ${vars['--color-fd-card']})`,
   },
   warning: {
-    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-warning']} 50%, transparent)`,
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-warning']} 10%, ${vars['--color-fd-card']})`,
   },
   error: {
-    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-error']} 50%, transparent)`,
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-error']} 10%, ${vars['--color-fd-card']})`,
   },
   success: {
-    backgroundColor: `color-mix(in srgb, ${vars['--color-fd-success']} 50%, transparent)`,
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-success']} 10%, ${vars['--color-fd-card']})`,
   },
 });
 
