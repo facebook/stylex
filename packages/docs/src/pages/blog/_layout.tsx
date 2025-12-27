@@ -5,7 +5,7 @@ import { baseOptions } from '@/lib/layout.shared';
 
 export default function Layout({ children }: { children: ReactNode }) {
   // HACK:
-  // Patch the pageTree to conver URLs to slugs
+  // Patch the pageTree to convert URLs to slugs
   const pages = blogSource.getPages();
   const pageTreeChildren = blogSource.pageTree.children
     .map((child: any) => {

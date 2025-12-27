@@ -1,22 +1,22 @@
 import * as stylex from '@stylexjs/stylex';
 import { blogSource } from '@/lib/source';
-import { Card } from '@/components/mdx/Cards';
+import BlogRoute from './[...slugs]';
 
 export default function BlogPage() {
   const pages = blogSource.getPages();
 
   const sortedPages = [...pages].sort((a, b) => b.path.localeCompare(a.path));
+  const latestPage = sortedPages[0];
+  if (!latestPage) {
+    return <div {...stylex.props(styles.container)}>No blog posts yet.</div>;
+  }
 
   return (
-    <div {...stylex.props(styles.container)}>
-      {sortedPages.map((page) => (
-        <Card
-          title={page.data.title}
-          description={page.data.description ?? ''}
-          href={`/blog/${page.data.slug}`}
-        />
-      ))}
-    </div>
+    <BlogRoute
+      slugs={[latestPage.data.slug]}
+      path={`/blog/${latestPage.data.slug}`}
+      query={''}
+    />
   );
 }
 
