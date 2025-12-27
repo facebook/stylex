@@ -52,7 +52,10 @@ export const buttonVariantStyles = stylex.create({
   },
   ghost: {
     backgroundColor: 'transparent',
-    color: vars['--color-fd-foreground'],
+    color: {
+      default: vars['--color-fd-foreground'],
+      ':hover': vars['--color-fd-primary'],
+    },
   },
   secondary: {
     borderWidth: 1,

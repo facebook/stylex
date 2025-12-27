@@ -276,8 +276,8 @@ const navItemVariants = stylex.create({
     gap: 1 * 4,
     padding: 2 * 4,
     color: {
-      default: vars['--color-fd-secondary-text'],
-      ':hover': vars['--color-fd-foreground'],
+      default: vars['--color-fd-secondary-foreground'],
+      ':hover': vars['--color-fd-primary'],
       ':where([data-active=true])': vars['--color-fd-primary'],
     },
     borderRadius: 8,
@@ -309,7 +309,7 @@ const navItemStyles = stylex.create({
       default: 'var(--bg-fd-card)',
       ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 80%, transparent)`,
     },
-    color: { default: null, ':hover': 'var(--text-fd-accent-foreground)' },
+    color: { default: null, ':hover': 'var(--text-fd-primary)' },
     padding: 3 * 4,
     transitionProperty: 'background-color, color',
   },
@@ -387,6 +387,7 @@ export function MenuLinkItem({
     <NavigationMenuLink asChild>
       <BaseLinkItem
         item={item}
+        aria-label={item.type === 'icon' ? item.label : undefined}
         xstyle={[
           (item.type == null || item.type === 'main') &&
             menuLinkStyles.baseLinkItem,
@@ -402,7 +403,6 @@ export function MenuLinkItem({
           ],
           xstyle,
         ]}
-        aria-label={item.type === 'icon' ? item.label : undefined}
       >
         {item.icon}
         {item.type === 'icon' ? undefined : item.text}

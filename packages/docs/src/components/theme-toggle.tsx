@@ -144,7 +144,7 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: vars['--color-fd-border'],
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-foreground']} 12%, ${vars['--color-fd-background']})`,
+    // backgroundColor: `color-mix(in oklab, ${vars['--color-fd-foreground']} 12%, ${vars['--color-fd-background']})`,
     padding: 0.5 * 4,
     overflow: 'hidden',
   },
@@ -175,8 +175,8 @@ const styles = stylex.create({
     flexGrow: 1,
   },
   itemActive: {
-    backgroundColor: vars['--color-fd-background'],
-    color: vars['--color-fd-foreground'],
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-primary']} 12%, ${vars['--color-fd-background']})`,
+    color: vars['--color-fd-primary'],
   },
   icon: {
     width: 16,

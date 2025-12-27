@@ -108,12 +108,12 @@ export const vars = stylex.defineVars({
   '--color-fd-secondary': lightDark('hsl(0, 0%, 93.1%)', 'hsl(0, 0%, 12.9%)'),
   '--color-fd-secondary-foreground': lightDark(
     'hsl(0, 0%, 9%)',
-    'hsl(0, 0%, 92%)',
+    'hsl(0, 0%, 70%)',
   ),
   '--color-fd-accent': lightDark('hsl(223, 16%, 83%)', 'hsl(237, 16%, 23%)'),
   '--color-fd-accent-foreground': lightDark(
-    'hsl(234, 16%, 35%)',
-    'hsl(226, 64%, 88%)',
+    'hsl(234, 94%, 55%)',
+    'hsl(226, 94%, 80%)',
   ),
   '--color-fd-ring': lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
   '--color-fd-overlay': lightDark('transparent', 'hsla(0, 0%, 0%, 0.2)'),
