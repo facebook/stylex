@@ -298,5 +298,5 @@ export const colors = stylex.defineVars({
   gray4: '#ced4da',
   gray8: '#343a40',
   gray9: '#212529',
-  lime7: '#74b816'
-})
+  lime7: '#74b816',
+});

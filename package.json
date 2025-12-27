@@ -1,6 +1,7 @@
 {
   "private": true,
   "name": "stylex-monorepo",
+  "packageManager": "yarn@1.22.22",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -8,8 +9,8 @@
     "prepare": "husky install tools/husky",
     "build": "npm run build --workspaces --if-present",
     "flow": "flow",
-    "prettier": "prettier --write \"**/*.{js,flow,mjs}\"",
-    "prettier:report": "prettier --check \"**/*.{js,flow,mjs}\"",
+    "prettier": "prettier --write \"**/*.{js,flow,mjs,tsx,ts}\"",
+    "prettier:report": "prettier --check \"**/*.{js,flow,mjs,tsx,ts}\"",
     "lint": "npm run lint:report -- --fix",
     "lint:report": "eslint . --ext .flow,.js,.jsx,.mjs",
     "release": "tools/npm/release.js",
@@ -18,6 +19,7 @@
   },
   "workspaces": [
     "packages/style-value-parser",
+    "packages/@stylexjs/shared",
     "packages/@stylexjs/stylex",
     "packages/@stylexjs/babel-plugin",
     "packages/@stylexjs/*",

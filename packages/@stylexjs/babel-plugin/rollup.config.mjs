@@ -62,7 +62,7 @@ const browserConfig = {
   input: './src/index.js',
   output: {
     file: './lib/index.browser.js',
-    format: 'cjs',
+    format: 'esm',
   },
   external: ['@babel/standalone', '@stylexjs/stylex', 'postcss-value-parser'],
   plugins: [
