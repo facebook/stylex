@@ -71,11 +71,10 @@ const styles = stylex.create({
   },
   mask1: {
     maskImage: 'linear-gradient(125deg, white 30%, transparent 65%)',
-    WebkitMaskImage: 'linear-gradient(125deg, white 30%, transparent 65%)',
   },
   mask2: {
-    maskImage: 'linear-gradient(80deg, white 30%, transparent 65%)',
-    WebkitMaskImage: 'linear-gradient(80deg, white 30%, transparent 65%)',
+    rotate: '-78deg',
+    maskImage: 'linear-gradient(145deg, white 30%, transparent 65%)',
   },
   dotPath: {
     position: 'absolute',
@@ -97,7 +96,7 @@ const styles = stylex.create({
     width: 20,
     height: 20,
     borderRadius: '50%',
-    borderColor: 'var(--bg1)',
+    borderColor: vars['--color-fd-background'],
     borderStyle: 'solid',
     borderWidth: 2,
     zIndex: 1,
@@ -113,7 +112,7 @@ const styles = stylex.create({
     bottom: 28,
     right: 28,
     animationName: fade2,
-    animationDelay: STAGGER,
+    animationDelay: '-2.8s',
     backgroundImage:
       'radial-gradient(#E5F9FF 0%, #B2EEFE 21.605%, #5ED9FB 57.356%, #5DD1F1 77.207%, #55C4E3 100%)',
   },
