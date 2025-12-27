@@ -118,26 +118,11 @@ export const vars = stylex.defineVars({
   '--color-fd-ring': lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
   '--color-fd-overlay': lightDark('transparent', 'hsla(0, 0%, 0%, 0.2)'),
 
-  '--color-fd-info': lightDark(
-    'oklch(62.3% 0.214 259.815)',
-    'oklch(62.3% 0.214 259.815)',
-  ),
-  '--color-fd-warning': lightDark(
-    'oklch(76.9% 0.188 70.08)',
-    'oklch(76.9% 0.188 70.08)',
-  ),
-  '--color-fd-error': lightDark(
-    'oklch(63.7% 0.237 25.331)',
-    'oklch(63.7% 0.237 25.331)',
-  ),
-  '--color-fd-success': lightDark(
-    'oklch(72.3% 0.219 149.579)',
-    'oklch(72.3% 0.219 149.579)',
-  ),
-  '--color-fd-diff-remove': lightDark(
-    'rgba(200, 10, 100, 0.12)',
-    'rgba(200, 10, 100, 0.12)',
-  ),
+  '--color-fd-info': 'oklch(62.3% 0.214 259.815)',
+  '--color-fd-warning': 'oklch(76.9% 0.188 70.08)',
+  '--color-fd-error': 'oklch(63.7% 0.237 25.331)',
+  '--color-fd-success': 'oklch(72.3% 0.219 149.579)',
+  '--color-fd-diff-remove': 'rgba(200, 10, 100, 0.12)',
   '--color-fd-diff-remove-symbol': 'rgb(230, 10, 100)',
   '--color-fd-diff-add': 'rgba(14, 180, 100, 0.1)',
   '--color-fd-diff-add-symbol': 'rgb(10, 200, 100)',

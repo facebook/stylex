@@ -23,7 +23,15 @@ export default function Heading<T extends Types = 'h1'>({
   if (!props.id) return <As {...stylex.props(xstyle)} {...props} />;
 
   return (
-    <As {...stylex.props(styles.heading, headingMarker, xstyle)} {...props}>
+    <As
+      {...stylex.props(
+        styles.heading,
+        sizes[As as keyof typeof sizes] ?? {},
+        headingMarker,
+        xstyle,
+      )}
+      {...props}
+    >
       <a data-card="" href={`#${props.id}`} {...stylex.props(styles.anchor)}>
         {props.children}
       </a>
@@ -39,6 +47,8 @@ const styles = stylex.create({
     alignItems: 'center',
     gap: 8,
     scrollMarginTop: '7rem',
+    marginTop: '1em',
+    // marginBottom: '0.5em',
   },
   anchor: {
     textDecoration: 'none',
@@ -59,4 +69,54 @@ const styles = stylex.create({
     transitionDuration: '0.15s',
     transitionTimingFunction: 'ease',
   },
+});
+
+// const TEXT_XS = '0.75rem';
+// const TEXT_XS_LH = 'calc(1 / 0.75)';
+// const TEXT_SM = '0.875rem';
+// const TEXT_SM_LH = 'calc(1.25 / 0.875)';
+// const TEXT_LG = '1.125rem';
+// const TEXT_LG_LH = 'calc(1.75 / 1.125)';
+// const TEXT_2XL = '1.5rem';
+// const TEXT_2XL_LH = 'calc(2.5 / 1.5)';
+const TEXT_3XL = '1.875rem';
+// const TEXT_3XL_LH = 'calc(3.5 / 1.875)';
+
+const sizes = stylex.create({
+  h1: {
+    fontSize: TEXT_3XL,
+    lineHeight: 1.1111111,
+    fontWeight: 800,
+    // marginTop: 0,
+    // marginBottom: '0.8888889em',
+  },
+  h2: {
+    fontSize: '1.4em',
+    lineHeight: 1.3333333,
+    fontWeight: 600,
+    // marginTop: '1.5em',
+    // marginBottom: '0.5em',
+  },
+  h3: {
+    fontSize: '1.2em',
+    lineHeight: 1.6,
+    fontWeight: 600,
+    // marginTop: '1.6em',
+    // marginBottom: '0.6em',
+  },
+  h4: {
+    fontSize: '1em',
+    lineHeight: 1.5,
+    fontWeight: 600,
+    // marginTop: '1.5em',
+    // marginBottom: '0.5em',
+  },
+  h5: {
+    fontSize: '0.875em',
+    lineHeight: 1.5,
+    fontWeight: 500,
+    // marginTop: '1.5em',
+    // marginBottom: '0.5em',
+  },
+  h6: {},
 });

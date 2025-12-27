@@ -26,7 +26,10 @@ const TabsContext = createContext<{
 
 export function Pre(props: ComponentProps<'pre'>) {
   return (
-    <pre {...stylex.props(styles.pre, preMarker)} {...props}>
+    <pre
+      {...stylex.props(styles.pre, stylex.defaultMarker(), preMarker)}
+      {...props}
+    >
       {props.children}
     </pre>
   );
@@ -316,6 +319,10 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    ':where(*) svg': {
+      width: '1em',
+      height: '1em',
+    },
   },
   title: {
     flex: 1,

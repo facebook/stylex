@@ -16,7 +16,7 @@ import {
   CalloutTitle,
   CalloutDescription,
 } from './Callout';
-import P from './P';
+import { Li, Ol, P, Ul } from './core';
 import Image from './Image';
 import {
   CodeBlock,
@@ -27,6 +27,7 @@ import {
   Pre,
 } from './CodeBlock';
 import { preMarker } from './mdx.stylex';
+import { vars } from '@/theming/vars.stylex';
 
 type StyleXHTMLProps<T extends HTMLElement = HTMLElement> = Omit<
   HTMLAttributes<T>,
@@ -63,6 +64,9 @@ export const mdxComponents = {
     <code {...props} {...stylex.props(styles.code)} />
   ),
   p: P,
+  ul: Ul,
+  ol: Ol,
+  li: Li,
   TabItem,
   Tabs,
   Dial,
@@ -98,13 +102,33 @@ const styles = stylex.create({
     // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
     color: 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
     backgroundColor: {
-      default: null,
-      [stylex.when.ancestor(':where(*)', preMarker)]: 'transparent',
+      default: vars['--color-fd-muted'],
+      [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',
     },
     borderStyle: {
-      default: null,
-      [stylex.when.ancestor(':where(*)', preMarker)]: 'none',
+      default: 'solid',
+      [stylex.when.ancestor(':where(pre)', preMarker)]: 'none',
     },
-    lineHeight: 1.5,
+    borderWidth: 1,
+    borderColor: vars['--color-fd-border'],
+    borderRadius: 5,
+    lineHeight: {
+      default: null,
+      [stylex.when.ancestor(':where(pre)')]: 1.5,
+    },
+    paddingBlock: {
+      default: 3,
+      [stylex.when.ancestor(':where(pre)')]: 8,
+    },
+    paddingInline: {
+      default: 3,
+      [stylex.when.ancestor(':where(pre)')]: 16,
+    },
+    fontSize: {
+      default: 13 / 16 + 'rem',
+      [stylex.when.ancestor(':where(h1)')]: '1.5rem',
+      [stylex.when.ancestor(':where(h2)')]: '0.875em',
+      [stylex.when.ancestor(':where(h3)')]: '0.9em',
+    },
   },
 });

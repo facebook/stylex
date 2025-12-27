@@ -122,7 +122,6 @@ export function DocsDescription({
 }
 const descStyles = stylex.create({
   p: {
-    marginBottom: 8 * 4,
     fontSize: `${18 / 16}rem`,
     lineHeight: 1.555,
     color: vars['--color-fd-muted-foreground'],

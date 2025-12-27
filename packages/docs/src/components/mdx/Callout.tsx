@@ -137,7 +137,6 @@ const indicatorStyles = stylex.create({
     width: 2,
     borderRadius: 2,
     backgroundColor: `color-mix(in srgb, currentColor 50%, transparent)`,
-    // boxShadow: '0 0 16px color-mix(in srgb, currentColor 50%, transparent)',
     flexShrink: 0,
   },
   info: { color: vars['--color-fd-info'] },

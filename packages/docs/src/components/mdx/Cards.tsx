@@ -87,6 +87,7 @@ const styles = stylex.create({
     },
     gap: 12,
     containerType: 'inline-size',
+    marginTop: 12,
   },
   card: {
     display: 'block',
