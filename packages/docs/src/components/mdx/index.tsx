@@ -122,7 +122,8 @@ const styles = stylex.create({
     },
     paddingInline: {
       default: 3,
-      [stylex.when.ancestor(':where(pre)')]: 16,
+      // CHange this to 16 when removing preset.css
+      [stylex.when.ancestor(':where(pre)')]: 0,
     },
     fontSize: {
       default: 13 / 16 + 'rem',
