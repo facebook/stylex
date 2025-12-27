@@ -245,6 +245,21 @@ export const vars = stylex.defineVars({
     [getUniqueFilename],
   );
 
+  const ensureMonacoModel = useCallback(
+    (monacoInstance: any, filename: string, content: string) => {
+      const uri = monacoInstance.Uri.file(`/${filename}`);
+      const existingModel = monacoInstance.editor.getModel(uri);
+      if (existingModel) {
+        if (existingModel.getValue() !== content) {
+          existingModel.setValue(content);
+        }
+        return existingModel;
+      }
+      return monacoInstance.editor.createModel(content, 'typescript', uri);
+    },
+    [],
+  );
+
   function updateSandpack(updatedInputFiles: Record<string, string>) {
     try {
       const { transformedFiles, generatedCSS } =
@@ -312,11 +327,7 @@ export const vars = stylex.defineVars({
     const success = updateSandpack(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
 
-    monaco.editor.createModel(
-      template,
-      'typescript',
-      monaco.Uri.file(`/${trimmedName}`),
-    );
+    ensureMonacoModel(monaco, trimmedName, template);
   };
 
   const renameFile = (oldName: string, newName: string) => {
@@ -333,20 +344,20 @@ export const vars = stylex.defineVars({
     const success = updateSandpack(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
 
-    monaco.editor.createModel(
-      updatedInputFiles[trimmedName],
-      'typescript',
-      monaco.Uri.file(`/${trimmedName}`),
+    ensureMonacoModel(
+      monaco,
+      trimmedName,
+      updatedInputFiles[trimmedName] ?? '',
     );
 
     if (activeInputFile === oldName) {
       setActiveInputFile(trimmedName);
     }
 
-    const oldModel = monaco.editor.getModel(
-      monaco.Uri.parse(monaco.Uri.file(`/${oldName}`)),
-    );
-    oldModel.dispose();
+    const oldModel = monaco.editor.getModel(monaco.Uri.file(`/${oldName}`));
+    if (oldModel) {
+      oldModel.dispose();
+    }
 
     return true;
   };
@@ -366,10 +377,10 @@ export const vars = stylex.defineVars({
     }
     updateSandpack(updatedInputFiles);
 
-    const oldModel = monaco.editor.getModel(
-      monaco.Uri.parse(monaco.Uri.file(`/${filename}`)),
-    );
-    oldModel.dispose();
+    const oldModel = monaco.editor.getModel(monaco.Uri.file(`/${filename}`));
+    if (oldModel) {
+      oldModel.dispose();
+    }
 
     return true;
   };
@@ -457,11 +468,7 @@ export const vars = stylex.defineVars({
                   for (const [filename, content] of Object.entries(
                     inputFiles,
                   )) {
-                    monaco.editor.createModel(
-                      content,
-                      'typescript',
-                      monaco.Uri.file(`/${filename}`),
-                    );
+                    ensureMonacoModel(monaco, filename, content);
                   }
 
                   monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
