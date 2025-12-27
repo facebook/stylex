@@ -47,7 +47,7 @@ const footerLinks = {
       href: 'https://github.com/facebook/stylex',
       external: true,
     },
-    { label: 'Acknowledgements', href: '/docs/learn/acknowledgements' },
+    { label: 'Acknowledgements', href: '/docs/acknowledgements' },
   ],
   legal: [
     {

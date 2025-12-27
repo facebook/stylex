@@ -335,12 +335,8 @@ const styles = stylex.create({
   },
   viewport: {
     paddingBlock: 8,
-    overflowX: 'auto',
-    overflowY: 'auto',
-    maxHeight: 600,
   },
   viewportPadded: {
-    // Space for floating copy button
     paddingInlineEnd: 48,
   },
   pre: {
