@@ -27,6 +27,7 @@ export default function Heading<T extends Types = 'h1'>({
       {...stylex.props(
         styles.heading,
         sizes[As as keyof typeof sizes] ?? {},
+        stylex.defaultMarker(),
         headingMarker,
         xstyle,
       )}
