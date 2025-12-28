@@ -209,6 +209,9 @@ export function SearchDialog({
       <Dialog.Portal>
         <Dialog.Overlay {...stylex.props(styles.overlay)} />
         <Dialog.Content {...stylex.props(styles.content)}>
+          <div {...stylex.props(styles.bgBlurContainer)}>
+            <div {...stylex.props(styles.bgBlur)} />
+          </div>
           <Dialog.Title {...stylex.props(styles.visuallyHidden)}>
             {text.search}
           </Dialog.Title>
@@ -401,7 +404,7 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: vars['--color-fd-border'],
-    backgroundColor: vars['--color-fd-popover'],
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-popover']} 35%, transparent)`,
     color: vars['--color-fd-popover-foreground'],
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
     overflow: 'hidden',
@@ -412,6 +415,16 @@ const styles = stylex.create({
     },
     animationDuration: '300ms',
     animationTimingFunction: EASINGS.dialog,
+  },
+  bgBlurContainer: {
+    position: 'absolute',
+    inset: 0,
+    oveflow: 'clip',
+  },
+  bgBlur: {
+    position: 'absolute',
+    inset: -64,
+    backdropFilter: 'blur(48px) saturate(400%)',
   },
   visuallyHidden: {
     position: 'absolute',
@@ -425,6 +438,7 @@ const styles = stylex.create({
     borderWidth: 0,
   },
   header: {
+    position: 'relative',
     display: 'flex',
     alignItems: 'center',
     gap: 2 * 4,
@@ -483,6 +497,7 @@ const styles = stylex.create({
     outline: 'none',
   },
   listContainer: {
+    position: 'relative',
     ['--fd-animated-height' as any]: '0px',
     overflow: 'hidden',
     height: 'var(--fd-animated-height)',
@@ -519,7 +534,7 @@ const styles = stylex.create({
     borderRadius: 8,
     backgroundColor: {
       default: 'transparent',
-      ':hover': vars['--color-fd-accent'],
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 45%, transparent)`,
     },
     color: vars['--color-fd-popover-foreground'],
     fontSize: `${14 / 16}rem`,
@@ -528,7 +543,7 @@ const styles = stylex.create({
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
   },
   itemButtonActive: {
-    backgroundColor: vars['--color-fd-accent'],
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-accent']} 45%, transparent)`,
     color: vars['--color-fd-accent-foreground'],
   },
   breadcrumbs: {
@@ -578,6 +593,7 @@ const styles = stylex.create({
     textDecorationLine: 'underline',
   },
   footer: {
+    position: 'relative',
     padding: 3 * 4,
     backgroundColor: `color-mix(in oklab, ${vars['--color-fd-secondary']} 50%, transparent)`,
     display: 'flex',
