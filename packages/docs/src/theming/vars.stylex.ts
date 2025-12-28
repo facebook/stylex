@@ -22,6 +22,36 @@ const fdSidebarOut = stylex.keyframes({
   },
 });
 
+const fdDialogIn = stylex.keyframes({
+  from: {
+    // transform: 'scale(1.06)',
+    scale: 1.06,
+    opacity: 0,
+  },
+  to: {
+    // transform: 'scale(1)',
+    scale: 1,
+  },
+});
+
+const fdDialogOut = stylex.keyframes({
+  from: {
+    // transform: 'scale(1)',
+    scale: 1,
+  },
+  to: {
+    // transform: 'scale(1.04)',
+    scale: 1.04,
+    opacity: 0,
+  },
+});
+
+const pulse = stylex.keyframes({
+  '50%': {
+    opacity: 0.5,
+  },
+});
+
 const lightDark = (light: string, dark: string) =>
   `light-dark(${light}, ${dark})`;
 
@@ -70,7 +100,6 @@ export const vars = stylex.defineVars({
   '--radius-2xl': '1rem',
   '--ease-out': 'cubic-bezier(0, 0, 0.2, 1)',
   '--ease-in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
-  '--animate-pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
   '--blur-xs': '4px',
   '--blur-sm': '8px',
   '--blur-lg': '16px',
@@ -137,10 +166,24 @@ export const vars = stylex.defineVars({
   '--fd-nav-height': '64px',
   '--fd-tocnav-height': '0px',
 
-  '--animate-fd-fade-in': `${fdFadeIn} 300ms ease`,
-  '--animate-fd-fade-out': `${fdFadeOut} 300ms ease`,
-  '--animate-fd-sidebar-in': `${fdSidebarIn} 250ms ease`,
-  '--animate-fd-sidebar-out': `${fdSidebarOut} 250ms ease`,
+  '--animate-pulse': pulse,
+
+  '--animate-fd-fade-in': fdFadeIn,
+  '--animate-fd-fade-out': fdFadeOut,
+  '--animate-fd-sidebar-in': fdSidebarIn,
+  '--animate-fd-sidebar-out': fdSidebarOut,
+
+  '--animate-fd-dialog-in': fdDialogIn,
+  '--animate-fd-dialog-out': fdDialogOut,
+});
+
+export const ANIMATION_DURATIONS = stylex.defineConsts({
+  pulse: '2s',
+});
+
+export const EASINGS = stylex.defineConsts({
+  dialog: 'cubic-bezier(0.16, 1, 0.3, 1)',
+  pulse: 'cubic-bezier(0.4, 0, 0.6, 1)',
 });
 
 export const legacyColors = stylex.defineVars({

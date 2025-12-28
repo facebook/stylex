@@ -82,6 +82,6 @@ const styles = stylex.create({
     borderColor: `${vars['--color-fd-border']}`,
     borderRadius: 5,
     fontWeight: 400,
-    backgroundColor: `${vars['--color-fd-muted']}`,
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
   },
 });

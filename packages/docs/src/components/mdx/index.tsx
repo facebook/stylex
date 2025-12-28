@@ -102,13 +102,14 @@ const styles = stylex.create({
     // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
     color: 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
     backgroundColor: {
-      default: vars['--color-fd-muted'],
+      default: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
       [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',
     },
     borderStyle: {
       default: 'solid',
       [stylex.when.ancestor(':where(pre)', preMarker)]: 'none',
     },
+    fontWeight: 'inherit',
     borderWidth: 1,
     borderColor: vars['--color-fd-border'],
     borderRadius: 5,
@@ -122,8 +123,7 @@ const styles = stylex.create({
     },
     paddingInline: {
       default: 3,
-      // CHange this to 16 when removing preset.css
-      [stylex.when.ancestor(':where(pre)')]: 0,
+      [stylex.when.ancestor(':where(pre)')]: 16,
     },
     fontSize: {
       default: 13 / 16 + 'rem',

@@ -1,7 +1,3 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
-
 @layer base {
   *,
   ::after,
@@ -31,22 +27,12 @@
     background-color: var(--color-fd-background);
   }
 
-  /* HACK: Fix search styling */
-  .border {
-    border-color: var(--color-fd-border);
-  }
-
-  .\*\:border-b {
-    :is(& > *) {
-      border-color: var(--color-fd-border);
-    }
-  }
-
   a {
     color: inherit;
     text-decoration: inherit;
   }
 
+  /* Enable syntax highlighting */
   pre code .line span {
     color: light-dark(var(--shiki-light), var(--shiki-dark));
   }

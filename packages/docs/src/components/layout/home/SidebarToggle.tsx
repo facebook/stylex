@@ -1,7 +1,9 @@
 'use client';
 
 import { SidebarContext } from '@/contexts/SidebarContext';
+import { vars } from '@/theming/vars.stylex';
 import { SidebarIcon } from 'lucide-react';
+import * as stylex from '@stylexjs/stylex';
 import { use } from 'react';
 
 export default function SidebarToggle() {
@@ -18,8 +20,30 @@ export default function SidebarToggle() {
           return !old;
         });
       }}
+      {...stylex.props(styles.button)}
     >
       <SidebarIcon size={20} />
     </button>
   );
 }
+
+const styles = stylex.create({
+  button: {
+    backgroundColor: 'transparent',
+    height: 56,
+    width: 56,
+    marginInline: (20 - 56) / 2,
+    color: {
+      default: null,
+      ':hover': vars['--color-fd-primary'],
+      ':focus-visible': vars['--color-fd-primary'],
+    },
+    transitionProperty: 'color, scale',
+    transitionDuration: '0.3s',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    scale: {
+      default: null,
+      ':active': 0.95,
+    },
+  },
+});
