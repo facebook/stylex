@@ -56,6 +56,7 @@ export default defineConfig({
     optimizeDeps: {
       include: [
         '@stylexjs/babel-plugin',
+        '@babel/standalone',
         'use-query-params',
         'serialize-query-params',
         'path-browserify',
