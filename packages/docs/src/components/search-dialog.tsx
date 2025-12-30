@@ -419,7 +419,7 @@ const styles = stylex.create({
   bgBlurContainer: {
     position: 'absolute',
     inset: 0,
-    oveflow: 'clip',
+    overflow: 'clip',
   },
   bgBlur: {
     position: 'absolute',
