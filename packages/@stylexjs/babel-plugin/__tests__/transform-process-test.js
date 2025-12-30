@@ -253,8 +253,8 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
-        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        "@keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @property --x-color { syntax: "*"; inherits: false;}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
@@ -348,8 +348,8 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "
         @layer priority1, priority2, priority3, priority4;
-        @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @property --x-color { syntax: "*"; inherits: false;}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
@@ -446,8 +446,8 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
-        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        "@keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @property --x-color { syntax: "*"; inherits: false;}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
@@ -641,8 +641,8 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@property --x-color { syntax: "*"; inherits: false;}
-        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        "@keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @property --x-color { syntax: "*"; inherits: false;}
         :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
         :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
         @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
