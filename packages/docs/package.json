@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
-    "build": "waku build && node scripts/vercel-output.mjs",
+    "build": "waku build",
     "start": "waku start",
     "postinstall": "fumadocs-mdx",
     "lint": "biome check",
