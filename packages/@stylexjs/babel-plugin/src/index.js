@@ -471,18 +471,12 @@ function processStylexRules(
           const query1 = rule1.slice(0, rule1.indexOf('{'));
           const query2 = rule2.slice(0, rule2.indexOf('{'));
           if (query1 !== query2) {
-            const maxWidth1Match = query1.match(
-              /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
-            );
-            const maxWidth2Match = query2.match(
-              /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
-            );
-            const minWidth1Match = query1.match(
-              /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
-            );
-            const minWidth2Match = query2.match(
-              /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
-            );
+            const MAX_WIDTH_REGEX = /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
+            const MIN_WIDTH_REGEX = /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
+            const maxWidth1Match = query1.match(MAX_WIDTH_REGEX);
+            const maxWidth2Match = query2.match(MAX_WIDTH_REGEX);
+            const minWidth1Match = query1.match(MIN_WIDTH_REGEX);
+            const minWidth2Match = query2.match(MIN_WIDTH_REGEX);
 
             if (maxWidth1Match && maxWidth2Match) {
               const value1 = parseFloat(maxWidth1Match[1]);
@@ -502,13 +496,8 @@ function processStylexRules(
 
             return query1.localeCompare(query2);
           }
-        } else if (rule1.startsWith('@') && !rule2.startsWith('@')) {
-          const query1 = rule1.slice(0, rule1.indexOf('{'));
-          const query2 = rule2.slice(0, rule2.indexOf('{'));
-          if (query1 !== query2) {
-            return query1.localeCompare(query2);
-          }
         }
+
         const property1 = rule1.slice(rule1.lastIndexOf('{'));
         const property2 = rule2.slice(rule2.lastIndexOf('{'));
         return property1.localeCompare(property2);
