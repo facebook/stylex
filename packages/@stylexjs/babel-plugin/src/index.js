@@ -467,7 +467,42 @@ function processStylexRules(
       if (useLegacyClassnamesSort) {
         return classname1.localeCompare(classname2);
       } else {
-        if (rule1.startsWith('@') && !rule2.startsWith('@')) {
+        if (rule1.startsWith('@') && rule2.startsWith('@')) {
+          const query1 = rule1.slice(0, rule1.indexOf('{'));
+          const query2 = rule2.slice(0, rule2.indexOf('{'));
+          if (query1 !== query2) {
+            const maxWidth1Match = query1.match(
+              /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
+            );
+            const maxWidth2Match = query2.match(
+              /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
+            );
+            const minWidth1Match = query1.match(
+              /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
+            );
+            const minWidth2Match = query2.match(
+              /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/,
+            );
+
+            if (maxWidth1Match && maxWidth2Match) {
+              const value1 = parseFloat(maxWidth1Match[1]);
+              const value2 = parseFloat(maxWidth2Match[1]);
+              if (value1 !== value2) {
+                return value1 - value2;
+              }
+            }
+
+            if (minWidth1Match && minWidth2Match) {
+              const value1 = parseFloat(minWidth1Match[1]);
+              const value2 = parseFloat(minWidth2Match[1]);
+              if (value1 !== value2) {
+                return value2 - value1;
+              }
+            }
+
+            return query1.localeCompare(query2);
+          }
+        } else if (rule1.startsWith('@') && !rule2.startsWith('@')) {
           const query1 = rule1.slice(0, rule1.indexOf('{'));
           const query2 = rule2.slice(0, rule2.indexOf('{'));
           if (query1 !== query2) {
