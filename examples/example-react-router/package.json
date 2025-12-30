@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "example:build": "rimraf dist && vite build",
+    "example:build": "shx rm -rf dist && vite build",
     "example:dev": "cross-env NODE_ENV=development vite",
     "example:start": "cross-env NODE_ENV=production node server.js",
     "example:typecheck": "tsc --noEmit"

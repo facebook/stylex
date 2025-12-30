@@ -3,7 +3,7 @@
   "name": "example-nextjs",
   "version": "0.17.4",
   "scripts": {
-    "clean": "rimraf .next",
+    "clean": "shx rm -rf .next",
     "example:build": "next build",
     "example:dev": "next dev",
     "example:lint": "next lint",
@@ -25,7 +25,6 @@
     "@typescript-eslint/parser": "^8.48.1",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.6",
-    "rimraf": "^6.1.2",
     "typescript": "^5.9.3",
     "client-only": "0.0.1"
   }

@@ -13,7 +13,7 @@
   "scripts": {
     "prebuild": "gen-types -i src/ -o lib/",
     "build": "rollup --config ./rollup.config.mjs",
-    "build-haste": "HASTE=true rollup --config ./rollup.config.mjs",
+    "build-haste": "cross-env HASTE=true rollup --config ./rollup.config.mjs",
     "build-watch": "rollup --config ./rollup.config.mjs --watch",
     "test": "jest --coverage"
   },

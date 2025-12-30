@@ -15,7 +15,7 @@
     "example:serve": "vite preview",
     "worker:run": "rw-scripts worker-run",
     "clean": "npm run clean:vite",
-    "clean:vite": "rm -rf ./node_modules/.vite",
+    "clean:vite": "shx rm -rf ./node_modules/.vite",
     "release": "rw-scripts ensure-deploy-env && npm run clean && npm run example:build && wrangler deploy",
     "generate": "rw-scripts ensure-env && wrangler types --include-runtime false",
     "check": "npm run generate && npm run types",

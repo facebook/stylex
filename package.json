@@ -8,6 +8,7 @@
     "postinstall": "npm run build",
     "prepare": "husky install tools/husky",
     "build": "npm run build --workspaces --if-present",
+    "build:examples": "npm run example:build --workspaces --if-present",
     "flow": "flow",
     "prettier": "prettier --write \"**/*.{js,flow,mjs,tsx,ts}\"",
     "prettier:report": "prettier --check \"**/*.{js,flow,mjs,tsx,ts}\"",
@@ -45,7 +46,7 @@
     "lint-staged": "^13.0.3",
     "prettier": "3.5.3",
     "prettier-plugin-hermes-parser": "^0.32.0",
-    "rimraf": "^6.1.2",
+    "shx": "^0.4.0",
     "yargs": "18.0.0"
   },
   "prettier": {
