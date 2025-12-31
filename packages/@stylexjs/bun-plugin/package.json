@@ -1,0 +1,27 @@
+{
+  "name": "@stylexjs/bun-plugin",
+  "version": "0.17.4",
+  "description": "Bun bundler plugin for StyleX",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@babel/core": "^7.26.8",
+    "@babel/plugin-syntax-flow": "^7.26.0",
+    "@babel/plugin-syntax-jsx": "^7.25.9",
+    "@babel/plugin-syntax-typescript": "^7.25.9",
+    "@stylexjs/babel-plugin": "0.17.4",
+    "browserslist": "^4.24.4",
+    "lightningcss": "^1.29.1"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.0"
+  }
+}

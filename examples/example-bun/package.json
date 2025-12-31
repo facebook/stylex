@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "example-bun",
+  "version": "0.17.4",
+  "description": "Simple Bun example for @stylexjs/bun-plugin",
+  "main": "src/App.tsx",
+  "scripts": {
+    "example:build": "bun run scripts/build.ts",
+    "example:lint": "eslint \"**/*.{ts,tsx}\""
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@stylexjs/stylex": "0.17.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@stylexjs/bun-plugin": "0.17.4",
+    "@stylexjs/eslint-plugin": "0.17.4",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "bun-types": "^1.0.0",
+    "eslint": "^8.57.1",
+    "typescript": "^5.8.0"
+  }
+}
