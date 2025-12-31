@@ -7,6 +7,11 @@ import z from 'zod';
 
 export const docs = defineDocs({
   dir: 'content/docs',
+  docs: {
+    postprocess: {
+      includeProcessedMarkdown: true,
+    },
+  },
 });
 
 export const blog = defineDocs({
