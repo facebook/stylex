@@ -194,7 +194,7 @@ const sidebarStyles = stylex.create({
     zIndex: 1,
     backdropFilter: 'blur(32px) saturate(800%)',
     maskImage:
-      'linear-gradient(to right, white, transparent 12%, transparent 88%, white)',
+      'linear-gradient(to right, white, transparent 4%, transparent 88%, white)',
   },
   base: {
     display: 'flex',

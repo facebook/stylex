@@ -232,6 +232,7 @@ const footerStyles = stylex.create({
     justifyContent: 'space-between',
     gap: 2 * 4,
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   link: {
     display: 'flex',
@@ -244,6 +245,7 @@ const footerStyles = stylex.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: vars['--color-fd-border'],
+    flexBasis: '40%',
     backgroundColor: {
       default: 'transparent',
       ':hover': vars['--color-fd-muted'],
