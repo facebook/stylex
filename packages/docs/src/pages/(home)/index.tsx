@@ -23,8 +23,11 @@ export default function Home() {
             <StylexAnimatedLogo style={styles.logo} />
           </h1>
           <p {...stylex.props(styles.subtitle)}>
-            The <TypingWord /> styling system for ambitious interfaces
+            The <TypingWord /> <br {...stylex.props(styles.mobileBreak)} />
+            styling system for <br {...stylex.props(styles.tabletBreak)} />{' '}
+            ambitious interfaces
           </p>
+          <div {...stylex.props(styles.ctaSpacer)} />
           <section {...stylex.props(styles.ctaSection)}>
             <CtaButton color="pink" to="/docs/learn/">
               Get Started
@@ -33,6 +36,7 @@ export default function Home() {
               Thinking in StyleX
             </CtaButton>
           </section>
+          <div {...stylex.props(styles.ctaSpacer)} />
         </section>
       </main>
       <Footer />
@@ -40,7 +44,8 @@ export default function Home() {
   );
 }
 
-const CTA_BREAK = '@media (max-width: 385px)';
+const TABLET_BREAK = '@media (max-width: 768px)';
+const CTA_BREAK = '@media (max-width: 460px)';
 
 const styles = stylex.create({
   main: {
@@ -50,23 +55,24 @@ const styles = stylex.create({
     alignItems: 'center',
     backgroundColor: `${vars['--color-fd-background']}`,
     color: `${vars['--color-fd-foreground']}`,
+    padding: 32,
+    minHeight: 'calc(100vh - 56px)',
   },
   hero: {
-    paddingBlock: 80,
     minHeight: 'calc(70vh)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    gap: 16,
   },
   title: {
     position: 'relative',
     boxSizing: 'border-box',
     margin: 0,
-    marginBottom: 32,
+    paddingInline: 32,
     paddingBlock: '5px',
-    marginBlockStart: '-5px',
     overflow: 'hidden',
     zIndex: 0,
   },
@@ -82,20 +88,34 @@ const styles = stylex.create({
     fontWeight: 200,
     textAlign: 'center',
     color: `${vars['--color-fd-foreground']}`,
-    fontSize: 'clamp(1rem, 1rem + 1vw, 2rem)',
+    fontSize: 'clamp(1.2rem, 1.2rem + 1vw, 2rem)',
+  },
+  ctaSpacer: {
+    flexGrow: 1,
+    maxHeight: 64,
   },
   ctaSection: {
-    alignItems: 'stretch',
-    display: 'flex',
+    display: 'grid',
     gap: '1rem',
-    justifyContent: 'center',
-    marginBlockStart: {
-      default: '2.5rem',
-      [CTA_BREAK]: '2rem',
+    gridTemplateColumns: {
+      default: 'repeat(2, 1fr)',
+      [CTA_BREAK]: '1fr',
     },
     flexDirection: {
       default: 'row',
       [CTA_BREAK]: 'column',
+    },
+  },
+  mobileBreak: {
+    display: {
+      default: 'none',
+      [CTA_BREAK]: 'block',
+    },
+  },
+  tabletBreak: {
+    display: {
+      default: 'none',
+      [TABLET_BREAK]: 'block',
     },
   },
 });
