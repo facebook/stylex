@@ -108,6 +108,8 @@ export const vars = stylex.defineVars({
   '--default-font-family': 'var(--font-sans)',
   '--default-mono-font-family': 'var(--font-mono)',
 
+  '--color-code-green': 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
+
   '--color-fd-background': lightDark('hsl(0, 0%, 100%)', 'hsl(0, 0%, 7%)'),
   '--color-fd-foreground': lightDark('hsl(0, 0%, 3.9%)', 'hsl(0, 0%, 92%)'),
   '--color-fd-muted': lightDark('hsl(0, 0%, 96.1%)', 'hsl(0, 0%, 12.9%)'),

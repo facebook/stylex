@@ -31,6 +31,8 @@
     color: inherit;
     text-decoration: inherit;
   }
+
+  /* 
   a:hover,
   a:focus-visible {
     text-decoration: underline;
@@ -47,7 +49,7 @@
     text-decoration-color: currentColor;
     text-underline-offset: 4px;
     text-decoration-thickness: 1px;
-  }
+  } */
 
   /* Enable syntax highlighting */
   pre code .line span {

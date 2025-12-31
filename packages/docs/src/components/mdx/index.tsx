@@ -61,7 +61,7 @@ export const mdxComponents = {
     <Heading as="h6" {...props} />
   ),
   code: (props: StyleXHTMLProps<HTMLElement>) => (
-    <code {...props} {...stylex.props(styles.code)} />
+    <code {...props} {...stylex.props(styles.code, stylex.defaultMarker())} />
   ),
   p: P,
   ul: Ul,
@@ -100,7 +100,7 @@ export const mdxComponents = {
 const styles = stylex.create({
   code: {
     // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
-    color: 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
+    color: vars['--color-code-green'],
     backgroundColor: {
       default: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
       [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',

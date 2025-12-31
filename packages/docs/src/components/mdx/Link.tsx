@@ -18,11 +18,21 @@ export default function MDXLink({
 
 const styles = stylex.create({
   base: {
-    color: vars['--color-fd-primary'],
+    color: {
+      default: vars['--color-fd-primary'],
+      [stylex.when.descendant(':is(code)')]: vars['--color-code-green'],
+    },
+    textDecoration: {
+      default: 'none',
+      ':hover': 'underline',
+      ':focus-visible': 'underline',
+    },
     textDecorationColor: {
       default: 'transparent',
-      ':hover': 'currentColor',
-      ':focus-visible': 'currentColor',
+      ':hover': 'color-mix(in srgb, currentColor 50%, transparent)',
+      ':focus-visible': 'color-mix(in srgb, currentColor 50%, transparent)',
     },
+    textUnderlineOffset: 4,
+    textDecorationThickness: 2,
   },
 });
