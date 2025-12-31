@@ -22,7 +22,6 @@ as `:hover`.
 Define one or more variables using `defineVars`:
 
 ```tsx variables.stylex.ts
-// variables.stylex.ts
 import * as stylex from '@stylexjs/stylex';
 
 export const vars = stylex.defineVars({
@@ -35,7 +34,7 @@ export const vars = stylex.defineVars({
 Define contextual styles setting the value for the variable in the ancestor
 component.
 
-```tsx
+```tsx Component.tsx
 import * as stylex from '@stylexjs/stylex';
 import { vars } from './variables.stylex';
 
@@ -57,7 +56,7 @@ function ParentWithHover({ children }) {
 
 Use the variable to style the child component
 
-```tsx
+```tsx Child.tsx
 import * as stylex from '@stylexjs/stylex';
 import { vars } from './variables.stylex';
 

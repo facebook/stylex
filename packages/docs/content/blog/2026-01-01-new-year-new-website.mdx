@@ -1,0 +1,77 @@
+---
+# Copyright (c) Meta Platforms, Inc. and affiliates.
+#
+# This source code is licensed under the MIT license found in the
+# LICENSE file in the root directory of this source tree.
+slug: new-year-new-website
+title: New Year, New Website
+authors: [nmn]
+tags:
+  - website
+  - announcement
+---
+
+Happy new year!
+
+StyleX has been in development for over six years. It started as a way to solve
+styling problems at the scale of [facebook.com](https://www.facebook.com/). It
+succeeded at Meta and became the default way to author styles for web surfaces.
+
+StyleX was open-sourced a little over two years ago, in December 2023. Since
+then, more teams outside Meta have started using it, including Figma, Snowflake,
+and HubSpot. Hearing how it works for them has been valuable. The feedback has
+been largely positive, and it validates that our core design decisions work well
+for various use-cases.
+
+Their feedback, along with how CSS itself continues to evolve, guides new
+features and refinements. Within the last year, we've added APIs for View
+Transitions, Anchor Positioning, and the
+[`stylex.when.*`](/docs/api/javascript/types) APIs for combinator-based styling.
+
+The new APIs are easy to notice, but a lot of progress is quieter. A recent
+milestone was the release of the
+[`@stylexjs/unplugin`](/docs/learn/installation/vite) package, which makes
+integration in web projects much simpler than it used to be. Setup friction was
+one of the most common pieces of feedback, and this new package is a big step
+toward reducing it.
+
+### A New Playground
+
+The new playground has been public for a few weeks now, but we never formally
+announced it. It is now the lowest-friction way to try StyleX on the
+documentation site. The playground is made possible by a browser-compatible
+version of the StyleX compiler that uses `@babel/standalone` to compile StyleX
+right in the browser. As a result, it is smaller, faster, and more reliable than
+before. It is now also possible, to share links to your code examples within the
+playground.
+
+A huge thanks to [Henry Q. Dineen](https://github.com/henryqdineen) for making
+it a reality!
+
+### A New Website
+
+We have redesigned and rebuilt the entire website from the ground up as a
+showcase of StyleX itself. For the last two years, the StyleX website was built
+on Docusaurus 2. We rewrote some of the core UI components with StyleX, but a
+large part of the site still relied on Docusaurus components. As a result the
+website used a combination of traditional CSS, CSS Modules and StyleX for
+styling. We were also stuck on an old version of React and updating to
+Docusaurus 3 would have been a major effort.
+
+The new website is built with Waku, a minimal React framework that lets us
+benefit from, and showcase StyleX's compatibility with React Server Components.
+Waku is built on Vite, which lets us leverage and dogfood the
+`@stylexjs/unplugin` package.
+
+For documentation features, we chose Fumadocs, a small and flexible
+documentation framework that is compatible with Waku. It is modular enough that
+we could rewrite all the UI components with StyleX. We translated the components
+from `fumadocs-ui` and then customized them further. We are able to achieve a
+more unique design without redundant code by using the features of StyleX and
+modern CSS.
+
+### Future
+
+Work on StyleX continues and we have some
+[big plans](https://github.com/facebook/stylex/issues/1356) for 2026. For now,
+we're celebrating our journey so far.
