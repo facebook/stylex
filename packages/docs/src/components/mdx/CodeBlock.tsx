@@ -364,7 +364,6 @@ const styles = stylex.create({
       default: vars['--color-fd-muted-foreground'],
       ':hover': vars['--color-fd-accent-foreground'],
     },
-    cursor: 'pointer',
     transitionProperty: 'background-color, color',
     transitionDuration: DURATION,
   },

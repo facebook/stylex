@@ -182,7 +182,7 @@ const sidebarStyles = stylex.create({
     inset: -64,
     insetInlineStart: -8,
     bottom: 0,
-    backdropFilter: 'blur(32px) saturate(400%)',
+    backdropFilter: 'blur(32px) saturate(500%)',
   },
   overlayBlur: {
     position: 'absolute',

@@ -14,8 +14,7 @@ import * as stylex from '@stylexjs/stylex';
 import { vars } from '@/theming/vars.stylex';
 
 interface SearchToggleProps
-  extends Omit<StyleXComponentProps<'button'>, 'color'>,
-    ButtonProps {
+  extends Omit<StyleXComponentProps<'button'>, 'color'>, ButtonProps {
   hideIfDisabled?: boolean;
 }
 
@@ -106,7 +105,8 @@ const styles = stylex.create({
     fontSize: `${14 / 16}rem`,
     color: {
       default: vars['--color-fd-muted-foreground'],
-      ':hover': vars['--color-fd-accent-foreground'],
+      ':hover': vars['--color-fd-foreground'],
+      ':focus-visible': vars['--color-fd-foreground'],
     },
     transitionProperty: 'color, background-color, border-color',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',

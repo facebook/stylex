@@ -31,10 +31,30 @@ export default function TypingWord() {
 }
 
 const typingAnim = stylex.keyframes({
-  '40%': { gridTemplateColumns: '1fr' },
-  '49%': { gridTemplateColumns: '0fr' },
-  '51%': { gridTemplateColumns: '0fr' },
-  '60%': { gridTemplateColumns: '1fr' },
+  '37%': {
+    gridTemplateColumns: '1fr',
+    borderInlineEndColor: 'transparent',
+  },
+  '40%': {
+    gridTemplateColumns: '1fr',
+    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  },
+  '49%': {
+    gridTemplateColumns: '0fr',
+    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  },
+  '51%': {
+    gridTemplateColumns: '0fr',
+    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  },
+  '60%': {
+    gridTemplateColumns: '1fr',
+    borderInlineEndColor: vars['--color-fd-accent-foreground'],
+  },
+  '63%': {
+    gridTemplateColumns: '1fr',
+    borderInlineEndColor: 'transparent',
+  },
 });
 
 const hidden = stylex.keyframes({
@@ -57,6 +77,9 @@ const styles = stylex.create({
     animationTimingFunction: 'ease-out',
     animationDelay: TIME / 2 + 's',
     overflow: 'hidden',
+    borderInlineEndWidth: 1,
+    borderInlineEndStyle: 'solid',
+    borderInlineEndColor: 'transparent',
   },
   word: {
     gridArea: '1 / 1',

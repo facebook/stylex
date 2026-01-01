@@ -154,7 +154,11 @@ const styles = stylex.create({
     justifyContent: 'center',
     minHeight: 7 * 4,
     minWidth: 7 * 4,
-    color: vars['--color-fd-muted-foreground'],
+    color: {
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-foreground'],
+      ':focus-visible': vars['--color-fd-foreground'],
+    },
     borderRadius: 999,
     borderWidth: 0,
     backgroundColor: {

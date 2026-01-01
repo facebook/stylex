@@ -122,14 +122,14 @@ export const vars = stylex.defineVars({
     'hsl(0, 0%, 15.1%)',
     'hsl(0, 0%, 86.9%)',
   ),
-  '--color-fd-card': lightDark('hsl(0, 0%, 94.7%)', 'hsl(0, 0%, 9.8%)'),
+  '--color-fd-card': lightDark('hsl(0, 0%, 97%)', 'hsl(0, 0%, 8.5%)'),
   '--color-fd-card-foreground': lightDark(
     'hsl(0, 0%, 3.9%)',
     'hsl(0, 0%, 98%)',
   ),
   '--color-fd-border': lightDark(
-    'hsla(0, 0%, 80%, 50%)',
-    'hsla(0, 0%, 40%, 20%)',
+    'hsla(0, 0%, 85%, 50%)',
+    'hsla(0, 0%, 30%, 20%)',
   ),
   '--color-fd-primary': lightDark('hsl(266, 85%, 58%)', 'hsl(267, 84%, 81%)'),
   '--color-fd-primary-foreground': lightDark(

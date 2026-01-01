@@ -34,7 +34,7 @@ const styles = stylex.create({
     width: 56,
     marginInline: (20 - 56) / 2,
     color: {
-      default: null,
+      default: vars['--color-fd-foreground'],
       ':hover': vars['--color-fd-primary'],
       ':focus-visible': vars['--color-fd-primary'],
     },
