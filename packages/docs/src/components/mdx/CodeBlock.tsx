@@ -322,7 +322,7 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    // eslint-disable-next-line @stylexjs/valid-styles
+    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
     ':where(*) svg': {
       width: '1em',
       height: '1em',

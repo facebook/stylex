@@ -99,7 +99,7 @@ const itemVariants = stylex.create({
       ':hover': 'none',
     },
     '--svg-size': 4,
-    // eslint-disable-next-line @stylexjs/valid-styles
+    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
     ':not(#foo) svg': {
       flexShrink: 0,
       width: 4,
@@ -400,7 +400,7 @@ const separatorStyles = stylex.create({
     paddingInline: 8,
     paddingInlineStart: 'var(--sidebar-item-offset)',
     marginBottom: { default: 1.5 * 4, ':empty': 0 },
-    // eslint-disable-next-line @stylexjs/valid-styles
+    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
     ':not(#foo) svg': {
       flexShrink: 0,
       width: 4 * 4,
@@ -601,7 +601,7 @@ const folderStyles = stylex.create({
   }),
   level1: {
     // HACK ALERT!
-    // eslint-disable-next-line @stylexjs/valid-styles
+    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
     ':not(#foo) [data-active="true"]::before': {
       position: 'absolute',
       insetBlock: 2.5 * 4,

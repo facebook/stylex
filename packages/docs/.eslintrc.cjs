@@ -15,6 +15,7 @@ module.exports = {
     // enable it to test things out.
     '@stylexjs/valid-styles': 'error',
     '@stylexjs/no-unused': 'error',
+    '@stylexjs/no-legacy-contextual-styles': 'error',
     '@stylexjs/sort-keys': ['error', {order: 'recess'}],
     'ft-flow/space-after-type-colon': 0,
     'ft-flow/no-types-missing-file-annotation': 0,
