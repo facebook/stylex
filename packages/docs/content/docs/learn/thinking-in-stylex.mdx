@@ -283,28 +283,25 @@ distance":
 
 - `.className > *`
 - `.className ~ *`
-- `.className:hover > div:first-child`
+- `.className:hover button`
 
-All of these patterns, while powerful, make styles fragile and less predictable.
-Applying class names on one element can affect a completely different element.
+All of these patterns, while powerful, make styles fragile, less predictable and
+harder to debug. An element could be styled without having any classes applied
+to it.
+
+StyleX enables these capabilities using a different pattern that doesn't have
+the same trade-offs. The `stylex.when.*` APIs, rely on classes that can be used
+to "mark" an element which can then be "observed at a distance" for conditional
+styling. More concretely, instead of a selector like `.className:hover button`,
+StyleX relies on selectors like `.marked:hover .btn`. The button is always
+explicitly styled with a className (`btn` in this case) which _observes_ the
+hover state of the marked ancestor. Without the `btn` class, the presence of the
+`marked` class would not affect the button at all.
 
 Inheritable styles such as `color` will still be inherited, but that is the
 _only_ form of style-at-a-distance that StyleX allows. In those cases too, the
 styles applied directly on an element always take precedence over inherited
 styles.
-
-This is often not the case when using complex selectors, as the complex
-selectors usually have higher specificity than the simple class selectors used
-for styles applied directly on the element.
-
-StyleX disallows this entire class of selectors. This currently makes certain
-CSS patterns impossible to achieve with StyleX. Our goal is to support these
-patterns without sacrificing style encapsulation.
-
-StyleX is not a CSS pre-processor. It intentionally puts constraints on the
-power of CSS selectors in order to build a fast and predictable system. The API,
-based on JavaScript objects instead of template strings, is designed to make
-these constraints feel natural.
 
 ### Readability & maintainability over terseness
 

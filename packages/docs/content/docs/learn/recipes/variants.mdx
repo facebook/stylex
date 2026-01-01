@@ -193,7 +193,7 @@ const colorVariantsDisabled = stylex.create({
 const sizeVariants = stylex.create({...});
 
 type Props = {
-  color?: keyof typeof colorVariants,
+  color?: keyof (typeof colorVariantsEnabled | typeof colorVariantsDisabled),
   size?: keyof typeof sizeVariants,
   disabled?: boolean,
   ...
