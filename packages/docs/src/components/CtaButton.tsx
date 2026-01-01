@@ -37,7 +37,7 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBlock: '0.75rem',
+    paddingBlock: '1rem',
     paddingInline: '2rem',
     fontWeight: 400,
     whiteSpace: 'nowrap',
@@ -50,7 +50,7 @@ const styles = stylex.create({
     borderColor: 'currentColor',
     borderStyle: 'solid',
     borderWidth: 2,
-    borderRadius: 8,
+    borderRadius: 10,
     scale: {
       default: '1',
       ':hover': '1.02',
@@ -64,27 +64,27 @@ const styles = stylex.create({
   },
   pink: {
     color: {
-      default: vars['--color-fd-primary'],
-      ':focus-visible': vars['--color-fd-background'],
-      ':hover': vars['--color-fd-background'],
-    },
-    backgroundColor: {
-      default: `color-mix(in srgb, ${vars['--color-fd-primary']} 10%, transparent)`,
+      default: vars['--color-fd-background'],
       ':focus-visible': vars['--color-fd-primary'],
       ':hover': vars['--color-fd-primary'],
+    },
+    backgroundColor: {
+      default: vars['--color-fd-primary'],
+      ':focus-visible': `color-mix(in srgb, ${vars['--color-fd-primary']} 10%, transparent)`,
+      ':hover': `color-mix(in srgb, ${vars['--color-fd-primary']} 10%, transparent)`,
     },
     borderColor: vars['--color-fd-primary'],
   },
   blue: {
     color: {
-      default: vars['--color-fd-accent-foreground'],
-      ':focus-visible': vars['--color-fd-background'],
-      ':hover': vars['--color-fd-background'],
-    },
-    backgroundColor: {
-      default: `color-mix(in srgb, ${vars['--color-fd-accent-foreground']} 10%, transparent)`,
+      default: vars['--color-fd-background'],
       ':focus-visible': vars['--color-fd-accent-foreground'],
       ':hover': vars['--color-fd-accent-foreground'],
+    },
+    backgroundColor: {
+      default: vars['--color-fd-accent-foreground'],
+      ':focus-visible': `color-mix(in srgb, ${vars['--color-fd-accent-foreground']} 10%, transparent)`,
+      ':hover': `color-mix(in srgb, ${vars['--color-fd-accent-foreground']} 10%, transparent)`,
     },
     borderColor: vars['--color-fd-accent-foreground'],
   },
