@@ -10,7 +10,6 @@ import { createRequire } from 'node:module';
 import { defineConfig } from 'waku/config';
 import mdx from 'fumadocs-mdx/vite';
 import * as MdxConfig from './source.config.js';
-import tailwindcss from '@tailwindcss/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import stylex from '@stylexjs/unplugin';
 // import lightningcss from 'lightningcss';
@@ -103,8 +102,6 @@ export default defineConfig({
           targets: browserslistToTargets(browserslist('>= 5%')),
         },
       }),
-      // @ts-ignore
-      tailwindcss(),
       // @ts-ignore
       mdx(MdxConfig),
       // @ts-ignore
