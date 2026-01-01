@@ -105,24 +105,6 @@ export const mdxComponents = {
 
 const styles = stylex.create({
   code: {
-    // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
-    color: vars['--color-code-green'],
-    backgroundColor: {
-      default: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
-      [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',
-    },
-    borderStyle: {
-      default: 'solid',
-      [stylex.when.ancestor(':where(pre)', preMarker)]: 'none',
-    },
-    fontWeight: 'inherit',
-    borderWidth: 1,
-    borderColor: vars['--color-fd-border'],
-    borderRadius: 5,
-    lineHeight: {
-      default: null,
-      [stylex.when.ancestor(':where(pre)')]: 1.5,
-    },
     paddingBlock: {
       default: 3,
       [stylex.when.ancestor(':where(pre)')]: 8,
@@ -137,5 +119,23 @@ const styles = stylex.create({
       [stylex.when.ancestor(':where(h2)')]: '0.875em',
       [stylex.when.ancestor(':where(h3)')]: '0.9em',
     },
+    fontWeight: 'inherit',
+    lineHeight: {
+      default: null,
+      [stylex.when.ancestor(':where(pre)')]: 1.5,
+    },
+    // color: `hsl(var(--cyan-h), var(--cyan-s), var(--cyan-l))`,
+    color: vars['--color-code-green'],
+    backgroundColor: {
+      default: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
+      [stylex.when.ancestor(':where(pre)', preMarker)]: 'transparent',
+    },
+    borderColor: vars['--color-fd-border'],
+    borderStyle: {
+      default: 'solid',
+      [stylex.when.ancestor(':where(pre)', preMarker)]: 'none',
+    },
+    borderWidth: 1,
+    borderRadius: 5,
   },
 });

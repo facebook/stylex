@@ -30,9 +30,9 @@ const fdSidebarOut = stylex.keyframes({
 
 const fdDialogIn = stylex.keyframes({
   from: {
+    opacity: 0,
     // transform: 'scale(1.06)',
     scale: 1.06,
-    opacity: 0,
   },
   to: {
     // transform: 'scale(1)',
@@ -46,9 +46,9 @@ const fdDialogOut = stylex.keyframes({
     scale: 1,
   },
   to: {
+    opacity: 0,
     // transform: 'scale(1.04)',
     scale: 1.04,
-    opacity: 0,
   },
 });
 

@@ -59,9 +59,9 @@ function PlaygroundPlaceholder() {
 const styles = stylex.create({
   placeholder: {
     display: 'flex',
-    justifyContent: 'center',
     alignItems: 'center',
-    height: `calc(100dvh - ${vars['--fd-nav-height']})`,
+    justifyContent: 'center',
     width: '100%',
+    height: `calc(100dvh - ${vars['--fd-nav-height']})`,
   },
 });

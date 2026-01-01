@@ -66,28 +66,28 @@ export async function getConfig() {
 
 const styles = stylex.create({
   fallbackContainer: {
-    textAlign: 'center',
     paddingBlock: '3rem',
     paddingInline: '1rem',
+    textAlign: 'center',
   },
   fallbackTitle: {
-    fontSize: '1.875rem',
-    lineHeight: '2.25rem',
-    fontWeight: 700,
     marginBlockEnd: '1rem',
+    fontSize: '1.875rem',
+    fontWeight: 700,
+    lineHeight: '2.25rem',
     color: `${vars['--color-fd-foreground']}`,
   },
   fallbackDescription: {
     color: `${vars['--color-fd-muted-foreground']}`,
   },
   codeTitle: {
-    fontFamily: 'var(--default-mono-font-family)',
     padding: 3,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: `${vars['--color-fd-border']}`,
-    borderRadius: 5,
+    fontFamily: 'var(--default-mono-font-family)',
     fontWeight: 400,
     backgroundColor: `color-mix(in oklab, ${vars['--color-fd-muted']} 95%, currentColor)`,
+    borderColor: `${vars['--color-fd-border']}`,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 5,
   },
 });

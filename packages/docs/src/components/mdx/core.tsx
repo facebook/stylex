@@ -63,9 +63,6 @@ export function Li({
 
 const styles = stylex.create({
   p: {
-    fontSize: '1rem',
-    lineHeight: 1.65,
-    color: vars['--color-fd-foreground'],
     marginTop: {
       default: '1.25em',
       ':first-child': 0,
@@ -74,14 +71,17 @@ const styles = stylex.create({
       default: '1.25em',
       ':last-child': 0,
     },
+    fontSize: '1rem',
+    lineHeight: 1.65,
+    color: vars['--color-fd-foreground'],
   },
   list: {
+    paddingInlineStart: '1.25rem',
     marginTop: {
       default: '1.25em',
-      [stylex.when.ancestor(':where(ul, ol)')]: '0.75em',
       [stylex.when.ancestor(':where(p)')]: 0,
+      [stylex.when.ancestor(':where(ul, ol)')]: '0.75em',
     },
-    paddingInlineStart: '1.25rem',
   },
   ul: {
     listStyleType: 'disc',
@@ -90,17 +90,17 @@ const styles = stylex.create({
     listStyleType: {
       default: 'decimal',
       ':is([type="A"])': 'upper-alpha',
-      ':is([type="a"])': 'lower-alpha',
       ':is([type="I"])': 'upper-roman',
+      ':is([type="a"])': 'lower-alpha',
       ':is([type="i"])': 'lower-roman',
     },
   },
   li: {
-    marginBlock: '0.5em',
     paddingInlineStart: {
       default: 0,
       [stylex.when.ancestor(':where(ol)')]: '0.375em',
       [stylex.when.ancestor(':where(ul)')]: 0,
     },
+    marginBlock: '0.5em',
   },
 });

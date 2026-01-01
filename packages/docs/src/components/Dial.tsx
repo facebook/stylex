@@ -17,11 +17,11 @@ const gradientShift = stylex.keyframes({
 
 const styles = stylex.create({
   wrapper: {
-    backgroundColor: 'black',
-    padding: '20px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    padding: '20px',
+    backgroundColor: 'black',
     borderRadius: '8px',
   },
   gradientBackground: {
@@ -51,19 +51,19 @@ const styles = stylex.create({
     strokeWidth: 2,
   },
   label: {
-    fill: 'white',
     fontSize: 14,
-    textAnchor: 'middle',
     dominantBaseline: 'middle',
+    textAnchor: 'middle',
+    fill: 'white',
   },
   indicator: {
     stroke: '#f00',
     strokeWidth: 3,
   },
   bottomText: {
-    color: 'white',
     marginTop: '20px',
     fontSize: 14,
+    color: 'white',
   },
 });
 

@@ -80,17 +80,17 @@ const styles = stylex.create({
     },
   },
   vertical: {
-    height: '100%',
     width: 1.5 * 4,
+    height: '100%',
   },
   horizontal: {
-    height: 1.5 * 4,
     flexDirection: 'column',
+    height: 1.5 * 4,
   },
   thumb: {
     position: 'relative',
     flexGrow: 1,
-    borderRadius: 9999,
     backgroundColor: `${vars['--color-fd-border']}`,
+    borderRadius: 9999,
   },
 });

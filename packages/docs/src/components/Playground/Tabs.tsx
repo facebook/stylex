@@ -188,12 +188,12 @@ function NewFileButton({
 const styles = stylex.create({
   tabs: {
     display: 'flex',
+    gap: 8,
     paddingInlineStart: 8,
     backgroundColor: vars['--color-fd-card'],
-    gap: 8,
-    borderBottomWidth: 1,
-    borderBottomStyle: 'solid',
     borderBottomColor: vars['--color-fd-border'],
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
   },
   tab: {
     display: 'flex',
@@ -211,32 +211,32 @@ const styles = stylex.create({
     boxShadow: '0 -4px 0 0 currentColor inset',
   },
   tabLabelButton: {
-    backgroundColor: 'transparent',
-    color: 'inherit',
-    borderStyle: 'none',
     paddingBlock: 8,
     fontSize: 12,
+    color: 'inherit',
     cursor: 'pointer',
+    backgroundColor: 'transparent',
+    borderStyle: 'none',
   },
   tabIconButton: {
+    width: 32,
+    height: 32,
+    fontSize: 12,
+    color: vars['--color-fd-foreground'],
+    cursor: 'pointer',
     backgroundColor: {
       default: 'transparent',
       ':hover': `color-mix(in srgb, ${vars['--color-fd-accent-foreground']} 20%, transparent)`,
     },
-    color: vars['--color-fd-foreground'],
-    borderRadius: 4,
-    height: 32,
-    width: 32,
-    fontSize: 12,
-    cursor: 'pointer',
     borderStyle: 'none',
+    borderRadius: 4,
   },
 
   addWrapper: {
     position: 'relative',
     display: 'flex',
+    gap: '6px',
     alignItems: 'center',
     marginLeft: 'auto',
-    gap: '6px',
   },
 });

@@ -30,15 +30,15 @@ const styles = stylex.create({
     },
     textDecoration: {
       default: 'none',
-      ':hover': 'underline',
       ':focus-visible': 'underline',
+      ':hover': 'underline',
     },
+    textDecorationThickness: '2px',
     textDecorationColor: {
       default: 'transparent',
-      ':hover': 'color-mix(in srgb, currentColor 50%, transparent)',
       ':focus-visible': 'color-mix(in srgb, currentColor 50%, transparent)',
+      ':hover': 'color-mix(in srgb, currentColor 50%, transparent)',
     },
     textUnderlineOffset: '4px',
-    textDecorationThickness: '2px',
   },
 });

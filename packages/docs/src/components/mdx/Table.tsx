@@ -21,13 +21,13 @@ export default function Table(props: TableProps) {
 const styles = stylex.create({
   wrapper: {
     position: 'relative',
-    overflowX: 'auto',
     marginBlock: 24,
+    overflowX: 'auto',
   },
   table: {
     width: '100%',
-    borderCollapse: 'collapse',
     fontSize: 14,
     lineHeight: 1.5,
+    borderCollapse: 'collapse',
   },
 });

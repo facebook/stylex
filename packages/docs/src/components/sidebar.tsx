@@ -79,36 +79,36 @@ const itemVariants = stylex.create({
     position: 'relative',
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 2 * 4,
-    borderRadius: 8,
-    backgroundColor: {
-      default: null,
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 50%, transparent)`,
-    },
+    alignItems: 'center',
     padding: 2 * 4,
     paddingInlineStart: `calc(${vars['--spacing']} * 2)`,
-    textAlign: 'start',
     color: {
       default: vars['--color-fd-muted-foreground'],
       ':hover': `color-mix(in oklab, ${vars['--color-fd-accent-foreground']} 80%, transparent)`,
     },
+    textAlign: 'start',
     overflowWrap: 'anywhere',
-    '--svg-size': 4,
-    // eslint-disable-next-line @stylexjs/valid-styles
-    ':not(#foo) svg': {
-      width: 4,
-      height: 4,
-      flexShrink: 0,
+    backgroundColor: {
+      default: null,
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 50%, transparent)`,
     },
+    borderRadius: 8,
     transitionProperty: {
       default: 'color, background-color, border-color',
       ':hover': 'none',
     },
+    '--svg-size': 4,
+    // eslint-disable-next-line @stylexjs/valid-styles
+    ':not(#foo) svg': {
+      flexShrink: 0,
+      width: 4,
+      height: 4,
+    },
   },
   active: {
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-primary']} 10%, transparent)`,
     color: vars['--color-fd-primary'],
+    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-primary']} 10%, transparent)`,
   },
 });
 
@@ -199,43 +199,43 @@ export function SidebarContent({
 const contentStyles = stylex.create({
   base: {
     position: 'fixed',
-    left: { default: 0, ':dir(rtl)': 'auto' },
+    top: 0,
     right: {
       default: null,
       ':dir(rtl)': 0,
     },
+    bottom: 0,
+    left: { default: 0, ':dir(rtl)': 'auto' },
+    zIndex: 20,
     display: { default: 'flex', '@media (max-width: 768px)': 'none' },
     flexDirection: 'column',
     alignItems: 'flex-end',
-    top: 0,
-    bottom: 0,
-    zIndex: 20,
-    backgroundColor: vars['--color-fd-card'],
+    width: `calc(${vars['--spacing']} + ${vars['--fd-sidebar-width']} + var(--fd-layout-offset))`,
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
-    borderInlineEndWidth: 1,
-    borderInlineEndStyle: 'solid',
+    backgroundColor: vars['--color-fd-card'],
     borderInlineEndColor: vars['--color-fd-border'],
-    transitionProperty: 'top, opacity, translate, width',
-    transitionDuration: '0.2s',
+    borderInlineEndStyle: 'solid',
+    borderInlineEndWidth: 1,
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    width: `calc(${vars['--spacing']} + ${vars['--fd-sidebar-width']} + var(--fd-layout-offset))`,
+    transitionDuration: '0.2s',
+    transitionProperty: 'top, opacity, translate, width',
     '--fd-sidebar-margin': '0px',
-    '--fd-sidebar-top': `calc(${vars['--fd-banner-height']} + ${vars['--fd-nav-height']} + var(--fd-sidebar-margin))`,
     '--fd-sidebar-offset': 'calc(16px - 100%)',
+    '--fd-sidebar-top': `calc(${vars['--fd-banner-height']} + ${vars['--fd-nav-height']} + var(--fd-sidebar-margin))`,
   },
   collapsed: {
-    borderRadius: 12,
-    borderWidth: 1,
-    borderStyle: 'solid',
+    width: vars['--fd-sidebar-width'],
     borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 12,
+    opacity: 0,
     transform: {
       default: 'translateX(var(--fd-sidebar-offset))',
       ':dir(rtl)': 'translateX(calc(var(--fd-sidebar-offset) * -1))',
     },
-    opacity: 0,
     '--fd-sidebar-margin': '0.5rem',
-    width: vars['--fd-sidebar-width'],
   },
   collapsedHovered: {
     zIndex: 50,
@@ -282,40 +282,37 @@ export function SidebarContentMobile({
 const mobContentStyles = stylex.create({
   top: {
     position: 'fixed',
-    zIndex: 40,
     inset: 0,
+    zIndex: 40,
     backdropFilter: 'blur(4px)',
     animation: {
       default: null,
-      ':where([data-state="open"])': vars['--animate-fd-fade-in'],
       ':where([data-state="closed"])': vars['--animate-fd-fade-out'],
+      ':where([data-state="open"])': vars['--animate-fd-fade-in'],
     },
   },
   bottom: {
     position: 'fixed',
-    fontSize: `${15 / 16}rem`,
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow:
-      '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-    borderInlineStartWidth: 1,
-    borderInlineStartStyle: 'solid',
-    borderInlineStartColor: vars['--color-fd-accent'],
-    insetInlineEnd: 0,
     insetBlock: 0,
-    width: '85%',
-    maxWidth: 380,
+    insetInlineEnd: 0,
     // z-40 bg-fd-background data-[state=open]:animate-fd-sidebar-in data-[state=closed]:animate-fd-sidebar-out
     zIndex: 40,
+    display: 'flex',
+    flexDirection: 'column',
+    width: '85%',
+    maxWidth: 380,
+    fontSize: `${15 / 16}rem`,
     backgroundColor: vars['--color-fd-background'],
+    borderInlineStartColor: vars['--color-fd-accent'],
+    borderInlineStartStyle: 'solid',
+    borderInlineStartWidth: 1,
+    boxShadow:
+      '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     animation: {
       default: null,
-      ':where([data-state="open"])': vars['--animate-fd-sidebar-in'],
       ':where([data-state="closed"])': vars['--animate-fd-sidebar-out'],
+      ':where([data-state="open"])': vars['--animate-fd-sidebar-in'],
     },
-  },
-  hidden: {
-    display: 'none',
   },
 });
 
@@ -353,11 +350,11 @@ const footerStyles = stylex.create({
   div: {
     display: 'flex',
     flexDirection: 'column',
-    borderTopWidth: 1,
-    borderTopStyle: 'solid',
-    borderTopColor: vars['--color-fd-accent'],
     padding: 4 * 4,
     paddingTop: 2 * 4,
+    borderTopColor: vars['--color-fd-accent'],
+    borderTopStyle: 'solid',
+    borderTopWidth: 1,
   },
 });
 
@@ -398,16 +395,16 @@ export function SidebarSeparator({
 const separatorStyles = stylex.create({
   p: {
     display: 'inline-flex',
-    alignItems: 'center',
     gap: 8,
-    marginBottom: { default: 1.5 * 4, ':empty': 0 },
+    alignItems: 'center',
     paddingInline: 8,
     paddingInlineStart: 'var(--sidebar-item-offset)',
+    marginBottom: { default: 1.5 * 4, ':empty': 0 },
     // eslint-disable-next-line @stylexjs/valid-styles
     ':not(#foo) svg': {
+      flexShrink: 0,
       width: 4 * 4,
       height: 4 * 4,
-      flexShrink: 0,
     },
   },
 });
@@ -499,9 +496,9 @@ const folderTriggerStyles = stylex.create({
     width: 'var(--svg-size)',
     height: 'var(--svg-size)',
     marginInlineStart: 'auto',
-    transitionProperty: 'transform',
-    transitionDuration: '0.15',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '0.15',
+    transitionProperty: 'transform',
   },
   closed: {
     rotate: '-90deg',
@@ -556,12 +553,12 @@ export function SidebarFolderLink({
 const folderLinkStyles = stylex.create({
   fullWidth: { width: '100%' },
   chevron: {
-    marginInlineStart: 'auto',
-    transitionProperty: 'transform',
-    transitionDuration: '0.15s',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
     width: 'var(--svg-size)',
     height: 'var(--svg-size)',
+    marginInlineStart: 'auto',
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '0.15s',
+    transitionProperty: 'transform',
   },
   closed: {
     rotate: '-90deg',
@@ -603,22 +600,22 @@ const folderStyles = stylex.create({
     '--sidebar-item-offset': `calc(var(--spacing) * ${(level + 1) * 3})`,
   }),
   level1: {
-    '::before': {
-      content: '',
-      position: 'absolute',
-      width: 1,
-      backgroundColor: vars['--color-fd-border'],
-      insetInlineStart: 2.5 * 4,
-    },
     // HACK ALERT!
     // eslint-disable-next-line @stylexjs/valid-styles
     ':not(#foo) [data-active="true"]::before': {
-      content: '',
-      backgroundColor: vars['--color-fd-primary'],
       position: 'absolute',
-      width: 1,
       insetBlock: 2.5 * 4,
       insetInlineStart: 2.5 * 4,
+      width: 1,
+      content: '',
+      backgroundColor: vars['--color-fd-primary'],
+    },
+    '::before': {
+      position: 'absolute',
+      insetInlineStart: 2.5 * 4,
+      width: 1,
+      content: '',
+      backgroundColor: vars['--color-fd-border'],
     },
   },
 });

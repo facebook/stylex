@@ -18,9 +18,9 @@ const styles = stylex.create({
   item: {
     gridArea: '1 / 1',
     opacity: 0,
-    transitionProperty: 'opacity',
-    transitionDuration: '0.5s',
     transitionTimingFunction: 'linear',
+    transitionDuration: '0.5s',
+    transitionProperty: 'opacity',
   },
   visible: {
     opacity: 1,

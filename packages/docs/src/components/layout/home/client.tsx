@@ -80,51 +80,51 @@ const navbarStyles = stylex.create({
   nav: {
     display: 'flex',
     flexDirection: 'row',
+    gap: 4 * 4,
     alignItems: 'center',
     paddingInline: 4 * 4,
-    gap: 4 * 4,
   },
   header: {
     position: 'fixed',
+    insetInline: 0,
     top: 0,
     zIndex: 10,
-    insetInline: 0,
-    padding: 8,
     height: 56 + 16,
+    padding: 8,
   },
   backdrop: {
-    position: 'absolute',
-    inset: 8,
-    pointerEvents: 'none',
-    borderRadius: 20,
     // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
+    position: 'absolute',
+    inset: 8,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderStyle: 'solid',
+    pointerEvents: 'none',
     borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 20,
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
   blur: {
     position: 'absolute',
-    pointerEvents: 'none',
     inset: -8,
     bottom: -32,
+    pointerEvents: 'none',
     backdropFilter: 'blur(16px) saturate(600%)',
   },
   gradientBlur: {
     position: 'absolute',
-    pointerEvents: 'none',
     inset: -8,
     bottom: -32,
+    pointerEvents: 'none',
     backdropFilter: 'blur(32px)',
     maskImage: 'linear-gradient(to bottom, white 30%, transparent)',
   },
   gradientFade: {
     position: 'absolute',
-    pointerEvents: 'none',
     inset: -8,
     bottom: -32,
+    pointerEvents: 'none',
     backgroundColor: vars['--color-fd-background'],
     maskImage:
       'linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 50%, transparent)',
@@ -133,41 +133,27 @@ const navbarStyles = stylex.create({
     bottom: -8,
   },
   overlayBlur: {
-    position: 'absolute',
-    pointerEvents: 'none',
-    inset: 9,
-    borderRadius: 19,
     // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
+    position: 'absolute',
+    inset: 9,
+    zIndex: 10,
     overflow: 'hidden',
-    backdropFilter: 'blur(20px) saturate(1000%)',
+    pointerEvents: 'none',
     backgroundColor: 'transparent',
+    borderRadius: 19,
+    backdropFilter: 'blur(20px) saturate(1000%)',
     maskImage:
       'linear-gradient(to bottom, white, transparent 16%, transparent 84%, white)',
-    zIndex: 10,
-  },
-  headerWithVals: {
-    // 'max-lg:shadow-lg max-lg:rounded-b-2xl'
-    boxShadow: {
-      default: null,
-      '@media (max-width: 1024px)':
-        '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
-    },
-    borderEndStartRadius: { default: null, '@media (max-width: 1024px)': 16 },
-    borderEndEndRadius: { default: null, '@media (max-width: 1024px)': 16 },
-  },
-  headerOpaque: {
-    backgroundColor:
-      'color-mix(in oklab, var(--fd-background) 80%, transparent)',
   },
   menuList: {
-    marginInline: 'auto',
-    maxWidth: 'var(--max-w-fd-container)',
     display: 'flex',
-    height: 14 * 4,
-    width: '100%',
     alignItems: 'center',
+    width: '100%',
+    maxWidth: 'var(--max-w-fd-container)',
+    height: 14 * 4,
     paddingInline: 4 * 4,
+    marginInline: 'auto',
   },
 });
 
@@ -279,18 +265,18 @@ const navItemVariants = stylex.create({
     ['--svg-size' as any]: '4px',
   },
   default: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    cornerShape: 'squircle',
     display: 'inline-flex',
-    alignItems: 'center',
     gap: 1 * 4,
+    alignItems: 'center',
     padding: 2 * 4,
     color: {
       default: vars['--color-fd-secondary-foreground'],
-      ':hover': vars['--color-fd-primary'],
       ':where([data-active=true])': vars['--color-fd-primary'],
+      ':hover': vars['--color-fd-primary'],
     },
     borderRadius: 8,
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
   },
   button: { gap: 1.5 * 4 },
 });
@@ -298,12 +284,12 @@ const navItemStyles = stylex.create({
   iconContainer: {
     // w-fit rounded-md border bg-fd-muted p-1 [&_svg]:size-4
     width: 'fit-content',
-    borderRadius: '8px',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: vars['--color-fd-border'],
-    backgroundColor: vars['--color-fd-muted'],
     padding: 4,
+    backgroundColor: vars['--color-fd-muted'],
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: '8px',
     // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },
@@ -311,16 +297,16 @@ const navItemStyles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 2 * 4,
-    borderRadius: '8px',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: vars['--color-fd-border'],
+    padding: 3 * 4,
+    color: { default: null, ':hover': 'var(--text-fd-primary)' },
     backgroundColor: {
       default: 'var(--bg-fd-card)',
       ':hover': `color-mix(in oklab, ${vars['--color-fd-accent']} 80%, transparent)`,
     },
-    color: { default: null, ':hover': 'var(--text-fd-primary)' },
-    padding: 3 * 4,
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: '8px',
     transitionProperty: 'background-color, color',
   },
   menuLinkTitle: {
@@ -329,10 +315,10 @@ const navItemStyles = stylex.create({
     fontWeight: 500,
   },
   menuLinkDescription: {
+    display: { default: null, ':empty': 'none' },
     // 'text-sm text-fd-muted-foreground empty:hidden'
     fontSize: `${12 / 16}rem`,
     color: 'var(--text-fd-muted-foreground)',
-    display: { default: null, ':empty': 'none' },
   },
 
   menuTrigger: {
@@ -343,8 +329,8 @@ const navItemStyles = stylex.create({
     display: 'grid',
     gridTemplateColumns: {
       default: '1fr',
-      '@media (min-width: 768px) and (max-width: 1024px)': 'repeat(2, 1fr)',
       '@media (min-width: 1024px)': 'repeat(3, 1fr)',
+      '@media (min-width: 768px) and (max-width: 1024px)': 'repeat(2, 1fr)',
     },
     gap: 2 * 4,
     padding: 4 * 4,
@@ -424,10 +410,10 @@ export function MenuLinkItem({
 const menuLinkStyles = stylex.create({
   grid: { display: 'grid' },
   menuContainer: {
-    // mb-4 flex flex-col
-    marginBottom: 4 * 4,
     display: 'flex',
     flexDirection: 'column',
+    // mb-4 flex flex-col
+    marginBottom: 4 * 4,
   },
   para: {
     // "mb-1 text-sm text-fd-muted-foreground"
@@ -438,20 +424,20 @@ const menuLinkStyles = stylex.create({
   baseLinkItem: {
     // 'inline-flex items-center gap-2 py-1.5 transition-colors hover:text-fd-popover-foreground/50 data-[active=true]:font-medium data-[active=true]:text-fd-primary [&_svg]:size-4'
     display: 'inline-flex' as any,
-    alignItems: 'center',
     gap: 2 * 4,
+    alignItems: 'center',
     padding: 1.5 * 4,
-    transitionProperty: 'color, background-color, border-color',
-    color: {
-      default: null,
-      ':hover':
-        'color-mix(in oklab, var(--text-fd-popover-foreground) 50%, transparent)',
-      ':where([data-active=true])': 'var(--text-fd-primary)',
-    },
     fontWeight: {
       default: null,
       ':where([data-active=true])': 500,
     },
+    color: {
+      default: null,
+      ':where([data-active=true])': 'var(--text-fd-primary)',
+      ':hover':
+        'color-mix(in oklab, var(--text-fd-popover-foreground) 50%, transparent)',
+    },
+    transitionProperty: 'color, background-color, border-color',
     // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },

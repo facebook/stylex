@@ -33,7 +33,7 @@ const styles = stylex.create({
     gap: '1rem',
     width: '100%',
     maxWidth: 800,
-    marginInline: 'auto',
     paddingBlock: 58,
+    marginInline: 'auto',
   },
 });

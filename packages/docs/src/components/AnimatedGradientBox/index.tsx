@@ -25,22 +25,22 @@ const rotate = stylex.keyframes({
 
 const styles = stylex.create({
   container: {
+    zIndex: 0,
+    boxSizing: 'border-box',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    aspectRatio: '16 / 9',
-    borderRadius: 8,
-    boxSizing: 'border-box',
     width: '100%',
+    aspectRatio: '16 / 9',
     marginBlock: 16,
-    zIndex: 0,
+    borderRadius: 8,
   },
   card: {
-    borderRadius: 16,
-    height: '65%',
     position: 'relative',
-    width: '65%',
     boxSizing: 'border-box',
+    width: '65%',
+    height: '65%',
+    borderRadius: 16,
   },
   gradient: {
     position: 'absolute',

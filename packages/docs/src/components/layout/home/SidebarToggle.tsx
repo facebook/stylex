@@ -35,21 +35,21 @@ export default function SidebarToggle() {
 
 const styles = stylex.create({
   button: {
-    backgroundColor: 'transparent',
-    height: 56,
     width: 56,
+    height: 56,
     marginInline: (20 - 56) / 2,
     color: {
       default: vars['--color-fd-foreground'],
-      ':hover': vars['--color-fd-primary'],
       ':focus-visible': vars['--color-fd-primary'],
+      ':hover': vars['--color-fd-primary'],
     },
-    transitionProperty: 'color, scale',
-    transitionDuration: '0.3s',
-    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    backgroundColor: 'transparent',
     scale: {
       default: null,
       ':active': 0.95,
     },
+    transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '0.3s',
+    transitionProperty: 'color, scale',
   },
 });

@@ -66,7 +66,7 @@ export function DevInstallExample({ prod = [], dev = [] }) {
 
 const styles = stylex.create({
   codeblock: {
-    marginTop: 0,
     paddingInline: 16,
+    marginTop: 0,
   },
 });

@@ -43,12 +43,12 @@ export default function Image({
 
 const styles = stylex.create({
   image: {
-    borderRadius: 8,
     // eslint-disable-next-line @stylexjs/valid-styles
     borderShape: 'squircle',
+    display: 'block',
     maxWidth: '100%',
     height: 'auto',
-    display: 'block',
     marginBlock: 16,
+    borderRadius: 8,
   },
 });

@@ -54,8 +54,8 @@ const pageStyles = stylex.create({
   wrapper: {
     display: 'flex',
     flexDirection: 'row',
-    width: '100%',
     alignItems: 'flex-start',
+    width: '100%',
   },
   flexCol: {
     display: 'flex',
@@ -67,39 +67,39 @@ const pageStyles = stylex.create({
   },
   article: {
     flexGrow: 1,
+    gap: 24,
     width: '100%',
     maxWidth: 860,
-    gap: 24,
-    paddingInline: 16,
     paddingBlock: 32,
+    paddingInline: 16,
     marginInline: {
       default: null,
       '@media (min-width: 768px)': 'auto',
     },
   },
   sticky: {
+    position: 'sticky',
+    top: 80,
+    zIndex: 1,
     display: {
       default: null,
       '@media (max-width: 1280px)': 'none',
     },
-    position: 'sticky',
-    top: 80,
-    width: 360,
-    marginBottom: 16,
     flexShrink: 0,
+    width: 360,
     maxHeight: 'calc(100dvh - 96px)',
     padding: 4 * 4,
+    marginBottom: 16,
     overflow: 'auto',
-    zIndex: 1,
-    borderInlineStartWidth: 1,
-    borderInlineStartStyle: 'solid',
     borderInlineStartColor: vars['--color-fd-border'],
+    borderInlineStartStyle: 'solid',
+    borderInlineStartWidth: 1,
   },
   tocPara: {
+    marginBottom: 8,
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
     color: vars['--color-fd-muted-foreground'],
-    marginBottom: 8,
   },
 });
 
@@ -144,8 +144,8 @@ export function DocsTitle({ xstyle, ...props }: StyleXComponentProps<'h1'>) {
 const titleStyles = stylex.create({
   h1: {
     fontSize: `${30 / 16}rem`,
-    lineHeight: 1.2,
     fontWeight: 600,
+    lineHeight: 1.2,
     color: vars['--color-fd-primary'],
   },
 });
@@ -167,11 +167,11 @@ function TocItem({ item }: { item: TOCItemType }) {
 }
 const itemStyles = stylex.create({
   link: (paddingInlineStart: number) => ({
+    paddingBlock: 4,
+    paddingInlineStart,
     fontSize: `${14 / 16}rem`,
     lineHeight: 1.42,
     color: `color-mix(in oklab, ${vars['--color-fd-foreground']} 80%, transparent)`,
-    paddingBlock: 4,
-    paddingInlineStart,
   }),
   active: {
     color: vars['--color-fd-primary'],
@@ -235,29 +235,29 @@ const footerStyles = stylex.create({
   div: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
     gap: 2 * 4,
     alignItems: 'center',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
   link: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexGrow: 1,
-    borderRadius: 20,
     // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
+    display: 'flex',
+    flexGrow: 1,
+    flexBasis: '40%',
+    flexDirection: 'row',
+    gap: 8,
     padding: 16,
     color: vars['--color-fd-primary'],
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: vars['--color-fd-border'],
-    flexBasis: '40%',
     backgroundColor: {
       default: 'transparent',
       ':hover': vars['--color-fd-muted'],
     },
-    gap: 8,
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 20,
   },
   prev: {
     justifyContent: 'flex-start',

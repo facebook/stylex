@@ -58,43 +58,19 @@ const layoutStyles = stylex.create({
     flexDirection: 'column',
     minHeight: 'calc(100dvh - 56px)',
   },
-  header: {
-    // sticky top-0 bg-fd-background h-14 z-20
-    position: 'sticky',
-    display: 'flex',
-    top: 0,
-    backgroundColor: vars['--color-fd-background'],
-    height: '56px',
-    zIndex: 20,
-    borderBottomWidth: 1,
-    borderBottomStyle: 'solid',
-    borderBottomColor: vars['--color-fd-border'],
-  },
-  nav: {
-    // flex flex-row items-center gap-2 size-full px-4
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2 * 4,
-    width: '100%',
-    paddingInline: 4 * 4,
-  },
-  gap: {
-    flexGrow: 1,
-  },
   main: {
     display: 'flex',
-    flexDirection: 'column',
     flexGrow: 1,
+    flexDirection: 'column',
     // eslint-disable-next-line @stylexjs/valid-styles
     ['--fd-nav-height' as any]: '64px',
     paddingInlineStart: {
       default: 292,
       '@media (max-width: 767.9px)': 0,
     },
-    transitionProperty: 'padding-inline-start',
-    transitionDuration: '0.15s',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '0.15s',
+    transitionProperty: 'padding-inline-start',
   },
   mainWithSidebarClosed: {
     paddingInlineStart: 0,
@@ -148,19 +124,19 @@ const sidebarStyles = stylex.create({
     position: 'fixed',
     top: 64,
     left: 0,
+    zIndex: 10,
     display: 'flex',
-    alignSelf: 'flex-start',
     flexShrink: 0,
-    padding: 8,
+    alignSelf: 'flex-start',
     height: 'calc(100dvh - 64px)',
+    padding: 8,
     transform: {
       default: 'translateX(0px)',
       '@media (max-width: 767.9px)': 'translateX(-100%)',
     },
-    transitionProperty: 'transform',
-    transitionDuration: '0.15s',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
-    zIndex: 10,
+    transitionDuration: '0.15s',
+    transitionProperty: 'transform',
   },
   open: {
     transform: 'translateX(0)',
@@ -169,13 +145,13 @@ const sidebarStyles = stylex.create({
     transform: 'translateX(-100%)',
   },
   blurContainer: {
-    position: 'absolute',
-    inset: 8,
-    overflow: 'hidden',
-    borderRadius: 20,
     // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
+    position: 'absolute',
+    inset: 8,
     zIndex: 1,
+    overflow: 'hidden',
+    borderRadius: 20,
   },
   blur: {
     position: 'absolute',
@@ -185,36 +161,36 @@ const sidebarStyles = stylex.create({
     backdropFilter: 'blur(32px) saturate(500%)',
   },
   overlayBlur: {
-    position: 'absolute',
-    inset: 9,
-    pointerEvents: 'none',
-    overflow: 'hidden',
-    borderRadius: 19,
     // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
+    position: 'absolute',
+    inset: 9,
     zIndex: 1,
+    overflow: 'hidden',
+    pointerEvents: 'none',
+    borderRadius: 19,
     backdropFilter: 'blur(32px) saturate(800%)',
     maskImage:
       'linear-gradient(to right, white, transparent 4%, transparent 88%, white)',
   },
   base: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    cornerShape: 'squircle',
+    zIndex: 1,
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
-    padding: 4 * 4,
-    fontSize: '1rem',
-    overflowY: 'auto',
-    overscrollBehavior: 'contain',
     width: 280,
     height: '100%',
-    borderRadius: 20,
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
-    borderWidth: 1,
-    borderStyle: 'solid',
+    padding: 4 * 4,
+    overflowY: 'auto',
+    overscrollBehavior: 'contain',
+    fontSize: '1rem',
     borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 20,
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
-    zIndex: 1,
   },
 });
 
@@ -328,11 +304,11 @@ function SidebarItemFolder({
 
 const sidebarItemStyles = stylex.create({
   separator: {
+    marginTop: { default: 5 * 4, ':first-child': 0 },
+    marginBottom: 1.5 * 4,
     // text-fd-muted-foreground mt-6 mb-2 first:mt-0
     fontSize: `${14 / 16}rem`,
     color: 'var(--text-fd-muted-foreground)',
-    marginTop: { default: 5 * 4, ':first-child': 0 },
-    marginBottom: 1.5 * 4,
   },
   details: {
     '--rotation': {
@@ -350,19 +326,19 @@ const sidebarItemStyles = stylex.create({
     // },
   },
   summary: {
-    listStyle: 'none',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    listStyle: 'none',
   },
   chevron: {
+    flexShrink: 0,
     width: 14,
     height: 14,
-    flexShrink: 0,
     transform: 'rotate(var(--rotation))',
-    transitionProperty: 'transform',
-    transitionDuration: '0.15s',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    transitionDuration: '0.15s',
+    transitionProperty: 'transform',
   },
   summaryLink: {
     color:
@@ -370,14 +346,14 @@ const sidebarItemStyles = stylex.create({
   },
   textStart: { textAlign: 'start' },
   childContainer: {
-    marginInlineStart: 1,
-    paddingInlineStart: 15,
-    borderInlineStartWidth: 1,
-    borderInlineStartStyle: 'solid',
-    borderInlineStartColor: vars['--color-fd-border'],
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
+    paddingInlineStart: 15,
+    marginInlineStart: 1,
+    borderInlineStartColor: vars['--color-fd-border'],
+    borderInlineStartStyle: 'solid',
+    borderInlineStartWidth: 1,
     // eslint-disable-next-line @stylexjs/valid-styles
     ['--summary-color' as any]: 'initial',
   },
@@ -387,14 +363,14 @@ const linkVariants = stylex.create({
   base: {
     position: 'relative',
     display: 'inline-flex',
+    gap: 2 * 4,
     alignItems: 'center',
+    paddingBlock: 1.5 * 4,
     fontSize: '1rem',
     lineHeight: 1.42,
-    gap: 2 * 4,
-    paddingBlock: 1.5 * 4,
-    borderRadius: '8px',
     color:
       'var(--summary-color, color-mix(in oklab, var(--text-fd-foreground) 80%, transparent))',
+    borderRadius: '8px',
   },
   active: {
     fontWeight: 500,

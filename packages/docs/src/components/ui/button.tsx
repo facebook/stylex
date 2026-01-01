@@ -14,69 +14,69 @@ export const buttonStyles = stylex.create({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
     padding: 8,
     fontSize: `${14 / 16}rem`,
     fontWeight: 500,
-    transitionProperty: 'background-color',
-    transitionDuration: '0.1s',
-    transitionTimingFunction: 'ease-in-out',
     outline: 'none',
+    borderRadius: 8,
     boxShadow: {
       default: 'none',
       ':focus-visible': `0 0 0 2px ${vars['--color-fd-primary']}`,
     },
+    transitionTimingFunction: 'ease-in-out',
+    transitionDuration: '0.1s',
+    transitionProperty: 'background-color',
   },
 });
 
 export const buttonVariantStyles = stylex.create({
   primary: {
+    color: vars['--color-fd-primary-foreground'],
     backgroundColor: {
       default: vars['--color-fd-primary'],
       ':hover': `color-mix(in srgb, ${vars['--color-fd-primary']} 80%, transparent)`,
     },
-    color: vars['--color-fd-primary-foreground'],
   },
   outline: {
-    backgroundColor: {
-      default: 'transparent',
-      ':hover': `${vars['--color-fd-accent']}`,
-    },
     color: {
       default: null,
       ':hover': `${vars['--color-fd-accent-foreground']}`,
     },
-    borderWidth: 1,
-    borderStyle: 'solid',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': `${vars['--color-fd-accent']}`,
+    },
     borderColor: `${vars['--color-fd-accent']}`,
+    borderStyle: 'solid',
+    borderWidth: 1,
   },
   ghost: {
-    backgroundColor: 'transparent',
     color: {
       default: vars['--color-fd-foreground'],
       ':hover': vars['--color-fd-primary'],
     },
+    backgroundColor: 'transparent',
   },
   secondary: {
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: `${vars['--color-fd-accent']}`,
-    backgroundColor: {
-      default: `${vars['--color-fd-secondary']}`,
-      ':hover': `${vars['--color-fd-accent']}`,
-    },
     color: {
       default: `${vars['--color-fd-secondary-foreground']}`,
       ':hover': `${vars['--color-fd-accent-foreground']}`,
     },
+    backgroundColor: {
+      default: `${vars['--color-fd-secondary']}`,
+      ':hover': `${vars['--color-fd-accent']}`,
+    },
+    borderColor: `${vars['--color-fd-accent']}`,
+    borderStyle: 'solid',
+    borderWidth: 1,
   },
 });
 
 export const buttonSizeVariants = stylex.create({
   sm: {
     gap: 4,
-    paddingInline: 8,
     paddingBlock: 6,
+    paddingInline: 8,
     fontSize: `${12 / 16}rem`,
     lineHeight: 1.4,
   },

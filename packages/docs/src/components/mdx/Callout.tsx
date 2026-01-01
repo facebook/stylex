@@ -125,12 +125,12 @@ export function CalloutDescription({
 
 const iconStyles = stylex.create({
   base: {
+    flexShrink: 0,
     width: 20,
     height: 20,
-    flexShrink: 0,
     marginInlineEnd: -2,
-    fill: vars['--color-fd-card'],
     color: vars['--color-fd-card'],
+    fill: vars['--color-fd-card'],
   },
   info: { fill: vars['--color-fd-info'] },
   warning: { fill: vars['--color-fd-warning'] },
@@ -140,10 +140,10 @@ const iconStyles = stylex.create({
 
 const indicatorStyles = stylex.create({
   base: {
-    width: 2,
-    borderRadius: 2,
-    backgroundColor: 'color-mix(in srgb, currentColor 50%, transparent)',
     flexShrink: 0,
+    width: 2,
+    backgroundColor: 'color-mix(in srgb, currentColor 50%, transparent)',
+    borderRadius: 2,
   },
   info: { color: vars['--color-fd-info'] },
   warning: { color: vars['--color-fd-warning'] },
@@ -168,35 +168,35 @@ const containerStyles = stylex.create({
 
 const styles = stylex.create({
   container: {
-    display: 'flex',
-    gap: 8,
-    marginBlock: 16,
-    borderRadius: 12,
     // eslint-disable-next-line @stylexjs/valid-styles
     borderShape: 'squircle',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: vars['--color-fd-border'],
-    backgroundColor: vars['--color-fd-card'],
+    display: 'flex',
+    gap: 8,
     padding: 12,
     paddingInlineStart: 4,
+    marginBlock: 16,
     fontSize: 14,
     lineHeight: 1.5,
     color: vars['--color-fd-card-foreground'],
+    backgroundColor: vars['--color-fd-card'],
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 12,
     boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   },
 
   content: {
     display: 'flex',
+    flexGrow: 1,
     flexDirection: 'column',
     gap: 8,
     minWidth: 0,
-    flexGrow: 1,
   },
   title: {
-    fontWeight: 500,
     marginTop: 0,
     marginBottom: 0,
+    fontWeight: 500,
   },
   description: {
     color: vars['--color-fd-muted-foreground'],

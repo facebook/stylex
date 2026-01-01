@@ -131,21 +131,21 @@ function isSecondary(item: LinkItemType): boolean {
 const styles = stylex.create({
   main: {
     display: 'flex',
-    flexDirection: 'column',
     flexGrow: 1,
+    flexDirection: 'column',
   },
   navTitleLink: {
     display: 'inline-flex',
-    alignItems: 'center',
     gap: 2.5 * 4,
+    alignItems: 'center',
     fontWeight: 600,
   },
   navLinkList: {
     // "flex flex-row items-center gap-2 px-6 max-sm:hidden"
     display: { default: 'flex', '@media (max-width: 640px)': 'none' },
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 2 * 4,
+    alignItems: 'center',
   },
   navbarLinkItem: {
     // "text-sm"
@@ -160,29 +160,25 @@ const styles = stylex.create({
   searchContainer: {
     // flex flex-row items-center justify-end gap-1.5 flex-1 max-lg:hidden
     display: { default: 'flex', '@media (max-width: 1024px)': 'none' },
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'end',
-    gap: 1.5 * 4,
     flexGrow: 0,
     flexShrink: 0,
+    flexDirection: 'row',
+    gap: 1.5 * 4,
+    alignItems: 'center',
+    justifyContent: 'end',
   },
   largeSearchToggle: {
     // "w-full rounded-full ps-2.5 max-w-[240px]"
     width: '100%',
-    borderRadius: '9999px',
-    paddingInlineStart: 2.5 * 4,
-    maxWidth: 240,
     minWidth: 180,
+    maxWidth: 240,
+    paddingInlineStart: 2.5 * 4,
     backgroundColor: {
       default: 'transparent',
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
       ':focus-visible': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
     },
-  },
-  languageToggle: {
-    height: 20,
-    width: 20,
+    borderRadius: '9999px',
   },
   grow: {
     flexGrow: 1,
@@ -190,8 +186,8 @@ const styles = stylex.create({
   endLinkList: {
     display: { default: 'flex', ':empty': 'none' },
     flexDirection: 'row',
-    alignItems: 'center',
     gap: 2 * 4,
+    alignItems: 'center',
   },
   endIconLink: {
     marginInline: -4,
@@ -201,64 +197,5 @@ const styles = stylex.create({
   },
   lastEndIconLink: {
     marginInlineEnd: 0,
-  },
-  mobileSearchContainer: {
-    display: { default: 'flex', '@media (max-width: 1024px)': 'none' },
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginInlineStart: 'auto',
-    marginInlineEnd: -1.5 * 4,
-  },
-  mobileSearchToggle: {
-    // "p-2"
-    padding: 2 * 4,
-  },
-  mobileMenuContent: {
-    display: 'flex',
-    flexDirection: { default: 'column', '@media (min-width: 640px)': 'row' },
-    padding: 4 * 4,
-    justifyContent: { default: null, '@media (min-width: 640px)': 'center' },
-  },
-  primaryMenuLink: {
-    display: {
-      // eslint-disable-next-line @stylexjs/valid-styles
-      default: 'var(--display)' as any,
-      '@media (min-width: 640px)': 'none',
-    },
-  },
-  themeSwitchContainer: {
-    // -ms-1.5 flex flex-row items-center gap-1.5 max-sm:mt-2
-    marginInlineStart: -1.5 * 4,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 1.5 * 4,
-    marginTop: { default: null, '@media (max-width: 640px)': 2 * 4 },
-  },
-  secondaryMenuLink: {
-    marginInlineEnd: -1.5 * 4,
-  },
-  separator: {
-    flexGrow: 1,
-  },
-  mobileLanguageToggle: {
-    width: 5 * 4,
-    height: 5 * 4,
-  },
-  languageChevron: {
-    // size-3 text-fd-muted-foreground
-    width: 3 * 4,
-    height: 3 * 4,
-    color: 'var(--text-fd-muted-foreground)',
-  },
-  menuTriggerIcon: {
-    transitionProperty: 'transform',
-    transitionDuration: '0.3s',
-    transform: {
-      default: null,
-      [stylex.when.ancestor(':where([data-state=open])')]: 'rotate(180deg)',
-    },
-    width: 'var(--svg-size)',
-    height: 'var(--svg-size)',
   },
 });

@@ -68,18 +68,18 @@ const TIME = 8;
 const styles = stylex.create({
   container: {
     display: 'inline-grid',
-    color: vars['--color-fd-primary'],
-    fontWeight: 600,
     gridTemplateColumns: '1fr',
+    overflow: 'hidden',
+    fontWeight: 600,
+    color: vars['--color-fd-primary'],
+    borderInlineEndColor: 'transparent',
+    borderInlineEndStyle: 'solid',
+    borderInlineEndWidth: 1,
     animationName: typingAnim,
     animationDuration: `${TIME}s`,
-    animationIterationCount: 'infinite',
     animationTimingFunction: 'ease-out',
     animationDelay: `${TIME / 2}s`,
-    overflow: 'hidden',
-    borderInlineEndWidth: 1,
-    borderInlineEndStyle: 'solid',
-    borderInlineEndColor: 'transparent',
+    animationIterationCount: 'infinite',
   },
   word: {
     gridArea: '1 / 1',
@@ -87,7 +87,6 @@ const styles = stylex.create({
     whiteSpace: 'nowrap',
     animationName: hidden,
     animationDuration: `${TIME * 5}s`,
-    animationIterationCount: 'infinite',
     animationTimingFunction: 'steps(5)',
     // eslint-disable-next-line @stylexjs/valid-styles
     animationDelay: Object.fromEntries(
@@ -96,5 +95,6 @@ const styles = stylex.create({
         `${TIME * (i - 5)}s`,
       ]),
     ),
+    animationIterationCount: 'infinite',
   },
 });
