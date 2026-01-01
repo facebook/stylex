@@ -24,11 +24,11 @@ export function Tabs({
 }: {
   files: string[];
   activeFile: string;
-  getDefaultFilename: (fileKind: string) => string;
-  onSelectFile: (filename: string) => void;
-  onCreateFile: (fileKind: 'component' | 'stylex', name: string) => void;
-  onDeleteFile: (filename: string) => void;
-  onRenameFile: (filename: string, newName: string) => void;
+  getDefaultFilename: (_fileKind: string) => string;
+  onSelectFile: (_filename: string) => void;
+  onCreateFile: (_fileKind: 'component' | 'stylex', _name: string) => void;
+  onDeleteFile: (_filename: string) => void;
+  onRenameFile: (_filename: string, _newName: string) => void;
   onFormat: () => void;
 }) {
   return (
@@ -75,8 +75,8 @@ function Tab({
   filename: string;
   isActive: boolean;
   onSelect: () => void;
-  onRename: (filename: string, newName: string) => void;
-  onDelete: (filename: string) => void;
+  onRename: (_filename: string, _newName: string) => void;
+  onDelete: (_filename: string) => void;
   immutable: boolean;
 }) {
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -137,8 +137,8 @@ function NewFileButton({
   getDefaultFilename,
   onCreateFile,
 }: {
-  getDefaultFilename: (fileKind: 'component' | 'stylex') => string;
-  onCreateFile: (fileKind: 'component' | 'stylex', name: string) => void;
+  getDefaultFilename: (_fileKind: 'component' | 'stylex') => string;
+  onCreateFile: (_fileKind: 'component' | 'stylex', _name: string) => void;
 }) {
   const addButtonRef = useRef(null);
   const componentDialogRef = useRef<HTMLDialogElement | null>(null);

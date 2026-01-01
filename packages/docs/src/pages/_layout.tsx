@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import type { ReactNode } from 'react';
 import { Provider } from '@/components/provider';
 import '@/styles/globals.css';
@@ -9,7 +15,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <head>
-        <link rel="icon" href={faviconUrl} type="image/svg+xml" />
+        <link href={faviconUrl} rel="icon" type="image/svg+xml" />
       </head>
       <DevStyleXHMR />
       <Provider>

@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import TabItem from './TabItem';
 import Tabs from './Tabs';
 import Dial from '../Dial';
@@ -126,7 +132,7 @@ const styles = stylex.create({
       [stylex.when.ancestor(':where(pre)')]: 16,
     },
     fontSize: {
-      default: 13 / 16 + 'rem',
+      default: `${13 / 16}rem`,
       [stylex.when.ancestor(':where(h1)')]: '1.5rem',
       [stylex.when.ancestor(':where(h2)')]: '0.875em',
       [stylex.when.ancestor(':where(h3)')]: '0.9em',

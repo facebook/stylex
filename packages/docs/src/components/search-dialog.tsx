@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as React from 'react';
@@ -205,7 +211,7 @@ export function SearchDialog({
   const showFooter = tags.length > 0 || footer != null;
 
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+    <Dialog.Root onOpenChange={onOpenChange} open={open}>
       <Dialog.Portal>
         <Dialog.Overlay {...stylex.props(styles.overlay)} />
         <Dialog.Content {...stylex.props(styles.content)}>
@@ -224,22 +230,22 @@ export function SearchDialog({
             />
             <input
               {...stylex.props(styles.input)}
-              value={search}
+              autoFocus
               onChange={(event) => setSearch(event.target.value)}
               placeholder={text.search}
-              autoFocus
+              value={search}
             />
             <button
-              type="button"
               onClick={() => onOpenChange(false)}
+              type="button"
               {...stylex.props(styles.closeButton)}
             >
               ESC
             </button>
           </div>
           <div
-            ref={listContainerRef}
             data-empty={items == null}
+            ref={listContainerRef}
             {...stylex.props(styles.listContainer)}
           >
             <div
@@ -259,12 +265,12 @@ export function SearchDialog({
                 if (item.type === 'action') {
                   return (
                     <button
-                      key={item.id}
-                      type="button"
-                      data-search-item={item.id}
                       aria-selected={active}
-                      onPointerMove={() => setActiveId(item.id)}
+                      data-search-item={item.id}
+                      key={item.id}
                       onClick={() => onOpenItem(item)}
+                      onPointerMove={() => setActiveId(item.id)}
+                      type="button"
                       {...stylex.props(
                         styles.itemButton,
                         active && styles.itemButtonActive,
@@ -281,12 +287,12 @@ export function SearchDialog({
 
                 return (
                   <button
-                    key={item.id}
-                    type="button"
-                    data-search-item={item.id}
                     aria-selected={active}
-                    onPointerMove={() => setActiveId(item.id)}
+                    data-search-item={item.id}
+                    key={item.id}
                     onClick={() => onOpenItem(item)}
+                    onPointerMove={() => setActiveId(item.id)}
+                    type="button"
                     {...stylex.props(
                       styles.itemButton,
                       active && styles.itemButtonActive,
@@ -337,12 +343,12 @@ export function SearchDialog({
                     return (
                       <button
                         key={tagItem.value}
-                        type="button"
                         onClick={() =>
                           setTag(
                             isActive && allowClear ? undefined : tagItem.value,
                           )
                         }
+                        type="button"
                         {...stylex.props(
                           styles.tagButton,
                           isActive && styles.tagButtonActive,
@@ -498,6 +504,7 @@ const styles = stylex.create({
   },
   listContainer: {
     position: 'relative',
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--fd-animated-height' as any]: '0px',
     overflow: 'hidden',
     height: 'var(--fd-animated-height)',

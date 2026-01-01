@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
@@ -43,11 +49,10 @@ export interface CodeBlockProps extends ComponentProps<'figure'> {
   icon?: ReactNode;
   title?: string;
   allowCopy?: boolean;
-  keepBackground?: boolean;
   viewportProps?: HTMLAttributes<HTMLDivElement>;
   'data-line-numbers'?: boolean;
   'data-line-numbers-start'?: number;
-  Actions?: (props: { className?: string; children?: ReactNode }) => ReactNode;
+  Actions?: (_props: { className?: string; children?: ReactNode }) => ReactNode;
   xstyle?: stylex.StyleXStyles;
 }
 
@@ -55,7 +60,6 @@ export function CodeBlock({
   ref,
   title,
   allowCopy = true,
-  keepBackground = false,
   icon,
   viewportProps = {},
   children,
@@ -81,8 +85,8 @@ export function CodeBlock({
 
   return (
     <figure
-      ref={ref}
       dir="ltr"
+      ref={ref}
       tabIndex={-1}
       {...rest}
       className={[_className, className].join(' ')}
@@ -161,8 +165,8 @@ function CopyButton({ containerRef, xstyle }: CopyButtonProps) {
 
   return (
     <button
-      type="button"
       data-checked={checked || undefined}
+      type="button"
       {...stylex.props(
         styles.copyButton,
         checked && styles.copyButtonChecked,
@@ -185,7 +189,6 @@ function CopyButton({ containerRef, xstyle }: CopyButtonProps) {
 // =============================================================================
 
 export function CodeBlockTabs({
-  ref,
   defaultValue,
   children,
   ...props
@@ -233,17 +236,17 @@ export function CodeBlockTabsTrigger({
 }: ComponentProps<'button'> & { value: string }) {
   const context = use(TabsContext) as {
     activeTab?: string;
-    setActiveTab: (value: string) => void;
+    setActiveTab: (_value: string) => void;
   } | null;
 
   const isActive = context?.activeTab === value;
 
   return (
     <button
-      type="button"
-      role="tab"
       aria-selected={isActive}
       data-state={isActive ? 'active' : 'inactive'}
+      role="tab"
+      type="button"
       {...stylex.props(styles.tabTrigger, isActive && styles.tabTriggerActive)}
       onClick={() => context?.setActiveTab(value)}
       {...props}
@@ -319,13 +322,14 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    // eslint-disable-next-line @stylexjs/valid-styles
     ':where(*) svg': {
       width: '1em',
       height: '1em',
     },
   },
   title: {
-    flex: 1,
+    flexGrow: 1,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',

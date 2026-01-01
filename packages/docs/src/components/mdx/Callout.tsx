@@ -1,6 +1,12 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import * as stylex from '@stylexjs/stylex';
 import { Info, TriangleAlert, CircleX, CircleCheck } from 'lucide-react';
-import type { HTMLAttributes, ReactNode, CSSProperties } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { calloutMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
 
@@ -35,8 +41,10 @@ export function Callout({ children, title, ...props }: CalloutProps) {
   );
 }
 
-export interface CalloutContainerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+export interface CalloutContainerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'style'
+> {
   /**
    * @defaultValue info
    */
@@ -82,8 +90,10 @@ export function CalloutContainer({
   );
 }
 
-export interface CalloutTitleProps
-  extends Omit<HTMLAttributes<HTMLParagraphElement>, 'className' | 'style'> {
+export interface CalloutTitleProps extends Omit<
+  HTMLAttributes<HTMLParagraphElement>,
+  'className' | 'style'
+> {
   children: ReactNode;
 }
 
@@ -95,8 +105,10 @@ export function CalloutTitle({ children, ...props }: CalloutTitleProps) {
   );
 }
 
-export interface CalloutDescriptionProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+export interface CalloutDescriptionProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'style'
+> {
   children: ReactNode;
 }
 
@@ -130,7 +142,7 @@ const indicatorStyles = stylex.create({
   base: {
     width: 2,
     borderRadius: 2,
-    backgroundColor: `color-mix(in srgb, currentColor 50%, transparent)`,
+    backgroundColor: 'color-mix(in srgb, currentColor 50%, transparent)',
     flexShrink: 0,
   },
   info: { color: vars['--color-fd-info'] },
@@ -160,6 +172,7 @@ const styles = stylex.create({
     gap: 8,
     marginBlock: 16,
     borderRadius: 12,
+    // eslint-disable-next-line @stylexjs/valid-styles
     borderShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
@@ -178,7 +191,7 @@ const styles = stylex.create({
     flexDirection: 'column',
     gap: 8,
     minWidth: 0,
-    flex: 1,
+    flexGrow: 1,
   },
   title: {
     fontWeight: 500,

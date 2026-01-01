@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <>
       <title>StyleX</title>
-      <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
+      <link href="/img/favicon.svg" rel="icon" type="image/svg+xml" />
       <main {...stylex.props(styles.main)}>
         <section {...stylex.props(styles.hero)}>
           <h1 {...stylex.props(styles.title)}>

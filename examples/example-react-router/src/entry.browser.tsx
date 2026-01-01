@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import {
   createFromReadableStream,
   createTemporaryReferenceSet,
@@ -47,7 +53,6 @@ createFromReadableStream<RSCServerPayload>(getRSCStream()).then((payload) => {
 
 if (import.meta.hot) {
   // Minimal StyleX CSS HMR: listen for stylex:css-update and bust the CSS link
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   import.meta.hot.on('rsc:update', () => {
     const reactDataRouter =

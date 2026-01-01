@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import { usePathname } from 'fumadocs-core/framework';
@@ -20,9 +26,9 @@ export function BaseLinkItem({
 
   return (
     <Link
-      ref={ref}
-      href={item.url}
       external={item.external}
+      href={item.url}
+      ref={ref}
       {...props}
       {...stylex.props(xstyle)}
       data-active={active}

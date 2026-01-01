@@ -1,7 +1,12 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import * as stylex from '@stylexjs/stylex';
 import { blogSource } from '@/lib/source';
 import { PageProps } from 'waku/router';
-import { Link } from 'waku';
 import {
   DocsBody,
   DocsDescription,
@@ -56,7 +61,7 @@ export default function BlogPage({ slugs }: PageProps<'/blog/[...slugs]'>) {
       </DocsTitle>
       <div {...stylex.props(styles.authors)}>
         {authors.map((author) => (
-          <a target="_blank" href={author.url} {...stylex.props(styles.author)}>
+          <a href={author.url} target="_blank" {...stylex.props(styles.author)}>
             <img {...stylex.props(styles.authorImage)} src={author.image_url} />
             <div {...stylex.props(styles.authorInfo)}>
               <div {...stylex.props(styles.authorName)}>{author.name}</div>

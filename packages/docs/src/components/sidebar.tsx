@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import { ChevronDown, ExternalLink } from 'lucide-react';
@@ -89,6 +95,7 @@ const itemVariants = stylex.create({
     },
     overflowWrap: 'anywhere',
     '--svg-size': 4,
+    // eslint-disable-next-line @stylexjs/valid-styles
     ':not(#foo) svg': {
       width: 4,
       height: 4,
@@ -224,7 +231,7 @@ const contentStyles = stylex.create({
     borderColor: vars['--color-fd-border'],
     transform: {
       default: 'translateX(var(--fd-sidebar-offset))',
-      ':dir(rtl)': `translateX(calc(var(--fd-sidebar-offset) * -1))`,
+      ':dir(rtl)': 'translateX(calc(var(--fd-sidebar-offset) * -1))',
     },
     opacity: 0,
     '--fd-sidebar-margin': '0.5rem',
@@ -246,9 +253,8 @@ export function SidebarContentMobile({
   children,
   ...props
 }: StyleXComponentProps<'aside'>) {
-  // const { open, setOpen } = useSidebar();
   const open = true;
-  const setOpen = (open: any) => {};
+  const setOpen = (_open: any) => {};
   const state = open ? 'open' : 'closed';
 
   return (
@@ -265,8 +271,8 @@ export function SidebarContentMobile({
           // !present && mobContentStyles.hidden,
           xstyle,
         )}
-        id="nd-sidebar-mobile"
         data-state={state}
+        id="nd-sidebar-mobile"
       >
         {children}
       </aside>
@@ -372,6 +378,7 @@ const sidebarStyles = stylex.create({
   viewport: {
     padding: 4 * 4,
     overscrollBehavior: 'contain',
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--sidebar-item-offset' as any]: 'calc(var(--spacing) * 2)',
     maskImage:
       'linear-gradient(to bottom, transparent, white 12px, white calc(100% - 12px), transparent)',
@@ -396,6 +403,7 @@ const separatorStyles = stylex.create({
     marginBottom: { default: 1.5 * 4, ':empty': 0 },
     paddingInline: 8,
     paddingInlineStart: 'var(--sidebar-item-offset)',
+    // eslint-disable-next-line @stylexjs/valid-styles
     ':not(#foo) svg': {
       width: 4 * 4,
       height: 4 * 4,
@@ -447,7 +455,7 @@ export function SidebarFolder({
   });
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen} {...props}>
+    <Collapsible onOpenChange={setOpen} open={open} {...props}>
       <FolderContext.Provider
         value={useMemo(() => ({ open, setOpen }), [open])}
       >
@@ -603,6 +611,7 @@ const folderStyles = stylex.create({
       insetInlineStart: 2.5 * 4,
     },
     // HACK ALERT!
+    // eslint-disable-next-line @stylexjs/valid-styles
     ':not(#foo) [data-active="true"]::before': {
       content: '',
       backgroundColor: vars['--color-fd-primary'],
@@ -620,7 +629,7 @@ export function SidebarTrigger({
   ...props
 }: StyleXComponentProps<'button'>) {
   // const { setOpen } = useSidebar();
-  const setOpen = (open: any) => {};
+  const setOpen = (_open: any) => {};
 
   return (
     <button
@@ -640,9 +649,9 @@ export function SidebarCollapseTrigger({
 }: StyleXComponentProps<'button'>) {
   return (
     <button
-      type="button"
       aria-label="Collapse Sidebar"
       data-collapsed={false}
+      type="button"
       {...props}
       {...stylex.props(xstyle)}
     >
@@ -688,7 +697,7 @@ export function SidebarPageTree(props: {
     ): ReactNode[] {
       return items.map((item, i) => {
         if (item.type === 'separator') {
-          if (Separator) return <Separator key={i} item={item} />;
+          if (Separator) return <Separator item={item} key={i} />;
           return (
             <SidebarSeparator
               key={i}
@@ -705,24 +714,24 @@ export function SidebarPageTree(props: {
 
           if (Folder)
             return (
-              <Folder key={i} item={item} level={level}>
+              <Folder item={item} key={i} level={level}>
                 {children}
               </Folder>
             );
           return (
-            <PageTreeFolder key={i} item={item}>
+            <PageTreeFolder item={item} key={i}>
               {children}
             </PageTreeFolder>
           );
         }
 
-        if (Item) return <Item key={item.url} item={item} />;
+        if (Item) return <Item item={item} key={item.url} />;
         return (
           <SidebarItem
-            key={item.url}
-            href={item.url}
             external={item.external}
+            href={item.url}
             icon={item.icon}
+            key={item.url}
           >
             {item.name}
           </SidebarItem>
@@ -757,8 +766,8 @@ function PageTreeFolder({
     >
       {item.index ? (
         <SidebarFolderLink
-          href={item.index.url}
           external={item.index.external}
+          href={item.index.url}
           {...props}
         >
           {item.icon}

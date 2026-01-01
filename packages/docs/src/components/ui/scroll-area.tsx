@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import { StyleXComponentProps } from '../layout/shared';
 import * as React from 'react';
@@ -48,8 +54,8 @@ export const ScrollBar = ({
   ...props
 }: StyleXComponentProps<typeof ScrollAreaPrimitive.Scrollbar>) => (
   <ScrollAreaPrimitive.Scrollbar
-    ref={ref}
     orientation={orientation}
+    ref={ref}
     {...props}
     {...stylex.props(styles.scrollBar, styles[orientation], xstyle)}
   >
@@ -83,7 +89,7 @@ const styles = stylex.create({
   },
   thumb: {
     position: 'relative',
-    flex: 1,
+    flexGrow: 1,
     borderRadius: 9999,
     backgroundColor: `${vars['--color-fd-border']}`,
   },

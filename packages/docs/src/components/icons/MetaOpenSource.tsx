@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import * as stylex from '@stylexjs/stylex';
 
 export default function MetaOpenSource({
@@ -8,8 +14,8 @@ export default function MetaOpenSource({
   return (
     <svg viewBox="0 0 6090.9521 1307.1739" {...stylex.props(xstyle)}>
       <linearGradient
-        id="a"
         gradientUnits="userSpaceOnUse"
+        id="a"
         x1="739.4327"
         x2="604.5946"
         y1="604.6622"
@@ -20,8 +26,8 @@ export default function MetaOpenSource({
         <stop offset=".8591" stopColor="#0064e0" />
       </linearGradient>
       <linearGradient
-        id="b"
         gradientUnits="userSpaceOnUse"
+        id="b"
         x1="476.93"
         x2="569.3698"
         y1="490.2073"
@@ -31,8 +37,8 @@ export default function MetaOpenSource({
         <stop offset=".9988" stopColor="#0064e0" />
       </linearGradient>
       <linearGradient
-        id="c"
         gradientUnits="userSpaceOnUse"
+        id="c"
         x1="437.7486"
         x2="474.8296"
         y1="593.1932"
@@ -42,8 +48,8 @@ export default function MetaOpenSource({
         <stop offset=".6881" stopColor="#0064df" />
       </linearGradient>
       <linearGradient
-        id="d"
         gradientUnits="userSpaceOnUse"
+        id="d"
         x1="432.7129"
         x2="437.0034"
         y1="660.6261"
@@ -53,8 +59,8 @@ export default function MetaOpenSource({
         <stop offset=".9943" stopColor="#0072ec" />
       </linearGradient>
       <linearGradient
-        id="e"
         gradientUnits="userSpaceOnUse"
+        id="e"
         x1="435.0724"
         x2="432.0034"
         y1="691.5921"
@@ -64,8 +70,8 @@ export default function MetaOpenSource({
         <stop offset="1" stopColor="#007cf6" />
       </linearGradient>
       <linearGradient
-        id="f"
         gradientUnits="userSpaceOnUse"
+        id="f"
         x1="433.2708"
         x2="452.3974"
         y1="697.5917"
@@ -75,8 +81,8 @@ export default function MetaOpenSource({
         <stop offset="1" stopColor="#0082fb" />
       </linearGradient>
       <linearGradient
-        id="g"
         gradientUnits="userSpaceOnUse"
+        id="g"
         x1="727.2435"
         x2="752.5295"
         y1="501.3039"
@@ -86,8 +92,8 @@ export default function MetaOpenSource({
         <stop offset=".9141" stopColor="#0082fb" />
       </linearGradient>
       <linearGradient
-        id="h"
         gradientUnits="userSpaceOnUse"
+        id="h"
         x1="919.4945"
         x2="972.3929"
         y1="455.9788"
@@ -97,8 +103,8 @@ export default function MetaOpenSource({
         <stop offset=".9995" stopColor="#0081fa" />
       </linearGradient>
       <linearGradient
-        id="i"
         gradientUnits="userSpaceOnUse"
+        id="i"
         x1="985.1641"
         x2="951.6867"
         y1="658.0135"
@@ -108,8 +114,8 @@ export default function MetaOpenSource({
         <stop offset="1" stopColor="#0080f9" />
       </linearGradient>
       <linearGradient
-        id="j"
         gradientUnits="userSpaceOnUse"
+        id="j"
         x1="925.0793"
         x2="956.3733"
         y1="761.5316"
@@ -119,8 +125,8 @@ export default function MetaOpenSource({
         <stop offset="1" stopColor="#0080f9" />
       </linearGradient>
       <linearGradient
-        id="k"
         gradientUnits="userSpaceOnUse"
+        id="k"
         x1="875.9993"
         x2="919.4855"
         y1="765.6962"
@@ -130,8 +136,8 @@ export default function MetaOpenSource({
         <stop offset=".9994" stopColor="#0279f1" />
       </linearGradient>
       <linearGradient
-        id="l"
         gradientUnits="userSpaceOnUse"
+        id="l"
         x1="838.1927"
         x2="869.456"
         y1="741.7469"
@@ -141,8 +147,8 @@ export default function MetaOpenSource({
         <stop offset="1" stopColor="#0377ef" />
       </linearGradient>
       <linearGradient
-        id="m"
         gradientUnits="userSpaceOnUse"
+        id="m"
         x1="742.8261"
         x2="842.9741"
         y1="606.1226"

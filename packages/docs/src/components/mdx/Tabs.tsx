@@ -1,12 +1,13 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
-import type {
-  ComponentProps,
-  KeyboardEvent,
-  ReactElement,
-  ReactNode,
-} from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import {
   Children,
   isValidElement,
@@ -14,7 +15,6 @@ import {
   useId,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import { TAB_ITEM_DISPLAY_NAME, type TabItemProps } from './TabItem';
 import { useStateWithCallback } from '@/hooks/useStateWithCallback';
@@ -71,8 +71,8 @@ export default function Tabs({
   return (
     <div {...rest} {...stylex.props(tabsStyles.root, xstyle)}>
       <div
-        role="tablist"
         aria-orientation="horizontal"
+        role="tablist"
         {...stylex.props(tabsStyles.list)}
       >
         {items.map(({ value: tabValue, label }, index) => {
@@ -83,16 +83,10 @@ export default function Tabs({
 
           return (
             <button
-              key={tabValue}
-              id={tabId}
-              role="tab"
-              type="button"
-              aria-selected={isActive}
               aria-controls={panelId}
-              tabIndex={isActive ? 0 : -1}
-              ref={(el) => {
-                tabsRef.current[tabValue] = el;
-              }}
+              aria-selected={isActive}
+              id={tabId}
+              key={tabValue}
               onClick={() => setValue(tabValue)}
               onKeyDown={(event) => {
                 let newValue = null;
@@ -112,6 +106,12 @@ export default function Tabs({
                   });
                 }
               }}
+              ref={(el) => {
+                tabsRef.current[tabValue] = el;
+              }}
+              role="tab"
+              tabIndex={isActive ? 0 : -1}
+              type="button"
               {...stylex.props(
                 tabsStyles.trigger,
                 isActive && tabsStyles.triggerActive,
@@ -131,11 +131,11 @@ export default function Tabs({
 
           return (
             <div
-              key={tabValue}
-              role="tabpanel"
-              id={panelId}
               aria-labelledby={tabId}
               hidden={!isActive}
+              id={panelId}
+              key={tabValue}
+              role="tabpanel"
               {...stylex.props(!isActive && tabsStyles.panelHidden)}
             >
               {tabChildren}

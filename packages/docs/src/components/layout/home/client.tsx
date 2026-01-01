@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 import { type ComponentProps, Fragment, useState } from 'react';
 import Link from 'fumadocs-core/link';
@@ -13,7 +19,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from '../../navigation-menu';
 import {
   buttonVariantStyles,
@@ -31,7 +36,7 @@ export function Navbar({
 }: StyleXComponentProps<'div'> & { disableShadowBlur?: boolean }) {
   const [value, setValue] = useState('');
   return (
-    <NavigationMenu value={value} onValueChange={setValue} asChild>
+    <NavigationMenu asChild onValueChange={setValue} value={value}>
       <>
         <div {...stylex.props(navbarStyles.gap)} />
         <header
@@ -92,6 +97,7 @@ const navbarStyles = stylex.create({
     inset: 8,
     pointerEvents: 'none',
     borderRadius: 20,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
     overflow: 'hidden',
     borderWidth: 1,
@@ -131,6 +137,7 @@ const navbarStyles = stylex.create({
     pointerEvents: 'none',
     inset: 9,
     borderRadius: 19,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
     overflow: 'hidden',
     backdropFilter: 'blur(20px) saturate(1000%)',
@@ -189,10 +196,10 @@ export function NavbarLinkItem({
       } = child.menu ?? {};
 
       return (
-        <NavigationMenuLink key={`${j}-${child.url}`} asChild>
+        <NavigationMenuLink asChild key={`${j}-${child.url}`}>
           <Link
-            href={child.url}
             external={child.external}
+            href={child.url}
             {...rest}
             {...stylex.props(navItemStyles.menuLink, menuLinkXstyle)}
           >
@@ -223,7 +230,7 @@ export function NavbarLinkItem({
           )}
         >
           {item.url ? (
-            <Link href={item.url} external={item.external}>
+            <Link external={item.external} href={item.url}>
               {item.text}
             </Link>
           ) : (
@@ -241,8 +248,8 @@ export function NavbarLinkItem({
     <NavigationMenuItem>
       <NavigationMenuLink asChild>
         <BaseLinkItem
-          item={item}
           aria-label={item.type === 'icon' ? item.label : undefined}
+          item={item}
           xstyle={[
             navItemVariants.base,
             item.type === 'main' && navItemVariants.default,
@@ -268,6 +275,7 @@ export function NavbarLinkItem({
 
 const navItemVariants = stylex.create({
   base: {
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },
   default: {
@@ -281,6 +289,7 @@ const navItemVariants = stylex.create({
       ':where([data-active=true])': vars['--color-fd-primary'],
     },
     borderRadius: 8,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
   },
   button: { gap: 1.5 * 4 },
@@ -295,6 +304,7 @@ const navItemStyles = stylex.create({
     borderColor: vars['--color-fd-border'],
     backgroundColor: vars['--color-fd-muted'],
     padding: 4,
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },
   menuLink: {
@@ -368,7 +378,7 @@ export function MenuLinkItem({
         <p {...stylex.props(menuLinkStyles.para)}>
           {item.url ? (
             <NavigationMenuLink asChild>
-              <Link href={item.url} external={item.external}>
+              <Link external={item.external} href={item.url}>
                 {header}
               </Link>
             </NavigationMenuLink>
@@ -377,7 +387,7 @@ export function MenuLinkItem({
           )}
         </p>
         {item.items.map((child, i) => (
-          <MenuLinkItem key={i} item={child} />
+          <MenuLinkItem item={child} key={i} />
         ))}
       </div>
     );
@@ -386,8 +396,8 @@ export function MenuLinkItem({
   return (
     <NavigationMenuLink asChild>
       <BaseLinkItem
-        item={item}
         aria-label={item.type === 'icon' ? item.label : undefined}
+        item={item}
         xstyle={[
           (item.type == null || item.type === 'main') &&
             menuLinkStyles.baseLinkItem,
@@ -442,11 +452,13 @@ const menuLinkStyles = stylex.create({
       default: null,
       ':where([data-active=true])': 500,
     },
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },
   button: {
     // gap-1.5 [&_svg]:size-4
     gap: 1.5 * 4,
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--svg-size' as any]: '4px',
   },
 });

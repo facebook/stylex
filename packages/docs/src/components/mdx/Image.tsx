@@ -1,8 +1,16 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import * as stylex from '@stylexjs/stylex';
 import type { ImgHTMLAttributes } from 'react';
 
-export interface ImageProps
-  extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'className' | 'style'> {
+export interface ImageProps extends Omit<
+  ImgHTMLAttributes<HTMLImageElement>,
+  'className' | 'style'
+> {
   /**
    * Responsive sizes attribute
    * @defaultValue "(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 900px"
@@ -23,10 +31,10 @@ export default function Image({
   return (
     <img
       alt={alt}
-      sizes={sizes}
+      decoding="async"
       fetchPriority={priority ? 'high' : 'auto'}
       loading={priority ? 'eager' : 'lazy'}
-      decoding="async"
+      sizes={sizes}
       {...stylex.props(styles.image)}
       {...props}
     />
@@ -36,6 +44,7 @@ export default function Image({
 const styles = stylex.create({
   image: {
     borderRadius: 8,
+    // eslint-disable-next-line @stylexjs/valid-styles
     borderShape: 'squircle',
     maxWidth: '100%',
     height: 'auto',

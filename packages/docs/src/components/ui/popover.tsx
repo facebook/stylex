@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as PopoverPrimitive from '@radix-ui/react-popover';
@@ -17,10 +23,10 @@ const PopoverContent = ({
 }: StyleXComponentProps<typeof PopoverPrimitive.Content>) => (
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
-      ref={ref}
       align={align}
-      sideOffset={sideOffset}
+      ref={ref}
       side="bottom"
+      sideOffset={sideOffset}
       {...props}
       {...stylex.props(styles.content, xstyle)}
     />

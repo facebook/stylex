@@ -21,7 +21,7 @@ export function FileNameDialog({
   title: string;
   description: string;
   defaultValue: string;
-  onConfirm: (name: string) => void;
+  onConfirm: (_name: string) => void;
   onCancel: () => void;
   ref: React.RefObject<HTMLDialogElement | null>;
 }) {

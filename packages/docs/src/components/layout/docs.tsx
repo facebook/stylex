@@ -1,13 +1,13 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
+
 import type * as PageTree from 'fumadocs-core/page-tree';
-import {
-  type ReactNode,
-  TouchEventHandler,
-  use,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { type ReactNode, use, useEffect, useMemo, useRef } from 'react';
 import { TreeContextProvider, useTreeContext } from 'fumadocs-ui/contexts/tree';
 import Link from 'fumadocs-core/link';
 import { usePathname } from 'fumadocs-core/framework';
@@ -30,10 +30,10 @@ export function DocsLayout({ tree, children, ...props }: DocsLayoutProps) {
   return (
     <TreeContextProvider tree={tree}>
       <Header
+        githubUrl={props.githubUrl}
+        i18n={props.i18n}
         links={props.links}
         nav={props.nav}
-        i18n={props.i18n}
-        githubUrl={props.githubUrl}
       />
 
       <div {...stylex.props(layoutStyles.wrapper)}>
@@ -83,11 +83,10 @@ const layoutStyles = stylex.create({
     flexGrow: 1,
   },
   main: {
-    // flex flex-1 flex-row [--fd-nav-height:56px]
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    // flexDirection: 'row',
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--fd-nav-height' as any]: '64px',
     paddingInlineStart: {
       default: 292,
@@ -113,7 +112,7 @@ function Sidebar() {
   const children = useMemo(() => {
     function renderItems(items: PageTree.Node[]) {
       return items.map((item) => (
-        <SidebarItem key={item.$id} item={item}>
+        <SidebarItem item={item} key={item.$id}>
           {item.type === 'folder' ? renderItems(item.children) : null}
         </SidebarItem>
       ));
@@ -174,6 +173,7 @@ const sidebarStyles = stylex.create({
     inset: 8,
     overflow: 'hidden',
     borderRadius: 20,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
     zIndex: 1,
   },
@@ -190,6 +190,7 @@ const sidebarStyles = stylex.create({
     pointerEvents: 'none',
     overflow: 'hidden',
     borderRadius: 19,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
     zIndex: 1,
     backdropFilter: 'blur(32px) saturate(800%)',
@@ -201,12 +202,13 @@ const sidebarStyles = stylex.create({
     flexDirection: 'column',
     gap: 2,
     padding: 4 * 4,
-    fontSize: `1rem`,
+    fontSize: '1rem',
     overflowY: 'auto',
     overscrollBehavior: 'contain',
     width: 280,
     height: '100%',
     borderRadius: 20,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',
@@ -337,7 +339,7 @@ const sidebarItemStyles = stylex.create({
       default: '-90deg',
       ':is([open])': '0deg',
     },
-    ['--summary-color']: {
+    '--summary-color': {
       default: null,
       [stylex.when.descendant(':is(*)', activeLinkMarker)]:
         `color-mix(in oklab, ${vars['--color-fd-primary']} 50%, ${vars['--color-fd-foreground']})`,
@@ -376,6 +378,7 @@ const sidebarItemStyles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
+    // eslint-disable-next-line @stylexjs/valid-styles
     ['--summary-color' as any]: 'initial',
   },
 });
@@ -385,7 +388,7 @@ const linkVariants = stylex.create({
     position: 'relative',
     display: 'inline-flex',
     alignItems: 'center',
-    fontSize: `1rem`,
+    fontSize: '1rem',
     lineHeight: 1.42,
     gap: 2 * 4,
     paddingBlock: 1.5 * 4,

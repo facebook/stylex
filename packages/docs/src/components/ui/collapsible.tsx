@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
@@ -46,7 +52,9 @@ const styles = stylex.create({
   mounted: {
     animation: {
       default: null,
+      // eslint-disable-next-line @stylexjs/valid-styles
       ':where([data-state=closed])': 'var(--animation-fd-collapsible-up)',
+      // eslint-disable-next-line @stylexjs/valid-styles
       ':where([data-state=open])': 'var(--animation-fd-collapsible-down)',
     },
   },

@@ -7,6 +7,7 @@
  *
  */
 
+/* eslint-disable no-unused-vars, no-redeclare */
 type NestedWithNumbers =
   | number
   | string

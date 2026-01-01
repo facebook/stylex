@@ -1,6 +1,12 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
-import { type ComponentProps, type ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import {
   AnchorProvider,
   type TOCItemType,
@@ -35,7 +41,7 @@ export function DocsPage({ toc = [], ...props }: DocsPageProps) {
             <p {...stylex.props(pageStyles.tocPara)}>On this page</p>
             <div {...stylex.props(pageStyles.flexCol)}>
               {toc.map((item) => (
-                <TocItem key={item.url} item={item} />
+                <TocItem item={item} key={item.url} />
               ))}
             </div>
           </div>
@@ -56,11 +62,11 @@ const pageStyles = stylex.create({
     flexDirection: 'column',
   },
   main: {
-    flex: 1,
+    flexGrow: 1,
     minWidth: 0,
   },
   article: {
-    flex: 1,
+    flexGrow: 1,
     width: '100%',
     maxWidth: 860,
     gap: 24,
@@ -239,6 +245,7 @@ const footerStyles = stylex.create({
     flexDirection: 'row',
     flexGrow: 1,
     borderRadius: 20,
+    // eslint-disable-next-line @stylexjs/valid-styles
     cornerShape: 'squircle',
     padding: 16,
     color: vars['--color-fd-primary'],

@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import { vars } from '@/theming/vars.stylex';
@@ -57,8 +63,8 @@ export function Card({
   if (href != null) {
     return (
       <BaseLink
-        href={href}
         external={external}
+        href={href}
         {...stylex.props(styles.card, styles.cardLink)}
         {...props}
         data-card
@@ -94,6 +100,7 @@ const styles = stylex.create({
     backgroundColor: vars['--color-fd-card'],
     color: vars['--color-fd-card-foreground'],
     borderRadius: 12,
+    // eslint-disable-next-line @stylexjs/valid-styles
     borderShape: 'squircle',
     borderWidth: 1,
     borderStyle: 'solid',

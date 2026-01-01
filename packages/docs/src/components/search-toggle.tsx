@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import { Search } from 'lucide-react';
@@ -31,12 +37,12 @@ export function SearchToggle({
   return (
     <button
       {...props}
-      type="button"
-      data-search=""
       aria-label="Open Search"
+      data-search=""
       onClick={() => {
         setOpenSearch(true);
       }}
+      type="button"
       {...stylex.props(
         buttonStyles.base,
         buttonSizeVariants[size as keyof typeof buttonSizeVariants],
@@ -62,8 +68,8 @@ export function LargeSearchToggle({
 
   return (
     <button
-      type="button"
       data-search-full=""
+      type="button"
       {...props}
       onClick={() => {
         setOpenSearch(true);

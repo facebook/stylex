@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Link } from 'waku';
-import { legacyColors, vars } from '../theming/vars.stylex';
+import { vars } from '../theming/vars.stylex';
 
 export default function CtaButton({
   children,

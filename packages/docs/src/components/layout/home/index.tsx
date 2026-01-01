@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import { useMemo } from 'react';
 import {
   type BaseLayoutProps,
@@ -43,12 +49,12 @@ export function HomeLayout({
       {nav.enabled !== false &&
         (nav.component ?? (
           <Header
+            disableShadowBlur={disableShadowBlur}
+            githubUrl={githubUrl}
+            i18n={i18n}
             links={links}
             nav={nav}
             showSidebarToggle={showSidebarToggle}
-            i18n={i18n}
-            githubUrl={githubUrl}
-            disableShadowBlur={disableShadowBlur}
           />
         ))}
       {children}
@@ -84,21 +90,21 @@ export function Header({
           .filter((item) => !isSecondary(item))
           .map((item, i) => (
             <NavbarLinkItem
-              key={i}
               item={item}
+              key={i}
               xstyle={styles.navbarLinkItem}
             />
           ))}
       </ul>
       <div {...stylex.props(styles.grow)} />
       <div {...stylex.props(styles.searchContainer)}>
-        <LargeSearchToggle xstyle={styles.largeSearchToggle} hideIfDisabled />
+        <LargeSearchToggle hideIfDisabled xstyle={styles.largeSearchToggle} />
       </div>
       <ul {...stylex.props(styles.endLinkList)}>
         {navItems.filter(isSecondary).map((item, i) => (
           <NavbarLinkItem
-            key={i}
             item={item}
+            key={i}
             xstyle={
               item.type === 'icon'
                 ? [
@@ -143,7 +149,7 @@ const styles = stylex.create({
   },
   navbarLinkItem: {
     // "text-sm"
-    fontSize: `1rem`,
+    fontSize: '1rem',
     lineHeight: 1.4,
     outline: 'none',
     boxShadow: {
@@ -215,6 +221,7 @@ const styles = stylex.create({
   },
   primaryMenuLink: {
     display: {
+      // eslint-disable-next-line @stylexjs/valid-styles
       default: 'var(--display)' as any,
       '@media (min-width: 640px)': 'none',
     },

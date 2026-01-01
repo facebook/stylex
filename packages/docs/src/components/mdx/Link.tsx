@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import BaseLink from 'fumadocs-core/link';
 import { ComponentProps } from 'react';
 import * as stylex from '@stylexjs/stylex';
@@ -32,7 +38,7 @@ const styles = stylex.create({
       ':hover': 'color-mix(in srgb, currentColor 50%, transparent)',
       ':focus-visible': 'color-mix(in srgb, currentColor 50%, transparent)',
     },
-    textUnderlineOffset: 4,
-    textDecorationThickness: 2,
+    textUnderlineOffset: '4px',
+    textDecorationThickness: '2px',
   },
 });

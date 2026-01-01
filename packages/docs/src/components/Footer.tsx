@@ -16,13 +16,13 @@ import { vars } from '@/theming/vars.stylex';
 function ExternalLinkIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
       <path d="M15 3h6v6" />
@@ -151,8 +151,8 @@ export default function Footer() {
 
         <Link
           href="https://opensource.fb.com"
-          target="_blank"
           rel="noopener noreferrer"
+          target="_blank"
           {...stylex.props(styles.metaOpenSourceLink)}
         >
           <MetaOpenSource xstyle={styles.metaOpenSource} />
@@ -168,24 +168,24 @@ export default function Footer() {
           <div {...stylex.props(styles.socialLinks)}>
             <Link
               href="https://github.com/facebook/stylex"
-              target="_blank"
               rel="noopener noreferrer"
+              target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <GithubIcon {...stylex.props(styles.socialIcon)} />
             </Link>
             <Link
               href="https://x.com/stylexjs"
-              target="_blank"
               rel="noopener noreferrer"
+              target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <TwitterIcon {...stylex.props(styles.socialIcon)} />
             </Link>
             <Link
               href="https://bsky.app/profile/stylexjs.bsky.social"
-              target="_blank"
               rel="noopener noreferrer"
+              target="_blank"
               {...stylex.props(styles.socialLink)}
             >
               <Bluesky xstyle={styles.socialIcon} />
@@ -243,14 +243,14 @@ const styles = stylex.create({
     gap: 8,
   },
   link: {
-    color: vars['--color-fd-muted-foreground'],
+    color: {
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-foreground'],
+    },
     textDecoration: 'none',
     fontSize: '0.875rem',
     transitionProperty: 'color',
     transitionDuration: '150ms',
-    ':hover': {
-      color: vars['--color-fd-foreground'],
-    },
   },
   externalLink: {
     display: 'inline-flex',
@@ -300,12 +300,12 @@ const styles = stylex.create({
   },
   socialLink: {
     padding: 8,
-    color: vars['--color-fd-muted-foreground'],
+    color: {
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': vars['--color-fd-foreground'],
+    },
     transitionProperty: 'color',
     transitionDuration: '150ms',
-    ':hover': {
-      color: vars['--color-fd-foreground'],
-    },
   },
   socialIcon: {
     width: 20,

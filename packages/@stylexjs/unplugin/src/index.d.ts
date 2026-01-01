@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import { type UnpluginInstance } from 'unplugin';
 import type { Options as StyleXOptions } from '@stylexjs/babel-plugin';
 import type { TransformOptions as LightningcssOptions } from 'lightningcss';

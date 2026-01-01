@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import {
   useCallback,
   useEffectEvent,
@@ -8,12 +14,12 @@ import {
 
 export function useStateWithCallback<T>(
   initialValue: T | (() => T),
-): [T, (newVal: T | ((prev: T) => T), cb?: (latest: T) => void) => void] {
+): [T, (_newVal: T | ((_prev: T) => T), _cb?: (_latest: T) => void) => void] {
   const [state, setState] = useState(initialValue);
-  const callbackRef = useRef<((latest: T) => void)[]>([]);
+  const callbackRef = useRef<((_latest: T) => void)[]>([]);
 
   const setStateThen = useCallback(
-    (newState: T | ((old: T) => T), cb?: (latest: T) => void) => {
+    (newState: T | ((_old: T) => T), cb?: (_latest: T) => void) => {
       setState(newState);
       if (cb) {
         callbackRef.current.push(cb);
