@@ -14,30 +14,32 @@ tags:
 Happy New Year!
 
 StyleX has been in development for just over six years. It started as a way to
-solve styling problems at the scale of
-[facebook.com](https://www.facebook.com/). It proved itself at Meta and became
-the default way to author styles for web surfaces.
+solve
+[styling problems](https://engineering.fb.com/2020/05/08/web/facebook-redesign/)
+at the scale of [facebook.com](https://www.facebook.com/). It proved itself at
+Meta and became the default way to author styles for web surfaces, and was
+open-sourced a little over two years ago in December 2023.
 
-StyleX was open-sourced a little over two years ago, in December 2023. Since
-then, more teams outside Meta have started using it, including Figma, Snowflake,
-and HubSpot. The feedback has been largely positive and it validates our core
-design decisions within various use-cases.
-
-Their feedback, along with how CSS itself continues to evolve, guides new
-features and refinements. Within the last year, we've added APIs for View
-Transitions, Anchor Positioning, and the
-[`stylex.when.*`](/docs/api/javascript/types) APIs for combinator-based styling.
+2025 has been a big year for StyleX. We've seen adoption from companies like
+Figma, Snowflake, and HubSpot. The feedback has been largely positive and has
+validated our core design decisions within various use-cases. We've taken this
+feedback and developed new features and refinements alongside the evolution of
+CSS itself. Within the last year, we’ve added APIs for shareable media queries
+([`stylex.defineConsts`](/docs/api/javascript/defineConsts)), View Transitions
+([`stylex.viewTransitionClass`](/docs/api/javascript/viewTransitionClass)),
+Anchor Positioning ([`stylex.positionTry`](/docs/api/javascript/positionTry)),
+and combinator-based styling ([`stylex.when.*`](/docs/api/javascript/types)).
 
 The new APIs are easy to spot, but a lot of progress is quieter. A recent
 milestone was the release of the
 [`@stylexjs/unplugin`](/docs/learn/installation/vite) package, which makes
-integration in web projects much simpler than it used to be. Setup friction was
-one of the most common bits of feedback, and this new package is a big step
+integration in web projects a lot simpler than it used to be. Setup friction was
+one of the most common reported painpoints, and this new package is a big step
 toward reducing it.
 
 ### A new playground
 
-The new playground quietly made public a few weeks ago. It's now the
+The new playground was quietly made public a few weeks ago. It's now the
 lowest-friction way to try StyleX without setting up a project. It is made
 possible by a version of the StyleX compiler that uses `@babel/standalone` to
 compile StyleX right in the browser. As a result, it's smaller, faster, and more
@@ -45,7 +47,7 @@ reliable than the previous playground. It's also now possible to share links to
 your code examples within the playground.
 
 A huge thanks to [Henry Q. Dineen](https://github.com/henryqdineen) for making
-it a reality!
+this a reality!
 
 ### A new website
 
@@ -70,6 +72,8 @@ modern CSS.
 
 ### Future
 
-Work on StyleX continues, and we have some
-[big plans](https://github.com/facebook/stylex/issues/1356) for 2026. For now,
-we are launching this new website as a celebration of the journey so far.
+We're always thankful for the continued feedback and support from the community.
+We have some [big plans](https://github.com/facebook/stylex/issues/1356) for
+2026, with themes of better ergonomics, new feature work, and developer tooling.
+For now, we are launching this new website as a celebration of the journey so
+far.
