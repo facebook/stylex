@@ -9,51 +9,9 @@
 import { Search } from 'lucide-react';
 import { useSearchContext } from 'fumadocs-ui/contexts/search';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import {
-  buttonStyles,
-  buttonSizeVariants,
-  buttonVariantStyles,
-  ButtonProps,
-} from './ui/button';
 import { type StyleXComponentProps } from './layout/shared';
 import * as stylex from '@stylexjs/stylex';
 import { vars } from '@/theming/vars.stylex';
-
-interface SearchToggleProps
-  extends Omit<StyleXComponentProps<'button'>, 'color'>, ButtonProps {
-  hideIfDisabled?: boolean;
-}
-
-export function SearchToggle({
-  hideIfDisabled,
-  size = 'icon-sm',
-  color = 'ghost',
-  xstyle,
-  ...props
-}: SearchToggleProps) {
-  const { setOpenSearch, enabled } = useSearchContext();
-  if (hideIfDisabled && !enabled) return null;
-
-  return (
-    <button
-      {...props}
-      aria-label="Open Search"
-      data-search=""
-      onClick={() => {
-        setOpenSearch(true);
-      }}
-      type="button"
-      {...stylex.props(
-        buttonStyles.base,
-        buttonSizeVariants[size as keyof typeof buttonSizeVariants],
-        buttonVariantStyles[color as keyof typeof buttonVariantStyles],
-        xstyle,
-      )}
-    >
-      <Search />
-    </button>
-  );
-}
 
 export function LargeSearchToggle({
   hideIfDisabled,
@@ -77,7 +35,7 @@ export function LargeSearchToggle({
       {...stylex.props(styles.button, xstyle)}
     >
       <Search {...stylex.props(styles.size4)} />
-      {text.search}
+      <span {...stylex.props(styles.text)}>{text.search}</span>
       <div {...stylex.props(styles.hotkeyContainer)}>
         {hotKey.map((k, i) => (
           <kbd key={i} {...stylex.props(styles.hotkey)}>
@@ -95,8 +53,10 @@ const styles = stylex.create({
     display: 'inline-flex',
     gap: 2 * 4,
     alignItems: 'center',
+    width: '100%',
+    minWidth: 90,
     padding: 1.5 * 4,
-    paddingInlineStart: 2 * 4,
+    paddingInlineStart: 2.5 * 4,
 
     fontSize: `${14 / 16}rem`,
     color: {
@@ -105,7 +65,12 @@ const styles = stylex.create({
       ':hover': vars['--color-fd-foreground'],
     },
     outline: 'none',
-    backgroundColor: `color-mix(in oklab, ${vars['--color-fd-secondary']} 50%, transparent)`,
+
+    backgroundColor: {
+      default: 'transparent',
+      ':focus-visible': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
+      ':hover': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
+    },
     borderColor: {
       default: vars['--color-fd-border'],
       ':focus-visible': vars['--color-fd-primary'],
@@ -113,10 +78,17 @@ const styles = stylex.create({
     },
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: '9999px',
     transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+
     transitionDuration: '150ms',
     transitionProperty: 'color, background-color, border-color',
+  },
+  text: {
+    display: {
+      default: null,
+      '@container (width < 240px)': 'none',
+    },
   },
   size4: { width: 16, height: 16 },
   hotkeyContainer: {

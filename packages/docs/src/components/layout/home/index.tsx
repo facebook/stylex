@@ -97,9 +97,6 @@ export function Header({
           ))}
       </ul>
       <div {...stylex.props(styles.grow)} />
-      <div {...stylex.props(styles.searchContainer)}>
-        <LargeSearchToggle hideIfDisabled xstyle={styles.largeSearchToggle} />
-      </div>
       <ul {...stylex.props(styles.endLinkList)}>
         {navItems.filter(isSecondary).map((item, i) => (
           <NavbarLinkItem
@@ -117,6 +114,9 @@ export function Header({
           />
         ))}
       </ul>
+      <div {...stylex.props(styles.searchContainer)}>
+        <LargeSearchToggle />
+      </div>
       <ThemeToggle />
     </Navbar>
   );
@@ -141,14 +141,12 @@ const styles = stylex.create({
     fontWeight: 600,
   },
   navLinkList: {
-    // "flex flex-row items-center gap-2 px-6 max-sm:hidden"
-    display: { default: 'flex', '@media (max-width: 640px)': 'none' },
+    display: { default: 'flex', '@media (max-width: 760px)': 'none' },
     flexDirection: 'row',
     gap: 2 * 4,
     alignItems: 'center',
   },
   navbarLinkItem: {
-    // "text-sm"
     fontSize: '1rem',
     lineHeight: 1.4,
     outline: 'none',
@@ -158,36 +156,29 @@ const styles = stylex.create({
     },
   },
   searchContainer: {
-    // flex flex-row items-center justify-end gap-1.5 flex-1 max-lg:hidden
-    display: { default: 'flex', '@media (max-width: 1024px)': 'none' },
-    flexGrow: 0,
-    flexShrink: 0,
+    display: 'flex',
+    flexGrow: 1,
+    flexBasis: 120,
     flexDirection: 'row',
     gap: 1.5 * 4,
     alignItems: 'center',
     justifyContent: 'end',
-  },
-  largeSearchToggle: {
-    // "w-full rounded-full ps-2.5 max-w-[240px]"
-    width: '100%',
-    minWidth: 180,
     maxWidth: 240,
-    paddingInlineStart: 2.5 * 4,
-    backgroundColor: {
-      default: 'transparent',
-      ':focus-visible': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
-      ':hover': `color-mix(in oklab, ${vars['--color-fd-primary']} 5%, transparent)`,
-    },
-    borderRadius: '9999px',
+    containerType: 'inline-size',
   },
   grow: {
     flexGrow: 1,
   },
   endLinkList: {
-    display: { default: 'flex', ':empty': 'none' },
+    display: {
+      default: 'flex',
+      ':empty': 'none',
+      '@media (max-width: 360px)': 'none',
+    },
     flexDirection: 'row',
     gap: 2 * 4,
     alignItems: 'center',
+    marginInline: -8,
   },
   endIconLink: {
     marginInline: -4,

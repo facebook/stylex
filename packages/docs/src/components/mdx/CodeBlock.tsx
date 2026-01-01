@@ -322,11 +322,6 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
-    ':where(*) svg': {
-      width: '1em',
-      height: '1em',
-    },
   },
   title: {
     flexGrow: 1,
@@ -376,8 +371,8 @@ const styles = stylex.create({
   },
   floatingCopyButton: {
     position: 'absolute',
-    insetInlineEnd: 8,
-    top: 8,
+    insetInlineEnd: 4,
+    top: 4,
     zIndex: 2,
     borderRadius: 8,
     backdropFilter: 'blur(8px)',

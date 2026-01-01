@@ -245,9 +245,10 @@ const footerStyles = stylex.create({
     cornerShape: 'squircle',
     display: 'flex',
     flexGrow: 1,
-    flexBasis: '40%',
+    flexBasis: '45%',
     flexDirection: 'row',
     gap: 8,
+    minWidth: 'fit-content',
     padding: 16,
     color: vars['--color-fd-primary'],
     backgroundColor: {

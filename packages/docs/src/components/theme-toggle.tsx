@@ -143,7 +143,7 @@ function SparklesIcon(props: SVGProps<SVGSVGElement>) {
 
 const styles = stylex.create({
   container: {
-    display: 'inline-flex',
+    display: { default: 'inline-flex', '@media (max-width: 420px)': 'none' },
     gap: 2,
     alignItems: 'center',
     // backgroundColor: `color-mix(in oklab, ${vars['--color-fd-foreground']} 12%, ${vars['--color-fd-background']})`,

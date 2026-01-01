@@ -98,13 +98,6 @@ const itemVariants = stylex.create({
       default: 'color, background-color, border-color',
       ':hover': 'none',
     },
-    '--svg-size': 4,
-    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
-    ':not(#foo) svg': {
-      flexShrink: 0,
-      width: 4,
-      height: 4,
-    },
   },
   active: {
     color: vars['--color-fd-primary'],
@@ -400,12 +393,6 @@ const separatorStyles = stylex.create({
     paddingInline: 8,
     paddingInlineStart: 'var(--sidebar-item-offset)',
     marginBottom: { default: 1.5 * 4, ':empty': 0 },
-    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
-    ':not(#foo) svg': {
-      flexShrink: 0,
-      width: 4 * 4,
-      height: 4 * 4,
-    },
   },
 });
 
@@ -573,13 +560,7 @@ export function SidebarFolderContent(
   const { level, ...ctx } = useInternalContext();
 
   return (
-    <CollapsibleContent
-      {...props}
-      {...stylex.props(
-        folderStyles.base(level),
-        level === 1 && folderStyles.level1,
-      )}
-    >
+    <CollapsibleContent {...props} {...stylex.props(folderStyles.base(level))}>
       <Context.Provider
         value={useMemo(
           () => ({
@@ -599,25 +580,6 @@ const folderStyles = stylex.create({
     position: 'relative',
     '--sidebar-item-offset': `calc(var(--spacing) * ${(level + 1) * 3})`,
   }),
-  level1: {
-    // HACK ALERT!
-    // eslint-disable-next-line @stylexjs/valid-styles, @stylexjs/no-legacy-contextual-styles
-    ':not(#foo) [data-active="true"]::before': {
-      position: 'absolute',
-      insetBlock: 2.5 * 4,
-      insetInlineStart: 2.5 * 4,
-      width: 1,
-      content: '',
-      backgroundColor: vars['--color-fd-primary'],
-    },
-    '::before': {
-      position: 'absolute',
-      insetInlineStart: 2.5 * 4,
-      width: 1,
-      content: '',
-      backgroundColor: vars['--color-fd-border'],
-    },
-  },
 });
 
 export function SidebarTrigger({
