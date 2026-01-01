@@ -7,13 +7,14 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { cardMarker, btnMarker } from './markers.stylex';
+import { vars } from '@/theming/vars.stylex';
 
 export function Card() {
   return (
     <article {...stylex.props(styles.card, cardMarker)}>
-      <p>Hovering here makes the button pink and the arrow opaque</p>
+      <p>Hovering here makes highlights the button</p>
       <button {...stylex.props(styles.cta, btnMarker)}>
-        Hovering here moves the arrow to the right
+        Hovering here animates the arrow to the right
         <span {...stylex.props(styles.icon)}>→</span>
       </button>
     </article>
@@ -27,8 +28,8 @@ const styles = stylex.create({
     gap: 8,
     padding: 16,
     marginBottom: '1rem',
-    color: 'var(--ifm-font-color-base)',
-    borderColor: 'var(--ifm-link-color)',
+    backgroundColor: vars['--color-fd-card'],
+    borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 16,
@@ -41,12 +42,13 @@ const styles = stylex.create({
     paddingInline: 16,
     color: {
       default: 'inherit',
-      [stylex.when.ancestor(':hover', cardMarker)]: 'white',
+      [stylex.when.ancestor(':hover', cardMarker)]:
+        vars['--color-fd-background'],
     },
     appearance: 'none',
     backgroundColor: {
-      default: 'var(--ifm-navbar-background-color)',
-      [stylex.when.ancestor(':hover', cardMarker)]: 'var(--ifm-link-color)',
+      default: vars['--color-fd-accent'],
+      [stylex.when.ancestor(':hover', cardMarker)]: vars['--color-fd-primary'],
     },
     borderStyle: 'none',
     borderRadius: 4,
