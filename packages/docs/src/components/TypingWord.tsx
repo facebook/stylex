@@ -58,10 +58,22 @@ const typingAnim = stylex.keyframes({
 });
 
 const hidden = stylex.keyframes({
-  '0%': { display: 'inline' },
-  '20%': { display: 'inline' },
-  '20.001%': { display: 'none' },
-  '100%': { display: 'none' },
+  '0%': {
+    display: 'inline',
+    opacity: 1,
+  },
+  '20%': {
+    display: 'inline',
+    opacity: 1,
+  },
+  '20.001%': {
+    display: 'none',
+    opacity: 0,
+  },
+  '100%': {
+    display: 'none',
+    opacity: 0,
+  },
 });
 
 const TIME = 8;
