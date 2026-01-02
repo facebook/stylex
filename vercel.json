@@ -1,4 +1,1 @@
-{
-  "buildCommand": "cd packages/docs && yarn build",
-  "outputDirectory": "packages/docs/dist"
-}
+{}
