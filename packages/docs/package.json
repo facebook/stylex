@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
     "build": "waku build",
-    "preview": "node dist/serve-node.js",
     "start": "waku start",
     "postinstall": "fumadocs-mdx"
   },

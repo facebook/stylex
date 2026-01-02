@@ -9,7 +9,7 @@ import { fsRouter } from 'waku/router/server';
 // - Vercel adapter when process.env.VERCEL is set
 // - Netlify adapter when process.env.NETLIFY is set
 // - Node adapter otherwise (for local `waku start`)
-import adapter from 'waku/adapters/default';
+import adapter from 'waku/adapters/vercel';
 
 // Lazy loaders for API modules (avoids top-level await issues)
 const apiModules = import.meta.glob('./pages/api/*.ts') as Record<
