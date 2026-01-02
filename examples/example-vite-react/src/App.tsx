@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
@@ -87,8 +93,8 @@ function App() {
             {...stylex.props(styles.link, styles.linkHover)}
           >
             <img
-              src={viteLogo}
               alt="Vite logo"
+              src={viteLogo}
               {...stylex.props(styles.logo, styles.animated)}
             />
           </a>
@@ -98,8 +104,8 @@ function App() {
             {...stylex.props(styles.link, styles.linkHover)}
           >
             <img
-              src={reactLogo}
               alt="React logo"
+              src={reactLogo}
               {...stylex.props(styles.logo, styles.reactLogo, styles.animated)}
             />
           </a>

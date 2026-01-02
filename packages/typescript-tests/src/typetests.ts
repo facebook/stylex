@@ -261,7 +261,6 @@ const styles8: Readonly<{
 }> = stylex.create({
   foo: {
     // In a real example `vars` would be imported from another file.
-    // eslint-disable-next-line @stylexjs/valid-styles
     color: vars.accent,
   },
 });

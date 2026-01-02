@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable no-unused-vars */
 import * as stylex from '@stylexjs/stylex';
 
 const basicVars = stylex.defineVars({

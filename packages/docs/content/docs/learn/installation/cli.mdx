@@ -1,0 +1,62 @@
+---
+title: 'CLI'
+---
+
+When none of the other integrations work, the StyleX CLI can be used to
+pre-transform an entire directory of files to compile away StyleX and generate a
+static CSS file which runs _before_ the rest of your build pipeline.
+
+The only requirement for using the CLI is that your bundler is able to handle
+CSS imports, as the CLI inserts an import for the generated CSS file into every
+file that was transformed.
+
+## Install
+
+Start by installing the StyleX CLI:
+
+<DevInstallExample dev={[`@stylexjs/cli`]} />
+
+## Configuration
+
+Although all options for the CLI are available as command line arguments, using
+a configuration file is recommended. The configuration file can be in either
+JSON or JSON5 format. Using JSON5 lets you skip quotes around object keys, and
+use comments and trailing commas.
+
+```js
+{
+  input: ['./source'],           // Where your StyleX source lives
+  output: ['./src'],             // Where compiled files + CSS bundle are written
+  cssBundleName: 'stylex_bundle.css',
+  babelPresets: [
+    ['@babel/preset-typescript', { allExtensions: true, isTSX: true }],
+  ],
+  styleXConfig: {
+    aliases: {
+      '@/*': ['./source/*'],
+    },
+  },
+  // watch: true, // enable for incremental rebuilds
+}
+```
+
+The configuration file can be named anything, as it is always passed explicitly
+to the CLI using the `--config` flag.
+
+## Using the CLI
+
+Run the compiler with:
+
+```json
+{
+  "scripts": {
+    "build": "stylex --config .stylex.json5",
+    "watch": "stylex --config .stylex.json5 --watch"
+  }
+}
+```
+
+You can add additional command line arguments, such as `--watch` for incremental
+rebuilds.
+
+You can also define multiple configuration files for different environments.
