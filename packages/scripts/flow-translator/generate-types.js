@@ -11,7 +11,6 @@ const monorepoPackage = require('../../../package.json');
 const path = require('path');
 const translate = require('flow-api-translator');
 const utils = require('./flow-module-utils');
-const yargs = require('yargs/yargs');
 
 async function generateTypes(inputDir, outputDir, rootDir) {
   const rootPath = rootDir ?? path.resolve(inputDir, '../');
@@ -134,23 +133,28 @@ function postProcessTSOutput(outputCode) {
   return result;
 }
 
-const args = yargs(process.argv)
-  .option('inputDir', {
-    alias: 'i',
-    type: 'string',
-  })
-  .option('outputDir', {
-    alias: 'o',
-    type: 'string',
-  }).argv;
+(async () => {
+  // yargs@18+ is ESM-only, so we need to use dynamic import
+  const { default: yargs } = await import('yargs/yargs');
 
-const inputDir = path.join(process.cwd(), args.inputDir);
-const outputDir = path.join(process.cwd(), args.outputDir);
-generateTypes(inputDir, outputDir)
-  .then(() => {
+  const args = yargs(process.argv)
+    .option('inputDir', {
+      alias: 'i',
+      type: 'string',
+    })
+    .option('outputDir', {
+      alias: 'o',
+      type: 'string',
+    }).argv;
+
+  const inputDir = path.join(process.cwd(), args.inputDir);
+  const outputDir = path.join(process.cwd(), args.outputDir);
+
+  try {
+    await generateTypes(inputDir, outputDir);
     console.log('Successfully generated type definitions');
-  })
-  .catch((err) => {
+  } catch (err) {
     console.error(err);
     process.exit(1);
-  });
+  }
+})();
