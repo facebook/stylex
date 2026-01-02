@@ -307,7 +307,6 @@ export function SearchDialog({
 
   const onOpenItem = useCallback(
     (item: SearchItem) => {
-      debugger;
       if (item.type === 'action') {
         item.onSelect();
         onOpenChange(false);
@@ -511,9 +510,6 @@ export function SearchDialog({
                         ))}
                       </div>
                     ) : null}
-                    {/* {item.type !== 'page' && (
-                      <span {...stylex.props(styles.itemRail)} />
-                    )} */}
                     <p
                       {...stylex.props(
                         styles.itemContent,
