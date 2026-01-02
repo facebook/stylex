@@ -58,10 +58,26 @@ const typingAnim = stylex.keyframes({
 });
 
 const hidden = stylex.keyframes({
-  '0%': { display: 'inline' },
-  '20%': { display: 'inline' },
-  '20.001%': { display: 'none' },
-  '100%': { display: 'none' },
+  '0%': {
+    display: 'inline',
+    fontSize: '1em',
+    opacity: 1,
+  },
+  '20%': {
+    display: 'inline',
+    fontSize: '1em',
+    opacity: 1,
+  },
+  '20.001%': {
+    display: 'none',
+    fontSize: '0.1em',
+    opacity: 0,
+  },
+  '100%': {
+    display: 'none',
+    fontSize: '0.1em',
+    opacity: 0,
+  },
 });
 
 const TIME = 8;
@@ -71,6 +87,7 @@ const styles = stylex.create({
     gridTemplateColumns: '1fr',
     overflow: 'hidden',
     fontWeight: 600,
+    verticalAlign: 'top',
     color: vars['--color-fd-primary'],
     borderInlineEndColor: 'transparent',
     borderInlineEndStyle: 'solid',

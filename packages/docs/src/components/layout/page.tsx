@@ -147,6 +147,7 @@ const titleStyles = stylex.create({
     fontWeight: 600,
     lineHeight: 1.2,
     color: vars['--color-fd-primary'],
+    wordBreak: 'break-word',
   },
 });
 

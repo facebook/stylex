@@ -122,14 +122,14 @@ export function CodeBlock({
         ref={areaRef}
         role="region"
         tabIndex={0}
-        {...stylex.props(styles.viewport, !title && styles.viewportPadded)}
-        style={{
-          counterSet: props['data-line-numbers']
-            ? `line ${Number(props['data-line-numbers-start'] ?? 1) - 1}`
-            : undefined,
-          ...viewportProps.style,
-        }}
+        // style={{
+        //   counterSet: props['data-line-numbers']
+        //     ? `line ${Number(props['data-line-numbers-start'] ?? 1) - 1}`
+        //     : undefined,
+        //   ...viewportProps.style,
+        // }}
         {...viewportProps}
+        {...stylex.props(styles.viewport, !title && styles.viewportPadded)}
       >
         {children}
       </div>
@@ -334,6 +334,7 @@ const styles = stylex.create({
   },
   viewport: {
     paddingBlock: 8,
+    overflow: 'auto',
   },
   viewportPadded: {
     paddingInlineEnd: 48,
