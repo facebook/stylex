@@ -6,7 +6,7 @@ StyleX lets you apply styles conditionally. Any condition can be used to do so,
 `Props`, `State` or `Context`.
 
 The React Context API (and other similar APIs) can be used to avoid
-prop-drilling and provide conditions that child component can read and apply
+prop-drilling and provide conditions that child components can read and apply
 styles conditionally.
 
 Context can help reduce prop-drilling by sharing state across components. This
@@ -34,7 +34,7 @@ The `Sidebar` component uses the `SidebarContext` to determine its open or
 closed state and conditionally applies the appropriate styles.
 
 ```tsx
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { SidebarContext } from './SidebarContext';
 
@@ -66,7 +66,7 @@ child components through `SidebarContext.Provider`. A button toggles the sidebar
 state dynamically.
 
 ```tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import SidebarContext from './SidebarContext';
 import Sidebar from './Sidebar';
 
