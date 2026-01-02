@@ -157,6 +157,7 @@ export default function PlaygroundNew() {
   const sandpackClientRef = useRef<any>(null);
   const [error, setError] = useState<Error | null>(null);
   const monaco = useMonaco();
+  const editorRef = useRef<any>(null);
 
   const setInputFiles = useCallback(
     (updatedInputFiles: Record<string, string>, replace: boolean = true) => {
@@ -431,17 +432,22 @@ export const vars = stylex.defineVars({
     };
   }, []);
 
-  const handleFormat = useCallback(async () => {
-    const formatted = await prettier.format(inputFiles[activeInputFile]!, {
-      parser: 'babel',
-      plugins: [estreePlugin as any, babelPlugin],
-    });
-    const updatedInputFiles = {
-      ...inputFiles,
-      [activeInputFile]: formatted,
-    };
-    setInputFiles(updatedInputFiles, updateSandpack(updatedInputFiles));
-  }, [inputFiles, activeInputFile, setInputFiles]);
+  const handleFormat = async () => {
+    if (editorRef.current) {
+      const model = editorRef.current.getModel();
+      const formatted = await prettier.format(model.getValue(), {
+        parser: 'babel',
+        plugins: [estreePlugin as any, babelPlugin],
+      });
+
+      editorRef.current.executeEdits('format', [
+        {
+          range: model.getFullModelRange(),
+          text: formatted,
+        },
+      ]);
+    }
+  };
 
   return (
     <>
@@ -503,6 +509,7 @@ export const vars = stylex.defineVars({
                 defaultLanguage="typescript"
                 onChange={handleEditorChange}
                 onMount={(editor: any) => {
+                  editorRef.current = editor;
                   editor.onKeyDown((e: any) => {
                     if (e.browserEvent.key === '/') {
                       e.browserEvent.stopPropagation();
