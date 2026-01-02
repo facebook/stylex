@@ -13,6 +13,7 @@
   "dependencies": {
     "@babel/standalone": "^7.28.5",
     "feed": "^4.2.2",
+    "algoliasearch": "^5.46.2",
     "@codesandbox/sandpack-client": "^2.19.8",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@stylexjs/stylex": "^0.17.4",
