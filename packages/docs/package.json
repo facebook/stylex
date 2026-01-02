@@ -7,16 +7,19 @@
   "scripts": {
     "dev": "waku dev --host 0.0.0.0",
     "build": "waku build",
+    "preview": "node dist/serve-node.js",
     "start": "waku start",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
     "@babel/standalone": "^7.28.5",
+    "feed": "^4.2.2",
     "@codesandbox/sandpack-client": "^2.19.8",
     "@codesandbox/sandpack-react": "^2.20.0",
     "@stylexjs/stylex": "^0.17.4",
     "@stylexjs/babel-plugin": "^0.17.4",
     "@monaco-editor/react": "^4.7.0",
+    "marked": "^17.0.1",
     "lz-string": "^1.5.0",
     "fumadocs-core": "16.0.11",
     "prettier": "^3.7.4",

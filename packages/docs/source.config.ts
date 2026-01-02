@@ -28,6 +28,10 @@ export const blog = defineDocs({
       authors: z.array(z.string()),
       tags: z.array(z.string()).optional(),
     }),
+    postprocess: {
+      includeProcessedMarkdown: true,
+      includeMDAST: true,
+    },
   },
 });
 
