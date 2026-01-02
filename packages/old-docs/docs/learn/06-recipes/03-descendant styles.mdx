@@ -25,8 +25,7 @@ Using CSS variables, you can style descendants based on a parent's state, such a
 
 Define one or more variables using `defineVars`:
 
-```tsx variables.stylex.ts
-// variables.stylex.ts
+```tsx title="variables.stylex.ts"
 import * as stylex from '@stylexjs/stylex';
 
 export const vars = stylex.defineVars({
@@ -76,7 +75,7 @@ const styles = stylex.create({
 
 function Child() {
   return (
-      <span {...stylex.props(styles.child)}><Icon />A Row</span>
+    <span {...stylex.props(styles.child)}><Icon />A Row</span>
   );
 }
 ```

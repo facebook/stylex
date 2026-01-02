@@ -18,7 +18,7 @@ plugins. Babel compiles StyleX in JS/TS, and the PostCSS plugin replaces the
 Create a `babel.config.js` file in your project root and add the StyleX Babel
 plugin to it.
 
-```js
+```js title="babel.config.js"
 const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -73,7 +73,7 @@ StyleX.
 Configure the `include` option with glob patterns to look for all source files
 that may contain StyleX styles.
 
-```js
+```js title="postcss.config.js"
 const babelConfig = require('./babel.config');
 
 module.exports = {

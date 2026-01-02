@@ -22,7 +22,7 @@ function defineConsts<Consts extends { [key: string]: string }>(
 ): Consts<{ [key in keyof Consts]: string }>;
 ```
 
-### Example use
+### Example use:
 
 Like `defineVars`, you must define your constants as named exports in a
 `.stylex.js` (or `.stylex.ts`) file. You can mix constants and variables in the

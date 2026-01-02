@@ -22,7 +22,7 @@ Start by installing the StyleX babel and postcss plugins:
 Create a `babel.config.js` file in your project root and add the StyleX Babel
 plugin to it.
 
-```js
+```js title="babel.config.js"
 const path = require('path');
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -75,8 +75,7 @@ config file.
 Other than the `babelConfig` option, define one or more glob patterns for the
 `include` option to define all the files that may contain StyleX styles.
 
-```js
-// postcss.config.mjs
+```js title="postcss.config.mjs"
 import stylex from '@stylexjs/postcss-plugin';
 import autoprefixer from 'autoprefixer';
 import babelConfig from './babel.config.js';
