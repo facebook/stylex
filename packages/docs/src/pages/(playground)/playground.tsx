@@ -18,7 +18,7 @@ export default function PlaygroundPage() {
       <main {...stylex.props(styles.main)}>
         <Playground />
       </main>
-      <Footer />
+      <Footer noBorderTop />
     </>
   );
 }

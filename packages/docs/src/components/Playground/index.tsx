@@ -39,7 +39,7 @@ import {
 
 // @ts-ignore - CJS module
 import * as stylexPluginModule from '@stylexjs/babel-plugin';
-import { vars } from '@/theming/vars.stylex';
+import { vars, playgroundVars } from '@/theming/vars.stylex';
 import { ChevronDown } from 'lucide-react';
 const stylexPlugin: typeof import('@stylexjs/babel-plugin').default =
   // @ts-ignore - handle CJS default export
@@ -48,6 +48,35 @@ const stylexPlugin: typeof import('@stylexjs/babel-plugin').default =
 declare const STYLEX_TYPES: Record<string, string>;
 declare const REACT_TYPES: string;
 declare const REACT_JSX_RUNTIME_TYPES: string;
+
+const LIGHT_EDITOR_THEME = 'stylex-light';
+const DARK_EDITOR_THEME = 'stylex-dark';
+const OUTPUT_TABS = [
+  { key: 'js', label: 'Generated JS' },
+  { key: 'css', label: 'Generated CSS' },
+] as const;
+
+const defineMonacoThemes = (monacoInstance: any) => {
+  if (!monacoInstance?.editor?.defineTheme) {
+    return;
+  }
+  monacoInstance.editor.defineTheme(LIGHT_EDITOR_THEME, {
+    base: 'vs',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#ffffff',
+    },
+  });
+  monacoInstance.editor.defineTheme(DARK_EDITOR_THEME, {
+    base: 'vs-dark',
+    inherit: true,
+    rules: [],
+    colors: {
+      'editor.background': '#1e1e1e',
+    },
+  });
+};
 
 function transformSourceFiles(sourceFiles: Record<string, string>) {
   const stylexRules = [];
@@ -124,6 +153,22 @@ const decodeObjKeys = (string: string) => {
   return JSON.parse(decompressFromEncodedURIComponent(string));
 };
 
+const getColorMode = () => {
+  if (typeof document !== 'undefined') {
+    const root = document.documentElement;
+    if (root.dataset.theme === 'dark' || root.classList.contains('dark')) {
+      return 'dark';
+    }
+  }
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    return 'dark';
+  }
+  return 'light';
+};
+
 export default function PlaygroundNew() {
   const [_inputFilesOld, _setInputFilesOld] = useQueryParam(
     'inputFiles',
@@ -143,6 +188,9 @@ export default function PlaygroundNew() {
     () => decodeObjKeys(_inputFiles),
     [_inputFiles],
   );
+  const [colorMode, setColorMode] = useState<'light' | 'dark'>(() =>
+    getColorMode(),
+  );
 
   const [activeInputFile, setActiveInputFile] = useState<string>((): string => {
     const keys: string[] = Object.keys(inputFiles);
@@ -158,6 +206,7 @@ export default function PlaygroundNew() {
   const [error, setError] = useState<Error | null>(null);
   const monaco = useMonaco();
   const editorRef = useRef<any>(null);
+  const [activeOutputTab, setActiveOutputTab] = useState<'js' | 'css'>('js');
 
   const setInputFiles = useCallback(
     (updatedInputFiles: Record<string, string>, replace: boolean = true) => {
@@ -170,15 +219,33 @@ export default function PlaygroundNew() {
   );
 
   useEffect(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const update = () => setColorMode(getColorMode());
+    update();
+    media.addEventListener('change', update);
+    const observer =
+      typeof MutationObserver !== 'undefined'
+        ? new MutationObserver(update)
+        : null;
+    if (observer) {
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme', 'class'],
+      });
+    }
+    return () => {
+      media.removeEventListener('change', update);
+      observer?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     if (_inputFilesOld == null || Object.keys(_inputFilesOld).length === 0) {
       return;
     }
     _setInputFilesOld(null);
     setInputFiles(initialValue);
   }, []);
-
-  // const { colorMode } = useColorMode();
-  const colorMode = 'dark';
 
   const getUniqueFilename = useCallback(
     (baseName: string) => {
@@ -432,29 +499,47 @@ export const vars = stylex.defineVars({
     };
   }, []);
 
-  const handleFormat = async () => {
-    if (editorRef.current) {
-      const model = editorRef.current.getModel();
-      const formatted = await prettier.format(model.getValue(), {
-        parser: 'babel',
-        plugins: [estreePlugin as any, babelPlugin],
-      });
-
-      editorRef.current.executeEdits('format', [
-        {
-          range: model.getFullModelRange(),
-          text: formatted,
-        },
-      ]);
+  useEffect(() => {
+    if (monaco) {
+      defineMonacoThemes(monaco);
     }
-  };
+  }, [monaco]);
+
+  const handleFormat = useCallback(async () => {
+    if (!editorRef.current) return;
+
+    const model = editorRef.current.getModel();
+    if (!model) return;
+
+    const formatted = await prettier.format(model.getValue(), {
+      parser: 'babel',
+      plugins: [estreePlugin as any, babelPlugin],
+    });
+
+    // update the editor (source of truth)
+    editorRef.current.executeEdits('format', [
+      {
+        range: model.getFullModelRange(),
+        text: formatted,
+      },
+    ]);
+
+    // OPTIONAL but recommended:
+    // sync formatted result back into inputFiles + sandpack
+    const updatedInputFiles = {
+      ...inputFiles,
+      [activeInputFile]: formatted,
+    };
+
+    setInputFiles(updatedInputFiles, updateSandpack(updatedInputFiles));
+  }, [monaco, inputFiles, activeInputFile, setInputFiles]);
 
   return (
-    <>
-      <div {...stylex.props(styles.container)}>
+    <div {...stylex.props(styles.container)}>
+      <div {...stylex.props(styles.frame)}>
         <div {...stylex.props(styles.row)}>
           <div {...stylex.props(styles.column)}>
-            <Panel header="Source">
+            <Panel header="Source" style={styles.panelSource}>
               <Tabs
                 activeFile={activeInputFile as string}
                 files={Object.keys(inputFiles)}
@@ -467,6 +552,7 @@ export const vars = stylex.defineVars({
               />
               <Editor
                 beforeMount={(monaco: any) => {
+                  defineMonacoThemes(monaco);
                   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(
                     true,
                   );
@@ -523,41 +609,62 @@ export const vars = stylex.defineVars({
                   readOnly: !sandpackInitialized,
                 }}
                 path={`/${activeInputFile}`}
-                theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
+                theme={
+                  colorMode === 'dark' ? DARK_EDITOR_THEME : LIGHT_EDITOR_THEME
+                }
               />
               {error != null && (
                 <div {...stylex.props(styles.error)}>{error.message}</div>
               )}
             </Panel>
-            <CollapsiblePanel header="Generated JS">
-              <Editor
-                defaultLanguage="javascript"
-                options={{
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: true,
-                  contextmenu: false,
-                  readOnly: true,
-                }}
-                theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
-                value={transformedFiles[activeInputFile] || ''}
-              />
-            </CollapsiblePanel>
-            <CollapsiblePanel header="Generated CSS">
-              <Editor
-                defaultLanguage="css"
-                options={{
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: true,
-                  contextmenu: false,
-                  readOnly: true,
-                }}
-                theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
-                value={cssOutput}
-              />
+            <CollapsiblePanel header="Output" style={styles.panelOutput}>
+              <div {...stylex.props(styles.outputContent)}>
+                <Tabs
+                  activeFile={
+                    OUTPUT_TABS.find((t) => t.key === activeOutputTab)?.label ??
+                    OUTPUT_TABS[0].label
+                  }
+                  files={OUTPUT_TABS.map((t) => t.label)}
+                  hideFileIcon
+                  onSelectFile={(label) => {
+                    const found = OUTPUT_TABS.find((t) => t.label === label);
+                    if (found) setActiveOutputTab(found.key);
+                  }}
+                  readOnly
+                />
+                <div {...stylex.props(styles.outputEditor)}>
+                  <Editor
+                    beforeMount={defineMonacoThemes}
+                    defaultLanguage={
+                      activeOutputTab === 'css' ? 'css' : 'javascript'
+                    }
+                    options={{
+                      minimap: { enabled: false },
+                      scrollBeyondLastLine: false,
+                      contextmenu: false,
+                      readOnly: true,
+                    }}
+                    theme={
+                      colorMode === 'dark'
+                        ? DARK_EDITOR_THEME
+                        : LIGHT_EDITOR_THEME
+                    }
+                    value={
+                      activeOutputTab === 'css'
+                        ? cssOutput
+                        : transformedFiles[activeInputFile] || ''
+                    }
+                  />
+                </div>
+              </div>
             </CollapsiblePanel>
           </div>
           <div {...stylex.props(styles.column)}>
-            <CollapsiblePanel alwaysOpen={true} header="Preview">
+            <CollapsiblePanel
+              alwaysOpen={true}
+              header="Preview"
+              style={[styles.previewPanel, styles.panelRight]}
+            >
               <iframe
                 ref={iframeRef}
                 title="StyleX Playground Preview"
@@ -567,7 +674,7 @@ export const vars = stylex.defineVars({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -644,15 +751,30 @@ function CollapsiblePanel({
 
 const styles = stylex.create({
   container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
     height: 'calc(100dvh - 60px)',
-    padding: 8,
+    padding: 10,
     containerType: 'inline-size',
+  },
+  frame: {
+    boxSizing: 'border-box',
+    width: '100%',
+    height: '100%',
+    padding: 0,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    borderColor: playgroundVars['--pg-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 8,
   },
   row: {
     display: 'flex',
     flexDirection: { default: 'row', '@container (width < 768px)': 'column' },
-    gap: 8,
+    gap: 0,
     width: '100%',
     height: '100%',
   },
@@ -661,7 +783,7 @@ const styles = stylex.create({
     flexGrow: 1,
     flexShrink: 1,
     flexDirection: 'column',
-    gap: 8,
+    gap: 0,
     width: '50%',
     minWidth: 0,
   },
@@ -671,9 +793,13 @@ const styles = stylex.create({
     flexShrink: 0,
     flexBasis: 38,
     overflow: 'hidden',
-    backgroundColor: vars['--color-fd-card'],
-    borderRadius: 8,
-    boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.15)',
+    backgroundColor: playgroundVars['--pg-panel-surface'],
+    borderColor: playgroundVars['--pg-border'],
+    borderStyle: 'solid',
+    borderWidth: 0,
+    borderRadius: 0,
+    boxShadow:
+      '0 0 0 1px light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1))',
   },
   panelClosed: {
     flexGrow: 0,
@@ -683,6 +809,16 @@ const styles = stylex.create({
       default: 1,
       '@container (width < 768px)': 0,
     },
+  },
+  panelSource: {
+    borderTopLeftRadius: 8,
+  },
+  panelOutput: {
+    borderBottomLeftRadius: 8,
+  },
+  panelRight: {
+    borderTopRightRadius: 8,
+    borderBottomRightRadius: 8,
   },
   panelHeader: {
     position: 'relative',
@@ -695,11 +831,17 @@ const styles = stylex.create({
     color: vars['--color-fd-foreground'],
     textAlign: 'start',
     appearance: 'none',
-    backgroundColor: vars['--color-fd-card'],
+    backgroundColor: playgroundVars['--pg-header-surface'],
     borderStyle: 'none',
     borderBottomColor: vars['--color-fd-border'],
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
+    boxShadow: `
+  inset 0 0 8px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 10%, transparent),
+  inset 0 1px 4px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 6%, transparent)
+`,
+
+    // boxShadow: playgroundVars['--pg-header-shadow'],
   },
   panelHeaderButtonAlwaysOpen: {
     display: {
@@ -741,17 +883,20 @@ const styles = stylex.create({
       '@container (width < 768px)': 'none',
     },
   },
+  previewPanel: {
+    backgroundColor: `light-dark(${vars['--color-fd-card']}, #222)`,
+  },
   hidden: {
     gridTemplateRows: '0fr',
   },
   iframe: {
-    flex: '1',
+    flexGrow: 1,
+    flexShrink: 1,
     width: '100%',
     height: '100%',
     color: 'var(--fg1)',
     outline: 'none',
-    backgroundColor: 'var(--bg1)',
-    borderWidth: '0',
+    backgroundColor: 'light-dark(#ffffff, #222)',
   },
   error: {
     position: 'absolute',
@@ -764,5 +909,16 @@ const styles = stylex.create({
     overflow: 'auto',
     color: 'white',
     backgroundColor: 'red',
+  },
+  outputContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    boxShadow: playgroundVars['--pg-output-shadow'],
+  },
+  outputEditor: {
+    flexGrow: 1,
+    flexShrink: 1,
+    minHeight: 0,
   },
 });

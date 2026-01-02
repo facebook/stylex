@@ -9,99 +9,255 @@ declare const STYLEX_SOURCE: string;
 
 export const INITIAL_INPUT_FILES: Record<string, string> = {
   'App.tsx': `import * as stylex from "@stylexjs/stylex";
-import Counter from "./Counter";
+import Logo from "./Logo";
 import { colors } from "./tokens.stylex";
+
+/**
+ * Welcome to the StyleX Playground!
+ *
+ * Edit the code and see styles update instantly.
+ * Experiment with tokens and themes using tokens.stylex.ts.
+ * Share the URL to collaborate or send examples to others.
+ */
 
 export default function App() {
   return (
-    <div {...stylex.props(styles.container)}>
-      <h1 {...stylex.props(styles.h1)}>Welcome to the StyleX Playground!</h1>
-      <Counter />
+    <div {...stylex.props(styles.page)}>
+      <div {...stylex.props(styles.card)}>
+        <div {...stylex.props(styles.contentBlock, styles.titleRow)}>
+          <Logo xstyle={styles.logo} />
+          <h1 {...stylex.props(styles.h1)}>
+            playground
+          </h1>
+        </div>
+
+        <ul {...stylex.props(styles.contentBlock, styles.list)}>
+          <li>Add your root component in <strong>App.tsx</strong></li>
+          <li>Define shared tokens in <strong>.stylex.js</strong> files</li>
+          <li>Create new components and pass styles</li>
+        </ul>
+
+        <div {...stylex.props(styles.contentBlock, styles.linkWrapper)}>
+          <button
+            {...stylex.props(stylex.defaultMarker(), styles.button)}
+            type="button"
+            onClick={() =>
+              window.open("https://stylexjs.com/docs", "_blank", "noreferrer")
+            }
+          >
+            See the docs
+            <span {...stylex.props(styles.linkIcon)}>→</span>
+          </button>
+          <button
+            {...stylex.props(stylex.defaultMarker(), styles.button, styles.buttonSecondary)}
+            type="button"
+            onClick={() =>
+              window.open("https://github.com/facebook/stylex", "_blank", "noreferrer")
+            }
+          >
+            View on GitHub
+            <span {...stylex.props(styles.linkIcon)}>→</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
 
 const styles = stylex.create({
-  container: {
+  page: {
     backgroundColor: colors.bg,
     padding: 32,
-    margin: 16,
-    borderRadius: 12,
+    minHeight: "100vh",
   },
+
+  card: {
+    maxWidth: 450,
+    marginInline: "auto",
+    marginBottom: 32,
+    padding: 36,
+    backgroundColor: colors.cardBg,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: colors.cardBorder,
+    boxShadow: "0 16px 40px rgb(0 0 0 / 10%), 0 2px 10px rgb(0 0 0 / 6%)",
+  },
+
+  contentBlock: {
+    width: "fit-content",
+    maxWidth: "100%",
+    marginInline: "auto",
+    textAlign: "left",
+  },
+
+  logo: {
+    display: "block",
+    width: "auto",
+    height: 50,
+    maxWidth: 120,
+  },
+
+  titleRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "left",
+    gap: 10,
+    width: "100%",
+  },
+
   h1: {
-    color: colors.text,
-    textAlign: "center",
-    fontSize: 32,
-    fontWeight: 600,
-    textShadow: "0 1px 2px rgb(0 0 0 / 10%)",
     margin: 0,
+    fontSize: 28,
+    marginBottom: 6,
+    fontWeight: 400,
+    textAlign: "left",
+    color: colors.title,
+  },
+
+  subtitle: {
+    marginTop: 12,
+    marginBottom: 24,
+    fontSize: 15,
+    lineHeight: 1.5,
+    textAlign: "center",
+    color: colors.subtitle,
+  },
+
+  list: {
+    paddingInlineStart: 20,
+    marginBottom: 24,
+    marginInline: "auto",
+    fontSize: 15,
+    lineHeight: 2,
+    listStyleType: '"▪  "',
+    color: colors.list,
+  },
+
+  linkWrapper: {
+    textAlign: "left",
+    marginTop: 12,
+    display: "flex",
+    gap: 12,
+    justifyContent: "center",
+    flexWrap: "wrap",
+  },
+
+  button: {
+    display: "inline-flex",
+    paddingBlock: 10,
+    paddingInline: 16,
+    borderRadius: 8,
+    borderStyle: "none",
+    textDecoration: "none",
+    fontSize: 14,
+    fontWeight: 500,
+    color: colors.buttonText,
+    backgroundColor: {
+      default: colors.buttonPrimary,
+      ":hover": \`color-mix(in srgb, \${colors.buttonPrimary} 88%, white 12%)\`,
+      ":focus-visible": \`color-mix(in srgb, \${colors.buttonPrimary} 88%, white 12%)\`,
+    },
+    transitionProperty: "background-color",
+    transitionDuration: "0.15s",
+  },
+
+  linkIcon: {
+    display: "inline-flex",
+    marginInlineStart: 8,
+    transitionProperty: "transform",
+    transitionDuration: "0.2s",
+    transitionTimingFunction: "ease-in-out",
+    transform: {
+      default: "translateX(0)",
+      [stylex.when.ancestor(":hover")]: "translateX(8px)",
+    },
+  },
+
+  buttonSecondary: {
+    backgroundColor: {
+      default: colors.buttonSecondary,
+      ":hover": \`color-mix(in srgb, \${colors.buttonSecondary} 86%, white 14%)\`,
+      ":focus-visible": \`color-mix(in srgb, \${colors.buttonSecondary} 86%, white 14%)\`,
+    },
+    color: colors.buttonText,
+    borderColor: "transparent",
   },
 });
 `,
   'tokens.stylex.ts': `import * as stylex from "@stylexjs/stylex";
 
-export const colors = stylex.defineVars({
-  bg: "light-dark(#fff, #000)",
-  text: "light-dark(#222, #bbb)",
+export const colors = stylex.defineConsts({
+  bg: "light-dark(#f7f7f7, #121212)",
+  text: "light-dark(#000, #fff)",
+  cardBg: "light-dark(#ffffff, #1b1b1f)",
+  cardBorder: "light-dark(rgb(0 0 0 / 8%), rgb(255 255 255 / 14%))",
+  title: "light-dark(hsl(248, 58.40%, 61.40%), hsl(267, 84%, 81%))",
+  subtitle: "light-dark(rgb(0 0 0 / 65%), rgb(255 255 255 / 70%))",
+  list: "light-dark(rgb(0 0 0 / 76%), rgb(255 255 255 / 82%))",
+  buttonText: "light-dark(#fff, #000)",
+  buttonPrimary: "light-dark(hsl(248, 58.40%, 61.40%), hsl(267, 84%, 81%))",
+  buttonSecondary: "light-dark(hsl(291, 66.30%, 67.50%), hsl(226, 70.70%, 70.60%))",
 });
 `,
-  'Counter.tsx': `import * as stylex from "@stylexjs/stylex";
-import { useState } from "react";
-
-export default function Counter() {
-  const [count, setCount] = useState(0);
-  return (
-    <div {...stylex.props(styles.container)}>
-      <button
-        {...stylex.props(styles.btn)}
-        onClick={() => setCount((x) => x - 1)}
-      >
-        -
-      </button>
-      <span {...stylex.props(styles.output)}>{count}</span>
-      <button
-        {...stylex.props(styles.btn)}
-        onClick={() => setCount((x) => x + 1)}
-      >
-        +
-      </button>
-    </div>
-  );
-}
+  'Logo.tsx': `import * as React from "react";
+import * as stylex from "@stylexjs/stylex";
 
 const styles = stylex.create({
-  container: {
-    display: "flex",
-    padding: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  btn: {
-    padding: 8,
-    paddingInline: 16,
-    cursor: "pointer",
-    borderStyle: "none",
-    appearance: "none",
-    borderRadius: 4,
-    color: "white",
-    backgroundColor: {
-      default: "#279",
-      ":hover": "#39b",
-      ":focus-visible": "#39b",
-    },
-    transform: {
-      default: null,
-      ":active": "scale(0.95)",
-    },
-    transitionProperty: 'transform',
-    transitionDuration: '0.1s',
-  },
-  output: {
-    padding: 8,
-    minWidth: 54,
-    textAlign: "center",
+  root: {
+    color: "light-dark(#111, #f5f5f5)",
   },
 });
+
+export default function Logo({ xstyle }: { xstyle?: stylex.StyleXStyles }) {
+  const id = "logo-bold";
+
+  return (
+    <svg
+      {...stylex.props(styles.root, xstyle)}
+      viewBox="0 0 644 435"
+      role="img"
+      aria-label="StyleX"
+    >
+      <defs>
+        <linearGradient
+          id={\`\${id}-a\`}
+          x1="40.855%"
+          x2="74.131%"
+          y1="31.719%"
+          y2="59.893%"
+        >
+          <stop offset="0%" stopColor="#E5F9FF" stopOpacity="0" />
+          <stop offset="100%" stopColor="#55C4E3" />
+        </linearGradient>
+        <linearGradient
+          id={\`\${id}-b\`}
+          x1="42.121%"
+          x2="65.327%"
+          y1="56.078%"
+          y2="39.384%"
+        >
+          <stop offset="0%" stopColor="#FCD5FD" stopOpacity="0" />
+          <stop offset="100%" stopColor="#CF28D4" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M298.101 227.366c2.391 5.6 13.07 27.839 15.264 33.295-13.355 22.14-16.488 27.885-44.407 62.98C155.339 441.287 67.678 460.298 13.96 405.337 8.712 399.73 4.058 392.44 0 383.467c1.143 2.058 2.653 4.326 4.53 6.804l.679.883c.115.149.232.298.35.448l.724.91.754.926.785.944.815.961.846.979.876.996.906 1.013.938 1.031.48.522.983 1.057.503.535 1.028 1.083.526.548c66.356 60.072 132.546 8.534 222.416-91.044 13.566-15.775 33.553-44.007 59.962-84.697Zm34.703-190.061c42.053 36.145 42.053 92.233 10.507 172.34-2.417-5.89-13.066-29.436-15.736-35.468 24.834-68.036 25.41-100.38-10.306-132.635-20.547-18.555-35.138-19.319-62.918-14.8l-1.819.303c-.304.051-.609.104-.914.157l-1.84.328-1.854.342-.933.177-21.905 4.338v-.04l.483-.176c43.96-16.015 81.711-17.295 107.235 5.134Z"
+        fill={\`url(#\${id}-a)\`}
+        transform="translate(278 -.052)"
+      />
+      <path
+        d="M305.062 153.35c66.669 125.717 70.877 193.743 48.67 241.331-8 17.148-27.95 28.999-36.532 33.608-21.54 11.568-66.138 5.808-106.006-5.873l-5.976-2.544c20.033 6.443 63.57 14.86 87.042 8.417 77.085-21.16 67.914-112.798-9.564-256.715C205.218 27.657 120.448-11.821 53.627 15.314c-6.416 2.605-12.01 6.165-16.822 10.575l.515-.549 1.033-1.084.517-.534 1.038-1.054c7.453-7.476 15.18-13.311 23.143-15.997 60.427-20.382 164.163-.12 242.011 146.679Z"
+        fill={\`url(#\${id}-b)\`}
+        transform="translate(278 -.052)"
+      />
+      <path
+        d="M-.016 285.688v-30.625c8.021 5.625 16.224 10.182 24.61 13.671 8.385 3.49 15.442 5.235 21.172 5.235 5.937 0 11.041-1.459 15.312-4.375 4.271-2.917 6.406-6.406 6.406-10.469 0-4.167-1.38-7.63-4.14-10.39-2.76-2.761-8.724-6.745-17.89-11.954-18.334-10.208-30.34-18.932-36.017-26.172C3.76 203.37.922 195.48.922 186.937c0-11.041 4.297-20.052 12.89-27.03 8.594-6.98 19.662-10.47 33.204-10.47 14.062 0 28.49 3.959 43.28 11.875v28.125c-16.874-10.208-30.676-15.312-41.405-15.312-5.521 0-9.974 1.172-13.36 3.516-3.385 2.343-5.078 5.442-5.078 9.297 0 3.333 1.537 6.51 4.61 9.53 3.072 3.022 8.463 6.667 16.171 10.938l10.157 5.781c23.958 13.542 35.937 28.542 35.937 45 0 11.771-4.61 21.433-13.828 28.985-9.219 7.552-21.068 11.328-35.547 11.328-8.542 0-16.146-.911-22.812-2.734-6.667-1.823-15.052-5.183-25.157-10.079ZM99.984 175.063l53.438-52.5v29.687h45.469v25.625h-45.47v70.469c0 16.458 6.824 24.687 20.47 24.687 10.208 0 20.99-3.437 32.343-10.312v26.562c-10.937 6.146-22.864 9.219-35.78 9.219-13.022 0-23.855-3.802-32.5-11.406-2.71-2.292-4.949-4.87-6.72-7.735-1.77-2.864-3.255-6.614-4.453-11.25-1.198-4.635-1.797-13.463-1.797-26.484v-63.75h-25v-2.813ZM314.672 152.25h32.031L244.984 369.282h-31.719l48.907-104.063-55.625-112.97h32.343l38.75 81.095zM354.484 77.719h28.438v218.28h-28.438zM525.516 226.625H424.422c.729 13.75 5.338 24.688 13.828 32.813 8.49 8.125 19.453 12.187 32.89 12.187 18.75 0 36.042-5.833 51.876-17.5v27.813c-8.75 5.833-17.422 10-26.016 12.5-8.594 2.5-18.672 3.75-30.234 3.75-15.834 0-28.646-3.282-38.438-9.844-9.792-6.563-17.63-15.39-23.515-26.485-5.886-11.093-8.829-23.932-8.829-38.515 0-21.875 6.198-39.662 18.594-53.36s28.49-20.547 48.281-20.547c19.063 0 34.271 6.667 45.625 20 11.355 13.334 17.032 31.198 17.032 53.594v3.594Zm-100.47-17.031h72.345c-.73-11.354-4.115-20.104-10.157-26.25-6.041-6.146-14.166-9.219-24.375-9.219-10.208 0-18.567 3.073-25.078 9.219-6.51 6.146-10.755 14.896-12.734 26.25Z"
+        fill="light-dark(#111, #f5f5f5)"
+      />
+    </svg>
+  );
+}
 `,
 };
 
@@ -144,7 +300,7 @@ createRoot(document.getElementById('root')).render(<App />);`,
     ),
   },
   '/node_modules/@stylexjs/stylex/index.js': {
-    code: STYLEX_SOURCE, // inlined via waku.config.ts
+    code: STYLEX_SOURCE,
   },
 };
 

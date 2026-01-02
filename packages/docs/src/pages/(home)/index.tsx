@@ -65,7 +65,7 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    minHeight: '45vh',
+    minHeight: '40vh',
   },
   title: {
     position: 'relative',
@@ -85,7 +85,7 @@ const styles = stylex.create({
   subtitle: {
     paddingInline: 24,
     margin: 0,
-    fontSize: 'clamp(1.2rem, 1.2rem + 1vw, 2.2rem)',
+    fontSize: 'clamp(1.2rem, 1.2rem + 1vw, 2rem)',
     fontWeight: 200,
     color: `${vars['--color-fd-foreground']}`,
     textAlign: 'center',
