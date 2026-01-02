@@ -1,4 +1,4 @@
 {
   "buildCommand": "cd packages/docs && yarn build",
-  "outputDirectory": "packages/docs/dist/public"
+  "outputDirectory": "packages/docs/dist"
 }
