@@ -50,6 +50,7 @@ export function Tabs({
           readOnly={readOnly}
         />
       ))}
+
       {!readOnly && onCreateFile && (
         <>
           <NewFileButton
@@ -113,7 +114,7 @@ function Tab({
 
   const commitRename = () => {
     if (!onRename) {
-      setIsRenaming(false);
+      cancelRename();
       return;
     }
     const trimmed = draftName.trim();
@@ -121,8 +122,7 @@ function Tab({
       cancelRename();
       return;
     }
-    const renameResult = onRename(filename, trimmed);
-    if (renameResult === false) {
+    if (onRename(filename, trimmed) === false) {
       cancelRename();
       return;
     }
@@ -160,29 +160,36 @@ function Tab({
         {...stylex.props(styles.tabLabelButton)}
       >
         {!hideFileIcon && <FileIcon {...stylex.props(styles.fileIcon)} />}
-        {isRenaming && !readOnly && onRename ? (
-          <input
-            autoFocus
-            onBlur={commitRename}
-            onChange={(e) => setDraftName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                commitRename();
-                return;
-              }
-              if (e.key === 'Escape') {
-                e.preventDefault();
-                cancelRename();
-              }
-            }}
-            value={draftName}
-            {...stylex.props(styles.tabRenameInput)}
-          />
-        ) : (
-          filename
-        )}
+
+        <span {...stylex.props(styles.filenameBox)}>
+          {isRenaming && !readOnly && onRename ? (
+            <>
+              <span {...stylex.props(styles.renameMirror)}>
+                {draftName || ' '}
+              </span>
+              <input
+                autoFocus
+                onBlur={commitRename}
+                onChange={(e) => setDraftName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    commitRename();
+                  } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelRename();
+                  }
+                }}
+                value={draftName}
+                {...stylex.props(styles.renameInputOverlay)}
+              />
+            </>
+          ) : (
+            filename
+          )}
+        </span>
       </button>
+
       {!immutable && !readOnly && onDelete && (
         <>
           <button
@@ -268,18 +275,20 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
   },
+
   tab: {
     display: 'flex',
     fontSize: 12,
     color: vars['--color-fd-foreground'],
-    cursor: 'pointer',
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
+
   tabActive: {
     color: vars['--color-fd-primary'],
     boxShadow: `0 -2px 0 0 ${vars['--color-fd-primary']} inset`,
   },
+
   tabLabelButton: {
     display: 'inline-flex',
     gap: 4,
@@ -293,10 +302,26 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
-  tabRenameInput: {
-    flexShrink: 1,
-    minWidth: 0,
-    height: '1.4em',
+
+  filenameBox: {
+    position: 'relative',
+    display: 'inline-flex',
+    alignItems: 'center',
+    whiteSpace: 'pre',
+  },
+
+  renameMirror: {
+    fontSize: 12,
+    lineHeight: 1.4,
+    color: 'transparent',
+    whiteSpace: 'pre',
+    pointerEvents: 'none',
+  },
+
+  renameInputOverlay: {
+    position: 'absolute',
+    inset: 0,
+    width: '100%',
     padding: 0,
     fontSize: 12,
     lineHeight: 1.4,
@@ -305,11 +330,13 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
+
   fileIcon: {
     display: 'inline-flex',
     minWidth: 12,
     color: 'currentColor',
   },
+
   tabIconButton: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -328,6 +355,7 @@ const styles = stylex.create({
     borderStyle: 'none',
     borderRadius: 4,
   },
+
   tabCloseButton: {
     paddingBlock: 8,
     paddingRight: 6,
@@ -341,6 +369,7 @@ const styles = stylex.create({
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
+
   addWrapper: {
     display: 'flex',
     gap: 6,
