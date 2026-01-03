@@ -3,7 +3,7 @@
   "name": "docs",
   "version": "0.16.3",
   "scripts": {
-    "old:build": "rimraf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build && node ./scripts/make-stylex-sheet.js",
+    "old:build": "shx rm -rf ./build ./docusaurus && cross-env NODE_ENV=production docusaurus build && node ./scripts/make-stylex-sheet.js",
     "clear": "docusaurus clear",
     "lint": "eslint --cache \"**/*.js\" && stylelint \"**/*.css\"",
     "old:serve": "docusaurus serve",

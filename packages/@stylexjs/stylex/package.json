@@ -29,11 +29,11 @@
   },
   "license": "MIT",
   "scripts": {
-    "prebuild": "rimraf lib && gen-types -i src/ -o lib/cjs && cp -r lib/cjs lib/es",
+    "prebuild": "shx rm -rf lib && gen-types -i src/ -o lib/cjs && shx cp -r lib/cjs lib/es",
     "build:cjs": "cross-env BABEL_ENV=cjs rollup -c ./rollup.config.mjs",
     "build:esm": "cross-env BABEL_ENV=esm rollup -c ./rollup.config.mjs",
     "build": "npm run build:cjs && npm run build:esm",
-    "build-haste": "rimraf lib && rewrite-imports -i src/ -o lib/",
+    "build-haste": "shx rm -rf lib && rewrite-imports -i src/ -o lib/",
     "test": "cross-env BABEL_ENV=test jest --coverage"
   },
   "dependencies": {
@@ -59,7 +59,6 @@
     "@rollup/plugin-replace": "^6.0.1",
     "babel-plugin-syntax-hermes-parser": "^0.32.1",
     "cross-env": "^10.1.0",
-    "rimraf": "^6.1.2",
     "rollup": "^4.24.0",
     "scripts": "0.17.4"
   },
