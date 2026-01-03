@@ -319,7 +319,7 @@ const styles = stylex.create({
     padding: 4,
     fontSize: 14,
     lineHeight: 1,
-    color: { default: vars['--color-fd-foreground'] },
+    color: vars['--color-fd-foreground'],
     cursor: 'pointer',
     backgroundColor: {
       default: 'transparent',
@@ -338,7 +338,7 @@ const styles = stylex.create({
       ':hover': vars['--color-fd-foreground'],
     },
     cursor: 'pointer',
-    backgroundColor: { default: 'transparent' },
+    backgroundColor: 'transparent',
     borderStyle: 'none',
   },
   addWrapper: {

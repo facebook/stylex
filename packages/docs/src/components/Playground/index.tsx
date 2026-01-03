@@ -524,8 +524,6 @@ export const vars = stylex.defineVars({
       },
     ]);
 
-    // OPTIONAL but recommended:
-    // sync formatted result back into inputFiles + sandpack
     const updatedInputFiles = {
       ...inputFiles,
       [activeInputFile]: formatted,
@@ -550,69 +548,77 @@ export const vars = stylex.defineVars({
                 onRenameFile={renameFile}
                 onSelectFile={(filename) => setActiveInputFile(filename)}
               />
-              <Editor
-                beforeMount={(monaco: any) => {
-                  defineMonacoThemes(monaco);
-                  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(
-                    true,
-                  );
-
-                  for (const [filename, content] of Object.entries(
-                    inputFiles,
-                  )) {
-                    ensureMonacoModel(monaco, filename, content);
-                  }
-
-                  monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-                    {
-                      ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
-                      jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
-                      moduleResolution:
-                        monaco.languages.typescript.ModuleResolutionKind.NodeJs,
-                      paths: {
-                        '@stylexjs/stylex': [
-                          'file:///node_modules/@stylexjs/stylex/stylex.d.ts',
-                        ],
-                      },
-                    },
-                  );
-
-                  for (const [file, content] of Object.entries(STYLEX_TYPES)) {
-                    monaco.languages.typescript.typescriptDefaults.addExtraLib(
-                      content,
-                      file,
+              <div {...stylex.props(styles.editorShell)}>
+                <Editor
+                  beforeMount={(monaco: any) => {
+                    defineMonacoThemes(monaco);
+                    monaco.languages.typescript.typescriptDefaults.setEagerModelSync(
+                      true,
                     );
-                  }
-                  monaco.languages.typescript.typescriptDefaults.addExtraLib(
-                    REACT_TYPES,
-                    'file:///node_modules/@types/react/index.d.ts',
-                  );
-                  monaco.languages.typescript.typescriptDefaults.addExtraLib(
-                    REACT_JSX_RUNTIME_TYPES,
-                    'file:///node_modules/@types/react/jsx-runtime.d.ts',
-                  );
-                }}
-                defaultLanguage="typescript"
-                onChange={handleEditorChange}
-                onMount={(editor: any) => {
-                  editorRef.current = editor;
-                  editor.onKeyDown((e: any) => {
-                    if (e.browserEvent.key === '/') {
-                      e.browserEvent.stopPropagation();
+
+                    for (const [filename, content] of Object.entries(
+                      inputFiles,
+                    )) {
+                      ensureMonacoModel(monaco, filename, content);
                     }
-                  });
-                }}
-                options={{
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: true,
-                  contextmenu: false,
-                  readOnly: !sandpackInitialized,
-                }}
-                path={`/${activeInputFile}`}
-                theme={
-                  colorMode === 'dark' ? DARK_EDITOR_THEME : LIGHT_EDITOR_THEME
-                }
-              />
+
+                    monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
+                      {
+                        ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+                        jsx: monaco.languages.typescript.JsxEmit.ReactJSX,
+                        moduleResolution:
+                          monaco.languages.typescript.ModuleResolutionKind
+                            .NodeJs,
+                        paths: {
+                          '@stylexjs/stylex': [
+                            'file:///node_modules/@stylexjs/stylex/stylex.d.ts',
+                          ],
+                        },
+                      },
+                    );
+
+                    for (const [file, content] of Object.entries(
+                      STYLEX_TYPES,
+                    )) {
+                      monaco.languages.typescript.typescriptDefaults.addExtraLib(
+                        content,
+                        file,
+                      );
+                    }
+                    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+                      REACT_TYPES,
+                      'file:///node_modules/@types/react/index.d.ts',
+                    );
+                    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+                      REACT_JSX_RUNTIME_TYPES,
+                      'file:///node_modules/@types/react/jsx-runtime.d.ts',
+                    );
+                  }}
+                  defaultLanguage="typescript"
+                  height="100%"
+                  onChange={handleEditorChange}
+                  onMount={(editor: any) => {
+                    editorRef.current = editor;
+                    editor.onKeyDown((e: any) => {
+                      if (e.browserEvent.key === '/') {
+                        e.browserEvent.stopPropagation();
+                      }
+                    });
+                  }}
+                  options={{
+                    minimap: { enabled: false },
+                    scrollBeyondLastLine: true,
+                    contextmenu: false,
+                    readOnly: !sandpackInitialized,
+                  }}
+                  path={`/${activeInputFile}`}
+                  theme={
+                    colorMode === 'dark'
+                      ? DARK_EDITOR_THEME
+                      : LIGHT_EDITOR_THEME
+                  }
+                />
+              </div>
               {error != null && (
                 <div {...stylex.props(styles.error)}>{error.message}</div>
               )}
@@ -789,9 +795,11 @@ const styles = stylex.create({
   },
   panel: {
     position: 'relative',
+    display: 'flex',
     flexGrow: 1,
     flexShrink: 0,
     flexBasis: 38,
+    flexDirection: 'column',
     overflow: 'hidden',
     backgroundColor: playgroundVars['--pg-panel-surface'],
     borderColor: playgroundVars['--pg-border'],
@@ -837,11 +845,9 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
     boxShadow: `
-  inset 0 0 8px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 10%, transparent),
-  inset 0 1px 4px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 6%, transparent)
-`,
-
-    // boxShadow: playgroundVars['--pg-header-shadow'],
+      inset 0 0 8px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 10%, transparent),
+      inset 0 1px 4px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 6%, transparent)
+    `,
   },
   panelHeaderButtonAlwaysOpen: {
     display: {
@@ -876,6 +882,11 @@ const styles = stylex.create({
   panelContentInner: {
     height: '100%',
     overflow: 'hidden',
+  },
+  editorShell: {
+    display: 'flex',
+    flexGrow: 1,
+    minHeight: 0,
   },
   panelContentAlwaysOpen: {
     display: {

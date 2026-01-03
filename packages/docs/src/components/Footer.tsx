@@ -213,8 +213,9 @@ const styles = stylex.create({
     transitionProperty: 'background-color, border-color',
   },
   footerNoBorder: {
-    borderTopStyle: 'none',
-    borderTopWidth: 0,
+    borderTopColor: null,
+    borderTopStyle: null,
+    borderTopWidth: null,
   },
   container: {
     display: 'flex',

@@ -205,9 +205,9 @@ export const playgroundVars = stylex.defineVars({
   '--pg-preview': lightDark('hsl(0, 0%, 94.7%)', '#222'),
   '--pg-panel-surface': lightDark('#ffffff', '#0b0b0f'),
   '--pg-header-surface': lightDark('#ffffff', '#1a1a1a'),
-  '--pg-header-shadow': lightDark(
-    `inset 0 0 18px color-mix(in srgb, ${vars['--color-fd-primary']} 30%, transparent)`,
-    'none',
+  '--pg-header-shadow-color': lightDark(
+    `color-mix(in srgb, ${vars['--color-fd-primary']} 30%, transparent)`,
+    'transparent',
   ),
   '--pg-output-shadow': lightDark(
     `inset 0 0 12px color-mix(in srgb, ${vars['--color-fd-primary']} 25%, transparent)`,
