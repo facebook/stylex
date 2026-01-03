@@ -537,7 +537,7 @@ export const vars = stylex.defineVars({
       <div {...stylex.props(styles.frame)}>
         <div {...stylex.props(styles.row)}>
           <div {...stylex.props(styles.column)}>
-            <Panel header="Source" style={styles.panelSource}>
+            <Panel header="Source">
               <Tabs
                 activeFile={activeInputFile as string}
                 files={Object.keys(inputFiles)}
@@ -623,7 +623,7 @@ export const vars = stylex.defineVars({
                 <div {...stylex.props(styles.error)}>{error.message}</div>
               )}
             </Panel>
-            <CollapsiblePanel header="Output" style={styles.panelOutput}>
+            <CollapsiblePanel header="Output">
               <div {...stylex.props(styles.outputContent)}>
                 <Tabs
                   activeFile={
@@ -669,7 +669,7 @@ export const vars = stylex.defineVars({
             <CollapsiblePanel
               alwaysOpen={true}
               header="Preview"
-              style={[styles.previewPanel, styles.panelRight]}
+              style={styles.previewPanel}
             >
               <iframe
                 ref={iframeRef}
@@ -761,7 +761,7 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: 'calc(100dvh - 60px)',
+    height: 'calc(100dvh - 64px)',
     padding: 10,
     containerType: 'inline-size',
   },
@@ -775,7 +775,8 @@ const styles = stylex.create({
     borderColor: playgroundVars['--pg-border'],
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 20,
+    cornerShape: 'squircle',
   },
   row: {
     display: 'flex',
@@ -798,7 +799,7 @@ const styles = stylex.create({
     display: 'flex',
     flexGrow: 1,
     flexShrink: 0,
-    flexBasis: 38,
+    flexBasis: 36,
     flexDirection: 'column',
     overflow: 'hidden',
     backgroundColor: playgroundVars['--pg-panel-surface'],
@@ -817,20 +818,12 @@ const styles = stylex.create({
       '@container (width < 768px)': 0,
     },
   },
-  panelSource: {
-    borderTopLeftRadius: 8,
-  },
-  panelOutput: {
-    borderBottomLeftRadius: 8,
-  },
-  panelRight: {
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
-  },
   panelHeader: {
     position: 'relative',
     display: 'block',
+    flexShrink: 0,
     width: '100%',
+    height: 36,
     paddingBlock: 8,
     paddingInline: 16,
     fontSize: 14,
@@ -843,10 +836,6 @@ const styles = stylex.create({
     borderBottomColor: vars['--color-fd-border'],
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
-    boxShadow: `
-      inset 0 0 8px color-mix(in srgb, ${playgroundVars['--pg-header-shadow']} 10%, transparent),
-      inset 0 1px 4px color-mix(in srgb, ${playgroundVars['--pg-header-shadow']} 6%, transparent)
-    `,
   },
   panelHeaderButtonAlwaysOpen: {
     display: {

@@ -137,10 +137,8 @@ export const vars = stylex.defineVars({
     'hsla(0, 0%, 85%, 50%)',
     'hsla(0, 0%, 30%, 20%)',
   ),
-  '--color-fd-primary': lightDark(
-    'hsl(248, 58.40%, 61.40%)',
-    'hsl(267, 72.20%, 77.50%)',
-  ),
+
+  '--color-fd-primary': lightDark('hsl(266, 78%, 69%)', 'hsl(270, 72%, 77%)'),
   '--color-fd-primary-foreground': lightDark(
     'hsl(234, 16%, 35%)',
     'hsl(240, 23%, 9%)',
@@ -150,10 +148,10 @@ export const vars = stylex.defineVars({
     'hsl(0, 0%, 9%)',
     'hsl(0, 0%, 70%)',
   ),
-  '--color-fd-accent': lightDark('hsl(223, 16%, 83%)', 'hsl(237, 16%, 23%)'),
+  '--color-fd-accent': lightDark('hsl(222, 16%, 83%)', 'hsl(222, 16%, 23%)'),
   '--color-fd-accent-foreground': lightDark(
-    ' hsl(291, 58.30%, 62.40%)',
-    'hsl(226, 66.30%, 67.50%)',
+    'hsl(222, 87%, 60%)',
+    'hsl(222, 87%, 78%)',
   ),
   '--color-fd-ring': lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
   '--color-fd-overlay': lightDark('transparent', 'hsla(0, 0%, 0%, 0.2)'),
