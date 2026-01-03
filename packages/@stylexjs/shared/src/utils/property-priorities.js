@@ -126,6 +126,16 @@ longHandPhysical.add('border-top-right-radius');
 longHandPhysical.add('border-bottom-left-radius');
 longHandPhysical.add('border-bottom-right-radius');
 
+shorthandsOfLonghands.add('corner-shape');
+longHandLogical.add('corner-start-start-shape'); // Logical Properties
+longHandLogical.add('corner-start-end-shape'); // Logical Properties
+longHandLogical.add('corner-end-start-shape'); // Logical Properties
+longHandLogical.add('corner-end-end-shape'); // Logical Properties
+longHandPhysical.add('corner-top-left-shape');
+longHandPhysical.add('corner-top-right-shape');
+longHandPhysical.add('corner-bottom-left-shape');
+longHandPhysical.add('corner-bottom-right-shape');
+
 longHandLogical.add('box-shadow');
 
 // CSS Basic User Interface

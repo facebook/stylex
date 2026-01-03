@@ -165,6 +165,20 @@ type borderRightColor = color;
 type borderRightStyle = brStyle;
 type borderRightWidth = borderWidth;
 type borderRadius = lengthPercentage;
+
+type cornerShape =
+  | 'round'
+  | 'scoop'
+  | 'bevel'
+  | 'notch'
+  | 'square'
+  | 'squircle'
+  // | StringPrefix<'superellipse('>
+  | string;
+type cornerTopLeftShape = cornerShape;
+type cornerTopRightShape = cornerShape;
+type cornerBottomLeftShape = cornerShape;
+type cornerBottomRightShape = cornerShape;
 type borderSpacing = number | string;
 type borderStyle = brStyle;
 type borderTopLeftRadius = lengthPercentage;
@@ -1096,6 +1110,16 @@ export type CSSProperties = $ReadOnly<{
   borderTopRightRadius?: all | borderTopRightRadius,
   borderBottomLeftRadius?: all | borderBottomLeftRadius,
   borderBottomRightRadius?: all | borderBottomRightRadius,
+
+  cornerShape?: all | cornerShape,
+  cornerStartStartShape?: all | cornerTopLeftShape,
+  cornerStartEndShape?: all | cornerTopRightShape,
+  cornerEndStartShape?: all | cornerBottomLeftShape,
+  cornerEndEndShape?: all | cornerBottomRightShape,
+  cornerTopLeftShape?: all | cornerTopLeftShape,
+  cornerTopRightShape?: all | cornerTopRightShape,
+  cornerBottomLeftShape?: all | cornerBottomLeftShape,
+  cornerBottomRightShape?: all | cornerBottomRightShape,
 
   borderTopStyle?: all | borderTopStyle,
   borderTopWidth?: all | borderTopWidth,

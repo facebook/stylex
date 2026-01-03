@@ -52,6 +52,7 @@ export const LOGICAL_FLOAT_END_VAR = '--stylex-logical-end';
  * - [x] border-inline-start
  * - [ ] border-left
  * - [x] border-radius
+ * - [ ] corner-shape
  * - [ ] border-right
  * - [x] border-style
  * - [ ] border-top

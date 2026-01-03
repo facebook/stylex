@@ -24,6 +24,7 @@ import type { TStyleValue } from '../common-types';
  * - [x] border-inline-start
  * - [x] border-left
  * - [x] border-radius
+ * - [x] corner-shape
  * - [x] border-right
  * - [x] border-style
  * - [x] border-top
@@ -332,6 +333,58 @@ const shorthands: $ReadOnly<{ [key: string]: (TStyleValue) => TReturn }> = {
     ['borderBottomRightRadius', value],
     ['borderEndStartRadius', null],
     ['borderEndEndRadius', null],
+  ],
+
+  cornerShape: (value: TStyleValue): TReturn => [
+    ['cornerShape', value],
+    ['cornerStartStartShape', null],
+    ['cornerStartEndShape', null],
+    ['cornerEndStartShape', null],
+    ['cornerEndEndShape', null],
+    ['cornerTopLeftShape', null],
+    ['cornerTopRightShape', null],
+    ['cornerBottomLeftShape', null],
+    ['cornerBottomRightShape', null],
+  ],
+  cornerStartStartShape: (value: TStyleValue): TReturn => [
+    ['cornerStartStartShape', value],
+    ['cornerTopLeftShape', null],
+    ['cornerTopRightShape', null],
+  ],
+  cornerStartEndShape: (value: TStyleValue): TReturn => [
+    ['cornerStartEndShape', value],
+    ['cornerTopLeftShape', null],
+    ['cornerTopRightShape', null],
+  ],
+  cornerEndStartShape: (value: TStyleValue): TReturn => [
+    ['cornerEndStartShape', value],
+    ['cornerBottomLeftShape', null],
+    ['cornerBottomRightShape', null],
+  ],
+  cornerEndEndShape: (value: TStyleValue): TReturn => [
+    ['cornerEndEndShape', value],
+    ['cornerBottomLeftShape', null],
+    ['cornerBottomRightShape', null],
+  ],
+  cornerTopLeftShape: (value: TStyleValue): TReturn => [
+    ['cornerTopLeftShape', value],
+    ['cornerStartStartShape', null],
+    ['cornerStartEndShape', null],
+  ],
+  cornerTopRightShape: (value: TStyleValue): TReturn => [
+    ['cornerTopRightShape', value],
+    ['cornerStartStartShape', null],
+    ['cornerStartEndShape', null],
+  ],
+  cornerBottomLeftShape: (value: TStyleValue): TReturn => [
+    ['cornerBottomLeftShape', value],
+    ['cornerEndStartShape', null],
+    ['cornerEndEndShape', null],
+  ],
+  cornerBottomRightShape: (value: TStyleValue): TReturn => [
+    ['cornerBottomRightShape', value],
+    ['cornerEndStartShape', null],
+    ['cornerEndEndShape', null],
   ],
 
   borderImage: (value: TStyleValue): TReturn => [
