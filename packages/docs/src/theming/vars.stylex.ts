@@ -114,7 +114,7 @@ export const vars = stylex.defineVars({
   '--default-font-family': 'var(--font-sans)',
   '--default-mono-font-family': 'var(--font-mono)',
 
-  '--color-code-green': 'light-dark(hsl(146, 55%, 45%), hsl(146, 52%, 68%))',
+  '--color-code-green': 'light-dark(hsl(146, 55%, 31%), hsl(146, 52%, 68%))',
 
   '--color-fd-background': lightDark('hsl(0, 0%, 100%)', 'hsl(0, 0%, 7%)'),
   '--color-fd-foreground': lightDark('hsl(0, 0%, 3.9%)', 'hsl(0, 0%, 92%)'),
@@ -138,7 +138,7 @@ export const vars = stylex.defineVars({
     'hsla(0, 0%, 30%, 20%)',
   ),
 
-  '--color-fd-primary': lightDark('hsl(266, 78%, 69%)', 'hsl(270, 72%, 77%)'),
+  '--color-fd-primary': lightDark('hsl(266, 78%, 61.8%)', 'hsl(270, 72%, 77%)'),
   '--color-fd-primary-foreground': lightDark(
     'hsl(234, 16%, 35%)',
     'hsl(240, 23%, 9%)',
@@ -150,7 +150,7 @@ export const vars = stylex.defineVars({
   ),
   '--color-fd-accent': lightDark('hsl(222, 16%, 83%)', 'hsl(222, 16%, 23%)'),
   '--color-fd-accent-foreground': lightDark(
-    'hsl(222, 87%, 60%)',
+    'hsl(222, 87%, 58%)',
     'hsl(222, 87%, 78%)',
   ),
   '--color-fd-ring': lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
