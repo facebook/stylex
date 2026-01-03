@@ -13,6 +13,7 @@ export const defaultOptions: StyleXOptions = {
   classNamePrefix: 'x',
   dev: false,
   debug: false,
+  disallowedPropertiesValidation: 'throw',
   enableDebugClassNames: false,
   enableDevClassNames: false,
   enableDebugDataProp: true,

@@ -93,6 +93,7 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf4(
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  disallowedPropertiesValidation?: 'throw' | 'warn' | 'silent',
   enableDebugClassNames?: boolean,
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
@@ -339,6 +340,15 @@ export default class StateManager {
         'options.styleResolution',
       );
 
+    const disallowedPropertiesValidation: StyleXStateOptions['disallowedPropertiesValidation'] =
+      z.logAndDefault(
+        z.unionOf3(z.literal('throw'), z.literal('warn'), z.literal('silent')),
+        options.disallowedPropertiesValidation ??
+          defaultOptions.disallowedPropertiesValidation,
+        'throw',
+        'options.disallowedPropertiesValidation',
+      );
+
     const unstable_moduleResolution: StyleXStateOptions['unstable_moduleResolution'] =
       z.logAndDefault(
         z.unionOf(z.nullish(), CheckModuleResolution),
@@ -390,6 +400,7 @@ export default class StateManager {
       debug,
       definedStylexCSSVariables: {},
       dev,
+      disallowedPropertiesValidation,
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,

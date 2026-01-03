@@ -598,4 +598,46 @@ describe('StateManager config parsing', () => {
       expect(warnings).toEqual([]);
     });
   });
+
+  describe('"disallowedPropertiesValidation" option', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({
+        disallowedPropertiesValidation: 'something-else',
+      });
+      expect(stateManager.options.disallowedPropertiesValidation).toBe('throw');
+      expect(warnings).toMatchInlineSnapshot(`
+        [
+          [
+            "[@stylexjs/babel-plugin]",
+            "Expected (options.disallowedPropertiesValidation) to be one of
+        	- the literal "throw"
+        	- the literal "warn"
+        	- the literal "silent"
+        But got: "something-else"",
+          ],
+        ]
+      `);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.disallowedPropertiesValidation).toBe('throw');
+      expect(warnings).toEqual([]);
+    });
+
+    test('valid values', () => {
+      let stateManager = makeState({ disallowedPropertiesValidation: 'throw' });
+      expect(stateManager.options.disallowedPropertiesValidation).toBe('throw');
+
+      stateManager = makeState({ disallowedPropertiesValidation: 'warn' });
+      expect(stateManager.options.disallowedPropertiesValidation).toBe('warn');
+
+      stateManager = makeState({ disallowedPropertiesValidation: 'silent' });
+      expect(stateManager.options.disallowedPropertiesValidation).toBe(
+        'silent',
+      );
+
+      expect(warnings).toEqual([]);
+    });
+  });
 });

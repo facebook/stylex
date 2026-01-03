@@ -846,4 +846,118 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
   });
+
+  describe('[validation] disallowedPropertiesValidation config', () => {
+    test('throws error by default for disallowed properties', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `);
+      }).toThrow('border is not supported');
+    });
+
+    test('throws error when disallowedPropertiesValidation is "throw"', () => {
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `,
+          { disallowedPropertiesValidation: 'throw' },
+        );
+      }).toThrow('border is not supported');
+    });
+
+    test('does not throw when disallowedPropertiesValidation is "warn"', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `,
+          { disallowedPropertiesValidation: 'warn' },
+        );
+      }).not.toThrow();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('border is not supported'),
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test('does not throw when disallowedPropertiesValidation is "silent"', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `,
+          { disallowedPropertiesValidation: 'silent' },
+        );
+      }).not.toThrow();
+
+      // Should not log any warning in silent mode
+      expect(consoleSpy).not.toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
+
+    test('works with background property', () => {
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              background: 'red',
+            },
+          });
+        `,
+          { disallowedPropertiesValidation: 'silent' },
+        );
+      }).not.toThrow();
+    });
+
+    test('works with animation property', () => {
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              animation: 'spin 1s',
+            },
+          });
+        `,
+          { disallowedPropertiesValidation: 'silent' },
+        );
+      }).not.toThrow();
+    });
+  });
 });

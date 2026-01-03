@@ -41,6 +41,7 @@ export type StyleXOptions = Readonly<{
   debug: null | undefined | boolean;
   definedStylexCSSVariables?: { [key: string]: unknown };
   dev: boolean;
+  disallowedPropertiesValidation?: 'throw' | 'warn' | 'silent';
   enableDebugClassNames?: null | undefined | boolean;
   enableDebugDataProp?: null | undefined | boolean;
   enableDevClassNames?: null | undefined | boolean;
