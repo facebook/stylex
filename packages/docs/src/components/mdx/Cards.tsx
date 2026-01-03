@@ -92,8 +92,6 @@ const styles = stylex.create({
     containerType: 'inline-size',
   },
   card: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    borderShape: 'squircle',
     display: 'block',
     padding: 16,
     color: vars['--color-fd-card-foreground'],
@@ -103,6 +101,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 12,
+    cornerShape: 'squircle',
     transitionTimingFunction: EASING,
     transitionDuration: DURATION,
     transitionProperty: 'background-color, border-color',
