@@ -13,7 +13,7 @@ import Logo from "./Logo";
 import { colors } from "./tokens.stylex";
 
 /**
- * Welcome to the StyleX Playground!
+ * Welcome to the StyleX playground!
  *
  * Edit the code and see styles update instantly.
  * Experiment with tokens and themes using tokens.stylex.ts.
@@ -80,6 +80,7 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: colors.cardBorder,
+    borderRadius: 10,
     boxShadow: "0 16px 40px rgb(0 0 0 / 10%), 0 2px 10px rgb(0 0 0 / 6%)",
   },
 
