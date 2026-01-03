@@ -806,8 +806,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 0,
     borderRadius: 0,
-    boxShadow:
-      '0 0 0 1px light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1))',
+    boxShadow: `0 0 0 1px ${playgroundVars['--pg-panel-shadow']}`,
   },
   panelClosed: {
     flexGrow: 0,
@@ -845,8 +844,8 @@ const styles = stylex.create({
     borderBottomStyle: 'solid',
     borderBottomWidth: 1,
     boxShadow: `
-      inset 0 0 8px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 10%, transparent),
-      inset 0 1px 4px color-mix(in srgb, ${playgroundVars['--pg-panel-header-shadow']} 6%, transparent)
+      inset 0 0 8px color-mix(in srgb, ${playgroundVars['--pg-header-shadow']} 10%, transparent),
+      inset 0 1px 4px color-mix(in srgb, ${playgroundVars['--pg-header-shadow']} 6%, transparent)
     `,
   },
   panelHeaderButtonAlwaysOpen: {
@@ -895,7 +894,7 @@ const styles = stylex.create({
     },
   },
   previewPanel: {
-    backgroundColor: `light-dark(${vars['--color-fd-card']}, #222)`,
+    backgroundColor: playgroundVars['--pg-preview'],
   },
   hidden: {
     gridTemplateRows: '0fr',
@@ -907,7 +906,7 @@ const styles = stylex.create({
     height: '100%',
     color: 'var(--fg1)',
     outline: 'none',
-    backgroundColor: 'light-dark(#ffffff, #222)',
+    backgroundColor: playgroundVars['--pg-preview'],
   },
   error: {
     position: 'absolute',
@@ -925,7 +924,7 @@ const styles = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    boxShadow: playgroundVars['--pg-output-shadow'],
+    boxShadow: `inset 0 0 12px color-mix(in srgb, ${vars['--color-fd-primary']} 25%, transparent)`,
   },
   outputEditor: {
     flexGrow: 1,
