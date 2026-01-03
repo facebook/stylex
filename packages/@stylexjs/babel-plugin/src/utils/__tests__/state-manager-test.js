@@ -599,17 +599,17 @@ describe('StateManager config parsing', () => {
     });
   });
 
-  describe('"disallowedPropertiesValidation" option', () => {
+  describe('"propertyValidationMode" option', () => {
     test('logs errors if invalid', () => {
       const stateManager = makeState({
-        disallowedPropertiesValidation: 'something-else',
+        propertyValidationMode: 'something-else',
       });
-      expect(stateManager.options.disallowedPropertiesValidation).toBe('throw');
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
       expect(warnings).toMatchInlineSnapshot(`
         [
           [
             "[@stylexjs/babel-plugin]",
-            "Expected (options.disallowedPropertiesValidation) to be one of
+            "Expected (options.propertyValidationMode) to be one of
         	- the literal "throw"
         	- the literal "warn"
         	- the literal "silent"
@@ -621,21 +621,19 @@ describe('StateManager config parsing', () => {
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.disallowedPropertiesValidation).toBe('throw');
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
       expect(warnings).toEqual([]);
     });
 
     test('valid values', () => {
-      let stateManager = makeState({ disallowedPropertiesValidation: 'throw' });
-      expect(stateManager.options.disallowedPropertiesValidation).toBe('throw');
+      let stateManager = makeState({ propertyValidationMode: 'throw' });
+      expect(stateManager.options.propertyValidationMode).toBe('throw');
 
-      stateManager = makeState({ disallowedPropertiesValidation: 'warn' });
-      expect(stateManager.options.disallowedPropertiesValidation).toBe('warn');
+      stateManager = makeState({ propertyValidationMode: 'warn' });
+      expect(stateManager.options.propertyValidationMode).toBe('warn');
 
-      stateManager = makeState({ disallowedPropertiesValidation: 'silent' });
-      expect(stateManager.options.disallowedPropertiesValidation).toBe(
-        'silent',
-      );
+      stateManager = makeState({ propertyValidationMode: 'silent' });
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
 
       expect(warnings).toEqual([]);
     });

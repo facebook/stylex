@@ -31,7 +31,7 @@ export default function flatMapExpandedShorthands(
   objEntry: $ReadOnly<[string, TStyleValue]>,
   options: $ReadOnly<{
     styleResolution: StyleXOptions['styleResolution'],
-    disallowedPropertiesValidation?: StyleXOptions['disallowedPropertiesValidation'],
+    propertyValidationMode?: StyleXOptions['propertyValidationMode'],
     ...
   }>,
 ): $ReadOnlyArray<[string, TStyleValue]> {
@@ -54,13 +54,11 @@ export default function flatMapExpandedShorthands(
     try {
       return expansion(value);
     } catch (error) {
-      const validationMode = options.disallowedPropertiesValidation ?? 'throw';
+      const validationMode = options.propertyValidationMode ?? 'silent';
       if (validationMode === 'throw') {
         throw error;
       } else if (validationMode === 'warn') {
-        console.warn(
-          `[stylex] ${error.message} Property "${key}" will be skipped.`,
-        );
+        console.warn(`[stylex] ${error.message}`);
         return [];
       } else {
         // silent mode - skip the property without any output

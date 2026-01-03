@@ -847,8 +847,12 @@ describe('@stylexjs/babel-plugin', () => {
     });
   });
 
-  describe('[validation] disallowedPropertiesValidation config', () => {
-    test('throws error by default for disallowed properties', () => {
+  describe('[validation] propertyValidationMode config', () => {
+    test('does not throw by default for disallowed properties (silent mode)', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
       expect(() => {
         transform(`
           import * as stylex from '@stylexjs/stylex';
@@ -858,10 +862,15 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `);
-      }).toThrow('border is not supported');
+      }).not.toThrow();
+
+      // Should not log any warning in silent mode (default)
+      expect(consoleSpy).not.toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
     });
 
-    test('throws error when disallowedPropertiesValidation is "throw"', () => {
+    test('throws error when propertyValidationMode is "throw"', () => {
       expect(() => {
         transform(
           `
@@ -872,12 +881,12 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { disallowedPropertiesValidation: 'throw' },
+          { propertyValidationMode: 'throw' },
         );
       }).toThrow('border is not supported');
     });
 
-    test('does not throw when disallowedPropertiesValidation is "warn"', () => {
+    test('does not throw when propertyValidationMode is "warn"', () => {
       const consoleSpy = jest
         .spyOn(console, 'warn')
         .mockImplementation(() => {});
@@ -892,7 +901,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { disallowedPropertiesValidation: 'warn' },
+          { propertyValidationMode: 'warn' },
         );
       }).not.toThrow();
 
@@ -903,7 +912,7 @@ describe('@stylexjs/babel-plugin', () => {
       consoleSpy.mockRestore();
     });
 
-    test('does not throw when disallowedPropertiesValidation is "silent"', () => {
+    test('does not throw when propertyValidationMode is "silent"', () => {
       const consoleSpy = jest
         .spyOn(console, 'warn')
         .mockImplementation(() => {});
@@ -918,7 +927,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { disallowedPropertiesValidation: 'silent' },
+          { propertyValidationMode: 'silent' },
         );
       }).not.toThrow();
 
@@ -939,7 +948,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { disallowedPropertiesValidation: 'silent' },
+          { propertyValidationMode: 'silent' },
         );
       }).not.toThrow();
     });
@@ -955,7 +964,7 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `,
-          { disallowedPropertiesValidation: 'silent' },
+          { propertyValidationMode: 'silent' },
         );
       }).not.toThrow();
     });
