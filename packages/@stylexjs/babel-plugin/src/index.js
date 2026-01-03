@@ -468,12 +468,37 @@ function processStylexRules(
         return classname1.localeCompare(classname2);
       } else {
         if (rule1.startsWith('@') && !rule2.startsWith('@')) {
-          const query1 = rule1.slice(0, rule1.indexOf('{'));
-          const query2 = rule2.slice(0, rule2.indexOf('{'));
+          const query1 = rule1.slice(0, rule1.indexOf('{')).trim();
+          const query2 = rule2.slice(0, rule2.indexOf('{')).trim();
+
+          // Handle media query sorting
+          const maxWidthRegex = /max-width:\s*(\d+)px/;
+          const minWidthRegex = /min-width:\s*(\d+)px/;
+
+          const maxWidth1 = query1.match(maxWidthRegex);
+          const maxWidth2 = query2.match(maxWidthRegex);
+          const minWidth1 = query1.match(minWidthRegex);
+          const minWidth2 = query2.match(minWidthRegex);
+
+          if (maxWidth1 && maxWidth2) {
+            return parseInt(maxWidth1[1], 10) - parseInt(maxWidth2[1], 10);
+          }
+          if (minWidth1 && minWidth2) {
+            return parseInt(minWidth2[1], 10) - parseInt(minWidth1[1], 10);
+          }
+          if (maxWidth1 && minWidth2) {
+            return -1; // max-width should come before min-width
+          }
+          if (minWidth1 && maxWidth2) {
+            return 1; // min-width should come after max-width
+          }
+
+          // Fallback to alphanumeric comparison if no media query match
           if (query1 !== query2) {
             return query1.localeCompare(query2);
           }
         }
+
         const property1 = rule1.slice(rule1.lastIndexOf('{'));
         const property2 = rule2.slice(rule2.lastIndexOf('{'));
         return property1.localeCompare(property2);
