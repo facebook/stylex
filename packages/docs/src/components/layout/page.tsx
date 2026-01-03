@@ -242,8 +242,6 @@ const footerStyles = stylex.create({
     justifyContent: 'space-between',
   },
   link: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     display: 'flex',
     flexGrow: 1,
     flexBasis: '45%',
@@ -260,6 +258,7 @@ const footerStyles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 20,
+    cornerShape: 'squircle',
   },
   prev: {
     justifyContent: 'flex-start',

@@ -542,6 +542,7 @@ const borderLeftColor: RuleCheck = color;
 const borderLeftStyle: RuleCheck = brStyle;
 const borderLeftWidth: RuleCheck = borderWidth;
 const borderSpacing: RuleCheck = isStringOrNumber;
+const cornerShape: RuleCheck = isString;
 const borderTopStyle: RuleCheck = brStyle;
 const borderTopWidth: RuleCheck = borderWidth;
 const boxDecorationBreak: RuleCheck = makeUnionRule(
@@ -1711,6 +1712,16 @@ const CSSProperties = {
   borderTopRightRadius: lengthPercentage,
   borderBottomLeftRadius: lengthPercentage,
   borderBottomRightRadius: lengthPercentage,
+
+  cornerShape: cornerShape,
+  cornerStartStartShape: cornerShape,
+  cornerStartEndShape: cornerShape,
+  cornerEndStartShape: cornerShape,
+  cornerEndEndShape: cornerShape,
+  cornerTopLeftShape: cornerShape,
+  cornerTopRightShape: cornerShape,
+  cornerBottomLeftShape: cornerShape,
+  cornerBottomRightShape: cornerShape,
 
   boxAlign: boxAlign,
   boxDecorationBreak: boxDecorationBreak,

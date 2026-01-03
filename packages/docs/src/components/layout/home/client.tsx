@@ -93,8 +93,6 @@ const navbarStyles = stylex.create({
     padding: 8,
   },
   backdrop: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     position: 'absolute',
     inset: 8,
     overflow: 'hidden',
@@ -103,6 +101,7 @@ const navbarStyles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 20,
+    cornerShape: 'squircle',
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
   blur: {
@@ -133,8 +132,6 @@ const navbarStyles = stylex.create({
     bottom: -8,
   },
   overlayBlur: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     position: 'absolute',
     inset: 9,
     zIndex: 10,
@@ -142,6 +139,7 @@ const navbarStyles = stylex.create({
     pointerEvents: 'none',
     backgroundColor: 'transparent',
     borderRadius: 19,
+    cornerShape: 'squircle',
     backdropFilter: 'blur(20px) saturate(1000%)',
     maskImage:
       'linear-gradient(to bottom, white, transparent 16%, transparent 84%, white)',
@@ -265,8 +263,6 @@ const navItemVariants = stylex.create({
     ['--svg-size' as any]: '4px',
   },
   default: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     display: 'inline-flex',
     gap: 1 * 4,
     alignItems: 'center',
@@ -277,6 +273,7 @@ const navItemVariants = stylex.create({
       ':hover': vars['--color-fd-primary'],
     },
     borderRadius: 8,
+    cornerShape: 'squircle',
   },
   button: { gap: 1.5 * 4 },
 });

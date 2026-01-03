@@ -48,6 +48,16 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({
         main: {
+          cornerShape: 'squircle',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
           margin: 10,
         },
       })
@@ -351,6 +361,16 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       })
     `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderRightWidth: '4px',
+          borderRightStyle: 'solid',
+          borderRightColor: 'var(--fds-gray-10)'
+        },
+      })
+    `,
       errors: [
         {
           message:
@@ -410,6 +430,33 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "borderRadius: 10px 15px 20px 25px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            cornerShape: 'scoop notch',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            cornerStartStartShape: 'scoop',
+            cornerStartEndShape: 'notch',
+            cornerEndStartShape: 'scoop',
+            cornerEndEndShape: 'notch',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "cornerShape: scoop notch" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
@@ -504,10 +551,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           import * as stylex from '@stylexjs/stylex';
           const styles = stylex.create({
             main: {
-              borderTopWidth: 'var(--vertical-border-width, 10)',
-              borderRightWidth: 'var(--horizontal-border-width, 15)',
-              borderBottomWidth: 'var(--vertical-border-width, 10)',
-              borderLeftWidth: 'var(--horizontal-border-width, 15)',
+              borderBlockWidth: 'var(--vertical-border-width, 10)',
+              borderInlineWidth: 'var(--horizontal-border-width, 15)',
             },
           })
         `,
@@ -520,14 +565,26 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
     {
       code: `
-      import * as stylex from '@stylexjs/stylex';
-      const styles = stylex.create({
-        main: {
-          borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
-          borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
-          background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
-        },
-      })
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderWidth: 'calc(100% - 20px) calc(90% - 20px)',
+            borderColor: 'var(--test-color, #ccc) linear-gradient(to right, #ff7e5f, #feb47b)',
+            background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockWidth: 'calc(100% - 20px)',
+            borderInlineWidth: 'calc(90% - 20px)',
+            borderBlockColor: 'var(--test-color, #ccc)',
+            borderInlineColor: 'linear-gradient(to right, #ff7e5f, #feb47b)',
+            background: 'no-repeat center/cover, linear-gradient(to right, #ff7e5f, #feb47b)'
+          },
+        });
       `,
       errors: [
         {
@@ -566,17 +623,17 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           const styles = stylex.create({
             main: {
               borderTopWidth: '1px',
-              borderRightWidth: '2px',
+              borderInlineEndWidth: '2px',
               borderBottomWidth: '3px',
-              borderLeftWidth: '4px',
+              borderInlineStartWidth: '4px',
               borderTopStyle: 'solid',
-              borderRightStyle: 'dashed',
+              borderInlineEndStyle: 'dashed',
               borderBottomStyle: 'dotted',
-              borderLeftStyle: 'double',
+              borderInlineStartStyle: 'double',
               borderTopColor: 'red',
-              borderRightColor: 'green',
+              borderInlineEndColor: 'green',
               borderBottomColor: 'blue',
-              borderLeftColor: 'yellow',
+              borderInlineStartColor: 'yellow',
               borderTopWidth: '2px',
               borderTopStyle: 'solid',
               borderTopColor: 'red',
@@ -962,17 +1019,17 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       const styles = stylex.create({
         main: {
           borderTopWidth: '4px',
-          borderRightWidth: '5px',
+          borderInlineEndWidth: '5px',
           borderBottomWidth: '6px',
-          borderLeftWidth: '7px',
+          borderInlineStartWidth: '7px',
           borderTopStyle: 'solid',
-          borderRightStyle: 'dashed',
+          borderInlineEndStyle: 'dashed',
           borderBottomStyle: 'dotted',
-          borderLeftStyle: 'double',
+          borderInlineStartStyle: 'double',
           borderTopColor: 'var(--fds-gray-10)',
-          borderRightColor: 'var(--fds-gray-20)',
+          borderInlineEndColor: 'var(--fds-gray-20)',
           borderBottomColor: 'var(--fds-gray-30)',
-          borderLeftColor: 'var(--fds-gray-40)',
+          borderInlineStartColor: 'var(--fds-gray-40)',
         },
       })
       `,
@@ -1155,6 +1212,15 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           },
         });
       `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockColor: 'hsl(220 3% 15%)',
+            borderInlineColor: 'hsl(240 3% 20%)',
+          },
+        });
+      `,
       errors: [
         {
           message:
@@ -1168,6 +1234,15 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             borderColor: 'oklch(0.7 0.15 180) rgb(255 0 0)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockColor: 'oklch(0.7 0.15 180)',
+            borderInlineColor: 'rgb(255 0 0)',
           },
         });
       `,
