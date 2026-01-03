@@ -152,7 +152,7 @@ export const vars = stylex.defineVars({
   ),
   '--color-fd-accent': lightDark('hsl(223, 16%, 83%)', 'hsl(237, 16%, 23%)'),
   '--color-fd-accent-foreground': lightDark(
-    ' hsl(291, 66.30%, 67.50%)',
+    ' hsl(291, 58.30%, 62.40%)',
     'hsl(226, 66.30%, 67.50%)',
   ),
   '--color-fd-ring': lightDark('hsl(267, 84%, 81%)', 'hsl(267, 84%, 81%)'),
@@ -205,10 +205,6 @@ export const playgroundVars = stylex.defineVars({
   '--pg-preview': lightDark('hsl(0, 0%, 94.7%)', '#222'),
   '--pg-panel-surface': lightDark('#ffffff', '#0b0b0f'),
   '--pg-header-surface': lightDark('#ffffff', '#1a1a1a'),
-  '--pg-header-shadow-color': lightDark(
-    `color-mix(in srgb, ${vars['--color-fd-primary']} 30%, transparent)`,
-    'transparent',
-  ),
   '--pg-output-shadow': lightDark(
     `inset 0 0 12px color-mix(in srgb, ${vars['--color-fd-primary']} 25%, transparent)`,
     'none',

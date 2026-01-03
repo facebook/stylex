@@ -197,7 +197,7 @@ export const colors = stylex.defineConsts({
   list: "light-dark(rgb(0 0 0 / 76%), rgb(255 255 255 / 82%))",
   buttonText: "light-dark(#fff, #000)",
   buttonPrimary: "light-dark(hsl(248, 58.40%, 61.40%), hsl(267, 84%, 81%))",
-  buttonSecondary: "light-dark(hsl(291, 66.30%, 67.50%), hsl(226, 70.70%, 70.60%))",
+  buttonSecondary: "light-dark(hsl(291, 58.30%, 62.40%), hsl(226, 70.70%, 70.60%))",
 });
 `,
   'Logo.tsx': `import * as React from "react";
