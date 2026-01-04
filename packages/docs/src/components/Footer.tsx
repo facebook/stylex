@@ -63,9 +63,15 @@ const footerLinks = {
   ],
 };
 
-export default function Footer() {
+export default function Footer({
+  noBorderTop = false,
+}: {
+  noBorderTop?: boolean;
+}) {
   return (
-    <footer {...stylex.props(styles.footer)}>
+    <footer
+      {...stylex.props(styles.footer, noBorderTop && styles.footerNoBorder)}
+    >
       <div {...stylex.props(styles.container)}>
         <div {...stylex.props(styles.grid)}>
           <div>
@@ -205,6 +211,11 @@ const styles = stylex.create({
     borderTopWidth: 1,
     transitionDuration: '300ms',
     transitionProperty: 'background-color, border-color',
+  },
+  footerNoBorder: {
+    borderTopColor: null,
+    borderTopStyle: null,
+    borderTopWidth: null,
   },
   container: {
     display: 'flex',

@@ -11,3 +11,5 @@ export const calloutMarker = stylex.defaultMarker();
 export const headingMarker = stylex.defineMarker();
 
 export const preMarker = stylex.defineMarker();
+
+export const accordionContainerMarker = stylex.defineMarker();
