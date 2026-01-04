@@ -22,8 +22,18 @@ export function ConfirmDialog({
   onCancel: () => void;
   ref: React.RefObject<HTMLDialogElement | null>;
 }) {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
   return (
-    <dialog ref={ref} {...stylex.props(styles.dialog)}>
+    <dialog
+      onClick={handleBackdropClick}
+      ref={ref}
+      {...stylex.props(styles.dialog)}
+    >
       <h3 {...stylex.props(styles.heading)}>{title}</h3>
       <p {...stylex.props(styles.description)}>{description}</p>
       <div {...stylex.props(styles.actions)}>
@@ -53,6 +63,7 @@ const styles = stylex.create({
     width: 480,
     maxWidth: '100%',
     padding: '20px',
+    fontStyle: 'normal',
     color: vars['--color-fd-muted-foreground'],
     textTransform: 'none',
     backgroundColor: vars['--color-fd-card'],
@@ -70,12 +81,14 @@ const styles = stylex.create({
     marginTop: 0,
     marginBottom: 8,
     fontSize: '1rem',
+    fontStyle: 'normal',
     color: vars['--color-fd-foreground'],
   },
   description: {
     marginTop: 0,
     marginBottom: 12,
     fontSize: 13,
+    fontStyle: 'normal',
     lineHeight: 1.5,
   },
   actions: {
@@ -86,9 +99,11 @@ const styles = stylex.create({
   button: {
     paddingBlock: 8,
     paddingInline: 12,
+    fontStyle: 'normal',
     color: vars['--color-fd-foreground'],
     cursor: 'pointer',
     backgroundColor: vars['--color-fd-background'],
+    borderStyle: 'none',
     borderRadius: 6,
     boxShadow: `0 0 0 1px ${vars['--color-fd-border']}`,
   },

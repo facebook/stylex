@@ -134,8 +134,8 @@ export const vars = stylex.defineVars({
     'hsl(0, 0%, 98%)',
   ),
   '--color-fd-border': lightDark(
-    'hsla(0, 0%, 85%, 50%)',
-    'hsla(0, 0%, 30%, 20%)',
+    'hsla(0, 0%, 80%, 55%)',
+    'hsla(0, 0%, 30%, 25%)',
   ),
 
   '--color-fd-primary': lightDark('hsl(266, 58%, 61.8%)', 'hsl(270, 72%, 77%)'),
@@ -196,7 +196,7 @@ export const EASINGS = stylex.defineConsts({
 });
 
 export const playgroundVars = stylex.defineVars({
-  '--pg-border': lightDark('hsla(0, 0%, 80%, 30%)', 'hsla(0, 0%, 40%, 20%)'),
+  '--pg-border': lightDark('hsla(0, 0%, 72%, 45%)', 'hsla(0, 0%, 40%, 20%)'),
   '--pg-panel-surface': lightDark('#ffffff', '#0b0b0f'),
   '--pg-panel-shadow': lightDark(
     'rgba(0, 0, 0, 0.1)',
@@ -204,7 +204,7 @@ export const playgroundVars = stylex.defineVars({
   ),
   '--pg-header-surface': lightDark('#ffffff', '#1a1a1a'),
   '--pg-header-shadow': lightDark('hsl(248, 66%, 62%)', 'transparent'),
-  '--pg-tabs-border': lightDark('#e5e5e5', 'hsla(0, 0%, 30%, 20%)'),
+  '--pg-tabs-border': lightDark('#d4d4d8', 'hsla(0, 0%, 30%, 20%)'),
   '--pg-preview': lightDark('hsl(0, 0%, 97%)', '#222'),
 });
 
