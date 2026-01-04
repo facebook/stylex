@@ -95,14 +95,17 @@ const DURATION = '0.3s';
 const EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const styles = stylex.create({
   group: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    cornerShape: 'squircle',
     overflow: 'hidden',
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 16,
-    cornerShape: 'squircle',
   },
   container: {
+    // eslint-disable-next-line @stylexjs/valid-styles
+    cornerShape: 'squircle',
     interpolateSize: 'allow-keywords',
     paddingBlock: 8,
     paddingInline: 16,
@@ -111,7 +114,6 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: {
       default: 1,
-      // eslint-disable-next-line @stylexjs/valid-styles
       [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: 0,
     },
     borderTopWidth: {
@@ -126,7 +128,6 @@ const styles = stylex.create({
       default: 8,
       [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: 0,
     },
-    cornerShape: 'squircle',
     // eslint-disable-next-line @stylexjs/valid-styles
     '::details-content': {
       display: 'block',
