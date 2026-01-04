@@ -29,19 +29,15 @@ export default function App() {
           <h1 {...stylex.props(styles.h1)}>playground</h1>
         </div>
 
-        <p {...stylex.props(styles.contentBlock, styles.p)}>
-          Welcome to the StyleX playground!
-        </p>
-
         <ul {...stylex.props(styles.contentBlock, styles.list)}>
           <li {...stylex.props(styles.li)}>
             Edit the root component in <code>App.tsx</code>
           </li>
           <li {...stylex.props(styles.li)}>
-            Create new files to define additional components.
+            Create new files for additional components.
           </li>
           <li {...stylex.props(styles.li)}>
-            Define variables and constants in <code>.stylex.js</code> files.
+            Define variables in <code>.stylex.js</code> files.
           </li>
           <li {...stylex.props(styles.li)}>
             Copy the URL to share your designs.
@@ -95,8 +91,8 @@ const styles = stylex.create({
   },
 
   card: {
-    maxWidth: 480,
-    padding: 24,
+    maxWidth: 440,
+    padding: 32,
     display: "flex",
     flexDirection: "column",
     gap: 24,
@@ -104,20 +100,13 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: colors.cardBorder,
-    borderRadius: 32,
+    borderRadius: 48,
     boxShadow: "0 16px 40px rgb(0 0 0 / 2%), 0 2px 10px rgb(0 0 0 / 4%)",
   },
 
   contentBlock: {
     width: "100%",
-    textAlign: "left",
-    lineHeight: 1.5,
-    color: colors.subtitle,
     margin: 0,
-  },
-  p: {
-    marginTop: "-1em",
-    textAlign: "center",
   },
 
   logo: {
@@ -164,14 +153,14 @@ const styles = stylex.create({
     borderBottomLeftRadius: { default: 4, ":last-child": 16 },
     borderBottomRightRadius: { default: 4, ":last-child": 16 },
     "::before": {
-      content: "\\\\2713",
+      content: "\\2713",
       height: "1.6em",
       width: "1.6em",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       borderRadius: "0.8em",
-      backgroundColor: \`color-mix(in srgb, $\{colors.buttonSecondary} 25%, transparent)\`,
+      backgroundColor: \`color-mix(in srgb, $\{colors.buttonSecondary} 40%, transparent)\`,
       position: "absolute",
       top: 15,
       left: 14,
@@ -179,7 +168,7 @@ const styles = stylex.create({
   },
 
   buttonRow: {
-    marginTop: 12,
+    marginTop: 10,
     display: "flex",
     gap: 12,
     justifyContent: "flex-end",
@@ -201,8 +190,8 @@ const styles = stylex.create({
     color: colors.buttonText,
     backgroundColor: {
       default: colors.buttonPrimary,
-      ":hover": \`color-mix(in srgb, \${colors.buttonPrimary} 88%, white 12%)\`,
-      ":focus-visible": \`color-mix(in srgb, \${colors.buttonPrimary} 88%, white 12%)\`,
+      ":hover": \`color-mix(in srgb, $\{colors.buttonPrimary} 88%, white 12%)\`,
+      ":focus-visible": \`color-mix(in srgb, $\{colors.buttonPrimary} 88%, white 12%)\`,
     },
     transitionProperty: "background-color",
     transitionDuration: "0.15s",
@@ -223,8 +212,8 @@ const styles = stylex.create({
   buttonSecondary: {
     backgroundColor: {
       default: colors.buttonSecondary,
-      ":hover": \`color-mix(in srgb, \${colors.buttonSecondary} 86%, white 14%)\`,
-      ":focus-visible": \`color-mix(in srgb, \${colors.buttonSecondary} 86%, white 14%)\`,
+      ":hover": \`color-mix(in srgb, $\{colors.buttonSecondary} 86%, white 14%)\`,
+      ":focus-visible": \`color-mix(in srgb, $\{colors.buttonSecondary} 86%, white 14%)\`,
     },
   },
 });
@@ -240,8 +229,8 @@ export const colors = stylex.defineConsts({
   subtitle: "light-dark(rgb(0 0 0 / 65%), rgb(255 255 255 / 70%))",
   list: "light-dark(rgb(0 0 0 / 76%), rgb(255 255 255 / 82%))",
   buttonText: "light-dark(#fff, #000)",
-  buttonPrimary: "light-dark(hsl(266, 78%, 61.8%), hsl(270, 72%, 77%))",
-  buttonSecondary: "light-dark(hsl(222, 87%, 58%), hsl(222, 87%, 78%))",
+  buttonPrimary: "light-dark(hsl(266, 58%, 61.8%), hsl(270, 72%, 77%))",
+  buttonSecondary: "light-dark(hsl(222, 67%, 58%), hsl(222, 87%, 78%))",
 });
 `,
   'Logo.tsx': `import * as React from "react";
