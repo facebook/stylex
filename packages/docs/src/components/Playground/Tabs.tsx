@@ -187,40 +187,20 @@ function NewFileIcon() {
 function ShareButton() {
   const [copied, setCopied] = useState(false);
 
-  const copyToClipboard = async (text: string): Promise<boolean> => {
-    // Try the modern clipboard API first
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch {
-        // Fall through to fallback
-      }
-    }
-
-    // Fallback: create a temporary textarea
-    try {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
-      textArea.style.top = '-999999px';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      const success = document.execCommand('copy');
-      document.body.removeChild(textArea);
-      return success;
-    } catch {
-      return false;
-    }
-  };
-
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = window.location.href;
-    const success = await copyToClipboard(url);
-    if (success) {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const textArea = document.createElement('textarea');
+      textArea.value = window.location.href;
+      textArea.style.cssText = 'position:fixed;left:-999999px;top:-999999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -520,7 +500,7 @@ const styles = stylex.create({
     display: 'inline-flex',
     gap: 6,
     alignItems: 'center',
-    paddingBlock: 10,
+    paddingBlock: 14,
     paddingInline: 8,
     fontSize: 13,
     fontStyle: 'inherit',
@@ -570,7 +550,7 @@ const styles = stylex.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 28,
-    height: 36,
+    height: 42,
     padding: 4,
     fontSize: 14,
     lineHeight: 1,
