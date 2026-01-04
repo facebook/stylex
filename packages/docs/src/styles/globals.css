@@ -36,7 +36,6 @@
     touch-action: manipulation;
   }
 
-  /* Enable syntax highlighting */
   pre code .line span {
     color: light-dark(var(--shiki-light), var(--shiki-dark));
   }
