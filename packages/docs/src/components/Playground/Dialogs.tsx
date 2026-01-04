@@ -6,82 +6,8 @@
  */
 
 import * as React from 'react';
-import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { vars } from '@/theming/vars.stylex';
-
-export function FileNameDialog({
-  title,
-  description,
-  defaultValue,
-  onConfirm,
-  onCancel,
-  ref,
-}: {
-  title: string;
-  description: string;
-  defaultValue: string;
-  onConfirm: (_name: string) => void;
-  onCancel: () => void;
-  ref: React.RefObject<HTMLDialogElement | null>;
-}) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const trimmed = inputRef.current?.value?.trim();
-    if (!trimmed) {
-      event.preventDefault();
-      return;
-    }
-    onConfirm?.(trimmed);
-  };
-
-  return (
-    <dialog
-      onClose={() => {
-        if (inputRef.current) {
-          inputRef.current.value = defaultValue;
-        }
-      }}
-      ref={ref}
-      {...stylex.props(styles.dialog)}
-    >
-      <form method="dialog" onSubmit={handleSubmit}>
-        <h3 {...stylex.props(styles.heading)}>{title}</h3>
-        {description ? (
-          <p {...stylex.props(styles.description)}>{description}</p>
-        ) : null}
-
-        <div {...stylex.props(styles.field)}>
-          <label>
-            <span {...stylex.props(styles.srOnly)}>New filename</span>
-            <input
-              autoFocus
-              defaultValue={defaultValue}
-              ref={inputRef}
-              {...stylex.props(styles.input)}
-            />
-          </label>
-        </div>
-        <div {...stylex.props(styles.actions)}>
-          <button
-            {...stylex.props(styles.button)}
-            onClick={onCancel}
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            {...stylex.props(styles.button, styles.primary)}
-            type="submit"
-          >
-            Confirm
-          </button>
-        </div>
-      </form>
-    </dialog>
-  );
-}
 
 export function ConfirmDialog({
   title,
@@ -110,9 +36,7 @@ export function ConfirmDialog({
         </button>
         <button
           {...stylex.props(styles.button, styles.primary)}
-          onClick={() => {
-            onConfirm?.();
-          }}
+          onClick={() => onConfirm?.()}
           type="button"
         >
           Confirm
@@ -154,22 +78,6 @@ const styles = stylex.create({
     fontSize: 13,
     lineHeight: 1.5,
   },
-  field: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-    marginBottom: 16,
-  },
-  input: {
-    width: '100%',
-    padding: 8,
-    color: vars['--color-fd-foreground'],
-    backgroundColor: vars['--color-fd-background'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 6,
-  },
   actions: {
     display: 'flex',
     gap: '8px',
@@ -189,16 +97,5 @@ const styles = stylex.create({
     backgroundColor: vars['--color-fd-primary'],
     borderColor: 'transparent',
     boxShadow: null,
-  },
-  srOnly: {
-    position: 'absolute',
-    width: 1,
-    height: 1,
-    padding: 0,
-    margin: -1,
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    borderWidth: 0,
-    clip: 'rect(0, 0, 0, 0)',
   },
 });

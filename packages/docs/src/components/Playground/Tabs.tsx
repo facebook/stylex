@@ -189,21 +189,20 @@ function ShareButton() {
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    const url = window.location.href;
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(url);
     } catch {
       const textArea = document.createElement('textarea');
-      textArea.value = window.location.href;
-      textArea.style.cssText = 'position:fixed;left:-999999px;top:-999999px';
+      textArea.value = url;
+      textArea.style.cssText = 'position:fixed;left:-9999px';
       document.body.appendChild(textArea);
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -279,21 +278,13 @@ function Tab({
 }) {
   const deleteDialogRef = useRef<HTMLDialogElement | null>(null);
   const renameTimerRef = useRef<number | null>(null);
-  const hasStartedRenaming = useRef(false);
 
-  const [isRenaming, setIsRenaming] = useState(false);
+  const [isRenaming, setIsRenaming] = useState(startInRenameMode);
   const [draftName, setDraftName] = useState(filename);
 
   useEffect(() => {
     setDraftName(filename);
   }, [filename]);
-
-  useEffect(() => {
-    if (startInRenameMode && !hasStartedRenaming.current) {
-      hasStartedRenaming.current = true;
-      setIsRenaming(true);
-    }
-  }, [startInRenameMode]);
 
   const cancelRename = () => {
     setIsRenaming(false);
@@ -357,9 +348,19 @@ function Tab({
       >
         {!hideFileIcon &&
           (filename.includes('.stylex.') ? (
-            <StyleXIcon active={isActive} {...stylex.props(styles.fileIcon)} />
+            <StyleXIcon
+              {...stylex.props(
+                styles.fileIcon,
+                !isActive && styles.fileIconInactive,
+              )}
+            />
           ) : (
-            <ReactIcon active={isActive} {...stylex.props(styles.fileIcon)} />
+            <ReactIcon
+              {...stylex.props(
+                styles.fileIcon,
+                !isActive && styles.fileIconInactive,
+              )}
+            />
           ))}
 
         <span {...stylex.props(styles.filenameBox)}>
@@ -480,9 +481,7 @@ const styles = stylex.create({
 
   tab: {
     display: 'flex',
-    fontSize: 13,
     color: vars['--color-fd-muted-foreground'],
-    textTransform: 'uppercase',
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
@@ -502,7 +501,7 @@ const styles = stylex.create({
     alignItems: 'center',
     paddingBlock: 14,
     paddingInline: 8,
-    fontSize: 13,
+    fontSize: 14,
     fontStyle: 'inherit',
     color: 'inherit',
     whiteSpace: 'nowrap',
@@ -542,7 +541,10 @@ const styles = stylex.create({
   fileIcon: {
     display: 'inline-flex',
     minWidth: 12,
-    color: 'currentColor',
+  },
+
+  fileIconInactive: {
+    opacity: 0.6,
   },
 
   tabIconButton: {
@@ -604,11 +606,8 @@ const styles = stylex.create({
   },
 });
 
-function ReactIcon({
-  active,
-  ...props
-}: SVGProps<SVGSVGElement> & { active?: boolean }) {
-  const color = active ? 'light-dark(#0891b2, #61DAFB)' : 'currentColor';
+function ReactIcon(props: SVGProps<SVGSVGElement>) {
+  const color = 'light-dark(#0891b2, #61DAFB)';
   return (
     <svg height="14" viewBox="-11.5 -10.232 23 20.463" width="14" {...props}>
       <circle cx="0" cy="0" fill={color} r="2.05" />
@@ -621,44 +620,15 @@ function ReactIcon({
   );
 }
 
-function StyleXIcon({
-  active,
-  ...props
-}: SVGProps<SVGSVGElement> & { active?: boolean }) {
-  if (!active) {
-    return (
-      <svg height="14" viewBox="0 0 180 180" width="14" {...props}>
-        <g fill="currentColor" fillRule="nonzero">
-          <path
-            d="M123.054863,93.4254443 C124.041858,95.7626109 128.450105,105.044084 129.355779,107.321152 C123.84289,116.561307 122.549601,118.95899 111.024753,133.60593 C64.1232983,182.705627 27.9371992,190.639891 5.76263041,167.701852 C3.59627766,165.361764 1.67512566,162.319274 0,158.574382 C0.471825684,159.433291 1.09514745,160.379843 1.86996531,161.414039 L2.15025371,161.78256 C2.19772524,161.844746 2.24602235,161.906931 2.29473227,161.969534 L2.59359648,162.349323 L2.90484457,162.735791 L3.22888933,163.12977 L3.56531797,163.530845 L3.91454328,163.939431 L4.27615246,164.355113 L4.65014553,164.77789 L5.03734806,165.208179 L5.23549007,165.426036 L5.64126842,165.867176 L5.84890474,166.090459 L6.2732589,166.542451 L6.49038953,166.771159 C33.8818726,191.84228 61.2048315,170.332834 98.3027967,128.773838 C103.902786,122.190123 112.153337,110.407464 123.054863,93.4254443 Z M137.380118,14.1032604 C154.739423,29.1884191 154.739423,52.5968124 141.717364,86.0295639 C140.719637,83.5713654 136.323774,73.7444144 135.221609,71.226952 C145.472981,42.8320467 145.710752,29.3332399 130.967334,15.8715774 C122.485617,8.12762615 116.462513,7.80876984 104.995043,9.69477985 L104.244168,9.82123726 C104.118678,9.84252217 103.992775,9.86464178 103.866872,9.8867614 L103.107328,10.0236526 L102.342004,10.1663867 L101.956866,10.2402579 L92.9145722,12.0507273 L92.9145722,12.0340333 L93.1139526,11.9605794 C111.260459,5.27670019 126.843916,4.74249067 137.380118,14.1032604 L137.380118,14.1032604 Z"
-            opacity="0.7"
-          />
-          <path d="M125.890167,63.5141248 C153.449324,115.583313 155.188797,143.75817 146.009025,163.468062 C142.702042,170.570383 134.455253,175.478804 130.907687,177.387749 C122.003636,182.178957 103.568032,179.793293 87.0876824,174.955283 L84.6173661,173.901615 C92.8984649,176.570162 110.89548,180.056296 120.598168,177.387749 C152.463016,168.623747 148.671973,130.669324 116.64467,71.0621007 C84.6173661,11.4548774 49.5757474,-4.8960329 21.9537585,6.3426811 C19.3015581,7.42161421 16.9891503,8.8960871 15,10.7226111 L15.212887,10.4952275 L15.6399012,10.0462588 L15.853615,9.82508786 L16.282696,9.38854448 C19.3635641,6.29215141 22.5576963,3.87542408 25.8493845,2.76294257 C50.8282672,-5.6788289 93.7099159,2.71324123 125.890167,63.5141248 Z" />
-        </g>
-      </svg>
-    );
-  }
-
+function StyleXIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg height="14" viewBox="0 0 180 180" width="14" {...props}>
       <defs>
-        <linearGradient
-          id="stylex-gradient-1"
-          x1="41%"
-          x2="74%"
-          y1="32%"
-          y2="60%"
-        >
+        <linearGradient id="stylex-grad-1" x1="41%" x2="74%" y1="32%" y2="60%">
           <stop offset="0%" stopColor="#5BD3F3" />
           <stop offset="100%" stopColor="#5BD3F3" />
         </linearGradient>
-        <linearGradient
-          id="stylex-gradient-2"
-          x1="42%"
-          x2="65%"
-          y1="56%"
-          y2="39%"
-        >
+        <linearGradient id="stylex-grad-2" x1="42%" x2="65%" y1="56%" y2="39%">
           <stop offset="0%" stopColor="#D573DE" stopOpacity="0" />
           <stop offset="100%" stopColor="#D573DE" />
         </linearGradient>
@@ -666,11 +636,11 @@ function StyleXIcon({
       <g fillRule="nonzero">
         <path
           d="M123.054863,93.4254443 C124.041858,95.7626109 128.450105,105.044084 129.355779,107.321152 C123.84289,116.561307 122.549601,118.95899 111.024753,133.60593 C64.1232983,182.705627 27.9371992,190.639891 5.76263041,167.701852 C3.59627766,165.361764 1.67512566,162.319274 0,158.574382 C0.471825684,159.433291 1.09514745,160.379843 1.86996531,161.414039 L2.15025371,161.78256 C2.19772524,161.844746 2.24602235,161.906931 2.29473227,161.969534 L2.59359648,162.349323 L2.90484457,162.735791 L3.22888933,163.12977 L3.56531797,163.530845 L3.91454328,163.939431 L4.27615246,164.355113 L4.65014553,164.77789 L5.03734806,165.208179 L5.23549007,165.426036 L5.64126842,165.867176 L5.84890474,166.090459 L6.2732589,166.542451 L6.49038953,166.771159 C33.8818726,191.84228 61.2048315,170.332834 98.3027967,128.773838 C103.902786,122.190123 112.153337,110.407464 123.054863,93.4254443 Z M137.380118,14.1032604 C154.739423,29.1884191 154.739423,52.5968124 141.717364,86.0295639 C140.719637,83.5713654 136.323774,73.7444144 135.221609,71.226952 C145.472981,42.8320467 145.710752,29.3332399 130.967334,15.8715774 C122.485617,8.12762615 116.462513,7.80876984 104.995043,9.69477985 L104.244168,9.82123726 C104.118678,9.84252217 103.992775,9.86464178 103.866872,9.8867614 L103.107328,10.0236526 L102.342004,10.1663867 L101.956866,10.2402579 L92.9145722,12.0507273 L92.9145722,12.0340333 L93.1139526,11.9605794 C111.260459,5.27670019 126.843916,4.74249067 137.380118,14.1032604 L137.380118,14.1032604 Z"
-          fill="url(#stylex-gradient-1)"
+          fill="url(#stylex-grad-1)"
         />
         <path
           d="M125.890167,63.5141248 C153.449324,115.583313 155.188797,143.75817 146.009025,163.468062 C142.702042,170.570383 134.455253,175.478804 130.907687,177.387749 C122.003636,182.178957 103.568032,179.793293 87.0876824,174.955283 L84.6173661,173.901615 C92.8984649,176.570162 110.89548,180.056296 120.598168,177.387749 C152.463016,168.623747 148.671973,130.669324 116.64467,71.0621007 C84.6173661,11.4548774 49.5757474,-4.8960329 21.9537585,6.3426811 C19.3015581,7.42161421 16.9891503,8.8960871 15,10.7226111 L15.212887,10.4952275 L15.6399012,10.0462588 L15.853615,9.82508786 L16.282696,9.38854448 C19.3635641,6.29215141 22.5576963,3.87542408 25.8493845,2.76294257 C50.8282672,-5.6788289 93.7099159,2.71324123 125.890167,63.5141248 Z"
-          fill="url(#stylex-gradient-2)"
+          fill="url(#stylex-grad-2)"
         />
       </g>
     </svg>
