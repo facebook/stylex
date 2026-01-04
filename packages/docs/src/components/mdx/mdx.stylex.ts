@@ -13,3 +13,5 @@ export const headingMarker = stylex.defineMarker();
 export const preMarker = stylex.defineMarker();
 
 export const accordionContainerMarker = stylex.defineMarker();
+
+export const tabsMarker = stylex.defineMarker();

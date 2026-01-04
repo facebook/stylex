@@ -4,8 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import TabItem from './TabItem';
-import Tabs from './Tabs';
+
+import { Tabs, TabItem } from './Tabs';
 import Dial from '../Dial';
 import { DevInstallExample } from './PackageInstall';
 import { Card as WhenDemo } from './WhenDemo';
@@ -24,14 +24,7 @@ import {
 } from './Callout';
 import { Li, Ol, P, Ul } from './core';
 import Image from './Image';
-import {
-  CodeBlock,
-  CodeBlockTab,
-  CodeBlockTabs,
-  CodeBlockTabsList,
-  CodeBlockTabsTrigger,
-  Pre,
-} from './CodeBlock';
+import { CodeBlock, Pre } from './CodeBlock';
 import { preMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
 
@@ -97,10 +90,6 @@ export const mdxComponents = {
     </CodeBlock>
   ),
   CodeBlock,
-  CodeBlockTab,
-  CodeBlockTabs,
-  CodeBlockTabsList,
-  CodeBlockTabsTrigger,
 };
 
 const styles = stylex.create({
