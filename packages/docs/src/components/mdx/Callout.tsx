@@ -121,7 +121,7 @@ const iconStyles = stylex.create({
   base: {
     flexShrink: 0,
     width: 20,
-    height: 20,
+    height: 'calc(16px * 1.65)',
     marginInlineEnd: -2,
     color: vars['--color-fd-card'],
     fill: vars['--color-fd-card'],
