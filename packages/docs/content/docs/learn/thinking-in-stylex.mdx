@@ -61,8 +61,8 @@ let a = stylex.props(styles.red);
 
 Compiles down to:
 
-<Tabs>
-<TabItem label="JS Output" value="js-output">
+<Accordions>
+<Accordion title="JS Output" open={true}>
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -70,8 +70,9 @@ import * as stylex from '@stylexjs/stylex';
 let a = { className: 'x1e2nbdu' };
 ```
 
-</TabItem>
-<TabItem label="CSS Output" value="css-output">
+</Accordion>
+
+<Accordion title="CSS Output" open={true}>
 
 ```css
 .x1e2nbdu {
@@ -79,8 +80,8 @@ let a = { className: 'x1e2nbdu' };
 }
 ```
 
-</TabItem>
-</Tabs>
+</Accordion>
+</Accordions>
 
 There is no runtime overhead here.
 
@@ -112,8 +113,9 @@ function MyComponent({ style }) {
 
 Compiles down to:
 
-<Tabs>
-<TabItem label="JS Output" value="js-output">
+<Accordions>
+
+<Accordion title="JS Output" open={true}>
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -134,8 +136,8 @@ function MyComponent({ style }) {
 }
 ```
 
-</TabItem>
-<TabItem label="CSS Output" value="css-output">
+</Accordion>
+<Accordion title="CSS Output" open={true}>
 
 ```css
 .x1e2nbdu {
@@ -146,8 +148,8 @@ function MyComponent({ style }) {
 }
 ```
 
-</TabItem>
-</Tabs>
+</Accordion>
+</Accordions>
 
 This is a little more code, but the runtime cost is still minimal because of how
 fast the `props` function is.

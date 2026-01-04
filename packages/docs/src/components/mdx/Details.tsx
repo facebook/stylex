@@ -11,6 +11,7 @@ import * as stylex from '@stylexjs/stylex';
 import { ChevronDown } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { useId, createContext, Children, use } from 'react';
+import { accordionContainerMarker } from './mdx.stylex';
 
 const AccordionContext = createContext<string | null>(null);
 
@@ -24,7 +25,7 @@ export function Accordions({
   const id = useId();
 
   return (
-    <div>
+    <div {...stylex.props(styles.group, accordionContainerMarker)}>
       {type === 'single' ? (
         <AccordionContext value={id}>{children}</AccordionContext>
       ) : (
@@ -62,12 +63,14 @@ export function Details({
 export function Accordion({
   title,
   children,
+  open = false,
 }: {
   title: string;
   children: ReactNode;
+  open?: boolean;
 }) {
   return (
-    <Details>
+    <Details open={open}>
       <Summary>{title}</Summary>
       {children}
     </Details>
@@ -91,17 +94,39 @@ export function Summary({
 const DURATION = '0.3s';
 const EASING = 'cubic-bezier(0.4, 0, 0.2, 1)';
 const styles = stylex.create({
+  group: {
+    overflow: 'hidden',
+    borderColor: vars['--color-fd-border'],
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 16,
+    cornerShape: 'squircle',
+  },
   container: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    borderShape: 'squircle',
     interpolateSize: 'allow-keywords',
     paddingBlock: 8,
     paddingInline: 16,
     backgroundColor: vars['--color-fd-card'],
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 8,
+    borderWidth: {
+      default: 1,
+      // eslint-disable-next-line @stylexjs/valid-styles
+      [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: 0,
+    },
+    borderTopWidth: {
+      default: 1,
+      // eslint-disable-next-line @stylexjs/valid-styles
+      [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: {
+        default: 1,
+        ':first-child': 0,
+      },
+    },
+    borderRadius: {
+      default: 8,
+      [stylex.when.ancestor(':where(*)', accordionContainerMarker)]: 0,
+    },
+    cornerShape: 'squircle',
     // eslint-disable-next-line @stylexjs/valid-styles
     '::details-content': {
       display: 'block',
