@@ -9,7 +9,7 @@ import * as React from 'react';
 import { useEffect, useRef, useState, type SVGProps } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Menu, Item } from './Menu';
-import { FileNameDialog, ConfirmDialog } from './Dialogs';
+import { ConfirmDialog } from './Dialogs';
 import { vars, playgroundVars } from '@/theming/vars.stylex';
 
 export function Tabs({
@@ -39,13 +39,42 @@ export function Tabs({
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
 }) {
+  const [renamingFile, setRenamingFile] = useState<string | null>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const scrollableRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = scrollableRef.current;
+    if (!el) return;
+
+    const checkOverflow = () => {
+      setIsOverflowing(el.scrollWidth > el.clientWidth);
+    };
+
+    checkOverflow();
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [files]);
+
+  const handleCreateFile = (fileKind: 'component' | 'stylex') => {
+    if (!onCreateFile || !getDefaultFilename) return;
+    const defaultName = getDefaultFilename(fileKind);
+    onCreateFile(fileKind, defaultName);
+    onSelectFile(defaultName);
+    setRenamingFile(defaultName);
+  };
+
+  const showNewFileButton = !readOnly && onCreateFile && getDefaultFilename;
+
   return (
     <div
       onClick={onToggleCollapse}
       role="tablist"
       {...stylex.props(styles.tabs, onToggleCollapse && styles.tabsCollapsible)}
     >
-      <div {...stylex.props(styles.tabsScrollable)}>
+      <div ref={scrollableRef} {...stylex.props(styles.tabsScrollable)}>
         {files.map((filename, i) => (
           <Tab
             filename={filename}
@@ -55,24 +84,23 @@ export function Tabs({
             key={filename}
             onDelete={readOnly ? undefined : onDeleteFile}
             onRename={readOnly ? undefined : onRenameFile}
+            onRenameComplete={() => setRenamingFile(null)}
             onSelect={(e) => {
               e.stopPropagation();
               onSelectFile(filename);
             }}
             readOnly={readOnly}
+            startInRenameMode={renamingFile === filename}
           />
         ))}
+        {showNewFileButton && !isOverflowing && (
+          <NewFileButton onCreateFile={handleCreateFile} />
+        )}
       </div>
 
       <div {...stylex.props(styles.tabsActions)}>
-        {!readOnly && onCreateFile && (
-          <NewFileButton
-            getDefaultFilename={
-              getDefaultFilename ??
-              ((_fileKind: 'component' | 'stylex') => 'File.tsx')
-            }
-            onCreateFile={onCreateFile}
-          />
+        {showNewFileButton && isOverflowing && (
+          <NewFileButton onCreateFile={handleCreateFile} />
         )}
         {!readOnly && onFormat ? (
           <button
@@ -255,6 +283,8 @@ function Tab({
   immutable = false,
   readOnly = false,
   hideFileIcon = false,
+  startInRenameMode = false,
+  onRenameComplete,
 }: {
   filename: string;
   isActive: boolean;
@@ -264,9 +294,12 @@ function Tab({
   immutable: boolean;
   readOnly?: boolean;
   hideFileIcon?: boolean;
+  startInRenameMode?: boolean;
+  onRenameComplete?: () => void;
 }) {
   const deleteDialogRef = useRef<HTMLDialogElement | null>(null);
   const renameTimerRef = useRef<number | null>(null);
+  const hasStartedRenaming = useRef(false);
 
   const [isRenaming, setIsRenaming] = useState(false);
   const [draftName, setDraftName] = useState(filename);
@@ -275,9 +308,17 @@ function Tab({
     setDraftName(filename);
   }, [filename]);
 
+  useEffect(() => {
+    if (startInRenameMode && !hasStartedRenaming.current) {
+      hasStartedRenaming.current = true;
+      setIsRenaming(true);
+    }
+  }, [startInRenameMode]);
+
   const cancelRename = () => {
     setIsRenaming(false);
     setDraftName(filename);
+    onRenameComplete?.();
   };
 
   const commitRename = () => {
@@ -295,6 +336,7 @@ function Tab({
       return;
     }
     setIsRenaming(false);
+    onRenameComplete?.();
   };
 
   const startLongPress = () => {
@@ -396,23 +438,17 @@ function Tab({
 }
 
 function NewFileButton({
-  getDefaultFilename,
   onCreateFile,
 }: {
-  getDefaultFilename: (_fileKind: 'component' | 'stylex') => string;
-  onCreateFile: (_fileKind: 'component' | 'stylex', _name: string) => void;
+  onCreateFile: (_fileKind: 'component' | 'stylex') => void;
 }) {
-  const addButtonRef = useRef<HTMLButtonElement | null>(null);
-  const componentDialogRef = useRef<HTMLDialogElement | null>(null);
-  const stylexDialogRef = useRef<HTMLDialogElement | null>(null);
-
   const id = 'new-file';
 
   return (
     <>
       <button
-        ref={addButtonRef}
         {...stylex.props(styles.tabIconButton)}
+        onClick={(e) => e.stopPropagation()}
         popoverTarget={id}
         title="Add file"
         type="button"
@@ -420,29 +456,9 @@ function NewFileButton({
         <NewFileIcon />
       </button>
       <Menu id={id}>
-        <Item onClick={() => componentDialogRef.current?.showModal()}>
-          Component file
-        </Item>
-        <Item onClick={() => stylexDialogRef.current?.showModal()}>
-          StyleX vars file
-        </Item>
+        <Item onClick={() => onCreateFile('component')}>Component file</Item>
+        <Item onClick={() => onCreateFile('stylex')}>Vars file</Item>
       </Menu>
-      <FileNameDialog
-        defaultValue={getDefaultFilename('component')}
-        description="Add a new component file to the playground."
-        onCancel={() => componentDialogRef.current?.close()}
-        onConfirm={(name) => onCreateFile('component', name)}
-        ref={componentDialogRef}
-        title="Create component file"
-      />
-      <FileNameDialog
-        defaultValue={getDefaultFilename('stylex')}
-        description="Create a .stylex file for defining StyleX variables, constants and markers"
-        onCancel={() => stylexDialogRef.current?.close()}
-        onConfirm={(name) => onCreateFile('stylex', name)}
-        ref={stylexDialogRef}
-        title="Create StyleX file"
-      />
     </>
   );
 }
@@ -523,7 +539,7 @@ const styles = stylex.create({
   },
 
   renameMirror: {
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 1.4,
     color: 'transparent',
     whiteSpace: 'pre',
@@ -535,7 +551,7 @@ const styles = stylex.create({
     inset: 0,
     width: '100%',
     padding: 0,
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 1.4,
     color: 'inherit',
     outline: 'none',
