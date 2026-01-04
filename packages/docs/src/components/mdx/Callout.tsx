@@ -40,11 +40,10 @@ export function Callout({ children, title, ...props }: CalloutProps) {
   );
 }
 
-export interface CalloutContainerProps
-  extends Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'className' | 'style' | 'title'
-  > {
+export interface CalloutContainerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'style' | 'title'
+> {
   /**
    * @defaultValue info
    */
@@ -94,8 +93,10 @@ export function CalloutContainer({
   );
 }
 
-export interface CalloutTitleProps
-  extends Omit<HTMLAttributes<HTMLParagraphElement>, 'className' | 'style'> {
+export interface CalloutTitleProps extends Omit<
+  HTMLAttributes<HTMLParagraphElement>,
+  'className' | 'style'
+> {
   children: ReactNode;
 }
 
@@ -107,8 +108,10 @@ export function CalloutTitle({ children, ...props }: CalloutTitleProps) {
   );
 }
 
-export interface CalloutDescriptionProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+export interface CalloutDescriptionProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'style'
+> {
   children: ReactNode;
 }
 
