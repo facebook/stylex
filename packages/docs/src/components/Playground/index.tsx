@@ -488,7 +488,12 @@ export const vars = stylex.defineVars({
         return;
       }
       sandpackClientRef.current = sandpackClient;
-      setSandpackInitialized(true);
+      const unsubscribe = sandpackClient.listen((msg: any) => {
+        if (msg.type === 'done') {
+          setSandpackInitialized(true);
+          unsubscribe();
+        }
+      });
     });
 
     return () => {
@@ -674,7 +679,10 @@ export const vars = stylex.defineVars({
               <iframe
                 ref={iframeRef}
                 title="StyleX Playground Preview"
-                {...stylex.props(styles.iframe)}
+                {...stylex.props(
+                  styles.iframe,
+                  !sandpackInitialized && styles.iframeHidden,
+                )}
               />
             </CollapsiblePanel>
           </div>
@@ -896,6 +904,12 @@ const styles = stylex.create({
     color: 'var(--fg1)',
     outline: 'none',
     backgroundColor: playgroundVars['--pg-preview'],
+    opacity: 1,
+    transitionDuration: '0.2s',
+    transitionProperty: 'opacity',
+  },
+  iframeHidden: {
+    opacity: 0,
   },
   error: {
     position: 'absolute',

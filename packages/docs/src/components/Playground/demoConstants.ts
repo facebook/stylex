@@ -153,7 +153,7 @@ const styles = stylex.create({
     borderBottomLeftRadius: { default: 4, ":last-child": 16 },
     borderBottomRightRadius: { default: 4, ":last-child": 16 },
     "::before": {
-      content: "\\2713",
+      content: '"✓"',
       height: "1.6em",
       width: "1.6em",
       display: "flex",
