@@ -7,10 +7,7 @@
  * @format
  */
 
-'use client';
-
-import Tabs from './Tabs';
-import TabItem from './TabItem';
+import { Tabs, TabItem } from './Tabs';
 import { versionTag } from './VersionTag';
 import * as stylex from '@stylexjs/stylex';
 import { CodeBlock, Pre } from './CodeBlock';
@@ -52,9 +49,9 @@ export function DevInstallExample({ prod = [], dev = [] }) {
   if (entries.length === 0) return null;
 
   return (
-    <Tabs defaultValue={entries[0]?.[0]}>
+    <Tabs defaultValue={0}>
       {entries.map(([key, code]) => (
-        <TabItem key={key} label={key} value={key}>
+        <TabItem key={key} label={key}>
           <CodeBlock xstyle={styles.codeblock}>
             <Pre>{code}</Pre>
           </CodeBlock>

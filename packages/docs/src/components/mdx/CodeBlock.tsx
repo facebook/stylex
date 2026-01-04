@@ -9,26 +9,9 @@
 import * as stylex from '@stylexjs/stylex';
 import { Check, Clipboard } from 'lucide-react';
 import type { ComponentProps, HTMLAttributes, ReactNode } from 'react';
-import {
-  createContext,
-  use,
-  useMemo,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-import { preMarker } from './mdx.stylex';
+import { useRef, useState, useCallback } from 'react';
+import { preMarker, tabsMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
-
-// Context for tracking if we're inside CodeBlockTabs
-const TabsContext = createContext<{
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  nested: boolean;
-} | null>(null);
-
-// =============================================================================
-// Pre Component
-// =============================================================================
 
 export function Pre(props: ComponentProps<'pre'>) {
   return (
@@ -40,10 +23,6 @@ export function Pre(props: ComponentProps<'pre'>) {
     </pre>
   );
 }
-
-// =============================================================================
-// CodeBlock Component
-// =============================================================================
 
 export interface CodeBlockProps extends ComponentProps<'figure'> {
   icon?: ReactNode;
@@ -69,7 +48,6 @@ export function CodeBlock({
   ),
   ...props
 }: CodeBlockProps) {
-  const inTab = use(TabsContext) !== null;
   const areaRef = useRef<HTMLDivElement>(null);
   const { className, style, ...rest } = props;
 
@@ -77,11 +55,7 @@ export function CodeBlock({
     className: _className,
     style: _style,
     ..._rest
-  } = stylex.props(
-    styles.figure,
-    inTab ? styles.figureInTab : styles.figureStandalone,
-    xstyle,
-  );
+  } = stylex.props(styles.figure, xstyle);
 
   return (
     <figure
@@ -122,12 +96,6 @@ export function CodeBlock({
         ref={areaRef}
         role="region"
         tabIndex={0}
-        // style={{
-        //   counterSet: props['data-line-numbers']
-        //     ? `line ${Number(props['data-line-numbers-start'] ?? 1) - 1}`
-        //     : undefined,
-        //   ...viewportProps.style,
-        // }}
         {...viewportProps}
         {...stylex.props(styles.viewport, !title && styles.viewportPadded)}
       >
@@ -136,10 +104,6 @@ export function CodeBlock({
     </figure>
   );
 }
-
-// =============================================================================
-// CopyButton Component
-// =============================================================================
 
 interface CopyButtonProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -184,128 +148,24 @@ function CopyButton({ containerRef, xstyle }: CopyButtonProps) {
   );
 }
 
-// =============================================================================
-// CodeBlockTabs Components
-// =============================================================================
-
-export function CodeBlockTabs({
-  defaultValue,
-  children,
-  ...props
-}: ComponentProps<'div'> & { defaultValue?: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const nested = use(TabsContext) !== null;
-  const [activeTab, setActiveTab] = useState(defaultValue);
-
-  const contextValue = useMemo(
-    () => ({
-      containerRef,
-      nested,
-      activeTab,
-      setActiveTab,
-    }),
-    [nested, activeTab],
-  );
-
-  return (
-    <div
-      ref={containerRef}
-      {...stylex.props(
-        styles.tabsContainer,
-        !nested && styles.tabsContainerOuter,
-      )}
-      {...props}
-    >
-      <TabsContext value={contextValue}>{children}</TabsContext>
-    </div>
-  );
-}
-
-export function CodeBlockTabsList(props: ComponentProps<'div'>) {
-  return (
-    <div role="tablist" {...stylex.props(styles.tabsList)} {...props}>
-      {props.children}
-    </div>
-  );
-}
-
-export function CodeBlockTabsTrigger({
-  value,
-  children,
-  ...props
-}: ComponentProps<'button'> & { value: string }) {
-  const context = use(TabsContext) as {
-    activeTab?: string;
-    setActiveTab: (_value: string) => void;
-  } | null;
-
-  const isActive = context?.activeTab === value;
-
-  return (
-    <button
-      aria-selected={isActive}
-      data-state={isActive ? 'active' : 'inactive'}
-      role="tab"
-      type="button"
-      {...stylex.props(styles.tabTrigger, isActive && styles.tabTriggerActive)}
-      onClick={() => context?.setActiveTab(value)}
-      {...props}
-    >
-      <div
-        {...stylex.props(
-          styles.tabIndicator,
-          isActive && styles.tabIndicatorActive,
-        )}
-      />
-      {children}
-    </button>
-  );
-}
-
-export function CodeBlockTab({
-  value,
-  children,
-  ...props
-}: ComponentProps<'div'> & { value: string }) {
-  const context = use(TabsContext) as { activeTab?: string } | null;
-  const isActive = context?.activeTab === value;
-
-  if (!isActive) return null;
-
-  return (
-    <div role="tabpanel" {...props}>
-      {children}
-    </div>
-  );
-}
-
-// =============================================================================
-// Styles
-// =============================================================================
-
 const DURATION = '0.15s';
 
 const styles = stylex.create({
   figure: {
     position: 'relative',
+    marginTop: {
+      default: 16,
+      [stylex.when.ancestor(':where(*)', tabsMarker)]: 4,
+    },
+    marginBottom: 16,
     overflow: 'hidden',
     fontSize: 13,
+    backgroundColor: vars['--color-fd-card'],
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
     borderWidth: 1,
-    boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-  },
-  figureStandalone: {
-    marginBlock: 16,
-    backgroundColor: vars['--color-fd-card'],
     borderRadius: 12,
-  },
-  figureInTab: {
-    marginBlockEnd: -1,
-    marginInline: -1,
-    backgroundColor: vars['--color-fd-secondary'],
-    borderEndStartRadius: 12,
-    borderEndEndRadius: 12,
+    boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
   },
   header: {
     display: 'flex',
@@ -381,56 +241,5 @@ const styles = stylex.create({
   copyIcon: {
     width: 14,
     height: 14,
-  },
-  // Tabs styles
-  tabsContainer: {
-    backgroundColor: vars['--color-fd-card'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 12,
-  },
-  tabsContainerOuter: {
-    marginBlock: 16,
-  },
-  tabsList: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingInline: 8,
-    overflowX: 'auto',
-    color: vars['--color-fd-muted-foreground'],
-  },
-  tabTrigger: {
-    position: 'relative',
-    display: 'inline-flex',
-    gap: 8,
-    alignItems: 'center',
-    paddingBlock: 6,
-    paddingInline: 8,
-    fontSize: 14,
-    fontWeight: 500,
-    color: {
-      default: 'inherit',
-      ':hover': vars['--color-fd-accent-foreground'],
-    },
-    whiteSpace: 'nowrap',
-    cursor: 'pointer',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    transitionDuration: DURATION,
-    transitionProperty: 'color',
-  },
-  tabTriggerActive: {
-    color: vars['--color-fd-primary'],
-  },
-  tabIndicator: {
-    position: 'absolute',
-    insetInline: 8,
-    bottom: 0,
-    height: 1,
-    backgroundColor: 'transparent',
-  },
-  tabIndicatorActive: {
-    backgroundColor: vars['--color-fd-primary'],
   },
 });

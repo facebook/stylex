@@ -62,8 +62,8 @@ let a = stylex.props(styles.red);
 
 Compiles down to:
 
-<Accordions>
-<Accordion title="JS Output" open={true}>
+<Tabs>
+<TabItem label="JS Output" value="js-output">
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -71,9 +71,8 @@ import * as stylex from '@stylexjs/stylex';
 let a = { className: 'x1e2nbdu' };
 ```
 
-</Accordion>
-
-<Accordion title="CSS Output" open={true}>
+</TabItem>
+<TabItem label="CSS Output" value="css-output">
 
 ```css
 .x1e2nbdu {
@@ -81,8 +80,8 @@ let a = { className: 'x1e2nbdu' };
 }
 ```
 
-</Accordion>
-</Accordions>
+</TabItem>
+</Tabs>
 
 There is no runtime overhead here.
 
@@ -114,9 +113,8 @@ function MyComponent({ style }) {
 
 Compiles down to:
 
-<Accordions>
-
-<Accordion title="JS Output" open={true}>
+<Tabs>
+<TabItem label="JS Output" value="js-output">
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -137,8 +135,8 @@ function MyComponent({ style }) {
 }
 ```
 
-</Accordion>
-<Accordion title="CSS Output" open={true}>
+</TabItem>
+<TabItem label="CSS Output" value="css-output">
 
 ```css
 .x1e2nbdu {
@@ -149,8 +147,8 @@ function MyComponent({ style }) {
 }
 ```
 
-</Accordion>
-</Accordions>
+</TabItem>
+</Tabs>
 
 This is a little more code, but the runtime cost is still minimal because of how
 fast the `props` function is.
@@ -361,8 +359,8 @@ We have chosen to prioritize composability and consistency over short-term
 convenience. We lean on linting and types to create project-specific rules.
 
 We also avoid magic strings that have special meaning within a project globally.
-Instead, every style, every variable, and every shared constant is a JavaScript
-import without needing unique names or project configuration.
+Instead, every style, every variable, and every shared constant is imported from
+a JavaScript module without needing unique names or project configuration.
 
 ### One small file over many smaller files
 
