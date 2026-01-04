@@ -6,83 +6,8 @@
  */
 
 import * as React from 'react';
-import { useRef } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { vars } from '@/theming/vars.stylex';
-
-export function FileNameDialog({
-  title,
-  description,
-  defaultValue,
-  onConfirm,
-  onCancel,
-  ref,
-}: {
-  title: string;
-  description: string;
-  defaultValue: string;
-  onConfirm: (_name: string) => void;
-  onCancel: () => void;
-  ref: React.RefObject<HTMLDialogElement | null>;
-}) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const trimmed = inputRef.current?.value?.trim();
-    if (!trimmed) {
-      event.preventDefault();
-      return;
-    }
-    onConfirm?.(trimmed);
-  };
-
-  return (
-    <dialog
-      onClose={() => {
-        if (inputRef.current) {
-          inputRef.current.value = defaultValue;
-        }
-      }}
-      ref={ref}
-      style={{ backdropFilter: 'blur(2px)' }}
-      {...stylex.props(styles.dialog)}
-    >
-      <form method="dialog" onSubmit={handleSubmit}>
-        <h3 {...stylex.props(styles.heading)}>{title}</h3>
-        {description ? (
-          <p {...stylex.props(styles.description)}>{description}</p>
-        ) : null}
-
-        <div {...stylex.props(styles.field)}>
-          <label>
-            <span style={{ display: 'none' }}>New filename</span>
-            <input
-              autoFocus
-              defaultValue={defaultValue}
-              ref={inputRef}
-              {...stylex.props(styles.input)}
-            />
-          </label>
-        </div>
-        <div {...stylex.props(styles.actions)}>
-          <button
-            {...stylex.props(styles.button)}
-            onClick={onCancel}
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            {...stylex.props(styles.button, styles.primary)}
-            type="submit"
-          >
-            Confirm
-          </button>
-        </div>
-      </form>
-    </dialog>
-  );
-}
 
 export function ConfirmDialog({
   title,
@@ -97,10 +22,16 @@ export function ConfirmDialog({
   onCancel: () => void;
   ref: React.RefObject<HTMLDialogElement | null>;
 }) {
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
   return (
     <dialog
+      onClick={handleBackdropClick}
       ref={ref}
-      style={{ backdropFilter: 'blur(2px)' }}
       {...stylex.props(styles.dialog)}
     >
       <h3 {...stylex.props(styles.heading)}>{title}</h3>
@@ -115,9 +46,7 @@ export function ConfirmDialog({
         </button>
         <button
           {...stylex.props(styles.button, styles.primary)}
-          onClick={() => {
-            onConfirm?.();
-          }}
+          onClick={() => onConfirm?.()}
           type="button"
         >
           Confirm
@@ -134,7 +63,9 @@ const styles = stylex.create({
     width: 480,
     maxWidth: '100%',
     padding: '20px',
+    fontStyle: 'normal',
     color: vars['--color-fd-muted-foreground'],
+    textTransform: 'none',
     backgroundColor: vars['--color-fd-card'],
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
@@ -150,29 +81,15 @@ const styles = stylex.create({
     marginTop: 0,
     marginBottom: 8,
     fontSize: '1rem',
+    fontStyle: 'normal',
     color: vars['--color-fd-foreground'],
   },
   description: {
     marginTop: 0,
     marginBottom: 12,
     fontSize: 13,
+    fontStyle: 'normal',
     lineHeight: 1.5,
-  },
-  field: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 6,
-    marginBottom: 16,
-  },
-  input: {
-    width: '100%',
-    padding: 8,
-    color: vars['--color-fd-foreground'],
-    backgroundColor: vars['--color-fd-background'],
-    borderColor: vars['--color-fd-border'],
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 6,
   },
   actions: {
     display: 'flex',
@@ -182,9 +99,11 @@ const styles = stylex.create({
   button: {
     paddingBlock: 8,
     paddingInline: 12,
+    fontStyle: 'normal',
     color: vars['--color-fd-foreground'],
     cursor: 'pointer',
     backgroundColor: vars['--color-fd-background'],
+    borderStyle: 'none',
     borderRadius: 6,
     boxShadow: `0 0 0 1px ${vars['--color-fd-border']}`,
   },
