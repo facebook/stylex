@@ -306,7 +306,7 @@ export default function PlaygroundNew() {
   const monaco = useMonaco();
   const editorRef = useRef<any>(null);
   const [activeOutputTab, setActiveOutputTab] = useState<'js' | 'css'>('js');
-  const [outputCollapsed, setOutputCollapsed] = useState(false);
+  const [outputCollapsed, setOutputCollapsed] = useState(true);
 
   const setInputFiles = useCallback(
     (updatedInputFiles: Record<string, string>, replace: boolean = true) => {
@@ -922,7 +922,7 @@ const styles = stylex.create({
     display: 'flex',
     flexGrow: 1,
     flexShrink: 0,
-    flexBasis: 36,
+    flexBasis: 42,
     flexDirection: 'column',
     overflow: 'hidden',
     backgroundColor: playgroundVars['--pg-panel-surface'],
@@ -946,7 +946,7 @@ const styles = stylex.create({
     display: 'block',
     flexShrink: 0,
     width: '100%',
-    height: 36,
+    height: 44,
     paddingBlock: 8,
     paddingInline: 16,
     fontSize: 14,

@@ -11,6 +11,7 @@ import * as stylex from '@stylexjs/stylex';
 import { Menu, Item } from './Menu';
 import { ConfirmDialog } from './Dialogs';
 import { vars, playgroundVars } from '@/theming/vars.stylex';
+import { ChevronDownIcon } from 'lucide-react';
 
 export function Tabs({
   files,
@@ -72,7 +73,7 @@ export function Tabs({
     <div
       onClick={onToggleCollapse}
       role="tablist"
-      {...stylex.props(styles.tabs, onToggleCollapse && styles.tabsCollapsible)}
+      {...stylex.props(styles.tabs)}
     >
       <div ref={scrollableRef} {...stylex.props(styles.tabsScrollable)}>
         {files.map((filename, i) => (
@@ -118,29 +119,16 @@ export function Tabs({
         {!readOnly && <ShareButton />}
         {onToggleCollapse && (
           <div {...stylex.props(styles.collapseIndicator)}>
-            <ChevronIcon collapsed={isCollapsed} />
+            <ChevronDownIcon
+              {...stylex.props(
+                styles.chevron,
+                isCollapsed && styles.chevronCollapsed,
+              )}
+            />
           </div>
         )}
       </div>
     </div>
-  );
-}
-
-function ChevronIcon({ collapsed }: { collapsed?: boolean }) {
-  return (
-    <svg
-      fill="none"
-      height="16"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      viewBox="0 0 24 24"
-      width="16"
-      {...stylex.props(styles.chevron, collapsed && styles.chevronCollapsed)}
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
   );
 }
 
@@ -325,13 +313,7 @@ function Tab({
   };
 
   return (
-    <div
-      {...stylex.props(
-        styles.tab,
-        isActive && styles.tabActive,
-        isActive && !readOnly && styles.tabActiveItalic,
-      )}
-    >
+    <div {...stylex.props(styles.tab, isActive && styles.tabActive)}>
       <button
         aria-selected={isActive}
         onClick={onSelect}
@@ -459,9 +441,8 @@ const styles = stylex.create({
     display: 'flex',
     flexGrow: 1,
     flexShrink: 1,
-    gap: 8,
     minWidth: 0,
-    paddingInlineStart: 12,
+    paddingInlineStart: 8,
     overflowX: 'auto',
     scrollbarWidth: 'none',
     '::-webkit-scrollbar': {
@@ -473,15 +454,16 @@ const styles = stylex.create({
     position: 'relative',
     display: 'flex',
     flexShrink: 0,
-    gap: 4,
     alignItems: 'center',
-    paddingInline: 8,
     backgroundColor: playgroundVars['--pg-header-surface'],
   },
 
   tab: {
     display: 'flex',
-    color: vars['--color-fd-muted-foreground'],
+    color: {
+      default: vars['--color-fd-muted-foreground'],
+      ':hover': `color-mix(in srgb, ${vars['--color-fd-foreground']} 80%, transparent)`,
+    },
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
@@ -489,10 +471,6 @@ const styles = stylex.create({
   tabActive: {
     color: vars['--color-fd-foreground'],
     boxShadow: `0 -2px 0 0 ${vars['--color-fd-primary']} inset`,
-  },
-
-  tabActiveItalic: {
-    fontStyle: 'italic',
   },
 
   tabLabelButton: {
@@ -503,9 +481,9 @@ const styles = stylex.create({
     paddingInline: 8,
     fontSize: 14,
     fontStyle: 'inherit',
+    fontWeight: 'inherit',
     color: 'inherit',
     whiteSpace: 'nowrap',
-    cursor: 'pointer',
     backgroundColor: 'transparent',
     borderStyle: 'none',
   },
@@ -551,13 +529,12 @@ const styles = stylex.create({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 28,
+    width: 42,
     height: 42,
     padding: 4,
     fontSize: 14,
     lineHeight: 1,
     color: vars['--color-fd-foreground'],
-    cursor: 'pointer',
     backgroundColor: {
       default: 'transparent',
       ':hover': `color-mix(in srgb, ${vars['--color-fd-foreground']} 8%, transparent)`,
@@ -575,13 +552,9 @@ const styles = stylex.create({
       default: vars['--color-fd-muted-foreground'],
       ':hover': vars['--color-fd-foreground'],
     },
-    cursor: 'pointer',
+
     backgroundColor: 'transparent',
     borderStyle: 'none',
-  },
-
-  tabsCollapsible: {
-    cursor: 'pointer',
   },
 
   collapseIndicator: {
@@ -590,19 +563,21 @@ const styles = stylex.create({
     justifyContent: 'center',
     width: 28,
     height: 28,
-    padding: 4,
+    marginInlineEnd: 4,
     color: vars['--color-fd-foreground'],
   },
 
   chevron: {
+    width: 24,
+    height: 24,
     transform: 'rotate(0deg)',
     transitionTimingFunction: 'ease',
-    transitionDuration: '0.2s',
+    transitionDuration: '0.3s',
     transitionProperty: 'transform',
   },
 
   chevronCollapsed: {
-    transform: 'rotate(180deg)',
+    transform: 'rotate(-90deg)',
   },
 });
 
