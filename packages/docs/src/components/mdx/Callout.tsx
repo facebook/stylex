@@ -27,22 +27,23 @@ function resolveType(
   return type;
 }
 
-export interface CalloutProps extends Omit<CalloutContainerProps, 'title'> {
-  title?: ReactNode;
+export interface CalloutProps extends CalloutContainerProps {
   children: ReactNode;
 }
 
 export function Callout({ children, title, ...props }: CalloutProps) {
   return (
-    <CalloutContainer {...props}>
+    <CalloutContainer title={title} {...props}>
       {title && <CalloutTitle>{title}</CalloutTitle>}
       <CalloutDescription>{children}</CalloutDescription>
     </CalloutContainer>
   );
 }
 
-export interface CalloutContainerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+export interface CalloutContainerProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'style' | 'title'
+> {
   /**
    * @defaultValue info
    */
@@ -51,6 +52,7 @@ export interface CalloutContainerProps
    * Force an icon
    */
   icon?: ReactNode;
+  title?: ReactNode;
   children: ReactNode;
 }
 
@@ -58,19 +60,22 @@ export function CalloutContainer({
   type: inputType = 'info',
   icon,
   children,
+  title,
   ...props
 }: CalloutContainerProps) {
   const type = resolveType(inputType);
 
+  const iconStyleProps = stylex.props(
+    iconStyles.base,
+    title !== undefined && iconStyles.withTitle,
+    iconStyles[type],
+  );
+
   const defaultIcon = {
-    info: <Info {...stylex.props(iconStyles.base, iconStyles[type])} />,
-    warning: (
-      <TriangleAlert {...stylex.props(iconStyles.base, iconStyles[type])} />
-    ),
-    error: <CircleX {...stylex.props(iconStyles.base, iconStyles[type])} />,
-    success: (
-      <CircleCheck {...stylex.props(iconStyles.base, iconStyles[type])} />
-    ),
+    info: <Info {...iconStyleProps} />,
+    warning: <TriangleAlert {...iconStyleProps} />,
+    error: <CircleX {...iconStyleProps} />,
+    success: <CircleCheck {...iconStyleProps} />,
   }[type];
 
   return (
@@ -88,8 +93,10 @@ export function CalloutContainer({
   );
 }
 
-export interface CalloutTitleProps
-  extends Omit<HTMLAttributes<HTMLParagraphElement>, 'className' | 'style'> {
+export interface CalloutTitleProps extends Omit<
+  HTMLAttributes<HTMLParagraphElement>,
+  'className' | 'style'
+> {
   children: ReactNode;
 }
 
@@ -101,8 +108,10 @@ export function CalloutTitle({ children, ...props }: CalloutTitleProps) {
   );
 }
 
-export interface CalloutDescriptionProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+export interface CalloutDescriptionProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'className' | 'style'
+> {
   children: ReactNode;
 }
 
@@ -125,6 +134,9 @@ const iconStyles = stylex.create({
     marginInlineEnd: -2,
     color: vars['--color-fd-card'],
     fill: vars['--color-fd-card'],
+  },
+  withTitle: {
+    height: 'calc(14px * 1.5)',
   },
   info: { fill: vars['--color-fd-info'] },
   warning: { fill: vars['--color-fd-warning'] },
