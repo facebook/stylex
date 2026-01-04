@@ -4,6 +4,7 @@
         "./StyleXStyles.mdx",
         "./StyleXStylesWithout.mdx",
         "./StaticStyles.mdx",
+        "./StaticStylesWithout.mdx",
         "./Theme.mdx",
         "./VarGroup.mdx"
     ]
