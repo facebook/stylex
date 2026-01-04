@@ -44,7 +44,6 @@ export function FileNameDialog({
         }
       }}
       ref={ref}
-      style={{ backdropFilter: 'blur(2px)' }}
       {...stylex.props(styles.dialog)}
     >
       <form method="dialog" onSubmit={handleSubmit}>
@@ -55,7 +54,7 @@ export function FileNameDialog({
 
         <div {...stylex.props(styles.field)}>
           <label>
-            <span style={{ display: 'none' }}>New filename</span>
+            <span {...stylex.props(styles.srOnly)}>New filename</span>
             <input
               autoFocus
               defaultValue={defaultValue}
@@ -98,11 +97,7 @@ export function ConfirmDialog({
   ref: React.RefObject<HTMLDialogElement | null>;
 }) {
   return (
-    <dialog
-      ref={ref}
-      style={{ backdropFilter: 'blur(2px)' }}
-      {...stylex.props(styles.dialog)}
-    >
+    <dialog ref={ref} {...stylex.props(styles.dialog)}>
       <h3 {...stylex.props(styles.heading)}>{title}</h3>
       <p {...stylex.props(styles.description)}>{description}</p>
       <div {...stylex.props(styles.actions)}>
@@ -135,6 +130,7 @@ const styles = stylex.create({
     maxWidth: '100%',
     padding: '20px',
     color: vars['--color-fd-muted-foreground'],
+    textTransform: 'none',
     backgroundColor: vars['--color-fd-card'],
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
@@ -193,5 +189,16 @@ const styles = stylex.create({
     backgroundColor: vars['--color-fd-primary'],
     borderColor: 'transparent',
     boxShadow: null,
+  },
+  srOnly: {
+    position: 'absolute',
+    width: 1,
+    height: 1,
+    padding: 0,
+    margin: -1,
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    borderWidth: 0,
+    clip: 'rect(0, 0, 0, 0)',
   },
 });

@@ -225,7 +225,7 @@ export const colors = stylex.defineConsts({
   text: "light-dark(#000, #fff)",
   cardBg: "light-dark(#ffffff, #1b1b1f)",
   cardBorder: "light-dark(rgb(0 0 0 / 14%), rgb(255 255 255 / 14%))",
-  title: "light-dark(hsl(248, 58.40%, 61.40%), hsl(267, 84%, 81%))",
+  title: "light-dark(hsl(266, 58%, 61.8%), hsl(267, 84%, 81%))",
   subtitle: "light-dark(rgb(0 0 0 / 65%), rgb(255 255 255 / 70%))",
   list: "light-dark(rgb(0 0 0 / 76%), rgb(255 255 255 / 82%))",
   buttonText: "light-dark(#fff, #000)",

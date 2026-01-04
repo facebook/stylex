@@ -52,28 +52,127 @@ declare const REACT_JSX_RUNTIME_TYPES: string;
 const LIGHT_EDITOR_THEME = 'stylex-light';
 const DARK_EDITOR_THEME = 'stylex-dark';
 const OUTPUT_TABS = [
-  { key: 'js', label: 'Generated JS' },
-  { key: 'css', label: 'Generated CSS' },
+  { key: 'js', label: 'JS output' },
+  { key: 'css', label: 'CSS output' },
 ] as const;
 
 const defineMonacoThemes = (monacoInstance: any) => {
   if (!monacoInstance?.editor?.defineTheme) {
     return;
   }
+
+  const colors = {
+    purpleLight: '#9b6ad4',
+    purpleDark: '#c9a0f0',
+    pinkLight: '#b35cc6',
+    pinkDark: '#d9a0e8',
+    blueLight: '#3966b8',
+    blueDark: '#92b8f8',
+    commentLight: '#6b6b7a',
+    commentDark: '#6b7280',
+    foregroundLight: '#000000',
+    foregroundDark: '#e4e4e7',
+  };
+
   monacoInstance.editor.defineTheme(LIGHT_EDITOR_THEME, {
     base: 'vs',
     inherit: true,
-    rules: [],
+    rules: [
+      {
+        token: 'keyword',
+        foreground: colors.purpleLight.slice(1),
+        fontStyle: '',
+      },
+      { token: 'keyword.control', foreground: colors.purpleLight.slice(1) },
+      { token: 'type', foreground: colors.pinkLight.slice(1) },
+      { token: 'type.identifier', foreground: colors.pinkLight.slice(1) },
+      { token: 'support.type', foreground: colors.pinkLight.slice(1) },
+      { token: 'entity.name.function', foreground: colors.blueLight.slice(1) },
+      { token: 'support.function', foreground: colors.blueLight.slice(1) },
+      { token: 'function', foreground: colors.blueLight.slice(1) },
+      { token: 'string', foreground: colors.blueLight.slice(1) },
+      { token: 'string.quoted', foreground: colors.blueLight.slice(1) },
+      { token: 'number', foreground: colors.blueLight.slice(1) },
+      { token: 'constant.numeric', foreground: colors.blueLight.slice(1) },
+      {
+        token: 'comment',
+        foreground: colors.commentLight.slice(1),
+        fontStyle: 'italic',
+      },
+      { token: 'variable', foreground: colors.foregroundLight.slice(1) },
+      { token: 'identifier', foreground: colors.foregroundLight.slice(1) },
+      { token: 'tag', foreground: colors.pinkLight.slice(1) },
+      { token: 'tag.html', foreground: colors.pinkLight.slice(1) },
+      { token: 'metatag', foreground: colors.pinkLight.slice(1) },
+      { token: 'attribute.name', foreground: colors.blueLight.slice(1) },
+      { token: 'attribute.value', foreground: colors.blueLight.slice(1) },
+      { token: 'delimiter', foreground: colors.commentLight.slice(1) },
+      { token: 'delimiter.bracket', foreground: colors.purpleLight.slice(1) },
+      { token: 'operator', foreground: colors.blueLight.slice(1) },
+      { token: 'constant', foreground: colors.blueLight.slice(1) },
+      { token: 'annotation', foreground: colors.pinkLight.slice(1) },
+    ],
     colors: {
       'editor.background': '#ffffff',
+      'editor.foreground': colors.foregroundLight,
+      'editorLineNumber.foreground': '#a0a0b0',
+      'editorLineNumber.activeForeground': colors.purpleLight,
+      'editor.selectionBackground': '#ddd6fe40',
+      'editor.lineHighlightBackground': '#f8f5ff',
+      'editorCursor.foreground': colors.purpleLight,
+      'editorIndentGuide.background': '#e5e5f0',
+      'editorIndentGuide.activeBackground': colors.purpleLight + '40',
     },
   });
+
   monacoInstance.editor.defineTheme(DARK_EDITOR_THEME, {
     base: 'vs-dark',
     inherit: true,
-    rules: [],
+    rules: [
+      {
+        token: 'keyword',
+        foreground: colors.purpleDark.slice(1),
+        fontStyle: '',
+      },
+      { token: 'keyword.control', foreground: colors.purpleDark.slice(1) },
+      { token: 'type', foreground: colors.pinkDark.slice(1) },
+      { token: 'type.identifier', foreground: colors.pinkDark.slice(1) },
+      { token: 'support.type', foreground: colors.pinkDark.slice(1) },
+      { token: 'entity.name.function', foreground: colors.blueDark.slice(1) },
+      { token: 'support.function', foreground: colors.blueDark.slice(1) },
+      { token: 'function', foreground: colors.blueDark.slice(1) },
+      { token: 'string', foreground: colors.blueDark.slice(1) },
+      { token: 'string.quoted', foreground: colors.blueDark.slice(1) },
+      { token: 'number', foreground: colors.blueDark.slice(1) },
+      { token: 'constant.numeric', foreground: colors.blueDark.slice(1) },
+      {
+        token: 'comment',
+        foreground: colors.commentDark.slice(1),
+        fontStyle: 'italic',
+      },
+      { token: 'variable', foreground: colors.foregroundDark.slice(1) },
+      { token: 'identifier', foreground: colors.foregroundDark.slice(1) },
+      { token: 'tag', foreground: colors.pinkDark.slice(1) },
+      { token: 'tag.html', foreground: colors.pinkDark.slice(1) },
+      { token: 'metatag', foreground: colors.pinkDark.slice(1) },
+      { token: 'attribute.name', foreground: colors.blueDark.slice(1) },
+      { token: 'attribute.value', foreground: colors.blueDark.slice(1) },
+      { token: 'delimiter', foreground: colors.commentDark.slice(1) },
+      { token: 'delimiter.bracket', foreground: colors.purpleDark.slice(1) },
+      { token: 'operator', foreground: colors.blueDark.slice(1) },
+      { token: 'constant', foreground: colors.blueDark.slice(1) },
+      { token: 'annotation', foreground: colors.pinkDark.slice(1) },
+    ],
     colors: {
       'editor.background': '#1e1e1e',
+      'editor.foreground': colors.foregroundDark,
+      'editorLineNumber.foreground': '#5a5a6a',
+      'editorLineNumber.activeForeground': colors.purpleDark,
+      'editor.selectionBackground': '#7c3aed30',
+      'editor.lineHighlightBackground': '#252530',
+      'editorCursor.foreground': colors.purpleDark,
+      'editorIndentGuide.background': '#333340',
+      'editorIndentGuide.activeBackground': colors.purpleDark + '40',
     },
   });
 };
@@ -207,6 +306,7 @@ export default function PlaygroundNew() {
   const monaco = useMonaco();
   const editorRef = useRef<any>(null);
   const [activeOutputTab, setActiveOutputTab] = useState<'js' | 'css'>('js');
+  const [outputCollapsed, setOutputCollapsed] = useState(false);
 
   const setInputFiles = useCallback(
     (updatedInputFiles: Record<string, string>, replace: boolean = true) => {
@@ -521,7 +621,6 @@ export const vars = stylex.defineVars({
       plugins: [estreePlugin as any, babelPlugin],
     });
 
-    // update the editor (source of truth)
     editorRef.current.executeEdits('format', [
       {
         range: model.getFullModelRange(),
@@ -542,7 +641,7 @@ export const vars = stylex.defineVars({
       <div {...stylex.props(styles.frame)}>
         <div {...stylex.props(styles.row)}>
           <div {...stylex.props(styles.column)}>
-            <Panel header="Source">
+            <Panel header="">
               <Tabs
                 activeFile={activeInputFile as string}
                 files={Object.keys(inputFiles)}
@@ -615,6 +714,8 @@ export const vars = stylex.defineVars({
                     scrollBeyondLastLine: true,
                     contextmenu: false,
                     readOnly: !sandpackInitialized,
+                    fontSize: 13,
+                    lineHeight: 22,
                   }}
                   path={`/${activeInputFile}`}
                   theme={
@@ -628,7 +729,12 @@ export const vars = stylex.defineVars({
                 <div {...stylex.props(styles.error)}>{error.message}</div>
               )}
             </Panel>
-            <CollapsiblePanel header="Output">
+            <div
+              {...stylex.props(
+                styles.panel,
+                outputCollapsed && styles.panelClosed,
+              )}
+            >
               <div {...stylex.props(styles.outputContent)}>
                 <Tabs
                   activeFile={
@@ -637,38 +743,44 @@ export const vars = stylex.defineVars({
                   }
                   files={OUTPUT_TABS.map((t) => t.label)}
                   hideFileIcon
+                  isCollapsed={outputCollapsed}
                   onSelectFile={(label) => {
                     const found = OUTPUT_TABS.find((t) => t.label === label);
                     if (found) setActiveOutputTab(found.key);
                   }}
+                  onToggleCollapse={() => setOutputCollapsed((c) => !c)}
                   readOnly
                 />
-                <div {...stylex.props(styles.outputEditor)}>
-                  <Editor
-                    beforeMount={defineMonacoThemes}
-                    defaultLanguage={
-                      activeOutputTab === 'css' ? 'css' : 'javascript'
-                    }
-                    options={{
-                      minimap: { enabled: false },
-                      scrollBeyondLastLine: false,
-                      contextmenu: false,
-                      readOnly: true,
-                    }}
-                    theme={
-                      colorMode === 'dark'
-                        ? DARK_EDITOR_THEME
-                        : LIGHT_EDITOR_THEME
-                    }
-                    value={
-                      activeOutputTab === 'css'
-                        ? cssOutput
-                        : transformedFiles[activeInputFile] || ''
-                    }
-                  />
-                </div>
+                {!outputCollapsed && (
+                  <div {...stylex.props(styles.outputEditor)}>
+                    <Editor
+                      beforeMount={defineMonacoThemes}
+                      defaultLanguage={
+                        activeOutputTab === 'css' ? 'css' : 'javascript'
+                      }
+                      options={{
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        contextmenu: false,
+                        readOnly: true,
+                        fontSize: 13,
+                        lineHeight: 22,
+                      }}
+                      theme={
+                        colorMode === 'dark'
+                          ? DARK_EDITOR_THEME
+                          : LIGHT_EDITOR_THEME
+                      }
+                      value={
+                        activeOutputTab === 'css'
+                          ? cssOutput
+                          : transformedFiles[activeInputFile] || ''
+                      }
+                    />
+                  </div>
+                )}
               </div>
-            </CollapsiblePanel>
+            </div>
           </div>
           <div {...stylex.props(styles.column)}>
             <CollapsiblePanel
@@ -724,7 +836,7 @@ function CollapsiblePanel({
   style?: stylex.StyleXStyles;
   alwaysOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(alwaysOpen);
+  const [open, setOpen] = useState(alwaysOpen || !header);
 
   return (
     <div
@@ -735,21 +847,23 @@ function CollapsiblePanel({
         style,
       )}
     >
-      <button
-        {...stylex.props(
-          styles.panelHeader,
-          alwaysOpen && styles.panelHeaderButtonAlwaysOpen,
-        )}
-        onClick={() => setOpen((open) => !open)}
-      >
-        {header}
-        <ChevronDown
+      {header && (
+        <button
           {...stylex.props(
-            styles.panelChevron,
-            open && styles.panelChevronOpen,
+            styles.panelHeader,
+            alwaysOpen && styles.panelHeaderButtonAlwaysOpen,
           )}
-        />
-      </button>
+          onClick={() => setOpen((open) => !open)}
+        >
+          {header}
+          <ChevronDown
+            {...stylex.props(
+              styles.panelChevron,
+              open && styles.panelChevronOpen,
+            )}
+          />
+        </button>
+      )}
       <div
         {...stylex.props(
           styles.panelContent,
