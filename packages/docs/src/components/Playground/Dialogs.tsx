@@ -76,10 +76,10 @@ const styles = stylex.create({
     },
   },
   content: {
+    padding: '20px',
     fontStyle: 'normal',
     color: vars['--color-fd-muted-foreground'],
     textTransform: 'none',
-    padding: '20px',
   },
   heading: {
     marginTop: 0,
