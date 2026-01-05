@@ -41,6 +41,10 @@ import transformStyleXDefineMarker from './visitors/stylex-define-marker';
 
 const NAME = 'stylex';
 
+// Precompiled regex patterns for media query sorting
+const MAX_WIDTH_REGEX = /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
+const MIN_WIDTH_REGEX = /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
+
 export type Options = StyleXOptions;
 
 /**
@@ -471,8 +475,6 @@ function processStylexRules(
           const query1 = rule1.slice(0, rule1.indexOf('{'));
           const query2 = rule2.slice(0, rule2.indexOf('{'));
           if (query1 !== query2) {
-            const MAX_WIDTH_REGEX = /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
-            const MIN_WIDTH_REGEX = /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
             const maxWidth1Match = query1.match(MAX_WIDTH_REGEX);
             const maxWidth2Match = query2.match(MAX_WIDTH_REGEX);
             const minWidth1Match = query1.match(MIN_WIDTH_REGEX);
