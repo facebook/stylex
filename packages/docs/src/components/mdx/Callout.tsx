@@ -27,14 +27,13 @@ function resolveType(
   return type;
 }
 
-export interface CalloutProps extends Omit<CalloutContainerProps, 'title'> {
-  title?: ReactNode;
+export interface CalloutProps extends CalloutContainerProps {
   children: ReactNode;
 }
 
 export function Callout({ children, title, ...props }: CalloutProps) {
   return (
-    <CalloutContainer {...props}>
+    <CalloutContainer title={title} {...props}>
       {title && <CalloutTitle>{title}</CalloutTitle>}
       <CalloutDescription>{children}</CalloutDescription>
     </CalloutContainer>
@@ -42,7 +41,10 @@ export function Callout({ children, title, ...props }: CalloutProps) {
 }
 
 export interface CalloutContainerProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+  extends Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'className' | 'style' | 'title'
+  > {
   /**
    * @defaultValue info
    */
@@ -51,6 +53,7 @@ export interface CalloutContainerProps
    * Force an icon
    */
   icon?: ReactNode;
+  title?: ReactNode;
   children: ReactNode;
 }
 
@@ -58,19 +61,22 @@ export function CalloutContainer({
   type: inputType = 'info',
   icon,
   children,
+  title,
   ...props
 }: CalloutContainerProps) {
   const type = resolveType(inputType);
 
+  const iconStyleProps = stylex.props(
+    iconStyles.base,
+    title !== undefined && iconStyles.withTitle,
+    iconStyles[type],
+  );
+
   const defaultIcon = {
-    info: <Info {...stylex.props(iconStyles.base, iconStyles[type])} />,
-    warning: (
-      <TriangleAlert {...stylex.props(iconStyles.base, iconStyles[type])} />
-    ),
-    error: <CircleX {...stylex.props(iconStyles.base, iconStyles[type])} />,
-    success: (
-      <CircleCheck {...stylex.props(iconStyles.base, iconStyles[type])} />
-    ),
+    info: <Info {...iconStyleProps} />,
+    warning: <TriangleAlert {...iconStyleProps} />,
+    error: <CircleX {...iconStyleProps} />,
+    success: <CircleCheck {...iconStyleProps} />,
   }[type];
 
   return (
@@ -121,10 +127,13 @@ const iconStyles = stylex.create({
   base: {
     flexShrink: 0,
     width: 20,
-    height: 20,
+    height: 'calc(16px * 1.65)',
     marginInlineEnd: -2,
     color: vars['--color-fd-card'],
     fill: vars['--color-fd-card'],
+  },
+  withTitle: {
+    height: 'calc(14px * 1.5)',
   },
   info: { fill: vars['--color-fd-info'] },
   warning: { fill: vars['--color-fd-warning'] },
