@@ -56,6 +56,10 @@ export type {
 
 import { styleq } from 'styleq';
 
+const optimizedStyleq = styleq.factory({
+  disableMix: true,
+});
+
 const errorForFn = (name: string) =>
   new Error(
     `Unexpected 'stylex.${name}' call at runtime. Styles must be compiled by '@stylexjs/babel-plugin'.`,
@@ -114,7 +118,7 @@ export function props(
   'data-style-src'?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
 }> {
-  const [className, style, dataStyleSrc] = styleq(styles);
+  const [className, style, dataStyleSrc] = optimizedStyleq(styles);
   const result: {
     className?: string,
     'data-style-src'?: string,
