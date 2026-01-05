@@ -182,6 +182,7 @@ const styles = stylex.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: 16,
   },
   title: {
     flexGrow: 1,
