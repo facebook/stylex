@@ -23,8 +23,12 @@ const percentage = '%';
 
 export default function normalizeZeroDimensions(
   ast: PostCSSValueAST,
-  _: mixed,
+  key: mixed,
 ): PostCSSValueAST {
+  if (typeof key === 'string' && key.startsWith('--')) {
+    return ast;
+  }
+
   let endFunction = 0;
 
   ast.walk((node) => {
