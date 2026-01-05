@@ -1,0 +1,36 @@
+{
+  "name": "create-stylex-app",
+  "version": "0.1.0",
+  "description": "Scaffold a new StyleX project from official templates",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "create-stylex-app": "./lib/index.js"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stylex",
+    "scaffold",
+    "cli",
+    "create-app"
+  ],
+  "dependencies": {
+    "yargs": "^18.0.0",
+    "ansis": "^3.3.2",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.26.4",
+    "@babel/core": "^7.26.8",
+    "@babel/preset-env": "^7.26.8",
+    "cross-env": "^10.1.0",
+    "scripts": "0.17.4"
+  }
+}
