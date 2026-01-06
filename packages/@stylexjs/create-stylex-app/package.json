@@ -26,7 +26,8 @@
     "ansis": "^3.3.2",
     "fs-extra": "^11.3.0",
     "cross-spawn": "^7.0.6",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "ora": "^9.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
