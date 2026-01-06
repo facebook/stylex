@@ -1,4 +1,5 @@
 # create-stylex-app Implementation Plan
+(will be deleted when project is complete/before branch is merged)
 
 > **Focus**: Core functionality with extensible architecture for future enhancements
 >
@@ -47,12 +48,12 @@
 - [x] Step 28: Test end-to-end manually ⭐ **MILESTONE: First working template** (Implementation complete - ready for testing)
 
 **Part 5: Add Dependency Installation (Steps 29-34)**
-- [ ] Step 29: Add cross-spawn dependency
-- [ ] Step 30: Create src/utils/packages.ts for package manager detection
-- [ ] Step 31: Add install function
-- [ ] Step 32: Add --no-install flag to skip installation
-- [ ] Step 33: Call install function conditionally
-- [ ] Step 34: Update success message based on install status
+- [x] Step 29: Add cross-spawn dependency
+- [x] Step 30: Create src/utils/packages.ts for package manager detection
+- [x] Step 31: Add install function
+- [x] Step 32: Add --no-install flag to skip installation
+- [x] Step 33: Call install function conditionally
+- [x] Step 34: Update success message based on install status
 
 **Part 6: Add Template Selection (Steps 35-39)**
 - [ ] Step 35: Add remaining templates to templates.ts
@@ -202,6 +203,48 @@ rm -rf test-app
 - ✅ `yarn dev` starts Next.js dev server successfully
 
 **Next**: Proceed to Parts 5-8 for additional features (dependency installation, template selection, feature flags, polish)
+
+---
+
+#### [2026-01-06] - Steps 29-34: Add Dependency Installation
+**Status**: ✅ Complete
+**Findings**:
+- **Issue #1**: Yargs flag naming - Using `--no-install` as option name doesn't work as expected
+  - Initial implementation used `.option('no-install', { type: 'boolean', default: false })`
+  - This didn't work because yargs doesn't auto-create negation for options starting with "no-"
+  - **Solution**: Changed to `.option('install', { type: 'boolean', default: true })`
+  - Now `--no-install` properly sets `argv.install = false` (yargs auto-negation)
+- Package manager detection works by checking for lock files in current directory
+- `cross-spawn` provides cross-platform process spawning (industry standard)
+- Installation runs synchronously with `stdio: 'inherit'` to show progress to user
+
+**Implementation Complete**:
+- ✅ Added cross-spawn@^7.0.6 dependency to package.json
+- ✅ Created src/utils/packages.js with:
+  - `detectPackageManager()` - detects npm/yarn/pnpm by lock files
+  - `installDependencies(targetDir, packageManager)` - runs install with spawn.sync
+- ✅ Added `--install` flag (default: true) to yargs CLI
+  - Users can pass `--no-install` to skip installation
+- ✅ Conditional installation logic in main CLI flow
+- ✅ Success message adapts based on install status
+  - Shows "npm install" step only if `--no-install` was used
+
+**Testing Results**:
+```bash
+# Test 1: Without flag (default behavior - auto install)
+node lib/index.js test-with-install
+# ✅ Dependencies installed automatically with yarn
+# ✅ Success message doesn't show "npm install" step
+# ✅ Dev server starts successfully
+
+# Test 2: With --no-install flag
+node lib/index.js test-no-install --no-install
+# ✅ Installation skipped
+# ✅ Success message shows "npm install" as first step
+# ✅ Package.json created correctly
+```
+
+**Next**: Part 6 - Add Template Selection (Steps 35-39)
 
 ---
 
@@ -2030,3 +2073,10 @@ describe('create-stylex-app', () => {
 3. **Stability**: Battle-tested libraries, not bleeding-edge
 4. **Maintainability**: Same stack = easier to maintain across CLI tools
 5. **Auto-updates**: ✨ **StyleX versions always current from examples** ✨
+
+---
+
+## TODOs / Open Issues
+
+### Dependency Version Alignment
+**Issue**: When adding new dependencies to `packages/create-stylex-app/package.json`, versions must be manually aligned with existing versions used elsewhere in the monorepo to avoid unnecessary `yarn.lock` changes. Currently, there's no automated way to detect or enforce version consistency across workspace packages.

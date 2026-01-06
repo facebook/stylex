@@ -24,7 +24,8 @@
   "dependencies": {
     "yargs": "^18.0.0",
     "ansis": "^3.3.2",
-    "fs-extra": "^11.2.0"
+    "fs-extra": "^11.3.0",
+    "cross-spawn": "^7.0.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
