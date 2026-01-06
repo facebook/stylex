@@ -25,6 +25,32 @@ const TEMPLATES = [
       'pnpm-lock.yaml',
     ],
   },
+  {
+    id: 'vite-react',
+    name: 'Vite + React (TypeScript)',
+    exampleSource: 'example-vite-react',
+    excludeFiles: [
+      'node_modules',
+      'dist',
+      '.vite',
+      'package-lock.json',
+      'yarn.lock',
+      'pnpm-lock.yaml',
+    ],
+  },
+  {
+    id: 'vite',
+    name: 'Vite (Vanilla TypeScript)',
+    exampleSource: 'example-vite',
+    excludeFiles: [
+      'node_modules',
+      'dist',
+      '.vite',
+      'package-lock.json',
+      'yarn.lock',
+      'pnpm-lock.yaml',
+    ],
+  },
 ];
 
 module.exports = { TEMPLATES };

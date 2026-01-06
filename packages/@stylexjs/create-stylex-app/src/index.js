@@ -12,6 +12,7 @@
 
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
+const prompts = require('prompts');
 const fs = require('fs-extra');
 const path = require('path');
 const { TEMPLATES } = require('./templates');
@@ -29,6 +30,12 @@ async function main() {
       .positional('project-name', {
         describe: 'Name of the project',
         type: 'string',
+      })
+      .option('framework', {
+        alias: 'f',
+        describe: 'Framework to use',
+        type: 'string',
+        choices: ['nextjs', 'vite-react', 'vite'],
       })
       .option('install', {
         describe: 'Install dependencies automatically',
@@ -71,14 +78,39 @@ async function main() {
     await fs.ensureDir(targetDir);
     console.log('✓ Created directory:', targetDir);
 
-    // Use first template for now (vite-react)
-    const template = TEMPLATES[0];
+    // Select template
+    let templateId = argv.framework;
+
+    if (!templateId) {
+      const response = await prompts({
+        type: 'select',
+        name: 'framework',
+        message: 'Select a framework',
+        choices: TEMPLATES.map((t) => ({
+          title: t.name,
+          value: t.id,
+        })),
+      });
+
+      templateId = response.framework;
+
+      if (!templateId) {
+        console.error('Error: Framework selection required');
+        process.exit(1);
+      }
+    }
+
+    const template = TEMPLATES.find((t) => t.id === templateId);
+    if (!template) {
+      throw new Error(`Template not found: ${templateId}`);
+    }
+
     console.log('✓ Using template:', template.name);
 
     // Resolve example source directory
     const exampleDir = path.resolve(
       __dirname,
-      '../../../examples',
+      '../../../../examples',
       template.exampleSource,
     );
 

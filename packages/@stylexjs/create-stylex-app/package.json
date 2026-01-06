@@ -1,5 +1,5 @@
 {
-  "name": "create-stylex-app",
+  "name": "@stylexjs/create-stylex-app",
   "version": "0.1.0",
   "description": "Scaffold a new StyleX project from official templates",
   "repository": "https://www.github.com/facebook/stylex",
@@ -25,7 +25,8 @@
     "yargs": "^18.0.0",
     "ansis": "^3.3.2",
     "fs-extra": "^11.3.0",
-    "cross-spawn": "^7.0.6"
+    "cross-spawn": "^7.0.6",
+    "prompts": "^2.4.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.26.4",
