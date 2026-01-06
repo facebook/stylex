@@ -133,33 +133,61 @@
 - ✅ src/utils/files.js with copyDirectory utility
 - ✅ All steps 1-27 complete
 
-**Testing Instructions (Step 28)**:
-To test the implementation, run the following commands:
+---
 
+#### [2026-01-05] - Step 28: Testing & Critical Bug Fixes
+**Status**: ✅ Complete
+**Findings**:
+- **Critical Issue #1**: `@stylexjs/shared-ui` is a **private monorepo package** (not published to npm)
+  - The Vite examples (`example-vite-react`, `example-vite`) use `@stylexjs/shared-ui` for demo purposes
+  - Generated projects failed on `yarn install` because `@stylexjs/shared-ui` doesn't exist on npm
+  - `example-nextjs` does NOT use `@stylexjs/shared-ui` - it's self-contained
+- **Issue #2**: Script names have `example:` prefix in monorepo examples
+  - Examples use `example:dev`, `example:build`, etc. (to avoid conflicts in monorepo)
+  - Standalone projects should use standard names: `dev`, `build`, etc.
+- All example `package.json` files are **package manager agnostic** (no `packageManager` field)
+- Root monorepo has `"packageManager": "yarn@1.22.22"` but examples don't propagate it
+
+**Decisions Made**:
+- **Changed default template from `vite-react` to `nextjs`** (Step 19)
+  - Reason: Next.js template is self-contained and doesn't depend on monorepo-only packages
+  - Next.js is also the most popular framework choice
+- **Added dependency filtering in Step 25** to remove monorepo-only packages
+  - Filters out `@stylexjs/shared-ui` from both dependencies and devDependencies
+  - Future-proof: can add more private packages to filter if needed
+- **Added script normalization in Step 25** to remove `example:` prefix
+  - Transforms `example:dev` → `dev`, `example:build` → `build`, etc.
+  - Makes generated projects follow standard npm/yarn conventions
+- **Keep generated projects package manager agnostic**
+  - Don't copy `packageManager` field from examples (they don't have it anyway)
+  - Users can use npm, yarn, or pnpm - whatever they prefer
+  - Part 5 (Steps 29-34) will auto-detect package manager
+
+**Code Changes**:
+1. Updated `src/templates.js`: Changed default template to `example-nextjs`
+2. Updated `src/index.js` (Step 25):
+   - Added `filterPrivateDeps()` function to exclude `@stylexjs/shared-ui`
+   - Added `normalizeScripts()` function to remove `example:` prefix from script names
+
+**Testing Instructions (Step 28)**:
 ```bash
 # From the root of the monorepo
 cd /Users/anay/stylex
 
-# Install dependencies (if not already installed)
-# Note: Yarn 1.22.22 is required (specified in package.json)
-yarn install
-
 # Build the create-stylex-app package
 cd packages/create-stylex-app
-npm run build  # or: yarn build
+yarn build
 
 # Test the CLI
 node lib/index.js test-app
 
 # Verify the generated project
 cd test-app
-ls -la
-cat package.json
-cat README.md
+cat package.json  # Should NOT contain @stylexjs/shared-ui
 
-# Install dependencies and run the project
-npm install
-npm run dev
+# Install dependencies and run
+yarn install  # Should succeed without errors
+yarn dev      # Next.js dev server should start
 
 # Clean up test
 cd ..
@@ -167,11 +195,11 @@ rm -rf test-app
 ```
 
 **Expected Results**:
-- ✅ CLI should create a new directory named `test-app`
-- ✅ Should copy files from `examples/example-vite-react`
-- ✅ Should generate `package.json` with current StyleX versions
-- ✅ Should generate `README.md` with project info
-- ✅ Running `npm run dev` should start the Vite dev server
+- ✅ CLI creates directory named `test-app`
+- ✅ Copies files from `examples/example-nextjs`
+- ✅ Generates `package.json` WITHOUT `@stylexjs/shared-ui`
+- ✅ `yarn install` succeeds (no missing package errors)
+- ✅ `yarn dev` starts Next.js dev server successfully
 
 **Next**: Proceed to Parts 5-8 for additional features (dependency installation, template selection, feature flags, polish)
 
@@ -455,14 +483,22 @@ async function scaffold(options: ScaffoldOptions) {
     ]
   });
 
-  // 5. Generate custom package.json
+  // 5. Generate custom package.json with dependency filtering
+  // IMPORTANT: Filter out monorepo-only packages that aren't published to npm
+  const filterPrivateDeps = (deps) => {
+    if (!deps) return deps;
+    const filtered = { ...deps };
+    delete filtered['@stylexjs/shared-ui']; // Not published to npm
+    return filtered;
+  };
+
   await writePackageJson(targetDir, {
     name: options.projectName,
     version: '0.1.0',
     private: true,
     scripts: examplePkg.scripts,
-    dependencies: examplePkg.dependencies,      // ✅ Current StyleX versions!
-    devDependencies: examplePkg.devDependencies // ✅ Current StyleX versions!
+    dependencies: filterPrivateDeps(examplePkg.dependencies),      // ✅ Current StyleX versions!
+    devDependencies: filterPrivateDeps(examplePkg.devDependencies) // ✅ No private packages!
   });
 
   // 6. Apply feature flags (--with-reset, --with-theme, --strict)
@@ -482,6 +518,11 @@ async function scaffold(options: ScaffoldOptions) {
 3. ✅ **Single source of truth** - Examples are already tested and maintained
 4. ✅ **Smaller package** - No duplicate template files in npm package
 5. ✅ **Consistency** - Users get exactly what's in examples
+6. ✅ **Dependency filtering** - Automatically excludes monorepo-only packages
+
+### Important Note: Monorepo-Only Dependencies
+
+Some examples may reference **private monorepo packages** that aren't published to npm (e.g., `@stylexjs/shared-ui`). The scaffolding tool automatically filters these out during package.json generation to ensure generated projects can install dependencies successfully.
 
 ---
 
@@ -949,13 +990,15 @@ export interface TemplateConfig {
 
 export const TEMPLATES: TemplateConfig[] = [
   {
-    id: 'vite-react',
-    name: 'Vite + React (TypeScript)',
-    exampleSource: 'example-vite-react',
-    excludeFiles: ['node_modules', 'dist', '.vite', 'package-lock.json', 'yarn.lock']
+    id: 'nextjs',
+    name: 'Next.js (App Router + TypeScript)',
+    exampleSource: 'example-nextjs',
+    excludeFiles: ['node_modules', '.next', 'package-lock.json', 'yarn.lock']
   }
 ];
 ```
+**Note**: Using `example-nextjs` instead of `example-vite-react` because Next.js template is self-contained and doesn't depend on monorepo-only packages like `@stylexjs/shared-ui`.
+
 ✅ **Done when**: Template config exports successfully
 
 ---
@@ -965,7 +1008,7 @@ export const TEMPLATES: TemplateConfig[] = [
 // In src/index.ts
 import { TEMPLATES } from './templates.js';
 
-const template = TEMPLATES[0]; // Use vite-react for now
+const template = TEMPLATES[0]; // Use nextjs for now
 console.log('✓ Using template:', template.name);
 ```
 ✅ **Done when**: Template is selected
@@ -1063,14 +1106,35 @@ console.log('  StyleX version:', examplePkg.dependencies['@stylexjs/stylex']);
 
 **Step 25**: Generate new package.json
 ```typescript
+// Filter out monorepo-only packages (like @stylexjs/shared-ui)
+const filterPrivateDeps = (deps) => {
+  if (!deps) return deps;
+  const filtered = { ...deps };
+  // Remove @stylexjs/shared-ui - it's private to the monorepo
+  delete filtered['@stylexjs/shared-ui'];
+  return filtered;
+};
+
+// Normalize script names (remove "example:" prefix used in monorepo)
+const normalizeScripts = (scripts) => {
+  if (!scripts) return scripts;
+  const normalized = {};
+  for (const [key, value] of Object.entries(scripts)) {
+    // Remove "example:" prefix if present
+    const normalizedKey = key.replace(/^example:/, '');
+    normalized[normalizedKey] = value;
+  }
+  return normalized;
+};
+
 const newPkg = {
   name: projectName,
   version: '0.1.0',
   private: true,
   type: examplePkg.type,
-  scripts: examplePkg.scripts,
-  dependencies: examplePkg.dependencies,
-  devDependencies: examplePkg.devDependencies
+  scripts: normalizeScripts(examplePkg.scripts),
+  dependencies: filterPrivateDeps(examplePkg.dependencies),
+  devDependencies: filterPrivateDeps(examplePkg.devDependencies)
 };
 
 await fs.writeJson(
@@ -1081,7 +1145,11 @@ await fs.writeJson(
 
 console.log('✓ Generated package.json');
 ```
-✅ **Done when**: New package.json is created with current StyleX versions
+**Note**:
+- The `filterPrivateDeps()` function removes monorepo-only packages that aren't published to npm (like `@stylexjs/shared-ui`). This ensures generated projects can install dependencies successfully.
+- The `normalizeScripts()` function removes the `example:` prefix from script names (e.g., `example:dev` → `dev`), making them follow standard npm conventions.
+
+✅ **Done when**: New package.json is created with current StyleX versions, normalized scripts, and no private dependencies
 
 ---
 
@@ -1125,19 +1193,28 @@ console.log('  npm run dev');
 
 **Step 28**: Test end-to-end manually
 ```bash
-npm run build
-node dist/index.js test-app
+# Build
+yarn build
+
+# Test CLI
+node lib/index.js test-app
+
+# Verify generated project
 cd test-app
-npm install
-npm run dev
+cat package.json  # Should NOT contain @stylexjs/shared-ui
+
+# Install and run
+yarn install  # Should succeed without errors
+yarn dev      # Next.js dev server should start
 ```
 ✅ **Done when**:
 - Project is created
-- Files are copied correctly
-- package.json has current StyleX version
+- Files are copied correctly from `example-nextjs`
+- package.json has current StyleX version and NO `@stylexjs/shared-ui`
+- `yarn install` succeeds without missing package errors
 - Dev server starts successfully
 
----
+**⭐ MILESTONE: First working template**
 
 #### Part 5: Add Dependency Installation (Steps 29-34)
 

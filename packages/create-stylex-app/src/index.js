@@ -103,14 +103,35 @@ async function main() {
     );
 
     // Generate new package.json
+    // Filter out monorepo-only packages (like @stylexjs/shared-ui)
+    const filterPrivateDeps = (deps) => {
+      if (!deps) return deps;
+      const filtered = { ...deps };
+      // Remove @stylexjs/shared-ui - it's private to the monorepo
+      delete filtered['@stylexjs/shared-ui'];
+      return filtered;
+    };
+
+    // Normalize script names (remove "example:" prefix used in monorepo)
+    const normalizeScripts = (scripts) => {
+      if (!scripts) return scripts;
+      const normalized = {};
+      for (const [key, value] of Object.entries(scripts)) {
+        // Remove "example:" prefix if present
+        const normalizedKey = key.replace(/^example:/, '');
+        normalized[normalizedKey] = value;
+      }
+      return normalized;
+    };
+
     const newPkg = {
       name: projectName,
       version: '0.1.0',
       private: true,
       type: examplePkg.type,
-      scripts: examplePkg.scripts,
-      dependencies: examplePkg.dependencies,
-      devDependencies: examplePkg.devDependencies,
+      scripts: normalizeScripts(examplePkg.scripts),
+      dependencies: filterPrivateDeps(examplePkg.dependencies),
+      devDependencies: filterPrivateDeps(examplePkg.devDependencies),
     };
 
     await fs.writeJson(path.join(targetDir, 'package.json'), newPkg, {
