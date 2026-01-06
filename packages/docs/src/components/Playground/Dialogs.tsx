@@ -34,23 +34,25 @@ export function ConfirmDialog({
       ref={ref}
       {...stylex.props(styles.dialog)}
     >
-      <h3 {...stylex.props(styles.heading)}>{title}</h3>
-      <p {...stylex.props(styles.description)}>{description}</p>
-      <div {...stylex.props(styles.actions)}>
-        <button
-          {...stylex.props(styles.button)}
-          onClick={onCancel}
-          type="button"
-        >
-          Cancel
-        </button>
-        <button
-          {...stylex.props(styles.button, styles.primary)}
-          onClick={() => onConfirm?.()}
-          type="button"
-        >
-          Confirm
-        </button>
+      <div {...stylex.props(styles.content)}>
+        <h3 {...stylex.props(styles.heading)}>{title}</h3>
+        <p {...stylex.props(styles.description)}>{description}</p>
+        <div {...stylex.props(styles.actions)}>
+          <button
+            {...stylex.props(styles.button)}
+            onClick={onCancel}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            {...stylex.props(styles.button, styles.primary)}
+            onClick={() => onConfirm?.()}
+            type="button"
+          >
+            Confirm
+          </button>
+        </div>
       </div>
     </dialog>
   );
@@ -62,10 +64,6 @@ const styles = stylex.create({
     left: '50%',
     width: 480,
     maxWidth: '100%',
-    padding: '20px',
-    fontStyle: 'normal',
-    color: vars['--color-fd-muted-foreground'],
-    textTransform: 'none',
     backgroundColor: vars['--color-fd-card'],
     borderColor: vars['--color-fd-border'],
     borderStyle: 'solid',
@@ -76,6 +74,12 @@ const styles = stylex.create({
     '::backdrop': {
       backdropFilter: 'brightness(0.8) blur(2px)',
     },
+  },
+  content: {
+    padding: '20px',
+    fontStyle: 'normal',
+    color: vars['--color-fd-muted-foreground'],
+    textTransform: 'none',
   },
   heading: {
     marginTop: 0,
