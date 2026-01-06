@@ -16,6 +16,9 @@ const TEMPLATES = [
   {
     id: 'nextjs',
     name: 'Next.js (App Router + TypeScript)',
+    description: 'Full-stack React framework with server components',
+    features: ['SSR', 'App Router', 'TypeScript', 'Hot Reload'],
+    recommended: true,
     exampleSource: 'example-nextjs',
     excludeFiles: [
       'node_modules',
@@ -28,6 +31,8 @@ const TEMPLATES = [
   {
     id: 'vite-react',
     name: 'Vite + React (TypeScript)',
+    description: 'Fast development with instant HMR',
+    features: ['React 18', 'TypeScript', 'Fast HMR', 'SWC'],
     exampleSource: 'example-vite-react',
     excludeFiles: [
       'node_modules',
@@ -41,6 +46,8 @@ const TEMPLATES = [
   {
     id: 'vite',
     name: 'Vite (Vanilla TypeScript)',
+    description: 'Lightweight setup without a framework',
+    features: ['Vanilla TS', 'Fast HMR', 'Minimal'],
     exampleSource: 'example-vite',
     excludeFiles: [
       'node_modules',

@@ -31,15 +31,17 @@ async function detectPackageManager() {
  * @returns {Promise<void>}
  */
 async function installDependencies(targetDir, packageManager) {
-  console.log(`\nInstalling dependencies with ${packageManager}...`);
-
   const result = spawn.sync(packageManager, ['install'], {
     cwd: targetDir,
     stdio: 'inherit',
   });
 
   if (result.status !== 0) {
-    throw new Error(`${packageManager} install failed`);
+    const { errors } = require('./errors');
+    errors
+      .installationFailed(packageManager, result.status || 'unknown')
+      .display();
+    process.exit(1);
   }
 }
 
