@@ -16,6 +16,10 @@ const fs = require('fs-extra');
 const path = require('path');
 const { TEMPLATES } = require('./templates');
 const { copyDirectory } = require('./utils/files');
+const {
+  detectPackageManager,
+  installDependencies,
+} = require('./utils/packages');
 
 async function main() {
   try {
@@ -25,6 +29,11 @@ async function main() {
       .positional('project-name', {
         describe: 'Name of the project',
         type: 'string',
+      })
+      .option('install', {
+        describe: 'Install dependencies automatically',
+        type: 'boolean',
+        default: true,
       })
       .help()
       .parse();
@@ -160,11 +169,24 @@ This project uses the **${template.name}** template.
     await fs.writeFile(path.join(targetDir, 'README.md'), readme);
     console.log('✓ Generated README.md');
 
+    // Install dependencies unless --no-install flag is set
+    if (argv.install) {
+      const pm = await detectPackageManager();
+      await installDependencies(targetDir, pm);
+      console.log('✓ Dependencies installed');
+    } else {
+      console.log('⊘ Skipped dependency installation');
+    }
+
     // Print success message
     console.log('\n✨ Success! Created', projectName, 'at', targetDir);
     console.log('\nNext steps:');
     console.log('  cd', projectName);
-    console.log('  npm install');
+
+    if (!argv.install) {
+      console.log('  npm install');
+    }
+
     console.log('  npm run dev');
   } catch (error) {
     console.error('Error:', error.message);
