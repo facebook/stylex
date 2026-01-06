@@ -14,13 +14,12 @@
  */
 const TEMPLATES = [
   {
-    id: 'vite-react',
-    name: 'Vite + React (TypeScript)',
-    exampleSource: 'example-vite-react',
+    id: 'nextjs',
+    name: 'Next.js (App Router + TypeScript)',
+    exampleSource: 'example-nextjs',
     excludeFiles: [
       'node_modules',
-      'dist',
-      '.vite',
+      '.next',
       'package-lock.json',
       'yarn.lock',
       'pnpm-lock.yaml',
