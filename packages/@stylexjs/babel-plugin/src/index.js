@@ -402,6 +402,7 @@ function processStylexRules(
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
         useLegacyClassnamesSort?: boolean,
+        sortMediaQueriesByBreakpoint?: boolean,
         ...
       },
 ): string {
@@ -410,6 +411,7 @@ function processStylexRules(
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
     useLegacyClassnamesSort = false,
+    sortMediaQueriesByBreakpoint = true,
   } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
   if (rules.length === 0) {
     return '';
@@ -471,7 +473,11 @@ function processStylexRules(
       if (useLegacyClassnamesSort) {
         return classname1.localeCompare(classname2);
       } else {
-        if (rule1.startsWith('@') && rule2.startsWith('@')) {
+        if (
+          sortMediaQueriesByBreakpoint &&
+          rule1.startsWith('@media') &&
+          rule2.startsWith('@media')
+        ) {
           const query1 = rule1.slice(0, rule1.indexOf('{'));
           const query2 = rule2.slice(0, rule2.indexOf('{'));
           if (query1 !== query2) {
