@@ -749,30 +749,40 @@ export function splitSpecificShorthands(
 
     const suffix = property.replace('border-', '');
 
-    if (values.length === 2) {
-      return [
-        [
-          toCamelCase(`border-block-${suffix}`),
-          applyImportant(values[0], importantSuffix),
-        ],
-        [
-          toCamelCase(`border-inline-${suffix}`),
-          applyImportant(values[1], importantSuffix),
-        ],
-      ];
-    }
-
     if (allSameValues) {
       return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
     }
 
     const expanded = expandQuadValues(values);
-    const keys = [
-      `border-top-${suffix}`,
-      `border-inline-end-${suffix}`,
-      `border-bottom-${suffix}`,
-      `border-inline-start-${suffix}`,
-    ];
+    const isBlockInline =
+      expanded[0] === expanded[2] && expanded[1] === expanded[3];
+
+    if (isBlockInline) {
+      return [
+        [
+          toCamelCase(`border-block-${suffix}`),
+          applyImportant(expanded[0], importantSuffix),
+        ],
+        [
+          toCamelCase(`border-inline-${suffix}`),
+          applyImportant(expanded[1], importantSuffix),
+        ],
+      ];
+    }
+
+    const keys = _preferInline
+      ? [
+          `border-top-${suffix}`,
+          `border-inline-end-${suffix}`,
+          `border-bottom-${suffix}`,
+          `border-inline-start-${suffix}`,
+        ]
+      : [
+          `border-top-${suffix}`,
+          `border-right-${suffix}`,
+          `border-bottom-${suffix}`,
+          `border-left-${suffix}`,
+        ];
 
     const entries = [];
 
