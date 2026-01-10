@@ -52,6 +52,7 @@ const shorthandAliases: $ReadOnly<{
   borderBottom: createSpecificTransformer('border-bottom'),
   borderLeft: createSpecificTransformer('border-left'),
   borderRadius: createSpecificTransformer('border-radius'),
+  cornerShape: createSpecificTransformer('corner-shape'),
   outline: createSpecificTransformer('outline'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),

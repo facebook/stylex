@@ -888,8 +888,6 @@ const styles = stylex.create({
     containerType: 'inline-size',
   },
   frame: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     boxSizing: 'border-box',
     width: '100%',
     height: '100%',
@@ -900,6 +898,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 20,
+    cornerShape: 'squircle',
   },
   row: {
     display: 'flex',
