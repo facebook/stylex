@@ -42,7 +42,7 @@ type Props = $ReadOnly<{
   style?: StyleXStyles<>,
 }>;
 
-function MyComponent({style, ...otherProps}: Props): React.MixedElement {
+function MyComponent({style, ...otherProps}: Props) {
   return (
     <div
       {...stylex.props(localStyles.foo, localStyles.bar, style)}
@@ -225,7 +225,7 @@ type Props = {
   style?: NoLayout,
 };
 
-function MyComponent({style, ...}: Props) {
+function MyComponent({style, ...otherProps}: Props) {
   return (
     <div
       {...stylex.props(localStyles.foo, localStyles.bar, style)}
@@ -279,7 +279,7 @@ type Props = $ReadOnly<{
   style?: NoLayout,
 }>;
 
-function MyComponent({style, ...}: Props): React.MixedElement {
+function MyComponent({style, ...otherProps }: Props) {
   return (
     <div
       {...stylex.props(localStyles.foo, localStyles.bar, style)}
