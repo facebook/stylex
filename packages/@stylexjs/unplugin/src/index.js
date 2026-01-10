@@ -67,6 +67,67 @@ function processCollectedRulesToCSS(rules, options) {
   return code.toString();
 }
 
+function getAssetBaseName(asset) {
+  if (asset?.name && typeof asset.name === 'string') return asset.name;
+  const fallback = asset?.fileName
+    ? path.basename(asset.fileName)
+    : 'stylex.css';
+  const match = /^(.*?)(-[a-z0-9]{8,})?\.css$/i.exec(fallback);
+  if (match) return `${match[1]}.css`;
+  return fallback || 'stylex.css';
+}
+
+function replaceBundleReferences(bundle, oldFileName, newFileName) {
+  for (const item of Object.values(bundle)) {
+    if (!item) continue;
+    if (item.type === 'chunk') {
+      if (typeof item.code === 'string' && item.code.includes(oldFileName)) {
+        item.code = item.code.split(oldFileName).join(newFileName);
+      }
+      const importedCss = item.viteMetadata?.importedCss;
+      if (importedCss instanceof Set && importedCss.has(oldFileName)) {
+        importedCss.delete(oldFileName);
+        importedCss.add(newFileName);
+      } else if (Array.isArray(importedCss)) {
+        const next = importedCss.map((name) =>
+          name === oldFileName ? newFileName : name,
+        );
+        item.viteMetadata.importedCss = next;
+      }
+    } else if (item.type === 'asset' && typeof item.source === 'string') {
+      if (item.source.includes(oldFileName)) {
+        item.source = item.source.split(oldFileName).join(newFileName);
+      }
+    }
+  }
+}
+
+function replaceCssAssetWithHashedCopy(ctx, bundle, asset, nextSource) {
+  const baseName = getAssetBaseName(asset);
+  const referenceId = ctx.emitFile({
+    type: 'asset',
+    name: baseName,
+    source: nextSource,
+  });
+  const nextFileName = ctx.getFileName(referenceId);
+  const oldFileName = asset.fileName;
+  if (!nextFileName || !oldFileName || nextFileName === oldFileName) {
+    asset.source = nextSource;
+    return;
+  }
+  replaceBundleReferences(bundle, oldFileName, nextFileName);
+  const emitted = bundle[nextFileName];
+  if (emitted && emitted !== asset) {
+    delete bundle[nextFileName];
+  }
+  asset.fileName = nextFileName;
+  asset.source = nextSource;
+  if (bundle[oldFileName] === asset) {
+    delete bundle[oldFileName];
+  }
+  bundle[nextFileName] = asset;
+}
+
 function readJSON(file) {
   try {
     const content = fs.readFileSync(file, 'utf8');
@@ -451,7 +512,8 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
           typeof target.source === 'string'
             ? target.source
             : target.source?.toString() || '';
-        target.source = current ? current + '\n' + css : css;
+        const nextSource = current ? current + '\n' + css : css;
+        replaceCssAssetWithHashedCopy(this, bundle, target, nextSource);
       } else {
         // Defer to writeBundle to append or emit fallback file
       }
