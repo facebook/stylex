@@ -11,7 +11,7 @@ StyleX comes with full support for Static Types. The most common utility type is
 <TabItem label="TypeScript" default>
 
 ```tsx
-import type {StyleXStyles} from '@stylexjs/stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 
 type Props = {
@@ -34,7 +34,7 @@ function MyComponent({style, ...otherProps}: Props) {
 <TabItem label="Flow">
 
 ```tsx
-import type {StyleXStyles} from '@stylexjs/stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 
 type Props = $ReadOnly<{
@@ -143,7 +143,7 @@ can be constrained too.
 <TabItem value="typescript" label="TypeScript" default>
 
 ```tsx
-import type {StyleXStyles} from '@stylexjs/stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
 
 type Props = {
   ...
@@ -159,7 +159,7 @@ type Props = {
 <TabItem value="flow" label="Flow">
 
 ```tsx
-import type {StyleXStyles} from '@stylexjs/stylex';
+import type { StyleXStyles } from '@stylexjs/stylex';
 
 type Props = $ReadOnly<{
   ...
@@ -186,7 +186,7 @@ It is sometimes more convenient to define a blocklist instead of an allowlist.
 <TabItem value="typescript" label="TypeScript" default>
 
 ```tsx
-import type {StyleXStylesWithout} from '@stylexjs/stylex';
+import type { StyleXStylesWithout } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 
 type NoLayout = StyleXStylesWithout<{
@@ -240,7 +240,7 @@ function MyComponent({style, ...}: Props) {
 <TabItem value="flow" label="Flow">
 
 ```tsx
-import type {StyleXStylesWithout} from '@stylexjs/stylex';
+import type { StyleXStylesWithout } from '@stylexjs/stylex';
 import * as stylex from '@stylexjs/stylex';
 
 type NoLayout = StyleXStylesWithout<{
