@@ -145,13 +145,12 @@ const sidebarStyles = stylex.create({
     transform: 'translateX(-100%)',
   },
   blurContainer: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     position: 'absolute',
     inset: 8,
     zIndex: 1,
     overflow: 'hidden',
     borderRadius: 20,
+    cornerShape: 'squircle',
   },
   blur: {
     position: 'absolute',
@@ -161,21 +160,18 @@ const sidebarStyles = stylex.create({
     backdropFilter: 'blur(32px) saturate(500%)',
   },
   overlayBlur: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     position: 'absolute',
     inset: 9,
     zIndex: 1,
     overflow: 'hidden',
     pointerEvents: 'none',
     borderRadius: 19,
+    cornerShape: 'squircle',
     backdropFilter: 'blur(32px) saturate(800%)',
     maskImage:
       'linear-gradient(to right, white, transparent 4%, transparent 88%, white)',
   },
   base: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    cornerShape: 'squircle',
     zIndex: 1,
     display: 'flex',
     flexDirection: 'column',
@@ -190,6 +186,7 @@ const sidebarStyles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 20,
+    cornerShape: 'squircle',
     boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06)',
   },
 });

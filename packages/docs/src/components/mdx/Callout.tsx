@@ -171,8 +171,6 @@ const containerStyles = stylex.create({
 
 const styles = stylex.create({
   container: {
-    // eslint-disable-next-line @stylexjs/valid-styles
-    borderShape: 'squircle',
     display: 'flex',
     gap: 8,
     padding: 12,
@@ -186,6 +184,7 @@ const styles = stylex.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderRadius: 12,
+    cornerShape: 'squircle',
     boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   },
 
