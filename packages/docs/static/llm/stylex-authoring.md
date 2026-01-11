@@ -205,7 +205,6 @@ const styles = stylex.create({
   }),
 });
 
-// Usage
 <div {...stylex.props(styles.bar(100))} />
 <div {...stylex.props(styles.positioned(mouseX, mouseY))} />
 ```
@@ -317,7 +316,7 @@ Unlike `defineVars`, themes can be created anywhere and passed across files/comp
 
 Style elements based on the state of ancestors, descendants, or siblings using `stylex.when.*` selectors: `stylex.when.ancestor()`, `stylex.when.descendant()`, `stylex.when.anySibling()`, `stylex.when.siblingBefore()`, `stylex.when.siblingAfter()`.
 
-Mark the observed element with `stylex.defaultMarker()` or create custom markers using ``stylex.defineMarker()`.
+Mark the observed element with `stylex.defaultMarker()` or create custom markers using `stylex.defineMarker()`.
 
 ```tsx
 const styles = stylex.create({
@@ -491,13 +490,13 @@ function ThemeProvider({ theme }: { theme: VarGroup<typeof colors> }) {
 ### Don't import non-StyleX values
 
 ```tsx
-// ❌ WRONG - imported non-StyleX variable
+// invalid: imported non-StyleX variable
 import { PADDING } from './constants';
 const styles = stylex.create({
   container: { padding: PADDING },
 });
 
-// ✅ CORRECT - use StyleX constants or variables
+// valid: use StyleX constants or variables
 import { spacing } from './tokens.stylex';
 const styles = stylex.create({
   container: { padding: spacing.medium },
@@ -509,10 +508,10 @@ const styles = stylex.create({
 Do not apply `style` or `className` props on an element with a `stylex.props()` spread.
 
 ```tsx
-// ❌ WRONG
+// invalid: no `classname` and `style` prop usage
 <div className="m-10" style={style} {...stylex.props(styles.container)} />
 
-// ✅ CORRECT
+// valid
 <div {...stylex.props(styles.container)} />
 ```
 
@@ -521,7 +520,7 @@ Do not apply `style` or `className` props on an element with a `stylex.props()` 
 Media queries and pseudo-classes must be nested inside property values, not at the top level of a style object.
 
 ```tsx
-// ❌ WRONG - media query at top level
+// invalid: media query at top level
 const styles = stylex.create({
   container: {
     '@media (min-width: 768px)': {
@@ -530,7 +529,7 @@ const styles = stylex.create({
   },
 });
 
-// ❌ WRONG - pseudo-class at top level
+// invalid: pseudo-class at top level
 const styles = stylex.create({
   button: {
     ':hover': {
@@ -539,7 +538,7 @@ const styles = stylex.create({
   },
 });
 
-// ✅ CORRECT - nest inside property values
+// valid: nest inside property values
 const styles = stylex.create({
   container: {
     padding: {
