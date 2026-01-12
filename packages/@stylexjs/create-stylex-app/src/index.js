@@ -10,43 +10,87 @@
 
 'use strict';
 
-const yargs = require('yargs/yargs');
-const { hideBin } = require('yargs/helpers');
 const fs = require('fs-extra');
 const path = require('path');
 const pc = require('picocolors');
 const p = require('@clack/prompts');
-const { TEMPLATES } = require('./templates');
-const { copyDirectory } = require('./utils/files');
+const { getTemplates, getBundledTemplates } = require('./templates');
+const {
+  fetchTemplate,
+  fetchCustomTemplate,
+} = require('./utils/fetch-template');
 const {
   detectPackageManager,
   installDependencies,
 } = require('./utils/packages');
 
+/**
+ * Parse command line arguments
+ */
+function parseArgs(args) {
+  const result = {
+    projectName: undefined,
+    framework: undefined,
+    template: undefined,
+    install: true,
+    help: false,
+  };
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+
+    if (arg === '--help' || arg === '-h') {
+      result.help = true;
+    } else if (arg === '--no-install') {
+      result.install = false;
+    } else if (arg === '--framework' || arg === '-f') {
+      result.framework = args[++i];
+    } else if (arg === '--template' || arg === '-t') {
+      result.template = args[++i];
+    } else if (!arg.startsWith('-') && !result.projectName) {
+      result.projectName = arg;
+    }
+  }
+
+  return result;
+}
+
+function showHelp() {
+  const templateIds = getBundledTemplates()
+    .map((t) => t.id)
+    .join(', ');
+  console.log(`
+${pc.bold('create-stylex-app')} - Create a new StyleX project
+
+${pc.bold('Usage:')}
+  npx create-stylex-app <project-name> [options]
+
+${pc.bold('Options:')}
+  -f, --framework <name>   Framework to use
+  -t, --template <source>  Custom template (GitHub URL or github:owner/repo/path)
+  --no-install             Skip dependency installation
+  -h, --help               Show this help message
+
+${pc.bold('Available frameworks:')}
+  ${templateIds}
+
+${pc.bold('Examples:')}
+  npx create-stylex-app my-app
+  npx create-stylex-app my-app --framework nextjs
+  npx create-stylex-app my-app --template github:user/repo/template
+`);
+}
+
 async function main() {
+  const argv = parseArgs(process.argv.slice(2));
+
+  if (argv.help) {
+    showHelp();
+    process.exit(0);
+  }
+
   // Show intro
   p.intro(pc.bgMagenta(pc.white(' create-stylex-app ')));
-
-  // Parse arguments
-  const argv = await yargs(hideBin(process.argv))
-    .command('$0 [project-name]', 'Create a new StyleX project')
-    .positional('project-name', {
-      describe: 'Name of the project',
-      type: 'string',
-    })
-    .option('framework', {
-      alias: 'f',
-      describe: 'Framework to use',
-      type: 'string',
-      choices: ['nextjs', 'vite-react', 'vite'],
-    })
-    .option('install', {
-      describe: 'Install dependencies automatically',
-      type: 'boolean',
-      default: true,
-    })
-    .help()
-    .parse();
 
   const projectName = argv.projectName;
 
@@ -83,13 +127,25 @@ async function main() {
 
   p.log.success('Directory available');
 
+  // Handle custom template
+  if (argv.template) {
+    await handleCustomTemplate(argv, projectName, targetDir);
+    return;
+  }
+
+  // Get available templates
+  const templatesSpinner = p.spinner();
+  templatesSpinner.start('Fetching available templates...');
+  const templates = await getTemplates();
+  templatesSpinner.stop(`Found ${templates.length} templates`);
+
   // Select template
   let templateId = argv.framework;
 
   if (!templateId) {
     templateId = await p.select({
       message: 'Select a framework',
-      options: TEMPLATES.map((t) => ({
+      options: templates.map((t) => ({
         value: t.id,
         label: t.name + (t.recommended ? pc.yellow(' (recommended)') : ''),
         hint: t.description,
@@ -102,11 +158,12 @@ async function main() {
     }
   }
 
-  const template = TEMPLATES.find((t) => t.id === templateId);
+  const template = templates.find((t) => t.id === templateId);
   if (!template) {
     p.cancel(
       `Template "${templateId}" not found.\n` +
-        '   Available templates: nextjs, vite-react, vite',
+        '   Available templates: ' +
+        templates.map((t) => t.id).join(', '),
     );
     process.exit(1);
   }
@@ -116,77 +173,86 @@ async function main() {
   // Create directory
   await fs.ensureDir(targetDir);
 
-  // Resolve example source directory
-  const exampleDir = path.resolve(
-    __dirname,
-    '../../../../examples',
-    template.exampleSource,
-  );
+  // Download template from GitHub
+  const downloadSpinner = p.spinner();
+  downloadSpinner.start('Downloading template from GitHub...');
 
-  // Verify it exists
-  if (!(await fs.pathExists(exampleDir))) {
-    p.cancel(`Example directory not found: ${exampleDir}`);
+  try {
+    await fetchTemplate(template, targetDir);
+    downloadSpinner.stop('Template downloaded');
+  } catch (error) {
+    downloadSpinner.stop('Download failed');
+    await fs.remove(targetDir);
+    p.cancel(`Failed to download template: ${error.message}`);
     process.exit(1);
   }
 
-  // Copy template files
-  const copySpinner = p.spinner();
-  copySpinner.start('Copying template files...');
-
-  const filesToExclude = [
-    ...template.excludeFiles,
-    'package.json', // We'll generate this separately
-    'README.md', // We'll generate this separately
-  ];
-
-  await copyDirectory(exampleDir, targetDir, filesToExclude);
-  copySpinner.stop('Template files copied');
-
-  // Generate configuration files
+  // Read package.json from downloaded template before removing it
   const configSpinner = p.spinner();
   configSpinner.start('Generating configuration files...');
 
-  // Read example package.json
-  const examplePkgPath = path.join(exampleDir, 'package.json');
-  const examplePkg = await fs.readJson(examplePkgPath);
+  try {
+    const templatePkgPath = path.join(targetDir, 'package.json');
+    const examplePkg = await fs.readJson(templatePkgPath);
 
-  // Filter out monorepo-only packages (like @stylexjs/shared-ui)
-  const filterPrivateDeps = (deps) => {
-    if (!deps) return deps;
-    const filtered = { ...deps };
-    // Remove @stylexjs/shared-ui - it's private to the monorepo
-    delete filtered['@stylexjs/shared-ui'];
-    return filtered;
-  };
-
-  // Normalize script names (remove "example:" prefix used in monorepo)
-  const normalizeScripts = (scripts) => {
-    if (!scripts) return scripts;
-    const normalized = {};
-    for (const [key, value] of Object.entries(scripts)) {
-      // Remove "example:" prefix if present
-      const normalizedKey = key.replace(/^example:/, '');
-      normalized[normalizedKey] = value;
+    // Remove files we'll regenerate
+    const filesToRemove = [
+      'package.json',
+      'README.md',
+      ...template.excludeFiles,
+    ];
+    for (const file of filesToRemove) {
+      const filePath = path.join(targetDir, file);
+      if (await fs.pathExists(filePath)) {
+        await fs.remove(filePath);
+      }
     }
-    return normalized;
-  };
 
-  const newPkg = {
-    name: projectName,
-    version: '0.1.0',
-    private: true,
-    type: examplePkg.type,
-    scripts: normalizeScripts(examplePkg.scripts),
-    dependencies: filterPrivateDeps(examplePkg.dependencies),
-    devDependencies: filterPrivateDeps(examplePkg.devDependencies),
-  };
+    // Filter out monorepo-only packages
+    const filterPrivateDeps = (deps) => {
+      if (!deps) return deps;
+      const filtered = { ...deps };
+      delete filtered['@stylexjs/shared-ui'];
+      return filtered;
+    };
 
-  await fs.writeJson(path.join(targetDir, 'package.json'), newPkg, {
-    spaces: 2,
-  });
+    // Normalize script names
+    const normalizeScripts = (scripts) => {
+      if (!scripts) return scripts;
+      const normalized = {};
+      for (const [key, value] of Object.entries(scripts)) {
+        const normalizedKey = key.replace(/^example:/, '');
+        normalized[normalizedKey] = value;
+      }
+      return normalized;
+    };
 
-  // Generate minimal README.md
-  const readme = `# ${projectName}
+    const newPkg = {
+      name: projectName,
+      version: '0.1.0',
+      private: true,
+      type: examplePkg.type,
+      scripts: normalizeScripts(examplePkg.scripts),
+      dependencies: filterPrivateDeps(examplePkg.dependencies),
+      devDependencies: filterPrivateDeps(examplePkg.devDependencies),
+    };
+
+    await fs.writeJson(path.join(targetDir, 'package.json'), newPkg, {
+      spaces: 2,
+    });
+
+    // Determine the run command based on available scripts
+    const scripts = newPkg.scripts || {};
+    const runCommand = scripts.dev
+      ? 'npm run dev'
+      : scripts.build
+        ? 'npm run build'
+        : scripts.start
+          ? 'npm run start'
+          : 'npm run';
+
+    // Generate minimal README.md
+    const readme = `# ${projectName}
 
 A new StyleX project created with create-stylex-app.
 
@@ -194,7 +260,7 @@ A new StyleX project created with create-stylex-app.
 
 \`\`\`bash
 npm install
-npm run dev
+${runCommand}
 \`\`\`
 
 ## Template
@@ -202,22 +268,119 @@ npm run dev
 This project uses the **${template.name}** template.
 `;
 
-  await fs.writeFile(path.join(targetDir, 'README.md'), readme);
-  configSpinner.stop('Configuration files generated');
+    await fs.writeFile(path.join(targetDir, 'README.md'), readme);
+    configSpinner.stop('Configuration files generated');
+  } catch (error) {
+    configSpinner.stop('Configuration generation failed');
+    await fs.remove(targetDir);
+    p.cancel(`Failed to generate configuration: ${error.message}`);
+    process.exit(1);
+  }
 
-  // Install dependencies (if enabled)
+  // Install dependencies
+  await finishSetup(argv, projectName, targetDir);
+}
+
+/**
+ * Handle custom template installation
+ */
+async function handleCustomTemplate(argv, projectName, targetDir) {
+  p.log.info(`Using custom template: ${pc.cyan(argv.template)}`);
+
+  // Create directory
+  await fs.ensureDir(targetDir);
+
+  // Download custom template
+  const downloadSpinner = p.spinner();
+  downloadSpinner.start('Downloading custom template...');
+
+  try {
+    await fetchCustomTemplate(argv.template, targetDir);
+    downloadSpinner.stop('Template downloaded');
+  } catch (error) {
+    downloadSpinner.stop('Download failed');
+    await fs.remove(targetDir);
+    p.cancel(`Failed to download custom template: ${error.message}`);
+    process.exit(1);
+  }
+
+  // Remove common excludes
+  const excludePatterns = [
+    'node_modules',
+    '.next',
+    'dist',
+    '.vite',
+    'package-lock.json',
+    'yarn.lock',
+    'pnpm-lock.yaml',
+  ];
+  for (const file of excludePatterns) {
+    const filePath = path.join(targetDir, file);
+    if (await fs.pathExists(filePath)) {
+      await fs.remove(filePath);
+    }
+  }
+
+  // Check if package.json exists
+  const pkgPath = path.join(targetDir, 'package.json');
+  if (await fs.pathExists(pkgPath)) {
+    // Update the name in package.json
+    const pkg = await fs.readJson(pkgPath);
+    pkg.name = projectName;
+
+    await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+    p.log.success('Updated package.json with project name');
+  } else {
+    p.log.warn(
+      'No package.json found in template. You may need to create one manually.',
+    );
+  }
+
+  // Install dependencies
+  await finishSetup(argv, projectName, targetDir);
+}
+
+/**
+ * Common setup completion (install deps, show success message)
+ */
+async function finishSetup(argv, projectName, targetDir) {
   const pm = await detectPackageManager();
+
+  // Read package.json to determine available scripts
+  let runScript = 'dev';
+  const pkgPath = path.join(targetDir, 'package.json');
+  if (await fs.pathExists(pkgPath)) {
+    const pkg = await fs.readJson(pkgPath);
+    const scripts = pkg.scripts || {};
+    if (scripts.dev) {
+      runScript = 'dev';
+    } else if (scripts.build) {
+      runScript = 'build';
+    } else if (scripts.start) {
+      runScript = 'start';
+    }
+  }
 
   if (argv.install) {
     const installSpinner = p.spinner({ indicator: 'timer' });
     installSpinner.start(`Installing dependencies with ${pm}...`);
 
     try {
-      await installDependencies(targetDir, pm);
-      installSpinner.stop('Dependencies installed');
+      const result = await installDependencies(targetDir, pm);
+      const countMsg = result.packageCount
+        ? ` (${result.packageCount} packages)`
+        : '';
+      installSpinner.stop(`Dependencies installed${countMsg}`);
     } catch (error) {
       installSpinner.stop('Installation failed');
-      p.log.error(error.message);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      p.log.error(errorMessage);
+      // $FlowFixMe[prop-missing] - stderr is added by installDependencies
+      if (error != null && typeof error === 'object' && error.stderr) {
+        // $FlowFixMe[incompatible-use]
+        p.log.error(error.stderr.trim());
+      }
       p.log.warn(
         `You can install dependencies manually: cd ${projectName} && ${pm} install`,
       );
@@ -230,7 +393,7 @@ This project uses the **${template.name}** template.
   const nextSteps = [
     `cd ${projectName}`,
     ...(argv.install ? [] : [`${pm} install`]),
-    `${pm} run dev`,
+    `${pm} run ${runScript}`,
   ].join('\n');
 
   p.note(nextSteps, 'Next steps');
@@ -239,6 +402,7 @@ This project uses the **${template.name}** template.
 }
 
 main().catch((error) => {
-  p.cancel(error.message);
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  p.cancel(errorMessage);
   process.exit(1);
 });

@@ -8,56 +8,39 @@
 
 'use strict';
 
-/**
- * Template configuration
- * Each template references an example directory in /examples
- */
-const TEMPLATES = [
-  {
-    id: 'nextjs',
-    name: 'Next.js (App Router + TypeScript)',
-    description: 'Full-stack React framework with server components',
-    features: ['SSR', 'App Router', 'TypeScript', 'Hot Reload'],
-    recommended: true,
-    exampleSource: 'example-nextjs',
-    excludeFiles: [
-      'node_modules',
-      '.next',
-      'package-lock.json',
-      'yarn.lock',
-      'pnpm-lock.yaml',
-    ],
-  },
-  {
-    id: 'vite-react',
-    name: 'Vite + React (TypeScript)',
-    description: 'Fast development with instant HMR',
-    features: ['React 18', 'TypeScript', 'Fast HMR', 'SWC'],
-    exampleSource: 'example-vite-react',
-    excludeFiles: [
-      'node_modules',
-      'dist',
-      '.vite',
-      'package-lock.json',
-      'yarn.lock',
-      'pnpm-lock.yaml',
-    ],
-  },
-  {
-    id: 'vite',
-    name: 'Vite (Vanilla TypeScript)',
-    description: 'Lightweight setup without a framework',
-    features: ['Vanilla TS', 'Fast HMR', 'Minimal'],
-    exampleSource: 'example-vite',
-    excludeFiles: [
-      'node_modules',
-      'dist',
-      '.vite',
-      'package-lock.json',
-      'yarn.lock',
-      'pnpm-lock.yaml',
-    ],
-  },
-];
+const { fetchTemplatesManifest } = require('./utils/fetch-template');
 
-module.exports = { TEMPLATES };
+/**
+ * Bundled templates as fallback if GitHub fetch fails
+ */
+const BUNDLED_TEMPLATES = require('../templates.json').templates;
+
+/**
+ * Get templates from GitHub, falling back to bundled templates
+ * @returns {Promise<Array>} Array of template definitions
+ */
+async function getTemplates() {
+  try {
+    const manifest = await fetchTemplatesManifest();
+    if (manifest && Array.isArray(manifest.templates)) {
+      return manifest.templates;
+    }
+  } catch (error) {
+    // Silently fall back to bundled templates
+  }
+  return BUNDLED_TEMPLATES;
+}
+
+/**
+ * Get bundled templates synchronously (for help text, etc.)
+ * @returns {Array} Array of template definitions
+ */
+function getBundledTemplates() {
+  return BUNDLED_TEMPLATES;
+}
+
+module.exports = {
+  getTemplates,
+  getBundledTemplates,
+  BUNDLED_TEMPLATES,
+};
