@@ -15,6 +15,46 @@ const path = require('path');
 const pc = require('picocolors');
 const p = require('@clack/prompts');
 const { getTemplates, getBundledTemplates } = require('./templates');
+
+// StyleX brand colors
+const PRIMARY = '#5B45DE';
+const SECONDARY = '#D573DD';
+
+// Simple hex color support for terminals that support it
+const hex = (color) => (text) =>
+  `\x1b[38;2;${parseInt(color.slice(1, 3), 16)};${parseInt(color.slice(3, 5), 16)};${parseInt(color.slice(5, 7), 16)}m${text}\x1b[0m`;
+
+function showWelcomeBanner() {
+  const primary = hex(PRIMARY);
+  const secondary = hex(SECONDARY);
+  console.log(
+    primary(`
+███████╗████████╗██╗   ██╗██╗     ███████╗`) +
+      secondary('██╗  ██╗') +
+      `
+` +
+      primary('██╔════╝╚══██╔══╝╚██╗ ██╔╝██║     ██╔════╝') +
+      secondary('╚██╗██╔╝') +
+      `
+` +
+      primary('███████╗   ██║    ╚████╔╝ ██║     █████╗  ') +
+      secondary(' ╚███╔╝ ') +
+      `
+` +
+      primary('╚════██║   ██║     ╚██╔╝  ██║     ██╔══╝  ') +
+      secondary(' ██╔██╗ ') +
+      `
+` +
+      primary('███████║   ██║      ██║   ███████╗███████╗') +
+      secondary('██╔╝ ██╗') +
+      `
+` +
+      primary('╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝') +
+      secondary('╚═╝  ╚═╝'),
+  );
+  console.log(secondary('  Create StyleX App\n'));
+}
+
 const {
   fetchTemplate,
   fetchCustomTemplate,
@@ -88,6 +128,9 @@ async function main() {
     showHelp();
     process.exit(0);
   }
+
+  // Show welcome banner
+  showWelcomeBanner();
 
   // Show intro
   p.intro(pc.bgMagenta(pc.white(' create-stylex-app ')));
