@@ -10,12 +10,15 @@ jobs:
   perf:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 50
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
         node-version: '22.x'
+        cache: 'yarn'
+        cache-dependency-path: yarn.lock
+    - run: corepack prepare yarn@1.22.22 --activate
     - name: 'Setup temporary files'
       run: |
         echo "BASE_JSON=$(mktemp)" >> $GITHUB_ENV
@@ -24,8 +27,8 @@ jobs:
       run: |
         git checkout -f ${{ github.event.pull_request.base.sha }}
         git clean -fdx
-        npm install --loglevel error
-        if npm run perf -w benchmarks -- -o ${{ env.BASE_JSON }}; then
+        yarn install --frozen-lockfile --silent
+        if yarn workspace benchmarks run perf -- -o ${{ env.BASE_JSON }}; then
           echo "Ran successfully on base branch"
         else
           echo "{}" > ${{ env.BASE_JSON }}  # Empty JSON as default
@@ -35,14 +38,14 @@ jobs:
       run: |
         git checkout -f ${{ github.event.pull_request.head.sha }}
         git clean -fdx
-        npm install --loglevel error
-        npm run perf -w benchmarks -- -o ${{ env.PATCH_JSON }}
+        yarn install --frozen-lockfile --silent
+        yarn workspace benchmarks run perf -- -o ${{ env.PATCH_JSON }}
         echo "Ran successfully on patch branch"
     - name: 'Collect results'
       id: collect
       run: |
         echo "table<<EOF" >> $GITHUB_OUTPUT
-        npm run compare -w benchmarks -- ${{ env.BASE_JSON }} ${{ env.PATCH_JSON }} >> markdown
+        yarn workspace benchmarks run compare -- ${{ env.BASE_JSON }} ${{ env.PATCH_JSON }} >> markdown
         cat markdown >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
     - name: 'Post comment'
@@ -61,12 +64,15 @@ jobs:
   size:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 50
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
         node-version: '22.x'
+        cache: 'yarn'
+        cache-dependency-path: yarn.lock
+    - run: corepack prepare yarn@1.22.22 --activate
     - name: 'Setup temporary files'
       run: |
         echo "BASE_JSON=$(mktemp)" >> $GITHUB_ENV
@@ -75,8 +81,8 @@ jobs:
       run: |
         git checkout -f ${{ github.event.pull_request.base.sha }}
         git clean -fdx
-        npm install --loglevel error
-        if npm run size -w benchmarks -- -o ${{ env.BASE_JSON }}; then
+        yarn install --frozen-lockfile --silent
+        if yarn workspace benchmarks run size -- -o ${{ env.BASE_JSON }}; then
           echo "Ran successfully on base branch"
         else
           echo "{}" > ${{ env.BASE_JSON }}  # Empty JSON as default
@@ -86,14 +92,14 @@ jobs:
       run: |
         git checkout -f ${{ github.event.pull_request.head.sha }}
         git clean -fdx
-        npm install --loglevel error
-        npm run size -w benchmarks -- -o ${{ env.PATCH_JSON }}
+        yarn install --frozen-lockfile --silent
+        yarn workspace benchmarks run size -- -o ${{ env.PATCH_JSON }}
         echo "Ran successfully on patch branch"
     - name: 'Collect results'
       id: collect
       run: |
         echo "table<<EOF" >> $GITHUB_OUTPUT
-        npm run compare -w benchmarks -- ${{ env.BASE_JSON }} ${{ env.PATCH_JSON }} >> markdown
+        yarn workspace benchmarks run compare -- ${{ env.BASE_JSON }} ${{ env.PATCH_JSON }} >> markdown
         cat markdown >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
     - name: 'Post comment'

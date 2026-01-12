@@ -44,7 +44,7 @@ module.exports = {
       {
         dev,
         runtimeInjection: false,
-        genConditionalClasses: true,
+        enableInlinedConditionalMerge: true,
         treeshakeCompensation: true,
         aliases: {
           '@/*': [path.join(__dirname, '*')],
@@ -61,7 +61,7 @@ module.exports = {
 Ensure that the `next/babel` preset is used as well as the `@stylexjs/babel-plugin` with your configuration.
 It is preferable to use a JS/TS file for this config to help in the next part...
 
-### Define the `postcss.config.js` 
+### Define the `postcss.config.js`
 
 ```tsx
 const babelConfig = require('./babel.config');

@@ -1,8 +1,9 @@
 /**
- * This is a minimal welcome page for the starter.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
- * _Feel free to delete this file_
- **/
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 import * as stylex from '@stylexjs/stylex';
 import { Button } from '@stylexjs/shared-ui';
@@ -27,8 +28,8 @@ export const Welcome = () => {
               Read the{' '}
               <a
                 href="https://docs.rwsdk.com/getting-started/quick-start/"
-                target="_blank"
                 rel="noreferrer"
+                target="_blank"
                 {...stylex.props(styles.link)}
               >
                 Quick Start
@@ -39,8 +40,8 @@ export const Welcome = () => {
               Explore React Server Components and Server Functions in the{' '}
               <a
                 href="https://docs.rwsdk.com/"
-                target="_blank"
                 rel="noreferrer"
+                target="_blank"
                 {...stylex.props(styles.link)}
               >
                 Docs
@@ -69,8 +70,8 @@ export const Welcome = () => {
             Need more detail? Read the{' '}
             <a
               href="https://docs.rwsdk.com/core/hosting/"
-              target="_blank"
               rel="noreferrer"
+              target="_blank"
               {...stylex.props(styles.link)}
             >
               Cloudflare deployment guide

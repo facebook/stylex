@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import './index.css'; // keep minimal to ensure CSS asset exists in build
 import viteLogo from '/vite.svg';
 import { DevStyleXInject } from './DevStyleXInject';
@@ -11,8 +17,8 @@ export function Root(props: { url: URL }) {
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/vite.svg" rel="icon" type="image/svg+xml" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <title>Vite + RSC + StyleX</title>
         <DevStyleXInject cssHref="/stylex.css" />
       </head>
@@ -32,7 +38,7 @@ function App(props: { url: URL }) {
           target="_blank"
           {...stylex.props(styles.link, styles.linkHover)}
         >
-          <img src={viteLogo} alt="Vite logo" {...stylex.props(styles.logo)} />
+          <img alt="Vite logo" src={viteLogo} {...stylex.props(styles.logo)} />
         </a>
         <a
           href="https://react.dev/reference/rsc/server-components"
@@ -40,8 +46,8 @@ function App(props: { url: URL }) {
           {...stylex.props(styles.link, styles.linkHover)}
         >
           <img
-            src={reactLogo}
             alt="React logo"
+            src={reactLogo}
             {...stylex.props(styles.logo, styles.reactLogo)}
           />
         </a>

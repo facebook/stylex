@@ -8,7 +8,12 @@
  */
 
 import * as stylex from '@stylexjs/stylex';
-import { globalTokens as $, spacing, text, colors } from '../app/globalTokens.stylex';
+import {
+  globalTokens as $,
+  spacing,
+  text,
+  colors,
+} from '../app/globalTokens.stylex';
 import { tokens } from '../app/CardTokens.stylex';
 
 type Props = Readonly<{

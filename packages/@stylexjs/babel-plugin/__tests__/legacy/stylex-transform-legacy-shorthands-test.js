@@ -1372,6 +1372,7 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             },
           });
         `,
+          { propertyValidationMode: 'throw' },
         ),
       ).toThrow();
       expect(() =>
@@ -1384,6 +1385,7 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
             },
           });
         `,
+          { propertyValidationMode: 'throw' },
         ),
       ).toThrow();
     });

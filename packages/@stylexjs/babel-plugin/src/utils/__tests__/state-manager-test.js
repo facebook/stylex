@@ -598,4 +598,44 @@ describe('StateManager config parsing', () => {
       expect(warnings).toEqual([]);
     });
   });
+
+  describe('"propertyValidationMode" option', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({
+        propertyValidationMode: 'something-else',
+      });
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
+      expect(warnings).toMatchInlineSnapshot(`
+        [
+          [
+            "[@stylexjs/babel-plugin]",
+            "Expected (options.propertyValidationMode) to be one of
+        	- the literal "throw"
+        	- the literal "warn"
+        	- the literal "silent"
+        But got: "something-else"",
+          ],
+        ]
+      `);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
+      expect(warnings).toEqual([]);
+    });
+
+    test('valid values', () => {
+      let stateManager = makeState({ propertyValidationMode: 'throw' });
+      expect(stateManager.options.propertyValidationMode).toBe('throw');
+
+      stateManager = makeState({ propertyValidationMode: 'warn' });
+      expect(stateManager.options.propertyValidationMode).toBe('warn');
+
+      stateManager = makeState({ propertyValidationMode: 'silent' });
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
+
+      expect(warnings).toEqual([]);
+    });
+  });
 });

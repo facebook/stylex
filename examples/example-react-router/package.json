@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "example:build": "rimraf dist && vite build",
+    "example:build": "shx rm -rf dist && vite build",
     "example:dev": "cross-env NODE_ENV=development vite",
     "example:start": "cross-env NODE_ENV=production node server.js",
     "example:typecheck": "tsc --noEmit"
@@ -16,7 +16,7 @@
     "express": "^5.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router": "7.9.2"
+    "react-router": "7.9.6"
   },
   "devDependencies": {
     "@stylexjs/unplugin": "0.17.4",

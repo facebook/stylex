@@ -62,7 +62,7 @@ const browserConfig = {
   input: './src/index.js',
   output: {
     file: './lib/index.browser.js',
-    format: 'cjs',
+    format: 'esm',
   },
   external: ['@babel/standalone', '@stylexjs/stylex', 'postcss-value-parser'],
   plugins: [
@@ -94,11 +94,11 @@ const browserConfig = {
           case '@dual-bundle/import-meta-resolve':
             return 'export function moduleResolve() {}';
           case '@babel/core':
-            return "import standalone from '@babel/standalone'; export const parseSync = standalone.packages.parser.parse;";
+            return "import { packages } from '@babel/standalone'; export const parseSync = packages.parser.parse;";
           case '@babel/traverse':
-            return "import standalone from '@babel/standalone'; export default standalone.packages.traverse.default;";
+            return "import { packages } from '@babel/standalone'; export default packages.traverse.default;";
           case '@babel/types':
-            return `import standalone from '@babel/standalone';
+            return `import { packages } from '@babel/standalone';
 export const {
   arrayExpression, arrowFunctionExpression, binaryExpression, booleanLiteral,
   callExpression, conditionalExpression, expressionStatement, identifier,
@@ -111,7 +111,7 @@ export const {
   isUpdateExpression, isValidIdentifier, isVariableDeclaration, jsxAttribute,
   jsxIdentifier, memberExpression, nullLiteral, numericLiteral, objectExpression,
   objectProperty, stringLiteral, unaryExpression, variableDeclaration, variableDeclarator
-} = standalone.packages.types;`;
+} = packages.types;`;
           default:
             return null;
         }
