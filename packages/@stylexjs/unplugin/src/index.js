@@ -399,7 +399,7 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
 
   // No rollup-style virtual module normalize for webpack/rspack stability
 
-  return {
+  const plugin = {
     name: '@stylexjs/unplugin',
     apply: (config, env) => {
       try {
@@ -835,6 +835,10 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
 
     // No-op closeBundle; all file writes handled in writeBundle
   };
+
+  plugin.__stylexCollectCss = collectCss;
+  plugin.__stylexResetState = resetState;
+  return plugin;
 });
 
 export default unpluginInstance;
