@@ -8,8 +8,8 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import * as stylex from '@stylexjs/stylex';
-import { Button } from '@stylexjs/shared-ui';
-import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
+import { Button } from './shared-ui';
+import { tokens } from './shared-ui/tokens.stylex';
 
 const spin = stylex.keyframes({
   from: { transform: 'rotate(0deg)' },

@@ -8,8 +8,8 @@
 
 import * as stylex from '@stylexjs/stylex';
 import { useState } from 'react';
-import { Button } from '@stylexjs/shared-ui';
-import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
+import { Button } from '../shared-ui';
+import { tokens } from '../shared-ui/tokens.stylex';
 
 export const Counter = () => {
   const [count, setCount] = useState(0);
