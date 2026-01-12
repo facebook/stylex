@@ -125,6 +125,11 @@ useLegacyClassnamesSort: boolean; // Default: false
 When `true`, sorts rules alphabetically by className within each priority group.
 When `false` (default), sorts by CSS property for more predictable output.
 
+> **Note**: The `useLegacyClassnamesSort` option may not be included in the
+> published TypeScript definitions for some versions of `@stylexjs/babel-plugin`.
+> You can still use this option at runtime, but you may need to use a type
+> assertion in your build setup until the official typings are updated.
+
 ## Example: Custom Bundler Integration
 
 ```ts
