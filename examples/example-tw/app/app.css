@@ -1,0 +1,26 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/* Import Tailwind's preflight (base reset styles) */
+@import 'tailwindcss/preflight.css';
+
+/* Import Tailwind theme CSS variables for tailwind-to-stylex */
+@import 'tailwind-to-stylex/theme.css';
+
+@layer resets {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/**
+ * The @stylex directive is used by the @stylexjs/postcss-plugin.
+ * It is automatically replaced with generated CSS during builds.
+ */
+@stylex;

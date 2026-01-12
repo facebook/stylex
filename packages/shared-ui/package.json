@@ -5,7 +5,8 @@
   "main": "src/index.tsx",
   "exports": {
     ".": "./src/index.tsx",
-    "./tokens.stylex": "./src/tokens.stylex.ts"
+    "./tokens.stylex": "./src/tokens.stylex.ts",
+    "./tw-theme.stylex": "./src/tw-theme.stylex.ts"
   },
   "peerDependencies": {
     "@stylexjs/stylex": "*",
