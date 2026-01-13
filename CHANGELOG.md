@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17.5 (Jan 12. 2026)
+- New `no-conflicting-props` lint rule.
+- Add `disallowedPropertiesValidation` config to disable property compiler errors by default.
+- Preserve units in zero values for CSS variables.
+- Fix `unplugin` cache invalidation on style changes.
+
 ## 0.17.4 (Dec 18. 2025)
 - New playground within the docs website.
 - Fix named exports detection on Turbopack.
