@@ -33,7 +33,7 @@ export function validateNamespace(
       continue;
     }
     if (isPlainObject(val)) {
-      if (key.startsWith('@') || key.startsWith(':')) {
+      if (key.startsWith('@') || key.startsWith(':') || key.startsWith('[')) {
         if (conditions.includes(key)) {
           throw new Error(messages.DUPLICATE_CONDITIONAL);
         }
@@ -62,6 +62,7 @@ function validateConditionalStyles(
       !(
         key.startsWith('@') ||
         key.startsWith(':') ||
+        key.startsWith('[') ||
         // This is a placeholder for `defineConsts` values that are later inlined
         key.startsWith('var(--') ||
         key === 'default'
