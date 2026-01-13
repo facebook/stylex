@@ -25,6 +25,7 @@ import {
 import { Li, Ol, P, Ul } from './core';
 import Image from './Image';
 import { CodeBlock, Pre } from './CodeBlock';
+import { LLMInstallationFile, LLMStylingFile } from './LLMFiles';
 import { preMarker } from './mdx.stylex';
 import { vars } from '@/theming/vars.stylex';
 
@@ -90,6 +91,8 @@ export const mdxComponents = {
     </CodeBlock>
   ),
   CodeBlock,
+  LLMInstallationFile,
+  LLMStylingFile,
 };
 
 const styles = stylex.create({
