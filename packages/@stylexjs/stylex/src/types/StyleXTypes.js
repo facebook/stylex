@@ -261,23 +261,23 @@ export type StyleX$DefineMarker = () => MapNamespace<{
 
 export type StyleX$When = {
   ancestor: (
-    _pseudo?: StringPrefix<':'>,
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
     _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
   ) => ':where-ancestor',
   descendant: (
-    _pseudo?: StringPrefix<':'>,
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
     _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
   ) => ':where-descendant',
   siblingBefore: (
-    _pseudo?: StringPrefix<':'>,
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
     _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
   ) => ':where-sibling-before',
   siblingAfter: (
-    _pseudo?: StringPrefix<':'>,
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
     _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
   ) => ':where-sibling-after',
   anySibling: (
-    _pseudo?: StringPrefix<':'>,
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
     _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
   ) => ':where-any-sibling',
 };
