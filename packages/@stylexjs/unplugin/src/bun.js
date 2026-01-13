@@ -7,63 +7,82 @@
 
 import path from 'node:path';
 import fsp from 'node:fs/promises';
-import { createEsbuildPlugin } from 'unplugin';
 
 import { unpluginFactory } from './core';
 
-const bunPluginFactory = createEsbuildPlugin(
-  (userOptions = {}, metaOptions) => {
-    const options = { ...userOptions };
-    if (options.dev == null) options.dev = true;
-    if (options.runtimeInjection == null) options.runtimeInjection = false;
-    if (options.useCSSLayers == null) options.useCSSLayers = true;
+const loaders = {
+  '.js': 'js',
+  '.jsx': 'jsx',
+  '.ts': 'ts',
+  '.tsx': 'tsx',
+};
 
-    const plugin = unpluginFactory(options, metaOptions);
-    const cssOutput =
-      options.bunDevCssOutput ||
-      path.resolve(process.cwd(), 'dist', 'stylex.dev.css');
-    let lastCss = null;
+export const createStylexBunPlugin = (userOptions = {}) => {
+  const options = { ...userOptions };
+  if (options.dev == null) options.dev = true;
+  if (options.runtimeInjection == null) options.runtimeInjection = false;
+  if (options.useCSSLayers == null) options.useCSSLayers = true;
 
-    const writeCss = async () => {
-      const css = plugin.__stylexCollectCss?.() || '';
-      const next = css
-        ? `:root { --stylex-injection: 0; }\n${css}`
-        : ':root { --stylex-injection: 0; }';
-      if (next === lastCss) return;
-      lastCss = next;
-      try {
-        await fsp.mkdir(path.dirname(cssOutput), { recursive: true });
-        await fsp.writeFile(cssOutput, next, 'utf8');
-      } catch {}
-    };
+  const plugin = unpluginFactory(options, { framework: 'bun' });
+  const cssOutput =
+    options.bunDevCssOutput ||
+    path.resolve(process.cwd(), 'dist', 'stylex.dev.css');
+  let lastCss = null;
 
-    return {
-      ...plugin,
-      async buildStart() {
-        if (plugin.buildStart) await plugin.buildStart.call(this);
-        await writeCss();
-      },
-      async buildEnd() {
-        if (plugin.buildEnd) await plugin.buildEnd.call(this);
-        await writeCss();
-      },
-      async transform(code, id) {
+  const writeCss = async () => {
+    const css = plugin.__stylexCollectCss?.() || '';
+    const next = css
+      ? `:root { --stylex-injection: 0; }\n${css}`
+      : ':root { --stylex-injection: 0; }';
+    if (next === lastCss) return;
+    lastCss = next;
+    try {
+      await fsp.mkdir(path.dirname(cssOutput), { recursive: true });
+      await fsp.writeFile(cssOutput, next, 'utf8');
+    } catch {}
+  };
+
+  return {
+    name: '@stylexjs/unplugin-bun',
+    async setup(build) {
+      if (plugin.buildStart) {
+        build.onStart(async () => {
+          await plugin.buildStart();
+          await writeCss();
+        });
+      } else {
+        build.onStart(async () => {
+          await writeCss();
+        });
+      }
+
+      if (plugin.buildEnd) {
+        build.onEnd(async () => {
+          await plugin.buildEnd();
+          await writeCss();
+        });
+      } else {
+        build.onEnd(async () => {
+          await writeCss();
+        });
+      }
+
+      build.onLoad({ filter: /\.[cm]?[jt]sx?$/ }, async (args) => {
+        const code = await Bun.file(args.path).text();
         const result = plugin.transform
-          ? await plugin.transform.call(this, code, id)
+          ? await plugin.transform(code, args.path)
           : null;
+        const nextCode = result?.code ?? code;
         await writeCss();
-        return result;
-      },
-      async writeBundle(...args) {
-        if (plugin.writeBundle) {
-          await plugin.writeBundle.apply(this, args);
-        }
-        await writeCss();
-      },
-    };
-  },
-);
+        return {
+          contents: nextCode,
+          loader: loaders[path.extname(args.path)] || 'js',
+        };
+      });
+    },
+  };
+};
 
-export default function stylexBunPlugin(userOptions = {}) {
-  return bunPluginFactory(userOptions);
-}
+const defaultBunPlugin = createStylexBunPlugin({});
+
+export default defaultBunPlugin;
