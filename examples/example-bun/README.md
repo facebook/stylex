@@ -49,9 +49,9 @@ await Bun.build({
 
 ## Dev server integration
 
-The Bun dev server uses `bunfig.toml` to load a Bun plugin that wraps
-`@stylexjs/unplugin` and writes generated StyleX rules into
-`dist/stylex.dev.css` (marked with `--stylex-injection`).
+The Bun dev server uses `bunfig.toml` with `@stylexjs/unplugin/bun`, which
+writes generated StyleX rules into `dist/stylex.dev.css` (marked with
+`--stylex-injection`).
 
 `dist/` is generated output and should remain gitignored.
 

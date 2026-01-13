@@ -9,6 +9,14 @@
 
 import * as stylex from '@stylexjs/stylex';
 
+export default function App() {
+  return (
+    <div {...stylex.props(styles.main)}>
+      <div {...stylex.props(styles.card)}>Content</div>
+    </div>
+  );
+}
+
 const styles = stylex.create({
   main: {
     width: '100vw',
@@ -29,11 +37,3 @@ const styles = stylex.create({
     fontFamily: 'Arial',
   },
 });
-
-export default function App() {
-  return (
-    <div {...stylex.props(styles.main)}>
-      <div {...stylex.props(styles.card)}>Content</div>
-    </div>
-  );
-}

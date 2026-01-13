@@ -1,2 +1,2 @@
 [serve.static]
-plugins = ["./scripts/stylex-plugin.mjs"]
+plugins = ["@stylexjs/unplugin/bun"]
