@@ -36,6 +36,15 @@ module.exports = function addMjsExtension({ types: t }) {
           path.node.source = t.stringLiteral(base + ext + suffix);
         }
       },
+      ExportNamedDeclaration(path, state) {
+        const ext = state.opts?.extension || '.mjs';
+        const s = path.node.source && path.node.source.value;
+        if (!s) return;
+        if (needsExtension(s)) {
+          const { base, suffix } = normalizeSpecifier(s);
+          path.node.source = t.stringLiteral(base + ext + suffix);
+        }
+      },
     },
   };
 };

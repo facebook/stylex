@@ -7,6 +7,14 @@
 
 import * as stylex from '@stylexjs/stylex';
 
+export default function App() {
+  return (
+    <main {...stylex.props(styles.app)}>
+      <h1 {...stylex.props(styles.title)}>StyleX + Rspack + unplugin</h1>
+    </main>
+  );
+}
+
 const styles = stylex.create({
   app: {
     minHeight: '100vh',
@@ -20,11 +28,3 @@ const styles = stylex.create({
     fontWeight: 700,
   },
 });
-
-export default function App() {
-  return (
-    <main {...stylex.props(styles.app)}>
-      <h1 {...stylex.props(styles.title)}>StyleX + Rspack + unplugin</h1>
-    </main>
-  );
-}
