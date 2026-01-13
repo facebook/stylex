@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "example-nextjs",
-  "version": "0.17.4",
+  "version": "0.17.5",
   "scripts": {
     "clean": "shx rm -rf .next",
     "example:build": "next build",
@@ -10,14 +10,14 @@
     "example:start": "next start"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.17.4",
+    "@stylexjs/stylex": "0.17.5",
     "next": "^16.0.7",
     "react": "^19.0.0-rc-de68d2f4-20241204",
     "react-dom": "^19.0.0-rc-de68d2f4-20241204"
   },
   "devDependencies": {
-    "@stylexjs/eslint-plugin": "0.17.4",
-    "@stylexjs/postcss-plugin": "0.17.4",
+    "@stylexjs/eslint-plugin": "0.17.5",
+    "@stylexjs/postcss-plugin": "0.17.5",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^22.7.6",
     "@types/react": "^18.3.0",
