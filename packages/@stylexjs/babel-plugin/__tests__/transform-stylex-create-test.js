@@ -1780,6 +1780,47 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        test('attribute selector with pseudo-class (nested, same value)', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: {
+                  ':hover': {
+                    '[data-state="open"]': 'red',
+                  },
+                  '[data-state="open"]': {
+                    ':hover': 'red',
+                  },
+                },
+              },
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kMwMTN: "x113j3rq",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x113j3rq",
+                  {
+                    "ltr": ".x113j3rq:hover[data-state="open"]{color:red}",
+                    "rtl": null,
+                  },
+                  6130,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('pseudo-class with array fallbacks', () => {
           const { code, metadata } = transform(`
             import * as stylex from '@stylexjs/stylex';
