@@ -4,8 +4,9 @@ title: 'stylex.when.*'
 
 A suite of APIs for creating descendant and sibling selectors. These let you
 style an element based on the state of its ancestors, descendants, or siblings
-in the DOM tree. You can only observe a pseudo-class state (`:hover`, `:focus`,
-etc.) on an element that has been marked with a marker class.
+in the DOM tree. You can observe pseudo-class states (`:hover`, `:focus`, etc.)
+or attribute selectors (e.g., `[data-panel-state="open"]`) on an element that
+has been marked with a marker class.
 
 > Note: lookahead selectors (`stylex.when.siblingAfter`,
 > `stylex.when.anySibling`, and `stylex.when.descendant`) rely on the CSS
