@@ -11,6 +11,10 @@ type BunOptions = UserOptions & {
   bunDevCssOutput?: string;
 };
 
-declare const plugin: (options?: Partial<BunOptions>) => any;
+declare const plugin: any;
+
+declare const createStylexBunPlugin: (options?: Partial<BunOptions>) => any;
+
+export { createStylexBunPlugin };
 
 export default plugin;

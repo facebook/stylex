@@ -7,7 +7,7 @@
  *
  */
 
-import bun from './bun';
+import bun, { createStylexBunPlugin } from './bun';
 import esbuild from './esbuild';
 import farm from './farm';
 import rolldown from './rolldown';
@@ -19,7 +19,7 @@ import webpack from './webpack';
 import { unpluginFactory } from './core';
 
 const stylex = {
-  bun,
+  bun: createStylexBunPlugin,
   esbuild,
   farm,
   rolldown,
@@ -41,6 +41,7 @@ export {
   unloader,
   vite,
   webpack,
+  createStylexBunPlugin,
 };
 export { unpluginFactory } from './core';
 

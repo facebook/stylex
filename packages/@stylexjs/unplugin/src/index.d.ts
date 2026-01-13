@@ -9,6 +9,7 @@ import type { UserOptions } from './core';
 
 export { unpluginFactory } from './core';
 export type { UserOptions } from './core';
+export { createStylexBunPlugin } from './bun';
 
 declare const stylex: {
   bun: (options?: Partial<UserOptions>) => any;
