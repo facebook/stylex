@@ -12,6 +12,7 @@ const t = require('@babel/types');
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const postcss = require('postcss');
 
 // Use static requires that webpack can analyze (need .js extension)
 const classesToCss = require('tailwind-to-stylex/lib/classes-to-css.js');
@@ -19,7 +20,193 @@ const helpers = require('tailwind-to-stylex/lib/helpers.js');
 const pathUtils = require('tailwind-to-stylex/lib/babel-path-utils.js');
 
 const { optimizeCss } = classesToCss;
-const { convertFromCssToJss } = helpers;
+const { extractPseudos } = helpers;
+
+// Custom convertFromCssToJss that handles Tailwind v4's nested CSS syntax
+function dashedToCamelCase(str) {
+  if (str.startsWith('--')) {
+    return str;
+  }
+  return str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+}
+
+// Helper to set a nested value in an object, creating the path as needed
+// For StyleX, we need: { propName: { default: X, ':hover': Y, '@media ...': Z } }
+function setNestedValue(obj, propName, conditions, value) {
+  // Filter out @media (hover: hover) - it's just for touch device detection
+  // and StyleX handles :hover directly
+  const filteredConditions = conditions.filter(c => c !== '@media (hover: hover)');
+  
+  if (filteredConditions.length === 0) {
+    // No conditions, just set the value directly
+    if (obj[propName] === undefined) {
+      obj[propName] = value;
+    } else if (typeof obj[propName] === 'object' && obj[propName] !== null) {
+      obj[propName].default = value;
+    }
+    return;
+  }
+
+  // We have conditions - need to create conditional object
+  // StyleX format: { propName: { default: null, ':hover': value, '@media (...)': value } }
+  
+  // For a single condition
+  if (filteredConditions.length === 1) {
+    const condition = filteredConditions[0];
+    if (obj[propName] === undefined) {
+      obj[propName] = { default: null, [condition]: value };
+    } else if (typeof obj[propName] === 'string') {
+      obj[propName] = { default: obj[propName], [condition]: value };
+    } else {
+      obj[propName][condition] = value;
+    }
+    return;
+  }
+
+  // For multiple conditions, we need to nest them
+  // e.g., @media (prefers-color-scheme: dark) + :hover
+  // becomes { propName: { default: null, '@media (...)': { default: null, ':hover': value } } }
+  
+  // Separate media queries from pseudos - media queries go outside
+  const mediaQueries = filteredConditions.filter(c => c.startsWith('@'));
+  const pseudos = filteredConditions.filter(c => !c.startsWith('@'));
+  
+  // Build the condition key - combine pseudos, wrap in media if needed
+  if (mediaQueries.length === 0) {
+    // Just pseudos - combine them
+    const combinedPseudo = pseudos.join('');
+    if (obj[propName] === undefined) {
+      obj[propName] = { default: null, [combinedPseudo]: value };
+    } else if (typeof obj[propName] === 'string') {
+      obj[propName] = { default: obj[propName], [combinedPseudo]: value };
+    } else {
+      obj[propName][combinedPseudo] = value;
+    }
+  } else if (pseudos.length === 0) {
+    // Just media queries - use the first one (usually there's only one)
+    const media = mediaQueries[0];
+    if (obj[propName] === undefined) {
+      obj[propName] = { default: null, [media]: value };
+    } else if (typeof obj[propName] === 'string') {
+      obj[propName] = { default: obj[propName], [media]: value };
+    } else {
+      obj[propName][media] = value;
+    }
+  } else {
+    // Both media and pseudos - nest them
+    const media = mediaQueries[0];
+    const combinedPseudo = pseudos.join('');
+    
+    if (obj[propName] === undefined) {
+      obj[propName] = { 
+        default: null, 
+        [media]: { default: null, [combinedPseudo]: value }
+      };
+    } else if (typeof obj[propName] === 'string') {
+      obj[propName] = { 
+        default: obj[propName], 
+        [media]: { default: null, [combinedPseudo]: value }
+      };
+    } else if (obj[propName][media] === undefined) {
+      obj[propName][media] = { default: null, [combinedPseudo]: value };
+    } else if (typeof obj[propName][media] === 'string') {
+      obj[propName][media] = { default: obj[propName][media], [combinedPseudo]: value };
+    } else {
+      obj[propName][media][combinedPseudo] = value;
+    }
+  }
+}
+
+// Fixed version that handles Tailwind v4's nested CSS syntax (& selectors)
+const convertFromCssToJss = (classNames, css) => {
+  const toMatch = typeof classNames === 'string' ? classNames.split(' ') : classNames;
+  
+  try {
+    const root = postcss.parse(css);
+    const object = {};
+
+    const processNode = (node, conditions = [], insideMatchedClass = false) => {
+      if (node.type === 'root') {
+        for (let child of node.nodes) {
+          processNode(child, conditions, false);
+        }
+        return;
+      }
+
+      if (node.type === 'atrule') {
+        const atRuleRaw = node.toString();
+        const atRule = atRuleRaw.split('{')[0].trim();
+
+        // Skip @property, @keyframes, @layer properties
+        if (atRule.startsWith('@property') || atRule.startsWith('@keyframes')) {
+          return;
+        }
+        
+        // Process @layer children without adding @layer as a condition
+        if (atRule.startsWith('@layer')) {
+          for (let child of node.nodes) {
+            processNode(child, conditions, insideMatchedClass);
+          }
+          return;
+        }
+
+        // Add media/supports/container queries as conditions
+        if (atRule.startsWith('@media') || atRule.startsWith('@supports') || 
+            atRule.startsWith('@container') || atRule.startsWith('@scope')) {
+          for (let child of node.nodes) {
+            processNode(child, [...conditions, atRule], insideMatchedClass);
+          }
+          return;
+        }
+
+        return;
+      }
+
+      if (node.type === 'rule') {
+        const selector = node.selector;
+        
+        // Handle nested & selectors (Tailwind v4 format)
+        if (selector.startsWith('&')) {
+          if (insideMatchedClass) {
+            // Extract pseudos from &:hover, &:focus, &:is(...), etc.
+            const selectorPart = selector.slice(1); // Remove the &
+            const pseudos = extractPseudos(selectorPart);
+            
+            for (let child of node.nodes) {
+              processNode(child, [...conditions, ...pseudos], true);
+            }
+          }
+          return;
+        }
+
+        // Regular class selector
+        const pseudos = extractPseudos(selector);
+        let className = pseudos.reduce(
+          (acc, pseudo) => acc.replace(pseudo, ''),
+          selector.replace(/^\./, '').replaceAll(' .', '').replaceAll('\\', '')
+        );
+
+        if (toMatch.includes(className)) {
+          for (let child of node.nodes) {
+            processNode(child, [...conditions, ...pseudos], true);
+          }
+        }
+        return;
+      }
+
+      if (node.type === 'decl') {
+        const propName = dashedToCamelCase(node.prop);
+        setNestedValue(object, propName, conditions, node.value);
+      }
+    };
+
+    processNode(root);
+    return object;
+  } catch (e) {
+    console.log('CSS parsing error:', e);
+    return null;
+  }
+};
 
 // Cache for compiled classes
 const cache = new Map();
@@ -148,13 +335,16 @@ module.exports = function tailwindToStylexSync() {
     let resultCss, resultJSS;
     try {
       resultCss = compileClassesSync(classNames);
-      if (resultCss == null) return null;
+      if (resultCss == null) {
+        console.log('[TW->StyleX] CSS compile returned null for:', classNames);
+        return null;
+      }
       resultJSS = convertFromCssToJss(classNames, resultCss);
+      console.log('[TW->StyleX] Converted:', classNames.substring(0, 50) + '...', '→', JSON.stringify(resultJSS).substring(0, 100) + '...');
       return resultJSS;
     } catch (e) {
-      console.log('Error converting', classNames);
-      console.log('CSS Result:', resultCss);
-      console.log('JSS Result:', resultJSS, '\n\n\n\n');
+      console.log('[TW->StyleX] Error converting:', classNames);
+      console.log('[TW->StyleX] Error:', e.message);
       return null;
     }
   };

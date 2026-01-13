@@ -1,0 +1,97 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/* Tailwind color variables for StyleX */
+:root {
+  /* Gray */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-gray-950: #030712;
+
+  /* Blue */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+
+  /* Pink */
+  --color-pink-50: #fdf2f8;
+  --color-pink-100: #fce7f3;
+  --color-pink-200: #fbcfe8;
+  --color-pink-300: #f9a8d4;
+  --color-pink-400: #f472b6;
+  --color-pink-500: #ec4899;
+  --color-pink-600: #db2777;
+  --color-pink-700: #be185d;
+  --color-pink-800: #9d174d;
+  --color-pink-900: #831843;
+
+  /* Lime */
+  --color-lime-50: #f7fee7;
+  --color-lime-100: #ecfccb;
+  --color-lime-200: #d9f99d;
+  --color-lime-300: #bef264;
+  --color-lime-400: #a3e635;
+  --color-lime-500: #84cc16;
+  --color-lime-600: #65a30d;
+  --color-lime-700: #4d7c0f;
+  --color-lime-800: #3f6212;
+  --color-lime-900: #365314;
+
+  /* White/Black */
+  --color-white: #fff;
+  --color-black: #000;
+
+  /* Gradient base variables */
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
+}
+
+/* Tailwind keyframe animations */
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

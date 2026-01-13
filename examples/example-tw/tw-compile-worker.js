@@ -8,7 +8,10 @@ const readline = require('readline');
 async function main() {
   const { compile } = await import('tailwindcss');
   const themePath = require.resolve('tailwind-to-stylex/theme.css');
-  const theme = fs.readFileSync(themePath, 'utf-8');
+  let theme = fs.readFileSync(themePath, 'utf-8');
+  
+  // Fix Tailwind v4 compatibility: --font-size-* should be --text-* for text-lg/xl/etc utilities
+  theme = theme.replace(/--font-size-([^:]+):/g, '--text-$1:');
 
   const { build } = await compile(`${theme}\n\n@tailwind utilities;`);
 

@@ -8,8 +8,8 @@
 import './app.css';
 
 export const metadata = {
-  title: 'Tailwind to StyleX Example',
-  description: 'Example of using Tailwind CSS syntax with StyleX compilation',
+  title: 'Tailwind ♥ StyleX',
+  description: 'Write Tailwind classes, compile to optimized StyleX CSS',
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased">{children}</body>
+      <body>{children}</body>
     </html>
   );
 }
