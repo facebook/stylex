@@ -293,14 +293,14 @@ describe('@stylexjs/babel-plugin', () => {
             },
           });
         `),
-      ).toThrow('Pseudo selector must start with ":"');
+      ).toThrow('Pseudo selector must start with ":" or "["');
     });
 
     test('rejects pseudo-elements', () => {
       expect(() =>
         transform(`
           import { when, create } from '@stylexjs/stylex';
-          
+
           const styles = create({
             container: {
               backgroundColor: {
@@ -311,6 +311,140 @@ describe('@stylexjs/babel-plugin', () => {
           });
         `),
       ).toThrow('Pseudo selector cannot start with "::"');
+    });
+
+    test('validates attribute selector format', () => {
+      expect(() =>
+        transform(`
+          import { when, create } from '@stylexjs/stylex';
+
+          const styles = create({
+            container: {
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor('[data-state="open"')]: 'red',
+              },
+            },
+          });
+        `),
+      ).toThrow('Attribute selector must end with "]"');
+    });
+
+    test('rejects invalid selector format', () => {
+      expect(() =>
+        transform(`
+          import { when, create } from '@stylexjs/stylex';
+
+          const styles = create({
+            container: {
+              backgroundColor: {
+                default: 'blue',
+                [when.ancestor('invalid')]: 'red',
+              },
+            },
+          });
+        `),
+      ).toThrow('Pseudo selector must start with ":" or "["');
+    });
+  });
+
+  describe('[transform] when functions with attribute selectors', () => {
+    test('when.ancestor with attribute selector', () => {
+      const { code, metadata } = transform(`
+        import { when, create } from '@stylexjs/stylex';
+
+        const styles = create({
+          container: {
+            backgroundColor: {
+              default: 'blue',
+              [when.ancestor('[data-panel-state="open"]')]: 'red',
+            },
+          },
+        });
+
+        console.log(styles.container);
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { when, create } from '@stylexjs/stylex';
+        const styles = {
+          container: {
+            kWkggS: "x1t391ir x11omtej",
+            $$css: true
+          }
+        };
+        console.log(styles.container);"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "x11omtej",
+            {
+              "ltr": ".x11omtej.x11omtej:where(.x-default-marker[data-panel-state="open"] *){background-color:red}",
+              "rtl": null,
+            },
+            3040,
+          ],
+        ]
+      `);
+    });
+
+    test('when.descendant with attribute selector', () => {
+      const { code, metadata } = transform(`
+        import { when, create } from '@stylexjs/stylex';
+
+        const styles = create({
+          container: {
+            backgroundColor: {
+              default: 'blue',
+              [when.descendant('[data-panel-state="open"]')]: 'green',
+            },
+          },
+        });
+
+        console.log(styles.container);
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import { when, create } from '@stylexjs/stylex';
+        const styles = {
+          container: {
+            kWkggS: "x1t391ir x1doj7mj",
+            $$css: true
+          }
+        };
+        console.log(styles.container);"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "x1t391ir",
+            {
+              "ltr": ".x1t391ir{background-color:blue}",
+              "rtl": null,
+            },
+            3000,
+          ],
+          [
+            "x1doj7mj",
+            {
+              "ltr": ".x1doj7mj.x1doj7mj:where(:has(.x-default-marker[data-panel-state="open"])){background-color:green}",
+              "rtl": null,
+            },
+            3040,
+          ],
+        ]
+      `);
     });
   });
   describe('[transform] using stylex.defaultMarker', () => {
