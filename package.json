@@ -77,5 +77,8 @@
       "git update-index --again",
       "npm run lint"
     ]
+  },
+  "resolutions": {
+    "baseline-browser-mapping": "^2.9.14"
   }
 }
