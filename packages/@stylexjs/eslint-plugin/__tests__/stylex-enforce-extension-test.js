@@ -15,11 +15,11 @@ const ruleTester = new RuleTester({
 });
 
 const invalidFilenameWithRestrictedExports = (suggestedExtension) =>
-  `Files that export variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` must end with a \`${suggestedExtension}\` extension.`;
+  `Files that export variables from \`stylex.defineVars()\`, \`stylex.defineConsts()\`, or \`stylex.defineMarker()\` must end with a \`${suggestedExtension}\` extension.`;
 const invalidFilenameWithoutRestrictedExports = (suggestedExtension) =>
-  `Only variables from \`stylex.defineVars()\` or \`stylex.defineConsts()\` can be exported from a file with a \`${suggestedExtension}\` extension.`;
+  `Only variables from \`stylex.defineVars()\`, \`stylex.defineConsts()\`, or \`stylex.defineMarker()\` can be exported from a file with a \`${suggestedExtension}\` extension.`;
 const invalidExportFromThemeFiles =
-  'Files that export variables from `stylex.defineVars()` or `stylex.defineConsts()` must not export anything else.';
+  'Files that export variables from `stylex.defineVars()`, `stylex.defineConsts()`, or `stylex.defineMarker()` must not export anything else.';
 const invalidConstsFilenameWithRestrictedExports = (suggestedExtension) =>
   `Files that export variables from \`stylex.defineConsts()\` must end with a \`${suggestedExtension}\` extension.`;
 const invalidConstsFilenameWithoutRestrictedExports = (suggestedExtension) =>
@@ -28,6 +28,10 @@ const invalidExportFromConstsFiles =
   'Files that export variables from `stylex.defineConsts()` must not export anything else.';
 const invalidDefaultExport = (type) =>
   `Default exports are not allowed for variables from \`stylex.${type}()\`. Use named exports instead.`;
+const invalidVarsMarkerFilenameWithRestrictedExports = (suggestedExtension) =>
+  `Files that export variables from \`stylex.defineVars()\` or \`stylex.defineMarker()\` must end with a \`${suggestedExtension}\` extension.`;
+const invalidExportFromVarsMarkerFiles =
+  'Files that export variables from `stylex.defineVars()` or `stylex.defineMarker()` must not export anything else.';
 
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
@@ -302,6 +306,92 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       options: [
         { legacyAllowMixedExports: true, themeFileExtension: '.custom' },
       ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.tsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.js',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.ts',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({});
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({});
+        export const consts = stylex.defineConsts({});
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.custom.jsx',
+      options: [{ themeFileExtension: '.custom' }],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import * as stylex from 'custom-stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        export const marker = css.defineMarker();
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
     },
   ],
 
@@ -755,8 +845,7 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
           message: invalidExportFromConstsFiles,
         },
         {
-          message:
-            'Files that export variables from `stylex.defineVars()` must end with a `.stylex.js` extension.',
+          message: invalidVarsMarkerFilenameWithRestrictedExports('.stylex.js'),
         },
       ],
     },
@@ -860,6 +949,160 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       `,
       filename: 'myComponent.stylex.jsx',
       errors: [{ message: invalidDefaultExport('defineConsts') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        { message: invalidFilenameWithRestrictedExports('.stylex.jsx') },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.tsx',
+      errors: [
+        { message: invalidFilenameWithRestrictedExports('.stylex.tsx') },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidExportFromThemeFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export default stylex.defineMarker();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineMarker') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const marker = stylex.defineMarker();
+        export default marker;
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineMarker') }],
+    },
+    {
+      code: `
+        import { defineMarker } from '@stylexjs/stylex';
+        export default defineMarker();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidDefaultExport('defineMarker') }],
+    },
+    {
+      options: [{ validImports: ['custom-stylex'] }],
+      code: `
+        import * as stylex from 'custom-stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        {
+          message: invalidFilenameWithRestrictedExports('.stylex.jsx'),
+        },
+      ],
+    },
+    {
+      options: [{ validImports: [{ from: 'a', as: 'css' }] }],
+      code: `
+        import { css } from 'a';
+        export const marker = css.defineMarker();
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        {
+          message: invalidFilenameWithRestrictedExports('.stylex.jsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'testComponent.jsx',
+      options: [{ themeFileExtension: '.custom' }],
+      errors: [
+        {
+          message: invalidFilenameWithRestrictedExports('.custom.jsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ legacyAllowMixedExports: false }],
+      errors: [{ message: invalidExportFromThemeFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'myComponent.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message: invalidVarsMarkerFilenameWithRestrictedExports('.stylex.jsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const marker = stylex.defineMarker();
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromVarsMarkerFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({ color: 'red' });
+        export const marker = stylex.defineMarker();
+      `,
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message: invalidExportFromConstsFiles,
+        },
+        {
+          message: invalidVarsMarkerFilenameWithRestrictedExports('.stylex.jsx'),
+        },
+      ],
+    },
+    {
+      code: 'export const marker = stylex.defineMarker();',
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithoutRestrictedExports('.stylex.const.jsx'),
+        },
+      ],
     },
   ],
 });
