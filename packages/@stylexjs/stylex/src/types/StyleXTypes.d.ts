@@ -306,8 +306,10 @@ export type StyleX$CreateTheme = <
   overrides: OverridesForTokenType<TokensFromVarGroup<TVars>>,
 ) => Theme<TVars, ThemeID>;
 
+declare const StyleXMarkerTag: unique symbol;
+
 export type StyleX$DefineMarker = () => MapNamespace<{
-  readonly marker: unique symbol;
+  readonly marker: typeof StyleXMarkerTag;
 }>;
 
 export type StyleX$When = {

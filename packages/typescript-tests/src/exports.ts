@@ -136,3 +136,5 @@ export const withFirstThatWorks = stylex.create({
     width: stylex.firstThatWorks('50%', '100%'),
   },
 });
+
+export const customMarker = stylex.defineMarker();
