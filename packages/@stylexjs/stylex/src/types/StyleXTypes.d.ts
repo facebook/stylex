@@ -313,13 +313,16 @@ export type StyleX$DefineMarker = () => MapNamespace<{
 }>;
 
 export type StyleX$When = {
-  ancestor: <const Pseudo extends string, MarkerSymbol extends symbol = symbol>(
+  ancestor: <
+    const Pseudo extends `:${string}` | `[${string}]`,
+    MarkerSymbol extends symbol = symbol,
+  >(
     _pseudo?: Pseudo,
     _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
     // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
   ) => `:where-ancestor(${Pseudo}, ${MarkerSymbol})`;
   descendant: <
-    const Pseudo extends string,
+    const Pseudo extends `:${string}` | `[${string}]`,
     MarkerSymbol extends symbol = symbol,
   >(
     _pseudo?: Pseudo,
@@ -327,7 +330,7 @@ export type StyleX$When = {
     // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
   ) => `:where-descendant(${Pseudo}, ${MarkerSymbol})`;
   siblingBefore: <
-    const Pseudo extends string,
+    const Pseudo extends `:${string}` | `[${string}]`,
     MarkerSymbol extends symbol = symbol,
   >(
     _pseudo?: Pseudo,
@@ -335,7 +338,7 @@ export type StyleX$When = {
     // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
   ) => `:where-sibling-before(${Pseudo}, ${MarkerSymbol})`;
   siblingAfter: <
-    const Pseudo extends string,
+    const Pseudo extends `:${string}` | `[${string}]`,
     MarkerSymbol extends symbol = symbol,
   >(
     _pseudo?: Pseudo,
@@ -343,7 +346,7 @@ export type StyleX$When = {
     // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
   ) => `:where-sibling-after(${Pseudo}, ${MarkerSymbol})`;
   anySibling: <
-    const Pseudo extends string,
+    const Pseudo extends `:${string}` | `[${string}]`,
     MarkerSymbol extends symbol = symbol,
   >(
     _pseudo?: Pseudo,
