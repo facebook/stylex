@@ -298,7 +298,9 @@ const stylexEnforceExtension = {
         }
       });
       hasRestrictedExports =
-        hasDefineConstsExports || hasDefineVarsExports || hasDefineMarkerExports;
+        hasDefineConstsExports ||
+        hasDefineVarsExports ||
+        hasDefineMarkerExports;
     }
 
     function reportErrors(node: Node): void {
