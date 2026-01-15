@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@stylexjs/stylex": "0.17.4",
+    "@stylexjs/shared-ui": "0.17.4",
     "@remix-run/node-fetch-server": "0.12.0",
     "compression": "^1.8.0",
     "express": "^5.1.0",
