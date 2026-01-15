@@ -284,3 +284,6 @@ _legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;
+
+// Re-export inline-css for cleaner imports
+export { default as css } from '@stylexjs/inline-css';
