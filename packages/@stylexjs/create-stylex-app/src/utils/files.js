@@ -18,7 +18,6 @@ async function copyDirectory(source, target, excludePatterns) {
   const entries = await fs.readdir(source, { withFileTypes: true });
 
   for (const entry of entries) {
-    // Skip excluded files/directories
     if (excludePatterns.includes(entry.name)) {
       continue;
     }

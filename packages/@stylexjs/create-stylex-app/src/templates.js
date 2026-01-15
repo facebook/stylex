@@ -25,9 +25,7 @@ async function getTemplates() {
     if (manifest && Array.isArray(manifest.templates)) {
       return manifest.templates;
     }
-  } catch (error) {
-    // Silently fall back to bundled templates
-  }
+  } catch (error) {}
   return BUNDLED_TEMPLATES;
 }
 

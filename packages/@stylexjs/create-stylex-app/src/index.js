@@ -16,11 +16,9 @@ const pc = require('picocolors');
 const p = require('@clack/prompts');
 const { getTemplates, getBundledTemplates } = require('./templates');
 
-// StyleX brand colors
 const PRIMARY = '#5B45DE';
 const SECONDARY = '#D573DD';
 
-// Simple hex color support for terminals that support it
 const hex = (color) => (text) =>
   `\x1b[38;2;${parseInt(color.slice(1, 3), 16)};${parseInt(color.slice(3, 5), 16)};${parseInt(color.slice(5, 7), 16)}m${text}\x1b[0m`;
 
@@ -129,15 +127,12 @@ async function main() {
     process.exit(0);
   }
 
-  // Show welcome banner
   showWelcomeBanner();
 
-  // Show intro
   p.intro(pc.bgMagenta(pc.white(' create-stylex-app ')));
 
   const projectName = argv.projectName;
 
-  // Validate project name
   if (!projectName) {
     p.cancel(
       'Project name is required. Usage: npx create-stylex-app <project-name>',
@@ -145,7 +140,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Validate project name format (npm package name rules)
   const validNameRegex = /^[a-z0-9-_]+$/;
   if (!validNameRegex.test(projectName)) {
     p.cancel(
@@ -157,7 +151,6 @@ async function main() {
 
   p.log.success(`Project name: ${pc.cyan(projectName)}`);
 
-  // Check directory availability
   const targetDir = path.resolve(process.cwd(), projectName);
 
   if (await fs.pathExists(targetDir)) {
@@ -170,19 +163,16 @@ async function main() {
 
   p.log.success('Directory available');
 
-  // Handle custom template
   if (argv.template) {
     await handleCustomTemplate(argv, projectName, targetDir);
     return;
   }
 
-  // Get available templates
   const templatesSpinner = p.spinner();
   templatesSpinner.start('Fetching available templates...');
   const templates = await getTemplates();
   templatesSpinner.stop(`Found ${templates.length} templates`);
 
-  // Select template
   let templateId = argv.framework;
 
   if (!templateId) {
@@ -213,10 +203,8 @@ async function main() {
 
   p.log.success(`Template: ${template.name}`);
 
-  // Create directory
   await fs.ensureDir(targetDir);
 
-  // Download template from GitHub
   const downloadSpinner = p.spinner();
   downloadSpinner.start('Downloading template from GitHub...');
 
@@ -230,7 +218,6 @@ async function main() {
     process.exit(1);
   }
 
-  // Read package.json from downloaded template before removing it
   const configSpinner = p.spinner();
   configSpinner.start('Generating configuration files...');
 
@@ -238,7 +225,6 @@ async function main() {
     const templatePkgPath = path.join(targetDir, 'package.json');
     const examplePkg = await fs.readJson(templatePkgPath);
 
-    // Remove files we'll regenerate
     const filesToRemove = [
       'package.json',
       'README.md',
@@ -251,7 +237,6 @@ async function main() {
       }
     }
 
-    // Rewrite monorepo-only packages to local file paths
     const rewritePrivateDeps = (deps) => {
       if (!deps) return deps;
       const rewritten = { ...deps };
@@ -261,7 +246,6 @@ async function main() {
       return rewritten;
     };
 
-    // Normalize script names
     const normalizeScripts = (scripts) => {
       if (!scripts) return scripts;
       const normalized = {};
@@ -286,7 +270,6 @@ async function main() {
       spaces: 2,
     });
 
-    // Determine the run command based on available scripts
     const scripts = newPkg.scripts || {};
     const runCommand = scripts.dev
       ? 'npm run dev'
@@ -296,7 +279,6 @@ async function main() {
           ? 'npm run start'
           : 'npm run';
 
-    // Generate minimal README.md
     const readme = `# ${projectName}
 
 A new StyleX project created with create-stylex-app.
@@ -322,7 +304,6 @@ This project uses the **${template.name}** template.
     process.exit(1);
   }
 
-  // Install dependencies
   await finishSetup(argv, projectName, targetDir);
 }
 
@@ -332,10 +313,8 @@ This project uses the **${template.name}** template.
 async function handleCustomTemplate(argv, projectName, targetDir) {
   p.log.info(`Using custom template: ${pc.cyan(argv.template)}`);
 
-  // Create directory
   await fs.ensureDir(targetDir);
 
-  // Download custom template
   const downloadSpinner = p.spinner();
   downloadSpinner.start('Downloading custom template...');
 
@@ -349,7 +328,6 @@ async function handleCustomTemplate(argv, projectName, targetDir) {
     process.exit(1);
   }
 
-  // Remove common excludes
   const excludePatterns = [
     'node_modules',
     '.next',
@@ -366,10 +344,8 @@ async function handleCustomTemplate(argv, projectName, targetDir) {
     }
   }
 
-  // Check if package.json exists
   const pkgPath = path.join(targetDir, 'package.json');
   if (await fs.pathExists(pkgPath)) {
-    // Update the name in package.json
     const pkg = await fs.readJson(pkgPath);
     pkg.name = projectName;
 
@@ -381,7 +357,6 @@ async function handleCustomTemplate(argv, projectName, targetDir) {
     );
   }
 
-  // Install dependencies
   await finishSetup(argv, projectName, targetDir);
 }
 
@@ -391,7 +366,6 @@ async function handleCustomTemplate(argv, projectName, targetDir) {
 async function finishSetup(argv, projectName, targetDir) {
   const pm = await detectPackageManager();
 
-  // Read package.json to determine available scripts
   let runScript = 'dev';
   const pkgPath = path.join(targetDir, 'package.json');
   if (await fs.pathExists(pkgPath)) {
@@ -434,7 +408,6 @@ async function finishSetup(argv, projectName, targetDir) {
     p.log.info('Skipped dependency installation (--no-install)');
   }
 
-  // Success message with next steps
   const nextSteps = [
     `cd ${projectName}`,
     ...(argv.install ? [] : [`${pm} install`]),

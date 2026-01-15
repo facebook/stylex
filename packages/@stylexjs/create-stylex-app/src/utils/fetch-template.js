@@ -40,7 +40,6 @@ async function fetchTemplate(templateConfig, targetDir) {
     force: true,
   });
 
-  // Fetch shared-ui if template uses it
   if (templateConfig.usesSharedUI) {
     await fetchSharedUI(targetDir);
   }
@@ -57,7 +56,6 @@ async function fetchTemplate(templateConfig, targetDir) {
  *   - Full GitHub URLs
  */
 async function fetchCustomTemplate(templateSource, targetDir) {
-  // giget handles github:, gh:, and full URLs natively
   await downloadTemplate(templateSource, {
     dir: targetDir,
     force: true,
@@ -100,7 +98,6 @@ async function fetchTemplatesManifest(
     await fs.remove(tempDir);
     return null;
   } catch (error) {
-    // If manifest doesn't exist, return null (use bundled templates)
     return null;
   }
 }
