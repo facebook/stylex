@@ -58,16 +58,16 @@ This is the development monorepo for StyleX.
 
 ### Tasks
 
-First, `npm install` the npm workspace.
+First, `yarn install` the yarn workspace.
 
 - `build`
-  - Use `npm run build` to run the build script in every package.
-  - Use `npm run build -w <package-name>` to run the build script for a specific
-    package.
+  - Use `yarn build` to run the build script in every package.
+  - Use `yarn workspace <package-name> build` to run the build script for a
+    specific package.
 - `test`
-  - Use `npm run test` to run tests for every package.
-  - Use `npm run test -w <package-name>` to run the test script for a specific
-    package. More details can be found in the contributing guide below.
+  - Use `yarn test` to run tests for every package.
+  - Use `yarn workspace <package-name> test` to run the test script for a
+    specific package. More details can be found in the contributing guide below.
 
 ## Contributing
 
