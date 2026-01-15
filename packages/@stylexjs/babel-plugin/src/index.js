@@ -45,6 +45,14 @@ const NAME = 'stylex';
 const MAX_WIDTH_REGEX = /max-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
 const MIN_WIDTH_REGEX = /min-width:\s*(\d+(?:\.\d+)?)(px|em|rem)/;
 
+// Standard base font size for rem/em to px conversion in media queries.
+const BASE_FONT_SIZE_PX = 16;
+
+// Converts a media query width value to pixels for comparison.
+function convertToPixels(value: number, unit: string): number {
+  return unit === 'px' ? value : value * BASE_FONT_SIZE_PX;
+}
+
 export type Options = StyleXOptions;
 
 /**
@@ -489,16 +497,30 @@ function processStylexRules(
             if (maxWidth1Match && maxWidth2Match) {
               const value1 = parseFloat(maxWidth1Match[1]);
               const value2 = parseFloat(maxWidth2Match[1]);
-              if (value1 !== value2) {
-                return value1 - value2;
+              const unit1 = maxWidth1Match[2];
+              const unit2 = maxWidth2Match[2];
+
+              const px1 = convertToPixels(value1, unit1);
+              const px2 = convertToPixels(value2, unit2);
+
+              if (px1 !== px2) {
+                // max-width: descending (larger first, smaller last → smaller wins)
+                return px2 - px1;
               }
             }
 
             if (minWidth1Match && minWidth2Match) {
               const value1 = parseFloat(minWidth1Match[1]);
               const value2 = parseFloat(minWidth2Match[1]);
-              if (value1 !== value2) {
-                return value2 - value1;
+              const unit1 = minWidth1Match[2];
+              const unit2 = minWidth2Match[2];
+
+              const px1 = convertToPixels(value1, unit1);
+              const px2 = convertToPixels(value2, unit2);
+
+              if (px1 !== px2) {
+                // min-width: ascending (smaller first, larger last → larger wins)
+                return px1 - px2;
               }
             }
 
