@@ -121,6 +121,9 @@ export function readImportDeclarations(
             if (importedName === 'defaultMarker') {
               state.stylexDefaultMarkerImport.add(localName);
             }
+            if (importedName === 'css') {
+              state.inlineCSSImports.set(localName, '*');
+            }
           }
         }
       }
@@ -220,6 +223,9 @@ export function readRequires(
           }
           if (prop.key.name === 'defaultMarker') {
             state.stylexDefaultMarkerImport.add(value.name);
+          }
+          if (prop.key.name === 'css') {
+            state.inlineCSSImports.set(value.name, '*');
           }
         }
       }
