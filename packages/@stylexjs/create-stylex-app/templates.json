@@ -22,6 +22,7 @@
       "description": "Fast development with instant HMR",
       "features": ["React", "TypeScript", "Fast HMR"],
       "exampleSource": "example-vite-react",
+      "usesSharedUI": true,
       "excludeFiles": [
         "node_modules",
         "dist",
@@ -37,6 +38,7 @@
       "description": "Lightweight setup without a framework",
       "features": ["Vanilla TS", "Fast HMR", "Minimal"],
       "exampleSource": "example-vite",
+      "usesSharedUI": true,
       "excludeFiles": [
         "node_modules",
         "dist",
@@ -108,6 +110,7 @@
       "description": "React Router with RSC support",
       "features": ["React Router", "RSC", "TypeScript"],
       "exampleSource": "example-react-router",
+      "usesSharedUI": true,
       "excludeFiles": [
         "node_modules",
         "dist",
@@ -122,6 +125,7 @@
       "description": "Minimal React framework with RSC",
       "features": ["Waku", "RSC", "TypeScript"],
       "exampleSource": "example-waku",
+      "usesSharedUI": true,
       "excludeFiles": [
         "node_modules",
         "dist",
@@ -136,6 +140,7 @@
       "description": "Vite with React Server Components",
       "features": ["Vite", "RSC", "TypeScript"],
       "exampleSource": "example-vite-rsc",
+      "usesSharedUI": true,
       "excludeFiles": [
         "node_modules",
         "dist",
@@ -151,6 +156,7 @@
       "description": "RedwoodSDK with Cloudflare Workers",
       "features": ["RedwoodSDK", "Cloudflare", "RSC"],
       "exampleSource": "example-redwoodsdk",
+      "usesSharedUI": true,
       "excludeFiles": [
         "node_modules",
         "dist",

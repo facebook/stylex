@@ -251,12 +251,14 @@ async function main() {
       }
     }
 
-    // Filter out monorepo-only packages
-    const filterPrivateDeps = (deps) => {
+    // Rewrite monorepo-only packages to local file paths
+    const rewritePrivateDeps = (deps) => {
       if (!deps) return deps;
-      const filtered = { ...deps };
-      delete filtered['@stylexjs/shared-ui'];
-      return filtered;
+      const rewritten = { ...deps };
+      if (rewritten['@stylexjs/shared-ui']) {
+        rewritten['@stylexjs/shared-ui'] = 'file:./shared-ui';
+      }
+      return rewritten;
     };
 
     // Normalize script names
@@ -276,8 +278,8 @@ async function main() {
       private: true,
       type: examplePkg.type,
       scripts: normalizeScripts(examplePkg.scripts),
-      dependencies: filterPrivateDeps(examplePkg.dependencies),
-      devDependencies: filterPrivateDeps(examplePkg.devDependencies),
+      dependencies: rewritePrivateDeps(examplePkg.dependencies),
+      devDependencies: rewritePrivateDeps(examplePkg.devDependencies),
     };
 
     await fs.writeJson(path.join(targetDir, 'package.json'), newPkg, {

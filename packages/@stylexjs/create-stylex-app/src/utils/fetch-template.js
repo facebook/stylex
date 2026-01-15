@@ -8,10 +8,26 @@
 
 'use strict';
 
+const path = require('path');
 const { downloadTemplate } = require('giget');
 
 const DEFAULT_REPO = 'facebook/stylex';
 const DEFAULT_BRANCH = 'main';
+
+/**
+ * Fetch shared-ui from the stylex packages directory
+ */
+async function fetchSharedUI(targetDir) {
+  const source = `github:${DEFAULT_REPO}/packages/shared-ui#${DEFAULT_BRANCH}`;
+  const sharedUIDir = path.join(targetDir, 'shared-ui');
+
+  await downloadTemplate(source, {
+    dir: sharedUIDir,
+    force: true,
+  });
+
+  return sharedUIDir;
+}
 
 /**
  * Fetch a template from the stylex examples directory
@@ -23,6 +39,11 @@ async function fetchTemplate(templateConfig, targetDir) {
     dir: targetDir,
     force: true,
   });
+
+  // Fetch shared-ui if template uses it
+  if (templateConfig.usesSharedUI) {
+    await fetchSharedUI(targetDir);
+  }
 
   return targetDir;
 }
@@ -88,4 +109,5 @@ module.exports = {
   fetchTemplate,
   fetchCustomTemplate,
   fetchTemplatesManifest,
+  fetchSharedUI,
 };

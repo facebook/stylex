@@ -9,16 +9,16 @@ Will be deleted once ready to merge
 | Template     | Status                                 | Script               |
 |--------------|----------------------------------------|----------------------|
 | nextjs       | ❌ Missing `autoprefixer`              | `npm run dev`        |
-| vite-react   | ⚠️ Needs testing (shared-ui inlined)  | `npm run dev`        |
-| vite         | ⚠️ Needs testing (shared-ui inlined)  | `npm run dev`        |
+| vite-react   | ✅ Fixed (shared-ui fetched)           | `npm run dev`        |
+| vite         | ✅ Fixed (shared-ui fetched)           | `npm run dev`        |
 | webpack      | ✅ Working                             | `npm run dev`        |
 | rollup       | ❌ Missing `@babel/preset-flow`        | `npm run dev`        |
 | esbuild      | ✅ Working                             | `npm run build` only |
 | rspack       | ✅ Working                             | `npm run dev`        |
-| react-router | ⚠️ Needs testing (shared-ui inlined)  | `npm run dev`        |
-| waku         | ⚠️ Needs testing (shared-ui inlined)  | `npm run dev`        |
-| vite-rsc     | ⚠️ Needs testing (shared-ui inlined)  | `npm run dev`        |
-| redwoodsdk   | ⚠️ Needs testing (shared-ui inlined)  | `npm run dev`        |
+| react-router | ❌ vite-plugin-devtools-json conflict  | `npm run dev`        |
+| waku         | ❌ SSR import issue with file: dep     | `npm run dev`        |
+| vite-rsc     | ✅ Fixed (shared-ui fetched)           | `npm run dev`        |
+| redwoodsdk   | ❌ React canary/stable version conflict | `npm run dev`        |
 | storybook    | ❌ vitest version conflict             | `npm run storybook`  |
 | cli          | ✅ Working                             | `npm run build` only |
 
@@ -43,17 +43,15 @@ These templates depend on `@stylexjs/shared-ui` which is a private package not p
 5. example-vite
 6. example-waku
 
-**Error when installing:**
+**Error when installing (without fix):**
 ```
 npm error 404 Not Found - GET https://registry.npmjs.org/@stylexjs%2fshared-ui - Not found
 ```
 
-**Fix Status:** ⚠️ **Partially fixed locally** - shared-ui has been inlined into all 6 examples:
-- Each example now has `src/shared-ui/tokens.stylex.ts` and `src/shared-ui/index.tsx` (or `.js`/`.jsx` for vite)
-- Imports updated from `@stylexjs/shared-ui` → `./shared-ui`
-- `@stylexjs/shared-ui` removed from package.json dependencies
-
-**⚠️ Needs testing after branch merge** - these templates may have additional missing dependencies (similar to nextjs/autoprefixer or rollup/@babel/preset-flow issues).
+**Fix Status:** ✅ **Fixed** - The CLI now:
+1. Fetches `examples/shared-ui` from GitHub alongside the template (to `./shared-ui/`)
+2. Rewrites `@stylexjs/shared-ui` dependency in package.json to `file:./shared-ui`
+3. npm resolves the dependency from the local directory
 
 ---
 
@@ -102,34 +100,17 @@ Add `autoprefixer` to devDependencies in `examples/example-nextjs/package.json`:
 
 ## vite-react
 
-**Status:** ❌ Failing
+**Status:** ✅ Fixed
 
-**Error:**
-```
-(!) Failed to run dependency scan. Skipping dependency pre-bundling. Error: The following dependencies are imported but could not be resolved:
-
-  @stylexjs/shared-ui (imported by /private/tmp/test-vite-react/src/App.tsx)
-  @stylexjs/shared-ui/tokens.stylex (imported by /private/tmp/test-vite-react/src/App.tsx)
-
-Are they installed?
-
-10:29:47 PM [vite] Internal server error: /private/tmp/test-vite-react/src/App.tsx: Could not resolve the path to the imported file.
-  10 | import * as stylex from '@stylexjs/stylex';
-  11 | import { Button } from '@stylexjs/shared-ui';
-> 12 | import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
-     |          ^^^^^^
-```
-
-**Root Cause:**
-Uses `@stylexjs/shared-ui` which is a private package not published to npm (see shared-ui section above)
-
-**Fix Status:** ⚠️ Partially fixed - shared-ui inlined into `examples/example-vite-react/src/shared-ui/`. Needs testing after merge for other potential missing dependencies.
+The shared-ui dependency is now fetched from GitHub and installed as a local file dependency.
 
 ---
 
 ## vite
 
-**Status:** ⚠️ Needs testing (pending merge) - shared-ui inlined, may have other issues
+**Status:** ✅ Fixed
+
+The shared-ui dependency is now fetched from GitHub and installed as a local file dependency.
 
 ---
 
@@ -180,25 +161,89 @@ Add `@babel/preset-flow` to devDependencies in `examples/example-rollup/package.
 
 ## react-router
 
-**Status:** ⚠️ Needs testing (pending merge) - shared-ui inlined, may have other issues
+**Status:** ❌ Failing
+
+**Error:**
+```
+npm error ERESOLVE unable to resolve dependency tree
+npm error peer vite@"^2.7.0 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0" from vite-plugin-devtools-json@0.2.0
+```
+
+**Root Cause:**
+The template has `vite@^7.2.4` but `vite-plugin-devtools-json@0.2.0` only supports up to Vite 6.
+
+**Fix Required:**
+Either update `vite-plugin-devtools-json` to a version that supports Vite 7, or downgrade Vite to v6.
+
+**Note:** The shared-ui fetching works correctly for this template.
 
 ---
 
 ## waku
 
-**Status:** ⚠️ Needs testing (pending merge) - shared-ui inlined, may have other issues
+**Status:** ❌ Failing (RSC compatibility issue)
+
+**Error:**
+```
+[SSR Error]
+Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined.
+```
+
+**Root Cause:**
+Waku uses React Server Components (RSC) and cannot properly resolve exports from `file:` dependencies that contain raw TypeScript files. The `Button` component from `@stylexjs/shared-ui` is imported as `undefined` during SSR.
+
+**Technical Details:**
+- The CLI correctly fetches shared-ui from GitHub
+- npm installs it as a symlink (`node_modules/@stylexjs/shared-ui -> ../../shared-ui`)
+- However, Waku/Vite's RSC bundler doesn't process the raw `.tsx` files from the package
+- Attempted fixes that didn't work:
+  - Adding `ssr.noExternal: ['@stylexjs/shared-ui']` to waku.config.ts
+  - Adding `'use client'` directive to the Button component
+  - Converting symlink to a hard copy
+  - Adding `optimizeDeps.include` configuration
+
+**Why it works in the monorepo:**
+In the monorepo, yarn workspaces hoists all packages to the root `node_modules`, and Vite already knows to process source files from workspace packages. When using the CLI with `file:` dependencies, the package ends up in a different location that Waku's bundler doesn't handle the same way.
+
+**Potential Solutions:**
+1. **Inline shared-ui** (most reliable): Copy the Button component directly into example-waku/src/ instead of using it as a dependency
+2. **Remove shared-ui usage**: Simplify the example to not use shared-ui
+3. **Build shared-ui**: Pre-compile shared-ui to JavaScript and export built files instead of raw TypeScript (but this breaks the monorepo workflow)
+4. **Wait for Waku/Vite fix**: This may be a broader issue with how Waku handles local TypeScript dependencies
+
+**Recommendation:** Since this is a Waku-specific limitation and the template works fine in the monorepo, this can remain a known issue. Users scaffolding with the CLI can manually fix by copying the Button component or removing it.
 
 ---
 
 ## vite-rsc
 
-**Status:** ⚠️ Needs testing (pending merge) - shared-ui inlined, may have other issues
+**Status:** ✅ Fixed
+
+The shared-ui dependency is now fetched from GitHub and installed as a local file dependency.
 
 ---
 
 ## redwoodsdk
 
-**Status:** ⚠️ Needs testing (pending merge) - shared-ui inlined, may have other issues
+**Status:** ❌ Failing
+
+**Error:**
+```
+npm error ERESOLVE unable to resolve dependency tree
+npm error Found: react@19.3.0-canary-561ee24d-20251101
+npm error Could not resolve dependency:
+npm error peer react@"^19.2.1" from react-server-dom-webpack@19.2.1
+```
+
+**Root Cause:**
+The template uses a React canary version (`19.3.0-canary-561ee24d-20251101`) but `react-server-dom-webpack@19.2.1` requires stable React (`^19.2.1`). npm's semver resolution treats canary versions differently and doesn't satisfy the peer dependency.
+
+**Note:** The shared-ui fetching works correctly for this template.
+
+**Fix Required:**
+Update `examples/example-redwoodsdk/package.json` to use compatible versions. Either:
+1. Downgrade React to stable: `"react": "^19.2.1"`, `"react-dom": "^19.2.1"`
+2. Or upgrade `react-server-dom-webpack` to a matching canary version
 
 ---
 
