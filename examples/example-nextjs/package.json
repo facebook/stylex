@@ -16,6 +16,7 @@
     "react-dom": "^19.0.0-rc-de68d2f4-20241204"
   },
   "devDependencies": {
+    "autoprefixer": "^10.4.20",
     "@stylexjs/eslint-plugin": "0.17.5",
     "@stylexjs/postcss-plugin": "0.17.5",
     "@types/json-schema": "^7.0.15",
