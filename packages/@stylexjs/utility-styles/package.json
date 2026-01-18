@@ -13,6 +13,10 @@
     "./compile": {
       "types": "./src/compile.d.ts",
       "default": "./src/compile.js"
+    },
+    "./babel-transform": {
+      "types": "./src/babel-transform.d.ts",
+      "default": "./src/babel-transform.js"
     }
   },
   "repository": {

@@ -462,6 +462,14 @@ describe('@stylexjs/babel-plugin', () => {
           var _inject2 = _inject;
           import stylex from 'stylex';
           import * as css from '@stylexjs/utility-styles';
+          const _styles = {
+            color: _v => [{
+              "color": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
           _inject2({
             ltr: ".x14rh7hd{color:var(--x-color)}",
             priority: 3000
@@ -470,12 +478,7 @@ describe('@stylexjs/babel-plugin', () => {
             ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
             priority: 0
           });
-          stylex.props([{
-            "color": color != null ? "x14rh7hd" : color,
-            "$$css": true
-          }, {
-            "--x-color": color != null ? color : undefined
-          }]);"
+          stylex.props(_styles.color(color));"
         `);
       });
 
@@ -488,7 +491,7 @@ describe('@stylexjs/babel-plugin', () => {
         expect(output).toContain('.x78zum5{display:flex}');
         expect(output).toContain('.x14rh7hd{color:var(--x-color)}');
         expect(output).toContain('--x-color');
-        expect(output).toContain('color != null ? "x14rh7hd" : color');
+        expect(output).toContain('_v != null ? "x14rh7hd" : _v');
       });
 
       test('inline static with create dynamic', () => {
@@ -514,6 +517,45 @@ describe('@stylexjs/babel-plugin', () => {
           });
           stylex.props(css.color(color), styles.opacity(0.5));
         `);
+        expect(output).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          const _styles = {
+            color: _v => [{
+              "color": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import * as css from '@stylexjs/utility-styles';
+          _inject2({
+            ltr: ".xb4nw82{opacity:var(--x-opacity)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-opacity { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const styles = {
+            opacity: o => [{
+              kSiTet: o != null ? "xb4nw82" : o,
+              $$css: true
+            }, {
+              "--x-opacity": o != null ? o : undefined
+            }]
+          };
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          stylex.props(_styles.color(color), styles.opacity(0.5));"
+        `);
         expect(output).toContain('.x14rh7hd{color:var(--x-color)}');
         expect(output).toContain('.xb4nw82{opacity:var(--x-opacity)}');
         expect(output).toContain('--x-color');
@@ -528,6 +570,14 @@ describe('@stylexjs/babel-plugin', () => {
       `);
         expect(inline).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          const _styles = {
+            color: _v => [{
+              "color": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
           var _inject2 = _inject;
           import stylex from 'stylex';
           import * as css from '@stylexjs/utility-styles';
@@ -543,15 +593,11 @@ describe('@stylexjs/babel-plugin', () => {
             ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
             priority: 0
           });
-          stylex.props({
+          const _temp = {
             k1xSpc: "x78zum5",
             $$css: true
-          }, [{
-            "color": color != null ? "x14rh7hd" : color,
-            "$$css": true
-          }, {
-            "--x-color": color != null ? color : undefined
-          }]);"
+          };
+          stylex.props(_temp, _styles.color(color));"
         `);
       });
 
@@ -589,10 +635,11 @@ describe('@stylexjs/babel-plugin', () => {
             ltr: ".x78zum5{display:flex}",
             priority: 3000
           });
-          stylex.props({
+          const _temp = {
             k1xSpc: "x78zum5",
             $$css: true
-          }, styles.opacity(0.5));"
+          };
+          stylex.props(_temp, styles.opacity(0.5));"
         `);
       });
 
@@ -607,6 +654,14 @@ describe('@stylexjs/babel-plugin', () => {
       `);
         expect(output).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          const _styles = {
+            color: _v => [{
+              "color": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
           var _inject2 = _inject;
           import stylex from 'stylex';
           import * as css from '@stylexjs/utility-styles';
@@ -634,12 +689,7 @@ describe('@stylexjs/babel-plugin', () => {
             ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
             priority: 0
           });
-          stylex.props([{
-            "color": color != null ? "x14rh7hd" : color,
-            "$$css": true
-          }, {
-            "--x-color": color != null ? color : undefined
-          }], styles.opacity(0.5));"
+          stylex.props(_styles.color(color), styles.opacity(0.5));"
         `);
       });
 
@@ -669,7 +719,7 @@ describe('@stylexjs/babel-plugin', () => {
               priority: 3000
             });
             ({
-              className: "Foo____inline__ display-x78zum5"
+              className: "display-x78zum5"
             });"
           `);
         });
