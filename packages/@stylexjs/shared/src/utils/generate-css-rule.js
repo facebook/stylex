@@ -14,7 +14,7 @@ import { defaultOptions } from './default-options';
 
 import generateLtr from '../physical-rtl/generate-ltr';
 import generateRtl from '../physical-rtl/generate-rtl';
-import { getPriority } from '@stylexjs/shared';
+import { default as getPriority } from './property-priorities';
 
 const THUMB_VARIANTS = [
   '::-webkit-slider-thumb',

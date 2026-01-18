@@ -11,8 +11,8 @@ import type { NodePath } from '@babel/traverse';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import * as messages from '../shared/messages';
-import { utils } from '../shared';
+import { messages } from '@stylexjs/shared';
+import { utils } from '@stylexjs/shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { isVariableNamedExported } from '../utils/ast-helpers';
 

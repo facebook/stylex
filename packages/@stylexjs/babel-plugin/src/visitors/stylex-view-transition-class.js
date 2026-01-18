@@ -12,14 +12,14 @@ import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import * as messages from '../shared/messages';
+import { messages } from '@stylexjs/shared';
 import { evaluate } from '../utils/evaluate-path';
 import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
-} from '../shared';
-import stylexViewTransitionClass from '../shared/stylex-view-transition-class';
-import type { InjectableStyle } from '../shared/common-types';
+  stylexViewTransitionClass,
+} from '@stylexjs/shared';
+import type { InjectableStyle } from '@stylexjs/shared';
 
 /// This function looks for `stylex.viewTransitionClass` calls within variable declarations and transforms them.
 /// 1. It finds the first argument to `stylex.viewTransitionClass` and validates it.

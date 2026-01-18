@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
+import type { CompiledNamespaces, MutableCompiledNamespaces } from '@stylexjs/shared';
 
 import path from 'node:path';
 import StateManager from './state-manager';

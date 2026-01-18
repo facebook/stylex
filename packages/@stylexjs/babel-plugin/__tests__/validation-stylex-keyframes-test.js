@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 import { transformSync } from '@babel/core';
-import { messages } from '../src/shared';
+import { messages } from '@stylexjs/shared';
 import stylexPlugin from '../src/index';
 
 function transform(source: string, opts: any = {}) {

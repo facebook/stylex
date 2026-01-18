@@ -12,10 +12,10 @@ import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import styleXPositionTry from '../shared/stylex-position-try';
+import { stylexPositionTry as styleXPositionTry } from '@stylexjs/shared';
 import { evaluate } from '../utils/evaluate-path';
-import { firstThatWorks as stylexFirstThatWorks } from '../shared';
-import * as messages from '../shared/messages';
+import { firstThatWorks as stylexFirstThatWorks } from '@stylexjs/shared';
+import { messages } from '@stylexjs/shared';
 
 /// This function looks for `stylex.positionTry` calls within variable declarations and transforms them.
 /// 1. It finds the first argument to `stylex.positionTry` and validates it.

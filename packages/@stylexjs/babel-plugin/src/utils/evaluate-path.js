@@ -27,7 +27,7 @@ import { parseSync } from '@babel/core';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
-import { utils } from '../shared';
+import { utils } from '@stylexjs/shared';
 import * as errMsgs from './evaluation-errors';
 import fs from 'node:fs';
 

@@ -2,6 +2,11 @@
   "name": "@stylexjs/shared",
   "version": "0.17.5",
   "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./lib/*": "./lib/*",
+    "./src/*": "./src/*"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/facebook/stylex.git"
@@ -12,11 +17,16 @@
     "build": "babel src/ --out-dir lib/",
     "test": "jest --coverage --passWithNoTests"
   },
+  "dependencies": {
+    "postcss-value-parser": "^4.1.0",
+    "style-value-parser": "0.17.5"
+  },
   "devDependencies": {
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9"
   },
   "files": [
-    "lib/*"
+    "lib/*",
+    "src/*"
   ]
 }

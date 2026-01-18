@@ -12,8 +12,8 @@ import type { NodePath } from '@babel/traverse';
 import type {
   CompiledNamespaces,
   StyleXOptions as RuntimeOptions,
-} from '../shared';
-import type { FlatCompiledStyles } from '../shared/common-types';
+} from '@stylexjs/shared';
+import type { FlatCompiledStyles } from '@stylexjs/shared';
 import type { Check } from './validate';
 
 import * as t from '@babel/types';
@@ -28,7 +28,7 @@ import {
   addNamedImport,
   getProgramStatement,
 } from './ast-helpers';
-import { defaultOptions } from '../shared/utils/default-options';
+import { defaultOptions } from '@stylexjs/shared';
 
 export type ImportPathResolution =
   | false

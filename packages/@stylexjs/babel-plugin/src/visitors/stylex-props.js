@@ -9,22 +9,22 @@
 
 import type { NodePath } from '@babel/traverse';
 import type { FunctionConfig } from '../utils/evaluate-path';
-import type { FlatCompiledStyles } from '../shared/common-types';
+import type { FlatCompiledStyles } from '@stylexjs/shared';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import { props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
-import stylexDefaultMarker from '../shared/stylex-defaultMarker';
-import styleXCreateSet from '../shared/stylex-create';
-import { convertStyleToClassName } from '../shared/utils/convert-to-className';
+import { stylexDefaultMarker } from '@stylexjs/shared';
+import { create as styleXCreateSet } from '@stylexjs/shared';
+import { convertStyleToClassName } from '@stylexjs/shared';
 import {
   injectDevClassNames,
   convertToTestStyles,
 } from '../utils/dev-classname';
 
-const INLINE_CSS_SOURCE = '@stylexjs/inline-css';
+const UTILITY_STYLES_SOURCE = '@stylexjs/utility-styles';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
@@ -611,7 +611,7 @@ function isInlineCSSIdentifier(
     binding &&
     binding.path.isImportSpecifier() &&
     binding.path.parent.type === 'ImportDeclaration' &&
-    binding.path.parent.source.value === INLINE_CSS_SOURCE
+    binding.path.parent.source.value === UTILITY_STYLES_SOURCE
   ) {
     return true;
   }
@@ -619,7 +619,7 @@ function isInlineCSSIdentifier(
     binding &&
     binding.path.isImportNamespaceSpecifier() &&
     binding.path.parent.type === 'ImportDeclaration' &&
-    binding.path.parent.source.value === INLINE_CSS_SOURCE
+    binding.path.parent.source.value === UTILITY_STYLES_SOURCE
   ) {
     return true;
   }
@@ -627,7 +627,7 @@ function isInlineCSSIdentifier(
     binding &&
     binding.path.isImportDefaultSpecifier() &&
     binding.path.parent.type === 'ImportDeclaration' &&
-    binding.path.parent.source.value === INLINE_CSS_SOURCE
+    binding.path.parent.source.value === UTILITY_STYLES_SOURCE
   ) {
     return true;
   }

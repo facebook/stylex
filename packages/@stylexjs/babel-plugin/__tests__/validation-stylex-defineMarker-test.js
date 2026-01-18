@@ -11,7 +11,7 @@ jest.autoMockOff();
 
 import { transformSync } from '@babel/core';
 import stylexPlugin from '../src/index';
-import * as messages from '../src/shared/messages';
+import { messages } from '@stylexjs/shared';
 
 function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {

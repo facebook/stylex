@@ -12,7 +12,7 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 
-const INLINE_CSS_SOURCES = new Set(['@stylexjs/inline-css']);
+const UTILITY_STYLES_SOURCES = new Set(['@stylexjs/utility-styles']);
 
 // Read imports of react and remember the name of the local variables for later
 export function readImportDeclarations(
@@ -25,7 +25,7 @@ export function readImportDeclarations(
   }
   const sourcePath = node.source.value;
 
-  if (INLINE_CSS_SOURCES.has(sourcePath)) {
+  if (UTILITY_STYLES_SOURCES.has(sourcePath)) {
     for (const specifier of node.specifiers) {
       if (specifier.type === 'ImportNamespaceSpecifier') {
         state.inlineCSSImports.set(specifier.local.name, '*');
@@ -121,7 +121,7 @@ export function readImportDeclarations(
             if (importedName === 'defaultMarker') {
               state.stylexDefaultMarkerImport.add(localName);
             }
-            if (importedName === 'css') {
+            if (importedName === 'x') {
               state.inlineCSSImports.set(localName, '*');
             }
           }
@@ -153,7 +153,7 @@ export function readRequires(
       return;
     }
     state.importPaths.add(importPath);
-    if (INLINE_CSS_SOURCES.has(importPath)) {
+    if (UTILITY_STYLES_SOURCES.has(importPath)) {
       if (node.id.type === 'Identifier') {
         state.inlineCSSImports.set(node.id.name, '*');
         return;
@@ -224,7 +224,7 @@ export function readRequires(
           if (prop.key.name === 'defaultMarker') {
             state.stylexDefaultMarkerImport.add(value.name);
           }
-          if (prop.key.name === 'css') {
+          if (prop.key.name === 'x') {
             state.inlineCSSImports.set(value.name, '*');
           }
         }
@@ -239,7 +239,7 @@ export function readRequires(
     init.callee?.name === 'require' &&
     init.arguments?.length === 1 &&
     init.arguments?.[0].type === 'StringLiteral' &&
-    INLINE_CSS_SOURCES.has(init.arguments[0].value)
+    UTILITY_STYLES_SOURCES.has(init.arguments[0].value)
   ) {
     if (node.id.type === 'Identifier') {
       state.inlineCSSImports.set(node.id.name, '*');

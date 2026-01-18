@@ -10,7 +10,7 @@
 jest.autoMockOff();
 
 import { transformSync } from '@babel/core';
-import { messages } from '../src/shared';
+import { messages } from '@stylexjs/shared';
 import stylexPlugin from '../src/index';
 
 // Valid string terminator sequences are BEL, ESC\, and 0x9c

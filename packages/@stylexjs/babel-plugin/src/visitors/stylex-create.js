@@ -9,7 +9,7 @@
 
 import type { NodePath } from '@babel/traverse';
 import type { FunctionConfig } from '../utils/evaluate-path';
-import type { InjectableStyle } from '../shared';
+import type { InjectableStyle } from '@stylexjs/shared';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
@@ -19,17 +19,17 @@ import {
   keyframes as stylexKeyframes,
   positionTry as stylexPositionTry,
   when as _stylexWhen,
-} from '../shared';
-import stylexDefaultMarker from '../shared/stylex-defaultMarker';
+} from '@stylexjs/shared';
+import { stylexDefaultMarker } from '@stylexjs/shared';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
   convertToTestStyles,
   injectDevClassNames,
 } from '../utils/dev-classname';
 import { convertObjectToAST } from '../utils/js-to-ast';
-import { messages } from '../shared';
+import { messages } from '@stylexjs/shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
-import flatMapExpandedShorthands from '../shared/preprocess-rules';
+import { flatMapExpandedShorthands } from '@stylexjs/shared';
 import { hoistExpression, pathReplaceHoisted } from '../utils/ast-helpers';
 
 function isSafeToSkipNullCheck(expr: t.Expression): boolean {

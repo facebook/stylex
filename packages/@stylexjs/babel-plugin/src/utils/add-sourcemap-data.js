@@ -8,7 +8,7 @@
  */
 
 import type { NodePath } from '@babel/traverse';
-import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
+import type { CompiledNamespaces, MutableCompiledNamespaces } from '@stylexjs/shared';
 
 import * as t from '@babel/types';
 import path from 'node:path';

@@ -46,7 +46,7 @@ const config = {
     ? external
     : [...external, '@dual-bundle/import-meta-resolve', '@stylexjs/stylex'],
   plugins: [
-    babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
+    babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*', '../shared/src/**/*'] }),
     nodeResolve({
       preferBuiltins: false,
       extensions,
