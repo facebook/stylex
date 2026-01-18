@@ -1,7 +1,7 @@
 {
-  "name": "@stylexjs/inline-css",
-  "version": "0.17.4",
-  "description": "Inline CSS property helpers for StyleX.",
+  "name": "@stylexjs/utility-styles",
+  "version": "0.17.5",
+  "description": "Utility style helpers for StyleX.",
   "license": "MIT",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -11,7 +11,7 @@
   },
   "sideEffects": false,
   "peerDependencies": {
-    "@stylexjs/stylex": "^0.17.4"
+    "@stylexjs/stylex": "^0.17.5"
   },
   "dependencies": {
     "csstype": "^3.1.3"
@@ -20,4 +20,3 @@
     "src"
   ]
 }
-
