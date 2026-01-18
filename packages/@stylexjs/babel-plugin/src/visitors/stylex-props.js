@@ -17,8 +17,10 @@ import { props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import { stylexDefaultMarker } from '@stylexjs/shared';
-import { create as styleXCreateSet } from '@stylexjs/shared';
-import { convertStyleToClassName } from '@stylexjs/shared';
+import {
+  compileStaticStyle,
+  compileDynamicStyle,
+} from '@stylexjs/utility-styles/compile';
 import {
   injectDevClassNames,
   convertToTestStyles,
@@ -646,16 +648,18 @@ function compileInlineStaticCSS(
     return cached;
   }
 
-  const [compiledNamespaces, injectedStyles] = styleXCreateSet(
-    {
-      __inline__: {
-        [property]: value,
-      },
-    },
+  const { className, classKey, injectedStyles } = compileStaticStyle(
+    property,
+    value,
     state.options,
   );
 
-  const compiled = applyDevTest(compiledNamespaces.__inline__, state);
+  const compiledNamespace = {
+    [classKey]: className,
+    $$css: true,
+  };
+
+  const compiled = applyDevTest(compiledNamespace, state);
 
   const listOfStyles = Object.entries(injectedStyles).map(
     ([key, { priority, ...rest }]) => [key, rest, priority],
@@ -677,28 +681,15 @@ function compileInlineDynamicStyle(
   let cached = state.inlineDynamicCache.get(cacheKey);
 
   if (cached == null) {
-    const varName = `--x-${property}`;
-    const [classKey, className, styleObj] = convertStyleToClassName(
-      [property, `var(${varName})`],
-      [],
-      [],
-      [],
+    const { className, classKey, varName, injectedStyles } = compileDynamicStyle(
+      property,
       state.options,
     );
-    const { priority, ...rest } = styleObj;
 
-    const propertyInjection = {
-      ltr: `@property ${varName} { syntax: "*"; inherits: false;}`,
-      rtl: null,
-    };
-
-    state.registerStyles(
-      [
-        [classKey, rest, priority],
-        [`${classKey}-var`, propertyInjection, 0],
-      ],
-      path,
+    const listOfStyles = Object.entries(injectedStyles).map(
+      ([key, { priority, ...rest }]) => [key, rest, priority],
     );
+    state.registerStyles(listOfStyles, path);
 
     cached = { className, varName, classKey };
     state.inlineDynamicCache.set(cacheKey, cached);
