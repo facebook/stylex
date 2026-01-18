@@ -17,7 +17,7 @@ const valueProxy = (_propName) =>
     },
   });
 
-const inlineCSS = new Proxy(function () {}, {
+const utilityStyles = new Proxy(function () {}, {
   get(_target, prop) {
     if (typeof prop === 'string') {
       return valueProxy(prop);
@@ -26,10 +26,10 @@ const inlineCSS = new Proxy(function () {}, {
   },
   apply() {
     throw new Error(
-      '@stylexjs/inline-css is a compile-time helper. Attempted to call it as a function, but the StyleX compiler did not run.',
+      '@stylexjs/utility-styles is a compile-time helper. Attempted to call it as a function, but the StyleX compiler did not run.',
     );
   },
 });
 
-module.exports = inlineCSS;
-module.exports.default = inlineCSS;
+module.exports = utilityStyles;
+module.exports.default = utilityStyles;
