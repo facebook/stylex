@@ -135,7 +135,8 @@ export function _flattenRawStyleObject(
     if (
       typeof value === 'object' &&
       !key.startsWith(':') &&
-      !key.startsWith('@')
+      !key.startsWith('@') &&
+      !key.startsWith('[')
     ) {
       const equivalentPairs: { [string]: { [string]: AnyPreRule } } = {};
       for (const condition in value) {
@@ -169,7 +170,7 @@ export function _flattenRawStyleObject(
     // Object Values for pseudos and at-rules. e.g. { ':hover': { color: 'red' } }
     if (
       typeof value === 'object' &&
-      (key.startsWith(':') || key.startsWith('@'))
+      (key.startsWith(':') || key.startsWith('@') || key.startsWith('['))
     ) {
       const pairs = _flattenRawStyleObject(value, [...keyPath, _key], options);
       for (const [property, preRule] of pairs) {
