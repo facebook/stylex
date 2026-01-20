@@ -1021,6 +1021,7 @@ const overflowWrap: RuleCheck = makeUnionRule(
 const overflowDir: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
+  makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
 );
