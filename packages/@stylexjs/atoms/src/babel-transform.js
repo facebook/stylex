@@ -9,7 +9,7 @@
 
 const t = require('@babel/types');
 
-const UTILITY_STYLES_SOURCE = '@stylexjs/utility-styles';
+const ATOMS_SOURCE = '@stylexjs/atoms';
 
 /**
  * Creates a visitor that transforms utility style expressions into raw style objects.
@@ -62,7 +62,7 @@ function isUtilityStylesIdentifier(ident, state, path) {
   if (
     binding.path.isImportSpecifier() &&
     binding.path.parent.type === 'ImportDeclaration' &&
-    binding.path.parent.source.value === UTILITY_STYLES_SOURCE
+    binding.path.parent.source.value === ATOMS_SOURCE
   ) {
     return true;
   }
@@ -70,7 +70,7 @@ function isUtilityStylesIdentifier(ident, state, path) {
   if (
     binding.path.isImportNamespaceSpecifier() &&
     binding.path.parent.type === 'ImportDeclaration' &&
-    binding.path.parent.source.value === UTILITY_STYLES_SOURCE
+    binding.path.parent.source.value === ATOMS_SOURCE
   ) {
     return true;
   }
@@ -78,7 +78,7 @@ function isUtilityStylesIdentifier(ident, state, path) {
   if (
     binding.path.isImportDefaultSpecifier() &&
     binding.path.parent.type === 'ImportDeclaration' &&
-    binding.path.parent.source.value === UTILITY_STYLES_SOURCE
+    binding.path.parent.source.value === ATOMS_SOURCE
   ) {
     return true;
   }

@@ -1,20 +1,20 @@
-# @stylexjs/utility-styles
+# @stylexjs/atoms
 
-Compile-time helpers for authoring StyleX utility styles.
+Compile-time helpers for authoring StyleX atomic styles.
 
 This package exposes CSS properties as a namespaced object and lets you express
 static and dynamic styles using normal JavaScript syntax. There is no new
 runtime styling system and no design tokens — everything compiles to the same
 output as stylex.create.
 
-The compiler treats utility styles from this package as if they were authored
+The compiler treats atomic styles from this package as if they were authored
 locally, enabling the same optimizations as normal StyleX styles.
 
 ## Usage
 
 ```js
 import * as stylex from '@stylexjs/stylex';
-import x from '@stylexjs/utility-styles';
+import x from '@stylexjs/atoms';
 
 function Example({ color }) {
   return (

@@ -38,7 +38,7 @@ import {
   LOGICAL_FLOAT_END_VAR,
 } from './shared/preprocess-rules/legacy-expand-shorthands';
 import transformStyleXDefineMarker from './visitors/stylex-define-marker';
-import { createUtilityStylesVisitor } from '@stylexjs/utility-styles/babel-transform';
+import { createUtilityStylesVisitor } from '@stylexjs/atoms/babel-transform';
 import { convertObjectToAST } from './utils/js-to-ast';
 
 const NAME = 'stylex';
@@ -162,13 +162,13 @@ function styleXTransform(): PluginObj<> {
               skipStylexPropsChildren(path, state);
             },
           });
-          // Run utility-styles visitor first to transform x.prop.value patterns
-          // This runs BEFORE stylex.props so that utility styles are already
+          // Run atoms visitor first to transform x.prop.value patterns
+          // This runs BEFORE stylex.props so that atomic styles are already
           // compiled when stylex.props processes them
-          const utilityStylesVisitor = createUtilityStylesVisitor(state, {
+          const atomsVisitor = createUtilityStylesVisitor(state, {
             convertObjectToAST,
           });
-          path.traverse(utilityStylesVisitor);
+          path.traverse(atomsVisitor);
 
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {

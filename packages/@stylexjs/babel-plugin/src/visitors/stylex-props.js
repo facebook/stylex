@@ -106,7 +106,7 @@ export default function transformStylexProps(
     disableImports: true,
   };
 
-  // Pre-process: compile any raw style objects (from utility-styles) before the main loop
+  // Pre-process: compile any raw style objects (from atoms) before the main loop
   // This transforms { property: 'value' } into { propKey: 'className', $$css: true }
   for (const argPath of argsPath) {
     compileRawStyleObjects(argPath, state, evaluatePathFnConfig);
@@ -283,7 +283,7 @@ export default function transformStylexProps(
         });
       }
 
-      // Hoist inline CSS objects (from utility-styles) to module level
+      // Hoist inline CSS objects (from atoms) to module level
       // Raw objects are pre-compiled in compileRawStyleObjects, so this only hoists compiled objects
       // eslint-disable-next-line no-inner-declarations
       function ObjectExpression(objPath: NodePath<t.ObjectExpression>) {
@@ -545,7 +545,7 @@ function isCalleeMemberExpression(
 }
 
 /**
- * Pre-compile raw style objects from utility-styles.
+ * Pre-compile raw style objects from atoms.
  * This transforms { property: 'value' } into { propKey: 'className', $$css: true }
  * and registers the CSS injection.
  */

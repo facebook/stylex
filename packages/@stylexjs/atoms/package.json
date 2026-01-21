@@ -1,7 +1,7 @@
 {
-  "name": "@stylexjs/utility-styles",
+  "name": "@stylexjs/atoms",
   "version": "0.17.5",
-  "description": "Utility style helpers for StyleX.",
+  "description": "Atomic style helpers for StyleX.",
   "license": "MIT",
   "main": "src/index.js",
   "types": "src/index.d.ts",
