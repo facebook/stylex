@@ -5,6 +5,10 @@
   "license": "MIT",
   "main": "src/index.js",
   "types": "src/index.d.ts",
+  "exports": {
+    ".": "./src/index.js",
+    "./babel-transform": "./src/babel-transform.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/facebook/stylex.git"
