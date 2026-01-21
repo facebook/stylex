@@ -285,5 +285,5 @@ _legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;
 
-// Re-export utility-styles for cleaner imports
-export { default as x } from '@stylexjs/utility-styles';
+// Re-export atoms for cleaner imports
+export { default as x } from '@stylexjs/atoms';

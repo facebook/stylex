@@ -231,18 +231,18 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
-    describe('props calls with utility-styles', () => {
+    describe('props calls with atoms', () => {
       test('inline static styles match stylex.create', () => {
         const inline = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           stylex.props(css.display.flex);
         `);
         expect(inline).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".x78zum5{display:flex}",
             priority: 3000
@@ -275,14 +275,14 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline static supports leading underscore value', () => {
         const inline = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           stylex.props(css.padding._16px);
         `);
         expect(inline).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".x1tamke2{padding:16px}",
             priority: 1000
@@ -315,14 +315,14 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline static supports computed key syntax', () => {
         const inline = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           stylex.props(css.width['calc(100% - 20px)']);
         `);
         expect(inline).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".xnlsq7q{width:calc(100% - 20px)}",
             priority: 4000
@@ -342,7 +342,7 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".xnlsq7q{width:calc(100% - 20px)}",
             priority: 4000
@@ -368,14 +368,14 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline css supports named imports', () => {
         const inline = transform(`
           import stylex from 'stylex';
-          import { color } from '@stylexjs/utility-styles';
+          import { color } from '@stylexjs/atoms';
           stylex.props(color.blue);
         `);
         expect(inline).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import { color } from '@stylexjs/utility-styles';
+          import { color } from '@stylexjs/atoms';
           _inject2({
             ltr: ".xju2f9n{color:blue}",
             priority: 3000
@@ -386,10 +386,10 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
-      test('dedupes duplicate properties across create and utility-styles', () => {
+      test('dedupes duplicate properties across create and atoms', () => {
         const output = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           const styles = stylex.create({
             base: { color: 'red', backgroundColor: 'white' },
           });
@@ -399,7 +399,7 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".x1e2nbdu{color:red}",
             priority: 3000
@@ -425,7 +425,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('dynamic style', () => {
         const inline = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           stylex.props(css.color(color));
         `);
         const local = transform(`
@@ -461,7 +461,7 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".x14rh7hd{color:var(--x-color)}",
             priority: 3000
@@ -485,7 +485,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline static with inline dynamic', () => {
         const output = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           stylex.props(css.display.flex, css.color(color));
         `);
         expect(output).toContain('.x78zum5{display:flex}');
@@ -497,7 +497,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline static with create dynamic', () => {
         const output = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           const styles = stylex.create({
             opacity: (o) => ({ opacity: o }),
           });
@@ -511,7 +511,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline dynamic with create dynamic', () => {
         const output = transform(`
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           const styles = stylex.create({
             opacity: (o) => ({ opacity: o }),
           });
@@ -521,7 +521,7 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".xb4nw82{opacity:var(--x-opacity)}",
             priority: 3000
@@ -565,14 +565,14 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline static + inline dynamic coexist', () => {
         const inline = transform(`
         import stylex from 'stylex';
-        import * as css from '@stylexjs/utility-styles';
+        import * as css from '@stylexjs/atoms';
         stylex.props(css.display.flex, css.color(color));
       `);
         expect(inline).toMatchInlineSnapshot(`
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".x78zum5{display:flex}",
             priority: 3000
@@ -604,7 +604,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline static + create dynamic', () => {
         const output = transform(`
         import stylex from 'stylex';
-        import * as css from '@stylexjs/utility-styles';
+        import * as css from '@stylexjs/atoms';
         const styles = stylex.create({
           opacity: (o) => ({ opacity: o }),
         });
@@ -614,7 +614,7 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".xb4nw82{opacity:var(--x-opacity)}",
             priority: 3000
@@ -646,7 +646,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('inline dynamic + create dynamic', () => {
         const output = transform(`
         import stylex from 'stylex';
-        import * as css from '@stylexjs/utility-styles';
+        import * as css from '@stylexjs/atoms';
         const styles = stylex.create({
           opacity: (o) => ({ opacity: o }),
         });
@@ -656,7 +656,7 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          import * as css from '@stylexjs/utility-styles';
+          import * as css from '@stylexjs/atoms';
           _inject2({
             ltr: ".xb4nw82{opacity:var(--x-opacity)}",
             priority: 3000
@@ -694,11 +694,11 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       describe('with options', () => {
-        test('dev/debug classnames for utility-styles', () => {
+        test('dev/debug classnames for atoms', () => {
           const inline = transform(
             `
               import stylex from 'stylex';
-              import * as css from '@stylexjs/utility-styles';
+              import * as css from '@stylexjs/atoms';
               stylex.props(css.display.flex);
             `,
             {
@@ -713,7 +713,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import _inject from "@stylexjs/stylex/lib/stylex-inject";
             var _inject2 = _inject;
             import stylex from 'stylex';
-            import * as css from '@stylexjs/utility-styles';
+            import * as css from '@stylexjs/atoms';
             _inject2({
               ltr: ".display-x78zum5{display:flex}",
               priority: 3000

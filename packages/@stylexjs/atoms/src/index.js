@@ -26,7 +26,7 @@ const utilityStyles = new Proxy(function () {}, {
   },
   apply() {
     throw new Error(
-      '@stylexjs/utility-styles is a compile-time helper. Attempted to call it as a function, but the StyleX compiler did not run.',
+      '@stylexjs/atoms is a compile-time helper. Attempted to call it as a function, but the StyleX compiler did not run.',
     );
   },
 });
