@@ -425,7 +425,7 @@ const unpluginInstance = createUnplugin((userOptions = {}, metaOptions) => {
     // Core code transform
     async transform(code, id) {
       // Only handle JS-like files; avoid parsing CSS/JSON/etc
-      const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
+      const JS_LIKE_RE = /\.([cm]?[jt]sx?|svelte)(\?|$)/;
       if (!JS_LIKE_RE.test(id)) return null;
       if (!shouldHandle(code)) return null;
 
