@@ -312,6 +312,19 @@ export type StyleX$DefineMarker = () => MapNamespace<{
   readonly marker: typeof StyleXMarkerTag;
 }>;
 
+export type StyleX$Attrs = (
+  this: unknown,
+  ...styles: ReadonlyArray<
+    StyleXArray<
+      CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]> | null
+    >
+  >
+) => Readonly<{
+  class?: string;
+  'data-style-src'?: string;
+  style?: string;
+}>;
+
 export type StyleX$When = {
   ancestor: <
     const Pseudo extends `:${string}` | `[${string}]`,

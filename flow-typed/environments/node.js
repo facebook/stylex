@@ -1905,7 +1905,7 @@ type http$agentOptions = {
 declare class http$Agent<+SocketT = net$Socket> {
   constructor(options: http$agentOptions): void;
   destroy(): void;
-  freeSockets: { [name: string]: $ReadOnlyArray<SocketT>, ... };
+  +freeSockets: { +[name: string]: $ReadOnlyArray<SocketT>, ... };
   getName(options: {
     host: string,
     port: number,
@@ -1914,11 +1914,11 @@ declare class http$Agent<+SocketT = net$Socket> {
   }): string;
   maxFreeSockets: number;
   maxSockets: number;
-  requests: {
-    [name: string]: $ReadOnlyArray<http$ClientRequest<SocketT>>,
+  +requests: {
+    +[name: string]: $ReadOnlyArray<http$ClientRequest<SocketT>>,
     ...
   };
-  sockets: { [name: string]: $ReadOnlyArray<SocketT>, ... };
+  +sockets: { +[name: string]: $ReadOnlyArray<SocketT>, ... };
 }
 
 declare class http$IncomingMessage<SocketT = net$Socket>
