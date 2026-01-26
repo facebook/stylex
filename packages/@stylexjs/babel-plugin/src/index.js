@@ -31,6 +31,8 @@ import transformStylexCall, {
 } from './visitors/stylex-merge';
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
+import transformStylexAttrs from './visitors/stylex-attrs';
+import { skipStylexAttrsChildren } from './visitors/stylex-attrs';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
 import transformStyleXDefaultMarker from './visitors/stylex-default-marker';
 import {
@@ -158,12 +160,14 @@ function styleXTransform(): PluginObj<> {
               // should be kept.
               skipStylexMergeChildren(path, state);
               skipStylexPropsChildren(path, state);
+              skipStylexAttrsChildren(path, state);
             },
           });
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
               transformStylexProps(path, state);
+              transformStylexAttrs(path, state);
             },
           });
 

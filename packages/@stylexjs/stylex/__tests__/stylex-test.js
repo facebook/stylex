@@ -293,4 +293,47 @@ describe('stylex', () => {
       `);
     });
   });
+
+  describe('attrs', () => {
+    test('with class-only styles', () => {
+      expect(
+        stylex.attrs([
+          {
+            backgroundColor: 'backgroundColor-red',
+            $$css: 'components/Foo.react.js:1',
+          },
+        ]),
+      ).toMatchInlineSnapshot(`
+        {
+          "class": "backgroundColor-red",
+          "data-style-src": "components/Foo.react.js:1",
+        }
+      `);
+    });
+
+    test('with dynamic styles', () => {
+      expect(
+        stylex.attrs([
+          {
+            backgroundColor: 'backgroundColor-red',
+            $$css: 'components/Foo.react.js:1',
+          },
+          {
+            color: 'red',
+            marginTop: 8,
+          },
+        ]),
+      ).toMatchInlineSnapshot(`
+        {
+          "class": "backgroundColor-red",
+          "data-style-src": "components/Foo.react.js:1",
+          "style": "color:red;marginTop:8",
+        }
+      `);
+    });
+
+    test('empty attrs call', () => {
+      expect(stylex.attrs()).toMatchInlineSnapshot('{}');
+    });
+  });
 });
