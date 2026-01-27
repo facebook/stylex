@@ -5,35 +5,36 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
+import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
+import { colors, fonts, sizes } from './globalTokens.stylex';
 
 export default function App() {
   return (
-    <div {...stylex.props(styles.main)}>
-      <div {...stylex.props(styles.card)}>Content</div>
-    </div>
+    <main {...stylex.props(styles.main)}>
+      <div {...stylex.props(styles.card)}>
+        <span>StyleX + Bun + unplugin</span>
+      </div>
+    </main>
   );
 }
 
 const styles = stylex.create({
   main: {
-    width: '100vw',
-    height: '100vh',
+    minHeight: '100vh',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'lightblue',
+    backgroundColor: colors.gray0,
   },
   card: {
-    backgroundColor: '#fefefe',
-    padding: '1rem',
-    borderRadius: 10,
+    backgroundColor: colors.blue9,
+    padding: sizes.spacing5,
+    borderRadius: sizes.spacing2,
     justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    color: '#333',
-    fontFamily: 'Arial',
+    color: colors.gray0,
+    fontFamily: fonts.mono,
   },
 });
