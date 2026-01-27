@@ -4,11 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { initClient } from 'rwsdk/client';
 
-initClient();
+import './global.css';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
 
-if (import.meta.env.DEV) {
-  // @ts-ignore
-  import('virtual:stylex:css-only');
-}
+createRoot(document.getElementById('root')).render(<App />);
