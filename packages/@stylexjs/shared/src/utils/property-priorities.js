@@ -734,6 +734,28 @@ const RELATIONAL_SELECTORS = {
     /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*,\s+:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/,
 };
 
+// Matches pseudo-elements (::after) and pseudo-classes (:hover, :nth-child(2))
+const PSEUDO_PART_REGEX = /::[a-zA-Z-]+|:[a-zA-Z-]+(?:\([^)]*\))?/g;
+
+// Calculate priority for compound pseudo selectors like :hover::after
+function getCompoundPseudoPriority(key: string): number | void {
+  const pseudoParts = key.match(PSEUDO_PART_REGEX);
+  if (pseudoParts && pseudoParts.length > 1) {
+    let total = 0;
+    for (const part of pseudoParts) {
+      if (part.startsWith('::')) {
+        total += PSEUDO_ELEMENT_PRIORITY;
+      } else {
+        const prop = part.includes('(')
+          ? part.slice(0, part.indexOf('('))
+          : part;
+        total += PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
+      }
+    }
+    return total;
+  }
+}
+
 export function getAtRulePriority(key: string): number | void {
   if (key.startsWith('--')) {
     return 1;
@@ -754,6 +776,10 @@ export function getAtRulePriority(key: string): number | void {
 
 export function getPseudoElementPriority(key: string): number | void {
   if (key.startsWith('::')) {
+    const compoundPriority = getCompoundPseudoPriority(key);
+    if (compoundPriority != null) {
+      return compoundPriority;
+    }
     return PSEUDO_ELEMENT_PRIORITY;
   }
 }
@@ -790,10 +816,14 @@ export function getPseudoClassPriority(key: string): number | void {
   }
 
   if (key.startsWith(':')) {
-    const prop =
-      key.startsWith(':') && key.includes('(')
-        ? key.slice(0, key.indexOf('('))
-        : key;
+    const compoundPriority = getCompoundPseudoPriority(key);
+    if (compoundPriority != null) {
+      return compoundPriority;
+    }
+
+    const prop = key.includes('(')
+      ? key.slice(0, key.indexOf('('))
+      : key;
 
     return PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
   }
