@@ -1,6 +1,6 @@
 {
   "name": "create-stylex-app",
-  "version": "0.1.0-alpha.2",
+  "version": "0.17.6-alpha.2",
   "description": "Scaffold a new StyleX project from official templates",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
