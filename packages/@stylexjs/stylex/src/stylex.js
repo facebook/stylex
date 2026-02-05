@@ -32,6 +32,7 @@ import type {
   StyleX$When,
   MapNamespace,
   StyleX$DefineMarker,
+  StyleX$Attrs,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -52,6 +53,7 @@ export type {
   Types,
   VarGroup,
   PositionTry,
+  StyleX$Attrs,
 };
 
 import { styleq } from 'styleq';
@@ -130,6 +132,32 @@ export function props(
     result['data-style-src'] = dataStyleSrc;
   }
   return result;
+}
+
+export function attrs(
+  this: ?mixed,
+  ...styles: $ReadOnlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+): $ReadOnly<{
+  class?: string,
+  'data-style-src'?: string,
+  style?: string,
+}> {
+  const { className, style, ...rest } = props(...styles);
+  return {
+    ...(className ? { class: className } : null),
+    ...(style != null
+      ? {
+          style: Object.entries(style)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join(';'),
+        }
+      : null),
+    ...rest,
+  };
 }
 
 export const viewTransitionClass = (
@@ -252,11 +280,13 @@ type IStyleX = {
     >
   ) => $ReadOnly<{
     className?: string,
-    'data-style-src'?: string,
     style?: $ReadOnly<{ [string]: string | number }>,
+    'data-style-src'?: string,
   }>,
+  attrs: StyleX$Attrs,
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
+
   when: typeof when,
   __customProperties?: { [string]: mixed },
   ...
@@ -279,6 +309,7 @@ _legacyMerge.firstThatWorks = firstThatWorks;
 _legacyMerge.keyframes = keyframes;
 _legacyMerge.positionTry = positionTry;
 _legacyMerge.props = props;
+_legacyMerge.attrs = attrs;
 _legacyMerge.types = types;
 _legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;

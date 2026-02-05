@@ -284,7 +284,7 @@ declare module '@babel/traverse' {
     [K in keyof _NodeToTuple<T>]: NodePath<_NodeToTuple<T>[K]>,
   };
 
-  type TParentPath<T: Node> = T extends t.Program ? null : NodePath<>;
+  type TParentPath<+T: Node> = T extends t.Program ? null : NodePath<>;
 
   interface object {}
 
@@ -300,14 +300,14 @@ declare module '@babel/traverse' {
     state: any;
     opts: object;
     skipKeys: object;
-    parentPath: TParentPath<T>;
+    +parentPath: TParentPath<T>;
     context: TraversalContext;
     container: object | $ReadOnlyArray<object>;
     listKey: string;
     inList: boolean;
     parentKey: string;
     key: string | number;
-    node: T;
+    +node: T;
     scope: Scope;
 
     type: T extends null | void
