@@ -4865,6 +4865,90 @@ describe('@stylexjs/babel-plugin', () => {
             }
           `);
         });
+
+        test('media query values with nullish coalescing', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (a, b, c) => ({
+                fontSize: {
+                  default: a ? '16px' : undefined,
+                  '@media (min-width: 800px)': b ? '18px' : undefined,
+                  '@media (min-width: 1280px)': c ? '20px' : undefined,
+                }
+              }),
+            });
+            stylex.props(styles.root(true, false, true));
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (a, b, c) => [{
+                kGuDYH: ((a ? '16px' : undefined) != null ? "xww4jgc " : a ? '16px' : undefined) + ((b ? '18px' : undefined) != null ? "xqdov8i " : b ? '18px' : undefined) + ((c ? '20px' : undefined) != null ? "x1j86d60" : c ? '20px' : undefined),
+                $$css: true
+              }, {
+                "--x-19zvkyr": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(a ? '16px' : undefined),
+                "--x-1bks2es": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(b ? '18px' : undefined),
+                "--x-q0n1i6": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(c ? '20px' : undefined)
+              }]
+            };
+            stylex.props(styles.root(true, false, true));"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xww4jgc",
+                  {
+                    "ltr": ".xww4jgc{font-size:var(--x-19zvkyr)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xqdov8i",
+                  {
+                    "ltr": "@media (min-width: 800px) and (max-width: 1279.99px){.xqdov8i.xqdov8i{font-size:var(--x-1bks2es)}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x1j86d60",
+                  {
+                    "ltr": "@media (min-width: 1280px){.x1j86d60.x1j86d60{font-size:var(--x-q0n1i6)}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "--x-19zvkyr",
+                  {
+                    "ltr": "@property --x-19zvkyr { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--x-1bks2es",
+                  {
+                    "ltr": "@property --x-1bks2es { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--x-q0n1i6",
+                  {
+                    "ltr": "@property --x-q0n1i6 { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
       });
     });
 
