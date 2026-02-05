@@ -524,7 +524,7 @@ function processStylexRules(
               }
             }
 
-            return query1.localeCompare(query2);
+            return 0; // preserve original order for non-width queries
           }
         }
 

@@ -716,4 +716,253 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
   });
+
+  describe('media query sorting', () => {
+    function transformMediaQueryTest(source, opts = {}) {
+      const result = transformSync(source, {
+        filename: opts.filename ?? '/src/app/test.js',
+        parserOpts: { flow: 'all' },
+        babelrc: false,
+        plugins: [
+          [
+            stylexPlugin,
+            {
+              styleResolution: 'property-specificity',
+              unstable_moduleResolution: {
+                rootDir: '/src/app/',
+                type: 'commonJS',
+              },
+              ...opts,
+            },
+          ],
+        ],
+      });
+      return { code: result.code, metadata: result.metadata.stylex || [] };
+    }
+
+    test('sorts max-width queries in descending order (px)', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (max-width: 400px)': 'red',
+              '@media (max-width: 1200px)': 'blue',
+              '@media (max-width: 800px)': 'green',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // max-width should be sorted descending: 1200px, 800px, 400px
+      // The sorting logic places larger values first so smaller (more specific) ones win
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media not all{.x1jqaanj.x1jqaanj{color:red}}
+        @media (min-width: 800.01px) and (max-width: 1200px){.xf6xr36.xf6xr36{color:blue}}
+        @media (max-width: 800px){.x1795ov8.x1795ov8{color:green}}"
+      `);
+    });
+
+    test('sorts min-width queries in ascending order (px)', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (min-width: 1024px)': 'blue',
+              '@media (min-width: 320px)': 'red',
+              '@media (min-width: 768px)': 'green',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // min-width should be sorted ascending: 320px, 768px, 1024px
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media not all{.x12vud9h.x12vud9h{color:blue}}
+        @media (min-width: 320px) and (max-width: 767.99px){.xcuj8j8.xcuj8j8{color:red}}
+        @media (min-width: 768px){.x1eatcr5.x1eatcr5{color:green}}"
+      `);
+    });
+
+    test('sorts max-width queries with em units', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (max-width: 25em)': 'red',
+              '@media (max-width: 75em)': 'blue',
+              '@media (max-width: 50em)': 'green',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // max-width with em should be sorted descending: 75em (1200px), 50em (800px), 25em (400px)
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media not all{.x1jqaanj.x1jqaanj{color:red}}
+        @media (min-width: 50.01em) and (max-width: 75em){.x157jv4g.x157jv4g{color:blue}}
+        @media (max-width: 50em){.x1byj4dt.x1byj4dt{color:green}}"
+      `);
+    });
+
+    test('sorts min-width queries with rem units', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (min-width: 64rem)': 'blue',
+              '@media (min-width: 20rem)': 'red',
+              '@media (min-width: 48rem)': 'green',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // min-width with rem should be sorted ascending: 20rem (320px), 48rem (768px), 64rem (1024px)
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media not all{.x12vud9h.x12vud9h{color:blue}}
+        @media (min-width: 20rem) and (max-width: 47.99rem){.x11pjsus.x11pjsus{color:red}}
+        @media (min-width: 48rem){.x19od24l.x19od24l{color:green}}"
+      `);
+    });
+
+    test('mixed px and em units sort by equivalent pixel value', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (max-width: 400px)': 'red',
+              '@media (max-width: 50em)': 'green',
+              '@media (max-width: 1200px)': 'blue',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Should sort by equivalent pixel value: 1200px, 50em (800px), 400px
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (max-width: 1200px){.xl1zllm.xl1zllm{color:blue}}
+        @media (max-width: 50em) and (not (max-width: 1200px)){.xhbqqoy.xhbqqoy{color:green}}
+        @media (max-width: 400px) and (not (max-width: 50em)) and (not (max-width: 1200px)){.x79avat.x79avat{color:red}}"
+      `);
+    });
+
+    test('handles decimal breakpoint values', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (min-width: 20em)': 'red',
+              '@media (min-width: 37.5em)': 'green',
+              '@media (min-width: 56.25em)': 'blue',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Should sort ascending: 20em (320px), 37.5em (600px), 56.25em (900px)
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (min-width: 37.5em) and (max-width: 56.24em){.xre86s4.xre86s4{color:green}}
+        @media (min-width: 20em) and (max-width: 37.49em){.xafilas.xafilas{color:red}}
+        @media (min-width: 56.25em){.x4hrn7p.x4hrn7p{color:blue}}"
+      `);
+    });
+
+    test('non-width media queries preserve relative order', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (prefers-color-scheme: dark)': 'white',
+              '@media (prefers-reduced-motion: reduce)': 'gray',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Non-width queries should preserve their original relative order
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (prefers-color-scheme: dark) and (not (prefers-reduced-motion: reduce)){.xwuutgs.xwuutgs{color:white}}
+        @media (prefers-reduced-motion: reduce){.x19a6tig.x19a6tig{color:gray}}"
+      `);
+    });
+
+    test('width queries do not affect non-width query ordering', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            backgroundColor: {
+              default: 'white',
+              '@media (prefers-color-scheme: dark)': 'black',
+            },
+            color: {
+              default: 'black',
+              '@media (min-width: 768px)': 'blue',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Both media query types should appear in the output
+      expect(css).toMatchInlineSnapshot(`
+        ".x12peec7{background-color:white}
+        .x1mqxbix{color:black}
+        @media (prefers-color-scheme: dark){.x7gr0ra.x7gr0ra{background-color:black}}
+        @media (min-width: 768px){.x14693no.x14693no{color:blue}}"
+      `);
+    });
+  });
 });

@@ -2056,7 +2056,7 @@ describe('@stylexjs/babel-plugin', () => {
                     "ltr": ".x1gfyp89:hover::after{color:red}",
                     "rtl": null,
                   },
-                  8130,
+                  3040,
                 ],
               ],
             }
@@ -2092,7 +2092,7 @@ describe('@stylexjs/babel-plugin', () => {
                     "ltr": ".x6wc952:hover::after{color:blue}",
                     "rtl": null,
                   },
-                  8130,
+                  3040,
                 ],
               ],
             }
