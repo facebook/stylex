@@ -45,7 +45,7 @@
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.4",
     "@types/react": "^19.2.7",
-    "@types/react-dom": "^19.2.2",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3",
     "unplugin": "^2.3.10",
     "vite": "^7.1.12",

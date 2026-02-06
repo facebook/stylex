@@ -14,7 +14,6 @@ export default function PlaygroundPage() {
   return (
     <>
       <title>Playground | StyleX</title>
-      <link href="/img/favicon.svg" rel="icon" type="image/svg+xml" />
       <main {...stylex.props(styles.main)}>
         <Playground />
       </main>

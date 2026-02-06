@@ -15,17 +15,23 @@ import { vars } from '@/theming/vars.stylex';
 export default function Home() {
   return (
     <>
-      <title>StyleX</title>
-      <link href="/img/favicon.svg" rel="icon" type="image/svg+xml" />
+      <title>StyleX — styling system for ambitious interfaces</title>
       <main {...stylex.props(styles.main)}>
         <section {...stylex.props(styles.hero)}>
           <h1 {...stylex.props(styles.title)}>
             <StylexAnimatedLogo style={styles.logo} />
           </h1>
-          <p {...stylex.props(styles.subtitle)}>
-            The <TypingWord /> <br {...stylex.props(styles.mobileBreak)} />
-            styling system for <br {...stylex.props(styles.tabletBreak)} />{' '}
-            ambitious interfaces
+          <p
+            {...stylex.props(styles.subtitle)}
+            aria-label="The expressive, type-safe, composable, predictable, and themeable styling system for ambitious interfaces"
+          >
+            <span aria-hidden="true">
+              The <TypingWord />{' '}
+              <br {...stylex.props(styles.mobileBreak)} aria-hidden="true" />
+              styling system for{' '}
+              <br {...stylex.props(styles.tabletBreak)} aria-hidden="true" />
+              ambitious interfaces
+            </span>
           </p>
           <div {...stylex.props(styles.ctaSpacer)} />
           <section {...stylex.props(styles.ctaSection)}>

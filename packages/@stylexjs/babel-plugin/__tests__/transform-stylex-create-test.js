@@ -1979,6 +1979,7 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        // Generates invalid CSS, need to revisit this API
         test('"::before" containing pseudo-classes', () => {
           const { code, metadata } = transform(`
             import * as stylex from '@stylexjs/stylex';
@@ -2017,6 +2018,78 @@ describe('@stylexjs/babel-plugin', () => {
                   "xeb2lg0",
                   {
                     "ltr": ".xeb2lg0::before:hover{color:blue}",
+                    "rtl": null,
+                  },
+                  8130,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('legacy compound ":hover::after" selector as single key', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              foo: {
+                ':hover::after': {
+                  color: 'red',
+                },
+              },
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              foo: {
+                kF1atM: "x1gfyp89",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1gfyp89",
+                  {
+                    "ltr": ".x1gfyp89:hover::after{color:red}",
+                    "rtl": null,
+                  },
+                  8130,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('compound ":hover::after" selector as single key', () => {
+          const { metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              foo: {
+                color: {
+                  default: 'red',
+                  ':hover::after': 'blue',
+                },
+              },
+            });
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1e2nbdu",
+                  {
+                    "ltr": ".x1e2nbdu{color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x6wc952",
+                  {
+                    "ltr": ".x6wc952:hover::after{color:blue}",
                     "rtl": null,
                   },
                   8130,
@@ -4784,6 +4857,90 @@ describe('@stylexjs/babel-plugin', () => {
                   "--x-ke45ok",
                   {
                     "ltr": "@property --x-ke45ok { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('media query values with nullish coalescing', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (a, b, c) => ({
+                fontSize: {
+                  default: a ? '16px' : undefined,
+                  '@media (min-width: 800px)': b ? '18px' : undefined,
+                  '@media (min-width: 1280px)': c ? '20px' : undefined,
+                }
+              }),
+            });
+            stylex.props(styles.root(true, false, true));
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (a, b, c) => [{
+                kGuDYH: ((a ? '16px' : undefined) != null ? "xww4jgc " : a ? '16px' : undefined) + ((b ? '18px' : undefined) != null ? "xqdov8i " : b ? '18px' : undefined) + ((c ? '20px' : undefined) != null ? "x1j86d60" : c ? '20px' : undefined),
+                $$css: true
+              }, {
+                "--x-19zvkyr": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(a ? '16px' : undefined),
+                "--x-1bks2es": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(b ? '18px' : undefined),
+                "--x-q0n1i6": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(c ? '20px' : undefined)
+              }]
+            };
+            stylex.props(styles.root(true, false, true));"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xww4jgc",
+                  {
+                    "ltr": ".xww4jgc{font-size:var(--x-19zvkyr)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xqdov8i",
+                  {
+                    "ltr": "@media (min-width: 800px) and (max-width: 1279.99px){.xqdov8i.xqdov8i{font-size:var(--x-1bks2es)}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x1j86d60",
+                  {
+                    "ltr": "@media (min-width: 1280px){.x1j86d60.x1j86d60{font-size:var(--x-q0n1i6)}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "--x-19zvkyr",
+                  {
+                    "ltr": "@property --x-19zvkyr { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--x-1bks2es",
+                  {
+                    "ltr": "@property --x-1bks2es { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--x-q0n1i6",
+                  {
+                    "ltr": "@property --x-q0n1i6 { syntax: "*"; inherits: false;}",
                     "rtl": null,
                   },
                   0,
