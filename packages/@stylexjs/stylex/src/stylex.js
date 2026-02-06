@@ -284,3 +284,6 @@ _legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;
+
+// Re-export atoms for cleaner imports
+export { default as x } from '@stylexjs/atoms';

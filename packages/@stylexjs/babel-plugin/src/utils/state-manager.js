@@ -13,6 +13,7 @@ import type {
   CompiledNamespaces,
   StyleXOptions as RuntimeOptions,
 } from '../shared';
+import type { FlatCompiledStyles } from '../shared/common-types';
 import type { Check } from './validate';
 
 import * as t from '@babel/types';
@@ -165,12 +166,20 @@ export default class StateManager {
   +stylexViewTransitionClassImport: Set<string> = new Set();
   +stylexDefaultMarkerImport: Set<string> = new Set();
   +stylexWhenImport: Set<string> = new Set();
+  // Map of local identifier -> imported name.
+  // For namespace/default imports we store '*'.
+  +inlineCSSImports: Map<string, string> = new Map();
 
   injectImportInserted: ?t.Identifier = null;
 
   // `stylex.create` calls
   +styleMap: Map<string, CompiledNamespaces> = new Map();
   +styleVars: Map<string, NodePath<>> = new Map();
+  +inlineStylesCache: Map<string, FlatCompiledStyles> = new Map();
+  +inlineDynamicCache: Map<
+    string,
+    { className: string, varName: string, classKey: string },
+  > = new Map();
 
   // results of `stylex.create` calls that should be kept
   +styleVarsToKeep: Set<[string, true | string, true | Array<string>]> =
