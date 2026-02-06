@@ -253,8 +253,8 @@ describe('@stylexjs/babel-plugin', () => {
           enableLTRRTLComments: false,
         }),
       ).toMatchInlineSnapshot(`
-        "@keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        @property --x-color { syntax: "*"; inherits: false;}
+        "@property --x-color { syntax: "*"; inherits: false;}
+        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
@@ -348,8 +348,8 @@ describe('@stylexjs/babel-plugin', () => {
       ).toMatchInlineSnapshot(`
         "
         @layer priority1, priority2, priority3, priority4;
-        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         @property --x-color { syntax: "*"; inherits: false;}
+        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
@@ -446,8 +446,8 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        @property --x-color { syntax: "*"; inherits: false;}
+        "@property --x-color { syntax: "*"; inherits: false;}
+        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
@@ -641,8 +641,8 @@ describe('@stylexjs/babel-plugin', () => {
           legacyDisableLayers: true,
         }),
       ).toMatchInlineSnapshot(`
-        "@keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
-        @property --x-color { syntax: "*"; inherits: false;}
+        "@property --x-color { syntax: "*"; inherits: false;}
+        @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
         :root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
         :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
         @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
@@ -962,6 +962,136 @@ describe('@stylexjs/babel-plugin', () => {
         .x1mqxbix{color:black}
         @media (prefers-color-scheme: dark){.x7gr0ra.x7gr0ra{background-color:black}}
         @media (min-width: 768px){.x14693no.x14693no{color:blue}}"
+      `);
+    });
+
+    test('mixed min-width and max-width queries preserve relative order', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (min-width: 768px)': 'blue',
+              '@media (max-width: 600px)': 'red',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Mixed min/max-width should preserve declaration order
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (min-width: 768px){.x14693no.x14693no{color:blue}}
+        @media (max-width: 600px){.xw8apw4.xw8apw4{color:red}}"
+      `);
+    });
+
+    test('identical breakpoint values in different units are stable', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (max-width: 800px)': 'red',
+              '@media (max-width: 50em)': 'blue',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // 800px and 50em (800px equivalent) should maintain stable order
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (max-width: 800px) and (not (max-width: 50em)){.x1owbdvi.x1owbdvi{color:red}}
+        @media (max-width: 50em){.x1htx2ma.x1htx2ma{color:blue}}"
+      `);
+    });
+
+    test('complex media queries with additional conditions sort by width', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (min-width: 768px) and (orientation: landscape)': 'blue',
+              '@media (min-width: 320px) and (orientation: landscape)': 'red',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Should still sort by extracted width: 320px before 768px
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (min-width: 320px) and (orientation: landscape){.xjcrjd3.xjcrjd3{color:red}}
+        @media ((min-width: 768px) and (orientation: landscape) and (not (min-width: 320px))) or ((min-width: 768px) and (orientation: landscape) and (not (orientation: landscape))){.xpe7bim.xpe7bim{color:blue}}"
+      `);
+    });
+
+    test('width and non-width queries together are handled correctly', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (min-width: 768px)': 'blue',
+              '@media (prefers-color-scheme: dark)': 'white',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // Should not crash, both queries should appear
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (min-width: 768px) and (not (prefers-color-scheme: dark)){.xrj7877.xrj7877{color:blue}}
+        @media (prefers-color-scheme: dark){.xat0y86.xat0y86{color:white}}"
+      `);
+    });
+
+    test('unsupported units fall through gracefully', () => {
+      const { metadata } = transformMediaQueryTest(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'black',
+              '@media (max-width: 50vw)': 'red',
+              '@media (max-width: 800px)': 'blue',
+            }
+          }
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+
+      // vw unit not in regex, should preserve order
+      expect(css).toMatchInlineSnapshot(`
+        ".x1mqxbix{color:black}
+        @media (max-width: 50vw) and (not (max-width: 800px)){.x8e43w7.x8e43w7{color:red}}
+        @media (max-width: 800px){.x5s3vgy.x5s3vgy{color:blue}}"
       `);
     });
   });

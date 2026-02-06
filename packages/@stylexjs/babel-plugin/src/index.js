@@ -470,11 +470,22 @@ function processStylexRules(
     constsMap.set(key, resolveConstant(value));
   }
 
-  const sortedRules = nonConstantRules.sort(
-    (
-      [classname1, { ltr: rule1 }, firstPriority]: [string, any, number],
-      [classname2, { ltr: rule2 }, secondPriority]: [string, any, number],
-    ) => {
+  // Add original indices for stable sort tiebreaker
+  const rulesWithIndex = nonConstantRules.map((rule, index) => ({
+    rule,
+    index,
+  }));
+
+  rulesWithIndex.sort(
+    ({ rule: ruleA, index: indexA }, { rule: ruleB, index: indexB }) => {
+      const [classname1, { ltr: rule1 }, firstPriority]: [string, any, number] =
+        ruleA;
+      const [classname2, { ltr: rule2 }, secondPriority]: [
+        string,
+        any,
+        number,
+      ] = ruleB;
+
       const priorityComparison = firstPriority - secondPriority;
       if (priorityComparison !== 0) return priorityComparison;
 
@@ -524,16 +535,23 @@ function processStylexRules(
               }
             }
 
-            return 0; // preserve original order for non-width queries
+            // Use original index as tiebreaker for stable sort
+            return indexA - indexB;
           }
         }
 
         const property1 = rule1.slice(rule1.lastIndexOf('{'));
         const property2 = rule2.slice(rule2.lastIndexOf('{'));
-        return property1.localeCompare(property2);
+        const propertyComparison = property1.localeCompare(property2);
+        if (propertyComparison !== 0) return propertyComparison;
+
+        // Use original index as final tiebreaker for stable sort
+        return indexA - indexB;
       }
     },
   );
+
+  const sortedRules = rulesWithIndex.map(({ rule }) => rule);
 
   let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
