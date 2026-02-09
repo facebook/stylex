@@ -53,6 +53,10 @@ const shorthandAliases: $ReadOnly<{
   borderLeft: createSpecificTransformer('border-left'),
   borderRadius: createSpecificTransformer('border-radius'),
   cornerShape: createSpecificTransformer('corner-shape'),
+  gridArea: createSpecificTransformer('grid-area'),
+  gridColumn: createSpecificTransformer('grid-column'),
+  gridRow: createSpecificTransformer('grid-row'),
+  gridTemplate: createSpecificTransformer('grid-template'),
   outline: createSpecificTransformer('outline'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
@@ -188,10 +192,10 @@ const stylexValidShorthands = {
 
       if (
         !newValues ||
-        (((newValues.length === 1 &&
-          newValues[0][1] === property.value.value) ||
-          newValues[0][1] === property.value?.value?.toString() ||
-          newValues[0][1] === parseInt(property.value?.value, 10)) &&
+        (newValues.length === 1 &&
+          (newValues[0][1] === property.value.value ||
+            newValues[0][1] === property.value?.value?.toString() ||
+            newValues[0][1] === parseInt(property.value?.value, 10)) &&
           !isUnfixableError)
       ) {
         return;
