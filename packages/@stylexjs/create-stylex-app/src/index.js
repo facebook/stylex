@@ -94,9 +94,17 @@ function parseArgs(args) {
 }
 
 function showHelp() {
-  const templateIds = getBundledTemplates()
-    .map((t) => t.id)
-    .join(', ');
+  const templates = getBundledTemplates();
+  const maxIdLength = Math.max(...templates.map((t) => t.id.length));
+
+  const frameworkList = templates
+    .map((t) => {
+      const padding = ' '.repeat(maxIdLength - t.id.length + 2);
+      const desc = t.description + (t.recommended ? ' (recommended)' : '');
+      return `  ${t.id}${padding}${desc}`;
+    })
+    .join('\n');
+
   console.log(`
 ${pc.bold('create-stylex-app')} - Create a new StyleX project
 
@@ -105,12 +113,12 @@ ${pc.bold('Usage:')}
 
 ${pc.bold('Options:')}
   -f, --framework <name>   Framework to use
-  -t, --template <source>  Custom template (GitHub URL or github:owner/repo/path)
+  -t, --template <source>  Custom template (github:owner/repo/path)
   --no-install             Skip dependency installation
   -h, --help               Show this help message
 
 ${pc.bold('Available frameworks:')}
-  ${templateIds}
+${frameworkList}
 
 ${pc.bold('Examples:')}
   npx create-stylex-app my-app
