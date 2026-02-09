@@ -1,6 +1,6 @@
 {
   "name": "create-stylex-app",
-  "version": "0.17.6-alpha.2",
+  "version": "0.17.6",
   "description": "Scaffold a new StyleX project from official templates",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
@@ -12,7 +12,7 @@
     "templates.json"
   ],
   "scripts": {
-    "build": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "build": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files && chmod +x lib/index.js",
     "test": "echo \"No tests yet\""
   },
   "keywords": [
