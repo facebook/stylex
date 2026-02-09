@@ -323,6 +323,130 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         })
       `,
     },
+    // grid-row: numeric single value
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridRow: 1,
+        },
+      })
+    `,
+    },
+    // grid-row: compound single value, no slash
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridRow: 'span 2',
+        },
+      })
+    `,
+    },
+    // grid-column: string single value
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: '1',
+        },
+      })
+    `,
+    },
+    // grid-column: CSS keyword
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: 'auto',
+        },
+      })
+    `,
+    },
+    // grid-column: span value
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: 'span 3',
+        },
+      })
+    `,
+    },
+    // grid-template: single value, no slash
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridTemplate: 'none',
+        },
+      })
+    `,
+    },
+    // grid-area: CSS keyword
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridArea: 'auto',
+        },
+      })
+    `,
+    },
+    // grid-area: span, not custom-ident
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridArea: 'span 2',
+        },
+      })
+    `,
+    },
+    // grid-area: integer, not custom-ident
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridArea: '1',
+        },
+      })
+    `,
+    },
+    // Already-longhand grid properties
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridRowStart: 1,
+          gridRowEnd: 3,
+          gridColumnStart: 2,
+          gridColumnEnd: 4,
+        },
+      })
+    `,
+    },
+    // grid-column: calc() with internal slash doesn't split
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: 'calc(100%/3)',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -1250,6 +1374,381 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "borderColor: oklch(0.7 0.15 180) rgb(255 0 0)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: custom-ident expands to 4 longhands
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'header',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'header',
+            gridColumnStart: 'header',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: header" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: custom-ident with 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'header / sidebar',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'sidebar',
+            gridColumnStart: 'sidebar',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: header / sidebar" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: non-custom-ident with 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'span 2 / span 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnStart: 'span 3',
+            gridRowStart: 'span 2',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: span 2 / span 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: 3 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / 2 / 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: 4 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / 2 / 3 / 4',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: '4',
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3 / 4" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: custom-ident row / non-custom-ident column (2 values)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'header / 2',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnStart: '2',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: header / 2" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: non-custom-ident row / custom-ident column (2 values)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / sidebar',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'sidebar',
+            gridColumnStart: 'sidebar',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / sidebar" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: 3 values with custom-ident column-start
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / sidebar / 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'sidebar',
+            gridColumnStart: 'sidebar',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / sidebar / 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-row: 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRow: '1 / 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridRow: 1 / 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-row: named lines
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRow: 'header-start / content-end',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowEnd: 'content-end',
+            gridRowStart: 'header-start',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridRow: header-start / content-end" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-row: compound value after slash
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRow: '1 / span 2',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowEnd: 'span 2',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridRow: 1 / span 2" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-column: 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumn: '2 / 4',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: '4',
+            gridColumnStart: '2',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridColumn: 2 / 4" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-template: rows / columns
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplate: '1fr 2fr / 100px 1fr',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplateColumns: '100px 1fr',
+            gridTemplateRows: '1fr 2fr',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridTemplate: 1fr 2fr / 100px 1fr" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-template: with repeat() function
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplate: 'auto auto / repeat(3, 1fr)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateRows: 'auto auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridTemplate: auto auto / repeat(3, 1fr)" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

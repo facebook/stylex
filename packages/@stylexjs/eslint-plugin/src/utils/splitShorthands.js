@@ -289,6 +289,84 @@ function expandQuadValues(
   return [top, right, bottom, left];
 }
 
+const GRID_NON_CUSTOM_IDENT_KEYWORDS = new Set([
+  'auto',
+  'none',
+  'inherit',
+  'initial',
+  'unset',
+  'revert',
+  'revert-layer',
+]);
+
+function isCustomIdent(value: string): boolean {
+  if (/\s/.test(value)) return false;
+  const lower = value.toLowerCase();
+  if (GRID_NON_CUSTOM_IDENT_KEYWORDS.has(lower)) return false;
+  if (/^span\b/i.test(lower)) return false;
+  if (/^-?\d+$/.test(value)) return false;
+  return true;
+}
+
+function splitOnSlashGroups(parts: Array<ValuePart>): Array<string> {
+  const groups: Array<Array<string>> = [[]];
+  for (const part of parts) {
+    if (part.text === '/') {
+      groups.push([]);
+    } else {
+      groups[groups.length - 1].push(part.text);
+    }
+  }
+  return groups.map((g) => g.join(' ')).filter((g) => g !== '');
+}
+
+function expandGridAreaShorthand(
+  groups: Array<string>,
+  importantSuffix: string,
+): $ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (groups.length === 2) {
+    const firstIsCustom = isCustomIdent(groups[0]);
+    const secondIsCustom = isCustomIdent(groups[1]);
+    const entries: Array<[string, string]> = [
+      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
+      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+    ];
+    if (firstIsCustom) {
+      entries.push(['gridRowEnd', applyImportant(groups[0], importantSuffix)]);
+    }
+    if (secondIsCustom) {
+      entries.push([
+        'gridColumnEnd',
+        applyImportant(groups[1], importantSuffix),
+      ]);
+    }
+    return entries.sort(([a], [b]) => a.localeCompare(b));
+  }
+  if (groups.length === 3) {
+    const entries: Array<[string, string]> = [
+      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
+      ['gridRowEnd', applyImportant(groups[2], importantSuffix)],
+      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+    ];
+    if (isCustomIdent(groups[1])) {
+      entries.push([
+        'gridColumnEnd',
+        applyImportant(groups[1], importantSuffix),
+      ]);
+    }
+    return entries.sort(([a], [b]) => a.localeCompare(b));
+  }
+  if (groups.length === 4) {
+    return [
+      ['gridColumnEnd', applyImportant(groups[3], importantSuffix)],
+      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
+      ['gridRowEnd', applyImportant(groups[2], importantSuffix)],
+      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+    ];
+  }
+  return [];
+}
+
 function isColorValue(value: string): boolean {
   const lowerValue = value.toLowerCase();
   return (
@@ -711,9 +789,59 @@ export function splitSpecificShorthands(
     return expandedFont ?? [[toCamelCase(property), CANNOT_FIX]];
   }
 
+  if (property === 'grid-area') {
+    const gridSplit = splitTopLevelValueTokens(baseValue);
+    const groups = splitOnSlashGroups(gridSplit.parts);
+    if (groups.length === 1) {
+      if (isCustomIdent(groups[0])) {
+        return [
+          ['gridColumnEnd', applyImportant(groups[0], importantSuffix)],
+          ['gridColumnStart', applyImportant(groups[0], importantSuffix)],
+          ['gridRowEnd', applyImportant(groups[0], importantSuffix)],
+          ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+      return [['gridArea', isNumber ? Number(rawValue) : rawValue]];
+    }
+    const expanded = expandGridAreaShorthand(groups, importantSuffix);
+    return expanded.length > 0 ? expanded : [['gridArea', CANNOT_FIX]];
+  }
+
   const splitValues = splitTopLevelValueTokens(baseValue);
   if (splitValues.parts.length <= 1 && !splitValues.hasTopLevelSlash) {
     return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+  }
+
+  if (
+    property === 'grid-row' ||
+    property === 'grid-column' ||
+    property === 'grid-template'
+  ) {
+    if (!splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+    const groups = splitOnSlashGroups(splitValues.parts);
+    if (groups.length === 2) {
+      if (property === 'grid-row') {
+        return [
+          ['gridRowEnd', applyImportant(groups[1], importantSuffix)],
+          ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+      if (property === 'grid-column') {
+        return [
+          ['gridColumnEnd', applyImportant(groups[1], importantSuffix)],
+          ['gridColumnStart', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+      if (property === 'grid-template') {
+        return [
+          ['gridTemplateColumns', applyImportant(groups[1], importantSuffix)],
+          ['gridTemplateRows', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+    }
+    return [[toCamelCase(property), CANNOT_FIX]];
   }
 
   if (property === 'background') {
