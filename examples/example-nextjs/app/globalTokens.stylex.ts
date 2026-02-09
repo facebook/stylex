@@ -292,10 +292,20 @@ export const scales = stylex.defineVars({
 });
 
 export const colors = stylex.defineVars({
+  accent: '#1c7ed6',
+  accentLight: 'rgba(28, 126, 214, 0.08)',
+  accentFaded: 'rgba(28, 126, 214, 0.19)',
   blue3: '#74c0fc',
+  blue5: '#4285F4',
   blue7: '#1c7ed6',
+  purple: '#5B45DE',
+  purple6: '#7C6AE8',
+  emerald: '#0ca678',
+  gray2: '#e9ecef',
   gray3: '#dee2e6',
   gray4: '#ced4da',
+  gray5: '#adb5bd',
+  gray6: '#868e96',
   gray8: '#343a40',
   gray9: '#212529',
   lime7: '#74b816',
