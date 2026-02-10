@@ -1285,7 +1285,7 @@ declare class HTMLCollection<+Elem: Element> {
   length: number;
   item(nameOrIndex?: any, optionalIndex?: any): Elem | null;
   namedItem(name: string): Elem | null;
-  [index: number | string]: Elem;
+  +[index: number | string]: Elem;
 }
 
 // from https://www.w3.org/TR/custom-elements/#extensions-to-document-interface-to-register

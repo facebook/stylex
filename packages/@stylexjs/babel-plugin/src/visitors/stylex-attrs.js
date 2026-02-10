@@ -8,8 +8,9 @@
  */
 
 import type { NodePath } from '@babel/traverse';
+
 import * as t from '@babel/types';
-import { props } from '@stylexjs/stylex';
+import { attrs } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import {
   transformStylexPropsLike,
@@ -17,26 +18,31 @@ import {
 } from './stylex-props-utils';
 import StateManager from '../utils/state-manager';
 
-export function skipStylexPropsChildren(
+export function skipStylexAttrsChildren(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
   skipStylexPropsLikeChildren(path, state, {
-    importSet: state.stylexPropsImport,
-    memberName: 'props',
+    importSet: state.stylexAttrsImport,
+    memberName: 'attrs',
   });
 }
 
 // If a `stylex()` call uses styles that are all locally defined,
 // This function is able to pre-compute that into a single string or
 // a single expression of strings and ternary expressions.
-export default function transformStylexProps(
+export default function transformStylexAttrs(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
   transformStylexPropsLike(path, state, {
-    importSet: state.stylexPropsImport,
-    memberName: 'props',
-    buildResult: (values) => convertObjectToAST(props(values as $FlowFixMe)),
+    importSet: state.stylexAttrsImport,
+    memberName: 'attrs',
+    buildResult: (values) => {
+      console.log('values', values);
+      const result = attrs(values as $FlowFixMe);
+      console.log('result', result);
+      return convertObjectToAST(result);
+    },
   });
 }

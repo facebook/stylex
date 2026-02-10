@@ -37,7 +37,7 @@
     "eslint-plugin-ft-flow": "^3.0.11",
     "eslint-plugin-headers": "~1.2.1",
     "eslint-plugin-react": "^7.37.1",
-    "flow-bin": "^0.291.0",
+    "flow-bin": "^0.295.0",
     "flow-typed": "^4.1.1",
     "hermes-eslint": "^0.32.1",
     "husky": "^8.0.0",

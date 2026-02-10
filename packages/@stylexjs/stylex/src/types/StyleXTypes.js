@@ -256,7 +256,19 @@ export type StyleX$CreateTheme = <
 ) => Theme<BaseTokens, ID>;
 
 export type StyleX$DefineMarker = () => MapNamespace<{
-  +marker: 'custom-marker',
+  +marker: 'default-marker',
+}>;
+
+export type StyleX$Attrs = (
+  ...styles: $ReadOnlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+) => $ReadOnly<{
+  class?: string,
+  style?: string,
+  'data-style-src'?: string,
 }>;
 
 export type StyleX$When = {
