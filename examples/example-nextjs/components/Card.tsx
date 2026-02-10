@@ -57,10 +57,7 @@ const styles = stylex.create({
     borderRadius: spacing.sm,
     backgroundColor: {
       default: 'transparent',
-      ':hover': {
-        default: 'rgba(0, 0, 0, 0.02)',
-        [DARK]: 'rgba(255, 255, 255, 0.04)',
-      },
+      ':hover': $.surfaceHover,
     },
     borderWidth: 1,
     borderStyle: 'solid',

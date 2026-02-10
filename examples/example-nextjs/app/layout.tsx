@@ -28,8 +28,6 @@ export default function RootLayout({
   );
 }
 
-const DARK = '@media (prefers-color-scheme: dark)';
-
 const styles = stylex.create({
   html: {
     colorScheme: 'light dark',
@@ -40,10 +38,6 @@ const styles = stylex.create({
     padding: 0,
   },
   body: {
-    color: `rgba(${$.foregroundR}, ${$.foregroundG}, ${$.foregroundB}, 1)`,
-    backgroundColor: {
-      default: '#fafafa',
-      [DARK]: '#0f1117',
-    },
+    backgroundColor: $.surfaceBg,
   },
 });
