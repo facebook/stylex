@@ -147,17 +147,20 @@ export function attrs(
   style?: string,
 }> {
   const { className, style, ...rest } = props(...styles);
-  return {
-    ...(className ? { class: className } : null),
-    ...(style != null
-      ? {
-          style: Object.entries(style)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join(';'),
-        }
-      : null),
-    ...rest,
-  };
+  const value: {
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
+  } = { ...rest };
+  if (className != null) {
+    value['class'] = className;
+  }
+  if (style != null) {
+    value.style = Object.entries(style)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(';');
+  }
+  return value;
 }
 
 export const viewTransitionClass = (
