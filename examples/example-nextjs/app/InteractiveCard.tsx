@@ -37,17 +37,24 @@ export const blueTheme = stylex.createTheme(colors, {
 });
 
 export const THEMES = [
-  { name: 'Red', theme: redTheme, dotColor: '#e03131' },
-  { name: 'Green', theme: greenTheme, dotColor: '#2f9e44' },
-  { name: 'Blue', theme: blueTheme, dotColor: '#1c7ed6' },
+  { name: 'Red', theme: redTheme },
+  { name: 'Green', theme: greenTheme },
+  { name: 'Blue', theme: blueTheme },
 ] as const;
 
 type Props = Readonly<{
   themeIndex: number;
   onThemeChange: (_index: number) => void;
+  isDark: boolean;
+  onDarkModeChange: (_isDark: boolean) => void;
 }>;
 
-export default function InteractiveCard({ themeIndex, onThemeChange }: Props) {
+export default function InteractiveCard({
+  themeIndex,
+  onThemeChange,
+  isDark,
+  onDarkModeChange,
+}: Props) {
   const [count, setCount] = useState(0);
 
   return (
@@ -63,10 +70,32 @@ export default function InteractiveCard({ themeIndex, onThemeChange }: Props) {
             )}
             onClick={() => onThemeChange(i)}
           >
-            <span {...stylex.props(styles.dot, styles.dotColor(t.dotColor))} />
+            <span {...stylex.props(t.theme, styles.dot)} />
             {t.name}
           </button>
         ))}
+      </div>
+      <div {...stylex.props(styles.divider)} />
+      <div {...stylex.props(styles.label)}>Mode</div>
+      <div {...stylex.props(styles.themeRow)}>
+        <button
+          {...stylex.props(
+            styles.themeButton,
+            !isDark && styles.themeButtonActive,
+          )}
+          onClick={() => onDarkModeChange(false)}
+        >
+          Light
+        </button>
+        <button
+          {...stylex.props(
+            styles.themeButton,
+            isDark && styles.themeButtonActive,
+          )}
+          onClick={() => onDarkModeChange(true)}
+        >
+          Dark
+        </button>
       </div>
       <div {...stylex.props(styles.divider)} />
       <div {...stylex.props(styles.label)}>Counter</div>
@@ -108,14 +137,8 @@ const styles = stylex.create({
     borderWidth: 2,
     borderStyle: 'solid',
     borderColor: colors.accent,
-    backgroundColor: {
-      default: 'white',
-      [DARK]: '#1a1b26',
-    },
-    boxShadow: {
-      default: '0 4px 24px rgba(0, 0, 0, 0.06)',
-      [DARK]: '0 4px 24px rgba(0, 0, 0, 0.3)',
-    },
+    backgroundColor: $.surfaceCard,
+    boxShadow: $.surfaceCardShadow,
     fontFamily: $.fontSans,
     width: '100%',
     maxWidth: 400,
@@ -173,10 +196,8 @@ const styles = stylex.create({
     height: 10,
     borderRadius: '50%',
     flexShrink: 0,
+    backgroundColor: colors.accent,
   },
-  dotColor: (color: string) => ({
-    backgroundColor: color,
-  }),
   divider: {
     height: 2,
     marginBlock: spacing.xxs,

@@ -9,7 +9,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Card from '@/components/Card';
 import {
@@ -19,14 +19,30 @@ import {
   colors,
 } from './globalTokens.stylex';
 import InteractiveCard, { THEMES } from './InteractiveCard';
+import { darkTheme, lightTheme } from './darkMode.stylex';
 
 const HOMEPAGE = 'https://stylexjs.com';
 
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(2);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   return (
-    <main {...stylex.props(style.main, THEMES[themeIndex].theme)}>
+    <main
+      {...stylex.props(
+        style.main,
+        THEMES[themeIndex].theme,
+        isDark ? darkTheme : lightTheme,
+      )}
+    >
       <div {...stylex.props(style.hero)}>
         <h1 {...stylex.props(style.h1)}>
           Next.js <span {...stylex.props(style.plus)}>+</span> StyleX
@@ -35,6 +51,8 @@ export default function Home() {
           The expressive styling system for ambitious interfaces
         </p>
         <InteractiveCard
+          isDark={isDark}
+          onDarkModeChange={setIsDark}
           onThemeChange={setThemeIndex}
           themeIndex={themeIndex}
         />
@@ -85,6 +103,8 @@ const style = stylex.create({
       [MEDIA_MOBILE]: spacing.lg,
     },
     paddingInline: spacing.md,
+    backgroundColor: $.surfaceBg,
+    color: `rgba(${$.foregroundR}, ${$.foregroundG}, ${$.foregroundB}, 1)`,
   },
   hero: {
     display: 'flex',
