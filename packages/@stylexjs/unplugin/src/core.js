@@ -411,69 +411,70 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
       // No-op; bundler-specific hooks handle CSS injection.
     },
 
-    // Core code transform
-    async transform(code, id) {
-      // Only handle JS-like files; avoid parsing CSS/JSON/etc
-      const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
-      if (!JS_LIKE_RE.test(id)) return null;
-      if (!shouldHandle(code)) return null;
+    transform: {
+      filter: {
+        id: /\.[cm]?[jt]sx?(\?|$)/
+      },
+      handler(code) {
+        if (!shouldHandle(code)) return null;
 
-      // Extract the pure filename by removing everything after '?' (e.g., handling Vite's '?v=' cache busting).
-      const dir = path.dirname(id);
-      const basename = path.basename(id);
-      const file = path.join(dir, basename.split('?')[0] || basename);
+        // Extract the pure filename by removing everything after '?' (e.g., handling Vite's '?v=' cache busting).
+        const dir = path.dirname(id);
+        const basename = path.basename(id);
+        const file = path.join(dir, basename.split('?')[0] || basename);
 
-      const result = await runBabelTransform(code, file, '@stylexjs/unplugin');
-      const { metadata } = result;
-      if (!stylexOptions.runtimeInjection) {
-        const hasRules =
-          metadata &&
-          Array.isArray(metadata.stylex) &&
-          metadata.stylex.length > 0;
-        const shared = getSharedStore();
-        if (hasRules) {
-          stylexRulesById.set(id, metadata.stylex);
-          shared.rulesById.set(id, metadata.stylex);
-          shared.version++;
-          await persistRulesToDisk(id, metadata.stylex);
-        } else {
-          stylexRulesById.delete(id);
-          if (shared.rulesById.has(id)) {
-            shared.rulesById.delete(id);
+        const result = await runBabelTransform(code, file, '@stylexjs/unplugin');
+        const { metadata } = result;
+        if (!stylexOptions.runtimeInjection) {
+          const hasRules =
+            metadata &&
+            Array.isArray(metadata.stylex) &&
+            metadata.stylex.length > 0;
+          const shared = getSharedStore();
+          if (hasRules) {
+            stylexRulesById.set(id, metadata.stylex);
+            shared.rulesById.set(id, metadata.stylex);
             shared.version++;
+            await persistRulesToDisk(id, metadata.stylex);
+          } else {
+            stylexRulesById.delete(id);
+            if (shared.rulesById.has(id)) {
+              shared.rulesById.delete(id);
+              shared.version++;
+            }
+            await persistRulesToDisk(id, []);
           }
-          await persistRulesToDisk(id, []);
         }
-      }
 
-      // Rollup/Vite watch-mode support: collect stylex metadata from cached deps
-      // Only when running in rollup-like context
-      // $FlowExpectedError[incompatible-use]
-      const ctx = this;
-      if (
-        ctx &&
-        ctx.meta &&
-        ctx.meta.watchMode &&
-        typeof ctx.parse === 'function'
-      ) {
-        try {
-          const ast = ctx.parse(result.code);
-          for (const stmt of ast.body) {
-            if (stmt.type === 'ImportDeclaration') {
-              // $FlowExpectedError[incompatible-call]
-              const resolved = await ctx.resolve(stmt.source.value, id);
-              if (resolved && !resolved.external) {
+        // Rollup/Vite watch-mode support: collect stylex metadata from cached deps
+        // Only when running in rollup-like context
+        // $FlowExpectedError[incompatible-use]
+        const ctx = this;
+        if (
+          ctx &&
+          ctx.meta &&
+          ctx.meta.watchMode &&
+          typeof ctx.parse === 'function'
+        ) {
+          try {
+            const ast = ctx.parse(result.code);
+            for (const stmt of ast.body) {
+              if (stmt.type === 'ImportDeclaration') {
                 // $FlowExpectedError[incompatible-call]
-                const loaded = await ctx.load(resolved);
-                if (loaded && loaded.meta && 'stylex' in loaded.meta) {
-                  stylexRulesById.set(resolved.id, loaded.meta.stylex);
+                const resolved = await ctx.resolve(stmt.source.value, id);
+                if (resolved && !resolved.external) {
+                  // $FlowExpectedError[incompatible-call]
+                  const loaded = await ctx.load(resolved);
+                  if (loaded && loaded.meta && 'stylex' in loaded.meta) {
+                    stylexRulesById.set(resolved.id, loaded.meta.stylex);
+                  }
                 }
               }
             }
-          }
-        } catch {}
-      }
-      return { code: result.code, map: result.map };
+          } catch {}
+        }
+        return { code: result.code, map: result.map };
+      },
     },
 
     // Rollup: ensure cached modules still provide their metadata
