@@ -86,7 +86,10 @@ export type NestedCSSPropTypes = Partial<
   }>
 >;
 
-type UserAuthoredStyles = CSSPropertiesWithExtras | { [key: string]: unknown };
+type NotUndefined = {} | null;
+type UserAuthoredStyles =
+  | CSSPropertiesWithExtras
+  | { [key: string]: NotUndefined };
 export type StyleXSingleStyle = false | (null | undefined | NestedCSSPropTypes);
 // NOTE: `XStyle` has been deprecated in favor of `StaticStyles` and `StyleXStyles`.
 
@@ -153,7 +156,7 @@ type ComplexStyleValueType<T> =
     ? U extends CSSType<infer V>
       ? V
       : U
-    : T extends string | number | null
+    : T extends string | number | null | symbol
       ? T
       : T extends ReadonlyArray<infer U>
         ? ComplexStyleValueType<U>
@@ -199,12 +202,13 @@ export type InlineStyles = {
 
 type _GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, Readonly<CSS[Key]>>;
-}>;
+}> &
+  Partial<{
+    [Key in Exclude<keyof CSSPropertiesWithExtras, keyof CSS>]: never;
+  }>;
+
 type GenStylePropType<CSS extends UserAuthoredStyles> = Readonly<
-  _GenStylePropType<CSS> &
-    Partial<{
-      [Key in Exclude<keyof CSSPropertiesWithExtras, keyof CSS>]: never;
-    }>
+  _GenStylePropType<CSS>
 >;
 
 // Replace `XStyle` with this.
@@ -248,9 +252,9 @@ export type IDFromVarGroup<T extends VarGroup<{}>> = T['__opaqueId'];
 
 type TTokens = Readonly<{
   [key: string]:
-    | CSSType<null | string | number>
-    | string
-    | { [key: string]: string };
+    | NestedVarObject<null | string | number>
+    | StyleXVar<null | string | number>
+    | CSSType<null | string | number>;
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
@@ -264,15 +268,16 @@ type NestedVarObject<T> =
   | T
   | Readonly<{
       default: NestedVarObject<T>;
-      [key: `@${string}`]: NestedVarObject<T>;
+      [key: AtRuleStr]: NestedVarObject<T>;
     }>;
 
 export type StyleX$DefineConsts = <
-  DefaultTokens extends TTokens,
-  ID extends symbol = symbol,
+  DefaultTokens extends {
+    [key: string]: number | string;
+  },
 >(
   tokens: DefaultTokens,
-) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
+) => DefaultTokens;
 
 export type StyleX$DefineVars = <
   DefaultTokens extends TTokens,
@@ -300,3 +305,52 @@ export type StyleX$CreateTheme = <
   baseTokens: TVars,
   overrides: OverridesForTokenType<TokensFromVarGroup<TVars>>,
 ) => Theme<TVars, ThemeID>;
+
+declare const StyleXMarkerTag: unique symbol;
+
+export type StyleX$DefineMarker = () => MapNamespace<{
+  readonly marker: typeof StyleXMarkerTag;
+}>;
+
+export type StyleX$When = {
+  ancestor: <
+    const Pseudo extends `:${string}` | `[${string}]`,
+    MarkerSymbol extends symbol = symbol,
+  >(
+    _pseudo?: Pseudo,
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-ancestor(${Pseudo}, ${MarkerSymbol})`;
+  descendant: <
+    const Pseudo extends `:${string}` | `[${string}]`,
+    MarkerSymbol extends symbol = symbol,
+  >(
+    _pseudo?: Pseudo,
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-descendant(${Pseudo}, ${MarkerSymbol})`;
+  siblingBefore: <
+    const Pseudo extends `:${string}` | `[${string}]`,
+    MarkerSymbol extends symbol = symbol,
+  >(
+    _pseudo?: Pseudo,
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-sibling-before(${Pseudo}, ${MarkerSymbol})`;
+  siblingAfter: <
+    const Pseudo extends `:${string}` | `[${string}]`,
+    MarkerSymbol extends symbol = symbol,
+  >(
+    _pseudo?: Pseudo,
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-sibling-after(${Pseudo}, ${MarkerSymbol})`;
+  anySibling: <
+    const Pseudo extends `:${string}` | `[${string}]`,
+    MarkerSymbol extends symbol = symbol,
+  >(
+    _pseudo?: Pseudo,
+    _customMarker?: MapNamespace<{ readonly marker: MarkerSymbol }>,
+    // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
+  ) => `:where-any-sibling(${Pseudo}, ${MarkerSymbol})`;
+};

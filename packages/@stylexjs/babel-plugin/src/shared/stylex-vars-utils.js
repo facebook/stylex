@@ -33,6 +33,7 @@ export function collectVarsByAtRule(
     collection[key].push(`--${nameHash}:${val};`);
     return;
   }
+  // $FlowFixMe[invalid-compare]
   if (value === null) {
     return;
   }
@@ -65,7 +66,7 @@ export function priorityForAtRule(atRule: string): number {
   if (atRule === 'default') {
     return 1;
   }
-  return atRule.split(SPLIT_TOKEN).length;
+  return 1 + atRule.split(SPLIT_TOKEN).length;
 }
 
 export function getDefaultValue(value: VarsConfigValue): ?string {

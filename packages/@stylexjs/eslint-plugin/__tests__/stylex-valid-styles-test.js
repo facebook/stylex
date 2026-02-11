@@ -53,6 +53,22 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       });
     `,
     `
+      const stylex = require('@stylexjs/stylex');
+      
+      const styles = stylex.create({
+        validStyle: {
+          marginInlineStart: "10px",
+          marginInlineEnd: "5px",
+          marginInline: "15px",
+          marginBlock: "20px",
+          paddingInlineStart: "8px",
+          paddingInlineEnd: "12px",
+          paddingInline: "10px",
+          paddingBlock: "16px",
+        },
+      });
+    `,
+    `
       import * as stylex from '@stylexjs/stylex';
       const start = 'start';
       const grayscale = 'grayscale';
@@ -219,6 +235,106 @@ eslintTester.run('stylex-valid-styles', rule.default, {
                 default: 10,
                 ":hover": 20,
               }
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import { create, when } from '@stylexjs/stylex';
+        const styles = create({
+          base: {
+            width: {
+              default: 10,
+              [when.descendant(":focus")]: 20,
+              [when.siblingAfter(":active")]: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import { create, when } from 'stylex';
+        const styles = create({
+          base: {
+            width: {
+              default: 10,
+              [when.descendant(":focus")]: 20,
+              [when.siblingAfter(":active")]: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: {
+              default: 10,
+              [stylex.when.descendant(":focus")]: 20,
+              [stylex.when.siblingAfter(":active")]: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+
+        import { colors } from './vars.stylex';
+
+        const styles = stylex.create({
+          base: {
+            backgroundColor: {
+              default: colors.bg,
+              [stylex.when.descendant(":focus")]: colors.bgFocus,
+              [stylex.when.siblingAfter(":active")]: colors.bgActive,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              backgroundColor: {
+                default: 'transparent',
+                [stylex.when.descendant(":focus")]: 'blue',
+                [stylex.when.siblingAfter(":active")]: 'red',
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+
+        import { colors } from './vars.stylex';
+
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              backgroundColor: {
+                default: colors.bg,
+                [stylex.when.descendant(":focus")]: colors.bgFocus,
+                [stylex.when.siblingAfter(":active")]: colors.bgActive,
+              },
             },
           },
         })
@@ -549,7 +665,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       })
     })
     `,
-    // test importing vars from paths including code file extension
+    // test importing vars from paths including theme file extension
     `
     import * as stylex from '@stylexjs/stylex';
     import { vars } from './vars.stylex';
@@ -571,6 +687,43 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     })
     `,
+    // test importing consts from paths including consts file extension
+    `
+        import * as stylex from '@stylexjs/stylex';
+        import { consts } from './vars.stylex.const.js';
+        import { constsJs } from './consts.stylex.const.js';
+        import { constsTs } from './consts.stylex.const.ts';
+        import { constsTsx } from './consts.stylex.const.tsx';
+        import { constsJsx } from './consts.stylex.const.jsx';
+        import { constsMjs } from './consts.stylex.const.mjs';
+        import { constsCjs } from './consts.stylex.const.cjs';
+        stylex.create({
+          root: {
+            borderRadius: consts.borderRadius,
+            margin: constsJs.margin,
+            padding: constsTs.padding,
+            height: constsTsx.height,
+            width: constsJsx.width,
+            minHeight: constsMjs.minHeight,
+            maxWidth: constsCjs.maxWidth,
+          },
+        })
+        `,
+    // test importing vars from paths including custom theme file extension
+    {
+      code: `
+    import * as stylex from '@stylexjs/stylex';
+    import { vars } from './vars.css.js';
+    import { consts } from './consts.css.const.js';
+    stylex.create({
+      root: {
+        borderRadius: vars.borderRadius,
+        margin: consts.margin,
+      },
+    })
+    `,
+      options: [{ themeFileExtension: '.css' }],
+    },
     // test for positionTryFallbacks with 'none'
     `
     import * as stylex from '@stylexjs/stylex';
@@ -619,8 +772,132 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
+    // test for ternary and logical expressions
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          basicTernary: (condition) => ({
+            color: condition ? 'blue' : 'red',
+            display: condition ? 'block' : 'none',
+            fontSize: condition ? '10px' : '20px',
+            fontWeight: condition ? 'bold' : 'normal',
+            opacity: condition ? 0.5 : 1,
+            zIndex: condition ? 10 + 10 : Math.max(10, 20),
+          }),
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'blue';
+        const sizeSmall = '10px';
+        const sizeMedium = '20px';
+        const sizeLarge = '30px';
+        const styles = stylex.create({
+          ternaryWithVars: (condition) => ({
+            fontSize: condition ? sizeSmall : sizeMedium,
+          }),
+          nestedTernaryWithVars: (conditionA, conditionB) => ({
+            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+            fontSize: conditionA ? sizeSmall : conditionB ? sizeMedium : sizeLarge,
+          }),
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const COLOR = 'blue';
+        const styles = stylex.create({
+          nestedTernaryWithVars: (conditionA, conditionB) => ({
+            backgroundColor: conditionA ? COLOR : conditionB ? 'green' : 'yellow',
+            fontSize: conditionA ? 14 : conditionB ? 16 : 18,
+            opacity: conditionA ? 0.5 : conditionB ? 1 : 0.2,
+          }),
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const condition = true;
+        const styles = stylex.create({
+          default: {
+            width: condition ? '50%' : '100%',
+            '@media (max-width: 600px)': {
+              width: condition ? '100%' : '200%',
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const condition = true;
+        const styles = stylex.create({
+          default: {
+            float: condition ? 'inline-start' : 'inline-end',
+            clear: condition ? 'inline-start' : 'left',
+          }
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          emptyString: (condition) => ({
+            '::before': {
+              content: condition ? '""' : '"*"',
+            },
+          })
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const zIndexConst = 10;
+        const widthConst = 0;
+        const widthConst2 = 3;
+        const isMobile = false;
+        const styles = stylex.create({
+          container: {
+            color: "blue" || "green",
+            zIndex: zIndexConst ?? 10,
+            width: isMobile ? (widthConst || "100%") : (widthConst2 ?? "200%"),
+          }
+        });
+      `,
+    },
   ],
   invalid: [
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            ':focus': {
+              ':hover': {
+                ':active': {
+                  color: 'red'
+                }
+              }
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'You cannot nest styles more than one level deep',
+        },
+      ],
+    },
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -693,6 +970,14 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
+      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginStart: 10}});",
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex',
+        },
+      ],
+    },
+    {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
       errors: [
         {
@@ -721,234 +1006,6 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           ],
         },
       ],
-    },
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            marginStart: '10px',
-            marginEnd: '5px',
-            marginHorizontal: '15px',
-            marginVertical: '15px',
-            paddingStart: '10px',
-            paddingEnd: '5px',
-            paddingHorizontal: '5px',
-            paddingVertical: '15px',
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'The key "marginStart" is not a standard CSS property. Did you mean "marginInlineStart"?',
-        },
-        {
-          message:
-            'The key "marginEnd" is not a standard CSS property. Did you mean "marginInlineEnd"?',
-        },
-        {
-          message:
-            'The key "marginHorizontal" is not a standard CSS property. Did you mean "marginInline"?',
-        },
-        {
-          message:
-            'The key "marginVertical" is not a standard CSS property. Did you mean "marginBlock"?',
-        },
-        {
-          message:
-            'The key "paddingStart" is not a standard CSS property. Did you mean "paddingInlineStart"?',
-        },
-        {
-          message:
-            'The key "paddingEnd" is not a standard CSS property. Did you mean "paddingInlineEnd"?',
-        },
-        {
-          message:
-            'The key "paddingHorizontal" is not a standard CSS property. Did you mean "paddingInline"?',
-        },
-        {
-          message:
-            'The key "paddingVertical" is not a standard CSS property. Did you mean "paddingBlock"?',
-        },
-      ],
-      output: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            marginInlineStart: '10px',
-            marginInlineEnd: '5px',
-            marginInline: '15px',
-            marginBlock: '15px',
-            paddingInlineStart: '10px',
-            paddingInlineEnd: '5px',
-            paddingInline: '5px',
-            paddingBlock: '15px',
-          },
-        });
-      `,
-    },
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            borderVerticalWidth: '2px',
-            borderVerticalStyle: 'solid',
-            borderVerticalColor: 'red',
-            borderHorizontalWidth: '1px',
-            borderHorizontalStyle: 'dashed',
-            borderHorizontalColor: 'blue',
-            borderStartWidth: '2px',
-            borderStartStyle: 'solid',
-            borderStartColor: 'green',
-            borderEndWidth: '3px',
-            borderEndStyle: 'dotted',
-            borderEndColor: 'purple',
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'The key "borderVerticalWidth" is not a standard CSS property. Did you mean "borderBlockWidth"?',
-        },
-        {
-          message:
-            'The key "borderVerticalStyle" is not a standard CSS property. Did you mean "borderBlockStyle"?',
-        },
-        {
-          message:
-            'The key "borderVerticalColor" is not a standard CSS property. Did you mean "borderBlockColor"?',
-        },
-        {
-          message:
-            'The key "borderHorizontalWidth" is not a standard CSS property. Did you mean "borderInlineWidth"?',
-        },
-        {
-          message:
-            'The key "borderHorizontalStyle" is not a standard CSS property. Did you mean "borderInlineStyle"?',
-        },
-        {
-          message:
-            'The key "borderHorizontalColor" is not a standard CSS property. Did you mean "borderInlineColor"?',
-        },
-        {
-          message:
-            'The key "borderStartWidth" is not a standard CSS property. Did you mean "borderInlineStartWidth"?',
-        },
-        {
-          message:
-            'The key "borderStartStyle" is not a standard CSS property. Did you mean "borderInlineStartStyle"?',
-        },
-        {
-          message:
-            'The key "borderStartColor" is not a standard CSS property. Did you mean "borderInlineStartColor"?',
-        },
-        {
-          message:
-            'The key "borderEndWidth" is not a standard CSS property. Did you mean "borderInlineEndWidth"?',
-        },
-        {
-          message:
-            'The key "borderEndStyle" is not a standard CSS property. Did you mean "borderInlineEndStyle"?',
-        },
-        {
-          message:
-            'The key "borderEndColor" is not a standard CSS property. Did you mean "borderInlineEndColor"?',
-        },
-      ],
-      output: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            borderBlockWidth: '2px',
-            borderBlockStyle: 'solid',
-            borderBlockColor: 'red',
-            borderInlineWidth: '1px',
-            borderInlineStyle: 'dashed',
-            borderInlineColor: 'blue',
-            borderInlineStartWidth: '2px',
-            borderInlineStartStyle: 'solid',
-            borderInlineStartColor: 'green',
-            borderInlineEndWidth: '3px',
-            borderInlineEndStyle: 'dotted',
-            borderInlineEndColor: 'purple',
-          },
-        });
-      `,
-    },
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            borderTopStartRadius: '4px',
-            borderTopEndRadius: '5px',
-            borderBottomStartRadius: '6px',
-            borderBottomEndRadius: '7px',
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'The key "borderTopStartRadius" is not a standard CSS property. Did you mean "borderStartStartRadius"?',
-        },
-        {
-          message:
-            'The key "borderTopEndRadius" is not a standard CSS property. Did you mean "borderStartEndRadius"?',
-        },
-        {
-          message:
-            'The key "borderBottomStartRadius" is not a standard CSS property. Did you mean "borderEndStartRadius"?',
-        },
-        {
-          message:
-            'The key "borderBottomEndRadius" is not a standard CSS property. Did you mean "borderEndEndRadius"?',
-        },
-      ],
-      output: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            borderStartStartRadius: '4px',
-            borderStartEndRadius: '5px',
-            borderEndStartRadius: '6px',
-            borderEndEndRadius: '7px',
-          },
-        });
-      `,
-    },
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            end: '5px',
-            start: '10px',
-          },
-        });
-      `,
-      errors: [
-        {
-          message:
-            'The key "end" is not a standard CSS property. Did you mean "insetInlineEnd"?',
-        },
-        {
-          message:
-            'The key "start" is not a standard CSS property. Did you mean "insetInlineStart"?',
-        },
-      ],
-      output: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          invalidStyle: {
-            insetInlineEnd: '5px',
-            insetInlineStart: '10px',
-          },
-        });
-      `,
     },
     {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'lfet'}});",
@@ -1697,6 +1754,97 @@ revert`,
         });
       `,
     },
+    // test for ternary and logical expressions
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          ternaryWithBasicInvalidStyles: (condition) => ({
+            color: condition ? 'red' : 123,
+            fontSize: condition ? true : '10px',
+            transition: condition ? 'transform 1s' : ' ',
+            zIndex: condition ?? 'red',
+            display: 'invalid-display' || 'block',
+          }),
+        });
+      `,
+      errors: [
+        {
+          message: /^color value must be one of:\n/,
+        },
+        {
+          message: /^fontSize value must be one of:\n/,
+        },
+        {
+          message: 'The empty string is not allowed by Stylex.',
+        },
+        {
+          message: /^zIndex value must be one of:\n/,
+        },
+        {
+          message: /^display value must be one of:\n/,
+        },
+      ],
+    },
+    {
+      code: `import * as stylex from '@stylexjs/stylex';
+const styles = stylex.create({
+  ternaryWithBasicInvalidStyles: (condition) => ({
+    float: condition ? 'start' : 'inline-end',
+  }),
+});`,
+      errors: [
+        {
+          message:
+            'The value "start" is not a standard CSS value for "float". Did you mean "inline-start"?',
+          suggestions: [
+            {
+              desc: 'Replace "start" with "inline-start"?',
+            },
+          ],
+        },
+      ],
+      output: `import * as stylex from '@stylexjs/stylex';
+const styles = stylex.create({
+  ternaryWithBasicInvalidStyles: (condition) => ({
+    float: condition ? 'inline-start' : 'inline-end',
+  }),
+});`,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          nestedInvalidStyles: (conditionA, conditionB) => ({
+            display: conditionA ?  conditionB ? 'grid' : 'invalid-display' : 'block',
+          }),
+        });
+      `,
+      errors: [
+        {
+          message: /^display value must be one of:\n/,
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          ternaryWithInvalidType: (condition) => ({
+            fontWeight: condition ? sasasa : 'bold',
+            marginStart: condition ? '10px' : '20px',
+          }),
+        });
+      `,
+      errors: [
+        {
+          message: /^fontWeight value must be one of:\n/,
+        },
+        {
+          message: 'This is not a key that is allowed by stylex',
+        },
+      ],
+    },
   ],
 });
 
@@ -1796,6 +1944,53 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
           },
         });`,
     },
+    // test for allowed raw CSS variable overrides
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            '--bar': '0',
+          }
+        })
+      `,
+      options: [{ allowRawCSSVars: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            '::after': {
+              ':hover': {
+                content: ''
+              }
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply',
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darken, exclusion',
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
@@ -1827,6 +2022,26 @@ initial
 inherit
 unset
 revert`,
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            ':focus': {
+              '::after': {
+                content: ''
+              }
+            }
+          }
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'You cannot nest styles more than one level deep',
         },
       ],
     },
@@ -2141,6 +2356,213 @@ initial
 inherit
 unset
 revert`,
+        },
+      ],
+    },
+    // test for disallowed raw CSS variable overrides
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            '--bar': '0',
+          }
+        })
+      `,
+      options: [{ allowRawCSSVars: false }],
+      errors: [
+        {
+          message: 'This is not a key that is allowed by stylex',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'invalid-blend-mode',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `backgroundBlendMode value must be one of:
+normal
+multiply
+screen
+overlay
+darken
+lighten
+color-dodge
+color-burn
+hard-light
+soft-light
+difference
+exclusion
+hue
+saturation
+color
+luminosity
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for backgroundBlendMode with invalid blend mode value in comma-separated list
+    // 'darke' should be 'darken'
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darke, exclusion',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `backgroundBlendMode value must be one of:
+normal
+multiply
+screen
+overlay
+darken
+lighten
+color-dodge
+color-burn
+hard-light
+soft-light
+difference
+exclusion
+hue
+saturation
+color
+luminosity
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for incorrect spacing around comma in backgroundBlendMode
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          container: {
+            backgroundBlendMode: 'multiply, darken,exclusion',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            "backgroundBlendMode values must be separated by a comma and a space (', ')",
+        },
+      ],
+    },
+    // test for when function from other library
+    {
+      code: `
+             import { when } from 'some-other-library';
+             import { create } from '@stylexjs/stylex';
+             const styles = create({
+               base: {
+                 width: {
+                   default: 10,
+                   [when.descendant(":focus")]: 20,
+                 },
+               },
+             })
+           `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message: 'Computed key cannot be resolved.',
+        },
+      ],
+    },
+    // test for invalid CSS values in stylex.when calls
+    {
+      code: `
+             import * as stylex from '@stylexjs/stylex';
+             const styles = stylex.create({
+               base: {
+                 float: {
+                   default: 'left',
+                   [stylex.when.ancestor(":hover")]: 'dsdfdsdfsdfsdfsdfsdf',
+                   [stylex.when.descendant(":focus")]: 30,
+                   [stylex.when.siblingAfter(":active")]: 40,
+                 },
+               },
+             })
+           `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+      ],
+    },
+    // test for invalid CSS value in stylex.when call
+    {
+      code: `
+             import { when, create } from '@stylexjs/stylex';
+             const styles = create({
+               base: {
+                 float: {
+                   default: 'left',
+                   [when.descendant(":focus")]: 'invalid-value',
+                 },
+               },
+             })
+           `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+      errors: [
+        {
+          message:
+            'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+      ],
+    },
+    // test for trying to use `stylex.when` as outer key when `allowOuterPseudoAndMedia` is false
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: 10,
+            [stylex.when.descendant(":focus")]: {
+              width: 20,
+            },
+            [stylex.when.siblingAfter(":active")]: {
+              width: 30,
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: false }],
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+        {
+          message: 'Keys must be strings',
         },
       ],
     },

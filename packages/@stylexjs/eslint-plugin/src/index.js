@@ -7,24 +7,36 @@
  * @flow strict
  */
 
-import validStyles from './stylex-valid-styles';
+import enforceExtension from './stylex-enforce-extension';
+import noLegacyContextualStyles from './stylex-no-legacy-contextual-styles';
+import noLookaheadSelectors from './stylex-no-lookahead-selectors';
+import noNonStandardStyles from './stylex-no-nonstandard-styles';
+import noConflictingProps from './stylex-no-conflicting-props';
+import noUnused from './stylex-no-unused';
 import sortKeys from './stylex-sort-keys';
 import validShorthands from './stylex-valid-shorthands';
-import noUnused from './stylex-no-unused';
-import noLegacyContextualStyles from './stylex-no-legacy-contextual-styles';
+import validStyles from './stylex-valid-styles';
 
 const rules: {
-  'valid-styles': typeof validStyles,
+  'enforce-extension': typeof enforceExtension,
+  'no-legacy-contextual-styles': typeof noLegacyContextualStyles,
+  'no-lookahead-selectors': typeof noLookaheadSelectors,
+  'no-nonstandard-styles': typeof noNonStandardStyles,
+  'no-conflicting-props': typeof noConflictingProps,
+  'no-unused': typeof noUnused,
   'sort-keys': typeof sortKeys,
   'valid-shorthands': typeof validShorthands,
-  'no-unused': typeof noUnused,
-  'no-legacy-contextual-styles': typeof noLegacyContextualStyles,
+  'valid-styles': typeof validStyles,
 } = {
-  'valid-styles': validStyles,
+  'enforce-extension': enforceExtension,
+  'no-legacy-contextual-styles': noLegacyContextualStyles,
+  'no-lookahead-selectors': noLookaheadSelectors,
+  'no-nonstandard-styles': noNonStandardStyles,
+  'no-conflicting-props': noConflictingProps,
+  'no-unused': noUnused,
   'sort-keys': sortKeys,
   'valid-shorthands': validShorthands,
-  'no-unused': noUnused,
-  'no-legacy-contextual-styles': noLegacyContextualStyles,
+  'valid-styles': validStyles,
 };
 
 export { rules };

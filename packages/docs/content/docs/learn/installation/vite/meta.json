@@ -1,0 +1,10 @@
+{
+  "title": "Vite",
+  "pages": [
+      "./vite-react.mdx",
+      "./vite-rsc.mdx",
+      "./react-router.mdx",
+      "./redwoodsdk.mdx",
+      "./waku.mdx"
+  ]
+}

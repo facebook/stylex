@@ -22,6 +22,8 @@ describe('stylex', () => {
       'keyframes',
       'positionTry',
       'viewTransitionClass',
+      'defaultMarker',
+      'defineMarker',
     ].forEach((api) => {
       test(`stylex.${api}`, () => {
         expect(() => stylex[api]()).toThrow();
@@ -45,6 +47,18 @@ describe('stylex', () => {
     ].forEach((api) => {
       test(`stylex.types${api}`, () => {
         expect(() => stylex.types[api]()).toThrow();
+      });
+    });
+
+    [
+      'ancestor',
+      'descendant',
+      'siblingBefore',
+      'siblingAfter',
+      'anySibling',
+    ].forEach((api) => {
+      test(`stylex.when${api}`, () => {
+        expect(() => stylex.when[api](':hover')).toThrow();
       });
     });
   });

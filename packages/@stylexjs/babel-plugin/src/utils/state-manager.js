@@ -17,9 +17,9 @@ import type { Check } from './validate';
 
 import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
-import path from 'path';
-import fs from 'fs';
-import url from 'url';
+import path from 'node:path';
+import fs from 'node:fs';
+import url from 'node:url';
 import * as z from './validate';
 import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 import {
@@ -27,6 +27,7 @@ import {
   addNamedImport,
   getProgramStatement,
 } from './ast-helpers';
+import { defaultOptions } from '../shared/utils/default-options';
 
 export type ImportPathResolution =
   | false
@@ -46,10 +47,20 @@ type ModuleResolution =
       type: 'experimental_crossFileParsing',
       rootDir?: string,
       themeFileExtension?: ?string,
+    }>
+  | $ReadOnly<{
+      type: 'custom',
+      themeFileExtension?: ?string,
+      filePathResolver: (
+        importPath: string,
+        sourceFilePath: string,
+        aliases: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
+      ) => string | void,
+      getCanonicalFilePath: (filePath: string) => string,
     }>;
 
 // eslint-disable-next-line no-unused-vars
-const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
+const CheckModuleResolution: Check<ModuleResolution> = z.unionOf4(
   z.object({
     type: z.literal('commonJS'),
     rootDir: z.unionOf(z.nullish(), z.string()),
@@ -58,6 +69,19 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
   z.object({
     type: z.literal('haste'),
     themeFileExtension: z.unionOf(z.nullish(), z.string()),
+  }),
+  z.object({
+    type: z.literal('custom'),
+    themeFileExtension: z.unionOf(z.nullish(), z.string()),
+    filePathResolver:
+      z.func<
+        (
+          importPath: string,
+          sourceFilePath: string,
+          aliases: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
+        ) => string | void,
+      >(),
+    getCanonicalFilePath: z.func<(filePath: string) => string>(),
   }),
   z.object({
     type: z.literal('experimental_crossFileParsing'),
@@ -69,6 +93,7 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf3(
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  propertyValidationMode?: 'throw' | 'warn' | 'silent',
   enableDebugClassNames?: boolean,
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
@@ -76,6 +101,7 @@ export type StyleXOptions = $ReadOnly<{
   enableMediaQueryOrder?: boolean,
   enableLegacyValueFlipping?: boolean,
   enableLogicalStylesPolyfill?: boolean,
+  enableLTRRTLComments?: boolean,
   enableMinifiedKeys?: boolean,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
@@ -84,6 +110,7 @@ export type StyleXOptions = $ReadOnly<{
   runtimeInjection: boolean | ?string | $ReadOnly<{ from: string, as: string }>,
   treeshakeCompensation?: boolean,
   unstable_moduleResolution?: ?ModuleResolution,
+  debugFilePath?: (filePath: string) => string,
   ...
 }>;
 
@@ -131,10 +158,13 @@ export default class StateManager {
   +stylexKeyframesImport: Set<string> = new Set();
   +stylexPositionTryImport: Set<string> = new Set();
   +stylexDefineVarsImport: Set<string> = new Set();
+  +stylexDefineMarkerImport: Set<string> = new Set();
   +stylexDefineConstsImport: Set<string> = new Set();
   +stylexCreateThemeImport: Set<string> = new Set();
   +stylexTypesImport: Set<string> = new Set();
   +stylexViewTransitionClassImport: Set<string> = new Set();
+  +stylexDefaultMarkerImport: Set<string> = new Set();
+  +stylexWhenImport: Set<string> = new Set();
 
   injectImportInserted: ?t.Identifier = null;
 
@@ -160,7 +190,7 @@ export default class StateManager {
   setOptions(options: { +[string]: mixed }): StyleXStateOptions {
     const dev: StyleXStateOptions['dev'] = z.logAndDefault(
       z.boolean(),
-      options.dev ?? false,
+      options.dev ?? defaultOptions.dev,
       false,
       'options.dev',
     );
@@ -175,7 +205,7 @@ export default class StateManager {
     const enableDebugClassNames: StyleXStateOptions['enableDebugClassNames'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableDebugClassNames ?? true,
+        options.enableDebugClassNames ?? defaultOptions.enableDebugClassNames,
         true,
         'options.enableDebugClassNames',
       );
@@ -183,23 +213,23 @@ export default class StateManager {
     const enableDebugDataProp: StyleXStateOptions['enableDebugDataProp'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableDebugDataProp ?? true,
-        true,
+        options.enableDebugDataProp ?? debug,
+        false,
         'options.enableDebugDataProp',
       );
 
     const enableDevClassNames: StyleXStateOptions['enableDevClassNames'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableDevClassNames ?? false,
-        false,
+        options.enableDevClassNames ?? dev,
+        dev,
         'options.enableDevClassNames',
       );
 
     const enableFontSizePxToRem: StyleXStateOptions['enableFontSizePxToRem'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableFontSizePxToRem ?? false,
+        options.enableFontSizePxToRem ?? defaultOptions.enableFontSizePxToRem,
         false,
         'options.enableFontSizePxToRem',
       );
@@ -207,7 +237,8 @@ export default class StateManager {
     const enableInlinedConditionalMerge: StyleXStateOptions['enableInlinedConditionalMerge'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableInlinedConditionalMerge ?? true,
+        options.enableInlinedConditionalMerge ??
+          defaultOptions.enableInlinedConditionalMerge,
         true,
         'options.enableInlinedConditionalMerge',
       );
@@ -215,7 +246,7 @@ export default class StateManager {
     const enableMinifiedKeys: StyleXStateOptions['enableMinifiedKeys'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableMinifiedKeys ?? true,
+        options.enableMinifiedKeys ?? defaultOptions.enableMinifiedKeys,
         true,
         'options.enableMinifiedKeys',
       );
@@ -223,15 +254,16 @@ export default class StateManager {
     const enableMediaQueryOrder: StyleXStateOptions['enableMediaQueryOrder'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableMediaQueryOrder ?? false,
-        false,
+        options.enableMediaQueryOrder ?? defaultOptions.enableMediaQueryOrder,
+        true,
         'options.enableMediaQueryOrder',
       );
 
     const enableLegacyValueFlipping: StyleXStateOptions['enableLegacyValueFlipping'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableLegacyValueFlipping ?? false,
+        options.enableLegacyValueFlipping ??
+          defaultOptions.enableLegacyValueFlipping,
         false,
         'options.enableLegacyValueFlipping',
       );
@@ -239,14 +271,23 @@ export default class StateManager {
     const enableLogicalStylesPolyfill: StyleXStateOptions['enableLogicalStylesPolyfill'] =
       z.logAndDefault(
         z.boolean(),
-        options.enableLogicalStylesPolyfill ?? false,
+        options.enableLogicalStylesPolyfill ??
+          defaultOptions.enableLogicalStylesPolyfill,
         false,
         'options.enableLogicalStylesPolyfill',
       );
 
+    const enableLTRRTLComments: StyleXStateOptions['enableLTRRTLComments'] =
+      z.logAndDefault(
+        z.boolean(),
+        options.enableLTRRTLComments ?? defaultOptions.enableLTRRTLComments,
+        false,
+        'options.enableLTRRTLComments',
+      );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
-      options.test ?? false,
+      options.test ?? defaultOptions.test,
       false,
       'options.test',
     );
@@ -259,20 +300,16 @@ export default class StateManager {
         'options.runtimeInjection',
       );
 
-    // prettier-ignore
-    const runtimeInjection: StyleXStateOptions['runtimeInjection']
-      = configRuntimeInjection === true ?
-        DEFAULT_INJECT_PATH
-      : configRuntimeInjection === false ?
-        undefined
-      :
-        configRuntimeInjection
-      ;
-
+    const runtimeInjection: StyleXStateOptions['runtimeInjection'] =
+      configRuntimeInjection === true
+        ? DEFAULT_INJECT_PATH
+        : configRuntimeInjection === false
+          ? undefined
+          : configRuntimeInjection;
     const classNamePrefix: StyleXStateOptions['classNamePrefix'] =
       z.logAndDefault(
         z.string(),
-        options.classNamePrefix ?? 'x',
+        options.classNamePrefix ?? defaultOptions.classNamePrefix,
         'x',
         'options.classNamePrefix',
       );
@@ -280,7 +317,7 @@ export default class StateManager {
     const configuredImportSources: StyleXStateOptions['importSources'] =
       z.logAndDefault(
         checkImportSources,
-        options.importSources ?? [],
+        options.importSources ?? defaultOptions.importSources,
         [],
         'options.importSources',
       );
@@ -298,9 +335,17 @@ export default class StateManager {
           z.literal('property-specificity'),
           z.literal('legacy-expand-shorthands'),
         ),
-        options.styleResolution ?? 'property-specificity',
+        options.styleResolution ?? defaultOptions.styleResolution,
         'property-specificity',
         'options.styleResolution',
+      );
+
+    const propertyValidationMode: StyleXStateOptions['propertyValidationMode'] =
+      z.logAndDefault(
+        z.unionOf3(z.literal('throw'), z.literal('warn'), z.literal('silent')),
+        options.propertyValidationMode ?? defaultOptions.propertyValidationMode,
+        'silent',
+        'options.propertyValidationMode',
       );
 
     const unstable_moduleResolution: StyleXStateOptions['unstable_moduleResolution'] =
@@ -314,7 +359,7 @@ export default class StateManager {
     const treeshakeCompensation: StyleXStateOptions['treeshakeCompensation'] =
       z.logAndDefault(
         z.boolean(),
-        options.treeshakeCompensation ?? false,
+        options.treeshakeCompensation ?? defaultOptions.treeshakeCompensation,
         false,
         'options.treeshakeCompensation',
       );
@@ -341,12 +386,20 @@ export default class StateManager {
             }),
           );
 
+    const debugFilePath: StyleXStateOptions['debugFilePath'] = z.logAndDefault(
+      z.optional(z.func<(filePath: string) => string>()),
+      options.debugFilePath,
+      undefined,
+      'options.debugFilePath',
+    );
+
     const opts: StyleXStateOptions = {
       aliases,
       classNamePrefix,
       debug,
       definedStylexCSSVariables: {},
       dev,
+      propertyValidationMode,
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,
@@ -356,6 +409,7 @@ export default class StateManager {
       enableMediaQueryOrder,
       enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
+      enableLTRRTLComments,
       importSources,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'
@@ -366,6 +420,7 @@ export default class StateManager {
       test,
       treeshakeCompensation,
       unstable_moduleResolution,
+      debugFilePath,
     };
     return opts;
   }
@@ -446,17 +501,27 @@ export default class StateManager {
     const themeFileExtension =
       this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
 
-    if (
-      filename == null ||
-      !matchesFileSuffix(themeFileExtension)(filename) ||
-      this.options.unstable_moduleResolution == null
-    ) {
+    const constsFileExtension = `${themeFileExtension}.const`;
+
+    if (filename == null || this.options.unstable_moduleResolution == null) {
       return null;
     }
 
-    switch (this.options.unstable_moduleResolution.type) {
+    const isThemeFile = matchesFileSuffix(themeFileExtension)(filename);
+
+    const isConstsOnlyFile = matchesFileSuffix(constsFileExtension)(filename);
+
+    if (!isThemeFile && !isConstsOnlyFile) {
+      return null;
+    }
+
+    switch (this.options.unstable_moduleResolution?.type) {
       case 'haste':
         return path.basename(filename);
+      case 'custom':
+        return this.options.unstable_moduleResolution.getCanonicalFilePath(
+          filename,
+        );
       default:
         return this.getCanonicalFilePath(filename);
     }
@@ -509,14 +574,23 @@ export default class StateManager {
 
     const themeFileExtension =
       this.options.unstable_moduleResolution?.themeFileExtension ?? '.stylex';
+
+    const constsFileExtension = `${themeFileExtension}.const`;
+
     const transformedVarsFileExtension = '.transformed';
 
     const isValidStylexFile = matchesFileSuffix(themeFileExtension)(importPath);
     const isValidTransformedVarsFile = matchesFileSuffix(
       transformedVarsFileExtension,
     )(importPath);
+    const isValidConstsOnlyFile =
+      matchesFileSuffix(constsFileExtension)(importPath);
 
-    if (!isValidStylexFile && !isValidTransformedVarsFile) {
+    if (
+      !isValidStylexFile &&
+      !isValidTransformedVarsFile &&
+      !isValidConstsOnlyFile
+    ) {
       return false;
     }
 
@@ -535,6 +609,18 @@ export default class StateManager {
       case 'haste': {
         return ['themeNameRef', addFileExtension(importPath, sourceFilePath)];
       }
+      case 'custom': {
+        const aliases = this.options.aliases;
+        const moduleResolution = this.options.unstable_moduleResolution;
+        const result = moduleResolution.filePathResolver(
+          importPath,
+          sourceFilePath,
+          aliases,
+        );
+        return result
+          ? ['themeNameRef', moduleResolution.getCanonicalFilePath(result)]
+          : false;
+      }
       case 'experimental_crossFileParsing': {
         const aliases = this.options.aliases;
         const resolvedFilePath = filePathResolver(
@@ -550,38 +636,42 @@ export default class StateManager {
   }
 
   addStyle(
-    style: [
-      string,
-      (
-        | { ltr: string, rtl?: string | null }
-        | {
-            constKey: string,
-            constVal: string | number,
-            rtl?: string | null,
-            ltr: string,
-          }
-      ),
-      number,
-    ],
+    style: $ReadOnly<
+      [
+        string,
+        (
+          | $ReadOnly<{ ltr: string, rtl?: string | null }>
+          | $ReadOnly<{
+              constKey: string,
+              constVal: string | number,
+              rtl?: string | null,
+              ltr: string,
+            }>
+        ),
+        number,
+      ],
+    >,
   ): void {
     this.metadata.stylex.push(style);
   }
 
   registerStyles(
     styles: $ReadOnlyArray<
-      [
-        string,
-        (
-          | { ltr: string, rtl?: string | null }
-          | {
-              constKey: string,
-              constVal: string | number,
-              rtl?: string | null,
-              ltr: string,
-            }
-        ),
-        number,
-      ],
+      $ReadOnly<
+        [
+          string,
+          (
+            | $ReadOnly<{ ltr: string, rtl?: string | null }>
+            | $ReadOnly<{
+                constKey: string,
+                constVal: string | number,
+                rtl?: string | null,
+                ltr: string,
+              }>
+          ),
+          number,
+        ],
+      >,
     >,
     path?: ?NodePath<>,
   ): void {
@@ -617,14 +707,42 @@ export default class StateManager {
 
       this.injectImportInserted = injectName;
     }
-    for (const [_key, { ltr, rtl }, priority] of styles) {
+    for (const [_key, styleObj, priority] of styles) {
+      const { ltr, rtl } = styleObj;
+
+      let constKey = null;
+      let constVal = null;
+
+      if (styleObj.constKey != null && styleObj.constVal != null) {
+        constKey = styleObj.constKey;
+        constVal = styleObj.constVal;
+      }
+
+      const properties: Array<t.ObjectProperty> = [
+        t.objectProperty(t.identifier('ltr'), t.stringLiteral(ltr)),
+        ...(rtl != null
+          ? [t.objectProperty(t.identifier('rtl'), t.stringLiteral(rtl))]
+          : []),
+        t.objectProperty(t.identifier('priority'), t.numericLiteral(priority)),
+        ...(constKey != null
+          ? [
+              t.objectProperty(
+                t.identifier('constKey'),
+                t.stringLiteral(constKey),
+              ),
+              t.objectProperty(
+                t.identifier('constVal'),
+                typeof constVal === 'number'
+                  ? t.numericLiteral(constVal)
+                  : t.stringLiteral(String(constVal)),
+              ),
+            ]
+          : []),
+      ];
+
       statementPath.insertBefore(
         t.expressionStatement(
-          t.callExpression(injectName, [
-            t.stringLiteral(ltr),
-            t.numericLiteral(priority),
-            ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-          ]),
+          t.callExpression(injectName, [t.objectExpression(properties)]),
         ),
       );
     }

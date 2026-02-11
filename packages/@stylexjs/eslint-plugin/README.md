@@ -53,7 +53,7 @@ their **suggested replacements**.
 ### @stylexjs/sort-keys
 
 This rule helps to sort the StyleX property keys according to
-[property priorities](https://github.com/facebook/stylex/blob/main/packages/shared/src/utils/property-priorities.js).
+[property priorities](https://github.com/facebook/stylex/blob/main/packages/%40stylexjs/babel-plugin/src/shared/utils/property-priorities.js).
 
 #### Config options
 
@@ -63,7 +63,7 @@ This rule helps to sort the StyleX property keys according to
 }
 ```
 
-### stylex/stylex-valid-shorthands
+### @stylexjs/valid-shorthands
 
 This ESLint rule enforces the use of individual longhand CSS properties in place
 of multivalue shorthands when using `create` for reasons of consistency
@@ -111,35 +111,39 @@ This rule has a few custom config options that can be set.
 }
 ```
 
-### @stylexjs/stylex-enforce-extension
+### @stylexjs/enforce-extension
 
 This rule ensures consistent naming for StyleX theme files that export variables
-using `defineVars`.
+using `defineVars` or `defineConsts`.
 
 #### Not allowed
 
-- Exporting `defineVars` in a file **not** ending in `.stylex.js` or
+- Exporting `defineVars` or `defineConsts` in a file **not** ending in `.stylex.js` or
   `.stylex.ts`
 - Using the `.stylex.js` / `.stylex.ts` extension without exporting
-  `defineVars`
-- Mixing `defineVars` with other exports in the same file
+  `defineVars` or `defineConsts`
+- Mixing `defineVars` or `defineConsts` with other exports in the same file (unless `legacyAllowMixedExports` is enabled)
+- Mixing `defineConsts` with `defineVars` when `enforceDefineConstsExtension` is enabled
 
 #### Instead...
 
 - Use `.stylex.js` or `.stylex.ts` for files that only export
-  `defineVars`
-- Export **only** theme vars from these files
+  `defineVars` or `defineConsts`
+- Export **only** theme vars/consts from these files
+- When `enforceDefineConstsExtension` is enabled, use `.stylex.const.js` for `defineConsts` exports
 
 #### Config options
 
 ```json
 {
-  "themeFileExtension": ".stylex.js", // default, can be customized
+  "themeFileExtension": ".stylex", // default, can be customized
+  "legacyAllowMixedExports": false, // allow mixed exports (legacy support)
+  "enforceDefineConstsExtension": false, // enforce separate .const suffix for defineConsts
   "validImports": ["stylex", "@stylexjs/stylex"]
 }
 ```
 
-### `stylex-no-unused`
+### `@stylexjs/no-unused`
 
 This rule flags unused styles created with `create(...)`. If a style key
 is defined but never used, the rule auto-strips them from the create call.
@@ -152,7 +156,7 @@ is defined but never used, the rule auto-strips them from the create call.
 }
 ```
 
-### `stylex-no-legacy-contextual-styles`
+### `@stylexjs/no-legacy-contextual-styles`
 
 This rule flags usages of the original media query/pseudo class syntax that
 wraps multiple property values within a single @-rule or pseudo class like this:
@@ -188,4 +192,84 @@ const styles = stylex.create({
     },
   },
 });
+```
+
+### `@stylexjs/no-lookahead-selectors`
+
+This rule warns against usage of `stylex.when.anySibling`, `stylex.when.descendant`,
+and `stylex.when.siblingAfter` due to their reliance on the CSS `:has()`
+selector, which does not yet have widespread browser support.
+
+#### Limited browser support
+
+```js
+const styles = stylex.create({
+  foo: {
+    backgroundColor: {
+      default: 'blue',
+      [stylex.when.anySibling('.sibling')]: 'red',
+    },
+    color: {
+      default: 'black',
+      [stylex.when.descendant('.child')]: 'purple',
+    },
+    marginTop: {
+      default: '0px',
+      [stylex.when.siblingAfter('.next')]: '8px',
+    },
+  },
+});
+```
+
+See [caniuse.com/css-has](https://caniuse.com/css-has) for current browser
+compatibility.
+
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
+```
+
+### `@stylexjs/no-nonstandard-styles`
+
+This rule enforces that you create standard CSS values and properties for StyleX.
+It validates that all CSS properties and values conform to standard CSS
+specifications.
+
+#### Features
+
+- Detects invalid CSS property names and suggests standard alternatives
+- Validates CSS values against property specifications
+- Provides auto-fixes for common issues (e.g., non-standard `float: start` → `float: inline-start`)
+- Supports StyleX-specific functions like `stylex.keyframes()` and `stylex.defineVars()`
+
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
+```
+
+### `@stylexjs/no-conflicting-props`
+
+This rule disallows using `className` or `style` props on elements that spread
+`stylex.props()` to avoid conflicts and unexpected behavior.
+
+#### Invalid examples
+
+```jsx
+<div {...stylex.props(styles.foo)} className="extra" />
+
+<div {...stylex.props(styles.foo)} style={{ color: 'red' }} />
+```
+
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
 ```

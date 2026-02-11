@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable no-unused-vars */
 import * as stylex from '@stylexjs/stylex';
 
 const basicVars = stylex.defineVars({
@@ -34,8 +35,8 @@ const basicConsts = stylex.defineConsts({
   bar: 'blue',
 });
 
-basicConsts satisfies stylex.VarGroup<{ foo: unknown; bar: unknown }>;
-basicConsts satisfies stylex.VarGroup<{
+basicConsts satisfies Readonly<{ foo: unknown; bar: unknown }>;
+basicConsts satisfies Readonly<{
   foo: unknown;
   bar: unknown;
   baz?: unknown;

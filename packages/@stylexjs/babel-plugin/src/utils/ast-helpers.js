@@ -64,7 +64,7 @@ export function pathReplaceHoisted(
   path.replaceWith(nameIdent);
 }
 
-function getProgramPath(path: NodePath<>): null | NodePath<t.Program> {
+function getProgramPath(path: NodePath<>): ?NodePath<t.Program> {
   let programPath = path;
   while (programPath != null && !programPath.isProgram()) {
     if (programPath.parentPath) {
@@ -87,7 +87,8 @@ export function addNamedImport(
   if (programPath == null) {
     return identifier;
   }
-  const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
+  const bodyPath: $ReadOnlyArray<NodePath<t.Statement>> =
+    programPath.get('body');
   let targetImportIndex = -1;
   for (let i = 0; i < bodyPath.length; i++) {
     const statement = bodyPath[i];
@@ -133,7 +134,8 @@ export function addDefaultImport(
   if (programPath == null) {
     return identifier;
   }
-  const bodyPath: Array<NodePath<t.Statement>> = programPath.get('body');
+  const bodyPath: $ReadOnlyArray<NodePath<t.Statement>> =
+    programPath.get('body');
   let targetImportIndex = -1;
   for (let i = 0; i < bodyPath.length; i++) {
     const statement = bodyPath[i];
@@ -201,4 +203,71 @@ export function getProgramStatement(path: NodePath<>): NodePath<> {
     programPath = programPath.parentPath;
   }
   return programPath;
+}
+
+/**
+ * Checks if a variable with the given name is named exported in the program.
+ * This handles both:
+ * - Direct named exports: `export const x = ...`
+ * - Locally declared named exports: `const x = ...; export { x }`
+ *
+ * Default exports, aliasing and re-exports from other files (e.g., `export { x } from './other'`) are NOT allowed.
+ */
+export function isVariableNamedExported(
+  path: NodePath<t.VariableDeclarator>,
+): boolean {
+  const idPath = path.get('id');
+  if (!idPath.isIdentifier()) return false;
+
+  const variableName = idPath.node.name;
+
+  const binding = path.scope.getBinding(variableName);
+  if (!binding) return false;
+
+  const programPath = getProgramPath(path);
+  if (programPath == null) {
+    return false;
+  }
+
+  let exported = false;
+
+  programPath.traverse({
+    ExportNamedDeclaration(p) {
+      const node = p.node;
+
+      if (node.source != null) return;
+
+      if (node.declaration) {
+        if (
+          node.declaration.type === 'VariableDeclaration' &&
+          node.declaration.declarations.some(
+            (d) =>
+              d.id.type === 'Identifier' &&
+              p.scope.getBinding(d.id.name) === binding,
+          )
+        ) {
+          exported = true;
+          p.stop();
+        }
+        return;
+      }
+
+      for (const s of node.specifiers ?? []) {
+        if (s.type !== 'ExportSpecifier') continue;
+        if (s.local.type !== 'Identifier') continue;
+        if (s.exported.type !== 'Identifier') continue;
+        if (s.exportKind === 'type') continue;
+        if (s.local.name !== s.exported.name) continue;
+
+        const localBinding = p.scope.getBinding(s.local.name);
+        if (localBinding === binding) {
+          exported = true;
+          p.stop();
+          return;
+        }
+      }
+    },
+  });
+
+  return exported;
 }

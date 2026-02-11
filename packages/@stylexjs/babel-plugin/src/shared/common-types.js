@@ -48,14 +48,25 @@ export type StyleXOptions = $ReadOnly<{
   debug: ?boolean,
   definedStylexCSSVariables?: { [key: string]: mixed },
   dev: boolean,
+  propertyValidationMode?: 'throw' | 'warn' | 'silent',
   enableDebugClassNames?: ?boolean,
   enableDebugDataProp?: ?boolean,
   enableDevClassNames?: ?boolean,
   enableFontSizePxToRem?: ?boolean,
+  enableInlinedConditionalMerge?: ?boolean,
   enableMediaQueryOrder?: ?boolean,
   enableLegacyValueFlipping?: ?boolean,
   enableLogicalStylesPolyfill?: ?boolean,
+  enableLTRRTLComments?: ?boolean,
   enableMinifiedKeys?: ?boolean,
+  // runtimeInjection?:
+  //   | boolean
+  //   | ?string
+  //   | $ReadOnly<{ from: string, as: string }>,
+  importSources?: $ReadOnlyArray<
+    string | $ReadOnly<{ from: string, as: string }>,
+  >,
+  treeshakeCompensation?: boolean,
   styleResolution:
     | 'application-order' // The last style applied wins.
     // More specific styles will win over less specific styles. (margin-top wins over margin)

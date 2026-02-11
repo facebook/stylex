@@ -96,6 +96,7 @@ export default function styleXCreateSet(
         .filter(Boolean);
 
       classNameTuples.forEach(([_className, _, classesToOriginalPath]) => {
+        // $FlowFixMe[unsafe-object-assign]
         Object.assign(classPathsInNamespace, classesToOriginalPath);
       });
 

@@ -113,7 +113,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xaaua2w:lightblue;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -121,7 +121,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xaaua2w:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
           ],
         }
@@ -178,7 +178,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xaaua2w:lightblue;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -186,7 +186,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xaaua2w:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
           ],
         }
@@ -270,7 +270,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-1e6ryz3",
@@ -278,7 +278,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:oklab(0.7 -0.3 -0.4);}}}",
                 "rtl": null,
               },
-              0.2,
+              0.3,
             ],
           ],
         }
@@ -323,7 +323,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": ":hover{:root, .xop34xu{--otherColor:lightblue;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
           ],
         }
@@ -385,7 +385,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--otherColor:lightblue;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -393,7 +393,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--otherColor:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
           ],
         }
@@ -547,7 +547,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:white;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
             [
               "xop34xu-bdddrq",
@@ -555,7 +555,7 @@ describe('@stylexjs/babel-plugin', () => {
                 "ltr": "@media print{:root, .xop34xu{--xwx8imx:black;}}",
                 "rtl": null,
               },
-              0.1,
+              0.2,
             ],
           ],
         }
@@ -718,7 +718,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     describe('options `debug:true`', () => {
       test('tokens object includes debug data', () => {
-        const options = { debug: true };
+        const options = { debug: true, enableDebugClassNames: true };
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -762,7 +762,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--color-xwx8imx:lightblue;}}",
                   "rtl": null,
                 },
-                0.1,
+                0.2,
               ],
               [
                 "xop34xu-1e6ryz3",
@@ -770,7 +770,7 @@ describe('@stylexjs/babel-plugin', () => {
                   "ltr": "@supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xop34xu{--color-xwx8imx:oklab(0.7 -0.3 -0.4);}}}",
                   "rtl": null,
                 },
-                0.2,
+                0.3,
               ],
             ],
           }
@@ -778,7 +778,7 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       test('tokens object includes debug data (keys with special characters)', () => {
-        const options = { debug: true };
+        const options = { debug: true, enableDebugClassNames: true };
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -822,7 +822,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     describe('options `dev:true`', () => {
       test('tokens object', () => {
-        const options = { dev: true };
+        const options = { dev: true, enableDebugClassNames: true };
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -881,7 +881,10 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import * as stylex from '@stylexjs/stylex';
-          _inject2(":root, .xop34xu{--xwx8imx:red;--xk6xtqk:green;--xaaua2w:blue;}", 0.1);
+          _inject2({
+            ltr: ":root, .xop34xu{--xwx8imx:red;--xk6xtqk:green;--xaaua2w:blue;}",
+            priority: 0.1
+          });
           export const vars = {
             color: "var(--xwx8imx)",
             nextColor: "var(--xk6xtqk)",
@@ -911,6 +914,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('processes tokens in files with configured extension', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/stylex/packages/src/vars/default.cssvars.js',
           unstable_moduleResolution: {
             rootDir: '/stylex/packages/',

@@ -11,7 +11,7 @@ import type { NodePath } from '@babel/traverse';
 import type { CompiledNamespaces, MutableCompiledNamespaces } from '../shared';
 
 import * as t from '@babel/types';
-import path from 'path';
+import path from 'node:path';
 import StateManager from './state-manager';
 
 function getPackagePrefix(absolutePath: string): ?string {
@@ -25,7 +25,15 @@ function getPackagePrefix(absolutePath: string): ?string {
   return undefined;
 }
 
-function getShortPath(relativePath: string): string {
+function getShortPath(relativePath: string, state: StateManager): string {
+  if (
+    state.options.unstable_moduleResolution?.type === 'commonJS' &&
+    state.options.unstable_moduleResolution?.rootDir
+  ) {
+    const appRootPath = state.options.unstable_moduleResolution?.rootDir;
+    return path.relative(appRootPath, relativePath);
+  }
+
   // Normalize slashes in the path and truncated
   return relativePath.split(path.sep).slice(-2).join('/');
 }
@@ -34,18 +42,32 @@ function createShortFilename(
   absolutePath: string,
   state: StateManager,
 ): string {
-  const isHaste = state.options.unstable_moduleResolution?.type === 'haste';
-  const relativePath = path.relative(process.cwd(), absolutePath);
+  if (typeof state.options.debugFilePath === 'function') {
+    return state.options.debugFilePath(absolutePath);
+  }
+
+  const cwdPackage = state.getPackageNameAndPath(process.cwd());
+  const packageDetails = state.getPackageNameAndPath(absolutePath);
+  if (packageDetails) {
+    const [packageName, packageRootPath] = packageDetails;
+    const relativePath = path.relative(packageRootPath, absolutePath);
+    if (cwdPackage && cwdPackage[0] === packageName) {
+      return relativePath;
+    }
+    return `${packageName}:${relativePath}`;
+  }
+
   // Construct a path based on package, moduleType, and file
   const packagePrefix = getPackagePrefix(absolutePath);
   if (packagePrefix) {
-    const shortPath = getShortPath(relativePath);
+    const shortPath = getShortPath(absolutePath, state);
     return `${packagePrefix}:${shortPath}`;
   } else {
+    const isHaste = state.options.unstable_moduleResolution?.type === 'haste';
     if (isHaste) {
       return path.basename(absolutePath);
     }
-    return getShortPath(relativePath);
+    return getShortPath(absolutePath, state);
   }
 }
 
@@ -61,16 +83,16 @@ export function addSourceMapData(
 ): CompiledNamespaces {
   const result: MutableCompiledNamespaces = {};
   for (const [key, value] of Object.entries(obj)) {
-    // $FlowIgnore (this repo's flow_modules types for babel are incomplete)
+    // $FlowFixMe[prop-missing] (this repo's flow_modules types for babel are incomplete)
     const currentFile = babelPath.hub.file;
     const sourceMap = currentFile.codeMap;
 
     // Find the line number of a given style object
     const styleNodePath = babelPath
-      // $FlowIgnore
+      // $FlowFixMe[prop-missing]
       .get('arguments.0.properties')
-      // $FlowIgnore
-      .find((prop) => {
+      // $FlowFixMe[incompatible-use]
+      .find((prop: NodePath<t.Property>) => {
         const k = prop.node.key;
         return (
           // string and number properties (normalized to string)

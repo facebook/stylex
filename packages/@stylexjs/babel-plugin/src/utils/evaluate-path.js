@@ -29,6 +29,7 @@ import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
+import fs from 'node:fs';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -51,6 +52,76 @@ function isInvalidMethod(val: string): boolean {
   return INVALID_METHODS.includes(val);
 }
 
+const MUTATING_ARRAY_METHODS = new Set([
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse',
+  'fill',
+  'copyWithin',
+]);
+
+function isMutated(binding: Binding): boolean {
+  for (const path of binding.referencePaths) {
+    const parentPath = path.parentPath;
+    if (!parentPath) continue;
+
+    if (
+      parentPath.isMemberExpression() &&
+      parentPath.node.object === path.node
+    ) {
+      const memberExpr = parentPath;
+      const parent = memberExpr.parentPath;
+      if (!parent) continue;
+
+      if (
+        parent.isAssignmentExpression() &&
+        parent.node.left === memberExpr.node
+      ) {
+        return true;
+      }
+      if (parent.isUpdateExpression()) {
+        return true;
+      }
+      if (parent.isUnaryExpression({ operator: 'delete' })) {
+        return true;
+      }
+      if (parent.isCallExpression() && parent.node.callee === memberExpr.node) {
+        // $FlowFixMe[prop-missing]
+        const property = memberExpr.node.property;
+        if (
+          t.isIdentifier(property) &&
+          MUTATING_ARRAY_METHODS.has(property.name)
+        ) {
+          return true;
+        }
+      }
+    }
+
+    if (
+      parentPath?.isCallExpression() &&
+      path.listKey === 'arguments' &&
+      path.key === 0
+    ) {
+      // TODO: There seems to be a Flow bug with `parentPath` here.
+      const callExpr: NodePath<t.CallExpression> = parentPath as $FlowFixMe;
+      const callee = callExpr.get('callee');
+      if (
+        callee.matchesPattern('Object.assign') ||
+        callee.matchesPattern('Object.defineProperty') ||
+        callee.matchesPattern('Object.defineProperties') ||
+        callee.matchesPattern('Object.setPrototypeOf')
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 export type FunctionConfig = {
   identifiers: {
     [fnName: string]: $FlowFixMe,
@@ -63,6 +134,7 @@ export type FunctionConfig = {
       },
     },
   },
+  disableImports?: boolean,
 };
 
 type State = {
@@ -100,7 +172,6 @@ function evaluateImportedFile(
   state: State,
   bindingPath: NodePath<>,
 ): any {
-  const fs = require('fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   // It's safe to use `.babelrc` here because we're only
   // interested in the JS runtime, and not the CSS.
@@ -201,6 +272,14 @@ function evaluateThemeRef(
     {},
     {
       get(_, key: string) {
+        if (key === '__IS_PROXY') {
+          return true;
+        }
+        if (key === 'toString') {
+          return () =>
+            state.traversalState.options.classNamePrefix +
+            utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }));
+        }
         return resolveKey(key);
       },
       set(_, key: string, value: string) {
@@ -411,7 +490,11 @@ function _evaluate(path: NodePath<>, state: State): any {
       const importedName =
         imported.type === 'Identifier' ? imported.name : imported.value;
       const importPath = binding.path.parentPath;
-      if (importPath && importPath.isImportDeclaration()) {
+      if (
+        importPath &&
+        importPath.isImportDeclaration() &&
+        !state.functions.disableImports
+      ) {
         const absPath = state.traversalState.importPathResolver(
           importPath.node.source.value,
         );
@@ -450,6 +533,10 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
 
     if (binding && binding.constantViolations.length > 0) {
+      return deopt(binding.path, state, errMsgs.NON_CONSTANT);
+    }
+
+    if (binding && isMutated(binding)) {
       return deopt(binding.path, state, errMsgs.NON_CONSTANT);
     }
 
@@ -553,6 +640,7 @@ function _evaluate(path: NodePath<>, state: State): any {
         if (!state.confident) {
           return deopt(prop, state, state.deoptReason ?? 'unknown error');
         }
+        // $FlowFixMe[unsafe-object-assign]
         Object.assign(obj, spreadExpression);
         continue;
       }
@@ -607,15 +695,19 @@ function _evaluate(path: NodePath<>, state: State): any {
   if (path.isLogicalExpression()) {
     // If we are confident that the left side of an && is false, or the left
     // side of an || is true, we can be confident about the entire expression
-    const stateForLeft = { ...state, deoptPath: null, confident: true };
+    const stateForLeft = {
+      ...state,
+      deoptPath: null,
+      confident: true,
+    } as const;
     const leftPath = path.get('left');
-    const left = evaluateCached(leftPath, stateForLeft);
-    const leftConfident = stateForLeft.confident;
+    const left = evaluateCached(leftPath, stateForLeft as $FlowFixMe);
+    const leftConfident: boolean = stateForLeft.confident as $FlowFixMe;
 
     const stateForRight = { ...state, deoptPath: null, confident: true };
     const rightPath = path.get('right');
-    const right = evaluateCached(rightPath, stateForRight);
-    const rightConfident = stateForRight.confident;
+    const right = evaluateCached(rightPath, stateForRight as $FlowFixMe);
+    const rightConfident: boolean = stateForRight.confident as $FlowFixMe;
 
     switch (path.node.operator) {
       case '||': {
@@ -903,7 +995,11 @@ const importsForState = new WeakMap<StateManager, Set<string>>();
 export function evaluate(
   path: NodePath<>,
   traversalState: StateManager,
-  functions: FunctionConfig = { identifiers: {}, memberExpressions: {} },
+  functions: FunctionConfig = {
+    identifiers: {},
+    memberExpressions: {},
+    disableImports: false,
+  },
   seen: Map<t.Node, Result> = new Map(),
 ): $ReadOnly<{
   confident: boolean,

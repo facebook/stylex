@@ -6,39 +6,73 @@
  *
  *
  */
-
-// webpack config
-//
-const StylexPlugin = require('@stylexjs/webpack-plugin');
+const fs = require('node:fs');
 const path = require('path');
+const templatePath = path.resolve(__dirname, 'index.html');
+const templateContent = () => fs.readFileSync(templatePath, 'utf-8');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const stylex = require('@stylexjs/unplugin').default;
 
-const config = (env, argv) => ({
-  entry: {
-    main: './js/index.js',
-  },
-  output: {
-    path: path.resolve(__dirname, '.build'),
-    filename: '[name].js',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: 'babel-loader',
+const config = (env, argv) => {
+  const isHot = argv.hot;
+  return {
+    entry: {
+      main: path.resolve(__dirname, 'src/index.js'),
+    },
+    output: {
+      path: path.resolve(__dirname, './dist'),
+    },
+    devServer: {
+      static: {
+        directory: path.resolve(__dirname, 'dist'),
       },
-    ],
-  },
-  plugins: [
-    // See all options in the babel plugin configuration docs:
-    // https://stylexjs.com/docs/api/configuration/babel-plugin/
-    new StylexPlugin({
-      filename: 'styles.[contenthash].css',
-      // get webpack mode and set value for dev
-      dev: argv.mode === 'development',
-    }),
-  ],
-  cache: true,
-});
+      watchFiles: [templatePath, path.resolve(__dirname, 'src/**/*')],
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: require.resolve('babel-loader'),
+              options: {
+                plugins: [
+                  isHot && require.resolve('react-refresh/babel'),
+                ].filter(Boolean),
+              },
+            },
+          ],
+        },
+        {
+          test: /\.(css)$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        },
+        {
+          test: /\.svg$/i,
+          issuer: /\.[jt]sx?$/,
+          use: ['file-loader'],
+        },
+      ],
+    },
+    resolve: {
+      extensions: ['*', '.js', '.jsx'],
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        inject: true,
+        templateContent,
+      }),
+      stylex.webpack({
+        useCSSLayers: true,
+      }),
+      new MiniCssExtractPlugin(),
+      isHot && new ReactRefreshWebpackPlugin(),
+    ].filter(Boolean),
+    cache: true,
+  };
+};
 
 module.exports = config;

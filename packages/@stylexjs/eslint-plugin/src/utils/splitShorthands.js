@@ -8,7 +8,8 @@
  */
 
 import parser from 'postcss-value-parser';
-import cssExpand from 'css-shorthand-expand';
+import type { CSSToken } from '@csstools/css-tokenizer';
+import { tokenize, TokenType } from '@csstools/css-tokenizer';
 
 export const CANNOT_FIX = 'CANNOT_FIX';
 
@@ -115,51 +116,578 @@ const toCamelCase = (str: string) => {
   return str.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
 };
 
-/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
-In cases with simple spaces between comma-separated parameters, we can preprocess the values by stripping the spaces.
-If there are still spaces remaining, such as in edge cases involving `calc()` or gradient values, we won't provide an auto-fix. */
-function processWhitespacesinFunctions(str: string) {
-  // Strip spaces after commas within parentheses
-  const strippedValue = str.replace(/\(\s*([^)]+?)\s*\)/g, (match, p1) => {
-    const strippedContent = p1.replace(/,\s+/g, ',');
-    return `(${strippedContent})`;
-  });
+const BORDER_STYLE_KEYWORDS = new Set([
+  'none',
+  'hidden',
+  'dotted',
+  'dashed',
+  'solid',
+  'double',
+  'groove',
+  'ridge',
+  'inset',
+  'outset',
+]);
+const BORDER_WIDTH_KEYWORDS = new Set(['thin', 'medium', 'thick']);
+const BACKGROUND_REPEAT_KEYWORDS = new Set([
+  'repeat',
+  'repeat-x',
+  'repeat-y',
+  'no-repeat',
+  'space',
+  'round',
+]);
+const BACKGROUND_ATTACHMENT_KEYWORDS = new Set(['scroll', 'fixed', 'local']);
+const BACKGROUND_POSITION_KEYWORDS = new Set([
+  'left',
+  'right',
+  'top',
+  'bottom',
+  'center',
+]);
+const FONT_STYLE_KEYWORDS = new Set(['normal', 'italic', 'oblique']);
+const FONT_VARIANT_KEYWORDS = new Set(['normal', 'small-caps']);
+const FONT_WEIGHT_KEYWORDS = new Set(['normal', 'bold', 'bolder', 'lighter']);
+const FONT_SIZE_KEYWORDS = new Set([
+  'xx-small',
+  'x-small',
+  'small',
+  'medium',
+  'large',
+  'x-large',
+  'xx-large',
+  'xxx-large',
+  'smaller',
+  'larger',
+]);
+const COLOR_KEYWORDS = new Set(['transparent', 'currentcolor']);
+const COLOR_FUNCTION_REGEX =
+  /^(?:rgb|rgba|hsl|hsla|hwb|hsb|lab|lch|oklab|oklch|color)\(/i;
+const IMAGE_FUNCTION_REGEX =
+  /^(?:url|image-set|linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient|repeating-conic-gradient|cross-fade|element)\(/i;
+const LENGTH_FUNCTION_REGEX = /^(?:calc|min|max|clamp)\(/i;
+const LENGTH_REGEX = /^-?(?:\d+|\d*\.\d+)(?:[a-z%]+)?$/i;
 
-  // If there are remaining spaces within the parentheses, we won't auto-fix
-  const canFix = !/\([^()]*\s+[^()]*\)/.test(strippedValue);
+type ValuePart = {
+  text: string,
+  tokens: Array<CSSToken>,
+};
 
-  // Strip all spaces within the parentheses to determine if multivalue shorthand
-  const fullyStripped = strippedValue.replace(
-    /\(\s*([^)]+?)\s*\)/g,
-    (match, p1) => {
-      const strippedContent = p1.replace(/\s+/g, '');
-      return `(${strippedContent})`;
-    },
-  );
+type SplitValuesResult = {
+  parts: Array<ValuePart>,
+  hasTopLevelComma: boolean,
+  hasTopLevelSlash: boolean,
+};
 
-  const isInvalidShorthand = /\s/.test(fullyStripped);
+function extractImportant(value: string): {
+  value: string,
+  important: boolean,
+} {
+  const match = value.match(/^(.*?)(?:\s*!important\s*)$/i);
+  if (!match) {
+    return { value: value.trim(), important: false };
+  }
+  return { value: match[1].trim(), important: true };
+}
 
-  return {
-    strippedValue,
-    canFix,
-    isInvalidShorthand,
+function applyImportant(value: string, suffix: string): string {
+  return suffix ? `${value}${suffix}` : value;
+}
+
+function stringifyTokens(tokens: Array<CSSToken>): string {
+  return tokens.map((token) => token[1]).join('');
+}
+
+function splitTopLevelValueTokens(
+  value: string,
+  options: { splitOnSlash?: boolean } = {},
+): SplitValuesResult {
+  const splitOnSlash = options.splitOnSlash !== false;
+  const tokens = tokenize({ css: value });
+  const parts: Array<ValuePart> = [];
+  let currentTokens: Array<CSSToken> = [];
+  let current = '';
+  let depth = 0;
+  let hasTopLevelComma = false;
+  let hasTopLevelSlash = false;
+
+  const flushCurrent = () => {
+    const trimmed = current.trim();
+    if (trimmed !== '') {
+      parts.push({ text: trimmed, tokens: currentTokens });
+    }
+    current = '';
+    currentTokens = [];
   };
-}
 
-/* The css-shorthands-expand library does not handle spaces within variables like `rgb(0, 0, 0) or var(-test-var, 0) properly.
-After stripping the spaces, let's post-process the values to add back the missing whitespaces between parentheses after a comma */
-function addSpacesAfterCommasInParentheses(str: string) {
-  return str.replace(/\(([^)]+)\)/g, (match, p1) => {
-    const correctedContent = p1.replace(/,\s*/g, ', ');
-    return `(${correctedContent})`;
+  tokens.forEach((token) => {
+    const type = token[0];
+    const text = token[1];
+
+    if (type === TokenType.EOF) {
+      return;
+    }
+
+    if (
+      type === TokenType.Function ||
+      type === TokenType.OpenParen ||
+      type === TokenType.OpenSquare ||
+      type === TokenType.OpenCurly
+    ) {
+      depth += 1;
+      current += text;
+      currentTokens.push(token);
+      return;
+    }
+
+    if (
+      type === TokenType.CloseParen ||
+      type === TokenType.CloseSquare ||
+      type === TokenType.CloseCurly
+    ) {
+      depth = Math.max(0, depth - 1);
+      current += text;
+      currentTokens.push(token);
+      return;
+    }
+
+    if (type === TokenType.Whitespace && depth === 0) {
+      flushCurrent();
+      return;
+    }
+
+    if (type === TokenType.Delim && text === '/' && depth === 0) {
+      hasTopLevelSlash = true;
+      if (splitOnSlash) {
+        flushCurrent();
+        parts.push({ text: '/', tokens: [token] });
+        return;
+      }
+    }
+
+    if (type === TokenType.Comma && depth === 0) {
+      hasTopLevelComma = true;
+    }
+
+    current += text;
+    currentTokens.push(token);
   });
+
+  flushCurrent();
+
+  return { parts, hasTopLevelComma, hasTopLevelSlash };
 }
 
-const stripImportant = (cssProperty: string | number) =>
-  cssProperty
-    .toString()
-    .replace(/\s*!important\s*$/, '')
-    .trim();
+function areAllValuesSame(values: Array<string>): boolean {
+  return values.length > 1 && values.every((value) => value === values[0]);
+}
+
+function expandQuadValues(
+  values: Array<string>,
+): [string, string, string, string] {
+  const [top, right = top, bottom = top, left = right] = values;
+  return [top, right, bottom, left];
+}
+
+function isColorValue(value: string): boolean {
+  const lowerValue = value.toLowerCase();
+  return (
+    lowerValue.startsWith('#') ||
+    COLOR_FUNCTION_REGEX.test(lowerValue) ||
+    COLOR_KEYWORDS.has(lowerValue)
+  );
+}
+
+function isImageValue(value: string): boolean {
+  const lowerValue = value.toLowerCase();
+  return lowerValue === 'none' || IMAGE_FUNCTION_REGEX.test(lowerValue);
+}
+
+function isBackgroundPositionValue(value: string): boolean {
+  const lowerValue = value.toLowerCase();
+  return (
+    BACKGROUND_POSITION_KEYWORDS.has(lowerValue) ||
+    LENGTH_REGEX.test(lowerValue) ||
+    LENGTH_FUNCTION_REGEX.test(lowerValue) ||
+    lowerValue.startsWith('var(')
+  );
+}
+
+function isBorderWidthValue(value: string): boolean {
+  const lowerValue = value.toLowerCase();
+  return (
+    BORDER_WIDTH_KEYWORDS.has(lowerValue) ||
+    LENGTH_REGEX.test(lowerValue) ||
+    LENGTH_FUNCTION_REGEX.test(lowerValue)
+  );
+}
+
+function classifyBorderPart(value: string): 'width' | 'style' | 'color' {
+  const lowerValue = value.toLowerCase();
+  if (BORDER_STYLE_KEYWORDS.has(lowerValue)) {
+    return 'style';
+  }
+  if (isBorderWidthValue(value)) {
+    return 'width';
+  }
+  return 'color';
+}
+
+function isFontSizePart(part: ValuePart): boolean {
+  const lowerValue = part.text.toLowerCase();
+  if (FONT_SIZE_KEYWORDS.has(lowerValue)) {
+    return true;
+  }
+  return part.tokens.some(
+    (token) =>
+      token[0] === TokenType.Dimension || token[0] === TokenType.Percentage,
+  );
+}
+
+function splitFontSizeAndLineHeight(
+  part: ValuePart,
+): ?{ fontSize: string, lineHeight?: string } {
+  let depth = 0;
+  let sawSlash = false;
+  const beforeTokens: Array<CSSToken> = [];
+  const afterTokens: Array<CSSToken> = [];
+
+  part.tokens.forEach((token) => {
+    const type = token[0];
+    const text = token[1];
+
+    if (
+      type === TokenType.Function ||
+      type === TokenType.OpenParen ||
+      type === TokenType.OpenSquare ||
+      type === TokenType.OpenCurly
+    ) {
+      depth += 1;
+    } else if (
+      type === TokenType.CloseParen ||
+      type === TokenType.CloseSquare ||
+      type === TokenType.CloseCurly
+    ) {
+      depth = Math.max(0, depth - 1);
+    }
+
+    if (type === TokenType.Delim && text === '/' && depth === 0) {
+      sawSlash = true;
+      return;
+    }
+
+    if (!sawSlash) {
+      beforeTokens.push(token);
+      return;
+    }
+    afterTokens.push(token);
+  });
+
+  const fontSize = stringifyTokens(beforeTokens).trim();
+  if (!fontSize) {
+    return null;
+  }
+
+  if (!sawSlash) {
+    return { fontSize };
+  }
+
+  const lineHeight = stringifyTokens(afterTokens).trim();
+  if (!lineHeight) {
+    return null;
+  }
+
+  return { fontSize, lineHeight };
+}
+
+const BORDER_RADIUS_MAP: { [string]: string } = {
+  'border-top-left-radius': 'borderStartStartRadius',
+  'border-top-right-radius': 'borderStartEndRadius',
+  'border-bottom-left-radius': 'borderEndStartRadius',
+  'border-bottom-right-radius': 'borderEndEndRadius',
+};
+const CORNER_SHAPE_MAP: { [string]: string } = {
+  'corner-top-left-shape': 'cornerStartStartShape',
+  'corner-top-right-shape': 'cornerStartEndShape',
+  'corner-bottom-left-shape': 'cornerEndStartShape',
+  'corner-bottom-right-shape': 'cornerEndEndShape',
+};
+
+function mapCornerKey(
+  property: string,
+  key: string,
+  preferInline: boolean,
+): ?string {
+  if (!preferInline) {
+    return key;
+  }
+  if (property === 'border-radius') {
+    return BORDER_RADIUS_MAP[key] || null;
+  }
+  if (property === 'corner-shape') {
+    return CORNER_SHAPE_MAP[key] || null;
+  }
+  return key;
+}
+
+function parseBorderParts(values: Array<string>): ?{
+  width: string,
+  style: string,
+  color: string,
+} {
+  let width = null;
+  let style = null;
+  let color = null;
+
+  for (const value of values) {
+    const kind = classifyBorderPart(value);
+    if (kind === 'width') {
+      if (width != null) {
+        return null;
+      }
+      width = value;
+      continue;
+    }
+    if (kind === 'style') {
+      if (style != null) {
+        return null;
+      }
+      style = value;
+      continue;
+    }
+    if (color != null) {
+      return null;
+    }
+    color = value;
+  }
+
+  if (!width || !style || !color) {
+    return null;
+  }
+
+  return { width, style, color };
+}
+
+function expandBorderSideShorthand(
+  property: string,
+  values: Array<string>,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  const parsed = parseBorderParts(values);
+  if (!parsed) {
+    return null;
+  }
+
+  const baseKey = toCamelCase(property);
+
+  return [
+    [`${baseKey}Width`, applyImportant(parsed.width, importantSuffix)],
+    [`${baseKey}Style`, applyImportant(parsed.style, importantSuffix)],
+    [`${baseKey}Color`, applyImportant(parsed.color, importantSuffix)],
+  ];
+}
+
+function expandBackgroundShorthand(
+  parts: Array<ValuePart>,
+  hasTopLevelComma: boolean,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (hasTopLevelComma) {
+    return null;
+  }
+
+  let sawSlash = false;
+  const beforeSlash: Array<string> = [];
+  const afterSlash: Array<string> = [];
+
+  for (const part of parts) {
+    if (part.text === '/') {
+      if (sawSlash) {
+        return null;
+      }
+      sawSlash = true;
+      continue;
+    }
+
+    if (sawSlash) {
+      afterSlash.push(part.text);
+    } else {
+      beforeSlash.push(part.text);
+    }
+  }
+
+  if (sawSlash && afterSlash.length === 0) {
+    return null;
+  }
+
+  let color = null;
+  let image = null;
+  let repeat = null;
+  let attachment = null;
+  const positionParts: Array<string> = [];
+
+  for (const part of beforeSlash) {
+    const lowerPart = part.toLowerCase();
+
+    if (!image && isImageValue(part)) {
+      image = part;
+      continue;
+    }
+
+    if (!repeat && BACKGROUND_REPEAT_KEYWORDS.has(lowerPart)) {
+      repeat = part;
+      continue;
+    }
+
+    if (!attachment && BACKGROUND_ATTACHMENT_KEYWORDS.has(lowerPart)) {
+      attachment = part;
+      continue;
+    }
+
+    if (!color && isColorValue(part)) {
+      color = part;
+      continue;
+    }
+
+    if (isBackgroundPositionValue(part)) {
+      positionParts.push(part);
+      continue;
+    }
+
+    if (!color) {
+      color = part;
+      continue;
+    }
+
+    positionParts.push(part);
+  }
+
+  const backgroundPosition =
+    positionParts.length > 0 ? positionParts.join(' ') : null;
+  const backgroundSize = afterSlash.length > 0 ? afterSlash.join(' ') : null;
+
+  const entries = [];
+
+  if (color) {
+    entries.push(['backgroundColor', applyImportant(color, importantSuffix)]);
+  }
+  if (image) {
+    entries.push(['backgroundImage', applyImportant(image, importantSuffix)]);
+  }
+  if (repeat) {
+    entries.push(['backgroundRepeat', applyImportant(repeat, importantSuffix)]);
+  }
+  if (attachment) {
+    entries.push([
+      'backgroundAttachment',
+      applyImportant(attachment, importantSuffix),
+    ]);
+  }
+  if (backgroundPosition) {
+    entries.push([
+      'backgroundPosition',
+      applyImportant(backgroundPosition, importantSuffix),
+    ]);
+  }
+  if (backgroundSize) {
+    entries.push([
+      'backgroundSize',
+      applyImportant(backgroundSize, importantSuffix),
+    ]);
+  }
+
+  if (entries.length === 0) {
+    return null;
+  }
+
+  return entries;
+}
+
+function expandFontShorthand(
+  parts: Array<ValuePart>,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (parts.length === 0) {
+    return null;
+  }
+
+  const sizeIndex = parts.findIndex(isFontSizePart);
+  if (sizeIndex < 0) {
+    return null;
+  }
+
+  const sizePart = parts[sizeIndex];
+  const sizeValues = splitFontSizeAndLineHeight(sizePart);
+  if (!sizeValues) {
+    return null;
+  }
+
+  const { fontSize, lineHeight } = sizeValues;
+  const familyParts = parts.slice(sizeIndex + 1);
+  if (familyParts.length === 0) {
+    return null;
+  }
+
+  const fontFamily = familyParts.map((part) => part.text).join(' ');
+
+  let fontStyle = null;
+  let fontVariant = null;
+  let fontWeight = null;
+
+  for (const part of parts.slice(0, sizeIndex)) {
+    const lowerPart = part.text.toLowerCase();
+
+    if (FONT_STYLE_KEYWORDS.has(lowerPart)) {
+      if (fontStyle != null) {
+        return null;
+      }
+      fontStyle = part.text;
+      continue;
+    }
+
+    if (FONT_VARIANT_KEYWORDS.has(lowerPart)) {
+      if (fontVariant != null) {
+        return null;
+      }
+      fontVariant = part.text;
+      continue;
+    }
+
+    if (
+      FONT_WEIGHT_KEYWORDS.has(lowerPart) ||
+      /^[1-9]00$/.test(lowerPart) ||
+      /^\d+(?:\.\d+)?$/.test(lowerPart)
+    ) {
+      if (fontWeight != null) {
+        return null;
+      }
+      fontWeight = part.text;
+      continue;
+    }
+
+    return null;
+  }
+
+  const entries = [['fontFamily', applyImportant(fontFamily, importantSuffix)]];
+
+  if (fontStyle) {
+    entries.push(['fontStyle', applyImportant(fontStyle, importantSuffix)]);
+  }
+  if (fontVariant) {
+    entries.push(['fontVariant', applyImportant(fontVariant, importantSuffix)]);
+  }
+  if (fontWeight) {
+    entries.push(['fontWeight', applyImportant(fontWeight, importantSuffix)]);
+  }
+
+  entries.push(['fontSize', applyImportant(fontSize, importantSuffix)]);
+
+  if (lineHeight) {
+    entries.push(['lineHeight', applyImportant(lineHeight, importantSuffix)]);
+  }
+
+  return entries;
+}
 
 export function splitSpecificShorthands(
   property: string,
@@ -168,75 +696,179 @@ export function splitSpecificShorthands(
   isNumber: boolean = false,
   _preferInline: boolean = false,
 ): $ReadOnlyArray<$ReadOnly<[string, number | string]>> {
-  const { strippedValue, canFix, isInvalidShorthand } =
-    processWhitespacesinFunctions(value);
+  const rawValue = value.toString();
+  const { value: baseValue, important } = extractImportant(rawValue);
+  const importantSuffix = allowImportant && important ? ' !important' : '';
 
-  if (!canFix && isInvalidShorthand) {
+  if (property === 'font') {
+    const fontSplit = splitTopLevelValueTokens(baseValue, {
+      splitOnSlash: false,
+    });
+    if (fontSplit.parts.length <= 1 && !fontSplit.hasTopLevelSlash) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+    const expandedFont = expandFontShorthand(fontSplit.parts, importantSuffix);
+    return expandedFont ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  const splitValues = splitTopLevelValueTokens(baseValue);
+  if (splitValues.parts.length <= 1 && !splitValues.hasTopLevelSlash) {
+    return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+  }
+
+  if (property === 'background') {
+    const expandedBackground = expandBackgroundShorthand(
+      splitValues.parts,
+      splitValues.hasTopLevelComma,
+      importantSuffix,
+    );
+    return expandedBackground ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  const values = splitValues.parts
+    .map((part) => part.text)
+    .filter((part) => part !== '/');
+
+  if (values.length === 0) {
     return [[toCamelCase(property), CANNOT_FIX]];
   }
 
-  const longform = cssExpand(property, strippedValue);
+  const allSameValues = areAllValuesSame(values);
 
-  if (!longform) {
-    // If css shorthand expand fails, we won't auto-fix
-    return [[toCamelCase(property), CANNOT_FIX]];
-  }
-
-  // If the longform is empty or all values are the same, no need to expand
-  // Relevant for properties like `borderColor` or `borderStyle`
   if (
-    Object.values(longform).length === 0 ||
-    Object.values(longform).every((val) => val === Object.values(longform)[0])
+    property === 'border-width' ||
+    property === 'border-style' ||
+    property === 'border-color'
   ) {
-    return [[toCamelCase(property), isNumber ? Number(value) : value]];
-  }
-
-  const directionMap = {
-    left: 'inline-start',
-    right: 'inline-end',
-  };
-
-  // List directional properties for later inline transform if needed
-  const directionalProperties = [
-    'border-width',
-    'border-color',
-    'border-style',
-  ];
-
-  const borderRadiusMap: { [string]: string } = {
-    'border-top-left-radius': 'borderStartStartRadius',
-    'border-top-right-radius': 'borderStartEndRadius',
-    'border-bottom-left-radius': 'borderEndStartRadius',
-    'border-bottom-right-radius': 'borderEndEndRadius',
-  };
-
-  const longformStyle: { [key: string]: number | string } = {};
-
-  Object.entries(longform).forEach(([key, val]) => {
-    const newKey =
-      property === 'border-radius' && _preferInline
-        ? borderRadiusMap[key] || null
-        : directionalProperties.includes(property) &&
-            _preferInline &&
-            /-(left|right)/.test(key)
-          ? key.replace(
-              /-(left|right)/,
-              (_, direction) => `-${directionMap[direction]}`,
-            )
-          : key;
-
-    if (!newKey) {
-      // If css shorthand expand fails, we won't auto-fix
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    if (values.length > 4) {
       return [[toCamelCase(property), CANNOT_FIX]];
     }
 
-    const correctedVal = addSpacesAfterCommasInParentheses(val);
-    longformStyle[toCamelCase(newKey)] = allowImportant
-      ? correctedVal
-      : stripImportant(correctedVal);
-  });
+    const suffix = property.replace('border-', '');
 
-  return Object.entries(longformStyle);
+    if (allSameValues) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+
+    const expanded = expandQuadValues(values);
+    const isBlockInline =
+      expanded[0] === expanded[2] && expanded[1] === expanded[3];
+
+    if (isBlockInline) {
+      return [
+        [
+          toCamelCase(`border-block-${suffix}`),
+          applyImportant(expanded[0], importantSuffix),
+        ],
+        [
+          toCamelCase(`border-inline-${suffix}`),
+          applyImportant(expanded[1], importantSuffix),
+        ],
+      ];
+    }
+
+    const keys = _preferInline
+      ? [
+          `border-top-${suffix}`,
+          `border-inline-end-${suffix}`,
+          `border-bottom-${suffix}`,
+          `border-inline-start-${suffix}`,
+        ]
+      : [
+          `border-top-${suffix}`,
+          `border-right-${suffix}`,
+          `border-bottom-${suffix}`,
+          `border-left-${suffix}`,
+        ];
+
+    const entries = [];
+
+    for (let index = 0; index < keys.length; index += 1) {
+      entries.push([
+        toCamelCase(keys[index]),
+        applyImportant(expanded[index], importantSuffix),
+      ]);
+    }
+
+    return entries;
+  }
+
+  if (property === 'border-radius' || property === 'corner-shape') {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    if (values.length > 4) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    if (values.length === 1 || allSameValues) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+
+    const expanded = expandQuadValues(values);
+    const keys =
+      property === 'border-radius'
+        ? [
+            'border-top-left-radius',
+            'border-top-right-radius',
+            'border-bottom-right-radius',
+            'border-bottom-left-radius',
+          ]
+        : [
+            'corner-start-start-shape',
+            'corner-start-end-shape',
+            'corner-end-start-shape',
+            'corner-end-end-shape',
+          ];
+
+    const entries = [];
+
+    for (let index = 0; index < keys.length; index += 1) {
+      const mappedKey = mapCornerKey(property, keys[index], _preferInline);
+      if (!mappedKey) {
+        return [[toCamelCase(property), CANNOT_FIX]];
+      }
+      entries.push([
+        toCamelCase(mappedKey),
+        applyImportant(expanded[index], importantSuffix),
+      ]);
+    }
+
+    return entries;
+  }
+
+  if (
+    property === 'border-top' ||
+    property === 'border-right' ||
+    property === 'border-bottom' ||
+    property === 'border-left'
+  ) {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    const expandedBorder = expandBorderSideShorthand(
+      property,
+      values,
+      importantSuffix,
+    );
+    return expandedBorder ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  if (property === 'outline') {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    const expandedOutline = expandBorderSideShorthand(
+      property,
+      values,
+      importantSuffix,
+    );
+    return expandedOutline ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  return [[toCamelCase(property), CANNOT_FIX]];
 }
 
 export function splitDirectionalShorthands(

@@ -15,7 +15,7 @@ export function createCSSStyleSheet(
 ): ?CSSStyleSheet {
   if (canUseDOM) {
     const root = rootNode != null ? rootNode : document;
-    // $FlowIgnore[prop-missing]
+    // $FlowExpectedError[prop-missing]
     let element = root?.querySelector('[data-stylex]');
     if (element == null) {
       element = document.createElement('style');
@@ -25,7 +25,7 @@ export function createCSSStyleSheet(
       }
       // If the root is a document, insert into the head.
       // Otherwise we're in a Shadow DOM tree.
-      // $FlowIgnore[prop-missing]
+      // $FlowExpectedError[prop-missing]
       const container = root.nodeType === Node.DOCUMENT_NODE ? root.head : root;
       if (container) {
         const firstChild = container.firstChild;
@@ -36,7 +36,7 @@ export function createCSSStyleSheet(
         }
       }
     }
-    // $FlowFixMe: we know this is HTMLStyleElement by this point
+    // $FlowFixMe[prop-missing]: we know this is HTMLStyleElement by this point
     return element.sheet;
   } else {
     return null;

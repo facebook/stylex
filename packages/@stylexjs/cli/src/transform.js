@@ -9,7 +9,7 @@
 
 import type { Rule } from '@stylexjs/babel-plugin';
 
-import path from 'path';
+import path from 'node:path';
 import * as babel from '@babel/core';
 import styleXPlugin from '@stylexjs/babel-plugin';
 import {
@@ -23,7 +23,7 @@ import {
 } from './files';
 import type { TransformConfig } from './config';
 import ansis from 'ansis';
-import fs from 'fs';
+import fs from 'node:fs';
 import {
   writeCache,
   readCache,
@@ -81,7 +81,10 @@ export async function compileDirectory(
 
   const compiledCSS = await styleXPlugin.processStylexRules(
     Array.from(config.state.styleXRules.values()).flat(),
-    config.useCSSLayers,
+    {
+      useLayers: config.useCSSLayers,
+      enableLTRRTLComments: config.styleXConfig?.enableLTRRTLComments,
+    },
   );
 
   const cssBundlePath = path.join(config.output, config.styleXBundleName);

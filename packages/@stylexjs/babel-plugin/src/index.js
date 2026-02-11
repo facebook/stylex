@@ -32,6 +32,12 @@ import transformStylexCall, {
 import transformStylexProps from './visitors/stylex-props';
 import { skipStylexPropsChildren } from './visitors/stylex-props';
 import transformStyleXViewTransitionClass from './visitors/stylex-view-transition-class';
+import transformStyleXDefaultMarker from './visitors/stylex-default-marker';
+import {
+  LOGICAL_FLOAT_START_VAR,
+  LOGICAL_FLOAT_END_VAR,
+} from './shared/preprocess-rules/legacy-expand-shorthands';
+import transformStyleXDefineMarker from './visitors/stylex-define-marker';
 
 const NAME = 'stylex';
 
@@ -313,32 +319,33 @@ function styleXTransform(): PluginObj<> {
       },
 
       CallExpression(path: NodePath<t.CallExpression>) {
-        if (path.parentPath.isVariableDeclarator()) {
-          const parentPath = path.parentPath;
-          if (parentPath.isVariableDeclarator()) {
-            // Look for `stylex.keyframes` calls
-            // Needs to be handled *before* `stylex.create` as the `create` call
-            // may use the generated animation name.
-            transformStyleXKeyframes(
-              parentPath as NodePath<t.VariableDeclarator>,
-              state,
-            );
-            // Look for `stylex.viewTransitionClass` calls
-            // Needs to be handled *after* `stylex.keyframes` since the `viewTransitionClass`
-            // call may use the generated animation name.
-            transformStyleXViewTransitionClass(
-              parentPath as NodePath<t.VariableDeclarator>,
-              state,
-            );
-            // Look for `stylex.positionTry` calls
-            // Needs to be handled *before* `stylex.create` as the `create` call
-            // may use the generated position-try name.
-            transformStyleXPositionTry(
-              parentPath as NodePath<t.VariableDeclarator>,
-              state,
-            );
-          }
+        const parentPath = path.parentPath;
+        if (parentPath.isVariableDeclarator()) {
+          // Look for `stylex.keyframes` calls
+          // Needs to be handled *before* `stylex.create` as the `create` call
+          // may use the generated animation name.
+          transformStyleXKeyframes(
+            parentPath as NodePath<t.VariableDeclarator>,
+            state,
+          );
+          // Look for `stylex.viewTransitionClass` calls
+          // Needs to be handled *after* `stylex.keyframes` since the `viewTransitionClass`
+          // call may use the generated animation name.
+          transformStyleXViewTransitionClass(
+            parentPath as NodePath<t.VariableDeclarator>,
+            state,
+          );
+          // Look for `stylex.positionTry` calls
+          // Needs to be handled *before* `stylex.create` as the `create` call
+          // may use the generated position-try name.
+          transformStyleXPositionTry(
+            parentPath as NodePath<t.VariableDeclarator>,
+            state,
+          );
         }
+
+        transformStyleXDefaultMarker(path, state);
+        transformStyleXDefineMarker(path, state);
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
@@ -390,10 +397,50 @@ export type Rule = [
   },
   number,
 ];
+
+function getLogicalFloatVars(rules: Array<Rule>): string {
+  const hasLogicalFloat = rules.some(([, { ltr, rtl }]) => {
+    const ltrStr = String(ltr);
+    const rtlStr = rtl ? String(rtl) : '';
+    return (
+      ltrStr.includes(LOGICAL_FLOAT_START_VAR) ||
+      ltrStr.includes(LOGICAL_FLOAT_END_VAR) ||
+      rtlStr.includes(LOGICAL_FLOAT_START_VAR) ||
+      rtlStr.includes(LOGICAL_FLOAT_END_VAR)
+    );
+  });
+
+  return hasLogicalFloat
+    ? `:root, [dir="ltr"] {
+  ${LOGICAL_FLOAT_START_VAR}: left;
+  ${LOGICAL_FLOAT_END_VAR}: right;
+}
+[dir="rtl"] {
+  ${LOGICAL_FLOAT_START_VAR}: right;
+  ${LOGICAL_FLOAT_END_VAR}: left;
+}
+`
+    : '';
+}
+
 function processStylexRules(
   rules: Array<Rule>,
-  useLayers: boolean = false,
+  config?:
+    | boolean
+    | {
+        useLayers?: boolean,
+        enableLTRRTLComments?: boolean,
+        legacyDisableLayers?: boolean,
+        useLegacyClassnamesSort?: boolean,
+        ...
+      },
 ): string {
+  const {
+    useLayers = false,
+    enableLTRRTLComments = false,
+    legacyDisableLayers = false,
+    useLegacyClassnamesSort = false,
+  } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
   if (rules.length === 0) {
     return '';
   }
@@ -407,7 +454,7 @@ function processStylexRules(
 
   const constsMap: Map<string, string | number> = new Map();
   for (const [keyhash, ruleObj] of constantRules) {
-    // $FlowFixMe null check above
+    // $FlowFixMe[incompatible-type] - null check above
     const constVal: string | number = ruleObj.constVal;
     const constName = `var(--${keyhash})`;
     constsMap.set(constName, constVal);
@@ -445,50 +492,72 @@ function processStylexRules(
 
   const sortedRules = nonConstantRules.sort(
     (
-      [, { ltr: rule1 }, firstPriority]: [string, any, number],
-      [, { ltr: rule2 }, secondPriority]: [string, any, number],
+      [classname1, { ltr: rule1 }, firstPriority]: [string, any, number],
+      [classname2, { ltr: rule2 }, secondPriority]: [string, any, number],
     ) => {
       const priorityComparison = firstPriority - secondPriority;
       if (priorityComparison !== 0) return priorityComparison;
-      if (rule1.startsWith('@') && !rule2.startsWith('@')) {
-        const query1 = rule1.slice(0, rule1.indexOf('{'));
-        const query2 = rule2.slice(0, rule2.indexOf('{'));
-        if (query1 !== query2) {
-          return query1.localeCompare(query2);
+
+      if (useLegacyClassnamesSort) {
+        return classname1.localeCompare(classname2);
+      } else {
+        if (rule1.startsWith('@') && !rule2.startsWith('@')) {
+          const query1 = rule1.slice(0, rule1.indexOf('{'));
+          const query2 = rule2.slice(0, rule2.indexOf('{'));
+          if (query1 !== query2) {
+            return query1.localeCompare(query2);
+          }
         }
+        const property1 = rule1.slice(rule1.lastIndexOf('{'));
+        const property2 = rule2.slice(rule2.lastIndexOf('{'));
+        return property1.localeCompare(property2);
       }
-      const property1 = rule1.slice(rule1.lastIndexOf('{'));
-      const property2 = rule2.slice(rule2.lastIndexOf('{'));
-      return property1.localeCompare(property2);
     },
   );
 
   let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
-    const [_key, styleObj, priority] = rule;
+    const [key, { ...styleObj }, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
 
     Object.keys(styleObj).forEach((dir) => {
       let original = styleObj[dir];
 
       for (const [varRef, constValue] of constsMap.entries()) {
-        if (typeof original === 'string') {
-          const replacement = String(constValue);
-          original = original.replaceAll(varRef, replacement);
-          styleObj[dir] = original;
+        if (typeof original !== 'string') continue;
+
+        const replacement = String(constValue);
+
+        original = original.replaceAll(varRef, replacement);
+
+        // When the replacement is a variable, we need to replace the key to allow variable overrides
+        if (replacement.startsWith('var(') && replacement.endsWith(')')) {
+          const inside = replacement.slice(4, -1).trim();
+          // Account for fallback variables
+          const commaIdx = inside.indexOf(',');
+          const targetName = (
+            commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
+          ).trim();
+
+          const constName = varRef.slice(4, -1);
+          original = original.replaceAll(`${constName}:`, `${targetName}:`);
         }
+
+        styleObj[dir] = original;
       }
     });
 
     if (priorityLevel === lastKPri) {
-      acc[acc.length - 1].push(rule);
+      acc[acc.length - 1].push([key, styleObj, priority]);
       return acc;
     }
 
     lastKPri = priorityLevel;
-    acc.push([rule]);
+    acc.push([[key, styleObj, priority]]);
     return acc;
   }, []);
+
+  const logicalFloatVars = getLogicalFloatVars(nonConstantRules);
 
   const header = useLayers
     ? '\n@layer ' +
@@ -507,16 +576,36 @@ function processStylexRules(
           let ltrRule = ltr,
             rtlRule = rtl;
 
-          if (!useLayers) {
+          if (!useLayers && !legacyDisableLayers) {
             ltrRule = addSpecificityLevel(ltrRule, index);
             rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
           }
 
+          // check if the selector looks like .xtrlmmh, .xtrlmmh:root
+          // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
+          // This is to ensure the themes always have precedence over the
+          // default variable values
+          ltrRule = ltrRule.replace(
+            /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+            '.$1.$1, .$1.$1:root',
+          );
+          if (rtlRule) {
+            rtlRule = rtlRule.replace(
+              /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+              '.$1.$1, .$1.$1:root',
+            );
+          }
+
           return rtlRule
-            ? [
-                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                addAncestorSelector(rtlRule, "html[dir='rtl']"),
-              ]
+            ? enableLTRRTLComments
+              ? [
+                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
+                ]
+              : [
+                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
+                ]
             : [ltrRule];
         })
         .join('\n');
@@ -528,7 +617,7 @@ function processStylexRules(
     })
     .join('\n');
 
-  return header + collectedCSS;
+  return logicalFloatVars + header + collectedCSS;
 }
 
 styleXTransform.processStylexRules = processStylexRules;

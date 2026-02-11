@@ -60,6 +60,15 @@ export const nullish: PrimitiveChecker<null | void> =
   (value, name) =>
     value == null ? value : new Error(message(value, name));
 
+export const optional: <T>(Check<T>) => Check<void | T> =
+  <T>(check: Check<T>): Check<void | T> =>
+  (value, name) => {
+    if (value === undefined) {
+      return undefined;
+    }
+    return check(value, name);
+  };
+
 export const boolean: PrimitiveChecker<boolean> =
   (message = defaultMessage('a boolean')) =>
   (value, name) => {
@@ -76,6 +85,15 @@ export const number: PrimitiveChecker<number> =
       return new Error(message(value, name));
     }
     return value;
+  };
+
+export const func: <T: Function>(msg?: Msg) => Check<T> =
+  (message = defaultMessage('a function')) =>
+  (value: mixed, name?: string) => {
+    if (typeof value !== 'function') {
+      return new Error(message(value, name));
+    }
+    return value as $FlowFixMe;
   };
 
 export const literal: <T: string | number | boolean>(
@@ -140,7 +158,7 @@ export const object: <T: { +[string]: Check<mixed> }>(
     if (typeof value !== 'object' || value == null) {
       return new Error(message(value, name));
     }
-    // $FlowFixMe
+    // $FlowFixMe[incompatible-type]
     const result: Partial<{ ...ObjOfChecks<T> }> = {};
     for (const key in shape) {
       const check = shape[key];
@@ -179,7 +197,7 @@ export const objectOf: <T>(
     if (typeof value !== 'object' || value == null) {
       return new Error(message(value, name));
     }
-    // $FlowFixMe
+    // $FlowFixMe[incompatible-type]
     const result: { [string]: T } = {};
     for (const key in value) {
       const item = check(

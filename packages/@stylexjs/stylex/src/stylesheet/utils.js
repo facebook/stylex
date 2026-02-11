@@ -29,8 +29,12 @@ export function addSpecificityLevel(cssText: string, index: number): string {
   const lastOpenCurly = cssText.includes('::')
     ? cssText.indexOf('::')
     : cssText.lastIndexOf('{');
-  const beforeCurly = cssText.slice(0, lastOpenCurly);
+  let beforeCurly = cssText.slice(0, lastOpenCurly);
   const afterCurly = cssText.slice(lastOpenCurly);
+
+  if (index > 0) {
+    beforeCurly = beforeCurly.trimEnd();
+  }
 
   return `${beforeCurly}${pseudoSelector}${afterCurly}`;
 }

@@ -9,42 +9,128 @@
 
 'use strict';
 
+import {
+  getAtRulePriority,
+  getPseudoElementPriority,
+  getPseudoClassPriority,
+  getDefaultPriority,
+} from '@stylexjs/shared';
+
+import CLEAN_ORDER_PRIORITIES from '../reference/cleanOrderPriorities';
+import RECESS_ORDER_PRIORITIES from '../reference/recessOrderPriorities';
+
 type PriorityAndType = {
   priority: number,
-  type: 'string' | 'pseudoClass' | 'pseudoElement' | 'atRule',
+  type:
+    | 'string'
+    | 'pseudoClass'
+    | 'pseudoElement'
+    | 'atRule'
+    | 'knownCssProperty',
 };
 
-const AT_CONTAINER_PRIORITY = 300;
-const AT_MEDIA_PRIORITY = 200;
-const AT_SUPPORT_PRIORITY = 30;
-const PSEUDO_CLASS_PRIORITY = 40;
-const PSEUDO_ELEMENT_PRIORITY = 5000;
+const ORDER_PRIORITIES = {
+  default: undefined,
+  clean: CLEAN_ORDER_PRIORITIES,
+  recess: RECESS_ORDER_PRIORITIES,
+};
 
 export default function getPropertyPriorityAndType(
   key: string,
+  order: 'default' | 'clean' | 'recess',
 ): PriorityAndType {
-  if (key.startsWith('@supports')) {
-    return { priority: AT_SUPPORT_PRIORITY, type: 'atRule' };
-  }
+  const orderPriority = ORDER_PRIORITIES[order]
+    ? ORDER_PRIORITIES[order].length - 1
+    : 0;
 
-  if (key.startsWith('::')) {
-    return { priority: PSEUDO_ELEMENT_PRIORITY, type: 'pseudoElement' };
-  }
-
-  if (key.startsWith(':')) {
-    // TODO: Consider restoring pseudo-specific priorities
+  const atRulePriority = getAtRulePriority(key);
+  if (atRulePriority) {
     return {
-      priority: PSEUDO_CLASS_PRIORITY,
+      priority: orderPriority + atRulePriority,
+      type: 'atRule',
+    };
+  }
+
+  const pseudoElementPriority = getPseudoElementPriority(key);
+  if (pseudoElementPriority) {
+    return {
+      priority: orderPriority + pseudoElementPriority,
+      type: 'pseudoElement',
+    };
+  }
+
+  if (key.startsWith(':when:ancestor')) {
+    const ancestorPriority = getPseudoClassPriority(
+      key.replace(':when:ancestor', ''),
+    );
+    if (ancestorPriority) {
+      return {
+        priority: orderPriority + ancestorPriority / 100 + 10,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:descendant')) {
+    const descendantPriority = getPseudoClassPriority(
+      key.replace(':when:descendant', ''),
+    );
+    if (descendantPriority) {
+      return {
+        priority: orderPriority + descendantPriority / 100 + 15,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:anySibling')) {
+    const anySiblingPriority = getPseudoClassPriority(
+      key.replace(':when:anySibling', ''),
+    );
+    if (anySiblingPriority) {
+      return {
+        priority: orderPriority + anySiblingPriority / 100 + 20,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:siblingBefore')) {
+    const siblingBeforePriority = getPseudoClassPriority(
+      key.replace(':when:siblingBefore', ''),
+    );
+    if (siblingBeforePriority) {
+      return {
+        priority: orderPriority + siblingBeforePriority / 100 + 30,
+        type: 'pseudoClass',
+      };
+    }
+  } else if (key.startsWith(':when:siblingAfter')) {
+    const siblingAfterPriority = getPseudoClassPriority(
+      key.replace(':when:siblingAfter', ''),
+    );
+    if (siblingAfterPriority) {
+      return {
+        priority: orderPriority + siblingAfterPriority / 100 + 40,
+        type: 'pseudoClass',
+      };
+    }
+  }
+
+  const pseudoClassPriority = getPseudoClassPriority(key);
+  if (pseudoClassPriority) {
+    return {
+      priority: orderPriority + pseudoClassPriority,
       type: 'pseudoClass',
     };
   }
 
-  if (key.startsWith('@media')) {
-    return { priority: AT_MEDIA_PRIORITY, type: 'atRule' };
-  }
-
-  if (key.startsWith('@container')) {
-    return { priority: AT_CONTAINER_PRIORITY, type: 'atRule' };
+  if (order === 'default') {
+    const defaultPriority = getDefaultPriority(
+      key.replace(/[A-Z]/g, '-$&').toLowerCase(),
+    );
+    if (defaultPriority) {
+      return { priority: defaultPriority, type: 'knownCssProperty' };
+    }
+  } else if (ORDER_PRIORITIES[order]) {
+    const index = ORDER_PRIORITIES[order].indexOf(key);
+    if (index !== -1) {
+      return { priority: index, type: 'knownCssProperty' };
+    }
   }
 
   return { priority: 1, type: 'string' };

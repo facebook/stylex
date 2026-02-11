@@ -1,0 +1,10 @@
+{
+    "pages": [
+
+        "./learn",
+        "./api",
+        "./llm-resources.mdx",
+        "./ecosystem.mdx",
+        "./acknowledgements.mdx"
+    ]
+}

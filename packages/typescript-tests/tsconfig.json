@@ -2,7 +2,8 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "jsx": "react",
-    "skipLibCheck": true,
+    "types": ["react"],
+    "skipLibCheck": false,
     "moduleDetection": "force",
     "isolatedModules": true,
     "incremental": true,
@@ -18,5 +19,6 @@
 
     "noErrorTruncation": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

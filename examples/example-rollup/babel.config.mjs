@@ -7,18 +7,18 @@
 
 const config = {
   assumptions: {
-    iterableIsArray: true
+    iterableIsArray: true,
   },
   comments: false,
-  presets:[
+  presets: [
     [
       '@babel/preset-react',
       {
-        runtime: 'automatic'
-      }
+        runtime: 'automatic',
+      },
     ],
-    '@babel/preset-flow'
-  ]
+    '@babel/preset-flow',
+  ],
 };
 
 export default config;

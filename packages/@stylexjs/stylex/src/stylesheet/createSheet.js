@@ -13,9 +13,9 @@ import { canUseDOM } from './utils';
 import { createCSSStyleSheet } from './createCSSStyleSheet';
 import { createOrderedCSSStyleSheet } from './createOrderedCSSStyleSheet';
 
-type Sheet = {
+type Sheet = $ReadOnly<{
   ...OrderedCSSStyleSheet,
-};
+}>;
 
 const roots = new WeakMap<Node, number>();
 const sheets: Array<Sheet> = [];
@@ -64,6 +64,11 @@ export function createSheet(root?: HTMLElement): Sheet {
     insert(cssText: string, groupValue: number) {
       sheets.forEach((s) => {
         s.insert(cssText, groupValue);
+      });
+    },
+    update(oldCssText: string, newCssText: string, groupValue: number) {
+      sheets.forEach((s) => {
+        s.update(oldCssText, newCssText, groupValue);
       });
     },
   };

@@ -1,0 +1,22 @@
+{
+  "name": "example-vite",
+  "private": true,
+  "version": "0.17.5",
+  "description": "Example: StyleX with Vite via @stylexjs/unplugin",
+  "scripts": {
+    "example:dev": "vite",
+    "example:build": "vite build",
+    "example:serve": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@stylexjs/stylex": "0.17.5",
+    "@stylexjs/shared-ui": "0.17.5"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4",
+    "@stylexjs/unplugin": "0.17.5",
+    "@vitejs/plugin-react": "latest"
+  }
+}

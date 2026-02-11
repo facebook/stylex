@@ -1,0 +1,14 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+import { initClient } from 'rwsdk/client';
+
+initClient();
+
+if (import.meta.env.DEV) {
+  // @ts-ignore
+  import('virtual:stylex:css-only');
+}

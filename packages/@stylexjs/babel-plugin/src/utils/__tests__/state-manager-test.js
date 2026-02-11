@@ -93,7 +93,7 @@ describe('StateManager config parsing', () => {
       const stateManager = makeState({ debug: true });
       expect(stateManager.options.debug).toBe(true);
       // automatically enabled in 'debug'
-      expect(stateManager.options.enableDebugClassNames).toBe(true);
+      expect(stateManager.options.enableDebugClassNames).toBe(false);
       expect(stateManager.options.enableDebugDataProp).toBe(true);
       expect(warnings).toEqual([]);
     });
@@ -129,7 +129,7 @@ describe('StateManager config parsing', () => {
       // debug is enabled by default in 'dev'
       expect(stateManager.options.debug).toBe(true);
       // enableDevClassNames is disabled by default in 'dev'
-      expect(stateManager.options.enableDevClassNames).toBe(false);
+      expect(stateManager.options.enableDevClassNames).toBe(true);
       expect(warnings).toEqual([]);
     });
   });
@@ -148,7 +148,7 @@ describe('StateManager config parsing', () => {
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.enableDebugClassNames).toBe(true);
+      expect(stateManager.options.enableDebugClassNames).toBe(false);
       expect(warnings).toEqual([]);
     });
 
@@ -173,19 +173,15 @@ describe('StateManager config parsing', () => {
 
   describe('"enableDebugDataProp" option (boolean)', () => {
     test('logs errors if invalid', () => {
-      const stateManager = makeState({ enableDebugDataProp: 'false' });
+      const stateManager = makeState({
+        debug: true,
+      });
       expect(stateManager.options.enableDebugDataProp).toBe(true);
-      expect(warnings).toEqual([
-        [
-          '[@stylexjs/babel-plugin]',
-          'Expected (options.enableDebugDataProp) to be a boolean, but got `"false"`.',
-        ],
-      ]);
     });
 
     test('default value', () => {
       const stateManager = makeState();
-      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(stateManager.options.enableDebugDataProp).toBe(false);
       expect(warnings).toEqual([]);
     });
 
@@ -308,7 +304,7 @@ describe('StateManager config parsing', () => {
       const stateManager = makeState({
         enableMinifiedKeys: true,
       });
-      expect(stateManager.options.enableDebugDataProp).toBe(true);
+      expect(stateManager.options.enableDebugDataProp).toBe(false);
       expect(warnings).toEqual([]);
     });
   });
@@ -544,6 +540,22 @@ describe('StateManager config parsing', () => {
       expect(warnings).toEqual([]);
     });
 
+    test('"custom" type', () => {
+      const stateManager = makeState({
+        unstable_moduleResolution: {
+          type: 'custom',
+          filePathResolver() {},
+          getCanonicalFilePath() {},
+        },
+      });
+      expect(stateManager.options.unstable_moduleResolution).toEqual({
+        type: 'custom',
+        filePathResolver: expect.any(Function),
+        getCanonicalFilePath: expect.any(Function),
+      });
+      expect(warnings).toEqual([]);
+    });
+
     test('"rootDir" option', () => {
       const stateManager = makeState({
         unstable_moduleResolution: { type: 'commonJS', rootDir: '/test/' },
@@ -583,6 +595,46 @@ describe('StateManager config parsing', () => {
     test('true value', () => {
       const stateManager = makeState({ enableFontSizePxToRem: true });
       expect(stateManager.options.enableFontSizePxToRem).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+  });
+
+  describe('"propertyValidationMode" option', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({
+        propertyValidationMode: 'something-else',
+      });
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
+      expect(warnings).toMatchInlineSnapshot(`
+        [
+          [
+            "[@stylexjs/babel-plugin]",
+            "Expected (options.propertyValidationMode) to be one of
+        	- the literal "throw"
+        	- the literal "warn"
+        	- the literal "silent"
+        But got: "something-else"",
+          ],
+        ]
+      `);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
+      expect(warnings).toEqual([]);
+    });
+
+    test('valid values', () => {
+      let stateManager = makeState({ propertyValidationMode: 'throw' });
+      expect(stateManager.options.propertyValidationMode).toBe('throw');
+
+      stateManager = makeState({ propertyValidationMode: 'warn' });
+      expect(stateManager.options.propertyValidationMode).toBe('warn');
+
+      stateManager = makeState({ propertyValidationMode: 'silent' });
+      expect(stateManager.options.propertyValidationMode).toBe('silent');
+
       expect(warnings).toEqual([]);
     });
   });

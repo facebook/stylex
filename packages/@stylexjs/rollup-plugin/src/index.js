@@ -12,7 +12,7 @@ import stylexBabelPlugin from '@stylexjs/babel-plugin';
 import flowSyntaxPlugin from '@babel/plugin-syntax-flow';
 import jsxSyntaxPlugin from '@babel/plugin-syntax-jsx';
 import typescriptSyntaxPlugin from '@babel/plugin-syntax-typescript';
-import path from 'path';
+import path from 'node:path';
 import type { Options, Rule } from '@stylexjs/babel-plugin';
 import { transform } from 'lightningcss';
 import type { TransformOptions } from 'lightningcss';
@@ -76,10 +76,10 @@ export default function stylexPlugin({
     generateBundle(this: PluginContext) {
       const rules: Array<Rule> = Object.values(stylexRules).flat();
       if (rules.length > 0) {
-        const collectedCSS = stylexBabelPlugin.processStylexRules(
-          rules,
-          useCSSLayers,
-        );
+        const collectedCSS = stylexBabelPlugin.processStylexRules(rules, {
+          useLayers: useCSSLayers,
+          enableLTRRTLComments: options?.enableLTRRTLComments,
+        });
 
         // Process the CSS using lightningcss
         const { code } = transform({

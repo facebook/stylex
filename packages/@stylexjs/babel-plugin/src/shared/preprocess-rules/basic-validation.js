@@ -33,7 +33,7 @@ export function validateNamespace(
       continue;
     }
     if (isPlainObject(val)) {
-      if (key.startsWith('@') || key.startsWith(':')) {
+      if (key.startsWith('@') || key.startsWith(':') || key.startsWith('[')) {
         if (conditions.includes(key)) {
           throw new Error(messages.DUPLICATE_CONDITIONAL);
         }
@@ -62,6 +62,7 @@ function validateConditionalStyles(
       !(
         key.startsWith('@') ||
         key.startsWith(':') ||
+        key.startsWith('[') ||
         // This is a placeholder for `defineConsts` values that are later inlined
         key.startsWith('var(--') ||
         key === 'default'
@@ -72,11 +73,13 @@ function validateConditionalStyles(
     if (conditions.includes(key)) {
       throw new Error(messages.DUPLICATE_CONDITIONAL);
     }
+    // $FlowFixMe[invalid-compare]
     if (v === null || typeof v === 'string' || typeof v === 'number') {
       continue;
     }
     if (Array.isArray(v)) {
       for (const vv of v) {
+        // $FlowFixMe[invalid-compare]
         if (vv === null || typeof vv === 'string' || typeof vv === 'number') {
           continue;
         }

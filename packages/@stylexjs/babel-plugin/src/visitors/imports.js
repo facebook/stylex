@@ -79,6 +79,9 @@ export function readImportDeclarations(
             if (importedName === 'defineVars') {
               state.stylexDefineVarsImport.add(localName);
             }
+            if (importedName === 'defineMarker') {
+              state.stylexDefineMarkerImport.add(localName);
+            }
             if (importedName === 'defineConsts') {
               state.stylexDefineConstsImport.add(localName);
             }
@@ -87,6 +90,12 @@ export function readImportDeclarations(
             }
             if (importedName === 'types') {
               state.stylexTypesImport.add(localName);
+            }
+            if (importedName === 'when') {
+              state.stylexWhenImport.add(localName);
+            }
+            if (importedName === 'defaultMarker') {
+              state.stylexDefaultMarkerImport.add(localName);
             }
           }
         }
@@ -152,6 +161,9 @@ export function readRequires(
           if (prop.key.name === 'defineVars') {
             state.stylexDefineVarsImport.add(value.name);
           }
+          if (prop.key.name === 'defineMarker') {
+            state.stylexDefineMarkerImport.add(value.name);
+          }
           if (prop.key.name === 'defineConsts') {
             state.stylexDefineConstsImport.add(value.name);
           }
@@ -160,6 +172,12 @@ export function readRequires(
           }
           if (prop.key.name === 'types') {
             state.stylexTypesImport.add(value.name);
+          }
+          if (prop.key.name === 'when') {
+            state.stylexWhenImport.add(value.name);
+          }
+          if (prop.key.name === 'defaultMarker') {
+            state.stylexDefaultMarkerImport.add(value.name);
           }
         }
       }

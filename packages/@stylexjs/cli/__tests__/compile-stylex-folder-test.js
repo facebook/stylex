@@ -15,9 +15,9 @@ import { compileDirectory } from '../src/transform';
 import * as cacheModule from '../src/cache';
 import { getDefaultCachePath, findProjectRoot } from '../src/cache';
 
-const fs = require('fs').promises;
+const fs = require('node:fs').promises;
 import { isDir, getRelativePath } from '../src/files';
-import * as path from 'path';
+import * as path from 'node:path';
 
 const cp = require('child_process');
 
@@ -37,19 +37,29 @@ function runCli(
   const cmd = 'node ' + path.resolve('../../lib/index.js ') + args;
   console.log(cmd);
   const script = cp.exec(cmd);
+  const stderrChunks = [];
 
   script.addListener('error', async (err) => {
     await clearTestDir(config);
     throw err;
   });
 
-  script.stderr.on('data', async (data) => {
-    process.kill(script.pid);
-    await clearTestDir(config);
-    throw new Error('failed to start StyleX CLI', data);
+  script.stderr.on('data', (data) => {
+    stderrChunks.push(String(data));
   });
 
-  script.addListener('close', () => {
+  script.addListener('close', (code) => {
+    if (code && code !== 0) {
+      const stderrOutput = stderrChunks.join('').trim();
+      Promise.resolve(clearTestDir(config)).finally(() => {
+        throw new Error(
+          `StyleX CLI exited with code ${code}${
+            stderrOutput ? `: ${stderrOutput}` : ''
+          }`,
+        );
+      });
+      return;
+    }
     Promise.resolve(onClose()).catch((err) => {
       throw new Error(`Error in onClose callback: ${err.message}`);
     });

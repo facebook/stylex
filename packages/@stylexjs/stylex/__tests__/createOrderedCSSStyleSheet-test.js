@@ -171,6 +171,164 @@ describe('createOrderedCSSStyleSheet', () => {
     });
   });
 
+  describe('#update', () => {
+    test('updates an existing rule with same selector', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert('.selector { color: red }', 0);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="0"]{}
+        .selector { color: red }"
+      `);
+
+      sheet.update('.selector { color: red }', '.selector { color: blue }', 0);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="0"]{}
+        .selector { color: blue }"
+      `);
+    });
+
+    test('updates a media query rule', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert(
+        '@media (min-width: 768px) { .responsive { display: flex } }',
+        6,
+      );
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="6"]{}
+        @media (min-width: 768px) { .responsive { display: flex } }"
+      `);
+
+      sheet.update(
+        '@media (min-width: 768px) { .responsive { display: flex } }',
+        '@media (min-width: 1024px) { .responsive { display: grid } }',
+        6,
+      );
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+"[stylesheet-group="6"]{}
+@media (min-width: 1024px) { .responsive { display: grid } }
+@media (min-width: 768px) { .responsive { display: flex } }"
+`);
+    });
+
+    test('updates multiple properties in a rule', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert('.box { width: 10px; height: 10px; color: red }', 3);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="3"]{}
+        .box { width: 10px; height: 10px; color: red }"
+      `);
+
+      sheet.update(
+        '.box { width: 10px; height: 10px; color: red }',
+        '.box { width: 20px; height: 20px; color: blue }',
+        3,
+      );
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="3"]{}
+        .box { width: 20px; height: 20px; color: blue }"
+      `);
+    });
+
+    test('inserts new rule if old rule does not exist', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert('.existing { color: red }', 0);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="0"]{}
+        .existing { color: red }"
+      `);
+
+      sheet.update('.nonexistent { color: blue }', '.new { color: green }', 0);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="0"]{}
+        .existing { color: red }
+        .new { color: green }"
+      `);
+    });
+
+    test('inserts new rule if selectors are different', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert('.old { color: red }', 0);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="0"]{}
+        .old { color: red }"
+      `);
+
+      sheet.update('.old { color: red }', '.new { color: blue }', 0);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="0"]{}
+        .new { color: blue }
+        .old { color: red }"
+      `);
+    });
+
+    test('updates rule in different group', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert('.one { color: red }', 1);
+      sheet.insert('.two { color: green }', 2);
+      sheet.insert('.three { color: blue }', 3);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="1"]{}
+        .one { color: red }
+        [stylesheet-group="2"]{}
+        .two { color: green }
+        [stylesheet-group="3"]{}
+        .three { color: blue }"
+      `);
+
+      sheet.update('.two { color: green }', '.two { color: yellow }', 2);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="1"]{}
+        .one { color: red }
+        [stylesheet-group="2"]{}
+        .two { color: yellow }
+        [stylesheet-group="3"]{}
+        .three { color: blue }"
+      `);
+    });
+
+    test('updates nested at-rules', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert(
+        '@media (min-width: 768px) { @supports (display: grid) { .nested { display: grid } } }',
+        9,
+      );
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+        "[stylesheet-group="9"]{}
+        @media (min-width: 768px) { @supports (display: grid) { .nested { display: grid } } }"
+      `);
+
+      sheet.update(
+        '@media (min-width: 768px) { @supports (display: grid) { .nested { display: grid } } }',
+        '@media (min-width: 1024px) { @supports (display: flex) { .nested { display: flex } } }',
+        9,
+      );
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+"[stylesheet-group="9"]{}
+@media (min-width: 1024px) { @supports (display: flex) { .nested { display: flex } } }
+@media (min-width: 768px) { @supports (display: grid) { .nested { display: grid } } }"
+`);
+    });
+
+    test('handles update when rule has specificity selectors', () => {
+      const sheet = createOrderedCSSStyleSheet();
+      sheet.insert('.selector:not(#\\#):not(#\\#):not(#\\#) { color: red }', 3);
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+"[stylesheet-group="3"]{}
+.selector:not(#\\#):not(#\\#):not(#\\#) { color: red }"
+`);
+
+      sheet.update(
+        '.selector:not(#\\#):not(#\\#):not(#\\#) { color: red }',
+        '.selector:not(#\\#):not(#\\#):not(#\\#) { color: blue }',
+        3,
+      );
+      expect(sheet.getTextContent()).toMatchInlineSnapshot(`
+"[stylesheet-group="3"]{}
+.selector:not(#\\#):not(#\\#):not(#\\#) { color: blue }"
+`);
+    });
+  });
+
   describe('client-side hydration', () => {
     let element;
 

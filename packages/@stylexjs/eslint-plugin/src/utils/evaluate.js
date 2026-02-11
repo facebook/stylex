@@ -15,9 +15,9 @@ export default function evaluate(
   variables?: Variables,
 ): null | Literal | 'ARG' {
   if (
-    // $FlowFixMe
+    // $FlowFixMe[invalid-compare]
     node.type === 'TSSatisfiesExpression' ||
-    // $FlowFixMe
+    // $FlowFixMe[invalid-compare]
     node.type === 'TSAsExpression'
   ) {
     return evaluate(node.expression, variables);

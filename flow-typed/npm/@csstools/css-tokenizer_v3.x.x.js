@@ -699,7 +699,7 @@ declare module '@csstools/css-tokenizer' {
     input: {
       css: {
         valueOf(): string,
-      },
+      } | string,
       unicodeRangesAllowed?: boolean,
     },
     options?: {

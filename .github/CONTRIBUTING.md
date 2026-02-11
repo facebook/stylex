@@ -16,11 +16,11 @@ Fork, then clone the repo:
 git clone https://github.com/your-username/stylex.git
 ```
 
-Make sure you have npm@>=7 and node@>=16 installed. Then install the package
+Make sure you have yarn@1.22 and node@>=16 installed. Then install the package
 dependencies:
 
 ```
-npm install
+yarn install
 ```
 
 ## Automated tests
@@ -28,13 +28,13 @@ npm install
 To run the linter:
 
 ```
-npm run lint
+yarn lint
 ```
 
 To run flow:
 
 ```
-npm run flow
+yarn flow
 ```
 
 ## Compile and build
@@ -42,28 +42,28 @@ npm run flow
 To compile the source code:
 
 ```
-npm run build
+yarn build
 ```
 
 To run all the tests (will build automatically):
 
 ```
-npm run test
+yarn test
 ```
 
 …in watch mode (will build only once):
 
 ```
-npm run test -- --watch
+yarn test --watch
 ```
 
 ## Documentation
 
-If necessary, first build the StyleX packages (`npm run build`), then start the
+If necessary, first build the StyleX packages (`yarn build`), then start the
 docs locally:
 
 ```
-npm run start -w docs
+yarn workspace docs start
 ```
 
 ### New Features
@@ -81,7 +81,7 @@ want to accept.
 1. Fork the repository and create your branch from `main`.
 2. If you've added code that should be tested, add tests!
 3. If you've changed APIs, update the documentation.
-4. Ensure the tests pass (`npm run test`).
+4. Ensure the tests pass (`yarn test`).
 
 You can now submit a pull request, referencing any issues it addresses.
 

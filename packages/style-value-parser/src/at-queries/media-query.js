@@ -35,7 +35,7 @@ type MediaNotRule = { type: 'not', rule: MediaQueryRule };
 type MediaAndRules = { type: 'and', rules: $ReadOnlyArray<MediaQueryRule> };
 type MediaOrRules = { type: 'or', rules: $ReadOnlyArray<MediaQueryRule> };
 
-type MediaQueryRule =
+export type MediaQueryRule =
   | MediaKeyword
   | MediaWordRule
   | MediaRulePair
@@ -85,7 +85,7 @@ const mediaWordRuleParser: TokenParser<MediaWordRule> =
   TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue')
     .surroundedBy(TokenParser.tokens.OpenParen, TokenParser.tokens.CloseParen)
     .where(
-      (key) =>
+      (key): implies key is WordRule =>
         key === 'color' ||
         key === 'monochrome' ||
         key === 'grid' ||
@@ -337,9 +337,9 @@ notParser = TokenParser.sequence(
   TokenParser.tokens.Whitespace,
   getNormalRuleParser(),
   TokenParser.tokens.CloseParen,
-).map(([_openParen, _not, _space, rule, _closeParen]) => ({
+).map(([_openParen, _not, _space, rule, _closeParen]): MediaNotRule => ({
   type: 'not',
-  rule,
+  rule: rule as $FlowFixMe,
 }));
 
 function isNumericLength(val: mixed): boolean {
@@ -520,7 +520,7 @@ export class MediaQuery {
     switch (queries.type) {
       case 'media-keyword': {
         const prefix = queries.not ? 'not ' : queries.only ? 'only ' : '';
-        return prefix + queries.key;
+        return prefix + (isTopLevel ? queries.key : `(${queries.key})`);
       }
       case 'word-rule':
         return `(${queries.keyValue})`;
@@ -555,7 +555,9 @@ export class MediaQuery {
       }
       case 'not':
         return queries.rule &&
-          (queries.rule.type === 'and' || queries.rule.type === 'or')
+          (queries.rule.type === 'and' ||
+            queries.rule.type === 'or' ||
+            queries.rule.type === 'not')
           ? `(not (${this.#toString(queries.rule)}))`
           : `(not ${this.#toString(queries.rule)})`;
       case 'and':
@@ -699,7 +701,7 @@ export class MediaQuery {
           querySets.length > 1
             ? { type: 'or', rules: querySets }
             : querySets[0];
-        return new MediaQuery(rule);
+        return new MediaQuery(rule as $FlowFixMe as MediaQueryRule);
       });
   }
 }

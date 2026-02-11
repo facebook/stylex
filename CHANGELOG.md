@@ -1,5 +1,90 @@
 # Changelog
 
+## 0.17.5 (Jan 12. 2026)
+- New `no-conflicting-props` lint rule.
+- Add `disallowedPropertiesValidation` config to disable property compiler errors by default.
+- Preserve units in zero values for CSS variables.
+- Fix `unplugin` cache invalidation on style changes.
+
+## 0.17.4 (Dec 18. 2025)
+- New playground within the docs website.
+- Fix named exports detection on Turbopack.
+
+## 0.17.3 (Dec 12, 2025)
+
+- Add docs for setup instructions.
+- Improve AST detection for `.stylex` named exports
+- Add browser rollup bundle.
+- Fix unplugin file suffix parsing.
+
+## 0.17.2 (Dec 1, 2025)
+
+- Pass importSources to babel plugin in `unplugin` plugin.
+- Fix custom typescript typedef mistake.
+
+## 0.17.1 (Nov 26, 2025)
+
+- Add support for compiling stylex from imported packages.
+- Add runtime injection support for `defineConsts` constants.
+- Show full debug file paths.
+- Fix media query ordering for queries with 'screen and'.
+- Add `debugFilePath` config option.
+- Fix unitless zoom bug for float values.
+- Fix props compilation for array mutations.
+
+## 0.17.0 (Nov 18, 2025)
+
+- Add docs for ESLint rules and `stylex.when` API.
+- Add `defineMarker()` for custom markers for selector combinators.
+- New unplugin bundler plugin implementation for various bundlers (Vite,
+  Webpack, Rspack, Rollup, etc.).
+- Enhance `stylex.props` to precompile more often for better performance.
+- Order pseudo-classes and `stylex.when` selectors according to priorities in
+  `sort-keys.
+- Add support for ternary and logical expressions in `valid-styles`.
+- Bump specificity of `stylex.when` selectors over defaults.
+- Add polyfill for logical float values in legacy mode.
+
+## 0.16.3 (Oct 27, 2025)
+
+- Add configs to `sort-keys` property ordering.
+- Create new `defineConsts` specific file extension.
+- Add `defineConsts` and various file extension support to `enforce-extension`.
+- Add config for custom module resolution.
+- Turn `enableMediaQueryOrder` on by default.
+- Updates to docs and Flow.
+
+## 0.16.2 (Oct 13, 2025)
+
+- Handle descendant selector styles in `valid-styles` rule.
+- Adjust descendant selector `.when` priorities.
+- Fix `defineVars` and `createTheme` at-rules priorities.
+- Update `defineConsts` types for non-stylex usage.
+
+## 0.16.1 (Oct 2, 2025)
+
+- New `no-lookahead-selector` lint rule to flag certain descendant and sibling
+  selectors.
+- Fix priorities for descendant and sibling selectors.
+- Fix color functions for `valid-shorthands` rule.
+- Fix hoisting issues with duplicate keys in `create` calls.
+- Add storybook example.
+
+## 0.16.0 (Sep 25, 2025)
+
+- Added support for descendant and shared selectors.
+- Support CSS variable overrides with `defineConsts`.
+- Add `valid-styles` support to CSS variable overrides in `create` calls.
+- Replace `valid-styles` object check with Flow typing
+
+## 0.15.4 (Sep 7, 2025)
+
+- Add configuration modes to `processStylexRules`.
+- Support local resolved constants, `positionTry`, and '0' values in
+  `valid-styles` ESLint rule.
+- Implement `defineConsts` for dynamic styles.
+- Create `.transformed` file extension for preresolved variables.
+
 ## 0.15.3 (Aug 13, 2025)
 
 - Optimize precomputed `props` calls in JSX.
@@ -15,7 +100,8 @@
 
 ### Fixes
 
-- Hoist stylex.create and static className objects to the top level for support inside functions.
+- Hoist stylex.create and static className objects to the top level for support
+  inside functions.
 
 ## 0.15.0 (Jul 31, 2025)
 

@@ -145,7 +145,7 @@ export type MapNamespaces<+S: { +[string]: mixed }> = $ReadOnly<{
     ? (...args: Args) => $ReadOnly<[MapNamespace<Obj>, InlineStyles]>
     : MapNamespace<S[Key]>,
 }>;
-export type StyleX$Create = <S: { +[string]: mixed }>(
+export type StyleX$Create = <const S: { +[string]: { ... } }>(
   styles: S,
 ) => MapNamespaces<S>;
 
@@ -225,9 +225,11 @@ export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
-export type StyleX$DefineConsts = <DefaultTokens: TTokens, ID: string = string>(
+export type StyleX$DefineConsts = <
+  const DefaultTokens: { +[string]: number | string },
+>(
   tokens: DefaultTokens,
-) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
+) => DefaultTokens;
 
 // opaque type ThemeKey<+_VG: VarGroup<{ +[string]: mixed }>>: string = string;
 export opaque type Theme<
@@ -252,3 +254,30 @@ export type StyleX$CreateTheme = <
   baseTokens: BaseTokens,
   overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
 ) => Theme<BaseTokens, ID>;
+
+export type StyleX$DefineMarker = () => MapNamespace<{
+  +marker: 'custom-marker',
+}>;
+
+export type StyleX$When = {
+  ancestor: (
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-ancestor',
+  descendant: (
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-descendant',
+  siblingBefore: (
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-sibling-before',
+  siblingAfter: (
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-sibling-after',
+  anySibling: (
+    _pseudo?: StringPrefix<':'> | StringPrefix<'['>,
+    _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
+  ) => ':where-any-sibling',
+};

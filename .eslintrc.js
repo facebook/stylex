@@ -41,6 +41,28 @@ module.exports = {
     'next-env.d.ts',
     'next.config.js',
     '**/__mocks__/snapshot*',
+    '**/storybook-static/**',
+    '**/examples/example-cli/src/**',
+    '**/*.d.ts',
+    '**/pages.gen.ts',
+  ],
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      rules: {
+        'ft-flow/space-after-type-colon': 'off',
+        'ft-flow/generic-spacing': 'off',
+        'ft-flow/no-types-missing-file-annotation': 'off',
+      },
+    },
   ],
   globals: {
     $Call: 'readonly',

@@ -79,6 +79,7 @@ export function evaluateStyleXCreateArg(
     const fnPath: NodePath<t.ArrowFunctionExpression> = valPath;
     const allParams: Array<
       NodePath<t.Identifier | t.SpreadElement | t.Pattern>,
+      // $FlowFixMe[incompatible-type]
     > = fnPath.get('params');
 
     validateDynamicStyleParams(fnPath, allParams);
@@ -141,6 +142,7 @@ function evaluatePartialObjectRecursively(
       if (!result.confident) {
         return result;
       }
+      // $FlowFixMe[unsafe-object-assign]
       Object.assign(obj, result.value);
       continue;
     }
@@ -173,6 +175,7 @@ function evaluatePartialObjectRecursively(
           return { confident: false, deopt: result.deopt, value: null };
         }
         obj[key] = result.value;
+        // $FlowFixMe[unsafe-object-assign]
         Object.assign(inlineStyles, result.inlineStyles);
       } else {
         const result = evaluate(valuePath, traversalState, functions);

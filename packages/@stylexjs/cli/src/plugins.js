@@ -13,7 +13,7 @@ import { getRelativePath } from './files';
 import { findModuleDir } from './modules';
 import * as t from '@babel/types';
 
-import * as nodePath from 'path';
+import * as nodePath from 'node:path';
 
 type ImportModifierPlugin = $ReadOnly<{
   visitor: {

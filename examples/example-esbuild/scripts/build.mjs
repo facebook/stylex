@@ -8,18 +8,13 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import esbuild from 'esbuild';
-import stylexPlugin from '@stylexjs/esbuild-plugin';
+import stylex from '@stylexjs/unplugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const BUILD_DIR_NAME = 'public/dist';
 const OUTFILE = `${BUILD_DIR_NAME}/bundle.js`;
-const STYLEX_BUNDLE_PATH = path.resolve(
-  __dirname,
-  '..',
-  `${BUILD_DIR_NAME}/stylex.css`,
-);
 
 esbuild
   .build({
@@ -27,13 +22,13 @@ esbuild
     bundle: true,
     outfile: OUTFILE,
     minify: true,
+    metafile: true, // lets the plugin find CSS outputs, if any
     plugins: [
       // See all options in the babel plugin configuration docs:
       // https://stylexjs.com/docs/api/configuration/babel-plugin/
-      stylexPlugin({
+      stylex.esbuild({
         useCSSLayers: true,
-        generatedCSSFileName: STYLEX_BUNDLE_PATH,
-        stylexImports: ['@stylexjs/stylex'],
+        importSources: ['@stylexjs/stylex'],
         unstable_moduleResolution: {
           type: 'commonJS',
           rootDir: path.resolve(__dirname, '../../..'),

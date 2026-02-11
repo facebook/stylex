@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/eslint-plugin",
-  "version": "0.15.3",
+  "version": "0.17.5",
   "description": "StyleX eslint plugin.",
   "main": "lib/index.js",
   "repository": {
@@ -16,8 +16,10 @@
     "test": "jest --detectOpenHandles --coverage"
   },
   "dependencies": {
-    "css-shorthand-expand": "^1.2.0",
-    "micromatch": "^4.0.5"
+    "@csstools/css-tokenizer": "^3.0.3",
+    "@stylexjs/shared": "0.17.5",
+    "micromatch": "^4.0.5",
+    "postcss-value-parser": "^4.2.0"
   },
   "files": [
     "flow_modules/*",

@@ -1,0 +1,89 @@
+---
+title: 'RedwoodSDK'
+---
+
+[`examples/example-redwoodsdk`](https://github.com/facebook/stylex/tree/main/examples/example-redwoodsdk)
+shows how RedwoodSDK’s Vite-based toolchain works with `@stylexjs/unplugin`.
+StyleX is compiled during both dev and build, and the aggregated CSS is appended
+to the worker/client assets that Redwood emits.
+
+## Vite configuration
+
+```ts title="vite.config.mts"
+import { defineConfig } from 'vite';
+import { redwood } from 'rwsdk/vite';
+import { cloudflare } from '@cloudflare/vite-plugin';
+import stylex from '@stylexjs/unplugin';
+
+export default defineConfig({
+  plugins: [
+    cloudflare({ viteEnvironment: { name: 'worker' } }),
+    redwood(),
+    stylex.vite({
+      devMode: 'css-only',
+      devPersistToDisk: true,
+      dev: true,
+      runtimeInjection: false,
+    }),
+  ],
+});
+```
+
+- `devMode: 'css-only'` exposes the `/virtual:stylex.css` endpoint without the
+  JS runtime (Redwood owns HTML injection).
+- `devPersistToDisk` shares collected rules across multiple Vite environments
+  (worker + client).
+
+## CSS entrypoint
+
+Ensure that there is one CSS file that is imported from your root layout
+component or JS entry point.
+
+## CSS Link and Hot Reloading during development
+
+Ensure that the virtual CSS file and script for hot reloading styles are part of
+your bundle to enable hot reloading during development.
+
+The easiest way to do this is by using an encapsulated helper that can also be
+used to insert a link tag for your production CSS.
+
+```tsx
+// src/app/DevStyleXInject.tsx
+'use client';
+import { useEffect } from 'react';
+
+function DevStyleXInjectImpl() {
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      import('virtual:stylex:runtime');
+    }
+  }, []);
+  return <link rel="stylesheet" href="/virtual:stylex.css" />;
+}
+
+export function DevStyleXInject({ cssHref }: { cssHref: string }) {
+  return import.meta.env.DEV ? (
+    <DevStyleXInjectImpl />
+  ) : (
+    cssHref && <link rel="stylesheet" href={cssHref} />
+  );
+}
+```
+
+Render `<DevStyleXInject cssHref="/stylex.css" />` in your HTML shell component.
+
+```tsx
+// src/app/Document.tsx (excerpt)
+import { DevStyleXInject } from './DevStyleXInject';
+
+export const Document = ({ children }: { children: React.ReactNode }) => (
+  <html lang="en">
+    <head>
+      <DevStyleXInject cssHref="/client/assets/stylex.css" />
+    </head>
+    <body>
+      <div id="root">{children}</div>
+    </body>
+  </html>
+);
+```

@@ -10,7 +10,7 @@
 'use strict';
 import namedColors from '../reference/namedColors';
 import type { Expression, Node, Pattern, Property } from 'estree';
-/*:: import { Rule } from 'eslint'; */
+import type { Rule } from 'eslint';
 import isCSSVariable from '../rules/isCSSVariable';
 import makeLiteralRule from '../rules/makeLiteralRule';
 import makeRangeRule from '../rules/makeRangeRule';
@@ -422,7 +422,49 @@ const backfaceVisibility: RuleCheck = makeUnionRule(
 );
 // type background = string | finalBgLayer;
 const backgroundAttachment: RuleCheck = attachment;
-const backgroundBlendMode: RuleCheck = blendMode;
+const backgroundBlendMode: RuleCheck = (
+  node: Expression | Pattern,
+  _variables?: Variables,
+  prop?: Property,
+) => {
+  if (node.type !== 'Literal' || prop == null) {
+    return blendMode(node, _variables, prop);
+  }
+
+  if (typeof node.value === 'string') {
+    const value: string = node.value;
+    const items = value.split(', ');
+    if (value.split(',').length !== items.length) {
+      return {
+        message:
+          "backgroundBlendMode values must be separated by a comma and a space (', ')",
+        suggest: {
+          desc: 'Replace comma with a comma and a space (", ")',
+          fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+            return fixer.replaceText(
+              prop,
+              `backgroundBlendMode: '${value.replace(',', ', ')}'`,
+            );
+          },
+        },
+      };
+    }
+    for (const item of items) {
+      const response = blendMode(
+        { type: 'Literal', value: item, raw: `'${item}'` },
+        _variables,
+        prop,
+      );
+      if (response !== undefined) {
+        return {
+          message: response.message,
+        };
+      }
+    }
+
+    return undefined;
+  }
+};
 const backgroundClip: RuleCheck = makeUnionRule(
   'border-box',
   'padding-box',
@@ -500,6 +542,7 @@ const borderLeftColor: RuleCheck = color;
 const borderLeftStyle: RuleCheck = brStyle;
 const borderLeftWidth: RuleCheck = borderWidth;
 const borderSpacing: RuleCheck = isStringOrNumber;
+const cornerShape: RuleCheck = isString;
 const borderTopStyle: RuleCheck = brStyle;
 const borderTopWidth: RuleCheck = borderWidth;
 const boxDecorationBreak: RuleCheck = makeUnionRule(
@@ -978,6 +1021,7 @@ const overflowWrap: RuleCheck = makeUnionRule(
 const overflowDir: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
+  makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
 );
@@ -1670,6 +1714,16 @@ const CSSProperties = {
   borderBottomLeftRadius: lengthPercentage,
   borderBottomRightRadius: lengthPercentage,
 
+  cornerShape: cornerShape,
+  cornerStartStartShape: cornerShape,
+  cornerStartEndShape: cornerShape,
+  cornerEndStartShape: cornerShape,
+  cornerEndEndShape: cornerShape,
+  cornerTopLeftShape: cornerShape,
+  cornerTopRightShape: cornerShape,
+  cornerBottomLeftShape: cornerShape,
+  cornerBottomRightShape: cornerShape,
+
   boxAlign: boxAlign,
   boxDecorationBreak: boxDecorationBreak,
   boxDirection: boxDirection,
@@ -2171,6 +2225,9 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::spelling-error'),
   makeLiteralRule('::grammar-error'),
   makeLiteralRule('::cue'),
+  makeLiteralRule('::cue-region'),
+  makeLiteralRule('::file-selector-button'),
+  makeLiteralRule('::target-text'),
   makeLiteralRule('::slotted'),
   makeLiteralRule('::part'),
   makeLiteralRule('::thumb'),

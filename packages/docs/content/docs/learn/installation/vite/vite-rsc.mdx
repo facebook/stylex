@@ -1,0 +1,106 @@
+---
+title: 'Vite + React Server Components'
+---
+
+[`examples/example-vite-rsc`](https://github.com/facebook/stylex/tree/main/examples/example-vite-rsc)
+layers `@vitejs/plugin-rsc` on top of React while `@stylexjs/unplugin` compiles
+StyleX for each environment (RSC, SSR, client). Every build output receives a
+single CSS asset with aggregated StyleX styles.
+
+## Vite configuration
+
+```ts title="vite.config.ts"
+import rsc from '@vitejs/plugin-rsc';
+import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+import stylex from '@stylexjs/unplugin';
+
+export default defineConfig({
+  plugins: [
+    rsc(),
+    react(),
+    stylex.vite({
+      // ... StyleX configuration options
+    }),
+  ],
+  environments: {
+    rsc: {
+      build: {
+        rollupOptions: { input: { index: './src/framework/entry.rsc.tsx' } },
+      },
+    },
+    ssr: {
+      build: {
+        rollupOptions: { input: { index: './src/framework/entry.ssr.tsx' } },
+      },
+    },
+    client: {
+      build: {
+        rollupOptions: {
+          input: { index: './src/framework/entry.browser.tsx' },
+        },
+      },
+    },
+  },
+});
+```
+
+- `stylex.vite()` runs for every environment, so each bundle gets the correct
+  CSS appended.
+- Add options such as `useCSSLayers` if desired.
+
+## CSS entrypoint
+
+Ensure that there is one CSS file that is imported from your root layout
+component or JS entry point.
+
+## CSS Link and Hot Reloading during development
+
+Ensure that the virtual CSS file and script for hot reloading styles are part of
+your bundle to enable hot reloading during development.
+
+The easiest way to do this is by using an encapsulated helper that can also be
+used to insert a link tag for your production CSS.
+
+```tsx
+// src/DevStyleXInject.tsx
+'use client';
+import { useEffect } from 'react';
+
+function DevStyleXInjectImpl() {
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      import('virtual:stylex:runtime');
+    }
+  }, []);
+  return <link rel="stylesheet" href="/virtual:stylex.css" />;
+}
+
+export function DevStyleXInject({ cssHref }: { cssHref: string }) {
+  return import.meta.env.DEV ? (
+    <DevStyleXInjectImpl />
+  ) : (
+    cssHref && <link rel="stylesheet" href={cssHref} />
+  );
+}
+```
+
+Render `<DevStyleXInject cssHref="/stylex.css" />` in your HTML shell component.
+
+```tsx
+// src/root.tsx (excerpt)
+import { DevStyleXInject } from './DevStyleXInject';
+
+export function Root(props: { url: URL }) {
+  return (
+    <html lang="en">
+      <head>
+        <DevStyleXInject cssHref="/stylex.css" />
+      </head>
+      <body>
+        <App {...props} />
+      </body>
+    </html>
+  );
+}
+```

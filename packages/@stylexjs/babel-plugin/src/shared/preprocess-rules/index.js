@@ -31,6 +31,7 @@ export default function flatMapExpandedShorthands(
   objEntry: $ReadOnly<[string, TStyleValue]>,
   options: $ReadOnly<{
     styleResolution: StyleXOptions['styleResolution'],
+    propertyValidationMode?: StyleXOptions['propertyValidationMode'],
     ...
   }>,
 ): $ReadOnlyArray<[string, TStyleValue]> {
@@ -43,13 +44,27 @@ export default function flatMapExpandedShorthands(
     string | number | null,
   ) => $ReadOnlyArray<[string, TStyleValue]> =
     expansions[options.styleResolution ?? 'property-specificity'][key];
+  // $FlowFixMe[constant-condition] - expansion is a function
   if (expansion) {
     if (Array.isArray(value)) {
       throw new Error(
         'Cannot use fallbacks for shorthands. Use the expansion instead.',
       );
     }
-    return expansion(value);
+    try {
+      return expansion(value);
+    } catch (error) {
+      const validationMode = options.propertyValidationMode ?? 'silent';
+      if (validationMode === 'throw') {
+        throw error;
+      } else if (validationMode === 'warn') {
+        console.warn(`[stylex] ${error.message}`);
+        return [];
+      } else {
+        // silent mode - skip the property without any output
+        return [];
+      }
+    }
   }
   return [[key, value]];
 }

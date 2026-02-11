@@ -22,6 +22,8 @@ import type {
 
 /* eslint-disable no-unused-vars */
 
+type NotUndefined = {} | null;
+
 /**
  * EMPTY STYLES
  */
@@ -31,13 +33,13 @@ const styles1: Readonly<{ foo: Readonly<{}> }> = stylex.create({
 styles1.foo as StaticStyles;
 styles1.foo as StaticStyles<{}>;
 styles1.foo as StaticStyles<{ width?: number | string }>;
-styles1.foo as StaticStyles<{ width?: unknown }>;
-styles1.foo as StaticStylesWithout<{ width: unknown }>;
+styles1.foo as StaticStyles<{ width?: NotUndefined }>;
+styles1.foo as StaticStylesWithout<{ width: NotUndefined }>;
 styles1.foo as StyleXStyles;
 styles1.foo as StyleXStyles<{}>;
 styles1.foo as StyleXStyles<{ width?: number | string }>;
-styles1.foo as StyleXStyles<{ width?: unknown }>;
-styles1.foo as StyleXStylesWithout<{ width: unknown }>;
+styles1.foo as StyleXStyles<{ width?: NotUndefined }>;
+styles1.foo as StyleXStylesWithout<{ width: NotUndefined }>;
 
 stylex.props(styles1.foo);
 
@@ -57,23 +59,23 @@ styles2.foo satisfies StaticStyles;
 // @ts-expect-error - We want to disallow extra keys
 styles2.foo satisfies StaticStyles<{}>;
 styles2.foo satisfies StaticStyles<{ width: '100%' }>;
-styles2.foo satisfies StaticStyles<{ width: unknown }>;
-styles2.foo satisfies StaticStylesWithout<{ height: unknown }>;
+styles2.foo satisfies StaticStyles<{ width: NotUndefined }>;
+styles2.foo satisfies StaticStylesWithout<{ height: NotUndefined }>;
 // @ts-expect-error - The style does have `width`
-styles2.foo satisfies StaticStylesWithout<{ width: unknown }>;
+styles2.foo satisfies StaticStylesWithout<{ width: NotUndefined }>;
 // @ts-expect-error - 'number' is not assignable to '100%'.
 styles2.foo satisfies StaticStyles<{ width: 100 }>;
 styles2.foo satisfies StaticStyles<{ width: number | string }>;
-styles2.foo satisfies StaticStyles<{ width?: unknown; height?: string }>;
+styles2.foo satisfies StaticStyles<{ width?: NotUndefined; height?: string }>;
 styles2.foo satisfies StyleXStyles;
 // @ts-expect-error - We want to disallow extra keys
 styles2.foo satisfies StyleXStyles<{}>;
 styles2.foo satisfies StyleXStyles<{ width: '100%' }>;
 styles2.foo satisfies StyleXStyles<{ width: number | string }>;
-styles2.foo satisfies StyleXStyles<{ width?: unknown }>;
-styles2.foo satisfies StyleXStylesWithout<{ height: unknown }>;
+styles2.foo satisfies StyleXStyles<{ width?: NotUndefined }>;
+styles2.foo satisfies StyleXStylesWithout<{ height: NotUndefined }>;
 // @ts-expect-error - The style does have `width`
-styles2.foo satisfies StyleXStylesWithout<{ width: unknown }>;
+styles2.foo satisfies StyleXStylesWithout<{ width: NotUndefined }>;
 
 stylex.props(styles2.foo);
 
@@ -94,18 +96,18 @@ styles3.foo satisfies StaticStyles;
 styles3.foo satisfies StaticStyles<{}>;
 styles3.foo satisfies StaticStyles<{ width: '100%' | '200%' }>;
 styles3.foo satisfies StaticStyles<{ width: number | string }>;
-styles3.foo satisfies StaticStylesWithout<{ height: unknown }>;
+styles3.foo satisfies StaticStylesWithout<{ height: NotUndefined }>;
 // @ts-expect-error - The style does have `width`
-styles3.foo satisfies StaticStylesWithout<{ width: unknown }>;
+styles3.foo satisfies StaticStylesWithout<{ width: NotUndefined }>;
 styles3.foo satisfies StyleXStyles;
 // @ts-expect-error - We want to disallow extra keys
 styles3.foo satisfies StyleXStyles<{}>;
 styles3.foo satisfies StyleXStyles<{ width: '100%' | '200%' }>;
 styles3.foo satisfies StyleXStyles<{ width: number | string }>;
-styles3.foo satisfies StyleXStyles<{ width?: unknown }>;
-styles3.foo satisfies StyleXStylesWithout<{ height: unknown }>;
+styles3.foo satisfies StyleXStyles<{ width?: NotUndefined }>;
+styles3.foo satisfies StyleXStylesWithout<{ height: NotUndefined }>;
 // @ts-expect-error - The style does have `width`
-styles3.foo satisfies StyleXStylesWithout<{ width: unknown }>;
+styles3.foo satisfies StyleXStylesWithout<{ width: NotUndefined }>;
 
 stylex.props(styles3.foo);
 
@@ -134,7 +136,7 @@ styles4.foo satisfies StyleXStyles;
 styles4.foo satisfies StyleXStyles<{}>;
 styles4.foo satisfies StyleXStyles<{ width: '100%' | '100dvw' }>;
 styles4.foo satisfies StyleXStyles<{ width: number | string }>;
-styles4.foo satisfies StyleXStyles<{ width?: unknown }>;
+styles4.foo satisfies StyleXStyles<{ width?: NotUndefined }>;
 
 stylex.props(styles4.foo);
 
@@ -166,7 +168,7 @@ styles5.foo satisfies StyleXStyles;
 styles5.foo satisfies StyleXStyles<{}>;
 styles5.foo satisfies StyleXStyles<{ width: '100%' | '100dvw' | '200%' }>;
 styles5.foo satisfies StyleXStyles<{ width: number | string }>;
-styles5.foo satisfies StyleXStyles<{ width?: unknown }>;
+styles5.foo satisfies StyleXStyles<{ width?: NotUndefined }>;
 
 stylex.props(styles5.foo);
 
@@ -208,7 +210,7 @@ styles6.foo(100) satisfies StyleXStyles;
 styles6.foo(100) satisfies StyleXStyles<{}>;
 styles6.foo(100) satisfies StyleXStyles<{ width: '100%' | '100dvw' | number }>;
 styles6.foo(100) satisfies StyleXStyles<{ width: number | string }>;
-styles6.foo(100) satisfies StyleXStyles<{ width?: unknown }>;
+styles6.foo(100) satisfies StyleXStyles<{ width?: NotUndefined }>;
 
 stylex.props(styles6.foo(100));
 
@@ -234,14 +236,14 @@ styles7.foo satisfies StaticStyles;
 styles7.foo satisfies StaticStyles<{}>;
 styles7.foo satisfies StaticStyles<{ '::before': { width: '100%' } }>;
 styles7.foo satisfies StaticStyles<{
-  '::before': { width: number | string; height?: unknown };
+  '::before': { width: number | string; height?: NotUndefined };
 }>;
 styles7.foo satisfies StyleXStyles;
 // @ts-expect-error - We want to disallow extra keys
 styles7.foo satisfies StyleXStyles<{}>;
 styles7.foo satisfies StyleXStyles<{ '::before': { width: '100%' } }>;
 styles7.foo satisfies StyleXStyles<{
-  '::before': { width: number | string; height?: unknown };
+  '::before': { width: number | string; height?: NotUndefined };
 }>;
 
 stylex.props(styles7.foo);
@@ -259,7 +261,6 @@ const styles8: Readonly<{
 }> = stylex.create({
   foo: {
     // In a real example `vars` would be imported from another file.
-    // eslint-disable-next-line @stylexjs/valid-styles
     color: vars.accent,
   },
 });
@@ -273,24 +274,46 @@ styles8.foo satisfies StaticStyles;
 // @ts-expect-error - We want to disallow extra keys
 styles8.foo satisfies StaticStyles<{}>;
 styles8.foo satisfies StaticStyles<{ color: 'red' }>;
-styles8.foo satisfies StaticStyles<{ color: unknown }>;
-styles8.foo satisfies StaticStylesWithout<{ height: unknown }>;
+styles8.foo satisfies StaticStyles<{ color: NotUndefined }>;
+styles8.foo satisfies StaticStylesWithout<{ height: NotUndefined }>;
 // @ts-expect-error - The style does have `width`
-styles8.foo satisfies StaticStylesWithout<{ color: unknown }>;
+styles8.foo satisfies StaticStylesWithout<{ color: NotUndefined }>;
 // @ts-expect-error - 'number' is not assignable to 'red'.
 styles8.foo satisfies StaticStyles<{ color: 100 }>;
 // @ts-expect-error - 'blue' is not assignable to 'red'.
 styles8.foo satisfies StaticStyles<{ color: 'blue' }>;
 styles8.foo satisfies StaticStyles<{ color: number | string }>;
-styles8.foo satisfies StaticStyles<{ color?: unknown; height?: string }>;
+styles8.foo satisfies StaticStyles<{ color?: NotUndefined; height?: string }>;
 styles8.foo satisfies StyleXStyles;
 // @ts-expect-error - We want to disallow extra keys
 styles8.foo satisfies StyleXStyles<{}>;
 styles8.foo satisfies StyleXStyles<{ color: 'red' }>;
 styles8.foo satisfies StyleXStyles<{ color: number | string }>;
-styles8.foo satisfies StyleXStyles<{ color?: unknown }>;
-styles8.foo satisfies StyleXStylesWithout<{ height: unknown }>;
+styles8.foo satisfies StyleXStyles<{ color?: NotUndefined }>;
+styles8.foo satisfies StyleXStylesWithout<{ height: NotUndefined }>;
 // @ts-expect-error - The style does have `color`
-styles8.foo satisfies StyleXStylesWithout<{ color: unknown }>;
+styles8.foo satisfies StyleXStylesWithout<{ color: NotUndefined }>;
 
 stylex.props(styles8.foo);
+
+// StyleX consts
+
+const consts = stylex.defineConsts({
+  foo: 'bar',
+  bar: 123,
+} as const);
+
+consts.foo satisfies 'bar';
+consts.bar satisfies 123;
+
+// Styles with explicit `undefined` values
+
+const styles9 = stylex.create({
+  foo: {
+    height: 100,
+    // @ts-expect-error - `undefined` is not a valid style value
+    width: undefined,
+  },
+  // @ts-expect-error - `undefined` is not a valid style value
+  bar: (height: number, width?: number) => ({ height, width }),
+});

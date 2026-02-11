@@ -18,16 +18,15 @@ import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
   positionTry as stylexPositionTry,
+  when as _stylexWhen,
 } from '../shared';
+import stylexDefaultMarker from '../shared/stylex-defaultMarker';
 import { addSourceMapData } from '../utils/add-sourcemap-data';
 import {
   convertToTestStyles,
   injectDevClassNames,
 } from '../utils/dev-classname';
-import {
-  convertObjectToAST,
-  removeObjectsWithSpreads,
-} from '../utils/js-to-ast';
+import { convertObjectToAST } from '../utils/js-to-ast';
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
@@ -69,6 +68,30 @@ function isSafeToSkipNullCheck(expr: t.Expression): boolean {
         isSafeToSkipNullCheck(expr.left) && isSafeToSkipNullCheck(expr.right)
       );
     }
+  }
+
+  return false;
+}
+
+function hasExplicitNullishFallback(expr: t.Expression): boolean {
+  if (t.isNullLiteral(expr)) return true;
+
+  if (t.isIdentifier(expr) && expr.name === 'undefined') return true;
+
+  if (t.isUnaryExpression(expr) && expr.operator === 'void') return true;
+
+  if (t.isConditionalExpression(expr)) {
+    return (
+      hasExplicitNullishFallback(expr.consequent) ||
+      hasExplicitNullishFallback(expr.alternate)
+    );
+  }
+
+  if (t.isLogicalExpression(expr)) {
+    return (
+      hasExplicitNullishFallback(expr.left) ||
+      hasExplicitNullishFallback(expr.right)
+    );
   }
 
   return false;
@@ -148,6 +171,13 @@ export default function transformStyleXCreate(
 
     const identifiers: FunctionConfig['identifiers'] = {};
     const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    const stylexWhen = Object.fromEntries(
+      Object.entries(_stylexWhen).map(([key, value]) => [
+        key,
+        (pseudo: string, marker?: string) =>
+          (value as $FlowFixMe)(pseudo, marker ?? state.options),
+      ]),
+    );
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
@@ -157,6 +187,12 @@ export default function transformStyleXCreate(
     state.stylexPositionTryImport.forEach((name) => {
       identifiers[name] = { fn: positionTry };
     });
+    state.stylexDefaultMarkerImport.forEach((name) => {
+      identifiers[name] = () => stylexDefaultMarker(state.options);
+    });
+    state.stylexWhenImport.forEach((name) => {
+      identifiers[name] = stylexWhen;
+    });
     state.stylexImport.forEach((name) => {
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
@@ -164,6 +200,10 @@ export default function transformStyleXCreate(
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
       memberExpressions[name].positionTry = { fn: positionTry };
+      memberExpressions[name].defaultMarker = {
+        fn: () => stylexDefaultMarker(state.options),
+      };
+      identifiers[name] = { ...(identifiers[name] ?? {}), when: stylexWhen };
     });
 
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
@@ -240,8 +280,10 @@ export default function transformStyleXCreate(
       };
     }
 
-    if (varName != null) {
-      const stylesToRemember = removeObjectsWithSpreads(compiledStyles);
+    if (varName != null && isTopLevel(path)) {
+      const stylesToRemember = Object.fromEntries(
+        Object.entries(compiledStyles),
+      );
       state.styleMap.set(varName, stylesToRemember);
       state.styleVars.set(varName, path.parentPath as $FlowFixMe);
     }
@@ -271,8 +313,9 @@ export default function transformStyleXCreate(
             let dynamicStyles: $ReadOnlyArray<{
               +expression: t.Expression,
               +key: string,
+              +varName: string,
               path: string,
-            }> = Object.entries(inlineStyles).map(([_key, v]) => ({
+            }> = Object.entries(inlineStyles).map(([varName, v]) => ({
               expression: v.originalExpression,
               key: v.path
                 .slice(
@@ -282,12 +325,20 @@ export default function transformStyleXCreate(
                   ) + 1,
                 )
                 .join('_'),
+              varName,
               path: v.path.join('_'),
             }));
 
             if (state.options.styleResolution === 'legacy-expand-shorthands') {
               dynamicStyles = legacyExpandShorthands(dynamicStyles);
             }
+
+            const nullishVarExpressions = new Map<string, t.Expression>();
+            dynamicStyles.forEach((style) => {
+              if (hasExplicitNullishFallback(style.expression)) {
+                nullishVarExpressions.set(style.varName, style.expression);
+              }
+            });
 
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
@@ -330,9 +381,35 @@ export default function transformStyleXCreate(
                 const exprList: t.Expression[] = [];
 
                 classList.forEach((cls, index) => {
-                  const expr = dynamicStyles.find(
+                  let expr = dynamicStyles.find(
                     ({ path }) => origClassPaths[cls] === path,
                   )?.expression;
+
+                  if (expr == null && nullishVarExpressions.size > 0) {
+                    const injectedStyle = injectedStyles[cls];
+                    const rule =
+                      injectedStyle != null
+                        ? typeof injectedStyle.ltr === 'string'
+                          ? injectedStyle.ltr
+                          : typeof injectedStyle.rtl === 'string'
+                            ? injectedStyle.rtl
+                            : null
+                        : null;
+
+                    if (rule != null) {
+                      const matches = rule.matchAll(
+                        /var\((--x-[^,)]+)[^)]*\)/g,
+                      );
+
+                      for (const match of matches) {
+                        const varExpr = nullishVarExpressions.get(match[1]);
+                        if (varExpr != null) {
+                          expr = varExpr;
+                          break;
+                        }
+                      }
+                    }
+                  }
 
                   const isLast = index === classList.length - 1;
                   const clsWithSpace = isLast ? cls : cls + ' ';
@@ -455,11 +532,13 @@ function legacyExpandShorthands(
   dynamicStyles: $ReadOnlyArray<{
     +expression: t.Expression,
     +key: string,
+    +varName: string,
     path: string,
   }>,
 ): $ReadOnlyArray<{
   +expression: t.Expression,
   +key: string,
+  +varName: string,
   path: string,
 }> {
   const expandedKeysToKeyPaths = dynamicStyles
@@ -488,4 +567,13 @@ function legacyExpandShorthands(
     .filter(Boolean);
 
   return expandedKeysToKeyPaths;
+}
+
+function isTopLevel(path: NodePath<>): boolean {
+  if (path.isStatement()) {
+    return (
+      path.parentPath?.isProgram() || path.parentPath?.isExportDeclaration()
+    );
+  }
+  return path.parentPath != null && isTopLevel(path.parentPath);
 }

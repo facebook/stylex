@@ -1,19 +1,20 @@
 # Next.js example using StyleX
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) which then uses
+the StyleX Babel and PostCSS plugins to compile StyleX.
 
 ## Getting Started
 
 First, run the development server:
 
 ```bash
-npm run dev
+npm run example:dev
 # or
-yarn dev
+yarn example:dev
 # or
-pnpm dev
+pnpm example:dev
 # or
-bun dev
+bun example:dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -22,17 +23,98 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+Enabling StyleX compilation involves three steps:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Define the `babel.config.js` file
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```tsx
+const path = require('path');
 
-## Deploy on Vercel
+const dev = process.env.NODE_ENV !== 'production';
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+module.exports = {
+  presets: ['next/babel'],
+  plugins: [
+    [
+      '@stylexjs/babel-plugin',
+      // See all options in the babel plugin configuration docs:
+      // https://stylexjs.com/docs/api/configuration/babel-plugin/
+      {
+        dev,
+        runtimeInjection: false,
+        enableInlinedConditionalMerge: true,
+        treeshakeCompensation: true,
+        aliases: {
+          '@/*': [path.join(__dirname, '*')],
+        },
+        unstable_moduleResolution: {
+          type: 'commonJS',
+        },
+      },
+    ],
+  ],
+};
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Ensure that the `next/babel` preset is used as well as the `@stylexjs/babel-plugin` with your configuration.
+It is preferable to use a JS/TS file for this config to help in the next part...
+
+### Define the `postcss.config.js`
+
+```tsx
+const babelConfig = require('./babel.config');
+
+module.exports = {
+  plugins: {
+    '@stylexjs/postcss-plugin': {
+      include: ['app/**/*.{js,jsx,ts,tsx}', 'components/**/*.{js,jsx,ts,tsx}'],
+      babelConfig: {
+        babelrc: false,
+        parserOpts: {
+          plugins: ['typescript', 'jsx'],
+        },
+        plugins: babelConfig.plugins,
+      },
+      useCSSLayers: true,
+    },
+    autoprefixer: {},
+  },
+};
+```
+
+Here, the `@stylexjs/postcss-plugin` must be used and configured. The `include` property takes a list of glob patterns
+to find all the files where styles should be extracted.
+
+`babelConfig` should be configured with at least the same StyleX Babel plugin as in your Babel config. It is important
+to ensure that your Babel config file and your PostCSS config are configured with the same options, so it's usually
+best to import your Babel config from your PostCSS config to share it.
+
+### Ensure a CSS file is imported by every route of your app
+
+It's usually best to do this by global layout. The CSS file *must* contain the `@stylex` directive.
+
+```css
+/**
+ * Any reset styles
+ */
+@layer resets {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+/**
+ * The @stylex directive is used by the @stylexjs/postcss-plugin.
+ * It is automatically replaced with generated CSS during builds.
+ */
+@stylex;
+```
+
+---
+
+Once these two files are defines, Next.js will automatically use Babel to transform your JS file with the StyleX plugin
+and the PostCSS plugin will be used to generate your final CSS file

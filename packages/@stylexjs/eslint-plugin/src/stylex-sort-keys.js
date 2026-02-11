@@ -33,6 +33,7 @@ type Schema = {
         as: string,
       },
   >,
+  order: 'default' | 'clean' | 'recess',
   minKeys: number,
   allowLineSeparatedGroups: boolean,
 };
@@ -45,11 +46,16 @@ type Stack = null | {
   numKeys: number,
 };
 
-function isValidOrder(prevName: string, currName: string): boolean {
-  const prev = getPropertyPriorityAndType(prevName);
-  const curr = getPropertyPriorityAndType(currName);
+function isValidOrder(
+  prevName: string,
+  currName: string,
+  order: Schema['order'],
+): boolean {
+  const prev = getPropertyPriorityAndType(prevName, order);
+  const curr = getPropertyPriorityAndType(currName, order);
 
   if (prev.type !== 'string' || curr.type !== 'string') {
+    if (prev.priority === curr.priority) return prevName <= currName;
     return prev.priority <= curr.priority;
   }
 
@@ -62,7 +68,7 @@ const stylexSortKeys = {
     docs: {
       description: 'Require style properties to be sorted by key',
       recommended: false,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
+      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
     },
     fixable: 'code',
     schema: [
@@ -85,6 +91,10 @@ const stylexSortKeys = {
             },
             default: ['stylex', '@stylexjs/stylex'],
           },
+          order: {
+            enum: ['default', 'clean', 'recess'],
+            default: 'default',
+          },
           minKeys: {
             type: 'integer',
             minimum: 2,
@@ -102,6 +112,7 @@ const stylexSortKeys = {
   create(context: Rule.RuleContext): { ... } {
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
+      order = 'default',
       minKeys = 2,
       allowLineSeparatedGroups = false,
     }: Schema = context.options[0] || {};
@@ -263,19 +274,25 @@ const stylexSortKeys = {
           return;
         }
 
-        if (!isValidOrder(prevName, currName)) {
+        if (!isValidOrder(prevName, currName, order)) {
           context.report({
-            // $FlowFixMe
+            // $FlowFixMe[incompatible-type]
             node,
             loc: node.key.loc,
             message: `StyleX property key "${currName}" should be above "${prevName}"`,
-            // $FlowFixMe
-            fix: createFix({ prevNode, currNode: node, sourceCode }),
+            // $FlowFixMe[incompatible-type]
+            fix: createFix({
+              prevNode: prevNode as $FlowFixMe,
+              currNode: node as $FlowFixMe,
+              sourceCode,
+            }),
           });
         }
       },
-      'CallExpression:exit'() {
-        if (isInsideStyleXCreateCall) {
+      'CallExpression:exit'(
+        node: $ReadOnly<{ ...CallExpression, ...Rule.NodeParentExtension }>,
+      ) {
+        if (isInsideStyleXCreateCall && isStylexDeclaration(node)) {
           isInsideStyleXCreateCall = false;
         }
       },

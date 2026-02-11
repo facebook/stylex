@@ -110,9 +110,59 @@ describe('@stylexjs/babel-plugin', () => {
       }).not.toThrow();
     });
 
+    test('valid export: separate const and export statement', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const constants = stylex.defineConsts({});
+          export { constants };
+        `);
+      }).not.toThrow();
+    });
+
+    test('invalid export: re-export from another file does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const constants = stylex.defineConsts({});
+          export { constants } from './other.stylex.js';
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineConsts'));
+    });
+
+    test('invalid export: renamed re-export from another file does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const constants = stylex.defineConsts({});
+          export { constants as otherConstants } from './other.stylex.js';
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineConsts'));
+    });
+
+    test('invalid export: default export does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const constants = stylex.defineConsts({});
+          export default constants;
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineConsts'));
+    });
+
+    test('invalid export: renamed export with as syntax', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const constants = stylex.defineConsts({});
+          export { constants as themeConstants };
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineConsts'));
+    });
+
     /* Properties */
 
-    test('invalid key: starts with "--"', () => {
+    test('valid key: starts with "--"', () => {
       expect(() =>
         transform(`
           import * as stylex from '@stylexjs/stylex';
@@ -120,7 +170,7 @@ describe('@stylexjs/babel-plugin', () => {
             '--small': '8px'
           });
         `),
-      ).toThrow(messages.INVALID_CONST_KEY);
+      ).not.toThrow();
     });
 
     test('invalid key: non-static', () => {

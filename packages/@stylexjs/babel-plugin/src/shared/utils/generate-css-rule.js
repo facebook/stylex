@@ -14,7 +14,7 @@ import { defaultOptions } from './default-options';
 
 import generateLtr from '../physical-rtl/generate-ltr';
 import generateRtl from '../physical-rtl/generate-rtl';
-import getPriority from './property-priorities';
+import { getPriority } from '@stylexjs/shared';
 
 const THUMB_VARIANTS = [
   '::-webkit-slider-thumb',
@@ -32,8 +32,13 @@ function buildNestedCSSRule(
   const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
   const combinedAtRules = atRules.concat(constRules);
 
+  // Bump specificity of stylex.when selectors
+  const hasWhere = pseudo.includes(':where(');
+  const extraClassForWhere = hasWhere ? `.${className}` : '';
+
   let selectorForAtRules =
     `.${className}` +
+    extraClassForWhere +
     combinedAtRules.map(() => `.${className}`).join('') +
     pseudo;
 

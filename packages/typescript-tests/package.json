@@ -1,15 +1,19 @@
 {
   "private": true,
   "name": "typescript-tests",
-  "version": "0.15.3",
+  "version": "0.17.5",
   "type": "module",
   "scripts": {
-    "test": "tsc"
+    "test": "tsc --noEmit"
   },
   "license": "MIT",
   "dependencies": {
-    "@stylexjs/stylex": "0.15.3",
-    "typescript": "^5.8.3"
+    "@stylexjs/stylex": "0.17.5",
+    "@stylexjs/babel-plugin": "0.17.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "@types/react": "^19.2.3"
   },
   "engines": {
     "node": ">=20.11.0"

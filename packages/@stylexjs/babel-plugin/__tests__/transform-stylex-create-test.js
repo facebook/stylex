@@ -1780,6 +1780,47 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        test('attribute selector with pseudo-class (nested, same value)', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                color: {
+                  ':hover': {
+                    '[data-state="open"]': 'red',
+                  },
+                  '[data-state="open"]': {
+                    ':hover': 'red',
+                  },
+                },
+              },
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kMwMTN: "x113j3rq",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x113j3rq",
+                  {
+                    "ltr": ".x113j3rq:hover[data-state="open"]{color:red}",
+                    "rtl": null,
+                  },
+                  6130,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('pseudo-class with array fallbacks', () => {
           const { code, metadata } = transform(`
             import * as stylex from '@stylexjs/stylex';
@@ -1938,6 +1979,7 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        // Generates invalid CSS, need to revisit this API
         test('"::before" containing pseudo-classes', () => {
           const { code, metadata } = transform(`
             import * as stylex from '@stylexjs/stylex';
@@ -1984,10 +2026,82 @@ describe('@stylexjs/babel-plugin', () => {
             }
           `);
         });
+
+        test('legacy compound ":hover::after" selector as single key', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              foo: {
+                ':hover::after': {
+                  color: 'red',
+                },
+              },
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              foo: {
+                kF1atM: "x1gfyp89",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1gfyp89",
+                  {
+                    "ltr": ".x1gfyp89:hover::after{color:red}",
+                    "rtl": null,
+                  },
+                  8130,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('compound ":hover::after" selector as single key', () => {
+          const { metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              foo: {
+                color: {
+                  default: 'red',
+                  ':hover::after': 'blue',
+                },
+              },
+            });
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1e2nbdu",
+                  {
+                    "ltr": ".x1e2nbdu{color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x6wc952",
+                  {
+                    "ltr": ".x6wc952:hover::after{color:blue}",
+                    "rtl": null,
+                  },
+                  8130,
+                ],
+              ],
+            }
+          `);
+        });
       });
 
       describe('object values: queries', () => {
-        test('media queries with last query wins', () => {
+        test('media queries without last query wins', () => {
           const { code, metadata } = transform(
             `
             import * as stylex from '@stylexjs/stylex';
@@ -2053,6 +2167,138 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         });
 
+        test('media queries without last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media screen and (max-width: 900px)': 'blue',
+                  '@media screen and (max-width: 500px)': 'purple',
+                  '@media screen and (max-width: 400px)': 'green',
+                }
+              },
+            });
+          `,
+            { enableMediaQueryOrder: true },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc x1qc147k x9qmkci x17z8iku",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "x1qc147k",
+                  {
+                    "ltr": "@media (((screen) and (max-width: 900px) and (not (screen)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (screen)) and (not (max-width: 400px)))) or (((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)))){.x1qc147k.x1qc147k{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x9qmkci",
+                  {
+                    "ltr": "@media ((screen) and (max-width: 500px) and (not (screen))) or ((screen) and (max-width: 500px) and (not (max-width: 400px))){.x9qmkci.x9qmkci{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x17z8iku",
+                  {
+                    "ltr": "@media (screen) and (max-width: 400px){.x17z8iku.x17z8iku{background-color:green}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('media queries without last query wins', () => {
+          const { code, metadata } = transform(
+            `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                backgroundColor: {
+                  default: 'red',
+                  '@media (max-width: 900px)': 'blue',
+                  '@media (max-width: 500px)': 'purple',
+                  '@media (max-width: 400px)': 'green',
+                }
+              },
+            });
+          `,
+            { enableMediaQueryOrder: false },
+          );
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: {
+                kWkggS: "xrkmrrc xn8cmr1 x1lr89ez x856a2w",
+                $$css: true
+              }
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xrkmrrc",
+                  {
+                    "ltr": ".xrkmrrc{background-color:red}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xn8cmr1",
+                  {
+                    "ltr": "@media (max-width: 900px){.xn8cmr1.xn8cmr1{background-color:blue}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x1lr89ez",
+                  {
+                    "ltr": "@media (max-width: 500px){.x1lr89ez.x1lr89ez{background-color:purple}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x856a2w",
+                  {
+                    "ltr": "@media (max-width: 400px){.x856a2w.x856a2w{background-color:green}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+              ],
+            }
+          `);
+        });
+
         test('media queries', () => {
           const { code, metadata } = transform(
             `
@@ -2072,7 +2318,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: {
-                kWkggS: "xrkmrrc xc445zv x1ssfqz5",
+                kWkggS: "xrkmrrc xw6up8c x1ssfqz5",
                 $$css: true
               }
             };"
@@ -2089,9 +2335,9 @@ describe('@stylexjs/babel-plugin', () => {
                   3000,
                 ],
                 [
-                  "xc445zv",
+                  "xw6up8c",
                   {
-                    "ltr": "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
+                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c.xw6up8c{background-color:blue}}",
                     "rtl": null,
                   },
                   3200,
@@ -4389,7 +4635,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: (a, b, c) => [{
-                kzqmXN: "x11ymkkh " + (b != null ? "x17gmrvw " : b) + (c != null ? "x1bai16n" : c),
+                kzqmXN: "x11ymkkh " + "x38mdg9 " + (c != null ? "x1bai16n" : c),
                 $$css: true
               }, {
                 "--x-1xmrurk": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)('color-mix(' + color + ', blue)'),
@@ -4410,9 +4656,9 @@ describe('@stylexjs/babel-plugin', () => {
                   4000,
                 ],
                 [
-                  "x17gmrvw",
+                  "x38mdg9",
                   {
-                    "ltr": "@media (min-width: 1000px){.x17gmrvw.x17gmrvw{width:var(--x-wm47pl)}}",
+                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.x38mdg9.x38mdg9{width:var(--x-wm47pl)}}",
                     "rtl": null,
                   },
                   4200,
@@ -4619,6 +4865,90 @@ describe('@stylexjs/babel-plugin', () => {
             }
           `);
         });
+
+        test('media query values with nullish coalescing', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: (a, b, c) => ({
+                fontSize: {
+                  default: a ? '16px' : undefined,
+                  '@media (min-width: 800px)': b ? '18px' : undefined,
+                  '@media (min-width: 1280px)': c ? '20px' : undefined,
+                }
+              }),
+            });
+            stylex.props(styles.root(true, false, true));
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              root: (a, b, c) => [{
+                kGuDYH: ((a ? '16px' : undefined) != null ? "xww4jgc " : a ? '16px' : undefined) + ((b ? '18px' : undefined) != null ? "xqdov8i " : b ? '18px' : undefined) + ((c ? '20px' : undefined) != null ? "x1j86d60" : c ? '20px' : undefined),
+                $$css: true
+              }, {
+                "--x-19zvkyr": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(a ? '16px' : undefined),
+                "--x-1bks2es": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(b ? '18px' : undefined),
+                "--x-q0n1i6": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(c ? '20px' : undefined)
+              }]
+            };
+            stylex.props(styles.root(true, false, true));"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "xww4jgc",
+                  {
+                    "ltr": ".xww4jgc{font-size:var(--x-19zvkyr)}",
+                    "rtl": null,
+                  },
+                  3000,
+                ],
+                [
+                  "xqdov8i",
+                  {
+                    "ltr": "@media (min-width: 800px) and (max-width: 1279.99px){.xqdov8i.xqdov8i{font-size:var(--x-1bks2es)}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "x1j86d60",
+                  {
+                    "ltr": "@media (min-width: 1280px){.x1j86d60.x1j86d60{font-size:var(--x-q0n1i6)}}",
+                    "rtl": null,
+                  },
+                  3200,
+                ],
+                [
+                  "--x-19zvkyr",
+                  {
+                    "ltr": "@property --x-19zvkyr { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--x-1bks2es",
+                  {
+                    "ltr": "@property --x-1bks2es { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+                [
+                  "--x-q0n1i6",
+                  {
+                    "ltr": "@property --x-q0n1i6 { syntax: "*"; inherits: false;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
       });
     });
 
@@ -4626,6 +4956,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/html/js/components/Foo.react.js',
         };
         const { code, metadata } = transform(
@@ -4697,6 +5028,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data for npm packages', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
         };
         const { code, metadata } = transform(
@@ -4768,6 +5100,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data (haste)', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/html/js/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
@@ -4840,6 +5173,7 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data for npm packages (haste)', () => {
         const options = {
           debug: true,
+          enableDebugClassNames: true,
           filename: '/node_modules/npm-package/dist/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
@@ -4936,8 +5270,14 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x1gykpug:hover{background-color:red}", 3130);
-          _inject2(".x17z2mba:hover{color:blue}", 3130);"
+          _inject2({
+            ltr: ".x1gykpug:hover{background-color:red}",
+            priority: 3130
+          });
+          _inject2({
+            ltr: ".x17z2mba:hover{color:blue}",
+            priority: 3130
+          });"
         `);
       });
 
@@ -4963,8 +5303,14 @@ describe('@stylexjs/babel-plugin', () => {
             "import _inject from "@stylexjs/stylex/lib/stylex-inject";
             var _inject2 = _inject;
             import stylex from 'stylex';
-            _inject2(".x19iys6w:invalpwdijad{background-color:red}", 3040);
-            _inject2(".x5z3o4w:invalpwdijad{color:blue}", 3040);"
+            _inject2({
+              ltr: ".x19iys6w:invalpwdijad{background-color:red}",
+              priority: 3040
+            });
+            _inject2({
+              ltr: ".x5z3o4w:invalpwdijad{color:blue}",
+              priority: 3040
+            });"
           `);
         });
 
@@ -4996,10 +5342,22 @@ describe('@stylexjs/babel-plugin', () => {
             "import _inject from "@stylexjs/stylex/lib/stylex-inject";
             var _inject2 = _inject;
             import stylex from 'stylex';
-            _inject2(".x17z2mba:hover{color:blue}", 3130);
-            _inject2(".x96fq8s:active{color:red}", 3170);
-            _inject2(".x1wvtd7d:focus{color:yellow}", 3150);
-            _inject2(".x126ychx:nth-child(2n){color:purple}", 3060);"
+            _inject2({
+              ltr: ".x17z2mba:hover{color:blue}",
+              priority: 3130
+            });
+            _inject2({
+              ltr: ".x96fq8s:active{color:red}",
+              priority: 3170
+            });
+            _inject2({
+              ltr: ".x1wvtd7d:focus{color:yellow}",
+              priority: 3150
+            });
+            _inject2({
+              ltr: ".x126ychx:nth-child(2n){color:purple}",
+              priority: 3060
+            });"
           `);
         });
 
@@ -5022,7 +5380,10 @@ describe('@stylexjs/babel-plugin', () => {
             "import _inject from "@stylexjs/stylex/lib/stylex-inject";
             var _inject2 = _inject;
             import stylex from 'stylex';
-            _inject2(".x1nxcus0:hover{position:sticky;position:fixed}", 3130);"
+            _inject2({
+              ltr: ".x1nxcus0:hover{position:sticky;position:fixed}",
+              priority: 3130
+            });"
           `);
         });
       });
@@ -5049,8 +5410,14 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x16oeupf::before{color:red}", 8000);
-          _inject2(".xeb2lg0::before:hover{color:blue}", 8130);
+          _inject2({
+            ltr: ".x16oeupf::before{color:red}",
+            priority: 8000
+          });
+          _inject2({
+            ltr: ".xeb2lg0::before:hover{color:blue}",
+            priority: 8130
+          });
           export const styles = {
             foo: {
               kxBb7d: "x16oeupf",
@@ -5085,8 +5452,14 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x16oeupf::before{color:red}", 8000);
-          _inject2(".xzzpreb:hover::before{color:blue}", 8130);
+          _inject2({
+            ltr: ".x16oeupf::before{color:red}",
+            priority: 8000
+          });
+          _inject2({
+            ltr: ".xzzpreb:hover::before{color:blue}",
+            priority: 8130
+          });
           export const styles = {
             foo: {
               kxBb7d: "x16oeupf",
@@ -5125,10 +5498,22 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".x16oeupf::before{color:red}", 8000);
-          _inject2(".xzzpreb:hover::before{color:blue}", 8130);
-          _inject2(".x1gobd9t:hover::before:hover{color:green}", 8260);
-          _inject2(".xs8jp5:hover::before:active{color:purple}", 8300);
+          _inject2({
+            ltr: ".x16oeupf::before{color:red}",
+            priority: 8000
+          });
+          _inject2({
+            ltr: ".xzzpreb:hover::before{color:blue}",
+            priority: 8130
+          });
+          _inject2({
+            ltr: ".x1gobd9t:hover::before:hover{color:green}",
+            priority: 8260
+          });
+          _inject2({
+            ltr: ".xs8jp5:hover::before:active{color:purple}",
+            priority: 8300
+          });
           export const styles = {
             foo: {
               kxBb7d: "x16oeupf",
@@ -5162,9 +5547,18 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".xrkmrrc{background-color:red}", 3000);
-          _inject2("@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}", 3200);
-          _inject2("@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}", 3200);"
+          _inject2({
+            ltr: ".xrkmrrc{background-color:red}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
+            priority: 3200
+          });
+          _inject2({
+            ltr: "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
+            priority: 3200
+          });"
         `);
       });
 
@@ -5191,9 +5585,18 @@ describe('@stylexjs/babel-plugin', () => {
           "import _inject from "@stylexjs/stylex/lib/stylex-inject";
           var _inject2 = _inject;
           import stylex from 'stylex';
-          _inject2(".xrkmrrc{background-color:red}", 3000);
-          _inject2("@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}", 3030);
-          _inject2("@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}", 3030);"
+          _inject2({
+            ltr: ".xrkmrrc{background-color:red}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}",
+            priority: 3030
+          });
+          _inject2({
+            ltr: "@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}",
+            priority: 3030
+          });"
         `);
       });
 
@@ -5227,17 +5630,50 @@ describe('@stylexjs/babel-plugin', () => {
             keoZOQ: "x1gkbulp",
             "$$css": true
           };
-          _inject2(".xrkmrrc{background-color:red}", 3000);
-          _inject2(".x17e2bsb{margin-inline-end:var(--x-14mfytm)}", 3000);
-          _inject2(".xtcj1g9:hover{margin-inline-end:var(--x-yepcm9)}", 3130);
-          _inject2(".xg6eqc8{margin-bottom:var(--x-14mfytm)}", 4000);
-          _inject2(".xgrn1a3:hover{margin-bottom:var(--x-yepcm9)}", 4130);
-          _inject2(".x19ja4a5{margin-inline-start:var(--x-14mfytm)}", 3000);
-          _inject2(".x2tye95:hover{margin-inline-start:var(--x-yepcm9)}", 3130);
-          _inject2(".x1gkbulp{margin-top:var(--x-marginTop)}", 4000);
-          _inject2("@property --x-14mfytm { syntax: \\"*\\"; inherits: false;}", 0);
-          _inject2("@property --x-yepcm9 { syntax: \\"*\\"; inherits: false;}", 0);
-          _inject2("@property --x-marginTop { syntax: \\"*\\"; inherits: false;}", 0);
+          _inject2({
+            ltr: ".xrkmrrc{background-color:red}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".x17e2bsb{margin-inline-end:var(--x-14mfytm)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".xtcj1g9:hover{margin-inline-end:var(--x-yepcm9)}",
+            priority: 3130
+          });
+          _inject2({
+            ltr: ".xg6eqc8{margin-bottom:var(--x-14mfytm)}",
+            priority: 4000
+          });
+          _inject2({
+            ltr: ".xgrn1a3:hover{margin-bottom:var(--x-yepcm9)}",
+            priority: 4130
+          });
+          _inject2({
+            ltr: ".x19ja4a5{margin-inline-start:var(--x-14mfytm)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".x2tye95:hover{margin-inline-start:var(--x-yepcm9)}",
+            priority: 3130
+          });
+          _inject2({
+            ltr: ".x1gkbulp{margin-top:var(--x-marginTop)}",
+            priority: 4000
+          });
+          _inject2({
+            ltr: "@property --x-14mfytm { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          _inject2({
+            ltr: "@property --x-yepcm9 { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          _inject2({
+            ltr: "@property --x-marginTop { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
           export const styles = {
             default: margin => [_temp, {
               k71WvV: (margin != null ? "x17e2bsb " : margin) + "xtcj1g9",

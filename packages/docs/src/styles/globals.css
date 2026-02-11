@@ -1,0 +1,66 @@
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-style: solid;
+  }
+  html,
+  :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--font-sans);
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-fd-background);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+    touch-action: manipulation;
+  }
+  button {
+    touch-action: manipulation;
+  }
+
+  pre code .line span {
+    color: light-dark(var(--shiki-light), var(--shiki-dark));
+  }
+
+  /* =============================================================================
+    Table Styles
+    ============================================================================= */
+
+  table th {
+    padding-block: 10px;
+    padding-inline: 12px;
+    text-align: start;
+    font-weight: 600;
+    color: var(--color-fd-foreground);
+    border-bottom: 1px solid var(--color-fd-border);
+  }
+
+  table td {
+    padding-block: 10px;
+    padding-inline: 12px;
+    border-bottom: 1px solid var(--color-fd-border);
+  }
+
+  table tbody tr:last-child td {
+    border-bottom: none;
+  }
+}

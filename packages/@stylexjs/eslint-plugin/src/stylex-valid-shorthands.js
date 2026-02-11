@@ -52,6 +52,7 @@ const shorthandAliases: $ReadOnly<{
   borderBottom: createSpecificTransformer('border-bottom'),
   borderLeft: createSpecificTransformer('border-left'),
   borderRadius: createSpecificTransformer('border-radius'),
+  cornerShape: createSpecificTransformer('corner-shape'),
   outline: createSpecificTransformer('outline'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
@@ -68,7 +69,7 @@ const stylexValidShorthands = {
       description:
         'Require shorthand properties to be split into individual properties',
       recommended: false,
-      url: 'https://github.com/facebook/stylex/tree/main/packages/eslint-plugin',
+      url: 'https://github.com/facebook/stylex/tree/main/packages/@stylexjs/eslint-plugin',
     },
     fixable: 'code',
     schema: [
@@ -156,7 +157,7 @@ const stylexValidShorthands = {
           node: property,
           message: `Use "${legacyNameMapping[key]}" instead of legacy formats like "${key}" to adhere to logical property naming.`,
           fix: (fixer) => {
-            // $FlowFixMe - We've already checked that key is a string and in legacyNameMapping
+            // $FlowFixMe[incompatible-type] - We've already checked that key is a string and in legacyNameMapping
             return fixer.replaceText(property.key, legacyNameMapping[key]);
           },
         });

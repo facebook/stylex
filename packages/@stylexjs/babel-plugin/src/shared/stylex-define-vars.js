@@ -125,7 +125,7 @@ function constructCssVariablesString(
     result[varGroupHash + suffix] = {
       ltr,
       rtl: null,
-      priority: priorityForAtRule(atRule) * 0.1,
+      priority: priorityForAtRule(atRule) / 10,
     };
   }
 

@@ -14,7 +14,7 @@ export const vars = stylex.defineVars({
 
 export const consts = stylex.defineConsts({
   bar: '100%',
-  baz: stylex.types.lengthPercentage(100),
+  baz: 100,
 });
 
 export const theme = stylex.createTheme(vars, {
@@ -136,3 +136,5 @@ export const withFirstThatWorks = stylex.create({
     width: stylex.firstThatWorks('50%', '100%'),
   },
 });
+
+export const customMarker = stylex.defineMarker();
