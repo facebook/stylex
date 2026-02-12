@@ -9,9 +9,10 @@
 
 'use strict';
 
-import type { Node, CallExpression } from 'estree';
+import type { CallExpression } from 'estree';
 import type { ValidImportSource } from './utils/createImportTracker';
 import createImportTracker from './utils/createImportTracker';
+import isStylexCreateDeclaration from './utils/isStylexCreateDeclaration';
 /*:: import { Rule } from 'eslint'; */
 
 type Schema = {
@@ -60,34 +61,13 @@ const stylexNoLegacyContextualStyles = {
 
     const importTracker = createImportTracker(importsToLookFor);
 
-    function isStylexCreateCallee(node: Node) {
-      return (
-        (node.type === 'MemberExpression' &&
-          node.object.type === 'Identifier' &&
-          importTracker.isStylexDefaultImport(node.object.name) &&
-          node.property.type === 'Identifier' &&
-          node.property.name === 'create') ||
-        (node.type === 'Identifier' &&
-          importTracker.isStylexNamedImport('create', node.name))
-      );
-    }
-
-    function isStylexCreateDeclaration(node: Node) {
-      return (
-        node &&
-        node.type === 'CallExpression' &&
-        isStylexCreateCallee(node.callee) &&
-        node.arguments.length === 1
-      );
-    }
-
     return {
       ImportDeclaration: importTracker.ImportDeclaration,
 
       CallExpression(node: CallExpression): void {
         const firstArg = node.arguments[0];
         if (
-          isStylexCreateDeclaration(node) &&
+          isStylexCreateDeclaration(node, importTracker) &&
           firstArg.type === 'ObjectExpression'
         ) {
           // Loop through the named styles

@@ -14,6 +14,7 @@ import type {
   Directive,
   Expression,
   Identifier,
+  Literal,
   ModuleDeclaration,
   Node,
   ObjectExpression,
@@ -28,18 +29,16 @@ import type {
 /*:: import { Rule } from 'eslint'; */
 import makeLiteralRule from './rules/makeLiteralRule';
 import makeUnionRule from './rules/makeUnionRule';
+import micromatch from 'micromatch';
 import isAnimationName from './rules/isAnimationName';
 import isPositionTryFallbacks from './rules/isPositionTryFallbacks';
 import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
 import isCSSVariable from './rules/isCSSVariable';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
-import {
-  CSSProperties,
-  convertToStandardProperties,
-  all,
-} from './reference/cssProperties';
+import { CSSPropertyKeys, CSSProperties, all } from './reference/cssProperties';
 import createImportTracker from './utils/createImportTracker';
+import getDistance from './utils/getDistance';
 import isStylexCreateDeclaration from './utils/isStylexCreateDeclaration';
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
@@ -58,14 +57,13 @@ export type RuleResponse = void | {
   },
 };
 
-const stylexNoNonstandardStyles = {
+const stylexNoDisallowedProperties = {
   meta: {
     type: 'problem',
     hasSuggestions: true,
-    fixable: 'code',
+    fixable: 'suggest',
     docs: {
-      descriptions:
-        'Enforce that you create standard CSS values and properties for stylex',
+      descriptions: 'Flags any property that is not allowed by stylex',
       category: 'Possible Errors',
       recommended: true,
     },
@@ -73,6 +71,10 @@ const stylexNoNonstandardStyles = {
       {
         type: 'object',
         properties: {
+          allowRawCSSVars: {
+            type: 'boolean',
+            default: true,
+          },
           validImports: {
             type: 'array',
             items: {
@@ -95,6 +97,7 @@ const stylexNoNonstandardStyles = {
   },
   create(context: Rule.RuleContext): { ... } {
     type Schema = {
+      allowRawCSSVars: boolean,
       validImports: Array<
         | string
         | {
@@ -104,6 +107,7 @@ const stylexNoNonstandardStyles = {
       >,
     };
     const {
+      allowRawCSSVars = true,
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
     }: Schema = context.options[0] || {};
     const importTracker = createImportTracker(importsToLookFor);
@@ -171,24 +175,22 @@ const stylexNoNonstandardStyles = {
         ) {
           return;
         }
-        return styleValue.properties.forEach((prop) => {
-          const nestedKeyName =
-            propName ??
-            (keyName.startsWith('@') ||
-            keyName.startsWith(':') ||
-            keyName === 'default'
-              ? null
-              : keyName);
-          if (nestedKeyName == null) {
-            return undefined;
-          }
-          return checkStyleProperty(
+
+        return styleValue.properties.forEach((prop) =>
+          checkStyleProperty(
             prop,
             level + 1,
-            nestedKeyName,
-            outerIsPseudoElement || keyName.startsWith('::'),
-          );
-        });
+            propName ??
+              (keyName.startsWith('@') ||
+              keyName.startsWith(':') ||
+              keyName === 'default'
+                ? null
+                : keyName),
+            outerIsPseudoElement ||
+              keyName.startsWith('@') ||
+              keyName.startsWith(':'),
+          ),
+        );
       }
       let styleKey: Expression | PrivateIdentifier = style.key;
       if (
@@ -212,40 +214,48 @@ const stylexNoNonstandardStyles = {
 
       const ruleChecker = CSSPropertiesWithOverrides[key];
       if (ruleChecker == null) {
-        const replacementKey =
-          style.key.type === 'Identifier' &&
-          convertToStandardProperties[style.key.name]
-            ? convertToStandardProperties[style.key.name]
-            : style.key.type === 'Literal' &&
-                typeof style.key.value === 'string' &&
-                convertToStandardProperties[style.key.value]
-              ? convertToStandardProperties[style.key.value]
-              : null;
-
-        let originalKey = '';
-
-        if (style.key.type === 'Identifier') {
-          originalKey = style.key.name;
-        } else if (
-          style.key.type === 'Literal' &&
-          typeof style.key.value === 'string'
-        ) {
-          originalKey = style.key.value;
+        if (allowRawCSSVars && micromatch.isMatch(key, '--*')) {
+          return;
         }
-        if (
-          replacementKey &&
-          (style.key.type === 'Identifier' || style.key.type === 'Literal')
-        ) {
-          return context.report({
-            node: style.key,
-            loc: style.key.loc,
-            message: `The key "${originalKey}" is not a standard CSS property. Did you mean "${replacementKey}"?`,
-            fix: (fixer) => {
-              return fixer.replaceText(style.key, replacementKey);
-            },
-          } as Rule.ReportDescriptor);
-        }
-        return;
+        const closestKey = CSSPropertyKeys.find((cssProp) => {
+          const distance = getDistance(key, cssProp, 2);
+          return distance <= 2;
+        });
+        return context.report({
+          node: style.key,
+          loc: style.key.loc,
+          message: 'This is not a key that is allowed by stylex',
+          suggest:
+            closestKey != null
+              ? [
+                  {
+                    desc: `Did you mean "${closestKey}"?`,
+                    fix: (fixer) => {
+                      if (style.key.type === 'Identifier') {
+                        return fixer.replaceText(style.key, closestKey);
+                      } else if (
+                        style.key.type === 'Literal' &&
+                        (typeof style.key.value === 'string' ||
+                          typeof style.key.value === 'number' ||
+                          typeof style.key.value === 'boolean' ||
+                          style.key.value == null)
+                      ) {
+                        const styleKey: Literal = style.key;
+                        const raw = style.key.raw;
+                        if (raw != null) {
+                          const quoteType = raw.substr(0, 1);
+                          return fixer.replaceText(
+                            styleKey,
+                            `${quoteType}${closestKey}${quoteType}`,
+                          );
+                        }
+                      }
+                      return null;
+                    },
+                  },
+                ]
+              : undefined,
+        } as Rule.ReportDescriptor);
       }
       if (typeof ruleChecker !== 'function') {
         throw new TypeError(`CSSProperties[${key}] is not a function`);
@@ -293,14 +303,6 @@ const stylexNoNonstandardStyles = {
     return {
       ImportDeclaration: importTracker.ImportDeclaration,
       Program(node: Program) {
-        // Keep track of all the top-level local variable declarations
-        // This is because stylex allows you to use local constants in your styles
-
-        // const body = node.body;
-        // for (let statement of body) {
-
-        // }
-
         const vars = node.body
           .reduce(
             (
@@ -353,9 +355,7 @@ const stylexNoNonstandardStyles = {
             decl.init.callee.name === 'require' &&
             decl.init.arguments.length === 1 &&
             decl.init.arguments[0].type === 'Literal' &&
-            importsToLookFor.includes(
-              decl.init.arguments[0].value as $FlowFixMe,
-            )
+            importsToLookFor.includes(decl.init.arguments[0].value)
           ) {
             if (decl.id.type === 'Identifier') {
               styleXDefaultImports.add(decl.id.name);
@@ -407,14 +407,13 @@ const stylexNoNonstandardStyles = {
           if (
             styles.type === 'ArrowFunctionExpression' &&
             (styles.body.type === 'ObjectExpression' ||
-              // $FlowFixMe[invalid-compare]
+              // $FlowFixMe TSAsExpression is relevant to the context of typescript
               (styles.body.type === 'TSAsExpression' &&
-                // $FlowFixMe[invalid-compare]
                 styles.body.expression.type === 'ObjectExpression'))
           ) {
             const params = styles.params;
             styles =
-              // $FlowFixMe[invalid-compare] TSAsExpression is relevant to the context of typescript
+              // $FlowFixMe[incompatible-type] TSAsExpression is relevant to the context of typescript
               styles.type === 'TSAsExpression'
                 ? styles.expression
                 : styles.body;
@@ -441,4 +440,4 @@ const stylexNoNonstandardStyles = {
     };
   },
 };
-export default stylexNoNonstandardStyles as typeof stylexNoNonstandardStyles;
+export default stylexNoDisallowedProperties as typeof stylexNoDisallowedProperties;
