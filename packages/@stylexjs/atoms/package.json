@@ -17,9 +17,6 @@
     "prebuild": "gen-types -i src/ -o src/"
   },
   "sideEffects": false,
-  "dependencies": {
-    "@stylexjs/shared": "0.17.5"
-  },
   "peerDependencies": {
     "@stylexjs/stylex": "^0.17.5"
   },

@@ -17,7 +17,6 @@ import {
   AT_RULE_PRIORITIES as _AT_RULE_PRIORITIES,
   PSEUDO_ELEMENT_PRIORITY as _PSEUDO_ELEMENT_PRIORITY,
 } from './utils/property-priorities';
-import _VALID_CSS_PROPERTIES from './utils/css-properties';
 
 export const getAtRulePriority: typeof _getAtRulePriority = _getAtRulePriority;
 export const getPseudoElementPriority: typeof _getPseudoElementPriority =
@@ -34,6 +33,3 @@ export const AT_RULE_PRIORITIES: typeof _AT_RULE_PRIORITIES =
   _AT_RULE_PRIORITIES;
 export const PSEUDO_ELEMENT_PRIORITY: typeof _PSEUDO_ELEMENT_PRIORITY =
   _PSEUDO_ELEMENT_PRIORITY;
-
-export const VALID_CSS_PROPERTIES: typeof _VALID_CSS_PROPERTIES =
-  _VALID_CSS_PROPERTIES;
