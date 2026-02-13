@@ -10,6 +10,7 @@
 'use strict';
 
 import type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -37,6 +38,7 @@ import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -284,6 +286,3 @@ _legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;
 
 export const legacyMerge: IStyleX = _legacyMerge;
-
-// Re-export atoms for cleaner imports
-export { default as x } from '@stylexjs/atoms';

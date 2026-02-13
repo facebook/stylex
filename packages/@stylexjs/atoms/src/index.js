@@ -3,33 +3,41 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
  */
 
 'use strict';
 
-const valueProxy = (_propName) =>
-  new Proxy(function () {}, {
-    get() {
-      return valueProxy('');
-    },
-    apply() {
-      return undefined;
-    },
-  });
+import type { CSSProperties, StyleXStyles } from '@stylexjs/stylex';
 
-const utilityStyles = new Proxy(function () {}, {
-  get(_target, prop) {
-    if (typeof prop === 'string') {
-      return valueProxy(prop);
+export type Atom = StyleXStyles<{ +[string]: mixed }>;
+
+export type AtomProperty = {
+  +[string]: Atom,
+  (value: string | number): Atom,
+};
+
+export type Atoms = $ReadOnly<{
+  [_Key in keyof CSSProperties]: AtomProperty,
+}>;
+
+const errorMessage = (prop: string): string =>
+  '\'@stylexjs/atoms\' must be compiled away by \'@stylexjs/babel-plugin\'. ' +
+  `Attempted to access '${prop}' at runtime.`;
+
+const _proxy: any = new Proxy({} as { [string]: mixed }, {
+  get(target: { [string]: mixed }, prop: string | symbol): mixed {
+    if (typeof prop === 'symbol') {
+      // $FlowFixMe[incompatible-type]
+      return target[prop];
     }
-    return undefined;
-  },
-  apply() {
-    throw new Error(
-      '@stylexjs/atoms is a compile-time helper. Attempted to call it as a function, but the StyleX compiler did not run.',
-    );
+    if (prop === 'default' || prop === '__esModule') {
+      return target[prop];
+    }
+    throw new Error(errorMessage(prop));
   },
 });
+const atoms: Atoms = _proxy;
 
-module.exports = utilityStyles;
-module.exports.default = utilityStyles;
+export default atoms;

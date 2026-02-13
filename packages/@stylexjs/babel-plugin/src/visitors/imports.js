@@ -12,7 +12,7 @@ import type { NodePath } from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 
-const INLINE_CSS_SOURCES = new Set(['@stylexjs/inline-css']);
+const ATOMS_SOURCES = new Set(['@stylexjs/atoms']);
 
 // Read imports of react and remember the name of the local variables for later
 export function readImportDeclarations(
@@ -25,12 +25,12 @@ export function readImportDeclarations(
   }
   const sourcePath = node.source.value;
 
-  if (INLINE_CSS_SOURCES.has(sourcePath)) {
+  if (ATOMS_SOURCES.has(sourcePath)) {
     for (const specifier of node.specifiers) {
       if (specifier.type === 'ImportNamespaceSpecifier') {
-        state.inlineCSSImports.set(specifier.local.name, '*');
+        state.atomImports.set(specifier.local.name, '*');
       } else if (specifier.type === 'ImportDefaultSpecifier') {
-        state.inlineCSSImports.set(specifier.local.name, '*');
+        state.atomImports.set(specifier.local.name, '*');
       } else if (
         specifier.type === 'ImportSpecifier' &&
         (specifier.imported.type === 'Identifier' ||
@@ -40,7 +40,7 @@ export function readImportDeclarations(
           specifier.imported.type === 'Identifier'
             ? specifier.imported.name
             : specifier.imported.value;
-        state.inlineCSSImports.set(specifier.local.name, importedName);
+        state.atomImports.set(specifier.local.name, importedName);
       }
     }
     return;
@@ -121,9 +121,6 @@ export function readImportDeclarations(
             if (importedName === 'defaultMarker') {
               state.stylexDefaultMarkerImport.add(localName);
             }
-            if (importedName === 'css') {
-              state.inlineCSSImports.set(localName, '*');
-            }
           }
         }
       }
@@ -153,24 +150,6 @@ export function readRequires(
       return;
     }
     state.importPaths.add(importPath);
-    if (INLINE_CSS_SOURCES.has(importPath)) {
-      if (node.id.type === 'Identifier') {
-        state.inlineCSSImports.set(node.id.name, '*');
-        return;
-      }
-      if (node.id.type === 'ObjectPattern') {
-        for (const prop of node.id.properties) {
-          if (
-            prop.type === 'ObjectProperty' &&
-            prop.key.type === 'Identifier' &&
-            prop.value.type === 'Identifier'
-          ) {
-            state.inlineCSSImports.set(prop.value.name, prop.key.name);
-          }
-        }
-        return;
-      }
-    }
     if (node.id.type === 'Identifier') {
       state.stylexImport.add(node.id.name);
     }
@@ -224,9 +203,6 @@ export function readRequires(
           if (prop.key.name === 'defaultMarker') {
             state.stylexDefaultMarkerImport.add(value.name);
           }
-          if (prop.key.name === 'css') {
-            state.inlineCSSImports.set(value.name, '*');
-          }
         }
       }
     }
@@ -239,10 +215,10 @@ export function readRequires(
     init.callee?.name === 'require' &&
     init.arguments?.length === 1 &&
     init.arguments?.[0].type === 'StringLiteral' &&
-    INLINE_CSS_SOURCES.has(init.arguments[0].value)
+    ATOMS_SOURCES.has(init.arguments[0].value)
   ) {
     if (node.id.type === 'Identifier') {
-      state.inlineCSSImports.set(node.id.name, '*');
+      state.atomImports.set(node.id.name, '*');
     }
     if (node.id.type === 'ObjectPattern') {
       for (const prop of node.id.properties) {
@@ -251,7 +227,7 @@ export function readRequires(
           prop.key.type === 'Identifier' &&
           prop.value.type === 'Identifier'
         ) {
-          state.inlineCSSImports.set(prop.value.name, prop.key.name);
+          state.atomImports.set(prop.value.name, prop.key.name);
         }
       }
     }

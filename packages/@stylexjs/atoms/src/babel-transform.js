@@ -8,8 +8,34 @@
 'use strict';
 
 const t = require('@babel/types');
+const { VALID_CSS_PROPERTIES } = require('@stylexjs/shared');
 
 const ATOMS_SOURCE = '@stylexjs/atoms';
+
+/**
+ * Validates a CSS property name against the known set of valid properties.
+ * Respects the propertyValidationMode option from the babel-plugin config.
+ *
+ * @param {string} property - The camelCase CSS property name to validate
+ * @param {object} state - StateManager from babel-plugin
+ */
+function validatePropertyName(property, state) {
+  if (VALID_CSS_PROPERTIES.has(property)) {
+    return;
+  }
+
+  const mode = state.options?.propertyValidationMode ?? 'silent';
+  const message =
+    `@stylexjs/atoms: Unknown CSS property '${property}'. ` +
+    'This will produce invalid CSS output.';
+
+  if (mode === 'throw') {
+    throw new Error(message);
+  } else if (mode === 'warn') {
+    console.warn(`[stylex] ${message}`);
+  }
+  // 'silent' mode: do nothing
+}
 
 /**
  * Creates a visitor that transforms utility style expressions into raw style objects.
@@ -50,7 +76,7 @@ function createUtilityStylesVisitor(state) {
 }
 
 function isUtilityStylesIdentifier(ident, state, path) {
-  if (state.inlineCSSImports && state.inlineCSSImports.has(ident.name)) {
+  if (state.atomImports && state.atomImports.has(ident.name)) {
     return true;
   }
 
@@ -99,6 +125,11 @@ function getPropKey(prop, computed) {
   return null;
 }
 
+/**
+ * Strips a leading underscore from CSS values. This allows using underscore-
+ * prefixed identifiers for CSS values that conflict with JS reserved words
+ * or start with a digit (e.g., css.display._flex or css.zIndex._1).
+ */
 function normalizeValue(value) {
   if (typeof value === 'string' && value.startsWith('_')) {
     return value.slice(1);
@@ -112,7 +143,10 @@ function getStaticStyleFromPath(path, state) {
     return null;
   }
 
-  if (path.parentPath?.isCallExpression() && path.parentPath.node.callee === node) {
+  if (
+    path.parentPath?.isCallExpression() &&
+    path.parentPath.node.callee === node
+  ) {
     return null;
   }
 
@@ -131,13 +165,21 @@ function getStaticStyleFromPath(path, state) {
       t.isIdentifier(base) &&
       isUtilityStylesIdentifier(base, state, path)
     ) {
+      validatePropertyName(propName, state);
       return { property: propName, value: normalizeValue(valueKey) };
     }
   }
 
-  if (t.isIdentifier(parent) && isUtilityStylesIdentifier(parent, state, path)) {
-    const importedName = state.inlineCSSImports?.get(parent.name) ?? 'color';
+  if (
+    t.isIdentifier(parent) &&
+    isUtilityStylesIdentifier(parent, state, path)
+  ) {
+    const importedName = state.atomImports?.get(parent.name);
+    if (importedName == null) {
+      return null;
+    }
     const property = importedName === '*' ? valueKey : importedName;
+    validatePropertyName(property, state);
     return { property, value: normalizeValue(valueKey) };
   }
 
@@ -166,7 +208,11 @@ function getDynamicStyleFromPath(path, state) {
 
   const parent = callee.node.object;
 
-  if (t.isIdentifier(parent) && isUtilityStylesIdentifier(parent, state, path)) {
+  if (
+    t.isIdentifier(parent) &&
+    isUtilityStylesIdentifier(parent, state, path)
+  ) {
+    validatePropertyName(valueKey, state);
     return {
       property: valueKey,
       value: argPath.node,
@@ -181,6 +227,7 @@ function getDynamicStyleFromPath(path, state) {
       t.isIdentifier(base) &&
       isUtilityStylesIdentifier(base, state, path)
     ) {
+      validatePropertyName(propName, state);
       return {
         property: propName,
         value: argPath.node,

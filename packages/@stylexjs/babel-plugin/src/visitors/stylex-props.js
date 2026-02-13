@@ -545,9 +545,14 @@ function isCalleeMemberExpression(
 }
 
 /**
- * Pre-compile raw style objects from atoms.
+ * Pre-compile raw style objects within stylex.props() arguments.
  * This transforms { property: 'value' } into { propKey: 'className', $$css: true }
  * and registers the CSS injection.
+ *
+ * This processes any plain ObjectExpression argument, but in practice only
+ * atoms-produced objects reach here — passing a raw object like
+ * stylex.props({ color: 'red' }) is already a type error since stylex.props()
+ * expects StyleXStyles (compiled objects with $$css: true).
  */
 function compileRawStyleObjects(
   argPath: NodePath<>,
@@ -580,13 +585,18 @@ function compileRawStyleObjects(
       // Check if this is a simple {property: dynamicValue} pattern
       if (properties.length === 1 && t.isObjectProperty(properties[0])) {
         const prop = properties[0];
-        const key = t.isIdentifier(prop.key) && !prop.computed
-          ? prop.key.name
-          : t.isStringLiteral(prop.key)
-            ? prop.key.value
-            : null;
+        const key =
+          t.isIdentifier(prop.key) && !prop.computed
+            ? prop.key.name
+            : t.isStringLiteral(prop.key)
+              ? prop.key.value
+              : null;
 
-        if (key != null && t.isExpression(prop.value) && !t.isLiteral(prop.value)) {
+        if (
+          key != null &&
+          t.isExpression(prop.value) &&
+          !t.isLiteral(prop.value)
+        ) {
           // This is a dynamic style: { property: dynamicValue }
           compileDynamicStyle(objPath, key, prop.value, state);
           return;

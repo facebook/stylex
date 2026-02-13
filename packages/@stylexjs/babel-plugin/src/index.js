@@ -39,7 +39,6 @@ import {
 } from './shared/preprocess-rules/legacy-expand-shorthands';
 import transformStyleXDefineMarker from './visitors/stylex-define-marker';
 import { createUtilityStylesVisitor } from '@stylexjs/atoms/babel-transform';
-import { convertObjectToAST } from './utils/js-to-ast';
 
 const NAME = 'stylex';
 
@@ -165,9 +164,7 @@ function styleXTransform(): PluginObj<> {
           // Run atoms visitor first to transform x.prop.value patterns
           // This runs BEFORE stylex.props so that atomic styles are already
           // compiled when stylex.props processes them
-          const atomsVisitor = createUtilityStylesVisitor(state, {
-            convertObjectToAST,
-          });
+          const atomsVisitor = createUtilityStylesVisitor(state);
           path.traverse(atomsVisitor);
 
           path.traverse({
