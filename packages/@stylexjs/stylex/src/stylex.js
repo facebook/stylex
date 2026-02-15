@@ -262,25 +262,26 @@ type IStyleX = {
   ...
 };
 
-function _legacyMerge(
-  ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
-): string {
-  const [className] = styleq(styles);
-  return className;
-}
+export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
+  function _legacyMerge(
+    ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
+  ): string {
+    const [className] = styleq(styles);
+    return className;
+  }
 
-_legacyMerge.create = create;
-_legacyMerge.createTheme = createTheme;
-_legacyMerge.defineConsts = defineConsts;
-_legacyMerge.defineMarker = defineMarker;
-_legacyMerge.defineVars = defineVars;
-_legacyMerge.defaultMarker = defaultMarker;
-_legacyMerge.firstThatWorks = firstThatWorks;
-_legacyMerge.keyframes = keyframes;
-_legacyMerge.positionTry = positionTry;
-_legacyMerge.props = props;
-_legacyMerge.types = types;
-_legacyMerge.when = when;
-_legacyMerge.viewTransitionClass = viewTransitionClass;
-
-export const legacyMerge: IStyleX = _legacyMerge;
+  _legacyMerge.create = create;
+  _legacyMerge.createTheme = createTheme;
+  _legacyMerge.defineConsts = defineConsts;
+  _legacyMerge.defineMarker = defineMarker;
+  _legacyMerge.defineVars = defineVars;
+  _legacyMerge.defaultMarker = defaultMarker;
+  _legacyMerge.firstThatWorks = firstThatWorks;
+  _legacyMerge.keyframes = keyframes;
+  _legacyMerge.positionTry = positionTry;
+  _legacyMerge.props = props;
+  _legacyMerge.types = types;
+  _legacyMerge.when = when;
+  _legacyMerge.viewTransitionClass = viewTransitionClass;
+  return _legacyMerge;
+})();
