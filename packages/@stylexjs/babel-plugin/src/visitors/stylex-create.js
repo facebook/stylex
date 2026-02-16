@@ -240,7 +240,7 @@ export default function transformStyleXCreate(
         const isPseudoElement = path.some((p) => p.startsWith('::'));
         injectedInheritStyles[variableName] = {
           priority: 0,
-          ltr: `@property ${variableName} { syntax: "*";${isPseudoElement ? '' : ' inherits: false;'}}`,
+          ltr: `@property ${variableName} { syntax: "*"; inherits: ${isPseudoElement ? 'true' : 'false'};}`,
           rtl: null,
         };
       });
