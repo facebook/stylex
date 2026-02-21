@@ -14,7 +14,11 @@ import type { CliConfig, TransformConfig } from '../src/config';
 import { compileDirectory } from '../src/transform';
 import * as cacheModule from '../src/cache';
 import { getDefaultCachePath, findProjectRoot } from '../src/cache';
-import { copyNodeModules, clearInputModuleDir } from '../src/modules';
+import {
+  copyNodeModules,
+  clearInputModuleDir,
+  COMPILED_MODULES_DIR_NAME,
+} from '../src/modules';
 import * as modulesModule from '../src/modules';
 
 const fs = require('node:fs').promises;
@@ -605,7 +609,7 @@ describe('copyNodeModules preserves all configured modules', () => {
     const result = copyNodeModules(config);
     expect(result).toBe(true);
 
-    const compiledDir = path.join(inputDir, 'stylex_compiled_modules');
+    const compiledDir = path.join(inputDir, COMPILED_MODULES_DIR_NAME);
     expect(
       await fs
         .access(path.join(compiledDir, 'module-a'))
@@ -674,7 +678,7 @@ describe('copyNodeModules preserves all configured modules', () => {
     const result = copyNodeModules(config);
     expect(result).toBe(true);
 
-    const compiledDir = path.join(inputDir, 'stylex_compiled_modules');
+    const compiledDir = path.join(inputDir, COMPILED_MODULES_DIR_NAME);
     expect(
       await fs
         .access(path.join(compiledDir, 'module-a'))

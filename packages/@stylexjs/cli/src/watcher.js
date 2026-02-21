@@ -9,7 +9,12 @@
 
 import type { ModuleType, TransformConfig } from './config';
 
-import { clearInputModuleDir, fetchModule, findModuleDir } from './modules';
+import {
+  clearInputModuleDir,
+  fetchModule,
+  findModuleDir,
+  COMPILED_MODULES_DIR_NAME,
+} from './modules';
 import { compileDirectory } from './transform';
 
 import ansis from 'ansis';
@@ -197,7 +202,7 @@ function subscribeInput(
   registerSubscription(client, watcher, relative_path, 'jsFileChanged');
 
   const isNotCompiledModule = (file: $ReadOnly<Object>) =>
-    !file.name.startsWith('stylex_compiled_modules');
+    !file.name.startsWith(COMPILED_MODULES_DIR_NAME);
 
   client.on('subscription', function (resp: OnEvent) {
     if (resp.subscription !== 'jsFileChanged') return;
@@ -231,7 +236,7 @@ function subscribeModule(
 
     fetchModule(moduleConfig, config);
 
-    const prefix = 'stylex_compiled_modules/' + moduleName + '/';
+    const prefix = COMPILED_MODULES_DIR_NAME + '/' + moduleName + '/';
 
     compileAndCleanup(
       config,

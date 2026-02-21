@@ -14,7 +14,7 @@ import fs from 'node:fs';
 import { createRequire } from 'module';
 import path from 'node:path';
 
-const COMPILED_MODULES_DIR_NAME = 'stylex_compiled_modules';
+export const COMPILED_MODULES_DIR_NAME = 'stylex_compiled_modules';
 
 export function copyNodeModules(config: TransformConfig): boolean {
   if (config.modules_EXPERIMENTAL === undefined) {
