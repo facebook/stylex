@@ -73,10 +73,6 @@ export function fetchModule(
   const compiledModuleDir = path.join(config.input, COMPILED_MODULES_DIR_NAME);
   const moduleName = Array.isArray(module) ? module[0] : module;
   const moduleDir = findModuleDir(moduleName, config);
-  fs.rmSync(compiledModuleDir, {
-    recursive: true,
-    force: true,
-  });
   // $FlowFixMe[prop-missing]
   fs.cpSync(moduleDir, path.join(compiledModuleDir, moduleName), {
     force: true,
