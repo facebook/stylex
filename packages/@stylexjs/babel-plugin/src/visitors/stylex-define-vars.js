@@ -15,6 +15,7 @@ import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import {
   defineVars as stylexDefineVars,
+  namedVar as stylexNamedVar,
   messages,
   utils,
   keyframes as stylexKeyframes,
@@ -78,6 +79,8 @@ export default function transformStyleXDefineVars(
 
     const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
       {};
+    const identifiers: FunctionConfig['identifiers'] = {};
+    const memberExpressions: FunctionConfig['memberExpressions'] = {};
 
     // eslint-disable-next-line no-inner-declarations
     function keyframes<
@@ -107,8 +110,51 @@ export default function transformStyleXDefineVars(
       return positionTryName;
     }
 
-    const identifiers: FunctionConfig['identifiers'] = {};
-    const memberExpressions: FunctionConfig['memberExpressions'] = {};
+    // eslint-disable-next-line no-inner-declarations
+    function namedVar(...namedVarArgs: $ReadOnlyArray<NodePath<t.Node>>) {
+      if (namedVarArgs.length !== 2) {
+        throw callExpressionPath.buildCodeFrameError(
+          messages.namedVarIllegalArgumentLength(),
+          SyntaxError,
+        );
+      }
+
+      const [namePath, valuePath] = namedVarArgs;
+      if (namePath == null || valuePath == null) {
+        throw callExpressionPath.buildCodeFrameError(
+          messages.namedVarIllegalArgumentLength(),
+          SyntaxError,
+        );
+      }
+
+      const evaluatedName = evaluate(namePath, state, {
+        identifiers,
+        memberExpressions,
+      });
+      if (!evaluatedName.confident || typeof evaluatedName.value !== 'string') {
+        throw callExpressionPath.buildCodeFrameError(
+          messages.namedVarNameMustBeStatic(),
+          SyntaxError,
+        );
+      }
+
+      const evaluatedValue = evaluate(valuePath, state, {
+        identifiers,
+        memberExpressions,
+      });
+      if (!evaluatedValue.confident) {
+        throw callExpressionPath.buildCodeFrameError(
+          messages.nonStaticValue('defineVars'),
+          SyntaxError,
+        );
+      }
+
+      return stylexNamedVar(evaluatedName.value, evaluatedValue.value);
+    }
+
+    state.stylexNamedVarImport.forEach((name) => {
+      identifiers[name] = { fn: namedVar, takesPath: true };
+    });
     state.stylexKeyframesImport.forEach((name) => {
       identifiers[name] = { fn: keyframes };
     });
@@ -123,6 +169,7 @@ export default function transformStyleXDefineVars(
         memberExpressions[name] = {};
       }
 
+      memberExpressions[name].namedVar = { fn: namedVar, takesPath: true };
       memberExpressions[name].keyframes = { fn: keyframes };
       memberExpressions[name].positionTry = { fn: positionTry };
       identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };

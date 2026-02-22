@@ -24,12 +24,16 @@
 import type { NodePath, Binding } from '@babel/traverse';
 
 import { parseSync } from '@babel/core';
+import { parse as parseCode } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
+import * as messages from '../shared/messages';
+import { isValidCustomPropertyName } from '../shared/stylex-named-var';
 import * as errMsgs from './evaluation-errors';
 import fs from 'node:fs';
+import path from 'node:path';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -50,6 +54,18 @@ function isValidCallee(val: string): boolean {
 
 function isInvalidMethod(val: string): boolean {
   return INVALID_METHODS.includes(val);
+}
+
+function runTraverse(astNode: any, visitors: { [string]: Function }): void {
+  const traverseAny: any = traverse;
+  const traverseFn =
+    typeof traverseAny === 'function' ? traverseAny : traverseAny.default;
+
+  if (typeof traverseFn !== 'function') {
+    throw new TypeError('Babel traverse runtime is unavailable.');
+  }
+
+  traverseFn(astNode, visitors);
 }
 
 const MUTATING_ARRAY_METHODS = new Set([
@@ -189,7 +205,7 @@ function evaluateImportedFile(
 
   let result: any;
 
-  traverse(astNode, {
+  runTraverse(astNode, {
     ExportNamedDeclaration(path: NodePath<t.ExportNamedDeclaration>) {
       const declaration = path.get('declaration');
 
@@ -234,7 +250,18 @@ function evaluateThemeRef(
   exportName: string,
   state: State,
 ): { [key: string]: string } {
+  const customNamesByKey = getCustomPropertyNamesForDefineVarsExport(
+    fileName,
+    exportName,
+    state,
+  );
+
   const resolveKey = (key: string) => {
+    const customName = customNamesByKey[key];
+    if (customName != null) {
+      return `var(--${customName})`;
+    }
+
     if (key.startsWith('--')) {
       return `var(${key})`;
     }
@@ -291,6 +318,384 @@ function evaluateThemeRef(
   );
 
   return proxy;
+}
+
+const customPropertyNamesByExportCache: Map<string, { [string]: string }> =
+  new Map();
+const packageDirsByRootDirCache: Map<string, Map<string, string>> = new Map();
+
+function getCustomPropertyNamesForDefineVarsExport(
+  filePath: string,
+  exportName: string,
+  state: State,
+): { [string]: string } {
+  const resolvedPath = resolveReadableFilePath(filePath, state);
+  const cacheKey = `${resolvedPath}:${exportName}`;
+  const cached = customPropertyNamesByExportCache.get(cacheKey);
+  if (cached != null) {
+    return cached;
+  }
+
+  const importSources = new Set(state.traversalState.importSources);
+  importSources.add('@stylexjs/stylex');
+  importSources.add('stylex');
+
+  const customPropertyNames = extractCustomPropertyNamesFromExportedDefineVars(
+    resolvedPath,
+    exportName,
+    importSources,
+  );
+  customPropertyNamesByExportCache.set(cacheKey, customPropertyNames);
+  return customPropertyNames;
+}
+
+function resolveReadableFilePath(filePath: string, state: State): string {
+  if (fs.existsSync(filePath)) {
+    return filePath;
+  }
+
+  const canonicalThemeRef = parseCanonicalThemeRef(filePath);
+  if (canonicalThemeRef != null) {
+    const { packageName, packageRelativePath } = canonicalThemeRef;
+    const sourceFilePath = state.traversalState.filename;
+    if (sourceFilePath != null) {
+      const sourcePackage =
+        state.traversalState.getPackageNameAndPath(sourceFilePath);
+      if (sourcePackage != null && sourcePackage[0] === packageName) {
+        const fromSourcePackage = path.resolve(
+          sourcePackage[1],
+          packageRelativePath,
+        );
+        if (fs.existsSync(fromSourcePackage)) {
+          return fromSourcePackage;
+        }
+      }
+    }
+
+    const rootDir =
+      state.traversalState.options.unstable_moduleResolution?.rootDir;
+    if (rootDir != null) {
+      const fromRootDir = resolveCanonicalThemeRefFromRootDir(
+        rootDir,
+        packageName,
+        packageRelativePath,
+      );
+      if (fromRootDir != null) {
+        return fromRootDir;
+      }
+    }
+  }
+
+  if (!path.isAbsolute(filePath)) {
+    const fromCwd = path.resolve(process.cwd(), filePath);
+    if (fs.existsSync(fromCwd)) {
+      return fromCwd;
+    }
+
+    const sourceFilePath = state.traversalState.filename;
+    if (sourceFilePath != null) {
+      const fromSourceFile = path.resolve(
+        path.dirname(sourceFilePath),
+        filePath,
+      );
+      if (fs.existsSync(fromSourceFile)) {
+        return fromSourceFile;
+      }
+    }
+  }
+
+  return filePath;
+}
+
+function parseCanonicalThemeRef(
+  filePath: string,
+): null | { +packageName: string, +packageRelativePath: string } {
+  if (path.isAbsolute(filePath) || /^[A-Za-z]:[\\/]/.test(filePath)) {
+    return null;
+  }
+  const separatorIndex = filePath.indexOf(':');
+  if (separatorIndex <= 0 || separatorIndex >= filePath.length - 1) {
+    return null;
+  }
+  return {
+    packageName: filePath.slice(0, separatorIndex),
+    packageRelativePath: filePath.slice(separatorIndex + 1),
+  };
+}
+
+function resolveCanonicalThemeRefFromRootDir(
+  rootDir: string,
+  packageName: string,
+  packageRelativePath: string,
+): string | null {
+  const packageDirs = getPackageDirsByName(rootDir);
+  const packageDir = packageDirs.get(packageName);
+  if (packageDir == null) {
+    return null;
+  }
+  const candidatePath = path.resolve(packageDir, packageRelativePath);
+  return fs.existsSync(candidatePath) ? candidatePath : null;
+}
+
+function getPackageDirsByName(rootDir: string): Map<string, string> {
+  const cached = packageDirsByRootDirCache.get(rootDir);
+  if (cached != null) {
+    return cached;
+  }
+
+  const packageDirs: Map<string, string> = new Map();
+  indexPackageDir(packageDirs, rootDir);
+  indexSubdirectories(packageDirs, path.join(rootDir, 'packages'));
+
+  packageDirsByRootDirCache.set(rootDir, packageDirs);
+  return packageDirs;
+}
+
+function indexSubdirectories(
+  packageDirs: Map<string, string>,
+  parentDir: string,
+): void {
+  if (!fs.existsSync(parentDir)) {
+    return;
+  }
+  for (const childName of fs.readdirSync(parentDir)) {
+    const childPath = path.join(parentDir, childName);
+    if (!fs.statSync(childPath).isDirectory()) {
+      continue;
+    }
+
+    indexPackageDir(packageDirs, childPath);
+    indexSubdirectories(packageDirs, childPath);
+  }
+}
+
+function indexPackageDir(packageDirs: Map<string, string>, dir: string): void {
+  const packageJsonPath = path.join(dir, 'package.json');
+  if (!fs.existsSync(packageJsonPath)) {
+    return;
+  }
+  try {
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    if (typeof packageJson.name === 'string') {
+      packageDirs.set(packageJson.name, dir);
+    }
+  } catch {}
+}
+
+function extractCustomPropertyNamesFromExportedDefineVars(
+  filePath: string,
+  exportName: string,
+  importSources: Set<string>,
+): { [string]: string } {
+  if (!fs.existsSync(filePath)) {
+    return {};
+  }
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const parserPlugins: Array<string> = ['jsx'];
+  if (/\.tsx?$/i.test(filePath)) {
+    parserPlugins.push('typescript');
+  } else {
+    parserPlugins.push('flow');
+  }
+
+  let ast;
+  try {
+    const parserOptions: any = {
+      sourceType: 'module',
+      plugins: parserPlugins,
+    };
+    ast = parseCode(fileContents, parserOptions);
+  } catch {
+    return {};
+  }
+
+  const namespaceImports = new Set<string>();
+  const defineVarsImports = new Set<string>();
+  const namedVarImports = new Set<string>();
+  const customNamesByKey: { [string]: string } = {};
+  const customNameToKey = new Map<string, string>();
+
+  function registerCustomPropertyName(key: string, cssName: string): void {
+    const customName = cssName.slice(2);
+    const existingKey = customNameToKey.get(customName);
+    if (existingKey != null && existingKey !== key) {
+      throw new Error(
+        messages.duplicateCustomPropertyName(
+          `--${customName}`,
+          existingKey,
+          key,
+        ),
+      );
+    }
+    customNameToKey.set(customName, key);
+    customNamesByKey[key] = customName;
+  }
+
+  function isDefineVarsCallee(node: t.Node): boolean {
+    if (t.isIdentifier(node)) {
+      return defineVarsImports.has(node.name);
+    }
+    if (t.isMemberExpression(node)) {
+      const object: any = node.object;
+      const property: any = node.property;
+      if (
+        node.computed ||
+        !t.isIdentifier(object) ||
+        !t.isIdentifier(property)
+      ) {
+        return false;
+      }
+      return (
+        namespaceImports.has(object.name) && property.name === 'defineVars'
+      );
+    }
+    return false;
+  }
+
+  function isNamedVarCallee(node: t.Node): boolean {
+    if (t.isIdentifier(node)) {
+      return namedVarImports.has(node.name);
+    }
+    if (t.isMemberExpression(node)) {
+      const object: any = node.object;
+      const property: any = node.property;
+      if (
+        node.computed ||
+        !t.isIdentifier(object) ||
+        !t.isIdentifier(property)
+      ) {
+        return false;
+      }
+      return namespaceImports.has(object.name) && property.name === 'namedVar';
+    }
+    return false;
+  }
+
+  function collectFromObjectExpression(node: t.ObjectExpression): void {
+    for (const property of node.properties) {
+      if (
+        !t.isObjectProperty(property) ||
+        property.computed ||
+        !(t.isIdentifier(property.key) || t.isStringLiteral(property.key))
+      ) {
+        continue;
+      }
+      let keyName;
+      if (t.isIdentifier(property.key)) {
+        keyName = property.key.name;
+      } else if (t.isStringLiteral(property.key)) {
+        keyName = property.key.value;
+      } else {
+        continue;
+      }
+
+      if (keyName.startsWith('--')) {
+        registerCustomPropertyName(keyName, keyName);
+      }
+
+      if (
+        !t.isCallExpression(property.value) ||
+        !isNamedVarCallee(property.value.callee)
+      ) {
+        continue;
+      }
+
+      if (property.value.arguments.length !== 2) {
+        throw new Error(messages.namedVarIllegalArgumentLength());
+      }
+      const rawName = property.value.arguments[0];
+      if (!t.isStringLiteral(rawName)) {
+        throw new Error(messages.namedVarNameMustBeStatic());
+      }
+      const customPropertyName = rawName.value;
+      if (!customPropertyName.startsWith('--')) {
+        throw new Error(
+          messages.namedVarNameMustStartWithDashes(keyName, customPropertyName),
+        );
+      }
+      if (!isValidCustomPropertyName(customPropertyName)) {
+        throw new Error(
+          messages.namedVarInvalidCustomPropertyName(
+            keyName,
+            customPropertyName,
+          ),
+        );
+      }
+      registerCustomPropertyName(keyName, customPropertyName);
+    }
+  }
+
+  runTraverse(ast, {
+    ImportDeclaration(path) {
+      if (!importSources.has(path.node.source.value)) {
+        return;
+      }
+      for (const specifier of path.node.specifiers) {
+        if (
+          specifier.type === 'ImportDefaultSpecifier' ||
+          specifier.type === 'ImportNamespaceSpecifier'
+        ) {
+          namespaceImports.add(specifier.local.name);
+          continue;
+        }
+        if (specifier.type !== 'ImportSpecifier') {
+          continue;
+        }
+        const importedName =
+          specifier.imported.type === 'Identifier'
+            ? specifier.imported.name
+            : specifier.imported.value;
+        if (importedName === 'defineVars') {
+          defineVarsImports.add(specifier.local.name);
+        }
+        if (importedName === 'namedVar') {
+          namedVarImports.add(specifier.local.name);
+        }
+      }
+    },
+    ExportNamedDeclaration(path) {
+      const declaration = path.get('declaration');
+      if (!declaration.isVariableDeclaration()) {
+        return;
+      }
+      const declarators = declaration.get('declarations');
+      for (const declaratorPath of declarators) {
+        if (!declaratorPath.isVariableDeclarator()) {
+          continue;
+        }
+        const id = declaratorPath.get('id');
+        if (!id.isIdentifier() || id.node.name !== exportName) {
+          continue;
+        }
+        const init = declaratorPath.get('init');
+        if (!init.isCallExpression() || !isDefineVarsCallee(init.node.callee)) {
+          continue;
+        }
+
+        const [firstArg] = init.get('arguments');
+        if (firstArg == null) {
+          continue;
+        }
+        if (firstArg.isObjectExpression()) {
+          collectFromObjectExpression(firstArg.node);
+          continue;
+        }
+        if (firstArg.isIdentifier()) {
+          const binding = firstArg.scope.getBinding(firstArg.node.name);
+          const bindingPath = binding?.path;
+          if (
+            bindingPath != null &&
+            bindingPath.isVariableDeclarator() &&
+            bindingPath.get('init').isObjectExpression()
+          ) {
+            collectFromObjectExpression(bindingPath.get('init').node);
+          }
+        }
+      }
+    },
+  });
+
+  return customNamesByKey;
 }
 
 /**

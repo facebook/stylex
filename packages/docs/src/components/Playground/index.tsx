@@ -41,9 +41,10 @@ import {
 import * as stylexPluginModule from '@stylexjs/babel-plugin';
 import { vars, playgroundVars } from '@/theming/vars.stylex';
 import { ChevronDown } from 'lucide-react';
-const stylexPlugin: typeof import('@stylexjs/babel-plugin').default =
+const stylexPluginDefaultExportKey = 'default';
+const stylexPlugin: any =
   // @ts-ignore - handle CJS default export
-  stylexPluginModule.default ?? stylexPluginModule;
+  stylexPluginModule[stylexPluginDefaultExportKey] ?? stylexPluginModule;
 
 declare const STYLEX_TYPES: Record<string, string>;
 declare const REACT_TYPES: string;

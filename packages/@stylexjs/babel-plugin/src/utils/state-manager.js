@@ -158,6 +158,7 @@ export default class StateManager {
   +stylexKeyframesImport: Set<string> = new Set();
   +stylexPositionTryImport: Set<string> = new Set();
   +stylexDefineVarsImport: Set<string> = new Set();
+  +stylexNamedVarImport: Set<string> = new Set();
   +stylexDefineMarkerImport: Set<string> = new Set();
   +stylexDefineConstsImport: Set<string> = new Set();
   +stylexCreateThemeImport: Set<string> = new Set();

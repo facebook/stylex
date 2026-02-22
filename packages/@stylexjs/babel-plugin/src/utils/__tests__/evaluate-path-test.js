@@ -11,6 +11,9 @@ jest.autoMockOff();
 
 const { parse } = require('@babel/parser');
 const traverse = require('@babel/traverse').default;
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
 const { evaluate } = require('../evaluate-path');
 const { default: StateManager } = require('../state-manager');
 
@@ -64,6 +67,47 @@ function evaluateLastStatement(code, functions) {
   } else {
     return result.value;
   }
+}
+
+function evaluateNamedVariable(code, variableName, stateOptions = {}) {
+  const ast = parse(code, { sourceType: 'module' });
+  let result;
+  traverse(ast, {
+    Program(path, state) {
+      const stateManager = new StateManager({
+        ...state,
+        filename: stateOptions.filename,
+        file: { metadata: {} },
+        opts: stateOptions.opts ?? {},
+      });
+
+      const statements = path.get('body');
+      for (const statement of statements) {
+        if (!statement.isVariableDeclaration()) {
+          continue;
+        }
+        for (const decl of statement.get('declarations')) {
+          if (!decl.isVariableDeclarator()) {
+            continue;
+          }
+          const idPath = decl.get('id');
+          if (!idPath.isIdentifier() || idPath.node.name !== variableName) {
+            continue;
+          }
+          const initPath = decl.get('init');
+          if (initPath != null) {
+            result = evaluate(initPath, stateManager, stateOptions.functions);
+            return;
+          }
+        }
+      }
+    },
+  });
+
+  if (result === undefined || result.confident === false) {
+    return { confident: false };
+  }
+  return result.value;
 }
 
 describe('custom path evaluation works as expected', () => {
@@ -298,6 +342,148 @@ describe('custom path evaluation works as expected', () => {
         a;
       `;
       expect(evaluateLastStatement(code, {})).toEqual({ confident: false });
+    });
+  });
+
+  describe('evaluateThemeRef custom property name mapping', () => {
+    test('resolves imported namedVar custom properties', () => {
+      const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'stylex-eval-'));
+      const sourceFilePath = path.join(tmpDir, 'App.js');
+      const tokensFilePath = path.join(tmpDir, 'tokens.stylex.js');
+
+      try {
+        fs.writeFileSync(
+          tokensFilePath,
+          `
+            import * as stylex from '@stylexjs/stylex';
+            export const tokens = stylex.defineVars({
+              surface: stylex.namedVar('--surface-bg', 'black'),
+              accent: 'blue',
+            });
+          `,
+          'utf8',
+        );
+
+        const appCode = `
+          import { tokens } from './tokens.stylex';
+          const customVar = tokens.surface;
+          const hashedVar = tokens.accent;
+        `;
+
+        const opts = {
+          unstable_moduleResolution: {
+            type: 'commonJS',
+            rootDir: tmpDir,
+          },
+        };
+
+        const customVar = evaluateNamedVariable(appCode, 'customVar', {
+          filename: sourceFilePath,
+          opts,
+        });
+        const hashedVar = evaluateNamedVariable(appCode, 'hashedVar', {
+          filename: sourceFilePath,
+          opts,
+        });
+
+        expect(customVar).toBe('var(--surface-bg)');
+        expect(hashedVar).toMatch(/^var\(--x/);
+      } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+      }
+    });
+
+    test('throws for invalid imported namedVar declarations', () => {
+      const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'stylex-eval-'));
+      const sourceFilePath = path.join(tmpDir, 'App.js');
+      const tokensFilePath = path.join(tmpDir, 'tokens.stylex.js');
+
+      try {
+        fs.writeFileSync(
+          tokensFilePath,
+          `
+            import * as stylex from '@stylexjs/stylex';
+            export const tokens = stylex.defineVars({
+              surface: stylex.namedVar('surface-bg', 'black'),
+            });
+          `,
+          'utf8',
+        );
+
+        const appCode = `
+          import { tokens } from './tokens.stylex';
+          const customVar = tokens.surface;
+        `;
+
+        const opts = {
+          unstable_moduleResolution: {
+            type: 'commonJS',
+            rootDir: tmpDir,
+          },
+        };
+
+        expect(() =>
+          evaluateNamedVariable(appCode, 'customVar', {
+            filename: sourceFilePath,
+            opts,
+          }),
+        ).toThrow('Expected a CSS custom property name starting with "--"');
+      } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+      }
+    });
+
+    test('resolves canonical package refs for named vars', () => {
+      const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'stylex-eval-'));
+      const packageDir = path.join(tmpDir, 'docs');
+      const sourceFilePath = path.join(packageDir, 'src', 'pages', 'App.js');
+      const tokensFilePath = path.join(
+        packageDir,
+        'src',
+        'theming',
+        'vars.stylex.ts',
+      );
+
+      try {
+        fs.mkdirSync(path.dirname(sourceFilePath), { recursive: true });
+        fs.mkdirSync(path.dirname(tokensFilePath), { recursive: true });
+        fs.writeFileSync(
+          path.join(packageDir, 'package.json'),
+          JSON.stringify({ name: 'docs-new', private: true }),
+          'utf8',
+        );
+        fs.writeFileSync(
+          tokensFilePath,
+          `
+            import * as stylex from '@stylexjs/stylex';
+            export const vars = stylex.defineVars({
+              surface: stylex.namedVar('--surface-bg', 'black'),
+            });
+          `,
+          'utf8',
+        );
+
+        const appCode = `
+          import { vars } from '../theming/vars.stylex';
+          const customVar = vars.surface;
+        `;
+
+        const opts = {
+          unstable_moduleResolution: {
+            type: 'commonJS',
+            rootDir: tmpDir,
+          },
+        };
+
+        const customVar = evaluateNamedVariable(appCode, 'customVar', {
+          filename: sourceFilePath,
+          opts,
+        });
+
+        expect(customVar).toBe('var(--surface-bg)');
+      } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+      }
     });
   });
 });

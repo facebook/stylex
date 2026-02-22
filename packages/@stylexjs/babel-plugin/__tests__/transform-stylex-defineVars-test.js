@@ -400,6 +400,64 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('namedVar allows custom property names with dot-notation keys', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({
+          background: stylex.namedVar('--surface-bg', 'black'),
+          accent: stylex.namedVar('--brand-accent', 'blue'),
+        });
+      `);
+
+      expect(code).toContain('background: "var(--surface-bg)"');
+      expect(code).toContain('accent: "var(--brand-accent)"');
+      expect(metadata.stylex[0][1].ltr).toContain('--surface-bg:black;');
+      expect(metadata.stylex[0][1].ltr).toContain('--brand-accent:blue;');
+    });
+
+    test('namedVar supports conditional values', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({
+          accent: stylex.namedVar('--brand-accent', {
+            default: 'blue',
+            '@media (prefers-color-scheme: dark)': 'lightblue',
+          }),
+        });
+      `);
+
+      expect(code).toContain('accent: "var(--brand-accent)"');
+      expect(metadata.stylex[0][1].ltr).toContain('--brand-accent:blue;');
+      expect(metadata.stylex[1][1].ltr).toContain('--brand-accent:lightblue;');
+    });
+
+    test('namedVar supports typed vars and emits @property for custom names', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.defineVars({
+          accent: stylex.namedVar('--brand-accent', stylex.types.color('red')),
+        });
+      `);
+
+      expect(code).toContain('accent: "var(--brand-accent)"');
+      expect(metadata.stylex[0][1].ltr).toContain(
+        '@property --brand-accent { syntax: "<color>";',
+      );
+      expect(metadata.stylex[1][1].ltr).toContain('--brand-accent:red;');
+    });
+
+    test('namedVar works with named imports', () => {
+      const { code, metadata } = transform(`
+        import { defineVars, namedVar } from '@stylexjs/stylex';
+        export const vars = defineVars({
+          background: namedVar('--surface-bg', 'black'),
+        });
+      `);
+
+      expect(code).toContain('background: "var(--surface-bg)"');
+      expect(metadata.stylex[0][1].ltr).toContain('--surface-bg:black;');
+    });
+
     test('local variables used in tokens objects', () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';

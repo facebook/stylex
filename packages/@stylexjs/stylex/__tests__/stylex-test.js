@@ -18,6 +18,7 @@ describe('stylex', () => {
       'createTheme',
       'defineConsts',
       'defineVars',
+      'namedVar',
       'firstThatWorks',
       'keyframes',
       'positionTry',
