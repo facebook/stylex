@@ -19,6 +19,7 @@ import type {
   StyleX$Create,
   StyleX$CreateTheme,
   StyleX$DefineVars,
+  StyleX$NamedVar,
   StyleX$DefineConsts,
   StyleXArray,
   StyleXClassNameFor,
@@ -82,6 +83,13 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   _styles: $FlowFixMe,
 ) {
   throw errorForFn('defineVars');
+};
+
+export const namedVar: StyleX$NamedVar = function stylexNamedVar(
+  _name: string,
+  _value: $FlowFixMe,
+) {
+  throw errorForFn('namedVar');
 };
 
 export const defineMarker: StyleX$DefineMarker = () => {
@@ -232,6 +240,7 @@ type IStyleX = {
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
+  namedVar: StyleX$NamedVar,
   defaultMarker: () => MapNamespace<
     $ReadOnly<{
       marker: 'default-marker',
@@ -274,6 +283,7 @@ _legacyMerge.createTheme = createTheme;
 _legacyMerge.defineConsts = defineConsts;
 _legacyMerge.defineMarker = defineMarker;
 _legacyMerge.defineVars = defineVars;
+_legacyMerge.namedVar = namedVar;
 _legacyMerge.defaultMarker = defaultMarker;
 _legacyMerge.firstThatWorks = firstThatWorks;
 _legacyMerge.keyframes = keyframes;

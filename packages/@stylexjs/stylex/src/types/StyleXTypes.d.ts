@@ -251,17 +251,26 @@ export type TokensFromVarGroup<T extends VarGroup<{}>> = T['__tokens'];
 export type IDFromVarGroup<T extends VarGroup<{}>> = T['__opaqueId'];
 
 type TTokens = Readonly<{
-  [key: string]:
-    | NestedVarObject<null | string | number>
-    | StyleXVar<null | string | number>
-    | CSSType<null | string | number>;
+  [key: string]: TTokenValue | NamedVarSpec<TTokenValue>;
 }>;
 
 type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
-export type FlattenTokens<T extends TTokens> = Readonly<{
-  [Key in keyof T]: T[Key] extends { [key: string]: infer X }
+export type NamedVarSpec<T> = Readonly<{
+  __stylexNamedVar: true;
+  name: string;
+  value: T;
+}>;
+type TTokenValue =
+  | NestedVarObject<null | string | number>
+  | StyleXVar<null | string | number>
+  | CSSType<null | string | number>;
+type FlattenTokenValue<T> = T extends NamedVarSpec<infer V>
+  ? FlattenTokenValue<V>
+  : T extends { [key: string]: infer X }
     ? UnwrapVars<X>
-    : UnwrapVars<T[Key]>;
+    : UnwrapVars<T>;
+export type FlattenTokens<T extends TTokens> = Readonly<{
+  [Key in keyof T]: FlattenTokenValue<T[Key]>;
 }>;
 
 type NestedVarObject<T> =
@@ -285,6 +294,10 @@ export type StyleX$DefineVars = <
 >(
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
+export type StyleX$NamedVar = <T extends TTokenValue>(
+  name: string,
+  value: T,
+) => NamedVarSpec<T>;
 
 declare class ThemeKey<out VG extends VarGroup<{}>> extends String {
   private varGroup: VG;
