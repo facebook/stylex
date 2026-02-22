@@ -266,6 +266,49 @@ describe('@stylexjs/babel-plugin', () => {
         ]
       `);
     });
+
+    test('constant names: -- prefix preserves user-authored name', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const sizes = stylex.defineConsts({
+          '--small': '8px',
+          '--large': '24px',
+        });
+      `);
+
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const sizes = {
+          "--small": "8px",
+          "--large": "24px"
+        };"
+      `);
+
+      expect(metadata.stylex).toMatchInlineSnapshot(`
+        [
+          [
+            "small",
+            {
+              "constKey": "small",
+              "constVal": "8px",
+              "ltr": "",
+              "rtl": null,
+            },
+            0,
+          ],
+          [
+            "large",
+            {
+              "constKey": "large",
+              "constVal": "24px",
+              "ltr": "",
+              "rtl": null,
+            },
+            0,
+          ],
+        ]
+      `);
+    });
   });
 
   describe('[transform] stylex.defineConsts() in stylex.create() ', () => {

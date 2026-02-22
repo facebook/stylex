@@ -223,5 +223,62 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       }).not.toThrow();
     });
+
+    test('invalid namedVar: missing leading "--"', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const vars = stylex.defineVars({
+            background: stylex.namedVar('surface-bg', 'black'),
+          });
+        `);
+      }).toThrow('Expected a CSS custom property name starting with "--"');
+    });
+
+    test('invalid namedVar: invalid custom property syntax', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const vars = stylex.defineVars({
+            background: stylex.namedVar('--surface bg', 'black'),
+          });
+        `);
+      }).toThrow('is not a valid CSS custom property name');
+    });
+
+    test('invalid namedVar: dynamic name', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const vars = stylex.defineVars({
+            background: stylex.namedVar(getName(), 'black'),
+          });
+        `);
+      }).toThrow(messages.namedVarNameMustBeStatic());
+    });
+
+    test('invalid namedVar: duplicate custom property names', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const vars = stylex.defineVars({
+            background: stylex.namedVar('--surface-bg', 'black'),
+            accent: stylex.namedVar('--surface-bg', 'blue'),
+          });
+        `);
+      }).toThrow('Duplicate custom property name "--surface-bg"');
+    });
+
+    test('invalid namedVar: collides with literal -- key', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const vars = stylex.defineVars({
+            '--surface-bg': 'black',
+            accent: stylex.namedVar('--surface-bg', 'blue'),
+          });
+        `);
+      }).toThrow('Duplicate custom property name "--surface-bg"');
+    });
   });
 });

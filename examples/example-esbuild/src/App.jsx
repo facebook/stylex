@@ -11,7 +11,7 @@
 
 import './global.css';
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as stylex from '@stylexjs/stylex';
 import { colors, fonts, sizes } from './globalTokens.stylex';
 
@@ -46,4 +46,4 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+createRoot(document.getElementById('root')).render(<App />);

@@ -73,6 +73,30 @@ function isSafeToSkipNullCheck(expr: t.Expression): boolean {
   return false;
 }
 
+function hasExplicitNullishFallback(expr: t.Expression): boolean {
+  if (t.isNullLiteral(expr)) return true;
+
+  if (t.isIdentifier(expr) && expr.name === 'undefined') return true;
+
+  if (t.isUnaryExpression(expr) && expr.operator === 'void') return true;
+
+  if (t.isConditionalExpression(expr)) {
+    return (
+      hasExplicitNullishFallback(expr.consequent) ||
+      hasExplicitNullishFallback(expr.alternate)
+    );
+  }
+
+  if (t.isLogicalExpression(expr)) {
+    return (
+      hasExplicitNullishFallback(expr.left) ||
+      hasExplicitNullishFallback(expr.right)
+    );
+  }
+
+  return false;
+}
+
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
 /// 2. It pre-processes valid-dynamic parts of style object such as custom presets (spreads)
@@ -289,8 +313,9 @@ export default function transformStyleXCreate(
             let dynamicStyles: $ReadOnlyArray<{
               +expression: t.Expression,
               +key: string,
+              +varName: string,
               path: string,
-            }> = Object.entries(inlineStyles).map(([_key, v]) => ({
+            }> = Object.entries(inlineStyles).map(([varName, v]) => ({
               expression: v.originalExpression,
               key: v.path
                 .slice(
@@ -300,12 +325,20 @@ export default function transformStyleXCreate(
                   ) + 1,
                 )
                 .join('_'),
+              varName,
               path: v.path.join('_'),
             }));
 
             if (state.options.styleResolution === 'legacy-expand-shorthands') {
               dynamicStyles = legacyExpandShorthands(dynamicStyles);
             }
+
+            const nullishVarExpressions = new Map<string, t.Expression>();
+            dynamicStyles.forEach((style) => {
+              if (hasExplicitNullishFallback(style.expression)) {
+                nullishVarExpressions.set(style.varName, style.expression);
+              }
+            });
 
             if (t.isObjectExpression(prop.value)) {
               const value: t.ObjectExpression = prop.value;
@@ -348,9 +381,35 @@ export default function transformStyleXCreate(
                 const exprList: t.Expression[] = [];
 
                 classList.forEach((cls, index) => {
-                  const expr = dynamicStyles.find(
+                  let expr = dynamicStyles.find(
                     ({ path }) => origClassPaths[cls] === path,
                   )?.expression;
+
+                  if (expr == null && nullishVarExpressions.size > 0) {
+                    const injectedStyle = injectedStyles[cls];
+                    const rule =
+                      injectedStyle != null
+                        ? typeof injectedStyle.ltr === 'string'
+                          ? injectedStyle.ltr
+                          : typeof injectedStyle.rtl === 'string'
+                            ? injectedStyle.rtl
+                            : null
+                        : null;
+
+                    if (rule != null) {
+                      const matches = rule.matchAll(
+                        /var\((--x-[^,)]+)[^)]*\)/g,
+                      );
+
+                      for (const match of matches) {
+                        const varExpr = nullishVarExpressions.get(match[1]);
+                        if (varExpr != null) {
+                          expr = varExpr;
+                          break;
+                        }
+                      }
+                    }
+                  }
 
                   const isLast = index === classList.length - 1;
                   const clsWithSpace = isLast ? cls : cls + ' ';
@@ -473,11 +532,13 @@ function legacyExpandShorthands(
   dynamicStyles: $ReadOnlyArray<{
     +expression: t.Expression,
     +key: string,
+    +varName: string,
     path: string,
   }>,
 ): $ReadOnlyArray<{
   +expression: t.Expression,
   +key: string,
+  +varName: string,
   path: string,
 }> {
   const expandedKeysToKeyPaths = dynamicStyles

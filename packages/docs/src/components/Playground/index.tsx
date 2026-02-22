@@ -746,7 +746,10 @@ export const vars = stylex.defineVars({
                   isCollapsed={outputCollapsed}
                   onSelectFile={(label) => {
                     const found = OUTPUT_TABS.find((t) => t.label === label);
-                    if (found) setActiveOutputTab(found.key);
+                    if (found) {
+                      setActiveOutputTab(found.key);
+                      setOutputCollapsed(false);
+                    }
                   }}
                   onToggleCollapse={() => setOutputCollapsed((c) => !c)}
                   readOnly

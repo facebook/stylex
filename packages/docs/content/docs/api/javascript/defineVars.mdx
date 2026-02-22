@@ -16,6 +16,25 @@ variables with custom names use a key that starts with `--`. These will generate
 CSS custom properties with the provided name instead of generating a globally
 unique name.
 
+If you want to keep dot-notation ergonomics while assigning a custom CSS custom
+property name, use `stylex.namedVar('--name', value)`:
+
+```tsx title="vars.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+export const colors = stylex.defineVars({
+  background: stylex.namedVar('--surface-background', 'black'),
+  accent: stylex.namedVar('--brand-accent', {
+    default: 'blue',
+    '@media (prefers-color-scheme: dark)': 'lightblue',
+  }),
+});
+```
+
+`namedVar()` requires a static string that starts with `--` and matches valid
+CSS custom property naming rules. Invalid names, non-static names, or duplicate
+custom property names fail compilation.
+
 ### Example use:
 
 You must define your variables as named exports in a `.stylex.js` (or

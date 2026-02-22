@@ -24,12 +24,16 @@
 import type { NodePath, Binding } from '@babel/traverse';
 
 import { parseSync } from '@babel/core';
+import { parse as parseCode } from '@babel/parser';
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
+import * as messages from '../shared/messages';
+import { isValidCustomPropertyName } from '../shared/stylex-named-var';
 import * as errMsgs from './evaluation-errors';
 import fs from 'node:fs';
+import path from 'node:path';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -234,7 +238,18 @@ function evaluateThemeRef(
   exportName: string,
   state: State,
 ): { [key: string]: string } {
+  const customNamesByKey = getCustomPropertyNamesForDefineVarsExport(
+    fileName,
+    exportName,
+    state,
+  );
+
   const resolveKey = (key: string) => {
+    const customName = customNamesByKey[key];
+    if (customName != null) {
+      return `var(--${customName})`;
+    }
+
     if (key.startsWith('--')) {
       return `var(${key})`;
     }
@@ -291,6 +306,255 @@ function evaluateThemeRef(
   );
 
   return proxy;
+}
+
+const customPropertyNamesByExportCache: Map<string, { [string]: string }> =
+  new Map();
+
+function getCustomPropertyNamesForDefineVarsExport(
+  filePath: string,
+  exportName: string,
+  state: State,
+): { [string]: string } {
+  const resolvedPath = resolveReadableFilePath(filePath, state);
+  const cacheKey = `${resolvedPath}:${exportName}`;
+  const cached = customPropertyNamesByExportCache.get(cacheKey);
+  if (cached != null) {
+    return cached;
+  }
+
+  const importSources = new Set(state.traversalState.importSources);
+  importSources.add('@stylexjs/stylex');
+  importSources.add('stylex');
+
+  const customPropertyNames = extractCustomPropertyNamesFromExportedDefineVars(
+    resolvedPath,
+    exportName,
+    importSources,
+  );
+  customPropertyNamesByExportCache.set(cacheKey, customPropertyNames);
+  return customPropertyNames;
+}
+
+function resolveReadableFilePath(filePath: string, state: State): string {
+  if (fs.existsSync(filePath)) {
+    return filePath;
+  }
+
+  if (!path.isAbsolute(filePath)) {
+    const fromCwd = path.resolve(process.cwd(), filePath);
+    if (fs.existsSync(fromCwd)) {
+      return fromCwd;
+    }
+
+    const sourceFilePath = state.traversalState.filename;
+    if (sourceFilePath != null) {
+      const fromSourceFile = path.resolve(path.dirname(sourceFilePath), filePath);
+      if (fs.existsSync(fromSourceFile)) {
+        return fromSourceFile;
+      }
+    }
+  }
+
+  return filePath;
+}
+
+function extractCustomPropertyNamesFromExportedDefineVars(
+  filePath: string,
+  exportName: string,
+  importSources: Set<string>,
+): { [string]: string } {
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const parserPlugins = ['jsx'];
+  if (/\.tsx?$/i.test(filePath)) {
+    parserPlugins.push('typescript');
+  } else {
+    parserPlugins.push('flow');
+  }
+
+  let ast;
+  try {
+    ast = parseCode(fileContents, {
+      sourceType: 'module',
+      plugins: parserPlugins,
+    });
+  } catch {
+    return {};
+  }
+
+  const namespaceImports = new Set<string>();
+  const defineVarsImports = new Set<string>();
+  const namedVarImports = new Set<string>();
+  const customNamesByKey = {};
+  const customNameToKey = new Map<string, string>();
+
+  function registerCustomPropertyName(key: string, cssName: string): void {
+    const customName = cssName.slice(2);
+    const existingKey = customNameToKey.get(customName);
+    if (existingKey != null && existingKey !== key) {
+      throw new Error(
+        messages.duplicateCustomPropertyName(`--${customName}`, existingKey, key),
+      );
+    }
+    customNameToKey.set(customName, key);
+    customNamesByKey[key] = customName;
+  }
+
+  function isDefineVarsCallee(node: t.Node): boolean {
+    if (t.isIdentifier(node)) {
+      return defineVarsImports.has(node.name);
+    }
+    if (
+      t.isMemberExpression(node) &&
+      t.isIdentifier(node.object) &&
+      t.isIdentifier(node.property) &&
+      !node.computed
+    ) {
+      return (
+        namespaceImports.has(node.object.name) &&
+        node.property.name === 'defineVars'
+      );
+    }
+    return false;
+  }
+
+  function isNamedVarCallee(node: t.Node): boolean {
+    if (t.isIdentifier(node)) {
+      return namedVarImports.has(node.name);
+    }
+    if (
+      t.isMemberExpression(node) &&
+      t.isIdentifier(node.object) &&
+      t.isIdentifier(node.property) &&
+      !node.computed
+    ) {
+      return (
+        namespaceImports.has(node.object.name) &&
+        node.property.name === 'namedVar'
+      );
+    }
+    return false;
+  }
+
+  function collectFromObjectExpression(node: t.ObjectExpression): void {
+    for (const property of node.properties) {
+      if (
+        !t.isObjectProperty(property) ||
+        property.computed ||
+        !(
+          t.isIdentifier(property.key) || t.isStringLiteral(property.key)
+        )
+      ) {
+        continue;
+      }
+      const keyName = t.isIdentifier(property.key)
+        ? property.key.name
+        : property.key.value;
+
+      if (keyName.startsWith('--')) {
+        registerCustomPropertyName(keyName, keyName);
+      }
+
+      if (
+        !t.isCallExpression(property.value) ||
+        !isNamedVarCallee(property.value.callee)
+      ) {
+        continue;
+      }
+
+      if (property.value.arguments.length !== 2) {
+        throw new Error(messages.namedVarIllegalArgumentLength());
+      }
+      const rawName = property.value.arguments[0];
+      if (!t.isStringLiteral(rawName)) {
+        throw new Error(messages.namedVarNameMustBeStatic());
+      }
+      const customPropertyName = rawName.value;
+      if (!customPropertyName.startsWith('--')) {
+        throw new Error(
+          messages.namedVarNameMustStartWithDashes(keyName, customPropertyName),
+        );
+      }
+      if (!isValidCustomPropertyName(customPropertyName)) {
+        throw new Error(
+          messages.namedVarInvalidCustomPropertyName(keyName, customPropertyName),
+        );
+      }
+      registerCustomPropertyName(keyName, customPropertyName);
+    }
+  }
+
+  traverse(ast, {
+    ImportDeclaration(path) {
+      if (!importSources.has(path.node.source.value)) {
+        return;
+      }
+      for (const specifier of path.node.specifiers) {
+        if (
+          t.isImportDefaultSpecifier(specifier) ||
+          t.isImportNamespaceSpecifier(specifier)
+        ) {
+          namespaceImports.add(specifier.local.name);
+          continue;
+        }
+        if (!t.isImportSpecifier(specifier)) {
+          continue;
+        }
+        const importedName =
+          specifier.imported.type === 'Identifier'
+            ? specifier.imported.name
+            : specifier.imported.value;
+        if (importedName === 'defineVars') {
+          defineVarsImports.add(specifier.local.name);
+        }
+        if (importedName === 'namedVar') {
+          namedVarImports.add(specifier.local.name);
+        }
+      }
+    },
+    ExportNamedDeclaration(path) {
+      const declaration = path.get('declaration');
+      if (!declaration.isVariableDeclaration()) {
+        return;
+      }
+      const declarators = declaration.get('declarations');
+      for (const declaratorPath of declarators) {
+        if (!declaratorPath.isVariableDeclarator()) {
+          continue;
+        }
+        const id = declaratorPath.get('id');
+        if (!id.isIdentifier() || id.node.name !== exportName) {
+          continue;
+        }
+        const init = declaratorPath.get('init');
+        if (!init.isCallExpression() || !isDefineVarsCallee(init.node.callee)) {
+          continue;
+        }
+
+        const [firstArg] = init.get('arguments');
+        if (firstArg == null) {
+          continue;
+        }
+        if (firstArg.isObjectExpression()) {
+          collectFromObjectExpression(firstArg.node);
+          continue;
+        }
+        if (firstArg.isIdentifier()) {
+          const binding = firstArg.scope.getBinding(firstArg.node.name);
+          const bindingPath = binding?.path;
+          if (
+            bindingPath != null &&
+            bindingPath.isVariableDeclarator() &&
+            bindingPath.get('init').isObjectExpression()
+          ) {
+            collectFromObjectExpression(bindingPath.get('init').node);
+          }
+        }
+      }
+    },
+  });
+
+  return customNamesByKey;
 }
 
 /**

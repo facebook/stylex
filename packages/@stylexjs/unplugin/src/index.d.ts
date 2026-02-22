@@ -4,20 +4,26 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { type UnpluginInstance } from 'unplugin';
-import type { Options as StyleXOptions } from '@stylexjs/babel-plugin';
-import type { TransformOptions as LightningcssOptions } from 'lightningcss';
 
-export default unplugin;
+import type { UserOptions } from './core';
 
-type UserOptions = StyleXOptions & {
-  useCSSLayers?: boolean;
-  enableLTRRTLComments?: boolean;
-  legacyDisableLayers?: boolean;
-  lightningcssOptions?: LightningcssOptions;
-  cssInjectionTarget?: (filepath: string) => boolean;
-  devPersistToDisk?: boolean;
-  devMode?: 'full' | 'css-only' | 'off';
+export { unpluginFactory } from './core';
+export type { UserOptions } from './core';
+export { createStylexBunPlugin } from './bun';
+
+declare const stylex: {
+  bun: (options?: Partial<UserOptions>) => any;
+  esbuild: (options?: Partial<UserOptions>) => any;
+  farm: (options?: Partial<UserOptions>) => any;
+  rolldown: (options?: Partial<UserOptions>) => any;
+  rollup: (options?: Partial<UserOptions>) => any;
+  rspack: (options?: Partial<UserOptions>) => any;
+  unloader: (options?: Partial<UserOptions>) => any;
+  vite: (options?: Partial<UserOptions>) => any;
+  webpack: (options?: Partial<UserOptions>) => any;
+  raw: typeof import('./core').unpluginFactory;
 };
 
-declare const unplugin: UnpluginInstance<Partial<UserOptions>, false>;
+export const unplugin: typeof stylex;
+
+export default stylex;

@@ -1021,6 +1021,7 @@ const overflowWrap: RuleCheck = makeUnionRule(
 const overflowDir: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
+  makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
 );
@@ -2224,6 +2225,9 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::spelling-error'),
   makeLiteralRule('::grammar-error'),
   makeLiteralRule('::cue'),
+  makeLiteralRule('::cue-region'),
+  makeLiteralRule('::file-selector-button'),
+  makeLiteralRule('::target-text'),
   makeLiteralRule('::slotted'),
   makeLiteralRule('::part'),
   makeLiteralRule('::thumb'),

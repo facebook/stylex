@@ -24,7 +24,7 @@ describe('@stylexjs/unplugin', () => {
   });
 
   test('writes fallback CSS asset when no CSS bundle entry exists', async () => {
-    const plugin = unplugin.raw({
+    const plugin = unplugin.rollup({
       runtimeInjection: false,
       devPersistToDisk: false,
       dev: false,
