@@ -79,6 +79,9 @@ export function readImportDeclarations(
             if (importedName === 'defineVars') {
               state.stylexDefineVarsImport.add(localName);
             }
+            if (importedName === 'namedVar') {
+              state.stylexNamedVarImport.add(localName);
+            }
             if (importedName === 'defineMarker') {
               state.stylexDefineMarkerImport.add(localName);
             }
@@ -160,6 +163,9 @@ export function readRequires(
           }
           if (prop.key.name === 'defineVars') {
             state.stylexDefineVarsImport.add(value.name);
+          }
+          if (prop.key.name === 'namedVar') {
+            state.stylexNamedVarImport.add(value.name);
           }
           if (prop.key.name === 'defineMarker') {
             state.stylexDefineMarkerImport.add(value.name);

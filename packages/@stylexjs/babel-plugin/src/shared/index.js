@@ -34,6 +34,7 @@ import styleXCreateTheme from './stylex-create-theme';
 import stylexKeyframes from './stylex-keyframes';
 import stylexPositionTry from './stylex-position-try';
 import stylexFirstThatWorks from './stylex-first-that-works';
+import stylexNamedVar from './stylex-named-var';
 import hash from './hash';
 import genFileBasedIdentifier from './utils/file-based-identifier';
 import * as m from './messages';
@@ -50,6 +51,7 @@ export const create: typeof styleXCreateSet = styleXCreateSet;
 export const defineVars: typeof styleXDefineVars = styleXDefineVars;
 export const defineConsts: typeof styleXDefineConsts = styleXDefineConsts;
 export const createTheme: typeof styleXCreateTheme = styleXCreateTheme;
+export const namedVar: typeof stylexNamedVar = stylexNamedVar;
 export const keyframes: typeof stylexKeyframes = stylexKeyframes;
 export const positionTry: typeof stylexPositionTry = stylexPositionTry;
 export const utils: {

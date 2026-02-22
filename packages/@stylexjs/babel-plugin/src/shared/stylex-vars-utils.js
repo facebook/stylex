@@ -8,10 +8,28 @@
  */
 
 import type { CSSType } from './types';
+import type { NamedVarSpec } from './stylex-named-var';
+
+type VarsConfigPrimitive = string | number;
+
+export interface VarsConfigConditional {
+  +default: VarsConfigValue,
+  +[string]: VarsConfigValue,
+}
+
+export type VarsConfigNamedVarValue = VarsConfigPrimitive | VarsConfigConditional;
 
 export type VarsConfigValue =
-  | string
-  | $ReadOnly<{ default: VarsConfigValue, [string]: VarsConfigValue }>;
+  | VarsConfigPrimitive
+  | NamedVarSpec<VarsConfigNamedVarValue>
+  | VarsConfigConditional;
+
+export type ResolvedVarsConfigValue =
+  | VarsConfigPrimitive
+  | $ReadOnly<{
+      default: ResolvedVarsConfigValue,
+      [string]: ResolvedVarsConfigValue,
+    }>;
 
 export type VarsConfig = $ReadOnly<{
   [string]: VarsConfigValue | CSSType<>,
@@ -21,7 +39,13 @@ const SPLIT_TOKEN = '__$$__';
 
 export function collectVarsByAtRule(
   key: string,
-  { nameHash, value }: { +nameHash: string, +value: VarsConfigValue },
+  {
+    nameHash,
+    value,
+  }: {
+    +nameHash: string,
+    +value: ResolvedVarsConfigValue,
+  },
   collection: { [string]: Array<string> } = {},
   atRules: Array<string> = [],
 ): void {
@@ -69,7 +93,7 @@ export function priorityForAtRule(atRule: string): number {
   return 1 + atRule.split(SPLIT_TOKEN).length;
 }
 
-export function getDefaultValue(value: VarsConfigValue): ?string {
+export function getDefaultValue(value: ResolvedVarsConfigValue): ?string {
   if (typeof value === 'string' || typeof value === 'number') {
     return value.toString();
   }
