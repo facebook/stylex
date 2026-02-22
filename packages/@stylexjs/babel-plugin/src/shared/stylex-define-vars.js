@@ -8,12 +8,18 @@
  */
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
-import type { VarsConfig, VarsConfigValue } from './stylex-vars-utils';
+import type {
+  VarsConfig,
+  ResolvedVarsConfigValue,
+} from './stylex-vars-utils';
+import type { NamedVarSpec } from './stylex-named-var';
 import { type CSSType, isCSSType } from './types';
 
 import createHash from './hash';
+import * as messages from './messages';
 import { objMap } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
+import { isNamedVarSpec, isValidCustomPropertyName } from './stylex-named-var';
 import {
   collectVarsByAtRule,
   getDefaultValue,
@@ -49,28 +55,59 @@ export default function styleXDefineVars<Vars: VarsConfig>(
       syntax: string,
     }>,
   } = {};
+  const customPropertyKeysByName: Map<string, string> = new Map();
 
   const variablesMap: {
-    +[string]: { +nameHash: string, +value: VarsConfigValue },
+    +[string]: { +nameHash: string, +value: ResolvedVarsConfigValue },
   } = objMap(variables, (value, key) => {
+    let resolvedValue: any = value;
+    let explicitCustomPropertyName: null | string = null;
+    if (isNamedVarSpec(value)) {
+      const namedVarSpec: NamedVarSpec<mixed> = value as any;
+      const customPropertyName = namedVarSpec.name;
+      if (!customPropertyName.startsWith('--')) {
+        throw new Error(
+          messages.namedVarNameMustStartWithDashes(key, customPropertyName),
+        );
+      }
+      if (!isValidCustomPropertyName(customPropertyName)) {
+        throw new Error(
+          messages.namedVarInvalidCustomPropertyName(key, customPropertyName),
+        );
+      }
+      explicitCustomPropertyName = customPropertyName;
+      resolvedValue = namedVarSpec.value;
+    }
+
     const varSafeKey = (
       key[0] >= '0' && key[0] <= '9' ? `_${key}` : key
     ).replace(/[^a-zA-Z0-9]/g, '_');
-    const nameHash = key.startsWith('--')
-      ? key.slice(2)
-      : debug && enableDebugClassNames
-        ? varSafeKey + '-' + classNamePrefix + createHash(`${exportId}.${key}`)
-        : classNamePrefix + createHash(`${exportId}.${key}`);
+    const nameHash =
+      explicitCustomPropertyName != null
+        ? explicitCustomPropertyName.slice(2)
+        : key.startsWith('--')
+          ? key.slice(2)
+          : debug && enableDebugClassNames
+            ? varSafeKey + '-' + classNamePrefix + createHash(`${exportId}.${key}`)
+            : classNamePrefix + createHash(`${exportId}.${key}`);
 
-    if (isCSSType(value)) {
-      const v: CSSType<> = value;
+    const existingKey = customPropertyKeysByName.get(nameHash);
+    if (existingKey != null && existingKey !== key) {
+      throw new Error(
+        messages.duplicateCustomPropertyName(`--${nameHash}`, existingKey, key),
+      );
+    }
+    customPropertyKeysByName.set(nameHash, key);
+
+    if (isCSSType(resolvedValue)) {
+      const v: CSSType<> = resolvedValue;
       typedVariables[nameHash] = {
         initialValue: getDefaultValue(v.value),
         syntax: v.syntax,
       };
       return { nameHash, value: v.value };
     }
-    return { nameHash, value: value as $FlowFixMe };
+    return { nameHash, value: resolvedValue as $FlowFixMe };
   });
 
   const themeVariablesObject = objMap(
@@ -102,7 +139,9 @@ export default function styleXDefineVars<Vars: VarsConfig>(
 }
 
 function constructCssVariablesString(
-  variables: { +[string]: { +nameHash: string, +value: VarsConfigValue } },
+  variables: {
+    +[string]: { +nameHash: string, +value: ResolvedVarsConfigValue },
+  },
   varGroupHash: string,
 ): { [string]: InjectableStyle } {
   const rulesByAtRule: { [string]: Array<string> } = {};
