@@ -9,7 +9,7 @@
 
 export type ValueWithDefault<+T> =
   | T
-  | $ReadOnly<{
+  | Readonly<{
       default: ValueWithDefault<T>,
       [string]: ValueWithDefault<T>,
     }>;

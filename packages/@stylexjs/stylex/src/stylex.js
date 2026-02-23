@@ -60,10 +60,10 @@ const errorForFn = (name: string) =>
   new Error(
     `Unexpected 'stylex.${name}' call at runtime. Styles must be compiled by '@stylexjs/babel-plugin'.`,
   );
-const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
+const errorForType = (key: keyof typeof types) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  const S: { +[string]: mixed },
+  const S: { +[string]: unknown },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -89,8 +89,8 @@ export const defineMarker: StyleX$DefineMarker = () => {
 };
 
 export const firstThatWorks = <T: string | number>(
-  ..._styles: $ReadOnlyArray<T>
-): $ReadOnlyArray<T> => {
+  ..._styles: ReadonlyArray<T>
+): ReadonlyArray<T> => {
   throw errorForFn('firstThatWorks');
 };
 
@@ -103,22 +103,22 @@ export const positionTry = (_positionTry: PositionTry): string => {
 };
 
 export function props(
-  this: ?mixed,
-  ...styles: $ReadOnlyArray<
+  this: ?unknown,
+  ...styles: ReadonlyArray<
     StyleXArray<
-      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
     >,
   >
-): $ReadOnly<{
+): Readonly<{
   className?: string,
   'data-style-src'?: string,
-  style?: $ReadOnly<{ [string]: string | number }>,
+  style?: Readonly<{ [string]: string | number }>,
 }> {
   const [className, style, dataStyleSrc] = styleq(styles);
   const result: {
     className?: string,
     'data-style-src'?: string,
-    style?: $ReadOnly<{ [string]: string | number }>,
+    style?: Readonly<{ [string]: string | number }>,
   } = {};
   if (className != null && className !== '') {
     result.className = className;
@@ -139,7 +139,7 @@ export const viewTransitionClass = (
 };
 
 export const defaultMarker = (): MapNamespace<
-  $ReadOnly<{
+  Readonly<{
     marker: 'default-marker',
   }>,
 > => {
@@ -227,43 +227,43 @@ export const types = {
  */
 
 type IStyleX = {
-  (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
+  (...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
   defaultMarker: () => MapNamespace<
-    $ReadOnly<{
+    Readonly<{
       marker: 'default-marker',
     }>,
   >,
   defineMarker: StyleX$DefineMarker,
   firstThatWorks: <T: string | number>(
-    ...v: $ReadOnlyArray<T>
-  ) => $ReadOnlyArray<T>,
+    ...v: ReadonlyArray<T>
+  ) => ReadonlyArray<T>,
   keyframes: (keyframes: Keyframes) => string,
   positionTry: (positionTry: PositionTry) => string,
   props: (
-    this: ?mixed,
-    ...styles: $ReadOnlyArray<
+    this: ?unknown,
+    ...styles: ReadonlyArray<
       StyleXArray<
-        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+        ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
       >,
     >
-  ) => $ReadOnly<{
+  ) => Readonly<{
     className?: string,
     'data-style-src'?: string,
-    style?: $ReadOnly<{ [string]: string | number }>,
+    style?: Readonly<{ [string]: string | number }>,
   }>,
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
-  __customProperties?: { [string]: mixed },
+  __customProperties?: { [string]: unknown },
   ...
 };
 
 function _legacyMerge(
-  ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
+  ...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>
 ): string {
   const [className] = styleq(styles);
   return className;
