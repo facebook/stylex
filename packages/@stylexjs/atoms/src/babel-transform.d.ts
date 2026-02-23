@@ -5,9 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export declare function createUtilityStylesVisitor(
-  state: unknown,
-): {
+export declare function createUtilityStylesVisitor(state: unknown): {
   MemberExpression(path: unknown): void;
   CallExpression(path: unknown): void;
 };

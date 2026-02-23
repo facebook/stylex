@@ -17,23 +17,23 @@
  * @param {object} state - StateManager from babel-plugin
  * @returns {object} Babel visitor
  */
-declare function createUtilityStylesVisitor(state: $FlowFixMe): void;
+declare function createUtilityStylesVisitor(state: $FlowFixMe): $FlowFixMe;
 
 declare function isUtilityStylesIdentifier(
   ident: $FlowFixMe,
   state: $FlowFixMe,
   path: $FlowFixMe,
-): void;
+): boolean;
 
 declare function getStaticStyleFromPath(
   path: $FlowFixMe,
   state: $FlowFixMe,
-): void;
+): ?{ property: string, value: string | number };
 
 declare function getDynamicStyleFromPath(
   path: $FlowFixMe,
   state: $FlowFixMe,
-): void;
+): ?{ property: string, value: $FlowFixMe };
 
 declare module.exports: {
   createUtilityStylesVisitor: typeof createUtilityStylesVisitor,

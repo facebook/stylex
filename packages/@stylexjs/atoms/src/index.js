@@ -23,7 +23,7 @@ export type Atoms = $ReadOnly<{
 }>;
 
 const errorMessage = (prop: string): string =>
-  '\'@stylexjs/atoms\' must be compiled away by \'@stylexjs/babel-plugin\'. ' +
+  "'@stylexjs/atoms' must be compiled away by '@stylexjs/babel-plugin'. " +
   `Attempted to access '${prop}' at runtime.`;
 
 const _proxy: any = new Proxy({} as { [string]: mixed }, {

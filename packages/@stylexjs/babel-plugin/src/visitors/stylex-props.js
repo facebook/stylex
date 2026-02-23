@@ -592,13 +592,14 @@ function compileRawStyleObjects(
               ? prop.key.value
               : null;
 
+        const propValue = prop.value;
         if (
           key != null &&
-          t.isExpression(prop.value) &&
-          !t.isLiteral(prop.value)
+          t.isExpression(propValue) &&
+          !t.isLiteral(propValue)
         ) {
           // This is a dynamic style: { property: dynamicValue }
-          compileDynamicStyle(objPath, key, prop.value, state);
+          compileDynamicStyle(objPath, key, propValue, state);
           return;
         }
       }
@@ -722,7 +723,7 @@ function compileDynamicStyle(
   // Get the class name for the property
   const propKey = Object.keys(compiledStyle).find((k) => k !== '$$css');
   const className = propKey != null ? compiledStyle[propKey] : null;
-  if (className == null || propKey == null) {
+  if (className == null || propKey == null || typeof className !== 'string') {
     return;
   }
 
