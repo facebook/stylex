@@ -16,13 +16,17 @@ import { props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
+import styleXCreateSet from '../shared/stylex-create';
+import { hoistExpression } from '../utils/ast-helpers';
+import { injectDevClassNames } from '../utils/dev-classname';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 
-type StyleObject = {
-  [key: string]: string | null | boolean,
-};
+type StyleObject = $ReadOnly<{
+  [key: string]: string | null,
+  $$css?: true | string,
+}>;
 
 class ConditionalStyle {
   test: t.Expression;
@@ -102,6 +106,12 @@ export default function transformStylexProps(
     disableImports: true,
   };
 
+  // Pre-process: compile any raw style objects (from atoms) before the main loop
+  // This transforms { property: 'value' } into { propKey: 'className', $$css: true }
+  for (const argPath of argsPath) {
+    compileRawStyleObjects(argPath, state, evaluatePathFnConfig);
+  }
+
   const resolvedArgs: ResolvedArgs = [];
   for (const argPath of argsPath) {
     currentIndex++;
@@ -109,11 +119,14 @@ export default function transformStylexProps(
     if (
       argPath.isObjectExpression() ||
       argPath.isIdentifier() ||
-      argPath.isMemberExpression()
+      argPath.isMemberExpression() ||
+      argPath.isCallExpression()
     ) {
       const resolved = parseNullableStyle(argPath, state, evaluatePathFnConfig);
       if (resolved === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(resolved);
@@ -135,7 +148,9 @@ export default function transformStylexProps(
         evaluatePathFnConfig,
       );
       if (primary === 'other' || fallback === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(new ConditionalStyle(test, primary, fallback));
@@ -162,7 +177,9 @@ export default function transformStylexProps(
         evaluatePathFnConfig,
       );
       if (leftResolved !== 'other' || rightResolved === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(
@@ -171,14 +188,16 @@ export default function transformStylexProps(
         conditional++;
       }
     } else {
-      bailOutIndex = currentIndex;
+      if (bailOutIndex == null) {
+        bailOutIndex = currentIndex;
+      }
       bailOut = true;
     }
     if (conditional > 4) {
       bailOut = true;
     }
     if (bailOut) {
-      break;
+      continue;
     }
   }
   if (!state.options.enableInlinedConditionalMerge && conditional) {
@@ -263,6 +282,32 @@ export default function transformStylexProps(
           MemberExpression,
         });
       }
+
+      // Hoist inline CSS objects (from atoms) to module level
+      // Raw objects are pre-compiled in compileRawStyleObjects, so this only hoists compiled objects
+      // eslint-disable-next-line no-inner-declarations
+      function ObjectExpression(objPath: NodePath<t.ObjectExpression>) {
+        // Check if this object has $$css: true (compiled utility style object)
+        const hasCssMarker = objPath.node.properties.some(
+          (prop) =>
+            t.isObjectProperty(prop) &&
+            ((t.isIdentifier(prop.key) && prop.key.name === '$$css') ||
+              (t.isStringLiteral(prop.key) && prop.key.value === '$$css')) &&
+            t.isBooleanLiteral(prop.value, { value: true }),
+        );
+        if (hasCssMarker) {
+          const hoisted = hoistExpression(objPath, objPath.node);
+          objPath.replaceWith(hoisted);
+        }
+      }
+
+      if (argPath.isObjectExpression()) {
+        ObjectExpression(argPath);
+      } else {
+        argPath.traverse({
+          ObjectExpression,
+        });
+      }
     }
   } else {
     path.skip();
@@ -331,6 +376,19 @@ function parseNullableStyle(
     return null;
   }
 
+  // Local dynamic style functions (e.g., styles.opacity(1)) should bail out
+  // so runtime props merging keeps the conditional class/inline var semantics.
+  if (path.isCallExpression()) {
+    const callee = path.get('callee');
+    if (callee.isMemberExpression()) {
+      const obj = callee.get('object');
+      if (obj.isIdentifier() && state.styleMap.has(obj.node.name)) {
+        return 'other';
+      }
+    }
+    return 'other';
+  }
+
   if (t.isMemberExpression(node)) {
     const { object, property, computed: computed } = node;
     let objName = null;
@@ -358,8 +416,14 @@ function parseNullableStyle(
     if (objName != null && propName != null) {
       const style = state.styleMap.get(objName);
       if (style != null && style[String(propName)] != null) {
+        const memberVal = style[String(propName)];
+        // Dynamic style functions (arrow/function expressions) should bail out
+        // so runtime props handling remains intact.
+        if (typeof memberVal === 'function') {
+          return 'other';
+        }
         // $FlowFixMe[incompatible-type]
-        return style[String(propName)];
+        return memberVal;
       }
     }
   }
@@ -478,4 +542,230 @@ function isCalleeMemberExpression(
     node.callee.property.name === 'props' &&
     state.stylexImport.has(node.callee.object.name)
   );
+}
+
+/**
+ * Pre-compile raw style objects within stylex.props() arguments.
+ * This transforms { property: 'value' } into { propKey: 'className', $$css: true }
+ * and registers the CSS injection.
+ *
+ * This processes any plain ObjectExpression argument, but in practice only
+ * atoms-produced objects reach here — passing a raw object like
+ * stylex.props({ color: 'red' }) is already a type error since stylex.props()
+ * expects StyleXStyles (compiled objects with $$css: true).
+ */
+function compileRawStyleObjects(
+  argPath: NodePath<>,
+  state: StateManager,
+  evaluatePathFnConfig: FunctionConfig,
+): void {
+  function processObjectExpression(objPath: NodePath<t.ObjectExpression>) {
+    // Check if this object already has $$css marker (already compiled)
+    const hasCssMarker = objPath.node.properties.some(
+      (prop) =>
+        t.isObjectProperty(prop) &&
+        ((t.isIdentifier(prop.key) && prop.key.name === '$$css') ||
+          (t.isStringLiteral(prop.key) && prop.key.value === '$$css')),
+    );
+    if (hasCssMarker) {
+      return;
+    }
+
+    // Empty objects don't need processing
+    const properties = objPath.node.properties;
+    if (properties.length === 0) {
+      return;
+    }
+
+    // Try to evaluate the object
+    const evalResult = evaluate(objPath, state, evaluatePathFnConfig);
+
+    // Check if the object has dynamic values (non-evaluatable)
+    if (!evalResult.confident) {
+      // Check if this is a simple {property: dynamicValue} pattern
+      if (properties.length === 1 && t.isObjectProperty(properties[0])) {
+        const prop = properties[0];
+        const key =
+          t.isIdentifier(prop.key) && !prop.computed
+            ? prop.key.name
+            : t.isStringLiteral(prop.key)
+              ? prop.key.value
+              : null;
+
+        const propValue = prop.value;
+        if (
+          key != null &&
+          t.isExpression(propValue) &&
+          !t.isLiteral(propValue)
+        ) {
+          // This is a dynamic style: { property: dynamicValue }
+          compileDynamicStyle(objPath, key, propValue, state);
+          return;
+        }
+      }
+      return;
+    }
+
+    if (evalResult.value == null) {
+      return;
+    }
+
+    // Skip proxies
+    if (evalResult.value.__IS_PROXY === true) {
+      return;
+    }
+
+    // This is a raw style object - compile it
+    const rawStyle = evalResult.value;
+
+    // Create a namespace wrapper for styleXCreateSet: { __inline__: rawStyle }
+    const styleInput = { __inline__: rawStyle };
+
+    // eslint-disable-next-line prefer-const
+    let [compiledStyles, injectedStyles] = styleXCreateSet(
+      styleInput,
+      state.options,
+    );
+
+    // Inject dev class names if enabled
+    if (state.isDev && state.opts.enableDevClassNames) {
+      compiledStyles = {
+        ...injectDevClassNames(compiledStyles, null, state),
+      };
+    }
+
+    // Register the CSS
+    const listOfStyles = Object.entries(injectedStyles).map(
+      ([key, { priority, ...rest }]) => [key, rest, priority],
+    );
+    state.registerStyles(listOfStyles, objPath);
+
+    // Get the compiled style for __inline__ namespace
+    const compiledStyle = compiledStyles.__inline__;
+    if (compiledStyle == null) {
+      return;
+    }
+
+    // Convert to AST and replace
+    const compiledAst = convertObjectToAST(compiledStyle);
+    objPath.replaceWith(compiledAst);
+  }
+
+  if (argPath.isObjectExpression()) {
+    processObjectExpression(argPath);
+  } else if (argPath.isConditionalExpression()) {
+    const consequentPath = argPath.get('consequent');
+    const alternatePath = argPath.get('alternate');
+    if (consequentPath.isObjectExpression()) {
+      processObjectExpression(consequentPath);
+    }
+    if (alternatePath.isObjectExpression()) {
+      processObjectExpression(alternatePath);
+    }
+  } else if (argPath.isLogicalExpression()) {
+    const rightPath = argPath.get('right');
+    if (rightPath.isObjectExpression()) {
+      processObjectExpression(rightPath);
+    }
+  }
+}
+
+/**
+ * Compile a dynamic style { property: dynamicValue } into a hoisted function pattern.
+ * This creates: const _styles = { property: _v => [compiledStyle, inlineVars] }
+ * And replaces the original with: _styles.property(dynamicValue)
+ */
+function compileDynamicStyle(
+  objPath: NodePath<t.ObjectExpression>,
+  property: string,
+  valueExpr: t.Expression,
+  state: StateManager,
+): void {
+  // Use a CSS variable for the dynamic value
+  const varName = `--x-${property}`;
+  const rawStyle = { [property]: `var(${varName})` };
+
+  // Create a namespace wrapper for styleXCreateSet
+  const styleInput = { __inline__: rawStyle };
+
+  // eslint-disable-next-line prefer-const
+  let [compiledStyles, injectedStyles] = styleXCreateSet(
+    styleInput,
+    state.options,
+  );
+
+  // Inject dev class names if enabled
+  if (state.isDev && state.opts.enableDevClassNames) {
+    compiledStyles = {
+      ...injectDevClassNames(compiledStyles, null, state),
+    };
+  }
+
+  // Add @property rule for the CSS variable
+  injectedStyles[varName] = {
+    priority: 0,
+    ltr: `@property ${varName} { syntax: "*"; inherits: false;}`,
+    rtl: null,
+  };
+
+  // Register the CSS
+  const listOfStyles = Object.entries(injectedStyles).map(
+    ([key, { priority, ...rest }]) => [key, rest, priority],
+  );
+  state.registerStyles(listOfStyles, objPath);
+
+  // Get the compiled style
+  const compiledStyle = compiledStyles.__inline__;
+  if (compiledStyle == null) {
+    return;
+  }
+
+  // Get the class name for the property
+  const propKey = Object.keys(compiledStyle).find((k) => k !== '$$css');
+  const className = propKey != null ? compiledStyle[propKey] : null;
+  if (className == null || propKey == null || typeof className !== 'string') {
+    return;
+  }
+
+  // Create the function pattern:
+  // _v => [{ propKey: _v != null ? className : _v, $$css: true }, { varName: _v != null ? _v : undefined }]
+  const param = t.identifier('_v');
+  const nullCheck = t.binaryExpression('!=', param, t.nullLiteral());
+
+  const compiledObj = t.objectExpression([
+    t.objectProperty(
+      t.stringLiteral(propKey),
+      t.conditionalExpression(nullCheck, t.stringLiteral(className), param),
+    ),
+    t.objectProperty(t.stringLiteral('$$css'), t.booleanLiteral(true)),
+  ]);
+
+  const inlineVarsObj = t.objectExpression([
+    t.objectProperty(
+      t.stringLiteral(varName),
+      t.conditionalExpression(
+        t.binaryExpression('!=', param, t.nullLiteral()),
+        param,
+        t.identifier('undefined'),
+      ),
+    ),
+  ]);
+
+  const fnBody = t.arrayExpression([compiledObj, inlineVarsObj]);
+  const arrowFn = t.arrowFunctionExpression([param], fnBody);
+
+  // Create the hoisted styles object: const _styles = { property: arrowFn }
+  const stylesObj = t.objectExpression([
+    t.objectProperty(t.identifier(property), arrowFn),
+  ]);
+
+  // Hoist the function
+  const hoistedId = hoistExpression(objPath, stylesObj);
+
+  // Replace the original with: _hoistedId.property(valueExpr)
+  const callExpr = t.callExpression(
+    t.memberExpression(hoistedId, t.identifier(property)),
+    [valueExpr],
+  );
+  objPath.replaceWith(callExpr);
 }

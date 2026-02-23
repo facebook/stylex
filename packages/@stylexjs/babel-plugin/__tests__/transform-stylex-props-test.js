@@ -231,6 +231,692 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
+    describe('props calls with atoms', () => {
+      test('inline static styles match stylex.create', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          stylex.props(css.display.flex);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".x78zum5{display:flex}",
+            priority: 3000
+          });
+          ({
+            className: "x78zum5"
+          });"
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            flex: { display: 'flex' },
+          });
+          stylex.props(styles.flex);
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".x78zum5{display:flex}",
+            priority: 3000
+          });
+          ({
+            className: "x78zum5"
+          });"
+        `);
+      });
+
+      test('inline static supports leading underscore value', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          stylex.props(css.padding._16px);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".x1tamke2{padding:16px}",
+            priority: 1000
+          });
+          ({
+            className: "x1tamke2"
+          });"
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            pad: { padding: '16px' },
+          });
+          stylex.props(styles.pad);
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".x1tamke2{padding:16px}",
+            priority: 1000
+          });
+          ({
+            className: "x1tamke2"
+          });"
+        `);
+      });
+
+      test('inline static supports computed key syntax', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          stylex.props(css.width['calc(100% - 20px)']);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".xnlsq7q{width:calc(100% - 20px)}",
+            priority: 4000
+          });
+          ({
+            className: "xnlsq7q"
+          });"
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            w: { width: 'calc(100% - 20px)' },
+          });
+          stylex.props(styles.w);
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".xnlsq7q{width:calc(100% - 20px)}",
+            priority: 4000
+          });
+          ({
+            className: "xnlsq7q"
+          });"
+        `);
+      });
+
+      test('inline css supports default imports', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          stylex.props(css.color.blue);
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".xju2f9n{color:blue}",
+            priority: 3000
+          });
+          ({
+            className: "xju2f9n"
+          });"
+        `);
+      });
+
+      test('dedupes duplicate properties across create and atoms', () => {
+        const output = transform(`
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          const styles = stylex.create({
+            base: { color: 'red', backgroundColor: 'white' },
+          });
+          stylex.props(styles.base, css.color.blue, css.backgroundColor.white);
+        `);
+        expect(output).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".x1e2nbdu{color:red}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".x12peec7{background-color:white}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".xju2f9n{color:blue}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".x12peec7{background-color:white}",
+            priority: 3000
+          });
+          ({
+            className: "xju2f9n x12peec7"
+          });"
+        `);
+      });
+
+      test('dynamic style', () => {
+        const inline = transform(`
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          stylex.props(css.color(color));
+        `);
+        const local = transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            color: (c) => ({ color: c }),
+          });
+          stylex.props(styles.color(color));
+        `);
+        expect(local).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const styles = {
+            color: c => [{
+              kMwMTN: c != null ? "x14rh7hd" : c,
+              $$css: true
+            }, {
+              "--x-color": c != null ? c : undefined
+            }]
+          };
+          stylex.props(styles.color(color));"
+        `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const _temp = {
+            color: _v => [{
+              "kMwMTN": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
+          stylex.props(_temp.color(color));"
+        `);
+      });
+
+      test('inline static + inline dynamic coexist', () => {
+        const inline = transform(`
+        import stylex from 'stylex';
+        import css from '@stylexjs/atoms';
+        stylex.props(css.display.flex, css.color(color));
+      `);
+        expect(inline).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".x78zum5{display:flex}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const _temp = {
+            color: _v => [{
+              "kMwMTN": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
+          const _temp2 = {
+            k1xSpc: "x78zum5",
+            $$css: true
+          };
+          stylex.props(_temp2, _temp.color(color));"
+        `);
+      });
+
+      test('inline static + create dynamic', () => {
+        const output = transform(`
+        import stylex from 'stylex';
+        import css from '@stylexjs/atoms';
+        const styles = stylex.create({
+          opacity: (o) => ({ opacity: o }),
+        });
+        stylex.props(css.display.flex, styles.opacity(0.5));
+      `);
+        expect(output).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".xb4nw82{opacity:var(--x-opacity)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-opacity { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const styles = {
+            opacity: o => [{
+              kSiTet: o != null ? "xb4nw82" : o,
+              $$css: true
+            }, {
+              "--x-opacity": o != null ? o : undefined
+            }]
+          };
+          _inject2({
+            ltr: ".x78zum5{display:flex}",
+            priority: 3000
+          });
+          const _temp = {
+            k1xSpc: "x78zum5",
+            $$css: true
+          };
+          stylex.props(_temp, styles.opacity(0.5));"
+        `);
+      });
+
+      test('inline dynamic + create dynamic', () => {
+        const output = transform(`
+        import stylex from 'stylex';
+        import css from '@stylexjs/atoms';
+        const styles = stylex.create({
+          opacity: (o) => ({ opacity: o }),
+        });
+        stylex.props(css.color(color), styles.opacity(0.5));
+      `);
+        expect(output).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          import css from '@stylexjs/atoms';
+          _inject2({
+            ltr: ".xb4nw82{opacity:var(--x-opacity)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-opacity { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const styles = {
+            opacity: o => [{
+              kSiTet: o != null ? "xb4nw82" : o,
+              $$css: true
+            }, {
+              "--x-opacity": o != null ? o : undefined
+            }]
+          };
+          _inject2({
+            ltr: ".x14rh7hd{color:var(--x-color)}",
+            priority: 3000
+          });
+          _inject2({
+            ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+            priority: 0
+          });
+          const _temp = {
+            color: _v => [{
+              "kMwMTN": _v != null ? "x14rh7hd" : _v,
+              "$$css": true
+            }, {
+              "--x-color": _v != null ? _v : undefined
+            }]
+          };
+          stylex.props(_temp.color(color), styles.opacity(0.5));"
+        `);
+      });
+
+      describe('conditional atoms', () => {
+        test('atoms with && conditional', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            stylex.props(css.display.flex, isActive && css.color.blue);
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".x78zum5{display:flex}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".xju2f9n{color:blue}",
+              priority: 3000
+            });
+            ({
+              0: {
+                className: "x78zum5"
+              },
+              1: {
+                className: "x78zum5 xju2f9n"
+              }
+            })[!!isActive << 0];"
+          `);
+        });
+
+        test('atoms with ternary conditional', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            stylex.props(isActive ? css.color.blue : css.color.red);
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".xju2f9n{color:blue}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".x1e2nbdu{color:red}",
+              priority: 3000
+            });
+            ({
+              0: {
+                className: "x1e2nbdu"
+              },
+              1: {
+                className: "xju2f9n"
+              }
+            })[!!isActive << 0];"
+          `);
+        });
+
+        test('atoms with conditional and create styles', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            const styles = stylex.create({
+              active: { color: 'blue' },
+            });
+            stylex.props(css.display.flex, isActive && styles.active);
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".xju2f9n{color:blue}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".x78zum5{display:flex}",
+              priority: 3000
+            });
+            ({
+              0: {
+                className: "x78zum5"
+              },
+              1: {
+                className: "x78zum5 xju2f9n"
+              }
+            })[!!isActive << 0];"
+          `);
+        });
+
+        test('dynamic atoms with ternary conditional', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            stylex.props(isActive ? css.color(activeColor) : css.backgroundColor(inactiveBg));
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".x14rh7hd{color:var(--x-color)}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+              priority: 0
+            });
+            const _temp = {
+              color: _v => [{
+                "kMwMTN": _v != null ? "x14rh7hd" : _v,
+                "$$css": true
+              }, {
+                "--x-color": _v != null ? _v : undefined
+              }]
+            };
+            _inject2({
+              ltr: ".xl8spv7{background-color:var(--x-backgroundColor)}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: "@property --x-backgroundColor { syntax: \\"*\\"; inherits: false;}",
+              priority: 0
+            });
+            const _temp2 = {
+              backgroundColor: _v => [{
+                "kWkggS": _v != null ? "xl8spv7" : _v,
+                "$$css": true
+              }, {
+                "--x-backgroundColor": _v != null ? _v : undefined
+              }]
+            };
+            stylex.props(isActive ? _temp.color(activeColor) : _temp2.backgroundColor(inactiveBg));"
+          `);
+        });
+      });
+
+      describe('atoms inside functions', () => {
+        test('static atoms inside function declaration', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            function Component() {
+              return stylex.props(css.display.flex, css.color.blue);
+            }
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".x78zum5{display:flex}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".xju2f9n{color:blue}",
+              priority: 3000
+            });
+            function Component() {
+              return {
+                className: "x78zum5 xju2f9n"
+              };
+            }"
+          `);
+        });
+
+        test('dynamic atoms inside function declaration', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            function Component(color) {
+              return stylex.props(css.display.flex, css.color(color));
+            }
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".x78zum5{display:flex}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".x14rh7hd{color:var(--x-color)}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: "@property --x-color { syntax: \\"*\\"; inherits: false;}",
+              priority: 0
+            });
+            const _temp = {
+              color: _v => [{
+                "kMwMTN": _v != null ? "x14rh7hd" : _v,
+                "$$css": true
+              }, {
+                "--x-color": _v != null ? _v : undefined
+              }]
+            };
+            const _temp2 = {
+              k1xSpc: "x78zum5",
+              $$css: true
+            };
+            function Component(color) {
+              return stylex.props(_temp2, _temp.color(color));
+            }"
+          `);
+        });
+
+        test('atoms inside arrow function', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            const Component = () => stylex.props(css.display.flex, css.color.blue);
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".x78zum5{display:flex}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".xju2f9n{color:blue}",
+              priority: 3000
+            });
+            const Component = () => ({
+              className: "x78zum5 xju2f9n"
+            });"
+          `);
+        });
+
+        test('multiple stylex.props calls with atoms in same function', () => {
+          const output = transform(`
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            function Component(isHeader) {
+              const headerStyles = stylex.props(css.fontSize['24px'], css.fontWeight.bold);
+              const bodyStyles = stylex.props(css.fontSize['16px'], css.color.black);
+              return [headerStyles, bodyStyles];
+            }
+          `);
+          expect(output).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".x1pvqxga{font-size:24px}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".x117nqv4{font-weight:bold}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".x1j61zf2{font-size:16px}",
+              priority: 3000
+            });
+            _inject2({
+              ltr: ".x1mqxbix{color:black}",
+              priority: 3000
+            });
+            function Component(isHeader) {
+              const headerStyles = {
+                className: "x1pvqxga x117nqv4"
+              };
+              const bodyStyles = {
+                className: "x1j61zf2 x1mqxbix"
+              };
+              return [headerStyles, bodyStyles];
+            }"
+          `);
+        });
+      });
+
+      describe('with options', () => {
+        test('dev/debug classnames for atoms', () => {
+          const inline = transform(
+            `
+              import stylex from 'stylex';
+              import css from '@stylexjs/atoms';
+              stylex.props(css.display.flex);
+            `,
+            {
+              dev: true,
+              debug: true,
+              enableDevClassNames: true,
+              enableDebugClassNames: true,
+              filename: '/tmp/Foo.js',
+            },
+          );
+          expect(inline).toMatchInlineSnapshot(`
+            "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+            var _inject2 = _inject;
+            import stylex from 'stylex';
+            import css from '@stylexjs/atoms';
+            _inject2({
+              ltr: ".display-x78zum5{display:flex}",
+              priority: 3000
+            });
+            ({
+              className: "Foo____inline__ display-x78zum5"
+            });"
+          `);
+        });
+      });
+    });
+
     test('stylex call with number', () => {
       expect(
         transform(`

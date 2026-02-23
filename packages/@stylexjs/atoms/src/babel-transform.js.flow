@@ -1,0 +1,43 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+/**
+ * Creates a visitor that transforms utility style expressions into raw style objects.
+ * The babel-plugin will handle compilation via stylexCreate.
+ *
+ * - css.display.flex -> { display: 'flex' }
+ * - css.color(myVar) -> { color: myVar }
+ *
+ * @param {object} state - StateManager from babel-plugin
+ * @returns {object} Babel visitor
+ */
+declare function createUtilityStylesVisitor(state: $FlowFixMe): $FlowFixMe;
+
+declare function isUtilityStylesIdentifier(
+  ident: $FlowFixMe,
+  state: $FlowFixMe,
+  path: $FlowFixMe,
+): boolean;
+
+declare function getStaticStyleFromPath(
+  path: $FlowFixMe,
+  state: $FlowFixMe,
+): ?{ property: string, value: string | number };
+
+declare function getDynamicStyleFromPath(
+  path: $FlowFixMe,
+  state: $FlowFixMe,
+): ?{ property: string, value: $FlowFixMe };
+
+declare module.exports: {
+  createUtilityStylesVisitor: typeof createUtilityStylesVisitor,
+  isUtilityStylesIdentifier: typeof isUtilityStylesIdentifier,
+  getStaticStyleFromPath: typeof getStaticStyleFromPath,
+  getDynamicStyleFromPath: typeof getDynamicStyleFromPath,
+};
