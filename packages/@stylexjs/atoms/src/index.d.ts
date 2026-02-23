@@ -15,7 +15,4 @@ export type AtomProperty = {
 };
 export type Atoms = { readonly [Key in keyof CSSProperties]-?: AtomProperty };
 declare const atoms: Atoms;
-declare const $$EXPORT_DEFAULT_DECLARATION$$: typeof atoms;
-declare type $$EXPORT_DEFAULT_DECLARATION$$ =
-  typeof $$EXPORT_DEFAULT_DECLARATION$$;
-export default $$EXPORT_DEFAULT_DECLARATION$$;
+export default atoms;
