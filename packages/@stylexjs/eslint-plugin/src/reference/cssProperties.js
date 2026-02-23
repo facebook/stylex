@@ -311,7 +311,7 @@ const absoluteSize: RuleCheck = makeUnionRule(
   makeLiteralRule('xx-large'),
 );
 const fontFamily: RuleCheck = isString;
-const gridLine: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isString);
+const gridLine: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isNumber, isString);
 const gridTemplate: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('subgrid'),

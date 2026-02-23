@@ -874,6 +874,26 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         });
       `,
     },
+    {
+      code: `
+        import stylex from "stylex";
+        const styles = stylex.create({
+          valid: {
+            gridColumnStart: 2,
+          }
+        });
+      `,
+    },
+    {
+      code: `
+        import stylex from "stylex";
+        const styles = stylex.create({
+          valid: {
+            gridRowEnd: 3,
+          }
+        });
+      `,
+    },
   ],
   invalid: [
     {
