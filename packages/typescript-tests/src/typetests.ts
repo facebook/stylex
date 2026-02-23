@@ -317,3 +317,26 @@ const styles9 = stylex.create({
   // @ts-expect-error - `undefined` is not a valid style value
   bar: (height: number, width?: number) => ({ height, width }),
 });
+
+// gridLine properties should accept integers
+// See https://drafts.csswg.org/css-grid/#typedef-grid-row-start-grid-line
+const gridStyles = stylex.create({
+  gridWithIntegers: {
+    gridColumnStart: 2,
+    gridColumnEnd: 5,
+    gridRowStart: 1,
+    gridRowEnd: 3,
+  },
+  gridWithAuto: {
+    gridColumnStart: 'auto',
+    gridRowStart: 'auto',
+  },
+  gridWithSpan: {
+    gridColumnStart: 'span 2',
+    gridRowEnd: 'span 3',
+  },
+});
+
+gridStyles.gridWithIntegers satisfies StyleXStyles;
+gridStyles.gridWithAuto satisfies StyleXStyles;
+gridStyles.gridWithSpan satisfies StyleXStyles;

@@ -886,7 +886,7 @@ type compositeOperator = 'add' | 'subtract' | 'intersect' | 'exclude';
 //   | box
 //   | backgroundColor;
 type geometryBox = shapeBox | 'fill-box' | 'stroke-box' | 'view-box';
-type gridLine = 'auto' | string;
+type gridLine = 'auto' | number | string;
 type lengthPercentage = number | string;
 type maskLayer =
   | maskReference
