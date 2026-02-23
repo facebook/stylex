@@ -4448,7 +4448,7 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "--x-1g451k2",
                   {
-                    "ltr": "@property --x-1g451k2 { syntax: "*";}",
+                    "ltr": "@property --x-1g451k2 { syntax: "*"; inherits: true;}",
                     "rtl": null,
                   },
                   0,
@@ -4456,7 +4456,7 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "--x-19erzii",
                   {
-                    "ltr": "@property --x-19erzii { syntax: "*";}",
+                    "ltr": "@property --x-19erzii { syntax: "*"; inherits: true;}",
                     "rtl": null,
                   },
                   0,
@@ -4502,7 +4502,7 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "--x-163tekb",
                   {
-                    "ltr": "@property --x-163tekb { syntax: "*";}",
+                    "ltr": "@property --x-163tekb { syntax: "*"; inherits: true;}",
                     "rtl": null,
                   },
                   0,
@@ -4548,7 +4548,7 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "--x-msahdu",
                   {
-                    "ltr": "@property --x-msahdu { syntax: "*";}",
+                    "ltr": "@property --x-msahdu { syntax: "*"; inherits: true;}",
                     "rtl": null,
                   },
                   0,
@@ -4606,7 +4606,53 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "--x-6bge3v",
                   {
-                    "ltr": "@property --x-6bge3v { syntax: "*";}",
+                    "ltr": "@property --x-6bge3v { syntax: "*"; inherits: true;}",
+                    "rtl": null,
+                  },
+                  0,
+                ],
+              ],
+            }
+          `);
+        });
+
+        test('dynamic style in "::after" generates valid @property with inherits', () => {
+          const { code, metadata } = transform(`
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              repro: (color) => ({
+                '::after': {
+                  color,
+                },
+              }),
+            });
+          `);
+          expect(code).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            export const styles = {
+              repro: color => [{
+                kB1Fuz: color != null ? "x1p1099i" : color,
+                $$css: true
+              }, {
+                "--x-19erzii": color != null ? color : undefined
+              }]
+            };"
+          `);
+          expect(metadata).toMatchInlineSnapshot(`
+            {
+              "stylex": [
+                [
+                  "x1p1099i",
+                  {
+                    "ltr": ".x1p1099i::after{color:var(--x-19erzii)}",
+                    "rtl": null,
+                  },
+                  8000,
+                ],
+                [
+                  "--x-19erzii",
+                  {
+                    "ltr": "@property --x-19erzii { syntax: "*"; inherits: true;}",
                     "rtl": null,
                   },
                   0,
