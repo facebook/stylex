@@ -128,7 +128,7 @@ describe('@stylexjs/babel-plugin', () => {
         }).toThrow(messages.ILLEGAL_NAMESPACE_VALUE);
       });
 
-      test('invalid rule: spread', () => {
+      test('valid rule: spread', () => {
         expect(() =>
           transform(`
           import * as stylex from '@stylexjs/stylex';
@@ -138,7 +138,7 @@ describe('@stylexjs/babel-plugin', () => {
             bar: { color: 'blue' }
           });
         `),
-        ).toThrow(messages.NO_OBJECT_SPREADS);
+        ).not.toThrow();
       });
 
       test('valid rule: object', () => {
@@ -337,6 +337,7 @@ describe('@stylexjs/babel-plugin', () => {
         }).toThrowErrorMatchingInlineSnapshot(`
           "unknown file: There was an error when attempting to evaluate the imported file.
           Please ensure that the imported file is self-contained and does not rely on dynamic behavior.
+          Only named exports of defineVars()/defineConsts() from .stylex.js/.stylex.ts files can be imported into StyleX calls.
 
             1 |
             2 |             import * as stylex from '@stylexjs/stylex';

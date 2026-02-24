@@ -522,11 +522,6 @@ function validateStyleXCreate(path: NodePath<t.CallExpression>) {
       SyntaxError,
     );
   }
-
-  const hasSpread = arg.properties.some((prop) => t.isSpreadElement(prop));
-  if (hasSpread) {
-    throw path.buildCodeFrameError(messages.NO_OBJECT_SPREADS, SyntaxError);
-  }
 }
 
 function legacyExpandShorthands(

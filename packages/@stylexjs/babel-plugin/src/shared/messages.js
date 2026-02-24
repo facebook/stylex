@@ -46,8 +46,6 @@ export const NON_OBJECT_KEYFRAME =
   'Every frame within a keyframes() call must be an object.';
 export const NON_CONTIGUOUS_VARS =
   'All variables passed to firstThatWorks() must be contiguous.';
-export const NO_OBJECT_SPREADS =
-  'Object spreads are not allowed in create() calls.';
 export const ONLY_NAMED_PARAMETERS_IN_DYNAMIC_STYLE_FUNCTIONS =
   'Only named parameters are allowed in Dynamic Style functions. Destructuring, spreading or default values are not allowed.';
 export const ONLY_TOP_LEVEL =

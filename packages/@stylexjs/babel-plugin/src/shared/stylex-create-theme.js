@@ -29,7 +29,7 @@ export default function styleXCreateTheme(
   if (typeof themeVars.__varGroupHash__ !== 'string') {
     throw new Error(
       'createTheme() requires a defineVars() result as its first argument. ' +
-        'The second argument is an object of overrides — partial overrides are supported, ' +
+        'The second argument is an object of overrides. Partial overrides are supported,' +
         'only specify the tokens you want to change.',
     );
   }

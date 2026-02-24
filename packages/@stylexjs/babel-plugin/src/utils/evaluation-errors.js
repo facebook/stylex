@@ -40,7 +40,7 @@ https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-
 `;
 
 export const NON_CONSTANT =
-  'Referenced value is not a constant. Only `const` bindings can be used in StyleX calls. Use `let` or `var` → `const`, or use `stylex.env` for shared values.\n\n';
+  'Referenced value is not a constant. The variable must not be reassigned or mutated.\n\n';
 
 export const USED_BEFORE_DECLARATION =
   'Referenced value is used before declaration.\n\n';
