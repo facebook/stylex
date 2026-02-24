@@ -392,6 +392,13 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          paddingInlineEnd: Math.round(x / 2),
        },
      })`,
+    // test for WebkitAppearance with 'none'
+    `import * as stylex from '@stylexjs/stylex';
+     stylex.create({
+       default: {
+         'WebkitAppearance': 'none',
+       },
+     })`,
     // test for Search
     `import * as stylex from '@stylexjs/stylex';
      stylex.create({
