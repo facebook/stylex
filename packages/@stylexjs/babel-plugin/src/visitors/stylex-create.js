@@ -205,6 +205,7 @@ export default function transformStyleXCreate(
       };
       identifiers[name] = { ...(identifiers[name] ?? {}), when: stylexWhen };
     });
+    state.applyStylexEnv(identifiers);
 
     const { confident, value, fns, reason, deopt } = evaluateStyleXCreateArg(
       firstArg,

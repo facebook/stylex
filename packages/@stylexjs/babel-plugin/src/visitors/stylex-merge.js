@@ -8,6 +8,7 @@
  */
 
 import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
@@ -56,6 +57,13 @@ export default function transformStyleXMerge(
   ) {
     return;
   }
+
+  const evaluatePathFnConfig: FunctionConfig = {
+    identifiers: {},
+    memberExpressions: {},
+    disableImports: true,
+  };
+  state.applyStylexEnv(evaluatePathFnConfig.identifiers);
 
   let bailOut = false;
   let conditional = 0;
@@ -160,7 +168,11 @@ export default function transformStyleXMerge(
         if (nonNullProps === true) {
           styleNonNullProps = true;
         } else {
-          const { confident, value: styleValue } = evaluate(path, state);
+          const { confident, value: styleValue } = evaluate(
+            path,
+            state,
+            evaluatePathFnConfig,
+          );
           if (!confident || styleValue == null) {
             nonNullProps = true;
             styleNonNullProps = true;

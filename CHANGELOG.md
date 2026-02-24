@@ -5,6 +5,7 @@
 - Add `disallowedPropertiesValidation` config to disable property compiler errors by default.
 - Preserve units in zero values for CSS variables.
 - Fix `unplugin` cache invalidation on style changes.
+- Add `env` compiler option to expose `stylex.env` compile-time constants.
 
 ## 0.17.4 (Dec 18. 2025)
 - New playground within the docs website.

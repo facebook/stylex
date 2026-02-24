@@ -164,6 +164,8 @@ export const when: StyleX$When = {
   },
 };
 
+export const env: $ReadOnly<{ [string]: mixed }> = Object.freeze({});
+
 export const types = {
   angle: <T: string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
@@ -232,6 +234,7 @@ type IStyleX = {
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
+  env: $ReadOnly<{ [string]: mixed }>,
   defaultMarker: () => MapNamespace<
     Readonly<{
       marker: 'default-marker',
@@ -282,5 +285,6 @@ _legacyMerge.props = props;
 _legacyMerge.types = types;
 _legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;
+_legacyMerge.env = env;
 
 export const legacyMerge: IStyleX = _legacyMerge;
