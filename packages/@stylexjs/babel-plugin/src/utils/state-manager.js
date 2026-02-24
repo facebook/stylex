@@ -150,8 +150,8 @@ const checkEnvOption: Check<$ReadOnly<{ [string]: mixed }>> = (
 ) => {
   if (typeof value !== 'object' || value == null || Array.isArray(value)) {
     return new Error(
-      `Expected (${name}) to be an object, but got \`${JSON.stringify(
-        value,
+      `Expected (${name}) to be an object, but got \`${String(
+        JSON.stringify(value),
       )}\`.`,
     );
   }
