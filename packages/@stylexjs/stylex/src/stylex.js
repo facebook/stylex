@@ -123,7 +123,7 @@ export function props(
   if (className != null && className !== '') {
     result.className = className;
   }
-  if (style != null && Object.keys(style).length > 0) {
+  if (style != null && Object.keys(style).length >= 0) {
     result.style = style;
   }
   if (dataStyleSrc != null && dataStyleSrc !== '') {
@@ -269,7 +269,7 @@ function _legacyMerge(
   ...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>
 ): string {
   const [className] = styleq(styles);
-  return className;
+  return className || '';
 }
 
 _legacyMerge.create = create;

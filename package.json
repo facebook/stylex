@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "npm run build",
     "prepare": "husky install tools/husky",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build --workspaces",
     "build:examples": "npm run example:build --workspaces --if-present",
     "flow": "flow",
     "prettier": "prettier --write \"**/*.{js,flow,mjs,tsx,ts}\"",
