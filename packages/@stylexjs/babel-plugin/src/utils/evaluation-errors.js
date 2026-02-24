@@ -14,13 +14,13 @@ Please ensure that the 'babelrc' file is configured to be able to parse this fil
 // export const
 export const IMPORT_FILE_EVAL_ERROR = `There was an error when attempting to evaluate the imported file.
 Please ensure that the imported file is self-contained and does not rely on dynamic behavior.
+Only named exports of defineVars()/defineConsts() from .stylex.js/.stylex.ts files can be imported into StyleX calls.
 `;
 
-export const DEFAULT_IMPORT = `Error: Cannot use default imports.
+export const DEFAULT_IMPORT = `Error: Cannot use default imports in StyleX calls.
 
-Please define your styles without depending on values imported from other files.
-
-You *may* use named imports to use variables defined with \`defineVars\` in a file with \`.stylex.js\` or \`.stylex.ts\` file.
+Only named imports from \`.stylex.js\` or \`.stylex.ts\` files are supported (e.g., defineVars/defineConsts results).
+For sharing constants or functions across files, use \`stylex.env\` configured in the babel plugin options.
 See: https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-variables for more information.
 `;
 
@@ -39,7 +39,8 @@ rules for defining variables:
 https://stylexjs.com/docs/learn/theming/defining-variables/#rules-when-defining-variables
 `;
 
-export const NON_CONSTANT = 'Referenced value is not a constant.\n\n';
+export const NON_CONSTANT =
+  'Referenced value is not a constant. Only `const` bindings can be used in StyleX calls. Use `let` or `var` → `const`, or use `stylex.env` for shared values.\n\n';
 
 export const USED_BEFORE_DECLARATION =
   'Referenced value is used before declaration.\n\n';

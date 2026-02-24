@@ -15,7 +15,8 @@
 export const illegalArgumentLength = (fn: string, argLength: number): string =>
   `${fn}() should have ${argLength} argument${argLength === 1 ? '' : 's'}.`;
 export const nonStaticValue = (fn: string): string =>
-  `Only static values are allowed inside of a ${fn}() call.`;
+  `Only static values are allowed inside of a ${fn}() call. ` +
+  'Allowed: literal values, const bindings, arrow functions, stylex.env values, and defineVars/defineConsts imports from .stylex.js/.stylex.ts files.';
 export const nonStyleObject = (fn: string): string =>
   `${fn}() can only accept an object.`;
 export const nonExportNamedDeclaration = (fn: string): string =>

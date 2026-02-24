@@ -157,7 +157,9 @@ export default function transformStyleXCreateTheme(
       variables.__varGroupHash__ === ''
     ) {
       throw callExpressionPath.buildCodeFrameError(
-        'Can only override variables theme created with defineVars().',
+        'createTheme() requires a defineVars() result as its first argument. ' +
+          'The second argument is an object of overrides — partial overrides are supported, ' +
+          'only specify the tokens you want to change.',
         SyntaxError,
       );
     }

@@ -74,7 +74,7 @@ describe('@stylexjs/babel-plugin', () => {
           const variables = stylex.createTheme({}, {});
         `);
       }).toThrow(
-        'Can only override variables theme created with defineVars().',
+        'createTheme() requires a defineVars() result as its first argument.',
       );
 
       expect(() => {
