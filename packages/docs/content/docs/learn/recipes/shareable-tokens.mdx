@@ -1,5 +1,5 @@
 ---
-title: 'Shareable Tokens and Theme Inheritance'
+title: 'Theme overrides'
 ---
 
 StyleX provides several patterns for sharing design tokens across your codebase
@@ -7,7 +7,7 @@ and creating themes that build on each other.
 
 ## Shareable tokens with `stylex.env`
 
-Use `stylex.env` to define design tokens once in your babel configuration and
+Use `stylex.env` to define design tokens once in your babel config and
 use them across your entire codebase. This avoids repeating token values in
 every file.
 
@@ -53,7 +53,7 @@ export const radii = stylex.defineVars(stylex.env.tokens.radii);
 ## Partial overrides
 
 `createTheme` accepts partial overrides. Tokens you don't specify are not
-included in the generated CSS, so they inherit from the original defineVars `VarGroup`.
+included in the generated CSS, so they inherit from the original `VarGroup`.
 
 ```tsx title="themes.js"
 import * as stylex from '@stylexjs/stylex';
@@ -73,7 +73,7 @@ export const highContrastTheme = stylex.createTheme(colors, {
 ```
 
 Apply themes by nesting. Child themes inherit unspecified tokens from their
-parent through the CSS cascade:
+parent:
 
 ```tsx title="App.js"
 import * as stylex from '@stylexjs/stylex';
@@ -89,8 +89,7 @@ import { darkTheme, highContrastTheme } from './themes';
 
 ## Composing theme overrides with `stylex.env` functions
 
-For themes that share a common base, use an `env` function to merge overrides at
-compile time. This avoids repeating the full token set in every theme.
+For themes that share a common base, define a shareable `env` function to merge overrides. This avoids repeating the full token set in every theme.
 
 ```js title="babel.config.js"
 module.exports = {
@@ -135,5 +134,4 @@ export const draculaTheme = stylex.createTheme(colors,
 );
 ```
 
-The `override` function merges the base tokens with your changes at compile
-time through the function set in your config.
+The `override` function merges the base tokens with your changes through the function set in your config.
