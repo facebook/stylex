@@ -17,12 +17,22 @@ module.exports = {
     ['@stylexjs/babel-plugin', {
       env: {
         tokens: {
-          primaryColor: 'blue',
-          secondaryColor: 'green',
-          backgroundColor: 'white',
-          textColor: 'black',
-          borderColor: 'gray',
-          borderRadius: '4px',
+          colors: {
+            primary: 'blue',
+            secondary: 'green',
+            background: 'white',
+            text: 'black',
+            border: 'gray',
+          },
+          spacing: {
+            small: '4px',
+            medium: '8px',
+            large: '16px',
+          },
+          radii: {
+            small: '4px',
+            medium: '8px',
+          },
         },
       },
     }],
@@ -35,13 +45,15 @@ These tokens can then be used in `defineVars`, `createTheme`, or `create` calls:
 ```tsx title="tokens.stylex.js"
 import * as stylex from '@stylexjs/stylex';
 
-export const colors = stylex.defineVars(stylex.env.tokens);
+export const colors = stylex.defineVars(stylex.env.tokens.colors);
+export const spacing = stylex.defineVars(stylex.env.tokens.spacing);
+export const radii = stylex.defineVars(stylex.env.tokens.radii);
 ```
 
-## Theme inheritance with partial overrides
+## Partial overrides
 
 `createTheme` accepts partial overrides. Tokens you don't specify are not
-included in the generated CSS, so they inherit from whatever ancestor set them.
+included in the generated CSS, so they inherit from the original defineVars `VarGroup`.
 
 ```tsx title="themes.js"
 import * as stylex from '@stylexjs/stylex';
@@ -49,14 +61,14 @@ import { colors } from './tokens.stylex';
 
 // Dark theme — only override what changes
 export const darkTheme = stylex.createTheme(colors, {
-  backgroundColor: '#1a1a1a',
-  textColor: 'white',
+  background: '#1a1a1a',
+  text: 'white',
 });
 
 // High contrast — only override what changes
 export const highContrastTheme = stylex.createTheme(colors, {
-  primaryColor: 'yellow',
-  borderColor: 'white',
+  primary: 'yellow',
+  border: 'white',
 });
 ```
 
@@ -67,7 +79,7 @@ parent through the CSS cascade:
 import * as stylex from '@stylexjs/stylex';
 import { darkTheme, highContrastTheme } from './themes';
 
-// High contrast inherits backgroundColor and textColor from dark
+// High contrast inherits background and text from dark
 <div {...stylex.props(darkTheme)}>
   <div {...stylex.props(highContrastTheme)}>
     {children}
@@ -75,9 +87,9 @@ import { darkTheme, highContrastTheme } from './themes';
 </div>
 ```
 
-## Composing overrides with env functions
+## Composing theme overrides with `stylex.env` functions
 
-For themes that share a common base, use an env function to merge overrides at
+For themes that share a common base, use an `env` function to merge overrides at
 compile time. This avoids repeating the full token set in every theme.
 
 ```js title="babel.config.js"
@@ -86,11 +98,13 @@ module.exports = {
     ['@stylexjs/babel-plugin', {
       env: {
         tokens: {
-          primaryColor: 'blue',
-          secondaryColor: 'green',
-          backgroundColor: 'white',
-          textColor: 'black',
-          borderColor: 'gray',
+          colors: {
+            primary: 'blue',
+            secondary: 'green',
+            background: 'white',
+            text: 'black',
+            border: 'gray',
+          },
         },
         override: (base, overrides) => ({ ...base, ...overrides }),
       },
@@ -105,22 +119,21 @@ import { colors } from './tokens.stylex';
 
 // Each theme specifies only its changes
 export const darkTheme = stylex.createTheme(colors,
-  stylex.env.override(stylex.env.tokens, {
-    backgroundColor: '#1a1a1a',
-    textColor: 'white',
+  stylex.env.override(stylex.env.tokens.colors, {
+    background: '#1a1a1a',
+    text: 'white',
   })
 );
 
 export const draculaTheme = stylex.createTheme(colors,
-  stylex.env.override(stylex.env.tokens, {
-    primaryColor: 'purple',
-    secondaryColor: 'pink',
-    backgroundColor: '#282a36',
-    textColor: '#f8f8f2',
+  stylex.env.override(stylex.env.tokens.colors, {
+    primary: 'purple',
+    secondary: 'pink',
+    background: '#282a36',
+    text: '#f8f8f2',
   })
 );
 ```
 
 The `override` function merges the base tokens with your changes at compile
-time. `createTheme` receives the full object it needs, but you only wrote the
-differences.
+time through the function set in your config.
