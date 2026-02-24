@@ -3,13 +3,15 @@
   "pages": [
     "./create.mdx",
     "./props.mdx",
-    "./keyframes.mdx",
-    "./positionTry.mdx",
-    "./viewTransitionClass.mdx",
-    "./defineVars.mdx",
-    "./types.mdx",
-    "./createTheme.mdx",
     "./defineConsts.mdx",
-    "./firstThatWorks.mdx"
+    "./defineVars.mdx",
+    "./createTheme.mdx",
+    "./when.mdx",
+    "./env.mdx",
+    "./keyframes.mdx",
+    "./viewTransitionClass.mdx",
+    "./positionTry.mdx",
+    "./firstThatWorks.mdx",
+    "./types.mdx"
   ]
 }
