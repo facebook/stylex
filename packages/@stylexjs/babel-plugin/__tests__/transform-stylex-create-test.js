@@ -146,7 +146,7 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
-      test('named env import resolves compile-time constants', () => {
+      test('stylex.env named import resolves compile-time constants', () => {
         const { code, metadata } = transform(
           `
           import * as stylex from '@stylexjs/stylex';
@@ -185,7 +185,7 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
-      test('named env import resolves compile-time constants', () => {
+      test('stylex.env destructured import resolves compile-time constants', () => {
         const { code, metadata } = transform(
           `
           import {create, env} from '@stylexjs/stylex';
@@ -213,6 +213,184 @@ describe('@stylexjs/babel-plugin', () => {
                 "x1tfn4g9",
                 {
                   "ltr": ".x1tfn4g9{color:#123456}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
+      test('stylex.env function call resolves at compile time', () => {
+        const { code, metadata } = transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            root: {
+              color: stylex.env.colorMix('red', 'blue', 50),
+            }
+          });
+        `,
+          {
+            env: {
+              colorMix: (c1, c2, pct) =>
+                `color-mix(in srgb, ${c1} ${pct}%, ${c2})`,
+            },
+          },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kMwMTN: "x10zuzju",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "x10zuzju",
+                {
+                  "ltr": ".x10zuzju{color:color-mix(in srgb,red 50%,blue)}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
+      test('stylex.env named import function call resolves at compile time', () => {
+        const { code, metadata } = transform(
+          `
+          import { create, env } from '@stylexjs/stylex';
+          export const styles = create({
+            root: {
+              color: env.colorMix('red', 'blue', 50),
+            }
+          });
+        `,
+          {
+            env: {
+              colorMix: (c1, c2, pct) =>
+                `color-mix(in srgb, ${c1} ${pct}%, ${c2})`,
+            },
+          },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import { create, env } from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kMwMTN: "x10zuzju",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "x10zuzju",
+                {
+                  "ltr": ".x10zuzju{color:color-mix(in srgb,red 50%,blue)}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
+      test('stylex.env function using template literals', () => {
+        const { code, metadata } = transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            root: {
+              boxShadow: stylex.env.shadow('black', 0.35),
+            }
+          });
+        `,
+          {
+            env: {
+              shadow: (color, opacity) =>
+                `0 4px 4px 2px color-mix(in srgb, ${color} ${opacity * 100}%, transparent)`,
+            },
+          },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kGVxlE: "xft59df",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xft59df",
+                {
+                  "ltr": ".xft59df{box-shadow:0 4px 4px 2px color-mix(in srgb,black 35%,transparent)}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+            ],
+          }
+        `);
+      });
+
+      test('stylex.env function with multiple properties', () => {
+        const { code, metadata } = transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          export const styles = stylex.create({
+            root: {
+              color: stylex.env.opacity('red', 0.5),
+              backgroundColor: stylex.env.opacity('blue', 0.8),
+            }
+          });
+        `,
+          {
+            env: {
+              opacity: (color, pct) =>
+                `color-mix(in srgb, ${color} ${pct * 100}%, transparent)`,
+            },
+          },
+        );
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              kMwMTN: "xa1gjp6",
+              kWkggS: "xuy6j5x",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "xa1gjp6",
+                {
+                  "ltr": ".xa1gjp6{color:color-mix(in srgb,red 50%,transparent)}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "xuy6j5x",
+                {
+                  "ltr": ".xuy6j5x{background-color:color-mix(in srgb,blue 80%,transparent)}",
                   "rtl": null,
                 },
                 3000,

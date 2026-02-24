@@ -98,14 +98,17 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import stylex from 'stylex';
-        _inject2(".xe4pkkx{color:#ff0000}", 3000);
+        _inject2({
+          ltr: ".xe4pkkx{color:#ff0000}",
+          priority: 3000
+        });
         ({
           className: "xe4pkkx"
         });"
       `);
     });
 
-    test('named env import resolves in inline objects', () => {
+    test('stylex.env named import resolves in inline objects', () => {
       expect(
         transform(
           `
@@ -123,7 +126,10 @@ describe('@stylexjs/babel-plugin', () => {
         "import _inject from "@stylexjs/stylex/lib/stylex-inject";
         var _inject2 = _inject;
         import { props, create, env } from 'stylex';
-        _inject2(".x4iekqp{color:#00ffaa}", 3000);
+        _inject2({
+          ltr: ".x4iekqp{color:#00ffaa}",
+          priority: 3000
+        });
         ({
           className: "x4iekqp"
         });"

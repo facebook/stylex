@@ -590,6 +590,95 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex.env.override for partial theme overrides', () => {
+      const { code, metadata } = transformWithFixture(
+        `
+        export const theme = stylex.createTheme(vars,
+          stylex.env.override(stylex.env.tokens, {
+            color: 'red',
+          })
+        );
+      `,
+        undefined,
+        {
+          env: {
+            tokens: {
+              color: {
+                default: 'blue',
+                '@media (prefers-color-scheme: dark)': 'lightblue',
+                '@media print': 'white',
+              },
+              otherColor: {
+                default: 'grey',
+                '@media (prefers-color-scheme: dark)': 'rgba(0, 0, 0, 0.8)',
+              },
+              radius: 10,
+            },
+            override: (base, overrides) => ({ ...base, ...overrides }),
+          },
+        },
+      );
+      expect(code).toMatchInlineSnapshot(`
+        "import * as stylex from '@stylexjs/stylex';
+        export const vars = {
+          color: "var(--xwx8imx)",
+          otherColor: "var(--xaaua2w)",
+          radius: "var(--xbbre8)",
+          __varGroupHash__: "xop34xu"
+        };
+        export const theme = {
+          xop34xu: "x1ahfulb xop34xu",
+          $$css: true
+        };"
+      `);
+      expect(metadata).toMatchInlineSnapshot(`
+        {
+          "stylex": [
+            [
+              "xop34xu",
+              {
+                "ltr": ":root, .xop34xu{--xwx8imx:blue;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.1,
+            ],
+            [
+              "xop34xu-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){:root, .xop34xu{--xwx8imx:lightblue;--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.2,
+            ],
+            [
+              "xop34xu-bdddrq",
+              {
+                "ltr": "@media print{:root, .xop34xu{--xwx8imx:white;}}",
+                "rtl": null,
+              },
+              0.2,
+            ],
+            [
+              "x1ahfulb",
+              {
+                "ltr": ".x1ahfulb, .x1ahfulb:root{--xwx8imx:red;--xaaua2w:grey;--xbbre8:10;}",
+                "rtl": null,
+              },
+              0.5,
+            ],
+            [
+              "x1ahfulb-1lveb7",
+              {
+                "ltr": "@media (prefers-color-scheme: dark){.x1ahfulb, .x1ahfulb:root{--xaaua2w:rgba(0, 0, 0, 0.8);}}",
+                "rtl": null,
+              },
+              0.6000000000000001,
+            ],
+          ],
+        }
+      `);
+    });
+
     test('template literals used in theme objects', () => {
       const { code, metadata } = transformWithFixture(`
         const name = 'light';
