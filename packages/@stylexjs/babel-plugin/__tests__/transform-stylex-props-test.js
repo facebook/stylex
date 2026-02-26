@@ -185,6 +185,43 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('Test that sx attribute can be used instead of ...stylex.props', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              }
+            });
+            function Foo() {
+              return (
+                <>
+                  <div id="test" sx={styles.red}>Hello World</div>
+                  <div className="test" sx={styles.red} id="test">Hello World</div>
+                  <div id="test" sx={styles.red} className="test">Hello World</div>
+                </>
+              );
+            }
+          `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2(".color-x1e2nbdu{color:red}", 3000);
+          function Foo() {
+            return <>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4">Hello World</div>
+                            <div className="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4" id="test">Hello World</div>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:components/Foo.react.js:4" className="test">Hello World</div>
+                          </>;
+          }"
+        `);
+      });
+
       test('local dynamic styles', () => {
         expect(
           transform(
