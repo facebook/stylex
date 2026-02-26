@@ -1491,7 +1491,7 @@ const maskImage: RuleCheck = maskReference;
 const SupportedVendorSpecificCSSProperties = {
   MozOsxFontSmoothing: makeLiteralRule('grayscale') as RuleCheck,
   WebkitFontSmoothing: makeLiteralRule('antialiased') as RuleCheck,
-  WebkitAppearance: makeLiteralRule('textfield') as RuleCheck,
+  WebkitAppearance: appearance,
   WebkitTapHighlightColor: color,
   WebkitOverflowScrolling: makeLiteralRule('touch') as RuleCheck,
 
