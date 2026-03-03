@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared-ui",
-  "version": "0.17.5",
+  "version": "0.18.0",
   "private": true,
   "main": "src/index.tsx",
   "exports": {
@@ -8,7 +8,7 @@
     "./tokens.stylex": "./src/tokens.stylex.ts"
   },
   "peerDependencies": {
-    "@stylexjs/stylex": "*",
+    "@stylexjs/stylex": "0.18.0",
     "react": ">=18"
   }
 }
