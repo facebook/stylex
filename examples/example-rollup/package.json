@@ -25,7 +25,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
     "@stylexjs/rollup-plugin": "0.18.0",
-    "rollup": "^4.24.0",
+    "rollup": "^4.59.0",
     "serve": "^14.2.4"
   }
 }

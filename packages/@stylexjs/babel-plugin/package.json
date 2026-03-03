@@ -36,7 +36,7 @@
     "@rollup/plugin-replace": "^6.0.1",
     "babel-plugin-syntax-hermes-parser": "^0.32.1",
     "path-browserify": "^1.0.1",
-    "rollup": "^4.24.0",
+    "rollup": "^4.59.0",
     "scripts": "0.18.0"
   },
   "files": [
