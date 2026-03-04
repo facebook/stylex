@@ -109,16 +109,7 @@ export function replaceCssAssetWithHashedCopy(ctx, bundle, asset, nextSource) {
     return;
   }
   replaceBundleReferences(bundle, oldFileName, nextFileName);
-  const emitted = bundle[nextFileName];
-  if (emitted && emitted !== asset) {
-    delete bundle[nextFileName];
-  }
-  asset.fileName = nextFileName;
-  asset.source = nextSource;
-  if (bundle[oldFileName] === asset) {
-    delete bundle[oldFileName];
-  }
-  bundle[nextFileName] = asset;
+  delete bundle[oldFileName];
 }
 
 function readJSON(file) {
