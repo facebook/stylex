@@ -42,7 +42,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
-    "rollup": "^4.24.0"
+    "rollup": "^4.59.0"
   },
   "files": [
     "flow_modules/*",
