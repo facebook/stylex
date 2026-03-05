@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.1 (Mar 5, 2026)
+- Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
+- Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
+
 ## 0.18.0 (Mar 3, 2026)
 - Add `stylex.env` API for compile-time constants and shareable design tokens.
 - New `create-stylex-app` CLI for scaffolding projects with `npx create-stylex-app`.
