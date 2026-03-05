@@ -8,7 +8,7 @@
     "./tokens.stylex": "./src/tokens.stylex.ts"
   },
   "peerDependencies": {
-    "@stylexjs/stylex": "0.18.0",
+    "@stylexjs/stylex": "*",
     "react": ">=18"
   }
 }
