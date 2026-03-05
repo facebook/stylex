@@ -285,6 +285,10 @@ function styleXTransform(): PluginObj<> {
       },
 
       JSXOpeningElement(path: NodePath<t.JSXOpeningElement>) {
+        const sxPropName = state.options.sxPropName;
+        if (sxPropName === false) {
+          return;
+        }
         const node = path.node;
         if (
           node.name.type !== 'JSXIdentifier' ||
@@ -293,18 +297,16 @@ function styleXTransform(): PluginObj<> {
         ) {
           return;
         }
-        // console.log(path.node.attributes);
         const relevantAttribute = path
           .get('attributes')
           .find(
             (attr: NodePath<t.JSXAttribute | t.JSXSpreadAttribute>) =>
               attr.isJSXAttribute() &&
               attr.get('name').isJSXIdentifier() &&
-              attr.get('name').node.name === 'sx' &&
+              attr.get('name').node.name === sxPropName &&
               attr.get('value').isJSXExpressionContainer(),
           );
         if (relevantAttribute == null) {
-          console.log('no relevant attribute');
           return;
         }
         const value = relevantAttribute.get('value').get('expression').node;

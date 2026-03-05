@@ -103,6 +103,7 @@ export type StyleXOptions = $ReadOnly<{
   enableLogicalStylesPolyfill?: boolean,
   enableLTRRTLComments?: boolean,
   enableMinifiedKeys?: boolean,
+  sxPropName?: string | false,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
@@ -285,6 +286,13 @@ export default class StateManager {
         'options.enableLTRRTLComments',
       );
 
+    const sxPropName: StyleXStateOptions['sxPropName'] = z.logAndDefault(
+      z.unionOf(z.string(), z.literal(false)),
+      options.sxPropName ?? 'sx',
+      'sx',
+      'options.sxPropName',
+    );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
       options.test ?? defaultOptions.test,
@@ -410,6 +418,7 @@ export default class StateManager {
       enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
       enableLTRRTLComments,
+      sxPropName,
       importSources,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'
