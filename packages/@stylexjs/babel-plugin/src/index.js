@@ -297,27 +297,35 @@ function styleXTransform(): PluginObj<> {
         ) {
           return;
         }
-        const relevantAttribute = path
-          .get('attributes')
-          .find(
-            (attr: NodePath<t.JSXAttribute | t.JSXSpreadAttribute>) =>
-              attr.isJSXAttribute() &&
-              attr.get('name').isJSXIdentifier() &&
-              attr.get('name').node.name === sxPropName &&
-              attr.get('value').isJSXExpressionContainer(),
-          );
-        if (relevantAttribute == null) {
-          return;
-        }
-        const value = relevantAttribute.get('value').get('expression').node;
-        relevantAttribute.replaceWith(
-          t.jsxSpreadAttribute(
-            t.callExpression(
-              t.memberExpression(t.identifier('stylex'), t.identifier('props')),
-              [value],
+        for (const attr of path.get('attributes')) {
+          if (
+            !attr.isJSXAttribute() ||
+            !attr.get('name').isJSXIdentifier() ||
+            attr.get('name').node.name !== sxPropName
+          ) {
+            continue;
+          }
+          const valuePath = attr.get('value');
+          if (!valuePath.isJSXExpressionContainer()) {
+            continue;
+          }
+          const value = valuePath.get('expression');
+          if (value.isJSXEmptyExpression()) {
+            continue;
+          }
+          attr.replaceWith(
+            t.jsxSpreadAttribute(
+              t.callExpression(
+                t.memberExpression(
+                  t.identifier('stylex'),
+                  t.identifier('props'),
+                ),
+                [value.node],
+              ),
             ),
-          ),
-        );
+          );
+          break;
+        }
       },
 
       CallExpression(path: NodePath<t.CallExpression>) {
