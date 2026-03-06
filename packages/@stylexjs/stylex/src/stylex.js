@@ -32,6 +32,7 @@ import type {
   StyleX$When,
   MapNamespace,
   StyleX$DefineMarker,
+  StyleX$Env,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
@@ -164,7 +165,7 @@ export const when: StyleX$When = {
   },
 };
 
-export const env: $ReadOnly<{ [string]: mixed }> = Object.freeze({});
+export const env: StyleX$Env = Object.freeze({});
 
 export const types = {
   angle: <T: string | 0 = string | 0>(
@@ -234,7 +235,7 @@ type IStyleX = {
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
-  env: $ReadOnly<{ [string]: mixed }>,
+  env: StyleX$Env,
   defaultMarker: () => MapNamespace<
     Readonly<{
       marker: 'default-marker',

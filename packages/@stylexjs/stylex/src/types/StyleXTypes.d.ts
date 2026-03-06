@@ -354,3 +354,9 @@ export type StyleX$When = {
     // @ts-expect-error - Trying to use a symbol in a string is not normally allowed
   ) => `:where-any-sibling(${Pseudo}, ${MarkerSymbol})`;
 };
+
+export interface Register {}
+
+export type StyleX$Env = Register extends { env: infer TEnv }
+  ? TEnv
+  : Readonly<{ [key: string]: unknown }>;
