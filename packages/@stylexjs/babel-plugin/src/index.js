@@ -511,16 +511,11 @@ function processStylexRules(
       if (useLegacyClassnamesSort) {
         return classname1.localeCompare(classname2);
       } else {
-        if (rule1.startsWith('@') && !rule2.startsWith('@')) {
-          const query1 = rule1.slice(0, rule1.indexOf('{'));
-          const query2 = rule2.slice(0, rule2.indexOf('{'));
-          if (query1 !== query2) {
-            return query1.localeCompare(query2);
-          }
-        }
         const property1 = rule1.slice(rule1.lastIndexOf('{'));
         const property2 = rule2.slice(rule2.lastIndexOf('{'));
-        return property1.localeCompare(property2);
+        const propertyComparison = property1.localeCompare(property2);
+        if (propertyComparison !== 0) return propertyComparison;
+        return rule1.localeCompare(rule2);
       }
     },
   );
