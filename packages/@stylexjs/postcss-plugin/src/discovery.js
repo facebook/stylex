@@ -8,6 +8,7 @@
 const path = require('node:path');
 const fs = require('node:fs');
 const { createRequire } = require('node:module');
+const babel = require('@babel/core');
 
 const DEFAULT_IMPORT_SOURCES = ['@stylexjs/stylex', 'stylex'];
 const DEFAULT_IMPORT_SOURCE_PACKAGES = new Set(
@@ -41,6 +42,7 @@ const AUTO_DISCOVERY_EXCLUDES = [
 ];
 
 const BABEL_PLUGIN_STRING_NAME = '@stylexjs/babel-plugin';
+const BABEL_DISCOVERY_FILENAME = '__stylex_postcss_discovery__.js';
 
 function toArray(value) {
   if (value == null) {
@@ -254,14 +256,53 @@ function discoverStylexPackageDirectories({ cwd, importSources }) {
   return Array.from(discoveredDirectories);
 }
 
+function getPluginOptions(pluginEntry) {
+  if (Array.isArray(pluginEntry)) {
+    return pluginEntry[1] ?? null;
+  }
+
+  if (pluginEntry != null && typeof pluginEntry === 'object') {
+    return pluginEntry.options ?? null;
+  }
+
+  return null;
+}
+
+function getPluginRefCandidates(pluginEntry) {
+  if (Array.isArray(pluginEntry)) {
+    return pluginEntry[0] == null ? [] : [pluginEntry[0]];
+  }
+
+  if (pluginEntry != null && typeof pluginEntry === 'object') {
+    const refs = [
+      pluginEntry.file?.request,
+      pluginEntry.file?.resolved,
+      pluginEntry.value,
+      pluginEntry.name,
+      pluginEntry.key,
+    ];
+
+    if (refs.some(Boolean)) {
+      return refs.filter(Boolean);
+    }
+  }
+
+  return pluginEntry == null ? [] : [pluginEntry];
+}
+
 function isStylexBabelPluginName(pluginRef) {
   if (typeof pluginRef === 'string') {
     if (pluginRef === BABEL_PLUGIN_STRING_NAME) {
       return true;
     }
 
-    return /(^|[/\\])@stylexjs[/\\]babel-plugin([/\\]|$)/.test(pluginRef);
+    return (
+      pluginRef.includes('@stylexjs/babel-plugin') ||
+      pluginRef.includes('@stylexjs\\babel-plugin') ||
+      pluginRef.includes('@stylexjs+babel-plugin')
+    );
   }
+
   if (typeof pluginRef === 'function') {
     if (pluginRef.name === 'styleXTransform') {
       return true;
@@ -273,24 +314,29 @@ function isStylexBabelPluginName(pluginRef) {
       return pluginRef.withOptions.name === 'stylexPluginWithOptions';
     }
   }
+
+  if (pluginRef != null && typeof pluginRef === 'object') {
+    if (pluginRef.default != null) {
+      return isStylexBabelPluginName(pluginRef.default);
+    }
+  }
+
   return false;
 }
 
-function inferImportSourcesFromBabelConfig(babelConfig) {
-  const plugins = toArray(babelConfig?.plugins);
-
-  for (const pluginEntry of plugins) {
+function inferImportSourcesFromPluginEntries(pluginEntries) {
+  for (const pluginEntry of pluginEntries) {
     if (pluginEntry == null) {
       continue;
     }
 
-    const pluginRef = Array.isArray(pluginEntry) ? pluginEntry[0] : pluginEntry;
-    const pluginOptions = Array.isArray(pluginEntry) ? pluginEntry[1] : null;
-
-    if (!isStylexBabelPluginName(pluginRef)) {
+    const pluginRefs = getPluginRefCandidates(pluginEntry);
+    const hasStylexPlugin = pluginRefs.some(isStylexBabelPluginName);
+    if (!hasStylexPlugin) {
       continue;
     }
 
+    const pluginOptions = getPluginOptions(pluginEntry);
     const importSources = pluginOptions?.importSources;
     if (Array.isArray(importSources) && importSources.length > 0) {
       return importSources;
@@ -300,33 +346,133 @@ function inferImportSourcesFromBabelConfig(babelConfig) {
   return null;
 }
 
-function resolveImportSources({ importSources, babelConfig }) {
+function inferImportSourcesFromBabelConfig(babelConfig) {
+  const plugins = toArray(babelConfig?.plugins);
+  return inferImportSourcesFromPluginEntries(plugins);
+}
+
+function getEffectiveBabelConfig({ babelConfig, cwd }) {
+  const normalizedBabelConfig =
+    babelConfig != null && typeof babelConfig === 'object' ? babelConfig : {};
+
+  const effectiveBabelConfig = { ...normalizedBabelConfig };
+
+  if (effectiveBabelConfig.cwd == null) {
+    effectiveBabelConfig.cwd = cwd;
+  }
+
+  return effectiveBabelConfig;
+}
+
+function inferImportSourcesFromResolvedBabelConfig({ babelConfig, cwd }) {
+  const effectiveBabelConfig = getEffectiveBabelConfig({
+    babelConfig,
+    cwd,
+  });
+
+  const filename =
+    typeof effectiveBabelConfig.filename === 'string'
+      ? effectiveBabelConfig.filename
+      : path.join(
+          path.resolve(effectiveBabelConfig.cwd),
+          BABEL_DISCOVERY_FILENAME,
+        );
+
+  try {
+    const loadedConfig = babel.loadPartialConfig({
+      ...effectiveBabelConfig,
+      filename,
+    });
+
+    return inferImportSourcesFromPluginEntries(
+      toArray(loadedConfig?.options?.plugins),
+    );
+  } catch {
+    return null;
+  }
+}
+
+function resolveImportSourcesWithMetadata({ importSources, babelConfig, cwd }) {
   if (Array.isArray(importSources)) {
-    return importSources;
+    return {
+      importSources: dedupe(importSources),
+      source: 'postcss-option',
+    };
   }
 
   const inferredFromBabel = inferImportSourcesFromBabelConfig(babelConfig);
   if (Array.isArray(inferredFromBabel) && inferredFromBabel.length > 0) {
-    return dedupe([...DEFAULT_IMPORT_SOURCES, ...inferredFromBabel]);
+    return {
+      importSources: dedupe([...DEFAULT_IMPORT_SOURCES, ...inferredFromBabel]),
+      source: 'babel-config-inline',
+    };
   }
 
-  return DEFAULT_IMPORT_SOURCES;
+  const inferredFromResolvedBabel = inferImportSourcesFromResolvedBabelConfig({
+    babelConfig,
+    cwd,
+  });
+  if (
+    Array.isArray(inferredFromResolvedBabel) &&
+    inferredFromResolvedBabel.length > 0
+  ) {
+    return {
+      importSources: dedupe([
+        ...DEFAULT_IMPORT_SOURCES,
+        ...inferredFromResolvedBabel,
+      ]),
+      source: 'babel-config-resolved',
+    };
+  }
+
+  return {
+    importSources: DEFAULT_IMPORT_SOURCES,
+    source: 'defaults',
+  };
 }
 
-function resolveInclude({ cwd, include, importSources }) {
+function resolveImportSources({ importSources, babelConfig, cwd }) {
+  return resolveImportSourcesWithMetadata({
+    importSources,
+    babelConfig,
+    cwd,
+  }).importSources;
+}
+
+function resolveIncludeWithMetadata({ cwd, include, importSources }) {
   const normalizedInclude = toArray(include);
   const hasExplicitInclude = normalizedInclude.length > 0;
 
   if (hasExplicitInclude) {
-    return dedupe(normalizedInclude);
+    return {
+      include: dedupe(normalizedInclude),
+      discoveredDependencyDirectories: [],
+      hasExplicitInclude,
+    };
   }
 
-  const discoveredDependencyGlobs = discoverStylexPackageDirectories({
+  const discoveredDependencyDirectories = discoverStylexPackageDirectories({
     cwd,
     importSources,
-  }).map((dir) => toAbsoluteGlob(dir, DEFAULT_INCLUDE_GLOB));
+  });
 
-  return dedupe([DEFAULT_INCLUDE_GLOB, ...discoveredDependencyGlobs]);
+  const discoveredDependencyGlobs = discoveredDependencyDirectories.map((dir) =>
+    toAbsoluteGlob(dir, DEFAULT_INCLUDE_GLOB),
+  );
+
+  return {
+    include: dedupe([DEFAULT_INCLUDE_GLOB, ...discoveredDependencyGlobs]),
+    discoveredDependencyDirectories,
+    hasExplicitInclude,
+  };
+}
+
+function resolveInclude({ cwd, include, importSources }) {
+  return resolveIncludeWithMetadata({
+    cwd,
+    include,
+    importSources,
+  }).include;
 }
 
 function resolveExclude({ include, exclude }) {
@@ -345,8 +491,11 @@ module.exports = {
   DEFAULT_IMPORT_SOURCES,
   DEFAULT_INCLUDE_GLOB,
   discoverStylexPackageDirectories,
+  getEffectiveBabelConfig,
   inferImportSourcesFromBabelConfig,
   resolveExclude,
   resolveImportSources,
+  resolveImportSourcesWithMetadata,
   resolveInclude,
+  resolveIncludeWithMetadata,
 };

@@ -86,10 +86,13 @@ import './stylex.css';
 ### include
 
 ```js
-include: string[] // Required
+include: string[] // Default: auto-discovered
 ```
 
 Array of paths or glob patterns to compile.
+
+When omitted, the plugin auto-discovers source files in the project `cwd` and
+also attempts to include installed packages that use StyleX.
 
 ---
 
@@ -101,6 +104,10 @@ exclude: string[] // Default: []
 
 Array of paths or glob patterns to exclude from compilation. Paths in exclude
 take precedence over include.
+
+When `include` is omitted, the plugin automatically excludes common build and
+dependency folders (for example `node_modules`, `.next`, `dist`, `build`) to
+keep discovery focused on source files.
 
 ---
 
@@ -146,3 +153,20 @@ importSources: Array<string | { from: string, as: string }>; // Default: ['@styl
 
 Possible strings where you can import stylex from. Files that do not match the
 import sources may be skipped from being processed to speed up compilation.
+
+When omitted, the plugin will infer `importSources` from your
+`@stylexjs/babel-plugin` options (if present) and still include the default
+StyleX sources.
+
+The plugin resolves Babel config with `cwd` as the Babel working directory by
+default (unless `babelConfig.cwd` is explicitly set), which helps keep
+PostCSS/Babel behavior aligned when running from a different process cwd.
+
+---
+
+## Debugging auto-discovery
+
+Set `STYLEX_POSTCSS_DEBUG=1` to print resolved plugin inputs, including:
+- resolved `importSources` and where they came from
+- final `include` and `exclude` globs
+- discovered dependency directories
