@@ -72,8 +72,9 @@ ensure that both the Babel and PostCSS plugins use the same configuration.
 Ensure that your build pipeline postprocesses your CSS with PostCSS using this
 config file.
 
-Other than the `babelConfig` option, define one or more glob patterns for the
-`include` option to define all the files that may contain StyleX styles.
+You can define one or more glob patterns for the `include` option to control
+exactly which files may contain StyleX styles. This is optional: when omitted,
+the plugin auto-discovers source files (and StyleX-using dependencies).
 
 ```js title="postcss.config.mjs"
 import stylex from '@stylexjs/postcss-plugin';

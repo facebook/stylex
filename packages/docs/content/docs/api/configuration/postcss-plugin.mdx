@@ -40,6 +40,9 @@ exclude: string[] // Default: []
 Array of paths or glob patterns to exclude from compilation. Paths in `exclude`
 take precedence over `include`.
 
+When `include` is omitted, the plugin automatically excludes common build and
+dependency folders (for example `node_modules`, `.next`, `dist`, `build`).
+
 ---
 
 ### importSources
@@ -51,15 +54,22 @@ importSources: Array<string | { from: string, as: string }>; // Default: ['@styl
 Possible strings where you can import stylex from. Files that do not match the
 import sources may be skipped from being processed to speed up compilation.
 
+When omitted, the plugin infers `importSources` from your
+`@stylexjs/babel-plugin` options (if present), while still keeping the default
+StyleX sources.
+
 ---
 
 ### include
 
 ```js
-include: string[] // Required
+include: string[] // Default: auto-discovered
 ```
 
 Array of paths or glob patterns to compile.
+
+When omitted, the plugin auto-discovers source files under `cwd` and also
+attempts to include installed packages that use StyleX.
 
 ---
 
