@@ -40,7 +40,7 @@ function parseGlob(pattern) {
 }
 
 // Parses a file path or glob pattern into a PostCSS dependency message.
-function parseDependency(fileOrGlob) {
+function parseDependency(fileOrGlob, cwd) {
   // License: MIT
   // Based on:
   // https://github.com/chakra-ui/panda/blob/6ab003795c0b076efe6879a2e6a2a548cb96580e/packages/node/src/parse-dependency.ts
@@ -52,9 +52,13 @@ function parseDependency(fileOrGlob) {
 
   if (isGlob(fileOrGlob)) {
     const { base, glob } = parseGlob(fileOrGlob);
-    message = { type: 'dir-dependency', dir: normalize(resolve(base)), glob };
+    message = {
+      type: 'dir-dependency',
+      dir: normalize(resolve(cwd, base)),
+      glob,
+    };
   } else {
-    message = { type: 'dependency', file: normalize(resolve(fileOrGlob)) };
+    message = { type: 'dependency', file: normalize(resolve(cwd, fileOrGlob)) };
   }
 
   return message;
@@ -95,11 +99,37 @@ function createBuilder() {
   // Retrieves all files that match the include and exclude patterns.
   function getFiles() {
     const { cwd, include, exclude } = getConfig();
-    return globSync(include, {
-      onlyFiles: true,
-      ignore: exclude,
-      cwd,
-    });
+    const includePatterns = Array.isArray(include) ? include : [];
+    if (includePatterns.length === 0) {
+      return [];
+    }
+
+    const ignoreWithoutNodeModules = (exclude ?? []).filter(
+      (pattern) => !pattern.includes('node_modules'),
+    );
+
+    const files = new Set();
+    for (const includePattern of includePatterns) {
+      const isAbsolutePattern = path.isAbsolute(includePattern);
+      const pointsToNodeModules = /(^|[/\\])node_modules([/\\]|$)/.test(
+        includePattern,
+      );
+      const ignore =
+        isAbsolutePattern && pointsToNodeModules
+          ? ignoreWithoutNodeModules
+          : exclude;
+
+      const matchedFiles = globSync(includePattern, {
+        onlyFiles: true,
+        ignore,
+        cwd,
+      });
+      for (const file of matchedFiles) {
+        files.add(file);
+      }
+    }
+
+    return Array.from(files);
   }
 
   // Transforms the included files, bundles the CSS, and returns the result.
@@ -163,11 +193,11 @@ function createBuilder() {
 
   // Retrieves the dependencies that PostCSS should watch.
   function getDependencies() {
-    const { include } = getConfig();
+    const { include, cwd } = getConfig();
     const dependencies = [];
 
     for (const fileOrGlob of include) {
-      const dependency = parseDependency(fileOrGlob);
+      const dependency = parseDependency(fileOrGlob, cwd);
       if (dependency != null) {
         dependencies.push(dependency);
       }

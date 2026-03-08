@@ -7,12 +7,89 @@
 
 'use strict';
 
+const fs = require('node:fs');
+const os = require('node:os');
 const path = require('path');
 const postcss = require('postcss');
 const createPlugin = require('../src/plugin');
 
 describe('@stylexjs/postcss-plugin', () => {
   const fixturesDir = path.resolve(__dirname, '__fixtures__');
+  const autoDiscoveryFixturesDir = path.resolve(
+    __dirname,
+    '__auto_discovery_fixtures__',
+  );
+
+  function createAutoDiscoveryFixture() {
+    const tempDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'stylex-postcss-auto-discovery-'),
+    );
+
+    fs.cpSync(autoDiscoveryFixturesDir, tempDir, { recursive: true });
+
+    const stylexLibDir = path.join(
+      tempDir,
+      'node_modules',
+      'stylex-custom-lib',
+    );
+    fs.mkdirSync(stylexLibDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(stylexLibDir, 'package.json'),
+      JSON.stringify(
+        {
+          name: 'stylex-custom-lib',
+          version: '1.0.0',
+          main: 'index.js',
+          dependencies: {
+            'react-strict-dom': '^0.0.0',
+          },
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(stylexLibDir, 'index.js'),
+      [
+        "import { css } from 'react-strict-dom';",
+        '',
+        'export const styles = css.create({',
+        '  lib: {',
+        "    backgroundColor: 'orange',",
+        '  },',
+        '});',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+
+    const nonStylexLibDir = path.join(
+      tempDir,
+      'node_modules',
+      'non-stylex-lib',
+    );
+    fs.mkdirSync(nonStylexLibDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(nonStylexLibDir, 'package.json'),
+      JSON.stringify(
+        {
+          name: 'non-stylex-lib',
+          version: '1.0.0',
+          main: 'index.js',
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(nonStylexLibDir, 'index.js'),
+      'export const v = 1;\n',
+    );
+
+    return tempDir;
+  }
 
   async function runStylexPostcss(options = {}, inputCSS = '@stylex;') {
     // Create a new instance for each test as the plugin is stateful
@@ -33,6 +110,34 @@ describe('@stylexjs/postcss-plugin', () => {
     });
 
     return result;
+  }
+
+  async function runAutoDiscoveryPostcss(options = {}, inputCSS = '@stylex;') {
+    const fixtureDir = createAutoDiscoveryFixture();
+    const stylexPostcssPlugin = createPlugin();
+    const babelConfig = require(path.join(fixtureDir, 'babel.config.js'));
+
+    const plugin = stylexPostcssPlugin({
+      cwd: fixtureDir,
+      babelConfig: {
+        babelrc: false,
+        plugins: babelConfig.plugins,
+      },
+      ...options,
+    });
+
+    const processor = postcss([plugin]);
+    try {
+      const result = await processor.process(inputCSS, {
+        from: path.join(fixtureDir, 'input.css'),
+      });
+      return {
+        css: result.css,
+        messages: result.messages,
+      };
+    } finally {
+      fs.rmSync(fixtureDir, { recursive: true, force: true });
+    }
   }
 
   test('extracts CSS from StyleX files', async () => {
@@ -149,5 +254,46 @@ describe('@stylexjs/postcss-plugin', () => {
     expect(result.css).toMatchInlineSnapshot(
       '".x1u857p9{background-color:green}"',
     );
+  });
+
+  test('auto-discovers include globs when include is omitted', async () => {
+    const result = await runStylexPostcss({
+      include: undefined,
+    });
+
+    expect(result.css).toContain('background-color:green');
+    expect(result.css).toContain('background-color:red');
+  });
+
+  test('auto-discovers StyleX dependency directories and importSources from Babel config', async () => {
+    const result = await runAutoDiscoveryPostcss();
+
+    expect(result.css).toContain('color:red');
+    expect(result.css).toContain('color:purple');
+    expect(result.css).toContain('background-color:orange');
+
+    expect(
+      result.messages.some(
+        (message) =>
+          message.type === 'dir-dependency' &&
+          message.dir.includes('stylex-custom-lib'),
+      ),
+    ).toBe(true);
+  });
+
+  test('does not auto-discover dependency directories when include is explicitly provided', async () => {
+    const result = await runAutoDiscoveryPostcss({
+      include: ['src/local-stylex.js'],
+    });
+
+    expect(result.css).toContain('color:red');
+    expect(result.css).not.toContain('background-color:orange');
+    expect(
+      result.messages.some(
+        (message) =>
+          message.type === 'dir-dependency' &&
+          message.dir.includes('stylex-custom-lib'),
+      ),
+    ).toBe(false);
   });
 });

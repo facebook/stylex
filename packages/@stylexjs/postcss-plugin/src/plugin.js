@@ -6,6 +6,11 @@
  */
 const postcss = require('postcss');
 const createBuilder = require('./builder');
+const {
+  resolveExclude,
+  resolveImportSources,
+  resolveInclude,
+} = require('./discovery');
 
 module.exports = function createPlugin() {
   const PLUGIN_NAME = '@stylexjs/postcss-plugin';
@@ -23,13 +28,29 @@ module.exports = function createPlugin() {
     exclude,
     useCSSLayers = false,
     styleResolution = 'property-specificity',
-    importSources = ['@stylexjs/stylex', 'stylex'],
+    importSources,
   }) => {
-    exclude = [
+    const effectiveImportSources = resolveImportSources({
+      importSources,
+      babelConfig,
+    });
+
+    const effectiveInclude = resolveInclude({
+      cwd,
+      include,
+      importSources: effectiveImportSources,
+    });
+
+    const effectiveExclude = resolveExclude({
+      include,
+      exclude,
+    });
+
+    const excludeWithDefaults = [
       // Exclude type declaration files by default because it never contains any CSS rules.
       '**/*.d.ts',
       '**/*.flow',
-      ...(exclude ?? []),
+      ...effectiveExclude,
     ];
 
     // Whether to skip the error when transforming StyleX rules.
@@ -46,13 +67,13 @@ module.exports = function createPlugin() {
 
           // Configure the builder with the provided options
           await builder.configure({
-            include,
-            exclude,
+            include: effectiveInclude,
+            exclude: excludeWithDefaults,
             cwd,
             babelConfig,
             useCSSLayers,
             styleResolution,
-            importSources,
+            importSources: effectiveImportSources,
             isDev,
           });
 
