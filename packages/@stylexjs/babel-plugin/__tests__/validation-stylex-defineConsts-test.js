@@ -162,7 +162,7 @@ describe('@stylexjs/babel-plugin', () => {
 
     /* Properties */
 
-    test('invalid key: starts with "--"', () => {
+    test('valid key: starts with "--"', () => {
       expect(() =>
         transform(`
           import * as stylex from '@stylexjs/stylex';
@@ -170,7 +170,7 @@ describe('@stylexjs/babel-plugin', () => {
             '--small': '8px'
           });
         `),
-      ).toThrow(messages.INVALID_CONST_KEY);
+      ).not.toThrow();
     });
 
     test('invalid key: non-static', () => {

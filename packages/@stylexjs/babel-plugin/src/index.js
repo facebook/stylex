@@ -284,6 +284,50 @@ function styleXTransform(): PluginObj<> {
         },
       },
 
+      JSXOpeningElement(path: NodePath<t.JSXOpeningElement>) {
+        const sxPropName = state.options.sxPropName;
+        if (sxPropName === false) {
+          return;
+        }
+        const node = path.node;
+        if (
+          node.name.type !== 'JSXIdentifier' ||
+          typeof node.name.name !== 'string' ||
+          node.name.name[0] !== node.name.name[0].toLowerCase()
+        ) {
+          return;
+        }
+        for (const attr of path.get('attributes')) {
+          if (
+            !attr.isJSXAttribute() ||
+            !attr.get('name').isJSXIdentifier() ||
+            attr.get('name').node.name !== sxPropName
+          ) {
+            continue;
+          }
+          const valuePath = attr.get('value');
+          if (!valuePath.isJSXExpressionContainer()) {
+            continue;
+          }
+          const value = valuePath.get('expression');
+          if (value.isJSXEmptyExpression()) {
+            continue;
+          }
+          attr.replaceWith(
+            t.jsxSpreadAttribute(
+              t.callExpression(
+                t.memberExpression(
+                  t.identifier('stylex'),
+                  t.identifier('props'),
+                ),
+                [value.node],
+              ),
+            ),
+          );
+          break;
+        }
+      },
+
       CallExpression(path: NodePath<t.CallExpression>) {
         const parentPath = path.parentPath;
         if (parentPath.isVariableDeclarator()) {

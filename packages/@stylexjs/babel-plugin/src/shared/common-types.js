@@ -47,6 +47,7 @@ export type StyleXOptions = $ReadOnly<{
   classNamePrefix: string,
   debug: ?boolean,
   definedStylexCSSVariables?: { [key: string]: mixed },
+  env?: $ReadOnly<{ [string]: any }>,
   dev: boolean,
   propertyValidationMode?: 'throw' | 'warn' | 'silent',
   enableDebugClassNames?: ?boolean,

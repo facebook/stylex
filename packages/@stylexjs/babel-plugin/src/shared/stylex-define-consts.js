@@ -11,8 +11,6 @@ import type { InjectableConstStyle, StyleXOptions } from './common-types';
 import type { ConstsConfig } from './stylex-consts-utils';
 
 import { defaultOptions } from './utils/default-options';
-import * as messages from './messages';
-
 import createHash from './hash';
 
 export default function styleXDefineConsts<Vars: ConstsConfig>(
@@ -31,16 +29,13 @@ export default function styleXDefineConsts<Vars: ConstsConfig>(
   const injectableStyles: { [string]: InjectableConstStyle } = {};
 
   for (const [key, value] of Object.entries(constants)) {
-    if (key.startsWith('--')) {
-      throw new Error(messages.INVALID_CONST_KEY);
-    }
-
     const varSafeKey = (
       key[0] >= '0' && key[0] <= '9' ? `_${key}` : key
     ).replace(/[^a-zA-Z0-9]/g, '_');
 
-    const constKey =
-      debug && enableDebugClassNames
+    const constKey = key.startsWith('--')
+      ? key.slice(2)
+      : debug && enableDebugClassNames
         ? `${varSafeKey}-${classNamePrefix}${createHash(`${exportId}.${key}`)}`
         : `${classNamePrefix}${createHash(`${exportId}.${key}`)}`;
 

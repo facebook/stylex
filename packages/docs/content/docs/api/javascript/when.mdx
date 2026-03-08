@@ -170,27 +170,68 @@ const styles = stylex.create({
 ## Using custom markers
 
 Custom markers created with `stylex.defineMarker()` let you have multiple
-independent sets of contextual selectors in the same component tree.
+independent sets of contextual selectors in the same component tree. For
+example, a table cell could have different styling depending on whether
+the cell itself is being hovered, or whether its row is being hovered:
 
 ```tsx
-import * as stylex from '@stylexjs/stylex';
-import { cardMarker, headingMarker } from './markers.stylex.js';
+// markers.stylex.js
+import * as stylex from "@stylexjs/stylex";
+export const rowMarker = stylex.defineMarker();
+export const cellMarker = stylex.defineMarker();
+
+```
+```tsx
+import * as stylex from "@stylexjs/stylex";
+import { cellMarker, rowMarker } from "./markers.stylex.js";
 
 const styles = stylex.create({
-  heading: {
-    transform: {
-      default: 'translateX(0)',
-      [stylex.when.ancestor(':hover', cardMarker)]: 'translateX(10px)',
-      [stylex.when.ancestor(':hover', headingMarker)]: 'translateX(4px)',
+  editButton: {
+    visibility: {
+      // Show button when row is hovered
+      default: 'hidden',
+      [stylex.when.ancestor(':hover', rowMarker)]: 'visible',
+    },
+    opacity: {
+      // Dim the button unless the cell itself is hovered
+      default: 0.4,
+      [stylex.when.ancestor(':hover', cellMarker)]: 1,
     },
   },
 });
 
-<div {...stylex.props(cardMarker)}>
-  <h2 {...stylex.props(headingMarker)}>
-    <span {...stylex.props(styles.heading)}>Title</span>
-  </h2>
-</div>;
+function Row({ children }) {
+  return <tr {...stylex.props(rowMarker)}>{children}</tr>;
+}
+
+function Cell({ children }) {
+  return (<td {...stylex.props(cellMarker)}>{children}</td>);
+}
+
+function EditableContents({children}) {
+  return (
+    <>
+      {children}
+      <button {...stylex.props(styles.editButton)}>Edit</button>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <table>
+      <Row>
+        <Cell><EditableContents>Daniel</EditableContents></Cell>
+        <Cell>1234</Cell>
+      </Row>
+      <Row>
+        <Cell><EditableContents>Test</EditableContents></Cell>
+        <Cell>Two</Cell>
+      </Row>
+    </table>
+  );
+}
+
 ```
 
 ## Specificity ranking

@@ -80,6 +80,62 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('stylex.env resolves in inline objects', () => {
+      expect(
+        transform(
+          `
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            red: {
+              color: stylex.env.primaryColor,
+            }
+          });
+          stylex.props(styles.red);
+        `,
+          { env: { primaryColor: '#ff0000' } },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".xe4pkkx{color:#ff0000}",
+          priority: 3000
+        });
+        ({
+          className: "xe4pkkx"
+        });"
+      `);
+    });
+
+    test('stylex.env named import resolves in inline objects', () => {
+      expect(
+        transform(
+          `
+          import { props, create, env } from 'stylex';
+          const styles = create({
+            red: {
+              color: env.primaryColor,
+            }
+          });
+          props(styles.red);
+        `,
+          { env: { primaryColor: '#00ffaa' } },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import { props, create, env } from 'stylex';
+        _inject2({
+          ltr: ".x4iekqp{color:#00ffaa}",
+          priority: 3000
+        });
+        ({
+          className: "x4iekqp"
+        });"
+      `);
+    });
+
     describe('props calls with jsx', () => {
       const options = {
         debug: true,
@@ -125,6 +181,76 @@ describe('@stylexjs/babel-plugin', () => {
                             <div className="test" className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4" id="test">Hello World</div>
                             <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4" className="test">Hello World</div>
                           </>;
+          }"
+        `);
+      });
+
+      test('Test that sx attribute can be used instead of ...stylex.props', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              }
+            });
+            function Foo() {
+              return (
+                <>
+                  <div id="test" sx={styles.red}>Hello World</div>
+                  <div className="test" sx={styles.red} id="test">Hello World</div>
+                  <div id="test" sx={styles.red} className="test">Hello World</div>
+                </>
+              );
+            }
+          `,
+            options,
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".color-x1e2nbdu{color:red}",
+            priority: 3000
+          });
+          function Foo() {
+            return <>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4">Hello World</div>
+                            <div className="test" className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4" id="test">Hello World</div>
+                            <div id="test" className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4" className="test">Hello World</div>
+                          </>;
+          }"
+        `);
+      });
+
+      test('sx prop with custom sxPropName', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              }
+            });
+            function Foo() {
+              return <div css={styles.red}>Hello World</div>;
+            }
+          `,
+            { ...options, sxPropName: 'css' },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".color-x1e2nbdu{color:red}",
+            priority: 3000
+          });
+          function Foo() {
+            return <div className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4">Hello World</div>;
           }"
         `);
       });

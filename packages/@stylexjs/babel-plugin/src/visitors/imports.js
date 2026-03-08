@@ -97,6 +97,9 @@ export function readImportDeclarations(
             if (importedName === 'defaultMarker') {
               state.stylexDefaultMarkerImport.add(localName);
             }
+            if (importedName === 'env') {
+              state.stylexEnvImport.add(localName);
+            }
           }
         }
       }
@@ -178,6 +181,9 @@ export function readRequires(
           }
           if (prop.key.name === 'defaultMarker') {
             state.stylexDefaultMarkerImport.add(value.name);
+          }
+          if (prop.key.name === 'env') {
+            state.stylexEnvImport.add(value.name);
           }
         }
       }

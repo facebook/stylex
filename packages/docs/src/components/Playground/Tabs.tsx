@@ -577,7 +577,7 @@ const styles = stylex.create({
   },
 
   chevronCollapsed: {
-    transform: 'rotate(-90deg)',
+    transform: 'rotate(180deg)',
   },
 });
 

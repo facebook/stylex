@@ -13,7 +13,7 @@ import { canUseDOM } from './utils';
 import { createCSSStyleSheet } from './createCSSStyleSheet';
 import { createOrderedCSSStyleSheet } from './createOrderedCSSStyleSheet';
 
-type Sheet = $ReadOnly<{
+type Sheet = Readonly<{
   ...OrderedCSSStyleSheet,
 }>;
 

@@ -35,8 +35,6 @@ export const ILLEGAL_PROP_VALUE =
 export const ILLEGAL_PROP_ARRAY_VALUE =
   'A style array value can only contain strings or numbers.';
 export const ILLEGAL_NAMESPACE_VALUE = 'A StyleX namespace must be an object.';
-export const INVALID_CONST_KEY =
-  'Keys in defineConsts() cannot start with "--".';
 export const INVALID_PSEUDO = 'Invalid pseudo selector, not on the whitelist.';
 export const INVALID_PSEUDO_OR_AT_RULE = 'Invalid pseudo or at-rule.';
 export const INVALID_MEDIA_QUERY_SYNTAX = 'Invalid media query syntax.';

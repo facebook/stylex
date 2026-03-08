@@ -7,33 +7,55 @@
  *
  */
 
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Card from '@/components/Card';
 import {
   globalTokens as $,
   spacing,
   text,
-  scales,
+  colors,
 } from './globalTokens.stylex';
-import Counter from './Counter';
+import InteractiveCard, { THEMES } from './InteractiveCard';
+import { darkTheme, lightTheme } from './darkMode.stylex';
 
 const HOMEPAGE = 'https://stylexjs.com';
 
 export default function Home() {
+  const [themeIndex, setThemeIndex] = useState(2);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   return (
-    <main {...stylex.props(style.main)}>
-      <div {...stylex.props(style.description)}>
-        <p {...stylex.props(style.descP)}>
-          Get started by editing&nbsp;
-          <code {...stylex.props(style.code)}>app/page.tsx</code>
-        </p>
-      </div>
+    <main
+      {...stylex.props(
+        style.main,
+        THEMES[themeIndex].theme,
+        isDark ? darkTheme : lightTheme,
+      )}
+    >
       <div {...stylex.props(style.hero)}>
         <h1 {...stylex.props(style.h1)}>
-          Next.js App Dir<span {...stylex.props(style.emoji)}>♥️</span>️StyleX
+          Next.js <span {...stylex.props(style.plus)}>+</span> StyleX
         </h1>
-        <Counter />
+        <p {...stylex.props(style.subtitle)}>
+          The expressive styling system for ambitious interfaces
+        </p>
+        <InteractiveCard
+          isDark={isDark}
+          onDarkModeChange={setIsDark}
+          onThemeChange={setThemeIndex}
+          themeIndex={themeIndex}
+        />
       </div>
 
       <div {...stylex.props(style.grid)}>
@@ -65,124 +87,64 @@ export default function Home() {
 const MEDIA_MOBILE = '@media (max-width: 700px)' as const;
 const MEDIA_TABLET =
   '@media (min-width: 701px) and (max-width: 1120px)' as const;
-
-const beat = stylex.keyframes({
-  '0%': { transform: scales.medium },
-  '10%': { transform: scales.large },
-  '20%': { transform: scales.medium },
-  '30%': { transform: scales.large },
-  '40%': { transform: scales.medium },
-  '90%': { transform: scales.small },
-  '100%': { transform: scales.medium },
-});
+const DARK = '@media (prefers-color-scheme: dark)' as const;
 
 const style = stylex.create({
   main: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: spacing.xxxl,
     minHeight: '100vh',
-    paddingTop: spacing.xxl,
+    paddingTop: spacing.xxxl,
     paddingBottom: {
       default: spacing.xxl,
-      [MEDIA_MOBILE]: spacing.md,
+      [MEDIA_MOBILE]: spacing.lg,
     },
+    paddingInline: spacing.md,
+    backgroundColor: $.surfaceBg,
+    color: `rgba(${$.foregroundR}, ${$.foregroundG}, ${$.foregroundB}, 1)`,
   },
   hero: {
-    flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.xl,
+    gap: spacing.lg,
+    width: '100%',
+    maxWidth: 480,
   },
   h1: {
     fontSize: text.h1,
     lineHeight: 1,
     fontFamily: $.fontSans,
-    fontWeight: 400,
+    fontWeight: 700,
     textAlign: 'center',
-    display: 'flex',
-    gap: spacing.md,
+    letterSpacing: '-0.02em',
     whiteSpace: 'nowrap',
     flexDirection: {
       default: 'row',
       [MEDIA_MOBILE]: 'column',
     },
   },
-  emoji: {
-    position: 'relative',
-    fontFamily: 'sans-serif',
-    top: {
-      default: 0,
-      [MEDIA_MOBILE]: spacing.xxxs,
-    },
-    animationName: beat,
-    animationDuration: '2s',
-    animationIterationCount: 'infinite',
-    animationTimingFunction: 'linear',
+  plus: {
+    fontWeight: 300,
+    color: colors.accent,
+    transitionProperty: 'color',
+    transitionDuration: '300ms',
   },
-  description: {
-    display: 'inherit',
-    justifyContent: 'inherit',
-    alignItems: 'inherit',
-    fontSize: text.sm,
-    maxWidth: $.maxWidth,
-    width: '100%',
-    zIndex: 2,
-    fontFamily: $.fontMono,
-  },
-  descLink: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xxs,
-    padding: { [MEDIA_MOBILE]: spacing.sm },
-  },
-  descP: {
-    display: { [MEDIA_MOBILE]: 'flex' },
-    position: {
-      default: 'relative',
-      [MEDIA_MOBILE]: 'fixed',
+  subtitle: {
+    fontSize: text.p,
+    lineHeight: 1.6,
+    fontFamily: $.fontSans,
+    textAlign: 'center',
+    color: {
+      default: colors.gray5,
+      [DARK]: colors.gray6,
     },
-    justifyContent: { [MEDIA_MOBILE]: 'center' },
-    alignItems: { [MEDIA_MOBILE]: 'center' },
-    width: { [MEDIA_MOBILE]: '100%' },
-    margin: 0,
-    paddingInline: spacing.sm,
-    paddingTop: {
-      default: spacing.sm,
-      [MEDIA_MOBILE]: spacing.lg,
-    },
-    paddingBottom: {
-      default: spacing.sm,
-      [MEDIA_MOBILE]: spacing.md,
-    },
-    backgroundColor: $.calloutRGB50,
-    backgroundImage: {
-      default: null,
-      [MEDIA_MOBILE]: `linear-gradient(to bottom, ${$.bgStartRGB}, ${$.calloutRGB50})`,
-    },
-    borderWidth: {
-      default: '1px',
-      [MEDIA_MOBILE]: '0',
-    },
-    borderStyle: 'solid',
-    borderColor: `rgba(${$.calloutBorderR}, ${$.calloutBorderG}, ${$.calloutBorderB}, 0.3)`,
-    borderBottomColor: {
-      default: null,
-      [MEDIA_MOBILE]: `rgba(${$.calloutBorderR}, ${$.calloutBorderG}, ${$.calloutBorderB}, 0.25)`,
-    },
-    borderRadius: {
-      default: spacing.xs,
-      [MEDIA_MOBILE]: 0,
-    },
-    inset: { [MEDIA_MOBILE]: '0 0 auto' },
-  },
-  code: {
-    fontWeight: 700,
-    fontFamily: $.fontMono,
+    maxWidth: '36ch',
+    textWrap: 'balance',
   },
   grid: {
     display: 'grid',
@@ -191,6 +153,7 @@ const style = stylex.create({
       [MEDIA_MOBILE]: '1fr',
       [MEDIA_TABLET]: 'repeat(2, 50%)',
     },
+    gap: spacing.sm,
     width: $.maxWidth,
     maxWidth: {
       default: '100%',

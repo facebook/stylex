@@ -1,10 +1,22 @@
 # Changelog
 
+## 0.18.1 (Mar 5, 2026)
+- Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
+- Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
+
+## 0.18.0 (Mar 3, 2026)
+- Add `stylex.env` API for compile-time constants and shareable design tokens.
+- New `create-stylex-app` CLI for scaffolding projects with `npx create-stylex-app`.
+- Add Bun support and improvements to the `unplugin` bundler plugin.
+- Support attribute selectors in `stylex.when` and conditional styles.
+- Fix priority calculation for compound pseudo selectors.
+
 ## 0.17.5 (Jan 12. 2026)
 - New `no-conflicting-props` lint rule.
 - Add `disallowedPropertiesValidation` config to disable property compiler errors by default.
 - Preserve units in zero values for CSS variables.
 - Fix `unplugin` cache invalidation on style changes.
+- Add `env` compiler option to expose `stylex.env` compile-time constants.
 
 ## 0.17.4 (Dec 18. 2025)
 - New playground within the docs website.

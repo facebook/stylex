@@ -1021,6 +1021,7 @@ const overflowWrap: RuleCheck = makeUnionRule(
 const overflowDir: RuleCheck = makeUnionRule(
   makeLiteralRule('visible'),
   makeLiteralRule('hidden'),
+  makeLiteralRule('clip'),
   makeLiteralRule('scroll'),
   makeLiteralRule('auto'),
 );
@@ -1490,7 +1491,7 @@ const maskImage: RuleCheck = maskReference;
 const SupportedVendorSpecificCSSProperties = {
   MozOsxFontSmoothing: makeLiteralRule('grayscale') as RuleCheck,
   WebkitFontSmoothing: makeLiteralRule('antialiased') as RuleCheck,
-  WebkitAppearance: makeLiteralRule('textfield') as RuleCheck,
+  WebkitAppearance: appearance,
   WebkitTapHighlightColor: color,
   WebkitOverflowScrolling: makeLiteralRule('touch') as RuleCheck,
 
@@ -2224,6 +2225,9 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::spelling-error'),
   makeLiteralRule('::grammar-error'),
   makeLiteralRule('::cue'),
+  makeLiteralRule('::cue-region'),
+  makeLiteralRule('::file-selector-button'),
+  makeLiteralRule('::target-text'),
   makeLiteralRule('::slotted'),
   makeLiteralRule('::part'),
   makeLiteralRule('::thumb'),
