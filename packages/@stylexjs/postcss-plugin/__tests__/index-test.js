@@ -143,7 +143,10 @@ describe('@stylexjs/postcss-plugin', () => {
   async function runAutoDiscoveryPostcss(options = {}, inputCSS = '@stylex;') {
     const fixtureDir = createAutoDiscoveryFixture();
     const stylexPostcssPlugin = createPlugin();
-    const { useResolvedBabelConfig = false, ...pluginOptions } = options;
+    const resolvedOptions =
+      typeof options === 'function' ? options(fixtureDir) : options;
+    const { useResolvedBabelConfig = false, ...pluginOptions } =
+      resolvedOptions;
 
     const basePluginOptions = {
       cwd: fixtureDir,
@@ -359,5 +362,104 @@ describe('@stylexjs/postcss-plugin', () => {
     expect(result.css).toContain('color:red');
     expect(result.css).not.toContain('color:purple');
     expect(result.css).not.toContain('background-color:orange');
+  });
+
+  test('infers importSources when StyleX Babel plugin is passed as a function reference', async () => {
+    const stylexBabelPlugin = require(
+      path.resolve(__dirname, '..', '..', 'babel-plugin', 'lib', 'index.js'),
+    );
+
+    const result = await runStylexPostcss({
+      include: ['**/import-sources-string.js'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            stylexBabelPlugin,
+            {
+              dev: false,
+              runtimeInjection: false,
+              importSources: ['custom'],
+            },
+          ],
+        ],
+      },
+    });
+
+    expect(result.css).toContain('background-color:blue');
+  });
+
+  test('falls back to default importSources when babel plugin options omit importSources', async () => {
+    const stylexBabelPlugin = require(
+      path.resolve(__dirname, '..', '..', 'babel-plugin', 'lib', 'index.js'),
+    );
+
+    const result = await runStylexPostcss({
+      include: ['**/styles.js', '**/import-sources-string.js'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            stylexBabelPlugin,
+            {
+              dev: false,
+              runtimeInjection: false,
+            },
+          ],
+        ],
+      },
+    });
+
+    expect(result.css).toContain('background-color:red');
+    expect(result.css).not.toContain('background-color:blue');
+  });
+
+  test('processes absolute include paths in node_modules even when node_modules is excluded', async () => {
+    const result = await runAutoDiscoveryPostcss((fixtureDir) => ({
+      include: [
+        path.join(fixtureDir, 'node_modules/stylex-custom-lib/index.js'),
+      ],
+      exclude: ['**/node_modules/**'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            '@stylexjs/babel-plugin',
+            {
+              dev: false,
+              runtimeInjection: false,
+              importSources: [{ from: 'react-strict-dom', as: 'css' }],
+            },
+          ],
+        ],
+      },
+    }));
+
+    expect(result.css).toContain('background-color:orange');
+  });
+
+  test('logs discovery details in debug mode', async () => {
+    const previousDebugValue = process.env.STYLEX_POSTCSS_DEBUG;
+    process.env.STYLEX_POSTCSS_DEBUG = '1';
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    try {
+      await runAutoDiscoveryPostcss();
+
+      const log = infoSpy.mock.calls.find(([arg]) =>
+        String(arg).includes('Auto-discovery details'),
+      );
+
+      expect(log).toBeDefined();
+      expect(String(log?.[0])).toContain('"importSourcesSource"');
+      expect(String(log?.[0])).toContain('"include"');
+    } finally {
+      if (previousDebugValue == null) {
+        delete process.env.STYLEX_POSTCSS_DEBUG;
+      } else {
+        process.env.STYLEX_POSTCSS_DEBUG = previousDebugValue;
+      }
+      infoSpy.mockRestore();
+    }
   });
 });
