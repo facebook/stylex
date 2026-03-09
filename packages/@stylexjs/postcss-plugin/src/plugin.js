@@ -7,10 +7,16 @@
 const postcss = require('postcss');
 const createBuilder = require('./builder');
 const {
+  getEffectiveBabelConfig,
   resolveExclude,
-  resolveImportSources,
-  resolveInclude,
+  resolveImportSourcesWithMetadata,
+  resolveIncludeWithMetadata,
 } = require('./discovery');
+
+function isDebugEnabled() {
+  const value = String(process.env.STYLEX_POSTCSS_DEBUG ?? '').toLowerCase();
+  return value === '1' || value === 'true' || value === 'yes';
+}
 
 module.exports = function createPlugin() {
   const PLUGIN_NAME = '@stylexjs/postcss-plugin';
@@ -30,16 +36,24 @@ module.exports = function createPlugin() {
     styleResolution = 'property-specificity',
     importSources,
   }) => {
-    const effectiveImportSources = resolveImportSources({
-      importSources,
+    const effectiveBabelConfig = getEffectiveBabelConfig({
       babelConfig,
+      cwd,
     });
 
-    const effectiveInclude = resolveInclude({
+    const importSourcesResolution = resolveImportSourcesWithMetadata({
+      importSources,
+      babelConfig: effectiveBabelConfig,
+      cwd,
+    });
+    const effectiveImportSources = importSourcesResolution.importSources;
+
+    const includeResolution = resolveIncludeWithMetadata({
       cwd,
       include,
       importSources: effectiveImportSources,
     });
+    const effectiveInclude = includeResolution.include;
 
     const effectiveExclude = resolveExclude({
       include,
@@ -52,6 +66,25 @@ module.exports = function createPlugin() {
       '**/*.flow',
       ...effectiveExclude,
     ];
+
+    if (isDebugEnabled()) {
+      console.info(
+        `[${PLUGIN_NAME}] Auto-discovery details:\n${JSON.stringify(
+          {
+            cwd,
+            importSourcesSource: importSourcesResolution.source,
+            importSources: effectiveImportSources,
+            include: effectiveInclude,
+            includeWasExplicit: includeResolution.hasExplicitInclude,
+            discoveredDependencyDirectories:
+              includeResolution.discoveredDependencyDirectories,
+            exclude: excludeWithDefaults,
+          },
+          null,
+          2,
+        )}`,
+      );
+    }
 
     // Whether to skip the error when transforming StyleX rules.
     // Useful in watch mode where Fast Refresh can recover from errors.
@@ -70,7 +103,7 @@ module.exports = function createPlugin() {
             include: effectiveInclude,
             exclude: excludeWithDefaults,
             cwd,
-            babelConfig,
+            babelConfig: effectiveBabelConfig,
             useCSSLayers,
             styleResolution,
             importSources: effectiveImportSources,

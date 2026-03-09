@@ -27,6 +27,34 @@ describe('@stylexjs/postcss-plugin', () => {
 
     fs.cpSync(autoDiscoveryFixturesDir, tempDir, { recursive: true });
 
+    const stylexBabelPluginDir = path.join(
+      tempDir,
+      'node_modules',
+      '@stylexjs',
+      'babel-plugin',
+    );
+    fs.mkdirSync(stylexBabelPluginDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(stylexBabelPluginDir, 'package.json'),
+      JSON.stringify(
+        {
+          name: '@stylexjs/babel-plugin',
+          version: '0.0.0-test',
+          main: 'index.js',
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(stylexBabelPluginDir, 'index.js'),
+      `module.exports = require(${JSON.stringify(
+        path.resolve(__dirname, '..', '..', 'babel-plugin', 'lib', 'index.js'),
+      )});\n`,
+      'utf8',
+    );
+
     const stylexLibDir = path.join(
       tempDir,
       'node_modules',
@@ -115,15 +143,23 @@ describe('@stylexjs/postcss-plugin', () => {
   async function runAutoDiscoveryPostcss(options = {}, inputCSS = '@stylex;') {
     const fixtureDir = createAutoDiscoveryFixture();
     const stylexPostcssPlugin = createPlugin();
-    const babelConfig = require(path.join(fixtureDir, 'babel.config.js'));
+    const { useResolvedBabelConfig = false, ...pluginOptions } = options;
 
-    const plugin = stylexPostcssPlugin({
+    const basePluginOptions = {
       cwd: fixtureDir,
-      babelConfig: {
+    };
+
+    if (!useResolvedBabelConfig) {
+      const babelConfig = require(path.join(fixtureDir, 'babel.config.js'));
+      basePluginOptions.babelConfig = {
         babelrc: false,
         plugins: babelConfig.plugins,
-      },
-      ...options,
+      };
+    }
+
+    const plugin = stylexPostcssPlugin({
+      ...basePluginOptions,
+      ...pluginOptions,
     });
 
     const processor = postcss([plugin]);
@@ -295,5 +331,33 @@ describe('@stylexjs/postcss-plugin', () => {
           message.dir.includes('stylex-custom-lib'),
       ),
     ).toBe(false);
+  });
+
+  test('infers importSources from resolved babel config when plugins are not passed inline', async () => {
+    const previousCwd = process.cwd();
+    process.chdir(os.tmpdir());
+
+    try {
+      const result = await runAutoDiscoveryPostcss({
+        useResolvedBabelConfig: true,
+      });
+
+      expect(result.css).toContain('color:red');
+      expect(result.css).toContain('color:purple');
+      expect(result.css).toContain('background-color:orange');
+    } finally {
+      process.chdir(previousCwd);
+    }
+  });
+
+  test('prefers explicit importSources over inferred babel importSources', async () => {
+    const result = await runAutoDiscoveryPostcss({
+      useResolvedBabelConfig: true,
+      importSources: ['@stylexjs/stylex'],
+    });
+
+    expect(result.css).toContain('color:red');
+    expect(result.css).not.toContain('color:purple');
+    expect(result.css).not.toContain('background-color:orange');
   });
 });
