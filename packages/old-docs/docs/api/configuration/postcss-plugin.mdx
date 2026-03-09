@@ -27,7 +27,8 @@ and specify desired options. Refer to [Babel Config Options](https://babeljs.io/
 cwd: string; // Default: process.cwd()
 ```
 
-Working directory for the plugin; defaults to `process.cwd()`.
+Working directory for the plugin; defaults to `process.cwd()`. Dependency paths
+and Babel config resolution use this value.
 
 ---
 
@@ -55,10 +56,13 @@ import sources may be skipped from being processed to speed up compilation.
 ### include
 
 ```js
-include: string[] // Required
+include: string[] // Default: auto-discovered
 ```
 
 Array of paths or glob patterns to compile.
+
+When omitted, the plugin auto-discovers source files under `cwd` and direct
+dependencies that use StyleX.
 
 ---
 

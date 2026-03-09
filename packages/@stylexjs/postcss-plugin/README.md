@@ -92,7 +92,7 @@ include: string[] // Default: auto-discovered
 Array of paths or glob patterns to compile.
 
 When omitted, the plugin auto-discovers source files in the project `cwd` and
-also attempts to include installed packages that use StyleX.
+direct dependencies that use StyleX.
 
 ---
 
@@ -117,7 +117,8 @@ keep discovery focused on source files.
 cwd: string; // Default: process.cwd()
 ```
 
-Working directory for the plugin; defaults to process.cwd().
+Working directory for the plugin; defaults to process.cwd(). Dependency paths
+and Babel config resolution use this value.
 
 ---
 
@@ -157,10 +158,6 @@ import sources may be skipped from being processed to speed up compilation.
 When omitted, the plugin will infer `importSources` from your
 `@stylexjs/babel-plugin` options (if present) and still include the default
 StyleX sources.
-
-The plugin resolves Babel config with `cwd` as the Babel working directory by
-default (unless `babelConfig.cwd` is explicitly set), which helps keep
-PostCSS/Babel behavior aligned when running from a different process cwd.
 
 ---
 

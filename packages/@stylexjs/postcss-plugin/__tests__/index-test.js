@@ -116,6 +116,23 @@ describe('@stylexjs/postcss-plugin', () => {
       'export const v = 1;\n',
     );
 
+    const cachedNodeModulesDir = path.join(tempDir, 'node_modules', '.cache');
+    fs.mkdirSync(cachedNodeModulesDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(cachedNodeModulesDir, 'hidden-stylex.js'),
+      [
+        "import { css } from 'react-strict-dom';",
+        '',
+        'export const styles = css.create({',
+        '  hidden: {',
+        "    backgroundColor: 'hotpink',",
+        '  },',
+        '});',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+
     return tempDir;
   }
 
@@ -143,7 +160,10 @@ describe('@stylexjs/postcss-plugin', () => {
   async function runAutoDiscoveryPostcss(options = {}, inputCSS = '@stylex;') {
     const fixtureDir = createAutoDiscoveryFixture();
     const stylexPostcssPlugin = createPlugin();
-    const { useResolvedBabelConfig = false, ...pluginOptions } = options;
+    const resolvedOptions =
+      typeof options === 'function' ? options(fixtureDir) : options;
+    const { useResolvedBabelConfig = false, ...pluginOptions } =
+      resolvedOptions;
 
     const basePluginOptions = {
       cwd: fixtureDir,
@@ -292,6 +312,39 @@ describe('@stylexjs/postcss-plugin', () => {
     );
   });
 
+  test('dedupes files matched by relative and absolute include patterns', async () => {
+    const targetFile = path.join(fixturesDir, 'styles.js');
+    const readFileSpy = jest.spyOn(fs, 'readFileSync');
+
+    try {
+      const result = await runStylexPostcss({
+        include: ['styles.js', targetFile],
+        babelConfig: {
+          babelrc: false,
+          plugins: [
+            [
+              '@stylexjs/babel-plugin',
+              {
+                dev: false,
+                runtimeInjection: false,
+              },
+            ],
+          ],
+        },
+      });
+
+      expect(result.css).toContain('background-color:red');
+
+      const readsForTargetFile = readFileSpy.mock.calls.filter(([file]) => {
+        return path.normalize(String(file)) === path.normalize(targetFile);
+      });
+
+      expect(readsForTargetFile).toHaveLength(1);
+    } finally {
+      readFileSpy.mockRestore();
+    }
+  });
+
   test('auto-discovers include globs when include is omitted', async () => {
     const result = await runStylexPostcss({
       include: undefined,
@@ -359,5 +412,127 @@ describe('@stylexjs/postcss-plugin', () => {
     expect(result.css).toContain('color:red');
     expect(result.css).not.toContain('color:purple');
     expect(result.css).not.toContain('background-color:orange');
+  });
+
+  test('infers importSources when StyleX Babel plugin is passed as a function reference', async () => {
+    const stylexBabelPlugin = require(
+      path.resolve(__dirname, '..', '..', 'babel-plugin', 'lib', 'index.js'),
+    );
+
+    const result = await runStylexPostcss({
+      include: ['**/import-sources-string.js'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            stylexBabelPlugin,
+            {
+              dev: false,
+              runtimeInjection: false,
+              importSources: ['custom'],
+            },
+          ],
+        ],
+      },
+    });
+
+    expect(result.css).toContain('background-color:blue');
+  });
+
+  test('falls back to default importSources when babel plugin options omit importSources', async () => {
+    const stylexBabelPlugin = require(
+      path.resolve(__dirname, '..', '..', 'babel-plugin', 'lib', 'index.js'),
+    );
+
+    const result = await runStylexPostcss({
+      include: ['**/styles.js', '**/import-sources-string.js'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            stylexBabelPlugin,
+            {
+              dev: false,
+              runtimeInjection: false,
+            },
+          ],
+        ],
+      },
+    });
+
+    expect(result.css).toContain('background-color:red');
+    expect(result.css).not.toContain('background-color:blue');
+  });
+
+  test('processes absolute include paths in node_modules even when node_modules is excluded', async () => {
+    const result = await runAutoDiscoveryPostcss((fixtureDir) => ({
+      include: [
+        path.join(fixtureDir, 'node_modules/stylex-custom-lib/index.js'),
+      ],
+      exclude: ['**/node_modules/**'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            '@stylexjs/babel-plugin',
+            {
+              dev: false,
+              runtimeInjection: false,
+              importSources: [{ from: 'react-strict-dom', as: 'css' }],
+            },
+          ],
+        ],
+      },
+    }));
+
+    expect(result.css).toContain('background-color:orange');
+  });
+
+  test('keeps specific node_modules excludes when absolute includes point to node_modules', async () => {
+    const result = await runAutoDiscoveryPostcss((fixtureDir) => ({
+      include: [path.join(fixtureDir, 'node_modules/**/*.js')],
+      exclude: ['**/node_modules/**', '**/node_modules/.cache/**'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            '@stylexjs/babel-plugin',
+            {
+              dev: false,
+              runtimeInjection: false,
+              importSources: [{ from: 'react-strict-dom', as: 'css' }],
+            },
+          ],
+        ],
+      },
+    }));
+
+    expect(result.css).toContain('background-color:orange');
+    expect(result.css).not.toContain('background-color:hotpink');
+  });
+
+  test('logs discovery details in debug mode', async () => {
+    const previousDebugValue = process.env.STYLEX_POSTCSS_DEBUG;
+    process.env.STYLEX_POSTCSS_DEBUG = '1';
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    try {
+      await runAutoDiscoveryPostcss();
+
+      const log = infoSpy.mock.calls.find(([arg]) =>
+        String(arg).includes('Auto-discovery details'),
+      );
+
+      expect(log).toBeDefined();
+      expect(String(log?.[0])).toContain('"importSourcesSource"');
+      expect(String(log?.[0])).toContain('"include"');
+    } finally {
+      if (previousDebugValue == null) {
+        delete process.env.STYLEX_POSTCSS_DEBUG;
+      } else {
+        process.env.STYLEX_POSTCSS_DEBUG = previousDebugValue;
+      }
+      infoSpy.mockRestore();
+    }
   });
 });

@@ -30,7 +30,8 @@ option as Babel's working directory to keep config resolution consistent.
 cwd: string; // Default: process.cwd()
 ```
 
-Working directory for the plugin; defaults to `process.cwd()`.
+Working directory for the plugin; defaults to `process.cwd()`. Dependency paths
+and Babel config resolution use this value.
 
 ---
 
@@ -76,8 +77,9 @@ include: string[] // Default: auto-discovered
 
 Array of paths or glob patterns to compile.
 
-When omitted, the plugin auto-discovers source files under `cwd` and also
-attempts to include installed packages that use StyleX.
+When omitted, the plugin auto-discovers source files under `cwd` and direct
+dependencies that use StyleX (checking `dependencies`, `peerDependencies`, and
+`optionalDependencies`).
 
 ---
 
