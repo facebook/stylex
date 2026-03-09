@@ -157,3 +157,16 @@ import sources may be skipped from being processed to speed up compilation.
 When omitted, the plugin will infer `importSources` from your
 `@stylexjs/babel-plugin` options (if present) and still include the default
 StyleX sources.
+
+The plugin resolves Babel config with `cwd` as the Babel working directory by
+default (unless `babelConfig.cwd` is explicitly set), which helps keep
+PostCSS/Babel behavior aligned when running from a different process cwd.
+
+---
+
+## Debugging auto-discovery
+
+Set `STYLEX_POSTCSS_DEBUG=1` to print resolved plugin inputs, including:
+- resolved `importSources` and where they came from
+- final `include` and `exclude` globs
+- discovered dependency directories

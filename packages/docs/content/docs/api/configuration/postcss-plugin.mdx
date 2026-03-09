@@ -19,6 +19,9 @@ Options for Babel configuration. By default, the plugin reads the
 `babelrc: false` and specify desired options. Refer to
 [Babel Config Options](https://babeljs.io/docs/options) for available options.
 
+Unless you explicitly provide `babelConfig.cwd`, the plugin uses its `cwd`
+option as Babel's working directory to keep config resolution consistent.
+
 ---
 
 ### cwd
@@ -58,6 +61,11 @@ When omitted, the plugin infers `importSources` from your
 `@stylexjs/babel-plugin` options (if present), while still keeping the default
 StyleX sources.
 
+Precedence order is:
+1. explicit PostCSS `importSources`
+2. inferred from Babel config
+3. built-in defaults
+
 ---
 
 ### include
@@ -81,3 +89,10 @@ useCSSLayers: boolean; // Default: false
 
 Enabling this option switches Stylex from using `:not(#\#)` to using `@layers`
 for handling CSS specificity.
+
+---
+
+## Debugging auto-discovery
+
+Set `STYLEX_POSTCSS_DEBUG=1` to log the resolved `importSources`, final
+`include`/`exclude` globs, and discovered dependency directories.
