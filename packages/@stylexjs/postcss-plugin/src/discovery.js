@@ -304,6 +304,9 @@ function isStylexBabelPluginName(pluginRef) {
   }
 
   if (typeof pluginRef === 'function') {
+    // Function-name matching is a best-effort fallback for inline function refs.
+    // This is intentionally secondary to string/path matching above because
+    // function names can change due to minification or implementation refactors.
     if (pluginRef.name === 'styleXTransform') {
       return true;
     }
