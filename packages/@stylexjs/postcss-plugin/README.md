@@ -94,6 +94,11 @@ Array of paths or glob patterns to compile.
 When omitted, the plugin auto-discovers source files in the project `cwd` and
 also attempts to include installed packages that use StyleX.
 
+Auto-discovery currently scans only direct dependencies from `cwd`'s
+`package.json` (not transitive dependencies). In monorepos, workspace packages
+are only included when they are direct dependencies of the package using this
+plugin. Use explicit `include` globs for full control.
+
 ---
 
 ### exclude
@@ -118,6 +123,10 @@ cwd: string; // Default: process.cwd()
 ```
 
 Working directory for the plugin; defaults to process.cwd().
+
+PostCSS dependency/watch paths are resolved relative to this `cwd` value, so
+PostCSS and Babel stay aligned even when the build process runs from a
+different `process.cwd()`.
 
 ---
 
@@ -161,6 +170,10 @@ StyleX sources.
 The plugin resolves Babel config with `cwd` as the Babel working directory by
 default (unless `babelConfig.cwd` is explicitly set), which helps keep
 PostCSS/Babel behavior aligned when running from a different process cwd.
+
+When auto-discovering dependency packages, StyleX usage checks
+`dependencies`, `peerDependencies`, and `optionalDependencies`
+(not `devDependencies`).
 
 ---
 

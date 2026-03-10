@@ -29,6 +29,10 @@ cwd: string; // Default: process.cwd()
 
 Working directory for the plugin; defaults to `process.cwd()`.
 
+PostCSS dependency/watch paths are resolved relative to this `cwd`, which keeps
+watch behavior aligned with Babel config resolution when your build process runs
+from a different `process.cwd()`.
+
 ---
 
 ### exclude
@@ -50,15 +54,27 @@ importSources: Array<string | { from: string, as: string }>; // Default: ['@styl
 Possible strings where you can import stylex from. Files that do not match the
 import sources may be skipped from being processed to speed up compilation.
 
+When auto-discovering dependency packages, StyleX usage checks
+`dependencies`, `peerDependencies`, and `optionalDependencies`
+(not `devDependencies`).
+
 ---
 
 ### include
 
 ```js
-include: string[] // Required
+include: string[] // Default: auto-discovered
 ```
 
 Array of paths or glob patterns to compile.
+
+When omitted, the plugin auto-discovers source files under `cwd` and also
+attempts to include installed packages that use StyleX.
+
+Auto-discovery currently scans only direct dependencies from `cwd`'s
+`package.json` (not transitive dependencies). In monorepos, workspace packages
+are only included when they are direct dependencies of the package that runs
+the plugin. Use explicit `include` globs when you need broader coverage.
 
 ---
 

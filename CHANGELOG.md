@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+- PostCSS plugin: normalize include matches to canonical absolute paths and
+  narrow absolute `node_modules` include handling so specific nested excludes
+  still apply.
+- PostCSS plugin: clarify docs for auto-discovery scope (direct dependencies
+  only, non-transitive, monorepo caveats) and dependency field checks.
+- PostCSS plugin: document that dependency/watch path resolution follows plugin
+  `cwd` for consistent PostCSS/Babel behavior when process cwd differs.
+
 ## 0.18.1 (Mar 5, 2026)
 - Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
 - Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
