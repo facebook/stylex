@@ -116,6 +116,23 @@ describe('@stylexjs/postcss-plugin', () => {
       'export const v = 1;\n',
     );
 
+    const cachedNodeModulesDir = path.join(tempDir, 'node_modules', '.cache');
+    fs.mkdirSync(cachedNodeModulesDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(cachedNodeModulesDir, 'hidden-stylex.js'),
+      [
+        "import { css } from 'react-strict-dom';",
+        '',
+        'export const styles = css.create({',
+        '  hidden: {',
+        "    backgroundColor: 'hotpink',",
+        '  },',
+        '});',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+
     return tempDir;
   }
 
@@ -295,6 +312,39 @@ describe('@stylexjs/postcss-plugin', () => {
     );
   });
 
+  test('dedupes files matched by relative and absolute include patterns', async () => {
+    const targetFile = path.join(fixturesDir, 'styles.js');
+    const readFileSpy = jest.spyOn(fs, 'readFileSync');
+
+    try {
+      const result = await runStylexPostcss({
+        include: ['styles.js', targetFile],
+        babelConfig: {
+          babelrc: false,
+          plugins: [
+            [
+              '@stylexjs/babel-plugin',
+              {
+                dev: false,
+                runtimeInjection: false,
+              },
+            ],
+          ],
+        },
+      });
+
+      expect(result.css).toContain('background-color:red');
+
+      const readsForTargetFile = readFileSpy.mock.calls.filter(([file]) => {
+        return path.normalize(String(file)) === path.normalize(targetFile);
+      });
+
+      expect(readsForTargetFile).toHaveLength(1);
+    } finally {
+      readFileSpy.mockRestore();
+    }
+  });
+
   test('auto-discovers include globs when include is omitted', async () => {
     const result = await runStylexPostcss({
       include: undefined,
@@ -436,6 +486,29 @@ describe('@stylexjs/postcss-plugin', () => {
     }));
 
     expect(result.css).toContain('background-color:orange');
+  });
+
+  test('keeps specific node_modules excludes when absolute includes point to node_modules', async () => {
+    const result = await runAutoDiscoveryPostcss((fixtureDir) => ({
+      include: [path.join(fixtureDir, 'node_modules/**/*.js')],
+      exclude: ['**/node_modules/**', '**/node_modules/.cache/**'],
+      babelConfig: {
+        babelrc: false,
+        plugins: [
+          [
+            '@stylexjs/babel-plugin',
+            {
+              dev: false,
+              runtimeInjection: false,
+              importSources: [{ from: 'react-strict-dom', as: 'css' }],
+            },
+          ],
+        ],
+      },
+    }));
+
+    expect(result.css).toContain('background-color:orange');
+    expect(result.css).not.toContain('background-color:hotpink');
   });
 
   test('logs discovery details in debug mode', async () => {

@@ -13,6 +13,11 @@ const isGlob = require('is-glob');
 const globParent = require('glob-parent');
 const createBundler = require('./bundler');
 
+const NODE_MODULES_CATCH_ALL_EXCLUDE_PATTERNS = new Set([
+  'node_modules/**',
+  '**/node_modules/**',
+]);
+
 // Parses a glob pattern and extracts its base directory and pattern.
 // Returns an object with `base` and `glob` properties.
 function parseGlob(pattern) {
@@ -64,6 +69,20 @@ function parseDependency(fileOrGlob, cwd) {
   return message;
 }
 
+function normalizeGlobPattern(pattern) {
+  return String(pattern).replace(/\\/g, '/').replace(/^\.\//, '');
+}
+
+function isNodeModulesCatchAllExcludePattern(pattern) {
+  return NODE_MODULES_CATCH_ALL_EXCLUDE_PATTERNS.has(
+    normalizeGlobPattern(pattern),
+  );
+}
+
+function toCanonicalFilePath(file, cwd) {
+  return normalize(resolve(cwd, file));
+}
+
 // Creates a builder for transforming files and bundling StyleX CSS.
 function createBuilder() {
   let config = null;
@@ -104,8 +123,8 @@ function createBuilder() {
       return [];
     }
 
-    const ignoreWithoutNodeModules = (exclude ?? []).filter(
-      (pattern) => !pattern.includes('node_modules'),
+    const ignoreWithoutNodeModulesCatchAll = (exclude ?? []).filter(
+      (pattern) => !isNodeModulesCatchAllExcludePattern(pattern),
     );
 
     const files = new Set();
@@ -116,7 +135,7 @@ function createBuilder() {
       );
       const ignore =
         isAbsolutePattern && pointsToNodeModules
-          ? ignoreWithoutNodeModules
+          ? ignoreWithoutNodeModulesCatchAll
           : exclude;
 
       const matchedFiles = globSync(includePattern, {
@@ -125,7 +144,7 @@ function createBuilder() {
         cwd,
       });
       for (const file of matchedFiles) {
-        files.add(file);
+        files.add(toCanonicalFilePath(file, cwd));
       }
     }
 
