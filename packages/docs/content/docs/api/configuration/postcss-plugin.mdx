@@ -30,11 +30,8 @@ option as Babel's working directory to keep config resolution consistent.
 cwd: string; // Default: process.cwd()
 ```
 
-Working directory for the plugin; defaults to `process.cwd()`.
-
-PostCSS dependency/watch paths are resolved relative to this `cwd`, which keeps
-watch behavior aligned with Babel config resolution when your build process runs
-from a different `process.cwd()`.
+Working directory for the plugin; defaults to `process.cwd()`. Dependency paths
+and Babel config resolution use this value.
 
 ---
 
@@ -80,17 +77,9 @@ include: string[] // Default: auto-discovered
 
 Array of paths or glob patterns to compile.
 
-When omitted, the plugin auto-discovers source files under `cwd` and also
-attempts to include installed packages that use StyleX.
-
-Auto-discovery currently scans only direct dependencies from `cwd`'s
-`package.json` (not transitive dependencies). In monorepos, workspace packages
-are only included when they are direct dependencies of the package that runs
-the plugin. Use explicit `include` globs when you need broader coverage.
-
-When auto-discovering dependency packages, StyleX usage checks
-`dependencies`, `peerDependencies`, and `optionalDependencies`
-(not `devDependencies`).
+When omitted, the plugin auto-discovers source files under `cwd` and direct
+dependencies that use StyleX (checking `dependencies`, `peerDependencies`, and
+`optionalDependencies`).
 
 ---
 
