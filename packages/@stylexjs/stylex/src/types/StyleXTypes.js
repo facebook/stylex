@@ -284,3 +284,5 @@ export type StyleX$When = {
     _customMarker?: MapNamespace<{ +marker: 'custom-marker' }>,
   ) => ':where-any-sibling',
 };
+
+export type StyleX$Env = $ReadOnly<{ [string]: mixed }>;
