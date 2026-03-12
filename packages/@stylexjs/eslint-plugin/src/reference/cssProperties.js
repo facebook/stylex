@@ -226,6 +226,7 @@ const brStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('outset'),
 );
 const CSSCursor: RuleCheck = makeUnionRule(
+  isCSSVariable,
   makeLiteralRule('auto'),
   makeLiteralRule('default'),
   makeLiteralRule('none'),
