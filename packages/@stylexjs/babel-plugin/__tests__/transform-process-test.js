@@ -802,8 +802,33 @@ describe('@stylexjs/babel-plugin', () => {
         legacyDisableLayers: true,
       });
 
-      expect(output1).toBe(output2);
-      expect(output1).toBe(output3);
+      expect(output1).toMatchInlineSnapshot(`
+        "@container card (min-width: 31.25rem){.xContainer1{display:flex}}
+        .xPlain1{display:none}
+        @media (min-width: 48rem){.xMedia1{display:none}}
+        var(--x10fi87w){.xVar1.xVar1{grid-template-columns:repeat(2,1fr)}}
+        .xPseudo1::before{inset:0}
+        @media (min-width: 64rem){.xMedia2{inset:0}}
+        @starting-style{.xStarting1{opacity:0}}"
+      `);
+      expect(output2).toMatchInlineSnapshot(`
+        "@container card (min-width: 31.25rem){.xContainer1{display:flex}}
+        .xPlain1{display:none}
+        @media (min-width: 48rem){.xMedia1{display:none}}
+        var(--x10fi87w){.xVar1.xVar1{grid-template-columns:repeat(2,1fr)}}
+        .xPseudo1::before{inset:0}
+        @media (min-width: 64rem){.xMedia2{inset:0}}
+        @starting-style{.xStarting1{opacity:0}}"
+      `);
+      expect(output3).toMatchInlineSnapshot(`
+        "@container card (min-width: 31.25rem){.xContainer1{display:flex}}
+        .xPlain1{display:none}
+        @media (min-width: 48rem){.xMedia1{display:none}}
+        var(--x10fi87w){.xVar1.xVar1{grid-template-columns:repeat(2,1fr)}}
+        .xPseudo1::before{inset:0}
+        @media (min-width: 64rem){.xMedia2{inset:0}}
+        @starting-style{.xStarting1{opacity:0}}"
+      `);
     });
 
     test('sort is deterministic with duplicate rules in different input orders', () => {
@@ -839,8 +864,21 @@ describe('@stylexjs/babel-plugin', () => {
         { useLayers: false, legacyDisableLayers: true },
       );
 
-      expect(output1).toBe(output2);
-      expect(output1).toBe(output3);
+      expect(output1).toMatchInlineSnapshot(`
+        "@media (min-width: 48rem){.xA{display:flex}}
+        .xB::after{inset:0}
+        @starting-style{.xC{opacity:0}}"
+      `);
+      expect(output2).toMatchInlineSnapshot(`
+        "@media (min-width: 48rem){.xA{display:flex}}
+        .xB::after{inset:0}
+        @starting-style{.xC{opacity:0}}"
+      `);
+      expect(output3).toMatchInlineSnapshot(`
+        "@media (min-width: 48rem){.xA{display:flex}}
+        .xB::after{inset:0}
+        @starting-style{.xC{opacity:0}}"
+      `);
     });
   });
 });
