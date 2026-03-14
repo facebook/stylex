@@ -2003,7 +2003,7 @@ const CSSProperties = {
     'inset',
     'outset',
   ) as RuleCheck,
-  outlineWidth: makeUnionRule(isNumber, isLength),
+  outlineWidth: makeUnionRule(isNumber, isLength) as RuleCheck,
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
@@ -2019,7 +2019,7 @@ const CSSProperties = {
   overscrollBehaviorY: overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorBlock: overscrollBehaviorY,
-  overflowClipMargin: makeUnionRule(isNumber, isString),
+  overflowClipMargin: makeUnionRule(isNumber, isString) as RuleCheck,
 
   paintOrder: makeUnionRule(
     'normal',
@@ -2145,7 +2145,7 @@ const CSSProperties = {
     'dashed',
     'wavy',
   ) as RuleCheck,
-  textDecorationThickness: makeUnionRule(isNumber, isLength),
+  textDecorationThickness: makeUnionRule(isNumber, isLength) as RuleCheck,
 
   textEmphasis: textEmphasis,
   textEmphasisColor: textEmphasisColor,
