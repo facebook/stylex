@@ -672,6 +672,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       })
     })
     `,
+    // test using member expressions on function params in dynamic styles
+    `
+    import * as stylex from 'stylex';
+    stylex.create({
+      badge: (props) => ({
+        backgroundColor: props.badgeColor,
+        color: props.color,
+      })
+    })
+    `,
+    // test member expressions on function params with pseudo-classes
+    `
+    import * as stylex from 'stylex';
+    stylex.create({
+      root: (props) => ({
+        color: {
+          default: props.textColor,
+          ':hover': props.hoverColor,
+        },
+      })
+    })
+    `,
     // test importing vars from paths including theme file extension
     `
     import * as stylex from '@stylexjs/stylex';
@@ -878,6 +900,26 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             zIndex: zIndexConst ?? 10,
             width: isMobile ? (widthConst || "100%") : (widthConst2 ?? "200%"),
           }
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            outlineOffset: 2,
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            strokeDasharray: 100,
+          },
         });
       `,
     },
