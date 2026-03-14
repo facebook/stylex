@@ -184,12 +184,14 @@ const backgroundPosition: RuleCheck = makeUnionRule(
   makeLiteralRule('center'),
 );
 const backgroundPositionX: RuleCheck = makeUnionRule(
+  isNumber,
   isString,
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   makeLiteralRule('center'),
 );
 const backgroundPositionY: RuleCheck = makeUnionRule(
+  isNumber,
   isString,
   makeLiteralRule('top'),
   makeLiteralRule('bottom'),
@@ -1226,6 +1228,7 @@ const textUnderlinePosition: RuleCheck = makeUnionRule(
 );
 const textUnderlineOffset: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
+  isNumber,
   isLength,
   isPercentage,
 );
@@ -2000,7 +2003,7 @@ const CSSProperties = {
     'inset',
     'outset',
   ) as RuleCheck,
-  outlineWidth: isLength,
+  outlineWidth: makeUnionRule(isNumber, isLength),
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
@@ -2016,7 +2019,7 @@ const CSSProperties = {
   overscrollBehaviorY: overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorBlock: overscrollBehaviorY,
-  overflowClipMargin: isString,
+  overflowClipMargin: makeUnionRule(isNumber, isString),
 
   paintOrder: makeUnionRule(
     'normal',
@@ -2142,7 +2145,7 @@ const CSSProperties = {
     'dashed',
     'wavy',
   ) as RuleCheck,
-  textDecorationThickness: isLength,
+  textDecorationThickness: makeUnionRule(isNumber, isLength),
 
   textEmphasis: textEmphasis,
   textEmphasisColor: textEmphasisColor,
