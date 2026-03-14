@@ -903,6 +903,20 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         });
       `,
     },
+    // bare numbers for px-related properties
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        default: {
+          backgroundPositionX: 10,
+          backgroundPositionY: 20,
+          outlineWidth: 2,
+          textDecorationThickness: 3,
+          textUnderlineOffset: 4,
+          overflowClipMargin: 5,
+        }
+      });
+    `,
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -2198,6 +2212,7 @@ This property is not supported in legacy StyleX resolution.`,
         {
           message: `textUnderlineOffset value must be one of:
 auto
+a number literal or math expression
 a number ending in px, mm, in, pc, pt
 a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
 A string literal representing a percentage (e.g. 100%)
