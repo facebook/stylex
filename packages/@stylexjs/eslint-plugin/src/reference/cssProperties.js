@@ -104,7 +104,7 @@ const borderImageSource: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
 );
-const time: RuleCheck = isString;
+const time: RuleCheck = makeUnionRule(isNumber, isString);
 const animationDirection: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('reverse'),
@@ -1430,6 +1430,7 @@ const speakAs: RuleCheck = makeUnionRule(
 const stroke: RuleCheck = paint;
 const strokeDasharray: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
+  isNumber,
   isString,
 );
 const strokeDashoffset: RuleCheck = svgLength;
@@ -1987,7 +1988,7 @@ const CSSProperties = {
   orphans: orphans,
   outline: outline,
   outlineColor: color,
-  outlineOffset: isLength,
+  outlineOffset: makeUnionRule(isNumber, isLength) as RuleCheck,
   outlineStyle: makeUnionRule(
     'auto',
     'none',
