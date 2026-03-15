@@ -937,6 +937,20 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         });
       `,
     },
+    // bare numbers for time-based properties
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            animationDelay: 200,
+            animationDuration: 300,
+            transitionDelay: 100,
+            transitionDuration: 500,
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
