@@ -72,8 +72,9 @@ ensure that both the Babel and PostCSS plugins use the same configuration.
 Ensure that your build pipeline postprocesses your CSS with PostCSS using this
 config file.
 
-Other than the `babelConfig` option, define one or more glob patterns for the
-`include` option to define all the files that may contain StyleX styles.
+You can define glob patterns for `include` to control which files are scanned.
+When omitted, the plugin auto-discovers source files and direct dependencies
+that use StyleX. It also infers `importSources` from your Babel config.
 
 ```js title="postcss.config.mjs"
 import stylex from '@stylexjs/postcss-plugin';
@@ -108,3 +109,6 @@ The
 [next.js example](https://github.com/facebook/stylex/tree/main/examples/example-nextjs)
 uses the same setup to integrate StyleX with Turbopack, which doesn't yet have a
 plugin API.
+
+To troubleshoot discovery behavior, run your build with
+`STYLEX_POSTCSS_DEBUG=1` to print resolved include/import source details.

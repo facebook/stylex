@@ -4,10 +4,15 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-
-'use strict';
-
 module.exports = {
-  testPathIgnorePatterns: ['/__fixtures__/', '/__auto_discovery_fixtures__/'],
-  testEnvironment: 'node',
+  plugins: [
+    [
+      '@stylexjs/babel-plugin',
+      {
+        dev: false,
+        runtimeInjection: false,
+        importSources: [{ from: 'react-strict-dom', as: 'css' }],
+      },
+    ],
+  ],
 };

@@ -4,10 +4,10 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import { css } from 'react-strict-dom';
 
-'use strict';
-
-module.exports = {
-  testPathIgnorePatterns: ['/__fixtures__/', '/__auto_discovery_fixtures__/'],
-  testEnvironment: 'node',
-};
+export const styles = css.create({
+  local: {
+    color: 'purple',
+  },
+});
