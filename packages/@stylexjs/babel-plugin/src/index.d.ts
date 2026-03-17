@@ -45,6 +45,8 @@ declare function processStylexRules(
     | boolean
     | {
         useLayers?: boolean;
+        layersBefore?: ReadonlyArray<string>;
+        layersAfter?: ReadonlyArray<string>;
         enableLTRRTLComments?: boolean;
         legacyDisableLayers?: boolean;
       },

@@ -62,11 +62,18 @@ module.exports = function createBundler() {
   }
 
   //  Bundles all collected StyleX rules into a single CSS string.
-  function bundle({ useCSSLayers, enableLTRRTLComments }) {
+  function bundle({
+    useCSSLayers,
+    layersBefore,
+    layersAfter,
+    enableLTRRTLComments,
+  }) {
     const rules = Array.from(styleXRulesMap.values()).flat();
 
     const css = stylexBabelPlugin.processStylexRules(rules, {
       useLayers: useCSSLayers,
+      layersBefore,
+      layersAfter,
       enableLTRRTLComments,
     });
 
