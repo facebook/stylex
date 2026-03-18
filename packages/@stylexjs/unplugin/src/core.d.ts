@@ -8,7 +8,7 @@ import { type UnpluginFactory, type UnpluginInstance } from 'unplugin';
 import type { Options as StyleXOptions } from '@stylexjs/babel-plugin';
 import type { TransformOptions } from 'lightningcss';
 
-type LightningcssOptions = TransformOptions<any>;
+type LightningcssOptions = Omit<TransformOptions<any>, 'filename' | 'code'>;
 
 export type UserOptions = StyleXOptions & {
   useCSSLayers?: boolean;
