@@ -38,6 +38,8 @@ export type PluginOptions = $ReadOnly<{
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
   useCSSLayers?: boolean,
+  layersBefore?: $ReadOnlyArray<string>,
+  layersAfter?: $ReadOnlyArray<string>,
   lightningcssOptions?: Omit<
     TransformOptions<{}>,
     'code' | 'filename' | 'visitor',
@@ -64,6 +66,8 @@ export default function stylexPlugin({
   babelConfig: { plugins = [], presets = [] } = {},
   importSources = ['stylex', '@stylexjs/stylex'],
   useCSSLayers = false,
+  layersBefore,
+  layersAfter,
   lightningcssOptions,
   ...options
 }: PluginOptions = {}): Plugin<> {
@@ -78,6 +82,8 @@ export default function stylexPlugin({
       if (rules.length > 0) {
         const collectedCSS = stylexBabelPlugin.processStylexRules(rules, {
           useLayers: useCSSLayers,
+          layersBefore,
+          layersAfter,
           enableLTRRTLComments: options?.enableLTRRTLComments,
         });
 

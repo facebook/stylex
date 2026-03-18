@@ -439,6 +439,8 @@ function processStylexRules(
     | boolean
     | {
         useLayers?: boolean,
+        layersBefore?: $ReadOnlyArray<string>,
+        layersAfter?: $ReadOnlyArray<string>,
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
         useLegacyClassnamesSort?: boolean,
@@ -447,10 +449,19 @@ function processStylexRules(
 ): string {
   const {
     useLayers = false,
+    layersBefore = [],
+    layersAfter = [],
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
     useLegacyClassnamesSort = false,
   } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
+
+  if (!useLayers && (layersBefore.length > 0 || layersAfter.length > 0)) {
+    console.warn(
+      '[@stylexjs/babel-plugin] `layersBefore` and `layersAfter` options are ignored when `useCSSLayers` is not enabled.',
+    );
+  }
+
   if (rules.length === 0) {
     return '';
   }
@@ -566,7 +577,11 @@ function processStylexRules(
 
   const header = useLayers
     ? '\n@layer ' +
-      grouped.map((_, index) => `priority${index + 1}`).join(', ') +
+      [
+        ...layersBefore,
+        ...grouped.map((_, index) => `priority${index + 1}`),
+        ...layersAfter,
+      ].join(', ') +
       ';\n'
     : '';
 

@@ -33,6 +33,8 @@ module.exports = function createPlugin() {
     include,
     exclude,
     useCSSLayers = false,
+    layersBefore,
+    layersAfter,
     styleResolution = 'property-specificity',
     importSources,
   }) => {
@@ -105,6 +107,8 @@ module.exports = function createPlugin() {
             cwd,
             babelConfig: effectiveBabelConfig,
             useCSSLayers,
+            layersBefore,
+            layersAfter,
             styleResolution,
             importSources: effectiveImportSources,
             isDev,
