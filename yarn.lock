@@ -13410,9 +13410,9 @@ kysely-do@~0.0.1-rc.1:
   integrity sha512-sI9Pyga89eIkHkVCyBPgPVSuzv0JnmBlIusdLzJJvryG35QkWQElQ4TbPtMPT8l+ABnJL/ktZqlfcd5oKSocew==
 
 kysely@~0.28.2:
-  version "0.28.8"
-  resolved "https://registry.npmjs.org/kysely/-/kysely-0.28.8.tgz"
-  integrity sha512-QUOgl5ZrS9IRuhq5FvOKFSsD/3+IA6MLE81/bOOTRA/YQpKDza2sFdN5g6JCB9BOpqMJDGefLCQ9F12hRS13TA==
+  version "0.28.12"
+  resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.28.12.tgz#bb21e998cac234ef6428ead96c59a56a9e663b2b"
+  integrity sha512-kWiueDWXhbCchgiotwXkwdxZE/6h56IHAeFWg4euUfW0YsmO9sxbAxzx1KLLv2lox15EfuuxHQvgJ1qIfZuHGw==
 
 language-subtag-registry@^0.3.20:
   version "0.3.23"
