@@ -19,7 +19,7 @@ import browserslist from 'browserslist';
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-// Inline playground sources/types so Monaco and Sandpack can resolve them.
+// Inline playground sources/types so Monaco and the playground bundler can resolve them.
 const playgroundDefines = (() => {
   const stylexFilename = require.resolve('@stylexjs/stylex');
   const stylexSource = fs.readFileSync(stylexFilename, 'utf8');
@@ -58,6 +58,12 @@ const playgroundDefines = (() => {
 
 export default defineConfig({
   vite: {
+    resolve: {
+      alias: {
+        // react-refresh/babel depends on Node.js built-in crypto module
+        crypto: path.join(__dirname, 'src/crypto-shim.ts'),
+      },
+    },
     optimizeDeps: {
       include: [
         '@stylexjs/babel-plugin',
@@ -66,6 +72,7 @@ export default defineConfig({
         'serialize-query-params',
         'path-browserify',
         'lz-string',
+        'react-refresh/babel',
       ],
     },
     ssr: {
@@ -81,6 +88,9 @@ export default defineConfig({
       REACT_TYPES: JSON.stringify(playgroundDefines.reactTypes),
       REACT_JSX_RUNTIME_TYPES: JSON.stringify(
         playgroundDefines.reactJsxRuntimeTypes,
+      ),
+      ESBUILD_WASM_VERSION: JSON.stringify(
+        require('esbuild-wasm/package.json').version,
       ),
     },
     plugins: [

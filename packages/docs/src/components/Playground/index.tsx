@@ -11,7 +11,7 @@ import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import * as stylex from '@stylexjs/stylex';
 // @ts-ignore - CJS module
 import { transform } from '@babel/standalone';
-import { loadSandpackClient } from '@codesandbox/sandpack-client';
+import { initBundler, type BundlerClient } from './bundler';
 import Editor, { useMonaco } from '@monaco-editor/react';
 // @ts-ignore - CJS module
 import path from 'path-browserify';
@@ -27,11 +27,7 @@ import { Tabs } from './Tabs';
 import prettier from 'prettier';
 import * as babelPlugin from 'prettier/plugins/babel.js';
 import * as estreePlugin from 'prettier/plugins/estree.js';
-import {
-  INITIAL_INPUT_FILES,
-  INITIAL_BUNDLER_FILES,
-  CSS_PRELUDE,
-} from './demoConstants';
+import { INITIAL_INPUT_FILES } from './demoConstants';
 import {
   compressToEncodedURIComponent,
   decompressFromEncodedURIComponent,
@@ -299,9 +295,9 @@ export default function PlaygroundNew() {
     Record<string, string>
   >({});
   const [cssOutput, setCssOutput] = useState('');
-  const [sandpackInitialized, setSandpackInitialized] = useState(false);
+  const [bundlerInitialized, setBundlerReady] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const sandpackClientRef = useRef<any>(null);
+  const bundlerRef = useRef<BundlerClient>(null);
   const [error, setError] = useState<Error | null>(null);
   const monaco = useMonaco();
   const editorRef = useRef<any>(null);
@@ -428,7 +424,7 @@ export const vars = stylex.defineVars({
     [],
   );
 
-  function updateSandpack(updatedInputFiles: Record<string, string>) {
+  function updatePreview(updatedInputFiles: Record<string, string>) {
     try {
       const { transformedFiles, generatedCSS } =
         transformSourceFiles(updatedInputFiles);
@@ -437,25 +433,8 @@ export const vars = stylex.defineVars({
       setCssOutput(generatedCSS);
       setError(null);
 
-      if (sandpackClientRef.current) {
-        const dynamicFiles = Object.keys(transformedFiles).reduce(
-          (acc, filename) => ({
-            ...acc,
-            [`/${filename.replace(/\.tsx?$/, '.js')}`]: {
-              code: transformedFiles[filename],
-            },
-          }),
-          {},
-        );
-        sandpackClientRef.current.updateSandbox({
-          files: {
-            ...INITIAL_BUNDLER_FILES,
-            ...dynamicFiles,
-            '/styles.css': {
-              code: CSS_PRELUDE + generatedCSS,
-            },
-          },
-        });
+      if (bundlerRef.current) {
+        bundlerRef.current.bundle(transformedFiles, generatedCSS);
       }
       return true;
     } catch (error: unknown) {
@@ -474,7 +453,7 @@ export const vars = stylex.defineVars({
       [activeInputFile as string]: value || '',
     };
 
-    const success = updateSandpack(updatedInputFiles);
+    const success = updatePreview(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
   }
 
@@ -492,7 +471,7 @@ export const vars = stylex.defineVars({
       [trimmedName]: template,
     };
 
-    const success = updateSandpack(updatedInputFiles);
+    const success = updatePreview(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
 
     ensureMonacoModel(monaco, trimmedName, template);
@@ -509,7 +488,7 @@ export const vars = stylex.defineVars({
           key === oldName ? [trimmedName, value] : [key, value],
       ),
     );
-    const success = updateSandpack(updatedInputFiles);
+    const success = updatePreview(updatedInputFiles);
     setInputFiles(updatedInputFiles, success);
 
     ensureMonacoModel(
@@ -543,7 +522,7 @@ export const vars = stylex.defineVars({
         setActiveInputFile(nextActive);
       }
     }
-    updateSandpack(updatedInputFiles);
+    updatePreview(updatedInputFiles);
 
     const oldModel = monaco.editor.getModel(monaco.Uri.file(`/${filename}`));
     if (oldModel) {
@@ -554,53 +533,22 @@ export const vars = stylex.defineVars({
   };
 
   useEffect(() => {
-    let mounted = true;
-
     const { transformedFiles, generatedCSS } = transformSourceFiles(inputFiles);
     setTransformedFiles(transformedFiles);
     setCssOutput(generatedCSS);
-    loadSandpackClient(
+    initBundler(
       iframeRef.current!,
-      {
-        files: {
-          ...INITIAL_BUNDLER_FILES,
-          ...Object.keys(transformedFiles).reduce(
-            (acc, filename) => ({
-              ...acc,
-              [`/${filename.replace(/\.tsx?$/, '.js')}`]: {
-                code: transformedFiles[filename],
-              },
-            }),
-            {},
-          ),
-          '/styles.css': {
-            code: CSS_PRELUDE + generatedCSS,
-          },
-        },
-        template: 'react' as any,
-      },
-      {
-        showOpenInCodeSandbox: false,
-      },
-    ).then((sandpackClient: any) => {
-      if (!mounted) {
-        sandpackClient.destroy();
-        return;
-      }
-      sandpackClientRef.current = sandpackClient;
-      const unsubscribe = sandpackClient.listen((msg: any) => {
-        if (msg.type === 'done') {
-          setSandpackInitialized(true);
-          unsubscribe();
-        }
-      });
+      transformedFiles,
+      generatedCSS,
+      setError,
+    ).then((client) => {
+      bundlerRef.current = client;
+      setBundlerReady(true);
     });
 
     return () => {
-      mounted = false;
-      if (sandpackClientRef.current) {
-        sandpackClientRef.current.destroy();
-      }
+      bundlerRef.current?.destroy();
+      bundlerRef.current = null;
     };
   }, []);
 
@@ -633,7 +581,7 @@ export const vars = stylex.defineVars({
       [activeInputFile]: formatted,
     };
 
-    setInputFiles(updatedInputFiles, updateSandpack(updatedInputFiles));
+    setInputFiles(updatedInputFiles, updatePreview(updatedInputFiles));
   }, [monaco, inputFiles, activeInputFile, setInputFiles]);
 
   return (
@@ -713,7 +661,7 @@ export const vars = stylex.defineVars({
                     minimap: { enabled: false },
                     scrollBeyondLastLine: true,
                     contextmenu: false,
-                    readOnly: !sandpackInitialized,
+                    readOnly: !bundlerInitialized,
                     fontSize: 13,
                     lineHeight: 22,
                   }}
@@ -793,10 +741,11 @@ export const vars = stylex.defineVars({
             >
               <iframe
                 ref={iframeRef}
+                sandbox="allow-scripts allow-same-origin"
                 title="StyleX Playground Preview"
                 {...stylex.props(
                   styles.iframe,
-                  !sandpackInitialized && styles.iframeHidden,
+                  !bundlerInitialized && styles.iframeHidden,
                 )}
               />
             </CollapsiblePanel>
