@@ -546,6 +546,126 @@ function parseBorderParts(values: Array<string>): ?{
   return { width, style, color };
 }
 
+const FLEX_BASIS_KEYWORDS = new Set([
+  'auto',
+  'content',
+  'min-content',
+  'max-content',
+  'fit-content',
+]);
+const FLEX_BASIS_FUNCTION_REGEX = /^(?:calc|min|max|clamp|fit-content)\(/i;
+const FLEX_NUMBER_REGEX = /^-?(?:\d+|\d*\.\d+)$/;
+const FLEX_UNITLESS_ZERO_REGEX = /^-?(?:0|0\.0+)$/;
+
+function isFlexNumberValue(value: string): boolean {
+  return FLEX_NUMBER_REGEX.test(value);
+}
+
+function isFlexBasisValue(
+  value: string,
+  options: { allowUnitlessZero?: boolean } = {},
+): boolean {
+  const lower = value.toLowerCase();
+  if (options.allowUnitlessZero && FLEX_UNITLESS_ZERO_REGEX.test(lower)) {
+    return true;
+  }
+  return (
+    FLEX_BASIS_KEYWORDS.has(lower) ||
+    FLEX_BASIS_FUNCTION_REGEX.test(lower) ||
+    lower.startsWith('var(') ||
+    /^-?(?:\d+|\d*\.\d+)(?:[a-z%]+)$/i.test(lower)
+  );
+}
+
+function expandFlexShorthand(
+  values: Array<string>,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (values.length === 1) {
+    const val = values[0];
+    const lower = val.toLowerCase();
+    if (lower === 'auto') {
+      return [
+        ['flexGrow', applyImportant('1', importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant('auto', importantSuffix)],
+      ];
+    }
+    if (lower === 'none') {
+      return [
+        ['flexGrow', applyImportant('0', importantSuffix)],
+        ['flexShrink', applyImportant('0', importantSuffix)],
+        ['flexBasis', applyImportant('auto', importantSuffix)],
+      ];
+    }
+    if (lower === 'initial') {
+      return [
+        ['flexGrow', applyImportant('0', importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant('auto', importantSuffix)],
+      ];
+    }
+    if (isFlexNumberValue(val)) {
+      // Single unitless number = flex-grow
+      return [
+        ['flexGrow', applyImportant(val, importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant('0%', importantSuffix)],
+      ];
+    }
+    if (isFlexBasisValue(val)) {
+      return [
+        ['flexGrow', applyImportant('1', importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant(val, importantSuffix)],
+      ];
+    }
+    return null;
+  }
+
+  if (values.length === 2) {
+    const [first, second] = values;
+    if (!isFlexNumberValue(first)) {
+      return null;
+    }
+    if (isFlexNumberValue(second)) {
+      // <number> <number>
+      return [
+        ['flexGrow', applyImportant(first, importantSuffix)],
+        ['flexShrink', applyImportant(second, importantSuffix)],
+        ['flexBasis', applyImportant('0%', importantSuffix)],
+      ];
+    }
+    if (isFlexBasisValue(second)) {
+      // <number> <basis>
+      return [
+        ['flexGrow', applyImportant(first, importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant(second, importantSuffix)],
+      ];
+    }
+    return null;
+  }
+
+  if (values.length === 3) {
+    const [grow, shrink, basis] = values;
+    if (
+      !isFlexNumberValue(grow) ||
+      !isFlexNumberValue(shrink) ||
+      !isFlexBasisValue(basis, { allowUnitlessZero: true })
+    ) {
+      return null;
+    }
+    return [
+      ['flexGrow', applyImportant(grow, importantSuffix)],
+      ['flexShrink', applyImportant(shrink, importantSuffix)],
+      ['flexBasis', applyImportant(basis, importantSuffix)],
+    ];
+  }
+
+  return null;
+}
+
 function expandBorderSideShorthand(
   property: string,
   values: Array<string>,
@@ -805,6 +925,16 @@ export function splitSpecificShorthands(
     }
     const expanded = expandGridAreaShorthand(groups, importantSuffix);
     return expanded.length > 0 ? expanded : [['gridArea', CANNOT_FIX]];
+  }
+
+  if (property === 'flex') {
+    const flexSplit = splitTopLevelValueTokens(baseValue);
+    if (flexSplit.hasTopLevelComma || flexSplit.hasTopLevelSlash) {
+      return [['flex', CANNOT_FIX]];
+    }
+    const flexValues = flexSplit.parts.map((part) => part.text);
+    const expandedFlex = expandFlexShorthand(flexValues, importantSuffix);
+    return expandedFlex ?? [['flex', CANNOT_FIX]];
   }
 
   const splitValues = splitTopLevelValueTokens(baseValue);

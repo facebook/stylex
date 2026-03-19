@@ -1752,5 +1752,303 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
+    // flex: single number expands to grow/shrink/basis
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 1,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: '0%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: string single number
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '2',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '2',
+            flexShrink: '1',
+            flexBasis: '0%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 2" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: auto keyword
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 'auto',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: auto" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: none keyword
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 'none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '0',
+            flexShrink: '0',
+            flexBasis: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: none" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: initial keyword
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 'initial',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '0',
+            flexShrink: '1',
+            flexBasis: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: initial" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: single basis value (with unit)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '100px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: '100px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 100px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: two numbers (grow shrink)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 0',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '0',
+            flexBasis: '0%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 0" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: number + basis
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 30px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: '30px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 30px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: three values (grow shrink basis)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '2 2 10%',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '2',
+            flexShrink: '2',
+            flexBasis: '10%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 2 2 10%" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: with !important (allowImportant)
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 0 auto !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1 !important',
+            flexShrink: '0 !important',
+            flexBasis: 'auto !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 0 auto !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: calc() basis
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 1 calc(100% - 20px)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: 'calc(100% - 20px)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 1 calc(100% - 20px)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
   ],
 });
