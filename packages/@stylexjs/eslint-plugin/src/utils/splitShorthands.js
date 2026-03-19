@@ -666,6 +666,163 @@ function expandFlexShorthand(
   return null;
 }
 
+const ANIMATION_DIRECTION_KEYWORDS = new Set([
+  'normal',
+  'reverse',
+  'alternate',
+  'alternate-reverse',
+]);
+const ANIMATION_FILL_MODE_KEYWORDS = new Set(['forwards', 'backwards', 'both']);
+const ANIMATION_PLAY_STATE_KEYWORDS = new Set(['running', 'paused']);
+const ANIMATION_TIMING_KEYWORDS = new Set([
+  'ease',
+  'ease-in',
+  'ease-out',
+  'ease-in-out',
+  'linear',
+  'step-start',
+  'step-end',
+]);
+const ANIMATION_TIMING_FUNCTION_REGEX = /^(?:cubic-bezier|steps|linear)\(/i;
+const TIME_REGEX = /^-?(?:\d+|\d*\.\d+)(?:s|ms)$/i;
+
+function isTimeValue(value: string): boolean {
+  return TIME_REGEX.test(value);
+}
+
+function isAnimationTimingFunction(value: string): boolean {
+  const lower = value.toLowerCase();
+  return (
+    ANIMATION_TIMING_KEYWORDS.has(lower) ||
+    ANIMATION_TIMING_FUNCTION_REGEX.test(lower)
+  );
+}
+
+function isAnimationIterationCount(value: string): boolean {
+  const lower = value.toLowerCase();
+  return lower === 'infinite' || /^(?:\d+|\d*\.\d+)$/.test(lower);
+}
+
+function expandAnimationShorthand(
+  parts: Array<ValuePart>,
+  hasTopLevelComma: boolean,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (hasTopLevelComma) {
+    return null;
+  }
+
+  const values = parts.map((part) => part.text);
+
+  let duration = null;
+  let delay = null;
+  let timingFunction = null;
+  let iterationCount = null;
+  let direction = null;
+  let fillMode = null;
+  let playState = null;
+  let name = null;
+
+  for (const val of values) {
+    const lower = val.toLowerCase();
+
+    if (isTimeValue(val)) {
+      if (duration == null) {
+        duration = val;
+        continue;
+      }
+      if (delay == null) {
+        delay = val;
+        continue;
+      }
+      return null;
+    }
+
+    if (timingFunction == null && isAnimationTimingFunction(val)) {
+      timingFunction = val;
+      continue;
+    }
+
+    if (direction == null && ANIMATION_DIRECTION_KEYWORDS.has(lower)) {
+      direction = val;
+      continue;
+    }
+
+    if (fillMode == null && ANIMATION_FILL_MODE_KEYWORDS.has(lower)) {
+      fillMode = val;
+      continue;
+    }
+
+    if (playState == null && ANIMATION_PLAY_STATE_KEYWORDS.has(lower)) {
+      playState = val;
+      continue;
+    }
+
+    if (iterationCount == null && isAnimationIterationCount(val)) {
+      iterationCount = val;
+      continue;
+    }
+
+    if (name == null) {
+      name = val;
+      continue;
+    }
+
+    return null;
+  }
+
+  const entries: Array<[string, string]> = [];
+
+  if (duration != null) {
+    entries.push([
+      'animationDuration',
+      applyImportant(duration, importantSuffix),
+    ]);
+  }
+  if (timingFunction != null) {
+    entries.push([
+      'animationTimingFunction',
+      applyImportant(timingFunction, importantSuffix),
+    ]);
+  }
+  if (delay != null) {
+    entries.push(['animationDelay', applyImportant(delay, importantSuffix)]);
+  }
+  if (iterationCount != null) {
+    entries.push([
+      'animationIterationCount',
+      applyImportant(iterationCount, importantSuffix),
+    ]);
+  }
+  if (direction != null) {
+    entries.push([
+      'animationDirection',
+      applyImportant(direction, importantSuffix),
+    ]);
+  }
+  if (fillMode != null) {
+    entries.push([
+      'animationFillMode',
+      applyImportant(fillMode, importantSuffix),
+    ]);
+  }
+  if (playState != null) {
+    entries.push([
+      'animationPlayState',
+      applyImportant(playState, importantSuffix),
+    ]);
+  }
+  if (name != null) {
+    entries.push(['animationName', applyImportant(name, importantSuffix)]);
+  }
+
+  if (entries.length === 0) {
+    return null;
+  }
+
+  return entries;
+}
+
 function expandBorderSideShorthand(
   property: string,
   values: Array<string>,
@@ -981,6 +1138,15 @@ export function splitSpecificShorthands(
       importantSuffix,
     );
     return expandedBackground ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  if (property === 'animation') {
+    const expandedAnimation = expandAnimationShorthand(
+      splitValues.parts,
+      splitValues.hasTopLevelComma,
+      importantSuffix,
+    );
+    return expandedAnimation ?? [[toCamelCase(property), CANNOT_FIX]];
   }
 
   const values = splitValues.parts

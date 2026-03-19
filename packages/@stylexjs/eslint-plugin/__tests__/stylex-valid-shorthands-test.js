@@ -1752,6 +1752,298 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
+    // animation: duration + name
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: duration + timing + name
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s ease-in',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationTimingFunction: 'ease-in',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s ease-in" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: duration + delay (two time values)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s 1s',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationDelay: '1s',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s 1s" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: full shorthand with all properties
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: '3s ease-in 1s 2 reverse both paused slidein',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationTimingFunction: 'ease-in',
+            animationDelay: '1s',
+            animationIterationCount: '2',
+            animationDirection: 'reverse',
+            animationFillMode: 'both',
+            animationPlayState: 'paused',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: 3s ease-in 1s 2 reverse both paused slidein" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: cubic-bezier timing function
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '300ms',
+            animationTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: infinite iteration count
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'spin 1s linear infinite',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationTimingFunction: 'linear',
+            animationIterationCount: 'infinite',
+            animationName: 'spin',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: spin 1s linear infinite" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: with !important
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 2s ease !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '2s !important',
+            animationTimingFunction: 'ease !important',
+            animationName: 'slidein !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 2s ease !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: comma-separated multi-animation is CANNOT_FIX
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s, fadeout 2s',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s, fadeout 2s" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: iteration count before duration
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: '2 3s slidein',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationIterationCount: '2',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: 2 3s slidein" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: none is animation-name (not fill-mode)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: '1s none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationName: 'none',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: 1s none" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: alternate-reverse direction
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'bounce 1s alternate-reverse',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationDirection: 'alternate-reverse',
+            animationName: 'bounce',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: bounce 1s alternate-reverse" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
     // flex: single number expands to grow/shrink/basis
     {
       code: `
