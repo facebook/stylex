@@ -817,7 +817,7 @@ function expandAnimationShorthand(
       applyImportant(playState, importantSuffix),
     ]);
   }
-  if (name == null && fillMode?.toLowerCase() === 'none') {
+  if (name == null && fillMode != null && fillMode.toLowerCase() === 'none') {
     // "none" is ambiguous between fill-mode and name. Emit both to preserve semantics.
     entries.push(['animationName', applyImportant(fillMode, importantSuffix)]);
   }
