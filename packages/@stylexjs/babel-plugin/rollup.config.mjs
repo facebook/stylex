@@ -109,7 +109,7 @@ export const {
   isNumericLiteral, isObjectExpression, isObjectProperty, isPrivateName,
   isSpreadElement, isStringLiteral, isTemplateLiteral, isUnaryExpression,
   isUpdateExpression, isValidIdentifier, isVariableDeclaration, jsxAttribute,
-  jsxIdentifier, memberExpression, nullLiteral, numericLiteral, objectExpression,
+  jsxIdentifier, jsxSpreadAttribute, memberExpression, nullLiteral, numericLiteral, objectExpression,
   objectProperty, stringLiteral, unaryExpression, variableDeclaration, variableDeclarator
 } = packages.types;`;
           default:
