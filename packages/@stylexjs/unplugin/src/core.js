@@ -282,6 +282,7 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
   async function runBabelTransform(inputCode, filename, callerName) {
     const result = await transformAsync(inputCode, {
       babelrc: false,
+      configFile: false,
       filename,
       presets,
       plugins: [
