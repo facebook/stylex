@@ -672,7 +672,12 @@ const ANIMATION_DIRECTION_KEYWORDS = new Set([
   'alternate',
   'alternate-reverse',
 ]);
-const ANIMATION_FILL_MODE_KEYWORDS = new Set(['forwards', 'backwards', 'both']);
+const ANIMATION_FILL_MODE_KEYWORDS = new Set([
+  'none',
+  'forwards',
+  'backwards',
+  'both',
+]);
 const ANIMATION_PLAY_STATE_KEYWORDS = new Set(['running', 'paused']);
 const ANIMATION_TIMING_KEYWORDS = new Set([
   'ease',
@@ -811,6 +816,10 @@ function expandAnimationShorthand(
       'animationPlayState',
       applyImportant(playState, importantSuffix),
     ]);
+  }
+  if (name == null && fillMode?.toLowerCase() === 'none') {
+    // "none" is ambiguous between fill-mode and name. Emit both to preserve semantics.
+    entries.push(['animationName', applyImportant(fillMode, importantSuffix)]);
   }
   if (name != null) {
     entries.push(['animationName', applyImportant(name, importantSuffix)]);

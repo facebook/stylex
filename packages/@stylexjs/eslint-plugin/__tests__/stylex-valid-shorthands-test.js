@@ -1991,7 +1991,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
-    // animation: none is animation-name (not fill-mode)
+    // animation: ambiguous "none" emits both fill-mode and animation-name
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -2006,6 +2006,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             animationDuration: '1s',
+            animationFillMode: 'none',
             animationName: 'none',
           },
         });
@@ -2014,6 +2015,33 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "animation: 1s none" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: named keyframe with explicit none fill-mode
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'fadein 1s none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationFillMode: 'none',
+            animationName: 'fadein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: fadein 1s none" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
