@@ -83,10 +83,57 @@ export function collectStylexDebugData(): StylexDebugData {
   }
 
   function splitSelectors(selectorText: string): Array<string> {
-    return selectorText
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const parts = [];
+    let current = '';
+    let bracketDepth = 0;
+    let parenDepth = 0;
+    let inString = false;
+    let quote = '';
+
+    for (let i = 0; i < selectorText.length; i += 1) {
+      const ch = selectorText[i];
+
+      if (ch === '\\') {
+        current += ch;
+        i += 1;
+        if (i < selectorText.length) current += selectorText[i];
+        continue;
+      }
+
+      if (inString) {
+        current += ch;
+        if (ch === quote) {
+          inString = false;
+          quote = '';
+        }
+        continue;
+      }
+
+      if (ch === '"' || ch === "'") {
+        inString = true;
+        quote = ch;
+        current += ch;
+        continue;
+      }
+
+      if (ch === '[') bracketDepth += 1;
+      if (ch === ']') bracketDepth = Math.max(bracketDepth - 1, 0);
+      if (ch === '(') parenDepth += 1;
+      if (ch === ')') parenDepth = Math.max(parenDepth - 1, 0);
+
+      if (ch === ',' && bracketDepth === 0 && parenDepth === 0) {
+        const selector = current.trim();
+        if (selector) parts.push(selector);
+        current = '';
+        continue;
+      }
+
+      current += ch;
+    }
+
+    const tail = current.trim();
+    if (tail) parts.push(tail);
+    return parts;
   }
 
   const LAYER_POLYFILL_RE = /:not\(#\\#\)/g;
@@ -103,7 +150,96 @@ export function collectStylexDebugData(): StylexDebugData {
     };
   }
 
-  const SIMPLE_CLASS_SELECTOR = /^\.[_a-zA-Z0-9-]+$/;
+  function isWhitespaceChar(ch: string): boolean {
+    return /\s/.test(ch);
+  }
+
+  function isHexDigit(ch: string): boolean {
+    return /[0-9a-fA-F]/.test(ch);
+  }
+
+  function decodeCssEscape(
+    text: string,
+    startIndex: number,
+  ): { value: string, nextIndex: number } {
+    let nextIndex = startIndex + 1;
+    if (nextIndex >= text.length) {
+      return { value: '', nextIndex };
+    }
+
+    const first = text[nextIndex];
+    if (first === '\n' || first === '\r' || first === '\f') {
+      return { value: '', nextIndex: nextIndex + 1 };
+    }
+
+    let hex = '';
+    while (nextIndex < text.length && hex.length < 6) {
+      const ch = text[nextIndex];
+      if (!isHexDigit(ch)) break;
+      hex += ch;
+      nextIndex += 1;
+    }
+
+    if (hex) {
+      if (nextIndex < text.length && isWhitespaceChar(text[nextIndex])) {
+        nextIndex += 1;
+      }
+      const codePoint = Number.parseInt(hex, 16);
+      if (!Number.isFinite(codePoint) || codePoint <= 0) {
+        return { value: '\uFFFD', nextIndex };
+      }
+      return { value: String.fromCodePoint(codePoint), nextIndex };
+    }
+
+    return { value: first, nextIndex: nextIndex + 1 };
+  }
+
+  function isClassNameTerminator(ch: string): boolean {
+    return (
+      isWhitespaceChar(ch) ||
+      ch === '.' ||
+      ch === '#' ||
+      ch === ':' ||
+      ch === '[' ||
+      ch === ']' ||
+      ch === '>' ||
+      ch === '+' ||
+      ch === '~' ||
+      ch === ',' ||
+      ch === '*' ||
+      ch === '|' ||
+      ch === '=' ||
+      ch === '^' ||
+      ch === '$' ||
+      ch === '(' ||
+      ch === ')' ||
+      ch === '{' ||
+      ch === '}'
+    );
+  }
+
+  function readClassName(
+    selectorText: string,
+    startIndex: number,
+  ): { className: string, endIndex: number } {
+    let className = '';
+    let index = startIndex;
+
+    while (index < selectorText.length) {
+      const ch = selectorText[index];
+      if (ch === '\\') {
+        const { value, nextIndex } = decodeCssEscape(selectorText, index);
+        className += value;
+        index = nextIndex;
+        continue;
+      }
+      if (isClassNameTerminator(ch)) break;
+      className += ch;
+      index += 1;
+    }
+
+    return { className, endIndex: index };
+  }
 
   function getAtRuleCondition(rule: CSSRule): string | null {
     if (!rule || typeof rule.cssText !== 'string') return null;
@@ -123,7 +259,45 @@ export function collectStylexDebugData(): StylexDebugData {
     const trimmed = selectorText.trim();
     if (!trimmed || trimmed[0] !== '.') return null;
     const { cleaned } = stripLayerPolyfill(trimmed);
-    const firstColonIndex = cleaned.indexOf(':');
+    let firstColonIndex = -1;
+    let bracketDepth = 0;
+    let parenDepth = 0;
+    let inString = false;
+    let quote = '';
+
+    for (let i = 0; i < cleaned.length; i += 1) {
+      const ch = cleaned[i];
+
+      if (ch === '\\') {
+        i += 1;
+        continue;
+      }
+
+      if (inString) {
+        if (ch === quote) {
+          inString = false;
+          quote = '';
+        }
+        continue;
+      }
+
+      if (ch === '"' || ch === "'") {
+        inString = true;
+        quote = ch;
+        continue;
+      }
+
+      if (ch === '[') bracketDepth += 1;
+      if (ch === ']') bracketDepth = Math.max(bracketDepth - 1, 0);
+      if (ch === '(') parenDepth += 1;
+      if (ch === ')') parenDepth = Math.max(parenDepth - 1, 0);
+
+      if (ch === ':' && bracketDepth === 0 && parenDepth === 0) {
+        firstColonIndex = i;
+        break;
+      }
+    }
+
     if (firstColonIndex === -1) {
       return {
         baseSelector: cleaned,
@@ -149,16 +323,64 @@ export function collectStylexDebugData(): StylexDebugData {
   }
 
   function isSimpleClassSelector(baseSelector: string): boolean {
-    return SIMPLE_CLASS_SELECTOR.test(baseSelector);
+    if (!baseSelector || baseSelector[0] !== '.') return false;
+    const { className, endIndex } = readClassName(baseSelector, 1);
+    return className !== '' && endIndex === baseSelector.length;
+  }
+
+  function getSimpleClassName(baseSelector: string): string | null {
+    if (!baseSelector || baseSelector[0] !== '.') return null;
+    const { className, endIndex } = readClassName(baseSelector, 1);
+    if (className === '' || endIndex !== baseSelector.length) {
+      return null;
+    }
+    return className;
   }
 
   function extractClassNames(selectorText: string): Array<string> {
     const out = [];
-    const re = /\.([_a-zA-Z0-9-]+)/g;
-    let m = re.exec(selectorText);
-    while (m != null) {
-      out.push(m[1]);
-      m = re.exec(selectorText);
+    let bracketDepth = 0;
+    let inString = false;
+    let quote = '';
+
+    for (let i = 0; i < selectorText.length; i += 1) {
+      const ch = selectorText[i];
+
+      if (ch === '\\') {
+        i += 1;
+        continue;
+      }
+
+      if (inString) {
+        if (ch === quote) {
+          inString = false;
+          quote = '';
+        }
+        continue;
+      }
+
+      if (ch === '"' || ch === "'") {
+        inString = true;
+        quote = ch;
+        continue;
+      }
+
+      if (ch === '[') {
+        bracketDepth += 1;
+        continue;
+      }
+      if (ch === ']') {
+        bracketDepth = Math.max(bracketDepth - 1, 0);
+        continue;
+      }
+
+      if (ch !== '.' || bracketDepth > 0) continue;
+
+      const { className, endIndex } = readClassName(selectorText, i + 1);
+      if (className) {
+        out.push(className);
+        i = endIndex - 1;
+      }
     }
     return out;
   }
@@ -252,7 +474,8 @@ export function collectStylexDebugData(): StylexDebugData {
             const { baseSelector, pseudoCondition, pseudoElementKey } =
               selectorInfo;
             if (!isSimpleClassSelector(baseSelector)) continue;
-            const className = baseSelector.slice(1);
+            const className = getSimpleClassName(baseSelector);
+            if (!className) continue;
 
             const conditionParts: Array<string> = [];
             for (const entry of conditions) {

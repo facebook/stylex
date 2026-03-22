@@ -16,6 +16,7 @@ import replace from '@rollup/plugin-replace';
 import { browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 import stylex from '@stylexjs/unplugin';
+import { Features } from 'lightningcss';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const outDir = path.resolve(rootDir, 'extension');
@@ -110,6 +111,7 @@ export default {
       useCSSLayers: true,
       lightningcssOptions: {
         targets: browserslistToTargets(browserslist('>= 2%')),
+        exclude: Features.LightDark,
       },
     }),
     babel({
