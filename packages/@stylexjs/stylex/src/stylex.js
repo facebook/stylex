@@ -132,6 +132,42 @@ export function props(
   return result;
 }
 
+export function attrs(
+  this: ?unknown,
+  ...styles: ReadonlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+): Readonly<{
+  class?: string,
+  'data-style-src'?: string,
+  style?: string,
+}> {
+  const {
+    className,
+    style,
+    'data-style-src': dataStyleSrc,
+  } = props.apply(this, styles);
+  const result: {
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
+  } = {};
+  if (className != null) {
+    result.class = className;
+  }
+  if (style != null) {
+    result.style = Object.entries(style)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(';');
+  }
+  if (dataStyleSrc != null) {
+    result['data-style-src'] = dataStyleSrc;
+  }
+  return result;
+}
+
 export const viewTransitionClass = (
   _viewTransitionClass: ViewTransitionClass,
 ): string => {

@@ -12,7 +12,7 @@ import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import { props } from '@stylexjs/stylex';
+import { attrs, props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
@@ -41,15 +41,14 @@ class ConditionalStyle {
 
 type ResolvedArg = ?StyleObject | ConditionalStyle;
 type ResolvedArgs = Array<ResolvedArg>;
+type PropsLikeFn = typeof props | typeof attrs;
+type StyleXPropsLikeCall = 'attrs' | 'props';
 
 export function skipStylexPropsChildren(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
-  if (
-    !isCalleeIdentifier(path, state) &&
-    !isCalleeMemberExpression(path, state)
-  ) {
+  if (getPropsLikeCall(path, state) == null) {
     return;
   }
   path.skip();
@@ -62,12 +61,11 @@ export default function transformStylexProps(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
-  if (
-    !isCalleeIdentifier(path, state) &&
-    !isCalleeMemberExpression(path, state)
-  ) {
+  const propsLikeCall = getPropsLikeCall(path, state);
+  if (propsLikeCall == null) {
     return;
   }
+  const propsLikeFn = propsLikeCall === 'attrs' ? attrs : props;
 
   let bailOut = false;
   let conditional = 0;
@@ -269,7 +267,7 @@ export default function transformStylexProps(
     path.skip();
     // convert resolvedStyles to a string + ternary expressions
     // We no longer need the keys, so we can just use the values.
-    const stringExpression = makeStringExpression(resolvedArgs);
+    const stringExpression = makeStringExpression(resolvedArgs, propsLikeFn);
 
     // Check if this is used as a JSX spread attribute and optimize
     // the output to avoid object creation and Babel helper
@@ -381,7 +379,10 @@ function parseNullableStyle(
   return 'other';
 }
 
-function makeStringExpression(values: ResolvedArgs): t.Expression {
+function makeStringExpression(
+  values: ResolvedArgs,
+  propsLikeFn: PropsLikeFn,
+): t.Expression {
   const conditions = values
     .filter(
       (v: ResolvedArg): v is ConditionalStyle => v instanceof ConditionalStyle,
@@ -389,7 +390,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     .map((v: ConditionalStyle) => v.test);
 
   if (conditions.length === 0) {
-    const result = props(values as any);
+    const result = propsLikeFn(values as any);
     return convertObjectToAST(result);
   }
 
@@ -410,7 +411,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     );
     return t.objectProperty(
       t.numericLiteral(key),
-      convertObjectToAST(props(args as any)),
+      convertObjectToAST(propsLikeFn(args as any)),
     );
   });
   const objExpressions = t.objectExpression(objEntries);
@@ -452,31 +453,42 @@ function genBitwiseOrOfConditions(
   });
 }
 
-function isCalleeIdentifier(
+function getPropsLikeCall(
   path: NodePath<t.CallExpression>,
   state: StateManager,
-): boolean {
+): StyleXPropsLikeCall | null {
   const { node } = path;
-  return (
+  const callee = node?.callee;
+  if (
     node != null &&
-    node.callee != null &&
-    node.callee.type === 'Identifier' &&
-    state.stylexPropsImport.has(node.callee.name)
-  );
-}
-
-function isCalleeMemberExpression(
-  path: NodePath<t.CallExpression>,
-  state: StateManager,
-): boolean {
-  const { node } = path;
-  return (
+    callee != null &&
+    callee.type === 'Identifier' &&
+    state.stylexPropsImport.has(callee.name)
+  ) {
+    return 'props';
+  }
+  if (
     node != null &&
-    node.callee != null &&
-    node.callee.type === 'MemberExpression' &&
-    node.callee.object.type === 'Identifier' &&
-    node.callee.property.type === 'Identifier' &&
-    node.callee.property.name === 'props' &&
-    state.stylexImport.has(node.callee.object.name)
-  );
+    callee != null &&
+    callee.type === 'Identifier' &&
+    state.stylexAttrsImport.has(callee.name)
+  ) {
+    return 'attrs';
+  }
+  if (
+    node != null &&
+    callee != null &&
+    callee.type === 'MemberExpression' &&
+    callee.object.type === 'Identifier' &&
+    callee.property.type === 'Identifier' &&
+    state.stylexImport.has(callee.object.name)
+  ) {
+    if (callee.property.name === 'props') {
+      return 'props';
+    }
+    if (callee.property.name === 'attrs') {
+      return 'attrs';
+    }
+  }
+  return null;
 }
