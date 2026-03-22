@@ -132,6 +132,9 @@ export function props(
   return result;
 }
 
+const toKebabCase = (str: string): string =>
+  str.replace(/([A-Z])/g, '-$1').toLowerCase();
+
 export function attrs(
   this: ?unknown,
   ...styles: ReadonlyArray<
@@ -159,7 +162,7 @@ export function attrs(
   }
   if (style != null) {
     result.style = Object.entries(style)
-      .map(([key, value]) => `${key}:${value}`)
+      .map(([key, value]) => `${toKebabCase(key)}:${value}`)
       .join(';');
   }
   if (dataStyleSrc != null) {
@@ -294,6 +297,18 @@ type IStyleX = {
     'data-style-src'?: string,
     style?: Readonly<{ [string]: string | number }>,
   }>,
+  attrs: (
+    this: ?unknown,
+    ...styles: ReadonlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => Readonly<{
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
+  }>,
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
@@ -318,6 +333,7 @@ _legacyMerge.firstThatWorks = firstThatWorks;
 _legacyMerge.keyframes = keyframes;
 _legacyMerge.positionTry = positionTry;
 _legacyMerge.props = props;
+_legacyMerge.attrs = attrs;
 _legacyMerge.types = types;
 _legacyMerge.when = when;
 _legacyMerge.viewTransitionClass = viewTransitionClass;
