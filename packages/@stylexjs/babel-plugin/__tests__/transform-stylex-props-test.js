@@ -80,6 +80,31 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('basic stylex attrs call', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            red: {
+              color: 'red',
+            }
+          });
+          stylex.attrs(styles.red);
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".x1e2nbdu{color:red}",
+          priority: 3000
+        });
+        ({
+          class: "x1e2nbdu"
+        });"
+      `);
+    });
+
     test('stylex.env resolves in inline objects', () => {
       expect(
         transform(
@@ -104,6 +129,34 @@ describe('@stylexjs/babel-plugin', () => {
         });
         ({
           className: "xe4pkkx"
+        });"
+      `);
+    });
+
+    test('stylex.attrs named import resolves in inline objects', () => {
+      expect(
+        transform(
+          `
+          import { attrs, create, env } from 'stylex';
+          const styles = create({
+            red: {
+              color: env.primaryColor,
+            }
+          });
+          attrs(styles.red);
+        `,
+          { env: { primaryColor: '#00ffaa' } },
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import { attrs, create, env } from 'stylex';
+        _inject2({
+          ltr: ".x4iekqp{color:#00ffaa}",
+          priority: 3000
+        });
+        ({
+          class: "x4iekqp"
         });"
       `);
     });

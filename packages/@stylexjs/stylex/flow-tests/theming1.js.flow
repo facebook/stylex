@@ -60,6 +60,11 @@ const result2: $ReadOnly<{
   'data-style-src'?: string,
   style?: $ReadOnly<{ [string]: string | number }>,
 }> = stylex.props(correctTheme);
+const result3: $ReadOnly<{
+  class?: string,
+  'data-style-src'?: string,
+  style?: string,
+}> = stylex.attrs(correctTheme);
 
 const wrongTheme1 = stylex.createTheme(buttonTokens, {
   bgColor: 'red',
@@ -115,11 +120,17 @@ const Incorrect = () => <MyComponent theme={themeB} />;
 // Usage of themes with stylex.props
 const p1 = stylex.props(themeA);
 const p2 = stylex.props(themeB);
+const attrs1 = stylex.attrs(themeA);
+const attrs2 = stylex.attrs(themeB);
 
 // $FlowExpectedError[incompatible-type] - You can apply themes, not varGroups
 const v1 = stylex.props(varsA);
 // $FlowExpectedError[incompatible-type] - You can apply themes, not varGroups
 const v2 = stylex.props(varsB);
+// $FlowExpectedError[incompatible-type] - You can apply themes, not varGroups
+const v3 = stylex.attrs(varsA);
+// $FlowExpectedError[incompatible-type] - You can apply themes, not varGroups
+const v4 = stylex.attrs(varsB);
 
 // It should be possible to define vars based on other vars
 const varsC = stylex.defineVars({
