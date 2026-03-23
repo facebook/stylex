@@ -1017,6 +1017,7 @@ export type CSSProperties = Readonly<{
 
   // Not Allowed:
   // all?: all | all,
+  /** @deprecated Use individual animation properties (animationName, animationDuration, etc.) instead. Not supported in property-specificity mode (the default). */
   animation?: all | string,
   animationComposition?: all | string,
   animationDelay?: all | OptionalArray<animationDelay>,
@@ -1036,6 +1037,7 @@ export type CSSProperties = Readonly<{
 
   backdropFilter?: all | backdropFilter,
   backfaceVisibility?: all | backfaceVisibility,
+  /** @deprecated Use backgroundColor, backgroundImage, etc. instead. Not supported in property-specificity mode (the default). */
   background?: all | string,
   backgroundAttachment?: all | OptionalArray<backgroundAttachment>,
   backgroundBlendMode?: all | OptionalArray<backgroundBlendMode>,
@@ -1051,7 +1053,9 @@ export type CSSProperties = Readonly<{
   baselineShift?: all | baselineShift,
   behavior?: all | behavior,
   blockSize?: all | blockSize,
+  /** @deprecated Use borderWidth, borderStyle, and borderColor instead. Not supported in property-specificity mode (the default). */
   border?: all | border,
+  /** @deprecated Use borderBlockWidth, borderBlockStyle, and borderBlockColor instead. Not supported in property-specificity mode (the default). */
   borderBlock?: all | borderBlockEnd,
   borderBlockColor?: all | borderBlockEndColor,
   borderBlockStyle?: all | borderBlockEndStyle,
@@ -1064,6 +1068,7 @@ export type CSSProperties = Readonly<{
   borderBlockStartColor?: all | borderBlockStartColor,
   borderBlockStartStyle?: all | borderBlockStartStyle,
   borderBlockStartWidth?: all | borderBlockStartWidth,
+  /** @deprecated Use borderBottomWidth, borderBottomStyle, and borderBottomColor instead. Not supported in property-specificity mode (the default). */
   borderBottom?: all | border,
   borderBottomColor?: all | color,
   borderBottomStyle?: all | borderBottomStyle,
@@ -1076,28 +1081,34 @@ export type CSSProperties = Readonly<{
   borderImageSlice?: all | borderImageSlice,
   borderImageSource?: all | borderImageSource,
   borderImageWidth?: all | borderImageWidth,
+  /** @deprecated Use borderInlineWidth, borderInlineStyle, and borderInlineColor instead. Not supported in property-specificity mode (the default). */
   borderInline?: all | borderInlineEnd,
   borderInlineColor?: all | borderInlineEndColor,
   borderInlineStyle?: all | borderInlineEndStyle,
   borderInlineWidth?: all | borderInlineEndWidth,
+  /** @deprecated Use borderInlineEndWidth, borderInlineEndStyle, and borderInlineEndColor instead. Not supported in property-specificity mode (the default). */
   borderInlineEnd?: all | borderInlineEnd,
   borderInlineEndColor?: all | borderInlineEndColor,
   borderInlineEndStyle?: all | borderInlineEndStyle,
   borderInlineEndWidth?: all | borderInlineEndWidth,
+  /** @deprecated Use borderInlineStartWidth, borderInlineStartStyle, and borderInlineStartColor instead. Not supported in property-specificity mode (the default). */
   borderInlineStart?: all | borderInlineStart,
   borderInlineStartColor?: all | borderInlineStartColor,
   borderInlineStartStyle?: all | borderInlineStartStyle,
   borderInlineStartWidth?: all | borderInlineStartWidth,
+  /** @deprecated Use borderLeftWidth, borderLeftStyle, and borderLeftColor instead (or preferably borderInlineStart* equivalents). Not supported in property-specificity mode (the default). */
   borderLeft?: all | border,
   borderLeftColor?: all | borderLeftColor,
   borderLeftStyle?: all | borderLeftStyle,
   borderLeftWidth?: all | borderLeftWidth,
+  /** @deprecated Use borderRightWidth, borderRightStyle, and borderRightColor instead (or preferably borderInlineEnd* equivalents). Not supported in property-specificity mode (the default). */
   borderRight?: all | border,
   borderRightColor?: all | borderRightColor,
   borderRightStyle?: all | borderRightStyle,
   borderRightWidth?: all | borderRightWidth,
   borderSpacing?: all | borderSpacing,
   borderStyle?: all | borderStyle,
+  /** @deprecated Use borderTopWidth, borderTopStyle, and borderTopColor instead. Not supported in property-specificity mode (the default). */
   borderTop?: all | border,
   borderTopColor?: all | color,
 
