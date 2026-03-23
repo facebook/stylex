@@ -1991,7 +1991,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
-    // animation: ambiguous "none" emits both fill-mode and animation-name
+    // animation: ambiguous "none" treated as animation-name (none is default fill-mode)
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -2006,7 +2006,6 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             animationDuration: '1s',
-            animationFillMode: 'none',
             animationName: 'none',
           },
         });

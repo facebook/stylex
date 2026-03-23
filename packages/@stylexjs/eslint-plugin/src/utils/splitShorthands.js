@@ -805,6 +805,12 @@ function expandAnimationShorthand(
       applyImportant(direction, importantSuffix),
     ]);
   }
+  if (name == null && fillMode != null && fillMode.toLowerCase() === 'none') {
+    // "none" is ambiguous between fill-mode and name, but since
+    // "none" is the default fill-mode, treat it as animation-name only.
+    entries.push(['animationName', applyImportant(fillMode, importantSuffix)]);
+    fillMode = null;
+  }
   if (fillMode != null) {
     entries.push([
       'animationFillMode',
@@ -816,10 +822,6 @@ function expandAnimationShorthand(
       'animationPlayState',
       applyImportant(playState, importantSuffix),
     ]);
-  }
-  if (name == null && fillMode != null && fillMode.toLowerCase() === 'none') {
-    // "none" is ambiguous between fill-mode and name. Emit both to preserve semantics.
-    entries.push(['animationName', applyImportant(fillMode, importantSuffix)]);
   }
   if (name != null) {
     entries.push(['animationName', applyImportant(name, importantSuffix)]);
