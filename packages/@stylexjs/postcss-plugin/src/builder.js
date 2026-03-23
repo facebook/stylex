@@ -157,8 +157,6 @@ function createBuilder() {
       cwd,
       babelConfig,
       useCSSLayers,
-      layersBefore,
-      layersAfter,
       enableLTRRTLComments,
       importSources,
       isDev,
@@ -210,8 +208,6 @@ function createBuilder() {
 
     const css = bundler.bundle({
       useCSSLayers,
-      layersBefore,
-      layersAfter,
       enableLTRRTLComments,
     });
     return css;

@@ -48,9 +48,7 @@ export function pickCssAssetFromRollupBundle(bundle, choose) {
 function processCollectedRulesToCSS(rules, options) {
   if (!rules || rules.length === 0) return '';
   const collectedCSS = stylexBabelPlugin.processStylexRules(rules, {
-    useLayers: !!options.useCSSLayers,
-    layersBefore: options?.layersBefore,
-    layersAfter: options?.layersAfter,
+    useLayers: options.useCSSLayers ?? false,
     enableLTRRTLComments: options?.enableLTRRTLComments,
   });
   const { code } = lightningTransform({
@@ -359,8 +357,6 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
     const allRules = Array.from(merged.values()).flat();
     return processCollectedRulesToCSS(allRules, {
       useCSSLayers,
-      layersBefore: userOptions.layersBefore,
-      layersAfter: userOptions.layersAfter,
       lightningcssOptions,
       enableLTRRTLComments: stylexOptions?.enableLTRRTLComments,
     });

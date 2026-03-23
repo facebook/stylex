@@ -438,29 +438,35 @@ function processStylexRules(
   config?:
     | boolean
     | {
-        useLayers?: boolean,
-        layersBefore?: $ReadOnlyArray<string>,
-        layersAfter?: $ReadOnlyArray<string>,
+        useLayers?:
+          | boolean
+          | $ReadOnly<{
+              before?: $ReadOnlyArray<string>,
+              after?: $ReadOnlyArray<string>,
+              prefix?: string,
+            }>,
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
         useLegacyClassnamesSort?: boolean,
         ...
       },
 ): string {
+  const rawConfig =
+    typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
   const {
-    useLayers = false,
-    layersBefore = [],
-    layersAfter = [],
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
     useLegacyClassnamesSort = false,
-  } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
+  } = rawConfig;
 
-  if (!useLayers && (layersBefore.length > 0 || layersAfter.length > 0)) {
-    console.warn(
-      '[@stylexjs/babel-plugin] `layersBefore` and `layersAfter` options are ignored when `useCSSLayers` is not enabled.',
-    );
-  }
+  const rawUseLayers = rawConfig.useLayers ?? false;
+  const useLayers = rawUseLayers !== false;
+  const layersBefore =
+    typeof rawUseLayers === 'object' ? (rawUseLayers.before ?? []) : [];
+  const layersAfter =
+    typeof rawUseLayers === 'object' ? (rawUseLayers.after ?? []) : [];
+  const layerPrefix =
+    typeof rawUseLayers === 'object' ? (rawUseLayers.prefix ?? '') : '';
 
   if (rules.length === 0) {
     return '';
@@ -575,11 +581,16 @@ function processStylexRules(
 
   const logicalFloatVars = getLogicalFloatVars(nonConstantRules);
 
+  const layerName = (index: number): string =>
+    layerPrefix
+      ? `${layerPrefix}.priority${index + 1}`
+      : `priority${index + 1}`;
+
   const header = useLayers
     ? '\n@layer ' +
       [
         ...layersBefore,
-        ...grouped.map((_, index) => `priority${index + 1}`),
+        ...grouped.map((_, index) => layerName(index)),
         ...layersAfter,
       ].join(', ') +
       ';\n'
@@ -632,7 +643,7 @@ function processStylexRules(
 
       // Don't put @property, @keyframe, @position-try in layers
       return useLayers && pri > 0
-        ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
+        ? `@layer ${layerName(index)}{\n${collectedCSS}\n}`
         : collectedCSS;
     })
     .join('\n');

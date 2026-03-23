@@ -10,8 +10,16 @@ import type { TransformOptions } from 'lightningcss';
 
 type LightningcssOptions = Omit<TransformOptions<any>, 'filename' | 'code'>;
 
+export type CSSLayersConfig =
+  | boolean
+  | {
+      before?: ReadonlyArray<string>;
+      after?: ReadonlyArray<string>;
+      prefix?: string;
+    };
+
 export type UserOptions = StyleXOptions & {
-  useCSSLayers?: boolean;
+  useCSSLayers?: CSSLayersConfig;
   enableLTRRTLComments?: boolean;
   legacyDisableLayers?: boolean;
   lightningcssOptions?: LightningcssOptions;
