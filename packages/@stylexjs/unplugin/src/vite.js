@@ -29,6 +29,7 @@ function attachViteHooks(plugin) {
   const shared = plugin.__stylexGetSharedStore?.();
   let viteServer = null;
   let viteOutDir = null;
+  let cssInjectedInGenerateBundle = false;
 
   return {
     ...plugin,
@@ -144,6 +145,7 @@ function attachViteHooks(plugin) {
       } catch {}
     },
     generateBundle(_opts, bundle) {
+      cssInjectedInGenerateBundle = false;
       const css = plugin.__stylexCollectCss?.();
       if (!css) return;
       const target = pickCssAssetFromRollupBundle(bundle, cssInjectionTarget);
@@ -154,9 +156,11 @@ function attachViteHooks(plugin) {
             : target.source?.toString() || '';
         const nextSource = current ? current + '\n' + css : css;
         replaceCssAssetWithHashedCopy(this, bundle, target, nextSource);
+        cssInjectedInGenerateBundle = true;
       }
     },
     async writeBundle(options, bundle) {
+      if (cssInjectedInGenerateBundle) return;
       const css = plugin.__stylexCollectCss?.();
       if (!css) return;
       const target = pickCssAssetFromRollupBundle(bundle, cssInjectionTarget);
