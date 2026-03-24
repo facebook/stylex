@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-declare const STYLEX_SOURCE: string;
-
 export const INITIAL_INPUT_FILES: Record<string, string> = {
   'App.tsx': `import * as stylex from "@stylexjs/stylex";
 import Logo from "./Logo";
@@ -294,59 +292,82 @@ const styles = stylex.create({
 `,
 };
 
-export const INITIAL_BUNDLER_FILES = {
-  '/index.js': {
-    code: `import './styles.css';
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-createRoot(document.getElementById('root')).render(<App />);`,
-  },
-  '/public/index.html': {
-    code: `<!DOCTYPE html>
+export const BOOTSTRAP_HTML = `<!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"></head>
-<body><div id="root"></div></body>
-</html>`,
-  },
-  '/package.json': {
-    code: JSON.stringify(
-      {
-        main: '/index.js',
-        dependencies: {
-          react: '19.2.3',
-          'react-dom': '19.2.3',
-        },
-      },
-      null,
-      2,
-    ),
-  },
-  '/node_modules/@stylexjs/stylex/package.json': {
-    code: JSON.stringify(
-      {
-        name: '@stylexjs/stylex',
-        main: './index.js',
-      },
-      null,
-      2,
-    ),
-  },
-  '/node_modules/@stylexjs/stylex/index.js': {
-    code: STYLEX_SOURCE,
-  },
-};
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <style>
+    @layer resets {
+      :root {
+        color-scheme: light dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html, body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+    }
+  </style>
+  <style id="styles"></style>
+  <div id="root"></div>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@19.2.3?dev",
+      "react/jsx-runtime": "https://esm.sh/react@19.2.3/jsx-runtime?dev",
+      "react-dom": "https://esm.sh/react-dom@19.2.3?dev",
+      "react-dom/client": "https://esm.sh/react-dom@19.2.3/client?dev",
+      "react-refresh/runtime": "https://esm.sh/react-refresh@0.17.0/runtime"
+    }
+  }
+  </script>
+  <script type="module">
+    import RefreshRuntime from 'react-refresh/runtime';
 
-export const CSS_PRELUDE = `@layer resets {
-:root {
-  color-scheme: light dark;
-}
-* {
-  box-sizing: border-box;
-}
-html, body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-}
-}
-`;
+    RefreshRuntime.injectIntoGlobalHook(window);
+
+    window.$RefreshReg$ = (type, id) => RefreshRuntime.register(type, id);
+    window.$RefreshSig$ = () => RefreshRuntime.createSignatureFunctionForTransform();
+
+    const React = await import('react');
+    const { createRoot } = await import('react-dom/client');
+
+    let root = null;
+    let prevUrl = null;
+
+    window.addEventListener('message', async (e) => {
+      if (e.data.type === 'preview-update') {
+        document.getElementById('styles').textContent = e.data.css;
+
+        const url = URL.createObjectURL(new Blob([e.data.js], { type: 'text/javascript' }));
+        try {
+          const mod = await import(url);
+
+          if (!root) {
+            root = createRoot(document.getElementById('root'));
+            root.render(React.createElement(mod.default));
+          } else {
+            RefreshRuntime.performReactRefresh();
+          }
+        } finally {
+          if (prevUrl) URL.revokeObjectURL(prevUrl);
+          prevUrl = url;
+        }
+      }
+    });
+
+    window.addEventListener('error', (e) => {
+      window.parent.postMessage({ type: 'preview-error', message: e.message }, '*');
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      window.parent.postMessage({ type: 'preview-error', message: e.reason?.message || String(e.reason) }, '*');
+    });
+
+    window.parent.postMessage({ type: 'preview-ready' }, '*');
+  </script>
+</body>
+</html>`;
