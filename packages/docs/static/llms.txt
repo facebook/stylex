@@ -1,0 +1,17 @@
+# StyleX
+
+> StyleX is a build-time CSS-in-JS library for defining and applying optimized atomic styles.
+
+## Documentation
+
+- [Installation Guide](/llm/stylex-installation.md): Build-time setup for Vite, Next.js, Webpack, Rspack, esbuild, and Rollup
+- [Authoring Guide](/llm/stylex-authoring.md): Writing styles, pseudo-classes, media queries, dynamic styles, variables, themes, and TypeScript types
+- [ESLint Plugin](https://raw.githubusercontent.com/facebook/stylex/main/packages/@stylexjs/eslint-plugin/README.md): Lint rules for valid styles, shorthands, unused styles, and naming conventions
+- [Agent Context](/llm/AGENTS.md): Workflow routing for AI coding agents
+
+## Links
+
+- Website: https://stylexjs.com
+- API Reference: https://stylexjs.com/docs/api
+- GitHub: https://github.com/facebook/stylex
+- Examples: https://github.com/facebook/stylex/tree/main/examples
