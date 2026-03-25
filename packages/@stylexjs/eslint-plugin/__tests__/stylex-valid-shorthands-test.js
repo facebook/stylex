@@ -551,6 +551,39 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    // placeContent: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          placeContent: 'center',
+        },
+      })
+    `,
+    },
+    // placeItems: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          placeItems: 'center',
+        },
+      })
+    `,
+    },
+    // placeSelf: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          placeSelf: 'center',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -3392,6 +3425,111 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "overflow: hidden scroll !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // placeContent: two values
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            placeContent: 'center space-between',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            alignContent: 'center',
+            justifyContent: 'space-between',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "placeContent: center space-between" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // placeItems: two values
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            placeItems: 'center start',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            alignItems: 'center',
+            justifyItems: 'start',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "placeItems: center start" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // placeSelf: two values
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            placeSelf: 'center start',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            alignSelf: 'center',
+            justifySelf: 'start',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "placeSelf: center start" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // placeContent: with !important (allowImportant)
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            placeContent: 'center space-between !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            alignContent: 'center !important',
+            justifyContent: 'space-between !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "placeContent: center space-between !important" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
