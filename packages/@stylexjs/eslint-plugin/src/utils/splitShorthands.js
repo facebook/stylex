@@ -1105,6 +1105,30 @@ export function splitSpecificShorthands(
     return expandedFlex ?? [['flex', CANNOT_FIX]];
   }
 
+  if (property === 'gap') {
+    const gapSplit = splitTopLevelValueTokens(baseValue);
+    if (gapSplit.hasTopLevelComma || gapSplit.hasTopLevelSlash) {
+      return [['gap', CANNOT_FIX]];
+    }
+    const gapValues = gapSplit.parts.map((part) => part.text);
+    if (gapValues.length <= 1) {
+      const val = isNumber
+        ? Number(rawValue)
+        : applyImportant(gapValues[0] ?? rawValue, importantSuffix);
+      return [
+        ['rowGap', val],
+        ['columnGap', val],
+      ];
+    }
+    if (gapValues.length === 2) {
+      return [
+        ['rowGap', applyImportant(gapValues[0], importantSuffix)],
+        ['columnGap', applyImportant(gapValues[1], importantSuffix)],
+      ];
+    }
+    return [['gap', CANNOT_FIX]];
+  }
+
   const splitValues = splitTopLevelValueTokens(baseValue);
   if (splitValues.parts.length <= 1 && !splitValues.hasTopLevelSlash) {
     return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
