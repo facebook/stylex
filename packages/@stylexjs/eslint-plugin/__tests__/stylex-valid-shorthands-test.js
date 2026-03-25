@@ -531,6 +531,26 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          overflow: 'hidden',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          overscrollBehavior: 'contain',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -3267,6 +3287,111 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "border: 1px solid red !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // overflow: 2 values split to overflowX + overflowY
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overflow: 'hidden scroll',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "overflow: hidden scroll" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // overflow: two identical values still split
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overflow: 'auto auto',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overflowX: 'auto',
+            overflowY: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "overflow: auto auto" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // overscrollBehavior: 2 values split to overscrollBehaviorX + overscrollBehaviorY
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overscrollBehavior: 'contain auto',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overscrollBehaviorX: 'contain',
+            overscrollBehaviorY: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "overscrollBehavior: contain auto" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // overflow: with !important (allowImportant)
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overflow: 'hidden scroll !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            overflowX: 'hidden !important',
+            overflowY: 'scroll !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "overflow: hidden scroll !important" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
