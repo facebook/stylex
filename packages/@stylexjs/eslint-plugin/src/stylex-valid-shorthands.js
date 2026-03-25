@@ -73,6 +73,9 @@ const shorthandAliases: $ReadOnly<{
   marginInline: createBlockInlineTransformer('margin', 'Inline'),
   paddingBlock: createBlockInlineTransformer('padding', 'Block'),
   paddingInline: createBlockInlineTransformer('padding', 'Inline'),
+  inset: createSpecificTransformer('inset'),
+  insetBlock: createBlockInlineTransformer('inset', 'Block'),
+  insetInline: createBlockInlineTransformer('inset', 'Inline'),
 };
 
 const stylexValidShorthands = {

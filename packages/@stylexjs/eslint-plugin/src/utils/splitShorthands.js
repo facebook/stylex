@@ -1129,6 +1129,33 @@ export function splitSpecificShorthands(
     return [['gap', CANNOT_FIX]];
   }
 
+  if (property === 'inset') {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [['inset', CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [['inset', isNumber ? Number(rawValue) : rawValue]];
+    }
+    if (vals.length === 2) {
+      return [
+        ['insetBlock', applyImportant(vals[0], importantSuffix)],
+        ['insetInline', applyImportant(vals[1], importantSuffix)],
+      ];
+    }
+    if (vals.length > 4) {
+      return [['inset', CANNOT_FIX]];
+    }
+    const [top, right = top, bottom = top, left = right] = vals;
+    return [
+      ['top', applyImportant(top, importantSuffix)],
+      ['right', applyImportant(right, importantSuffix)],
+      ['bottom', applyImportant(bottom, importantSuffix)],
+      ['left', applyImportant(left, importantSuffix)],
+    ];
+  }
+
   const splitValues = splitTopLevelValueTokens(baseValue);
   if (splitValues.parts.length <= 1 && !splitValues.hasTopLevelSlash) {
     return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
