@@ -606,6 +606,27 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    // textDecoration: single value (valid, no expansion needed)
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          textDecoration: 'underline',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          textDecoration: 'none',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -3655,6 +3676,114 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "flexFlow: column-reverse nowrap" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // textDecoration: line + style
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecoration: 'underline solid',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecorationLine: 'underline',
+            textDecorationStyle: 'solid',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "textDecoration: underline solid" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // textDecoration: line + style + color
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecoration: 'underline solid red',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecorationLine: 'underline',
+            textDecorationStyle: 'solid',
+            textDecorationColor: 'red',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "textDecoration: underline solid red" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // textDecoration: line + style + hex color
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecoration: 'underline wavy #ff0000',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecorationLine: 'underline',
+            textDecorationStyle: 'wavy',
+            textDecorationColor: '#ff0000',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "textDecoration: underline wavy #ff0000" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // textDecoration: line + style + color + thickness
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecoration: 'line-through double blue 2px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            textDecorationLine: 'line-through',
+            textDecorationStyle: 'double',
+            textDecorationColor: 'blue',
+            textDecorationThickness: '2px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "textDecoration: line-through double blue 2px" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

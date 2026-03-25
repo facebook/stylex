@@ -75,6 +75,7 @@ const shorthandAliases: $ReadOnly<{
   gridRow: createSpecificTransformer('grid-row'),
   gridTemplate: createSpecificTransformer('grid-template'),
   outline: createSpecificTransformer('outline'),
+  textDecoration: createSpecificTransformer('text-decoration'),
   animation: createSpecificTransformer('animation'),
   flex: createSpecificTransformer('flex'),
   flexFlow: createSpecificTransformer('flex-flow'),
