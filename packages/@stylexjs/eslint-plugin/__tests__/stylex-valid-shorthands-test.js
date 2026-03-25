@@ -2369,5 +2369,443 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
+    // gap: single value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: single numeric value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 10,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 10,
+            columnGap: 10,
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: numeric zero expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 0,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 0,
+            columnGap: 0,
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 0" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: var() value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 'var(--spacing)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 'var(--spacing)',
+            columnGap: 'var(--spacing)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: var(--spacing)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: calc() value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 'calc(10px + 1rem)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 'calc(10px + 1rem)',
+            columnGap: 'calc(10px + 1rem)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: calc(10px + 1rem)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: two values splits to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridGap: single value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridGap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridGap: 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridGap: two values splits to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridGap: '10px 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridGap: 10px 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridColumnGap: legacy name fix to columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnGap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            columnGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Use "columnGap" instead of legacy formats like "gridColumnGap" to adhere to logical property naming.',
+        },
+      ],
+    },
+    // gridRowGap: legacy name fix to rowGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowGap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Use "rowGap" instead of legacy formats like "gridRowGap" to adhere to logical property naming.',
+        },
+      ],
+    },
+    // gap: two calc() values splits to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 'calc(10px + 1rem) calc(20px + 2rem)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 'calc(10px + 1rem)',
+            columnGap: 'calc(20px + 2rem)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: calc(10px + 1rem) calc(20px + 2rem)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: two identical values still splits (two values means shorthand)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '0px 0px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '0px',
+            columnGap: '0px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 0px 0px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: with !important and allowImportant
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px !important',
+            columnGap: '20px !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px 20px !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridGap: single numeric value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridGap: 10,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 10,
+            columnGap: 10,
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridGap: 10" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: with comma returns CANNOT_FIX (no autofix)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px, 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px, 20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px, 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: with slash returns CANNOT_FIX (no autofix)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px / 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px / 20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px / 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: three values returns CANNOT_FIX (no autofix)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px 30px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px 30px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px 20px 30px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
   ],
 });
