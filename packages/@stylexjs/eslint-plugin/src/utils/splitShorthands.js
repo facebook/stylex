@@ -167,6 +167,8 @@ const IMAGE_FUNCTION_REGEX =
   /^(?:url|image-set|linear-gradient|radial-gradient|conic-gradient|repeating-linear-gradient|repeating-radial-gradient|repeating-conic-gradient|cross-fade|element)\(/i;
 const LENGTH_FUNCTION_REGEX = /^(?:calc|min|max|clamp)\(/i;
 const LENGTH_REGEX = /^-?(?:\d+|\d*\.\d+)(?:[a-z%]+)?$/i;
+const LIST_STYLE_POSITION_KEYWORDS = new Set(['inside', 'outside']);
+const CARET_SHAPE_KEYWORDS = new Set(['auto', 'bar', 'block', 'underscore']);
 
 type ValuePart = {
   text: string,
@@ -1243,6 +1245,122 @@ export function splitSpecificShorthands(
     return [['flexFlow', CANNOT_FIX]];
   }
 
+  if (property === 'columns') {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [['columns', CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [['columns', isNumber ? Number(rawValue) : rawValue]];
+    }
+    if (vals.length === 2) {
+      let width = null;
+      let count = null;
+      for (const val of vals) {
+        const lower = val.toLowerCase();
+        if (lower === 'auto') {
+          if (width == null) {
+            width = val;
+          } else if (count == null) {
+            count = val;
+          } else {
+            return [['columns', CANNOT_FIX]];
+          }
+          continue;
+        }
+        if (/^\d+$/.test(val)) {
+          if (count != null) return [['columns', CANNOT_FIX]];
+          count = val;
+          continue;
+        }
+        if (width != null) return [['columns', CANNOT_FIX]];
+        width = val;
+      }
+      const entries: Array<[string, string]> = [];
+      if (width != null)
+        entries.push(['columnWidth', applyImportant(width, importantSuffix)]);
+      if (count != null)
+        entries.push(['columnCount', applyImportant(count, importantSuffix)]);
+      if (entries.length === 0) return [['columns', CANNOT_FIX]];
+      return entries;
+    }
+    return [['columns', CANNOT_FIX]];
+  }
+
+  if (property === 'list-style') {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [['listStyle', CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [['listStyle', isNumber ? Number(rawValue) : rawValue]];
+    }
+    let type = null;
+    let position = null;
+    let image = null;
+    for (const val of vals) {
+      const lower = val.toLowerCase();
+      if (LIST_STYLE_POSITION_KEYWORDS.has(lower)) {
+        if (position != null) return [['listStyle', CANNOT_FIX]];
+        position = val;
+        continue;
+      }
+      if (lower === 'none' || IMAGE_FUNCTION_REGEX.test(lower)) {
+        if (image != null) return [['listStyle', CANNOT_FIX]];
+        image = val;
+        continue;
+      }
+      if (type != null) return [['listStyle', CANNOT_FIX]];
+      type = val;
+    }
+    const entries: Array<[string, string]> = [];
+    if (type != null)
+      entries.push(['listStyleType', applyImportant(type, importantSuffix)]);
+    if (position != null)
+      entries.push([
+        'listStylePosition',
+        applyImportant(position, importantSuffix),
+      ]);
+    if (image != null)
+      entries.push(['listStyleImage', applyImportant(image, importantSuffix)]);
+    if (entries.length === 0) return [['listStyle', CANNOT_FIX]];
+    return entries;
+  }
+
+  if (property === 'caret') {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [['caret', CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [['caret', isNumber ? Number(rawValue) : rawValue]];
+    }
+    if (vals.length === 2) {
+      let color = null;
+      let shape = null;
+      for (const val of vals) {
+        if (CARET_SHAPE_KEYWORDS.has(val.toLowerCase())) {
+          if (shape != null) return [['caret', CANNOT_FIX]];
+          shape = val;
+        } else {
+          if (color != null) return [['caret', CANNOT_FIX]];
+          color = val;
+        }
+      }
+      const entries: Array<[string, string]> = [];
+      if (color != null)
+        entries.push(['caretColor', applyImportant(color, importantSuffix)]);
+      if (shape != null)
+        entries.push(['caretShape', applyImportant(shape, importantSuffix)]);
+      if (entries.length === 0) return [['caret', CANNOT_FIX]];
+      return entries;
+    }
+    return [['caret', CANNOT_FIX]];
+  }
+
   const splitValues = splitTopLevelValueTokens(baseValue);
   if (splitValues.parts.length <= 1 && !splitValues.hasTopLevelSlash) {
     return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
@@ -1434,7 +1552,8 @@ export function splitSpecificShorthands(
     property === 'border-block-end' ||
     property === 'border-block-start' ||
     property === 'border-inline' ||
-    property === 'border-block'
+    property === 'border-block' ||
+    property === 'column-rule'
   ) {
     if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
       return [[toCamelCase(property), CANNOT_FIX]];
