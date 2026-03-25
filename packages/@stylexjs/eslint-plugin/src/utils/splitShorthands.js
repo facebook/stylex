@@ -1298,6 +1298,18 @@ export function splitSpecificShorthands(
     return entries;
   }
 
+  if (property === 'border') {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [['border', CANNOT_FIX]];
+    }
+    const expandedBorder = expandBorderSideShorthand(
+      property,
+      values,
+      importantSuffix,
+    );
+    return expandedBorder ?? [['border', CANNOT_FIX]];
+  }
+
   if (
     property === 'border-top' ||
     property === 'border-right' ||
