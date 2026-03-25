@@ -666,6 +666,13 @@ function expandFlexShorthand(
   return null;
 }
 
+const FLEX_DIRECTION_KEYWORDS = new Set([
+  'row',
+  'row-reverse',
+  'column',
+  'column-reverse',
+]);
+
 const ANIMATION_DIRECTION_KEYWORDS = new Set([
   'normal',
   'reverse',
@@ -1196,6 +1203,38 @@ export function splitSpecificShorthands(
       ['bottom', applyImportant(bottom, importantSuffix)],
       ['left', applyImportant(left, importantSuffix)],
     ];
+  }
+
+  if (property === 'flex-flow') {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [['flexFlow', CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [['flexFlow', isNumber ? Number(rawValue) : rawValue]];
+    }
+    if (vals.length === 2) {
+      let direction = null;
+      let wrap = null;
+      for (const val of vals) {
+        if (FLEX_DIRECTION_KEYWORDS.has(val.toLowerCase())) {
+          if (direction != null) return [['flexFlow', CANNOT_FIX]];
+          direction = val;
+        } else {
+          if (wrap != null) return [['flexFlow', CANNOT_FIX]];
+          wrap = val;
+        }
+      }
+      if (direction == null || wrap == null) {
+        return [['flexFlow', CANNOT_FIX]];
+      }
+      return [
+        ['flexDirection', applyImportant(direction, importantSuffix)],
+        ['flexWrap', applyImportant(wrap, importantSuffix)],
+      ];
+    }
+    return [['flexFlow', CANNOT_FIX]];
   }
 
   const splitValues = splitTopLevelValueTokens(baseValue);

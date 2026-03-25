@@ -584,6 +584,28 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    // flexFlow: single value (direction only)
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          flexFlow: 'row',
+        },
+      })
+    `,
+    },
+    // flexFlow: single value (wrap only)
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          flexFlow: 'wrap',
+        },
+      })
+    `,
+    },
   ],
   invalid: [
     {
@@ -3530,6 +3552,84 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "placeContent: center space-between !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flexFlow: 'row wrap' → flexDirection + flexWrap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexFlow: 'row wrap',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flexFlow: row wrap" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flexFlow: reversed order 'wrap column'
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexFlow: 'wrap column',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexDirection: 'column',
+            flexWrap: 'wrap',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flexFlow: wrap column" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flexFlow: 'column-reverse nowrap'
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexFlow: 'column-reverse nowrap',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexDirection: 'column-reverse',
+            flexWrap: 'nowrap',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flexFlow: column-reverse nowrap" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
