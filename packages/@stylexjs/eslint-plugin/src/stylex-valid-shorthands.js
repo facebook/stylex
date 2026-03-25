@@ -67,6 +67,8 @@ const shorthandAliases: $ReadOnly<{
   flex: createSpecificTransformer('flex'),
   gap: createSpecificTransformer('gap'),
   gridGap: createSpecificTransformer('gap'),
+  overflow: createSpecificTransformer('overflow'),
+  overscrollBehavior: createSpecificTransformer('overscroll-behavior'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
   marginBlock: createBlockInlineTransformer('margin', 'Block'),
