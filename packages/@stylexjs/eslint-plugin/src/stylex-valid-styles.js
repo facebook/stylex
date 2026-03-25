@@ -11,6 +11,7 @@
 
 import getDistance from './utils/getDistance';
 import isWhiteSpaceOrEmpty from './utils/isWhiteSpaceOrEmpty';
+import validateStyleValueWithCSSTree from './rules/validateWithCSSTree';
 import type {
   CallExpression,
   Directive,
@@ -119,6 +120,10 @@ const stylexValidStyles = {
             type: 'boolean',
             default: false,
           },
+          cssValueValidation: {
+            type: 'boolean',
+            default: false,
+          },
           propLimits: {
             type: 'object',
             additionalProperties: {
@@ -176,6 +181,7 @@ const stylexValidStyles = {
       allowRawCSSVars: boolean,
       allowOuterPseudoAndMedia: boolean,
       banPropsForLegacy: boolean,
+      cssValueValidation: boolean,
       propLimits?: PropLimits,
     };
 
@@ -195,6 +201,7 @@ const stylexValidStyles = {
       allowRawCSSVars = true,
       allowOuterPseudoAndMedia,
       banPropsForLegacy = false,
+      cssValueValidation = false,
       propLimits = {},
     }: Schema = context.options[0] || {};
 
@@ -733,6 +740,22 @@ const stylexValidStyles = {
               message: finalMessage,
               suggest: suggest != null ? [suggest] : undefined,
             } as Rule.ReportDescriptor);
+          }
+
+          // Fallback: validate with css-tree when the existing validators pass
+          if (cssValueValidation && check == null) {
+            const cssTreeCheck = validateStyleValueWithCSSTree(
+              style.value,
+              key,
+              varsWithFnArgs,
+            );
+            if (cssTreeCheck != null) {
+              return context.report({
+                node: style.value,
+                loc: style.value.loc,
+                message: cssTreeCheck.message,
+              } as Rule.ReportDescriptor);
+            }
           }
         }
       }

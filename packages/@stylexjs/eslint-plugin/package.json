@@ -18,6 +18,7 @@
   "dependencies": {
     "@csstools/css-tokenizer": "^3.0.3",
     "@stylexjs/shared": "0.18.1",
+    "css-tree": "^3.0.1",
     "micromatch": "^4.0.5",
     "postcss-value-parser": "^4.2.0"
   },
