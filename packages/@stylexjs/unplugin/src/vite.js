@@ -145,7 +145,6 @@ function attachViteHooks(plugin) {
       } catch {}
     },
     generateBundle(_opts, bundle) {
-      cssInjectedInGenerateBundle = false;
       const css = plugin.__stylexCollectCss?.();
       if (!css) return;
       const target = pickCssAssetFromRollupBundle(bundle, cssInjectionTarget);
