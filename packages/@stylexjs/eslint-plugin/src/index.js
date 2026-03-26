@@ -17,7 +17,7 @@ import sortKeys from './stylex-sort-keys';
 import validShorthands from './stylex-valid-shorthands';
 import validStyles from './stylex-valid-styles';
 
-const rules: {
+const rules: $ReadOnly<{
   'enforce-extension': typeof enforceExtension,
   'no-legacy-contextual-styles': typeof noLegacyContextualStyles,
   'no-lookahead-selectors': typeof noLookaheadSelectors,
@@ -27,7 +27,7 @@ const rules: {
   'sort-keys': typeof sortKeys,
   'valid-shorthands': typeof validShorthands,
   'valid-styles': typeof validStyles,
-} = {
+}> = {
   'enforce-extension': enforceExtension,
   'no-legacy-contextual-styles': noLegacyContextualStyles,
   'no-lookahead-selectors': noLookaheadSelectors,
