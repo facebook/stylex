@@ -1520,6 +1520,7 @@ const SupportedVendorSpecificCSSProperties = {
     'content-box',
     'text',
   ) as RuleCheck,
+  WebkitAppRegion: makeUnionRule('drag', 'no-drag') as RuleCheck,
 };
 
 export const convertToStandardProperties: $ReadOnly<{
