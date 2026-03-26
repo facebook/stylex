@@ -58,6 +58,7 @@ export type StyleXOptions = $ReadOnly<{
   enableMediaQueryOrder?: ?boolean,
   enableLegacyValueFlipping?: ?boolean,
   enableLogicalStylesPolyfill?: ?boolean,
+  useLogicalProperties?: ?boolean,
   enableLTRRTLComments?: ?boolean,
   enableMinifiedKeys?: ?boolean,
   // runtimeInjection?:
