@@ -39,6 +39,7 @@ import isAnimationName from './rules/isAnimationName';
 import isPositionTryFallbacks from './rules/isPositionTryFallbacks';
 import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
 import isCSSVariable from './rules/isCSSVariable';
+import { isValidColorFormat } from './utils/colorUtils';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
 import {
@@ -78,6 +79,13 @@ const showError =
   () => ({ message });
 
 const stylexValidStyles = {
+  /**
+   * Validates CSS color values according to CSS Color Module Level 4+ specifications.
+   * Supports named colors, hex, rgb, rgba, hsl, hsla, hwb, lab, lch, oklab, oklch, and color() functions.
+   */
+  isValidColor: (value: string): boolean => {
+    return isValidColorFormat(value);
+  },
   meta: {
     type: 'problem',
     hasSuggestions: true,
