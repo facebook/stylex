@@ -37,6 +37,8 @@ const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   paddingEnd: 'paddingInlineEnd',
   paddingHorizontal: 'paddingInline',
   paddingVertical: 'paddingBlock',
+  borderStart: 'borderInlineStart',
+  borderEnd: 'borderInlineEnd',
 };
 
 const shorthandAliases: $ReadOnly<{
@@ -50,6 +52,7 @@ const shorthandAliases: $ReadOnly<{
   borderTop: createSpecificTransformer('border-top'),
   borderRight: createSpecificTransformer('border-right'),
   borderBottom: createSpecificTransformer('border-bottom'),
+  border: createSpecificTransformer('border'),
   borderLeft: createSpecificTransformer('border-left'),
   borderRadius: createSpecificTransformer('border-radius'),
   cornerShape: createSpecificTransformer('corner-shape'),
