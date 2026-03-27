@@ -1,0 +1,20 @@
+---
+description: "WF-MAINTAIN workflow routing and constraints"
+globs:
+  - "packages/@stylexjs/**/*.{js,jsx,ts,tsx,mjs,flow}"
+  - "packages/style-value-parser/**/*.{js,ts,mjs}"
+---
+
+Workflow: `WF-MAINTAIN` (P1)
+Modify StyleX OSS internals safely
+
+Load sources first:
+- `packages/@stylexjs/eslint-plugin/README.md`
+- `packages/@stylexjs/babel-plugin/__tests__/evaluation-import-test.js`
+- `packages/@stylexjs/shared/src/utils/property-priorities.js`
+- `packages/style-value-parser/src/index.js`
+
+Hard constraints:
+- Preserve behavior unless semantic change is explicitly requested.
+- Reference package-local tests and snapshots for behavior validation.
+- Call out user-visible impact on setup and authoring docs when applicable.

@@ -278,7 +278,8 @@ const styles = stylex.create({
 ```
 
 **IMPORTANT: For `defineConsts` and `defineVars`:**
-- Must be in `.stylex.ts` or `.stylex.js` files
+- Must be in `.stylex.ts` or `.stylex.js` files by default
+- If `@stylexjs/enforce-extension` is configured with `enforceDefineConstsExtension: true`, use `.stylex.const.ts` / `.stylex.const.js` for `defineConsts` exports
 - Must be named exports (not default exports)
 - No other exports allowed in the file
 

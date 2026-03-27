@@ -1,0 +1,20 @@
+---
+description: "WF-SETUP workflow routing and constraints"
+globs:
+  - "**/{vite.config,webpack.config,rspack.config,rollup.config,esbuild.config,next.config,babel.config,postcss.config}.{js,cjs,mjs,ts}"
+  - "**/package.json"
+  - "**/*.css"
+---
+
+Workflow: `WF-SETUP` (P0)
+Install and configure StyleX in app projects
+
+Load sources first:
+- `packages/docs/static/llm/stylex-installation.md`
+- `packages/docs/static/llm/stylex-authoring.md`
+
+Hard constraints:
+- Provide minimal, working config for the user's exact stack.
+- Keep StyleX plugin ordering constraints where required (for example, before React in Vite).
+- Include @stylex stylesheet directive guidance where needed.
+- Mention .stylex extension and module-resolution caveats when relevant.

@@ -15,8 +15,10 @@
     "lint": "npm run lint:report -- --fix",
     "lint:report": "eslint . --ext .flow,.js,.jsx,.mjs,.ts,.tsx",
     "release": "tools/npm/release.js",
+    "ai:generate-context": "node tools/ai-context/generate-agents.js",
+    "ai:check-context": "node tools/ai-context/generate-agents.js --check",
     "test:packages": "npm run test --workspaces --if-present",
-    "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report"
+    "test": "npm run build && npm run flow && npm run test:packages && npm run prettier:report && npm run lint:report && npm run ai:check-context"
   },
   "workspaces": [
     "packages/style-value-parser",
