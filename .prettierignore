@@ -13,3 +13,5 @@ flow-typed
 examples/example-storybook/storybook-static
 examples/example-cli/src
 packages/docs/.source
+devtools-extension/extension
+devtools-extension/extension/assets/*
