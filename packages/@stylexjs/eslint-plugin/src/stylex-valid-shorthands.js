@@ -37,6 +37,8 @@ const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   paddingEnd: 'paddingInlineEnd',
   paddingHorizontal: 'paddingInline',
   paddingVertical: 'paddingBlock',
+  gridColumnGap: 'columnGap',
+  gridRowGap: 'rowGap',
 };
 
 const shorthandAliases: $ReadOnly<{
@@ -60,6 +62,8 @@ const shorthandAliases: $ReadOnly<{
   outline: createSpecificTransformer('outline'),
   animation: createSpecificTransformer('animation'),
   flex: createSpecificTransformer('flex'),
+  gap: createSpecificTransformer('gap'),
+  gridGap: createSpecificTransformer('gap'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
   marginBlock: createBlockInlineTransformer('margin', 'Block'),
@@ -195,6 +199,7 @@ const stylexValidShorthands = {
       if (
         !newValues ||
         (newValues.length === 1 &&
+          newValues[0][0] === key &&
           (newValues[0][1] === property.value.value ||
             newValues[0][1] === property.value?.value?.toString() ||
             newValues[0][1] === parseInt(property.value?.value, 10)) &&
