@@ -1289,6 +1289,7 @@ function DeclarationEntryRow({
         event.currentTarget.blur();
       }
       if (event.key === 'Escape') {
+        event.stopPropagation();
         event.preventDefault();
         setIsEditing(false);
         setDraftValue(displayValue);
