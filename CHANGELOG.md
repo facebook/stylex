@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18.2 (Mar 23, 2026)
+- Bring back `stylex.attrs` for SSR and non-React frameworks.
+- Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
+- Add `flex` and `grid` shorthand expansion to ESLint plugin.
+- ESLint fixes: bare number support, false positive fixes in `stylex.create`.
+
 ## 0.18.1 (Mar 5, 2026)
 - Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
 - Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
