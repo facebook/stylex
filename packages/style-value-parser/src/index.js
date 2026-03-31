@@ -10,3 +10,12 @@
 export * as tokenParser from './token-parser';
 export * as properties from './properties';
 export { lastMediaQueryWinsTransform } from './at-queries/media-query-transform.js';
+
+export { validate, normalize } from './validate-normalize';
+export {
+  validateColor,
+  normalizeColor,
+  validateLength,
+  validateCalc,
+} from './validators';
+export { validateMediaQuery, normalizeMediaQuery } from './at-queries/media-query';
