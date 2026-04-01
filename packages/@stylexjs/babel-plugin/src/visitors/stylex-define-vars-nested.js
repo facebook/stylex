@@ -8,7 +8,6 @@
  */
 
 import type { NodePath } from '@babel/traverse';
-import type { FunctionConfig } from '../utils/evaluate-path';
 import type { InjectableStyle } from '../shared';
 
 import * as t from '@babel/types';
@@ -17,192 +16,86 @@ import {
   defineVarsNested as stylexDefineVarsNested,
   messages,
   utils,
-  keyframes as stylexKeyframes,
-  positionTry as stylexPositionTry,
-  types as stylexTypes,
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
-import { isVariableNamedExported } from '../utils/ast-helpers';
+import { isCallTo, validateDefineCall, buildEvalConfig } from './visitor-utils';
 
-/// This function looks for `stylex.unstable_defineVarsNested` calls and transforms them.
-/// 1.  finds the first argument to `stylex.unstable_defineVarsNested` and validates it.
-/// 2.  evaluates the style object to get a JS object. This also handles local constants automatically.
-/// 4.  uses the `stylexDefineVarsNested` from `@stylexjs/shared` to transform the JS object and to get a list of injected styles.
-/// 5.  converts the resulting Object back into an AST and replaces the call with it.
-/// 6.  inserts `stylex.inject` calls above the current statement as needed.
+/// Transforms `stylex.unstable_defineVarsNested` calls.
+/// Validates, evaluates the argument statically, delegates to the shared
+/// stylexDefineVarsNested transform, replaces the AST, and registers styles.
 export default function transformStyleXDefineVarsNested(
   callExpressionPath: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
-  const callExpressionNode = callExpressionPath.node;
+  const node = callExpressionPath.node;
+  if (node.type !== 'CallExpression') return;
 
-  if (callExpressionNode.type !== 'CallExpression') {
+  if (
+    !isCallTo(
+      node,
+      state.stylexDefineVarsNestedImport,
+      'unstable_defineVarsNested',
+      state.stylexImport,
+    )
+  ) {
     return;
   }
 
-  if (
-    (callExpressionNode.callee.type === 'Identifier' &&
-      state.stylexDefineVarsNestedImport.has(callExpressionNode.callee.name)) ||
-    (callExpressionNode.callee.type === 'MemberExpression' &&
-      callExpressionNode.callee.property.name === 'unstable_defineVarsNested' &&
-      callExpressionNode.callee.object.type === 'Identifier' &&
-      callExpressionNode.callee.property.type === 'Identifier' &&
-      state.stylexImport.has(callExpressionNode.callee.object.name))
-  ) {
-    validateStyleXDefineVarsNested(callExpressionPath);
+  validateDefineCall(callExpressionPath, 'unstable_defineVarsNested', 1);
 
-    // We know that parent is a variable declaration
-    const variableDeclaratorPath = callExpressionPath.parentPath;
-    if (!variableDeclaratorPath.isVariableDeclarator()) {
-      return;
-    }
+  const variableDeclaratorPath = callExpressionPath.parentPath;
+  if (!variableDeclaratorPath.isVariableDeclarator()) return;
 
-    const variableDeclaratorNode = variableDeclaratorPath.node;
+  const variableDeclaratorNode = variableDeclaratorPath.node;
+  if (variableDeclaratorNode.id.type !== 'Identifier') return;
+  const varId: t.Identifier = variableDeclaratorNode.id;
 
-    if (variableDeclaratorNode.id.type !== 'Identifier') {
-      return;
-    }
-    const varId: t.Identifier = variableDeclaratorNode.id;
+  const firstArg = callExpressionPath.get('arguments')[0];
 
-    const args: $ReadOnlyArray<
-      NodePath<
-        | t.Expression
-        | t.SpreadElement
-        | t.JSXNamespacedName
-        | t.ArgumentPlaceholder,
-      >,
-    > = callExpressionPath.get('arguments');
-    const firstArg = args[0];
+  const otherInjectedCSSRules: { [string]: InjectableStyle } = {};
+  const { identifiers, memberExpressions } = buildEvalConfig(
+    state,
+    otherInjectedCSSRules,
+  );
 
-    const otherInjectedCSSRules: { [animationName: string]: InjectableStyle } =
-      {};
-
-    // eslint-disable-next-line no-inner-declarations
-    function keyframes<
-      Obj: {
-        +[key: string]: { +[k: string]: string | number },
-      },
-    >(animation: Obj): string {
-      const [animationName, injectedStyle] = stylexKeyframes(
-        animation,
-        state.options,
-      );
-      otherInjectedCSSRules[animationName] = injectedStyle;
-      return animationName;
-    }
-
-    // eslint-disable-next-line no-inner-declarations
-    function positionTry<
-      Obj: {
-        +[k: string]: string | number,
-      },
-    >(fallbackStyles: Obj): string {
-      const [positionTryName, injectedStyle] = stylexPositionTry(
-        fallbackStyles,
-        state.options,
-      );
-      otherInjectedCSSRules[positionTryName] = injectedStyle;
-      return positionTryName;
-    }
-
-    const identifiers: FunctionConfig['identifiers'] = {};
-    const memberExpressions: FunctionConfig['memberExpressions'] = {};
-    state.stylexKeyframesImport.forEach((name) => {
-      identifiers[name] = { fn: keyframes };
-    });
-    state.stylexPositionTryImport.forEach((name) => {
-      identifiers[name] = { fn: positionTry };
-    });
-    state.stylexTypesImport.forEach((name) => {
-      identifiers[name] = stylexTypes;
-    });
-    state.stylexImport.forEach((name) => {
-      if (memberExpressions[name] === undefined) {
-        memberExpressions[name] = {};
-      }
-
-      memberExpressions[name].keyframes = { fn: keyframes };
-      memberExpressions[name].positionTry = { fn: positionTry };
-      identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
-    });
-    state.applyStylexEnv(identifiers);
-
-    const { confident, value } = evaluate(firstArg, state, {
-      identifiers,
-      memberExpressions,
-    });
-    if (!confident) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('unstable_defineVarsNested'),
-        SyntaxError,
-      );
-    }
-    if (typeof value !== 'object' || value == null) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStyleObject('unstable_defineVarsNested'),
-        SyntaxError,
-      );
-    }
-
-    const fileName = state.fileNameForHashing;
-    if (fileName == null) {
-      throw new Error(messages.cannotGenerateHash('unstable_defineVarsNested'));
-    }
-
-    const exportName = varId.name;
-
-    const [variablesObj, injectedStylesSansKeyframes] =
-      stylexDefineVarsNested(value, {
-        ...state.options,
-        exportId: utils.genFileBasedIdentifier({ fileName, exportName }),
-      });
-
-    const injectedStyles = {
-      ...otherInjectedCSSRules,
-      ...injectedStylesSansKeyframes,
-    };
-
-    // This should be a transformed variables object
-    callExpressionPath.replaceWith(convertObjectToAST(variablesObj));
-
-    const listOfStyles = Object.entries(injectedStyles).map(
-      ([key, { priority, ...rest }]) => [key, rest, priority],
-    );
-
-    state.registerStyles(listOfStyles, variableDeclaratorPath);
-  }
-}
-
-// Validates the call of `stylex.unstable_defineVarsNested`.
-function validateStyleXDefineVarsNested(
-  callExpressionPath: NodePath<t.CallExpression>,
-) {
-  const variableDeclaratorPath: any = callExpressionPath.parentPath;
-
-  if (
-    variableDeclaratorPath == null ||
-    variableDeclaratorPath.isExpressionStatement() ||
-    !variableDeclaratorPath.isVariableDeclarator() ||
-    variableDeclaratorPath.node.id.type !== 'Identifier'
-  ) {
+  const { confident, value } = evaluate(firstArg, state, {
+    identifiers,
+    memberExpressions,
+  });
+  if (!confident) {
     throw callExpressionPath.buildCodeFrameError(
-      messages.unboundCallValue('unstable_defineVarsNested'),
+      messages.nonStaticValue('unstable_defineVarsNested'),
+      SyntaxError,
+    );
+  }
+  if (typeof value !== 'object' || value == null) {
+    throw callExpressionPath.buildCodeFrameError(
+      messages.nonStyleObject('unstable_defineVarsNested'),
       SyntaxError,
     );
   }
 
-  if (!isVariableNamedExported(variableDeclaratorPath)) {
-    throw callExpressionPath.buildCodeFrameError(
-      messages.nonExportNamedDeclaration('unstable_defineVarsNested'),
-      SyntaxError,
-    );
+  const fileName = state.fileNameForHashing;
+  if (fileName == null) {
+    throw new Error(messages.cannotGenerateHash('unstable_defineVarsNested'));
   }
 
-  if (callExpressionPath.node.arguments.length !== 1) {
-    throw callExpressionPath.buildCodeFrameError(
-      messages.illegalArgumentLength('unstable_defineVarsNested', 1),
-      SyntaxError,
-    );
-  }
+  const [variablesObj, injectedStylesSansKeyframes] =
+    stylexDefineVarsNested(value, {
+      ...state.options,
+      exportId: utils.genFileBasedIdentifier({
+        fileName,
+        exportName: varId.name,
+      }),
+    });
+
+  callExpressionPath.replaceWith(convertObjectToAST(variablesObj));
+
+  const listOfStyles = Object.entries({
+    ...otherInjectedCSSRules,
+    ...injectedStylesSansKeyframes,
+  }).map(([key, { priority, ...rest }]) => [key, rest, priority]);
+
+  state.registerStyles(listOfStyles, variableDeclaratorPath);
 }
