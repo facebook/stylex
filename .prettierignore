@@ -15,3 +15,4 @@ examples/example-cli/src
 packages/docs/.source
 devtools-extension/extension
 **/devtools-extension/extension/assets/**
+examples/example-sveltekit/.svelte-kit/**
