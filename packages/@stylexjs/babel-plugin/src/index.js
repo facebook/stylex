@@ -41,6 +41,7 @@ import transformStyleXDefineMarker from './visitors/stylex-define-marker';
 import transformStyleXDefineVarsNested from './visitors/stylex-define-vars-nested';
 import transformStyleXDefineConstsNested from './visitors/stylex-define-consts-nested';
 import transformStyleXCreateThemeNested from './visitors/stylex-create-theme-nested';
+import transformStyleXDefineTheme from './visitors/stylex-define-theme';
 
 const NAME = 'stylex';
 
@@ -365,6 +366,7 @@ function styleXTransform(): PluginObj<> {
         transformStyleXDefineVarsNested(path, state);
         transformStyleXDefineConstsNested(path, state);
         transformStyleXCreateThemeNested(path, state);
+        transformStyleXDefineTheme(path, state);
         transformStyleXCreate(path, state);
       },
     },
