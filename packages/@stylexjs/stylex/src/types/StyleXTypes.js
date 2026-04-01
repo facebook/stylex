@@ -56,8 +56,9 @@ export type XStyle<+T = NestedCSSPropTypes> = StyleXArray<
   false | ?Readonly<{ ...T, $$css: true }>,
 >;
 
-export type XStyleWithout<+T: { +[_K in keyof NestedCSSPropTypes]?: unknown }> =
-  XStyle<Readonly<Omit<NestedCSSPropTypes, keyof T>>>;
+export type XStyleWithout<
+  +T extends { +[_K in keyof NestedCSSPropTypes]?: unknown },
+> = XStyle<Readonly<Omit<NestedCSSPropTypes, keyof T>>>;
 
 export type Keyframes = Readonly<{ [name: string]: CSSProperties, ... }>;
 
@@ -133,19 +134,19 @@ type ComplexStyleValueType<+T> =
           ? ComplexStyleValueType<A> | ComplexStyleValueType<B>
           : Readonly<T>;
 
-type _MapNamespace<+CSS: { +[string]: unknown }> = Readonly<{
+type _MapNamespace<+CSS extends { +[string]: unknown }> = Readonly<{
   [Key in keyof CSS]: StyleXClassNameFor<Key, ComplexStyleValueType<CSS[Key]>>,
 }>;
-export type MapNamespace<+CSS: { +[string]: unknown }> = Readonly<{
+export type MapNamespace<+CSS extends { +[string]: unknown }> = Readonly<{
   ..._MapNamespace<CSS>,
   $$css: true,
 }>;
-export type MapNamespaces<+S: { +[string]: unknown }> = Readonly<{
+export type MapNamespaces<+S extends { +[string]: unknown }> = Readonly<{
   [Key in keyof S]: S[Key] extends (...args: infer Args) => infer Obj
     ? (...args: Args) => Readonly<[MapNamespace<Obj>, InlineStyles]>
     : MapNamespace<S[Key]>,
 }>;
-export type StyleX$Create = <const S: { +[string]: { ... } }>(
+export type StyleX$Create = <const S extends { +[string]: { ... } }>(
   styles: S,
 ) => MapNamespaces<S>;
 
@@ -158,47 +159,48 @@ export type InlineStyles = Readonly<{
   [key: string]: string,
 }>;
 
-type _GenStylePropType<+CSS: { +[string]: unknown }> = Readonly<{
+type _GenStylePropType<+CSS extends { +[string]: unknown }> = Readonly<{
   [Key in keyof CSS]: CSS[Key] extends { +[string]: unknown }
     ? StyleXClassNameFor<Key, Readonly<CSS[Key]>>
     : StyleXClassNameFor<Key, CSS[Key]>,
 }>;
-type GenStylePropType<+CSS: { +[string]: unknown }> = Readonly<{
+type GenStylePropType<+CSS extends { +[string]: unknown }> = Readonly<{
   ..._GenStylePropType<CSS>,
   $$css: true,
 }>;
 
 // Replace `XStyle` with this.
 export type StaticStyles<
-  +CSS: { +[string]: unknown } = CSSPropertiesWithExtras,
+  +CSS extends { +[string]: unknown } = CSSPropertiesWithExtras,
 > = StyleXArray<false | ?GenStylePropType<Readonly<CSS>>>;
 
-export type StaticStylesWithout<+CSS: { +[string]: unknown }> = StaticStyles<
-  Omit<CSSPropertiesWithExtras, keyof CSS>,
->;
+export type StaticStylesWithout<+CSS extends { +[string]: unknown }> =
+  StaticStyles<Omit<CSSPropertiesWithExtras, keyof CSS>>;
 
 export type StyleXStyles<
-  +CSS: { +[string]: unknown } = CSSPropertiesWithExtras,
+  +CSS extends { +[string]: unknown } = CSSPropertiesWithExtras,
 > = StyleXArray<
   | ?false
   | GenStylePropType<Readonly<CSS>>
   | Readonly<[GenStylePropType<Readonly<CSS>>, InlineStyles]>,
 >;
 
-export type StyleXStylesWithout<+CSS: { +[string]: unknown }> = StyleXStyles<
-  Omit<CSSPropertiesWithExtras, keyof CSS>,
->;
+export type StyleXStylesWithout<+CSS extends { +[string]: unknown }> =
+  StyleXStyles<Omit<CSSPropertiesWithExtras, keyof CSS>>;
 
-export type VarGroup<+Tokens: { +[string]: unknown }, +_ID: string = string> = {
+export type VarGroup<
+  +Tokens extends { +[string]: unknown },
+  +_ID extends string = string,
+> = {
   +[Key in keyof Tokens]: StyleXVar<Tokens[Key]>,
 };
 
-export type TokensFromVarGroup<+T: VarGroup<{ +[string]: unknown }>> =
+export type TokensFromVarGroup<+T extends VarGroup<{ +[string]: unknown }>> =
   Readonly<{
     [Key in keyof T]: UnwrapVar<T[Key]>,
   }>;
 
-type IDFromVarGroup<+T: VarGroup<{ +[string]: unknown }>> =
+type IDFromVarGroup<+T extends VarGroup<{ +[string]: unknown }>> =
   T extends VarGroup<{ +[string]: unknown }, infer ID> ? ID : empty;
 
 type NestedVarObject<+T> =
@@ -216,7 +218,7 @@ type TTokens = Readonly<{
 }>;
 
 type UnwrapVar<+T> = T extends StyleXVar<infer U> ? U : T;
-export type FlattenTokens<+T: TTokens> = {
+export type FlattenTokens<+T extends TTokens> = {
   +[Key in keyof T]: T[Key] extends CSSType<string | number>
     ? UnwrapVar<T[Key]>
     : T[Key] extends { +default: infer X, +[string]: infer Y }
@@ -224,20 +226,23 @@ export type FlattenTokens<+T: TTokens> = {
       : UnwrapVar<T[Key]>,
 };
 
-export type StyleX$DefineVars = <DefaultTokens: TTokens, ID: string = string>(
+export type StyleX$DefineVars = <
+  DefaultTokens extends TTokens,
+  ID extends string = string,
+>(
   tokens: DefaultTokens,
 ) => VarGroup<FlattenTokens<DefaultTokens>, ID>;
 
 export type StyleX$DefineConsts = <
-  const DefaultTokens: { +[string]: number | string },
+  const DefaultTokens extends { +[string]: number | string },
 >(
   tokens: DefaultTokens,
 ) => DefaultTokens;
 
 // opaque type ThemeKey<+_VG: VarGroup<{ +[string]: unknown }>>: string = string;
 export opaque type Theme<
-  +T: VarGroup<{ +[string]: unknown }, string>,
-  +_Tag: string = string,
+  +T extends VarGroup<{ +[string]: unknown }, string>,
+  +_Tag extends string = string,
 >: Readonly<{
   $$css: true,
   theme: StyleXClassNameFor<'theme', IDFromVarGroup<T>>,
@@ -246,13 +251,13 @@ export opaque type Theme<
   theme: StyleXClassNameFor<'theme', IDFromVarGroup<T>>,
 }>;
 
-export type OverridesForTokenType<+Config: { +[string]: unknown }> = {
+export type OverridesForTokenType<+Config extends { +[string]: unknown }> = {
   [Key in keyof Config]?: NestedVarObject<Config[Key]>,
 };
 
 export type StyleX$CreateTheme = <
-  BaseTokens: VarGroup<{ +[string]: unknown }>,
-  ID: string = string,
+  BaseTokens extends VarGroup<{ +[string]: unknown }>,
+  ID extends string = string,
 >(
   baseTokens: BaseTokens,
   overrides: OverridesForTokenType<TokensFromVarGroup<BaseTokens>>,
@@ -285,4 +290,4 @@ export type StyleX$When = {
   ) => ':where-any-sibling',
 };
 
-export type StyleX$Env = $ReadOnly<{ [string]: mixed }>;
+export type StyleX$Env = Readonly<{ [string]: unknown }>;

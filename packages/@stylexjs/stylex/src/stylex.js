@@ -64,7 +64,7 @@ const errorForFn = (name: string) =>
 const errorForType = (key: keyof typeof types) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  const S: { +[string]: unknown },
+  const S extends { +[string]: unknown },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -74,7 +74,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  const T: { +[string]: number | string },
+  const T extends { +[string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -89,7 +89,7 @@ export const defineMarker: StyleX$DefineMarker = () => {
   throw errorForFn('defineMarker');
 };
 
-export const firstThatWorks = <T: string | number>(
+export const firstThatWorks = <T extends string | number>(
   ..._styles: ReadonlyArray<T>
 ): ReadonlyArray<T> => {
   throw errorForFn('firstThatWorks');
@@ -207,57 +207,65 @@ export const when: StyleX$When = {
 export const env: StyleX$Env = Object.freeze({});
 
 export const types = {
-  angle: <T: string | 0 = string | 0>(
+  angle: <T extends string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
   ): Types.Angle<T> => {
     throw errorForType('angle');
   },
-  color: <T: string = string>(_v: ValueWithDefault<T>): Types.Color<T> => {
+  color: <T extends string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Color<T> => {
     throw errorForType('color');
   },
-  url: <T: string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
+  url: <T extends string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
     throw errorForType('url');
   },
-  image: <T: string = string>(_v: ValueWithDefault<T>): Types.Image<T> => {
+  image: <T extends string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Image<T> => {
     throw errorForType('image');
   },
-  integer: <T: number = number>(_v: ValueWithDefault<T>): Types.Integer<T> => {
+  integer: <T extends number = number>(
+    _v: ValueWithDefault<T>,
+  ): Types.Integer<T> => {
     throw errorForType('integer');
   },
-  lengthPercentage: <T: number | string = number | string>(
+  lengthPercentage: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.LengthPercentage<T> => {
     throw errorForType('lengthPercentage');
   },
-  length: <T: number | string = number | string>(
+  length: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.Length<T> => {
     throw errorForType('length');
   },
-  percentage: <T: number | string = number | string>(
+  percentage: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.Percentage<T> => {
     throw errorForType('percentage');
   },
-  number: <T: number = number>(_v: ValueWithDefault<T>): Types.Num<T> => {
+  number: <T extends number = number>(
+    _v: ValueWithDefault<T>,
+  ): Types.Num<T> => {
     throw errorForType('number');
   },
-  resolution: <T: string = string>(
+  resolution: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.Resolution<T> => {
     throw errorForType('resolution');
   },
-  time: <T: string | 0 = string | 0>(
+  time: <T extends string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
   ): Types.Time<T> => {
     throw errorForType('time');
   },
-  transformFunction: <T: string = string>(
+  transformFunction: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.TransformFunction<T> => {
     throw errorForType('transformFunction');
   },
-  transformList: <T: string = string>(
+  transformList: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.TransformList<T> => {
     throw errorForType('transformList');
@@ -281,7 +289,7 @@ type IStyleX = {
     }>,
   >,
   defineMarker: StyleX$DefineMarker,
-  firstThatWorks: <T: string | number>(
+  firstThatWorks: <T extends string | number>(
     ...v: ReadonlyArray<T>
   ) => ReadonlyArray<T>,
   keyframes: (keyframes: Keyframes) => string,
