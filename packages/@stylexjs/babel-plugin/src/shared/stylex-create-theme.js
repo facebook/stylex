@@ -8,6 +8,7 @@
  */
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
+import type { VarsConfigValue } from './stylex-vars-utils';
 
 import createHash from './hash';
 import {
@@ -15,7 +16,6 @@ import {
   priorityForAtRule,
   wrapWithAtRules,
 } from './stylex-vars-utils';
-import { isCSSType } from './types';
 import { defaultOptions } from './utils/default-options';
 
 // It takes an object of variables with their values and the original set of variables to override
@@ -23,7 +23,7 @@ import { defaultOptions } from './utils/default-options';
 //
 export default function styleXCreateTheme(
   themeVars: { +__varGroupHash__: string, +[string]: string },
-  variables: { +[string]: string | { default: string, +[string]: string } },
+  variables: { +[string]: VarsConfigValue },
   options?: StyleXOptions,
 ): [{ $$css: true, +[string]: string }, { [string]: InjectableStyle }] {
   if (typeof themeVars.__varGroupHash__ !== 'string') {
@@ -41,11 +41,12 @@ export default function styleXCreateTheme(
   const sortedKeys = Object.keys(variables).sort();
 
   for (const key of sortedKeys) {
-    const value = isCSSType(variables[key])
-      ? variables[key].value
-      : variables[key];
     const nameHash = themeVars[key].slice(6, -1);
-    collectVarsByAtRule(key, { nameHash, value }, rulesByAtRule);
+    collectVarsByAtRule(
+      key,
+      { nameHash, value: variables[key] },
+      rulesByAtRule,
+    );
   }
 
   // Sort @-rules to get a consistent unique hash value
