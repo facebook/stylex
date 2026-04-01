@@ -9,7 +9,6 @@
 
 'use strict';
 
-import getDistance from './utils/getDistance';
 import isWhiteSpaceOrEmpty from './utils/isWhiteSpaceOrEmpty';
 import type {
   CallExpression,
@@ -23,7 +22,6 @@ import type {
   Pattern,
   Program,
   Property,
-  Literal,
   Statement,
   VariableDeclaration,
   VariableDeclarator,
@@ -42,7 +40,6 @@ import isCSSVariable from './rules/isCSSVariable';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
 import {
-  CSSPropertyKeys,
   CSSProperties,
   CSSPropertyReplacements,
   pseudoElements,
@@ -192,7 +189,6 @@ const stylexValidStyles = {
 
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
-      allowRawCSSVars = true,
       allowOuterPseudoAndMedia,
       banPropsForLegacy = false,
       propLimits = {},
@@ -624,52 +620,6 @@ const stylexValidStyles = {
           }
         }
         const ruleChecker = CSSPropertiesWithOverrides[key];
-        if (ruleChecker == null) {
-          if (allowRawCSSVars && micromatch.isMatch(key, '--*')) {
-            return;
-          }
-
-          const closestKey = CSSPropertyKeys.find((cssProp) => {
-            const distance = getDistance(key, cssProp, 2);
-            return distance <= 2;
-          });
-
-          return context.report({
-            node: style.key,
-            loc: style.key.loc,
-            message: 'This is not a key that is allowed by stylex',
-            suggest:
-              closestKey != null
-                ? [
-                    {
-                      desc: `Did you mean "${closestKey}"?`,
-                      fix: (fixer) => {
-                        if (style.key.type === 'Identifier') {
-                          return fixer.replaceText(style.key, closestKey);
-                        } else if (
-                          style.key.type === 'Literal' &&
-                          (typeof style.key.value === 'string' ||
-                            typeof style.key.value === 'number' ||
-                            typeof style.key.value === 'boolean' ||
-                            style.key.value == null)
-                        ) {
-                          const styleKey: Literal = style.key;
-                          const raw = style.key.raw;
-                          if (raw != null) {
-                            const quoteType = raw.substr(0, 1);
-                            return fixer.replaceText(
-                              styleKey,
-                              `${quoteType}${closestKey}${quoteType}`,
-                            );
-                          }
-                        }
-                        return null;
-                      },
-                    },
-                  ]
-                : undefined,
-          } as Rule.ReportDescriptor);
-        }
         if (typeof ruleChecker !== 'function') {
           throw new TypeError(`CSSProperties[${key}] is not a function`);
         }
@@ -992,4 +942,3 @@ const stylexValidStyles = {
   },
 };
 export default stylexValidStyles as typeof stylexValidStyles;
-/* eslint-enable object-shorthand */
