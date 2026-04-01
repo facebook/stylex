@@ -339,5 +339,6 @@ export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   _legacyMerge.types = types;
   _legacyMerge.when = when;
   _legacyMerge.viewTransitionClass = viewTransitionClass;
+  _legacyMerge.env = env;
   return _legacyMerge;
 })();
