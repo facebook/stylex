@@ -72,6 +72,43 @@ runtimeInjection: boolean; // Default: false
 Should StyleX generate code to inject styles at runtime? This may be useful
 during development but should be disabled in production.
 
+### `sxPropName`
+
+```ts
+sxPropName?: string; // Default: 'sx'
+```
+
+Customize the prop name that should be used instead of `sx` on HTML JSX
+elements.
+
+#### Example
+
+If you want to use `css` instead of `sx`:
+
+```js
+sxPropName: 'css';
+```
+
+```tsx
+<div css={styles.foo} />
+```
+
+### `sxOutput`
+
+```ts
+sxOutput: 'as-props' | 'as-attrs'; // Default: 'as-props'
+```
+
+Controls how the `sx` JSX prop is compiled.
+
+- **as-props**: rewrites `sx={styles.foo}` to `...stylex.props(styles.foo)`,
+  producing `className`.
+- **as-attrs**: rewrites `sx={styles.foo}` to `...stylex.attrs(styles.foo)`,
+  producing `class`.
+
+This only affects the JSX `sx` shortcut. Direct calls to `stylex.props()` and
+`stylex.attrs()` keep their existing behavior.
+
 ---
 
 ### `styleResolution`

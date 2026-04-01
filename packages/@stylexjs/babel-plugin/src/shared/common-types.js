@@ -60,6 +60,8 @@ export type StyleXOptions = $ReadOnly<{
   enableLogicalStylesPolyfill?: ?boolean,
   enableLTRRTLComments?: ?boolean,
   enableMinifiedKeys?: ?boolean,
+  sxPropName?: string,
+  sxOutput?: 'as-props' | 'as-attrs',
   // runtimeInjection?:
   //   | boolean
   //   | ?string

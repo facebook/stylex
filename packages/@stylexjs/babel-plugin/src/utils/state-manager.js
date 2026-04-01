@@ -105,6 +105,7 @@ export type StyleXOptions = $ReadOnly<{
   enableLTRRTLComments?: boolean,
   enableMinifiedKeys?: boolean,
   sxPropName?: string | false,
+  sxOutput?: 'as-props' | 'as-attrs',
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
@@ -310,6 +311,13 @@ export default class StateManager {
       'options.sxPropName',
     );
 
+    const sxOutput: StyleXStateOptions['sxOutput'] = z.logAndDefault(
+      z.unionOf(z.literal('as-props'), z.literal('as-attrs')),
+      options.sxOutput ?? defaultOptions.sxOutput,
+      'as-props',
+      'options.sxOutput',
+    );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
       options.test ?? defaultOptions.test,
@@ -448,6 +456,7 @@ export default class StateManager {
       enableLogicalStylesPolyfill,
       enableLTRRTLComments,
       sxPropName,
+      sxOutput,
       importSources,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'
