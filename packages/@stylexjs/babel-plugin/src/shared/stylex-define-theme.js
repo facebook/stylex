@@ -22,7 +22,11 @@
  */
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
-import type { NestedVarsValue, Unflattened } from './stylex-nested-utils';
+import type {
+  NestedStringValue,
+  NestedVarsValue,
+  Unflattened,
+} from './stylex-nested-utils';
 
 import styleXDefineVarsNested from './stylex-define-vars-nested';
 import styleXCreateThemeNested from './stylex-create-theme-nested';
@@ -48,17 +52,20 @@ export default function styleXDefineTheme(
   );
 
   const themesResult: { [string]: { $$css: true, +[string]: string } } = {};
-  const allStyles: { [string]: InjectableStyle } = { ...tokenStyles };
+  let allStyles: { [string]: InjectableStyle } = { ...tokenStyles };
 
   if (config.themes != null) {
     for (const [themeName, overrides] of Object.entries(config.themes)) {
+      const themeVars: {
+        +__varGroupHash__: string,
+        +[string]: NestedStringValue,
+      } = tokensResult as any;
       const [themeObj, themeStyles] = styleXCreateThemeNested(
-        (tokensResult as any),
+        themeVars,
         overrides,
-        options,
       );
       themesResult[themeName] = themeObj;
-      Object.assign(allStyles, themeStyles);
+      allStyles = { ...allStyles, ...themeStyles };
     }
   }
 

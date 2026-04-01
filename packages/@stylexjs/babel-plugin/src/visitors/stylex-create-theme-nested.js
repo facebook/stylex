@@ -61,10 +61,7 @@ export default function transformStyleXCreateThemeNested(
   const secondArg = args[1];
 
   // Evaluate first arg (the defineVarsNested result) without eval config
-  const { confident: confident1, value: variables } = evaluate(
-    firstArg,
-    state,
-  );
+  const { confident: confident1, value: variables } = evaluate(firstArg, state);
   if (!confident1) {
     throw callExpressionPath.buildCodeFrameError(
       messages.nonStaticValue('unstable_createThemeNested'),

@@ -81,14 +81,16 @@ export default function transformStyleXDefineVarsNested(
     throw new Error(messages.cannotGenerateHash('unstable_defineVarsNested'));
   }
 
-  const [variablesObj, injectedStylesSansKeyframes] =
-    stylexDefineVarsNested(value, {
+  const [variablesObj, injectedStylesSansKeyframes] = stylexDefineVarsNested(
+    value,
+    {
       ...state.options,
       exportId: utils.genFileBasedIdentifier({
         fileName,
         exportName: varId.name,
       }),
-    });
+    },
+  );
 
   callExpressionPath.replaceWith(convertObjectToAST(variablesObj));
 

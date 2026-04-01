@@ -65,9 +65,12 @@ export const utils: {
 };
 export const messages: typeof m = m;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
-export const defineVarsNested: typeof styleXDefineVarsNested = styleXDefineVarsNested;
-export const defineConstsNested: typeof styleXDefineConstsNested = styleXDefineConstsNested;
-export const createThemeNested: typeof styleXCreateThemeNested = styleXCreateThemeNested;
+export const defineVarsNested: typeof styleXDefineVarsNested =
+  styleXDefineVarsNested;
+export const defineConstsNested: typeof styleXDefineConstsNested =
+  styleXDefineConstsNested;
+export const createThemeNested: typeof styleXCreateThemeNested =
+  styleXCreateThemeNested;
 export const defineTheme: typeof styleXDefineTheme = styleXDefineTheme;
 export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES =
   _PSEUDO_CLASS_PRIORITIES;

@@ -85,11 +85,10 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
-export const unstable_defineVarsNested = function stylexDefineVarsNested(
-  _styles: { +[string]: mixed },
-): mixed {
-  throw errorForFn('unstable_defineVarsNested');
-};
+export const unstable_defineVarsNested =
+  function stylexDefineVarsNested(_styles: { +[string]: mixed }): mixed {
+    throw errorForFn('unstable_defineVarsNested');
+  };
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
   const T: { +[string]: unknown },
@@ -104,12 +103,10 @@ export const unstable_createThemeNested = (
   throw errorForFn('unstable_createThemeNested');
 };
 
-export const defineTheme = function stylexDefineTheme(
-  _config: {
-    +tokens: { +[string]: mixed },
-    +themes?: { +[string]: { +[string]: mixed } },
-  },
-): mixed {
+export const defineTheme = function stylexDefineTheme(_config: {
+  +tokens: { +[string]: mixed },
+  +themes?: { +[string]: { +[string]: mixed } },
+}): mixed {
   throw errorForFn('defineTheme');
 };
 
@@ -342,7 +339,9 @@ type IStyleX = {
   types: typeof types,
   when: typeof when,
   unstable_defineVarsNested: (tokens: { +[string]: mixed }) => mixed,
-  unstable_defineConstsNested: <const T: { +[string]: unknown }>(tokens: T) => T,
+  unstable_defineConstsNested: <const T: { +[string]: unknown }>(
+    tokens: T,
+  ) => T,
   unstable_createThemeNested: (
     baseTokens: { +[string]: mixed },
     overrides: { +[string]: mixed },

@@ -42,7 +42,11 @@ export default function styleXCreateTheme(
 
   for (const key of sortedKeys) {
     const nameHash = themeVars[key].slice(6, -1);
-    collectVarsByAtRule(key, { nameHash, value: variables[key] }, rulesByAtRule);
+    collectVarsByAtRule(
+      key,
+      { nameHash, value: variables[key] },
+      rulesByAtRule,
+    );
   }
 
   // Sort @-rules to get a consistent unique hash value

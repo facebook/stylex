@@ -268,9 +268,9 @@ export type Unflattened<V> = V | { [string]: Unflattened<V> };
  */
 const SPECIAL_KEYS = new Set(['__varGroupHash__', '$$css']);
 
-export function unflattenObject<V>(
-  flatObj: { +[string]: V },
-): { [string]: Unflattened<V> } {
+export function unflattenObject<V>(flatObj: { +[string]: V }): {
+  [string]: Unflattened<V>,
+} {
   const result: { [string]: Unflattened<V> } = {};
   // Track intermediate objects by their dot-path for type-safe traversal
   const intermediates: Map<string, { [string]: Unflattened<V> }> = new Map();
