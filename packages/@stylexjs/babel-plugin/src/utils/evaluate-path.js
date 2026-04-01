@@ -267,7 +267,10 @@ function evaluateThemeRef(
     return `var(--${varName})`;
   };
 
-  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
+  // A JS proxy that uses the key to generate a string value using the `resolveKey` function.
+  // Supports dotted keys (e.g., 'button.primary.background') for nested token access
+  // across file boundaries. The MemberExpression evaluator collects the full path
+  // and passes it as a single dotted key.
   const proxy = new Proxy(
     {},
     {
@@ -442,11 +445,64 @@ function _evaluate(path: NodePath<>, state: State): any {
     return evaluateCached(path.get('expression'), state);
   }
 
+  // Collect the full member path for a chain of MemberExpressions.
+  // e.g., tokens.button.primary.background → { basePath: <tokens>, parts: ['button', 'primary', 'background'] }
+  // Returns null if the chain contains computed properties with non-static values.
+  function getFullMemberPath(
+    memberPath: NodePath<t.MemberExpression>,
+  ): ?{ basePath: NodePath<>, parts: Array<string> } {
+    const parts: Array<string> = [];
+    let current: NodePath<> = memberPath;
+
+    while (current.isMemberExpression()) {
+      const propPath = current.get('property');
+      if (current.node.computed) {
+        // Only handle static computed properties (string/number literals)
+        if (propPath.isStringLiteral()) {
+          parts.unshift(propPath.node.value);
+        } else if (propPath.isNumericLiteral()) {
+          parts.unshift(String(propPath.node.value));
+        } else {
+          return null; // Dynamic computed property — can't collect statically
+        }
+      } else if (propPath.isIdentifier()) {
+        parts.unshift(propPath.node.name);
+      } else {
+        return null;
+      }
+      current = current.get('object');
+    }
+
+    if (parts.length < 2) {
+      return null; // Single-level access — no benefit from collecting path
+    }
+
+    return { basePath: current, parts };
+  }
+
   // "foo".length
   if (
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
+    // For nested member expressions on theme ref proxies (e.g., tokens.button.primary.background),
+    // we need to collect the full path and resolve it as a single dotted key.
+    // Otherwise, the proxy returns a string for the first access and subsequent
+    // accesses fail (e.g., "var(--hash)".primary → undefined).
+    const fullPath = getFullMemberPath(path);
+    if (fullPath != null) {
+      const { basePath, parts } = fullPath;
+      const baseObject = evaluateCached(basePath, state);
+      if (!state.confident) {
+        return;
+      }
+      if (baseObject != null && typeof baseObject === 'object' && baseObject.__IS_PROXY === true) {
+        // Resolve the full dotted path at once against the proxy
+        return baseObject[parts.join('.')];
+      }
+      // Not a proxy — fall through to standard recursive evaluation
+    }
+
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
       return;
