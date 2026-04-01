@@ -53,121 +53,81 @@ function toVarsConfigValue(value: mixed): VarsConfigValue {
   return String(value ?? '');
 }
 
-// === Internal flatten implementations ===
-// These work with { +[string]: mixed } to leverage Flow's built-in typeof/isCSSType
-// narrowing, which is more reliable than implies type guards for mixed union types.
+// === Generic flatten implementation ===
+// Walks a nested object, building dot-separated keys.
+// Stops at values where isLeaf returns true.
+// Optionally transforms leaf values before storing.
 
-function flattenVarsImpl(
+function flattenImpl<T>(
   obj: { +[string]: mixed },
   prefix: string,
-  result: { [string]: VarsConfigValue | CSSType<string | number> },
+  result: { [string]: T },
+  isLeaf: (value: mixed) => boolean,
+  transformLeaf?: (value: mixed) => T,
 ): void {
   for (const key of Object.keys(obj)) {
     const value = obj[key];
     const fullKey = prefix ? `${prefix}${SEPARATOR}${key}` : key;
 
-    if (typeof value === 'string') {
-      result[fullKey] = value;
-    } else if (isCSSType(value)) {
-      result[fullKey] = value;
+    if (isLeaf(value)) {
+      result[fullKey] = transformLeaf ? transformLeaf(value) : (value: any);
     } else if (
       typeof value === 'object' &&
       value != null &&
       !Array.isArray(value)
     ) {
-      if (value.default !== undefined) {
-        // Conditional @-rule value — treat as leaf
-        result[fullKey] = toVarsConfigValue(value);
-      } else {
-        // Namespace object — recurse
-        flattenVarsImpl(value, fullKey, result);
-      }
+      flattenImpl(value, fullKey, result, isLeaf, transformLeaf);
     }
   }
 }
 
-// Like flattenVarsImpl but extracts .value from CSSType values.
-// Used for theme overrides where CSSType is unwrapped before passing to styleXCreateTheme.
-function flattenOverridesImpl(
-  obj: { +[string]: mixed },
-  prefix: string,
-  result: { [string]: VarsConfigValue },
-): void {
-  for (const key of Object.keys(obj)) {
-    const value = obj[key];
-    const fullKey = prefix ? `${prefix}${SEPARATOR}${key}` : key;
+// === Leaf detectors ===
+// Each flatten variant has its own leaf detection logic.
 
-    if (typeof value === 'string') {
-      result[fullKey] = value;
-    } else if (isCSSType(value)) {
-      // Extract the inner value from CSSType for theme overrides
-      result[fullKey] = toVarsConfigValue(value.value);
-    } else if (
-      typeof value === 'object' &&
-      value != null &&
-      !Array.isArray(value)
-    ) {
-      if (value.default !== undefined) {
-        result[fullKey] = toVarsConfigValue(value);
-      } else {
-        flattenOverridesImpl(value, fullKey, result);
-      }
-    }
+function isVarsLeaf(value: mixed): boolean {
+  if (typeof value === 'string') return true;
+  if (isCSSType(value)) return true;
+  if (typeof value === 'object' && value != null && !Array.isArray(value)) {
+    return value.default !== undefined; // conditional @-rule value
   }
+  return false;
 }
 
-function flattenStringImpl(
-  obj: { +[string]: mixed },
-  prefix: string,
-  result: { [string]: string },
-): void {
-  for (const key of Object.keys(obj)) {
-    const value = obj[key];
-    const fullKey = prefix ? `${prefix}${SEPARATOR}${key}` : key;
-
-    if (typeof value === 'string') {
-      result[fullKey] = value;
-    } else if (
-      typeof value === 'object' &&
-      value != null &&
-      !Array.isArray(value)
-    ) {
-      flattenStringImpl(value, fullKey, result);
-    }
-  }
+function isStringLeaf(value: mixed): boolean {
+  return typeof value === 'string';
 }
 
-function flattenConstsImpl(
-  obj: { +[string]: mixed },
-  prefix: string,
-  result: { [string]: string | number },
-): void {
-  for (const key of Object.keys(obj)) {
-    const value = obj[key];
-    const fullKey = prefix ? `${prefix}${SEPARATOR}${key}` : key;
+function isConstsLeaf(value: mixed): boolean {
+  return typeof value === 'string' || typeof value === 'number';
+}
 
-    if (typeof value === 'string' || typeof value === 'number') {
-      result[fullKey] = value;
-    } else if (
-      typeof value === 'object' &&
-      value != null &&
-      !Array.isArray(value)
-    ) {
-      flattenConstsImpl(value, fullKey, result);
-    }
-  }
+// === Leaf transformers ===
+// Transform leaf values into the correct output type.
+
+function transformVarsLeaf(
+  value: mixed,
+): VarsConfigValue | CSSType<string | number> {
+  if (typeof value === 'string') return value;
+  if (isCSSType(value)) return value;
+  return toVarsConfigValue(value);
+}
+
+function transformOverridesLeaf(value: mixed): VarsConfigValue {
+  if (typeof value === 'string') return value;
+  if (isCSSType(value)) return toVarsConfigValue(value.value);
+  return toVarsConfigValue(value);
 }
 
 // === Public flatten functions ===
 // These accept specific nested types (for API type safety) and delegate to
-// the mixed-based impl functions (for reliable Flow narrowing).
+// the generic flattenImpl (for code reuse).
 
 export function flattenNestedVarsConfig(
   obj: $ReadOnly<{ +[string]: NestedVarsValue }>,
   prefix: string = '',
 ): { [string]: VarsConfigValue | CSSType<string | number> } {
   const result: { [string]: VarsConfigValue | CSSType<string | number> } = {};
-  flattenVarsImpl(obj, prefix, result);
+  flattenImpl(obj, prefix, result, isVarsLeaf, transformVarsLeaf);
   return result;
 }
 
@@ -176,7 +136,7 @@ export function flattenNestedOverridesConfig(
   prefix: string = '',
 ): { [string]: VarsConfigValue } {
   const result: { [string]: VarsConfigValue } = {};
-  flattenOverridesImpl(obj, prefix, result);
+  flattenImpl(obj, prefix, result, isVarsLeaf, transformOverridesLeaf);
   return result;
 }
 
@@ -185,7 +145,7 @@ export function flattenNestedStringConfig(
   prefix: string = '',
 ): { [string]: string } {
   const result: { [string]: string } = {};
-  flattenStringImpl(obj, prefix, result);
+  flattenImpl(obj, prefix, result, isStringLeaf);
   return result;
 }
 
@@ -194,7 +154,7 @@ export function flattenNestedConstsConfig(
   prefix: string = '',
 ): { [string]: string | number } {
   const result: { [string]: string | number } = {};
-  flattenConstsImpl(obj, prefix, result);
+  flattenImpl(obj, prefix, result, isConstsLeaf);
   return result;
 }
 
