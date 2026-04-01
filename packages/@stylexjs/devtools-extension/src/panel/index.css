@@ -1,0 +1,16 @@
+@layer reset {
+  html,
+  body,
+  #root {
+    height: 100%;
+    color-scheme: light dark;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
