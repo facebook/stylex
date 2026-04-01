@@ -23,18 +23,17 @@ import type { NestedVarsValue } from './stylex-nested-utils';
 import styleXDefineVars from './stylex-define-vars';
 import { flattenNestedVarsConfig, unflattenObject } from './stylex-nested-utils';
 
-type NestedVarOutput = string | $ReadOnly<{ +[string]: NestedVarOutput }>;
+import type { Unflattened } from './stylex-nested-utils';
 
 export default function styleXDefineVarsNested(
   nestedVariables: { +[string]: NestedVarsValue },
   options: $ReadOnly<{ ...Partial<StyleXOptions>, exportId: string, ... }>,
-): [$ReadOnly<{ +[string]: NestedVarOutput }>, { [string]: InjectableStyle }] {
+): [{ [string]: Unflattened<string> }, { [string]: InjectableStyle }] {
   const flatVariables = flattenNestedVarsConfig(nestedVariables);
   const [flatResult, injectableStyles] = styleXDefineVars(flatVariables, options);
 
   const { __varGroupHash__, ...flatVarRefs } = flatResult;
-  // $FlowFixMe[incompatible-type] - unflattenObject preserves string leaf values
-  const nestedVarRefs: $ReadOnly<{ +[string]: NestedVarOutput }> = unflattenObject(flatVarRefs);
+  const nestedVarRefs = unflattenObject(flatVarRefs);
 
   return [{ ...nestedVarRefs, __varGroupHash__ }, injectableStyles];
 }
