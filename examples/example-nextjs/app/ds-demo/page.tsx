@@ -39,8 +39,8 @@ export default function XdsDemoPage() {
     <main {...stylex.props(s.page, THEMES[themeIndex].theme)}>
       {/* ── Header ──────────────────────────────────── */}
       <header {...stylex.props(s.header)}>
-        <a {...stylex.props(s.backLink)} href="/nested-demo">
-          ← Back
+        <a {...stylex.props(s.backLink)} href="/theming-demos">
+          ← Back to Theming Demos
         </a>
         <h1 {...stylex.props(s.title)}>
           Design System <span {...stylex.props(s.titleAccent)}>Theming</span> Demo

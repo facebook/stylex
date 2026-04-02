@@ -39,8 +39,8 @@ export default function NestedDemoPage() {
     >
       {/* ── Hero ────────────────────────────────────── */}
       <div {...stylex.props(s.hero)}>
-        <a {...stylex.props(s.backLink)} href="/">
-          ← Back to main demo
+        <a {...stylex.props(s.backLink)} href="/theming-demos">
+          ← Back to Theming Demos
         </a>
         <h1 {...stylex.props(s.h1)}>
           Nested <span {...stylex.props(s.plus)}>APIs</span> Demo

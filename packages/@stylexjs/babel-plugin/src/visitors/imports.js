@@ -112,6 +112,9 @@ export function readImportDeclarations(
             if (importedName === 'unstable_createThemeNested') {
               state.stylexCreateThemeNestedImport.add(localName);
             }
+            if (importedName === 'defineTheme') {
+              state.stylexDefineThemeImport.add(localName);
+            }
           }
         }
       }
@@ -208,6 +211,9 @@ export function readRequires(
           }
           if (prop.key.name === 'unstable_createThemeNested') {
             state.stylexCreateThemeNestedImport.add(value.name);
+          }
+          if (prop.key.name === 'defineTheme') {
+            state.stylexDefineThemeImport.add(value.name);
           }
         }
       }

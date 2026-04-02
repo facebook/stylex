@@ -57,14 +57,14 @@ export default function Home() {
         />
       </div>
 
-      {/* Link to dedicated nested API demo */}
-      <a {...stylex.props(style.nestedLink)} href="/nested-demo">
-        <span {...stylex.props(style.nestedLinkIcon)}>✨</span>
+      {/* Link to nested theming demos hub */}
+      <a {...stylex.props(style.nestedLink)} href="/theming-demos">
+        <span {...stylex.props(style.nestedLinkIcon)}>🎨</span>
         <span>
-          <strong>Nested APIs Demo</strong>
+          <strong>Theming Demos</strong>
           <br />
           <span {...stylex.props(style.nestedLinkSub)}>
-            Experimental APIs for defining styles with nested objects
+            Experimental APIs for expressing nested design tokens · Design system theming
           </span>
         </span>
         <span {...stylex.props(style.nestedLinkArrow)}>→</span>
