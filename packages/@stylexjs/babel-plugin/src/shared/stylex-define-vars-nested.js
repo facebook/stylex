@@ -5,6 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  *
  * @flow strict
+ *
+ * Shared transform for stylex.unstable_defineVarsNested().
+ * Thin wrapper: flatten nested input → delegate to styleXDefineVars → unflatten JS output.
+ * CSS output passes through unchanged (already flat).
+ *
+ * Example:
+ *   Input:  { button: { bg: 'red', color: 'blue' } }
+ *   Step 1: flattenNestedVarsConfig → { 'button.bg': 'red', 'button.color': 'blue' }
+ *   Step 2: styleXDefineVars       → { 'button.bg': 'var(--x1)', 'button.color': 'var(--x2)', __varGroupHash__: 'xH' }
+ *   Step 3: unflattenObject        → { button: { bg: 'var(--x1)', color: 'var(--x2)' }, __varGroupHash__: 'xH' }
  */
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
