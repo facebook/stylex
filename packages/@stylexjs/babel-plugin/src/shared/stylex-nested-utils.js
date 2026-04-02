@@ -251,6 +251,9 @@ export function flattenNestedConstsConfig(
 
 // === Unflatten ===
 
+// Recursive unflattened value: either a leaf V or a nested object of more Unflattened<V>.
+export type Unflattened<V> = V | { [string]: Unflattened<V> };
+
 /**
  * Rebuilds a nested object from dot-separated flat keys.
  * This is the reverse of flattenImpl — used to convert the flat output
@@ -265,12 +268,12 @@ export function flattenNestedConstsConfig(
  */
 const SPECIAL_KEYS = new Set(['__varGroupHash__', '$$css']);
 
-export function unflattenObject(
-  flatObj: { +[string]: mixed },
-): { [string]: mixed } {
-  const result: { [string]: mixed } = {};
+export function unflattenObject<V>(
+  flatObj: { +[string]: V },
+): { [string]: Unflattened<V> } {
+  const result: { [string]: Unflattened<V> } = {};
   // Track intermediate objects by their dot-path for type-safe traversal
-  const intermediates: Map<string, { [string]: mixed }> = new Map();
+  const intermediates: Map<string, { [string]: Unflattened<V> }> = new Map();
   intermediates.set('', result);
 
   for (const key of Object.keys(flatObj)) {
@@ -284,7 +287,7 @@ export function unflattenObject(
 
     // Walk/create intermediate namespace objects
     let pathSoFar = '';
-    let current: { [string]: mixed } = result;
+    let current: { [string]: Unflattened<V> } = result;
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
@@ -294,7 +297,7 @@ export function unflattenObject(
       if (existing != null) {
         current = existing;
       } else {
-        const newObj: { [string]: mixed } = {};
+        const newObj: { [string]: Unflattened<V> } = {};
         current[part] = newObj;
         intermediates.set(nextPath, newObj);
         current = newObj;

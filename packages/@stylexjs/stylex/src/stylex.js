@@ -86,8 +86,8 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
 };
 
 export const unstable_defineVarsNested = function stylexDefineVarsNested(
-  _styles: $FlowFixMe,
-) {
+  _styles: { +[string]: mixed },
+): mixed {
   throw errorForFn('unstable_defineVarsNested');
 };
 
@@ -98,9 +98,9 @@ export const unstable_defineConstsNested = function stylexDefineConstsNested<
 };
 
 export const unstable_createThemeNested = (
-  _baseTokens: $FlowFixMe,
-  _overrides: $FlowFixMe,
-) => {
+  _baseTokens: { +[string]: mixed },
+  _overrides: { +[string]: mixed },
+): mixed => {
   throw errorForFn('unstable_createThemeNested');
 };
 
@@ -332,9 +332,12 @@ type IStyleX = {
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
-  unstable_defineVarsNested: (...args: $FlowFixMe) => $FlowFixMe,
-  unstable_defineConstsNested: (...args: $FlowFixMe) => $FlowFixMe,
-  unstable_createThemeNested: (...args: $FlowFixMe) => $FlowFixMe,
+  unstable_defineVarsNested: (tokens: { +[string]: mixed }) => mixed,
+  unstable_defineConstsNested: <const T: { +[string]: unknown }>(tokens: T) => T,
+  unstable_createThemeNested: (
+    baseTokens: { +[string]: mixed },
+    overrides: { +[string]: mixed },
+  ) => mixed,
   __customProperties?: { [string]: unknown },
   ...
 };
