@@ -38,6 +38,9 @@ import {
   LOGICAL_FLOAT_END_VAR,
 } from './shared/preprocess-rules/legacy-expand-shorthands';
 import transformStyleXDefineMarker from './visitors/stylex-define-marker';
+import transformStyleXDefineVarsNested from './visitors/stylex-define-vars-nested';
+import transformStyleXDefineConstsNested from './visitors/stylex-define-consts-nested';
+import transformStyleXCreateThemeNested from './visitors/stylex-create-theme-nested';
 
 const NAME = 'stylex';
 
@@ -359,6 +362,9 @@ function styleXTransform(): PluginObj<> {
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
+        transformStyleXDefineVarsNested(path, state);
+        transformStyleXDefineConstsNested(path, state);
+        transformStyleXCreateThemeNested(path, state);
         transformStyleXCreate(path, state);
       },
     },
