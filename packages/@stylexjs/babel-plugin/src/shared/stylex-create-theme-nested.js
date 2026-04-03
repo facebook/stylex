@@ -39,5 +39,5 @@ export default function styleXCreateThemeNested(
 
   const flatOverrides = flattenNestedOverridesConfig(nestedOverrides);
 
-  return styleXCreateTheme(flatThemeVars, flatOverrides, options);
+  return styleXCreateTheme(flatThemeVars, flatOverrides as any, options);
 }

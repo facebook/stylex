@@ -210,21 +210,43 @@ describe('stylex-nested-utils', () => {
     });
 
     test('differs from flattenNestedVarsConfig for objects with "default" key', () => {
-      const input = {
+      // With the tightened heuristic, { default: 'blue', hovered: 'darkblue' }
+      // is treated as a NAMESPACE by both vars and consts flatteners because
+      // 'hovered' doesn't start with '@'. Only objects where ALL non-default
+      // keys start with '@' are treated as conditional leaves by vars.
+      const inputWithNonAtKeys = {
         color: { default: 'blue', hovered: 'darkblue' },
       };
 
-      // flattenNestedVarsConfig treats { default: ... } as a leaf (for vars with @-rules)
-      const varsResult = flattenNestedVarsConfig(input);
+      // Both treat this as a namespace (hovered is not an @-rule key)
+      const varsResult = flattenNestedVarsConfig(inputWithNonAtKeys);
       expect(varsResult).toEqual({
-        color: { default: 'blue', hovered: 'darkblue' },
+        'color.default': 'blue',
+        'color.hovered': 'darkblue',
       });
 
-      // flattenNestedConstsConfig treats it as a namespace (consts have no @-rules)
-      const constsResult = flattenNestedConstsConfig(input);
+      const constsResult = flattenNestedConstsConfig(inputWithNonAtKeys);
       expect(constsResult).toEqual({
         'color.default': 'blue',
         'color.hovered': 'darkblue',
+      });
+
+      // WHERE THEY DIFFER: objects with @-rule keys
+      const inputWithAtRuleKeys = {
+        color: { default: 'blue', '@media (prefers-color-scheme: dark)': 'darkblue' },
+      };
+
+      // Vars flattener treats this as a LEAF (conditional @-rule value)
+      const varsResult2 = flattenNestedVarsConfig(inputWithAtRuleKeys);
+      expect(varsResult2).toEqual({
+        color: { default: 'blue', '@media (prefers-color-scheme: dark)': 'darkblue' },
+      });
+
+      // Consts flattener treats this as a NAMESPACE (consts don't support @-rules)
+      const constsResult2 = flattenNestedConstsConfig(inputWithAtRuleKeys);
+      expect(constsResult2).toEqual({
+        'color.default': 'blue',
+        'color.@media (prefers-color-scheme: dark)': 'darkblue',
       });
     });
 

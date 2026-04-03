@@ -48,17 +48,16 @@ export default function styleXDefineTheme(
   );
 
   const themesResult: { [string]: { $$css: true, +[string]: string } } = {};
-  const allStyles: { [string]: InjectableStyle } = { ...tokenStyles };
+  let allStyles: { [string]: InjectableStyle } = { ...tokenStyles };
 
   if (config.themes != null) {
     for (const [themeName, overrides] of Object.entries(config.themes)) {
       const [themeObj, themeStyles] = styleXCreateThemeNested(
-        (tokensResult as any),
+        tokensResult as any,
         overrides,
-        options,
       );
       themesResult[themeName] = themeObj;
-      Object.assign(allStyles, themeStyles);
+      allStyles = { ...allStyles, ...themeStyles };
     }
   }
 

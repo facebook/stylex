@@ -132,7 +132,13 @@ function isVarsLeaf(value: mixed): boolean {
   if (typeof value === 'string') return true;
   if (isCSSType(value)) return true;
   if (typeof value === 'object' && value != null && !Array.isArray(value)) {
-    return value.default !== undefined; // conditional @-rule value
+    // A conditional @-rule value has a 'default' key AND all other keys start with '@'.
+    // e.g., { default: 'blue', '@media (...)': 'dark' } → conditional leaf
+    // An object like { default: cond(...), hovered: cond(...) } has non-@ keys
+    // → it's a namespace, not a conditional.
+    if (value.default === undefined) return false;
+    const keys = Object.keys(value);
+    return keys.every((k) => k === 'default' || k.startsWith('@'));
   }
   return false;
 }
@@ -268,9 +274,9 @@ export type Unflattened<V> = V | { [string]: Unflattened<V> };
  */
 const SPECIAL_KEYS = new Set(['__varGroupHash__', '$$css']);
 
-export function unflattenObject<V>(
-  flatObj: { +[string]: V },
-): { [string]: Unflattened<V> } {
+export function unflattenObject<V>(flatObj: { +[string]: V }): {
+  [string]: Unflattened<V>,
+} {
   const result: { [string]: Unflattened<V> } = {};
   // Track intermediate objects by their dot-path for type-safe traversal
   const intermediates: Map<string, { [string]: Unflattened<V> }> = new Map();

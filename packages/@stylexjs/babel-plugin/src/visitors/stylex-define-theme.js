@@ -12,11 +12,7 @@ import type { InjectableStyle } from '../shared';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import {
-  defineTheme as stylexDefineTheme,
-  messages,
-  utils,
-} from '../shared';
+import { defineTheme as stylexDefineTheme, messages, utils } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import { isCallTo, buildEvalConfig } from './visitor-utils';
@@ -79,7 +75,7 @@ export default function transformStyleXDefineTheme(
   // For destructured patterns (ObjectPattern), walk ancestors to find ExportNamedDeclaration.
   let isExported: boolean;
   if (isDestructured) {
-    let ancestor = variableDeclaratorPath.parentPath;
+    let ancestor: ?NodePath<> = variableDeclaratorPath.parentPath;
     isExported = false;
     while (ancestor != null && !ancestor.isProgram()) {
       if (ancestor.isExportNamedDeclaration()) {
@@ -140,7 +136,7 @@ export default function transformStyleXDefineTheme(
   }
 
   // Determine exportId for hash generation
-  const exportName = isSingleBinding ? (idNode: t.Identifier).name : 'tokens';
+  const exportName = idNode.type === 'Identifier' ? idNode.name : 'tokens';
 
   const fileName = state.fileNameForHashing;
   if (fileName == null) {
@@ -160,27 +156,30 @@ export default function transformStyleXDefineTheme(
   );
 
   // Dev/Test mode: add readable class names to themes
-  let finalThemesResult = themesResult;
+  let finalThemesResult: { [string]: { $$css: true, +[string]: string } } =
+    themesResult;
   if (state.isTest || state.isDev) {
     const baseName = path
       .basename(state.filename ?? 'UnknownFile')
       .split('.')[0];
-    finalThemesResult = {};
+    const devThemesResult: { [string]: { $$css: true, +[string]: string } } =
+      {};
     for (const [themeName, themeObj] of Object.entries(themesResult)) {
       const devClassName = `${baseName}__${themeName}`;
       if (state.isTest) {
-        finalThemesResult[themeName] = {
+        devThemesResult[themeName] = {
           [devClassName]: devClassName,
           $$css: true,
         };
       } else {
         // $FlowFixMe[cannot-spread-indexer]
-        finalThemesResult[themeName] = {
+        devThemesResult[themeName] = {
           [devClassName]: devClassName,
           ...themeObj,
         };
       }
     }
+    finalThemesResult = devThemesResult;
   }
 
   // Register CSS before AST replacement (paths may be invalidated after replace)
@@ -204,14 +203,20 @@ export default function transformStyleXDefineTheme(
     };
 
     const newDeclarations: Array<t.VariableDeclaration> = [];
-    for (const prop of (idNode: t.ObjectPattern).properties) {
+    if (idNode.type !== 'ObjectPattern') return;
+    for (const prop of idNode.properties) {
       if (
         prop.type === 'ObjectProperty' &&
         prop.key.type === 'Identifier' &&
         prop.value.type === 'Identifier'
       ) {
         const key: string = prop.key.name;
-        const localName: string = (prop.value: t.Identifier).name;
+        const localName: string =
+          prop.value.type === 'Identifier'
+            ? prop.value.name
+            : prop.key.type === 'Identifier'
+              ? prop.key.name
+              : '';
         const value = fullResult[key];
         if (value == null) {
           throw callExpressionPath.buildCodeFrameError(
@@ -224,7 +229,7 @@ export default function transformStyleXDefineTheme(
           t.variableDeclaration('const', [
             t.variableDeclarator(
               t.identifier(localName),
-              convertObjectToAST(value),
+              convertObjectToAST(value as any),
             ),
           ]),
         );

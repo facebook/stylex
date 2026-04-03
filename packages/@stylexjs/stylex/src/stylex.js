@@ -85,11 +85,16 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
-export const unstable_defineVarsNested = function stylexDefineVarsNested(
-  _styles: { +[string]: mixed },
-): mixed {
-  throw errorForFn('unstable_defineVarsNested');
+export const unstable_conditional = function stylexConditional<
+  const T: { +default: mixed, +[string]: mixed },
+>(_value: T): T {
+  throw errorForFn('unstable_conditional');
 };
+
+export const unstable_defineVarsNested =
+  function stylexDefineVarsNested(_styles: { +[string]: mixed }): mixed {
+    throw errorForFn('unstable_defineVarsNested');
+  };
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
   const T: { +[string]: unknown },
@@ -104,12 +109,10 @@ export const unstable_createThemeNested = (
   throw errorForFn('unstable_createThemeNested');
 };
 
-export const defineTheme = function stylexDefineTheme(
-  _config: {
-    +tokens: { +[string]: mixed },
-    +themes?: { +[string]: { +[string]: mixed } },
-  },
-): mixed {
+export const defineTheme = function stylexDefineTheme(_config: {
+  +tokens: { +[string]: mixed },
+  +themes?: { +[string]: { +[string]: mixed } },
+}): mixed {
   throw errorForFn('defineTheme');
 };
 
@@ -341,8 +344,13 @@ type IStyleX = {
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
+  unstable_conditional: <const T: { +default: mixed, +[string]: mixed }>(
+    value: T,
+  ) => T,
   unstable_defineVarsNested: (tokens: { +[string]: mixed }) => mixed,
-  unstable_defineConstsNested: <const T: { +[string]: unknown }>(tokens: T) => T,
+  unstable_defineConstsNested: <const T: { +[string]: unknown }>(
+    tokens: T,
+  ) => T,
   unstable_createThemeNested: (
     baseTokens: { +[string]: mixed },
     overrides: { +[string]: mixed },
@@ -378,6 +386,7 @@ export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   _legacyMerge.when = when;
   _legacyMerge.viewTransitionClass = viewTransitionClass;
   _legacyMerge.env = env;
+  _legacyMerge.unstable_conditional = unstable_conditional;
   _legacyMerge.unstable_defineVarsNested = unstable_defineVarsNested;
   _legacyMerge.unstable_defineConstsNested = unstable_defineConstsNested;
   _legacyMerge.unstable_createThemeNested = unstable_createThemeNested;
