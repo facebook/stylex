@@ -3141,6 +3141,33 @@ insetTester.run('stylex-valid-shorthands (inset)', rule.default, {
         },
       ],
     },
+    // inset: 2-value expansion with preferInline
+    {
+      options: [{ preferInline: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            inset: '0 10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetBlock: '0',
+            insetInline: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "inset: 0 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
     // inset: 3-value expansion
     {
       code: `
