@@ -156,14 +156,13 @@ export default function transformStyleXDefineTheme(
   );
 
   // Dev/Test mode: add readable class names to themes
-  let finalThemesResult: { [string]: { $$css: true, +[string]: string } } =
+  let finalThemesResult: { [string]: { +[string]: string | boolean } } =
     themesResult;
   if (state.isTest || state.isDev) {
     const baseName = path
       .basename(state.filename ?? 'UnknownFile')
       .split('.')[0];
-    const devThemesResult: { [string]: { $$css: true, +[string]: string } } =
-      {};
+    const devThemesResult: { [string]: { +[string]: string | boolean } } = {};
     for (const [themeName, themeObj] of Object.entries(themesResult)) {
       const devClassName = `${baseName}__${themeName}`;
       if (state.isTest) {

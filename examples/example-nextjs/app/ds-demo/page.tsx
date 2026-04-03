@@ -8,8 +8,6 @@
  * (Primitives → Semantics → Themes) using the nested APIs.
  */
 
-// @ts-nocheck — nested APIs are experimental and lack TS type definitions.
-
 'use client';
 
 import { useState } from 'react';
@@ -208,8 +206,8 @@ export default function XdsDemoPage() {
           <strong>defineTheme() Demo</strong>
           <br />
           <span {...stylex.props(s.demoLinkSub)}>
-            A single defineTheme() call that bundles token definitions and
-            theme variants together
+            A single defineTheme() call that bundles token definitions and theme
+            variants together
           </span>
         </span>
         <span {...stylex.props(s.demoLinkArrow)}>→</span>

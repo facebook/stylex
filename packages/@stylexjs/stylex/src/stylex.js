@@ -91,10 +91,11 @@ export const unstable_conditional = function stylexConditional<
   throw errorForFn('unstable_conditional');
 };
 
-export const unstable_defineVarsNested =
-  function stylexDefineVarsNested(_styles: { +[string]: mixed }): mixed {
-    throw errorForFn('unstable_defineVarsNested');
-  };
+export const unstable_defineVarsNested = function stylexDefineVarsNested<
+  const T: { +[string]: mixed },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineVarsNested');
+};
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
   const T: { +[string]: unknown },
@@ -105,14 +106,22 @@ export const unstable_defineConstsNested = function stylexDefineConstsNested<
 export const unstable_createThemeNested = (
   _baseTokens: { +[string]: mixed },
   _overrides: { +[string]: mixed },
-): mixed => {
+): CompiledStyles => {
   throw errorForFn('unstable_createThemeNested');
 };
 
-export const defineTheme = function stylexDefineTheme(_config: {
-  +tokens: { +[string]: mixed },
-  +themes?: { +[string]: { +[string]: mixed } },
-}): mixed {
+export const defineTheme = function stylexDefineTheme<
+  const T: { +[string]: mixed },
+  const Themes: { +[string]: { +[string]: mixed } } = {
+    +[string]: { +[string]: mixed },
+  },
+>(_config: {
+  +tokens: T,
+  +themes?: Themes,
+}): $ReadOnly<{
+  tokens: T,
+  themes: $ReadOnly<{ +[string]: CompiledStyles }>,
+}> {
   throw errorForFn('defineTheme');
 };
 

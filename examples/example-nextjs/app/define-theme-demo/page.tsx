@@ -15,8 +15,6 @@
  * (unstable_defineVarsNested + unstable_createThemeNested).
  */
 
-// @ts-nocheck — defineTheme is experimental and lacks TS type definitions.
-
 'use client';
 
 import { useState } from 'react';
@@ -612,7 +610,6 @@ export const { tokens, themes } =
           ))}
         </div>
       </section>
-
     </main>
   );
 }

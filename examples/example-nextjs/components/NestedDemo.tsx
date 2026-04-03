@@ -19,13 +19,7 @@ type Props = Readonly<{
 
 export default function NestedDemo({ useWarmTheme = false }: Props) {
   return (
-    <div
-      {...stylex.props(
-        styles.container,
-        // @ts-expect-error -- nested APIs lack TS types (Flow-only for now)
-        useWarmTheme ? warmTheme : null,
-      )}
-    >
+    <div {...stylex.props(styles.container, useWarmTheme ? warmTheme : null)}>
       <h2 {...stylex.props(styles.heading)}>Nested Tokens Demo</h2>
       <p {...stylex.props(styles.description)}>
         These badges use{' '}

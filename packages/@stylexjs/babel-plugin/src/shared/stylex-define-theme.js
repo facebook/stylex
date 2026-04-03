@@ -34,7 +34,7 @@ type DefineThemeConfig = {
 
 type DefineThemeResult = {
   tokensResult: { [string]: Unflattened<string> },
-  themesResult: { [string]: { $$css: true, +[string]: string } },
+  themesResult: { [string]: { +[string]: string | boolean } },
   injectableStyles: { [string]: InjectableStyle },
 };
 
@@ -47,7 +47,7 @@ export default function styleXDefineTheme(
     options,
   );
 
-  const themesResult: { [string]: { $$css: true, +[string]: string } } = {};
+  const themesResult: { [string]: { +[string]: string | boolean } } = {};
   let allStyles: { [string]: InjectableStyle } = { ...tokenStyles };
 
   if (config.themes != null) {

@@ -228,6 +228,15 @@ const stylexValidStyles = {
       );
     }
     const stylexResolvedVarsTokenImports = new Set<string>();
+
+    // Track same-file defineVars/defineVarsNested/defineConstsNested declarations.
+    const currentFilename =
+      context.getFilename != null ? context.getFilename() : '';
+    const isStylexFile = isValidStylexResolvedVarsFileExtension(
+      currentFilename,
+      themeFileExtension,
+    );
+
     const styleXDefaultImports = new Set<string>();
     const styleXCreateImports = new Set<string>();
     const styleXKeyframesImports = new Set<string>();
@@ -913,6 +922,18 @@ const stylexValidStyles = {
               stylexResolvedVarsTokenImports.add(specifier.local.name);
             }
           });
+        }
+      },
+      // Track same-file token declarations in .stylex files.
+      // This handles the case where defineVars/defineVarsNested/defineConstsNested
+      // is defined and consumed via stylex.create in the same .stylex file.
+      ExportNamedDeclaration(node: any): void {
+        if (isStylexFile && node.declaration?.type === 'VariableDeclaration') {
+          for (const decl of node.declaration.declarations) {
+            if (decl.id?.type === 'Identifier') {
+              stylexResolvedVarsTokenImports.add(decl.id.name);
+            }
+          }
         }
       },
       CallExpression(node: { ...CallExpression, ...Rule.NodeParentExtension }) {

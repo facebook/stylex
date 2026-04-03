@@ -14,8 +14,6 @@
  * The demo page shows the defineTheme API side-by-side.
  */
 
-// @ts-nocheck — nested APIs are experimental and lack TS type definitions.
-
 import * as stylex from '@stylexjs/stylex';
 
 const DARK = '@media (prefers-color-scheme: dark)';
