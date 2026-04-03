@@ -3974,6 +3974,32 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
         },
       ],
     },
+    // columns: 'auto 200px' → columnWidth + columnCount
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            columns: 'auto 200px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            columnWidth: '200px',
+            columnCount: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "columns: auto 200px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
     // listStyle: 'square inside' → listStyleType + listStylePosition
     {
       code: `
@@ -4024,6 +4050,85 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
         {
           message:
             'Property shorthands using multiple values like "listStyle: disc inside url(bullet.png)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // listStyle: 'none inside' → type + position + image
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            listStyle: 'none inside',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            listStyleType: 'none',
+            listStylePosition: 'inside',
+            listStyleImage: 'none',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "listStyle: none inside" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // listStyle: 'none url(bullet.png)' → type + image
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            listStyle: 'none url(bullet.png)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            listStyleType: 'none',
+            listStyleImage: 'url(bullet.png)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "listStyle: none url(bullet.png)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // listStyle: 'url(bullet.png) none' → type + image
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            listStyle: 'url(bullet.png) none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            listStyleType: 'none',
+            listStyleImage: 'url(bullet.png)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "listStyle: url(bullet.png) none" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

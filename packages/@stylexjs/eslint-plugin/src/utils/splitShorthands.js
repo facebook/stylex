@@ -718,6 +718,10 @@ function isAnimationIterationCount(value: string): boolean {
   return lower === 'infinite' || /^(?:\d+|\d*\.\d+)$/.test(lower);
 }
 
+function isPositiveInteger(value: string): boolean {
+  return /^[1-9]\d*$/.test(value);
+}
+
 function expandAnimationShorthand(
   parts: Array<ValuePart>,
   hasTopLevelComma: boolean,
@@ -1255,28 +1259,46 @@ export function splitSpecificShorthands(
       return [['columns', isNumber ? Number(rawValue) : rawValue]];
     }
     if (vals.length === 2) {
+      const [first, second] = vals;
+      const firstLower = first.toLowerCase();
+      const secondLower = second.toLowerCase();
+      const firstIsAuto = firstLower === 'auto';
+      const secondIsAuto = secondLower === 'auto';
+      const firstIsCount = isPositiveInteger(first);
+      const secondIsCount = isPositiveInteger(second);
+
       let width = null;
       let count = null;
-      for (const val of vals) {
-        const lower = val.toLowerCase();
-        if (lower === 'auto') {
-          if (width == null) {
-            width = val;
-          } else if (count == null) {
-            count = val;
-          } else {
-            return [['columns', CANNOT_FIX]];
-          }
-          continue;
+
+      if (firstIsAuto && secondIsAuto) {
+        width = first;
+        count = second;
+      } else if (firstIsAuto) {
+        if (secondIsCount) {
+          width = first;
+          count = second;
+        } else {
+          width = second;
+          count = first;
         }
-        if (/^\d+$/.test(val)) {
-          if (count != null) return [['columns', CANNOT_FIX]];
-          count = val;
-          continue;
+      } else if (secondIsAuto) {
+        if (firstIsCount) {
+          width = second;
+          count = first;
+        } else {
+          width = first;
+          count = second;
         }
-        if (width != null) return [['columns', CANNOT_FIX]];
-        width = val;
+      } else if (firstIsCount && !secondIsCount) {
+        width = second;
+        count = first;
+      } else if (secondIsCount && !firstIsCount) {
+        width = first;
+        count = second;
+      } else {
+        return [['columns', CANNOT_FIX]];
       }
+
       const entries: Array<[string, string]> = [];
       if (width != null)
         entries.push(['columnWidth', applyImportant(width, importantSuffix)]);
@@ -1300,6 +1322,7 @@ export function splitSpecificShorthands(
     let type = null;
     let position = null;
     let image = null;
+    let noneCount = 0;
     for (const val of vals) {
       const lower = val.toLowerCase();
       if (LIST_STYLE_POSITION_KEYWORDS.has(lower)) {
@@ -1307,7 +1330,11 @@ export function splitSpecificShorthands(
         position = val;
         continue;
       }
-      if (lower === 'none' || IMAGE_FUNCTION_REGEX.test(lower)) {
+      if (lower === 'none') {
+        noneCount += 1;
+        continue;
+      }
+      if (IMAGE_FUNCTION_REGEX.test(lower)) {
         if (image != null) return [['listStyle', CANNOT_FIX]];
         image = val;
         continue;
@@ -1315,6 +1342,23 @@ export function splitSpecificShorthands(
       if (type != null) return [['listStyle', CANNOT_FIX]];
       type = val;
     }
+
+    if (noneCount > 0) {
+      if (type == null && image == null) {
+        if (noneCount > 2) return [['listStyle', CANNOT_FIX]];
+        type = 'none';
+        image = 'none';
+      } else if (type == null) {
+        if (noneCount > 1) return [['listStyle', CANNOT_FIX]];
+        type = 'none';
+      } else if (image == null) {
+        if (noneCount > 1) return [['listStyle', CANNOT_FIX]];
+        image = 'none';
+      } else {
+        return [['listStyle', CANNOT_FIX]];
+      }
+    }
+
     const entries: Array<[string, string]> = [];
     if (type != null)
       entries.push(['listStyleType', applyImportant(type, importantSuffix)]);
