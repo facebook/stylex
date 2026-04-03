@@ -21,7 +21,12 @@
 
 import { useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
-import { tokens, sunsetTheme, forestTheme, lavenderTheme } from './tokens.stylex';
+import {
+  tokens,
+  sunsetTheme,
+  forestTheme,
+  lavenderTheme,
+} from './tokens.stylex';
 
 const DARK = '@media (prefers-color-scheme: dark)';
 const MOBILE = '@media (max-width: 700px)';
@@ -35,8 +40,7 @@ const THEME_LIST = [
 
 const FONT_SANS =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-const FONT_MONO =
-  'ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace';
+const FONT_MONO = 'ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace';
 
 // ─── Styles ──────────────────────────────────────────────────
 const s = stylex.create({
@@ -123,7 +127,10 @@ const s = stylex.create({
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: tokens.color.border,
-    backgroundColor: { default: 'transparent', ':hover': tokens.color.surfaceHover },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': tokens.color.surfaceHover,
+    },
     color: tokens.color.textPrimary,
     cursor: 'pointer',
     fontSize: '0.875rem',
@@ -194,7 +201,10 @@ const s = stylex.create({
   pre: {
     margin: 0,
     padding: tokens.spacing.sm,
-    backgroundColor: { default: 'rgba(0,0,0,0.03)', [DARK]: 'rgba(255,255,255,0.05)' },
+    backgroundColor: {
+      default: 'rgba(0,0,0,0.03)',
+      [DARK]: 'rgba(255,255,255,0.05)',
+    },
     borderRadius: tokens.radius.sm,
     fontSize: '0.72rem',
     fontFamily: FONT_MONO,
@@ -261,7 +271,10 @@ const s = stylex.create({
     paddingBlock: tokens.spacing.sm,
     borderRadius: tokens.radius.md,
     borderWidth: 0,
-    backgroundColor: { default: 'transparent', ':hover': tokens.color.accentSoft },
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': tokens.color.accentSoft,
+    },
     color: tokens.color.accent,
     fontWeight: 600,
     fontSize: '0.85rem',
@@ -365,13 +378,25 @@ const s = stylex.create({
     fontFamily: FONT_MONO,
     color: tokens.color.textMuted,
   },
-  swAccent: { backgroundColor: tokens.color.accent, borderColor: tokens.color.accentBorder },
+  swAccent: {
+    backgroundColor: tokens.color.accent,
+    borderColor: tokens.color.accentBorder,
+  },
   swAccentSoft: { backgroundColor: tokens.color.accentSoft },
   swBg: { backgroundColor: tokens.color.bg },
   swSurface: { backgroundColor: tokens.color.surface },
-  swSuccess: { backgroundColor: tokens.color.success, borderColor: 'rgba(22,163,74,0.25)' },
-  swWarning: { backgroundColor: tokens.color.warning, borderColor: 'rgba(217,119,6,0.25)' },
-  swError: { backgroundColor: tokens.color.error, borderColor: 'rgba(220,38,38,0.25)' },
+  swSuccess: {
+    backgroundColor: tokens.color.success,
+    borderColor: 'rgba(22,163,74,0.25)',
+  },
+  swWarning: {
+    backgroundColor: tokens.color.warning,
+    borderColor: 'rgba(217,119,6,0.25)',
+  },
+  swError: {
+    backgroundColor: tokens.color.error,
+    borderColor: 'rgba(220,38,38,0.25)',
+  },
   howGrid: {
     display: 'grid',
     gridTemplateColumns: { default: 'repeat(3, 1fr)', [MOBILE]: '1fr' },
@@ -408,7 +433,10 @@ const s = stylex.create({
   howPre: {
     margin: 0,
     padding: tokens.spacing.sm,
-    backgroundColor: { default: 'rgba(0,0,0,0.03)', [DARK]: 'rgba(255,255,255,0.05)' },
+    backgroundColor: {
+      default: 'rgba(0,0,0,0.03)',
+      [DARK]: 'rgba(255,255,255,0.05)',
+    },
     borderRadius: tokens.radius.sm,
     fontSize: '0.65rem',
     fontFamily: FONT_MONO,
@@ -436,7 +464,10 @@ const s = stylex.create({
   code: {
     fontFamily: FONT_MONO,
     fontSize: '0.85em',
-    backgroundColor: { default: 'rgba(0,0,0,0.04)', [DARK]: 'rgba(255,255,255,0.08)' },
+    backgroundColor: {
+      default: 'rgba(0,0,0,0.04)',
+      [DARK]: 'rgba(255,255,255,0.08)',
+    },
     paddingInline: '0.3em',
     paddingBlock: '0.1em',
     borderRadius: '4px',
@@ -450,7 +481,9 @@ export default function DefineThemeDemo() {
   return (
     <main {...stylex.props(s.page, THEME_LIST[themeIndex].theme)}>
       <header {...stylex.props(s.header)}>
-        <a {...stylex.props(s.backLink)} href="/theming-demos">← Back to Theming Demos</a>
+        <a {...stylex.props(s.backLink)} href="/theming-demos">
+          ← Back to Theming Demos
+        </a>
         <h1 {...stylex.props(s.title)}>
           <code {...stylex.props(s.titleCode)}>defineTheme</code>{' '}
           <span {...stylex.props(s.titleAccent)}>Demo</span>
@@ -468,7 +501,10 @@ export default function DefineThemeDemo() {
             <button
               key={t.name}
               onClick={() => setThemeIndex(i)}
-              {...stylex.props(s.pickerBtn, i === themeIndex && s.pickerBtnActive)}
+              {...stylex.props(
+                s.pickerBtn,
+                i === themeIndex && s.pickerBtnActive,
+              )}
             >
               {t.emoji} {t.name}
             </button>
@@ -481,7 +517,7 @@ export default function DefineThemeDemo() {
           <div {...stylex.props(s.compareCard, s.compareCardAfter)}>
             <p {...stylex.props(s.compareLabel, s.compareLabelAfter)}>USAGE</p>
             <pre {...stylex.props(s.pre)}>
-{`// tokens.stylex.ts — co-located definition
+              {`// tokens.stylex.ts — co-located definition
 export const { tokens, themes } =
   stylex.defineTheme({
     tokens: {
@@ -501,7 +537,9 @@ export const { tokens, themes } =
       <section {...stylex.props(s.section)}>
         <h2 {...stylex.props(s.sectionTitle)}>🧩 Component Showcase</h2>
         <p {...stylex.props(s.sectionDesc)}>
-          All components reference <code {...stylex.props(s.code)}>tokens.*</code> — switch themes and watch everything update
+          All components reference{' '}
+          <code {...stylex.props(s.code)}>tokens.*</code> — switch themes and
+          watch everything update
         </p>
         <div {...stylex.props(s.showcaseGrid)}>
           <div {...stylex.props(s.showcaseCard)}>
@@ -523,7 +561,11 @@ export const { tokens, themes } =
           </div>
           <div {...stylex.props(s.showcaseCard)}>
             <p {...stylex.props(s.showcaseLabel)}>Input</p>
-            <input {...stylex.props(s.input)} placeholder="Type something..." readOnly />
+            <input
+              {...stylex.props(s.input)}
+              placeholder="Type something..."
+              readOnly
+            />
           </div>
           <div {...stylex.props(s.showcaseCard)}>
             <p {...stylex.props(s.showcaseLabel)}>Elevated Card</p>
@@ -540,15 +582,17 @@ export const { tokens, themes } =
       <section {...stylex.props(s.section)}>
         <h2 {...stylex.props(s.sectionTitle)}>🎨 Live Token Swatches</h2>
         <div {...stylex.props(s.swatchGrid)}>
-          {([
-            ['accent', s.swAccent],
-            ['accentSoft', s.swAccentSoft],
-            ['bg', s.swBg],
-            ['surface', s.swSurface],
-            ['success', s.swSuccess],
-            ['warning', s.swWarning],
-            ['error', s.swError],
-          ] as const).map(([label, style]) => (
+          {(
+            [
+              ['accent', s.swAccent],
+              ['accentSoft', s.swAccentSoft],
+              ['bg', s.swBg],
+              ['surface', s.swSurface],
+              ['success', s.swSuccess],
+              ['warning', s.swWarning],
+              ['error', s.swError],
+            ] as const
+          ).map(([label, style]) => (
             <div key={label} {...stylex.props(s.swatchItem)}>
               <div {...stylex.props(s.swatchCircle, style)} />
               <span {...stylex.props(s.swatchLabel)}>color.{label}</span>
@@ -561,9 +605,21 @@ export const { tokens, themes } =
         <h2 {...stylex.props(s.sectionTitle)}>🔧 Under the Hood</h2>
         <div {...stylex.props(s.howGrid)}>
           {[
-            { step: '1', title: 'You write', code: `export const { tokens, themes } =\n  stylex.defineTheme({\n    tokens: {...},\n    themes: {...}\n  });` },
-            { step: '2', title: 'Compiler expands to', code: `const tokens =\n  defineVarsNested(config.tokens);\nconst themes = {\n  dark: createThemeNested(\n    tokens, config.themes.dark\n  )\n};` },
-            { step: '3', title: 'Output becomes', code: `export const tokens = {\n  color: { accent: "var(--x1a)" },\n  __varGroupHash__: "xHash"\n};\nexport const themes = {\n  dark: { xHash: "xOvr xHash",\n    $$css: true }\n};` },
+            {
+              step: '1',
+              title: 'You write',
+              code: 'export const { tokens, themes } =\n  stylex.defineTheme({\n    tokens: {...},\n    themes: {...}\n  });',
+            },
+            {
+              step: '2',
+              title: 'Compiler expands to',
+              code: 'const tokens =\n  defineVarsNested(config.tokens);\nconst themes = {\n  dark: createThemeNested(\n    tokens, config.themes.dark\n  )\n};',
+            },
+            {
+              step: '3',
+              title: 'Output becomes',
+              code: 'export const tokens = {\n  color: { accent: "var(--x1a)" },\n  __varGroupHash__: "xHash"\n};\nexport const themes = {\n  dark: { xHash: "xOvr xHash",\n    $$css: true }\n};',
+            },
           ].map((item) => (
             <div key={item.step} {...stylex.props(s.howCard)}>
               <div {...stylex.props(s.howStep)}>{item.step}</div>
@@ -575,8 +631,12 @@ export const { tokens, themes } =
       </section>
 
       <nav {...stylex.props(s.nav)}>
-        <a {...stylex.props(s.navLink)} href="/theming-demos">← Theming Demos</a>
-        <a {...stylex.props(s.navLink)} href="/nested-demo">Nested APIs Demo →</a>
+        <a {...stylex.props(s.navLink)} href="/theming-demos">
+          ← Theming Demos
+        </a>
+        <a {...stylex.props(s.navLink)} href="/nested-demo">
+          Nested APIs Demo →
+        </a>
       </nav>
     </main>
   );

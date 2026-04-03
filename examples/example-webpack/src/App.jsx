@@ -51,16 +51,18 @@ export default function App() {
 const styles = stylex.create({
   main: {
     padding: '2rem',
-    gap: '2rem',
     alignItems: 'center',
+    columnGap: '2rem',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
+    rowGap: '2rem',
     height: '100vh',
   },
   logoContainer: {
-    gap: '2rem',
+    columnGap: '2rem',
     display: 'flex',
+    rowGap: '2rem',
   },
   logo: {
     transition: 'filter 300ms',
@@ -77,7 +79,8 @@ const styles = stylex.create({
     lineHeight: 1.1,
   },
   card: {
-    gap: '2rem',
+    columnGap: '2rem',
     display: 'flex',
+    rowGap: '2rem',
   },
 });

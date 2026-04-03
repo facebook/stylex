@@ -22,7 +22,8 @@ const DEMOS = [
     href: '/nested-demo',
     icon: '✨',
     title: 'Nested APIs Demo',
-    subtitle: 'unstable_defineVarsNested · unstable_defineConstsNested · unstable_createThemeNested',
+    subtitle:
+      'unstable_defineVarsNested · unstable_defineConstsNested · unstable_createThemeNested',
     description:
       'Define design tokens as nested objects instead of flat key-value pairs. ' +
       'The compiler flattens them into the same CSS — zero performance cost. ' +
@@ -61,9 +62,9 @@ export default function DemosPage() {
           Theming <span {...stylex.props(s.titleAccent)}>Demos</span>
         </h1>
         <p {...stylex.props(s.subtitle)}>
-          Experimental APIs for nested design tokens in StyleX.
-          Define hierarchical token structures, compose themes across packages,
-          and let the compiler flatten everything to optimized CSS.
+          Experimental APIs for nested design tokens in StyleX. Define
+          hierarchical token structures, compose themes across packages, and let
+          the compiler flatten everything to optimized CSS.
         </p>
       </header>
 
@@ -181,7 +182,7 @@ const s = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     gap: '0.125rem',
-    flex: 1,
+    flex: '1',
   },
   cardTitle: {
     margin: 0,
@@ -208,5 +209,4 @@ const s = stylex.create({
     lineHeight: 1.6,
     opacity: 0.7,
   },
-
 });

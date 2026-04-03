@@ -43,10 +43,12 @@ export default function XdsDemoPage() {
           ← Back to Theming Demos
         </a>
         <h1 {...stylex.props(s.title)}>
-          Design System <span {...stylex.props(s.titleAccent)}>Theming</span> Demo
+          Design System <span {...stylex.props(s.titleAccent)}>Theming</span>{' '}
+          Demo
         </h1>
         <p {...stylex.props(s.subtitle)}>
-          A showcase of three-tier token architecture (Primitives → Semantics → Themes) with the nested APIs
+          A showcase of three-tier token architecture (Primitives → Semantics →
+          Themes) with the nested APIs
         </p>
       </header>
 
@@ -164,7 +166,9 @@ export default function XdsDemoPage() {
                 placeholder="Type something…"
                 readOnly
               />
-              <button {...stylex.props(s.btnPrimary, s.inputBtn)}>Submit</button>
+              <button {...stylex.props(s.btnPrimary, s.inputBtn)}>
+                Submit
+              </button>
             </div>
           </div>
         </div>
@@ -174,8 +178,8 @@ export default function XdsDemoPage() {
       <section {...stylex.props(s.section)}>
         <h2 {...stylex.props(s.sectionTitle)}>Live Token Values</h2>
         <p {...stylex.props(s.sectionDesc)}>
-          These swatches reflect the current theme's semantic tokens in
-          real time.
+          These swatches reflect the current theme's semantic tokens in real
+          time.
         </p>
         <div {...stylex.props(s.swatchGrid)}>
           {[
@@ -349,7 +353,7 @@ const s = stylex.create({
     color: tokens.color.textMuted,
   },
   tierCard: {
-    flex: 1,
+    flex: '1',
     padding: '1.25rem',
     borderRadius: primitives.radius.lg,
     backgroundColor: tokens.color.surface,
@@ -551,7 +555,7 @@ const s = stylex.create({
     gap: '0.5rem',
   },
   input: {
-    flex: 1,
+    flex: '1',
     paddingInline: '0.75rem',
     paddingBlock: '0.5rem',
     borderRadius: primitives.radius.md,
@@ -573,7 +577,10 @@ const s = stylex.create({
   // Swatches
   swatchGrid: {
     display: 'grid',
-    gridTemplateColumns: { default: 'repeat(3, 1fr)', [MOBILE]: 'repeat(2, 1fr)' },
+    gridTemplateColumns: {
+      default: 'repeat(3, 1fr)',
+      [MOBILE]: 'repeat(2, 1fr)',
+    },
     gap: '0.75rem',
     width: '100%',
   },

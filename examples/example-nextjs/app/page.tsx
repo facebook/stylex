@@ -64,7 +64,8 @@ export default function Home() {
           <strong>Theming Demos</strong>
           <br />
           <span {...stylex.props(style.nestedLinkSub)}>
-            Experimental APIs for expressing nested design tokens · Design system theming
+            Experimental APIs for expressing nested design tokens · Design
+            system theming
           </span>
         </span>
         <span {...stylex.props(style.nestedLinkArrow)}>→</span>

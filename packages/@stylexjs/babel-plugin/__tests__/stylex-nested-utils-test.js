@@ -233,13 +233,19 @@ describe('stylex-nested-utils', () => {
 
       // WHERE THEY DIFFER: objects with @-rule keys
       const inputWithAtRuleKeys = {
-        color: { default: 'blue', '@media (prefers-color-scheme: dark)': 'darkblue' },
+        color: {
+          default: 'blue',
+          '@media (prefers-color-scheme: dark)': 'darkblue',
+        },
       };
 
       // Vars flattener treats this as a LEAF (conditional @-rule value)
       const varsResult2 = flattenNestedVarsConfig(inputWithAtRuleKeys);
       expect(varsResult2).toEqual({
-        color: { default: 'blue', '@media (prefers-color-scheme: dark)': 'darkblue' },
+        color: {
+          default: 'blue',
+          '@media (prefers-color-scheme: dark)': 'darkblue',
+        },
       });
 
       // Consts flattener treats this as a NAMESPACE (consts don't support @-rules)
