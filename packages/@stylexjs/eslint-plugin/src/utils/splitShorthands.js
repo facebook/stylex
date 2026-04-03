@@ -672,6 +672,7 @@ const FLEX_DIRECTION_KEYWORDS = new Set([
   'column',
   'column-reverse',
 ]);
+const FLEX_WRAP_KEYWORDS = new Set(['nowrap', 'wrap', 'wrap-reverse']);
 
 const ANIMATION_DIRECTION_KEYWORDS = new Set([
   'normal',
@@ -1218,13 +1219,18 @@ export function splitSpecificShorthands(
       let direction = null;
       let wrap = null;
       for (const val of vals) {
-        if (FLEX_DIRECTION_KEYWORDS.has(val.toLowerCase())) {
+        const lower = val.toLowerCase();
+        if (FLEX_DIRECTION_KEYWORDS.has(lower)) {
           if (direction != null) return [['flexFlow', CANNOT_FIX]];
           direction = val;
-        } else {
+          continue;
+        }
+        if (FLEX_WRAP_KEYWORDS.has(lower)) {
           if (wrap != null) return [['flexFlow', CANNOT_FIX]];
           wrap = val;
+          continue;
         }
+        return [['flexFlow', CANNOT_FIX]];
       }
       if (direction == null || wrap == null) {
         return [['flexFlow', CANNOT_FIX]];

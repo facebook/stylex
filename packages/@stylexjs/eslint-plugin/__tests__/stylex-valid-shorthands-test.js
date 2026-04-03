@@ -3607,6 +3607,31 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         },
       ],
     },
+    // flexFlow: invalid wrap value should not autofix
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexFlow: 'row banana',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexFlow: 'row banana',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flexFlow: row banana" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
     // flexFlow: 'column-reverse nowrap'
     {
       code: `
