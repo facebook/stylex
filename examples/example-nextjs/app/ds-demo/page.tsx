@@ -201,10 +201,19 @@ export default function XdsDemoPage() {
         </div>
       </section>
 
-      {/* ── Footer ─────────────────────────────────── */}
-      <footer {...stylex.props(s.footer)}>
-        Source: <code {...stylex.props(s.code)}>tokens.stylex.ts</code>
-      </footer>
+      {/* ── Footer Link ──────────────────────────────── */}
+      <a {...stylex.props(s.demoLink)} href="/define-theme-demo">
+        <span {...stylex.props(s.demoLinkIcon)}>🧩</span>
+        <span>
+          <strong>defineTheme() Demo</strong>
+          <br />
+          <span {...stylex.props(s.demoLinkSub)}>
+            A single defineTheme() call that bundles token definitions and
+            theme variants together
+          </span>
+        </span>
+        <span {...stylex.props(s.demoLinkArrow)}>→</span>
+      </a>
     </main>
   );
 }
@@ -636,10 +645,48 @@ const s = stylex.create({
     borderRadius: '4px',
   },
 
-  // Footer
-  footer: {
+  // Footer link card
+  demoLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+    paddingInline: '1.5rem',
+    paddingBlock: '1rem',
+    borderRadius: primitives.radius.lg,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: tokens.color.accent,
+    backgroundColor: {
+      default: tokens.color.accentSoft,
+      ':hover': tokens.color.surfaceHover,
+    },
+    color: 'inherit',
+    textDecoration: 'none',
+    fontFamily: primitives.font.sans,
+    fontSize: '0.875rem',
+    lineHeight: 1.4,
+    transitionProperty: 'background-color, border-color, transform',
+    transitionDuration: '200ms',
+    width: '100%',
+    maxWidth: 640,
+    transform: {
+      default: null,
+      ':hover': 'translateY(-2px)',
+    },
+  },
+  demoLinkIcon: {
+    fontSize: '1.5rem',
+    flexShrink: 0,
+  },
+  demoLinkSub: {
     fontSize: '0.75rem',
-    color: tokens.color.textMuted,
-    textAlign: 'center',
+    opacity: 0.6,
+  },
+  demoLinkArrow: {
+    marginLeft: 'auto',
+    fontSize: '1.25rem',
+    color: tokens.color.accent,
+    transitionProperty: 'transform',
+    transitionDuration: '200ms',
   },
 });

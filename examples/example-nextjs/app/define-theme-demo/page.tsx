@@ -444,23 +444,6 @@ const s = stylex.create({
     overflow: 'auto',
     color: tokens.color.textSecondary,
   },
-  nav: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    width: '100%',
-    maxWidth: 720,
-    paddingTop: tokens.spacing.lg,
-    borderTopWidth: 1,
-    borderTopStyle: 'solid',
-    borderTopColor: tokens.color.border,
-  },
-  navLink: {
-    color: tokens.color.accent,
-    textDecoration: 'none',
-    fontWeight: 500,
-    fontSize: '0.9rem',
-    opacity: { default: 0.8, ':hover': 1 },
-  },
   code: {
     fontFamily: FONT_MONO,
     fontSize: '0.85em',
@@ -630,14 +613,6 @@ export const { tokens, themes } =
         </div>
       </section>
 
-      <nav {...stylex.props(s.nav)}>
-        <a {...stylex.props(s.navLink)} href="/theming-demos">
-          ← Theming Demos
-        </a>
-        <a {...stylex.props(s.navLink)} href="/nested-demo">
-          Nested APIs Demo →
-        </a>
-      </nav>
     </main>
   );
 }

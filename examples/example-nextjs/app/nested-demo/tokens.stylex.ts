@@ -11,91 +11,92 @@
 // @ts-nocheck — nested APIs are experimental and lack TS type definitions.
 
 import * as stylex from '@stylexjs/stylex';
+import { unstable_conditional as cond } from '@stylexjs/stylex';
 
 const DARK = '@media (prefers-color-scheme: dark)';
 
 // ─── Dynamic tokens (CSS custom properties) ──────────────────
 export const tokens = stylex.unstable_defineVarsNested({
   surface: {
-    bg: { default: '#fafafa', [DARK]: '#0f1117' },
-    card: { default: 'white', [DARK]: '#1a1b26' },
-    cardShadow: {
+    bg: cond({ default: '#fafafa', [DARK]: '#0f1117' }),
+    card: cond({ default: 'white', [DARK]: '#1a1b26' }),
+    cardShadow: cond({
       default: '0 4px 24px rgba(0,0,0,0.06)',
       [DARK]: '0 4px 24px rgba(0,0,0,0.3)',
-    },
-    hover: {
+    }),
+    hover: cond({
       default: 'rgba(0,0,0,0.02)',
       [DARK]: 'rgba(255,255,255,0.04)',
-    },
-    divider: {
+    }),
+    divider: cond({
       default: 'rgba(0,0,0,0.06)',
       [DARK]: 'rgba(255,255,255,0.08)',
-    },
+    }),
   },
   text: {
-    primary: { default: '#111', [DARK]: '#e1e1e1' },
-    secondary: { default: '#555', [DARK]: '#999' },
-    muted: { default: '#888', [DARK]: '#666' },
+    primary: cond({ default: '#111', [DARK]: '#e1e1e1' }),
+    secondary: cond({ default: '#555', [DARK]: '#999' }),
+    muted: cond({ default: '#888', [DARK]: '#666' }),
   },
   accent: {
-    base: { default: '#1c7ed6', [DARK]: '#74c0fc' },
-    light: {
+    base: cond({ default: '#1c7ed6', [DARK]: '#74c0fc' }),
+    light: cond({
       default: 'rgba(28, 126, 214, 0.08)',
       [DARK]: 'rgba(116, 192, 252, 0.12)',
-    },
-    faded: {
+    }),
+    faded: cond({
       default: 'rgba(28, 126, 214, 0.19)',
       [DARK]: 'rgba(116, 192, 252, 0.19)',
-    },
-    border: {
+    }),
+    border: cond({
       default: 'rgba(28, 126, 214, 0.25)',
       [DARK]: 'rgba(116, 192, 252, 0.25)',
-    },
+    }),
   },
   badge: {
     info: {
-      bg: {
+      bg: cond({
         default: 'rgba(28, 126, 214, 0.08)',
         [DARK]: 'rgba(28, 126, 214, 0.15)',
-      },
-      text: { default: '#1c7ed6', [DARK]: '#74c0fc' },
-      border: {
+      }),
+      text: cond({ default: '#1c7ed6', [DARK]: '#74c0fc' }),
+      border: cond({
         default: 'rgba(28, 126, 214, 0.25)',
         [DARK]: 'rgba(116, 192, 252, 0.25)',
-      },
+      }),
     },
     success: {
-      bg: {
+      bg: cond({
         default: 'rgba(12, 166, 120, 0.08)',
         [DARK]: 'rgba(12, 166, 120, 0.15)',
-      },
-      text: { default: '#0ca678', [DARK]: '#63e6be' },
-      border: {
+      }),
+      text: cond({ default: '#0ca678', [DARK]: '#63e6be' }),
+      border: cond({
         default: 'rgba(12, 166, 120, 0.25)',
         [DARK]: 'rgba(99, 230, 190, 0.25)',
-      },
+      }),
     },
     warning: {
-      bg: {
+      bg: cond({
         default: 'rgba(116, 184, 22, 0.08)',
         [DARK]: 'rgba(116, 184, 22, 0.15)',
-      },
-      text: { default: '#74b816', [DARK]: '#a9e34b' },
-      border: {
+      }),
+      text: cond({ default: '#74b816', [DARK]: '#a9e34b' }),
+      border: cond({
         default: 'rgba(116, 184, 22, 0.25)',
         [DARK]: 'rgba(169, 227, 75, 0.25)',
-      },
+      }),
     },
     error: {
-      bg: {
+      bg: cond({
         default: 'rgba(224, 49, 49, 0.08)',
         [DARK]: 'rgba(224, 49, 49, 0.15)',
-      },
-      text: { default: '#e03131', [DARK]: '#ff6b6b' },
-      border: {
+      }),
+      text: cond({ default: '#e03131', [DARK]: '#ff6b6b' }),
+      border: cond({
         default: 'rgba(224, 49, 49, 0.25)',
         [DARK]: 'rgba(255, 107, 107, 0.25)',
-      },
+      }),
     },
   },
 });
