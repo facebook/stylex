@@ -1,0 +1,22 @@
+{
+  "id": "WF-AUTHOR",
+  "priority": "P0",
+  "title": "Author valid, idiomatic StyleX styles in apps",
+  "copilot_apply_to": "**/*.{js,jsx,ts,tsx}",
+  "cursor_globs": ["**/*.{js,jsx,ts,tsx}"],
+  "when_to_use": [
+    "User asks how to write or refactor StyleX styles",
+    "User asks about pseudo/media rules, dynamic styles, vars/themes, or style merges",
+    "User is fixing lint violations in app-level StyleX code"
+  ],
+  "sources": [
+    "packages/docs/static/llm/stylex-authoring.md",
+    "packages/@stylexjs/eslint-plugin/README.md"
+  ],
+  "hard_constraints": [
+    "Use stylex.create() for definitions and stylex.props() for application.",
+    "Prefer longhands over disallowed multivalue shorthand patterns.",
+    "Avoid mixing className/style with stylex.props() on the same element.",
+    "Use modern nested syntax for media queries and pseudo-classes."
+  ]
+}
