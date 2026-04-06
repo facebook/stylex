@@ -1095,6 +1095,29 @@ export function splitSpecificShorthands(
     return expanded.length > 0 ? expanded : [['gridArea', CANNOT_FIX]];
   }
 
+  if (
+    property === 'place-content' ||
+    property === 'place-items' ||
+    property === 'place-self'
+  ) {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+    if (vals.length === 2) {
+      const suffix = property.replace('place-', '');
+      return [
+        [toCamelCase(`align-${suffix}`), applyImportant(vals[0], importantSuffix)],
+        [toCamelCase(`justify-${suffix}`), applyImportant(vals[1], importantSuffix)],
+      ];
+    }
+    return [[toCamelCase(property), CANNOT_FIX]];
+  }
+
   if (property === 'flex') {
     const flexSplit = splitTopLevelValueTokens(baseValue);
     if (flexSplit.hasTopLevelComma || flexSplit.hasTopLevelSlash) {
