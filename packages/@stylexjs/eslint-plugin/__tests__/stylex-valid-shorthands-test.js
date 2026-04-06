@@ -3873,11 +3873,14 @@ insetTester.run('stylex-valid-shorthands (inset)', rule.default, {
 });
 
 // columnRule, columns, listStyle, caret shorthand expansion tests
-eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)', rule.default, {
-  valid: [
-    // columnRule single value
-    {
-      code: `
+eslintTester.run(
+  'stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
+  rule.default,
+  {
+    valid: [
+      // columnRule single value
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3885,10 +3888,10 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-    },
-    // columns single value
-    {
-      code: `
+      },
+      // columns single value
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3896,10 +3899,10 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-    },
-    // listStyle single value
-    {
-      code: `
+      },
+      // listStyle single value
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3907,10 +3910,10 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-    },
-    // caret single value
-    {
-      code: `
+      },
+      // caret single value
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3918,12 +3921,12 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-    },
-  ],
-  invalid: [
-    // columnRule: '1px solid red' → columnRuleWidth + columnRuleStyle + columnRuleColor
-    {
-      code: `
+      },
+    ],
+    invalid: [
+      // columnRule: '1px solid red' → columnRuleWidth + columnRuleStyle + columnRuleColor
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3931,7 +3934,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3941,16 +3944,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "columnRule: 1px solid red" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // columns: '200px 3' → columnWidth + columnCount
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "columnRule: 1px solid red" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // columns: '200px 3' → columnWidth + columnCount
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3958,7 +3961,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3967,16 +3970,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "columns: 200px 3" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // columns: 'auto 200px' → columnWidth + columnCount
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "columns: 200px 3" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // columns: 'auto 200px' → columnWidth + columnCount
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3984,7 +3987,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -3993,16 +3996,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "columns: auto 200px" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // listStyle: 'square inside' → listStyleType + listStylePosition
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "columns: auto 200px" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // listStyle: 'square inside' → listStyleType + listStylePosition
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4010,7 +4013,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4019,16 +4022,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "listStyle: square inside" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // listStyle: 'disc inside url(bullet.png)' → type + position + image
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "listStyle: square inside" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // listStyle: 'disc inside url(bullet.png)' → type + position + image
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4036,7 +4039,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4046,16 +4049,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "listStyle: disc inside url(bullet.png)" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // listStyle: 'none inside' → type + position + image
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "listStyle: disc inside url(bullet.png)" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // listStyle: 'none inside' → type + position + image
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4063,7 +4066,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4073,16 +4076,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "listStyle: none inside" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // listStyle: 'none url(bullet.png)' → type + image
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "listStyle: none inside" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // listStyle: 'none url(bullet.png)' → type + image
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4090,7 +4093,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4099,16 +4102,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "listStyle: none url(bullet.png)" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // listStyle: 'url(bullet.png) none' → type + image
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "listStyle: none url(bullet.png)" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // listStyle: 'url(bullet.png) none' → type + image
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4116,7 +4119,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4125,16 +4128,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "listStyle: url(bullet.png) none" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // caret: 'red bar' → caretColor + caretShape
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "listStyle: url(bullet.png) none" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // caret: 'red bar' → caretColor + caretShape
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4142,7 +4145,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4151,16 +4154,16 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "caret: red bar" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-    // caret: 'block blue' → caretColor + caretShape (reversed order)
-    {
-      code: `
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "caret: red bar" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+      // caret: 'block blue' → caretColor + caretShape (reversed order)
+      {
+        code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4168,7 +4171,7 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      output: `
+        output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
@@ -4177,12 +4180,13 @@ eslintTester.run('stylex-valid-shorthands (columnRule/columns/listStyle/caret)',
           },
         });
       `,
-      errors: [
-        {
-          message:
-            'Property shorthands using multiple values like "caret: block blue" are not supported in StyleX. Separate into individual properties.',
-        },
-      ],
-    },
-  ],
-});
+        errors: [
+          {
+            message:
+              'Property shorthands using multiple values like "caret: block blue" are not supported in StyleX. Separate into individual properties.',
+          },
+        ],
+      },
+    ],
+  },
+);
