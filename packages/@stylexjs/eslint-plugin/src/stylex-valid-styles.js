@@ -147,7 +147,10 @@ const showErrorWithFix =
     const fixFn = (fixer: Rule.RuleFixer) => {
       return fixer.replaceText(prop, newPropertiesText);
     };
-    response.fix = fixFn;
+    // animation is suggest-only since animationName needs a keyframes() reference
+    if (propertyKey !== 'animation') {
+      response.fix = fixFn;
+    }
     response.suggest = {
       desc: `Split '${propertyKey}' shorthand into individual longhand properties?`,
       fix: fixFn,
