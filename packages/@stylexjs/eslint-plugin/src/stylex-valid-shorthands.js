@@ -77,6 +77,7 @@ const shorthandAliases: $ReadOnly<{
   outline: createSpecificTransformer('outline'),
   animation: createSpecificTransformer('animation'),
   flex: createSpecificTransformer('flex'),
+  flexFlow: createSpecificTransformer('flex-flow'),
   gap: createSpecificTransformer('gap'),
   gridGap: createSpecificTransformer('gap'),
   overflow: createSpecificTransformer('overflow'),

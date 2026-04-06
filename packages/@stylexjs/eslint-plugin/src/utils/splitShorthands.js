@@ -666,6 +666,14 @@ function expandFlexShorthand(
   return null;
 }
 
+const FLEX_DIRECTION_KEYWORDS = new Set([
+  'row',
+  'row-reverse',
+  'column',
+  'column-reverse',
+]);
+const FLEX_WRAP_KEYWORDS = new Set(['nowrap', 'wrap', 'wrap-reverse']);
+
 const ANIMATION_DIRECTION_KEYWORDS = new Set([
   'normal',
   'reverse',
@@ -1130,8 +1138,14 @@ export function splitSpecificShorthands(
     if (vals.length === 2) {
       const suffix = property.replace('place-', '');
       return [
-        [toCamelCase(`align-${suffix}`), applyImportant(vals[0], importantSuffix)],
-        [toCamelCase(`justify-${suffix}`), applyImportant(vals[1], importantSuffix)],
+        [
+          toCamelCase(`align-${suffix}`),
+          applyImportant(vals[0], importantSuffix),
+        ],
+        [
+          toCamelCase(`justify-${suffix}`),
+          applyImportant(vals[1], importantSuffix),
+        ],
       ];
     }
     return [[toCamelCase(property), CANNOT_FIX]];
@@ -1196,6 +1210,43 @@ export function splitSpecificShorthands(
       ['bottom', applyImportant(bottom, importantSuffix)],
       ['left', applyImportant(left, importantSuffix)],
     ];
+  }
+
+  if (property === 'flex-flow') {
+    const split = splitTopLevelValueTokens(baseValue);
+    if (split.hasTopLevelComma || split.hasTopLevelSlash) {
+      return [['flexFlow', CANNOT_FIX]];
+    }
+    const vals = split.parts.map((part) => part.text);
+    if (vals.length <= 1) {
+      return [['flexFlow', isNumber ? Number(rawValue) : rawValue]];
+    }
+    if (vals.length === 2) {
+      let direction = null;
+      let wrap = null;
+      for (const val of vals) {
+        const lower = val.toLowerCase();
+        if (FLEX_DIRECTION_KEYWORDS.has(lower)) {
+          if (direction != null) return [['flexFlow', CANNOT_FIX]];
+          direction = val;
+          continue;
+        }
+        if (FLEX_WRAP_KEYWORDS.has(lower)) {
+          if (wrap != null) return [['flexFlow', CANNOT_FIX]];
+          wrap = val;
+          continue;
+        }
+        return [['flexFlow', CANNOT_FIX]];
+      }
+      if (direction == null || wrap == null) {
+        return [['flexFlow', CANNOT_FIX]];
+      }
+      return [
+        ['flexDirection', applyImportant(direction, importantSuffix)],
+        ['flexWrap', applyImportant(wrap, importantSuffix)],
+      ];
+    }
+    return [['flexFlow', CANNOT_FIX]];
   }
 
   const splitValues = splitTopLevelValueTokens(baseValue);
