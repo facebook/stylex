@@ -23,10 +23,6 @@ import isPercentage from '../rules/isPercentage';
 import isAbsoluteLength from '../rules/isAbsoluteLength';
 import isRelativeLength from '../rules/isRelativeLength';
 import { borderSplitter } from '../utils/split-css-value';
-import {
-  splitSpecificShorthands,
-  CANNOT_FIX,
-} from '../utils/splitShorthands';
 
 export type RuleResponse = void | {
   message: string,
@@ -531,52 +527,6 @@ const serializeValue = (propertyKey: string, val: number | string): string => {
   return `'${escaped}'`;
 };
 
-const createShorthandFixer =
-  (
-    property: string,
-    errorMessage: string,
-    suggestOnly?: boolean,
-  ): RuleCheck =>
-  (
-    node: Expression | Pattern,
-    _variables?: Variables,
-    prop?: Property,
-  ): RuleResponse => {
-    const response: $NonMaybeType<RuleResponse> = {
-      message: errorMessage,
-    };
-    if (node.type !== 'Literal' || prop == null) {
-      return response;
-    }
-    const val = node.value;
-    if (typeof val !== 'string' && typeof val !== 'number') {
-      return response;
-    }
-    const expanded = splitSpecificShorthands(property, String(val));
-    if (
-      expanded.length <= 1 &&
-      expanded[0]?.[1] !== CANNOT_FIX
-    ) {
-      return response;
-    }
-    if (expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX) {
-      return response;
-    }
-    const newPropertiesText = expanded
-      .map(([key, value]) => `${key}: ${serializeValue(key, value)}`)
-      .join(',\n    ');
-    const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
-      return fixer.replaceText(prop, newPropertiesText);
-    };
-    if (!suggestOnly) {
-      response.fix = fixFn;
-    }
-    response.suggest = {
-      desc: `Split '${property}' shorthand into individual longhand properties?`,
-      fix: fixFn,
-    };
-    return response;
-  };
 const border =
   (suffix: string = ''): RuleCheck =>
   (node: Expression | Pattern, _variables?: Variables, prop?: Property) => {
@@ -2319,15 +2269,6 @@ export const CSSPropertyReplacements: { [key: string]: RuleCheck | void } = {
   borderStart: border('InlineStart'),
   borderInlineStart: border('InlineStart'),
   borderLeft: border('Left'),
-  animation: createShorthandFixer(
-    'animation',
-    '`animation` is not supported. Use `animationName`, `animationDuration`, `animationTimingFunction`, etc. instead.',
-    true, // suggest-only: animationName needs a keyframes() reference, not a string
-  ),
-  font: createShorthandFixer(
-    'font',
-    '`font` is not supported. Use `fontSize`, `fontFamily`, `fontStyle`, `fontWeight`, etc. instead.',
-  ),
 };
 
 export const pseudoElements: RuleCheck = makeUnionRule(

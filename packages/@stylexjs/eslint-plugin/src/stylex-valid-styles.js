@@ -50,10 +50,7 @@ import {
   allModifiers,
   all,
 } from './reference/cssProperties';
-import {
-  splitSpecificShorthands,
-  CANNOT_FIX,
-} from './utils/splitShorthands';
+import { splitSpecificShorthands, CANNOT_FIX } from './utils/splitShorthands';
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
 export type RuleCheck = (
@@ -85,6 +82,8 @@ const showError =
 // Maps camelCase CSS shorthand property names to the hyphenated names
 // used by splitSpecificShorthands
 const shorthandExpansionMap: { [string]: string } = {
+  animation: 'animation',
+  font: 'font',
   gridArea: 'grid-area',
   gridColumn: 'grid-column',
   gridRow: 'grid-row',
@@ -94,7 +93,13 @@ const shorthandExpansionMap: { [string]: string } = {
 
 const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
 
-const NUMERIC_LITERAL_PROPERTIES = new Set(['rowGap', 'columnGap']);
+const NUMERIC_LITERAL_PROPERTIES = new Set([
+  'rowGap',
+  'columnGap',
+  'lineHeight',
+  'fontWeight',
+  'animationIterationCount',
+]);
 
 const serializeValue = (propertyKey: string, val: number | string): string => {
   if (typeof val === 'number') {
@@ -128,10 +133,7 @@ const showErrorWithFix =
       return response;
     }
     const expanded = splitSpecificShorthands(shorthandProp, String(val));
-    if (
-      expanded.length <= 1 &&
-      expanded[0]?.[1] !== CANNOT_FIX
-    ) {
+    if (expanded.length <= 1 && expanded[0]?.[1] !== CANNOT_FIX) {
       // Single value that's unchanged — no expansion available
       return response;
     }
@@ -819,7 +821,48 @@ const stylexValidStyles = {
               });
             }
 
-            const { message, fix, suggest } = check;
+            const { message } = check;
+            let { fix, suggest } = check;
+
+            // If the property has a known shorthand expansion and no fix yet,
+            // try to attach one
+            if (
+              fix == null &&
+              suggest == null &&
+              shorthandExpansionMap[key] != null &&
+              style.value.type === 'Literal'
+            ) {
+              const val = style.value.value;
+              if (typeof val === 'string' || typeof val === 'number') {
+                const shorthandProp = shorthandExpansionMap[key];
+                const expanded = splitSpecificShorthands(
+                  shorthandProp,
+                  String(val),
+                );
+                const canFix =
+                  expanded.length > 1 ||
+                  (expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX);
+                const isFixable =
+                  canFix &&
+                  !(expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX);
+                if (isFixable) {
+                  const newPropertiesText = expanded
+                    .map(([k, v]) => `${k}: ${serializeValue(k, v)}`)
+                    .join(',\n    ');
+                  const fixFn = (fixer: Rule.RuleFixer) =>
+                    fixer.replaceText(style, newPropertiesText);
+                  // animation is suggest-only since animationName needs keyframes()
+                  if (key !== 'animation') {
+                    fix = fixFn;
+                  }
+                  suggest = {
+                    desc: `Split '${key}' shorthand into individual longhand properties?`,
+                    fix: fixFn,
+                  };
+                }
+              }
+            }
+
             const isBackgroundBlendModeFormatError =
               key === 'backgroundBlendMode' &&
               typeof message === 'string' &&
