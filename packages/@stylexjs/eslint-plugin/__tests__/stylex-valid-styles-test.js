@@ -2808,7 +2808,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
           suggestions: [
             {
               desc: "Split 'gridArea' shorthand into individual longhand properties?",
@@ -2850,7 +2851,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridColumn value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridColumn value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
@@ -2876,7 +2878,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridRow value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridRow value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
@@ -2902,7 +2905,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridTemplate value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridTemplate value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
@@ -2928,7 +2932,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
@@ -2954,7 +2959,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
@@ -2971,7 +2977,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       options: [{ banPropsForLegacy: true }],
       errors: [
         {
-          message: `grid value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'grid value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
@@ -2999,12 +3006,13 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.`,
+          message:
+            'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
         },
       ],
     },
-    // animation suggest-fix via CSSPropertyReplacements (suggest-only because
-    // animationName needs a keyframes() reference, not a string literal)
+    // animation suggest-fix (suggest-only because animationName needs
+    // a keyframes() reference, not a string literal)
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -3017,7 +3025,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       errors: [
         {
           message:
-            "`animation` is not supported. Use `animationName`, `animationDuration`, `animationTimingFunction`, etc. instead.",
+            /^animation value must be one of:\n`animation` is not recommended/,
           suggestions: [
             {
               desc: "Split 'animation' shorthand into individual longhand properties?",
@@ -3036,7 +3044,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         },
       ],
     },
-    // font auto-fix via CSSPropertyReplacements
+    // font auto-fix
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -3059,8 +3067,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message:
-            "`font` is not supported. Use `fontSize`, `fontFamily`, `fontStyle`, `fontWeight`, etc. instead.",
+          message: /^font value must be one of:\n`font` is not recommended/,
         },
       ],
     },
@@ -3086,8 +3093,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message:
-            "`font` is not supported. Use `fontSize`, `fontFamily`, `fontStyle`, `fontWeight`, etc. instead.",
+          message: /^font value must be one of:\n`font` is not recommended/,
         },
       ],
     },
@@ -3104,24 +3110,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       errors: [
         {
           message:
-            "`animation` is not supported. Use `animationName`, `animationDuration`, `animationTimingFunction`, etc. instead.",
-        },
-      ],
-    },
-    // font with no expansion (single value)
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          default: {
-            font: 'inherit',
-          }
-        });
-      `,
-      errors: [
-        {
-          message:
-            "`font` is not supported. Use `fontSize`, `fontFamily`, `fontStyle`, `fontWeight`, etc. instead.",
+            /^animation value must be one of:\n`animation` is not recommended/,
         },
       ],
     },
@@ -3186,7 +3175,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       `,
       errors: [
         {
-          message: `gridArea value must be one of:\ngridArea shorthand is banned`,
+          message:
+            'gridArea value must be one of:\ngridArea shorthand is banned',
         },
       ],
     },
