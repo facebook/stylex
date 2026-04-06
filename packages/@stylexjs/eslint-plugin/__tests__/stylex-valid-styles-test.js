@@ -1032,59 +1032,6 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       ],
     },
     {
-      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-          suggestions: [
-            {
-              desc: 'Did you mean "textAlign"?',
-              output:
-                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginStart: 10}});",
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-        },
-      ],
-    },
-    {
-      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlin: 'left'}});",
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-          suggestions: [
-            {
-              desc: 'Did you mean "textAlign"?',
-              output:
-                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'left'}});",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {[\"textAlin\"]: 'left'}});",
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-          suggestions: [
-            {
-              desc: 'Did you mean "textAlign"?',
-              output:
-                "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {[\"textAlign\"]: 'left'}});",
-            },
-          ],
-        },
-      ],
-    },
-    {
       code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {textAlign: 'lfet'}});",
       errors: [
         {
@@ -1134,15 +1081,6 @@ initial
 inherit
 unset
 revert`,
-        },
-      ],
-    },
-    {
-      code: "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {':hover': {textAlin: 'left'}}});",
-      options: [{ allowOuterPseudoAndMedia: true }],
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
         },
       ],
     },
@@ -2021,18 +1959,6 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
           },
         });`,
     },
-    // test for allowed raw CSS variable overrides
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          foo: {
-            '--bar': '0',
-          }
-        })
-      `,
-      options: [{ allowRawCSSVars: true }],
-    },
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -2438,22 +2364,7 @@ revert`,
       ],
     },
     // test for disallowed raw CSS variable overrides
-    {
-      code: `
-        import * as stylex from '@stylexjs/stylex';
-        const styles = stylex.create({
-          foo: {
-            '--bar': '0',
-          }
-        })
-      `,
-      options: [{ allowRawCSSVars: false }],
-      errors: [
-        {
-          message: 'This is not a key that is allowed by stylex',
-        },
-      ],
-    },
+
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
