@@ -3397,3 +3397,214 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
     },
   ],
 });
+
+// --- inset, insetBlock, insetInline tests ---
+
+const insetTester = new ESLintTester({
+  parser: require.resolve('hermes-eslint'),
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: 'module',
+  },
+});
+
+insetTester.run('stylex-valid-shorthands (inset)', rule.default, {
+  valid: [
+    // inset: single numeric value
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            inset: 0,
+          },
+        });
+      `,
+    },
+    // insetBlock: single string value
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetBlock: '10px',
+          },
+        });
+      `,
+    },
+    // insetInline: single string value
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetInline: '10px',
+          },
+        });
+      `,
+    },
+  ],
+  invalid: [
+    // inset: 2-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            inset: '0 10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetBlock: '0',
+            insetInline: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "inset: 0 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // inset: 2-value expansion with preferInline
+    {
+      options: [{ preferInline: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            inset: '0 10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetBlock: '0',
+            insetInline: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "inset: 0 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // inset: 3-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            inset: '0 10px 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            top: '0',
+            right: '10px',
+            bottom: '20px',
+            left: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "inset: 0 10px 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // inset: 4-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            inset: '0 10px 20px 30px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            top: '0',
+            right: '10px',
+            bottom: '20px',
+            left: '30px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "inset: 0 10px 20px 30px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // insetBlock: 2-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetBlock: '0 10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetBlockStart: '0',
+            insetBlockEnd: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "insetBlock: 0 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // insetInline: 2-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetInline: '0 10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            insetInlineStart: '0',
+            insetInlineEnd: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "insetInline: 0 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+  ],
+});
