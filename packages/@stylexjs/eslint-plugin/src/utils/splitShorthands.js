@@ -1159,8 +1159,14 @@ export function splitSpecificShorthands(
     if (vals.length === 2) {
       const suffix = property.replace('place-', '');
       return [
-        [toCamelCase(`align-${suffix}`), applyImportant(vals[0], importantSuffix)],
-        [toCamelCase(`justify-${suffix}`), applyImportant(vals[1], importantSuffix)],
+        [
+          toCamelCase(`align-${suffix}`),
+          applyImportant(vals[0], importantSuffix),
+        ],
+        [
+          toCamelCase(`justify-${suffix}`),
+          applyImportant(vals[1], importantSuffix),
+        ],
       ];
     }
     return [[toCamelCase(property), CANNOT_FIX]];
@@ -1713,7 +1719,10 @@ export function splitSpecificShorthands(
 
     const entries: Array<[string, string]> = [];
     if (line != null)
-      entries.push(['textDecorationLine', applyImportant(line, importantSuffix)]);
+      entries.push([
+        'textDecorationLine',
+        applyImportant(line, importantSuffix),
+      ]);
     if (style != null)
       entries.push([
         'textDecorationStyle',
