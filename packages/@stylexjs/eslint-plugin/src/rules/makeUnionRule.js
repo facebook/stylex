@@ -40,11 +40,14 @@ export default function makeUnionRule(
       }
       failedRules.push(check);
     }
-    const fixable = failedRules.filter((a) => a.suggest != null);
+    const fixable = failedRules.filter(
+      (a) => a.suggest != null || a.fix != null,
+    );
     fixable.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
 
     return {
       message: failedRules.map((a) => a.message).join('\n'),
+      fix: fixable[0] != null ? fixable[0].fix : undefined,
       suggest: fixable[0] != null ? fixable[0].suggest : undefined,
     };
   };
