@@ -160,6 +160,21 @@ const FONT_SIZE_KEYWORDS = new Set([
   'smaller',
   'larger',
 ]);
+const TEXT_DECORATION_LINE_KEYWORDS = new Set([
+  'none',
+  'underline',
+  'overline',
+  'line-through',
+  'blink',
+]);
+const TEXT_DECORATION_STYLE_KEYWORDS = new Set([
+  'solid',
+  'double',
+  'dotted',
+  'dashed',
+  'wavy',
+]);
+const TEXT_DECORATION_THICKNESS_KEYWORDS = new Set(['auto', 'from-font']);
 const COLOR_KEYWORDS = new Set(['transparent', 'currentcolor']);
 const COLOR_FUNCTION_REGEX =
   /^(?:rgb|rgba|hsl|hsla|hwb|hsb|lab|lch|oklab|oklch|color)\(/i;
@@ -1144,8 +1159,14 @@ export function splitSpecificShorthands(
     if (vals.length === 2) {
       const suffix = property.replace('place-', '');
       return [
-        [toCamelCase(`align-${suffix}`), applyImportant(vals[0], importantSuffix)],
-        [toCamelCase(`justify-${suffix}`), applyImportant(vals[1], importantSuffix)],
+        [
+          toCamelCase(`align-${suffix}`),
+          applyImportant(vals[0], importantSuffix),
+        ],
+        [
+          toCamelCase(`justify-${suffix}`),
+          applyImportant(vals[1], importantSuffix),
+        ],
       ];
     }
     return [[toCamelCase(property), CANNOT_FIX]];
@@ -1658,6 +1679,68 @@ export function splitSpecificShorthands(
       importantSuffix,
     );
     return expandedOutline ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  if (property === 'text-decoration') {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [['textDecoration', CANNOT_FIX]];
+    }
+
+    let line = null;
+    let style = null;
+    let color = null;
+    let thickness = null;
+
+    for (const val of values) {
+      const lower = val.toLowerCase();
+      if (TEXT_DECORATION_LINE_KEYWORDS.has(lower)) {
+        if (line != null) return [['textDecoration', CANNOT_FIX]];
+        line = val;
+        continue;
+      }
+      if (TEXT_DECORATION_STYLE_KEYWORDS.has(lower)) {
+        if (style != null) return [['textDecoration', CANNOT_FIX]];
+        style = val;
+        continue;
+      }
+      if (
+        TEXT_DECORATION_THICKNESS_KEYWORDS.has(lower) ||
+        LENGTH_REGEX.test(lower) ||
+        LENGTH_FUNCTION_REGEX.test(lower)
+      ) {
+        if (thickness != null) return [['textDecoration', CANNOT_FIX]];
+        thickness = val;
+        continue;
+      }
+      // Assume it's a color
+      if (color != null) return [['textDecoration', CANNOT_FIX]];
+      color = val;
+    }
+
+    const entries: Array<[string, string]> = [];
+    if (line != null)
+      entries.push([
+        'textDecorationLine',
+        applyImportant(line, importantSuffix),
+      ]);
+    if (style != null)
+      entries.push([
+        'textDecorationStyle',
+        applyImportant(style, importantSuffix),
+      ]);
+    if (color != null)
+      entries.push([
+        'textDecorationColor',
+        applyImportant(color, importantSuffix),
+      ]);
+    if (thickness != null)
+      entries.push([
+        'textDecorationThickness',
+        applyImportant(thickness, importantSuffix),
+      ]);
+
+    if (entries.length === 0) return [['textDecoration', CANNOT_FIX]];
+    return entries;
   }
 
   return [[toCamelCase(property), CANNOT_FIX]];
