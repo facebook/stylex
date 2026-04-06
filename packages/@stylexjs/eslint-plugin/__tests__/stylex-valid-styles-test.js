@@ -1258,6 +1258,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1299,6 +1300,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1340,6 +1342,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1381,6 +1384,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1422,6 +1426,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1463,6 +1468,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1502,6 +1508,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1541,6 +1548,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1578,6 +1586,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1615,6 +1624,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1652,6 +1662,7 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -1697,7 +1708,12 @@ revert`,
           }
         });
       `,
-      options: [{ validImports: ['custom-import'] }],
+      options: [
+        {
+          validImports: ['custom-import'],
+          styleResolution: 'legacy-expand-shorthands',
+        },
+      ],
       errors: [
         {
           message:
@@ -3022,6 +3038,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       errors: [
         {
           message:
@@ -3054,6 +3071,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -3081,6 +3099,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
       output: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -3094,6 +3113,95 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
       errors: [
         {
           message: /^font value must be one of:\n`font` is not recommended/,
+        },
+      ],
+    },
+    // animation/font/border autofixes are only enabled in legacy-expand-shorthands mode
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animation: 'fadeIn 1s ease-in',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animation: 'fadeIn 1s ease-in',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            /^animation value must be one of:\n`animation` is not recommended/,
+          suggestions: [],
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: 'bold 16px/1.5 Arial',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: 'bold 16px/1.5 Arial',
+          }
+        });
+      `,
+      errors: [
+        {
+          message: /^font value must be one of:\n`font` is not recommended/,
+          suggestions: [],
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            border: '1px solid blue',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            border: '1px solid blue',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'blue',
+          }
+        });
+      `,
+            },
+          ],
         },
       ],
     },
