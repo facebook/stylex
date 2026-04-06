@@ -91,6 +91,22 @@ const shorthandExpansionMap: { [string]: string } = {
   gridGap: 'gap',
 };
 
+const LEGACY_CONDITIONAL_SHORTHAND_FIXERS = new Set(['animation', 'font']);
+
+const LEGACY_CONDITIONAL_REPLACEMENT_FIXERS = new Set([
+  'border',
+  'borderTop',
+  'borderBlockStart',
+  'borderEnd',
+  'borderInlineEnd',
+  'borderRight',
+  'borderBottom',
+  'borderBlockEnd',
+  'borderStart',
+  'borderInlineStart',
+  'borderLeft',
+]);
+
 const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
 
 const NUMERIC_LITERAL_PROPERTIES = new Set([
@@ -200,6 +216,14 @@ const stylexValidStyles = {
             type: 'boolean',
             default: false,
           },
+          styleResolution: {
+            type: 'string',
+            enum: [
+              'application-order',
+              'property-specificity',
+              'legacy-expand-shorthands',
+            ],
+          },
           propLimits: {
             type: 'object',
             additionalProperties: {
@@ -257,6 +281,10 @@ const stylexValidStyles = {
       allowRawCSSVars: boolean,
       allowOuterPseudoAndMedia: boolean,
       banPropsForLegacy: boolean,
+      styleResolution?:
+        | 'application-order'
+        | 'property-specificity'
+        | 'legacy-expand-shorthands',
       propLimits?: PropLimits,
     };
 
@@ -283,8 +311,18 @@ const stylexValidStyles = {
       allowRawCSSVars = true,
       allowOuterPseudoAndMedia,
       banPropsForLegacy = false,
+      styleResolution,
       propLimits = {},
     }: Schema = context.options[0] || {};
+
+    const isLegacyExpandShorthands =
+      styleResolution === 'legacy-expand-shorthands' || banPropsForLegacy;
+
+    const shouldEnableLegacyConditionalShorthandFixer = (
+      propertyKey: string,
+    ): boolean =>
+      isLegacyExpandShorthands ||
+      !LEGACY_CONDITIONAL_SHORTHAND_FIXERS.has(propertyKey);
 
     /**
      * Check if a file has a valid extension for StyleX variable imports.
@@ -332,7 +370,7 @@ const stylexValidStyles = {
     const styleXWhenImports = new Set<string>();
 
     const overrides: PropLimits = {
-      ...(banPropsForLegacy ? legacyProps : {}),
+      ...(isLegacyExpandShorthands ? legacyProps : {}),
       ...propLimits,
     };
 
@@ -351,6 +389,12 @@ const stylexValidStyles = {
         all,
       ),
     };
+    const getOverrideErrorRule = (reason: string, propertyKey: string) =>
+      shorthandExpansionMap[propertyKey] != null &&
+      shouldEnableLegacyConditionalShorthandFixer(propertyKey)
+        ? showErrorWithFix(reason, propertyKey)
+        : showError(reason);
+
     for (const overrideKey in overrides) {
       const { limit, reason } = overrides[overrideKey];
       if (limit === null) {
@@ -358,17 +402,17 @@ const stylexValidStyles = {
         if (overrideKey.includes('*') || overrideKey.includes('+')) {
           for (const key in CSSPropertiesWithOverrides) {
             if (micromatch.isMatch(key, overrideKey)) {
-              CSSPropertiesWithOverrides[key] =
-                shorthandExpansionMap[key] != null
-                  ? showErrorWithFix(reason, key)
-                  : showError(reason);
+              CSSPropertiesWithOverrides[key] = getOverrideErrorRule(
+                reason,
+                key,
+              );
             }
           }
         } else {
-          CSSPropertiesWithOverrides[overrideKey] =
-            shorthandExpansionMap[overrideKey] != null
-              ? showErrorWithFix(reason, overrideKey)
-              : showError(reason);
+          CSSPropertiesWithOverrides[overrideKey] = getOverrideErrorRule(
+            reason,
+            overrideKey,
+          );
         }
         continue;
       }
@@ -734,7 +778,15 @@ const stylexValidStyles = {
           const val: Property = style;
           const check = propCheck(style.value, variables, style);
           if (check != null) {
-            const { message, fix, suggest } = check;
+            const { message } = check;
+            const { suggest } = check;
+            let { fix } = check;
+            if (
+              !isLegacyExpandShorthands &&
+              LEGACY_CONDITIONAL_REPLACEMENT_FIXERS.has(key)
+            ) {
+              fix = undefined;
+            }
             const diagnostic: Rule.ReportDescriptor = {
               node: style,
               loc: style.loc,
@@ -842,6 +894,7 @@ const stylexValidStyles = {
               fix == null &&
               suggest == null &&
               shorthandExpansionMap[key] != null &&
+              shouldEnableLegacyConditionalShorthandFixer(key) &&
               style.value.type === 'Literal'
             ) {
               const val = style.value.value;

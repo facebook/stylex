@@ -29,6 +29,13 @@ type Options = {
   //
   // Default: false
   banPropsForLegacy: boolean;
+
+  // Mirrors the compiler option and enables legacy-mode
+  // shorthand autofixers when set to 'legacy-expand-shorthands'.
+  styleResolution?:
+    | 'application-order'
+    | 'property-specificity'
+    | 'legacy-expand-shorthands';
 };
 
 type PropLimits = {
