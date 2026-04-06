@@ -86,11 +86,62 @@ dependencies that use StyleX (checking `dependencies`, `peerDependencies`, and
 ### useCSSLayers
 
 ```js
-useCSSLayers: boolean; // Default: false
+useCSSLayers: boolean | {
+  before?: string[],
+  after?: string[],
+  prefix?: string,
+}; // Default: false
 ```
 
-Enabling this option switches Stylex from using `:not(#\#)` to using `@layers`
-for handling CSS specificity.
+Enabling this option switches StyleX from using `:not(#\#)` to using `@layer`
+for handling CSS specificity. When set to `true`, each priority level is wrapped
+in its own `@layer` and a layer-ordering header is emitted. This gives StyleX
+CSS lower specificity than any unlayered CSS in the app (per the CSS cascade:
+layered styles < unlayered styles).
+
+When your project also uses other CSS layers (e.g. a design-system
+layer, or a utility framework like Tailwind), pass an object to position
+StyleX's layers relative to yours in the
+[`@layer` ordering declaration](https://developer.mozilla.org/en-US/docs/Web/CSS/@layer)
+and to namespace them to avoid collisions:
+
+- **`before`** — extra layer names placed _before_ StyleX's priority layers in
+  the ordering header. Use this to ensure base layers are ordered before
+  StyleX.
+- **`after`** — extra layer names placed _after_ StyleX's priority layers.
+  Useful for giving a utilities layer higher precedence than StyleX.
+- **`prefix`** — string prepended to every StyleX layer name (joined with `.`).
+  Use this to namespace StyleX layers and avoid collisions with other frameworks
+  (e.g. `prefix: 'stylex'` → `stylex.priority1`).
+
+```js
+// postcss.config.js
+module.exports = {
+  plugins: {
+    '@stylexjs/postcss-plugin': {
+      useCSSLayers: {
+        before: ['reset', 'base'],
+        after: ['utilities'],
+        prefix: 'stylex',
+      },
+      // ...other options
+    },
+  },
+};
+```
+
+The generated CSS begins with a layer-ordering header followed by wrapped rules:
+
+```css
+@layer reset, base, stylex.priority1, stylex.priority2, utilities;
+
+@layer stylex.priority1 {
+  /* low-priority rules */
+}
+@layer stylex.priority2 {
+  /* higher-priority rules */
+}
+```
 
 ---
 
