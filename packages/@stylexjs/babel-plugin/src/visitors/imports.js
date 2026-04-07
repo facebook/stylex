@@ -103,6 +103,15 @@ export function readImportDeclarations(
             if (importedName === 'env') {
               state.stylexEnvImport.add(localName);
             }
+            if (importedName === 'unstable_defineVarsNested') {
+              state.stylexDefineVarsNestedImport.add(localName);
+            }
+            if (importedName === 'unstable_defineConstsNested') {
+              state.stylexDefineConstsNestedImport.add(localName);
+            }
+            if (importedName === 'unstable_createThemeNested') {
+              state.stylexCreateThemeNestedImport.add(localName);
+            }
           }
         }
       }
@@ -190,6 +199,15 @@ export function readRequires(
           }
           if (prop.key.name === 'env') {
             state.stylexEnvImport.add(value.name);
+          }
+          if (prop.key.name === 'unstable_defineVarsNested') {
+            state.stylexDefineVarsNestedImport.add(value.name);
+          }
+          if (prop.key.name === 'unstable_defineConstsNested') {
+            state.stylexDefineConstsNestedImport.add(value.name);
+          }
+          if (prop.key.name === 'unstable_createThemeNested') {
+            state.stylexCreateThemeNestedImport.add(value.name);
           }
         }
       }
