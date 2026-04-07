@@ -479,9 +479,29 @@ function _evaluate(path: NodePath<>, state: State): any {
     return evaluateCached(path.get('expression'), state);
   }
 
-  // Collect the full member path for a chain of MemberExpressions.
-  // e.g., tokens.button.primary.background → { basePath: <tokens>, parts: ['button', 'primary', 'background'] }
-  // Returns null if the chain contains computed properties with non-static values.
+  /**
+   * Collects the full member expression chain for cross-file nested token resolution.
+   *
+   * When tokens are imported from another .stylex.js file, the plugin creates a
+   * themeNameRef proxy that only handles single-level access. Multi-level access like
+   * tokens.button.primary.background would fail because proxy['button'] returns a
+   * string, and "var(--hash)"['primary'] is undefined.
+   *
+   * This function walks the MemberExpression AST chain from outermost to innermost,
+   * collecting all property names. The caller can then resolve the full dotted key
+   * against the proxy in one shot: proxy['button.primary.background'].
+   *
+   * Example:
+   *   AST for tokens.button.primary.background
+   *   → { basePath: <Identifier:tokens>, parts: ['button', 'primary', 'background'] }
+   *
+   * Returns null for:
+   *   - Single-level access (no benefit from path collection)
+   *   - Dynamic computed properties that can't be resolved statically
+   *
+   * @param memberPath - The outermost MemberExpression NodePath
+   * @returns { basePath, parts } or null
+   */
   function getFullMemberPath(
     memberPath: NodePath<t.MemberExpression>,
   ): ?{ basePath: NodePath<>, parts: Array<string> } {
@@ -519,10 +539,17 @@ function _evaluate(path: NodePath<>, state: State): any {
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
-    // For nested member expressions on theme ref proxies (e.g., tokens.button.primary.background),
-    // we need to collect the full path and resolve it as a single dotted key.
-    // Otherwise, the proxy returns a string for the first access and subsequent
-    // accesses fail (e.g., "var(--hash)".primary → undefined).
+    // Cross-file nested token resolution:
+    // When tokens are imported from another .stylex.js file, the evaluator creates
+    // a themeNameRef proxy. For flat tokens (tokens.color), single-level proxy access
+    // works fine. For nested tokens (tokens.button.primary.background), multi-level
+    // access fails because proxy['button'] returns "var(--hash)" (a string) and
+    // "var(--hash)"['primary'] is undefined.
+    //
+    // Fix: collect the full member chain ['button', 'primary', 'background'] and
+    // resolve it as a single dotted key: proxy['button.primary.background'].
+    // The dotted key produces the same hash as defineVarsNested compilation
+    // (which internally flattens to the same dotted key).
     const fullPath = getFullMemberPath(path);
     if (fullPath != null) {
       const { basePath, parts } = fullPath;
