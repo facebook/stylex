@@ -161,7 +161,7 @@ export default function CrossFileSection() {
   return (
     <section {...stylex.props(s.section)}>
       <p {...stylex.props(s.description)}>
-        Cross-file imports: You can define your nested tokens in{' '}
+        Cross-file import works: You can define your nested tokens in{' '}
         <code {...stylex.props(s.code)}>tokens.stylex.ts</code> and import{' '}
         <code {...stylex.props(s.code)}>tokens</code> /{' '}
         <code {...stylex.props(s.code)}>consts</code> into any other file. The

@@ -37,8 +37,8 @@ export default function XdsDemoPage() {
     <main {...stylex.props(s.page, THEMES[themeIndex].theme)}>
       {/* ── Header ──────────────────────────────────── */}
       <header {...stylex.props(s.header)}>
-        <a {...stylex.props(s.backLink)} href="/nested-demo">
-          ← Back
+        <a {...stylex.props(s.backLink)} href="/theming-demos">
+          ← Back to Theming Demos
         </a>
         <h1 {...stylex.props(s.title)}>
           Design System <span {...stylex.props(s.titleAccent)}>Theming</span>{' '}
@@ -46,7 +46,17 @@ export default function XdsDemoPage() {
         </h1>
         <p {...stylex.props(s.subtitle)}>
           A showcase of three-tier token architecture (Primitives → Semantics →
-          Themes) with the nested APIs
+          Themes) written with{' '}
+          <a {...stylex.props(s.inlineLink)} href="/nested-demo">
+            the nested APIs
+          </a>
+          .
+        </p>
+        <p {...stylex.props(s.subtitle)}>
+          Express three-tier token architecture natively in StyleX. Primitives
+          (defineConstsNested) feed into semantic tokens (defineVarsNested)
+          which are overridden by themes (createThemeNested). Switch themes to
+          re-skin everything.
         </p>
       </header>
 
@@ -256,6 +266,16 @@ const s = stylex.create({
     fontSize: '1rem',
     color: tokens.color.textSecondary,
     margin: 0,
+    maxWidth: '50ch',
+    textWrap: 'balance',
+  },
+  inlineLink: {
+    color: tokens.color.accent,
+    textDecoration: 'none',
+    fontWeight: primitives.fontWeight.medium,
+    opacity: { default: 0.9, ':hover': 1 },
+    transitionProperty: 'opacity',
+    transitionDuration: '200ms',
   },
   tagline: {
     fontSize: '0.85rem',

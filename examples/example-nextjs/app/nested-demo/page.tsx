@@ -33,18 +33,52 @@ export default function NestedDemoPage() {
     <main {...stylex.props(s.main, THEMES[themeIndex].theme)}>
       {/* ── Hero ────────────────────────────────────── */}
       <div {...stylex.props(s.hero)}>
-        <a {...stylex.props(s.backLink)} href="/">
-          ← Back to main demo
+        <a {...stylex.props(s.backLink)} href="/theming-demos">
+          ← Back to Theming Demos
         </a>
         <h1 {...stylex.props(s.h1)}>
           Nested <span {...stylex.props(s.plus)}>APIs</span> Demo
         </h1>
         <p {...stylex.props(s.subtitle)}>
-          A showcase of{' '}
-          <code {...stylex.props(s.code)}>unstable_defineVarsNested</code>,{' '}
-          <code {...stylex.props(s.code)}>unstable_defineConstsNested</code>,
-          and <code {...stylex.props(s.code)}>unstable_createThemeNested</code>
+          Experimental APIs for nested design tokens in StyleX. Define design
+          tokens as nested objects instead of flat key-value pairs — the
+          compiler flattens them into the same CSS with zero performance cost.
+          This lets you compose hierarchical token structures and themes across
+          packages.
         </p>
+      </div>
+
+      <div {...stylex.props(s.apiGrid)}>
+        {[
+          {
+            api: 'unstable_defineVarsNested',
+            desc: 'Define nested CSS custom properties that can be themed at runtime.',
+            file: 'tokens.stylex.ts',
+          },
+          {
+            api: 'unstable_defineConstsNested',
+            desc: 'Define nested compile-time constants that are inlined — zero runtime cost.',
+            file: 'tokens.stylex.ts',
+          },
+          {
+            api: 'unstable_createThemeNested',
+            desc: 'Override nested token values for a subtree, just like createTheme.',
+            file: 'tokens.stylex.ts',
+          },
+          {
+            api: 'unstable_conditional',
+            desc: 'Wrapper for conditional CSS at-rules (@media, @supports) that disambiguates from namespace keys.',
+            file: 'tokens.stylex.ts',
+          },
+        ].map((item) => (
+          <div key={item.api} {...stylex.props(s.apiCard)}>
+            <code {...stylex.props(s.apiName)}>{item.api}</code>
+            <p {...stylex.props(s.apiDesc)}>{item.desc}</p>
+            <p {...stylex.props(s.apiFile)}>
+              <code {...stylex.props(s.code)}>{item.file}</code>
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* ── Theme Picker ───────────────────────────── */}
@@ -116,18 +150,16 @@ export default function NestedDemoPage() {
         </div>
       </section>
 
-      <CrossFileSection />
-
       {/* ── unstable_conditional (cond) ────────────── */}
       <section {...stylex.props(s.section)}>
-        <p {...stylex.props(s.sectionDesc, s.leftAlign)}>
-          Recommended: use the{' '}
-          <code {...stylex.props(s.code)}>unstable_conditional()</code> wrapper
-          for conditional CSS at-rules (
-          <code {...stylex.props(s.code)}>@media</code>,{' '}
-          <code {...stylex.props(s.code)}>@supports</code>) for type safety.
-        </p>
-        <div {...stylex.props(s.condCard)}>
+        <div {...stylex.props(s.condHighlight)}>
+          <p {...stylex.props(s.condHighlightText)}>
+            💡 Use the{' '}
+            <code {...stylex.props(s.code)}>unstable_conditional()</code>{' '}
+            wrapper for conditional CSS at-rules (
+            <code {...stylex.props(s.code)}>@media</code>,{' '}
+            <code {...stylex.props(s.code)}>@supports</code>) for type safety.
+          </p>
           <pre {...stylex.props(s.condPre)}>
             {`import { unstable_conditional as cond }
   from '@stylexjs/stylex';
@@ -146,40 +178,7 @@ accent: cond({
         </div>
       </section>
 
-      {/* ── API Reference Cards ────────────────────── */}
-      <section {...stylex.props(s.section)}>
-        <h2 {...stylex.props(s.sectionTitle)}>
-          <span {...stylex.props(s.sectionIcon)}>📚</span>
-          APIs Used
-        </h2>
-        <div {...stylex.props(s.apiGrid)}>
-          {[
-            {
-              api: 'unstable_defineVarsNested',
-              desc: 'Define nested CSS custom properties that can be themed at runtime.',
-              file: 'tokens.stylex.ts',
-            },
-            {
-              api: 'unstable_defineConstsNested',
-              desc: 'Define nested compile-time constants that are inlined — zero runtime cost.',
-              file: 'tokens.stylex.ts',
-            },
-            {
-              api: 'unstable_createThemeNested',
-              desc: 'Override nested token values for a subtree, just like createTheme.',
-              file: 'tokens.stylex.ts',
-            },
-          ].map((item) => (
-            <div key={item.api} {...stylex.props(s.apiCard)}>
-              <code {...stylex.props(s.apiName)}>{item.api}</code>
-              <p {...stylex.props(s.apiDesc)}>{item.desc}</p>
-              <p {...stylex.props(s.apiFile)}>
-                <code {...stylex.props(s.code)}>{item.file}</code>
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <CrossFileSection />
 
       <a {...stylex.props(s.demoLink)} href="/ds-demo">
         <span {...stylex.props(s.demoLinkIcon)}>🎨</span>
@@ -472,11 +471,12 @@ const s = stylex.create({
   apiGrid: {
     display: 'grid',
     gridTemplateColumns: {
-      default: 'repeat(3, 1fr)',
+      default: 'repeat(4, 1fr)',
       [MOBILE]: '1fr',
     },
     gap: '0.75rem',
     width: '100%',
+    maxWidth: 840,
   },
   apiCard: {
     padding: '1.25rem',
@@ -570,6 +570,28 @@ const s = stylex.create({
     lineHeight: 1.5,
     color: tokens.text.secondary,
     fontStyle: 'italic',
+  },
+  condHighlight: {
+    padding: '1.25rem',
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: tokens.accent.base,
+    borderRadius: consts.radius.lg,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    transitionProperty: 'border-color',
+    transitionDuration: '300ms',
+  },
+  condHighlightText: {
+    margin: 0,
+    fontSize: '0.875rem',
+    lineHeight: 1.6,
+    fontWeight: 600,
+    color: tokens.accent.base,
+    transitionProperty: 'color',
+    transitionDuration: '300ms',
   },
 
   // Shared
