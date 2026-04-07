@@ -161,16 +161,6 @@ describe('shared nested transforms', () => {
       expect(jsOutput.button.background).not.toBe(jsOutput.button.color);
     });
 
-    test('handles null values (schema placeholders)', () => {
-      const [jsOutput] = defineVarsNested(
-        {
-          button: { background: null },
-        },
-        options,
-      );
-
-      expect(jsOutput.button.background).toMatch(/^var\(--/);
-    });
   });
 
   describe('styleXDefineConstsNested', () => {

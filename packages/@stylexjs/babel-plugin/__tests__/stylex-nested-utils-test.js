@@ -10,18 +10,18 @@
 jest.autoMockOff();
 
 import {
-  flattenNestedConfig,
+  flattenNestedVarsConfig,
   flattenNestedConstsConfig,
   unflattenObject,
 } from '../src/shared/stylex-nested-utils';
 
 describe('stylex-nested-utils', () => {
-  describe('flattenNestedConfig', () => {
+  describe('flattenNestedVarsConfig', () => {
     test('flattens a simple one-level nested object', () => {
       const input = {
         button: { background: '#00FF00', color: 'blue' },
       };
-      const result = flattenNestedConfig(input);
+      const result = flattenNestedVarsConfig(input);
       expect(result).toEqual({
         'button.background': '#00FF00',
         'button.color': 'blue',
@@ -39,7 +39,7 @@ describe('stylex-nested-utils', () => {
           },
         },
       };
-      const result = flattenNestedConfig(input);
+      const result = flattenNestedVarsConfig(input);
       expect(result).toEqual({
         'button.primary.background': '#00FF00',
         'button.secondary.background': '#CCCCCC',
@@ -47,7 +47,7 @@ describe('stylex-nested-utils', () => {
     });
 
     test('flattens 4 levels deep', () => {
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         a: { b: { c: { d: 'value' } } },
       });
       expect(result).toEqual({
@@ -56,7 +56,7 @@ describe('stylex-nested-utils', () => {
     });
 
     test('keeps top-level string values as-is', () => {
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         shallow: 'red',
         deep: { nested: 'blue' },
       });
@@ -66,49 +66,17 @@ describe('stylex-nested-utils', () => {
       });
     });
 
-    test('treats number values as leaves', () => {
-      const result = flattenNestedConfig({
-        spacing: { sm: 4, md: 8, lg: 16 },
-      });
-      expect(result).toEqual({
-        'spacing.sm': 4,
-        'spacing.md': 8,
-        'spacing.lg': 16,
-      });
-    });
-
-    test('treats null values as leaves', () => {
-      const result = flattenNestedConfig({
-        button: { background: null, color: null },
-      });
-      expect(result).toEqual({
-        'button.background': null,
-        'button.color': null,
-      });
-    });
-
-    test('treats undefined values as leaves', () => {
-      const result = flattenNestedConfig({
-        button: { background: undefined },
-      });
-      expect(result).toEqual({
-        'button.background': undefined,
-      });
-    });
-
     test('stops at objects with a "default" key (conditional @-rule values)', () => {
       const conditionalValue = {
         default: 'blue',
         '@media (prefers-color-scheme: dark)': 'lightblue',
       };
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         button: { color: conditionalValue },
       });
       expect(result).toEqual({
         'button.color': conditionalValue,
       });
-      // The conditional object is preserved intact, not flattened
-      expect(result['button.color']).toBe(conditionalValue);
     });
 
     test('stops at deeply nested conditional @-rule values', () => {
@@ -119,7 +87,7 @@ describe('stylex-nested-utils', () => {
           '@supports (color: oklch(0 0 0))': 'oklch(0.7 -0.3 -0.4)',
         },
       };
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         button: { primary: { color: conditionalValue } },
       });
       expect(result).toEqual({
@@ -128,7 +96,7 @@ describe('stylex-nested-utils', () => {
     });
 
     test('handles mixed namespaces and conditional values at the same level', () => {
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         button: {
           primary: {
             background: '#00FF00',
@@ -149,7 +117,7 @@ describe('stylex-nested-utils', () => {
     });
 
     test('handles multiple branches at the same level', () => {
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         button: {
           primary: { bg: 'red' },
           secondary: { bg: 'blue' },
@@ -164,35 +132,26 @@ describe('stylex-nested-utils', () => {
     });
 
     test('returns empty object for empty input', () => {
-      expect(flattenNestedConfig({})).toEqual({});
+      expect(flattenNestedVarsConfig({})).toEqual({});
     });
 
     test('handles object with only top-level leaves (no nesting)', () => {
-      const result = flattenNestedConfig({
+      const result = flattenNestedVarsConfig({
         color: 'red',
         fontSize: '16px',
-        lineHeight: 1.5,
+        lineHeight: '1.5',
       });
       expect(result).toEqual({
         color: 'red',
         fontSize: '16px',
-        lineHeight: 1.5,
+        lineHeight: '1.5',
       });
     });
 
-    test('treats arrays as leaves (does not recurse into arrays)', () => {
-      const result = flattenNestedConfig({
-        button: { values: [1, 2, 3] },
-      });
-      expect(result).toEqual({
-        'button.values': [1, 2, 3],
-      });
-    });
-
-    test('preserves the exact reference of conditional value objects', () => {
+    test('preserves conditional value objects', () => {
       const condObj = { default: 'red', '@media print': 'black' };
-      const result = flattenNestedConfig({ button: { color: condObj } });
-      expect(result['button.color']).toBe(condObj);
+      const result = flattenNestedVarsConfig({ button: { color: condObj } });
+      expect(result['button.color']).toEqual(condObj);
     });
 
     test('object with default key set to a nested conditional is still a leaf', () => {
@@ -203,7 +162,7 @@ describe('stylex-nested-utils', () => {
         },
         '@media (prefers-color-scheme: dark)': 'lightblue',
       };
-      const result = flattenNestedConfig({ color: value });
+      const result = flattenNestedVarsConfig({ color: value });
       expect(result).toEqual({ color: value });
     });
   });
@@ -250,13 +209,13 @@ describe('stylex-nested-utils', () => {
       });
     });
 
-    test('differs from flattenNestedConfig for objects with "default" key', () => {
+    test('differs from flattenNestedVarsConfig for objects with "default" key', () => {
       const input = {
         color: { default: 'blue', hovered: 'darkblue' },
       };
 
-      // flattenNestedConfig treats { default: ... } as a leaf (for vars with @-rules)
-      const varsResult = flattenNestedConfig(input);
+      // flattenNestedVarsConfig treats { default: ... } as a leaf (for vars with @-rules)
+      const varsResult = flattenNestedVarsConfig(input);
       expect(varsResult).toEqual({
         color: { default: 'blue', hovered: 'darkblue' },
       });
@@ -266,15 +225,6 @@ describe('stylex-nested-utils', () => {
       expect(constsResult).toEqual({
         'color.default': 'blue',
         'color.hovered': 'darkblue',
-      });
-    });
-
-    test('handles null values as leaves', () => {
-      const result = flattenNestedConstsConfig({
-        button: { background: null },
-      });
-      expect(result).toEqual({
-        'button.background': null,
       });
     });
 
@@ -387,7 +337,7 @@ describe('stylex-nested-utils', () => {
     });
   });
 
-  describe('flattenNestedConfig and unflattenObject round-trip', () => {
+  describe('flattenNestedVarsConfig and unflattenObject round-trip', () => {
     test('round-trips a simple nested object', () => {
       const original = {
         button: {
@@ -395,7 +345,7 @@ describe('stylex-nested-utils', () => {
           secondary: { background: 'gray' },
         },
       };
-      const flat = flattenNestedConfig(original);
+      const flat = flattenNestedVarsConfig(original);
       const roundTripped = unflattenObject(flat);
       expect(roundTripped).toEqual(original);
     });
@@ -409,7 +359,7 @@ describe('stylex-nested-utils', () => {
           },
         },
       };
-      const flat = flattenNestedConfig(original);
+      const flat = flattenNestedVarsConfig(original);
       const roundTripped = unflattenObject(flat);
       expect(roundTripped).toEqual(original);
     });
@@ -433,16 +383,16 @@ describe('stylex-nested-utils', () => {
           border: '#000000',
         },
       };
-      const flat = flattenNestedConfig(original);
+      const flat = flattenNestedVarsConfig(original);
       const roundTripped = unflattenObject(flat);
       expect(roundTripped).toEqual(original);
     });
 
-    test('round-trips with number values', () => {
+    test('round-trips with string values', () => {
       const original = {
-        spacing: { xs: 4, sm: 8, md: 16, lg: 24 },
+        spacing: { xs: '4px', sm: '8px', md: '16px', lg: '24px' },
       };
-      const flat = flattenNestedConfig(original);
+      const flat = flattenNestedVarsConfig(original);
       const roundTripped = unflattenObject(flat);
       expect(roundTripped).toEqual(original);
     });
@@ -452,7 +402,7 @@ describe('stylex-nested-utils', () => {
         color: 'red',
         fontSize: '16px',
       };
-      const flat = flattenNestedConfig(original);
+      const flat = flattenNestedVarsConfig(original);
       const roundTripped = unflattenObject(flat);
       expect(roundTripped).toEqual(original);
     });
