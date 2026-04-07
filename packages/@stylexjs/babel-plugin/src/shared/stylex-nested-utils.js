@@ -70,7 +70,7 @@ function flattenImpl<T>(
     const fullKey = prefix ? `${prefix}${SEPARATOR}${key}` : key;
 
     if (isLeaf(value)) {
-      result[fullKey] = transformLeaf ? transformLeaf(value) : (value: any);
+      result[fullKey] = transformLeaf ? transformLeaf(value) : (value as any);
     } else if (
       typeof value === 'object' &&
       value != null &&
