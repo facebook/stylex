@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  * Dedicated demo route for the nested design-token APIs.
- * Mirrors the visual style of the main app but uses exclusively:
  *   - unstable_defineVarsNested  (tokens.stylex.ts)
  *   - unstable_defineConstsNested (tokens.stylex.ts)
  *   - unstable_createThemeNested  (tokens.stylex.ts)
- * Cross-file resolution is demonstrated by CrossFileSection.tsx.
  */
 
 // @ts-nocheck — nested APIs are experimental and lack TS type definitions.
@@ -123,8 +121,35 @@ export default function NestedDemoPage() {
         </div>
       </section>
 
-      {/* ── Cross-File Section ─────────────────────── */}
       <CrossFileSection />
+
+      {/* ── unstable_conditional (cond) ────────────── */}
+      <section {...stylex.props(s.section)}>
+        <p {...stylex.props(s.sectionDesc, s.leftAlign)}>
+          Recommended: use the{' '}
+          <code {...stylex.props(s.code)}>unstable_conditional()</code> wrapper
+          for conditional CSS at-rules (
+          <code {...stylex.props(s.code)}>@media</code>,{' '}
+          <code {...stylex.props(s.code)}>@supports</code>) for type safety.
+        </p>
+        <div {...stylex.props(s.condCard)}>
+          <pre {...stylex.props(s.condPre)}>
+            {`import { unstable_conditional as cond }
+  from '@stylexjs/stylex';
+
+const DARK = '@media (prefers-color-scheme: dark)';
+
+accent: cond({
+  default: '#2563eb',  // base value
+  [DARK]: '#60a5fa',   // dark mode override
+})`}
+          </pre>
+          <p {...stylex.props(s.condNote)}>
+            With cond() compiler knows `default` is a conditional rule not a
+            namespace
+          </p>
+        </div>
+      </section>
 
       {/* ── API Reference Cards ────────────────────── */}
       <section {...stylex.props(s.section)}>
@@ -161,7 +186,6 @@ export default function NestedDemoPage() {
         </div>
       </section>
 
-      {/* ── Link to Design System Theming demo ──────── */}
       <a {...stylex.props(s.demoLink)} href="/ds-demo">
         <span {...stylex.props(s.demoLinkIcon)}>🎨</span>
         <span>
@@ -360,6 +384,10 @@ const s = stylex.create({
     margin: 0,
     color: tokens.text.secondary,
   },
+  leftAlign: {
+    textAlign: 'left',
+    width: '100%',
+  },
 
   // Badges
   badgeRow: {
@@ -485,6 +513,67 @@ const s = stylex.create({
     marginTop: 'auto',
     fontSize: '0.7rem',
     color: tokens.text.muted,
+  },
+
+  // cond() comparison
+  condCompare: {
+    display: 'grid',
+    gridTemplateColumns: {
+      default: '1fr 1fr',
+      [MOBILE]: '1fr',
+    },
+    gap: '0.75rem',
+    width: '100%',
+  },
+  condCard: {
+    padding: '1rem',
+    borderRadius: consts.radius.lg,
+    backgroundColor: tokens.surface.card,
+    boxShadow: tokens.surface.cardShadow,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: tokens.surface.divider,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+    transitionProperty: 'background-color, box-shadow, border-color',
+    transitionDuration: '300ms',
+  },
+  condCardRecommended: {
+    borderColor: tokens.accent.base,
+    borderWidth: 2,
+  },
+  condLabel: {
+    margin: 0,
+    fontSize: '0.7rem',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    color: tokens.text.muted,
+  },
+  condLabelRecommended: {
+    color: tokens.accent.base,
+  },
+  condPre: {
+    margin: 0,
+    padding: '0.75rem',
+    backgroundColor: {
+      default: 'rgba(0,0,0,0.03)',
+      [DARK]: 'rgba(255,255,255,0.05)',
+    },
+    borderRadius: consts.radius.sm,
+    fontSize: '0.72rem',
+    fontFamily: consts.font.mono,
+    lineHeight: 1.5,
+    overflow: 'auto',
+    color: tokens.text.primary,
+  },
+  condNote: {
+    margin: 0,
+    fontSize: '0.75rem',
+    lineHeight: 1.5,
+    color: tokens.text.secondary,
+    fontStyle: 'italic',
   },
 
   // Shared
