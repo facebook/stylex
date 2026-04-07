@@ -85,6 +85,25 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
+export const unstable_defineVarsNested = function stylexDefineVarsNested(
+  _styles: $FlowFixMe,
+) {
+  throw errorForFn('unstable_defineVarsNested');
+};
+
+export const unstable_defineConstsNested = function stylexDefineConstsNested<
+  const T: { +[string]: unknown },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineConstsNested');
+};
+
+export const unstable_createThemeNested = (
+  _baseTokens: $FlowFixMe,
+  _overrides: $FlowFixMe,
+) => {
+  throw errorForFn('unstable_createThemeNested');
+};
+
 export const defineMarker: StyleX$DefineMarker = () => {
   throw errorForFn('defineMarker');
 };
@@ -321,6 +340,9 @@ type IStyleX = {
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
+  unstable_defineVarsNested: (...args: $FlowFixMe) => $FlowFixMe,
+  unstable_defineConstsNested: (...args: $FlowFixMe) => $FlowFixMe,
+  unstable_createThemeNested: (...args: $FlowFixMe) => $FlowFixMe,
   __customProperties?: { [string]: unknown },
   ...
 };
@@ -348,5 +370,8 @@ export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   _legacyMerge.when = when;
   _legacyMerge.viewTransitionClass = viewTransitionClass;
   _legacyMerge.env = env;
+  _legacyMerge.unstable_defineVarsNested = unstable_defineVarsNested;
+  _legacyMerge.unstable_defineConstsNested = unstable_defineConstsNested;
+  _legacyMerge.unstable_createThemeNested = unstable_createThemeNested;
   return _legacyMerge;
 })();
