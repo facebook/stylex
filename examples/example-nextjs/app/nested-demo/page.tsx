@@ -30,9 +30,7 @@ export default function NestedDemoPage() {
   const [themeIndex, setThemeIndex] = useState(0);
 
   return (
-    <main
-      {...stylex.props(s.main, THEMES[themeIndex].theme)}
-    >
+    <main {...stylex.props(s.main, THEMES[themeIndex].theme)}>
       {/* ── Hero ────────────────────────────────────── */}
       <div {...stylex.props(s.hero)}>
         <a {...stylex.props(s.backLink)} href="/">
@@ -44,8 +42,8 @@ export default function NestedDemoPage() {
         <p {...stylex.props(s.subtitle)}>
           A showcase of{' '}
           <code {...stylex.props(s.code)}>unstable_defineVarsNested</code>,{' '}
-          <code {...stylex.props(s.code)}>unstable_defineConstsNested</code>, and{' '}
-          <code {...stylex.props(s.code)}>unstable_createThemeNested</code>
+          <code {...stylex.props(s.code)}>unstable_defineConstsNested</code>,
+          and <code {...stylex.props(s.code)}>unstable_createThemeNested</code>
         </p>
       </div>
 
@@ -75,9 +73,8 @@ export default function NestedDemoPage() {
           Themed Badges
         </h2>
         <p {...stylex.props(s.sectionDesc)}>
-          Colors from{' '}
-          <code {...stylex.props(s.code)}>tokens.badge.*</code>, sizing from{' '}
-          <code {...stylex.props(s.code)}>consts.badge.*</code>
+          Colors from <code {...stylex.props(s.code)}>tokens.badge.*</code>,
+          sizing from <code {...stylex.props(s.code)}>consts.badge.*</code>
         </p>
         <div {...stylex.props(s.badgeRow)}>
           <span {...stylex.props(s.badgeBase, s.badgeInfo)}>Info</span>
@@ -190,7 +187,8 @@ accent: cond({
           <strong>Design System Theming</strong>
           <br />
           <span {...stylex.props(s.demoLinkSub)}>
-            Expressing the Primitives → Semantics → Themes three-tier design system architecture using the nested APIs
+            Expressing the Primitives → Semantics → Themes three-tier design
+            system architecture using the nested APIs
           </span>
         </span>
         <span {...stylex.props(s.demoLinkArrow)}>→</span>

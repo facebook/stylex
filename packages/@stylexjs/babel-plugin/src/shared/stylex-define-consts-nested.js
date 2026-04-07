@@ -26,16 +26,25 @@ import type { InjectableConstStyle, StyleXOptions } from './common-types';
 import type { NestedConstsValue } from './stylex-nested-utils';
 
 import styleXDefineConsts from './stylex-define-consts';
-import { flattenNestedConstsConfig, unflattenObject } from './stylex-nested-utils';
+import {
+  flattenNestedConstsConfig,
+  unflattenObject,
+} from './stylex-nested-utils';
 
 import type { Unflattened } from './stylex-nested-utils';
 
 export default function styleXDefineConstsNested(
   nestedConstants: { +[string]: NestedConstsValue },
   options: $ReadOnly<{ ...Partial<StyleXOptions>, exportId: string, ... }>,
-): [{ [string]: Unflattened<string | number> }, { [string]: InjectableConstStyle }] {
+): [
+  { [string]: Unflattened<string | number> },
+  { [string]: InjectableConstStyle },
+] {
   const flatConstants = flattenNestedConstsConfig(nestedConstants);
-  const [flatResult, injectableStyles] = styleXDefineConsts(flatConstants, options);
+  const [flatResult, injectableStyles] = styleXDefineConsts(
+    flatConstants,
+    options,
+  );
 
   const nestedResult = unflattenObject(flatResult);
 

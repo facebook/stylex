@@ -23,8 +23,8 @@ export default function NestedDemo({ useWarmTheme = false }: Props) {
       <h2 {...stylex.props(styles.heading)}>Nested Tokens Demo</h2>
       <p {...stylex.props(styles.description)}>
         These badges use{' '}
-        <code {...stylex.props(styles.code)}>unstable_defineVarsNested</code> for
-        themeable colors,{' '}
+        <code {...stylex.props(styles.code)}>unstable_defineVarsNested</code>{' '}
+        for themeable colors,{' '}
         <code {...stylex.props(styles.code)}>unstable_defineConstsNested</code>{' '}
         for compile-time sizing, and{' '}
         <code {...stylex.props(styles.code)}>unstable_createThemeNested</code>{' '}

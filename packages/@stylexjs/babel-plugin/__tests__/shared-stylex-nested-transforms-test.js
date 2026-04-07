@@ -32,7 +32,10 @@ const defaultOptions = {
 
 describe('shared nested transforms', () => {
   describe('styleXDefineVarsNested', () => {
-    const options = { ...defaultOptions, exportId: 'test/tokens.stylex.js//tokens' };
+    const options = {
+      ...defaultOptions,
+      exportId: 'test/tokens.stylex.js//tokens',
+    };
 
     test('returns nested JS output with var() references', () => {
       const [jsOutput] = defineVarsNested(
@@ -65,10 +68,7 @@ describe('shared nested transforms', () => {
         options,
       );
 
-      const [, flatCSS] = defineVars(
-        { 'button.background': 'red' },
-        options,
-      );
+      const [, flatCSS] = defineVars({ 'button.background': 'red' }, options);
 
       // Same number of injectable style entries
       expect(Object.keys(nestedCSS).length).toBe(Object.keys(flatCSS).length);
@@ -85,10 +85,7 @@ describe('shared nested transforms', () => {
         { button: { background: 'red' } },
         options,
       );
-      const [flatJS] = defineVars(
-        { 'button.background': 'red' },
-        options,
-      );
+      const [flatJS] = defineVars({ 'button.background': 'red' }, options);
 
       // Same group hash because same exportId
       expect(nestedJS.__varGroupHash__).toBe(flatJS.__varGroupHash__);
@@ -160,11 +157,13 @@ describe('shared nested transforms', () => {
 
       expect(jsOutput.button.background).not.toBe(jsOutput.button.color);
     });
-
   });
 
   describe('styleXDefineConstsNested', () => {
-    const options = { ...defaultOptions, exportId: 'test/tokens.stylex.js//tokens' };
+    const options = {
+      ...defaultOptions,
+      exportId: 'test/tokens.stylex.js//tokens',
+    };
 
     test('returns nested JS output with original values preserved', () => {
       const [jsOutput] = defineConstsNested(
@@ -226,10 +225,7 @@ describe('shared nested transforms', () => {
         { spacing: { sm: '4px' } },
         options,
       );
-      const [, flatMeta] = defineConsts(
-        { 'spacing.sm': '4px' },
-        options,
-      );
+      const [, flatMeta] = defineConsts({ 'spacing.sm': '4px' }, options);
 
       // Same number of entries
       expect(Object.keys(nestedMeta).length).toBe(Object.keys(flatMeta).length);
@@ -294,7 +290,10 @@ describe('shared nested transforms', () => {
   });
 
   describe('styleXCreateThemeNested', () => {
-    const options = { ...defaultOptions, exportId: 'test/tokens.stylex.js//tokens' };
+    const options = {
+      ...defaultOptions,
+      exportId: 'test/tokens.stylex.js//tokens',
+    };
 
     test('creates theme override from nested vars and nested overrides', () => {
       const [varsOutput] = defineVarsNested(
@@ -307,15 +306,12 @@ describe('shared nested transforms', () => {
         options,
       );
 
-      const [themeOutput, themeCSS] = createThemeNested(
-        varsOutput,
-        {
-          button: {
-            background: 'green',
-            color: 'white',
-          },
+      const [themeOutput, themeCSS] = createThemeNested(varsOutput, {
+        button: {
+          background: 'green',
+          color: 'white',
         },
-      );
+      });
 
       expect(themeOutput.$$css).toBe(true);
       expect(themeOutput[varsOutput.__varGroupHash__]).toBeDefined();
@@ -323,7 +319,9 @@ describe('shared nested transforms', () => {
       const themeClass = themeOutput[varsOutput.__varGroupHash__];
       expect(themeClass).toContain(varsOutput.__varGroupHash__);
 
-      const allCSS = Object.values(themeCSS).map((s) => s.ltr).join('');
+      const allCSS = Object.values(themeCSS)
+        .map((s) => s.ltr)
+        .join('');
       expect(allCSS).toContain('green');
       expect(allCSS).toContain('white');
     });
@@ -342,39 +340,28 @@ describe('shared nested transforms', () => {
         options,
       );
 
-      const [, themeCSS] = createThemeNested(
-        varsOutput,
-        {
-          button: {
-            background: 'green',
-          },
+      const [, themeCSS] = createThemeNested(varsOutput, {
+        button: {
+          background: 'green',
         },
-      );
+      });
 
-      const allCSS = Object.values(themeCSS).map((s) => s.ltr).join('');
+      const allCSS = Object.values(themeCSS)
+        .map((s) => s.ltr)
+        .join('');
       expect(allCSS).toContain('green');
       expect(allCSS).not.toContain('blue');
       expect(allCSS).not.toContain('white');
     });
 
     test('produces same output as flat createTheme with equivalent flattened inputs', () => {
-      const [nestedVars] = defineVarsNested(
-        { button: { bg: 'red' } },
-        options,
-      );
-      const [flatVars] = defineVars(
-        { 'button.bg': 'red' },
-        options,
-      );
+      const [nestedVars] = defineVarsNested({ button: { bg: 'red' } }, options);
+      const [flatVars] = defineVars({ 'button.bg': 'red' }, options);
 
-      const [nestedTheme] = createThemeNested(
-        nestedVars,
-        { button: { bg: 'green' } },
-      );
-      const [flatTheme] = createTheme(
-        flatVars,
-        { 'button.bg': 'green' },
-      );
+      const [nestedTheme] = createThemeNested(nestedVars, {
+        button: { bg: 'green' },
+      });
+      const [flatTheme] = createTheme(flatVars, { 'button.bg': 'green' });
 
       expect(nestedTheme.$$css).toBe(true);
       expect(flatTheme.$$css).toBe(true);
@@ -391,17 +378,14 @@ describe('shared nested transforms', () => {
         options,
       );
 
-      const [, themeCSS] = createThemeNested(
-        varsOutput,
-        {
-          button: {
-            background: {
-              default: 'green',
-              '@media (prefers-color-scheme: dark)': 'darkgreen',
-            },
+      const [, themeCSS] = createThemeNested(varsOutput, {
+        button: {
+          background: {
+            default: 'green',
+            '@media (prefers-color-scheme: dark)': 'darkgreen',
           },
         },
-      );
+      });
 
       const cssEntries = Object.values(themeCSS);
       expect(cssEntries.length).toBeGreaterThanOrEqual(2);

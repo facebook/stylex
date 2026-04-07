@@ -21,7 +21,10 @@ import type { InjectableStyle, StyleXOptions } from './common-types';
 import type { NestedVarsValue } from './stylex-nested-utils';
 
 import styleXDefineVars from './stylex-define-vars';
-import { flattenNestedVarsConfig, unflattenObject } from './stylex-nested-utils';
+import {
+  flattenNestedVarsConfig,
+  unflattenObject,
+} from './stylex-nested-utils';
 
 import type { Unflattened } from './stylex-nested-utils';
 
@@ -30,7 +33,10 @@ export default function styleXDefineVarsNested(
   options: $ReadOnly<{ ...Partial<StyleXOptions>, exportId: string, ... }>,
 ): [{ [string]: Unflattened<string> }, { [string]: InjectableStyle }] {
   const flatVariables = flattenNestedVarsConfig(nestedVariables);
-  const [flatResult, injectableStyles] = styleXDefineVars(flatVariables, options);
+  const [flatResult, injectableStyles] = styleXDefineVars(
+    flatVariables,
+    options,
+  );
 
   const { __varGroupHash__, ...flatVarRefs } = flatResult;
   const nestedVarRefs = unflattenObject(flatVarRefs);

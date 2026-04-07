@@ -61,11 +61,7 @@ export default function transformStyleXDefineConstsNested(
   };
   state.applyStylexEnv(evaluatePathFnConfig.identifiers);
 
-  const { confident, value } = evaluate(
-    firstArg,
-    state,
-    evaluatePathFnConfig,
-  );
+  const { confident, value } = evaluate(firstArg, state, evaluatePathFnConfig);
   if (!confident) {
     throw callExpressionPath.buildCodeFrameError(
       messages.nonStaticValue('unstable_defineConstsNested'),
@@ -81,9 +77,7 @@ export default function transformStyleXDefineConstsNested(
 
   const fileName = state.fileNameForHashing;
   if (fileName == null) {
-    throw new Error(
-      messages.cannotGenerateHash('unstable_defineConstsNested'),
-    );
+    throw new Error(messages.cannotGenerateHash('unstable_defineConstsNested'));
   }
 
   const exportName = varId.name;

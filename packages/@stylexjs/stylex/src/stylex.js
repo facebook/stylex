@@ -110,7 +110,6 @@ export const unstable_createThemeNested = (
   throw errorForFn('unstable_createThemeNested');
 };
 
-
 export const defineMarker: StyleX$DefineMarker = () => {
   throw errorForFn('defineMarker');
 };

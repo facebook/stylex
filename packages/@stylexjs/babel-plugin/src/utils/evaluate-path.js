@@ -557,7 +557,11 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (!state.confident) {
         return;
       }
-      if (baseObject != null && typeof baseObject === 'object' && baseObject.__IS_PROXY === true) {
+      if (
+        baseObject != null &&
+        typeof baseObject === 'object' &&
+        baseObject.__IS_PROXY === true
+      ) {
         // Resolve the full dotted path at once against the proxy
         return baseObject[parts.join('.')];
       }
