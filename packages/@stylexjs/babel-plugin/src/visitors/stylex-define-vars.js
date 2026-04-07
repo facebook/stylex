@@ -140,6 +140,19 @@ export default function transformStyleXDefineVars(
       memberExpressions[name].positionTry = { fn: positionTry };
       identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
     });
+    const conditionalIdentity = (value: mixed): mixed => value;
+    state.stylexConditionalImport.forEach((name) => {
+      identifiers[name] = { fn: conditionalIdentity };
+    });
+    state.stylexImport.forEach((name) => {
+      if (memberExpressions[name] === undefined) {
+        memberExpressions[name] = {};
+      }
+      memberExpressions[name].unstable_conditional = {
+        fn: conditionalIdentity,
+      };
+    });
+
     state.applyStylexEnv(identifiers);
 
     const fileName = state.fileNameForHashing;

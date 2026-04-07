@@ -348,6 +348,80 @@ describe('@stylexjs/babel-plugin', () => {
       `),
       ).toThrow();
     });
+
+    // ── unstable_conditional tests ──
+    test('works with stylex.unstable_conditional for @media values', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const DARK = '@media (prefers-color-scheme: dark)';
+        export const tokens = stylex.unstable_defineVarsNested({
+          button: {
+            primary: {
+              background: {
+                default: stylex.unstable_conditional({ default: '#2563eb', [DARK]: '#3b82f6' }),
+                hovered: stylex.unstable_conditional({ default: '#1d4ed8', [DARK]: '#2563eb' }),
+              },
+            },
+          },
+        });
+      `);
+
+      expect(code).toContain('button');
+      expect(code).toContain('primary');
+      expect(code).toContain('background');
+      expect(code).toContain('default');
+      expect(code).toContain('hovered');
+      expect(code).toContain('var(--');
+
+      const allLtr = metadata.stylex.map((m) => m[1].ltr).join('');
+      expect(allLtr).toContain('#2563eb');
+      expect(allLtr).toContain('#3b82f6');
+      expect(allLtr).toContain('@media');
+    });
+
+    test('works with named import of unstable_conditional', () => {
+      const { code } = transform(`
+        import { unstable_defineVarsNested, unstable_conditional as cond } from '@stylexjs/stylex';
+        const DARK = '@media (prefers-color-scheme: dark)';
+        export const tokens = unstable_defineVarsNested({
+          color: {
+            accent: cond({ default: '#2563eb', [DARK]: '#60a5fa' }),
+          },
+        });
+      `);
+
+      expect(code).toContain('var(--');
+      expect(code).toContain('color');
+      expect(code).toContain('accent');
+    });
+
+    test('unstable_conditional is backward compatible — heuristic still works without it', () => {
+      const { code } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.unstable_defineVarsNested({
+          color: {
+            accent: { default: 'blue', '@media (prefers-color-scheme: dark)': 'dark' },
+          },
+        });
+      `);
+
+      expect(code).toContain('var(--');
+    });
+
+    test('unstable_conditional works in flat defineVars too', () => {
+      const { code, metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const DARK = '@media (prefers-color-scheme: dark)';
+        export const tokens = stylex.defineVars({
+          accent: stylex.unstable_conditional({ default: 'blue', [DARK]: 'lightblue' }),
+        });
+      `);
+
+      expect(code).toContain('var(--');
+      const allLtr = metadata.stylex.map((m) => m[1].ltr).join('');
+      expect(allLtr).toContain('blue');
+      expect(allLtr).toContain('lightblue');
+    });
   });
 
   describe('[cross-file] nested tokens used in stylex.create()', () => {
@@ -366,7 +440,8 @@ describe('@stylexjs/babel-plugin', () => {
 
     test('cross-file: nested token access in stylex.create', () => {
       // Step 1: Compile defineVarsNested in tokens.stylex.js
-      transform(`
+      transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         export const tokens = stylex.unstable_defineVarsNested({
           button: {
@@ -376,11 +451,14 @@ describe('@stylexjs/babel-plugin', () => {
             },
           },
         });
-      `, { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts },
+      );
 
       // Step 2: Compile a SEPARATE file that imports tokens and uses nested access.
       // Export styles so the compiled output is preserved in code.
-      const { code, metadata } = transform(`
+      const { code, metadata } = transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         import { tokens } from 'tokens.stylex';
         export const styles = stylex.create({
@@ -389,7 +467,9 @@ describe('@stylexjs/babel-plugin', () => {
             color: tokens.button.primary.color,
           },
         });
-      `, { filename: '/stylex/packages/component.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/component.js', ...hasteOpts },
+      );
 
       // stylex.create compiles token refs into CSS classnames in JS
       // and var(--hash) references in the CSS metadata
@@ -402,7 +482,8 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('cross-file: deeply nested token access (3+ levels)', () => {
-      transform(`
+      transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         export const tokens = stylex.unstable_defineVarsNested({
           design: {
@@ -413,9 +494,12 @@ describe('@stylexjs/babel-plugin', () => {
             },
           },
         });
-      `, { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts },
+      );
 
-      const { code, metadata } = transform(`
+      const { code, metadata } = transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         import { tokens } from 'tokens.stylex';
         export const styles = stylex.create({
@@ -423,7 +507,9 @@ describe('@stylexjs/babel-plugin', () => {
             backgroundColor: tokens.design.color.surface.primary,
           },
         });
-      `, { filename: '/stylex/packages/component.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/component.js', ...hasteOpts },
+      );
 
       expect(code).toContain('$$css');
       expect(code).not.toContain('tokens.design');
@@ -433,7 +519,8 @@ describe('@stylexjs/babel-plugin', () => {
     });
 
     test('cross-file: mixed flat and nested access', () => {
-      transform(`
+      transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         export const tokens = stylex.unstable_defineVarsNested({
           accent: 'blue',
@@ -441,9 +528,12 @@ describe('@stylexjs/babel-plugin', () => {
             bg: 'red',
           },
         });
-      `, { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts },
+      );
 
-      const { code, metadata } = transform(`
+      const { code, metadata } = transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         import { tokens } from 'tokens.stylex';
         export const styles = stylex.create({
@@ -452,7 +542,9 @@ describe('@stylexjs/babel-plugin', () => {
             backgroundColor: tokens.button.bg,
           },
         });
-      `, { filename: '/stylex/packages/component.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/component.js', ...hasteOpts },
+      );
 
       // Both flat (tokens.accent) and nested (tokens.button.bg) should resolve
       expect(code).toContain('$$css');
@@ -467,7 +559,8 @@ describe('@stylexjs/babel-plugin', () => {
       // defineVarsNested generates flat dotted keys under the hood.
       // Cross-file createTheme uses the flat proxy which resolves dotted keys
       // like 'color.primary' → var(--hash).
-      transform(`
+      transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         export const tokens = stylex.unstable_defineVarsNested({
           color: {
@@ -475,17 +568,22 @@ describe('@stylexjs/babel-plugin', () => {
             secondary: 'grey',
           },
         });
-      `, { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/tokens.stylex.js', ...hasteOpts },
+      );
 
       // Cross-file createTheme with flat dotted keys (matching the internal format)
-      const { code, metadata } = transform(`
+      const { code, metadata } = transform(
+        `
         import * as stylex from '@stylexjs/stylex';
         import { tokens } from 'tokens.stylex';
         export const darkTheme = stylex.createTheme(tokens, {
           'color.primary': 'lightblue',
           'color.secondary': 'darkgrey',
         });
-      `, { filename: '/stylex/packages/theme.stylex.js', ...hasteOpts });
+      `,
+        { filename: '/stylex/packages/theme.stylex.js', ...hasteOpts },
+      );
 
       expect(code).toContain('$$css');
       const allLtr = metadata.stylex.map((m) => m[1].ltr).join('');

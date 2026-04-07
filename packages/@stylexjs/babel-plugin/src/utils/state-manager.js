@@ -187,6 +187,7 @@ export default class StateManager {
   +stylexDefineVarsNestedImport: Set<string> = new Set();
   +stylexDefineConstsNestedImport: Set<string> = new Set();
   +stylexCreateThemeNestedImport: Set<string> = new Set();
+  +stylexConditionalImport: Set<string> = new Set();
 
   injectImportInserted: ?t.Identifier = null;
 

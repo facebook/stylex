@@ -178,6 +178,22 @@ export function buildEvalConfig(
     memberExpressions[name].positionTry = { fn: positionTry };
     identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
   });
+
+  // unstable_conditional is an identity function — it returns its argument unchanged.
+  // Its purpose is purely for type-level disambiguation: it gives conditional
+  // values ({ default: ..., '@media ...': ... }) a distinct type so Flow/TypeScript
+  // can distinguish them from namespace objects in nested token definitions.
+  const conditionalIdentity = (value: mixed): mixed => value;
+  state.stylexConditionalImport.forEach((name) => {
+    identifiers[name] = { fn: conditionalIdentity };
+  });
+  state.stylexImport.forEach((name) => {
+    if (memberExpressions[name] === undefined) {
+      memberExpressions[name] = {};
+    }
+    memberExpressions[name].unstable_conditional = { fn: conditionalIdentity };
+  });
+
   state.applyStylexEnv(identifiers);
 
   return { identifiers, memberExpressions };
