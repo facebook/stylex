@@ -171,7 +171,7 @@ const s = stylex.create({
     display: 'flex',
     flexDirection: 'column',
     gap: '0.125rem',
-    flex: 1,
+    flex: '1',
   },
   cardTitle: {
     margin: 0,

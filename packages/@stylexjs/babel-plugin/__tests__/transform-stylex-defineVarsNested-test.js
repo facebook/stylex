@@ -8,9 +8,11 @@
 'use strict';
 
 jest.autoMockOff();
+jest.mock('@dual-bundle/import-meta-resolve');
 
 import { transformSync } from '@babel/core';
 import stylexPlugin from '../src/index';
+import { moduleResolve } from '@dual-bundle/import-meta-resolve';
 
 function transform(source, opts = {}) {
   const { code, metadata } = transformSync(source, {
@@ -589,6 +591,210 @@ describe('@stylexjs/babel-plugin', () => {
       const allLtr = metadata.stylex.map((m) => m[1].ltr).join('');
       expect(allLtr).toContain('lightblue');
       expect(allLtr).toContain('darkgrey');
+    });
+  });
+
+  describe('[cross-package] nested tokens from node_modules (commonJS)', () => {
+    // These tests verify that nested tokens defined in a package under
+    // node_modules can be imported and used in a consumer package, exercising
+    // the commonJS resolution path with getCanonicalFilePath.
+    //
+    // We mock @dual-bundle/import-meta-resolve (at file top) so that commonJS
+    // resolution works without real files on disk.
+
+    afterEach(() => {
+      moduleResolve.mockReset();
+    });
+
+    const commonJSOpts = {
+      unstable_moduleResolution: {
+        rootDir: '/app/',
+        type: 'commonJS',
+      },
+    };
+
+    test('cross-package: nested token access from node_modules in stylex.create', () => {
+      // Step 1: Compile defineVarsNested in the design-system package
+      const { metadata: pkgMeta } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.unstable_defineVarsNested({
+          color: {
+            accent: 'blue',
+            surface: 'white',
+          },
+          spacing: {
+            md: '1rem',
+          },
+        });
+      `,
+        {
+          filename:
+            '/app/node_modules/@design-system/tokens/src/tokens.stylex.js',
+          ...commonJSOpts,
+        },
+      );
+
+      // Step 2: Consumer imports tokens from the design-system package.
+      // Mock moduleResolve so commonJS resolution finds the package.
+      moduleResolve.mockImplementation((specifier) => {
+        if (
+          specifier.includes('@design-system/tokens') &&
+          specifier.includes('tokens.stylex')
+        ) {
+          return new URL(
+            'file:///app/node_modules/@design-system/tokens/src/tokens.stylex.js',
+          );
+        }
+        throw new Error(`Cannot find module: ${specifier}`);
+      });
+
+      const { code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        import { tokens } from '@design-system/tokens/src/tokens.stylex';
+        export const styles = stylex.create({
+          card: {
+            color: tokens.color.accent,
+            backgroundColor: tokens.color.surface,
+            padding: tokens.spacing.md,
+          },
+        });
+      `,
+        {
+          filename: '/app/src/components/Card.js',
+          ...commonJSOpts,
+        },
+      );
+
+      // Consumer should compile token references into CSS
+      expect(code).toContain('$$css');
+      expect(code).not.toContain('tokens.color');
+      expect(code).not.toContain('tokens.spacing');
+      expect(metadata.stylex.length).toBeGreaterThan(0);
+      const consumerCss = metadata.stylex.map((m) => m[1].ltr).join('');
+      expect(consumerCss).toContain('var(--');
+
+      // Verify hash determinism: the var(--hash) names produced by the
+      // consumer must match the var declarations from the producer
+      const producerCss = pkgMeta.stylex.map((m) => m[1].ltr).join('');
+      const producerVars = [...producerCss.matchAll(/--[\w]+/g)].map(
+        (m) => m[0],
+      );
+      expect(producerVars.length).toBeGreaterThan(0);
+      for (const varName of producerVars) {
+        expect(consumerCss).toContain(varName);
+      }
+    });
+
+    test('cross-package: deeply nested token access (3+ levels) from node_modules', () => {
+      transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.unstable_defineVarsNested({
+          design: {
+            color: {
+              surface: {
+                primary: 'white',
+              },
+            },
+          },
+        });
+      `,
+        {
+          filename:
+            '/app/node_modules/@design-system/tokens/src/tokens.stylex.js',
+          ...commonJSOpts,
+        },
+      );
+
+      moduleResolve.mockImplementation((specifier) => {
+        if (
+          specifier.includes('@design-system/tokens') &&
+          specifier.includes('tokens.stylex')
+        ) {
+          return new URL(
+            'file:///app/node_modules/@design-system/tokens/src/tokens.stylex.js',
+          );
+        }
+        throw new Error(`Cannot find module: ${specifier}`);
+      });
+
+      const { code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        import { tokens } from '@design-system/tokens/src/tokens.stylex';
+        export const styles = stylex.create({
+          card: {
+            backgroundColor: tokens.design.color.surface.primary,
+          },
+        });
+      `,
+        {
+          filename: '/app/src/components/Card.js',
+          ...commonJSOpts,
+        },
+      );
+
+      expect(code).toContain('$$css');
+      expect(code).not.toContain('tokens.design');
+      expect(metadata.stylex.length).toBeGreaterThan(0);
+      const allLtr = metadata.stylex.map((m) => m[1].ltr).join('');
+      expect(allLtr).toContain('var(--');
+    });
+
+    test('cross-package: createThemeNested overriding tokens from node_modules', () => {
+      transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const tokens = stylex.unstable_defineVarsNested({
+          color: {
+            accent: 'blue',
+            bg: 'white',
+          },
+        });
+      `,
+        {
+          filename:
+            '/app/node_modules/@design-system/tokens/src/tokens.stylex.js',
+          ...commonJSOpts,
+        },
+      );
+
+      moduleResolve.mockImplementation((specifier) => {
+        if (
+          specifier.includes('@design-system/tokens') &&
+          specifier.includes('tokens.stylex')
+        ) {
+          return new URL(
+            'file:///app/node_modules/@design-system/tokens/src/tokens.stylex.js',
+          );
+        }
+        throw new Error(`Cannot find module: ${specifier}`);
+      });
+
+      const { code, metadata } = transform(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        import { tokens } from '@design-system/tokens/src/tokens.stylex';
+        export const darkTheme = stylex.createTheme(tokens, {
+          'color.accent': 'lightblue',
+          'color.bg': '#111',
+        });
+      `,
+        {
+          filename: '/app/src/themes/dark.stylex.js',
+          ...commonJSOpts,
+        },
+      );
+
+      expect(code).toContain('$$css');
+      const allLtr = metadata.stylex.map((m) => m[1].ltr).join('');
+      expect(allLtr).toContain('lightblue');
+      expect(allLtr).toContain('#111');
+      // The theme override should produce valid CSS with var declarations
+      expect(allLtr).toMatch(/--[\w]+:lightblue/);
+      expect(allLtr).toMatch(/--[\w]+:#111/);
     });
   });
 });
