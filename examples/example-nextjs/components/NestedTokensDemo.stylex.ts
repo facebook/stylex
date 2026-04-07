@@ -9,9 +9,6 @@
  * demonstrates cross-file consumption of these same tokens.
  */
 
-// @ts-nocheck — nested APIs are experimental and lack TS type definitions.
-// The babel plugin compiles all calls away before runtime.
-
 import * as stylex from '@stylexjs/stylex';
 
 const DARK_MODE = '@media (prefers-color-scheme: dark)';

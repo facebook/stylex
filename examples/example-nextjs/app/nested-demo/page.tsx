@@ -10,8 +10,6 @@
  *   - unstable_createThemeNested  (tokens.stylex.ts)
  */
 
-// @ts-nocheck — nested APIs are experimental and lack TS type definitions.
-
 'use client';
 
 import { useState } from 'react';

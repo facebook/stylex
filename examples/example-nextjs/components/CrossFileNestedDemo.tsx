@@ -9,8 +9,6 @@
  * and consumed here in a separate stylex.create call.
  */
 
-// @ts-nocheck — nested APIs are experimental and lack TS type definitions.
-
 import * as stylex from '@stylexjs/stylex';
 import { nestedTokens, nestedConsts } from './NestedTokensDemo.stylex';
 

@@ -9,8 +9,6 @@
  * cross-file resolution path for unstable_defineVarsNested.
  */
 
-// @ts-nocheck — nested APIs are experimental and lack TS type definitions.
-
 import * as stylex from '@stylexjs/stylex';
 import { tokens, consts } from './tokens.stylex';
 

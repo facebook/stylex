@@ -91,10 +91,11 @@ export const unstable_conditional = function stylexConditional<
   throw errorForFn('unstable_conditional');
 };
 
-export const unstable_defineVarsNested =
-  function stylexDefineVarsNested(_styles: { +[string]: mixed }): mixed {
-    throw errorForFn('unstable_defineVarsNested');
-  };
+export const unstable_defineVarsNested = function stylexDefineVarsNested<
+  const T: { +[string]: mixed },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineVarsNested');
+};
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
   const T: { +[string]: unknown },
@@ -105,7 +106,7 @@ export const unstable_defineConstsNested = function stylexDefineConstsNested<
 export const unstable_createThemeNested = (
   _baseTokens: { +[string]: mixed },
   _overrides: { +[string]: mixed },
-): mixed => {
+): CompiledStyles => {
   throw errorForFn('unstable_createThemeNested');
 };
 
