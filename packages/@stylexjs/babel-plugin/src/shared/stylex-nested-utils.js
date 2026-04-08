@@ -22,6 +22,10 @@
 import type { VarsConfigValue } from './stylex-vars-utils';
 import { type CSSType, isCSSType } from './types';
 
+// The "." separator is used to build flat key paths (e.g., "button.primary.bg").
+// This aligns with the W3C Design Tokens spec, which forbids "." in token names
+// because "." is used as the path separator in token alias references.
+// See: https://www.designtokens.org/tr/drafts/format/#character-restrictions
 const SEPARATOR = '.';
 
 // === Nested value types ===
@@ -100,6 +104,13 @@ function flattenImpl<T>(
   transformLeaf?: (value: mixed) => T,
 ): void {
   for (const key of Object.keys(obj)) {
+    if (key.includes(SEPARATOR)) {
+      throw new Error(
+        `Key "${key}" must not contain the "${SEPARATOR}" character. ` +
+          'Use nested objects instead of dots in key names. ' +
+          'See: https://www.designtokens.org/tr/drafts/format/#character-restrictions',
+      );
+    }
     const value = obj[key];
     const fullKey = prefix ? `${prefix}${SEPARATOR}${key}` : key;
 

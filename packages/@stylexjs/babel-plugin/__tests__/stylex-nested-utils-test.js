@@ -12,6 +12,7 @@ jest.autoMockOff();
 import {
   flattenNestedVarsConfig,
   flattenNestedConstsConfig,
+  flattenNestedStringConfig,
   unflattenObject,
 } from '../src/shared/stylex-nested-utils';
 
@@ -133,6 +134,18 @@ describe('stylex-nested-utils', () => {
 
     test('returns empty object for empty input', () => {
       expect(flattenNestedVarsConfig({})).toEqual({});
+    });
+
+    test('throws on keys containing dots', () => {
+      expect(() =>
+        flattenNestedVarsConfig({ 'button.primary': 'red' }),
+      ).toThrow('Key "button.primary" must not contain the "." character');
+    });
+
+    test('throws on nested keys containing dots', () => {
+      expect(() =>
+        flattenNestedVarsConfig({ button: { 'primary.bg': 'red' } }),
+      ).toThrow('Key "primary.bg" must not contain the "." character');
     });
 
     test('handles object with only top-level leaves (no nesting)', () => {
@@ -258,6 +271,20 @@ describe('stylex-nested-utils', () => {
 
     test('handles empty object', () => {
       expect(flattenNestedConstsConfig({})).toEqual({});
+    });
+
+    test('throws on keys containing dots', () => {
+      expect(() => flattenNestedConstsConfig({ 'spacing.sm': 4 })).toThrow(
+        'Key "spacing.sm" must not contain the "." character',
+      );
+    });
+  });
+
+  describe('flattenNestedStringConfig', () => {
+    test('throws on keys containing dots', () => {
+      expect(() =>
+        flattenNestedStringConfig({ 'color.brand': 'var(--x1)' }),
+      ).toThrow('Key "color.brand" must not contain the "." character');
     });
   });
 
