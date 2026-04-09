@@ -9,7 +9,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Card from '@/components/Card';
 import {
@@ -26,7 +26,6 @@ const HOMEPAGE = 'https://stylexjs.com';
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(2);
   const [isDark, setIsDark] = useState(false);
-
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     setIsDark(mq.matches);
@@ -57,6 +56,20 @@ export default function Home() {
           themeIndex={themeIndex}
         />
       </div>
+
+      {/* Link to nested theming demos hub */}
+      <a {...stylex.props(style.nestedLink)} href="/theming-demos">
+        <span {...stylex.props(style.nestedLinkIcon)}>🎨</span>
+        <span>
+          <strong>Theming Demos</strong>
+          <br />
+          <span {...stylex.props(style.nestedLinkSub)}>
+            Experimental APIs for expressing nested design tokens · Design
+            system theming
+          </span>
+        </span>
+        <span {...stylex.props(style.nestedLinkArrow)}>→</span>
+      </a>
 
       <div {...stylex.props(style.grid)}>
         <Card
@@ -145,6 +158,49 @@ const style = stylex.create({
     },
     maxWidth: '36ch',
     textWrap: 'balance',
+  },
+  nestedLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingInline: spacing.lg,
+    paddingBlock: spacing.md,
+    borderRadius: spacing.sm,
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: colors.accent,
+    backgroundColor: {
+      default: colors.accentLight,
+      ':hover': colors.accentFaded,
+    },
+    color: 'inherit',
+    textDecoration: 'none',
+    fontFamily: $.fontSans,
+    fontSize: text.sm,
+    lineHeight: 1.4,
+    transitionProperty: 'background-color, border-color, transform',
+    transitionDuration: '200ms',
+    width: '100%',
+    maxWidth: 480,
+    transform: {
+      default: null,
+      ':hover': 'translateY(-2px)',
+    },
+  },
+  nestedLinkIcon: {
+    fontSize: text.h4,
+    flexShrink: 0,
+  },
+  nestedLinkSub: {
+    fontSize: text.xs,
+    opacity: 0.6,
+  },
+  nestedLinkArrow: {
+    marginLeft: 'auto',
+    fontSize: text.h5,
+    color: colors.accent,
+    transitionProperty: 'transform',
+    transitionDuration: '200ms',
   },
   grid: {
     display: 'grid',

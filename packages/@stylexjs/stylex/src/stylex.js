@@ -85,6 +85,31 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
+export const unstable_conditional = function stylexConditional<
+  const T: { +default: mixed, +[string]: mixed },
+>(_value: T): T {
+  throw errorForFn('unstable_conditional');
+};
+
+export const unstable_defineVarsNested = function stylexDefineVarsNested<
+  const T: { +[string]: mixed },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineVarsNested');
+};
+
+export const unstable_defineConstsNested = function stylexDefineConstsNested<
+  const T: { +[string]: unknown },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineConstsNested');
+};
+
+export const unstable_createThemeNested = (
+  _baseTokens: { +[string]: mixed },
+  _overrides: { +[string]: mixed },
+): CompiledStyles => {
+  throw errorForFn('unstable_createThemeNested');
+};
+
 export const defineMarker: StyleX$DefineMarker = () => {
   throw errorForFn('defineMarker');
 };
@@ -321,6 +346,17 @@ type IStyleX = {
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
+  unstable_conditional: <const T: { +default: mixed, +[string]: mixed }>(
+    value: T,
+  ) => T,
+  unstable_defineVarsNested: (tokens: { +[string]: mixed }) => mixed,
+  unstable_defineConstsNested: <const T: { +[string]: unknown }>(
+    tokens: T,
+  ) => T,
+  unstable_createThemeNested: (
+    baseTokens: { +[string]: mixed },
+    overrides: { +[string]: mixed },
+  ) => mixed,
   __customProperties?: { [string]: unknown },
   ...
 };
@@ -348,5 +384,9 @@ export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   _legacyMerge.when = when;
   _legacyMerge.viewTransitionClass = viewTransitionClass;
   _legacyMerge.env = env;
+  _legacyMerge.unstable_conditional = unstable_conditional;
+  _legacyMerge.unstable_defineVarsNested = unstable_defineVarsNested;
+  _legacyMerge.unstable_defineConstsNested = unstable_defineConstsNested;
+  _legacyMerge.unstable_createThemeNested = unstable_createThemeNested;
   return _legacyMerge;
 })();

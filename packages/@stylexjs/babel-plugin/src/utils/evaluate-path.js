@@ -479,11 +479,95 @@ function _evaluate(path: NodePath<>, state: State): any {
     return evaluateCached(path.get('expression'), state);
   }
 
+  /**
+   * Collects the full member expression chain for cross-file nested token resolution.
+   *
+   * When tokens are imported from another .stylex.js file, the plugin creates a
+   * themeNameRef proxy that only handles single-level access. Multi-level access like
+   * tokens.button.primary.background would fail because proxy['button'] returns a
+   * string, and "var(--hash)"['primary'] is undefined.
+   *
+   * This function walks the MemberExpression AST chain from outermost to innermost,
+   * collecting all property names. The caller can then resolve the full dotted key
+   * against the proxy in one shot: proxy['button.primary.background'].
+   *
+   * Example:
+   *   AST for tokens.button.primary.background
+   *   → { basePath: <Identifier:tokens>, parts: ['button', 'primary', 'background'] }
+   *
+   * Returns null for:
+   *   - Single-level access (no benefit from path collection)
+   *   - Dynamic computed properties that can't be resolved statically
+   *
+   * @param memberPath - The outermost MemberExpression NodePath
+   * @returns { basePath, parts } or null
+   */
+  function getFullMemberPath(
+    memberPath: NodePath<t.MemberExpression>,
+  ): ?{ basePath: NodePath<>, parts: Array<string> } {
+    const parts: Array<string> = [];
+    let current: NodePath<> = memberPath;
+
+    while (current.isMemberExpression()) {
+      const propPath = current.get('property');
+      if (current.node.computed) {
+        // Only handle static computed properties (string/number literals)
+        if (propPath.isStringLiteral()) {
+          parts.unshift(propPath.node.value);
+        } else if (propPath.isNumericLiteral()) {
+          parts.unshift(String(propPath.node.value));
+        } else {
+          return null; // Dynamic computed property — can't collect statically
+        }
+      } else if (propPath.isIdentifier()) {
+        parts.unshift(propPath.node.name);
+      } else {
+        return null;
+      }
+      current = current.get('object');
+    }
+
+    if (parts.length < 2) {
+      return null; // Single-level access — no benefit from collecting path
+    }
+
+    return { basePath: current, parts };
+  }
+
   // "foo".length
   if (
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
+    // Cross-file nested token resolution:
+    // When tokens are imported from another .stylex.js file, the evaluator creates
+    // a themeNameRef proxy. For flat tokens (tokens.color), single-level proxy access
+    // works fine. For nested tokens (tokens.button.primary.background), multi-level
+    // access fails because proxy['button'] returns "var(--hash)" (a string) and
+    // "var(--hash)"['primary'] is undefined.
+    //
+    // Fix: collect the full member chain ['button', 'primary', 'background'] and
+    // resolve it as a single dotted key: proxy['button.primary.background'].
+    // The dotted key produces the same hash as defineVarsNested compilation
+    // (which internally flattens to the same dotted key).
+    const fullPath = getFullMemberPath(path);
+    if (fullPath != null) {
+      const { basePath, parts } = fullPath;
+      const baseObject = evaluateCached(basePath, state);
+      if (!state.confident) {
+        return;
+      }
+      if (
+        baseObject != null &&
+        typeof baseObject === 'object' &&
+        baseObject.__IS_PROXY === true
+      ) {
+        // Resolve the full dotted path at once against the proxy
+        return baseObject[parts.join('.')];
+      }
+      // Not a proxy — fall through to standard recursive evaluation
+    }
+
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
       return;

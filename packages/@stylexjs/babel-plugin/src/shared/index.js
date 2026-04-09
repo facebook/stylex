@@ -36,6 +36,9 @@ import stylexPositionTry from './stylex-position-try';
 import stylexFirstThatWorks from './stylex-first-that-works';
 import hash from './hash';
 import genFileBasedIdentifier from './utils/file-based-identifier';
+import styleXDefineVarsNested from './stylex-define-vars-nested';
+import styleXDefineConstsNested from './stylex-define-consts-nested';
+import styleXCreateThemeNested from './stylex-create-theme-nested';
 import * as m from './messages';
 import {
   PSEUDO_CLASS_PRIORITIES as _PSEUDO_CLASS_PRIORITIES,
@@ -61,6 +64,12 @@ export const utils: {
 };
 export const messages: typeof m = m;
 export const firstThatWorks: typeof stylexFirstThatWorks = stylexFirstThatWorks;
+export const defineVarsNested: typeof styleXDefineVarsNested =
+  styleXDefineVarsNested;
+export const defineConstsNested: typeof styleXDefineConstsNested =
+  styleXDefineConstsNested;
+export const createThemeNested: typeof styleXCreateThemeNested =
+  styleXCreateThemeNested;
 export const PSEUDO_CLASS_PRIORITIES: typeof _PSEUDO_CLASS_PRIORITIES =
   _PSEUDO_CLASS_PRIORITIES;
 export const AT_RULE_PRIORITIES: typeof _AT_RULE_PRIORITIES =

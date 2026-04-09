@@ -366,3 +366,36 @@ export interface Register {}
 export type StyleX$Env = Register extends { env: infer TEnv }
   ? TEnv
   : Readonly<{ [key: string]: unknown }>;
+
+// === Nested API Types ===
+
+// unstable_defineVarsNested: preserves nested key structure in output.
+// Uses generic <T> to give consumers key-level autocomplete.
+// Leaf values are replaced with var(--hash) strings at compile time.
+export type StyleX$DefineVarsNested = <
+  const T extends { [key: string]: unknown },
+>(
+  tokens: T,
+) => T;
+
+// unstable_defineConstsNested: same as input — values inlined at compile time.
+export type StyleX$DefineConstsNested = <
+  const T extends { [key: string]: unknown },
+>(
+  tokens: T,
+) => T;
+
+// unstable_createThemeNested: returns a flat theme object like createTheme.
+export type StyleX$CreateThemeNested = (
+  baseTokens: { readonly [key: string]: unknown },
+  overrides: { readonly [key: string]: unknown },
+) => CompiledStyles;
+
+// unstable_conditional: identity function for type disambiguation.
+// Marks a conditional @media/@supports value so the type system can
+// distinguish it from namespace objects in nested token definitions.
+export type StyleX$Conditional = <
+  const T extends { default: unknown; [key: `@${string}`]: unknown },
+>(
+  value: T,
+) => T;
