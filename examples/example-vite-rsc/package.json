@@ -21,7 +21,7 @@
     "@vitejs/plugin-react": "latest",
     "@vitejs/plugin-rsc": "latest",
     "rsc-html-stream": "^0.0.7",
-    "vite": "^7.1.12",
+    "vite": "^7.3.2",
     "@stylexjs/unplugin": "0.18.2"
   }
 }
