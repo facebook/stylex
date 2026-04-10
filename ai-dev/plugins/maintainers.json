@@ -1,0 +1,26 @@
+{
+  "id": "WF-MAINTAIN",
+  "priority": "P1",
+  "title": "Modify StyleX OSS internals safely",
+  "copilot_apply_to": "packages/{@stylexjs,style-value-parser}/**/*.{js,jsx,ts,tsx,mjs,flow}",
+  "cursor_globs": [
+    "packages/@stylexjs/**/*.{js,jsx,ts,tsx,mjs,flow}",
+    "packages/style-value-parser/**/*.{js,ts,mjs}"
+  ],
+  "when_to_use": [
+    "User edits packages/@stylexjs/* or packages/style-value-parser/*",
+    "Task changes compiler, parser, lint rule internals, or shared utilities",
+    "Task modifies tests, transforms, or behavior snapshots"
+  ],
+  "sources": [
+    "packages/@stylexjs/eslint-plugin/README.md",
+    "packages/@stylexjs/babel-plugin/__tests__/evaluation-import-test.js",
+    "packages/@stylexjs/shared/src/utils/property-priorities.js",
+    "packages/style-value-parser/src/index.js"
+  ],
+  "hard_constraints": [
+    "Preserve behavior unless semantic change is explicitly requested.",
+    "Reference package-local tests and snapshots for behavior validation.",
+    "Call out user-visible impact on setup and authoring docs when applicable."
+  ]
+}
