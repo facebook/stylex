@@ -14,6 +14,9 @@ import type {
   InlineStyles,
   Keyframes,
   MapNamespaces,
+  NestedConstsValue,
+  NestedStringValue,
+  NestedVarsValue,
   StaticStyles,
   StaticStylesWithout,
   StyleX$Create,
@@ -86,26 +89,26 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
 };
 
 export const unstable_conditional = function stylexConditional<
-  const T: { +default: mixed, +[string]: mixed },
+  const T extends { +default: unknown, +[string]: unknown },
 >(_value: T): T {
   throw errorForFn('unstable_conditional');
 };
 
 export const unstable_defineVarsNested = function stylexDefineVarsNested<
-  const T: { +[string]: mixed },
+  const T extends { +[string]: NestedVarsValue },
 >(_styles: T): T {
   throw errorForFn('unstable_defineVarsNested');
 };
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
-  const T: { +[string]: unknown },
+  const T extends { +[string]: NestedConstsValue },
 >(_styles: T): T {
   throw errorForFn('unstable_defineConstsNested');
 };
 
 export const unstable_createThemeNested = (
-  _baseTokens: { +[string]: mixed },
-  _overrides: { +[string]: mixed },
+  _baseTokens: { +[string]: NestedStringValue },
+  _overrides: { +[string]: NestedVarsValue },
 ): CompiledStyles => {
   throw errorForFn('unstable_createThemeNested');
 };
@@ -346,24 +349,30 @@ type IStyleX = {
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
-  unstable_conditional: <const T: { +default: mixed, +[string]: mixed }>(
+  unstable_conditional: <
+    const T extends { +default: unknown, +[string]: unknown },
+  >(
     value: T,
   ) => T,
-  unstable_defineVarsNested: (tokens: { +[string]: mixed }) => mixed,
-  unstable_defineConstsNested: <const T: { +[string]: unknown }>(
+  unstable_defineVarsNested: <const T extends { +[string]: NestedVarsValue }>(
+    tokens: T,
+  ) => T,
+  unstable_defineConstsNested: <
+    const T extends { +[string]: NestedConstsValue },
+  >(
     tokens: T,
   ) => T,
   unstable_createThemeNested: (
-    baseTokens: { +[string]: mixed },
-    overrides: { +[string]: mixed },
-  ) => mixed,
+    baseTokens: { +[string]: NestedStringValue },
+    overrides: { +[string]: NestedVarsValue },
+  ) => CompiledStyles,
   __customProperties?: { [string]: unknown },
   ...
 };
 
 export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   function _legacyMerge(
-    ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
+    ...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>
   ): string {
     const [className] = styleq(styles);
     return className;

@@ -219,6 +219,18 @@ type TTokens = Readonly<{
     | CSSType<null | string | number>,
 }>;
 
+export type NestedVarsValue =
+  | string
+  | CSSType<string | number>
+  | { +[string]: NestedVarsValue };
+
+export type NestedConstsValue =
+  | string
+  | number
+  | { +[string]: NestedConstsValue };
+
+export type NestedStringValue = string | { +[string]: NestedStringValue };
+
 type UnwrapVar<+T> = T extends () => infer U
   ? UnwrapVar<U>
   : T extends StyleXVar<infer U>
