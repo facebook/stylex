@@ -87,6 +87,10 @@ function attachViteHooks(plugin) {
             } catch {}
           }
         }, 150);
+        // Unref the timer so it does not prevent the process from exiting
+        // (e.g. when Vitest runs the plugin in middleware mode without an
+        // HTTP server that emits 'close').
+        interval.unref();
         server.httpServer?.once('close', () => clearInterval(interval));
       }
     },
