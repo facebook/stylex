@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@stylexjs/stylex": "0.18.2",
-    "next": "^16.1.7",
+    "next": "^16.2.3",
     "react": "^19.0.0-rc-de68d2f4-20241204",
     "react-dom": "^19.0.0-rc-de68d2f4-20241204"
   },
