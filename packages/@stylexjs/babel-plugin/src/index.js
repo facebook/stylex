@@ -46,6 +46,10 @@ const NAME = 'stylex';
 
 export type Options = StyleXOptions;
 
+function getSxOutputCalleeName(state: StateManager): 'props' | 'attrs' {
+  return state.options.sxOutput === 'as-attrs' ? 'attrs' : 'props';
+}
+
 /**
  * Entry point for the StyleX babel plugin.
  */
@@ -321,7 +325,7 @@ function styleXTransform(): PluginObj<> {
               t.callExpression(
                 t.memberExpression(
                   t.identifier('stylex'),
-                  t.identifier('props'),
+                  t.identifier(getSxOutputCalleeName(state)),
                 ),
                 [value.node],
               ),

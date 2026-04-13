@@ -51,6 +51,8 @@ export type StyleXOptions = Readonly<{
   enableLogicalStylesPolyfill?: null | undefined | boolean;
   enableLTRRTLComments?: null | undefined | boolean;
   enableMinifiedKeys?: null | undefined | boolean;
+  sxPropName?: string;
+  sxOutput?: 'as-props' | 'as-attrs';
   styleResolution:
     | 'application-order'
     | 'property-specificity'
