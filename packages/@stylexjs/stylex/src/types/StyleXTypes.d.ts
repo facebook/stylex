@@ -369,26 +369,40 @@ export type StyleX$Env = Register extends { env: infer TEnv }
 
 // === Nested API Types ===
 
+export type NestedVarsValue =
+  | string
+  | CSSType<string | number>
+  | { readonly [key: string]: NestedVarsValue };
+
+export type NestedConstsValue =
+  | string
+  | number
+  | { readonly [key: string]: NestedConstsValue };
+
+export type NestedStringValue =
+  | string
+  | { readonly [key: string]: NestedStringValue };
+
 // unstable_defineVarsNested: preserves nested key structure in output.
 // Uses generic <T> to give consumers key-level autocomplete.
 // Leaf values are replaced with var(--hash) strings at compile time.
 export type StyleX$DefineVarsNested = <
-  const T extends { [key: string]: unknown },
+  const T extends { [key: string]: NestedVarsValue },
 >(
   tokens: T,
 ) => T;
 
 // unstable_defineConstsNested: same as input — values inlined at compile time.
 export type StyleX$DefineConstsNested = <
-  const T extends { [key: string]: unknown },
+  const T extends { [key: string]: NestedConstsValue },
 >(
   tokens: T,
 ) => T;
 
 // unstable_createThemeNested: returns a flat theme object like createTheme.
 export type StyleX$CreateThemeNested = (
-  baseTokens: { readonly [key: string]: unknown },
-  overrides: { readonly [key: string]: unknown },
+  baseTokens: { readonly [key: string]: NestedStringValue },
+  overrides: { readonly [key: string]: NestedVarsValue },
 ) => CompiledStyles;
 
 // unstable_conditional: identity function for type disambiguation.
