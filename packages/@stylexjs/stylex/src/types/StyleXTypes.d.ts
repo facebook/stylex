@@ -252,17 +252,12 @@ export type IDFromVarGroup<T extends VarGroup<{}>> = T['__opaqueId'];
 
 type TTokens = Readonly<{
   [key: string]:
-    | NestedVarObject<
-        null | string | number | StyleXVar<null | string | number>
-      >
+    | NestedVarObject<null | string | number>
+    | StyleXVar<null | string | number>
     | CSSType<null | string | number>;
 }>;
 
-type UnwrapVars<T> = T extends () => infer U
-  ? UnwrapVars<U>
-  : T extends StyleXVar<infer U>
-    ? U
-    : T;
+type UnwrapVars<T> = T extends StyleXVar<infer U> ? U : T;
 export type FlattenTokens<T extends TTokens> = Readonly<{
   [Key in keyof T]: T[Key] extends { [key: string]: infer X }
     ? UnwrapVars<X>
@@ -271,7 +266,6 @@ export type FlattenTokens<T extends TTokens> = Readonly<{
 
 type NestedVarObject<T> =
   | T
-  | (() => T)
   | Readonly<{
       default: NestedVarObject<T>;
       [key: AtRuleStr]: NestedVarObject<T>;
