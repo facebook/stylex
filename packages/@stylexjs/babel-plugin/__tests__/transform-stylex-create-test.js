@@ -2408,7 +2408,7 @@ describe('@stylexjs/babel-plugin', () => {
 
           // Pseudo-classes (:hover, :active) must come before the
           // pseudo-element (::after) in the selector for valid CSS.
-          const rules = metadata.stylex.map(([className, { ltr }]) => ltr);
+          const rules = metadata.stylex.map(([_className, { ltr }]) => ltr);
           expect(rules).toMatchInlineSnapshot(`
             [
               ".x1s928wv::after{content:""}",
