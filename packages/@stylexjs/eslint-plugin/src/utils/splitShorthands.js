@@ -1314,7 +1314,13 @@ export function splitSpecificShorthands(
     property === 'border-top' ||
     property === 'border-right' ||
     property === 'border-bottom' ||
-    property === 'border-left'
+    property === 'border-left' ||
+    property === 'border-inline-end' ||
+    property === 'border-inline-start' ||
+    property === 'border-block-end' ||
+    property === 'border-block-start' ||
+    property === 'border-inline' ||
+    property === 'border-block'
   ) {
     if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
       return [[toCamelCase(property), CANNOT_FIX]];
@@ -1325,6 +1331,44 @@ export function splitSpecificShorthands(
       importantSuffix,
     );
     return expandedBorder ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  if (
+    property === 'border-inline-color' ||
+    property === 'border-inline-style' ||
+    property === 'border-inline-width' ||
+    property === 'border-block-color' ||
+    property === 'border-block-style' ||
+    property === 'border-block-width'
+  ) {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+    if (values.length > 2) {
+      return [[toCamelCase(property), CANNOT_FIX]];
+    }
+
+    const isInline = property.includes('inline');
+    const suffix = property
+      .replace('border-inline-', '')
+      .replace('border-block-', '');
+    const axis = isInline ? 'inline' : 'block';
+    const [start, end = start] = values;
+
+    if (allSameValues) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+
+    return [
+      [
+        toCamelCase(`border-${axis}-start-${suffix}`),
+        applyImportant(start, importantSuffix),
+      ],
+      [
+        toCamelCase(`border-${axis}-end-${suffix}`),
+        applyImportant(end, importantSuffix),
+      ],
+    ];
   }
 
   if (property === 'outline') {
