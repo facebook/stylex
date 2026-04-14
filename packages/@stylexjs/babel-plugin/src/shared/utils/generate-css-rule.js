@@ -29,7 +29,12 @@ function buildNestedCSSRule(
   atRules: $ReadOnlyArray<string>,
   constRules: $ReadOnlyArray<string>,
 ): string {
-  const pseudo = pseudos.filter((p) => p !== '::thumb').join('');
+  const filteredPseudos = pseudos.filter((p) => p !== '::thumb');
+  // Pseudo-elements (::before, ::after, etc.) must come after pseudo-classes
+  // in the selector. e.g. `.class:hover::before` not `.class::before:hover`
+  const pseudoClasses = filteredPseudos.filter((p) => !p.startsWith('::'));
+  const pseudoElements = filteredPseudos.filter((p) => p.startsWith('::'));
+  const pseudo = [...pseudoClasses, ...pseudoElements].join('');
   const combinedAtRules = atRules.concat(constRules);
 
   // Bump specificity of stylex.when selectors
