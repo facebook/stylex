@@ -363,17 +363,21 @@ function parseNullableStyle(
     }
   }
 
-  const parsedObj = evaluate(path, state, evaluatePathFnConfig);
+  try {
+    const parsedObj = evaluate(path, state, evaluatePathFnConfig);
 
-  if (
-    parsedObj.confident &&
-    parsedObj.value != null &&
-    typeof parsedObj.value === 'object'
-  ) {
-    if (parsedObj.value.__IS_PROXY === true) {
-      return 'other';
+    if (
+      parsedObj.confident &&
+      parsedObj.value != null &&
+      typeof parsedObj.value === 'object'
+    ) {
+      if (parsedObj.value.__IS_PROXY === true) {
+        return 'other';
+      }
+      return parsedObj.value;
     }
-    return parsedObj.value;
+  } catch {
+    return 'other';
   }
 
   return 'other';
