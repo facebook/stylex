@@ -341,6 +341,43 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    // test for nested media query inside stylex.when.ancestor()
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          icon: {
+            transitionDuration: {
+              default: '0.5s',
+              [stylex.when.ancestor(":active")]: '0.1s',
+              [stylex.when.ancestor(":hover")]: {
+                default: null,
+                "@media (hover: hover)": '0.1s',
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    // test for nested media query inside when.descendant() with destructured import
+    {
+      code: `
+        import { when, create } from '@stylexjs/stylex';
+        const styles = create({
+          icon: {
+            transitionDuration: {
+              default: '0.5s',
+              [when.ancestor(":hover")]: {
+                default: null,
+                "@media (hover: hover)": '0.1s',
+              },
+            },
+          },
+        })
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
