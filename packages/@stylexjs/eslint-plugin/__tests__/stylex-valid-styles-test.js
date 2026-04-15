@@ -358,7 +358,6 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
     },
     // test for nested media query inside when.descendant() with destructured import
     {
@@ -376,7 +375,6 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           },
         })
       `,
-      options: [{ allowOuterPseudoAndMedia: true }],
     },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
