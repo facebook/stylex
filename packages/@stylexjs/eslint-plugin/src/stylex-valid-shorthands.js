@@ -9,12 +9,7 @@
 
 'use strict';
 
-import type {
-  CallExpression,
-  Node,
-  Property,
-  ObjectExpression,
-} from 'estree';
+import type { CallExpression, Node, Property, ObjectExpression } from 'estree';
 import {
   createBlockInlineTransformer,
   createSpecificTransformer,

@@ -28,8 +28,6 @@ export default function formatPropertiesWithNodeIndentation(
   const newLineAndIndent = `\n${indentation}`;
 
   return properties
-    .map(
-      (property, index) => `${index > 0 ? newLineAndIndent : ''}${property}`,
-    )
+    .map((property, index) => `${index > 0 ? newLineAndIndent : ''}${property}`)
     .join(',');
 }
