@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "description": "Canonical workflow plugin registry for StyleX agent context routing.",
+  "default_workflows": ["WF-SETUP", "WF-AUTHOR"],
+  "workflows": ["setup", "authoring", "maintainers"],
+  "global_sources": [
+    "packages/docs/static/llm/stylex-installation.md",
+    "packages/docs/static/llm/stylex-authoring.md",
+    "packages/@stylexjs/eslint-plugin/README.md"
+  ],
+  "rule_alignment_targets": [
+    "@stylexjs/valid-styles",
+    "@stylexjs/sort-keys",
+    "@stylexjs/valid-shorthands",
+    "@stylexjs/no-unused",
+    "@stylexjs/no-legacy-contextual-styles",
+    "@stylexjs/no-lookahead-selectors",
+    "@stylexjs/no-nonstandard-styles",
+    "@stylexjs/no-conflicting-props",
+    "@stylexjs/enforce-extension"
+  ],
+  "verification_commands": [
+    { "name": "Build", "command": "npm run build" },
+    { "name": "Test Packages", "command": "npm run test:packages" },
+    { "name": "Lint", "command": "npm run lint:report" },
+    { "name": "Typecheck", "command": "npm run flow" },
+    { "name": "Check Context Drift", "command": "npm run ai:check-context" }
+  ],
+  "repo_structure": [
+    {
+      "path": "packages/@stylexjs/stylex",
+      "role": "Public API and runtime"
+    },
+    {
+      "path": "packages/@stylexjs/babel-plugin",
+      "role": "Compiler (style extraction and code transforms)"
+    },
+    {
+      "path": "packages/@stylexjs/shared",
+      "role": "Shared utilities (property priorities, naming)"
+    },
+    {
+      "path": "packages/@stylexjs/eslint-plugin",
+      "role": "Lint rules for style validation"
+    },
+    {
+      "path": "packages/style-value-parser",
+      "role": "CSS value parser and normalizer"
+    },
+    {
+      "path": "packages/@stylexjs/unplugin",
+      "role": "Bundler integrations (Vite, Webpack, Rspack, esbuild, Rollup)"
+    },
+    {
+      "path": "packages/@stylexjs/postcss-plugin",
+      "role": "PostCSS integration (Next.js)"
+    },
+    {
+      "path": "packages/@stylexjs/cli",
+      "role": "CLI for standalone file processing"
+    }
+  ],
+  "conventions": {
+    "internal_type_system": "flow",
+    "note": "Internal packages use Flow-typed .js files. Do not write TypeScript syntax in these files."
+  },
+  "do_not_rules": [
+    "Do not mix className or inline style with stylex.props() on the same element.",
+    "Do not use legacy contextual syntax for media or pseudo styles.",
+    "Do not use disallowed multivalue shorthand patterns where longhands are required.",
+    "Do not write TypeScript syntax in Flow-typed internal .js files."
+  ],
+  "local_override": {
+    "path": "AGENTS.override.md",
+    "note": "Use for machine-local customizations. Do not commit."
+  }
+}
